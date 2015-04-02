@@ -1,0 +1,18 @@
+syntax = "proto3";
+option go_package = "examples";
+package gengo.grpc.gateway.example;
+
+import "options/options.proto";
+
+message SimpleMessage {
+	string id = 1;
+}
+
+service EchoService {
+	rpc Echo(SimpleMessage) returns (SimpleMessage) {
+		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+			path: "/v1/example/echo"
+			method: "POST"
+		};
+	}
+}
