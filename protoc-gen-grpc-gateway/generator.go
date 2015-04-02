@@ -24,6 +24,7 @@ func registerMsg(location string, msgs []*descriptor.DescriptorProto) {
 	for _, m := range msgs {
 		name := fmt.Sprintf("%s.%s", location, m.GetName())
 		msgTbl[name] = m
+		glog.V(1).Infof("register name: %s", name)
 		registerMsg(name, m.GetNestedType())
 	}
 }
@@ -43,6 +44,9 @@ func generate(req *plugin.CodeGeneratorRequest) *plugin.CodeGeneratorResponse {
 	}
 	for _, file := range req.GetProtoFile() {
 		pkg := file.GetPackage()
+		if !strings.HasPrefix(pkg, ".") {
+			pkg = fmt.Sprintf(".%s", pkg)
+		}
 		registerMsg(pkg, file.GetMessageType())
 	}
 
@@ -77,7 +81,9 @@ func goPackage(d *descriptor.FileDescriptorProto) string {
 		return d.Options.GetGoPackage()
 	}
 	if d.Package == nil {
-		return filepath.Base(d.GetName())
+		base := filepath.Base(d.GetName())
+		ext := filepath.Ext(base)
+		return strings.TrimSuffix(base, ext)
 	}
 	return strings.NewReplacer("-", "_", ".", "_").Replace(d.GetPackage())
 }
@@ -189,9 +195,8 @@ func lookupField(msg *descriptor.DescriptorProto, name string) *descriptor.Field
 }
 
 func generateSingleFile(file *descriptor.FileDescriptorProto) (string, error) {
-	pkg := file.GetPackage()
 	buf := bytes.NewBuffer(nil)
-	if err := headerTemplate.Execute(buf, pkg); err != nil {
+	if err := headerTemplate.Execute(buf, goPackage(file)); err != nil {
 		return "", err
 	}
 	var svcDescs []serviceDesc
