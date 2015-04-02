@@ -1,0 +1,22 @@
+syntax = "proto2";
+option go_package = "options";
+
+package gengo.grpc.gateway;
+import "google/protobuf/descriptor.proto";
+
+message ApiMethodOptions {
+	extend google.protobuf.MethodOptions {
+		// Describes how the gRPC method should be exported as a RESTful API.
+		// TODO(yugui) Use a globally unique id instead of a organization-private id.
+		optional ApiMethodOptions api_options = 5000;
+	}
+
+	// Path of the RESTful API method.
+	// Path components which start with colon is mapped to the corresponding fields in the request message.
+	required string path = 1;
+	// HTTP method of the RESTful API method
+	required string method = 2;
+	// Human-readable description of the method.
+	optional string description = 3;
+}
+
