@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
@@ -35,6 +36,14 @@ func main() {
 	req, err := parseReq(os.Stdin)
 	if err != nil {
 		glog.Fatal(err)
+	}
+	if req.Parameter != nil {
+		for _, p := range strings.Split(req.GetParameter(), ",") {
+			spec := strings.SplitN(p, "=", 2)
+			if err := flag.CommandLine.Set(spec[0], spec[1]); err != nil {
+				glog.Fatalf("Cannot set flag %s", p)
+			}
+		}
 	}
 	resp := generate(req)
 	glog.Info("Processed code generator request")
