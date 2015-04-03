@@ -301,9 +301,7 @@ var (
 	headerTemplate = template.Must(template.New("header").Parse(`
 package {{.Pkg}}
 import (
-	{{if .NeedsBody}}
 	"encoding/json"
-	{{end}}
 	{{if .NeedsPathParam}}
 	"fmt"
 	{{end}}
@@ -386,7 +384,7 @@ func Register{{$svc.Name}}Handler(ctx context.Context, mux *web.Mux, conn *grpc.
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		buf, err := proto.Marshal(resp)
+		buf, err := json.Marshal(resp)
 		if err != nil {
 			glog.Errorf("Marshal error: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)

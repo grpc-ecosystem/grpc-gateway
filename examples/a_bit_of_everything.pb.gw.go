@@ -257,7 +257,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		buf, err := proto.Marshal(resp)
+		buf, err := json.Marshal(resp)
 		if err != nil {
 			glog.Errorf("Marshal error: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -276,7 +276,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		buf, err := proto.Marshal(resp)
+		buf, err := json.Marshal(resp)
 		if err != nil {
 			glog.Errorf("Marshal error: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -295,7 +295,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		buf, err := proto.Marshal(resp)
+		buf, err := json.Marshal(resp)
 		if err != nil {
 			glog.Errorf("Marshal error: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -314,7 +314,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		buf, err := proto.Marshal(resp)
+		buf, err := json.Marshal(resp)
 		if err != nil {
 			glog.Errorf("Marshal error: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -333,7 +333,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		buf, err := proto.Marshal(resp)
+		buf, err := json.Marshal(resp)
 		if err != nil {
 			glog.Errorf("Marshal error: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)

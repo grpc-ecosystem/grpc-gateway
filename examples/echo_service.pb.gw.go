@@ -78,7 +78,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.Cl
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		buf, err := proto.Marshal(resp)
+		buf, err := json.Marshal(resp)
 		if err != nil {
 			glog.Errorf("Marshal error: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -97,7 +97,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.Cl
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		buf, err := proto.Marshal(resp)
+		buf, err := json.Marshal(resp)
 		if err != nil {
 			glog.Errorf("Marshal error: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
