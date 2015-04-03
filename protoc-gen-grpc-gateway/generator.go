@@ -320,7 +320,7 @@ import (
 )
 `))
 	handlerTemplate = template.Must(template.New("handler").Parse(`
-func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c *web.C, client {{.ServiceName}}Client, req *http.Request) (msg proto.Message, err error) {
+func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, req *http.Request) (msg proto.Message, err error) {
 	protoReq := new({{.RequestType}})
 {{if .NeedsBody}}
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
@@ -379,7 +379,7 @@ func Register{{$svc.Name}}HandlerFromEndpoint(ctx context.Context, mux *web.Mux,
 func Register{{$svc.Name}}Handler(ctx context.Context, mux *web.Mux, conn *grpc.ClientConn) error {
 	client := New{{$svc.Name}}Client(conn)
 	{{range $m := $svc.Methods}}
-	mux.{{$m.MuxRegistererName}}({{$m.Path | printf "%q"}}, func(c *web.C, w http.ResponseWriter, req *http.Request) {
+	mux.{{$m.MuxRegistererName}}({{$m.Path | printf "%q"}}, func(c web.C, w http.ResponseWriter, req *http.Request) {
 		resp, err := handle_{{$m.ServiceName}}_{{$m.Name}}(ctx, c, client, req)
 		if err != nil {
 			glog.Errorf("RPC error: %v", err)

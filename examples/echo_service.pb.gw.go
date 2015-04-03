@@ -17,7 +17,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-func handle_EchoService_Echo(ctx context.Context, c *web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
+func handle_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
 	protoReq := new(SimpleMessage)
 
 	var val string
@@ -35,7 +35,7 @@ func handle_EchoService_Echo(ctx context.Context, c *web.C, client EchoServiceCl
 	return client.Echo(ctx, protoReq)
 }
 
-func handle_EchoService_EchoBody(ctx context.Context, c *web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
+func handle_EchoService_EchoBody(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
 	protoReq := new(SimpleMessage)
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
@@ -71,7 +71,7 @@ func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *web.Mux, e
 func RegisterEchoServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.ClientConn) error {
 	client := NewEchoServiceClient(conn)
 
-	mux.Post("/v1/example/echo/:id", func(c *web.C, w http.ResponseWriter, req *http.Request) {
+	mux.Post("/v1/example/echo/:id", func(c web.C, w http.ResponseWriter, req *http.Request) {
 		resp, err := handle_EchoService_Echo(ctx, c, client, req)
 		if err != nil {
 			glog.Errorf("RPC error: %v", err)
@@ -90,7 +90,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.Cl
 		}
 	})
 
-	mux.Post("/v1/example/echo_body", func(c *web.C, w http.ResponseWriter, req *http.Request) {
+	mux.Post("/v1/example/echo_body", func(c web.C, w http.ResponseWriter, req *http.Request) {
 		resp, err := handle_EchoService_EchoBody(ctx, c, client, req)
 		if err != nil {
 			glog.Errorf("RPC error: %v", err)

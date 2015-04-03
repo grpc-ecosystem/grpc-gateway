@@ -17,7 +17,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-func handle_ABitOfEverythingService_Create(ctx context.Context, c *web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+func handle_ABitOfEverythingService_Create(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
 	protoReq := new(ABitOfEverything)
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
@@ -156,7 +156,7 @@ func handle_ABitOfEverythingService_Create(ctx context.Context, c *web.C, client
 	return client.Create(ctx, protoReq)
 }
 
-func handle_ABitOfEverythingService_CreateBody(ctx context.Context, c *web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+func handle_ABitOfEverythingService_CreateBody(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
 	protoReq := new(ABitOfEverything)
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
@@ -166,7 +166,7 @@ func handle_ABitOfEverythingService_CreateBody(ctx context.Context, c *web.C, cl
 	return client.CreateBody(ctx, protoReq)
 }
 
-func handle_ABitOfEverythingService_Lookup(ctx context.Context, c *web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+func handle_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
 	protoReq := new(IdMessage)
 
 	var val string
@@ -184,7 +184,7 @@ func handle_ABitOfEverythingService_Lookup(ctx context.Context, c *web.C, client
 	return client.Lookup(ctx, protoReq)
 }
 
-func handle_ABitOfEverythingService_Update(ctx context.Context, c *web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+func handle_ABitOfEverythingService_Update(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
 	protoReq := new(ABitOfEverything)
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
@@ -206,7 +206,7 @@ func handle_ABitOfEverythingService_Update(ctx context.Context, c *web.C, client
 	return client.Update(ctx, protoReq)
 }
 
-func handle_ABitOfEverythingService_Delete(ctx context.Context, c *web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+func handle_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
 	protoReq := new(IdMessage)
 
 	var val string
@@ -250,7 +250,7 @@ func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux
 func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.ClientConn) error {
 	client := NewABitOfEverythingServiceClient(conn)
 
-	mux.Post("/v1/example/a_bit_of_everything/:float_value/:double_value/:int64_value/separator/:uint64_value/:int32_value/:fixed64_value/:fixed32_value/:bool_value/:string_value/:uint32_value/:sfixed32_value/:sfixed64_value/:sint32_value/:sint64_value", func(c *web.C, w http.ResponseWriter, req *http.Request) {
+	mux.Post("/v1/example/a_bit_of_everything/:float_value/:double_value/:int64_value/separator/:uint64_value/:int32_value/:fixed64_value/:fixed32_value/:bool_value/:string_value/:uint32_value/:sfixed32_value/:sfixed64_value/:sint32_value/:sint64_value", func(c web.C, w http.ResponseWriter, req *http.Request) {
 		resp, err := handle_ABitOfEverythingService_Create(ctx, c, client, req)
 		if err != nil {
 			glog.Errorf("RPC error: %v", err)
@@ -269,7 +269,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 		}
 	})
 
-	mux.Post("/v1/example/a_bit_of_everything", func(c *web.C, w http.ResponseWriter, req *http.Request) {
+	mux.Post("/v1/example/a_bit_of_everything", func(c web.C, w http.ResponseWriter, req *http.Request) {
 		resp, err := handle_ABitOfEverythingService_CreateBody(ctx, c, client, req)
 		if err != nil {
 			glog.Errorf("RPC error: %v", err)
@@ -288,7 +288,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 		}
 	})
 
-	mux.Get("/v1/example/a_bit_of_everything/:uuid", func(c *web.C, w http.ResponseWriter, req *http.Request) {
+	mux.Get("/v1/example/a_bit_of_everything/:uuid", func(c web.C, w http.ResponseWriter, req *http.Request) {
 		resp, err := handle_ABitOfEverythingService_Lookup(ctx, c, client, req)
 		if err != nil {
 			glog.Errorf("RPC error: %v", err)
@@ -307,7 +307,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 		}
 	})
 
-	mux.Put("/v1/example/a_bit_of_everything/:uuid", func(c *web.C, w http.ResponseWriter, req *http.Request) {
+	mux.Put("/v1/example/a_bit_of_everything/:uuid", func(c web.C, w http.ResponseWriter, req *http.Request) {
 		resp, err := handle_ABitOfEverythingService_Update(ctx, c, client, req)
 		if err != nil {
 			glog.Errorf("RPC error: %v", err)
@@ -326,7 +326,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 		}
 	})
 
-	mux.Delete("/v1/example/a_bit_of_everything/:uuid", func(c *web.C, w http.ResponseWriter, req *http.Request) {
+	mux.Delete("/v1/example/a_bit_of_everything/:uuid", func(c web.C, w http.ResponseWriter, req *http.Request) {
 		resp, err := handle_ABitOfEverythingService_Delete(ctx, c, client, req)
 		if err != nil {
 			glog.Errorf("RPC error: %v", err)
