@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "examples";
+option go_package = "main";
 package gengo.grpc.gateway.example;
 
 import "options/options.proto";

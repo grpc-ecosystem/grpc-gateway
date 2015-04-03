@@ -56,8 +56,8 @@ proto_file <
     name: "EchoService"
     method <
       name: "Echo"
-      input_type: "example.SimpleMessage"
-      output_type: "example.SimpleMessage"
+      input_type: ".example.SimpleMessage"
+      output_type: ".example.SimpleMessage"
       options <
         [gengo.grpc.gateway.ApiMethodOptions.api_options] <
           path: "/v1/example/echo"
@@ -71,6 +71,7 @@ proto_file <
 
 import (
 	"encoding/json"
+	"flag"
 	"net/http"
 
 	"github.com/golang/glog"
@@ -79,11 +80,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-func handle_EchoService_Echo(ctx context.Context, c *EchoServiceClient, req *http.Request) (proto.Message, error) {
+func handle_EchoService_Echo(ctx context.Context, c EchoServiceClient, req *http.Request) (proto.Message, error) {
 	protoReq := new(SimpleMessage)
 
-	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return err
+	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+		return nil, err
 	}
 
 	return c.Echo(ctx, protoReq)
@@ -104,6 +105,10 @@ type handler struct {
 	conns map[string]*grpc.ClientConn
 }
 
+func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.mux.ServeHTTP(w, r)
+}
+
 func (h *handler) Close() error {
 	var err error
 	for svc, conn := range h.conns {
@@ -120,7 +125,7 @@ func (h *handler) Close() error {
 
 func NewHandler(ctx context.Context) (http.Handler, error) {
 	h := &handler{
-		conn: make(map[string]*grpc.ClientConn),
+		conns: make(map[string]*grpc.ClientConn),
 	}
 	var err error
 	defer func() {
@@ -134,28 +139,29 @@ func NewHandler(ctx context.Context) (http.Handler, error) {
 		if err != nil {
 			return err
 		}
-		h.conn["EchoService"] = conn
+		h.conns["EchoService"] = conn
 		client := NewEchoServiceClient(conn)
 
-		mux.HandleFunc("/v1/example/echo", func(w http.ResponseWriter, req *http.Request) {
+		h.mux.HandleFunc("/v1/example/echo", func(w http.ResponseWriter, req *http.Request) {
 			resp, err := handle_EchoService_Echo(ctx, client, req)
 			if err != nil {
 				glog.Errorf("RPC error: %v", err)
-				http.Error(w, err.String(), http.StatusInternalServerError)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
 			buf, err := proto.Marshal(resp)
 			if err != nil {
 				glog.Errorf("Marshal error: %v", err)
-				http.Error(w, err.String(), http.StatusInternalServerError)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
 			w.Header().Set("Content-Type", "application/json")
-			if err = w.Write(buf); err != nil {
+			if _, err = w.Write(buf); err != nil {
 				glog.Errorf("Failed to write response: %v", err)
 			}
 		})
 
+		return nil
 	}()
 	if err != nil {
 		return nil, err

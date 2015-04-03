@@ -299,8 +299,9 @@ var (
 	headerTemplate = template.Must(template.New("header").Parse(`
 package {{.}}
 import (
-	"net/http"
 	"encoding/json"
+	"flag"
+	"net/http"
 
 	"google.golang.org/grpc"
 	"github.com/golang/protobuf/proto"
@@ -309,11 +310,11 @@ import (
 )
 `))
 	handlerTemplate = template.Must(template.New("handler").Parse(`
-func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c *{{.ServiceName}}Client, req *http.Request) (proto.Message, error) {
+func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c {{.ServiceName}}Client, req *http.Request) (proto.Message, error) {
 	protoReq := new({{.RequestType}})
 {{if .NeedsBody}}
-	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return err
+	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+		return nil, err
 	}
 {{end}}
 	{{range $desc := .QueryParams}}
@@ -347,6 +348,10 @@ type handler struct {
 	conns map[string]*grpc.ClientConn
 }
 
+func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.mux.ServeHTTP(w, r)
+}
+
 func (h *handler) Close() error {
 	var err error
 	for svc, conn := range h.conns {
@@ -363,7 +368,7 @@ func (h *handler) Close() error {
 
 func NewHandler(ctx context.Context) (http.Handler, error) {
 	h := &handler{
-		conn: make(map[string]*grpc.ClientConn),
+		conns: make(map[string]*grpc.ClientConn),
 	}
 	var err error
 	defer func() {
@@ -377,28 +382,29 @@ func NewHandler(ctx context.Context) (http.Handler, error) {
 		if err != nil {
 			return err
 		}
-		h.conn[{{$svc.Name | printf "%q"}}] = conn
+		h.conns[{{$svc.Name | printf "%q"}}] = conn
 		client := New{{$svc.Name}}Client(conn)
 		{{range $m := $svc.Methods}}
-		mux.HandleFunc({{$m.Prefix | printf "%q"}}, func(w http.ResponseWriter, req *http.Request) {
+		h.mux.HandleFunc({{$m.Prefix | printf "%q"}}, func(w http.ResponseWriter, req *http.Request) {
 			resp, err := handle_{{$m.ServiceName}}_{{$m.Name}}(ctx, client, req)
 			if err != nil {
 				glog.Errorf("RPC error: %v", err)
-				http.Error(w, err.String(), http.StatusInternalServerError)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
 			buf, err := proto.Marshal(resp)
 			if err != nil {
 				glog.Errorf("Marshal error: %v", err)
-				http.Error(w, err.String(), http.StatusInternalServerError)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
 			w.Header().Set("Content-Type", "application/json")
-			if err = w.Write(buf); err != nil {
+			if _, err = w.Write(buf); err != nil {
 				glog.Errorf("Failed to write response: %v", err)
 			}
 		})
 		{{end}}
+		return nil
 	}()
 	if err != nil {
 		return nil, err

@@ -3,7 +3,7 @@
 // DO NOT EDIT!
 
 /*
-Package examples is a generated protocol buffer package.
+Package main is a generated protocol buffer package.
 
 It is generated from these files:
 	examples/echo_service.proto
@@ -11,7 +11,7 @@ It is generated from these files:
 It has these top-level messages:
 	SimpleMessage
 */
-package examples
+package main
 
 import proto "github.com/golang/protobuf/proto"
 
