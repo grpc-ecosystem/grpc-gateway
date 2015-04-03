@@ -37,3 +37,5 @@ test: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS)
 
 realclean:
 	rm -f $(OPTIONS_GO)
+	rm -f $(EXAMPLE_SVCSRCS)
+	rm -f $(EXAMPLE_GWSRCS)
