@@ -7,6 +7,7 @@ package main
 import proto "github.com/golang/protobuf/proto"
 
 // discarding unused import gengo_grpc_gateway "options/options.pb"
+import gengo_grpc_gateway_examples_sub "github.com/gengo/grpc-gateway/examples/sub"
 
 import (
 	context "golang.org/x/net/context"
@@ -87,6 +88,7 @@ type ABitOfEverythingServiceClient interface {
 	Lookup(ctx context.Context, in *IdMessage, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	Update(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*EmptyMessage, error)
 	Delete(ctx context.Context, in *IdMessage, opts ...grpc.CallOption) (*EmptyMessage, error)
+	Echo(ctx context.Context, in *gengo_grpc_gateway_examples_sub.StringMessage, opts ...grpc.CallOption) (*gengo_grpc_gateway_examples_sub.StringMessage, error)
 }
 
 type aBitOfEverythingServiceClient struct {
@@ -142,6 +144,15 @@ func (c *aBitOfEverythingServiceClient) Delete(ctx context.Context, in *IdMessag
 	return out, nil
 }
 
+func (c *aBitOfEverythingServiceClient) Echo(ctx context.Context, in *gengo_grpc_gateway_examples_sub.StringMessage, opts ...grpc.CallOption) (*gengo_grpc_gateway_examples_sub.StringMessage, error) {
+	out := new(gengo_grpc_gateway_examples_sub.StringMessage)
+	err := grpc.Invoke(ctx, "/gengo.grpc.gateway.examples.ABitOfEverythingService/Echo", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for ABitOfEverythingService service
 
 type ABitOfEverythingServiceServer interface {
@@ -150,6 +161,7 @@ type ABitOfEverythingServiceServer interface {
 	Lookup(context.Context, *IdMessage) (*ABitOfEverything, error)
 	Update(context.Context, *ABitOfEverything) (*EmptyMessage, error)
 	Delete(context.Context, *IdMessage) (*EmptyMessage, error)
+	Echo(context.Context, *gengo_grpc_gateway_examples_sub.StringMessage) (*gengo_grpc_gateway_examples_sub.StringMessage, error)
 }
 
 func RegisterABitOfEverythingServiceServer(s *grpc.Server, srv ABitOfEverythingServiceServer) {
@@ -216,6 +228,18 @@ func _ABitOfEverythingService_Delete_Handler(srv interface{}, ctx context.Contex
 	return out, nil
 }
 
+func _ABitOfEverythingService_Echo_Handler(srv interface{}, ctx context.Context, buf []byte) (interface{}, error) {
+	in := new(gengo_grpc_gateway_examples_sub.StringMessage)
+	if err := proto.Unmarshal(buf, in); err != nil {
+		return nil, err
+	}
+	out, err := srv.(ABitOfEverythingServiceServer).Echo(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 var _ABitOfEverythingService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "gengo.grpc.gateway.examples.ABitOfEverythingService",
 	HandlerType: (*ABitOfEverythingServiceServer)(nil),
@@ -239,6 +263,10 @@ var _ABitOfEverythingService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Delete",
 			Handler:    _ABitOfEverythingService_Delete_Handler,
+		},
+		{
+			MethodName: "Echo",
+			Handler:    _ABitOfEverythingService_Echo_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{},

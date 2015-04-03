@@ -12,6 +12,10 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
 
+var (
+	importPrefix = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
+)
+
 func parseReq(r io.Reader) (*plugin.CodeGeneratorRequest, error) {
 	glog.V(1).Info("Parsing code generator request")
 	input, err := ioutil.ReadAll(r)
@@ -40,7 +44,18 @@ func main() {
 	if req.Parameter != nil {
 		for _, p := range strings.Split(req.GetParameter(), ",") {
 			spec := strings.SplitN(p, "=", 2)
-			if err := flag.CommandLine.Set(spec[0], spec[1]); err != nil {
+			if len(spec) == 1 {
+				if err := flag.CommandLine.Set(spec[0], ""); err != nil {
+					glog.Fatalf("Cannot set flag %s", p)
+				}
+				continue
+			}
+			name, value := spec[0], spec[1]
+			if strings.HasSuffix(name, "M") {
+				importMap[name[1:]] = value
+				continue
+			}
+			if err := flag.CommandLine.Set(name, value); err != nil {
 				glog.Fatalf("Cannot set flag %s", p)
 			}
 		}

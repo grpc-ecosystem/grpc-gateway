@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"go/format"
 	"path/filepath"
@@ -17,15 +18,27 @@ import (
 )
 
 var (
+	// msgTbl maps a fully-qualified message name to its DescriptorProto.
 	msgTbl = make(map[string]*descriptor.DescriptorProto)
+	// proto2MsgTbl keeps a set of fully-qualified message names which came from files with proto2 syntax.
+	proto2MsgTbl = make(map[string]bool)
+	// filePkgTbl maps a file name to its proto package name.
+	filePkgTbl = make(map[string]string)
+	// importMap maps a path to a .proto file to a go pacakge path.
+	importMap = make(map[string]string)
+
+	errNoTargetService = errors.New("no target service defined in the file")
 )
 
-func registerMsg(location string, msgs []*descriptor.DescriptorProto) {
+func registerMsg(location string, msgs []*descriptor.DescriptorProto, isProto2 bool) {
 	for _, m := range msgs {
 		name := fmt.Sprintf("%s.%s", location, m.GetName())
 		msgTbl[name] = m
+		if isProto2 {
+			proto2MsgTbl[name] = true
+		}
 		glog.V(1).Infof("register name: %s", name)
-		registerMsg(name, m.GetNestedType())
+		registerMsg(name, m.GetNestedType(), isProto2)
 	}
 }
 
@@ -47,7 +60,9 @@ func generate(req *plugin.CodeGeneratorRequest) *plugin.CodeGeneratorResponse {
 		if !strings.HasPrefix(pkg, ".") {
 			pkg = fmt.Sprintf(".%s", pkg)
 		}
-		registerMsg(pkg, file.GetMessageType())
+		filePkgTbl[file.GetName()] = pkg
+		isProto2 := file.GetSyntax() == "" || file.GetSyntax() == "proto2"
+		registerMsg(pkg, file.GetMessageType(), isProto2)
 	}
 
 	var files []*plugin.CodeGeneratorResponse_File
@@ -58,6 +73,10 @@ func generate(req *plugin.CodeGeneratorRequest) *plugin.CodeGeneratorResponse {
 		}
 		glog.V(1).Infof("Processing %s", file.GetName())
 		code, err := generateSingleFile(file)
+		if err == errNoTargetService {
+			glog.V(1).Info("%s: %v", file.GetName(), err)
+			continue
+		}
 		if err != nil {
 			return &plugin.CodeGeneratorResponse{
 				Error: proto.String(err.Error()),
@@ -85,7 +104,24 @@ func goPackage(d *descriptor.FileDescriptorProto) string {
 		ext := filepath.Ext(base)
 		return strings.TrimSuffix(base, ext)
 	}
-	return strings.NewReplacer("-", "_", ".", "_").Replace(d.GetPackage())
+	return goPkgFromProtoPkg(d.GetPackage())
+}
+
+func goPkgFromProtoPkg(protoPkg string) string {
+	return strings.NewReplacer("-", "_", ".", "_").Replace(protoPkg)
+}
+
+func goTypeFromProtoType(protoType, currentPkg string) string {
+	components := strings.Split(protoType, ".")
+	if len(components) < 2 {
+		return protoType
+	}
+	msg := components[len(components)-1]
+	pkg := strings.Join(components[:len(components)-1], ".")
+	if pkg == currentPkg {
+		return msg
+	}
+	return fmt.Sprintf("%s.%s", goPkgFromProtoPkg(pkg), msg)
 }
 
 var (
@@ -119,7 +155,7 @@ func getAPIOptions(meth *descriptor.MethodDescriptorProto) (*options.ApiMethodOp
 }
 
 var (
-	convertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
+	proto3ConvertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
 		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "convert.Float64",
 		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "convert.Float32",
 		descriptor.FieldDescriptorProto_TYPE_INT64:   "convert.Int64",
@@ -141,9 +177,36 @@ var (
 		descriptor.FieldDescriptorProto_TYPE_SINT32:   "convert.Int32",
 		descriptor.FieldDescriptorProto_TYPE_SINT64:   "convert.Int64",
 	}
+	proto2ConvertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
+		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "convert.Float64P",
+		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "convert.Float32P",
+		descriptor.FieldDescriptorProto_TYPE_INT64:   "convert.Int64P",
+		descriptor.FieldDescriptorProto_TYPE_UINT64:  "convert.Uint64P",
+		descriptor.FieldDescriptorProto_TYPE_INT32:   "convert.Int32P",
+		descriptor.FieldDescriptorProto_TYPE_FIXED64: "convert.Uint64P",
+		descriptor.FieldDescriptorProto_TYPE_FIXED32: "convert.Uint32P",
+		descriptor.FieldDescriptorProto_TYPE_BOOL:    "convert.BoolP",
+		descriptor.FieldDescriptorProto_TYPE_STRING:  "convert.StringP",
+		// FieldDescriptorProto_TYPE_GROUP
+		// FieldDescriptorProto_TYPE_MESSAGE
+		// FieldDescriptorProto_TYPE_BYTES
+		// TODO(yugui) Handle bytes
+		descriptor.FieldDescriptorProto_TYPE_UINT32: "convert.Uint32P",
+		// FieldDescriptorProto_TYPE_ENUM
+		// TODO(yugui) Handle Enum
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "convert.Int32P",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "convert.Int64P",
+		descriptor.FieldDescriptorProto_TYPE_SINT32:   "convert.Int32P",
+		descriptor.FieldDescriptorProto_TYPE_SINT64:   "convert.Int64P",
+	}
 )
 
-func pathParams(msg *descriptor.DescriptorProto, opts *options.ApiMethodOptions) ([]paramDesc, error) {
+func pathParams(msg *descriptor.DescriptorProto, opts *options.ApiMethodOptions, isProto2 bool) ([]paramDesc, error) {
+	convertFuncs := proto3ConvertFuncs
+	if isProto2 {
+		convertFuncs = proto2ConvertFuncs
+	}
+
 	var params []paramDesc
 	components := strings.Split(opts.GetPath(), "/")
 	for _, c := range components {
@@ -177,9 +240,9 @@ func lookupField(msg *descriptor.DescriptorProto, name string) *descriptor.Field
 }
 
 func generateSingleFile(file *descriptor.FileDescriptorProto) (string, error) {
+	usedImports := make(map[string]bool)
 	buf := bytes.NewBuffer(nil)
 	var svcDescs []serviceDesc
-	var anyNeedsBody, anyNeedsPathParam bool
 	for _, svc := range file.GetService() {
 		sd := serviceDesc{
 			Name: svc.GetName(),
@@ -198,7 +261,7 @@ func generateSingleFile(file *descriptor.FileDescriptorProto) (string, error) {
 			for _, f := range input.Field {
 				fields[f.GetName()] = true
 			}
-			params, err := pathParams(input, opts)
+			params, err := pathParams(input, opts, proto2MsgTbl[meth.GetInputType()])
 			if err != nil {
 				return "", err
 			}
@@ -209,20 +272,18 @@ func generateSingleFile(file *descriptor.FileDescriptorProto) (string, error) {
 			if needsBody && (opts.GetMethod() == "GET" || opts.GetMethod() == "DELETE") {
 				return "", fmt.Errorf("needs request body even though http method is %s: %s", opts.Method, meth.GetName())
 			}
+			requestGoType := goTypeFromProtoType(meth.GetInputType()[1:], file.GetPackage())
+			if idx := strings.Index(requestGoType, "."); idx >= 0 {
+				usedImports[requestGoType[:idx]] = true
+			}
 			md := methodDesc{
 				ServiceName: svc.GetName(),
 				Name:        meth.GetName(),
 				Method:      opts.GetMethod(),
 				Path:        opts.GetPath(),
-				RequestType: input.GetName(),
+				RequestType: requestGoType,
 				PathParams:  params,
 				NeedsBody:   needsBody,
-			}
-			if md.NeedsBody {
-				anyNeedsBody = true
-			}
-			if md.NeedsPathParam() {
-				anyNeedsPathParam = true
 			}
 			sd.Methods = append(sd.Methods, md)
 		}
@@ -231,11 +292,25 @@ func generateSingleFile(file *descriptor.FileDescriptorProto) (string, error) {
 		}
 		svcDescs = append(svcDescs, sd)
 	}
+	if len(svcDescs) == 0 {
+		return "", errNoTargetService
+	}
 
+	var imports []string
+	for _, dep := range file.GetDependency() {
+		protoPkg, ok := filePkgTbl[dep]
+		if !ok {
+			glog.Fatalf("unknown dependency in %s: %s", file.GetName(), dep)
+		}
+		pkg := filepath.Join(*importPrefix, filepath.Dir(dep))
+		alias := goPkgFromProtoPkg(protoPkg[1:])
+		if usedImports[alias] {
+			imports = append(imports, fmt.Sprintf("%s %q\n", alias, pkg))
+		}
+	}
 	err := headerTemplate.Execute(buf, headerParams{
-		Pkg:            goPackage(file),
-		NeedsBody:      anyNeedsBody,
-		NeedsPathParam: anyNeedsPathParam,
+		Pkg:     goPackage(file),
+		Imports: imports,
 	})
 	if err != nil {
 		return "", err
@@ -260,8 +335,8 @@ func generateSingleFile(file *descriptor.FileDescriptorProto) (string, error) {
 }
 
 type headerParams struct {
-	Pkg                       string
-	NeedsBody, NeedsPathParam bool
+	Pkg     string
+	Imports []string
 }
 
 type paramDesc struct {
@@ -302,20 +377,21 @@ var (
 package {{.Pkg}}
 import (
 	"encoding/json"
-	{{if .NeedsPathParam}}
 	"fmt"
-	{{end}}
 	"net/http"
 
 	"google.golang.org/grpc"
-	{{if (or .NeedsBody .NeedsPathParam)}}
 	"github.com/gengo/grpc-gateway/convert"
-	{{end}}
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/glog"
 	"github.com/zenazn/goji/web"
 	"golang.org/x/net/context"
+
+{{range $line := .Imports}}{{$line}}{{end}}
 )
+
+var _ fmt.Stringer
+var _ = convert.String
 `))
 	handlerTemplate = template.Must(template.New("handler").Parse(`
 func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, req *http.Request) (msg proto.Message, err error) {

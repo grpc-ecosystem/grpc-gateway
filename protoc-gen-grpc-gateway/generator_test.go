@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/golang/protobuf/proto"
@@ -8,20 +9,24 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
 
-func runGenerateRaw(t *testing.T, input string, expected *plugin.CodeGeneratorResponse) {
+func generateFromText(t *testing.T, input string) *plugin.CodeGeneratorResponse {
 	msgTbl = make(map[string]*descriptor.DescriptorProto)
 	var req plugin.CodeGeneratorRequest
 	if err := proto.UnmarshalText(input, &req); err != nil {
 		t.Fatalf("proto.Unmarshal(%q, &req) failed with %v; want success", input, err)
 	}
-
-	resp := generate(&req)
-	if !proto.Equal(resp, expected) {
-		t.Errorf("generate(%s) = %s; want %s", input, proto.MarshalTextString(resp), proto.MarshalTextString(expected))
-	}
+	return generate(&req)
 }
 
-func runGenerate(t *testing.T, input string, outputs map[string]string) {
+func mustGenerateFromText(t *testing.T, input string) []*plugin.CodeGeneratorResponse_File {
+	resp := generateFromText(t, input)
+	if resp.Error != nil {
+		t.Fatalf("generate(%s) failed with %s", input, resp.GetError())
+	}
+	return resp.File
+}
+
+func testGenerate(t *testing.T, input string, outputs map[string]string) {
 	var expected plugin.CodeGeneratorResponse
 	for fname, content := range outputs {
 		expected.File = append(expected.File, &plugin.CodeGeneratorResponse_File{
@@ -29,20 +34,23 @@ func runGenerate(t *testing.T, input string, outputs map[string]string) {
 			Content: proto.String(content),
 		})
 	}
-	runGenerateRaw(t, input, &expected)
+	resp := generateFromText(t, input)
+	if !proto.Equal(resp, &expected) {
+		t.Errorf("generate(%s) = %s; want %s", input, proto.MarshalTextString(resp), proto.MarshalTextString(&expected))
+	}
 }
 
 func TestGenerateEmtpy(t *testing.T) {
-	var expected plugin.CodeGeneratorResponse
-	runGenerateRaw(t, "", &expected)
+	testGenerate(t, "", nil)
 }
 
-func TestGenerator(t *testing.T) {
-	runGenerate(t, `
+func TestGenerate(t *testing.T) {
+	testGenerate(t, `
 file_to_generate: "example.proto"
 proto_file <
   name: "example.proto"
   package: "example"
+  syntax: "proto3"
   message_type <
     name: "SimpleMessage"
     field <
@@ -82,20 +90,19 @@ proto_file <
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"net/http"
 
-	"google.golang.org/grpc"
-
 	"github.com/gengo/grpc-gateway/convert"
-
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	"github.com/zenazn/goji/web"
 	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
+
+var _ fmt.Stringer
+var _ = convert.String
 
 func handle_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
 	protoReq := new(SimpleMessage)
@@ -193,4 +200,82 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.Cl
 }
 `,
 	})
+}
+
+func TestGenerateWithExternalMessage(t *testing.T) {
+	input := `
+file_to_generate: "example.proto"
+proto_file <
+  name: "github.com/example/proto/message.proto"
+  package: "com.example.proto"
+  message_type <
+    name: "SimpleMessage"
+    field <
+      name: "id"
+      number: 1
+      label: LABEL_REQUIRED,
+      type: TYPE_STRING
+    >
+  >
+>
+proto_file <
+  name: "github.com/example/sub/proto/another.proto"
+  package: "com.example.sub.proto"
+  message_type <
+    name: "AnotherMessage"
+    field <
+      name: "id"
+      number: 1
+      label: LABEL_REQUIRED,
+      type: TYPE_STRING
+    >
+  >
+>
+proto_file <
+  name: "example.proto"
+  package: "example"
+  dependency: "github.com/example/proto/message.proto"
+  dependency: "github.com/example/sub/proto/another.proto"
+  public_dependency: 0
+  public_dependency: 1
+  syntax: "proto3"
+  service <
+    name: "EchoService"
+    method <
+      name: "SimpleToAnother"
+      input_type: ".com.example.proto.SimpleMessage"
+      output_type: ".com.example.sub.proto.AnotherMessage"
+      options <
+        [gengo.grpc.gateway.ApiMethodOptions.api_options] <
+          path: "/v1/example/conv/:id"
+          method: "POST"
+        >
+      >
+    >
+    method <
+      name: "AnotherToSimple"
+      input_type: ".com.example.sub.proto.AnotherMessage"
+      output_type: ".com.example.proto.SimpleMessage"
+      options <
+        [gengo.grpc.gateway.ApiMethodOptions.api_options] <
+          path: "/v1/example/rconv/:id"
+          method: "POST"
+        >
+      >
+    >
+  >
+>`
+	files := mustGenerateFromText(t, input)
+	if got, want := len(files), 1; got != want {
+		t.Errorf("len(generate(%s).File) = %d; want %d", got, want)
+		return
+	}
+	content := files[0].GetContent()
+
+	if want := `com_example_proto "github.com/example/proto"`; !strings.Contains(content, want) {
+		t.Errorf("content = %s; want it to contain %s", content, want)
+	}
+	if want := `com_example_sub_proto "github.com/example/sub/proto"`; !strings.Contains(content, want) {
+		t.Errorf("content = %s; want it to contain %s", content, want)
+	}
 }

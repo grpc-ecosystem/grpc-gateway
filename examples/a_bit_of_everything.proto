@@ -3,6 +3,7 @@ option go_package = "main";
 package gengo.grpc.gateway.examples;
 
 import "options/options.proto";
+import "examples/sub/message.proto";
 
 message ABitOfEverything {
 	message Nested {
@@ -66,6 +67,12 @@ service ABitOfEverythingService {
 		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
 			path: "/v1/example/a_bit_of_everything/:uuid"
 			method: "DELETE"
+		};
+	}
+	rpc Echo(gengo.grpc.gateway.examples.sub.StringMessage) returns (gengo.grpc.gateway.examples.sub.StringMessage) {
+		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+			path: "/v1/example/a_bit_of_everything/echo/:value"
+			method: "GET"
 		};
 	}
 }

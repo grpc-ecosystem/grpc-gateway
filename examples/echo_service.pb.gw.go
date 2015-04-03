@@ -2,20 +2,19 @@ package main
 
 import (
 	"encoding/json"
-
 	"fmt"
-
 	"net/http"
 
-	"google.golang.org/grpc"
-
 	"github.com/gengo/grpc-gateway/convert"
-
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	"github.com/zenazn/goji/web"
 	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
+
+var _ fmt.Stringer
+var _ = convert.String
 
 func handle_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
 	protoReq := new(SimpleMessage)
