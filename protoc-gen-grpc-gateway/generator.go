@@ -92,17 +92,10 @@ var (
 	upperPattern = regexp.MustCompile("[A-Z]")
 )
 
-func toSnake(str string) string {
-	str = upperPattern.ReplaceAllStringFunc(str, func(c string) string {
-		return "_" + strings.ToLower(c)
-	})
-	return strings.TrimPrefix(str, "_")
-}
-
 func toCamel(str string) string {
 	var components []string
 	for _, c := range strings.Split(str, "_") {
-		components = append(components, strings.Title(c))
+		components = append(components, strings.Title(strings.ToLower(c)))
 	}
 	return strings.Join(components, "")
 }
@@ -127,62 +120,51 @@ func getAPIOptions(meth *descriptor.MethodDescriptorProto) (*options.ApiMethodOp
 
 var (
 	convertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
-		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "Float64",
-		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "Float32",
-		descriptor.FieldDescriptorProto_TYPE_INT64:   "Int64",
-		descriptor.FieldDescriptorProto_TYPE_UINT64:  "Uint64",
-		descriptor.FieldDescriptorProto_TYPE_INT32:   "Int32",
-		descriptor.FieldDescriptorProto_TYPE_FIXED64: "Uint64",
-		descriptor.FieldDescriptorProto_TYPE_FIXED32: "Uint32",
-		descriptor.FieldDescriptorProto_TYPE_BOOL:    "Bool",
-		descriptor.FieldDescriptorProto_TYPE_STRING:  "String",
+		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "convert.Float64",
+		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "convert.Float32",
+		descriptor.FieldDescriptorProto_TYPE_INT64:   "convert.Int64",
+		descriptor.FieldDescriptorProto_TYPE_UINT64:  "convert.Uint64",
+		descriptor.FieldDescriptorProto_TYPE_INT32:   "convert.Int32",
+		descriptor.FieldDescriptorProto_TYPE_FIXED64: "convert.Uint64",
+		descriptor.FieldDescriptorProto_TYPE_FIXED32: "convert.Uint32",
+		descriptor.FieldDescriptorProto_TYPE_BOOL:    "convert.Bool",
+		descriptor.FieldDescriptorProto_TYPE_STRING:  "convert.String",
 		// FieldDescriptorProto_TYPE_GROUP
 		// FieldDescriptorProto_TYPE_MESSAGE
 		// FieldDescriptorProto_TYPE_BYTES
 		// TODO(yugui) Handle bytes
-		descriptor.FieldDescriptorProto_TYPE_UINT32: "Uint32",
+		descriptor.FieldDescriptorProto_TYPE_UINT32: "convert.Uint32",
 		// FieldDescriptorProto_TYPE_ENUM
 		// TODO(yugui) Handle Enum
-		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "Int32",
-		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "Int64",
-		descriptor.FieldDescriptorProto_TYPE_SINT32:   "Int32",
-		descriptor.FieldDescriptorProto_TYPE_SINT64:   "Int64",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "convert.Int32",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "convert.Int64",
+		descriptor.FieldDescriptorProto_TYPE_SINT32:   "convert.Int32",
+		descriptor.FieldDescriptorProto_TYPE_SINT64:   "convert.Int64",
 	}
 )
 
-func pathParams(msg *descriptor.DescriptorProto, opts *options.ApiMethodOptions) (prefix string, params []pathParamDesc, err error) {
+func pathParams(msg *descriptor.DescriptorProto, opts *options.ApiMethodOptions) ([]paramDesc, error) {
+	var params []paramDesc
 	components := strings.Split(opts.GetPath(), "/")
-	var firstParam int
-	for i, c := range components {
+	for _, c := range components {
 		if !strings.HasPrefix(c, ":") {
-			if firstParam > 0 {
-				// TODO(yugui) Relax this restriction?
-				return "", nil, fmt.Errorf("fixed component after positional parameter: %q", opts.Path)
-			}
 			continue
-		}
-		if firstParam == 0 {
-			firstParam = i
 		}
 		name := strings.TrimPrefix(c, ":")
 		fd := lookupField(msg, name)
 		if fd == nil {
-			return "", nil, fmt.Errorf("field %q not found in %s", name, msg.GetName())
+			return nil, fmt.Errorf("field %q not found in %s", name, msg.GetName())
 		}
 		conv, ok := convertFuncs[fd.GetType()]
 		if !ok {
-			return "", nil, fmt.Errorf("unsupported path parameter type %s in %s", fd.GetType(), msg.GetName())
+			return nil, fmt.Errorf("unsupported path parameter type %s in %s", fd.GetType(), msg.GetName())
 		}
-		params = append(params, pathParamDesc{
+		params = append(params, paramDesc{
 			ProtoName:   name,
-			PathIndex:   i,
 			ConvertFunc: conv,
 		})
 	}
-	if firstParam == 0 {
-		return opts.GetPath(), nil, nil
-	}
-	return strings.Join(components[:firstParam], "/"), params, nil
+	return params, nil
 }
 
 func lookupField(msg *descriptor.DescriptorProto, name string) *descriptor.FieldDescriptorProto {
@@ -196,10 +178,8 @@ func lookupField(msg *descriptor.DescriptorProto, name string) *descriptor.Field
 
 func generateSingleFile(file *descriptor.FileDescriptorProto) (string, error) {
 	buf := bytes.NewBuffer(nil)
-	if err := headerTemplate.Execute(buf, goPackage(file)); err != nil {
-		return "", err
-	}
 	var svcDescs []serviceDesc
+	var anyNeedsBody, anyNeedsPathParam bool
 	for _, svc := range file.GetService() {
 		sd := serviceDesc{
 			Name: svc.GetName(),
@@ -218,7 +198,7 @@ func generateSingleFile(file *descriptor.FileDescriptorProto) (string, error) {
 			for _, f := range input.Field {
 				fields[f.GetName()] = true
 			}
-			prefix, params, err := pathParams(input, opts)
+			params, err := pathParams(input, opts)
 			if err != nil {
 				return "", err
 			}
@@ -233,20 +213,39 @@ func generateSingleFile(file *descriptor.FileDescriptorProto) (string, error) {
 				ServiceName: svc.GetName(),
 				Name:        meth.GetName(),
 				Method:      opts.GetMethod(),
+				Path:        opts.GetPath(),
 				RequestType: input.GetName(),
 				PathParams:  params,
-				Prefix:      prefix,
 				NeedsBody:   needsBody,
 			}
-			sd.Methods = append(sd.Methods, md)
-			if err = handlerTemplate.Execute(buf, md); err != nil {
-				return "", err
+			if md.NeedsBody {
+				anyNeedsBody = true
 			}
+			if md.NeedsPathParam() {
+				anyNeedsPathParam = true
+			}
+			sd.Methods = append(sd.Methods, md)
 		}
 		if len(sd.Methods) == 0 {
 			continue
 		}
 		svcDescs = append(svcDescs, sd)
+	}
+
+	err := headerTemplate.Execute(buf, headerParams{
+		Pkg:            goPackage(file),
+		NeedsBody:      anyNeedsBody,
+		NeedsPathParam: anyNeedsPathParam,
+	})
+	if err != nil {
+		return "", err
+	}
+	for _, sd := range svcDescs {
+		for _, md := range sd.Methods {
+			if err = handlerTemplate.Execute(buf, md); err != nil {
+				return "", err
+			}
+		}
 	}
 	if err := trailerTemplate.Execute(buf, svcDescs); err != nil {
 		return "", err
@@ -260,26 +259,37 @@ func generateSingleFile(file *descriptor.FileDescriptorProto) (string, error) {
 	return string(code), nil
 }
 
-type pathParamDesc struct {
+type headerParams struct {
+	Pkg                       string
+	NeedsBody, NeedsPathParam bool
+}
+
+type paramDesc struct {
 	ProtoName   string
-	PathIndex   int
 	ConvertFunc string
 }
 
-type queryParamDesc struct {
-	ProtoName   string
-	ConvertFunc string
+func (d paramDesc) GoName() string {
+	return toCamel(d.ProtoName)
 }
 
 type methodDesc struct {
 	ServiceName string
 	Name        string
 	Method      string
+	Path        string
 	RequestType string
-	QueryParams []queryParamDesc
-	PathParams  []pathParamDesc
-	Prefix      string
+	QueryParams []paramDesc
+	PathParams  []paramDesc
 	NeedsBody   bool
+}
+
+func (d methodDesc) MuxRegistererName() string {
+	return toCamel(d.Method)
+}
+
+func (d methodDesc) NeedsPathParam() bool {
+	return len(d.PathParams) != 0
 }
 
 type serviceDesc struct {
@@ -287,130 +297,108 @@ type serviceDesc struct {
 	Methods []methodDesc
 }
 
-func (d serviceDesc) EndpointFlag() string {
-	return fmt.Sprintf("%s_endpoint", toSnake(d.Name))
-}
-
-func (d methodDesc) NeedsPathParam() bool {
-	return len(d.PathParams) != 0
-}
-
 var (
 	headerTemplate = template.Must(template.New("header").Parse(`
-package {{.}}
+package {{.Pkg}}
 import (
+	{{if .NeedsBody}}
 	"encoding/json"
-	"flag"
+	{{end}}
+	{{if .NeedsPathParam}}
+	"fmt"
+	{{end}}
 	"net/http"
 
 	"google.golang.org/grpc"
+	{{if (or .NeedsBody .NeedsPathParam)}}
+	"github.com/gengo/grpc-gateway/convert"
+	{{end}}
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/glog"
+	"github.com/zenazn/goji/web"
 	"golang.org/x/net/context"
 )
 `))
 	handlerTemplate = template.Must(template.New("handler").Parse(`
-func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c {{.ServiceName}}Client, req *http.Request) (proto.Message, error) {
+func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c *web.C, client {{.ServiceName}}Client, req *http.Request) (msg proto.Message, err error) {
 	protoReq := new({{.RequestType}})
 {{if .NeedsBody}}
-	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, err
 	}
 {{end}}
 	{{range $desc := .QueryParams}}
-	protoReq.{{$desc.ProtoName}} = proto.{{$desc.ConvertFunc}}(req.FormValue({{$desc.ProtoName | printf "%q"}}))
-	{{end}}
-{{if .NeedsPathParam}}
-	components := strings.Split(req.URL.Path, "/")
-	{{range $desc := .PathParams}}
-	protoReq.{{$desc.ProtoName}} = proto.{{$desc.ConvertFunc}}(components[{{$desc.PathIndex}}])
-	{{end}}
-{{end}}
-	return c.{{.Name}}(ctx, protoReq)
-}
-`))
-
-	trailerTemplate = template.Must(template.New("trailer").Parse(`
-var (
-	{{range $svc := .}}
-	endpoint{{$svc.Name}} string
-	{{end}}
-)
-
-func init() {
-	{{range $svc := .}}
-	flag.StringVar(&endpoint{{$svc.Name}}, {{$svc.EndpointFlag | printf "%q"}}, "", "endpoint host:port of {{$svc.Name}}")
-	{{end}}
-}
-
-type handler struct {
-	mux http.ServeMux
-	conns map[string]*grpc.ClientConn
-}
-
-func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h.mux.ServeHTTP(w, r)
-}
-
-func (h *handler) Close() error {
-	var err error
-	for svc, conn := range h.conns {
-		cerr := conn.Close()
-		if err == nil {
-			err = cerr
-		}
-		if cerr != nil {
-			glog.Errorf("Failed to close gRPC connection to %s: %v", svc, err)
-		}
-	}
-	return err
-}
-
-func NewHandler(ctx context.Context) (http.Handler, error) {
-	h := &handler{
-		conns: make(map[string]*grpc.ClientConn),
-	}
-	var err error
-	defer func() {
-		if err != nil {
-			h.Close()
-		}
-	}()
-	{{range $svc := .}}
-	err = func() error {
-		conn, err := grpc.Dial(endpoint{{$svc.Name}})
-		if err != nil {
-			return err
-		}
-		h.conns[{{$svc.Name | printf "%q"}}] = conn
-		client := New{{$svc.Name}}Client(conn)
-		{{range $m := $svc.Methods}}
-		h.mux.HandleFunc({{$m.Prefix | printf "%q"}}, func(w http.ResponseWriter, req *http.Request) {
-			resp, err := handle_{{$m.ServiceName}}_{{$m.Name}}(ctx, client, req)
-			if err != nil {
-				glog.Errorf("RPC error: %v", err)
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			buf, err := proto.Marshal(resp)
-			if err != nil {
-				glog.Errorf("Marshal error: %v", err)
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			w.Header().Set("Content-Type", "application/json")
-			if _, err = w.Write(buf); err != nil {
-				glog.Errorf("Failed to write response: %v", err)
-			}
-		})
-		{{end}}
-		return nil
-	}()
+	protoReq.{{$desc.ProtoName}}, err = {{$desc.ConvertFunc}}(req.FormValue({{$desc.ProtoName | printf "%q"}}))
 	if err != nil {
 		return nil, err
 	}
 	{{end}}
-	return h, nil
+{{if .NeedsPathParam}}
+	var val string
+	var ok bool
+	{{range $desc := .PathParams}}
+	val, ok = c.URLParams[{{$desc.ProtoName | printf "%q"}}]
+	if !ok {
+		return nil, fmt.Errorf("missing parameter %s", {{$desc.ProtoName | printf "%q"}})
+	}
+	protoReq.{{$desc.GoName}}, err = {{$desc.ConvertFunc}}(val)
+	if err != nil {
+		return nil, err
+	}
+	{{end}}
+{{end}}
+	return client.{{.Name}}(ctx, protoReq)
 }
 `))
+
+	trailerTemplate = template.Must(template.New("trailer").Parse(`
+{{range $svc := .}}
+func Register{{$svc.Name}}HandlerFromEndpoint(ctx context.Context, mux *web.Mux, endpoint string) (err error) {
+	conn, err := grpc.Dial(endpoint)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			if cerr := conn.Close(); cerr != nil {
+				glog.Error("Failed to close conn to %s: %v", endpoint, cerr)
+			}
+			return
+		}
+		go func() {
+			<-ctx.Done()
+			if cerr := conn.Close(); cerr != nil {
+				glog.Error("Failed to close conn to %s: %v", endpoint, cerr)
+			}
+		}()
+	}()
+
+	return Register{{$svc.Name}}Handler(ctx, mux, conn)
+}
+
+func Register{{$svc.Name}}Handler(ctx context.Context, mux *web.Mux, conn *grpc.ClientConn) error {
+	client := New{{$svc.Name}}Client(conn)
+	{{range $m := $svc.Methods}}
+	mux.{{$m.MuxRegistererName}}({{$m.Path | printf "%q"}}, func(c *web.C, w http.ResponseWriter, req *http.Request) {
+		resp, err := handle_{{$m.ServiceName}}_{{$m.Name}}(ctx, c, client, req)
+		if err != nil {
+			glog.Errorf("RPC error: %v", err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		buf, err := proto.Marshal(resp)
+		if err != nil {
+			glog.Errorf("Marshal error: %v", err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		if _, err = w.Write(buf); err != nil {
+			glog.Errorf("Failed to write response: %v", err)
+		}
+	})
+	{{end}}
+	return nil
+}
+{{end}}`))
 )

@@ -44,6 +44,7 @@ func init() {
 
 type EchoServiceClient interface {
 	Echo(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
+	EchoBody(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
 }
 
 type echoServiceClient struct {
@@ -63,10 +64,20 @@ func (c *echoServiceClient) Echo(ctx context.Context, in *SimpleMessage, opts ..
 	return out, nil
 }
 
+func (c *echoServiceClient) EchoBody(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error) {
+	out := new(SimpleMessage)
+	err := grpc.Invoke(ctx, "/gengo.grpc.gateway.example.EchoService/EchoBody", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for EchoService service
 
 type EchoServiceServer interface {
 	Echo(context.Context, *SimpleMessage) (*SimpleMessage, error)
+	EchoBody(context.Context, *SimpleMessage) (*SimpleMessage, error)
 }
 
 func RegisterEchoServiceServer(s *grpc.Server, srv EchoServiceServer) {
@@ -85,6 +96,18 @@ func _EchoService_Echo_Handler(srv interface{}, ctx context.Context, buf []byte)
 	return out, nil
 }
 
+func _EchoService_EchoBody_Handler(srv interface{}, ctx context.Context, buf []byte) (interface{}, error) {
+	in := new(SimpleMessage)
+	if err := proto.Unmarshal(buf, in); err != nil {
+		return nil, err
+	}
+	out, err := srv.(EchoServiceServer).EchoBody(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 var _EchoService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "gengo.grpc.gateway.example.EchoService",
 	HandlerType: (*EchoServiceServer)(nil),
@@ -92,6 +115,10 @@ var _EchoService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Echo",
 			Handler:    _EchoService_Echo_Handler,
+		},
+		{
+			MethodName: "EchoBody",
+			Handler:    _EchoService_EchoBody_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{},

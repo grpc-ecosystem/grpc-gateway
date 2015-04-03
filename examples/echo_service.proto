@@ -11,7 +11,13 @@ message SimpleMessage {
 service EchoService {
 	rpc Echo(SimpleMessage) returns (SimpleMessage) {
 		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/echo"
+			path: "/v1/example/echo/:id"
+			method: "POST"
+		};
+	}
+	rpc EchoBody(SimpleMessage) returns (SimpleMessage) {
+		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+			path: "/v1/example/echo_body"
 			method: "POST"
 		};
 	}
