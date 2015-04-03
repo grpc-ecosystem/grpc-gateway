@@ -8,7 +8,8 @@ GATEWAY_PLUGIN_SRC=protoc-gen-grpc-gateway/main.go \
 OPTIONS_GO=options/options.pb.go
 OPTIONS_PROTO=options/options.proto
 PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor
-EXAMPLES=examples/echo_service.proto
+EXAMPLES=examples/echo_service.proto \
+	 examples/a_bit_of_everything.proto
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
 PROTOC_INC_PATH=$(dir $(shell which protoc))/../include

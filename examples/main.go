@@ -11,6 +11,7 @@ import (
 
 var (
 	echoEndpoint = flag.String("--echo_endpoint", "localhost:9090", "endpoint of EchoService")
+	abeEndpoint  = flag.String("--more_endpoint", "localhost:9090", "endpoint of ABitOfEverythingService")
 )
 
 func run() error {
@@ -20,6 +21,10 @@ func run() error {
 
 	mux := web.New()
 	err := RegisterEchoServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint)
+	if err != nil {
+		return err
+	}
+	err = RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx, mux, *abeEndpoint)
 	if err != nil {
 		return err
 	}

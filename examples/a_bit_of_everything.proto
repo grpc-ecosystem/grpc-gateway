@@ -1,0 +1,71 @@
+syntax = "proto3";
+option go_package = "main";
+package gengo.grpc.gateway.examples;
+
+import "options/options.proto";
+
+message ABitOfEverything {
+	message Nested {
+		string name = 1;
+		uint32 amount = 2;
+	}
+
+	string uuid = 1;
+	repeated Nested nested = 2;
+	float float_value = 3;
+	double double_value = 4;
+	int64 int64_value = 5;
+	uint64 uint64_value = 6;
+	int32 int32_value = 7;
+	fixed64 fixed64_value = 8;
+	fixed32 fixed32_value = 9;
+	bool bool_value = 10;
+	string string_value = 11;
+	// TODO(yugui) add bytes_value
+	uint32 uint32_value = 13;
+	// TODO(yugui) add enum_value
+	sfixed32 sfixed32_value = 15;
+	sfixed64 sfixed64_value = 16;
+	sint32 sint32_value = 17;
+	sint64 sint64_value = 18;
+}
+
+message EmptyMessage {
+}
+
+message IdMessage {
+	string uuid = 1;
+}
+
+service ABitOfEverythingService {
+	rpc Create(ABitOfEverything) returns (ABitOfEverything) {
+		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+			path: "/v1/example/a_bit_of_everything/:float_value/:double_value/:int64_value/separator/:uint64_value/:int32_value/:fixed64_value/:fixed32_value/:bool_value/:string_value/:uint32_value/:sfixed32_value/:sfixed64_value/:sint32_value/:sint64_value"
+			method: "POST"
+		};
+	}
+	rpc CreateBody(ABitOfEverything) returns (ABitOfEverything) {
+		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+			path: "/v1/example/a_bit_of_everything"
+			method: "POST"
+		};
+	}
+	rpc Lookup(IdMessage) returns (ABitOfEverything) {
+		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+			path: "/v1/example/a_bit_of_everything/:uuid"
+			method: "Get"
+		};
+	}
+	rpc Update(ABitOfEverything) returns (EmptyMessage) {
+		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+			path: "/v1/example/a_bit_of_everything/:uuid"
+			method: "PUT"
+		};
+	}
+	rpc Delete(IdMessage) returns (EmptyMessage) {
+		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+			path: "/v1/example/a_bit_of_everything/:uuid"
+			method: "DELETE"
+		};
+	}
+}

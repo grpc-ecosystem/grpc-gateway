@@ -7,6 +7,7 @@ Package main is a generated protocol buffer package.
 
 It is generated from these files:
 	examples/echo_service.proto
+	examples/a_bit_of_everything.proto
 
 It has these top-level messages:
 	SimpleMessage
