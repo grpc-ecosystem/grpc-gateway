@@ -11,8 +11,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/runtime"
@@ -26,8 +24,6 @@ import (
 	gengo_grpc_gateway_examples_sub "github.com/gengo/grpc-gateway/examples/sub"
 )
 
-var _ fmt.Stringer
-var _ io.Reader
 var _ codes.Code
 var _ = runtime.String
 
@@ -43,7 +39,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["float_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "float_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "float_value")
 	}
 	protoReq.FloatValue, err = runtime.Float32(val)
 	if err != nil {
@@ -52,7 +48,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["double_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "double_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "double_value")
 	}
 	protoReq.DoubleValue, err = runtime.Float64(val)
 	if err != nil {
@@ -61,7 +57,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["int64_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "int64_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "int64_value")
 	}
 	protoReq.Int64Value, err = runtime.Int64(val)
 	if err != nil {
@@ -70,7 +66,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["uint64_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "uint64_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uint64_value")
 	}
 	protoReq.Uint64Value, err = runtime.Uint64(val)
 	if err != nil {
@@ -79,7 +75,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["int32_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "int32_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "int32_value")
 	}
 	protoReq.Int32Value, err = runtime.Int32(val)
 	if err != nil {
@@ -88,7 +84,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["fixed64_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "fixed64_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "fixed64_value")
 	}
 	protoReq.Fixed64Value, err = runtime.Uint64(val)
 	if err != nil {
@@ -97,7 +93,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["fixed32_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "fixed32_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "fixed32_value")
 	}
 	protoReq.Fixed32Value, err = runtime.Uint32(val)
 	if err != nil {
@@ -106,7 +102,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["bool_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "bool_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "bool_value")
 	}
 	protoReq.BoolValue, err = runtime.Bool(val)
 	if err != nil {
@@ -115,7 +111,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["string_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "string_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "string_value")
 	}
 	protoReq.StringValue, err = runtime.String(val)
 	if err != nil {
@@ -124,7 +120,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["uint32_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "uint32_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uint32_value")
 	}
 	protoReq.Uint32Value, err = runtime.Uint32(val)
 	if err != nil {
@@ -133,7 +129,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["sfixed32_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "sfixed32_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "sfixed32_value")
 	}
 	protoReq.Sfixed32Value, err = runtime.Int32(val)
 	if err != nil {
@@ -142,7 +138,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["sfixed64_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "sfixed64_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "sfixed64_value")
 	}
 	protoReq.Sfixed64Value, err = runtime.Int64(val)
 	if err != nil {
@@ -151,7 +147,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["sint32_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "sint32_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "sint32_value")
 	}
 	protoReq.Sint32Value, err = runtime.Int32(val)
 	if err != nil {
@@ -160,7 +156,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["sint64_value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "sint64_value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "sint64_value")
 	}
 	protoReq.Sint64Value, err = runtime.Int64(val)
 	if err != nil {
@@ -168,25 +164,6 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	}
 
 	return client.Create(ctx, &protoReq)
-}
-
-func handle_ABitOfEverythingService_Create(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
-	resp, err := request_ABitOfEverythingService_Create(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-	buf, err := json.Marshal(resp)
-	if err != nil {
-		glog.Errorf("Marshal error: %v", err)
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	if _, err = w.Write(buf); err != nil {
-		glog.Errorf("Failed to write response: %v", err)
-	}
 }
 
 func request_ABitOfEverythingService_CreateBody(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
@@ -197,25 +174,6 @@ func request_ABitOfEverythingService_CreateBody(ctx context.Context, c web.C, cl
 	}
 
 	return client.CreateBody(ctx, &protoReq)
-}
-
-func handle_ABitOfEverythingService_CreateBody(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
-	resp, err := request_ABitOfEverythingService_CreateBody(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-	buf, err := json.Marshal(resp)
-	if err != nil {
-		glog.Errorf("Marshal error: %v", err)
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	if _, err = w.Write(buf); err != nil {
-		glog.Errorf("Failed to write response: %v", err)
-	}
 }
 
 func request_ABitOfEverythingService_BulkCreate(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
@@ -241,25 +199,6 @@ func request_ABitOfEverythingService_BulkCreate(ctx context.Context, c web.C, cl
 
 }
 
-func handle_ABitOfEverythingService_BulkCreate(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
-	resp, err := request_ABitOfEverythingService_BulkCreate(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-	buf, err := json.Marshal(resp)
-	if err != nil {
-		glog.Errorf("Marshal error: %v", err)
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	if _, err = w.Write(buf); err != nil {
-		glog.Errorf("Failed to write response: %v", err)
-	}
-}
-
 func request_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
 	var protoReq IdMessage
 
@@ -268,7 +207,7 @@ func request_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["uuid"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "uuid")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
 	}
 	protoReq.Uuid, err = runtime.String(val)
 	if err != nil {
@@ -278,71 +217,10 @@ func request_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client
 	return client.Lookup(ctx, &protoReq)
 }
 
-func handle_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
-	resp, err := request_ABitOfEverythingService_Lookup(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-	buf, err := json.Marshal(resp)
-	if err != nil {
-		glog.Errorf("Marshal error: %v", err)
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	if _, err = w.Write(buf); err != nil {
-		glog.Errorf("Failed to write response: %v", err)
-	}
-}
-
 func request_ABitOfEverythingService_List(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (ABitOfEverythingService_ListClient, error) {
 	var protoReq EmptyMessage
 
 	return client.List(ctx, &protoReq)
-}
-
-type ABitOfEverythingService_ListStreamChunk struct {
-	Result proto.Message `json:"result`
-	Error  string        `json:"error,omitempty"`
-}
-
-func handle_ABitOfEverythingService_List(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
-	stream, err := request_ABitOfEverythingService_List(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	for {
-		resp, err := stream.Recv()
-		if err == io.EOF {
-			return
-		}
-		if err != nil {
-			buf, merr := json.Marshal(ABitOfEverythingService_ListStreamChunk{Error: err.Error()})
-			if merr != nil {
-				glog.Error("Failed to marshal an error: %v", merr)
-				return
-			}
-			if _, werr := fmt.Fprintln(w, buf); werr != nil {
-				glog.Error("Failed to notify error to client: %v", werr)
-				return
-			}
-			return
-		}
-		buf, err := json.Marshal(ABitOfEverythingService_ListStreamChunk{Result: resp})
-		if err != nil {
-			glog.Error("Failed to marshal response chunk: %v", err)
-			return
-		}
-		if _, err = fmt.Fprintln(w, buf); err != nil {
-			glog.Error("Failed to send response chunk: %v", err)
-			return
-		}
-	}
 }
 
 func request_ABitOfEverythingService_Update(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
@@ -357,7 +235,7 @@ func request_ABitOfEverythingService_Update(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["uuid"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "uuid")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
 	}
 	protoReq.Uuid, err = runtime.String(val)
 	if err != nil {
@@ -365,25 +243,6 @@ func request_ABitOfEverythingService_Update(ctx context.Context, c web.C, client
 	}
 
 	return client.Update(ctx, &protoReq)
-}
-
-func handle_ABitOfEverythingService_Update(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
-	resp, err := request_ABitOfEverythingService_Update(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-	buf, err := json.Marshal(resp)
-	if err != nil {
-		glog.Errorf("Marshal error: %v", err)
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	if _, err = w.Write(buf); err != nil {
-		glog.Errorf("Failed to write response: %v", err)
-	}
 }
 
 func request_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
@@ -394,7 +253,7 @@ func request_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client
 
 	val, ok = c.URLParams["uuid"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "uuid")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
 	}
 	protoReq.Uuid, err = runtime.String(val)
 	if err != nil {
@@ -402,25 +261,6 @@ func request_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client
 	}
 
 	return client.Delete(ctx, &protoReq)
-}
-
-func handle_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
-	resp, err := request_ABitOfEverythingService_Delete(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-	buf, err := json.Marshal(resp)
-	if err != nil {
-		glog.Errorf("Marshal error: %v", err)
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	if _, err = w.Write(buf); err != nil {
-		glog.Errorf("Failed to write response: %v", err)
-	}
 }
 
 func request_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
@@ -431,7 +271,7 @@ func request_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client A
 
 	val, ok = c.URLParams["value"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "value")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "value")
 	}
 	protoReq.Value, err = runtime.StringP(val)
 	if err != nil {
@@ -439,25 +279,6 @@ func request_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client A
 	}
 
 	return client.Echo(ctx, &protoReq)
-}
-
-func handle_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
-	resp, err := request_ABitOfEverythingService_Echo(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-	buf, err := json.Marshal(resp)
-	if err != nil {
-		glog.Errorf("Marshal error: %v", err)
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	if _, err = w.Write(buf); err != nil {
-		glog.Errorf("Failed to write response: %v", err)
-	}
 }
 
 func request_ABitOfEverythingService_BulkEcho(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (ABitOfEverythingService_BulkEchoClient, error) {
@@ -487,48 +308,6 @@ func request_ABitOfEverythingService_BulkEcho(ctx context.Context, c web.C, clie
 
 }
 
-type ABitOfEverythingService_BulkEchoStreamChunk struct {
-	Result proto.Message `json:"result`
-	Error  string        `json:"error,omitempty"`
-}
-
-func handle_ABitOfEverythingService_BulkEcho(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
-	stream, err := request_ABitOfEverythingService_BulkEcho(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	for {
-		resp, err := stream.Recv()
-		if err == io.EOF {
-			return
-		}
-		if err != nil {
-			buf, merr := json.Marshal(ABitOfEverythingService_BulkEchoStreamChunk{Error: err.Error()})
-			if merr != nil {
-				glog.Error("Failed to marshal an error: %v", merr)
-				return
-			}
-			if _, werr := fmt.Fprintln(w, buf); werr != nil {
-				glog.Error("Failed to notify error to client: %v", werr)
-				return
-			}
-			return
-		}
-		buf, err := json.Marshal(ABitOfEverythingService_BulkEchoStreamChunk{Result: resp})
-		if err != nil {
-			glog.Error("Failed to marshal response chunk: %v", err)
-			return
-		}
-		if _, err = fmt.Fprintln(w, buf); err != nil {
-			glog.Error("Failed to send response chunk: %v", err)
-			return
-		}
-	}
-}
-
 func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux *web.Mux, endpoint string) (err error) {
 	conn, err := grpc.Dial(endpoint)
 	if err != nil {
@@ -556,39 +335,102 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 	client := NewABitOfEverythingServiceClient(conn)
 
 	mux.Post("/v1/example/a_bit_of_everything/:float_value/:double_value/:int64_value/separator/:uint64_value/:int32_value/:fixed64_value/:fixed32_value/:bool_value/:string_value/:uint32_value/:sfixed32_value/:sfixed64_value/:sint32_value/:sint64_value", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		handle_ABitOfEverythingService_Create(ctx, c, client, w, req)
+		resp, err := request_ABitOfEverythingService_Create(ctx, c, client, req)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+
+		runtime.ForwardResponseMessage(w, resp)
+
 	})
 
 	mux.Post("/v1/example/a_bit_of_everything", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		handle_ABitOfEverythingService_CreateBody(ctx, c, client, w, req)
+		resp, err := request_ABitOfEverythingService_CreateBody(ctx, c, client, req)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+
+		runtime.ForwardResponseMessage(w, resp)
+
 	})
 
 	mux.Post("/v1/example/a_bit_of_everything", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		handle_ABitOfEverythingService_BulkCreate(ctx, c, client, w, req)
+		resp, err := request_ABitOfEverythingService_BulkCreate(ctx, c, client, req)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+
+		runtime.ForwardResponseMessage(w, resp)
+
 	})
 
 	mux.Get("/v1/example/a_bit_of_everything/:uuid", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		handle_ABitOfEverythingService_Lookup(ctx, c, client, w, req)
+		resp, err := request_ABitOfEverythingService_Lookup(ctx, c, client, req)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+
+		runtime.ForwardResponseMessage(w, resp)
+
 	})
 
 	mux.Get("/v1/example/a_bit_of_everything", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		handle_ABitOfEverythingService_List(ctx, c, client, w, req)
+		resp, err := request_ABitOfEverythingService_List(ctx, c, client, req)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+
+		runtime.ForwardResponseStream(w, func() (proto.Message, error) { return resp.Recv() })
+
 	})
 
 	mux.Put("/v1/example/a_bit_of_everything/:uuid", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		handle_ABitOfEverythingService_Update(ctx, c, client, w, req)
+		resp, err := request_ABitOfEverythingService_Update(ctx, c, client, req)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+
+		runtime.ForwardResponseMessage(w, resp)
+
 	})
 
 	mux.Delete("/v1/example/a_bit_of_everything/:uuid", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		handle_ABitOfEverythingService_Delete(ctx, c, client, w, req)
+		resp, err := request_ABitOfEverythingService_Delete(ctx, c, client, req)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+
+		runtime.ForwardResponseMessage(w, resp)
+
 	})
 
 	mux.Get("/v1/example/a_bit_of_everything/echo/:value", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		handle_ABitOfEverythingService_Echo(ctx, c, client, w, req)
+		resp, err := request_ABitOfEverythingService_Echo(ctx, c, client, req)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+
+		runtime.ForwardResponseMessage(w, resp)
+
 	})
 
 	mux.Post("/v1/example/a_bit_of_everything/echo", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		handle_ABitOfEverythingService_BulkEcho(ctx, c, client, w, req)
+		resp, err := request_ABitOfEverythingService_BulkEcho(ctx, c, client, req)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+
+		runtime.ForwardResponseStream(w, func() (proto.Message, error) { return resp.Recv() })
+
 	})
 
 	return nil

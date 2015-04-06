@@ -394,8 +394,6 @@ It translates gRPC into RESTful JSON APIs.
 package {{.Pkg}}
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/runtime"
@@ -409,75 +407,15 @@ import (
 {{range $line := .Imports}}{{$line}}{{end}}
 )
 
-var _ fmt.Stringer
-var _ io.Reader
 var _ codes.Code
 var _ = runtime.String
 `))
 
 	handlerTemplate = template.Must(template.New("handler").Parse(`
-{{if .ClientStreaming}}{{template "client-streaming-request-func" .}}{{else}}{{template "client-rpc-request-func" .}}{{end}}
-{{if .ServerStreaming}}
-type {{.ServiceName}}_{{.Name}}StreamChunk struct {
-	Result proto.Message ` + "`" + `json:"result` + "`" + `
-	Error  string        ` + "`" + `json:"error,omitempty"` + "`" + `
-}
-
-func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, w http.ResponseWriter, req *http.Request) {
-	stream, err := request_{{.ServiceName}}_{{.Name}}(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	for {
-		resp, err := stream.Recv()
-		if err == io.EOF {
-			return
-		}
-		if err != nil {
-			buf, merr := json.Marshal({{.ServiceName}}_{{.Name}}StreamChunk{Error: err.Error()})
-			if merr != nil {
-				glog.Error("Failed to marshal an error: %v", merr)
-				return
-			}
-			if _, werr := fmt.Fprintln(w, buf); werr != nil {
-				glog.Error("Failed to notify error to client: %v", werr)
-				return
-			}
-			return
-		}
-		buf, err := json.Marshal({{.ServiceName}}_{{.Name}}StreamChunk{Result: resp})
-		if err != nil {
-			glog.Error("Failed to marshal response chunk: %v", err)
-			return
-		}
-		if _, err = fmt.Fprintln(w, buf); err != nil {
-			glog.Error("Failed to send response chunk: %v", err)
-			return
-		}
-	}
-}
+{{if .ClientStreaming}}
+{{template "client-streaming-request-func" .}}
 {{else}}
-func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, w http.ResponseWriter, req *http.Request) {
-	resp, err := request_{{.ServiceName}}_{{.Name}}(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-	buf, err := json.Marshal(resp)
-	if err != nil {
-		glog.Errorf("Marshal error: %v", err)
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	if _, err = w.Write(buf); err != nil {
-		glog.Errorf("Failed to write response: %v", err)
-	}
-}
+{{template "client-rpc-request-func" .}}
 {{end}}
 `))
 
@@ -539,7 +477,7 @@ func request_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.
 	{{range $desc := .PathParams}}
 	val, ok = c.URLParams[{{$desc.ProtoName | printf "%q"}}]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", {{$desc.ProtoName | printf "%q"}})
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", {{$desc.ProtoName | printf "%q"}})
 	}
 	protoReq.{{$desc.GoName}}, err = {{$desc.ConvertFunc}}(val)
 	if err != nil {
@@ -580,7 +518,16 @@ func Register{{$svc.Name}}Handler(ctx context.Context, mux *web.Mux, conn *grpc.
 	client := New{{$svc.Name}}Client(conn)
 	{{range $m := $svc.Methods}}
 	mux.{{$m.MuxRegistererName}}({{$m.Path | printf "%q"}}, func(c web.C, w http.ResponseWriter, req *http.Request) {
-		handle_{{$m.ServiceName}}_{{$m.Name}}(ctx, c, client, w, req)
+		resp, err := request_{{.ServiceName}}_{{.Name}}(ctx, c, client, req)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+		{{if .ServerStreaming}}
+		runtime.ForwardResponseStream(w, func() (proto.Message, error) { return resp.Recv() })
+		{{else}}
+		runtime.ForwardResponseMessage(w, resp)
+		{{end}}
 	})
 	{{end}}
 	return nil

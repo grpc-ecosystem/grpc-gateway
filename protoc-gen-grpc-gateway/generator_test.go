@@ -99,8 +99,6 @@ package example
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/runtime"
@@ -112,8 +110,6 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
-var _ fmt.Stringer
-var _ io.Reader
 var _ codes.Code
 var _ = runtime.String
 
@@ -125,7 +121,7 @@ func request_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceCl
 
 	val, ok = c.URLParams["id"]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", "id")
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
 	}
 	protoReq.Id, err = runtime.String(val)
 	if err != nil {
@@ -133,25 +129,6 @@ func request_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceCl
 	}
 
 	return client.Echo(ctx, &protoReq)
-}
-
-func handle_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceClient, w http.ResponseWriter, req *http.Request) {
-	resp, err := request_EchoService_Echo(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-	buf, err := json.Marshal(resp)
-	if err != nil {
-		glog.Errorf("Marshal error: %v", err)
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	if _, err = w.Write(buf); err != nil {
-		glog.Errorf("Failed to write response: %v", err)
-	}
 }
 
 func request_EchoService_EchoBody(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
@@ -162,25 +139,6 @@ func request_EchoService_EchoBody(ctx context.Context, c web.C, client EchoServi
 	}
 
 	return client.EchoBody(ctx, &protoReq)
-}
-
-func handle_EchoService_EchoBody(ctx context.Context, c web.C, client EchoServiceClient, w http.ResponseWriter, req *http.Request) {
-	resp, err := request_EchoService_EchoBody(ctx, c, client, req)
-	if err != nil {
-		runtime.HTTPError(w, err)
-		return
-	}
-	buf, err := json.Marshal(resp)
-	if err != nil {
-		glog.Errorf("Marshal error: %v", err)
-		runtime.HTTPError(w, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	if _, err = w.Write(buf); err != nil {
-		glog.Errorf("Failed to write response: %v", err)
-	}
 }
 
 func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *web.Mux, endpoint string) (err error) {
@@ -210,11 +168,25 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.Cl
 	client := NewEchoServiceClient(conn)
 
 	mux.Post("/v1/example/echo/:id", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		handle_EchoService_Echo(ctx, c, client, w, req)
+		resp, err := request_EchoService_Echo(ctx, c, client, req)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+
+		runtime.ForwardResponseMessage(w, resp)
+
 	})
 
 	mux.Post("/v1/example/echo_body", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		handle_EchoService_EchoBody(ctx, c, client, w, req)
+		resp, err := request_EchoService_EchoBody(ctx, c, client, req)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+
+		runtime.ForwardResponseMessage(w, resp)
+
 	})
 
 	return nil
