@@ -15,7 +15,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/gengo/grpc-gateway/convert"
+	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	"github.com/zenazn/goji/web"
@@ -29,7 +29,7 @@ import (
 var _ fmt.Stringer
 var _ io.Reader
 var _ codes.Code
-var _ = convert.String
+var _ = runtime.String
 
 func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
 	var protoReq ABitOfEverything
@@ -45,7 +45,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "float_value")
 	}
-	protoReq.FloatValue, err = convert.Float32(val)
+	protoReq.FloatValue, err = runtime.Float32(val)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "double_value")
 	}
-	protoReq.DoubleValue, err = convert.Float64(val)
+	protoReq.DoubleValue, err = runtime.Float64(val)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "int64_value")
 	}
-	protoReq.Int64Value, err = convert.Int64(val)
+	protoReq.Int64Value, err = runtime.Int64(val)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "uint64_value")
 	}
-	protoReq.Uint64Value, err = convert.Uint64(val)
+	protoReq.Uint64Value, err = runtime.Uint64(val)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "int32_value")
 	}
-	protoReq.Int32Value, err = convert.Int32(val)
+	protoReq.Int32Value, err = runtime.Int32(val)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +90,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "fixed64_value")
 	}
-	protoReq.Fixed64Value, err = convert.Uint64(val)
+	protoReq.Fixed64Value, err = runtime.Uint64(val)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "fixed32_value")
 	}
-	protoReq.Fixed32Value, err = convert.Uint32(val)
+	protoReq.Fixed32Value, err = runtime.Uint32(val)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "bool_value")
 	}
-	protoReq.BoolValue, err = convert.Bool(val)
+	protoReq.BoolValue, err = runtime.Bool(val)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "string_value")
 	}
-	protoReq.StringValue, err = convert.String(val)
+	protoReq.StringValue, err = runtime.String(val)
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +126,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "uint32_value")
 	}
-	protoReq.Uint32Value, err = convert.Uint32(val)
+	protoReq.Uint32Value, err = runtime.Uint32(val)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +135,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "sfixed32_value")
 	}
-	protoReq.Sfixed32Value, err = convert.Int32(val)
+	protoReq.Sfixed32Value, err = runtime.Int32(val)
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +144,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "sfixed64_value")
 	}
-	protoReq.Sfixed64Value, err = convert.Int64(val)
+	protoReq.Sfixed64Value, err = runtime.Int64(val)
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +153,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "sint32_value")
 	}
-	protoReq.Sint32Value, err = convert.Int32(val)
+	protoReq.Sint32Value, err = runtime.Int32(val)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +162,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "sint64_value")
 	}
-	protoReq.Sint64Value, err = convert.Int64(val)
+	protoReq.Sint64Value, err = runtime.Int64(val)
 	if err != nil {
 		return nil, err
 	}
@@ -270,7 +270,7 @@ func request_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "uuid")
 	}
-	protoReq.Uuid, err = convert.String(val)
+	protoReq.Uuid, err = runtime.String(val)
 	if err != nil {
 		return nil, err
 	}
@@ -359,7 +359,7 @@ func request_ABitOfEverythingService_Update(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "uuid")
 	}
-	protoReq.Uuid, err = convert.String(val)
+	protoReq.Uuid, err = runtime.String(val)
 	if err != nil {
 		return nil, err
 	}
@@ -396,7 +396,7 @@ func request_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "uuid")
 	}
-	protoReq.Uuid, err = convert.String(val)
+	protoReq.Uuid, err = runtime.String(val)
 	if err != nil {
 		return nil, err
 	}
@@ -433,7 +433,7 @@ func request_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client A
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "value")
 	}
-	protoReq.Value, err = convert.StringP(val)
+	protoReq.Value, err = runtime.StringP(val)
 	if err != nil {
 		return nil, err
 	}

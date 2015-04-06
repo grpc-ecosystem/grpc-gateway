@@ -156,48 +156,48 @@ func getAPIOptions(meth *descriptor.MethodDescriptorProto) (*options.ApiMethodOp
 
 var (
 	proto3ConvertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
-		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "convert.Float64",
-		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "convert.Float32",
-		descriptor.FieldDescriptorProto_TYPE_INT64:   "convert.Int64",
-		descriptor.FieldDescriptorProto_TYPE_UINT64:  "convert.Uint64",
-		descriptor.FieldDescriptorProto_TYPE_INT32:   "convert.Int32",
-		descriptor.FieldDescriptorProto_TYPE_FIXED64: "convert.Uint64",
-		descriptor.FieldDescriptorProto_TYPE_FIXED32: "convert.Uint32",
-		descriptor.FieldDescriptorProto_TYPE_BOOL:    "convert.Bool",
-		descriptor.FieldDescriptorProto_TYPE_STRING:  "convert.String",
+		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "runtime.Float64",
+		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "runtime.Float32",
+		descriptor.FieldDescriptorProto_TYPE_INT64:   "runtime.Int64",
+		descriptor.FieldDescriptorProto_TYPE_UINT64:  "runtime.Uint64",
+		descriptor.FieldDescriptorProto_TYPE_INT32:   "runtime.Int32",
+		descriptor.FieldDescriptorProto_TYPE_FIXED64: "runtime.Uint64",
+		descriptor.FieldDescriptorProto_TYPE_FIXED32: "runtime.Uint32",
+		descriptor.FieldDescriptorProto_TYPE_BOOL:    "runtime.Bool",
+		descriptor.FieldDescriptorProto_TYPE_STRING:  "runtime.String",
 		// FieldDescriptorProto_TYPE_GROUP
 		// FieldDescriptorProto_TYPE_MESSAGE
 		// FieldDescriptorProto_TYPE_BYTES
 		// TODO(yugui) Handle bytes
-		descriptor.FieldDescriptorProto_TYPE_UINT32: "convert.Uint32",
+		descriptor.FieldDescriptorProto_TYPE_UINT32: "runtime.Uint32",
 		// FieldDescriptorProto_TYPE_ENUM
 		// TODO(yugui) Handle Enum
-		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "convert.Int32",
-		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "convert.Int64",
-		descriptor.FieldDescriptorProto_TYPE_SINT32:   "convert.Int32",
-		descriptor.FieldDescriptorProto_TYPE_SINT64:   "convert.Int64",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64",
+		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32",
+		descriptor.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64",
 	}
 	proto2ConvertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
-		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "convert.Float64P",
-		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "convert.Float32P",
-		descriptor.FieldDescriptorProto_TYPE_INT64:   "convert.Int64P",
-		descriptor.FieldDescriptorProto_TYPE_UINT64:  "convert.Uint64P",
-		descriptor.FieldDescriptorProto_TYPE_INT32:   "convert.Int32P",
-		descriptor.FieldDescriptorProto_TYPE_FIXED64: "convert.Uint64P",
-		descriptor.FieldDescriptorProto_TYPE_FIXED32: "convert.Uint32P",
-		descriptor.FieldDescriptorProto_TYPE_BOOL:    "convert.BoolP",
-		descriptor.FieldDescriptorProto_TYPE_STRING:  "convert.StringP",
+		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "runtime.Float64P",
+		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "runtime.Float32P",
+		descriptor.FieldDescriptorProto_TYPE_INT64:   "runtime.Int64P",
+		descriptor.FieldDescriptorProto_TYPE_UINT64:  "runtime.Uint64P",
+		descriptor.FieldDescriptorProto_TYPE_INT32:   "runtime.Int32P",
+		descriptor.FieldDescriptorProto_TYPE_FIXED64: "runtime.Uint64P",
+		descriptor.FieldDescriptorProto_TYPE_FIXED32: "runtime.Uint32P",
+		descriptor.FieldDescriptorProto_TYPE_BOOL:    "runtime.BoolP",
+		descriptor.FieldDescriptorProto_TYPE_STRING:  "runtime.StringP",
 		// FieldDescriptorProto_TYPE_GROUP
 		// FieldDescriptorProto_TYPE_MESSAGE
 		// FieldDescriptorProto_TYPE_BYTES
 		// TODO(yugui) Handle bytes
-		descriptor.FieldDescriptorProto_TYPE_UINT32: "convert.Uint32P",
+		descriptor.FieldDescriptorProto_TYPE_UINT32: "runtime.Uint32P",
 		// FieldDescriptorProto_TYPE_ENUM
 		// TODO(yugui) Handle Enum
-		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "convert.Int32P",
-		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "convert.Int64P",
-		descriptor.FieldDescriptorProto_TYPE_SINT32:   "convert.Int32P",
-		descriptor.FieldDescriptorProto_TYPE_SINT64:   "convert.Int64P",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32P",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64P",
+		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32P",
+		descriptor.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64P",
 	}
 )
 
@@ -398,7 +398,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/gengo/grpc-gateway/convert"
+	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	"github.com/zenazn/goji/web"
@@ -412,7 +412,7 @@ import (
 var _ fmt.Stringer
 var _ io.Reader
 var _ codes.Code
-var _ = convert.String
+var _ = runtime.String
 `))
 
 	handlerTemplate = template.Must(template.New("handler").Parse(`

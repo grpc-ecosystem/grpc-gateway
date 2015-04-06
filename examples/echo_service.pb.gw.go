@@ -15,7 +15,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/gengo/grpc-gateway/convert"
+	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	"github.com/zenazn/goji/web"
@@ -27,7 +27,7 @@ import (
 var _ fmt.Stringer
 var _ io.Reader
 var _ codes.Code
-var _ = convert.String
+var _ = runtime.String
 
 func request_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
 	var protoReq SimpleMessage
@@ -39,7 +39,7 @@ func request_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceCl
 	if !ok {
 		return nil, fmt.Errorf("missing parameter %s", "id")
 	}
-	protoReq.Id, err = convert.String(val)
+	protoReq.Id, err = runtime.String(val)
 	if err != nil {
 		return nil, err
 	}

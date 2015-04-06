@@ -1,4 +1,4 @@
-package convert
+package runtime
 
 import (
 	"github.com/golang/protobuf/proto"
