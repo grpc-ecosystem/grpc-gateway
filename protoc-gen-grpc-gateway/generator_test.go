@@ -141,6 +141,8 @@ func request_EchoService_EchoBody(ctx context.Context, c web.C, client EchoServi
 	return client.EchoBody(ctx, &protoReq)
 }
 
+// RegisterEchoServiceHandlerFromEndpoint is same as RegisterEchoServiceHandler but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *web.Mux, endpoint string) (err error) {
 	conn, err := grpc.Dial(endpoint)
 	if err != nil {
@@ -164,6 +166,8 @@ func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *web.Mux, e
 	return RegisterEchoServiceHandler(ctx, mux, conn)
 }
 
+// RegisterEchoServiceHandler registers the http handlers for service EchoService to "mux".
+// The handlers forward requests to the grpc endpoint over "conn".
 func RegisterEchoServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.ClientConn) error {
 	client := NewEchoServiceClient(conn)
 

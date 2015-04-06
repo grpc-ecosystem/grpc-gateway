@@ -308,6 +308,8 @@ func request_ABitOfEverythingService_BulkEcho(ctx context.Context, c web.C, clie
 
 }
 
+// RegisterABitOfEverythingServiceHandlerFromEndpoint is same as RegisterABitOfEverythingServiceHandler but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux *web.Mux, endpoint string) (err error) {
 	conn, err := grpc.Dial(endpoint)
 	if err != nil {
@@ -331,6 +333,8 @@ func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux
 	return RegisterABitOfEverythingServiceHandler(ctx, mux, conn)
 }
 
+// RegisterABitOfEverythingServiceHandler registers the http handlers for service ABitOfEverythingService to "mux".
+// The handlers forward requests to the grpc endpoint over "conn".
 func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.ClientConn) error {
 	client := NewABitOfEverythingServiceClient(conn)
 

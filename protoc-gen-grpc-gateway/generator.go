@@ -491,6 +491,8 @@ func request_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.
 
 	trailerTemplate = template.Must(template.New("trailer").Parse(`
 {{range $svc := .}}
+// Register{{$svc.Name}}HandlerFromEndpoint is same as Register{{$svc.Name}}Handler but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func Register{{$svc.Name}}HandlerFromEndpoint(ctx context.Context, mux *web.Mux, endpoint string) (err error) {
 	conn, err := grpc.Dial(endpoint)
 	if err != nil {
@@ -514,6 +516,8 @@ func Register{{$svc.Name}}HandlerFromEndpoint(ctx context.Context, mux *web.Mux,
 	return Register{{$svc.Name}}Handler(ctx, mux, conn)
 }
 
+// Register{{$svc.Name}}Handler registers the http handlers for service {{$svc.Name}} to "mux".
+// The handlers forward requests to the grpc endpoint over "conn".
 func Register{{$svc.Name}}Handler(ctx context.Context, mux *web.Mux, conn *grpc.ClientConn) error {
 	client := New{{$svc.Name}}Client(conn)
 	{{range $m := $svc.Methods}}
