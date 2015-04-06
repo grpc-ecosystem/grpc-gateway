@@ -173,13 +173,13 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 func handle_ABitOfEverythingService_Create(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
 	resp, err := request_ABitOfEverythingService_Create(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 
@@ -202,13 +202,13 @@ func request_ABitOfEverythingService_CreateBody(ctx context.Context, c web.C, cl
 func handle_ABitOfEverythingService_CreateBody(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
 	resp, err := request_ABitOfEverythingService_CreateBody(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 
@@ -244,13 +244,13 @@ func request_ABitOfEverythingService_BulkCreate(ctx context.Context, c web.C, cl
 func handle_ABitOfEverythingService_BulkCreate(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
 	resp, err := request_ABitOfEverythingService_BulkCreate(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 
@@ -281,13 +281,13 @@ func request_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client
 func handle_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
 	resp, err := request_ABitOfEverythingService_Lookup(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 
@@ -311,7 +311,7 @@ type ABitOfEverythingService_ListStreamChunk struct {
 func handle_ABitOfEverythingService_List(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
 	stream, err := request_ABitOfEverythingService_List(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 
@@ -370,13 +370,13 @@ func request_ABitOfEverythingService_Update(ctx context.Context, c web.C, client
 func handle_ABitOfEverythingService_Update(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
 	resp, err := request_ABitOfEverythingService_Update(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 
@@ -407,13 +407,13 @@ func request_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client
 func handle_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
 	resp, err := request_ABitOfEverythingService_Delete(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 
@@ -444,13 +444,13 @@ func request_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client A
 func handle_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
 	resp, err := request_ABitOfEverythingService_Echo(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 
@@ -495,7 +495,7 @@ type ABitOfEverythingService_BulkEchoStreamChunk struct {
 func handle_ABitOfEverythingService_BulkEcho(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
 	stream, err := request_ABitOfEverythingService_BulkEcho(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 

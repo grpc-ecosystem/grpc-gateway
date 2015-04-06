@@ -426,7 +426,7 @@ type {{.ServiceName}}_{{.Name}}StreamChunk struct {
 func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, w http.ResponseWriter, req *http.Request) {
 	stream, err := request_{{.ServiceName}}_{{.Name}}(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 
@@ -463,13 +463,13 @@ func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.S
 func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, w http.ResponseWriter, req *http.Request) {
 	resp, err := request_{{.ServiceName}}_{{.Name}}(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 

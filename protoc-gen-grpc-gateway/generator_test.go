@@ -138,13 +138,13 @@ func request_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceCl
 func handle_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceClient, w http.ResponseWriter, req *http.Request) {
 	resp, err := request_EchoService_Echo(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 
@@ -167,13 +167,13 @@ func request_EchoService_EchoBody(ctx context.Context, c web.C, client EchoServi
 func handle_EchoService_EchoBody(ctx context.Context, c web.C, client EchoServiceClient, w http.ResponseWriter, req *http.Request) {
 	resp, err := request_EchoService_EchoBody(ctx, c, client, req)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		runtime.HTTPError(w, err)
 		return
 	}
 
