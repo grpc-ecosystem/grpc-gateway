@@ -270,20 +270,25 @@ func generateSingleFile(file *descriptor.FileDescriptorProto) (string, error) {
 			}
 			needsBody := len(fields) != 0
 			if needsBody && (opts.GetMethod() == "GET" || opts.GetMethod() == "DELETE") {
-				return "", fmt.Errorf("needs request body even though http method is %s: %s", opts.Method, meth.GetName())
+				return "", fmt.Errorf("needs request body even though http method is %s: %s", opts.GetMethod(), meth.GetName())
+			}
+			if meth.GetClientStreaming() && (len(params) > 0 || !needsBody) {
+				return "", fmt.Errorf("cannot use path parameter in client streaming")
 			}
 			requestGoType := goTypeFromProtoType(meth.GetInputType()[1:], file.GetPackage())
 			if idx := strings.Index(requestGoType, "."); idx >= 0 {
 				usedImports[requestGoType[:idx]] = true
 			}
 			md := methodDesc{
-				ServiceName: svc.GetName(),
-				Name:        meth.GetName(),
-				Method:      opts.GetMethod(),
-				Path:        opts.GetPath(),
-				RequestType: requestGoType,
-				PathParams:  params,
-				NeedsBody:   needsBody,
+				ServiceName:     svc.GetName(),
+				Name:            meth.GetName(),
+				Method:          opts.GetMethod(),
+				Path:            opts.GetPath(),
+				RequestType:     requestGoType,
+				PathParams:      params,
+				NeedsBody:       needsBody,
+				ServerStreaming: meth.GetServerStreaming(),
+				ClientStreaming: meth.GetClientStreaming(),
 			}
 			sd.Methods = append(sd.Methods, md)
 		}
@@ -350,14 +355,16 @@ func (d paramDesc) GoName() string {
 }
 
 type methodDesc struct {
-	ServiceName string
-	Name        string
-	Method      string
-	Path        string
-	RequestType string
-	QueryParams []paramDesc
-	PathParams  []paramDesc
-	NeedsBody   bool
+	ServiceName     string
+	Name            string
+	Method          string
+	Path            string
+	RequestType     string
+	QueryParams     []paramDesc
+	PathParams      []paramDesc
+	NeedsBody       bool
+	ClientStreaming bool
+	ServerStreaming bool
 }
 
 func (d methodDesc) MuxRegistererName() string {
@@ -388,35 +395,144 @@ package {{.Pkg}}
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
-	"google.golang.org/grpc"
 	"github.com/gengo/grpc-gateway/convert"
-	"github.com/golang/protobuf/proto"
 	"github.com/golang/glog"
+	"github.com/golang/protobuf/proto"
 	"github.com/zenazn/goji/web"
 	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 
 {{range $line := .Imports}}{{$line}}{{end}}
 )
 
 var _ fmt.Stringer
+var _ io.Reader
+var _ codes.Code
 var _ = convert.String
 `))
+
 	handlerTemplate = template.Must(template.New("handler").Parse(`
-func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, req *http.Request) (msg proto.Message, err error) {
-	protoReq := new({{.RequestType}})
-{{if .NeedsBody}}
-	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+{{if .ClientStreaming}}{{template "client-streaming-request-func" .}}{{else}}{{template "client-rpc-request-func" .}}{{end}}
+{{if .ServerStreaming}}
+type {{.ServiceName}}_{{.Name}}StreamChunk struct {
+	Result proto.Message ` + "`" + `json:"result` + "`" + `
+	Error  string        ` + "`" + `json:"error,omitempty"` + "`" + `
+}
+
+func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, w http.ResponseWriter, req *http.Request) {
+	stream, err := request_{{.ServiceName}}_{{.Name}}(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	for {
+		resp, err := stream.Recv()
+		if err == io.EOF {
+			return
+		}
+		if err != nil {
+			buf, merr := json.Marshal({{.ServiceName}}_{{.Name}}StreamChunk{Error: err.Error()})
+			if merr != nil {
+				glog.Error("Failed to marshal an error: %v", merr)
+				return
+			}
+			if _, werr := fmt.Fprintln(w, buf); werr != nil {
+				glog.Error("Failed to notify error to client: %v", werr)
+				return
+			}
+			return
+		}
+		buf, err := json.Marshal({{.ServiceName}}_{{.Name}}StreamChunk{Result: resp})
+		if err != nil {
+			glog.Error("Failed to marshal response chunk: %v", err)
+			return
+		}
+		if _, err = fmt.Fprintln(w, buf); err != nil {
+			glog.Error("Failed to send response chunk: %v", err)
+			return
+		}
+	}
+}
+{{else}}
+func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, w http.ResponseWriter, req *http.Request) {
+	resp, err := request_{{.ServiceName}}_{{.Name}}(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buf, err := json.Marshal(resp)
+	if err != nil {
+		glog.Errorf("Marshal error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err = w.Write(buf); err != nil {
+		glog.Errorf("Failed to write response: %v", err)
+	}
+}
+{{end}}
+`))
+
+	_ = template.Must(handlerTemplate.New("request-func-signature").Parse(strings.Replace(`
+{{if .ServerStreaming}}
+func request_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, req *http.Request) ({{.ServiceName}}_{{.Name}}Client, error)
+{{else}}
+func request_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, req *http.Request) (msg proto.Message, err error)
+{{end}}`, "\n", "", -1)))
+
+	_ = template.Must(handlerTemplate.New("client-streaming-request-func").Parse(`
+{{template "request-func-signature" .}} {
+	stream, err := client.{{.Name}}(ctx)
+	if err != nil {
+		glog.Errorf("Failed to start streaming: %v", err)
 		return nil, err
 	}
+	dec := json.NewDecoder(req.Body)
+	var protoReq {{.RequestType}}
+	for {
+		if err = dec.Decode(&protoReq); err != nil {
+			glog.Errorf("Failed to decode request: %v", err)
+			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		}
+		if err = stream.Send(&protoReq); err != nil {
+			glog.Errorf("Failed to send request: %v", err)
+			return nil, err
+		}
+	}
+{{if .ServerStreaming}}
+	if err = stream.CloseSend(); err != nil {
+		glog.Errorf("Failed to terminate client stream: %v", err)
+		return nil, err
+	}
+	return stream, nil
+{{else}}
+	return stream.CloseAndRecv()
 {{end}}
+}
+`))
+
+	_ = template.Must(handlerTemplate.New("client-rpc-request-func").Parse(`
+{{template "request-func-signature" .}} {
+	var protoReq {{.RequestType}}
 	{{range $desc := .QueryParams}}
 	protoReq.{{$desc.ProtoName}}, err = {{$desc.ConvertFunc}}(req.FormValue({{$desc.ProtoName | printf "%q"}}))
 	if err != nil {
 		return nil, err
 	}
 	{{end}}
+{{if .NeedsBody}}
+	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+		return nil, err
+	}
+{{end}}
 {{if .NeedsPathParam}}
 	var val string
 	var ok bool
@@ -431,9 +547,9 @@ func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.S
 	}
 	{{end}}
 {{end}}
-	return client.{{.Name}}(ctx, protoReq)
-}
-`))
+
+	return client.{{.Name}}(ctx, &protoReq)
+}`))
 
 	trailerTemplate = template.Must(template.New("trailer").Parse(`
 {{range $svc := .}}
@@ -464,22 +580,7 @@ func Register{{$svc.Name}}Handler(ctx context.Context, mux *web.Mux, conn *grpc.
 	client := New{{$svc.Name}}Client(conn)
 	{{range $m := $svc.Methods}}
 	mux.{{$m.MuxRegistererName}}({{$m.Path | printf "%q"}}, func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := handle_{{$m.ServiceName}}_{{$m.Name}}(ctx, c, client, req)
-		if err != nil {
-			glog.Errorf("RPC error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		buf, err := json.Marshal(resp)
-		if err != nil {
-			glog.Errorf("Marshal error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		if _, err = w.Write(buf); err != nil {
-			glog.Errorf("Failed to write response: %v", err)
-		}
+		handle_{{$m.ServiceName}}_{{$m.Name}}(ctx, c, client, w, req)
 	})
 	{{end}}
 	return nil

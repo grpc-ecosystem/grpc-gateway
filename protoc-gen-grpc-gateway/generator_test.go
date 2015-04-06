@@ -100,6 +100,7 @@ package example
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/convert"
@@ -108,13 +109,16 @@ import (
 	"github.com/zenazn/goji/web"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 )
 
 var _ fmt.Stringer
+var _ io.Reader
+var _ codes.Code
 var _ = convert.String
 
-func handle_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
-	protoReq := new(SimpleMessage)
+func request_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
+	var protoReq SimpleMessage
 
 	var val string
 	var ok bool
@@ -128,17 +132,55 @@ func handle_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceCli
 		return nil, err
 	}
 
-	return client.Echo(ctx, protoReq)
+	return client.Echo(ctx, &protoReq)
 }
 
-func handle_EchoService_EchoBody(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
-	protoReq := new(SimpleMessage)
+func handle_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceClient, w http.ResponseWriter, req *http.Request) {
+	resp, err := request_EchoService_Echo(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buf, err := json.Marshal(resp)
+	if err != nil {
+		glog.Errorf("Marshal error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err = w.Write(buf); err != nil {
+		glog.Errorf("Failed to write response: %v", err)
+	}
+}
+
+func request_EchoService_EchoBody(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
+	var protoReq SimpleMessage
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, err
 	}
 
-	return client.EchoBody(ctx, protoReq)
+	return client.EchoBody(ctx, &protoReq)
+}
+
+func handle_EchoService_EchoBody(ctx context.Context, c web.C, client EchoServiceClient, w http.ResponseWriter, req *http.Request) {
+	resp, err := request_EchoService_EchoBody(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buf, err := json.Marshal(resp)
+	if err != nil {
+		glog.Errorf("Marshal error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err = w.Write(buf); err != nil {
+		glog.Errorf("Failed to write response: %v", err)
+	}
 }
 
 func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *web.Mux, endpoint string) (err error) {
@@ -168,41 +210,11 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.Cl
 	client := NewEchoServiceClient(conn)
 
 	mux.Post("/v1/example/echo/:id", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := handle_EchoService_Echo(ctx, c, client, req)
-		if err != nil {
-			glog.Errorf("RPC error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		buf, err := json.Marshal(resp)
-		if err != nil {
-			glog.Errorf("Marshal error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		if _, err = w.Write(buf); err != nil {
-			glog.Errorf("Failed to write response: %v", err)
-		}
+		handle_EchoService_Echo(ctx, c, client, w, req)
 	})
 
 	mux.Post("/v1/example/echo_body", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := handle_EchoService_EchoBody(ctx, c, client, req)
-		if err != nil {
-			glog.Errorf("RPC error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		buf, err := json.Marshal(resp)
-		if err != nil {
-			glog.Errorf("Marshal error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		if _, err = w.Write(buf); err != nil {
-			glog.Errorf("Failed to write response: %v", err)
-		}
+		handle_EchoService_EchoBody(ctx, c, client, w, req)
 	})
 
 	return nil

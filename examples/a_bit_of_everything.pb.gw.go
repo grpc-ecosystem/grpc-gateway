@@ -12,6 +12,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/convert"
@@ -20,15 +21,18 @@ import (
 	"github.com/zenazn/goji/web"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 
 	gengo_grpc_gateway_examples_sub "github.com/gengo/grpc-gateway/examples/sub"
 )
 
 var _ fmt.Stringer
+var _ io.Reader
+var _ codes.Code
 var _ = convert.String
 
-func handle_ABitOfEverythingService_Create(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
-	protoReq := new(ABitOfEverything)
+func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+	var protoReq ABitOfEverything
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, err
@@ -163,21 +167,101 @@ func handle_ABitOfEverythingService_Create(ctx context.Context, c web.C, client 
 		return nil, err
 	}
 
-	return client.Create(ctx, protoReq)
+	return client.Create(ctx, &protoReq)
 }
 
-func handle_ABitOfEverythingService_CreateBody(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
-	protoReq := new(ABitOfEverything)
+func handle_ABitOfEverythingService_Create(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
+	resp, err := request_ABitOfEverythingService_Create(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buf, err := json.Marshal(resp)
+	if err != nil {
+		glog.Errorf("Marshal error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err = w.Write(buf); err != nil {
+		glog.Errorf("Failed to write response: %v", err)
+	}
+}
+
+func request_ABitOfEverythingService_CreateBody(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+	var protoReq ABitOfEverything
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, err
 	}
 
-	return client.CreateBody(ctx, protoReq)
+	return client.CreateBody(ctx, &protoReq)
 }
 
-func handle_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
-	protoReq := new(IdMessage)
+func handle_ABitOfEverythingService_CreateBody(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
+	resp, err := request_ABitOfEverythingService_CreateBody(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buf, err := json.Marshal(resp)
+	if err != nil {
+		glog.Errorf("Marshal error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err = w.Write(buf); err != nil {
+		glog.Errorf("Failed to write response: %v", err)
+	}
+}
+
+func request_ABitOfEverythingService_BulkCreate(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+	stream, err := client.BulkCreate(ctx)
+	if err != nil {
+		glog.Errorf("Failed to start streaming: %v", err)
+		return nil, err
+	}
+	dec := json.NewDecoder(req.Body)
+	var protoReq ABitOfEverything
+	for {
+		if err = dec.Decode(&protoReq); err != nil {
+			glog.Errorf("Failed to decode request: %v", err)
+			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		}
+		if err = stream.Send(&protoReq); err != nil {
+			glog.Errorf("Failed to send request: %v", err)
+			return nil, err
+		}
+	}
+
+	return stream.CloseAndRecv()
+
+}
+
+func handle_ABitOfEverythingService_BulkCreate(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
+	resp, err := request_ABitOfEverythingService_BulkCreate(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buf, err := json.Marshal(resp)
+	if err != nil {
+		glog.Errorf("Marshal error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err = w.Write(buf); err != nil {
+		glog.Errorf("Failed to write response: %v", err)
+	}
+}
+
+func request_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+	var protoReq IdMessage
 
 	var val string
 	var ok bool
@@ -191,11 +275,78 @@ func handle_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client 
 		return nil, err
 	}
 
-	return client.Lookup(ctx, protoReq)
+	return client.Lookup(ctx, &protoReq)
 }
 
-func handle_ABitOfEverythingService_Update(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
-	protoReq := new(ABitOfEverything)
+func handle_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
+	resp, err := request_ABitOfEverythingService_Lookup(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buf, err := json.Marshal(resp)
+	if err != nil {
+		glog.Errorf("Marshal error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err = w.Write(buf); err != nil {
+		glog.Errorf("Failed to write response: %v", err)
+	}
+}
+
+func request_ABitOfEverythingService_List(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (ABitOfEverythingService_ListClient, error) {
+	var protoReq EmptyMessage
+
+	return client.List(ctx, &protoReq)
+}
+
+type ABitOfEverythingService_ListStreamChunk struct {
+	Result proto.Message `json:"result`
+	Error  string        `json:"error,omitempty"`
+}
+
+func handle_ABitOfEverythingService_List(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
+	stream, err := request_ABitOfEverythingService_List(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	for {
+		resp, err := stream.Recv()
+		if err == io.EOF {
+			return
+		}
+		if err != nil {
+			buf, merr := json.Marshal(ABitOfEverythingService_ListStreamChunk{Error: err.Error()})
+			if merr != nil {
+				glog.Error("Failed to marshal an error: %v", merr)
+				return
+			}
+			if _, werr := fmt.Fprintln(w, buf); werr != nil {
+				glog.Error("Failed to notify error to client: %v", werr)
+				return
+			}
+			return
+		}
+		buf, err := json.Marshal(ABitOfEverythingService_ListStreamChunk{Result: resp})
+		if err != nil {
+			glog.Error("Failed to marshal response chunk: %v", err)
+			return
+		}
+		if _, err = fmt.Fprintln(w, buf); err != nil {
+			glog.Error("Failed to send response chunk: %v", err)
+			return
+		}
+	}
+}
+
+func request_ABitOfEverythingService_Update(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+	var protoReq ABitOfEverything
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, err
@@ -213,11 +364,30 @@ func handle_ABitOfEverythingService_Update(ctx context.Context, c web.C, client 
 		return nil, err
 	}
 
-	return client.Update(ctx, protoReq)
+	return client.Update(ctx, &protoReq)
 }
 
-func handle_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
-	protoReq := new(IdMessage)
+func handle_ABitOfEverythingService_Update(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
+	resp, err := request_ABitOfEverythingService_Update(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buf, err := json.Marshal(resp)
+	if err != nil {
+		glog.Errorf("Marshal error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err = w.Write(buf); err != nil {
+		glog.Errorf("Failed to write response: %v", err)
+	}
+}
+
+func request_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+	var protoReq IdMessage
 
 	var val string
 	var ok bool
@@ -231,11 +401,30 @@ func handle_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client 
 		return nil, err
 	}
 
-	return client.Delete(ctx, protoReq)
+	return client.Delete(ctx, &protoReq)
 }
 
-func handle_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
-	protoReq := new(gengo_grpc_gateway_examples_sub.StringMessage)
+func handle_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
+	resp, err := request_ABitOfEverythingService_Delete(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buf, err := json.Marshal(resp)
+	if err != nil {
+		glog.Errorf("Marshal error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err = w.Write(buf); err != nil {
+		glog.Errorf("Failed to write response: %v", err)
+	}
+}
+
+func request_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+	var protoReq gengo_grpc_gateway_examples_sub.StringMessage
 
 	var val string
 	var ok bool
@@ -249,7 +438,95 @@ func handle_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client AB
 		return nil, err
 	}
 
-	return client.Echo(ctx, protoReq)
+	return client.Echo(ctx, &protoReq)
+}
+
+func handle_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
+	resp, err := request_ABitOfEverythingService_Echo(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buf, err := json.Marshal(resp)
+	if err != nil {
+		glog.Errorf("Marshal error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if _, err = w.Write(buf); err != nil {
+		glog.Errorf("Failed to write response: %v", err)
+	}
+}
+
+func request_ABitOfEverythingService_BulkEcho(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (ABitOfEverythingService_BulkEchoClient, error) {
+	stream, err := client.BulkEcho(ctx)
+	if err != nil {
+		glog.Errorf("Failed to start streaming: %v", err)
+		return nil, err
+	}
+	dec := json.NewDecoder(req.Body)
+	var protoReq gengo_grpc_gateway_examples_sub.StringMessage
+	for {
+		if err = dec.Decode(&protoReq); err != nil {
+			glog.Errorf("Failed to decode request: %v", err)
+			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		}
+		if err = stream.Send(&protoReq); err != nil {
+			glog.Errorf("Failed to send request: %v", err)
+			return nil, err
+		}
+	}
+
+	if err = stream.CloseSend(); err != nil {
+		glog.Errorf("Failed to terminate client stream: %v", err)
+		return nil, err
+	}
+	return stream, nil
+
+}
+
+type ABitOfEverythingService_BulkEchoStreamChunk struct {
+	Result proto.Message `json:"result`
+	Error  string        `json:"error,omitempty"`
+}
+
+func handle_ABitOfEverythingService_BulkEcho(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, w http.ResponseWriter, req *http.Request) {
+	stream, err := request_ABitOfEverythingService_BulkEcho(ctx, c, client, req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	for {
+		resp, err := stream.Recv()
+		if err == io.EOF {
+			return
+		}
+		if err != nil {
+			buf, merr := json.Marshal(ABitOfEverythingService_BulkEchoStreamChunk{Error: err.Error()})
+			if merr != nil {
+				glog.Error("Failed to marshal an error: %v", merr)
+				return
+			}
+			if _, werr := fmt.Fprintln(w, buf); werr != nil {
+				glog.Error("Failed to notify error to client: %v", werr)
+				return
+			}
+			return
+		}
+		buf, err := json.Marshal(ABitOfEverythingService_BulkEchoStreamChunk{Result: resp})
+		if err != nil {
+			glog.Error("Failed to marshal response chunk: %v", err)
+			return
+		}
+		if _, err = fmt.Fprintln(w, buf); err != nil {
+			glog.Error("Failed to send response chunk: %v", err)
+			return
+		}
+	}
 }
 
 func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux *web.Mux, endpoint string) (err error) {
@@ -279,117 +556,39 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 	client := NewABitOfEverythingServiceClient(conn)
 
 	mux.Post("/v1/example/a_bit_of_everything/:float_value/:double_value/:int64_value/separator/:uint64_value/:int32_value/:fixed64_value/:fixed32_value/:bool_value/:string_value/:uint32_value/:sfixed32_value/:sfixed64_value/:sint32_value/:sint64_value", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := handle_ABitOfEverythingService_Create(ctx, c, client, req)
-		if err != nil {
-			glog.Errorf("RPC error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		buf, err := json.Marshal(resp)
-		if err != nil {
-			glog.Errorf("Marshal error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		if _, err = w.Write(buf); err != nil {
-			glog.Errorf("Failed to write response: %v", err)
-		}
+		handle_ABitOfEverythingService_Create(ctx, c, client, w, req)
 	})
 
 	mux.Post("/v1/example/a_bit_of_everything", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := handle_ABitOfEverythingService_CreateBody(ctx, c, client, req)
-		if err != nil {
-			glog.Errorf("RPC error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		buf, err := json.Marshal(resp)
-		if err != nil {
-			glog.Errorf("Marshal error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		if _, err = w.Write(buf); err != nil {
-			glog.Errorf("Failed to write response: %v", err)
-		}
+		handle_ABitOfEverythingService_CreateBody(ctx, c, client, w, req)
+	})
+
+	mux.Post("/v1/example/a_bit_of_everything", func(c web.C, w http.ResponseWriter, req *http.Request) {
+		handle_ABitOfEverythingService_BulkCreate(ctx, c, client, w, req)
 	})
 
 	mux.Get("/v1/example/a_bit_of_everything/:uuid", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := handle_ABitOfEverythingService_Lookup(ctx, c, client, req)
-		if err != nil {
-			glog.Errorf("RPC error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		buf, err := json.Marshal(resp)
-		if err != nil {
-			glog.Errorf("Marshal error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		if _, err = w.Write(buf); err != nil {
-			glog.Errorf("Failed to write response: %v", err)
-		}
+		handle_ABitOfEverythingService_Lookup(ctx, c, client, w, req)
+	})
+
+	mux.Get("/v1/example/a_bit_of_everything", func(c web.C, w http.ResponseWriter, req *http.Request) {
+		handle_ABitOfEverythingService_List(ctx, c, client, w, req)
 	})
 
 	mux.Put("/v1/example/a_bit_of_everything/:uuid", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := handle_ABitOfEverythingService_Update(ctx, c, client, req)
-		if err != nil {
-			glog.Errorf("RPC error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		buf, err := json.Marshal(resp)
-		if err != nil {
-			glog.Errorf("Marshal error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		if _, err = w.Write(buf); err != nil {
-			glog.Errorf("Failed to write response: %v", err)
-		}
+		handle_ABitOfEverythingService_Update(ctx, c, client, w, req)
 	})
 
 	mux.Delete("/v1/example/a_bit_of_everything/:uuid", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := handle_ABitOfEverythingService_Delete(ctx, c, client, req)
-		if err != nil {
-			glog.Errorf("RPC error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		buf, err := json.Marshal(resp)
-		if err != nil {
-			glog.Errorf("Marshal error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		if _, err = w.Write(buf); err != nil {
-			glog.Errorf("Failed to write response: %v", err)
-		}
+		handle_ABitOfEverythingService_Delete(ctx, c, client, w, req)
 	})
 
 	mux.Get("/v1/example/a_bit_of_everything/echo/:value", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := handle_ABitOfEverythingService_Echo(ctx, c, client, req)
-		if err != nil {
-			glog.Errorf("RPC error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		buf, err := json.Marshal(resp)
-		if err != nil {
-			glog.Errorf("Marshal error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		if _, err = w.Write(buf); err != nil {
-			glog.Errorf("Failed to write response: %v", err)
-		}
+		handle_ABitOfEverythingService_Echo(ctx, c, client, w, req)
+	})
+
+	mux.Post("/v1/example/a_bit_of_everything/echo", func(c web.C, w http.ResponseWriter, req *http.Request) {
+		handle_ABitOfEverythingService_BulkEcho(ctx, c, client, w, req)
 	})
 
 	return nil
