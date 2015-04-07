@@ -171,3 +171,7 @@ But patch is welcome.
 * Handling header/trailer metadata
 * Encoding request/response body in XML
 * True bi-directional streaming. (Probably impossible?)
+
+# License
+grpc-gateway is licensed under the BSD 3-Clause License.
+See `LICENSE.txt` for more details.
