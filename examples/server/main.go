@@ -107,6 +107,9 @@ func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *examples.IdMe
 }
 
 func (s *_ABitOfEverythingServer) Echo(ctx context.Context, msg *sub.StringMessage) (*sub.StringMessage, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
 	glog.Info(msg)
 	return msg, nil
 }
