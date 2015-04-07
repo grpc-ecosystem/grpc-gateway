@@ -11,6 +11,7 @@ package main
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/runtime"
@@ -25,6 +26,7 @@ import (
 )
 
 var _ codes.Code
+var _ io.Reader
 var _ = runtime.String
 
 func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
@@ -183,9 +185,13 @@ func request_ABitOfEverythingService_BulkCreate(ctx context.Context, c web.C, cl
 		return nil, err
 	}
 	dec := json.NewDecoder(req.Body)
-	var protoReq ABitOfEverything
 	for {
-		if err = dec.Decode(&protoReq); err != nil {
+		var protoReq ABitOfEverything
+		err = dec.Decode(&protoReq)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
 			glog.Errorf("Failed to decode request: %v", err)
 			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}
@@ -288,9 +294,13 @@ func request_ABitOfEverythingService_BulkEcho(ctx context.Context, c web.C, clie
 		return nil, err
 	}
 	dec := json.NewDecoder(req.Body)
-	var protoReq gengo_grpc_gateway_examples_sub.StringMessage
 	for {
-		if err = dec.Decode(&protoReq); err != nil {
+		var protoReq gengo_grpc_gateway_examples_sub.StringMessage
+		err = dec.Decode(&protoReq)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
 			glog.Errorf("Failed to decode request: %v", err)
 			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}
@@ -360,7 +370,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 
 	})
 
-	mux.Post("/v1/example/a_bit_of_everything", func(c web.C, w http.ResponseWriter, req *http.Request) {
+	mux.Post("/v1/example/a_bit_of_everything/bulk", func(c web.C, w http.ResponseWriter, req *http.Request) {
 		resp, err := request_ABitOfEverythingService_BulkCreate(ctx, c, client, req)
 		if err != nil {
 			runtime.HTTPError(w, err)

@@ -99,6 +99,7 @@ package example
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/runtime"
@@ -111,6 +112,7 @@ import (
 )
 
 var _ codes.Code
+var _ io.Reader
 var _ = runtime.String
 
 func request_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {

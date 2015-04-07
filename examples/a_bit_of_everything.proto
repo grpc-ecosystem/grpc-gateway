@@ -53,7 +53,7 @@ service ABitOfEverythingService {
 	}
 	rpc BulkCreate(stream ABitOfEverything) returns (EmptyMessage) {
 		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/a_bit_of_everything"
+			path: "/v1/example/a_bit_of_everything/bulk"
 			method: "POST"
 		};
 	}

@@ -17,7 +17,17 @@ type responseStreamChunk struct {
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
 func ForwardResponseStream(w http.ResponseWriter, recv func() (proto.Message, error)) {
+	f, ok := w.(http.Flusher)
+	if !ok {
+		glog.Errorf("Flush not supported in %T", w)
+		http.Error(w, "unexpected type of web server", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Transfer-Encoding", "chunked")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	f.Flush()
 	for {
 		resp, err := recv()
 		if err == io.EOF {
@@ -29,7 +39,7 @@ func ForwardResponseStream(w http.ResponseWriter, recv func() (proto.Message, er
 				glog.Error("Failed to marshal an error: %v", merr)
 				return
 			}
-			if _, werr := fmt.Fprintln(w, buf); werr != nil {
+			if _, werr := fmt.Fprintf(w, "%s\n", buf); werr != nil {
 				glog.Error("Failed to notify error to client: %v", werr)
 				return
 			}
@@ -40,7 +50,7 @@ func ForwardResponseStream(w http.ResponseWriter, recv func() (proto.Message, er
 			glog.Error("Failed to marshal response chunk: %v", err)
 			return
 		}
-		if _, err = fmt.Fprintln(w, buf); err != nil {
+		if _, err = fmt.Fprintf(w, "%s\n", buf); err != nil {
 			glog.Error("Failed to send response chunk: %v", err)
 			return
 		}

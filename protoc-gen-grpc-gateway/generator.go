@@ -394,6 +394,7 @@ It translates gRPC into RESTful JSON APIs.
 package {{.Pkg}}
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/runtime"
@@ -408,6 +409,7 @@ import (
 )
 
 var _ codes.Code
+var _ io.Reader
 var _ = runtime.String
 `))
 
@@ -434,9 +436,13 @@ func request_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.
 		return nil, err
 	}
 	dec := json.NewDecoder(req.Body)
-	var protoReq {{.RequestType}}
 	for {
-		if err = dec.Decode(&protoReq); err != nil {
+		var protoReq {{.RequestType}}
+		err = dec.Decode(&protoReq)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
 			glog.Errorf("Failed to decode request: %v", err)
 			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}

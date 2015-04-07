@@ -80,6 +80,7 @@ func (s *_ABitOfEverythingServer) BulkCreate(stream examples.ABitOfEverythingSer
 		if err != nil {
 			return err
 		}
+		glog.Error(msg)
 		if _, err = s.Create(ctx, msg); err != nil {
 			return err
 		}
