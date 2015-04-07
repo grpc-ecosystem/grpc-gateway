@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"net"
@@ -12,6 +11,7 @@ import (
 	"github.com/rogpeppe/fastuuid"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 )
 
 // Implements of EchoServiceServer
@@ -69,7 +69,7 @@ func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *examples.IdMe
 	if a, ok := s.m[msg.Uuid]; ok {
 		return a, nil
 	}
-	return nil, errors.New("not found")
+	return nil, grpc.Errorf(codes.NotFound, "not found")
 }
 
 func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABitOfEverything) (*examples.EmptyMessage, error) {
@@ -77,7 +77,7 @@ func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABit
 	if _, ok := s.m[msg.Uuid]; ok {
 		s.m[msg.Uuid] = msg
 	} else {
-		return nil, errors.New("not found")
+		return nil, grpc.Errorf(codes.NotFound, "not found")
 	}
 	return new(examples.EmptyMessage), nil
 }
@@ -87,7 +87,7 @@ func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *examples.IdMe
 	if _, ok := s.m[msg.Uuid]; ok {
 		delete(s.m, msg.Uuid)
 	} else {
-		return nil, errors.New("not found")
+		return nil, grpc.Errorf(codes.NotFound, "not found")
 	}
 	return new(examples.EmptyMessage), nil
 }
