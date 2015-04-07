@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"net"
+	"sync"
 
 	examples "github.com/gengo/grpc-gateway/examples"
 	sub "github.com/gengo/grpc-gateway/examples/sub"
@@ -37,27 +38,31 @@ func (s *echoServer) EchoBody(ctx context.Context, msg *examples.SimpleMessage) 
 var uuidgen = fastuuid.MustNewGenerator()
 
 type _ABitOfEverythingServer struct {
-	m map[string]*examples.ABitOfEverything
+	v map[string]*examples.ABitOfEverything
+	m sync.Mutex
 }
 
 func newABitOfEverythingServer() examples.ABitOfEverythingServiceServer {
 	return &_ABitOfEverythingServer{
-		m: make(map[string]*examples.ABitOfEverything),
+		v: make(map[string]*examples.ABitOfEverything),
 	}
 }
 
 func (s *_ABitOfEverythingServer) Create(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
 	glog.Info(msg)
 	var uuid string
 	for {
 		uuid = fmt.Sprintf("%x", uuidgen.Next())
-		if _, ok := s.m[uuid]; !ok {
+		if _, ok := s.v[uuid]; !ok {
 			break
 		}
 	}
-	s.m[uuid] = msg
-	s.m[uuid].Uuid = uuid
-	return s.m[uuid], nil
+	s.v[uuid] = msg
+	s.v[uuid].Uuid = uuid
+	return s.v[uuid], nil
 }
 
 func (s *_ABitOfEverythingServer) CreateBody(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
@@ -65,17 +70,23 @@ func (s *_ABitOfEverythingServer) CreateBody(ctx context.Context, msg *examples.
 }
 
 func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *examples.IdMessage) (*examples.ABitOfEverything, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
 	glog.Info(msg)
-	if a, ok := s.m[msg.Uuid]; ok {
+	if a, ok := s.v[msg.Uuid]; ok {
 		return a, nil
 	}
 	return nil, grpc.Errorf(codes.NotFound, "not found")
 }
 
 func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABitOfEverything) (*examples.EmptyMessage, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
 	glog.Info(msg)
-	if _, ok := s.m[msg.Uuid]; ok {
-		s.m[msg.Uuid] = msg
+	if _, ok := s.v[msg.Uuid]; ok {
+		s.v[msg.Uuid] = msg
 	} else {
 		return nil, grpc.Errorf(codes.NotFound, "not found")
 	}
@@ -83,9 +94,12 @@ func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABit
 }
 
 func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *examples.IdMessage) (*examples.EmptyMessage, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
 	glog.Info(msg)
-	if _, ok := s.m[msg.Uuid]; ok {
-		delete(s.m, msg.Uuid)
+	if _, ok := s.v[msg.Uuid]; ok {
+		delete(s.v, msg.Uuid)
 	} else {
 		return nil, grpc.Errorf(codes.NotFound, "not found")
 	}
