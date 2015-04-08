@@ -57,24 +57,25 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 2. Add a custom option to the .proto file
    
    your_service.proto:
-   ```protobuf
-   syntax = "proto3";
-   package example;
-   
-   import "github.com/gengo/grpc-gateway/options/options.proto";
-   
-   message StringMessage {
-     string value = 1;
-   }
-   
-   service YourService {
-     rpc Echo(StringMessage) returns (StringMessage) {
-       option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-         path: "/v1/example/echo"
-         method: "POST"
-       }
-     }
-   }
+   ```diff
+    syntax = "proto3";
+    package example;
+    
+   +import "github.com/gengo/grpc-gateway/options/options.proto";
+    
+    message StringMessage {
+      string value = 1;
+    }
+    
+    service YourService {
+   -  rpc Echo(StringMessage) returns (StringMessage) {}
+   +  rpc Echo(StringMessage) returns (StringMessage) {
+   +    option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+   +      path: "/v1/example/echo"
+   +      method: "POST"
+   +    }
+   +  }
+    }
    ```
 3. Generate gRPC stub
    
