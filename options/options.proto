@@ -7,8 +7,10 @@ import "google/protobuf/descriptor.proto";
 message ApiMethodOptions {
 	extend google.protobuf.MethodOptions {
 		// Describes how the gRPC method should be exported as a RESTful API.
-		// TODO(yugui) Use a globally unique id instead of a organization-private id.
-		optional ApiMethodOptions api_options = 5000;
+		//
+		// The id is a globally unique id for this option, assigned by
+		// protobuf-global-extension-registry@google.com.
+		optional ApiMethodOptions api_options = 1022;
 	}
 
 	// Path of the RESTful API method.
