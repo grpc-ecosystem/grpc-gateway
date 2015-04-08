@@ -60,9 +60,9 @@ func (m *ApiMethodOptions) GetDescription() string {
 var E_ApiMethodOptions_ApiOptions = &proto.ExtensionDesc{
 	ExtendedType:  (*google_protobuf.MethodOptions)(nil),
 	ExtensionType: (*ApiMethodOptions)(nil),
-	Field:         5000,
+	Field:         1022,
 	Name:          "gengo.grpc.gateway.ApiMethodOptions.api_options",
-	Tag:           "bytes,5000,opt,name=api_options",
+	Tag:           "bytes,1022,opt,name=api_options",
 }
 
 func init() {
