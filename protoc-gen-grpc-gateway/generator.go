@@ -156,48 +156,48 @@ func getAPIOptions(meth *descriptor.MethodDescriptorProto) (*options.ApiMethodOp
 
 var (
 	proto3ConvertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
-		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "convert.Float64",
-		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "convert.Float32",
-		descriptor.FieldDescriptorProto_TYPE_INT64:   "convert.Int64",
-		descriptor.FieldDescriptorProto_TYPE_UINT64:  "convert.Uint64",
-		descriptor.FieldDescriptorProto_TYPE_INT32:   "convert.Int32",
-		descriptor.FieldDescriptorProto_TYPE_FIXED64: "convert.Uint64",
-		descriptor.FieldDescriptorProto_TYPE_FIXED32: "convert.Uint32",
-		descriptor.FieldDescriptorProto_TYPE_BOOL:    "convert.Bool",
-		descriptor.FieldDescriptorProto_TYPE_STRING:  "convert.String",
+		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "runtime.Float64",
+		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "runtime.Float32",
+		descriptor.FieldDescriptorProto_TYPE_INT64:   "runtime.Int64",
+		descriptor.FieldDescriptorProto_TYPE_UINT64:  "runtime.Uint64",
+		descriptor.FieldDescriptorProto_TYPE_INT32:   "runtime.Int32",
+		descriptor.FieldDescriptorProto_TYPE_FIXED64: "runtime.Uint64",
+		descriptor.FieldDescriptorProto_TYPE_FIXED32: "runtime.Uint32",
+		descriptor.FieldDescriptorProto_TYPE_BOOL:    "runtime.Bool",
+		descriptor.FieldDescriptorProto_TYPE_STRING:  "runtime.String",
 		// FieldDescriptorProto_TYPE_GROUP
 		// FieldDescriptorProto_TYPE_MESSAGE
 		// FieldDescriptorProto_TYPE_BYTES
 		// TODO(yugui) Handle bytes
-		descriptor.FieldDescriptorProto_TYPE_UINT32: "convert.Uint32",
+		descriptor.FieldDescriptorProto_TYPE_UINT32: "runtime.Uint32",
 		// FieldDescriptorProto_TYPE_ENUM
 		// TODO(yugui) Handle Enum
-		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "convert.Int32",
-		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "convert.Int64",
-		descriptor.FieldDescriptorProto_TYPE_SINT32:   "convert.Int32",
-		descriptor.FieldDescriptorProto_TYPE_SINT64:   "convert.Int64",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64",
+		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32",
+		descriptor.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64",
 	}
 	proto2ConvertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
-		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "convert.Float64P",
-		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "convert.Float32P",
-		descriptor.FieldDescriptorProto_TYPE_INT64:   "convert.Int64P",
-		descriptor.FieldDescriptorProto_TYPE_UINT64:  "convert.Uint64P",
-		descriptor.FieldDescriptorProto_TYPE_INT32:   "convert.Int32P",
-		descriptor.FieldDescriptorProto_TYPE_FIXED64: "convert.Uint64P",
-		descriptor.FieldDescriptorProto_TYPE_FIXED32: "convert.Uint32P",
-		descriptor.FieldDescriptorProto_TYPE_BOOL:    "convert.BoolP",
-		descriptor.FieldDescriptorProto_TYPE_STRING:  "convert.StringP",
+		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "runtime.Float64P",
+		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "runtime.Float32P",
+		descriptor.FieldDescriptorProto_TYPE_INT64:   "runtime.Int64P",
+		descriptor.FieldDescriptorProto_TYPE_UINT64:  "runtime.Uint64P",
+		descriptor.FieldDescriptorProto_TYPE_INT32:   "runtime.Int32P",
+		descriptor.FieldDescriptorProto_TYPE_FIXED64: "runtime.Uint64P",
+		descriptor.FieldDescriptorProto_TYPE_FIXED32: "runtime.Uint32P",
+		descriptor.FieldDescriptorProto_TYPE_BOOL:    "runtime.BoolP",
+		descriptor.FieldDescriptorProto_TYPE_STRING:  "runtime.StringP",
 		// FieldDescriptorProto_TYPE_GROUP
 		// FieldDescriptorProto_TYPE_MESSAGE
 		// FieldDescriptorProto_TYPE_BYTES
 		// TODO(yugui) Handle bytes
-		descriptor.FieldDescriptorProto_TYPE_UINT32: "convert.Uint32P",
+		descriptor.FieldDescriptorProto_TYPE_UINT32: "runtime.Uint32P",
 		// FieldDescriptorProto_TYPE_ENUM
 		// TODO(yugui) Handle Enum
-		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "convert.Int32P",
-		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "convert.Int64P",
-		descriptor.FieldDescriptorProto_TYPE_SINT32:   "convert.Int32P",
-		descriptor.FieldDescriptorProto_TYPE_SINT64:   "convert.Int64P",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32P",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64P",
+		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32P",
+		descriptor.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64P",
 	}
 )
 
@@ -270,20 +270,25 @@ func generateSingleFile(file *descriptor.FileDescriptorProto) (string, error) {
 			}
 			needsBody := len(fields) != 0
 			if needsBody && (opts.GetMethod() == "GET" || opts.GetMethod() == "DELETE") {
-				return "", fmt.Errorf("needs request body even though http method is %s: %s", opts.Method, meth.GetName())
+				return "", fmt.Errorf("needs request body even though http method is %s: %s", opts.GetMethod(), meth.GetName())
+			}
+			if meth.GetClientStreaming() && (len(params) > 0 || !needsBody) {
+				return "", fmt.Errorf("cannot use path parameter in client streaming")
 			}
 			requestGoType := goTypeFromProtoType(meth.GetInputType()[1:], file.GetPackage())
 			if idx := strings.Index(requestGoType, "."); idx >= 0 {
 				usedImports[requestGoType[:idx]] = true
 			}
 			md := methodDesc{
-				ServiceName: svc.GetName(),
-				Name:        meth.GetName(),
-				Method:      opts.GetMethod(),
-				Path:        opts.GetPath(),
-				RequestType: requestGoType,
-				PathParams:  params,
-				NeedsBody:   needsBody,
+				ServiceName:     svc.GetName(),
+				Name:            meth.GetName(),
+				Method:          opts.GetMethod(),
+				Path:            opts.GetPath(),
+				RequestType:     requestGoType,
+				PathParams:      params,
+				NeedsBody:       needsBody,
+				ServerStreaming: meth.GetServerStreaming(),
+				ClientStreaming: meth.GetClientStreaming(),
 			}
 			sd.Methods = append(sd.Methods, md)
 		}
@@ -350,14 +355,16 @@ func (d paramDesc) GoName() string {
 }
 
 type methodDesc struct {
-	ServiceName string
-	Name        string
-	Method      string
-	Path        string
-	RequestType string
-	QueryParams []paramDesc
-	PathParams  []paramDesc
-	NeedsBody   bool
+	ServiceName     string
+	Name            string
+	Method          string
+	Path            string
+	RequestType     string
+	QueryParams     []paramDesc
+	PathParams      []paramDesc
+	NeedsBody       bool
+	ClientStreaming bool
+	ServerStreaming bool
 }
 
 func (d methodDesc) MuxRegistererName() string {
@@ -387,43 +394,96 @@ It translates gRPC into RESTful JSON APIs.
 package {{.Pkg}}
 import (
 	"encoding/json"
-	"fmt"
+	"io"
 	"net/http"
 
-	"google.golang.org/grpc"
-	"github.com/gengo/grpc-gateway/convert"
-	"github.com/golang/protobuf/proto"
+	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/glog"
+	"github.com/golang/protobuf/proto"
 	"github.com/zenazn/goji/web"
 	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 
 {{range $line := .Imports}}{{$line}}{{end}}
 )
 
-var _ fmt.Stringer
-var _ = convert.String
+var _ codes.Code
+var _ io.Reader
+var _ = runtime.String
 `))
+
 	handlerTemplate = template.Must(template.New("handler").Parse(`
-func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, req *http.Request) (msg proto.Message, err error) {
-	protoReq := new({{.RequestType}})
-{{if .NeedsBody}}
-	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+{{if .ClientStreaming}}
+{{template "client-streaming-request-func" .}}
+{{else}}
+{{template "client-rpc-request-func" .}}
+{{end}}
+`))
+
+	_ = template.Must(handlerTemplate.New("request-func-signature").Parse(strings.Replace(`
+{{if .ServerStreaming}}
+func request_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, req *http.Request) ({{.ServiceName}}_{{.Name}}Client, error)
+{{else}}
+func request_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.ServiceName}}Client, req *http.Request) (msg proto.Message, err error)
+{{end}}`, "\n", "", -1)))
+
+	_ = template.Must(handlerTemplate.New("client-streaming-request-func").Parse(`
+{{template "request-func-signature" .}} {
+	stream, err := client.{{.Name}}(ctx)
+	if err != nil {
+		glog.Errorf("Failed to start streaming: %v", err)
 		return nil, err
 	}
+	dec := json.NewDecoder(req.Body)
+	for {
+		var protoReq {{.RequestType}}
+		err = dec.Decode(&protoReq)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			glog.Errorf("Failed to decode request: %v", err)
+			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		}
+		if err = stream.Send(&protoReq); err != nil {
+			glog.Errorf("Failed to send request: %v", err)
+			return nil, err
+		}
+	}
+{{if .ServerStreaming}}
+	if err = stream.CloseSend(); err != nil {
+		glog.Errorf("Failed to terminate client stream: %v", err)
+		return nil, err
+	}
+	return stream, nil
+{{else}}
+	return stream.CloseAndRecv()
 {{end}}
+}
+`))
+
+	_ = template.Must(handlerTemplate.New("client-rpc-request-func").Parse(`
+{{template "request-func-signature" .}} {
+	var protoReq {{.RequestType}}
 	{{range $desc := .QueryParams}}
 	protoReq.{{$desc.ProtoName}}, err = {{$desc.ConvertFunc}}(req.FormValue({{$desc.ProtoName | printf "%q"}}))
 	if err != nil {
 		return nil, err
 	}
 	{{end}}
+{{if .NeedsBody}}
+	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+		return nil, err
+	}
+{{end}}
 {{if .NeedsPathParam}}
 	var val string
 	var ok bool
 	{{range $desc := .PathParams}}
 	val, ok = c.URLParams[{{$desc.ProtoName | printf "%q"}}]
 	if !ok {
-		return nil, fmt.Errorf("missing parameter %s", {{$desc.ProtoName | printf "%q"}})
+		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", {{$desc.ProtoName | printf "%q"}})
 	}
 	protoReq.{{$desc.GoName}}, err = {{$desc.ConvertFunc}}(val)
 	if err != nil {
@@ -431,12 +491,14 @@ func handle_{{.ServiceName}}_{{.Name}}(ctx context.Context, c web.C, client {{.S
 	}
 	{{end}}
 {{end}}
-	return client.{{.Name}}(ctx, protoReq)
-}
-`))
+
+	return client.{{.Name}}(ctx, &protoReq)
+}`))
 
 	trailerTemplate = template.Must(template.New("trailer").Parse(`
 {{range $svc := .}}
+// Register{{$svc.Name}}HandlerFromEndpoint is same as Register{{$svc.Name}}Handler but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func Register{{$svc.Name}}HandlerFromEndpoint(ctx context.Context, mux *web.Mux, endpoint string) (err error) {
 	conn, err := grpc.Dial(endpoint)
 	if err != nil {
@@ -460,26 +522,22 @@ func Register{{$svc.Name}}HandlerFromEndpoint(ctx context.Context, mux *web.Mux,
 	return Register{{$svc.Name}}Handler(ctx, mux, conn)
 }
 
+// Register{{$svc.Name}}Handler registers the http handlers for service {{$svc.Name}} to "mux".
+// The handlers forward requests to the grpc endpoint over "conn".
 func Register{{$svc.Name}}Handler(ctx context.Context, mux *web.Mux, conn *grpc.ClientConn) error {
 	client := New{{$svc.Name}}Client(conn)
 	{{range $m := $svc.Methods}}
 	mux.{{$m.MuxRegistererName}}({{$m.Path | printf "%q"}}, func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := handle_{{$m.ServiceName}}_{{$m.Name}}(ctx, c, client, req)
+		resp, err := request_{{.ServiceName}}_{{.Name}}(ctx, c, client, req)
 		if err != nil {
-			glog.Errorf("RPC error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			runtime.HTTPError(w, err)
 			return
 		}
-		buf, err := json.Marshal(resp)
-		if err != nil {
-			glog.Errorf("Marshal error: %v", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		if _, err = w.Write(buf); err != nil {
-			glog.Errorf("Failed to write response: %v", err)
-		}
+		{{if .ServerStreaming}}
+		runtime.ForwardResponseStream(w, func() (proto.Message, error) { return resp.Recv() })
+		{{else}}
+		runtime.ForwardResponseMessage(w, resp)
+		{{end}}
 	})
 	{{end}}
 	return nil

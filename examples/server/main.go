@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"net"
 	"sync"
 
@@ -69,6 +70,24 @@ func (s *_ABitOfEverythingServer) CreateBody(ctx context.Context, msg *examples.
 	return s.Create(ctx, msg)
 }
 
+func (s *_ABitOfEverythingServer) BulkCreate(stream examples.ABitOfEverythingService_BulkCreateServer) error {
+	ctx := stream.Context()
+	for {
+		msg, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		glog.Error(msg)
+		if _, err = s.Create(ctx, msg); err != nil {
+			return err
+		}
+	}
+	return stream.SendAndClose(new(examples.EmptyMessage))
+}
+
 func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *examples.IdMessage) (*examples.ABitOfEverything, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
@@ -78,6 +97,17 @@ func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *examples.IdMe
 		return a, nil
 	}
 	return nil, grpc.Errorf(codes.NotFound, "not found")
+}
+
+func (s *_ABitOfEverythingServer) List(_ *examples.EmptyMessage, stream examples.ABitOfEverythingService_ListServer) error {
+	s.m.Lock()
+	defer s.m.Unlock()
+	for _, msg := range s.v {
+		if err := stream.Send(msg); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABitOfEverything) (*examples.EmptyMessage, error) {
@@ -112,6 +142,27 @@ func (s *_ABitOfEverythingServer) Echo(ctx context.Context, msg *sub.StringMessa
 
 	glog.Info(msg)
 	return msg, nil
+}
+
+func (s *_ABitOfEverythingServer) BulkEcho(stream examples.ABitOfEverythingService_BulkEchoServer) error {
+	var msgs []*sub.StringMessage
+	for {
+		msg, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		msgs = append(msgs, msg)
+	}
+	for _, msg := range msgs {
+		glog.Info(msg)
+		if err := stream.Send(msg); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func run() error {

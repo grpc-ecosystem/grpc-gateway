@@ -154,11 +154,11 @@ More examples are available under `examples` directory.
 * Generating JSON API handlers
 * Method parameters in request body
 * Method parameters in request path
+* Mppping streaming APIs to JSON streams
 
 ### Want to support
 But not yet.
 * Integrated authentication
-* Streaming APIs
 * bytes and enum fields in path parameter
 * Method parameters in query string
 * Encoding request/response body in application/x-www-form-urlencoded

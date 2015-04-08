@@ -51,10 +51,22 @@ service ABitOfEverythingService {
 			method: "POST"
 		};
 	}
+	rpc BulkCreate(stream ABitOfEverything) returns (EmptyMessage) {
+		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+			path: "/v1/example/a_bit_of_everything/bulk"
+			method: "POST"
+		};
+	}
 	rpc Lookup(IdMessage) returns (ABitOfEverything) {
 		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
 			path: "/v1/example/a_bit_of_everything/:uuid"
-			method: "Get"
+			method: "GET"
+		};
+	}
+	rpc List(EmptyMessage) returns (stream ABitOfEverything) {
+		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+			path: "/v1/example/a_bit_of_everything"
+			method: "GET"
 		};
 	}
 	rpc Update(ABitOfEverything) returns (EmptyMessage) {
@@ -73,6 +85,12 @@ service ABitOfEverythingService {
 		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
 			path: "/v1/example/a_bit_of_everything/echo/:value"
 			method: "GET"
+		};
+	}
+	rpc BulkEcho(stream gengo.grpc.gateway.examples.sub.StringMessage) returns (stream gengo.grpc.gateway.examples.sub.StringMessage) {
+		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+			path: "/v1/example/a_bit_of_everything/echo"
+			method: "POST"
 		};
 	}
 }
