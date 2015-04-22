@@ -73,14 +73,14 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    +    option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
    +      path: "/v1/example/echo"
    +      method: "POST"
-   +    }
+   +    };
    +  }
     }
    ```
 3. Generate gRPC stub
    
    ```sh
-   protoc -I/usr/local/include -I. -I$GOPATH \
+   protoc -I/usr/local/include -I. -I$GOPATH/src \
      --go_out=plugins=grpc:. \
      path/to/your_service.proto
    ```
@@ -90,7 +90,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 4. Generate reverse-proxy
    
    ```sh
-   protoc -I/usr/local/include -I. -I$GOPATH \
+   protoc -I/usr/local/include -I. -I$GOPATH/src \
      --grpc-gateway_out=logtostderr=true:. \
      path/to/your_service.proto
    ```
@@ -155,7 +155,7 @@ More examples are available under `examples` directory.
 * Generating JSON API handlers
 * Method parameters in request body
 * Method parameters in request path
-* Mppping streaming APIs to JSON streams
+* Mapping streaming APIs to JSON streams
 
 ### Want to support
 But not yet.
@@ -163,7 +163,7 @@ But not yet.
 * bytes and enum fields in path parameter
 * Method parameters in query string
 * Encoding request/response body in application/x-www-form-urlencoded
-* Optinally generating the entrypoint
+* Optionally generating the entrypoint
 * Optionally emitting API definition for [Swagger](http://swagger.io)
 
 ### No plan to support
