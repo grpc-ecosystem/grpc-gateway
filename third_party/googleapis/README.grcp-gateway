@@ -12,3 +12,11 @@ Imported Files
 
 - google/api/annotations.proto
 - google/api/http.proto
+
+
+Generated Files
+----------------
+
+They are generated from the .proto files by protoc-gen-go.
+- google/api/annotations.pb.go
+- google/api/http.pb.go
