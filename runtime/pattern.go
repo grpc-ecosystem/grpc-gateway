@@ -49,13 +49,16 @@ type Pattern struct {
 	vars []string
 	// stacksize is the max depth of the stack
 	stacksize int
+	// verb is the VERB part of the path pattern. It is empty if the pattern does not have VERB part.
+	verb string
 }
 
 // NewPattern returns a new Pattern from the given definition values.
 // "ops" is a sequence of op codes. "pool" is a constant pool.
+// "verb" is the verb part of the pattern. It is empty if the pattern does not have the part.
 // "version" must be 1 for now.
 // It returns an error if the given definition is invalid.
-func NewPattern(version int, ops []int, pool []string) (Pattern, error) {
+func NewPattern(version int, ops []int, pool []string, verb string) (Pattern, error) {
 	if version != 1 {
 		glog.V(2).Infof("unsupported version: %d", version)
 		return Pattern{}, ErrInvalidPattern
@@ -123,14 +126,20 @@ func NewPattern(version int, ops []int, pool []string) (Pattern, error) {
 		pool:      pool,
 		vars:      vars,
 		stacksize: maxstack,
+		verb:      verb,
 	}, nil
 }
 
 // Match examines components if it matches to the Pattern.
 // If it matches, the function returns a mapping from field paths to their captured values.
 // If otherwise, the function returns an error.
-func (p Pattern) Match(components []string) (map[string]string, error) {
-	glog.V(2).Infof("matching %q to %v", components, p)
+func (p Pattern) Match(components []string, verb string) (map[string]string, error) {
+	glog.V(2).Infof("matching (%q, %q) to %v", components, verb, p)
+
+	if p.verb != verb {
+		return nil, ErrNotMatch
+	}
+
 	var pos int
 	stack := make([]string, 0, p.stacksize)
 	captured := make([]string, len(p.vars))
@@ -176,3 +185,6 @@ func (p Pattern) Match(components []string) (map[string]string, error) {
 	}
 	return bindings, nil
 }
+
+// Verb returns the verb part of the Pattern.
+func (p Pattern) Verb() string { return p.verb }

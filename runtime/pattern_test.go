@@ -15,6 +15,7 @@ func TestNewPattern(t *testing.T) {
 	for _, spec := range []struct {
 		ops  []int
 		pool []string
+		verb string
 
 		stackSizeWant int
 	}{
@@ -64,10 +65,16 @@ func TestNewPattern(t *testing.T) {
 			pool:          []string{"lit1", "lit2", "var1"},
 			stackSizeWant: 4,
 		},
+		{
+			ops:           []int{int(opLitPush), 0},
+			pool:          []string{"abc"},
+			stackSizeWant: 1,
+			verb:          "LOCK",
+		},
 	} {
-		pat, err := NewPattern(validVersion, spec.ops, spec.pool)
+		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
 		if err != nil {
-			t.Errorf("NewPattern(%d, %v, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, err)
+			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, spec.verb, err)
 			continue
 		}
 		if got, want := pat.stacksize, spec.stackSizeWant; got != want {
@@ -80,6 +87,7 @@ func TestNewPatternWithWrongOp(t *testing.T) {
 	for _, spec := range []struct {
 		ops  []int
 		pool []string
+		verb string
 	}{
 		{
 			// op code out of bound
@@ -119,13 +127,13 @@ func TestNewPatternWithWrongOp(t *testing.T) {
 			pool: []string{"abc"},
 		},
 	} {
-		_, err := NewPattern(validVersion, spec.ops, spec.pool)
+		_, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
 		if err == nil {
-			t.Errorf("NewPattern(%d, %v, %q) succeeded; want failure with %v", validVersion, spec.ops, spec.pool, ErrInvalidPattern)
+			t.Errorf("NewPattern(%d, %v, %q, %q) succeeded; want failure with %v", validVersion, spec.ops, spec.pool, spec.verb, ErrInvalidPattern)
 			continue
 		}
 		if err != ErrInvalidPattern {
-			t.Errorf("NewPattern(%d, %v, %q) failed with %v; want failure with %v", validVersion, spec.ops, spec.pool, err, ErrInvalidPattern)
+			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want failure with %v", validVersion, spec.ops, spec.pool, spec.verb, err, ErrInvalidPattern)
 			continue
 		}
 	}
@@ -135,6 +143,7 @@ func TestNewPatternWithStackUnderflow(t *testing.T) {
 	for _, spec := range []struct {
 		ops  []int
 		pool []string
+		verb string
 	}{
 		{
 			ops: []int{int(opConcatN), 1},
@@ -144,29 +153,23 @@ func TestNewPatternWithStackUnderflow(t *testing.T) {
 			pool: []string{"abc"},
 		},
 	} {
-		_, err := NewPattern(validVersion, spec.ops, spec.pool)
+		_, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
 		if err == nil {
-			t.Errorf("NewPattern(%d, %v, %q) succeeded; want failure with %v", validVersion, spec.ops, spec.pool, ErrInvalidPattern)
+			t.Errorf("NewPattern(%d, %v, %q, %q) succeeded; want failure with %v", validVersion, spec.ops, spec.pool, spec.verb, ErrInvalidPattern)
 			continue
 		}
 		if err != ErrInvalidPattern {
-			t.Errorf("NewPattern(%d, %v, %q) failed with %v; want failure with %v", validVersion, spec.ops, spec.pool, err, ErrInvalidPattern)
+			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want failure with %v", validVersion, spec.ops, spec.pool, spec.verb, err, ErrInvalidPattern)
 			continue
 		}
 	}
-}
-
-func segments(path string) []string {
-	if path == "" {
-		return nil
-	}
-	return strings.Split(path, "/")
 }
 
 func TestMatch(t *testing.T) {
 	for _, spec := range []struct {
 		ops  []int
 		pool []string
+		verb string
 
 		match    []string
 		notMatch []string
@@ -263,10 +266,17 @@ func TestMatch(t *testing.T) {
 				"v2/b/my-bucket/o",
 			},
 		},
+		{
+			ops:      []int{int(opLitPush), 0},
+			pool:     []string{"v1"},
+			verb:     "LOCK",
+			match:    []string{"v1:LOCK"},
+			notMatch: []string{"v1", "LOCK"},
+		},
 	} {
-		pat, err := NewPattern(validVersion, spec.ops, spec.pool)
+		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
 		if err != nil {
-			t.Errorf("NewPattern(%d, %v, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, err)
+			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, spec.verb, err)
 			continue
 		}
 
@@ -295,6 +305,7 @@ func TestMatchWithBinding(t *testing.T) {
 		ops  []int
 		pool []string
 		path string
+		verb string
 
 		want map[string]string
 	}{
@@ -308,6 +319,12 @@ func TestMatchWithBinding(t *testing.T) {
 		{
 			ops:  []int{int(opPush), anything},
 			path: "abc",
+			want: make(map[string]string),
+		},
+		{
+			ops:  []int{int(opPush), anything},
+			verb: "LOCK",
+			path: "abc:LOCK",
 			want: make(map[string]string),
 		},
 		{
@@ -331,6 +348,21 @@ func TestMatchWithBinding(t *testing.T) {
 			},
 			pool: []string{"v1", "bucket", "name"},
 			path: "v1/bucket/my-bucket",
+			want: map[string]string{
+				"name": "my-bucket",
+			},
+		},
+		{
+			ops: []int{
+				int(opLitPush), 0,
+				int(opLitPush), 1,
+				int(opPush), anything,
+				int(opConcatN), 1,
+				int(opCapture), 2,
+			},
+			pool: []string{"v1", "bucket", "name"},
+			verb: "LOCK",
+			path: "v1/bucket/my-bucket:LOCK",
 			want: map[string]string{
 				"name": "my-bucket",
 			},
@@ -369,9 +401,9 @@ func TestMatchWithBinding(t *testing.T) {
 			},
 		},
 	} {
-		pat, err := NewPattern(validVersion, spec.ops, spec.pool)
+		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
 		if err != nil {
-			t.Errorf("NewPattern(%d, %v, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, err)
+			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, spec.verb, err)
 			continue
 		}
 
@@ -383,4 +415,17 @@ func TestMatchWithBinding(t *testing.T) {
 			t.Errorf("pat.Match(%q) = %q; want %q; pattern = (%v, %q)", spec.path, got, spec.want, spec.ops, spec.pool)
 		}
 	}
+}
+
+func segments(path string) (components []string, verb string) {
+	if path == "" {
+		return nil, ""
+	}
+	components = strings.Split(path, "/")
+	l := len(components)
+	c := components[l-1]
+	if idx := strings.LastIndex(c, ":"); idx >= 0 {
+		components[l-1], verb = c[:idx], c[idx+1:]
+	}
+	return components, verb
 }
