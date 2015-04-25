@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -428,4 +429,84 @@ func segments(path string) (components []string, verb string) {
 		components[l-1], verb = c[:idx], c[idx+1:]
 	}
 	return components, verb
+}
+
+func TestPatternString(t *testing.T) {
+	for _, spec := range []struct {
+		ops  []int
+		pool []string
+
+		want string
+	}{
+		{
+			want: "/",
+		},
+		{
+			ops:  []int{int(opNop), anything},
+			want: "/",
+		},
+		{
+			ops:  []int{int(opPush), anything},
+			want: "/*",
+		},
+		{
+			ops:  []int{int(opLitPush), 0},
+			pool: []string{"endpoint"},
+			want: "/endpoint",
+		},
+		{
+			ops:  []int{int(opPushM), anything},
+			want: "/**",
+		},
+		{
+			ops: []int{
+				int(opPush), anything,
+				int(opConcatN), 1,
+			},
+			want: "/*",
+		},
+		{
+			ops: []int{
+				int(opPush), anything,
+				int(opConcatN), 1,
+				int(opCapture), 0,
+			},
+			pool: []string{"name"},
+			want: "/{name=*}",
+		},
+		{
+			ops: []int{
+				int(opLitPush), 0,
+				int(opLitPush), 1,
+				int(opPush), anything,
+				int(opConcatN), 2,
+				int(opCapture), 2,
+				int(opLitPush), 3,
+				int(opPushM), anything,
+				int(opConcatN), 2,
+				int(opCapture), 4,
+			},
+			pool: []string{"v1", "buckets", "bucket_name", "objects", "name"},
+			want: "/v1/{bucket_name=buckets/*}/{name=objects/**}",
+		},
+	} {
+		p, err := NewPattern(validVersion, spec.ops, spec.pool, "")
+		if err != nil {
+			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, "", err)
+			continue
+		}
+		if got, want := p.String(), spec.want; got != want {
+			t.Errorf("%#v.String() = %q; want %q", p, got, want)
+		}
+
+		verb := "LOCK"
+		p, err = NewPattern(validVersion, spec.ops, spec.pool, verb)
+		if err != nil {
+			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, verb, err)
+			continue
+		}
+		if got, want := p.String(), fmt.Sprintf("%s:%s", spec.want, verb); got != want {
+			t.Errorf("%#v.String() = %q; want %q", p, got, want)
+		}
+	}
 }

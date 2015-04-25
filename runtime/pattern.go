@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/golang/glog"
@@ -188,3 +189,31 @@ func (p Pattern) Match(components []string, verb string) (map[string]string, err
 
 // Verb returns the verb part of the Pattern.
 func (p Pattern) Verb() string { return p.verb }
+
+func (p Pattern) String() string {
+	var stack []string
+	for _, op := range p.ops {
+		switch op.code {
+		case opNop:
+			continue
+		case opPush:
+			stack = append(stack, "*")
+		case opLitPush:
+			stack = append(stack, p.pool[op.operand])
+		case opPushM:
+			stack = append(stack, "**")
+		case opConcatN:
+			n := op.operand
+			l := len(stack) - n
+			stack = append(stack[:l], strings.Join(stack[l:], "/"))
+		case opCapture:
+			n := len(stack) - 1
+			stack[n] = fmt.Sprintf("{%s=%s}", p.vars[op.operand], stack[n])
+		}
+	}
+	segs := strings.Join(stack, "/")
+	if p.verb != "" {
+		return fmt.Sprintf("/%s:%s", segs, p.verb)
+	}
+	return "/" + segs
+}
