@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gengo/grpc-gateway/internal"
 	"github.com/golang/glog"
 )
 
@@ -15,28 +16,8 @@ var (
 	ErrInvalidPattern = errors.New("invalid pattern")
 )
 
-type opcode int
-
-// These constants are the valid values of opcode.
-const (
-	// opNop does nothing
-	opNop = opcode(iota)
-	// opPush pushes a component to stack
-	opPush
-	// opLitPush pushes a component to stack if it matches to the literal
-	opLitPush
-	// opPushM concatenates the remaining components and pushes it to stack
-	opPushM
-	// opPopN pops a N items from stack, concatenates them and pushes it to stack
-	opConcatN
-	// opCapture pops an item and binds it to the variable
-	opCapture
-	// opEnd is the least postive invalid opcode.
-	opEnd
-)
-
 type op struct {
-	code    opcode
+	code    internal.OpCode
 	operand int
 }
 
@@ -75,19 +56,19 @@ func NewPattern(version int, ops []int, pool []string, verb string) (Pattern, er
 	var stack, maxstack int
 	var vars []string
 	for i := 0; i < l; i += 2 {
-		op := op{code: opcode(ops[i]), operand: ops[i+1]}
+		op := op{code: internal.OpCode(ops[i]), operand: ops[i+1]}
 		switch op.code {
-		case opNop:
+		case internal.OpNop:
 			continue
-		case opPush, opPushM:
+		case internal.OpPush, internal.OpPushM:
 			stack++
-		case opLitPush:
+		case internal.OpLitPush:
 			if op.operand < 0 || len(pool) <= op.operand {
 				glog.V(2).Infof("negative literal index: %d", op.operand)
 				return Pattern{}, ErrInvalidPattern
 			}
 			stack++
-		case opConcatN:
+		case internal.OpConcatN:
 			if op.operand <= 0 {
 				glog.V(2).Infof("negative concat size: %d", op.operand)
 				return Pattern{}, ErrInvalidPattern
@@ -98,7 +79,7 @@ func NewPattern(version int, ops []int, pool []string, verb string) (Pattern, er
 				return Pattern{}, ErrInvalidPattern
 			}
 			stack++
-		case opCapture:
+		case internal.OpCapture:
 			if op.operand < 0 || len(pool) <= op.operand {
 				glog.V(2).Infof("variable name index out of bound: %d", op.operand)
 				return Pattern{}, ErrInvalidPattern
@@ -147,15 +128,15 @@ func (p Pattern) Match(components []string, verb string) (map[string]string, err
 	l := len(components)
 	for _, op := range p.ops {
 		switch op.code {
-		case opNop:
+		case internal.OpNop:
 			continue
-		case opPush, opLitPush:
+		case internal.OpPush, internal.OpLitPush:
 			if pos >= l {
 				glog.V(1).Infof("insufficient # of segments")
 				return nil, ErrNotMatch
 			}
 			c := components[pos]
-			if op.code == opLitPush {
+			if op.code == internal.OpLitPush {
 				if lit := p.pool[op.operand]; c != lit {
 					glog.V(1).Infof("literal segment mismatch: got %q; want %q", c, lit)
 					return nil, ErrNotMatch
@@ -163,14 +144,14 @@ func (p Pattern) Match(components []string, verb string) (map[string]string, err
 			}
 			stack = append(stack, c)
 			pos++
-		case opPushM:
+		case internal.OpPushM:
 			stack = append(stack, strings.Join(components[pos:], "/"))
 			pos = len(components)
-		case opConcatN:
+		case internal.OpConcatN:
 			n := op.operand
 			l := len(stack) - n
 			stack = append(stack[:l], strings.Join(stack[l:], "/"))
-		case opCapture:
+		case internal.OpCapture:
 			n := len(stack) - 1
 			captured[op.operand] = stack[n]
 			stack = stack[:n]
@@ -194,19 +175,19 @@ func (p Pattern) String() string {
 	var stack []string
 	for _, op := range p.ops {
 		switch op.code {
-		case opNop:
+		case internal.OpNop:
 			continue
-		case opPush:
+		case internal.OpPush:
 			stack = append(stack, "*")
-		case opLitPush:
+		case internal.OpLitPush:
 			stack = append(stack, p.pool[op.operand])
-		case opPushM:
+		case internal.OpPushM:
 			stack = append(stack, "**")
-		case opConcatN:
+		case internal.OpConcatN:
 			n := op.operand
 			l := len(stack) - n
 			stack = append(stack[:l], strings.Join(stack[l:], "/"))
-		case opCapture:
+		case internal.OpCapture:
 			n := len(stack) - 1
 			stack[n] = fmt.Sprintf("{%s=%s}", p.vars[op.operand], stack[n])
 		}
