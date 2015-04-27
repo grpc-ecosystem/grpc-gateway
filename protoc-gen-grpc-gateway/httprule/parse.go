@@ -17,7 +17,8 @@ func (e InvalidTemplateError) Error() string {
 	return fmt.Sprintf("%s: %s", e.msg, e.tmpl)
 }
 
-func Parse(tmpl string) (template, error) {
+// Parse parses the string representation of path template
+func Parse(tmpl string) (Compiler, error) {
 	if !strings.HasPrefix(tmpl, "/") {
 		return template{}, InvalidTemplateError{tmpl: tmpl, msg: "no leading /"}
 	}
@@ -203,7 +204,6 @@ func (p *parser) fieldPath() (string, error) {
 		}
 		components = append(components, c)
 	}
-	return strings.Join(components, "."), nil
 }
 
 // A termType is a type of terminal symbols.
