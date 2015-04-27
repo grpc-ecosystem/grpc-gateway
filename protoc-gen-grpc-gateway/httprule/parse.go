@@ -7,6 +7,7 @@ import (
 	"github.com/golang/glog"
 )
 
+// InvalidTemplateError indicates that the path template is not valid.
 type InvalidTemplateError struct {
 	tmpl string
 	msg  string
