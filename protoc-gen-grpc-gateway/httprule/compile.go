@@ -18,6 +18,8 @@ type Template struct {
 	Pool []string
 	// Verb is a VERB part in the template.
 	Verb string
+	// Fields is a list of field paths bound in this template.
+	Fields []string
 }
 
 // Compiler compiles internal representation of path templates into marshallable operations.
@@ -82,8 +84,9 @@ func (t template) Compile() Template {
 	}
 
 	var (
-		ops  []int
-		pool []string
+		ops    []int
+		pool   []string
+		fields []string
 	)
 	consts := make(map[string]int)
 	for _, op := range rawOps {
@@ -97,11 +100,15 @@ func (t template) Compile() Template {
 			}
 			ops = append(ops, consts[op.str])
 		}
+		if op.code == internal.OpCapture {
+			fields = append(fields, op.str)
+		}
 	}
 	return Template{
 		Version: opcodeVersion,
 		OpCodes: ops,
 		Pool:    pool,
 		Verb:    t.verb,
+		Fields:  fields,
 	}
 }

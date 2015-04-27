@@ -16,8 +16,9 @@ func TestCompile(t *testing.T) {
 		segs []segment
 		verb string
 
-		ops  []int
-		pool []string
+		ops    []int
+		pool   []string
+		fields []string
 	}{
 		{},
 		{
@@ -61,7 +62,8 @@ func TestCompile(t *testing.T) {
 				int(internal.OpConcatN), 1,
 				int(internal.OpCapture), 0,
 			},
-			pool: []string{"name.nested"},
+			pool:   []string{"name.nested"},
+			fields: []string{"name.nested"},
 		},
 		{
 			segs: []segment{
@@ -92,7 +94,8 @@ func TestCompile(t *testing.T) {
 				int(internal.OpConcatN), 1,
 				int(internal.OpCapture), 0,
 			},
-			pool: []string{"obj", "a", "b", "name.nested"},
+			pool:   []string{"obj", "a", "b", "name.nested"},
+			fields: []string{"name.nested", "obj"},
 		},
 	} {
 		tmpl := template{
@@ -111,6 +114,9 @@ func TestCompile(t *testing.T) {
 		}
 		if got, want := compiled.Verb, spec.verb; got != want {
 			t.Errorf("tmpl.Compile().Verb = %q; want %q; segs=%#v, verb=%q", got, want, spec.segs, spec.verb)
+		}
+		if got, want := compiled.Fields, spec.fields; !reflect.DeepEqual(got, want) {
+			t.Errorf("tmpl.Compile().Fields = %q; want %q; segs=%#v, verb=%q", got, want, spec.segs, spec.verb)
 		}
 	}
 }
