@@ -75,7 +75,7 @@ func TestApplyTemplateHeader(t *testing.T) {
 			},
 		},
 	}
-	got, err := applyTemplate(crossLinkFixture(&file))
+	got, err := applyTemplate(param{File: crossLinkFixture(&file)})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
@@ -217,7 +217,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 				},
 			},
 		}
-		got, err := applyTemplate(crossLinkFixture(&file))
+		got, err := applyTemplate(param{File: crossLinkFixture(&file)})
 		if err != nil {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 			return
@@ -375,7 +375,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 				},
 			},
 		}
-		got, err := applyTemplate(crossLinkFixture(&file))
+		got, err := applyTemplate(param{File: crossLinkFixture(&file)})
 		if err != nil {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 			return

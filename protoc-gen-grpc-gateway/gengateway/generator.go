@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"go/format"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -18,21 +19,47 @@ var (
 )
 
 type generator struct {
-	reg *descriptor.Registry
+	reg         *descriptor.Registry
+	baseImports []descriptor.GoPackage
 }
 
 func New(reg *descriptor.Registry) *generator {
-	if err := reg.ReserveGoPackageAlias("json", "encoding/json"); err != nil {
-		glog.Fatal("package name json collides to another")
+	var imports []descriptor.GoPackage
+	for _, pkgpath := range []string{
+		"encoding/json",
+		"io",
+		"net/http",
+		"github.com/gengo/grpc-gateway/runtime",
+		"github.com/golang/glog",
+		"github.com/golang/protobuf/proto",
+		"golang.org/x/net/context",
+		"google.golang.org/grpc",
+		"google.golang.org/grpc/codes",
+	} {
+		pkg := descriptor.GoPackage{
+			Path: pkgpath,
+			Name: path.Base(pkgpath),
+		}
+		if err := reg.ReserveGoPackageAlias(pkg.Name, pkg.Path); err != nil {
+			for i := 0; ; i++ {
+				alias := fmt.Sprintf("%s_%d", pkg.Name, i)
+				if err := reg.ReserveGoPackageAlias(pkg.Name, pkg.Path); err != nil {
+					continue
+				}
+				pkg.Alias = alias
+				break
+			}
+		}
+		imports = append(imports, pkg)
 	}
-	return &generator{reg: reg}
+	return &generator{reg: reg, baseImports: imports}
 }
 
 func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGeneratorResponse_File, error) {
 	var files []*plugin.CodeGeneratorResponse_File
 	for _, file := range targets {
 		glog.V(1).Infof("Processing %s", file.GetName())
-		code, err := applyTemplate(file)
+		code, err := g.generate(file)
 		if err == errNoTargetService {
 			glog.V(1).Infof("%s: %v", file.GetName(), err)
 			continue
@@ -56,4 +83,27 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 		glog.Infof("Will emit %s", output)
 	}
 	return files, nil
+}
+
+func (g *generator) generate(file *descriptor.File) (string, error) {
+	pkgSeen := make(map[string]bool)
+	var imports []descriptor.GoPackage
+	for _, pkg := range g.baseImports {
+		pkgSeen[pkg.Path] = true
+		imports = append(imports, pkg)
+	}
+	for _, svc := range file.Services {
+		for _, m := range svc.Methods {
+			pkg := m.RequestType.File.GoPkg
+			if pkg == file.GoPkg {
+				continue
+			}
+			if pkgSeen[pkg.Path] {
+				continue
+			}
+			pkgSeen[pkg.Path] = true
+			imports = append(imports, pkg)
+		}
+	}
+	return applyTemplate(param{File: file, Imports: imports})
 }

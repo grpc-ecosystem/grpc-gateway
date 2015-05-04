@@ -2,7 +2,6 @@ package gengateway
 
 import (
 	"bytes"
-	"path"
 	"strings"
 	"text/template"
 
@@ -14,43 +13,13 @@ type param struct {
 	Imports []descriptor.GoPackage
 }
 
-func applyTemplate(file *descriptor.File) (string, error) {
-	pkgSeen := make(map[string]bool)
-	var imports []descriptor.GoPackage
-	for _, pkg := range []string{
-		"io",
-		"net/http",
-		"encoding/json",
-		"github.com/gengo/grpc-gateway/runtime",
-		"github.com/golang/glog",
-		"github.com/golang/protobuf/proto",
-		"golang.org/x/net/context",
-		"google.golang.org/grpc",
-		"google.golang.org/grpc/codes",
-	} {
-		pkgSeen[pkg] = true
-		imports = append(imports, descriptor.GoPackage{Path: pkg, Name: path.Base(pkg)})
-	}
-	for _, svc := range file.Services {
-		for _, m := range svc.Methods {
-			pkg := m.RequestType.File.GoPkg
-			if pkg == file.GoPkg {
-				continue
-			}
-			if pkgSeen[pkg.Path] {
-				continue
-			}
-			pkgSeen[pkg.Path] = true
-			imports = append(imports, pkg)
-		}
-	}
-
+func applyTemplate(p param) (string, error) {
 	w := bytes.NewBuffer(nil)
-	if err := headerTemplate.Execute(w, param{File: file, Imports: imports}); err != nil {
+	if err := headerTemplate.Execute(w, p); err != nil {
 		return "", err
 	}
 	var methodSeen bool
-	for _, svc := range file.Services {
+	for _, svc := range p.Services {
 		for _, meth := range svc.Methods {
 			methodSeen = true
 			if err := handlerTemplate.Execute(w, meth); err != nil {
@@ -61,7 +30,7 @@ func applyTemplate(file *descriptor.File) (string, error) {
 	if !methodSeen {
 		return "", errNoTargetService
 	}
-	if err := trailerTemplate.Execute(w, file.Services); err != nil {
+	if err := trailerTemplate.Execute(w, p.Services); err != nil {
 		return "", err
 	}
 	return w.String(), nil

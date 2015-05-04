@@ -32,21 +32,10 @@ type Registry struct {
 // NewRegistry returns a new Registry.
 func NewRegistry() *Registry {
 	return &Registry{
-		msgs:   make(map[string]*Message),
-		files:  make(map[string]*File),
-		pkgMap: make(map[string]string),
-		pkgAliases: map[string]string{
-			// TODO(yugui) Move this initialization to generators.
-			"json":    "encoding/json",
-			"io":      "io",
-			"http":    "net/http",
-			"runtime": "runtime",
-			"glog":    "github.com/golang/glog",
-			"proto":   "github.com/golang/protobuf/proto",
-			"context": "golang.org/x/net/context",
-			"grpc":    "google.golang.org/grpc",
-			"codes":   "google.golang.org/grpc/codes",
-		},
+		msgs:       make(map[string]*Message),
+		files:      make(map[string]*File),
+		pkgMap:     make(map[string]string),
+		pkgAliases: make(map[string]string),
 	}
 }
 
