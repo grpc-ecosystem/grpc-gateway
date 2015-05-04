@@ -23,6 +23,7 @@ type generator struct {
 	baseImports []descriptor.GoPackage
 }
 
+// New returns a new generator which generates grpc gateway files.
 func New(reg *descriptor.Registry) *generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{

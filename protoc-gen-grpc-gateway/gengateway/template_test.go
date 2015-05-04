@@ -186,7 +186,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 							ResponseType: msg,
 							PathParams: []descriptor.Parameter{
 								{
-									FieldPath: descriptor.FieldPath{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
 										{
 											Name:   "nested",
 											Target: nestedField,
@@ -195,13 +195,13 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 											Name:   "int32",
 											Target: intField,
 										},
-									},
+									}),
 									Target: intField,
 								},
 							},
 							Body: &descriptor.Body{
 								DecoderFactoryExpr: "NewExampleDecoder",
-								FieldPath: descriptor.FieldPath{
+								FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
 									{
 										Name:   "nested",
 										Target: nestedField,
@@ -210,7 +210,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 										Name:   "bool",
 										Target: boolField,
 									},
-								},
+								}),
 							},
 						},
 					},
@@ -344,7 +344,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 							ResponseType: msg,
 							PathParams: []descriptor.Parameter{
 								{
-									FieldPath: descriptor.FieldPath{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
 										{
 											Name:   "nested",
 											Target: nestedField,
@@ -353,13 +353,13 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 											Name:   "int32",
 											Target: intField,
 										},
-									},
+									}),
 									Target: intField,
 								},
 							},
 							Body: &descriptor.Body{
 								DecoderFactoryExpr: "NewExampleDecoder",
-								FieldPath: descriptor.FieldPath{
+								FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
 									{
 										Name:   "nested",
 										Target: nestedField,
@@ -368,7 +368,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 										Name:   "bool",
 										Target: boolField,
 									},
-								},
+								}),
 							},
 						},
 					},
