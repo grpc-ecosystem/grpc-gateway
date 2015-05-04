@@ -2,7 +2,7 @@ syntax = "proto3";
 option go_package = "main";
 package gengo.grpc.gateway.example;
 
-import "options/options.proto";
+import "google/api/annotations.proto";
 
 message SimpleMessage {
 	string id = 1;
@@ -10,15 +10,15 @@ message SimpleMessage {
 
 service EchoService {
 	rpc Echo(SimpleMessage) returns (SimpleMessage) {
-		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/echo/:id"
-			method: "POST"
+		option (google.api.http) = {
+			post: "/v1/example/echo/{id}"
+			body: "*"
 		};
 	}
 	rpc EchoBody(SimpleMessage) returns (SimpleMessage) {
-		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/echo_body"
-			method: "POST"
+		option (google.api.http) = {
+			post: "/v1/example/echo_body"
+			body: "*"
 		};
 	}
 }

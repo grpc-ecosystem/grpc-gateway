@@ -63,6 +63,7 @@ func (s *_ABitOfEverythingServer) Create(ctx context.Context, msg *examples.ABit
 	}
 	s.v[uuid] = msg
 	s.v[uuid].Uuid = uuid
+	glog.Infof("%v", s.v[uuid])
 	return s.v[uuid], nil
 }
 
@@ -165,7 +166,7 @@ func (s *_ABitOfEverythingServer) BulkEcho(stream examples.ABitOfEverythingServi
 	return nil
 }
 
-func run() error {
+func Run() error {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -185,7 +186,7 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	if err := run(); err != nil {
+	if err := Run(); err != nil {
 		glog.Fatal(err)
 	}
 }

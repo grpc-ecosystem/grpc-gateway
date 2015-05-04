@@ -14,32 +14,26 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/gengo/grpc-gateway/examples/sub"
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
-	"github.com/zenazn/goji/web"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-
-	gengo_grpc_gateway_examples_sub "github.com/gengo/grpc-gateway/examples/sub"
 )
 
 var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
 
-func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_Create(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq ABitOfEverything
-
-	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return nil, err
-	}
 
 	var val string
 	var ok bool
 
-	val, ok = c.URLParams["float_value"]
+	val, ok = pathParams["float_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "float_value")
 	}
@@ -48,7 +42,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["double_value"]
+	val, ok = pathParams["double_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "double_value")
 	}
@@ -57,7 +51,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["int64_value"]
+	val, ok = pathParams["int64_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "int64_value")
 	}
@@ -66,7 +60,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["uint64_value"]
+	val, ok = pathParams["uint64_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uint64_value")
 	}
@@ -75,7 +69,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["int32_value"]
+	val, ok = pathParams["int32_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "int32_value")
 	}
@@ -84,7 +78,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["fixed64_value"]
+	val, ok = pathParams["fixed64_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "fixed64_value")
 	}
@@ -93,7 +87,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["fixed32_value"]
+	val, ok = pathParams["fixed32_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "fixed32_value")
 	}
@@ -102,7 +96,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["bool_value"]
+	val, ok = pathParams["bool_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "bool_value")
 	}
@@ -111,7 +105,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["string_value"]
+	val, ok = pathParams["string_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "string_value")
 	}
@@ -120,7 +114,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["uint32_value"]
+	val, ok = pathParams["uint32_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uint32_value")
 	}
@@ -129,7 +123,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["sfixed32_value"]
+	val, ok = pathParams["sfixed32_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "sfixed32_value")
 	}
@@ -138,7 +132,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["sfixed64_value"]
+	val, ok = pathParams["sfixed64_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "sfixed64_value")
 	}
@@ -147,7 +141,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["sint32_value"]
+	val, ok = pathParams["sint32_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "sint32_value")
 	}
@@ -156,7 +150,7 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 		return nil, err
 	}
 
-	val, ok = c.URLParams["sint64_value"]
+	val, ok = pathParams["sint64_value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "sint64_value")
 	}
@@ -168,17 +162,17 @@ func request_ABitOfEverythingService_Create(ctx context.Context, c web.C, client
 	return client.Create(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_CreateBody(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_CreateBody(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq ABitOfEverything
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return nil, err
+		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	return client.CreateBody(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_BulkCreate(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_BulkCreate(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	stream, err := client.BulkCreate(ctx)
 	if err != nil {
 		glog.Errorf("Failed to start streaming: %v", err)
@@ -205,13 +199,13 @@ func request_ABitOfEverythingService_BulkCreate(ctx context.Context, c web.C, cl
 
 }
 
-func request_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_Lookup(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq IdMessage
 
 	var val string
 	var ok bool
 
-	val, ok = c.URLParams["uuid"]
+	val, ok = pathParams["uuid"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
 	}
@@ -223,23 +217,23 @@ func request_ABitOfEverythingService_Lookup(ctx context.Context, c web.C, client
 	return client.Lookup(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_List(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (ABitOfEverythingService_ListClient, error) {
+func request_ABitOfEverythingService_List(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (ABitOfEverythingService_ListClient, error) {
 	var protoReq EmptyMessage
 
 	return client.List(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_Update(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_Update(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq ABitOfEverything
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return nil, err
+		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	var val string
 	var ok bool
 
-	val, ok = c.URLParams["uuid"]
+	val, ok = pathParams["uuid"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
 	}
@@ -251,13 +245,13 @@ func request_ABitOfEverythingService_Update(ctx context.Context, c web.C, client
 	return client.Update(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_Delete(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq IdMessage
 
 	var val string
 	var ok bool
 
-	val, ok = c.URLParams["uuid"]
+	val, ok = pathParams["uuid"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
 	}
@@ -269,13 +263,13 @@ func request_ABitOfEverythingService_Delete(ctx context.Context, c web.C, client
 	return client.Delete(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (msg proto.Message, err error) {
-	var protoReq gengo_grpc_gateway_examples_sub.StringMessage
+func request_ABitOfEverythingService_Echo(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+	var protoReq sub.StringMessage
 
 	var val string
 	var ok bool
 
-	val, ok = c.URLParams["value"]
+	val, ok = pathParams["value"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "value")
 	}
@@ -287,7 +281,7 @@ func request_ABitOfEverythingService_Echo(ctx context.Context, c web.C, client A
 	return client.Echo(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_BulkEcho(ctx context.Context, c web.C, client ABitOfEverythingServiceClient, req *http.Request) (ABitOfEverythingService_BulkEchoClient, error) {
+func request_ABitOfEverythingService_BulkEcho(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (ABitOfEverythingService_BulkEchoClient, error) {
 	stream, err := client.BulkEcho(ctx)
 	if err != nil {
 		glog.Errorf("Failed to start streaming: %v", err)
@@ -295,7 +289,7 @@ func request_ABitOfEverythingService_BulkEcho(ctx context.Context, c web.C, clie
 	}
 	dec := json.NewDecoder(req.Body)
 	for {
-		var protoReq gengo_grpc_gateway_examples_sub.StringMessage
+		var protoReq sub.StringMessage
 		err = dec.Decode(&protoReq)
 		if err == io.EOF {
 			break
@@ -320,7 +314,7 @@ func request_ABitOfEverythingService_BulkEcho(ctx context.Context, c web.C, clie
 
 // RegisterABitOfEverythingServiceHandlerFromEndpoint is same as RegisterABitOfEverythingServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux *web.Mux, endpoint string) (err error) {
+func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string) (err error) {
 	conn, err := grpc.Dial(endpoint)
 	if err != nil {
 		return err
@@ -345,11 +339,11 @@ func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux
 
 // RegisterABitOfEverythingServiceHandler registers the http handlers for service ABitOfEverythingService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.ClientConn) error {
+func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 	client := NewABitOfEverythingServiceClient(conn)
 
-	mux.Post("/v1/example/a_bit_of_everything/:float_value/:double_value/:int64_value/separator/:uint64_value/:int32_value/:fixed64_value/:fixed32_value/:bool_value/:string_value/:uint32_value/:sfixed32_value/:sfixed64_value/:sint32_value/:sint64_value", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := request_ABitOfEverythingService_Create(ctx, c, client, req)
+	mux.Handle("POST", pattern_ABitOfEverythingService_Create, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_ABitOfEverythingService_Create(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -359,8 +353,8 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 
 	})
 
-	mux.Post("/v1/example/a_bit_of_everything", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := request_ABitOfEverythingService_CreateBody(ctx, c, client, req)
+	mux.Handle("POST", pattern_ABitOfEverythingService_CreateBody, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_ABitOfEverythingService_CreateBody(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -370,8 +364,8 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 
 	})
 
-	mux.Post("/v1/example/a_bit_of_everything/bulk", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := request_ABitOfEverythingService_BulkCreate(ctx, c, client, req)
+	mux.Handle("POST", pattern_ABitOfEverythingService_BulkCreate, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_ABitOfEverythingService_BulkCreate(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -381,8 +375,8 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 
 	})
 
-	mux.Get("/v1/example/a_bit_of_everything/:uuid", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := request_ABitOfEverythingService_Lookup(ctx, c, client, req)
+	mux.Handle("GET", pattern_ABitOfEverythingService_Lookup, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_ABitOfEverythingService_Lookup(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -392,8 +386,8 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 
 	})
 
-	mux.Get("/v1/example/a_bit_of_everything", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := request_ABitOfEverythingService_List(ctx, c, client, req)
+	mux.Handle("GET", pattern_ABitOfEverythingService_List, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_ABitOfEverythingService_List(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -403,8 +397,8 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 
 	})
 
-	mux.Put("/v1/example/a_bit_of_everything/:uuid", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := request_ABitOfEverythingService_Update(ctx, c, client, req)
+	mux.Handle("PUT", pattern_ABitOfEverythingService_Update, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_ABitOfEverythingService_Update(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -414,8 +408,8 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 
 	})
 
-	mux.Delete("/v1/example/a_bit_of_everything/:uuid", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := request_ABitOfEverythingService_Delete(ctx, c, client, req)
+	mux.Handle("DELETE", pattern_ABitOfEverythingService_Delete, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_ABitOfEverythingService_Delete(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -425,8 +419,8 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 
 	})
 
-	mux.Get("/v1/example/a_bit_of_everything/echo/:value", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := request_ABitOfEverythingService_Echo(ctx, c, client, req)
+	mux.Handle("GET", pattern_ABitOfEverythingService_Echo, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_ABitOfEverythingService_Echo(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -436,8 +430,8 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 
 	})
 
-	mux.Post("/v1/example/a_bit_of_everything/echo", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := request_ABitOfEverythingService_BulkEcho(ctx, c, client, req)
+	mux.Handle("POST", pattern_ABitOfEverythingService_BulkEcho, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_ABitOfEverythingService_BulkEcho(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -449,3 +443,23 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *web.Mux, c
 
 	return nil
 }
+
+var (
+	pattern_ABitOfEverythingService_Create = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 1, 0, 4, 1, 5, 8, 1, 0, 4, 1, 5, 9, 1, 0, 4, 1, 5, 10, 1, 0, 4, 1, 5, 11, 2, 12, 1, 0, 4, 2, 5, 13, 1, 0, 4, 1, 5, 14, 1, 0, 4, 1, 5, 15, 1, 0, 4, 1, 5, 16, 1, 0, 4, 1, 5, 17, 1, 0, 4, 1, 5, 18}, []string{"v1", "example", "a_bit_of_everything", "float_value", "double_value", "int64_value", "separator", "uint64_value", "int32_value", "fixed64_value", "fixed32_value", "bool_value", "strprefix", "string_value", "uint32_value", "sfixed32_value", "sfixed64_value", "sint32_value", "sint64_value"}, ""))
+
+	pattern_ABitOfEverythingService_CreateBody = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "a_bit_of_everything"}, ""))
+
+	pattern_ABitOfEverythingService_BulkCreate = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a_bit_of_everything", "bulk"}, ""))
+
+	pattern_ABitOfEverythingService_Lookup = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "a_bit_of_everything", "uuid"}, ""))
+
+	pattern_ABitOfEverythingService_List = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "a_bit_of_everything"}, ""))
+
+	pattern_ABitOfEverythingService_Update = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "a_bit_of_everything", "uuid"}, ""))
+
+	pattern_ABitOfEverythingService_Delete = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "a_bit_of_everything", "uuid"}, ""))
+
+	pattern_ABitOfEverythingService_Echo = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "example", "a_bit_of_everything", "echo", "value"}, ""))
+
+	pattern_ABitOfEverythingService_BulkEcho = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a_bit_of_everything", "echo"}, ""))
+)

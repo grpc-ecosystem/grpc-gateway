@@ -6,7 +6,7 @@ package main
 
 import proto "github.com/golang/protobuf/proto"
 
-// discarding unused import gengo_grpc_gateway "options/options.pb"
+// discarding unused import google_api1 "google/api/annotations.pb"
 import gengo_grpc_gateway_examples_sub "github.com/gengo/grpc-gateway/examples/sub"
 
 import (
