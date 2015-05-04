@@ -5,6 +5,9 @@ package gengo.grpc.gateway;
 import "google/protobuf/descriptor.proto";
 
 message ApiMethodOptions {
+	// Use HttpRule instead.
+	option deprecated = true;
+
 	extend google.protobuf.MethodOptions {
 		// Describes how the gRPC method should be exported as a RESTful API.
 		//
