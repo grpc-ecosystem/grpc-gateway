@@ -167,10 +167,6 @@ func (s *_ABitOfEverythingServer) BulkEcho(stream examples.ABitOfEverythingServi
 }
 
 func Run() error {
-	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
 	l, err := net.Listen("tcp", ":9090")
 	if err != nil {
 		return err
