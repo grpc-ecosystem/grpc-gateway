@@ -60,9 +60,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```diff
     syntax = "proto3";
     package example;
-    
-   +import "github.com/gengo/grpc-gateway/options/options.proto";
-    
+   +
+   +import "github.com/gengo/grpc-gateway/third_party/googleapis/google/api/annnotations.proto";
+   +
     message StringMessage {
       string value = 1;
     }
@@ -70,7 +70,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
     service YourService {
    -  rpc Echo(StringMessage) returns (StringMessage) {}
    +  rpc Echo(StringMessage) returns (StringMessage) {
-   +    option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
+   +    option (google.api.http) = {
    +      path: "/v1/example/echo"
    +      method: "POST"
    +    };
@@ -86,7 +86,20 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```
    
    It will generate a stub file `path/to/your_service.pb.go`.
-   Now you can implement your service on top of the stub.
+4. Implement your service in gRPC as usual
+   1. (Optional) Generate gRPC stub in the language you want.
+     
+     e.g.
+     ```sh
+     protoc -I/usr/local/include -I. -I$GOPATH/src --ruby_out=. \
+       path/to/your/service_proto
+     
+     protoc -I/usr/local/include -I. -I$GOPATH/src \
+       --plugin=protoc-gen-grpc-ruby=grpc_ruby_plugin \
+       --grpc-ruby_out=. \
+       path/to/your/service.proto
+     ```
+   2. Implement your service
 4. Generate reverse-proxy
    
    ```sh
@@ -106,8 +119,8 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      "net/http"
    
      "github.com/golang/glog"
-     "github.com/zenazn/goji/web"
      "golang.org/x/net/context"
+     "github.com/gengo/grpc-gateway/runtime"
    	
      gw "path/to/your_service_package"
    )
@@ -121,7 +134,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      ctx, cancel := context.WithCancel(ctx)
      defer cancel()
    
-     mux := web.New()
+     mux := runtime.NewServeMux()
      err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint)
      if err != nil {
        return err
