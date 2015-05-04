@@ -1,5 +1,5 @@
 /*
-package runtime contains runtime helper functions used by
+Package runtime contains runtime helper functions used by
 servers which protoc-gen-grpc-gateway generates.
 */
 package runtime
