@@ -100,7 +100,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
        path/to/your/service.proto
      ```
    2. Implement your service
-4. Generate reverse-proxy
+5. Generate reverse-proxy
    
    ```sh
    protoc -I/usr/local/include -I. -I$GOPATH/src \
@@ -109,7 +109,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```
    
    It will generate a reverse proxy `path/to/your_service.pb.gw.go`.
-5. Write an entrypoint
+6. Write an entrypoint
    
    Now you need to write an entrypoint of the proxy server.
    ```go
