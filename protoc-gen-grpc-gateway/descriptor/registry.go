@@ -93,7 +93,7 @@ func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descripto
 		}
 		file.Messages = append(file.Messages, m)
 		r.msgs[m.FQMN()] = m
-		glog.Infof("register name: %s", m.FQMN())
+		glog.V(1).Infof("register name: %s", m.FQMN())
 
 		var outers []string
 		outers = append(outers, outerPath...)
@@ -105,7 +105,7 @@ func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descripto
 // LookupMsg looks up a message type by "name".
 // It tries to resolve "name" from "location" if "name" is a relative message name.
 func (r *Registry) LookupMsg(location, name string) (*Message, error) {
-	glog.Infof("lookup %s from %s", name, location)
+	glog.V(1).Infof("lookup %s from %s", name, location)
 	if strings.HasPrefix(name, ".") {
 		m, ok := r.msgs[name]
 		if !ok {

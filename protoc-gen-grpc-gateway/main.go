@@ -40,7 +40,7 @@ func main() {
 
 	reg := descriptor.NewRegistry()
 
-	glog.Info("Processing code generator request")
+	glog.V(1).Info("Processing code generator request")
 	req, err := parseReq(os.Stdin)
 	if err != nil {
 		glog.Fatal(err)
@@ -86,7 +86,7 @@ func main() {
 	} else {
 		resp.File = out
 	}
-	glog.Info("Processed code generator request")
+	glog.V(1).Info("Processed code generator request")
 
 	buf, err := proto.Marshal(&resp)
 	if err != nil {

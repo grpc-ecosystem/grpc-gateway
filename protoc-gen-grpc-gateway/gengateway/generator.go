@@ -81,7 +81,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 			Name:    proto.String(output),
 			Content: proto.String(string(formatted)),
 		})
-		glog.Infof("Will emit %s", output)
+		glog.V(1).Infof("Will emit %s", output)
 	}
 	return files, nil
 }

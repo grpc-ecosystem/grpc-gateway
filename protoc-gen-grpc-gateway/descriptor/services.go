@@ -244,7 +244,7 @@ func (r *Registry) resolveFiledPath(msg *Message, path string) ([]FieldPathCompo
 			}
 		}
 
-		glog.Infof("Lookup %s in %s", c, msg.FQMN())
+		glog.V(2).Infof("Lookup %s in %s", c, msg.FQMN())
 		f := lookupField(msg, c)
 		if f == nil {
 			return nil, fmt.Errorf("no field %q found in %s", path, root.GetName())
