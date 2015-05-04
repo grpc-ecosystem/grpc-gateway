@@ -5,20 +5,13 @@ GATEWAY_PLUGIN=bin/protoc-gen-grpc-gateway
 GATEWAY_PLUGIN_PKG=$(PKG)/protoc-gen-grpc-gateway
 GATEWAY_PLUGIN_SRC= protoc-gen-grpc-gateway/descriptor/name.go \
 		    protoc-gen-grpc-gateway/descriptor/registry.go \
-		    protoc-gen-grpc-gateway/descriptor/registry_test.go \
 		    protoc-gen-grpc-gateway/descriptor/services.go \
-		    protoc-gen-grpc-gateway/descriptor/services_test.go \
 		    protoc-gen-grpc-gateway/descriptor/types.go \
-		    protoc-gen-grpc-gateway/descriptor/types_test.go \
 		    protoc-gen-grpc-gateway/gengateway/generator.go \
 		    protoc-gen-grpc-gateway/gengateway/template.go \
-		    protoc-gen-grpc-gateway/gengateway/template_test.go \
 		    protoc-gen-grpc-gateway/httprule/compile.go \
-		    protoc-gen-grpc-gateway/httprule/compile_test.go \
 		    protoc-gen-grpc-gateway/httprule/parse.go \
-		    protoc-gen-grpc-gateway/httprule/parse_test.go \
 		    protoc-gen-grpc-gateway/httprule/types.go \
-		    protoc-gen-grpc-gateway/httprule/types_test.go \
 		    protoc-gen-grpc-gateway/main.go
 
 GOOGLEAPIS_DIR=third_party/googleapis
