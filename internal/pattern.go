@@ -13,7 +13,7 @@ const (
 	OpLitPush
 	// OpPushM concatenates the remaining components and pushes it to stack
 	OpPushM
-	// OpPopN pops a N items from stack, concatenates them and pushes it to stack
+	// OpConcatN pops N items from stack, concatenates them and pushes it back to stack
 	OpConcatN
 	// OpCapture pops an item and binds it to the variable
 	OpCapture
