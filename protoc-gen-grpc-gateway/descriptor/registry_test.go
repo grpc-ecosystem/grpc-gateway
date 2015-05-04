@@ -10,7 +10,7 @@ import (
 func load(t *testing.T, reg *Registry, src string) *descriptor.FileDescriptorProto {
 	var file descriptor.FileDescriptorProto
 	if err := proto.UnmarshalText(src, &file); err != nil {
-		t.Fatalf("proto.UnmarshalText(%s, &file) failed with %v; want success", err)
+		t.Fatalf("proto.UnmarshalText(%s, &file) failed with %v; want success", src, err)
 	}
 	reg.loadFile(&file)
 	return &file
@@ -44,11 +44,11 @@ func TestLoadFile(t *testing.T) {
 
 	msg, err := reg.LookupMsg("", ".example.ExampleMessage")
 	if err != nil {
-		t.Errorf("reg.LookupMsg(%q, %q)) failed with %v; want success", "", ".example.ExampleMessage")
+		t.Errorf("reg.LookupMsg(%q, %q)) failed with %v; want success", "", ".example.ExampleMessage", "", ".example.ExampleMessage", err)
 		return
 	}
 	if got, want := msg.DescriptorProto, fd.MessageType[0]; got != want {
-		t.Errorf("reg.lookupMsg(%q, %q).DescriptorProto = %#v; want %#v", got, want)
+		t.Errorf("reg.lookupMsg(%q, %q).DescriptorProto = %#v; want %#v", "", ".example.ExampleMessage", got, want)
 	}
 	if got, want := msg.File, file; got != want {
 		t.Errorf("msg.File = %v; want %v", got, want)
@@ -267,7 +267,7 @@ func TestLookupMsgWithoutPackage(t *testing.T) {
 		return
 	}
 	if got, want := msg.DescriptorProto, fd.MessageType[0]; got != want {
-		t.Errorf("reg.lookupMsg(%q, %q).DescriptorProto = %#v; want %#v", got, want)
+		t.Errorf("reg.lookupMsg(%q, %q).DescriptorProto = %#v; want %#v", "", ".ExampleMessage", got, want)
 	}
 }
 

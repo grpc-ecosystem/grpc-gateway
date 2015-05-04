@@ -128,6 +128,7 @@ func (r *Registry) LookupMsg(location, name string) (*Message, error) {
 	return nil, fmt.Errorf("no message found: %s", name)
 }
 
+// LookupFile looks up a file by name.
 func (r *Registry) LookupFile(name string) (*File, error) {
 	f, ok := r.files[name]
 	if !ok {
