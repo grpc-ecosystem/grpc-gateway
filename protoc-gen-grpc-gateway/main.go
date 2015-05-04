@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/gengateway"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
@@ -36,6 +38,8 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
+	reg := descriptor.NewRegistry()
+
 	glog.Info("Processing code generator request")
 	req, err := parseReq(os.Stdin)
 	if err != nil {
@@ -51,8 +55,8 @@ func main() {
 				continue
 			}
 			name, value := spec[0], spec[1]
-			if strings.HasSuffix(name, "M") {
-				importMap[name[1:]] = value
+			if strings.HasPrefix(name, "M") {
+				reg.AddPkgMap(name[1:], value)
 				continue
 			}
 			if err := flag.CommandLine.Set(name, value); err != nil {
@@ -60,10 +64,31 @@ func main() {
 			}
 		}
 	}
-	resp := generate(req)
+
+	reg.SetPrefix(*importPrefix)
+	reg.Load(req)
+
+	g := gengateway.New(reg)
+
+	var targets []*descriptor.File
+	for _, target := range req.FileToGenerate {
+		f, err := reg.LookupFile(target)
+		if err != nil {
+			glog.Fatal(err)
+		}
+		targets = append(targets, f)
+	}
+
+	var resp plugin.CodeGeneratorResponse
+	out, err := g.Generate(targets)
+	if err != nil {
+		resp.Error = proto.String(err.Error())
+	} else {
+		resp.File = out
+	}
 	glog.Info("Processed code generator request")
 
-	buf, err := proto.Marshal(resp)
+	buf, err := proto.Marshal(&resp)
 	if err != nil {
 		glog.Fatal(err)
 	}

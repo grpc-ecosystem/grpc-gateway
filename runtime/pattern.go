@@ -112,6 +112,14 @@ func NewPattern(version int, ops []int, pool []string, verb string) (Pattern, er
 	}, nil
 }
 
+// MustPattern is a helper function which makes it easier to call NewPattern in variable initialization.
+func MustPattern(p Pattern, err error) Pattern {
+	if err != nil {
+		glog.Fatalf("Pattern initialization failed: %v", err)
+	}
+	return p
+}
+
 // Match examines components if it matches to the Pattern.
 // If it matches, the function returns a mapping from field paths to their captured values.
 // If otherwise, the function returns an error.
