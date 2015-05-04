@@ -322,14 +322,14 @@ func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				glog.Error("Failed to close conn to %s: %v", endpoint, cerr)
+				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				glog.Error("Failed to close conn to %s: %v", endpoint, cerr)
+				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()

@@ -328,9 +328,10 @@ func testABELookup(t *testing.T) {
 		return
 	}
 
-	resp, err := http.Get(fmt.Sprintf("%s/%s", url, want.Uuid))
+	url = fmt.Sprintf("%s/%s", url, want.Uuid)
+	resp, err := http.Get(url)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", err)
+		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -355,7 +356,7 @@ func testABEList(t *testing.T) {
 	url := "http://localhost:8080/v1/example/a_bit_of_everything"
 	resp, err := http.Get(url)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", err)
+		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
 		return
 	}
 	defer resp.Body.Close()
