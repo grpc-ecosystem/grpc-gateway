@@ -26,6 +26,7 @@ import (
 var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
+var _ = json.Marshal
 
 func request_ABitOfEverythingService_Create(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq ABitOfEverything

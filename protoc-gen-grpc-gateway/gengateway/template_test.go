@@ -67,9 +67,7 @@ func TestApplyTemplateHeader(t *testing.T) {
 						HTTPMethod:            "GET",
 						RequestType:           msg,
 						ResponseType:          msg,
-						Body: &descriptor.Body{
-							DecoderFactoryExpr: "json.NewDecoder",
-						},
+						Body:                  &descriptor.Body{FieldPath: nil},
 					},
 				},
 			},
@@ -200,7 +198,6 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 								},
 							},
 							Body: &descriptor.Body{
-								DecoderFactoryExpr: "NewExampleDecoder",
 								FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
 									{
 										Name:   "nested",
@@ -225,7 +222,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		if want := spec.sigWant; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `NewExampleDecoder(req.Body).Decode(&protoReq.GetNested().Bool)`; !strings.Contains(got, want) {
+		if want := `json.NewDecoder(req.Body).Decode(&protoReq.GetNested().Bool)`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `val, ok = pathParams["nested.int32"]`; !strings.Contains(got, want) {
@@ -358,7 +355,6 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 								},
 							},
 							Body: &descriptor.Body{
-								DecoderFactoryExpr: "NewExampleDecoder",
 								FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
 									{
 										Name:   "nested",
@@ -383,7 +379,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		if want := spec.sigWant; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `NewExampleDecoder(req.Body)`; !strings.Contains(got, want) {
+		if want := `json.NewDecoder(req.Body)`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 		if want := `func RegisterExampleServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {`; !strings.Contains(got, want) {

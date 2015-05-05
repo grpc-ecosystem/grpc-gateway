@@ -183,31 +183,13 @@ func (r *Registry) newBody(meth *Method, path string) (*Body, error) {
 	case "":
 		return nil, nil
 	case "*":
-		return &Body{
-			DecoderFactoryExpr: "json.NewDecoder",
-			DecoderImports: []GoPackage{
-				{
-					Path: "encoding/json",
-					Name: "json",
-				},
-			},
-			FieldPath: nil,
-		}, nil
+		return &Body{FieldPath: nil}, nil
 	}
 	fields, err := r.resolveFiledPath(msg, path)
 	if err != nil {
 		return nil, err
 	}
-	return &Body{
-		DecoderFactoryExpr: "json.NewDecoder",
-		DecoderImports: []GoPackage{
-			{
-				Path: "encoding/json",
-				Name: "json",
-			},
-		},
-		FieldPath: FieldPath(fields),
-	}, nil
+	return &Body{FieldPath: FieldPath(fields)}, nil
 }
 
 // lookupField looks up a field named "name" within "msg".

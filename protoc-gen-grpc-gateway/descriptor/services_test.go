@@ -185,16 +185,7 @@ func TestExtractServicesSimple(t *testing.T) {
 						HTTPMethod:            "POST",
 						RequestType:           msg,
 						ResponseType:          msg,
-						Body: &Body{
-							DecoderFactoryExpr: "json.NewDecoder",
-							DecoderImports: []GoPackage{
-								{
-									Path: "encoding/json",
-									Name: "json",
-								},
-							},
-							FieldPath: nil,
-						},
+						Body:                  &Body{FieldPath: nil},
 					},
 				},
 			},
@@ -289,16 +280,7 @@ func TestExtractServicesCrossPackage(t *testing.T) {
 							HTTPMethod:            "POST",
 							RequestType:           boolMsg,
 							ResponseType:          stringMsg,
-							Body: &Body{
-								DecoderFactoryExpr: "json.NewDecoder",
-								DecoderImports: []GoPackage{
-									{
-										Path: "encoding/json",
-										Name: "json",
-									},
-								},
-								FieldPath: nil,
-							},
+							Body:                  &Body{FieldPath: nil},
 						},
 					},
 				},
@@ -388,13 +370,6 @@ func TestExtractServicesWithBodyPath(t *testing.T) {
 						RequestType:           msg,
 						ResponseType:          msg,
 						Body: &Body{
-							DecoderFactoryExpr: "json.NewDecoder",
-							DecoderImports: []GoPackage{
-								{
-									Path: "encoding/json",
-									Name: "json",
-								},
-							},
 							FieldPath: FieldPath{
 								{
 									Name:   "nested",

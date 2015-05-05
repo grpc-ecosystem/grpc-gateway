@@ -152,16 +152,6 @@ func (p Parameter) ConvertFuncExpr() (string, error) {
 
 // Body describes a http requtest body to be sent to the method.
 type Body struct {
-	// DecoderFactoryExpr is a go expression of a factory function
-	// which takes a io.Reader and returns a Decoder (unmarshaller).
-	// TODO(yugui) Extract this to a flag.
-	DecoderFactoryExpr string
-
-	// DecoderImports is a list of packages to be imported from the
-	// generated go files so that DecoderFactoryExpr is valid.
-	// TODO(yugui) Extract this to a flag.
-	DecoderImports []GoPackage
-
 	// FieldPath is a path to a proto field which the request body is mapped to.
 	// The request body is mapped to the request type itself if FieldPath is empty.
 	FieldPath FieldPath

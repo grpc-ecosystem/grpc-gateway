@@ -57,6 +57,7 @@ import (
 var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
+var _ = json.Marshal
 `))
 
 	handlerTemplate = template.Must(template.New("handler").Parse(`
@@ -81,7 +82,7 @@ func request_{{.Service.GetName}}_{{.GetName}}(ctx context.Context, client {{.Se
 		glog.Errorf("Failed to start streaming: %v", err)
 		return nil, err
 	}
-	dec := {{.Body.DecoderFactoryExpr}}(req.Body)
+	dec := json.NewDecoder(req.Body)
 	for {
 		var protoReq {{.RequestType.GoType .Service.File.GoPkg.Path}}
 		err = dec.Decode(&protoReq)
@@ -119,7 +120,7 @@ func request_{{.Service.GetName}}_{{.GetName}}(ctx context.Context, client {{.Se
 	}
 	{{end}}
 {{if .Body}}
-	if err = {{.Body.DecoderFactoryExpr}}(req.Body).Decode(&{{.Body.RHS "protoReq"}}); err != nil {
+	if err = json.NewDecoder(req.Body).Decode(&{{.Body.RHS "protoReq"}}); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 {{end}}
