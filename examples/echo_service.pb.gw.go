@@ -29,10 +29,6 @@ var _ = runtime.String
 func request_EchoService_Echo(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq SimpleMessage
 
-	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
 	var val string
 	var ok bool
 

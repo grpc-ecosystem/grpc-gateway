@@ -12,7 +12,6 @@ service EchoService {
 	rpc Echo(SimpleMessage) returns (SimpleMessage) {
 		option (google.api.http) = {
 			post: "/v1/example/echo/{id}"
-			body: "*"
 		};
 	}
 	rpc EchoBody(SimpleMessage) returns (SimpleMessage) {

@@ -71,8 +71,8 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    -  rpc Echo(StringMessage) returns (StringMessage) {}
    +  rpc Echo(StringMessage) returns (StringMessage) {
    +    option (google.api.http) = {
-   +      path: "/v1/example/echo"
-   +      method: "POST"
+   +      post: "/v1/example/echo"
+   +      body: "*"
    +    };
    +  }
     }
@@ -80,7 +80,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 3. Generate gRPC stub
    
    ```sh
-   protoc -I/usr/local/include -I. -I$GOPATH/src \
+   protoc -I/usr/local/include -I. \
+     -I$GOPATH/src \
+     -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
      --go_out=plugins=grpc:. \
      path/to/your_service.proto
    ```
@@ -91,10 +93,15 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      
      e.g.
      ```sh
-     protoc -I/usr/local/include -I. -I$GOPATH/src --ruby_out=. \
+     protoc -I/usr/local/include -I. \
+       -I$GOPATH/src \
+       -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
+       --ruby_out=. \
        path/to/your/service_proto
      
-     protoc -I/usr/local/include -I. -I$GOPATH/src \
+     protoc -I/usr/local/include -I. \
+       -I$GOPATH/src \
+       -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
        --plugin=protoc-gen-grpc-ruby=grpc_ruby_plugin \
        --grpc-ruby_out=. \
        path/to/your/service.proto
@@ -103,7 +110,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 5. Generate reverse-proxy
    
    ```sh
-   protoc -I/usr/local/include -I. -I$GOPATH/src \
+   protoc -I/usr/local/include -I. \
+     -I$GOPATH/src \
+     -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
      --grpc-gateway_out=logtostderr=true:. \
      path/to/your_service.proto
    ```
