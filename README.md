@@ -61,7 +61,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
     syntax = "proto3";
     package example;
    +
-   +import "github.com/gengo/grpc-gateway/third_party/googleapis/google/api/annnotations.proto";
+   +import "google/api/annotations.proto";
    +
     message StringMessage {
       string value = 1;
