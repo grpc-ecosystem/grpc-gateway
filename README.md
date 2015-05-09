@@ -1,5 +1,7 @@
 # grpc-gateway
 
+[![Build Status](https://api.travis-ci.org/gengo/grpc-gateway.svg?branch=master)](https://travis-ci.org/gengo/grpc-gateway)
+
 grpc-gateway is a plugin of [protoc](http://github.com/google/protobuf).
 It reads [gRPC](http://github.com/grpc/grpc-common) service definition,
 and generates a reverse-proxy server which translates a RESTful JSON API into gRPC.
