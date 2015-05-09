@@ -27,7 +27,7 @@ var _ io.Reader
 var _ = runtime.String
 var _ = json.Marshal
 
-func request_EchoService_Echo(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_EchoService_Echo_0(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq SimpleMessage
 
 	var val string
@@ -45,7 +45,7 @@ func request_EchoService_Echo(ctx context.Context, client EchoServiceClient, req
 	return client.Echo(ctx, &protoReq)
 }
 
-func request_EchoService_EchoBody(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_EchoService_EchoBody_0(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq SimpleMessage
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
@@ -85,8 +85,8 @@ func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.Se
 func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 	client := NewEchoServiceClient(conn)
 
-	mux.Handle("POST", pattern_EchoService_Echo, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		resp, err := request_EchoService_Echo(ctx, client, req, pathParams)
+	mux.Handle("POST", pattern_EchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_EchoService_Echo_0(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -96,8 +96,8 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 
 	})
 
-	mux.Handle("POST", pattern_EchoService_EchoBody, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		resp, err := request_EchoService_EchoBody(ctx, client, req, pathParams)
+	mux.Handle("POST", pattern_EchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_EchoService_EchoBody_0(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -111,7 +111,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 }
 
 var (
-	pattern_EchoService_Echo = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "echo", "id"}, ""))
+	pattern_EchoService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "echo", "id"}, ""))
 
-	pattern_EchoService_EchoBody = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "echo_body"}, ""))
+	pattern_EchoService_EchoBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "echo_body"}, ""))
 )

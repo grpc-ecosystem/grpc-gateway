@@ -14,6 +14,7 @@ import (
 
 	gw "github.com/gengo/grpc-gateway/examples"
 	server "github.com/gengo/grpc-gateway/examples/server"
+	sub "github.com/gengo/grpc-gateway/examples/sub"
 )
 
 func TestIntegration(t *testing.T) {
@@ -43,6 +44,7 @@ func TestIntegration(t *testing.T) {
 	testABEBulkCreate(t)
 	testABELookup(t)
 	testABEList(t)
+	testAdditionalBindings(t)
 }
 
 func testEcho(t *testing.T) {
@@ -375,5 +377,53 @@ func testABEList(t *testing.T) {
 	}
 	if i <= 0 {
 		t.Errorf("i == %d; want > 0", i)
+	}
+}
+
+func testAdditionalBindings(t *testing.T) {
+	for i, f := range []func() *http.Response{
+		func() *http.Response {
+			url := "http://localhost:8080/v1/example/a_bit_of_everything/echo/hello"
+			resp, err := http.Get(url)
+			if err != nil {
+				t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+				return nil
+			}
+			return resp
+		},
+		func() *http.Response {
+			url := "http://localhost:8080/v2/example/echo"
+			resp, err := http.Post(url, "application/json", strings.NewReader(`"hello"`))
+			if err != nil {
+				t.Errorf("http.Post(%q, %q, %q) failed with %v; want success", url, "application/json", `"hello"`, err)
+				return nil
+			}
+			return resp
+		},
+	} {
+		resp := f()
+		if resp == nil {
+			continue
+		}
+
+		defer resp.Body.Close()
+		buf, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success; i=%d", err, i)
+			return
+		}
+		if got, want := resp.StatusCode, http.StatusOK; got != want {
+			t.Errorf("resp.StatusCode = %d; want %d; i=%d", got, want, i)
+			t.Logf("%s", buf)
+		}
+
+		var msg sub.StringMessage
+		if err := json.Unmarshal(buf, &msg); err != nil {
+			t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success; %i", buf, err, i)
+			return
+		}
+		if got, want := msg.GetValue(), "hello"; got != want {
+			t.Errorf("msg.GetValue() = %q; want %q", got, want)
+		}
 	}
 }
