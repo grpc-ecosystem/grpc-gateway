@@ -36,28 +36,28 @@ func ForwardResponseStream(w http.ResponseWriter, recv func() (proto.Message, er
 		if err != nil {
 			buf, merr := json.Marshal(responseStreamChunk{Error: err.Error()})
 			if merr != nil {
-				glog.Error("Failed to marshal an error: %v", merr)
+				glog.Errorf("Failed to marshal an error: %v", merr)
 				return
 			}
 			if _, werr := fmt.Fprintf(w, "%s\n", buf); werr != nil {
-				glog.Error("Failed to notify error to client: %v", werr)
+				glog.Errorf("Failed to notify error to client: %v", werr)
 				return
 			}
 			return
 		}
 		buf, err := json.Marshal(responseStreamChunk{Result: resp})
 		if err != nil {
-			glog.Error("Failed to marshal response chunk: %v", err)
+			glog.Errorf("Failed to marshal response chunk: %v", err)
 			return
 		}
 		if _, err = fmt.Fprintf(w, "%s\n", buf); err != nil {
-			glog.Error("Failed to send response chunk: %v", err)
+			glog.Errorf("Failed to send response chunk: %v", err)
 			return
 		}
 	}
 }
 
-// ForwardResponseStream forwards the message from gRPC server to REST client.
+// ForwardResponseMessage forwards the message from gRPC server to REST client.
 func ForwardResponseMessage(w http.ResponseWriter, resp proto.Message) {
 	buf, err := json.Marshal(resp)
 	if err != nil {

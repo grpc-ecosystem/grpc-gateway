@@ -17,7 +17,6 @@ import (
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
-	"github.com/zenazn/goji/web"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -26,14 +25,15 @@ import (
 var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
+var _ = json.Marshal
 
-func request_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
+func request_EchoService_Echo(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq SimpleMessage
 
 	var val string
 	var ok bool
 
-	val, ok = c.URLParams["id"]
+	val, ok = pathParams["id"]
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
 	}
@@ -45,11 +45,11 @@ func request_EchoService_Echo(ctx context.Context, c web.C, client EchoServiceCl
 	return client.Echo(ctx, &protoReq)
 }
 
-func request_EchoService_EchoBody(ctx context.Context, c web.C, client EchoServiceClient, req *http.Request) (msg proto.Message, err error) {
+func request_EchoService_EchoBody(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq SimpleMessage
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return nil, err
+		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	return client.EchoBody(ctx, &protoReq)
@@ -57,7 +57,7 @@ func request_EchoService_EchoBody(ctx context.Context, c web.C, client EchoServi
 
 // RegisterEchoServiceHandlerFromEndpoint is same as RegisterEchoServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *web.Mux, endpoint string) (err error) {
+func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string) (err error) {
 	conn, err := grpc.Dial(endpoint)
 	if err != nil {
 		return err
@@ -65,14 +65,14 @@ func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *web.Mux, e
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				glog.Error("Failed to close conn to %s: %v", endpoint, cerr)
+				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				glog.Error("Failed to close conn to %s: %v", endpoint, cerr)
+				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -82,11 +82,11 @@ func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *web.Mux, e
 
 // RegisterEchoServiceHandler registers the http handlers for service EchoService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterEchoServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.ClientConn) error {
+func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 	client := NewEchoServiceClient(conn)
 
-	mux.Post("/v1/example/echo/:id", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := request_EchoService_Echo(ctx, c, client, req)
+	mux.Handle("POST", pattern_EchoService_Echo, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_EchoService_Echo(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -96,8 +96,8 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.Cl
 
 	})
 
-	mux.Post("/v1/example/echo_body", func(c web.C, w http.ResponseWriter, req *http.Request) {
-		resp, err := request_EchoService_EchoBody(ctx, c, client, req)
+	mux.Handle("POST", pattern_EchoService_EchoBody, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_EchoService_EchoBody(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -109,3 +109,9 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *web.Mux, conn *grpc.Cl
 
 	return nil
 }
+
+var (
+	pattern_EchoService_Echo = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "echo", "id"}, ""))
+
+	pattern_EchoService_EchoBody = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "echo_body"}, ""))
+)

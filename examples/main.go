@@ -4,8 +4,8 @@ import (
 	"flag"
 	"net/http"
 
+	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/glog"
-	"github.com/zenazn/goji/web"
 	"golang.org/x/net/context"
 )
 
@@ -14,12 +14,12 @@ var (
 	abeEndpoint  = flag.String("more_endpoint", "localhost:9090", "endpoint of ABitOfEverythingService")
 )
 
-func run() error {
+func Run() error {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	mux := web.New()
+	mux := runtime.NewServeMux()
 	err := RegisterEchoServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint)
 	if err != nil {
 		return err
@@ -37,7 +37,7 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	if err := run(); err != nil {
+	if err := Run(); err != nil {
 		glog.Fatal(err)
 	}
 }

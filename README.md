@@ -60,9 +60,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```diff
     syntax = "proto3";
     package example;
-    
-   +import "github.com/gengo/grpc-gateway/options/options.proto";
-    
+   +
+   +import "google/api/annotations.proto";
+   +
     message StringMessage {
       string value = 1;
     }
@@ -70,9 +70,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
     service YourService {
    -  rpc Echo(StringMessage) returns (StringMessage) {}
    +  rpc Echo(StringMessage) returns (StringMessage) {
-   +    option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-   +      path: "/v1/example/echo"
-   +      method: "POST"
+   +    option (google.api.http) = {
+   +      post: "/v1/example/echo"
+   +      body: "*"
    +    };
    +  }
     }
@@ -80,23 +80,45 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 3. Generate gRPC stub
    
    ```sh
-   protoc -I/usr/local/include -I. -I$GOPATH/src \
+   protoc -I/usr/local/include -I. \
+     -I$GOPATH/src \
+     -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
      --go_out=plugins=grpc:. \
      path/to/your_service.proto
    ```
    
    It will generate a stub file `path/to/your_service.pb.go`.
-   Now you can implement your service on top of the stub.
-4. Generate reverse-proxy
+4. Implement your service in gRPC as usual
+   1. (Optional) Generate gRPC stub in the language you want.
+     
+     e.g.
+     ```sh
+     protoc -I/usr/local/include -I. \
+       -I$GOPATH/src \
+       -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
+       --ruby_out=. \
+       path/to/your/service_proto
+     
+     protoc -I/usr/local/include -I. \
+       -I$GOPATH/src \
+       -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
+       --plugin=protoc-gen-grpc-ruby=grpc_ruby_plugin \
+       --grpc-ruby_out=. \
+       path/to/your/service.proto
+     ```
+   2. Implement your service
+5. Generate reverse-proxy
    
    ```sh
-   protoc -I/usr/local/include -I. -I$GOPATH/src \
+   protoc -I/usr/local/include -I. \
+     -I$GOPATH/src \
+     -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
      --grpc-gateway_out=logtostderr=true:. \
      path/to/your_service.proto
    ```
    
    It will generate a reverse proxy `path/to/your_service.pb.gw.go`.
-5. Write an entrypoint
+6. Write an entrypoint
    
    Now you need to write an entrypoint of the proxy server.
    ```go
@@ -106,8 +128,8 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      "net/http"
    
      "github.com/golang/glog"
-     "github.com/zenazn/goji/web"
      "golang.org/x/net/context"
+     "github.com/gengo/grpc-gateway/runtime"
    	
      gw "path/to/your_service_package"
    )
@@ -121,7 +143,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      ctx, cancel := context.WithCancel(ctx)
      defer cancel()
    
-     mux := web.New()
+     mux := runtime.NewServeMux()
      err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint)
      if err != nil {
        return err

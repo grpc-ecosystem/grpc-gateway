@@ -2,7 +2,7 @@ syntax = "proto3";
 option go_package = "main";
 package gengo.grpc.gateway.examples;
 
-import "options/options.proto";
+import "google/api/annotations.proto";
 import "examples/sub/message.proto";
 
 message ABitOfEverything {
@@ -40,57 +40,52 @@ message IdMessage {
 
 service ABitOfEverythingService {
 	rpc Create(ABitOfEverything) returns (ABitOfEverything) {
-		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/a_bit_of_everything/:float_value/:double_value/:int64_value/separator/:uint64_value/:int32_value/:fixed64_value/:fixed32_value/:bool_value/:string_value/:uint32_value/:sfixed32_value/:sfixed64_value/:sint32_value/:sint64_value"
-			method: "POST"
+		option (google.api.http) = {
+			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}"
 		};
 	}
 	rpc CreateBody(ABitOfEverything) returns (ABitOfEverything) {
-		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/a_bit_of_everything"
-			method: "POST"
+		option (google.api.http) = {
+			post: "/v1/example/a_bit_of_everything"
+			body: "*"
 		};
 	}
 	rpc BulkCreate(stream ABitOfEverything) returns (EmptyMessage) {
-		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/a_bit_of_everything/bulk"
-			method: "POST"
+		option (google.api.http) = {
+			post: "/v1/example/a_bit_of_everything/bulk"
+			body: "*"
 		};
 	}
 	rpc Lookup(IdMessage) returns (ABitOfEverything) {
-		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/a_bit_of_everything/:uuid"
-			method: "GET"
+		option (google.api.http) = {
+			get: "/v1/example/a_bit_of_everything/{uuid}"
 		};
 	}
 	rpc List(EmptyMessage) returns (stream ABitOfEverything) {
-		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/a_bit_of_everything"
-			method: "GET"
+		option (google.api.http) = {
+			get: "/v1/example/a_bit_of_everything"
 		};
 	}
 	rpc Update(ABitOfEverything) returns (EmptyMessage) {
-		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/a_bit_of_everything/:uuid"
-			method: "PUT"
+		option (google.api.http) = {
+			put: "/v1/example/a_bit_of_everything/{uuid}"
+			body: "*"
 		};
 	}
 	rpc Delete(IdMessage) returns (EmptyMessage) {
-		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/a_bit_of_everything/:uuid"
-			method: "DELETE"
+		option (google.api.http) = {
+			delete: "/v1/example/a_bit_of_everything/{uuid}"
 		};
 	}
 	rpc Echo(gengo.grpc.gateway.examples.sub.StringMessage) returns (gengo.grpc.gateway.examples.sub.StringMessage) {
-		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/a_bit_of_everything/echo/:value"
-			method: "GET"
+		option (google.api.http) = {
+			get: "/v1/example/a_bit_of_everything/echo/{value}"
 		};
 	}
 	rpc BulkEcho(stream gengo.grpc.gateway.examples.sub.StringMessage) returns (stream gengo.grpc.gateway.examples.sub.StringMessage) {
-		option (gengo.grpc.gateway.ApiMethodOptions.api_options) = {
-			path: "/v1/example/a_bit_of_everything/echo"
-			method: "POST"
+		option (google.api.http) = {
+			post: "/v1/example/a_bit_of_everything/echo"
+			body: "*"
 		};
 	}
 }
