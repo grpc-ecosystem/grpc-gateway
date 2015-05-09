@@ -51,56 +51,6 @@ func (r *Registry) loadServices(targetFile string) error {
 }
 
 func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto, opts *options.HttpRule) (*Method, error) {
-	var (
-		httpMethod   string
-		pathTemplate string
-	)
-	switch {
-	case opts.Get != "":
-		httpMethod = "GET"
-		pathTemplate = opts.Get
-		if opts.Body != "" {
-			return nil, fmt.Errorf("needs request body even though http method is GET: %s", md.GetName())
-		}
-
-	case opts.Put != "":
-		httpMethod = "PUT"
-		pathTemplate = opts.Put
-
-	case opts.Post != "":
-		httpMethod = "POST"
-		pathTemplate = opts.Post
-
-	case opts.Delete != "":
-		httpMethod = "DELETE"
-		pathTemplate = opts.Delete
-		if opts.Body != "" {
-			return nil, fmt.Errorf("needs request body even though http method is DELETE: %s", md.GetName())
-		}
-
-	case opts.Patch != "":
-		httpMethod = "PATCH"
-		pathTemplate = opts.Patch
-
-	case opts.Custom != nil:
-		httpMethod = opts.Custom.Kind
-		pathTemplate = opts.Custom.Path
-
-	default:
-		glog.Errorf("No pattern specified in google.api.HttpRule: %s", md.GetName())
-		return nil, fmt.Errorf("none of pattern specified")
-	}
-
-	parsed, err := httprule.Parse(pathTemplate)
-	if err != nil {
-		return nil, err
-	}
-	tmpl := parsed.Compile()
-
-	if md.GetClientStreaming() && len(tmpl.Fields) > 0 {
-		return nil, fmt.Errorf("cannot use path parameter in client streaming")
-	}
-
 	requestType, err := r.LookupMsg(svc.File.GetPackage(), md.GetInputType())
 	if err != nil {
 		return nil, err
@@ -109,29 +59,103 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 	if err != nil {
 		return nil, err
 	}
-
 	meth := &Method{
 		Service:               svc,
 		MethodDescriptorProto: md,
-		PathTmpl:              tmpl,
-		HTTPMethod:            httpMethod,
 		RequestType:           requestType,
 		ResponseType:          responseType,
 	}
 
-	for _, f := range tmpl.Fields {
-		param, err := r.newParam(meth, f)
+	newBinding := func(opts *options.HttpRule, idx int) (*Binding, error) {
+		var (
+			httpMethod   string
+			pathTemplate string
+		)
+		switch {
+		case opts.Get != "":
+			httpMethod = "GET"
+			pathTemplate = opts.Get
+			if opts.Body != "" {
+				return nil, fmt.Errorf("needs request body even though http method is GET: %s", md.GetName())
+			}
+
+		case opts.Put != "":
+			httpMethod = "PUT"
+			pathTemplate = opts.Put
+
+		case opts.Post != "":
+			httpMethod = "POST"
+			pathTemplate = opts.Post
+
+		case opts.Delete != "":
+			httpMethod = "DELETE"
+			pathTemplate = opts.Delete
+			if opts.Body != "" {
+				return nil, fmt.Errorf("needs request body even though http method is DELETE: %s", md.GetName())
+			}
+
+		case opts.Patch != "":
+			httpMethod = "PATCH"
+			pathTemplate = opts.Patch
+
+		case opts.Custom != nil:
+			httpMethod = opts.Custom.Kind
+			pathTemplate = opts.Custom.Path
+
+		default:
+			glog.Errorf("No pattern specified in google.api.HttpRule: %s", md.GetName())
+			return nil, fmt.Errorf("none of pattern specified")
+		}
+
+		parsed, err := httprule.Parse(pathTemplate)
 		if err != nil {
 			return nil, err
 		}
-		meth.PathParams = append(meth.PathParams, param)
+		tmpl := parsed.Compile()
+
+		if md.GetClientStreaming() && len(tmpl.Fields) > 0 {
+			return nil, fmt.Errorf("cannot use path parameter in client streaming")
+		}
+
+		b := &Binding{
+			Method:     meth,
+			Index:      idx,
+			PathTmpl:   tmpl,
+			HTTPMethod: httpMethod,
+		}
+
+		for _, f := range tmpl.Fields {
+			param, err := r.newParam(meth, f)
+			if err != nil {
+				return nil, err
+			}
+			b.PathParams = append(b.PathParams, param)
+		}
+
+		// TODO(yugui) Handle query params
+
+		b.Body, err = r.newBody(meth, opts.Body)
+		if err != nil {
+			return nil, err
+		}
+
+		return b, nil
 	}
-
-	// TODO(yugui) Handle query params
-
-	meth.Body, err = r.newBody(meth, opts.Body)
+	b, err := newBinding(opts, 0)
 	if err != nil {
 		return nil, err
+	}
+
+	meth.Bindings = append(meth.Bindings, b)
+	for i, additional := range opts.GetAdditionalBindings() {
+		if len(additional.AdditionalBindings) > 0 {
+			return nil, fmt.Errorf("additional_binding in additional_binding not allowed: %s.%s", svc.GetName(), meth.GetName())
+		}
+		b, err := newBinding(additional, i+1)
+		if err != nil {
+			return nil, err
+		}
+		meth.Bindings = append(meth.Bindings, b)
 	}
 
 	return meth, nil

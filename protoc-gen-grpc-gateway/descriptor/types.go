@@ -102,14 +102,23 @@ type Method struct {
 	Service *Service
 	*descriptor.MethodDescriptorProto
 
-	// PathTmpl is path template where this method is mapped to.
-	PathTmpl httprule.Template
-	// HTTPMethod is the HTTP method which this method is mapped to.
-	HTTPMethod string
 	// RequestType is the message type of requests to this method.
 	RequestType *Message
 	// ResponseType is the message type of responses from this method.
 	ResponseType *Message
+	Bindings     []*Binding
+}
+
+// Binding describes how an HTTP endpoint is bound to a gRPC method.
+type Binding struct {
+	// Method is the method which the endpoint is bound to.
+	Method *Method
+	// Index is a zero-origin index of the binding in the target method
+	Index int
+	// PathTmpl is path template where this method is mapped to.
+	PathTmpl httprule.Template
+	// HTTPMethod is the HTTP method which this method is mapped to.
+	HTTPMethod string
 	// PathParams is the list of parameters provided in HTTP request paths.
 	PathParams []Parameter
 	// QueryParam is the list of parameters provided in HTTP query strings.
