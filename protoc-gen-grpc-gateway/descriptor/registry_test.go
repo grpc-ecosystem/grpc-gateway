@@ -44,7 +44,7 @@ func TestLoadFile(t *testing.T) {
 
 	msg, err := reg.LookupMsg("", ".example.ExampleMessage")
 	if err != nil {
-		t.Errorf("reg.LookupMsg(%q, %q)) failed with %v; want success", "", ".example.ExampleMessage", "", ".example.ExampleMessage", err)
+		t.Errorf("reg.LookupMsg(%q, %q)) failed with %v; want success", "", ".example.ExampleMessage", err)
 		return
 	}
 	if got, want := msg.DescriptorProto, fd.MessageType[0]; got != want {
@@ -263,7 +263,7 @@ func TestLookupMsgWithoutPackage(t *testing.T) {
 
 	msg, err := reg.LookupMsg("", ".ExampleMessage")
 	if err != nil {
-		t.Errorf("reg.LookupMsg(%q, %q)) failed with %v; want success", "", ".ExampleMessage")
+		t.Errorf("reg.LookupMsg(%q, %q)) failed with %v; want success", "", ".ExampleMessage", err)
 		return
 	}
 	if got, want := msg.DescriptorProto, fd.MessageType[0]; got != want {
