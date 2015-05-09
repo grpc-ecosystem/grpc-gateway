@@ -776,3 +776,189 @@ func TestExtractServicesWithError(t *testing.T) {
 		t.Log(err)
 	}
 }
+
+func TestResolveFieldPath(t *testing.T) {
+	for _, spec := range []struct {
+		src     string
+		path    string
+		wantErr bool
+	}{
+		{
+			src: `
+				name: 'example.proto'
+				package: 'example'
+				message_type <
+					name: 'ExampleMessage'
+					field <
+						name: 'string'
+						type: TYPE_STRING
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+				>
+			`,
+			path:    "string",
+			wantErr: false,
+		},
+		// no such field
+		{
+			src: `
+				name: 'example.proto'
+				package: 'example'
+				message_type <
+					name: 'ExampleMessage'
+					field <
+						name: 'string'
+						type: TYPE_STRING
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+				>
+			`,
+			path:    "something_else",
+			wantErr: true,
+		},
+		// repeated field
+		{
+			src: `
+				name: 'example.proto'
+				package: 'example'
+				message_type <
+					name: 'ExampleMessage'
+					field <
+						name: 'string'
+						type: TYPE_STRING
+						label: LABEL_REPEATED
+						number: 1
+					>
+				>
+			`,
+			path:    "string",
+			wantErr: true,
+		},
+		// nested field
+		{
+			src: `
+				name: 'example.proto'
+				package: 'example'
+				message_type <
+					name: 'ExampleMessage'
+					field <
+						name: 'nested'
+						type: TYPE_MESSAGE
+						type_name: 'AnotherMessage'
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+					field <
+						name: 'terminal'
+						type: TYPE_BOOL
+						label: LABEL_OPTIONAL
+						number: 2
+					>
+				>
+				message_type <
+					name: 'AnotherMessage'
+					field <
+						name: 'nested2'
+						type: TYPE_MESSAGE
+						type_name: 'ExampleMessage'
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+				>
+			`,
+			path:    "nested.nested2.nested.nested2.nested.nested2.terminal",
+			wantErr: false,
+		},
+		// non aggregate field on the path
+		{
+			src: `
+				name: 'example.proto'
+				package: 'example'
+				message_type <
+					name: 'ExampleMessage'
+					field <
+						name: 'nested'
+						type: TYPE_MESSAGE
+						type_name: 'AnotherMessage'
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+					field <
+						name: 'terminal'
+						type: TYPE_BOOL
+						label: LABEL_OPTIONAL
+						number: 2
+					>
+				>
+				message_type <
+					name: 'AnotherMessage'
+					field <
+						name: 'nested2'
+						type: TYPE_MESSAGE
+						type_name: 'ExampleMessage'
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+				>
+			`,
+			path:    "nested.terminal.nested2",
+			wantErr: true,
+		},
+		// repeated field
+		{
+			src: `
+				name: 'example.proto'
+				package: 'example'
+				message_type <
+					name: 'ExampleMessage'
+					field <
+						name: 'nested'
+						type: TYPE_MESSAGE
+						type_name: 'AnotherMessage'
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+					field <
+						name: 'terminal'
+						type: TYPE_BOOL
+						label: LABEL_OPTIONAL
+						number: 2
+					>
+				>
+				message_type <
+					name: 'AnotherMessage'
+					field <
+						name: 'nested2'
+						type: TYPE_MESSAGE
+						type_name: 'ExampleMessage'
+						label: LABEL_REPEATED
+						number: 1
+					>
+				>
+			`,
+			path:    "nested.nested2.terminal",
+			wantErr: true,
+		},
+	} {
+		var file descriptor.FileDescriptorProto
+		if err := proto.UnmarshalText(spec.src, &file); err != nil {
+			t.Fatalf("proto.Unmarshal(%s) failed with %v; want success", spec.src, err)
+		}
+		reg := NewRegistry()
+		reg.loadFile(&file)
+		f, err := reg.LookupFile(file.GetName())
+		if err != nil {
+			t.Fatalf("reg.LookupFile(%q) failed with %v; want success; on file=%s", file.GetName(), err, spec.src)
+		}
+		_, err = reg.resolveFiledPath(f.Messages[0], spec.path)
+		if got, want := err != nil, spec.wantErr; got != want {
+			if want {
+				t.Errorf("reg.resolveFiledPath(%q, %q) succeeded; want an error", f.Messages[0].GetName(), spec.path)
+				continue
+			}
+			t.Errorf("reg.resolveFiledPath(%q, %q) failed with %v; want success", f.Messages[0].GetName(), spec.path, err)
+		}
+	}
+}

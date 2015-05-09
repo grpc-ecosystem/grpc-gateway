@@ -231,6 +231,9 @@ func (r *Registry) resolveFiledPath(msg *Message, path string) ([]FieldPathCompo
 		if f == nil {
 			return nil, fmt.Errorf("no field %q found in %s", path, root.GetName())
 		}
+		if f.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			return nil, fmt.Errorf("repeated field not allowed in field path: %s in %s", f.GetName(), path)
+		}
 		result = append(result, FieldPathComponent{Name: c, Target: f})
 	}
 	return result, nil
