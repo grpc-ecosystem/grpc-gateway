@@ -69,10 +69,10 @@ func testExtractServices(t *testing.T, input []*descriptor.FileDescriptorProto, 
 						t.Errorf("svcs[%d].Methods[%d].Bindings[%d].PathParams[%d].FieldPath.String() = %q; want %q; input = %v", i, j, k, l, got, want, input)
 						continue
 					}
-					for l := 0; l < len(param.FieldPath) && l < len(wantParam.FieldPath); l++ {
-						field, wantField := param.FieldPath[l].Target, wantParam.FieldPath[l].Target
+					for m := 0; m < len(param.FieldPath) && m < len(wantParam.FieldPath); m++ {
+						field, wantField := param.FieldPath[m].Target, wantParam.FieldPath[m].Target
 						if got, want := field.FieldDescriptorProto, wantField.FieldDescriptorProto; !proto.Equal(got, want) {
-							t.Errorf("svcs[%d].Methods[%d].Bindings[%d].PathParams[%d].FieldPath[%d].Target.FieldDescriptorProto = %v; want %v; input = %v", i, j, k, l, got, want, input)
+							t.Errorf("svcs[%d].Methods[%d].Bindings[%d].PathParams[%d].FieldPath[%d].Target.FieldDescriptorProto = %v; want %v; input = %v", i, j, k, l, m, got, want, input)
 						}
 					}
 				}
@@ -93,7 +93,7 @@ func testExtractServices(t *testing.T, input []*descriptor.FileDescriptorProto, 
 					}
 				} else if binding.Body != nil {
 					if got, want := binding.Body.FieldPath.String(), wantBinding.Body.FieldPath.String(); got != want {
-						t.Errorf("svcs[%d].Methods[%d].Bindings[%d].Body = %q; want it to be missing; input = %v", i, j, k, got, want, input)
+						t.Errorf("svcs[%d].Methods[%d].Bindings[%d].Body = %q; want %q; input = %v", i, j, k, got, want, input)
 					}
 				}
 			}
