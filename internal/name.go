@@ -1,15 +1,11 @@
-package descriptor
+package internal
 
 import (
-	"regexp"
 	"strings"
 )
 
-var (
-	upperPattern = regexp.MustCompile("[A-Z]")
-)
-
-func toCamel(str string) string {
+// PascalFromSnake converts an identifier in snake_case into PascalCase.
+func PascalFromSnake(str string) string {
 	var components []string
 	for _, c := range strings.Split(str, "_") {
 		components = append(components, strings.Title(strings.ToLower(c)))

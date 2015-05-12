@@ -84,6 +84,9 @@ service ABitOfEverythingService {
 				post: "/v2/example/echo"
 				body: "value"
 			}
+			additional_bindings {
+				get: "/v2/example/echo"
+			}
 		};
 	}
 	rpc BulkEcho(stream gengo.grpc.gateway.examples.sub.StringMessage) returns (stream gengo.grpc.gateway.examples.sub.StringMessage) {

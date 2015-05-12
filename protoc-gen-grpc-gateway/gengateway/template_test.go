@@ -23,9 +23,6 @@ func crossLinkFixture(f *descriptor.File) *descriptor.File {
 				for _, param := range b.PathParams {
 					param.Method = m
 				}
-				for _, param := range b.QueryParams {
-					param.Method = m
-				}
 			}
 		}
 	}

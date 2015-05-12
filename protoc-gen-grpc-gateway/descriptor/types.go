@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gengo/grpc-gateway/internal"
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/httprule"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
@@ -121,10 +122,39 @@ type Binding struct {
 	HTTPMethod string
 	// PathParams is the list of parameters provided in HTTP request paths.
 	PathParams []Parameter
-	// QueryParam is the list of parameters provided in HTTP query strings.
-	QueryParams []Parameter
 	// Body describes parameters provided in HTTP request body.
 	Body *Body
+}
+
+// HasQueryParams returns if "b" has query_string params.
+func (b *Binding) HasQueryParams() bool {
+	if b.Body != nil && len(b.Body.FieldPath) == 0 {
+		return false
+	}
+	fields := make(map[string]bool)
+	for _, f := range b.Method.RequestType.GetField() {
+		fields[f.GetName()] = true
+	}
+	if b.Body != nil {
+		delete(fields, b.Body.FieldPath.String())
+	}
+	for _, p := range b.PathParams {
+		delete(fields, p.FieldPath.String())
+	}
+	return len(fields) > 0
+}
+
+// ExplicitParams returns a list of explicitly bound parameters of "b",
+// i.e. a union of field path for body and field paths for path parameters.
+func (b *Binding) ExplicitParams() []string {
+	var result []string
+	if b.Body != nil {
+		result = append(result, b.Body.FieldPath.String())
+	}
+	for _, p := range b.PathParams {
+		result = append(result, p.FieldPath.String())
+	}
+	return result
 }
 
 // Field wraps descriptor.FieldDescriptorProto for richer features.
@@ -213,15 +243,15 @@ type FieldPathComponent struct {
 
 // RHS returns a right-hand-side expression in go for this field.
 func (c FieldPathComponent) RHS() string {
-	return toCamel(c.Name)
+	return internal.PascalFromSnake(c.Name)
 }
 
 // LHS returns a left-hand-side expression in go for this field.
 func (c FieldPathComponent) LHS() string {
 	if c.Target.Message.File.proto2() {
-		return fmt.Sprintf("Get%s()", toCamel(c.Name))
+		return fmt.Sprintf("Get%s()", internal.PascalFromSnake(c.Name))
 	}
-	return toCamel(c.Name)
+	return internal.PascalFromSnake(c.Name)
 }
 
 var (

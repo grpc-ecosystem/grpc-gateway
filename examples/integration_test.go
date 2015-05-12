@@ -400,6 +400,15 @@ func testAdditionalBindings(t *testing.T) {
 			}
 			return resp
 		},
+		func() *http.Response {
+			url := "http://localhost:8080/v2/example/echo?value=hello"
+			resp, err := http.Get(url)
+			if err != nil {
+				t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+				return nil
+			}
+			return resp
+		},
 	} {
 		resp := f()
 		if resp == nil {

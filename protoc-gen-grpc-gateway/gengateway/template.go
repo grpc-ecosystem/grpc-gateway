@@ -115,12 +115,6 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 	_ = template.Must(handlerTemplate.New("client-rpc-request-func").Parse(`
 {{template "request-func-signature" .}} {
 	var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
-	{{range $param := .QueryParams}}
-	protoReq.{{$param.RHS "protoReq"}}, err = {{$param.ConvertFuncExpr}}(req.FormValue({{$param | printf "%q"}}))
-	if err != nil {
-		return nil, err
-	}
-	{{end}}
 {{if .Body}}
 	if err = json.NewDecoder(req.Body).Decode(&{{.Body.RHS "protoReq"}}); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
@@ -139,6 +133,11 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 		return nil, err
 	}
 	{{end}}
+{{end}}
+{{if .HasQueryParams}}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), {{.ExplicitParams | printf "%#v"}}); err != nil {
+		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+	}
 {{end}}
 
 	return client.{{.Method.GetName}}(ctx, &protoReq)

@@ -3,7 +3,9 @@ GO_PLUGIN=bin/protoc-gen-go
 GO_PLUGIN_PKG=github.com/golang/protobuf/protoc-gen-go
 GATEWAY_PLUGIN=bin/protoc-gen-grpc-gateway
 GATEWAY_PLUGIN_PKG=$(PKG)/protoc-gen-grpc-gateway
-GATEWAY_PLUGIN_SRC= protoc-gen-grpc-gateway/descriptor/name.go \
+GATEWAY_PLUGIN_SRC= internal/doc.go \
+		    internal/name.go \
+		    internal/pattern.go \
 		    protoc-gen-grpc-gateway/descriptor/registry.go \
 		    protoc-gen-grpc-gateway/descriptor/services.go \
 		    protoc-gen-grpc-gateway/descriptor/types.go \

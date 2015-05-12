@@ -160,6 +160,10 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, client ABitOf
 		return nil, err
 	}
 
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), []string{"float_value", "double_value", "int64_value", "uint64_value", "int32_value", "fixed64_value", "fixed32_value", "bool_value", "string_value", "uint32_value", "sfixed32_value", "sfixed64_value", "sint32_value", "sint64_value"}); err != nil {
+		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
 	return client.Create(ctx, &protoReq)
 }
 
@@ -286,6 +290,16 @@ func request_ABitOfEverythingService_Echo_1(ctx context.Context, client ABitOfEv
 	var protoReq sub.StringMessage
 
 	if err = json.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil {
+		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	return client.Echo(ctx, &protoReq)
+}
+
+func request_ABitOfEverythingService_Echo_2(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+	var protoReq sub.StringMessage
+
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), []string(nil)); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -452,6 +466,17 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 
 	})
 
+	mux.Handle("GET", pattern_ABitOfEverythingService_Echo_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_ABitOfEverythingService_Echo_2(ctx, client, req, pathParams)
+		if err != nil {
+			runtime.HTTPError(w, err)
+			return
+		}
+
+		runtime.ForwardResponseMessage(w, resp)
+
+	})
+
 	mux.Handle("POST", pattern_ABitOfEverythingService_BulkEcho_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_ABitOfEverythingService_BulkEcho_0(ctx, client, req, pathParams)
 		if err != nil {
@@ -484,6 +509,8 @@ var (
 	pattern_ABitOfEverythingService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "example", "a_bit_of_everything", "echo", "value"}, ""))
 
 	pattern_ABitOfEverythingService_Echo_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v2", "example", "echo"}, ""))
+
+	pattern_ABitOfEverythingService_Echo_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v2", "example", "echo"}, ""))
 
 	pattern_ABitOfEverythingService_BulkEcho_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a_bit_of_everything", "echo"}, ""))
 )
