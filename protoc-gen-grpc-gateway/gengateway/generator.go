@@ -31,6 +31,7 @@ func New(reg *descriptor.Registry) *generator {
 		"io",
 		"net/http",
 		"github.com/gengo/grpc-gateway/runtime",
+		"github.com/gengo/grpc-gateway/internal",
 		"github.com/golang/glog",
 		"github.com/golang/protobuf/proto",
 		"golang.org/x/net/context",

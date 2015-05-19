@@ -126,24 +126,6 @@ type Binding struct {
 	Body *Body
 }
 
-// HasQueryParams returns if "b" has query_string params.
-func (b *Binding) HasQueryParams() bool {
-	if b.Body != nil && len(b.Body.FieldPath) == 0 {
-		return false
-	}
-	fields := make(map[string]bool)
-	for _, f := range b.Method.RequestType.GetField() {
-		fields[f.GetName()] = true
-	}
-	if b.Body != nil {
-		delete(fields, b.Body.FieldPath.String())
-	}
-	for _, p := range b.PathParams {
-		delete(fields, p.FieldPath.String())
-	}
-	return len(fields) > 0
-}
-
 // ExplicitParams returns a list of explicitly bound parameters of "b",
 // i.e. a union of field path for body and field paths for path parameters.
 func (b *Binding) ExplicitParams() []string {

@@ -5,12 +5,49 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/gengo/grpc-gateway/internal"
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 )
 
 type param struct {
 	*descriptor.File
 	Imports []descriptor.GoPackage
+}
+
+type binding struct {
+	*descriptor.Binding
+}
+
+// HasQueryParam determines if the binding needs parameters in query string.
+//
+// It sometimes returns true even though actually the binding does not need.
+// But it is not serious because it just results in a small amount of extra codes generated.
+func (b binding) HasQueryParam() bool {
+	if b.Body != nil && len(b.Body.FieldPath) == 0 {
+		return false
+	}
+	fields := make(map[string]bool)
+	for _, f := range b.Method.RequestType.Fields {
+		fields[f.GetName()] = true
+	}
+	if b.Body != nil {
+		delete(fields, b.Body.FieldPath.String())
+	}
+	for _, p := range b.PathParams {
+		delete(fields, p.FieldPath.String())
+	}
+	return len(fields) > 0
+}
+
+func (b binding) QueryParamFilter() *internal.DoubleArray {
+	var seqs [][]string
+	if b.Body != nil {
+		seqs = append(seqs, strings.Split(b.Body.FieldPath.String(), "."))
+	}
+	for _, p := range b.PathParams {
+		seqs = append(seqs, strings.Split(p.FieldPath.String(), "."))
+	}
+	return internal.NewDoubleArray(seqs)
 }
 
 func applyTemplate(p param) (string, error) {
@@ -23,7 +60,7 @@ func applyTemplate(p param) (string, error) {
 		for _, meth := range svc.Methods {
 			methodSeen = true
 			for _, b := range meth.Bindings {
-				if err := handlerTemplate.Execute(w, b); err != nil {
+				if err := handlerTemplate.Execute(w, binding{Binding: b}); err != nil {
 					return "", err
 				}
 			}
@@ -60,6 +97,7 @@ var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
 var _ = json.Marshal
+var _ = internal.PascalFromSnake
 `))
 
 	handlerTemplate = template.Must(template.New("handler").Parse(`
@@ -113,6 +151,11 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 `))
 
 	_ = template.Must(handlerTemplate.New("client-rpc-request-func").Parse(`
+{{if .HasQueryParam}}
+var (
+	filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}} = {{.QueryParamFilter | printf "%#v"}}
+)
+{{end}}
 {{template "request-func-signature" .}} {
 	var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 {{if .Body}}
@@ -134,8 +177,8 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 	}
 	{{end}}
 {{end}}
-{{if .HasQueryParams}}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), {{.ExplicitParams | printf "%#v"}}); err != nil {
+{{if .HasQueryParam}}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 {{end}}
