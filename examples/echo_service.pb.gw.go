@@ -14,6 +14,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/gengo/grpc-gateway/internal"
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
@@ -26,6 +27,7 @@ var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
 var _ = json.Marshal
+var _ = internal.PascalFromSnake
 
 func request_EchoService_Echo_0(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq SimpleMessage

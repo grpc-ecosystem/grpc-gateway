@@ -15,6 +15,7 @@ import (
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/examples/sub"
+	"github.com/gengo/grpc-gateway/internal"
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
@@ -27,6 +28,11 @@ var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
 var _ = json.Marshal
+var _ = internal.PascalFromSnake
+
+var (
+	filter_ABitOfEverythingService_Create_0 = &internal.DoubleArray{Encoding: map[string]int{"float_value": 0, "double_value": 1, "bool_value": 7, "sfixed64_value": 11, "sint32_value": 12, "sint64_value": 13, "int64_value": 2, "int32_value": 4, "string_value": 8, "uint32_value": 9, "sfixed32_value": 10, "fixed64_value": 5, "fixed32_value": 6, "uint64_value": 3}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}}
+)
 
 func request_ABitOfEverythingService_Create_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq ABitOfEverything
@@ -160,7 +166,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, client ABitOf
 		return nil, err
 	}
 
-	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), []string{"float_value", "double_value", "int64_value", "uint64_value", "int32_value", "fixed64_value", "fixed32_value", "bool_value", "string_value", "uint32_value", "sfixed32_value", "sfixed64_value", "sint32_value", "sint64_value"}); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_Create_0); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -296,10 +302,14 @@ func request_ABitOfEverythingService_Echo_1(ctx context.Context, client ABitOfEv
 	return client.Echo(ctx, &protoReq)
 }
 
+var (
+	filter_ABitOfEverythingService_Echo_2 = &internal.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+)
+
 func request_ABitOfEverythingService_Echo_2(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
 	var protoReq sub.StringMessage
 
-	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), []string(nil)); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_Echo_2); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
