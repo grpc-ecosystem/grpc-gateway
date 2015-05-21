@@ -80,6 +80,13 @@ service ABitOfEverythingService {
 	rpc Echo(gengo.grpc.gateway.examples.sub.StringMessage) returns (gengo.grpc.gateway.examples.sub.StringMessage) {
 		option (google.api.http) = {
 			get: "/v1/example/a_bit_of_everything/echo/{value}"
+			additional_bindings {
+				post: "/v2/example/echo"
+				body: "value"
+			}
+			additional_bindings {
+				get: "/v2/example/echo"
+			}
 		};
 	}
 	rpc BulkEcho(stream gengo.grpc.gateway.examples.sub.StringMessage) returns (stream gengo.grpc.gateway.examples.sub.StringMessage) {

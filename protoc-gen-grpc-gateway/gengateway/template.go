@@ -5,12 +5,49 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/gengo/grpc-gateway/internal"
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 )
 
 type param struct {
 	*descriptor.File
 	Imports []descriptor.GoPackage
+}
+
+type binding struct {
+	*descriptor.Binding
+}
+
+// HasQueryParam determines if the binding needs parameters in query string.
+//
+// It sometimes returns true even though actually the binding does not need.
+// But it is not serious because it just results in a small amount of extra codes generated.
+func (b binding) HasQueryParam() bool {
+	if b.Body != nil && len(b.Body.FieldPath) == 0 {
+		return false
+	}
+	fields := make(map[string]bool)
+	for _, f := range b.Method.RequestType.Fields {
+		fields[f.GetName()] = true
+	}
+	if b.Body != nil {
+		delete(fields, b.Body.FieldPath.String())
+	}
+	for _, p := range b.PathParams {
+		delete(fields, p.FieldPath.String())
+	}
+	return len(fields) > 0
+}
+
+func (b binding) QueryParamFilter() *internal.DoubleArray {
+	var seqs [][]string
+	if b.Body != nil {
+		seqs = append(seqs, strings.Split(b.Body.FieldPath.String(), "."))
+	}
+	for _, p := range b.PathParams {
+		seqs = append(seqs, strings.Split(p.FieldPath.String(), "."))
+	}
+	return internal.NewDoubleArray(seqs)
 }
 
 func applyTemplate(p param) (string, error) {
@@ -22,8 +59,10 @@ func applyTemplate(p param) (string, error) {
 	for _, svc := range p.Services {
 		for _, meth := range svc.Methods {
 			methodSeen = true
-			if err := handlerTemplate.Execute(w, meth); err != nil {
-				return "", err
+			for _, b := range meth.Bindings {
+				if err := handlerTemplate.Execute(w, binding{Binding: b}); err != nil {
+					return "", err
+				}
 			}
 		}
 	}
@@ -58,10 +97,11 @@ var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
 var _ = json.Marshal
+var _ = internal.PascalFromSnake
 `))
 
 	handlerTemplate = template.Must(template.New("handler").Parse(`
-{{if .GetClientStreaming}}
+{{if .Method.GetClientStreaming}}
 {{template "client-streaming-request-func" .}}
 {{else}}
 {{template "client-rpc-request-func" .}}
@@ -69,22 +109,22 @@ var _ = json.Marshal
 `))
 
 	_ = template.Must(handlerTemplate.New("request-func-signature").Parse(strings.Replace(`
-{{if .GetServerStreaming}}
-func request_{{.Service.GetName}}_{{.GetName}}(ctx context.Context, client {{.Service.GetName}}Client, req *http.Request, pathParams map[string]string) ({{.Service.GetName}}_{{.GetName}}Client, error)
+{{if .Method.GetServerStreaming}}
+func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, client {{.Method.Service.GetName}}Client, req *http.Request, pathParams map[string]string) ({{.Method.Service.GetName}}_{{.Method.GetName}}Client, error)
 {{else}}
-func request_{{.Service.GetName}}_{{.GetName}}(ctx context.Context, client {{.Service.GetName}}Client, req *http.Request, pathParams map[string]string) (msg proto.Message, err error)
+func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, client {{.Method.Service.GetName}}Client, req *http.Request, pathParams map[string]string) (msg proto.Message, err error)
 {{end}}`, "\n", "", -1)))
 
 	_ = template.Must(handlerTemplate.New("client-streaming-request-func").Parse(`
 {{template "request-func-signature" .}} {
-	stream, err := client.{{.GetName}}(ctx)
+	stream, err := client.{{.Method.GetName}}(ctx)
 	if err != nil {
 		glog.Errorf("Failed to start streaming: %v", err)
 		return nil, err
 	}
 	dec := json.NewDecoder(req.Body)
 	for {
-		var protoReq {{.RequestType.GoType .Service.File.GoPkg.Path}}
+		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 		err = dec.Decode(&protoReq)
 		if err == io.EOF {
 			break
@@ -98,7 +138,7 @@ func request_{{.Service.GetName}}_{{.GetName}}(ctx context.Context, client {{.Se
 			return nil, err
 		}
 	}
-{{if .GetServerStreaming}}
+{{if .Method.GetServerStreaming}}
 	if err = stream.CloseSend(); err != nil {
 		glog.Errorf("Failed to terminate client stream: %v", err)
 		return nil, err
@@ -111,14 +151,13 @@ func request_{{.Service.GetName}}_{{.GetName}}(ctx context.Context, client {{.Se
 `))
 
 	_ = template.Must(handlerTemplate.New("client-rpc-request-func").Parse(`
+{{if .HasQueryParam}}
+var (
+	filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}} = {{.QueryParamFilter | printf "%#v"}}
+)
+{{end}}
 {{template "request-func-signature" .}} {
-	var protoReq {{.RequestType.GoType .Service.File.GoPkg.Path}}
-	{{range $param := .QueryParams}}
-	protoReq.{{$param.RHS "protoReq"}}, err = {{$param.ConvertFuncExpr}}(req.FormValue({{$param | printf "%q"}}))
-	if err != nil {
-		return nil, err
-	}
-	{{end}}
+	var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 {{if .Body}}
 	if err = json.NewDecoder(req.Body).Decode(&{{.Body.RHS "protoReq"}}); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
@@ -138,8 +177,13 @@ func request_{{.Service.GetName}}_{{.GetName}}(ctx context.Context, client {{.Se
 	}
 	{{end}}
 {{end}}
+{{if .HasQueryParam}}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}); err != nil {
+		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+	}
+{{end}}
 
-	return client.{{.GetName}}(ctx, &protoReq)
+	return client.{{.Method.GetName}}(ctx, &protoReq)
 }`))
 
 	trailerTemplate = template.Must(template.New("trailer").Parse(`
@@ -174,8 +218,9 @@ func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runti
 func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 	client := New{{$svc.GetName}}Client(conn)
 	{{range $m := $svc.Methods}}
-	mux.Handle({{$m.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		resp, err := request_{{$svc.GetName}}_{{$m.GetName}}(ctx, client, req, pathParams)
+	{{range $b := $m.Bindings}}
+	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		resp, err := request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -187,12 +232,15 @@ func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux,
 		{{end}}
 	})
 	{{end}}
+	{{end}}
 	return nil
 }
 
 var (
 	{{range $m := $svc.Methods}}
-	pattern_{{$svc.GetName}}_{{$m.GetName}} = runtime.MustPattern(runtime.NewPattern({{$m.PathTmpl.Version}}, {{$m.PathTmpl.OpCodes | printf "%#v"}}, {{$m.PathTmpl.Pool | printf "%#v"}}, {{$m.PathTmpl.Verb | printf "%q"}}))
+	{{range $b := $m.Bindings}}
+	pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} = runtime.MustPattern(runtime.NewPattern({{$b.PathTmpl.Version}}, {{$b.PathTmpl.OpCodes | printf "%#v"}}, {{$b.PathTmpl.Pool | printf "%#v"}}, {{$b.PathTmpl.Verb | printf "%q"}}))
+	{{end}}
 	{{end}}
 )
 {{end}}`))

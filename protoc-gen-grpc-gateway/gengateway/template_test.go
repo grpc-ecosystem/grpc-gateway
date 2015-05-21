@@ -18,11 +18,11 @@ func crossLinkFixture(f *descriptor.File) *descriptor.File {
 		svc.File = f
 		for _, m := range svc.Methods {
 			m.Service = svc
-			for _, param := range m.PathParams {
-				param.Method = m
-			}
-			for _, param := range m.QueryParams {
-				param.Method = m
+			for _, b := range m.Bindings {
+				b.Method = m
+				for _, param := range b.PathParams {
+					param.Method = m
+				}
 			}
 		}
 	}
@@ -64,10 +64,14 @@ func TestApplyTemplateHeader(t *testing.T) {
 				Methods: []*descriptor.Method{
 					{
 						MethodDescriptorProto: meth,
-						HTTPMethod:            "GET",
 						RequestType:           msg,
 						ResponseType:          msg,
-						Body:                  &descriptor.Body{FieldPath: nil},
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+							},
+						},
 					},
 				},
 			},
@@ -129,11 +133,11 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 	}{
 		{
 			serverStreaming: false,
-			sigWant:         `func request_ExampleService_Echo(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {`,
+			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {`,
 		},
 		{
 			serverStreaming: true,
-			sigWant:         `func request_ExampleService_Echo(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (ExampleService_EchoClient, error) {`,
+			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (ExampleService_EchoClient, error) {`,
 		},
 	} {
 		meth.ServerStreaming = proto.Bool(spec.serverStreaming)
@@ -175,39 +179,43 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 					Methods: []*descriptor.Method{
 						{
 							MethodDescriptorProto: meth,
-							HTTPMethod:            "POST",
-							PathTmpl: httprule.Template{
-								Version: 1,
-								OpCodes: []int{0, 0},
-							},
-							RequestType:  msg,
-							ResponseType: msg,
-							PathParams: []descriptor.Parameter{
+							RequestType:           msg,
+							ResponseType:          msg,
+							Bindings: []*descriptor.Binding{
 								{
-									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+									HTTPMethod: "POST",
+									PathTmpl: httprule.Template{
+										Version: 1,
+										OpCodes: []int{0, 0},
+									},
+									PathParams: []descriptor.Parameter{
 										{
-											Name:   "nested",
-											Target: nestedField,
-										},
-										{
-											Name:   "int32",
+											FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+												{
+													Name:   "nested",
+													Target: nestedField,
+												},
+												{
+													Name:   "int32",
+													Target: intField,
+												},
+											}),
 											Target: intField,
 										},
-									}),
-									Target: intField,
+									},
+									Body: &descriptor.Body{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+											{
+												Name:   "nested",
+												Target: nestedField,
+											},
+											{
+												Name:   "bool",
+												Target: boolField,
+											},
+										}),
+									},
 								},
-							},
-							Body: &descriptor.Body{
-								FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
-									{
-										Name:   "nested",
-										Target: nestedField,
-									},
-									{
-										Name:   "bool",
-										Target: boolField,
-									},
-								}),
 							},
 						},
 					},
@@ -234,7 +242,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		if want := `func RegisterExampleServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `pattern_ExampleService_Echo = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
+		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 	}
@@ -286,11 +294,11 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 	}{
 		{
 			serverStreaming: false,
-			sigWant:         `func request_ExampleService_Echo(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {`,
+			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {`,
 		},
 		{
 			serverStreaming: true,
-			sigWant:         `func request_ExampleService_Echo(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (ExampleService_EchoClient, error) {`,
+			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (ExampleService_EchoClient, error) {`,
 		},
 	} {
 		meth.ServerStreaming = proto.Bool(spec.serverStreaming)
@@ -332,39 +340,43 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 					Methods: []*descriptor.Method{
 						{
 							MethodDescriptorProto: meth,
-							HTTPMethod:            "POST",
-							PathTmpl: httprule.Template{
-								Version: 1,
-								OpCodes: []int{0, 0},
-							},
-							RequestType:  msg,
-							ResponseType: msg,
-							PathParams: []descriptor.Parameter{
+							RequestType:           msg,
+							ResponseType:          msg,
+							Bindings: []*descriptor.Binding{
 								{
-									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+									HTTPMethod: "POST",
+									PathTmpl: httprule.Template{
+										Version: 1,
+										OpCodes: []int{0, 0},
+									},
+									PathParams: []descriptor.Parameter{
 										{
-											Name:   "nested",
-											Target: nestedField,
-										},
-										{
-											Name:   "int32",
+											FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+												{
+													Name:   "nested",
+													Target: nestedField,
+												},
+												{
+													Name:   "int32",
+													Target: intField,
+												},
+											}),
 											Target: intField,
 										},
-									}),
-									Target: intField,
+									},
+									Body: &descriptor.Body{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+											{
+												Name:   "nested",
+												Target: nestedField,
+											},
+											{
+												Name:   "bool",
+												Target: boolField,
+											},
+										}),
+									},
 								},
-							},
-							Body: &descriptor.Body{
-								FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
-									{
-										Name:   "nested",
-										Target: nestedField,
-									},
-									{
-										Name:   "bool",
-										Target: boolField,
-									},
-								}),
 							},
 						},
 					},
@@ -385,7 +397,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		if want := `func RegisterExampleServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `pattern_ExampleService_Echo = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
+		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 	}

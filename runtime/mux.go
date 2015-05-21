@@ -48,6 +48,13 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		verb, components[l-1] = c[:idx], c[idx+1:]
 	}
 
+	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && isPathLengthFallback(r) {
+		r.Method = strings.ToUpper(override)
+		if err := r.ParseForm(); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+	}
 	for _, h := range s.handlers[r.Method] {
 		pathParams, err := h.pat.Match(components, verb)
 		if err != nil {
@@ -58,19 +65,35 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// lookup other methods to determine if it is MethodNotAllowed
+	// lookup other methods to handle fallback from GET to POST and
+	// to determine if it is MethodNotAllowed or NotFound.
 	for m, handlers := range s.handlers {
 		if m == r.Method {
 			continue
 		}
 		for _, h := range handlers {
-			if _, err := h.pat.Match(components, verb); err == nil {
-				http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+			pathParams, err := h.pat.Match(components, verb)
+			if err != nil {
+				continue
+			}
+			// X-HTTP-Method-Override is optional. Always allow fallback to POST.
+			if isPathLengthFallback(r) {
+				if err := r.ParseForm(); err != nil {
+					http.Error(w, err.Error(), http.StatusBadRequest)
+					return
+				}
+				h.h(w, r, pathParams)
 				return
 			}
+			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+			return
 		}
 	}
 	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+}
+
+func isPathLengthFallback(r *http.Request) bool {
+	return r.Method == "POST" && r.Header.Get("Content-Type") == "application/x-www-form-urlencoded"
 }
 
 type handler struct {

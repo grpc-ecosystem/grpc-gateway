@@ -43,48 +43,67 @@ func testExtractServices(t *testing.T, input []*descriptor.FileDescriptorProto, 
 				t.Errorf("svcs[%d].Methods[%d].MethodDescriptorProto = %v; want %v; input = %v", i, j, got, want, input)
 				continue
 			}
-			if got, want := meth.PathTmpl, wantMeth.PathTmpl; !reflect.DeepEqual(got, want) {
-				t.Errorf("svcs[%d].Methods[%d].PathTmpl = %#v; want %#v; input = %v", i, j, got, want, input)
-			}
-			if got, want := meth.HTTPMethod, wantMeth.HTTPMethod; got != want {
-				t.Errorf("svcs[%d].Methods[%d].HTTPMethod = %q; want %q; input = %v", i, j, got, want, input)
-			}
 			if got, want := meth.RequestType, wantMeth.RequestType; got.FQMN() != want.FQMN() {
 				t.Errorf("svcs[%d].Methods[%d].RequestType = %s; want %s; input = %v", i, j, got.FQMN(), want.FQMN(), input)
 			}
 			if got, want := meth.ResponseType, wantMeth.ResponseType; got.FQMN() != want.FQMN() {
 				t.Errorf("svcs[%d].Methods[%d].ResponseType = %s; want %s; input = %v", i, j, got.FQMN(), want.FQMN(), input)
 			}
-
 			var k int
-			for k = 0; k < len(meth.PathParams) && k < len(wantMeth.PathParams); k++ {
-				param, wantParam := meth.PathParams[k], wantMeth.PathParams[k]
-				if got, want := param.FieldPath.String(), wantParam.FieldPath.String(); got != want {
-					t.Errorf("svcs[%d].Methods[%d].PathParams[%d].FieldPath.String() = %q; want %q; input = %v", i, j, k, got, want, input)
-					continue
+			for k = 0; k < len(meth.Bindings) && k < len(wantMeth.Bindings); k++ {
+				binding, wantBinding := meth.Bindings[k], wantMeth.Bindings[k]
+				if got, want := binding.Index, wantBinding.Index; got != want {
+					t.Errorf("svcs[%d].Methods[%d].Bindings[%d].Index = %d; want %d; input = %v", i, j, k, got, want, input)
 				}
-				for l := 0; l < len(param.FieldPath) && l < len(wantParam.FieldPath); l++ {
-					field, wantField := param.FieldPath[l].Target, wantParam.FieldPath[l].Target
-					if got, want := field.FieldDescriptorProto, wantField.FieldDescriptorProto; !proto.Equal(got, want) {
-						t.Errorf("svcs[%d].Methods[%d].PathParams[%d].FieldPath[%d].Target.FieldDescriptorProto = %v; want %v; input = %v", i, j, k, l, got, want, input)
+				if got, want := binding.PathTmpl, wantBinding.PathTmpl; !reflect.DeepEqual(got, want) {
+					t.Errorf("svcs[%d].Methods[%d].Bindings[%d].PathTmpl = %#v; want %#v; input = %v", i, j, k, got, want, input)
+				}
+				if got, want := binding.HTTPMethod, wantBinding.HTTPMethod; got != want {
+					t.Errorf("svcs[%d].Methods[%d].Bindings[%d].HTTPMethod = %q; want %q; input = %v", i, j, k, got, want, input)
+				}
+
+				var l int
+				for l = 0; l < len(binding.PathParams) && l < len(wantBinding.PathParams); l++ {
+					param, wantParam := binding.PathParams[l], wantBinding.PathParams[l]
+					if got, want := param.FieldPath.String(), wantParam.FieldPath.String(); got != want {
+						t.Errorf("svcs[%d].Methods[%d].Bindings[%d].PathParams[%d].FieldPath.String() = %q; want %q; input = %v", i, j, k, l, got, want, input)
+						continue
+					}
+					for m := 0; m < len(param.FieldPath) && m < len(wantParam.FieldPath); m++ {
+						field, wantField := param.FieldPath[m].Target, wantParam.FieldPath[m].Target
+						if got, want := field.FieldDescriptorProto, wantField.FieldDescriptorProto; !proto.Equal(got, want) {
+							t.Errorf("svcs[%d].Methods[%d].Bindings[%d].PathParams[%d].FieldPath[%d].Target.FieldDescriptorProto = %v; want %v; input = %v", i, j, k, l, m, got, want, input)
+						}
+					}
+				}
+				for ; l < len(binding.PathParams); l++ {
+					got := binding.PathParams[l].FieldPath.String()
+					t.Errorf("svcs[%d].Methods[%d].Bindings[%d].PathParams[%d] = %q; want it to be missing; input = %v", i, j, k, l, got, input)
+				}
+				for ; l < len(wantBinding.PathParams); l++ {
+					want := wantBinding.PathParams[l].FieldPath.String()
+					t.Errorf("svcs[%d].Methods[%d].Bindings[%d].PathParams[%d] missing; want %q; input = %v", i, j, k, l, want, input)
+				}
+
+				if got, want := (binding.Body != nil), (wantBinding.Body != nil); got != want {
+					if got {
+						t.Errorf("svcs[%d].Methods[%d].Bindings[%d].Body = %q; want it to be missing; input = %v", i, j, k, binding.Body.FieldPath.String(), input)
+					} else {
+						t.Errorf("svcs[%d].Methods[%d].Bindings[%d].Body missing; want %q; input = %v", i, j, k, wantBinding.Body.FieldPath.String(), input)
+					}
+				} else if binding.Body != nil {
+					if got, want := binding.Body.FieldPath.String(), wantBinding.Body.FieldPath.String(); got != want {
+						t.Errorf("svcs[%d].Methods[%d].Bindings[%d].Body = %q; want %q; input = %v", i, j, k, got, want, input)
 					}
 				}
 			}
-			for ; k < len(meth.PathParams); k++ {
-				got := meth.PathParams[k].FieldPath.String()
-				t.Errorf("svcs[%d].Methods[%d].PathParams[%d] = %q; want it to be missing; input = %v", i, j, k, got, input)
+			for ; k < len(meth.Bindings); k++ {
+				got := meth.Bindings[k]
+				t.Errorf("svcs[%d].Methods[%d].Bindings[%d] = %q; want it to be missing; input = %v", i, j, k, got, input)
 			}
-			for ; k < len(wantMeth.PathParams); k++ {
-				want := wantMeth.PathParams[k].FieldPath.String()
-				t.Errorf("svcs[%d].Methods[%d].PathParams[%d] missing; want %q; input = %v", i, j, k, want, input)
-			}
-
-			if got, want := (meth.Body != nil), (wantMeth.Body != nil); got != want {
-				if got {
-					t.Errorf("svcs[%d].Methods[%d].Body = %q; want it to be missing; input = %v", i, j, meth.Body.FieldPath.String(), input)
-				} else {
-					t.Errorf("svcs[%d].Methods[%d].Body missing; want %q; input = %v", i, j, wantMeth.Body.FieldPath.String(), input)
-				}
+			for ; k < len(wantMeth.Bindings); k++ {
+				want := wantMeth.Bindings[k]
+				t.Errorf("svcs[%d].Methods[%d].Bindings[%d] missing; want %q; input = %v", i, j, k, want, input)
 			}
 		}
 		for ; j < len(svc.Methods); j++ {
@@ -117,11 +136,11 @@ func crossLinkFixture(f *File) *File {
 		svc.File = f
 		for _, m := range svc.Methods {
 			m.Service = svc
-			for _, param := range m.PathParams {
-				param.Method = m
-			}
-			for _, param := range m.QueryParams {
-				param.Method = m
+			for _, b := range m.Bindings {
+				b.Method = m
+				for _, param := range b.PathParams {
+					param.Method = m
+				}
 			}
 		}
 	}
@@ -181,11 +200,15 @@ func TestExtractServicesSimple(t *testing.T) {
 				Methods: []*Method{
 					{
 						MethodDescriptorProto: fd.Service[0].Method[0],
-						PathTmpl:              compilePath(t, "/v1/example/echo"),
-						HTTPMethod:            "POST",
 						RequestType:           msg,
 						ResponseType:          msg,
-						Body:                  &Body{FieldPath: nil},
+						Bindings: []*Binding{
+							{
+								PathTmpl:   compilePath(t, "/v1/example/echo"),
+								HTTPMethod: "POST",
+								Body:       &Body{FieldPath: nil},
+							},
+						},
 					},
 				},
 			},
@@ -276,11 +299,15 @@ func TestExtractServicesCrossPackage(t *testing.T) {
 					Methods: []*Method{
 						{
 							MethodDescriptorProto: fds[0].Service[0].Method[0],
-							PathTmpl:              compilePath(t, "/v1/example/to_s"),
-							HTTPMethod:            "POST",
 							RequestType:           boolMsg,
 							ResponseType:          stringMsg,
-							Body:                  &Body{FieldPath: nil},
+							Bindings: []*Binding{
+								{
+									PathTmpl:   compilePath(t, "/v1/example/to_s"),
+									HTTPMethod: "POST",
+									Body:       &Body{FieldPath: nil},
+								},
+							},
 						},
 					},
 				},
@@ -365,15 +392,19 @@ func TestExtractServicesWithBodyPath(t *testing.T) {
 				Methods: []*Method{
 					{
 						MethodDescriptorProto: fd.Service[0].Method[0],
-						PathTmpl:              compilePath(t, "/v1/example/echo"),
-						HTTPMethod:            "POST",
 						RequestType:           msg,
 						ResponseType:          msg,
-						Body: &Body{
-							FieldPath: FieldPath{
-								{
-									Name:   "nested",
-									Target: msg.Fields[0],
+						Bindings: []*Binding{
+							{
+								PathTmpl:   compilePath(t, "/v1/example/echo"),
+								HTTPMethod: "POST",
+								Body: &Body{
+									FieldPath: FieldPath{
+										{
+											Name:   "nested",
+											Target: msg.Fields[0],
+										},
+									},
 								},
 							},
 						},
@@ -439,19 +470,133 @@ func TestExtractServicesWithPathParam(t *testing.T) {
 				Methods: []*Method{
 					{
 						MethodDescriptorProto: fd.Service[0].Method[0],
-						PathTmpl:              compilePath(t, "/v1/example/echo/{string=*}"),
-						HTTPMethod:            "GET",
 						RequestType:           msg,
 						ResponseType:          msg,
-						PathParams: []Parameter{
+						Bindings: []*Binding{
 							{
-								FieldPath: FieldPath{
+								PathTmpl:   compilePath(t, "/v1/example/echo/{string=*}"),
+								HTTPMethod: "GET",
+								PathParams: []Parameter{
 									{
-										Name:   "string",
+										FieldPath: FieldPath{
+											{
+												Name:   "string",
+												Target: msg.Fields[0],
+											},
+										},
 										Target: msg.Fields[0],
 									},
 								},
-								Target: msg.Fields[0],
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	crossLinkFixture(file)
+	testExtractServices(t, []*descriptor.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
+}
+
+func TestExtractServicesWithAdditionalBinding(t *testing.T) {
+	src := `
+		name: "path/to/example.proto",
+		package: "example"
+		message_type <
+			name: "StringMessage"
+			field <
+				name: "string"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+			>
+		>
+		service <
+			name: "ExampleService"
+			method <
+				name: "Echo"
+				input_type: "StringMessage"
+				output_type: "StringMessage"
+				options <
+					[google.api.http] <
+						post: "/v1/example/echo"
+						body: "*"
+						additional_bindings <
+							get: "/v1/example/echo/{string}"
+						>
+						additional_bindings <
+							post: "/v2/example/echo"
+							body: "string"
+						>
+					>
+				>
+			>
+		>
+	`
+	var fd descriptor.FileDescriptorProto
+	if err := proto.UnmarshalText(src, &fd); err != nil {
+		t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
+	}
+	msg := &Message{
+		DescriptorProto: fd.MessageType[0],
+		Fields: []*Field{
+			{
+				FieldDescriptorProto: fd.MessageType[0].Field[0],
+			},
+		},
+	}
+	file := &File{
+		FileDescriptorProto: &fd,
+		GoPkg: GoPackage{
+			Path: "path/to/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*Message{msg},
+		Services: []*Service{
+			{
+				ServiceDescriptorProto: fd.Service[0],
+				Methods: []*Method{
+					{
+						MethodDescriptorProto: fd.Service[0].Method[0],
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*Binding{
+							{
+								Index:      0,
+								PathTmpl:   compilePath(t, "/v1/example/echo"),
+								HTTPMethod: "POST",
+								Body:       &Body{FieldPath: nil},
+							},
+							{
+								Index:      1,
+								PathTmpl:   compilePath(t, "/v1/example/echo/{string}"),
+								HTTPMethod: "GET",
+								PathParams: []Parameter{
+									{
+										FieldPath: FieldPath{
+											{
+												Name:   "string",
+												Target: msg.Fields[0],
+											},
+										},
+										Target: msg.Fields[0],
+									},
+								},
+								Body: nil,
+							},
+							{
+								Index:      2,
+								PathTmpl:   compilePath(t, "/v2/example/echo"),
+								HTTPMethod: "POST",
+								Body: &Body{
+									FieldPath: FieldPath{
+										FieldPathComponent{
+											Name:   "string",
+											Target: msg.Fields[0],
+										},
+									},
+								},
 							},
 						},
 					},
@@ -774,5 +919,191 @@ func TestExtractServicesWithError(t *testing.T) {
 			t.Errorf("loadServices(%q) succeeded; want an error; files=%v", spec.target, spec.srcs)
 		}
 		t.Log(err)
+	}
+}
+
+func TestResolveFieldPath(t *testing.T) {
+	for _, spec := range []struct {
+		src     string
+		path    string
+		wantErr bool
+	}{
+		{
+			src: `
+				name: 'example.proto'
+				package: 'example'
+				message_type <
+					name: 'ExampleMessage'
+					field <
+						name: 'string'
+						type: TYPE_STRING
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+				>
+			`,
+			path:    "string",
+			wantErr: false,
+		},
+		// no such field
+		{
+			src: `
+				name: 'example.proto'
+				package: 'example'
+				message_type <
+					name: 'ExampleMessage'
+					field <
+						name: 'string'
+						type: TYPE_STRING
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+				>
+			`,
+			path:    "something_else",
+			wantErr: true,
+		},
+		// repeated field
+		{
+			src: `
+				name: 'example.proto'
+				package: 'example'
+				message_type <
+					name: 'ExampleMessage'
+					field <
+						name: 'string'
+						type: TYPE_STRING
+						label: LABEL_REPEATED
+						number: 1
+					>
+				>
+			`,
+			path:    "string",
+			wantErr: true,
+		},
+		// nested field
+		{
+			src: `
+				name: 'example.proto'
+				package: 'example'
+				message_type <
+					name: 'ExampleMessage'
+					field <
+						name: 'nested'
+						type: TYPE_MESSAGE
+						type_name: 'AnotherMessage'
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+					field <
+						name: 'terminal'
+						type: TYPE_BOOL
+						label: LABEL_OPTIONAL
+						number: 2
+					>
+				>
+				message_type <
+					name: 'AnotherMessage'
+					field <
+						name: 'nested2'
+						type: TYPE_MESSAGE
+						type_name: 'ExampleMessage'
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+				>
+			`,
+			path:    "nested.nested2.nested.nested2.nested.nested2.terminal",
+			wantErr: false,
+		},
+		// non aggregate field on the path
+		{
+			src: `
+				name: 'example.proto'
+				package: 'example'
+				message_type <
+					name: 'ExampleMessage'
+					field <
+						name: 'nested'
+						type: TYPE_MESSAGE
+						type_name: 'AnotherMessage'
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+					field <
+						name: 'terminal'
+						type: TYPE_BOOL
+						label: LABEL_OPTIONAL
+						number: 2
+					>
+				>
+				message_type <
+					name: 'AnotherMessage'
+					field <
+						name: 'nested2'
+						type: TYPE_MESSAGE
+						type_name: 'ExampleMessage'
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+				>
+			`,
+			path:    "nested.terminal.nested2",
+			wantErr: true,
+		},
+		// repeated field
+		{
+			src: `
+				name: 'example.proto'
+				package: 'example'
+				message_type <
+					name: 'ExampleMessage'
+					field <
+						name: 'nested'
+						type: TYPE_MESSAGE
+						type_name: 'AnotherMessage'
+						label: LABEL_OPTIONAL
+						number: 1
+					>
+					field <
+						name: 'terminal'
+						type: TYPE_BOOL
+						label: LABEL_OPTIONAL
+						number: 2
+					>
+				>
+				message_type <
+					name: 'AnotherMessage'
+					field <
+						name: 'nested2'
+						type: TYPE_MESSAGE
+						type_name: 'ExampleMessage'
+						label: LABEL_REPEATED
+						number: 1
+					>
+				>
+			`,
+			path:    "nested.nested2.terminal",
+			wantErr: true,
+		},
+	} {
+		var file descriptor.FileDescriptorProto
+		if err := proto.UnmarshalText(spec.src, &file); err != nil {
+			t.Fatalf("proto.Unmarshal(%s) failed with %v; want success", spec.src, err)
+		}
+		reg := NewRegistry()
+		reg.loadFile(&file)
+		f, err := reg.LookupFile(file.GetName())
+		if err != nil {
+			t.Fatalf("reg.LookupFile(%q) failed with %v; want success; on file=%s", file.GetName(), err, spec.src)
+		}
+		_, err = reg.resolveFiledPath(f.Messages[0], spec.path)
+		if got, want := err != nil, spec.wantErr; got != want {
+			if want {
+				t.Errorf("reg.resolveFiledPath(%q, %q) succeeded; want an error", f.Messages[0].GetName(), spec.path)
+				continue
+			}
+			t.Errorf("reg.resolveFiledPath(%q, %q) failed with %v; want success", f.Messages[0].GetName(), spec.path, err)
+		}
 	}
 }

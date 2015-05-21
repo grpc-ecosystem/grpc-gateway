@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gengo/grpc-gateway/internal"
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/httprule"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
@@ -102,20 +103,40 @@ type Method struct {
 	Service *Service
 	*descriptor.MethodDescriptorProto
 
-	// PathTmpl is path template where this method is mapped to.
-	PathTmpl httprule.Template
-	// HTTPMethod is the HTTP method which this method is mapped to.
-	HTTPMethod string
 	// RequestType is the message type of requests to this method.
 	RequestType *Message
 	// ResponseType is the message type of responses from this method.
 	ResponseType *Message
+	Bindings     []*Binding
+}
+
+// Binding describes how an HTTP endpoint is bound to a gRPC method.
+type Binding struct {
+	// Method is the method which the endpoint is bound to.
+	Method *Method
+	// Index is a zero-origin index of the binding in the target method
+	Index int
+	// PathTmpl is path template where this method is mapped to.
+	PathTmpl httprule.Template
+	// HTTPMethod is the HTTP method which this method is mapped to.
+	HTTPMethod string
 	// PathParams is the list of parameters provided in HTTP request paths.
 	PathParams []Parameter
-	// QueryParam is the list of parameters provided in HTTP query strings.
-	QueryParams []Parameter
 	// Body describes parameters provided in HTTP request body.
 	Body *Body
+}
+
+// ExplicitParams returns a list of explicitly bound parameters of "b",
+// i.e. a union of field path for body and field paths for path parameters.
+func (b *Binding) ExplicitParams() []string {
+	var result []string
+	if b.Body != nil {
+		result = append(result, b.Body.FieldPath.String())
+	}
+	for _, p := range b.PathParams {
+		result = append(result, p.FieldPath.String())
+	}
+	return result
 }
 
 // Field wraps descriptor.FieldDescriptorProto for richer features.
@@ -204,15 +225,15 @@ type FieldPathComponent struct {
 
 // RHS returns a right-hand-side expression in go for this field.
 func (c FieldPathComponent) RHS() string {
-	return toCamel(c.Name)
+	return internal.PascalFromSnake(c.Name)
 }
 
 // LHS returns a left-hand-side expression in go for this field.
 func (c FieldPathComponent) LHS() string {
 	if c.Target.Message.File.proto2() {
-		return fmt.Sprintf("Get%s()", toCamel(c.Name))
+		return fmt.Sprintf("Get%s()", internal.PascalFromSnake(c.Name))
 	}
-	return toCamel(c.Name)
+	return internal.PascalFromSnake(c.Name)
 }
 
 var (
