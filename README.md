@@ -179,14 +179,13 @@ More examples are available under `examples` directory.
 * Generating JSON API handlers
 * Method parameters in request body
 * Method parameters in request path
+* Method parameters in query string
 * Mapping streaming APIs to JSON streams
 
 ### Want to support
 But not yet.
 * Integrated authentication
 * bytes and enum fields in path parameter
-* Method parameters in query string
-* Encoding request/response body in application/x-www-form-urlencoded
 * Optionally generating the entrypoint
 * Optionally emitting API definition for [Swagger](http://swagger.io)
 
