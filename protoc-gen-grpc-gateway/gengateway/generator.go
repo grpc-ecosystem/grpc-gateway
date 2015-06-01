@@ -45,7 +45,7 @@ func New(reg *descriptor.Registry) *generator {
 		if err := reg.ReserveGoPackageAlias(pkg.Name, pkg.Path); err != nil {
 			for i := 0; ; i++ {
 				alias := fmt.Sprintf("%s_%d", pkg.Name, i)
-				if err := reg.ReserveGoPackageAlias(pkg.Name, pkg.Path); err != nil {
+				if err := reg.ReserveGoPackageAlias(alias, pkg.Path); err != nil {
 					continue
 				}
 				pkg.Alias = alias
