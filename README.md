@@ -165,7 +165,6 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    }
    ```
 
-
 ## More Examples
 More examples are available under `examples` directory.
 * `echo_service.proto`, `a_bit_of_everything.proto`: service definition
@@ -181,13 +180,14 @@ More examples are available under `examples` directory.
 * Method parameters in request path
 * Method parameters in query string
 * Mapping streaming APIs to JSON streams
+* Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata
 
 ### Want to support
 But not yet.
-* Integrated authentication
-* bytes and enum fields in path parameter
-* Optionally generating the entrypoint
-* Optionally emitting API definition for [Swagger](http://swagger.io)
+* Integrated authentication. #4
+* bytes and enum fields in path parameter. #5
+* Optionally generating the entrypoint. #8
+* Optionally emitting API definition for [Swagger](http://swagger.io). #9
 
 ### No plan to support
 But patch is welcome.
