@@ -71,6 +71,7 @@ func TestPopulateParameters(t *testing.T) {
 				"nested.nested.nested.string_value":   {"s"},
 				"nested.nested.string_value":          {"t"},
 				"nested.string_value":                 {"u"},
+				"nested_non_null.string_value":        {"v"},
 			},
 			filter: internal.NewDoubleArray(nil),
 			want: &proto3Message{
@@ -83,6 +84,9 @@ func TestPopulateParameters(t *testing.T) {
 						StringValue: "t",
 					},
 					StringValue: proto.String("u"),
+				},
+				NestedNonNull: proto2Message{
+					StringValue: proto.String("v"),
 				},
 			},
 		},
@@ -195,6 +199,7 @@ func TestPopulateParametersWithFilters(t *testing.T) {
 
 type proto3Message struct {
 	Nested        *proto2Message `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
+	NestedNonNull proto2Message  `protobuf:"bytes,11,opt,name=nested_non_null" json:"nested_non_null,omitempty"`
 	FloatValue    float32        `protobuf:"fixed32,2,opt,name=float_value" json:"float_value,omitempty"`
 	DoubleValue   float64        `protobuf:"fixed64,3,opt,name=double_value" json:"double_value,omitempty"`
 	Int64Value    int64          `protobuf:"varint,4,opt,name=int64_value" json:"int64_value,omitempty"`
