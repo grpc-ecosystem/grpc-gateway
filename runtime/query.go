@@ -59,6 +59,9 @@ func populateQueryParameter(msg proto.Message, fieldPath []string, values []stri
 			}
 			m = f.Elem()
 			continue
+		case reflect.Struct:
+			m = f
+			continue
 		default:
 			return fmt.Errorf("unexpected type %s in %T", f.Type(), msg)
 		}
