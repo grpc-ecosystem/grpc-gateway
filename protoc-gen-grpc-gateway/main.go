@@ -68,6 +68,7 @@ func main() {
 	reg.SetPrefix(*importPrefix)
 	if err := reg.Load(req); err != nil {
 		emitError(err)
+		return
 	}
 
 	g := gengateway.New(reg)
@@ -85,6 +86,7 @@ func main() {
 	glog.V(1).Info("Processed code generator request")
 	if err != nil {
 		emitError(err)
+		return
 	}
 	emitFiles(out)
 }
