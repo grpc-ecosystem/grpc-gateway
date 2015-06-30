@@ -66,7 +66,9 @@ func main() {
 	}
 
 	reg.SetPrefix(*importPrefix)
-	reg.Load(req)
+	if err := reg.Load(req); err != nil {
+		emitError(err)
+	}
 
 	g := gengateway.New(reg)
 
@@ -79,16 +81,24 @@ func main() {
 		targets = append(targets, f)
 	}
 
-	var resp plugin.CodeGeneratorResponse
 	out, err := g.Generate(targets)
-	if err != nil {
-		resp.Error = proto.String(err.Error())
-	} else {
-		resp.File = out
-	}
 	glog.V(1).Info("Processed code generator request")
+	if err != nil {
+		emitError(err)
+	}
+	emitFiles(out)
+}
 
-	buf, err := proto.Marshal(&resp)
+func emitFiles(out []*plugin.CodeGeneratorResponse_File) {
+	emitResp(&plugin.CodeGeneratorResponse{File: out})
+}
+
+func emitError(err error) {
+	emitResp(&plugin.CodeGeneratorResponse{Error: proto.String(err.Error())})
+}
+
+func emitResp(resp *plugin.CodeGeneratorResponse) {
+	buf, err := proto.Marshal(resp)
 	if err != nil {
 		glog.Fatal(err)
 	}

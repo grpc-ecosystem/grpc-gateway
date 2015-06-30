@@ -7,6 +7,7 @@ import (
 
 	"github.com/gengo/grpc-gateway/internal"
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	"github.com/golang/glog"
 )
 
 type param struct {
@@ -58,6 +59,7 @@ func applyTemplate(p param) (string, error) {
 	var methodSeen bool
 	for _, svc := range p.Services {
 		for _, meth := range svc.Methods {
+			glog.V(2).Infof("Processing %s.%s", svc.GetName(), meth.GetName())
 			methodSeen = true
 			for _, b := range meth.Bindings {
 				if err := handlerTemplate.Execute(w, binding{Binding: b}); err != nil {

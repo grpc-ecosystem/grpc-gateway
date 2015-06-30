@@ -15,17 +15,20 @@ import (
 // It must be called after loadFile is called for all files so that loadServices
 // can resolve names of message types and their fields.
 func (r *Registry) loadServices(targetFile string) error {
+	glog.V(1).Infof("Loading services from %s", targetFile)
 	file := r.files[targetFile]
 	if file == nil {
 		return fmt.Errorf("no such file: %s", targetFile)
 	}
 	var svcs []*Service
 	for _, sd := range file.GetService() {
+		glog.V(2).Infof("Registering %s", sd.GetName())
 		svc := &Service{
 			File: file,
 			ServiceDescriptorProto: sd,
 		}
 		for _, md := range sd.GetMethod() {
+			glog.V(2).Infof("Processing %s.%s", sd.GetName(), md.GetName())
 			opts, err := extractAPIOptions(md)
 			if err != nil {
 				glog.Errorf("Failed to extract ApiMethodOptions from %s.%s: %v", svc.GetName(), md.GetName(), err)
@@ -44,6 +47,7 @@ func (r *Registry) loadServices(targetFile string) error {
 		if len(svc.Methods) == 0 {
 			continue
 		}
+		glog.V(2).Infof("Registered %s with %d method(s)", svc.GetName(), len(svc.Methods))
 		svcs = append(svcs, svc)
 	}
 	file.Services = svcs
