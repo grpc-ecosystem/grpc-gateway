@@ -88,7 +88,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 	client := NewEchoServiceClient(conn)
 
 	mux.Handle("POST", pattern_EchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		resp, err := request_EchoService_Echo_0(ctx, client, req, pathParams)
+		resp, err := request_EchoService_Echo_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
@@ -99,7 +99,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 	})
 
 	mux.Handle("POST", pattern_EchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		resp, err := request_EchoService_EchoBody_0(ctx, client, req, pathParams)
+		resp, err := request_EchoService_EchoBody_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(w, err)
 			return
