@@ -55,6 +55,7 @@ func ForwardResponseStream(w http.ResponseWriter, recv func() (proto.Message, er
 			glog.Errorf("Failed to send response chunk: %v", err)
 			return
 		}
+		f.Flush()
 	}
 }
 
