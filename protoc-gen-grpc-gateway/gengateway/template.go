@@ -224,13 +224,13 @@ func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux,
 	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(w, err)
+			runtime.HTTPError(ctx, w, err)
 			return
 		}
 		{{if $m.GetServerStreaming}}
 		runtime.ForwardResponseStream(w, func() (proto.Message, error) { return resp.Recv() })
 		{{else}}
-		runtime.ForwardResponseMessage(w, resp)
+		runtime.ForwardResponseMessage(ctx, w, resp)
 		{{end}}
 	})
 	{{end}}

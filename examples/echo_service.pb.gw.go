@@ -90,22 +90,22 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 	mux.Handle("POST", pattern_EchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_EchoService_Echo_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(w, err)
+			runtime.HTTPError(ctx, w, err)
 			return
 		}
 
-		runtime.ForwardResponseMessage(w, resp)
+		runtime.ForwardResponseMessage(ctx, w, resp)
 
 	})
 
 	mux.Handle("POST", pattern_EchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_EchoService_EchoBody_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(w, err)
+			runtime.HTTPError(ctx, w, err)
 			return
 		}
 
-		runtime.ForwardResponseMessage(w, resp)
+		runtime.ForwardResponseMessage(ctx, w, resp)
 
 	})
 

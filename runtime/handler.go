@@ -8,6 +8,7 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
+	"golang.org/x/net/context"
 )
 
 type responseStreamChunk struct {
@@ -58,11 +59,11 @@ func ForwardResponseStream(w http.ResponseWriter, recv func() (proto.Message, er
 }
 
 // ForwardResponseMessage forwards the message from gRPC server to REST client.
-func ForwardResponseMessage(w http.ResponseWriter, resp proto.Message) {
+func ForwardResponseMessage(ctx context.Context, w http.ResponseWriter, resp proto.Message) {
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
-		HTTPError(w, err)
+		HTTPError(ctx, w, err)
 		return
 	}
 

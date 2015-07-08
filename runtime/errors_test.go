@@ -1,0 +1,55 @@
+package runtime_test
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+
+	"github.com/gengo/grpc-gateway/runtime"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+)
+
+func TestDefaultHTTPError(t *testing.T) {
+	ctx := context.Background()
+
+	for _, spec := range []struct {
+		err    error
+		status int
+		msg    string
+	}{
+		{
+			err:    fmt.Errorf("example error"),
+			status: http.StatusInternalServerError,
+			msg:    "example error",
+		},
+		{
+			err:    grpc.Errorf(codes.NotFound, "no such resource"),
+			status: http.StatusNotFound,
+			msg:    "no such resource",
+		},
+	} {
+		w := httptest.NewRecorder()
+		runtime.DefaultHTTPError(ctx, w, spec.err)
+
+		if got, want := w.Header().Get("Content-Type"), "application/json"; got != want {
+			t.Errorf(`w.Header().Get("Content-Type") = %q; want %q; on spec.err=%v`, got, want, spec.err)
+		}
+		if got, want := w.Code, spec.status; got != want {
+			t.Errorf("w.Code = %d; want %d", got, want)
+		}
+
+		body := make(map[string]string)
+		if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
+			t.Errorf("json.Unmarshal(%q, &body) failed with %v; want success", w.Body.Bytes(), err)
+			continue
+		}
+		if got, want := body["error"], spec.msg; !strings.Contains(got, want) {
+			t.Errorf(`body["error"] = %q; want %q; on spec.err=%v`, got, want, spec.err)
+		}
+	}
+}
