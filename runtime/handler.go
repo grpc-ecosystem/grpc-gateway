@@ -17,7 +17,7 @@ type responseStreamChunk struct {
 }
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
-func ForwardResponseStream(w http.ResponseWriter, recv func() (proto.Message, error)) {
+func ForwardResponseStream(ctx context.Context, w http.ResponseWriter, req *http.Request, recv func() (proto.Message, error)) {
 	f, ok := w.(http.Flusher)
 	if !ok {
 		glog.Errorf("Flush not supported in %T", w)
@@ -59,8 +59,8 @@ func ForwardResponseStream(w http.ResponseWriter, recv func() (proto.Message, er
 	}
 }
 
-// ForwardResponseMessage forwards the message from gRPC server to REST client.
-func ForwardResponseMessage(ctx context.Context, w http.ResponseWriter, resp proto.Message) {
+// ForwardResponseMessage forwards the message "resp" from gRPC server to REST client.
+func ForwardResponseMessage(ctx context.Context, w http.ResponseWriter, req *http.Request, resp proto.Message) {
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
