@@ -384,7 +384,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		runtime.ForwardResponseMessage(ctx, w, resp)
+		forward_ABitOfEverythingService_Create_0(ctx, w, req, resp)
 
 	})
 
@@ -395,7 +395,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		runtime.ForwardResponseMessage(ctx, w, resp)
+		forward_ABitOfEverythingService_CreateBody_0(ctx, w, req, resp)
 
 	})
 
@@ -406,7 +406,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		runtime.ForwardResponseMessage(ctx, w, resp)
+		forward_ABitOfEverythingService_BulkCreate_0(ctx, w, req, resp)
 
 	})
 
@@ -417,7 +417,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		runtime.ForwardResponseMessage(ctx, w, resp)
+		forward_ABitOfEverythingService_Lookup_0(ctx, w, req, resp)
 
 	})
 
@@ -428,7 +428,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		runtime.ForwardResponseStream(w, func() (proto.Message, error) { return resp.Recv() })
+		forward_ABitOfEverythingService_List_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
 
 	})
 
@@ -439,7 +439,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		runtime.ForwardResponseMessage(ctx, w, resp)
+		forward_ABitOfEverythingService_Update_0(ctx, w, req, resp)
 
 	})
 
@@ -450,7 +450,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		runtime.ForwardResponseMessage(ctx, w, resp)
+		forward_ABitOfEverythingService_Delete_0(ctx, w, req, resp)
 
 	})
 
@@ -461,7 +461,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		runtime.ForwardResponseMessage(ctx, w, resp)
+		forward_ABitOfEverythingService_Echo_0(ctx, w, req, resp)
 
 	})
 
@@ -472,7 +472,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		runtime.ForwardResponseMessage(ctx, w, resp)
+		forward_ABitOfEverythingService_Echo_1(ctx, w, req, resp)
 
 	})
 
@@ -483,7 +483,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		runtime.ForwardResponseMessage(ctx, w, resp)
+		forward_ABitOfEverythingService_Echo_2(ctx, w, req, resp)
 
 	})
 
@@ -494,7 +494,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			return
 		}
 
-		runtime.ForwardResponseStream(w, func() (proto.Message, error) { return resp.Recv() })
+		forward_ABitOfEverythingService_BulkEcho_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
 
 	})
 
@@ -523,4 +523,28 @@ var (
 	pattern_ABitOfEverythingService_Echo_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v2", "example", "echo"}, ""))
 
 	pattern_ABitOfEverythingService_BulkEcho_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a_bit_of_everything", "echo"}, ""))
+)
+
+var (
+	forward_ABitOfEverythingService_Create_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_CreateBody_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_BulkCreate_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_Lookup_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_List_0 = runtime.ForwardResponseStream
+
+	forward_ABitOfEverythingService_Update_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_Delete_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_Echo_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_Echo_1 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_Echo_2 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_BulkEcho_0 = runtime.ForwardResponseStream
 )

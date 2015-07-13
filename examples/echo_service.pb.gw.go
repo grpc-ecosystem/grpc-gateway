@@ -94,7 +94,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 			return
 		}
 
-		runtime.ForwardResponseMessage(ctx, w, resp)
+		forward_EchoService_Echo_0(ctx, w, req, resp)
 
 	})
 
@@ -105,7 +105,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 			return
 		}
 
-		runtime.ForwardResponseMessage(ctx, w, resp)
+		forward_EchoService_EchoBody_0(ctx, w, req, resp)
 
 	})
 
@@ -116,4 +116,10 @@ var (
 	pattern_EchoService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "echo", "id"}, ""))
 
 	pattern_EchoService_EchoBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "echo_body"}, ""))
+)
+
+var (
+	forward_EchoService_Echo_0 = runtime.ForwardResponseMessage
+
+	forward_EchoService_EchoBody_0 = runtime.ForwardResponseMessage
 )

@@ -228,9 +228,9 @@ func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 		{{if $m.GetServerStreaming}}
-		runtime.ForwardResponseStream(w, func() (proto.Message, error) { return resp.Recv() })
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
 		{{else}}
-		runtime.ForwardResponseMessage(ctx, w, resp)
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, w, req, resp)
 		{{end}}
 	})
 	{{end}}
@@ -242,6 +242,14 @@ var (
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
 	pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} = runtime.MustPattern(runtime.NewPattern({{$b.PathTmpl.Version}}, {{$b.PathTmpl.OpCodes | printf "%#v"}}, {{$b.PathTmpl.Pool | printf "%#v"}}, {{$b.PathTmpl.Verb | printf "%q"}}))
+	{{end}}
+	{{end}}
+)
+
+var (
+	{{range $m := $svc.Methods}}
+	{{range $b := $m.Bindings}}
+	forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} = {{if $m.GetServerStreaming}}runtime.ForwardResponseStream{{else}}runtime.ForwardResponseMessage{{end}}
 	{{end}}
 	{{end}}
 )
