@@ -31,7 +31,7 @@ var _ = json.Marshal
 var _ = internal.PascalFromSnake
 
 var (
-	filter_ABitOfEverythingService_Create_0 = &internal.DoubleArray{Encoding: map[string]int{"float_value": 0, "double_value": 1, "bool_value": 7, "sfixed64_value": 11, "sint32_value": 12, "sint64_value": 13, "int64_value": 2, "int32_value": 4, "string_value": 8, "uint32_value": 9, "sfixed32_value": 10, "fixed64_value": 5, "fixed32_value": 6, "uint64_value": 3}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}}
+	filter_ABitOfEverythingService_Create_0 = &internal.DoubleArray{Encoding: map[string]int{"float_value": 0, "double_value": 1, "int64_value": 2, "uint64_value": 3, "int32_value": 4, "fixed64_value": 5, "fixed32_value": 6, "bool_value": 7, "string_value": 8, "uint32_value": 9, "sfixed32_value": 10, "sfixed64_value": 11, "sint32_value": 12, "sint64_value": 13}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}}
 )
 
 func request_ABitOfEverythingService_Create_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {

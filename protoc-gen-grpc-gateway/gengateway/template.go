@@ -2,6 +2,7 @@ package gengateway
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	"text/template"
 
@@ -40,7 +41,7 @@ func (b binding) HasQueryParam() bool {
 	return len(fields) > 0
 }
 
-func (b binding) QueryParamFilter() *internal.DoubleArray {
+func (b binding) QueryParamFilter() queryParamFilter {
 	var seqs [][]string
 	if b.Body != nil {
 		seqs = append(seqs, strings.Split(b.Body.FieldPath.String(), "."))
@@ -48,7 +49,21 @@ func (b binding) QueryParamFilter() *internal.DoubleArray {
 	for _, p := range b.PathParams {
 		seqs = append(seqs, strings.Split(p.FieldPath.String(), "."))
 	}
-	return internal.NewDoubleArray(seqs)
+	return queryParamFilter{internal.NewDoubleArray(seqs)}
+}
+
+// queryParamFilter is a wrapper of internal.DoubleArray which provides String() to output DoubleArray.Encoding in a stable and predictable format.
+type queryParamFilter struct {
+	*internal.DoubleArray
+}
+
+func (f queryParamFilter) String() string {
+	encodings := make([]string, len(f.Encoding))
+	for str, enc := range f.Encoding {
+		encodings[enc] = fmt.Sprintf("%q: %d", str, enc)
+	}
+	e := strings.Join(encodings, ", ")
+	return fmt.Sprintf("&internal.DoubleArray{Encoding: map[string]int{%s}, Base: %#v, Check: %#v}", e, f.Base, f.Check)
 }
 
 func applyTemplate(p param) (string, error) {
@@ -155,7 +170,7 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 	_ = template.Must(handlerTemplate.New("client-rpc-request-func").Parse(`
 {{if .HasQueryParam}}
 var (
-	filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}} = {{.QueryParamFilter | printf "%#v"}}
+	filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}} = {{.QueryParamFilter}}
 )
 {{end}}
 {{template "request-func-signature" .}} {
