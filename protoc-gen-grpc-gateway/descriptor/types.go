@@ -230,7 +230,8 @@ func (c FieldPathComponent) RHS() string {
 
 // LHS returns a left-hand-side expression in go for this field.
 func (c FieldPathComponent) LHS() string {
-	if c.Target.Message.File.proto2() {
+	// proto2 generates a Get*() for all fields, while proto3 only generates it for nested messages.
+	if c.Target.Message.File.proto2() || *(c.Target.Type) == descriptor.FieldDescriptorProto_TYPE_MESSAGE {
 		return fmt.Sprintf("Get%s()", internal.PascalFromSnake(c.Name))
 	}
 	return internal.PascalFromSnake(c.Name)
