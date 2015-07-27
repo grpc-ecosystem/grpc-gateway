@@ -196,6 +196,14 @@ func (p FieldPath) String() string {
 	return strings.Join(components, ".")
 }
 
+// IsNestedProto3 indicates whether the FieldPath is a nested Proto3 path.
+func (p FieldPath) IsNestedProto3() bool {
+	if len(p) > 1 && !p[0].Target.Message.File.proto2() {
+		return true
+	}
+	return false
+}
+
 // RHS is a right-hand-side expression in go to be used to assign a value to the target field.
 // It starts with "msgExpr", which is the go expression of the method request object.
 func (p FieldPath) RHS(msgExpr string) string {

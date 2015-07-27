@@ -188,7 +188,11 @@ var (
 	if !ok {
 		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", {{$param | printf "%q"}})
 	}
+{{if $param.IsNestedProto3 }}
+	err = runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val)
+{{else}}
 	{{$param.RHS "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val)
+{{end}}
 	if err != nil {
 		return nil, err
 	}

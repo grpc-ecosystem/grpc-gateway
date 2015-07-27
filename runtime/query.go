@@ -19,14 +19,21 @@ func PopulateQueryParameters(msg proto.Message, values url.Values, filter *inter
 		if filter.HasCommonPrefix(fieldPath) {
 			continue
 		}
-		if err := populateQueryParameter(msg, fieldPath, values); err != nil {
+		if err := populateFieldValueFromPath(msg, fieldPath, values); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func populateQueryParameter(msg proto.Message, fieldPath []string, values []string) error {
+// PopulateFieldFromPath sets a value in a nested Protobuf structure.
+// It instantiates missing protobuf fields as it goes.
+func PopulateFieldFromPath(msg proto.Message, fieldPathString string, value string) error {
+	fieldPath := strings.Split(fieldPathString, ".")
+	return populateFieldValueFromPath(msg, fieldPath, []string{value})
+}
+
+func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []string) error {
 	m := reflect.ValueOf(msg)
 	if m.Kind() != reflect.Ptr {
 		return fmt.Errorf("unexpected type %T: %v", msg, msg)
