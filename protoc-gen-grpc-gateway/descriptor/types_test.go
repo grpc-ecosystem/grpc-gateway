@@ -164,10 +164,10 @@ func TestFieldPath(t *testing.T) {
 		Name:   "nest2_field",
 		Target: nest.Fields[0],
 	}
-	if got, want := c2.LHS(), "Nest2Field"; got != want {
+	if got, want := c2.LHS(), "GetNest2Field()"; got != want {
 		t.Errorf("c2.LHS() = %q; want %q", got, want)
 	}
-	if got, want := c2.LHS(), "Nest2Field"; got != want {
+	if got, want := c2.RHS(), "Nest2Field"; got != want {
 		t.Errorf("c2.LHS() = %q; want %q", got, want)
 	}
 
@@ -177,7 +177,7 @@ func TestFieldPath(t *testing.T) {
 			Target: nest.Fields[1],
 		},
 	}
-	if got, want := fp.RHS("resp"), "resp.GetNestField().Nest2Field.GetNestField().TerminalField"; got != want {
+	if got, want := fp.RHS("resp"), "resp.GetNestField().GetNest2Field().GetNestField().TerminalField"; got != want {
 		t.Errorf("fp.RHS(%q) = %q; want %q", "resp", got, want)
 	}
 
@@ -187,7 +187,7 @@ func TestFieldPath(t *testing.T) {
 			Target: nest2.Fields[1],
 		},
 	}
-	if got, want := fp2.RHS("resp"), "resp.Nest2Field.GetNestField().Nest2Field.TerminalField"; got != want {
+	if got, want := fp2.RHS("resp"), "resp.GetNest2Field().GetNestField().GetNest2Field().TerminalField"; got != want {
 		t.Errorf("fp2.RHS(%q) = %q; want %q", "resp", got, want)
 	}
 
