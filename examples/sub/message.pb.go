@@ -35,6 +35,3 @@ func (m *StringMessage) GetValue() string {
 	}
 	return ""
 }
-
-func init() {
-}

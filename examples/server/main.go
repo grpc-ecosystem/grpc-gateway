@@ -7,7 +7,7 @@ import (
 	"net"
 	"sync"
 
-	examples "github.com/gengo/grpc-gateway/examples"
+	examples "github.com/gengo/grpc-gateway/examples/examplepb"
 	sub "github.com/gengo/grpc-gateway/examples/sub"
 	"github.com/golang/glog"
 	"github.com/rogpeppe/fastuuid"

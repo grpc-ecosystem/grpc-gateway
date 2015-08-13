@@ -1,6 +1,6 @@
 syntax = "proto3";
-option go_package = "main";
-package gengo.grpc.gateway.examples;
+option go_package = "examplepb";
+package gengo.grpc.gateway.examples.examplepb;
 
 import "google/api/annotations.proto";
 import "examples/sub/message.proto";

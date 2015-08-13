@@ -1,4 +1,4 @@
-package main_test
+package main
 
 import (
 	"bytes"
@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	gw "github.com/gengo/grpc-gateway/examples"
+	gw "github.com/gengo/grpc-gateway/examples/examplepb"
 	server "github.com/gengo/grpc-gateway/examples/server"
 	sub "github.com/gengo/grpc-gateway/examples/sub"
 )
@@ -30,7 +30,7 @@ func TestIntegration(t *testing.T) {
 		}
 	}()
 	go func() {
-		if err := gw.Run(); err != nil {
+		if err := Run(); err != nil {
 			t.Errorf("gw.Run() failed with %v; want success", err)
 			return
 		}

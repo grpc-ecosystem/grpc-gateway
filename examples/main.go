@@ -4,6 +4,7 @@ import (
 	"flag"
 	"net/http"
 
+	"github.com/gengo/grpc-gateway/examples/examplepb"
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/glog"
 	"golang.org/x/net/context"
@@ -20,11 +21,11 @@ func Run() error {
 	defer cancel()
 
 	mux := runtime.NewServeMux()
-	err := RegisterEchoServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint)
+	err := examplepb.RegisterEchoServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint)
 	if err != nil {
 		return err
 	}
-	err = RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx, mux, *abeEndpoint)
+	err = examplepb.RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx, mux, *abeEndpoint)
 	if err != nil {
 		return err
 	}
