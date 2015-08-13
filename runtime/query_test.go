@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/gengo/grpc-gateway/internal"
+	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/protobuf/proto"
 )
@@ -12,7 +12,7 @@ import (
 func TestPopulateParameters(t *testing.T) {
 	for _, spec := range []struct {
 		values url.Values
-		filter *internal.DoubleArray
+		filter *utilities.DoubleArray
 		want   proto.Message
 	}{
 		{
@@ -27,7 +27,7 @@ func TestPopulateParameters(t *testing.T) {
 				"string_value":   {"str"},
 				"repeated_value": {"a", "b", "c"},
 			},
-			filter: internal.NewDoubleArray(nil),
+			filter: utilities.NewDoubleArray(nil),
 			want: &proto3Message{
 				FloatValue:    1.5,
 				DoubleValue:   2.5,
@@ -52,7 +52,7 @@ func TestPopulateParameters(t *testing.T) {
 				"string_value":   {"str"},
 				"repeated_value": {"a", "b", "c"},
 			},
-			filter: internal.NewDoubleArray(nil),
+			filter: utilities.NewDoubleArray(nil),
 			want: &proto2Message{
 				FloatValue:    proto.Float32(1.5),
 				DoubleValue:   proto.Float64(2.5),
@@ -73,7 +73,7 @@ func TestPopulateParameters(t *testing.T) {
 				"nested.string_value":                 {"u"},
 				"nested_non_null.string_value":        {"v"},
 			},
-			filter: internal.NewDoubleArray(nil),
+			filter: utilities.NewDoubleArray(nil),
 			want: &proto3Message{
 				Nested: &proto2Message{
 					Nested: &proto3Message{
@@ -94,7 +94,7 @@ func TestPopulateParameters(t *testing.T) {
 			values: url.Values{
 				"uint64_value": {"1", "2", "3", "4", "5"},
 			},
-			filter: internal.NewDoubleArray(nil),
+			filter: utilities.NewDoubleArray(nil),
 			want: &proto3Message{
 				Uint64Value: 1,
 			},
@@ -116,7 +116,7 @@ func TestPopulateParameters(t *testing.T) {
 func TestPopulateParametersWithFilters(t *testing.T) {
 	for _, spec := range []struct {
 		values url.Values
-		filter *internal.DoubleArray
+		filter *utilities.DoubleArray
 		want   proto.Message
 	}{
 		{
@@ -125,7 +125,7 @@ func TestPopulateParametersWithFilters(t *testing.T) {
 				"string_value":   {"str"},
 				"repeated_value": {"a", "b", "c"},
 			},
-			filter: internal.NewDoubleArray([][]string{
+			filter: utilities.NewDoubleArray([][]string{
 				{"bool_value"}, {"repeated_value"},
 			}),
 			want: &proto3Message{
@@ -139,7 +139,7 @@ func TestPopulateParametersWithFilters(t *testing.T) {
 				"nested.string_value":        {"str"},
 				"string_value":               {"str"},
 			},
-			filter: internal.NewDoubleArray([][]string{
+			filter: utilities.NewDoubleArray([][]string{
 				{"nested"},
 			}),
 			want: &proto3Message{
@@ -153,7 +153,7 @@ func TestPopulateParametersWithFilters(t *testing.T) {
 				"nested.string_value":        {"str"},
 				"string_value":               {"str"},
 			},
-			filter: internal.NewDoubleArray([][]string{
+			filter: utilities.NewDoubleArray([][]string{
 				{"nested", "nested"},
 			}),
 			want: &proto3Message{
@@ -170,7 +170,7 @@ func TestPopulateParametersWithFilters(t *testing.T) {
 				"nested.string_value":        {"str"},
 				"string_value":               {"str"},
 			},
-			filter: internal.NewDoubleArray([][]string{
+			filter: utilities.NewDoubleArray([][]string{
 				{"nested", "nested", "string_value"},
 			}),
 			want: &proto3Message{

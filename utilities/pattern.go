@@ -1,4 +1,4 @@
-package internal
+package utilities
 
 // An OpCode is a opcode of compiled path patterns.
 type OpCode int

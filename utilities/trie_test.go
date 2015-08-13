@@ -1,30 +1,30 @@
-package internal_test
+package utilities_test
 
 import (
 	"reflect"
 	"testing"
 
-	"github.com/gengo/grpc-gateway/internal"
+	"github.com/gengo/grpc-gateway/utilities"
 )
 
 func TestMaxCommonPrefix(t *testing.T) {
 	for _, spec := range []struct {
-		da     internal.DoubleArray
+		da     utilities.DoubleArray
 		tokens []string
 		want   bool
 	}{
 		{
-			da:     internal.DoubleArray{},
+			da:     utilities.DoubleArray{},
 			tokens: nil,
 			want:   false,
 		},
 		{
-			da:     internal.DoubleArray{},
+			da:     utilities.DoubleArray{},
 			tokens: []string{"foo"},
 			want:   false,
 		},
 		{
-			da: internal.DoubleArray{
+			da: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 				},
@@ -35,7 +35,7 @@ func TestMaxCommonPrefix(t *testing.T) {
 			want:   false,
 		},
 		{
-			da: internal.DoubleArray{
+			da: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 				},
@@ -46,7 +46,7 @@ func TestMaxCommonPrefix(t *testing.T) {
 			want:   true,
 		},
 		{
-			da: internal.DoubleArray{
+			da: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 				},
@@ -58,7 +58,7 @@ func TestMaxCommonPrefix(t *testing.T) {
 		},
 		{
 			// foo|bar
-			da: internal.DoubleArray{
+			da: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -76,7 +76,7 @@ func TestMaxCommonPrefix(t *testing.T) {
 		},
 		{
 			// foo|bar
-			da: internal.DoubleArray{
+			da: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -94,7 +94,7 @@ func TestMaxCommonPrefix(t *testing.T) {
 		},
 		{
 			// foo|bar
-			da: internal.DoubleArray{
+			da: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -112,7 +112,7 @@ func TestMaxCommonPrefix(t *testing.T) {
 		},
 		{
 			// foo|bar
-			da: internal.DoubleArray{
+			da: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -130,7 +130,7 @@ func TestMaxCommonPrefix(t *testing.T) {
 		},
 		{
 			// foo|foo\.bar|bar
-			da: internal.DoubleArray{
+			da: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -150,7 +150,7 @@ func TestMaxCommonPrefix(t *testing.T) {
 		},
 		{
 			// foo|foo\.bar|bar
-			da: internal.DoubleArray{
+			da: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -170,7 +170,7 @@ func TestMaxCommonPrefix(t *testing.T) {
 		},
 		{
 			// foo|foo\.bar|bar
-			da: internal.DoubleArray{
+			da: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -190,7 +190,7 @@ func TestMaxCommonPrefix(t *testing.T) {
 		},
 		{
 			// foo|foo\.bar|bar
-			da: internal.DoubleArray{
+			da: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -210,7 +210,7 @@ func TestMaxCommonPrefix(t *testing.T) {
 		},
 		{
 			// foo|foo\.bar|bar
-			da: internal.DoubleArray{
+			da: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -239,16 +239,16 @@ func TestMaxCommonPrefix(t *testing.T) {
 func TestAdd(t *testing.T) {
 	for _, spec := range []struct {
 		tokens [][]string
-		want   internal.DoubleArray
+		want   utilities.DoubleArray
 	}{
 		{
-			want: internal.DoubleArray{
+			want: utilities.DoubleArray{
 				Encoding: make(map[string]int),
 			},
 		},
 		{
 			tokens: [][]string{{"foo"}},
-			want: internal.DoubleArray{
+			want: utilities.DoubleArray{
 				Encoding: map[string]int{"foo": 0},
 				Base:     []int{1, 1, 0},
 				Check:    []int{0, 1, 2},
@@ -259,7 +259,7 @@ func TestAdd(t *testing.T) {
 		},
 		{
 			tokens: [][]string{{"foo"}, {"bar"}},
-			want: internal.DoubleArray{
+			want: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -275,7 +275,7 @@ func TestAdd(t *testing.T) {
 		},
 		{
 			tokens: [][]string{{"foo", "bar"}, {"foo", "baz"}},
-			want: internal.DoubleArray{
+			want: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -293,7 +293,7 @@ func TestAdd(t *testing.T) {
 		},
 		{
 			tokens: [][]string{{"foo", "bar"}, {"foo", "baz"}, {"qux"}},
-			want: internal.DoubleArray{
+			want: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -318,7 +318,7 @@ func TestAdd(t *testing.T) {
 				{"foo", "baz", "bar"},
 				{"qux", "foo"},
 			},
-			want: internal.DoubleArray{
+			want: utilities.DoubleArray{
 				Encoding: map[string]int{
 					"foo": 0,
 					"bar": 1,
@@ -340,7 +340,7 @@ func TestAdd(t *testing.T) {
 			},
 		},
 	} {
-		da := internal.NewDoubleArray(spec.tokens)
+		da := utilities.NewDoubleArray(spec.tokens)
 		if got, want := da.Encoding, spec.want.Encoding; !reflect.DeepEqual(got, want) {
 			t.Errorf("da.Encoding = %v; want %v; tokens = %#v", got, want, spec.tokens)
 		}
