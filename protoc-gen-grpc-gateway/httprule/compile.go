@@ -1,7 +1,7 @@
 package httprule
 
 import (
-	"github.com/gengo/grpc-gateway/internal"
+	"github.com/gengo/grpc-gateway/utilities"
 )
 
 const (
@@ -22,7 +22,7 @@ type Template struct {
 	Fields []string
 }
 
-// Compiler compiles internal representation of path templates into marshallable operations.
+// Compiler compiles utilities representation of path templates into marshallable operations.
 // They can be unmarshalled by runtime.NewPattern.
 type Compiler interface {
 	Compile() Template
@@ -30,7 +30,7 @@ type Compiler interface {
 
 type op struct {
 	// code is the opcode of the operation
-	code internal.OpCode
+	code utilities.OpCode
 
 	// str is a string operand of the code.
 	// num is ignored if str is not empty.
@@ -42,20 +42,20 @@ type op struct {
 
 func (w wildcard) compile() []op {
 	return []op{
-		{code: internal.OpPush},
+		{code: utilities.OpPush},
 	}
 }
 
 func (w deepWildcard) compile() []op {
 	return []op{
-		{code: internal.OpPushM},
+		{code: utilities.OpPushM},
 	}
 }
 
 func (l literal) compile() []op {
 	return []op{
 		{
-			code: internal.OpLitPush,
+			code: utilities.OpLitPush,
 			str:  string(l),
 		},
 	}
@@ -67,10 +67,10 @@ func (v variable) compile() []op {
 		ops = append(ops, s.compile()...)
 	}
 	ops = append(ops, op{
-		code: internal.OpConcatN,
+		code: utilities.OpConcatN,
 		num:  len(v.segments),
 	}, op{
-		code: internal.OpCapture,
+		code: utilities.OpCapture,
 		str:  v.path,
 	})
 
@@ -100,7 +100,7 @@ func (t template) Compile() Template {
 			}
 			ops = append(ops, consts[op.str])
 		}
-		if op.code == internal.OpCapture {
+		if op.code == utilities.OpCapture {
 			fields = append(fields, op.str)
 		}
 	}

@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gengo/grpc-gateway/internal"
+	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/gengo/grpc-gateway/runtime"
 )
 
@@ -37,7 +37,7 @@ func TestMuxServeHTTP(t *testing.T) {
 			patterns: []stubPattern{
 				{
 					method: "GET",
-					ops:    []int{int(internal.OpLitPush), 0},
+					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
 				},
 			},
@@ -50,7 +50,7 @@ func TestMuxServeHTTP(t *testing.T) {
 			patterns: []stubPattern{
 				{
 					method: "GET",
-					ops:    []int{int(internal.OpLitPush), 0},
+					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
 				},
 			},
@@ -62,12 +62,12 @@ func TestMuxServeHTTP(t *testing.T) {
 			patterns: []stubPattern{
 				{
 					method: "GET",
-					ops:    []int{int(internal.OpLitPush), 0},
+					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
 				},
 				{
 					method: "GET",
-					ops:    []int{int(internal.OpPush), 0},
+					ops:    []int{int(utilities.OpPush), 0},
 				},
 			},
 			reqMethod:   "GET",
@@ -79,12 +79,12 @@ func TestMuxServeHTTP(t *testing.T) {
 			patterns: []stubPattern{
 				{
 					method: "GET",
-					ops:    []int{int(internal.OpLitPush), 0},
+					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
 				},
 				{
 					method: "POST",
-					ops:    []int{int(internal.OpLitPush), 0},
+					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
 				},
 			},
@@ -97,7 +97,7 @@ func TestMuxServeHTTP(t *testing.T) {
 			patterns: []stubPattern{
 				{
 					method: "GET",
-					ops:    []int{int(internal.OpLitPush), 0},
+					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
 				},
 			},
@@ -109,7 +109,7 @@ func TestMuxServeHTTP(t *testing.T) {
 			patterns: []stubPattern{
 				{
 					method: "GET",
-					ops:    []int{int(internal.OpLitPush), 0},
+					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
 				},
 			},
@@ -125,12 +125,12 @@ func TestMuxServeHTTP(t *testing.T) {
 			patterns: []stubPattern{
 				{
 					method: "GET",
-					ops:    []int{int(internal.OpLitPush), 0},
+					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
 				},
 				{
 					method: "POST",
-					ops:    []int{int(internal.OpLitPush), 0},
+					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
 				},
 			},
@@ -147,7 +147,7 @@ func TestMuxServeHTTP(t *testing.T) {
 			patterns: []stubPattern{
 				{
 					method: "GET",
-					ops:    []int{int(internal.OpLitPush), 0},
+					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
 				},
 			},

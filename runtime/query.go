@@ -6,14 +6,14 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/gengo/grpc-gateway/internal"
+	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 )
 
 // PopulateQueryParameters populates "values" into "msg".
 // A value is ignored if its key starts with one of the elements in "filters".
-func PopulateQueryParameters(msg proto.Message, values url.Values, filter *internal.DoubleArray) error {
+func PopulateQueryParameters(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error {
 	for key, values := range values {
 		fieldPath := strings.Split(key, ".")
 		if filter.HasCommonPrefix(fieldPath) {
@@ -44,7 +44,7 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 		if !isLast && m.Kind() != reflect.Struct {
 			return fmt.Errorf("non-aggregate type in the mid of path: %s", strings.Join(fieldPath, "."))
 		}
-		f := m.FieldByName(internal.PascalFromSnake(fieldName))
+		f := m.FieldByName(utilities.PascalFromSnake(fieldName))
 		if !f.IsValid() {
 			glog.Warningf("field not found in %T: %s", msg, strings.Join(fieldPath, "."))
 			return nil

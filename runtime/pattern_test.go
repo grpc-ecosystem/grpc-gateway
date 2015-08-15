@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gengo/grpc-gateway/internal"
+	"github.com/gengo/grpc-gateway/utilities"
 )
 
 const (
@@ -24,52 +24,52 @@ func TestNewPattern(t *testing.T) {
 	}{
 		{},
 		{
-			ops:           []int{int(internal.OpNop), anything},
+			ops:           []int{int(utilities.OpNop), anything},
 			stackSizeWant: 0,
 		},
 		{
-			ops:           []int{int(internal.OpPush), anything},
+			ops:           []int{int(utilities.OpPush), anything},
 			stackSizeWant: 1,
 		},
 		{
-			ops:           []int{int(internal.OpLitPush), 0},
+			ops:           []int{int(utilities.OpLitPush), 0},
 			pool:          []string{"abc"},
 			stackSizeWant: 1,
 		},
 		{
-			ops:           []int{int(internal.OpPushM), anything},
+			ops:           []int{int(utilities.OpPushM), anything},
 			stackSizeWant: 1,
 		},
 		{
 			ops: []int{
-				int(internal.OpPush), anything,
-				int(internal.OpConcatN), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
 			},
 			stackSizeWant: 1,
 		},
 		{
 			ops: []int{
-				int(internal.OpPush), anything,
-				int(internal.OpConcatN), 1,
-				int(internal.OpCapture), 0,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 0,
 			},
 			pool:          []string{"abc"},
 			stackSizeWant: 1,
 		},
 		{
 			ops: []int{
-				int(internal.OpPush), anything,
-				int(internal.OpLitPush), 0,
-				int(internal.OpLitPush), 1,
-				int(internal.OpPushM), anything,
-				int(internal.OpConcatN), 2,
-				int(internal.OpCapture), 2,
+				int(utilities.OpPush), anything,
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPushM), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 2,
 			},
 			pool:          []string{"lit1", "lit2", "var1"},
 			stackSizeWant: 4,
 		},
 		{
-			ops:           []int{int(internal.OpLitPush), 0},
+			ops:           []int{int(utilities.OpLitPush), 0},
 			pool:          []string{"abc"},
 			stackSizeWant: 1,
 			verb:          "LOCK",
@@ -98,35 +98,35 @@ func TestNewPatternWithWrongOp(t *testing.T) {
 		},
 		{
 			// op code out of bound
-			ops: []int{int(internal.OpEnd), 0},
+			ops: []int{int(utilities.OpEnd), 0},
 		},
 		{
 			// odd number of items
-			ops: []int{int(internal.OpPush)},
+			ops: []int{int(utilities.OpPush)},
 		},
 		{
 			// negative index
-			ops:  []int{int(internal.OpLitPush), -1},
+			ops:  []int{int(utilities.OpLitPush), -1},
 			pool: []string{"abc"},
 		},
 		{
 			// index out of bound
-			ops:  []int{int(internal.OpLitPush), 1},
+			ops:  []int{int(utilities.OpLitPush), 1},
 			pool: []string{"abc"},
 		},
 		{
 			// negative # of segments
-			ops:  []int{int(internal.OpConcatN), -1},
+			ops:  []int{int(utilities.OpConcatN), -1},
 			pool: []string{"abc"},
 		},
 		{
 			// negative index
-			ops:  []int{int(internal.OpCapture), -1},
+			ops:  []int{int(utilities.OpCapture), -1},
 			pool: []string{"abc"},
 		},
 		{
 			// index out of bound
-			ops:  []int{int(internal.OpCapture), 1},
+			ops:  []int{int(utilities.OpCapture), 1},
 			pool: []string{"abc"},
 		},
 	} {
@@ -149,10 +149,10 @@ func TestNewPatternWithStackUnderflow(t *testing.T) {
 		verb string
 	}{
 		{
-			ops: []int{int(internal.OpConcatN), 1},
+			ops: []int{int(utilities.OpConcatN), 1},
 		},
 		{
-			ops:  []int{int(internal.OpCapture), 0},
+			ops:  []int{int(utilities.OpCapture), 0},
 			pool: []string{"abc"},
 		},
 	} {
@@ -182,32 +182,32 @@ func TestMatch(t *testing.T) {
 			notMatch: []string{"example"},
 		},
 		{
-			ops:      []int{int(internal.OpNop), anything},
+			ops:      []int{int(utilities.OpNop), anything},
 			match:    []string{""},
 			notMatch: []string{"example", "path/to/example"},
 		},
 		{
-			ops:      []int{int(internal.OpPush), anything},
+			ops:      []int{int(utilities.OpPush), anything},
 			match:    []string{"abc", "def"},
 			notMatch: []string{"", "abc/def"},
 		},
 		{
-			ops:      []int{int(internal.OpLitPush), 0},
+			ops:      []int{int(utilities.OpLitPush), 0},
 			pool:     []string{"v1"},
 			match:    []string{"v1"},
 			notMatch: []string{"", "v2"},
 		},
 		{
-			ops:   []int{int(internal.OpPushM), anything},
+			ops:   []int{int(utilities.OpPushM), anything},
 			match: []string{"", "abc", "abc/def", "abc/def/ghi"},
 		},
 		{
 			ops: []int{
-				int(internal.OpLitPush), 0,
-				int(internal.OpLitPush), 1,
-				int(internal.OpPush), anything,
-				int(internal.OpConcatN), 1,
-				int(internal.OpCapture), 2,
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 2,
 			},
 			pool:  []string{"v1", "bucket", "name"},
 			match: []string{"v1/bucket/my-bucket", "v1/bucket/our-bucket"},
@@ -221,11 +221,11 @@ func TestMatch(t *testing.T) {
 		},
 		{
 			ops: []int{
-				int(internal.OpLitPush), 0,
-				int(internal.OpLitPush), 1,
-				int(internal.OpPushM), anything,
-				int(internal.OpConcatN), 2,
-				int(internal.OpCapture), 2,
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPushM), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 2,
 			},
 			pool: []string{"v1", "o", "name"},
 			match: []string{
@@ -245,15 +245,15 @@ func TestMatch(t *testing.T) {
 		},
 		{
 			ops: []int{
-				int(internal.OpLitPush), 0,
-				int(internal.OpLitPush), 1,
-				int(internal.OpPush), anything,
-				int(internal.OpConcatN), 2,
-				int(internal.OpCapture), 2,
-				int(internal.OpLitPush), 3,
-				int(internal.OpPush), anything,
-				int(internal.OpConcatN), 1,
-				int(internal.OpCapture), 4,
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 2,
+				int(utilities.OpLitPush), 3,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 4,
 			},
 			pool: []string{"v2", "b", "name", "o", "oname"},
 			match: []string{
@@ -270,7 +270,7 @@ func TestMatch(t *testing.T) {
 			},
 		},
 		{
-			ops:      []int{int(internal.OpLitPush), 0},
+			ops:      []int{int(utilities.OpLitPush), 0},
 			pool:     []string{"v1"},
 			verb:     "LOCK",
 			match:    []string{"v1:LOCK"},
@@ -316,38 +316,38 @@ func TestMatchWithBinding(t *testing.T) {
 			want: make(map[string]string),
 		},
 		{
-			ops:  []int{int(internal.OpNop), anything},
+			ops:  []int{int(utilities.OpNop), anything},
 			want: make(map[string]string),
 		},
 		{
-			ops:  []int{int(internal.OpPush), anything},
+			ops:  []int{int(utilities.OpPush), anything},
 			path: "abc",
 			want: make(map[string]string),
 		},
 		{
-			ops:  []int{int(internal.OpPush), anything},
+			ops:  []int{int(utilities.OpPush), anything},
 			verb: "LOCK",
 			path: "abc:LOCK",
 			want: make(map[string]string),
 		},
 		{
-			ops:  []int{int(internal.OpLitPush), 0},
+			ops:  []int{int(utilities.OpLitPush), 0},
 			pool: []string{"endpoint"},
 			path: "endpoint",
 			want: make(map[string]string),
 		},
 		{
-			ops:  []int{int(internal.OpPushM), anything},
+			ops:  []int{int(utilities.OpPushM), anything},
 			path: "abc/def/ghi",
 			want: make(map[string]string),
 		},
 		{
 			ops: []int{
-				int(internal.OpLitPush), 0,
-				int(internal.OpLitPush), 1,
-				int(internal.OpPush), anything,
-				int(internal.OpConcatN), 1,
-				int(internal.OpCapture), 2,
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 2,
 			},
 			pool: []string{"v1", "bucket", "name"},
 			path: "v1/bucket/my-bucket",
@@ -357,11 +357,11 @@ func TestMatchWithBinding(t *testing.T) {
 		},
 		{
 			ops: []int{
-				int(internal.OpLitPush), 0,
-				int(internal.OpLitPush), 1,
-				int(internal.OpPush), anything,
-				int(internal.OpConcatN), 1,
-				int(internal.OpCapture), 2,
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 2,
 			},
 			pool: []string{"v1", "bucket", "name"},
 			verb: "LOCK",
@@ -372,11 +372,11 @@ func TestMatchWithBinding(t *testing.T) {
 		},
 		{
 			ops: []int{
-				int(internal.OpLitPush), 0,
-				int(internal.OpLitPush), 1,
-				int(internal.OpPushM), anything,
-				int(internal.OpConcatN), 2,
-				int(internal.OpCapture), 2,
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPushM), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 2,
 			},
 			pool: []string{"v1", "o", "name"},
 			path: "v1/o/my-bucket/dir/dir2/obj",
@@ -386,15 +386,15 @@ func TestMatchWithBinding(t *testing.T) {
 		},
 		{
 			ops: []int{
-				int(internal.OpLitPush), 0,
-				int(internal.OpLitPush), 1,
-				int(internal.OpPush), anything,
-				int(internal.OpConcatN), 2,
-				int(internal.OpCapture), 2,
-				int(internal.OpLitPush), 3,
-				int(internal.OpPush), anything,
-				int(internal.OpConcatN), 1,
-				int(internal.OpCapture), 4,
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 2,
+				int(utilities.OpLitPush), 3,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 4,
 			},
 			pool: []string{"v2", "b", "name", "o", "oname"},
 			path: "v2/b/my-bucket/o/obj",
@@ -444,49 +444,49 @@ func TestPatternString(t *testing.T) {
 			want: "/",
 		},
 		{
-			ops:  []int{int(internal.OpNop), anything},
+			ops:  []int{int(utilities.OpNop), anything},
 			want: "/",
 		},
 		{
-			ops:  []int{int(internal.OpPush), anything},
+			ops:  []int{int(utilities.OpPush), anything},
 			want: "/*",
 		},
 		{
-			ops:  []int{int(internal.OpLitPush), 0},
+			ops:  []int{int(utilities.OpLitPush), 0},
 			pool: []string{"endpoint"},
 			want: "/endpoint",
 		},
 		{
-			ops:  []int{int(internal.OpPushM), anything},
+			ops:  []int{int(utilities.OpPushM), anything},
 			want: "/**",
 		},
 		{
 			ops: []int{
-				int(internal.OpPush), anything,
-				int(internal.OpConcatN), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
 			},
 			want: "/*",
 		},
 		{
 			ops: []int{
-				int(internal.OpPush), anything,
-				int(internal.OpConcatN), 1,
-				int(internal.OpCapture), 0,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 0,
 			},
 			pool: []string{"name"},
 			want: "/{name=*}",
 		},
 		{
 			ops: []int{
-				int(internal.OpLitPush), 0,
-				int(internal.OpLitPush), 1,
-				int(internal.OpPush), anything,
-				int(internal.OpConcatN), 2,
-				int(internal.OpCapture), 2,
-				int(internal.OpLitPush), 3,
-				int(internal.OpPushM), anything,
-				int(internal.OpConcatN), 2,
-				int(internal.OpCapture), 4,
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 2,
+				int(utilities.OpLitPush), 3,
+				int(utilities.OpPushM), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 4,
 			},
 			pool: []string{"v1", "buckets", "bucket_name", "objects", "name"},
 			want: "/v1/{bucket_name=buckets/*}/{name=objects/**}",

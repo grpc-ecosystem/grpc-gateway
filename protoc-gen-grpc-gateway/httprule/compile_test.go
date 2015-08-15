@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gengo/grpc-gateway/internal"
+	"github.com/gengo/grpc-gateway/utilities"
 )
 
 const (
@@ -25,19 +25,19 @@ func TestCompile(t *testing.T) {
 			segs: []segment{
 				wildcard{},
 			},
-			ops: []int{int(internal.OpPush), operandFiller},
+			ops: []int{int(utilities.OpPush), operandFiller},
 		},
 		{
 			segs: []segment{
 				deepWildcard{},
 			},
-			ops: []int{int(internal.OpPushM), operandFiller},
+			ops: []int{int(utilities.OpPushM), operandFiller},
 		},
 		{
 			segs: []segment{
 				literal("v1"),
 			},
-			ops:  []int{int(internal.OpLitPush), 0},
+			ops:  []int{int(utilities.OpLitPush), 0},
 			pool: []string{"v1"},
 		},
 		{
@@ -45,7 +45,7 @@ func TestCompile(t *testing.T) {
 				literal("v1"),
 			},
 			verb: "LOCK",
-			ops:  []int{int(internal.OpLitPush), 0},
+			ops:  []int{int(utilities.OpLitPush), 0},
 			pool: []string{"v1"},
 		},
 		{
@@ -58,9 +58,9 @@ func TestCompile(t *testing.T) {
 				},
 			},
 			ops: []int{
-				int(internal.OpPush), operandFiller,
-				int(internal.OpConcatN), 1,
-				int(internal.OpCapture), 0,
+				int(utilities.OpPush), operandFiller,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 0,
 			},
 			pool:   []string{"name.nested"},
 			fields: []string{"name.nested"},
@@ -84,15 +84,15 @@ func TestCompile(t *testing.T) {
 				},
 			},
 			ops: []int{
-				int(internal.OpLitPush), 0,
-				int(internal.OpLitPush), 1,
-				int(internal.OpPush), operandFiller,
-				int(internal.OpLitPush), 2,
-				int(internal.OpConcatN), 3,
-				int(internal.OpCapture), 3,
-				int(internal.OpPushM), operandFiller,
-				int(internal.OpConcatN), 1,
-				int(internal.OpCapture), 0,
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), operandFiller,
+				int(utilities.OpLitPush), 2,
+				int(utilities.OpConcatN), 3,
+				int(utilities.OpCapture), 3,
+				int(utilities.OpPushM), operandFiller,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 0,
 			},
 			pool:   []string{"obj", "a", "b", "name.nested"},
 			fields: []string{"name.nested", "obj"},
