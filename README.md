@@ -167,9 +167,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 
 ## More Examples
 More examples are available under `examples` directory.
-* `echo_service.proto`, `a_bit_of_everything.proto`: service definition
-  * `echo_service.pb.go`, `a_bit_of_everything.pb.go`: [generated] stub of the service
-  * `echo_service.pb.gw.go`, `a_bit_of_everything.pb.gw.go`: [generated] reverse proxy for the service
+* `examplepb/echo_service.proto`, `examplepb/a_bit_of_everything.proto`: service definition
+  * `examplepb/echo_service.pb.go`, `examplepb/a_bit_of_everything.pb.go`: [generated] stub of the service
+  * `examplepb/echo_service.pb.gw.go`, `examplepb/a_bit_of_everything.pb.gw.go`: [generated] reverse proxy for the service
 * `server/main.go`: service implementation
 * `main.go`: entrypoint of the generated reverse proxy
 
@@ -192,7 +192,7 @@ But not yet.
 ### No plan to support
 But patch is welcome.
 * Method parameters in HTTP headers
-* Handling header/trailer metadata
+* Handling trailer metadata
 * Encoding request/response body in XML
 * True bi-directional streaming. (Probably impossible?)
 
