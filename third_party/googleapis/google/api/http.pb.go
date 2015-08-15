@@ -121,6 +121,3 @@ type CustomHttpPattern struct {
 func (m *CustomHttpPattern) Reset()         { *m = CustomHttpPattern{} }
 func (m *CustomHttpPattern) String() string { return proto.CompactTextString(m) }
 func (*CustomHttpPattern) ProtoMessage()    {}
-
-func init() {
-}

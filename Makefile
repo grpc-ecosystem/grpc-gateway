@@ -21,8 +21,8 @@ OPTIONS_PROTO=$(GOOGLEAPIS_DIR)/google/api/annotations.proto $(GOOGLEAPIS_DIR)/g
 OPTIONS_GO=$(OPTIONS_PROTO:.proto=.pb.go)
 
 PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/sub/message.proto=$(PKG)/examples/sub
-EXAMPLES=examples/echo_service.proto \
-	 examples/a_bit_of_everything.proto
+EXAMPLES=examples/examplepb/echo_service.proto \
+	 examples/examplepb/a_bit_of_everything.proto
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
 EXAMPLE_DEPS=examples/sub/message.proto
