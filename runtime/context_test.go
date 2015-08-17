@@ -1,8 +1,8 @@
 package runtime_test
 
 import (
-	"Reflect"
 	"net/http"
+	"reflect"
 	"testing"
 
 	"github.com/gengo/grpc-gateway/runtime"
