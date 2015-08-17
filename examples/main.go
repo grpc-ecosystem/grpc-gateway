@@ -13,6 +13,7 @@ import (
 var (
 	echoEndpoint = flag.String("echo_endpoint", "localhost:9090", "endpoint of EchoService")
 	abeEndpoint  = flag.String("more_endpoint", "localhost:9090", "endpoint of ABitOfEverythingService")
+	flowEndpoint = flag.String("flow_endpoint", "localhost:9090", "endpoint of ABitOfEverythingService")
 )
 
 func Run() error {
@@ -26,6 +27,10 @@ func Run() error {
 		return err
 	}
 	err = examplepb.RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx, mux, *abeEndpoint)
+	if err != nil {
+		return err
+	}
+	err = examplepb.RegisterFlowCombinationHandlerFromEndpoint(ctx, mux, *flowEndpoint)
 	if err != nil {
 		return err
 	}

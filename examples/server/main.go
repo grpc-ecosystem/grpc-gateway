@@ -17,6 +17,7 @@ func Run() error {
 	s := grpc.NewServer()
 	examples.RegisterEchoServiceServer(s, newEchoServer())
 	examples.RegisterABitOfEverythingServiceServer(s, newABitOfEverythingServer())
+	examples.RegisterFlowCombinationServer(s, newFlowCombinationServer())
 	s.Serve(l)
 	return nil
 }
