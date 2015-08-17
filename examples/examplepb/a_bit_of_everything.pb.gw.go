@@ -34,11 +34,15 @@ var (
 	filter_ABitOfEverythingService_Create_0 = &utilities.DoubleArray{Encoding: map[string]int{"float_value": 0, "double_value": 1, "int64_value": 2, "uint64_value": 3, "int32_value": 4, "fixed64_value": 5, "fixed32_value": 6, "bool_value": 7, "string_value": 8, "uint32_value": 9, "sfixed32_value": 10, "sfixed64_value": 11, "sint32_value": 12, "sint64_value": 13}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}}
 )
 
-func request_ABitOfEverythingService_Create_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_Create_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq ABitOfEverything
 
-	var val string
-	var ok bool
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
 
 	val, ok = pathParams["float_value"]
 	if !ok {
@@ -201,17 +205,17 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, client ABitOf
 	return client.Create(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq ABitOfEverything
 
-	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	return client.CreateBody(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_BulkCreate_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_BulkCreate_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	stream, err := client.BulkCreate(ctx)
 	if err != nil {
 		glog.Errorf("Failed to start streaming: %v", err)
@@ -238,11 +242,15 @@ func request_ABitOfEverythingService_BulkCreate_0(ctx context.Context, client AB
 
 }
 
-func request_ABitOfEverythingService_Lookup_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_Lookup_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq IdMessage
 
-	var val string
-	var ok bool
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
 
 	val, ok = pathParams["uuid"]
 	if !ok {
@@ -264,15 +272,19 @@ func request_ABitOfEverythingService_List_0(ctx context.Context, client ABitOfEv
 	return client.List(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_Update_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_Update_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq ABitOfEverything
 
-	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	var val string
-	var ok bool
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
 
 	val, ok = pathParams["uuid"]
 	if !ok {
@@ -288,11 +300,15 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, client ABitOf
 	return client.Update(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_Delete_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_Delete_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq IdMessage
 
-	var val string
-	var ok bool
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
 
 	val, ok = pathParams["uuid"]
 	if !ok {
@@ -308,11 +324,15 @@ func request_ABitOfEverythingService_Delete_0(ctx context.Context, client ABitOf
 	return client.Delete(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_Echo_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_Echo_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq sub.StringMessage
 
-	var val string
-	var ok bool
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
 
 	val, ok = pathParams["value"]
 	if !ok {
@@ -328,10 +348,10 @@ func request_ABitOfEverythingService_Echo_0(ctx context.Context, client ABitOfEv
 	return client.Echo(ctx, &protoReq)
 }
 
-func request_ABitOfEverythingService_Echo_1(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_Echo_1(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq sub.StringMessage
 
-	if err = json.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil {
+	if err := json.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -342,7 +362,7 @@ var (
 	filter_ABitOfEverythingService_Echo_2 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_ABitOfEverythingService_Echo_2(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_ABitOfEverythingService_Echo_2(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq sub.StringMessage
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_Echo_2); err != nil {

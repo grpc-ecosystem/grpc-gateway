@@ -6,8 +6,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/golang/glog"
 )
 
@@ -129,7 +129,7 @@ var _ = utilities.PascalFromSnake
 {{if .Method.GetServerStreaming}}
 func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, client {{.Method.Service.GetName}}Client, req *http.Request, pathParams map[string]string) ({{.Method.Service.GetName}}_{{.Method.GetName}}Client, error)
 {{else}}
-func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, client {{.Method.Service.GetName}}Client, req *http.Request, pathParams map[string]string) (msg proto.Message, err error)
+func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, client {{.Method.Service.GetName}}Client, req *http.Request, pathParams map[string]string) (proto.Message, error)
 {{end}}`, "\n", "", -1)))
 
 	_ = template.Must(handlerTemplate.New("client-streaming-request-func").Parse(`
@@ -176,13 +176,17 @@ var (
 {{template "request-func-signature" .}} {
 	var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 {{if .Body}}
-	if err = json.NewDecoder(req.Body).Decode(&{{.Body.RHS "protoReq"}}); err != nil {
+	if err := json.NewDecoder(req.Body).Decode(&{{.Body.RHS "protoReq"}}); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 {{end}}
 {{if .PathParams}}
-	var val string
-	var ok bool
+	var (
+		val string
+		ok bool
+		err error
+		_ = err
+	)
 	{{range $param := .PathParams}}
 	val, ok = pathParams[{{$param | printf "%q"}}]
 	if !ok {

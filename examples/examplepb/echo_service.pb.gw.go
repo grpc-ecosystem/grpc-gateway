@@ -29,11 +29,15 @@ var _ = runtime.String
 var _ = json.Marshal
 var _ = utilities.PascalFromSnake
 
-func request_EchoService_Echo_0(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_EchoService_Echo_0(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq SimpleMessage
 
-	var val string
-	var ok bool
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
 
 	val, ok = pathParams["id"]
 	if !ok {
@@ -49,10 +53,10 @@ func request_EchoService_Echo_0(ctx context.Context, client EchoServiceClient, r
 	return client.Echo(ctx, &protoReq)
 }
 
-func request_EchoService_EchoBody_0(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {
+func request_EchoService_EchoBody_0(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq SimpleMessage
 
-	if err = json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
