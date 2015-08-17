@@ -24,10 +24,6 @@ import (
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
-
-// Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 
 type SimpleMessage struct {
@@ -37,6 +33,10 @@ type SimpleMessage struct {
 func (m *SimpleMessage) Reset()         { *m = SimpleMessage{} }
 func (m *SimpleMessage) String() string { return proto.CompactTextString(m) }
 func (*SimpleMessage) ProtoMessage()    {}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
 
 // Client API for EchoService service
 

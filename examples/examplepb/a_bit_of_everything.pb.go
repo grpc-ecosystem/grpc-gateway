@@ -15,10 +15,6 @@ import (
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ grpc.ClientConn
-
-// Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 
 type ABitOfEverything struct {
@@ -76,6 +72,10 @@ type IdMessage struct {
 func (m *IdMessage) Reset()         { *m = IdMessage{} }
 func (m *IdMessage) String() string { return proto.CompactTextString(m) }
 func (*IdMessage) ProtoMessage()    {}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConn
 
 // Client API for ABitOfEverythingService service
 

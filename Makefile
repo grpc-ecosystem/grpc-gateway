@@ -1,3 +1,8 @@
+# This is a Makefile which maintains files automatically generated but to be
+# shipped together with other files.
+# You don't have to rebuild these targets by yourself unless you develop
+# grpc-gateway itself.
+
 PKG=github.com/gengo/grpc-gateway
 GO_PLUGIN=bin/protoc-gen-go
 GO_PLUGIN_PKG=github.com/golang/protobuf/protoc-gen-go
@@ -55,9 +60,11 @@ test: examples
 	go test $(PKG)/...
 
 clean distclean:
-realclean:
+	rm -f $(GATEWAY_PLUGIN)
+realclean: distclean
 	rm -f $(OPTIONS_GO)
 	rm -f $(EXAMPLE_SVCSRCS) $(EXAMPLE_DEPSRCS)
 	rm -f $(EXAMPLE_GWSRCS)
+	rm -f $(GO_PLUGIN)
 
 .PHONY: generate examples test clean distclean realclean

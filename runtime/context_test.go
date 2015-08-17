@@ -2,6 +2,7 @@ package runtime_test
 
 import (
 	"net/http"
+	"reflect"
 	"testing"
 
 	"github.com/gengo/grpc-gateway/runtime"
@@ -25,10 +26,10 @@ func TestAnnotateContext(t *testing.T) {
 	if !ok || len(md) != 2 {
 		t.Errorf("Expected 2 metadata items in context; got %v", md)
 	}
-	if md["Foobar"] != "Value1" {
-		t.Errorf("md[\"Foobar\"] = %v; want %v", md["Foobar"], "Value1")
+	if got, want := md["Foobar"], []string{"Value1"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("md[\"Foobar\"] = %v; want %v", got, want)
 	}
-	if md["Foo-Baz"] != "Value2" {
-		t.Errorf("md[\"Foo-Baz\"] = %v want %v", md["Foo-Baz"], "Value2")
+	if got, want := md["Foo-Baz"], []string{"Value2"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("md[\"Foo-Baz\"] = %v want %v", got, want)
 	}
 }
