@@ -133,7 +133,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 	}{
 		{
 			serverStreaming: false,
-			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {`,
+			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {`,
 		},
 		{
 			serverStreaming: true,
@@ -294,7 +294,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 	}{
 		{
 			serverStreaming: false,
-			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (msg proto.Message, err error) {`,
+			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {`,
 		},
 		{
 			serverStreaming: true,

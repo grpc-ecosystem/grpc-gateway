@@ -27,7 +27,8 @@ OPTIONS_GO=$(OPTIONS_PROTO:.proto=.pb.go)
 
 PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/sub/message.proto=$(PKG)/examples/sub
 EXAMPLES=examples/examplepb/echo_service.proto \
-	 examples/examplepb/a_bit_of_everything.proto
+	 examples/examplepb/a_bit_of_everything.proto \
+	 examples/examplepb/flow_combination.proto
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
 EXAMPLE_DEPS=examples/sub/message.proto
