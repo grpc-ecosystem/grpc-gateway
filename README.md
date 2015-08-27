@@ -12,7 +12,7 @@ It helps you to provide your APIs in both gRPC and RESTful style at the same tim
 gRPC is great -- it generates API clients and server stubs in many programming languages,
 it is fast, easy-to-use, bandwidth-efficient and its design is combat-proven by Google.
 However, you might still want to provide classic RESTful APIs too for some reasons --
-compatiblity to languages not supported by gRPC, API backward-compatibility or aesthetics
+compatibility with languages not supported by gRPC, API backward-compatibility or aesthetics
 of RESTful architecture.
 
 That's what grpc-gateway helps you to do. You just need to implement your gRPC service with a small amount of custom options.
