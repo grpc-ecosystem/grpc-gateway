@@ -249,6 +249,18 @@ func TestMatch(t *testing.T) {
 		},
 		{
 			ops: []int{
+				int(utilities.OpPushM), anything,
+				int(utilities.OpLitPush), 0,
+			},
+			pool:  []string{"tail"},
+			match: []string{"tail", "abc/tail", "abc/def/tail"},
+			notMatch: []string{
+				"", "abc", "abc/def",
+				"tail/extra", "abc/tail/extra", "abc/def/tail/extra",
+			},
+		},
+		{
+			ops: []int{
 				int(utilities.OpLitPush), 0,
 				int(utilities.OpLitPush), 1,
 				int(utilities.OpPush), anything,
@@ -434,6 +446,22 @@ func TestMatchWithBinding(t *testing.T) {
 			ops: []int{
 				int(utilities.OpLitPush), 0,
 				int(utilities.OpLitPush), 1,
+				int(utilities.OpPushM), anything,
+				int(utilities.OpLitPush), 2,
+				int(utilities.OpConcatN), 3,
+				int(utilities.OpCapture), 4,
+				int(utilities.OpLitPush), 3,
+			},
+			pool: []string{"v1", "o", ".ext", "tail", "name"},
+			path: "v1/o/my-bucket/dir/dir2/obj/.ext/tail",
+			want: map[string]string{
+				"name": "o/my-bucket/dir/dir2/obj/.ext",
+			},
+		},
+		{
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
 				int(utilities.OpPush), anything,
 				int(utilities.OpConcatN), 2,
 				int(utilities.OpCapture), 2,
@@ -531,11 +559,13 @@ func TestPatternString(t *testing.T) {
 				int(utilities.OpCapture), 2,
 				int(utilities.OpLitPush), 3,
 				int(utilities.OpPushM), anything,
-				int(utilities.OpConcatN), 2,
-				int(utilities.OpCapture), 4,
+				int(utilities.OpLitPush), 4,
+				int(utilities.OpConcatN), 3,
+				int(utilities.OpCapture), 6,
+				int(utilities.OpLitPush), 5,
 			},
-			pool: []string{"v1", "buckets", "bucket_name", "objects", "name"},
-			want: "/v1/{bucket_name=buckets/*}/{name=objects/**}",
+			pool: []string{"v1", "buckets", "bucket_name", "objects", ".ext", "tail", "name"},
+			want: "/v1/{bucket_name=buckets/*}/{name=objects/**/.ext}/tail",
 		},
 	} {
 		p, err := NewPattern(validVersion, spec.ops, spec.pool, "")

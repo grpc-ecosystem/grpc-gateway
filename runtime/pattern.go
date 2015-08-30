@@ -173,8 +173,13 @@ func (p Pattern) Match(components []string, verb string) (map[string]string, err
 			stack = append(stack, c)
 			pos++
 		case utilities.OpPushM:
-			stack = append(stack, strings.Join(components[pos:], "/"))
-			pos = len(components)
+			end := len(components)
+			if end < pos+p.tailLen {
+				return nil, ErrNotMatch
+			}
+			end -= p.tailLen
+			stack = append(stack, strings.Join(components[pos:end], "/"))
+			pos = end
 		case utilities.OpConcatN:
 			n := op.operand
 			l := len(stack) - n
