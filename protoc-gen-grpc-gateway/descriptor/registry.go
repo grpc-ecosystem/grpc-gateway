@@ -44,7 +44,22 @@ func (r *Registry) Load(req *plugin.CodeGeneratorRequest) error {
 	for _, file := range req.GetProtoFile() {
 		r.loadFile(file)
 	}
-	for _, target := range req.FileToGenerate {
+
+	var targetPkg string
+	for _, name := range req.FileToGenerate {
+		target := r.files[name]
+		if target == nil {
+			return fmt.Errorf("no such file: %s", name)
+		}
+		name := packageIdentityName(target.FileDescriptorProto)
+		if targetPkg == "" {
+			targetPkg = name
+		} else {
+			if targetPkg != name {
+				return fmt.Errorf("inconsistent package names: %s %s", targetPkg, name)
+			}
+		}
+
 		if err := r.loadServices(target); err != nil {
 			return err
 		}
@@ -170,17 +185,20 @@ func (r *Registry) goPackagePath(f *descriptor.FileDescriptorProto) string {
 	if pkg, ok := r.pkgMap[name]; ok {
 		return path.Join(r.prefix, pkg)
 	}
-
-	ext := filepath.Ext(name)
-	if ext == ".protodevel" || ext == ".proto" {
-		name = strings.TrimSuffix(name, ext)
-	}
-	return path.Join(r.prefix, fmt.Sprintf("%s.pb", name))
+	return path.Join(r.prefix, path.Dir(name))
 }
 
 // defaultGoPackageName returns the default go package name to be used for go files generated from "f".
 // You might need to use an unique alias for the package when you import it.  Use ReserveGoPackageAlias to get a unique alias.
 func defaultGoPackageName(f *descriptor.FileDescriptorProto) string {
+	name := packageIdentityName(f)
+	return strings.Replace(name, ".", "_", -1)
+}
+
+// packageIdentityName returns the identity of packages.
+// protoc-gen-grpc-gateway rejects CodeGenerationRequests which contains more than one packages
+// as protoc-gen-go does.
+func packageIdentityName(f *descriptor.FileDescriptorProto) string {
 	if f.Options != nil && f.Options.GoPackage != nil {
 		return f.Options.GetGoPackage()
 	}
@@ -190,5 +208,5 @@ func defaultGoPackageName(f *descriptor.FileDescriptorProto) string {
 		ext := filepath.Ext(base)
 		return strings.TrimSuffix(base, ext)
 	}
-	return strings.Replace(f.GetPackage(), ".", "_", -1)
+	return f.GetPackage()
 }
