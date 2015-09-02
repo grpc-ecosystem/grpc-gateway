@@ -14,12 +14,8 @@ import (
 // loadServices registers services and their methods from "targetFile" to "r".
 // It must be called after loadFile is called for all files so that loadServices
 // can resolve names of message types and their fields.
-func (r *Registry) loadServices(targetFile string) error {
-	glog.V(1).Infof("Loading services from %s", targetFile)
-	file := r.files[targetFile]
-	if file == nil {
-		return fmt.Errorf("no such file: %s", targetFile)
-	}
+func (r *Registry) loadServices(file *File) error {
+	glog.V(1).Infof("Loading services from %s", file.GetName())
 	var svcs []*Service
 	for _, sd := range file.GetService() {
 		glog.V(2).Infof("Registering %s", sd.GetName())

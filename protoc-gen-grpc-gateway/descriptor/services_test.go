@@ -22,7 +22,7 @@ func testExtractServices(t *testing.T, input []*descriptor.FileDescriptorProto, 
 	for _, file := range input {
 		reg.loadFile(file)
 	}
-	err := reg.loadServices(target)
+	err := reg.loadServices(reg.files[target])
 	if err != nil {
 		t.Errorf("loadServices(%q) failed with %v; want success; files=%v", target, err, input)
 	}
@@ -914,7 +914,7 @@ func TestExtractServicesWithError(t *testing.T) {
 			reg.loadFile(&fd)
 			fds = append(fds, &fd)
 		}
-		err := reg.loadServices(spec.target)
+		err := reg.loadServices(reg.files[spec.target])
 		if err == nil {
 			t.Errorf("loadServices(%q) succeeded; want an error; files=%v", spec.target, spec.srcs)
 		}

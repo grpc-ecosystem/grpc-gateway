@@ -65,13 +65,13 @@ func main() {
 		}
 	}
 
+	g := gengateway.New(reg)
+
 	reg.SetPrefix(*importPrefix)
 	if err := reg.Load(req); err != nil {
 		emitError(err)
 		return
 	}
-
-	g := gengateway.New(reg)
 
 	var targets []*descriptor.File
 	for _, target := range req.FileToGenerate {

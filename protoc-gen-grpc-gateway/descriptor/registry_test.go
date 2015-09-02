@@ -5,9 +5,10 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
 
-func load(t *testing.T, reg *Registry, src string) *descriptor.FileDescriptorProto {
+func loadFile(t *testing.T, reg *Registry, src string) *descriptor.FileDescriptorProto {
 	var file descriptor.FileDescriptorProto
 	if err := proto.UnmarshalText(src, &file); err != nil {
 		t.Fatalf("proto.UnmarshalText(%s, &file) failed with %v; want success", src, err)
@@ -16,9 +17,17 @@ func load(t *testing.T, reg *Registry, src string) *descriptor.FileDescriptorPro
 	return &file
 }
 
+func load(t *testing.T, reg *Registry, src string) error {
+	var req plugin.CodeGeneratorRequest
+	if err := proto.UnmarshalText(src, &req); err != nil {
+		t.Fatalf("proto.UnmarshalText(%s, &file) failed with %v; want success", src, err)
+	}
+	return reg.Load(&req)
+}
+
 func TestLoadFile(t *testing.T) {
 	reg := NewRegistry()
-	fd := load(t, reg, `
+	fd := loadFile(t, reg, `
 		name: 'example.proto'
 		package: 'example'
 		message_type <
@@ -37,7 +46,7 @@ func TestLoadFile(t *testing.T) {
 		t.Errorf("reg.files[%q] = nil; want non-nil", "example.proto")
 		return
 	}
-	wantPkg := GoPackage{Path: "example.pb", Name: "example"}
+	wantPkg := GoPackage{Path: ".", Name: "example"}
 	if got, want := file.GoPkg, wantPkg; got != want {
 		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
 	}
@@ -74,7 +83,7 @@ func TestLoadFile(t *testing.T) {
 
 func TestLoadFileNestedPackage(t *testing.T) {
 	reg := NewRegistry()
-	load(t, reg, `
+	loadFile(t, reg, `
 		name: 'example.proto'
 		package: 'example.nested.nested2'
 	`)
@@ -84,7 +93,7 @@ func TestLoadFileNestedPackage(t *testing.T) {
 		t.Errorf("reg.files[%q] = nil; want non-nil", "example.proto")
 		return
 	}
-	wantPkg := GoPackage{Path: "example.pb", Name: "example_nested_nested2"}
+	wantPkg := GoPackage{Path: ".", Name: "example_nested_nested2"}
 	if got, want := file.GoPkg, wantPkg; got != want {
 		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
 	}
@@ -92,7 +101,7 @@ func TestLoadFileNestedPackage(t *testing.T) {
 
 func TestLoadFileWithDir(t *testing.T) {
 	reg := NewRegistry()
-	load(t, reg, `
+	loadFile(t, reg, `
 		name: 'path/to/example.proto'
 		package: 'example'
 	`)
@@ -102,7 +111,7 @@ func TestLoadFileWithDir(t *testing.T) {
 		t.Errorf("reg.files[%q] = nil; want non-nil", "example.proto")
 		return
 	}
-	wantPkg := GoPackage{Path: "path/to/example.pb", Name: "example"}
+	wantPkg := GoPackage{Path: "path/to", Name: "example"}
 	if got, want := file.GoPkg, wantPkg; got != want {
 		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
 	}
@@ -110,7 +119,7 @@ func TestLoadFileWithDir(t *testing.T) {
 
 func TestLoadFileWithoutPackage(t *testing.T) {
 	reg := NewRegistry()
-	load(t, reg, `
+	loadFile(t, reg, `
 		name: 'path/to/example_file.proto'
 	`)
 
@@ -119,7 +128,7 @@ func TestLoadFileWithoutPackage(t *testing.T) {
 		t.Errorf("reg.files[%q] = nil; want non-nil", "example.proto")
 		return
 	}
-	wantPkg := GoPackage{Path: "path/to/example_file.pb", Name: "example_file"}
+	wantPkg := GoPackage{Path: "path/to", Name: "example_file"}
 	if got, want := file.GoPkg, wantPkg; got != want {
 		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
 	}
@@ -128,7 +137,7 @@ func TestLoadFileWithoutPackage(t *testing.T) {
 func TestLoadFileWithMapping(t *testing.T) {
 	reg := NewRegistry()
 	reg.AddPkgMap("path/to/example.proto", "example.com/proj/example/proto")
-	load(t, reg, `
+	loadFile(t, reg, `
 		name: 'path/to/example.proto'
 		package: 'example'
 	`)
@@ -146,18 +155,18 @@ func TestLoadFileWithMapping(t *testing.T) {
 
 func TestLoadFileWithPackageNameCollision(t *testing.T) {
 	reg := NewRegistry()
-	load(t, reg, `
+	loadFile(t, reg, `
 		name: 'path/to/another.proto'
 		package: 'example'
 	`)
-	load(t, reg, `
+	loadFile(t, reg, `
 		name: 'path/to/example.proto'
 		package: 'example'
 	`)
 	if err := reg.ReserveGoPackageAlias("ioutil", "io/ioutil"); err != nil {
 		t.Fatalf("reg.ReserveGoPackageAlias(%q) failed with %v; want success", "ioutil", err)
 	}
-	load(t, reg, `
+	loadFile(t, reg, `
 		name: 'path/to/ioutil.proto'
 		package: 'ioutil'
 	`)
@@ -167,7 +176,7 @@ func TestLoadFileWithPackageNameCollision(t *testing.T) {
 		t.Errorf("reg.files[%q] = nil; want non-nil", "path/to/another.proto")
 		return
 	}
-	wantPkg := GoPackage{Path: "path/to/another.pb", Name: "example"}
+	wantPkg := GoPackage{Path: "path/to", Name: "example"}
 	if got, want := file.GoPkg, wantPkg; got != want {
 		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
 	}
@@ -177,7 +186,7 @@ func TestLoadFileWithPackageNameCollision(t *testing.T) {
 		t.Errorf("reg.files[%q] = nil; want non-nil", "path/to/example.proto")
 		return
 	}
-	wantPkg = GoPackage{Path: "path/to/example.pb", Name: "example", Alias: "example_0"}
+	wantPkg = GoPackage{Path: "path/to", Name: "example", Alias: ""}
 	if got, want := file.GoPkg, wantPkg; got != want {
 		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
 	}
@@ -187,7 +196,7 @@ func TestLoadFileWithPackageNameCollision(t *testing.T) {
 		t.Errorf("reg.files[%q] = nil; want non-nil", "path/to/ioutil.proto")
 		return
 	}
-	wantPkg = GoPackage{Path: "path/to/ioutil.pb", Name: "ioutil", Alias: "ioutil_0"}
+	wantPkg = GoPackage{Path: "path/to", Name: "ioutil", Alias: "ioutil_0"}
 	if got, want := file.GoPkg, wantPkg; got != want {
 		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
 	}
@@ -197,11 +206,11 @@ func TestLoadFileWithIdenticalGoPkg(t *testing.T) {
 	reg := NewRegistry()
 	reg.AddPkgMap("path/to/another.proto", "example.com/example")
 	reg.AddPkgMap("path/to/example.proto", "example.com/example")
-	load(t, reg, `
+	loadFile(t, reg, `
 		name: 'path/to/another.proto'
 		package: 'example'
 	`)
-	load(t, reg, `
+	loadFile(t, reg, `
 		name: 'path/to/example.proto'
 		package: 'example'
 	`)
@@ -230,7 +239,7 @@ func TestLoadFileWithIdenticalGoPkg(t *testing.T) {
 func TestLoadFileWithPrefix(t *testing.T) {
 	reg := NewRegistry()
 	reg.SetPrefix("third_party")
-	load(t, reg, `
+	loadFile(t, reg, `
 		name: 'path/to/example.proto'
 		package: 'example'
 	`)
@@ -240,7 +249,7 @@ func TestLoadFileWithPrefix(t *testing.T) {
 		t.Errorf("reg.files[%q] = nil; want non-nil", "example.proto")
 		return
 	}
-	wantPkg := GoPackage{Path: "third_party/path/to/example.pb", Name: "example"}
+	wantPkg := GoPackage{Path: "third_party/path/to", Name: "example"}
 	if got, want := file.GoPkg, wantPkg; got != want {
 		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
 	}
@@ -248,7 +257,7 @@ func TestLoadFileWithPrefix(t *testing.T) {
 
 func TestLookupMsgWithoutPackage(t *testing.T) {
 	reg := NewRegistry()
-	fd := load(t, reg, `
+	fd := loadFile(t, reg, `
 		name: 'example.proto'
 		message_type <
 			name: 'ExampleMessage'
@@ -273,7 +282,7 @@ func TestLookupMsgWithoutPackage(t *testing.T) {
 
 func TestLookupMsgWithNestedPackage(t *testing.T) {
 	reg := NewRegistry()
-	fd := load(t, reg, `
+	fd := loadFile(t, reg, `
 		name: 'example.proto'
 		package: 'nested.nested2.mypackage'
 		message_type <
@@ -341,6 +350,184 @@ func TestLookupMsgWithNestedPackage(t *testing.T) {
 		}
 		if got, want := msg.DescriptorProto, fd.MessageType[0]; got != want {
 			t.Errorf("reg.lookupMsg(%q, %q).DescriptorProto = %#v; want %#v", loc, name, got, want)
+		}
+	}
+}
+
+func TestLoadWithInconsistentTargetPackage(t *testing.T) {
+	for _, spec := range []struct {
+		req        string
+		consistent bool
+	}{
+		// root package, no explicit go package
+		{
+			req: `
+				file_to_generate: 'a.proto'
+				file_to_generate: 'b.proto'
+				proto_file <
+					name: 'a.proto'
+					message_type < name: 'A' >
+					service <
+						name: "AService"
+						method <
+							name: "Meth"
+							input_type: "A"
+							output_type: "A"
+							options <
+								[google.api.http] < post: "/v1/a" body: "*" >
+							>
+						>
+					>
+				>
+				proto_file <
+					name: 'b.proto'
+					message_type < name: 'B' >
+					service <
+						name: "BService"
+						method <
+							name: "Meth"
+							input_type: "B"
+							output_type: "B"
+							options <
+								[google.api.http] < post: "/v1/b" body: "*" >
+							>
+						>
+					>
+				>
+			`,
+			consistent: false,
+		},
+		// named package, no explicit go package
+		{
+			req: `
+				file_to_generate: 'a.proto'
+				file_to_generate: 'b.proto'
+				proto_file <
+					name: 'a.proto'
+					package: 'example.foo'
+					message_type < name: 'A' >
+					service <
+						name: "AService"
+						method <
+							name: "Meth"
+							input_type: "A"
+							output_type: "A"
+							options <
+								[google.api.http] < post: "/v1/a" body: "*" >
+							>
+						>
+					>
+				>
+				proto_file <
+					name: 'b.proto'
+					package: 'example.foo'
+					message_type < name: 'B' >
+					service <
+						name: "BService"
+						method <
+							name: "Meth"
+							input_type: "B"
+							output_type: "B"
+							options <
+								[google.api.http] < post: "/v1/b" body: "*" >
+							>
+						>
+					>
+				>
+			`,
+			consistent: true,
+		},
+		// root package, explicit go package
+		{
+			req: `
+				file_to_generate: 'a.proto'
+				file_to_generate: 'b.proto'
+				proto_file <
+					name: 'a.proto'
+					options < go_package: 'foo' >
+					message_type < name: 'A' >
+					service <
+						name: "AService"
+						method <
+							name: "Meth"
+							input_type: "A"
+							output_type: "A"
+							options <
+								[google.api.http] < post: "/v1/a" body: "*" >
+							>
+						>
+					>
+				>
+				proto_file <
+					name: 'b.proto'
+					options < go_package: 'foo' >
+					message_type < name: 'B' >
+					service <
+						name: "BService"
+						method <
+							name: "Meth"
+							input_type: "B"
+							output_type: "B"
+							options <
+								[google.api.http] < post: "/v1/b" body: "*" >
+							>
+						>
+					>
+				>
+			`,
+			consistent: true,
+		},
+		// named package, explicit go package
+		{
+			req: `
+				file_to_generate: 'a.proto'
+				file_to_generate: 'b.proto'
+				proto_file <
+					name: 'a.proto'
+					package: 'example.foo'
+					options < go_package: 'foo' >
+					message_type < name: 'A' >
+					service <
+						name: "AService"
+						method <
+							name: "Meth"
+							input_type: "A"
+							output_type: "A"
+							options <
+								[google.api.http] < post: "/v1/a" body: "*" >
+							>
+						>
+					>
+				>
+				proto_file <
+					name: 'b.proto'
+					package: 'example.foo'
+					options < go_package: 'foo' >
+					message_type < name: 'B' >
+					service <
+						name: "BService"
+						method <
+							name: "Meth"
+							input_type: "B"
+							output_type: "B"
+							options <
+								[google.api.http] < post: "/v1/b" body: "*" >
+							>
+						>
+					>
+				>
+			`,
+			consistent: true,
+		},
+	} {
+		reg := NewRegistry()
+		err := load(t, reg, spec.req)
+		if got, want := err == nil, spec.consistent; got != want {
+			if want {
+				t.Errorf("reg.Load(%s) failed with %v; want success", spec.req, err)
+				continue
+			}
+			t.Errorf("reg.Load(%s) succeeded; want an package inconsistency error", spec.req)
 		}
 	}
 }
