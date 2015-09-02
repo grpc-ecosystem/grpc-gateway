@@ -31,6 +31,8 @@ type Pattern struct {
 	vars []string
 	// stacksize is the max depth of the stack
 	stacksize int
+	// tailLen is the length of the fixed-size segments after a deep wildcard
+	tailLen int
 	// verb is the VERB part of the path pattern. It is empty if the pattern does not have VERB part.
 	verb string
 }
@@ -52,20 +54,37 @@ func NewPattern(version int, ops []int, pool []string, verb string) (Pattern, er
 		return Pattern{}, ErrInvalidPattern
 	}
 
-	var typedOps []op
-	var stack, maxstack int
-	var vars []string
+	var (
+		typedOps        []op
+		stack, maxstack int
+		tailLen         int
+		pushMSeen       bool
+		vars            []string
+	)
 	for i := 0; i < l; i += 2 {
 		op := op{code: utilities.OpCode(ops[i]), operand: ops[i+1]}
 		switch op.code {
 		case utilities.OpNop:
 			continue
-		case utilities.OpPush, utilities.OpPushM:
+		case utilities.OpPush:
+			if pushMSeen {
+				tailLen++
+			}
+			stack++
+		case utilities.OpPushM:
+			if pushMSeen {
+				glog.V(2).Info("pushM appears twice")
+				return Pattern{}, ErrInvalidPattern
+			}
+			pushMSeen = true
 			stack++
 		case utilities.OpLitPush:
 			if op.operand < 0 || len(pool) <= op.operand {
 				glog.V(2).Infof("negative literal index: %d", op.operand)
 				return Pattern{}, ErrInvalidPattern
+			}
+			if pushMSeen {
+				tailLen++
 			}
 			stack++
 		case utilities.OpConcatN:
@@ -108,6 +127,7 @@ func NewPattern(version int, ops []int, pool []string, verb string) (Pattern, er
 		pool:      pool,
 		vars:      vars,
 		stacksize: maxstack,
+		tailLen:   tailLen,
 		verb:      verb,
 	}, nil
 }
@@ -153,8 +173,13 @@ func (p Pattern) Match(components []string, verb string) (map[string]string, err
 			stack = append(stack, c)
 			pos++
 		case utilities.OpPushM:
-			stack = append(stack, strings.Join(components[pos:], "/"))
-			pos = len(components)
+			end := len(components)
+			if end < pos+p.tailLen {
+				return nil, ErrNotMatch
+			}
+			end -= p.tailLen
+			stack = append(stack, strings.Join(components[pos:end], "/"))
+			pos = end
 		case utilities.OpConcatN:
 			n := op.operand
 			l := len(stack) - n

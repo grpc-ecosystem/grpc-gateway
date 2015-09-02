@@ -20,25 +20,29 @@ func TestNewPattern(t *testing.T) {
 		pool []string
 		verb string
 
-		stackSizeWant int
+		stackSizeWant, tailLenWant int
 	}{
 		{},
 		{
 			ops:           []int{int(utilities.OpNop), anything},
 			stackSizeWant: 0,
+			tailLenWant:   0,
 		},
 		{
 			ops:           []int{int(utilities.OpPush), anything},
 			stackSizeWant: 1,
+			tailLenWant:   0,
 		},
 		{
 			ops:           []int{int(utilities.OpLitPush), 0},
 			pool:          []string{"abc"},
 			stackSizeWant: 1,
+			tailLenWant:   0,
 		},
 		{
 			ops:           []int{int(utilities.OpPushM), anything},
 			stackSizeWant: 1,
+			tailLenWant:   0,
 		},
 		{
 			ops: []int{
@@ -46,6 +50,7 @@ func TestNewPattern(t *testing.T) {
 				int(utilities.OpConcatN), 1,
 			},
 			stackSizeWant: 1,
+			tailLenWant:   0,
 		},
 		{
 			ops: []int{
@@ -55,6 +60,7 @@ func TestNewPattern(t *testing.T) {
 			},
 			pool:          []string{"abc"},
 			stackSizeWant: 1,
+			tailLenWant:   0,
 		},
 		{
 			ops: []int{
@@ -67,12 +73,40 @@ func TestNewPattern(t *testing.T) {
 			},
 			pool:          []string{"lit1", "lit2", "var1"},
 			stackSizeWant: 4,
+			tailLenWant:   0,
+		},
+		{
+			ops: []int{
+				int(utilities.OpPushM), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 2,
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+			},
+			pool:          []string{"lit1", "lit2", "var1"},
+			stackSizeWant: 2,
+			tailLenWant:   2,
+		},
+		{
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPushM), anything,
+				int(utilities.OpLitPush), 2,
+				int(utilities.OpConcatN), 3,
+				int(utilities.OpLitPush), 3,
+				int(utilities.OpCapture), 4,
+			},
+			pool:          []string{"lit1", "lit2", "lit3", "lit4", "var1"},
+			stackSizeWant: 4,
+			tailLenWant:   2,
 		},
 		{
 			ops:           []int{int(utilities.OpLitPush), 0},
 			pool:          []string{"abc"},
-			stackSizeWant: 1,
 			verb:          "LOCK",
+			stackSizeWant: 1,
+			tailLenWant:   0,
 		},
 	} {
 		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
@@ -81,6 +115,9 @@ func TestNewPattern(t *testing.T) {
 			continue
 		}
 		if got, want := pat.stacksize, spec.stackSizeWant; got != want {
+			t.Errorf("pat.stacksize = %d; want %d", got, want)
+		}
+		if got, want := pat.tailLen, spec.tailLenWant; got != want {
 			t.Errorf("pat.stacksize = %d; want %d", got, want)
 		}
 	}
@@ -127,6 +164,15 @@ func TestNewPatternWithWrongOp(t *testing.T) {
 		{
 			// index out of bound
 			ops:  []int{int(utilities.OpCapture), 1},
+			pool: []string{"abc"},
+		},
+		{
+			// pushM appears twice
+			ops: []int{
+				int(utilities.OpPushM), anything,
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpPushM), anything,
+			},
 			pool: []string{"abc"},
 		},
 	} {
@@ -200,6 +246,18 @@ func TestMatch(t *testing.T) {
 		{
 			ops:   []int{int(utilities.OpPushM), anything},
 			match: []string{"", "abc", "abc/def", "abc/def/ghi"},
+		},
+		{
+			ops: []int{
+				int(utilities.OpPushM), anything,
+				int(utilities.OpLitPush), 0,
+			},
+			pool:  []string{"tail"},
+			match: []string{"tail", "abc/tail", "abc/def/tail"},
+			notMatch: []string{
+				"", "abc", "abc/def",
+				"tail/extra", "abc/tail/extra", "abc/def/tail/extra",
+			},
 		},
 		{
 			ops: []int{
@@ -388,6 +446,22 @@ func TestMatchWithBinding(t *testing.T) {
 			ops: []int{
 				int(utilities.OpLitPush), 0,
 				int(utilities.OpLitPush), 1,
+				int(utilities.OpPushM), anything,
+				int(utilities.OpLitPush), 2,
+				int(utilities.OpConcatN), 3,
+				int(utilities.OpCapture), 4,
+				int(utilities.OpLitPush), 3,
+			},
+			pool: []string{"v1", "o", ".ext", "tail", "name"},
+			path: "v1/o/my-bucket/dir/dir2/obj/.ext/tail",
+			want: map[string]string{
+				"name": "o/my-bucket/dir/dir2/obj/.ext",
+			},
+		},
+		{
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
 				int(utilities.OpPush), anything,
 				int(utilities.OpConcatN), 2,
 				int(utilities.OpCapture), 2,
@@ -485,11 +559,13 @@ func TestPatternString(t *testing.T) {
 				int(utilities.OpCapture), 2,
 				int(utilities.OpLitPush), 3,
 				int(utilities.OpPushM), anything,
-				int(utilities.OpConcatN), 2,
-				int(utilities.OpCapture), 4,
+				int(utilities.OpLitPush), 4,
+				int(utilities.OpConcatN), 3,
+				int(utilities.OpCapture), 6,
+				int(utilities.OpLitPush), 5,
 			},
-			pool: []string{"v1", "buckets", "bucket_name", "objects", "name"},
-			want: "/v1/{bucket_name=buckets/*}/{name=objects/**}",
+			pool: []string{"v1", "buckets", "bucket_name", "objects", ".ext", "tail", "name"},
+			want: "/v1/{bucket_name=buckets/*}/{name=objects/**/.ext}/tail",
 		},
 	} {
 		p, err := NewPattern(validVersion, spec.ops, spec.pool, "")
