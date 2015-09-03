@@ -15,8 +15,8 @@ before_install:
 install:
 - go get github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway
 script:
-- make examples
-- test -z "$(git -C $GOPATH/src/github.com/gengo/grpc-gateway status --porcelain)"
+- make realclean && make examples
+- test -z "$(git status --porcelain)" || (git status; git diff; exit 1)
 - go test -v github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/... --logtostderr
 - golint github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/...
 - golint github.com/gengo/grpc-gateway/runtime/...
