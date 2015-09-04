@@ -5,6 +5,8 @@
 package examplepb
 
 import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // discarding unused import google_api1 "google/api"
 
@@ -15,6 +17,8 @@ import (
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 type EmptyProto struct {
 }

@@ -5,9 +5,13 @@
 package google_api
 
 import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // `HttpRule` defines the mapping of an RPC method to one or more HTTP REST API
 // methods. The mapping determines what portions of the request message are
@@ -71,18 +75,18 @@ var _ = proto.Marshal
 // a given URL path rule. The wild-card rule is useful for services that provide
 // content to Web (HTML) clients.
 type HttpRule struct {
-	// Used for listing and getting information about resources.
-	Get string `protobuf:"bytes,2,opt,name=get" json:"get,omitempty"`
-	// Used for updating a resource.
-	Put string `protobuf:"bytes,3,opt,name=put" json:"put,omitempty"`
-	// Used for creating a resource.
-	Post string `protobuf:"bytes,4,opt,name=post" json:"post,omitempty"`
-	// Used for deleting a resource.
-	Delete string `protobuf:"bytes,5,opt,name=delete" json:"delete,omitempty"`
-	// Used for updating a resource.
-	Patch string `protobuf:"bytes,6,opt,name=patch" json:"patch,omitempty"`
-	// Custom pattern is used for defining custom verbs.
-	Custom *CustomHttpPattern `protobuf:"bytes,8,opt,name=custom" json:"custom,omitempty"`
+	// Determines the URL pattern is matched by this rules. This pattern can be
+	// used with any of the {get|put|post|delete|patch} methods. A custom method
+	// can be defined using the 'custom' field.
+	//
+	// Types that are valid to be assigned to Pattern:
+	//	*HttpRule_Get
+	//	*HttpRule_Put
+	//	*HttpRule_Post
+	//	*HttpRule_Delete
+	//	*HttpRule_Patch
+	//	*HttpRule_Custom
+	Pattern isHttpRule_Pattern `protobuf_oneof:"pattern"`
 	// The name of the request field whose value is mapped to the HTTP body, or
 	// `*` for mapping all fields not captured by the path pattern to the HTTP
 	// body.
@@ -96,9 +100,81 @@ func (m *HttpRule) Reset()         { *m = HttpRule{} }
 func (m *HttpRule) String() string { return proto.CompactTextString(m) }
 func (*HttpRule) ProtoMessage()    {}
 
-func (m *HttpRule) GetCustom() *CustomHttpPattern {
+type isHttpRule_Pattern interface {
+	isHttpRule_Pattern()
+}
+
+type HttpRule_Get struct {
+	Get string `protobuf:"bytes,2,opt,name=get"`
+}
+type HttpRule_Put struct {
+	Put string `protobuf:"bytes,3,opt,name=put"`
+}
+type HttpRule_Post struct {
+	Post string `protobuf:"bytes,4,opt,name=post"`
+}
+type HttpRule_Delete struct {
+	Delete string `protobuf:"bytes,5,opt,name=delete"`
+}
+type HttpRule_Patch struct {
+	Patch string `protobuf:"bytes,6,opt,name=patch"`
+}
+type HttpRule_Custom struct {
+	Custom *CustomHttpPattern `protobuf:"bytes,8,opt,name=custom"`
+}
+
+func (*HttpRule_Get) isHttpRule_Pattern()    {}
+func (*HttpRule_Put) isHttpRule_Pattern()    {}
+func (*HttpRule_Post) isHttpRule_Pattern()   {}
+func (*HttpRule_Delete) isHttpRule_Pattern() {}
+func (*HttpRule_Patch) isHttpRule_Pattern()  {}
+func (*HttpRule_Custom) isHttpRule_Pattern() {}
+
+func (m *HttpRule) GetPattern() isHttpRule_Pattern {
 	if m != nil {
-		return m.Custom
+		return m.Pattern
+	}
+	return nil
+}
+
+func (m *HttpRule) GetGet() string {
+	if x, ok := m.GetPattern().(*HttpRule_Get); ok {
+		return x.Get
+	}
+	return ""
+}
+
+func (m *HttpRule) GetPut() string {
+	if x, ok := m.GetPattern().(*HttpRule_Put); ok {
+		return x.Put
+	}
+	return ""
+}
+
+func (m *HttpRule) GetPost() string {
+	if x, ok := m.GetPattern().(*HttpRule_Post); ok {
+		return x.Post
+	}
+	return ""
+}
+
+func (m *HttpRule) GetDelete() string {
+	if x, ok := m.GetPattern().(*HttpRule_Delete); ok {
+		return x.Delete
+	}
+	return ""
+}
+
+func (m *HttpRule) GetPatch() string {
+	if x, ok := m.GetPattern().(*HttpRule_Patch); ok {
+		return x.Patch
+	}
+	return ""
+}
+
+func (m *HttpRule) GetCustom() *CustomHttpPattern {
+	if x, ok := m.GetPattern().(*HttpRule_Custom); ok {
+		return x.Custom
 	}
 	return nil
 }
@@ -108,6 +184,100 @@ func (m *HttpRule) GetAdditionalBindings() []*HttpRule {
 		return m.AdditionalBindings
 	}
 	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*HttpRule) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), []interface{}) {
+	return _HttpRule_OneofMarshaler, _HttpRule_OneofUnmarshaler, []interface{}{
+		(*HttpRule_Get)(nil),
+		(*HttpRule_Put)(nil),
+		(*HttpRule_Post)(nil),
+		(*HttpRule_Delete)(nil),
+		(*HttpRule_Patch)(nil),
+		(*HttpRule_Custom)(nil),
+	}
+}
+
+func _HttpRule_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*HttpRule)
+	// pattern
+	switch x := m.Pattern.(type) {
+	case *HttpRule_Get:
+		b.EncodeVarint(2<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.Get)
+	case *HttpRule_Put:
+		b.EncodeVarint(3<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.Put)
+	case *HttpRule_Post:
+		b.EncodeVarint(4<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.Post)
+	case *HttpRule_Delete:
+		b.EncodeVarint(5<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.Delete)
+	case *HttpRule_Patch:
+		b.EncodeVarint(6<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.Patch)
+	case *HttpRule_Custom:
+		b.EncodeVarint(8<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Custom); err != nil {
+			return err
+		}
+	case nil:
+	default:
+		return fmt.Errorf("HttpRule.Pattern has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _HttpRule_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*HttpRule)
+	switch tag {
+	case 2: // pattern.get
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.Pattern = &HttpRule_Get{x}
+		return true, err
+	case 3: // pattern.put
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.Pattern = &HttpRule_Put{x}
+		return true, err
+	case 4: // pattern.post
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.Pattern = &HttpRule_Post{x}
+		return true, err
+	case 5: // pattern.delete
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.Pattern = &HttpRule_Delete{x}
+		return true, err
+	case 6: // pattern.patch
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.Pattern = &HttpRule_Patch{x}
+		return true, err
+	case 8: // pattern.custom
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(CustomHttpPattern)
+		err := b.DecodeMessage(msg)
+		m.Pattern = &HttpRule_Custom{msg}
+		return true, err
+	default:
+		return false, nil
+	}
 }
 
 // A custom pattern is used for defining custom HTTP verb.

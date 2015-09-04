@@ -72,35 +72,36 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 			pathTemplate string
 		)
 		switch {
-		case opts.Get != "":
+		case opts.GetGet() != "":
 			httpMethod = "GET"
-			pathTemplate = opts.Get
+			pathTemplate = opts.GetGet()
 			if opts.Body != "" {
 				return nil, fmt.Errorf("needs request body even though http method is GET: %s", md.GetName())
 			}
 
-		case opts.Put != "":
+		case opts.GetPut() != "":
 			httpMethod = "PUT"
-			pathTemplate = opts.Put
+			pathTemplate = opts.GetPut()
 
-		case opts.Post != "":
+		case opts.GetPost() != "":
 			httpMethod = "POST"
-			pathTemplate = opts.Post
+			pathTemplate = opts.GetPost()
 
-		case opts.Delete != "":
+		case opts.GetDelete() != "":
 			httpMethod = "DELETE"
-			pathTemplate = opts.Delete
+			pathTemplate = opts.GetDelete()
 			if opts.Body != "" {
 				return nil, fmt.Errorf("needs request body even though http method is DELETE: %s", md.GetName())
 			}
 
-		case opts.Patch != "":
+		case opts.GetPatch() != "":
 			httpMethod = "PATCH"
-			pathTemplate = opts.Patch
+			pathTemplate = opts.GetPatch()
 
-		case opts.Custom != nil:
-			httpMethod = opts.Custom.Kind
-			pathTemplate = opts.Custom.Path
+		case opts.GetCustom() != nil:
+			custom := opts.GetCustom()
+			httpMethod = custom.Kind
+			pathTemplate = custom.Path
 
 		default:
 			glog.Errorf("No pattern specified in google.api.HttpRule: %s", md.GetName())
