@@ -14,9 +14,9 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/gengo/grpc-gateway/log"
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/gengo/grpc-gateway/utilities"
-	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -44,7 +44,7 @@ func request_FlowCombination_RpcEmptyStream_0(ctx context.Context, client FlowCo
 func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	stream, err := client.StreamEmptyRpc(ctx)
 	if err != nil {
-		glog.Errorf("Failed to start streaming: %v", err)
+		log.Errorf("Failed to start streaming: %v", err)
 		return nil, err
 	}
 	dec := json.NewDecoder(req.Body)
@@ -55,11 +55,11 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, client FlowCo
 			break
 		}
 		if err != nil {
-			glog.Errorf("Failed to decode request: %v", err)
+			log.Errorf("Failed to decode request: %v", err)
 			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
-			glog.Errorf("Failed to send request: %v", err)
+			log.Errorf("Failed to send request: %v", err)
 			return nil, err
 		}
 	}
@@ -71,7 +71,7 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, client FlowCo
 func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_StreamEmptyStreamClient, error) {
 	stream, err := client.StreamEmptyStream(ctx)
 	if err != nil {
-		glog.Errorf("Failed to start streaming: %v", err)
+		log.Errorf("Failed to start streaming: %v", err)
 		return nil, err
 	}
 	dec := json.NewDecoder(req.Body)
@@ -82,17 +82,17 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, client Flo
 			break
 		}
 		if err != nil {
-			glog.Errorf("Failed to decode request: %v", err)
+			log.Errorf("Failed to decode request: %v", err)
 			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
-			glog.Errorf("Failed to send request: %v", err)
+			log.Errorf("Failed to send request: %v", err)
 			return nil, err
 		}
 	}
 
 	if err = stream.CloseSend(); err != nil {
-		glog.Errorf("Failed to terminate client stream: %v", err)
+		log.Errorf("Failed to terminate client stream: %v", err)
 		return nil, err
 	}
 	return stream, nil
@@ -793,14 +793,14 @@ func RegisterFlowCombinationHandlerFromEndpoint(ctx context.Context, mux *runtim
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+				log.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+				log.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()

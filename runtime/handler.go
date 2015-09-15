@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/golang/glog"
+	"github.com/gengo/grpc-gateway/log"
 	"github.com/golang/protobuf/proto"
 	"golang.org/x/net/context"
 )
@@ -20,7 +20,7 @@ type responseStreamChunk struct {
 func ForwardResponseStream(ctx context.Context, w http.ResponseWriter, req *http.Request, recv func() (proto.Message, error)) {
 	f, ok := w.(http.Flusher)
 	if !ok {
-		glog.Errorf("Flush not supported in %T", w)
+		log.Errorf("Flush not supported in %T", w)
 		http.Error(w, "unexpected type of web server", http.StatusInternalServerError)
 		return
 	}
@@ -37,22 +37,22 @@ func ForwardResponseStream(ctx context.Context, w http.ResponseWriter, req *http
 		if err != nil {
 			buf, merr := json.Marshal(responseStreamChunk{Error: err.Error()})
 			if merr != nil {
-				glog.Errorf("Failed to marshal an error: %v", merr)
+				log.Errorf("Failed to marshal an error: %v", merr)
 				return
 			}
 			if _, werr := fmt.Fprintf(w, "%s\n", buf); werr != nil {
-				glog.Errorf("Failed to notify error to client: %v", werr)
+				log.Errorf("Failed to notify error to client: %v", werr)
 				return
 			}
 			return
 		}
 		buf, err := json.Marshal(responseStreamChunk{Result: resp})
 		if err != nil {
-			glog.Errorf("Failed to marshal response chunk: %v", err)
+			log.Errorf("Failed to marshal response chunk: %v", err)
 			return
 		}
 		if _, err = fmt.Fprintf(w, "%s\n", buf); err != nil {
-			glog.Errorf("Failed to send response chunk: %v", err)
+			log.Errorf("Failed to send response chunk: %v", err)
 			return
 		}
 		f.Flush()
@@ -63,13 +63,13 @@ func ForwardResponseStream(ctx context.Context, w http.ResponseWriter, req *http
 func ForwardResponseMessage(ctx context.Context, w http.ResponseWriter, req *http.Request, resp proto.Message) {
 	buf, err := json.Marshal(resp)
 	if err != nil {
-		glog.Errorf("Marshal error: %v", err)
+		log.Errorf("Marshal error: %v", err)
 		HTTPError(ctx, w, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	if _, err = w.Write(buf); err != nil {
-		glog.Errorf("Failed to write response: %v", err)
+		log.Errorf("Failed to write response: %v", err)
 	}
 }

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gengo/grpc-gateway/log"
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/httprule"
 	options "github.com/gengo/grpc-gateway/third_party/googleapis/google/api"
-	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
@@ -15,23 +15,23 @@ import (
 // It must be called after loadFile is called for all files so that loadServices
 // can resolve names of message types and their fields.
 func (r *Registry) loadServices(file *File) error {
-	glog.V(1).Infof("Loading services from %s", file.GetName())
+	log.Infof("Loading services from %s", file.GetName())
 	var svcs []*Service
 	for _, sd := range file.GetService() {
-		glog.V(2).Infof("Registering %s", sd.GetName())
+		log.Infof("Registering %s", sd.GetName())
 		svc := &Service{
 			File: file,
 			ServiceDescriptorProto: sd,
 		}
 		for _, md := range sd.GetMethod() {
-			glog.V(2).Infof("Processing %s.%s", sd.GetName(), md.GetName())
+			log.Infof("Processing %s.%s", sd.GetName(), md.GetName())
 			opts, err := extractAPIOptions(md)
 			if err != nil {
-				glog.Errorf("Failed to extract ApiMethodOptions from %s.%s: %v", svc.GetName(), md.GetName(), err)
+				log.Errorf("Failed to extract ApiMethodOptions from %s.%s: %v", svc.GetName(), md.GetName(), err)
 				return err
 			}
 			if opts == nil {
-				glog.V(1).Infof("Skip non-target method: %s.%s", svc.GetName(), md.GetName())
+				log.Infof("Skip non-target method: %s.%s", svc.GetName(), md.GetName())
 				continue
 			}
 			meth, err := r.newMethod(svc, md, opts)
@@ -43,7 +43,7 @@ func (r *Registry) loadServices(file *File) error {
 		if len(svc.Methods) == 0 {
 			continue
 		}
-		glog.V(2).Infof("Registered %s with %d method(s)", svc.GetName(), len(svc.Methods))
+		log.Infof("Registered %s with %d method(s)", svc.GetName(), len(svc.Methods))
 		svcs = append(svcs, svc)
 	}
 	file.Services = svcs
@@ -104,7 +104,7 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 			pathTemplate = custom.Path
 
 		default:
-			glog.Errorf("No pattern specified in google.api.HttpRule: %s", md.GetName())
+			log.Errorf("No pattern specified in google.api.HttpRule: %s", md.GetName())
 			return nil, fmt.Errorf("none of pattern specified")
 		}
 
@@ -251,7 +251,7 @@ func (r *Registry) resolveFiledPath(msg *Message, path string) ([]FieldPathCompo
 			}
 		}
 
-		glog.V(2).Infof("Lookup %s in %s", c, msg.FQMN())
+		log.Infof("Lookup %s in %s", c, msg.FQMN())
 		f := lookupField(msg, c)
 		if f == nil {
 			return nil, fmt.Errorf("no field %q found in %s", path, root.GetName())
