@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/gengo/grpc-gateway/runtime"
+	"github.com/gengo/grpc-gateway/utilities"
 )
 
 func TestMuxServeHTTP(t *testing.T) {
@@ -16,6 +16,7 @@ func TestMuxServeHTTP(t *testing.T) {
 		method string
 		ops    []int
 		pool   []string
+		verb   string
 	}
 	for _, spec := range []struct {
 		patterns []stubPattern
@@ -158,13 +159,30 @@ func TestMuxServeHTTP(t *testing.T) {
 			},
 			respStatus: http.StatusMethodNotAllowed,
 		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "POST",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+					verb:   "bar",
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/foo:bar",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:  http.StatusOK,
+			respContent: "POST /foo:bar",
+		},
 	} {
 		mux := runtime.NewServeMux()
 		for _, p := range spec.patterns {
 			func(p stubPattern) {
-				pat, err := runtime.NewPattern(1, p.ops, p.pool, "")
+				pat, err := runtime.NewPattern(1, p.ops, p.pool, p.verb)
 				if err != nil {
-					t.Fatalf("runtime.NewPattern(1, %#v, %#v, %q) failed with %v; want success", p.ops, p.pool, "", err)
+					t.Fatalf("runtime.NewPattern(1, %#v, %#v, %q) failed with %v; want success", p.ops, p.pool, p.verb, err)
 				}
 				mux.Handle(p.method, pat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 					fmt.Fprintf(w, "%s %s", p.method, pat.String())
