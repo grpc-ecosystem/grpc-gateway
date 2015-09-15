@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,6 +10,11 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	"golang.org/x/net/context"
+)
+
+var (
+	// The indent to use for JSON responses.
+	ResponseIndent = ""
 )
 
 type responseStreamChunk struct {
@@ -66,6 +72,11 @@ func ForwardResponseMessage(ctx context.Context, w http.ResponseWriter, req *htt
 		glog.Errorf("Marshal error: %v", err)
 		HTTPError(ctx, w, err)
 		return
+	}
+	if ResponseIndent != "" {
+		var dst bytes.Buffer
+		json.Indent(&dst, buf, "", ResponseIndent)
+		buf = dst.Bytes()
 	}
 
 	w.Header().Set("Content-Type", "application/json")
