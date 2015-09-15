@@ -61,6 +61,12 @@ func ForwardResponseStream(ctx context.Context, w http.ResponseWriter, req *http
 
 // ForwardResponseMessage forwards the message "resp" from gRPC server to REST client.
 func ForwardResponseMessage(ctx context.Context, w http.ResponseWriter, req *http.Request, resp proto.Message, opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
+	w.Header().Set("Content-Type", "application/json")
+	if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {
+		HTTPError(ctx, w, err)
+		return
+	}
+
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
@@ -68,11 +74,6 @@ func ForwardResponseMessage(ctx context.Context, w http.ResponseWriter, req *htt
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {
-		HTTPError(ctx, w, err)
-		return
-	}
 	if _, err = w.Write(buf); err != nil {
 		glog.Errorf("Failed to write response: %v", err)
 	}
