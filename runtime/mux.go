@@ -45,7 +45,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if idx > 0 {
 		c := components[l-1]
-		verb, components[l-1] = c[:idx], c[idx+1:]
+		components[l-1], verb = c[:idx], c[idx+1:]
 	}
 
 	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && isPathLengthFallback(r) {
