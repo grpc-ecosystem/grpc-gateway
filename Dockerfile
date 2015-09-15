@@ -35,11 +35,14 @@ RUN \
 
 RUN \
   go get \
+    github.com/golang/glog \
     github.com/golang/lint/golint \
-    github.com/golang/protobuf/{proto,protoc-gen-go} \
-    google.golang.org/grpc \
+    github.com/golang/protobuf/proto \
+    github.com/golang/protobuf/protoc-gen-go \
+    github.com/rogpeppe/fastuuid \
+    google.golang.org/grpc
 
 RUN mkdir -p /go/src/github.com/gengo/grpc-gateway
 ADD . /go/src/github.com/gengo/grpc-gateway/
 WORKDIR /go/src/github.com/gengo/grpc-gateway
-RUN go install github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway
+RUN make generate examples
