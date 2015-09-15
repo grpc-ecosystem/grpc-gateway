@@ -45,4 +45,4 @@ RUN \
 RUN mkdir -p /go/src/github.com/gengo/grpc-gateway
 ADD . /go/src/github.com/gengo/grpc-gateway/
 WORKDIR /go/src/github.com/gengo/grpc-gateway
-RUN make generate examples
+RUN go install github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway
