@@ -4,7 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/golang/glog"
+	"github.com/gengo/grpc-gateway/log"
+	_ "github.com/gengo/grpc-gateway/log/glog"
 )
 
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
@@ -58,7 +59,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	for _, h := range s.handlers[r.Method] {
 		pathParams, err := h.pat.Match(components, verb)
 		if err != nil {
-			glog.V(3).Infof("path mismatch: %q to %q", path, h.pat)
+			log.Infof("path mismatch: %q to %q", path, h.pat)
 			continue
 		}
 		h.h(w, r, pathParams)

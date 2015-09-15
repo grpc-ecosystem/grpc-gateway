@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/gengo/grpc-gateway/log"
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/gengateway"
 	"github.com/golang/glog"
@@ -19,18 +20,18 @@ var (
 )
 
 func parseReq(r io.Reader) (*plugin.CodeGeneratorRequest, error) {
-	glog.V(1).Info("Parsing code generator request")
+	log.Infoln("Parsing code generator request")
 	input, err := ioutil.ReadAll(r)
 	if err != nil {
-		glog.Errorf("Failed to read code generator request: %v", err)
+		log.Errorf("Failed to read code generator request: %v", err)
 		return nil, err
 	}
 	req := new(plugin.CodeGeneratorRequest)
 	if err = proto.Unmarshal(input, req); err != nil {
-		glog.Errorf("Failed to unmarshal code generator request: %v", err)
+		log.Errorf("Failed to unmarshal code generator request: %v", err)
 		return nil, err
 	}
-	glog.V(1).Info("Parsed code generator request")
+	log.Infoln("Parsed code generator request")
 	return req, nil
 }
 
@@ -40,17 +41,19 @@ func main() {
 
 	reg := descriptor.NewRegistry()
 
-	glog.V(1).Info("Processing code generator request")
+	log.Infoln("Processing code generator request")
 	req, err := parseReq(os.Stdin)
 	if err != nil {
-		glog.Fatal(err)
+		log.Errorln(err)
+		os.Exit(1)
 	}
 	if req.Parameter != nil {
 		for _, p := range strings.Split(req.GetParameter(), ",") {
 			spec := strings.SplitN(p, "=", 2)
 			if len(spec) == 1 {
 				if err := flag.CommandLine.Set(spec[0], ""); err != nil {
-					glog.Fatalf("Cannot set flag %s", p)
+					log.Errorf("Cannot set flag %s", p)
+					os.Exit(1)
 				}
 				continue
 			}
@@ -60,7 +63,8 @@ func main() {
 				continue
 			}
 			if err := flag.CommandLine.Set(name, value); err != nil {
-				glog.Fatalf("Cannot set flag %s", p)
+				log.Errorf("Cannot set flag %s", p)
+				os.Exit(1)
 			}
 		}
 	}
@@ -77,13 +81,14 @@ func main() {
 	for _, target := range req.FileToGenerate {
 		f, err := reg.LookupFile(target)
 		if err != nil {
-			glog.Fatal(err)
+			log.Errorln(err)
+			os.Exit(1)
 		}
 		targets = append(targets, f)
 	}
 
 	out, err := g.Generate(targets)
-	glog.V(1).Info("Processed code generator request")
+	log.Infoln("Processed code generator request")
 	if err != nil {
 		emitError(err)
 		return
@@ -102,9 +107,11 @@ func emitError(err error) {
 func emitResp(resp *plugin.CodeGeneratorResponse) {
 	buf, err := proto.Marshal(resp)
 	if err != nil {
-		glog.Fatal(err)
+		log.Errorln(err)
+		os.Exit(1)
 	}
 	if _, err := os.Stdout.Write(buf); err != nil {
-		glog.Fatal(err)
+		log.Errorln(err)
+		os.Exit(1)
 	}
 }

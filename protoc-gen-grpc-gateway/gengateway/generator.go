@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/gengo/grpc-gateway/log"
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
-	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
@@ -30,9 +30,9 @@ func New(reg *descriptor.Registry) *generator {
 		"encoding/json",
 		"io",
 		"net/http",
+		"github.com/gengo/grpc-gateway/log",
 		"github.com/gengo/grpc-gateway/runtime",
 		"github.com/gengo/grpc-gateway/utilities",
-		"github.com/golang/glog",
 		"github.com/golang/protobuf/proto",
 		"golang.org/x/net/context",
 		"google.golang.org/grpc",
@@ -60,10 +60,10 @@ func New(reg *descriptor.Registry) *generator {
 func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGeneratorResponse_File, error) {
 	var files []*plugin.CodeGeneratorResponse_File
 	for _, file := range targets {
-		glog.V(1).Infof("Processing %s", file.GetName())
+		log.Infof("Processing %s", file.GetName())
 		code, err := g.generate(file)
 		if err == errNoTargetService {
-			glog.V(1).Infof("%s: %v", file.GetName(), err)
+			log.Infof("%s: %v", file.GetName(), err)
 			continue
 		}
 		if err != nil {
@@ -71,7 +71,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 		}
 		formatted, err := format.Source([]byte(code))
 		if err != nil {
-			glog.Errorf("%v: %s", err, code)
+			log.Errorf("%v: %s", err, code)
 			return nil, err
 		}
 		name := file.GetName()
@@ -82,7 +82,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 			Name:    proto.String(output),
 			Content: proto.String(string(formatted)),
 		})
-		glog.V(1).Infof("Will emit %s", output)
+		log.Infof("Will emit %s", output)
 	}
 	return files, nil
 }

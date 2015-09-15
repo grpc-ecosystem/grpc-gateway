@@ -15,9 +15,9 @@ import (
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/examples/sub"
+	"github.com/gengo/grpc-gateway/log"
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/gengo/grpc-gateway/utilities"
-	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -218,7 +218,7 @@ func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, client AB
 func request_ABitOfEverythingService_BulkCreate_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	stream, err := client.BulkCreate(ctx)
 	if err != nil {
-		glog.Errorf("Failed to start streaming: %v", err)
+		log.Errorf("Failed to start streaming: %v", err)
 		return nil, err
 	}
 	dec := json.NewDecoder(req.Body)
@@ -229,11 +229,11 @@ func request_ABitOfEverythingService_BulkCreate_0(ctx context.Context, client AB
 			break
 		}
 		if err != nil {
-			glog.Errorf("Failed to decode request: %v", err)
+			log.Errorf("Failed to decode request: %v", err)
 			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
-			glog.Errorf("Failed to send request: %v", err)
+			log.Errorf("Failed to send request: %v", err)
 			return nil, err
 		}
 	}
@@ -375,7 +375,7 @@ func request_ABitOfEverythingService_Echo_2(ctx context.Context, client ABitOfEv
 func request_ABitOfEverythingService_BulkEcho_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (ABitOfEverythingService_BulkEchoClient, error) {
 	stream, err := client.BulkEcho(ctx)
 	if err != nil {
-		glog.Errorf("Failed to start streaming: %v", err)
+		log.Errorf("Failed to start streaming: %v", err)
 		return nil, err
 	}
 	dec := json.NewDecoder(req.Body)
@@ -386,17 +386,17 @@ func request_ABitOfEverythingService_BulkEcho_0(ctx context.Context, client ABit
 			break
 		}
 		if err != nil {
-			glog.Errorf("Failed to decode request: %v", err)
+			log.Errorf("Failed to decode request: %v", err)
 			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
-			glog.Errorf("Failed to send request: %v", err)
+			log.Errorf("Failed to send request: %v", err)
 			return nil, err
 		}
 	}
 
 	if err = stream.CloseSend(); err != nil {
-		glog.Errorf("Failed to terminate client stream: %v", err)
+		log.Errorf("Failed to terminate client stream: %v", err)
 		return nil, err
 	}
 	return stream, nil
@@ -406,21 +406,21 @@ func request_ABitOfEverythingService_BulkEcho_0(ctx context.Context, client ABit
 // RegisterABitOfEverythingServiceHandlerFromEndpoint is same as RegisterABitOfEverythingServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string) (err error) {
-	conn, err := grpc.Dial(endpoint)
+	conn, err := grpc.Dial(endpoint, grpc.WithInsecure())
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+				log.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+				log.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()

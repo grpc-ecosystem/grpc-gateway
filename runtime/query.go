@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/gengo/grpc-gateway/log"
 	"github.com/gengo/grpc-gateway/utilities"
-	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -46,7 +46,7 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 		}
 		f := m.FieldByName(utilities.PascalFromSnake(fieldName))
 		if !f.IsValid() {
-			glog.Warningf("field not found in %T: %s", msg, strings.Join(fieldPath, "."))
+			log.Warnf("field not found in %T: %s", msg, strings.Join(fieldPath, "."))
 			return nil
 		}
 
@@ -78,7 +78,7 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 		return fmt.Errorf("no value of field: %s", strings.Join(fieldPath, "."))
 	case 1:
 	default:
-		glog.Warningf("too many field values: %s", strings.Join(fieldPath, "."))
+		log.Warnf("too many field values: %s", strings.Join(fieldPath, "."))
 	}
 	return populateField(m, values[0])
 }

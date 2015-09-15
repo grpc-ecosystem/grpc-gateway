@@ -6,9 +6,9 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/gengo/grpc-gateway/log"
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/gengo/grpc-gateway/utilities"
-	"github.com/golang/glog"
 )
 
 type param struct {
@@ -74,7 +74,7 @@ func applyTemplate(p param) (string, error) {
 	var methodSeen bool
 	for _, svc := range p.Services {
 		for _, meth := range svc.Methods {
-			glog.V(2).Infof("Processing %s.%s", svc.GetName(), meth.GetName())
+			log.Infof("Processing %s.%s", svc.GetName(), meth.GetName())
 			methodSeen = true
 			for _, b := range meth.Bindings {
 				if err := handlerTemplate.Execute(w, binding{Binding: b}); err != nil {
@@ -136,7 +136,7 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 {{template "request-func-signature" .}} {
 	stream, err := client.{{.Method.GetName}}(ctx)
 	if err != nil {
-		glog.Errorf("Failed to start streaming: %v", err)
+		log.Errorf("Failed to start streaming: %v", err)
 		return nil, err
 	}
 	dec := json.NewDecoder(req.Body)
@@ -147,17 +147,17 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 			break
 		}
 		if err != nil {
-			glog.Errorf("Failed to decode request: %v", err)
+			log.Errorf("Failed to decode request: %v", err)
 			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
-			glog.Errorf("Failed to send request: %v", err)
+			log.Errorf("Failed to send request: %v", err)
 			return nil, err
 		}
 	}
 {{if .Method.GetServerStreaming}}
 	if err = stream.CloseSend(); err != nil {
-		glog.Errorf("Failed to terminate client stream: %v", err)
+		log.Errorf("Failed to terminate client stream: %v", err)
 		return nil, err
 	}
 	return stream, nil
@@ -216,21 +216,21 @@ var (
 // Register{{$svc.GetName}}HandlerFromEndpoint is same as Register{{$svc.GetName}}Handler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string) (err error) {
-	conn, err := grpc.Dial(endpoint)
+	conn, err := grpc.Dial(endpoint, grpc.WithInsecure())
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+				log.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+				log.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()

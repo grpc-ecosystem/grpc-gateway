@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/golang/glog"
+	"github.com/gengo/grpc-gateway/log"
 )
 
 func TestTokenize(t *testing.T) {
@@ -308,6 +308,6 @@ func TestParseSegmentsWithErrors(t *testing.T) {
 			t.Errorf("parser{%q}.segments() succeeded; want InvalidTemplateError; accepted %#v", spec.tokens, segs)
 			continue
 		}
-		glog.V(1).Info(err)
+		log.Infoln(err)
 	}
 }

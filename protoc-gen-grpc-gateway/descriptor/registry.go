@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/golang/glog"
+	"github.com/gengo/grpc-gateway/log"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
@@ -108,7 +108,7 @@ func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descripto
 		}
 		file.Messages = append(file.Messages, m)
 		r.msgs[m.FQMN()] = m
-		glog.V(1).Infof("register name: %s", m.FQMN())
+		log.Infof("register name: %s", m.FQMN())
 
 		var outers []string
 		outers = append(outers, outerPath...)
@@ -120,7 +120,7 @@ func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descripto
 // LookupMsg looks up a message type by "name".
 // It tries to resolve "name" from "location" if "name" is a relative message name.
 func (r *Registry) LookupMsg(location, name string) (*Message, error) {
-	glog.V(1).Infof("lookup %s from %s", name, location)
+	log.Infof("lookup %s from %s", name, location)
 	if strings.HasPrefix(name, ".") {
 		m, ok := r.msgs[name]
 		if !ok {
