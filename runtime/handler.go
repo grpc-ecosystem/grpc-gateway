@@ -9,11 +9,19 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
 
 type responseStreamChunk struct {
 	Result proto.Message `json:"result,omitempty"`
 	Error  string        `json:"error,omitempty"`
+}
+
+type responseStreamError struct {
+	GrpcCode   int    `json:"grcp_code, omitempty"`
+	HttpCode   int    `json:"http_code, omitempty"`
+	Message    string `json:"message, omitempty"`
+	HttpStatus string `json:"http_status, omitempty"`
 }
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
@@ -35,7 +43,13 @@ func ForwardResponseStream(ctx context.Context, w http.ResponseWriter, req *http
 			return
 		}
 		if err != nil {
-			buf, merr := json.Marshal(responseStreamChunk{Error: err.Error()})
+			grpcCode := grpc.Code(err)
+			httpCode := HTTPStatusFromCode(grpcCode)
+			resp := responseStreamChunk{Error: responseStreamError{GrpcCode: int(grpcCode),
+				HttpCode:   httpCode,
+				Message:    err.Error(),
+				HttpStatus: http.StatusText(httpCode)}}
+			buf, merr := json.Marshal(resp)
 			if merr != nil {
 				glog.Errorf("Failed to marshal an error: %v", merr)
 				return
