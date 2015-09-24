@@ -13,13 +13,13 @@ import (
 )
 
 type responseStreamChunk struct {
-	Result proto.Message `json:"result,omitempty"`
-	Error  responseStreamError        `json:"error,omitempty"`
+	Result proto.Message       `json:"result,omitempty"`
+	Error  responseStreamError `json:"error,omitempty"`
 }
 
 type responseStreamError struct {
 	GrpcCode   int    `json:"grcp_code, omitempty"`
-	HTTPCode int    `json:"http_code, omitempty"`
+	HTTPCode   int    `json:"http_code, omitempty"`
 	Message    string `json:"message, omitempty"`
 	HTTPStatus string `json:"http_status, omitempty"`
 }
