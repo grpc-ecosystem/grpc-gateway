@@ -786,7 +786,7 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, client F
 // RegisterFlowCombinationHandlerFromEndpoint is same as RegisterFlowCombinationHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterFlowCombinationHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string) (err error) {
-	conn, err := grpc.Dial(endpoint)
+	conn, err := grpc.Dial(endpoint, grpc.WithInsecure())
 	if err != nil {
 		return err
 	}

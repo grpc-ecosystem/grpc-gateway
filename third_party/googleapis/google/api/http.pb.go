@@ -105,22 +105,22 @@ type isHttpRule_Pattern interface {
 }
 
 type HttpRule_Get struct {
-	Get string `protobuf:"bytes,2,opt,name=get"`
+	Get string `protobuf:"bytes,2,opt,name=get,oneof"`
 }
 type HttpRule_Put struct {
-	Put string `protobuf:"bytes,3,opt,name=put"`
+	Put string `protobuf:"bytes,3,opt,name=put,oneof"`
 }
 type HttpRule_Post struct {
-	Post string `protobuf:"bytes,4,opt,name=post"`
+	Post string `protobuf:"bytes,4,opt,name=post,oneof"`
 }
 type HttpRule_Delete struct {
-	Delete string `protobuf:"bytes,5,opt,name=delete"`
+	Delete string `protobuf:"bytes,5,opt,name=delete,oneof"`
 }
 type HttpRule_Patch struct {
-	Patch string `protobuf:"bytes,6,opt,name=patch"`
+	Patch string `protobuf:"bytes,6,opt,name=patch,oneof"`
 }
 type HttpRule_Custom struct {
-	Custom *CustomHttpPattern `protobuf:"bytes,8,opt,name=custom"`
+	Custom *CustomHttpPattern `protobuf:"bytes,8,opt,name=custom,oneof"`
 }
 
 func (*HttpRule_Get) isHttpRule_Pattern()    {}

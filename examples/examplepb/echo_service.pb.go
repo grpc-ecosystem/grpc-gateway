@@ -12,6 +12,14 @@ It is generated from these files:
 
 It has these top-level messages:
 	SimpleMessage
+	ABitOfEverything
+	EmptyMessage
+	IdMessage
+	EmptyProto
+	NonEmptyProto
+	UnaryProto
+	NestedProto
+	SingleNestedProto
 */
 package examplepb
 
