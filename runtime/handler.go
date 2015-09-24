@@ -14,7 +14,7 @@ import (
 
 type responseStreamChunk struct {
 	Result proto.Message `json:"result,omitempty"`
-	Error  string        `json:"error,omitempty"`
+	Error  responseStreamError        `json:"error,omitempty"`
 }
 
 type responseStreamError struct {
