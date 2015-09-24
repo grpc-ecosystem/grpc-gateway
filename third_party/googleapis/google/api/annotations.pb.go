@@ -10,8 +10,6 @@ It is generated from these files:
 	google/api/http.proto
 
 It has these top-level messages:
-	HttpRule
-	CustomHttpPattern
 */
 package google_api
 
