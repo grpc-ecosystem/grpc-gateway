@@ -88,7 +88,7 @@ func ForwardResponseMessage(ctx context.Context, w http.ResponseWriter, req *htt
 }
 
 func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, resp proto.Message, opts []func(context.Context, http.ResponseWriter, proto.Message) error) error {
-	if opts == nil || len(opts) == 0 {
+	if len(opts) == 0 {
 		return nil
 	}
 	for _, opt := range opts {
