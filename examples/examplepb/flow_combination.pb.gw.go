@@ -820,7 +820,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcEmptyRpc_0(ctx, w, req, resp)
+		forward_FlowCombination_RpcEmptyRpc_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -831,7 +831,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcEmptyStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_RpcEmptyStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -842,7 +842,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_StreamEmptyRpc_0(ctx, w, req, resp)
+		forward_FlowCombination_StreamEmptyRpc_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -853,7 +853,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_StreamEmptyStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_StreamEmptyStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -864,7 +864,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_0(ctx, w, req, resp)
+		forward_FlowCombination_RpcBodyRpc_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -875,7 +875,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_1(ctx, w, req, resp)
+		forward_FlowCombination_RpcBodyRpc_1(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -886,7 +886,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_2(ctx, w, req, resp)
+		forward_FlowCombination_RpcBodyRpc_2(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -897,7 +897,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_3(ctx, w, req, resp)
+		forward_FlowCombination_RpcBodyRpc_3(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -908,7 +908,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_4(ctx, w, req, resp)
+		forward_FlowCombination_RpcBodyRpc_4(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -919,7 +919,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_5(ctx, w, req, resp)
+		forward_FlowCombination_RpcBodyRpc_5(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -930,7 +930,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_6(ctx, w, req, resp)
+		forward_FlowCombination_RpcBodyRpc_6(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -941,7 +941,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcPathSingleNestedRpc_0(ctx, w, req, resp)
+		forward_FlowCombination_RpcPathSingleNestedRpc_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -952,7 +952,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcPathNestedRpc_0(ctx, w, req, resp)
+		forward_FlowCombination_RpcPathNestedRpc_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -963,7 +963,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcPathNestedRpc_1(ctx, w, req, resp)
+		forward_FlowCombination_RpcPathNestedRpc_1(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -974,7 +974,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcPathNestedRpc_2(ctx, w, req, resp)
+		forward_FlowCombination_RpcPathNestedRpc_2(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -985,7 +985,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_RpcBodyStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -996,7 +996,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_1(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_RpcBodyStream_1(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1007,7 +1007,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_2(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_RpcBodyStream_2(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1018,7 +1018,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_3(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_RpcBodyStream_3(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1029,7 +1029,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_4(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_RpcBodyStream_4(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1040,7 +1040,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_5(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_RpcBodyStream_5(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1051,7 +1051,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_6(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_RpcBodyStream_6(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1062,7 +1062,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcPathSingleNestedStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_RpcPathSingleNestedStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1073,7 +1073,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcPathNestedStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_RpcPathNestedStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1084,7 +1084,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcPathNestedStream_1(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_RpcPathNestedStream_1(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -1095,7 +1095,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			return
 		}
 
-		forward_FlowCombination_RpcPathNestedStream_2(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_FlowCombination_RpcPathNestedStream_2(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 

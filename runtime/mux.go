@@ -4,7 +4,10 @@ import (
 	"net/http"
 	"strings"
 
+	"golang.org/x/net/context"
+
 	"github.com/golang/glog"
+	"github.com/golang/protobuf/proto"
 )
 
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
@@ -14,14 +17,35 @@ type HandlerFunc func(w http.ResponseWriter, r *http.Request, pathParams map[str
 // It matches http requests to patterns and invokes the corresponding handler.
 type ServeMux struct {
 	// handlers maps HTTP method to a list of handlers.
-	handlers map[string][]handler
+	handlers               map[string][]handler
+	forwardResponseOptions []func(context.Context, http.ResponseWriter, proto.Message) error
+}
+
+// ServeMuxOption is an option that can be given to a ServeMux on construction.
+type ServeMuxOption func(*ServeMux)
+
+// WithForwardResponseOption returns a ServeMuxOption representing the forwardResponseOption.
+//
+// forwardResponseOption is an option that will be called on the relevant context.Context,
+// http.ResponseWriter, and proto.Message before every forwarded response.
+//
+// The message may be nil in the case where just a header is being sent.
+func WithForwardResponseOption(forwardResponseOption func(context.Context, http.ResponseWriter, proto.Message) error) ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		serveMux.forwardResponseOptions = append(serveMux.forwardResponseOptions, forwardResponseOption)
+	}
 }
 
 // NewServeMux returns a new MuxHandler whose internal mapping is empty.
-func NewServeMux() *ServeMux {
-	return &ServeMux{
-		handlers: make(map[string][]handler),
+func NewServeMux(opts ...ServeMuxOption) *ServeMux {
+	serveMux := &ServeMux{
+		handlers:               make(map[string][]handler),
+		forwardResponseOptions: make([]func(context.Context, http.ResponseWriter, proto.Message) error, 0),
 	}
+	for _, opt := range opts {
+		opt(serveMux)
+	}
+	return serveMux
 }
 
 // Handle associates "h" to the pair of HTTP method and path pattern.
@@ -90,6 +114,11 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+}
+
+// GetForwardResponseOptions returns the ForwardResponseOptions associated with this ServeMux.
+func (s *ServeMux) GetForwardResponseOptions() []func(context.Context, http.ResponseWriter, proto.Message) error {
+	return s.forwardResponseOptions
 }
 
 func isPathLengthFallback(r *http.Request) bool {

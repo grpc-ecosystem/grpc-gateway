@@ -12,9 +12,13 @@ import (
 	"testing"
 	"time"
 
+	"golang.org/x/net/context"
+
 	gw "github.com/gengo/grpc-gateway/examples/examplepb"
 	server "github.com/gengo/grpc-gateway/examples/server"
 	sub "github.com/gengo/grpc-gateway/examples/sub"
+	"github.com/gengo/grpc-gateway/runtime"
+	"github.com/golang/protobuf/proto"
 )
 
 func TestIntegration(t *testing.T) {
@@ -30,14 +34,14 @@ func TestIntegration(t *testing.T) {
 		}
 	}()
 	go func() {
-		if err := Run(); err != nil {
+		if err := Run(":8080"); err != nil {
 			t.Errorf("gw.Run() failed with %v; want success", err)
 			return
 		}
 	}()
 
 	time.Sleep(100 * time.Millisecond)
-	testEcho(t)
+	testEcho(t, 8080, "application/json")
 	testEchoBody(t)
 	testABECreate(t)
 	testABECreateBody(t)
@@ -45,10 +49,27 @@ func TestIntegration(t *testing.T) {
 	testABELookup(t)
 	testABEList(t)
 	testAdditionalBindings(t)
+
+	go func() {
+		if err := Run(
+			":8081",
+			runtime.WithForwardResponseOption(
+				func(_ context.Context, w http.ResponseWriter, _ proto.Message) error {
+					w.Header().Set("Content-Type", "application/vnd.docker.plugins.v1.1+json")
+					return nil
+				},
+			),
+		); err != nil {
+			t.Errorf("gw.Run() failed with %v; want success", err)
+			return
+		}
+	}()
+
+	testEcho(t, 8081, "application/vnd.docker.plugins.v1.1+json")
 }
 
-func testEcho(t *testing.T) {
-	url := "http://localhost:8080/v1/example/echo/myid"
+func testEcho(t *testing.T, port int, contentType string) {
+	url := fmt.Sprintf("http://localhost:%d/v1/example/echo/myid", port)
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
@@ -73,6 +94,10 @@ func testEcho(t *testing.T) {
 	}
 	if got, want := msg.Id, "myid"; got != want {
 		t.Errorf("msg.Id = %q; want %q", got, want)
+	}
+
+	if value := resp.Header.Get("Content-Type"); value != contentType {
+		t.Errorf("Content-Type was %s, wanted %s", value, contentType)
 	}
 }
 

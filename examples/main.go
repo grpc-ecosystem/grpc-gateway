@@ -16,12 +16,12 @@ var (
 	flowEndpoint = flag.String("flow_endpoint", "localhost:9090", "endpoint of FlowCombination")
 )
 
-func Run() error {
+func Run(address string, opts ...runtime.ServeMuxOption) error {
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	mux := runtime.NewServeMux()
+	mux := runtime.NewServeMux(opts...)
 	err := examplepb.RegisterEchoServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint)
 	if err != nil {
 		return err
@@ -35,7 +35,7 @@ func Run() error {
 		return err
 	}
 
-	http.ListenAndServe(":8080", mux)
+	http.ListenAndServe(address, mux)
 	return nil
 }
 
@@ -43,7 +43,7 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	if err := Run(); err != nil {
+	if err := Run(":8080"); err != nil {
 		glog.Fatal(err)
 	}
 }
