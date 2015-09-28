@@ -251,9 +251,9 @@ func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 		{{if $m.GetServerStreaming}}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, w, req, func() (proto.Message, error) { return resp.Recv() })
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 		{{else}}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, w, req, resp)
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 		{{end}}
 	})
 	{{end}}

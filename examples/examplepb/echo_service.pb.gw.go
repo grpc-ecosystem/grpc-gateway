@@ -100,7 +100,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 			return
 		}
 
-		forward_EchoService_Echo_0(ctx, w, req, resp)
+		forward_EchoService_Echo_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -111,7 +111,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 			return
 		}
 
-		forward_EchoService_EchoBody_0(ctx, w, req, resp)
+		forward_EchoService_EchoBody_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
