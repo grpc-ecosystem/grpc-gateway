@@ -2,25 +2,6 @@
 // source: examples/examplepb/echo_service.proto
 // DO NOT EDIT!
 
-/*
-Package examplepb is a generated protocol buffer package.
-
-It is generated from these files:
-	examples/examplepb/echo_service.proto
-	examples/examplepb/a_bit_of_everything.proto
-	examples/examplepb/flow_combination.proto
-
-It has these top-level messages:
-	SimpleMessage
-	ABitOfEverything
-	EmptyMessage
-	IdMessage
-	EmptyProto
-	NonEmptyProto
-	UnaryProto
-	NestedProto
-	SingleNestedProto
-*/
 package examplepb
 
 import proto "github.com/golang/protobuf/proto"
@@ -95,9 +76,9 @@ func RegisterEchoServiceServer(s *grpc.Server, srv EchoServiceServer) {
 	s.RegisterService(&_EchoService_serviceDesc, srv)
 }
 
-func _EchoService_Echo_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _EchoService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(SimpleMessage)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(EchoServiceServer).Echo(ctx, in)
@@ -107,9 +88,9 @@ func _EchoService_Echo_Handler(srv interface{}, ctx context.Context, codec grpc.
 	return out, nil
 }
 
-func _EchoService_EchoBody_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _EchoService_EchoBody_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(SimpleMessage)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(EchoServiceServer).EchoBody(ctx, in)

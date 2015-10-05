@@ -352,9 +352,9 @@ func RegisterFlowCombinationServer(s *grpc.Server, srv FlowCombinationServer) {
 	s.RegisterService(&_FlowCombination_serviceDesc, srv)
 }
 
-func _FlowCombination_RpcEmptyRpc_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _FlowCombination_RpcEmptyRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(EmptyProto)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(FlowCombinationServer).RpcEmptyRpc(ctx, in)
@@ -437,9 +437,9 @@ func (x *flowCombinationStreamEmptyStreamServer) Recv() (*EmptyProto, error) {
 	return m, nil
 }
 
-func _FlowCombination_RpcBodyRpc_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _FlowCombination_RpcBodyRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(NonEmptyProto)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(FlowCombinationServer).RpcBodyRpc(ctx, in)
@@ -449,9 +449,9 @@ func _FlowCombination_RpcBodyRpc_Handler(srv interface{}, ctx context.Context, c
 	return out, nil
 }
 
-func _FlowCombination_RpcPathSingleNestedRpc_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _FlowCombination_RpcPathSingleNestedRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(SingleNestedProto)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(FlowCombinationServer).RpcPathSingleNestedRpc(ctx, in)
@@ -461,9 +461,9 @@ func _FlowCombination_RpcPathSingleNestedRpc_Handler(srv interface{}, ctx contex
 	return out, nil
 }
 
-func _FlowCombination_RpcPathNestedRpc_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _FlowCombination_RpcPathNestedRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(NestedProto)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(FlowCombinationServer).RpcPathNestedRpc(ctx, in)
