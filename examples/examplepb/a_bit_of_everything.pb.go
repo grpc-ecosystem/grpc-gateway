@@ -2,6 +2,25 @@
 // source: examples/examplepb/a_bit_of_everything.proto
 // DO NOT EDIT!
 
+/*
+Package examplepb is a generated protocol buffer package.
+
+It is generated from these files:
+	examples/examplepb/a_bit_of_everything.proto
+	examples/examplepb/echo_service.proto
+	examples/examplepb/flow_combination.proto
+
+It has these top-level messages:
+	ABitOfEverything
+	EmptyMessage
+	IdMessage
+	SimpleMessage
+	EmptyProto
+	NonEmptyProto
+	UnaryProto
+	NestedProto
+	SingleNestedProto
+*/
 package examplepb
 
 import proto "github.com/golang/protobuf/proto"
@@ -272,9 +291,9 @@ func RegisterABitOfEverythingServiceServer(s *grpc.Server, srv ABitOfEverythingS
 	s.RegisterService(&_ABitOfEverythingService_serviceDesc, srv)
 }
 
-func _ABitOfEverythingService_Create_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _ABitOfEverythingService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(ABitOfEverything)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(ABitOfEverythingServiceServer).Create(ctx, in)
@@ -284,9 +303,9 @@ func _ABitOfEverythingService_Create_Handler(srv interface{}, ctx context.Contex
 	return out, nil
 }
 
-func _ABitOfEverythingService_CreateBody_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _ABitOfEverythingService_CreateBody_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(ABitOfEverything)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(ABitOfEverythingServiceServer).CreateBody(ctx, in)
@@ -322,9 +341,9 @@ func (x *aBitOfEverythingServiceBulkCreateServer) Recv() (*ABitOfEverything, err
 	return m, nil
 }
 
-func _ABitOfEverythingService_Lookup_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _ABitOfEverythingService_Lookup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(IdMessage)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(ABitOfEverythingServiceServer).Lookup(ctx, in)
@@ -355,9 +374,9 @@ func (x *aBitOfEverythingServiceListServer) Send(m *ABitOfEverything) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _ABitOfEverythingService_Update_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _ABitOfEverythingService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(ABitOfEverything)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(ABitOfEverythingServiceServer).Update(ctx, in)
@@ -367,9 +386,9 @@ func _ABitOfEverythingService_Update_Handler(srv interface{}, ctx context.Contex
 	return out, nil
 }
 
-func _ABitOfEverythingService_Delete_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _ABitOfEverythingService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(IdMessage)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(ABitOfEverythingServiceServer).Delete(ctx, in)
@@ -379,9 +398,9 @@ func _ABitOfEverythingService_Delete_Handler(srv interface{}, ctx context.Contex
 	return out, nil
 }
 
-func _ABitOfEverythingService_Echo_Handler(srv interface{}, ctx context.Context, codec grpc.Codec, buf []byte) (interface{}, error) {
+func _ABitOfEverythingService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
 	in := new(gengo_grpc_gateway_examples_sub.StringMessage)
-	if err := codec.Unmarshal(buf, in); err != nil {
+	if err := dec(in); err != nil {
 		return nil, err
 	}
 	out, err := srv.(ABitOfEverythingServiceServer).Echo(ctx, in)
