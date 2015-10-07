@@ -2,25 +2,6 @@
 // source: examples/examplepb/a_bit_of_everything.proto
 // DO NOT EDIT!
 
-/*
-Package examplepb is a generated protocol buffer package.
-
-It is generated from these files:
-	examples/examplepb/a_bit_of_everything.proto
-	examples/examplepb/echo_service.proto
-	examples/examplepb/flow_combination.proto
-
-It has these top-level messages:
-	ABitOfEverything
-	EmptyMessage
-	IdMessage
-	SimpleMessage
-	EmptyProto
-	NonEmptyProto
-	UnaryProto
-	NestedProto
-	SingleNestedProto
-*/
 package examplepb
 
 import proto "github.com/golang/protobuf/proto"
