@@ -14,7 +14,7 @@ import (
 
 type responseStreamChunk struct {
 	Result proto.Message       `json:"result,omitempty"`
-	Error  responseStreamError `json:"error,omitempty"`
+	Error  *responseStreamError `json:"error,omitempty"`
 }
 
 type responseStreamError struct {
@@ -103,7 +103,7 @@ func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, re
 func handleForwardResponseStreamError(w http.ResponseWriter, err error) {
 	grpcCode := grpc.Code(err)
 	httpCode := HTTPStatusFromCode(grpcCode)
-	resp := responseStreamChunk{Error: responseStreamError{GrpcCode: int(grpcCode),
+	resp := responseStreamChunk{Error: &responseStreamError{GrpcCode: int(grpcCode),
 		HTTPCode:   httpCode,
 		Message:    err.Error(),
 		HTTPStatus: http.StatusText(httpCode)}}
