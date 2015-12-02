@@ -16,6 +16,7 @@ import (
 
 var (
 	importPrefix = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
+	file         = flag.String("file", "stdin", "where to load data from")
 )
 
 func parseReq(r io.Reader) (*plugin.CodeGeneratorRequest, error) {
@@ -41,7 +42,11 @@ func main() {
 	reg := descriptor.NewRegistry()
 
 	glog.V(1).Info("Processing code generator request")
-	req, err := parseReq(os.Stdin)
+	f := os.Stdin
+	if *file != "stdin" {
+		f, _ = os.Open("input.txt")
+	}
+	req, err := parseReq(f)
 	if err != nil {
 		glog.Fatal(err)
 	}

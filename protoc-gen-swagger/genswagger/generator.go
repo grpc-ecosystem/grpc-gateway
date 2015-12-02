@@ -3,7 +3,10 @@ package genswagger
 import (
 	"errors"
 	"fmt"
-	"go/format"
+	// Don't use the formatter
+	//"go/format"
+	"bytes"
+	"encoding/json"
 	"path"
 	"path/filepath"
 	"strings"
@@ -69,18 +72,17 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 		if err != nil {
 			return nil, err
 		}
-		formatted, err := format.Source([]byte(code))
-		if err != nil {
-			glog.Errorf("%v: %s", err, code)
-			return nil, err
-		}
+
+		var formatted bytes.Buffer
+		json.Indent(&formatted, []byte(code), "", "  ")
+
 		name := file.GetName()
 		ext := filepath.Ext(name)
 		base := strings.TrimSuffix(name, ext)
 		output := fmt.Sprintf("%s.swagger.json", base)
 		files = append(files, &plugin.CodeGeneratorResponse_File{
 			Name:    proto.String(output),
-			Content: proto.String(string(formatted)),
+			Content: proto.String(string(formatted.Bytes())),
 		})
 		glog.V(1).Infof("Will emit %s", output)
 	}
