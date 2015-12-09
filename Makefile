@@ -25,7 +25,7 @@ GOOGLEAPIS_DIR=third_party/googleapis
 OPTIONS_PROTO=$(GOOGLEAPIS_DIR)/google/api/annotations.proto $(GOOGLEAPIS_DIR)/google/api/http.proto
 OPTIONS_GO=$(OPTIONS_PROTO:.proto=.pb.go)
 
-PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/sub/message.proto=$(PKG)/examples/sub
+PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mgoogle/api/annotations.proto=$(PKG)/$(GOOGLEAPIS_DIR)/google/api,Mexamples/sub/message.proto=$(PKG)/examples/sub
 EXAMPLES=examples/examplepb/echo_service.proto \
 	 examples/examplepb/a_bit_of_everything.proto \
 	 examples/examplepb/flow_combination.proto
