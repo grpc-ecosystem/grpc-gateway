@@ -13,12 +13,16 @@ import (
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
 type HandlerFunc func(w http.ResponseWriter, r *http.Request, pathParams map[string]string)
 
+// ValidateRequestFunc is a func that will be used to pre-validate the request.
+type ValidateRequestHandlerFunc func(string, context.Context, http.ResponseWriter, *http.Request, map[string]string) bool
+
 // ServeMux is a request multiplexer for grpc-gateway.
 // It matches http requests to patterns and invokes the corresponding handler.
 type ServeMux struct {
 	// handlers maps HTTP method to a list of handlers.
 	handlers               map[string][]handler
 	forwardResponseOptions []func(context.Context, http.ResponseWriter, proto.Message) error
+	validateRequestOptions []ValidateRequestHandlerFunc
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -36,11 +40,25 @@ func WithForwardResponseOption(forwardResponseOption func(context.Context, http.
 	}
 }
 
+// WithValidateRequestOption returns a ServeMuxOption representing the validateRequestOption.
+//
+// validateRequestOption is an option that will be called on the relevant context.Context and
+// http.Request before any request is processed.
+//
+// The option should return false to indicate that it has fully completed serving the response,
+// for example in case of an error.
+func WithValidateRequestOption(validateRequestOption ValidateRequestHandlerFunc) ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		serveMux.validateRequestOptions = append(serveMux.validateRequestOptions, validateRequestOption)
+	}
+}
+
 // NewServeMux returns a new MuxHandler whose internal mapping is empty.
 func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 	serveMux := &ServeMux{
 		handlers:               make(map[string][]handler),
 		forwardResponseOptions: make([]func(context.Context, http.ResponseWriter, proto.Message) error, 0),
+		validateRequestOptions: make([]ValidateRequestHandlerFunc, 0),
 	}
 	for _, opt := range opts {
 		opt(serveMux)
@@ -119,6 +137,11 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // GetForwardResponseOptions returns the ForwardResponseOptions associated with this ServeMux.
 func (s *ServeMux) GetForwardResponseOptions() []func(context.Context, http.ResponseWriter, proto.Message) error {
 	return s.forwardResponseOptions
+}
+
+// GetValidateRequestOptions returns the ValidateRequestOptions associated with this ServeMux.
+func (s *ServeMux) GetValidateRequestOptions() []ValidateRequestHandlerFunc {
+	return s.validateRequestOptions
 }
 
 func isPathLengthFallback(r *http.Request) bool {

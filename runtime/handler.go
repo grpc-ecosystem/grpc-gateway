@@ -87,6 +87,16 @@ func ForwardResponseMessage(ctx context.Context, w http.ResponseWriter, req *htt
 	}
 }
 
+// HandleRequestValidateOptions will run all request validation options before parsing the request and accessing the gRPC server.
+func HandleRequestValidateOptions(methodName string, ctx context.Context, w http.ResponseWriter, r *http.Request, pathParams map[string]string, opts []ValidateRequestHandlerFunc) bool {
+	for _, opt := range opts {
+		if !opt(methodName, ctx, w, r, pathParams) {
+			return false
+		}
+	}
+	return true
+}
+
 func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, resp proto.Message, opts []func(context.Context, http.ResponseWriter, proto.Message) error) error {
 	if len(opts) == 0 {
 		return nil
