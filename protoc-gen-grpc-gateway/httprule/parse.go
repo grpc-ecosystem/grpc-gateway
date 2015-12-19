@@ -33,6 +33,7 @@ func Parse(tmpl string) (Compiler, error) {
 	return template{
 		segments: segs,
 		verb:     verb,
+		template: tmpl,
 	}, nil
 }
 

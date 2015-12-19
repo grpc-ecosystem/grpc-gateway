@@ -8,6 +8,7 @@ import (
 type template struct {
 	segments []segment
 	verb     string
+	template string
 }
 
 type segment interface {

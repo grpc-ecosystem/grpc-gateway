@@ -10,14 +10,8 @@ SWAGGER_PLUGIN=bin/protoc-gen-swagger
 SWAGGER_PLUGIN_SRC= utilities/doc.go \
 		    utilities/name.go \
 		    utilities/pattern.go \
-		    protoc-gen-swagger/descriptor/registry.go \
-		    protoc-gen-swagger/descriptor/services.go \
-		    protoc-gen-swagger/descriptor/types.go \
 		    protoc-gen-swagger/genswagger/generator.go \
 		    protoc-gen-swagger/genswagger/template.go \
-		    protoc-gen-swagger/httprule/compile.go \
-		    protoc-gen-swagger/httprule/parse.go \
-		    protoc-gen-swagger/httprule/types.go \
 		    protoc-gen-swagger/main.go
 SWAGGER_PLUGIN_PKG=$(PKG)/protoc-gen-swagger
 GATEWAY_PLUGIN=bin/protoc-gen-grpc-gateway
@@ -65,7 +59,7 @@ $(GATEWAY_PLUGIN): $(OPTIONS_GO) $(GATEWAY_PLUGIN_SRC)
 	go build -o $@ $(GATEWAY_PLUGIN_PKG)
 
 $(SWAGGER_PLUGIN): $(OPTIONS_GO) $(SWAGGER_PLUGIN_SRC)
-	go build -o $@ $(SWAGGER_PLUGIN_PKG)
+	~/gopath/bin/godebug build -instrument="github.com/gengo/grpc-gateway/..." -o $@ $(SWAGGER_PLUGIN_PKG)
 
 $(EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc:. $(EXAMPLES)

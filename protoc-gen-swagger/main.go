@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gengo/grpc-gateway/protoc-gen-swagger/descriptor"
+	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/gengo/grpc-gateway/protoc-gen-swagger/genswagger"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"

@@ -188,8 +188,8 @@ func (m *HttpRule) GetAdditionalBindings() []*HttpRule {
 }
 
 // XXX_OneofFuncs is for the internal use of the proto package.
-func (*HttpRule) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
-	return _HttpRule_OneofMarshaler, _HttpRule_OneofUnmarshaler, _HttpRule_OneofSizer, []interface{}{
+func (*HttpRule) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), []interface{}) {
+	return _HttpRule_OneofMarshaler, _HttpRule_OneofUnmarshaler, []interface{}{
 		(*HttpRule_Get)(nil),
 		(*HttpRule_Put)(nil),
 		(*HttpRule_Post)(nil),
@@ -279,42 +279,6 @@ func _HttpRule_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffe
 	default:
 		return false, nil
 	}
-}
-
-func _HttpRule_OneofSizer(msg proto.Message) (n int) {
-	m := msg.(*HttpRule)
-	// pattern
-	switch x := m.Pattern.(type) {
-	case *HttpRule_Get:
-		n += proto.SizeVarint(2<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(len(x.Get)))
-		n += len(x.Get)
-	case *HttpRule_Put:
-		n += proto.SizeVarint(3<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(len(x.Put)))
-		n += len(x.Put)
-	case *HttpRule_Post:
-		n += proto.SizeVarint(4<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(len(x.Post)))
-		n += len(x.Post)
-	case *HttpRule_Delete:
-		n += proto.SizeVarint(5<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(len(x.Delete)))
-		n += len(x.Delete)
-	case *HttpRule_Patch:
-		n += proto.SizeVarint(6<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(len(x.Patch)))
-		n += len(x.Patch)
-	case *HttpRule_Custom:
-		s := proto.Size(x.Custom)
-		n += proto.SizeVarint(8<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(s))
-		n += s
-	case nil:
-	default:
-		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
-	}
-	return n
 }
 
 // A custom pattern is used for defining custom HTTP verb.

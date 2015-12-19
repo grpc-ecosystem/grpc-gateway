@@ -20,6 +20,8 @@ type Template struct {
 	Verb string
 	// Fields is a list of field paths bound in this template.
 	Fields []string
+	// Original template (example: /v1/a_bit_of_everything)
+	Template string
 }
 
 // Compiler compiles utilities representation of path templates into marshallable operations.
@@ -105,10 +107,11 @@ func (t template) Compile() Template {
 		}
 	}
 	return Template{
-		Version: opcodeVersion,
-		OpCodes: ops,
-		Pool:    pool,
-		Verb:    t.verb,
-		Fields:  fields,
+		Version:  opcodeVersion,
+		OpCodes:  ops,
+		Pool:     pool,
+		Verb:     t.verb,
+		Fields:   fields,
+		Template: t.template,
 	}
 }
