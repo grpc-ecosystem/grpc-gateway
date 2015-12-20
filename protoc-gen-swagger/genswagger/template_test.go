@@ -1,11 +1,12 @@
 package genswagger
 
 import (
-	"strings"
+	"encoding/json"
+	"reflect"
 	"testing"
 
-	"github.com/gengo/grpc-gateway/protoc-gen-swagger/descriptor"
-	"github.com/gengo/grpc-gateway/protoc-gen-swagger/httprule"
+	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/httprule"
 	"github.com/golang/protobuf/proto"
 	protodescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
@@ -29,7 +30,7 @@ func crossLinkFixture(f *descriptor.File) *descriptor.File {
 	return f
 }
 
-func TestApplyTemplateHeader(t *testing.T) {
+func TestApplyTemplateSimple(t *testing.T) {
 	msgdesc := &protodescriptor.DescriptorProto{
 		Name: proto.String("ExampleMessage"),
 	}
@@ -70,6 +71,11 @@ func TestApplyTemplateHeader(t *testing.T) {
 							{
 								HTTPMethod: "GET",
 								Body:       &descriptor.Body{FieldPath: nil},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo", // TODO(achew): Figure out what this hsould really be
+								},
 							},
 						},
 					},
@@ -77,13 +83,37 @@ func TestApplyTemplateHeader(t *testing.T) {
 			},
 		},
 	}
-	got, err := applyTemplate(param{File: crossLinkFixture(&file)})
+	result, err := applyTemplate(param{File: crossLinkFixture(&file)})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
 	}
-	if want := "package example_pb\n"; !strings.Contains(got, want) {
-		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+	got := new(swaggerObject)
+	err = json.Unmarshal([]byte(result), got)
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+	if want, is, name := "2.0", got.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := "", got.BasePath, "BasePath"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := []string{"http", "https"}, got.Schemes, "Schemes"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := []string{"application/json"}, got.Consumes, "Consumes"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := []string{"application/json"}, got.Produces, "Produces"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	}
+
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", result)
 	}
 }
 
@@ -127,124 +157,124 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		Name:   proto.String("ExampleService"),
 		Method: []*protodescriptor.MethodDescriptorProto{meth},
 	}
-	for _, spec := range []struct {
-		serverStreaming bool
-		sigWant         string
-	}{
-		{
-			serverStreaming: false,
-			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {`,
-		},
-		{
-			serverStreaming: true,
-			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (ExampleService_EchoClient, error) {`,
-		},
-	} {
-		meth.ServerStreaming = proto.Bool(spec.serverStreaming)
 
-		msg := &descriptor.Message{
-			DescriptorProto: msgdesc,
-		}
-		nested := &descriptor.Message{
-			DescriptorProto: nesteddesc,
-		}
+	meth.ServerStreaming = proto.Bool(false)
 
-		nestedField := &descriptor.Field{
-			Message:              msg,
-			FieldDescriptorProto: msg.GetField()[0],
-		}
-		intField := &descriptor.Field{
-			Message:              nested,
-			FieldDescriptorProto: nested.GetField()[0],
-		}
-		boolField := &descriptor.Field{
-			Message:              nested,
-			FieldDescriptorProto: nested.GetField()[1],
-		}
-		file := descriptor.File{
-			FileDescriptorProto: &protodescriptor.FileDescriptorProto{
-				Name:        proto.String("example.proto"),
-				Package:     proto.String("example"),
-				MessageType: []*protodescriptor.DescriptorProto{msgdesc, nesteddesc},
-				Service:     []*protodescriptor.ServiceDescriptorProto{svc},
-			},
-			GoPkg: descriptor.GoPackage{
-				Path: "example.com/path/to/example/example.pb",
-				Name: "example_pb",
-			},
-			Messages: []*descriptor.Message{msg, nested},
-			Services: []*descriptor.Service{
-				{
-					ServiceDescriptorProto: svc,
-					Methods: []*descriptor.Method{
-						{
-							MethodDescriptorProto: meth,
-							RequestType:           msg,
-							ResponseType:          msg,
-							Bindings: []*descriptor.Binding{
-								{
-									HTTPMethod: "POST",
-									PathTmpl: httprule.Template{
-										Version: 1,
-										OpCodes: []int{0, 0},
-									},
-									PathParams: []descriptor.Parameter{
-										{
-											FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
-												{
-													Name:   "nested",
-													Target: nestedField,
-												},
-												{
-													Name:   "int32",
-													Target: intField,
-												},
-											}),
-											Target: intField,
-										},
-									},
-									Body: &descriptor.Body{
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+	nested := &descriptor.Message{
+		DescriptorProto: nesteddesc,
+	}
+
+	nestedField := &descriptor.Field{
+		Message:              msg,
+		FieldDescriptorProto: msg.GetField()[0],
+	}
+	intField := &descriptor.Field{
+		Message:              nested,
+		FieldDescriptorProto: nested.GetField()[0],
+	}
+	boolField := &descriptor.Field{
+		Message:              nested,
+		FieldDescriptorProto: nested.GetField()[1],
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+			Name:        proto.String("example.proto"),
+			Package:     proto.String("example"),
+			MessageType: []*protodescriptor.DescriptorProto{msgdesc, nesteddesc},
+			Service:     []*protodescriptor.ServiceDescriptorProto{svc},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg, nested},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo", // TODO(achew): Figure out what this hsould really be
+								},
+								PathParams: []descriptor.Parameter{
+									{
 										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
 											{
 												Name:   "nested",
 												Target: nestedField,
 											},
 											{
-												Name:   "bool",
-												Target: boolField,
+												Name:   "int32",
+												Target: intField,
 											},
 										}),
+										Target: intField,
 									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+										{
+											Name:   "nested",
+											Target: nestedField,
+										},
+										{
+											Name:   "bool",
+											Target: boolField,
+										},
+									}),
 								},
 							},
 						},
 					},
 				},
 			},
-		}
-		got, err := applyTemplate(param{File: crossLinkFixture(&file)})
-		if err != nil {
-			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
-			return
-		}
-		if want := spec.sigWant; !strings.Contains(got, want) {
-			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
-		}
-		if want := `json.NewDecoder(req.Body).Decode(&protoReq.GetNested().Bool)`; !strings.Contains(got, want) {
-			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
-		}
-		if want := `val, ok = pathParams["nested.int32"]`; !strings.Contains(got, want) {
-			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
-		}
-		if want := `protoReq.GetNested().Int32, err = runtime.Int32P(val)`; !strings.Contains(got, want) {
-			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
-		}
-		if want := `func RegisterExampleServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {`; !strings.Contains(got, want) {
-			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
-		}
-		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
-			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
-		}
+		},
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file)})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+	got := new(swaggerObject)
+	err = json.Unmarshal([]byte(result), got)
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+	if want, is, name := "2.0", got.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := "", got.BasePath, "BasePath"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := []string{"http", "https"}, got.Schemes, "Schemes"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := []string{"application/json"}, got.Consumes, "Consumes"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := []string{"application/json"}, got.Produces, "Produces"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := "Generated for ExampleService.Echo - ", got.Paths["/v1/echo"].Post.Summary, "Paths[/v1/echo].Post.Summary"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(file).%s = %s want to be %s", name, is, want)
+	}
+
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", result)
 	}
 }
 
@@ -283,122 +313,97 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		InputType:       proto.String("ExampleMessage"),
 		OutputType:      proto.String("ExampleMessage"),
 		ClientStreaming: proto.Bool(true),
+		ServerStreaming: proto.Bool(true),
 	}
 	svc := &protodescriptor.ServiceDescriptorProto{
 		Name:   proto.String("ExampleService"),
 		Method: []*protodescriptor.MethodDescriptorProto{meth},
 	}
-	for _, spec := range []struct {
-		serverStreaming bool
-		sigWant         string
-	}{
-		{
-			serverStreaming: false,
-			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {`,
-		},
-		{
-			serverStreaming: true,
-			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (ExampleService_EchoClient, error) {`,
-		},
-	} {
-		meth.ServerStreaming = proto.Bool(spec.serverStreaming)
 
-		msg := &descriptor.Message{
-			DescriptorProto: msgdesc,
-		}
-		nested := &descriptor.Message{
-			DescriptorProto: nesteddesc,
-		}
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+	nested := &descriptor.Message{
+		DescriptorProto: nesteddesc,
+	}
 
-		nestedField := &descriptor.Field{
-			Message:              msg,
-			FieldDescriptorProto: msg.GetField()[0],
-		}
-		intField := &descriptor.Field{
-			Message:              nested,
-			FieldDescriptorProto: nested.GetField()[0],
-		}
-		boolField := &descriptor.Field{
-			Message:              nested,
-			FieldDescriptorProto: nested.GetField()[1],
-		}
-		file := descriptor.File{
-			FileDescriptorProto: &protodescriptor.FileDescriptorProto{
-				Name:        proto.String("example.proto"),
-				Package:     proto.String("example"),
-				MessageType: []*protodescriptor.DescriptorProto{msgdesc, nesteddesc},
-				Service:     []*protodescriptor.ServiceDescriptorProto{svc},
-			},
-			GoPkg: descriptor.GoPackage{
-				Path: "example.com/path/to/example/example.pb",
-				Name: "example_pb",
-			},
-			Messages: []*descriptor.Message{msg, nested},
-			Services: []*descriptor.Service{
-				{
-					ServiceDescriptorProto: svc,
-					Methods: []*descriptor.Method{
-						{
-							MethodDescriptorProto: meth,
-							RequestType:           msg,
-							ResponseType:          msg,
-							Bindings: []*descriptor.Binding{
-								{
-									HTTPMethod: "POST",
-									PathTmpl: httprule.Template{
-										Version: 1,
-										OpCodes: []int{0, 0},
-									},
-									PathParams: []descriptor.Parameter{
-										{
-											FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
-												{
-													Name:   "nested",
-													Target: nestedField,
-												},
-												{
-													Name:   "int32",
-													Target: intField,
-												},
-											}),
-											Target: intField,
-										},
-									},
-									Body: &descriptor.Body{
+	nestedField := &descriptor.Field{
+		Message:              msg,
+		FieldDescriptorProto: msg.GetField()[0],
+	}
+	intField := &descriptor.Field{
+		Message:              nested,
+		FieldDescriptorProto: nested.GetField()[0],
+	}
+	boolField := &descriptor.Field{
+		Message:              nested,
+		FieldDescriptorProto: nested.GetField()[1],
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+			Name:        proto.String("example.proto"),
+			Package:     proto.String("example"),
+			MessageType: []*protodescriptor.DescriptorProto{msgdesc, nesteddesc},
+			Service:     []*protodescriptor.ServiceDescriptorProto{svc},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg, nested},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo", // TODO(achew): Figure out what this hsould really be
+								},
+								PathParams: []descriptor.Parameter{
+									{
 										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
 											{
 												Name:   "nested",
 												Target: nestedField,
 											},
 											{
-												Name:   "bool",
-												Target: boolField,
+												Name:   "int32",
+												Target: intField,
 											},
 										}),
+										Target: intField,
 									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+										{
+											Name:   "nested",
+											Target: nestedField,
+										},
+										{
+											Name:   "bool",
+											Target: boolField,
+										},
+									}),
 								},
 							},
 						},
 					},
 				},
 			},
-		}
-		got, err := applyTemplate(param{File: crossLinkFixture(&file)})
-		if err != nil {
-			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
-			return
-		}
-		if want := spec.sigWant; !strings.Contains(got, want) {
-			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
-		}
-		if want := `json.NewDecoder(req.Body)`; !strings.Contains(got, want) {
-			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
-		}
-		if want := `func RegisterExampleServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {`; !strings.Contains(got, want) {
-			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
-		}
-		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
-			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
-		}
+		},
+	}
+	_, err := applyTemplate(param{File: crossLinkFixture(&file)})
+	if err == nil {
+		t.Errorf("applyTemplate(%#v) should have failed cause swagger doesn't support streaming", file)
+		return
 	}
 }

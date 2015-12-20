@@ -3,6 +3,7 @@ package genswagger
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -133,6 +134,9 @@ func applyTemplate(p param) (string, error) {
 
 	for _, svc := range p.Services {
 		for _, meth := range svc.Methods {
+			if meth.GetClientStreaming() || meth.GetServerStreaming() {
+				return "", errors.New(`Service uses streaming, which is not currently supported. Maybe you would like to implement it? It wouldn't be that hard and we don't bite. Why don't you send a pull request to https://github.com/gengo/grpc-gateway?`)
+			}
 			for _, b := range meth.Bindings {
 				pathItemObject := swaggerPathItemObject{}
 				operationObject := swaggerOperationObject{
