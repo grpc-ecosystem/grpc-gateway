@@ -19,8 +19,10 @@ func TestAnnotateContext(t *testing.T) {
 	if annotated != ctx {
 		t.Errorf("AnnotateContext(ctx, request) = %v; want %v", annotated, ctx)
 	}
+
 	request.Header.Add("Grpc-Metadata-FooBar", "Value1")
 	request.Header.Add("Grpc-Metadata-Foo-BAZ", "Value2")
+	request.Header.Add("Grpc-Metadata-foo-bAz", "Value3")
 	annotated = runtime.AnnotateContext(ctx, request)
 	md, ok := metadata.FromContext(annotated)
 	if !ok || len(md) != 2 {
@@ -29,7 +31,7 @@ func TestAnnotateContext(t *testing.T) {
 	if got, want := md["foobar"], []string{"Value1"}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["foobar"] = %q; want %q`, got, want)
 	}
-	if got, want := md["foo-baz"], []string{"Value2"}; !reflect.DeepEqual(got, want) {
+	if got, want := md["foo-baz"], []string{"Value2", "Value3"}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["foo-baz"] = %q want %q`, got, want)
 	}
 }
