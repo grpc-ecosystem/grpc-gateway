@@ -26,10 +26,10 @@ func TestAnnotateContext(t *testing.T) {
 	if !ok || len(md) != 2 {
 		t.Errorf("Expected 2 metadata items in context; got %v", md)
 	}
-	if got, want := md["Foobar"], []string{"Value1"}; !reflect.DeepEqual(got, want) {
-		t.Errorf("md[\"Foobar\"] = %v; want %v", got, want)
+	if got, want := md["foobar"], []string{"Value1"}; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["foobar"] = %q; want %q`, got, want)
 	}
-	if got, want := md["Foo-Baz"], []string{"Value2"}; !reflect.DeepEqual(got, want) {
-		t.Errorf("md[\"Foo-Baz\"] = %v want %v", got, want)
+	if got, want := md["foo-baz"], []string{"Value2"}; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["foo-baz"] = %q want %q`, got, want)
 	}
 }
