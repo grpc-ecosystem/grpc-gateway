@@ -18,17 +18,20 @@ will be the same context.
 */
 func AnnotateContext(ctx context.Context, req *http.Request) context.Context {
 	var pairs []string
-	for key, val := range req.Header {
-		if strings.HasPrefix(key, metadataHeaderPrefix) {
-			pairs = append(pairs, key[len(metadataHeaderPrefix):], val[0])
-		}
-		if key == "Authorization" {
-			pairs = append(pairs, key, val[0])
+	for key, vals := range req.Header {
+		for _, val := range vals {
+			if key == "Authorization" {
+				pairs = append(pairs, key, val)
+				continue
+			}
+			if strings.HasPrefix(key, metadataHeaderPrefix) {
+				pairs = append(pairs, key[len(metadataHeaderPrefix):], val)
+			}
 		}
 	}
 
-	if len(pairs) != 0 {
-		ctx = metadata.NewContext(ctx, metadata.Pairs(pairs...))
+	if len(pairs) == 0 {
+		return ctx
 	}
-	return ctx
+	return metadata.NewContext(ctx, metadata.Pairs(pairs...))
 }
