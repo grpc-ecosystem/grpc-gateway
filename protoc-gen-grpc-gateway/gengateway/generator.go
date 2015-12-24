@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	gen "github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/generator"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
@@ -24,7 +25,7 @@ type generator struct {
 }
 
 // New returns a new generator which generates grpc gateway files.
-func New(reg *descriptor.Registry) *generator {
+func New(reg *descriptor.Registry) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
 		"encoding/json",
