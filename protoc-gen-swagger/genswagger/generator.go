@@ -1,13 +1,10 @@
 package genswagger
 
 import (
-	"errors"
-	"fmt"
-	// Don't use the formatter
-	//"go/format"
 	"bytes"
 	"encoding/json"
-	"path"
+	"errors"
+	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -22,42 +19,12 @@ var (
 )
 
 type generator struct {
-	reg         *descriptor.Registry
-	baseImports []descriptor.GoPackage
+	reg *descriptor.Registry
 }
 
 // New returns a new generator which generates grpc gateway files.
 func New(reg *descriptor.Registry) *generator {
-	var imports []descriptor.GoPackage
-	for _, pkgpath := range []string{
-		"encoding/json",
-		"io",
-		"net/http",
-		"github.com/gengo/grpc-gateway/runtime",
-		"github.com/gengo/grpc-gateway/utilities",
-		"github.com/golang/glog",
-		"github.com/golang/protobuf/proto",
-		"golang.org/x/net/context",
-		"google.golang.org/grpc",
-		"google.golang.org/grpc/codes",
-	} {
-		pkg := descriptor.GoPackage{
-			Path: pkgpath,
-			Name: path.Base(pkgpath),
-		}
-		if err := reg.ReserveGoPackageAlias(pkg.Name, pkg.Path); err != nil {
-			for i := 0; ; i++ {
-				alias := fmt.Sprintf("%s_%d", pkg.Name, i)
-				if err := reg.ReserveGoPackageAlias(alias, pkg.Path); err != nil {
-					continue
-				}
-				pkg.Alias = alias
-				break
-			}
-		}
-		imports = append(imports, pkg)
-	}
-	return &generator{reg: reg, baseImports: imports}
+	return &generator{reg: reg}
 }
 
 func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGeneratorResponse_File, error) {
@@ -91,11 +58,6 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 
 func (g *generator) generate(file *descriptor.File) (string, error) {
 	pkgSeen := make(map[string]bool)
-	var imports []descriptor.GoPackage
-	for _, pkg := range g.baseImports {
-		pkgSeen[pkg.Path] = true
-		imports = append(imports, pkg)
-	}
 	for _, svc := range file.Services {
 		for _, m := range svc.Methods {
 			pkg := m.RequestType.File.GoPkg
@@ -106,8 +68,7 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 				continue
 			}
 			pkgSeen[pkg.Path] = true
-			imports = append(imports, pkg)
 		}
 	}
-	return applyTemplate(param{File: file, Imports: imports})
+	return applyTemplate(param{File: file, reg: g.reg})
 }

@@ -1,0 +1,309 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "",
+    "title": ""
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/example/a_bit_of_everything": {
+      "get": {
+        "summary": "ABitOfEverythingService.List",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.ABitOfEverything"
+            }
+          }
+        }
+      }
+    },
+    "/v1/example/a_bit_of_everything/echo": {
+      "post": {
+        "summary": "ABitOfEverythingService.BulkEcho",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/.gengo.grpc.gateway.examples.sub.StringMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/.gengo.grpc.gateway.examples.sub.StringMessage"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/echo/{value}": {
+      "get": {
+        "summary": "ABitOfEverythingService.Echo",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/.gengo.grpc.gateway.examples.sub.StringMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          }
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}": {
+      "post": {
+        "summary": "ABitOfEverythingService.Create",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.ABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "float_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "double_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "int64_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "uint64_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "int32_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "fixed64_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "fixed32_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "bool_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "string_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "uint32_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "sfixed32_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "sfixed64_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "sint32_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "sint64_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          }
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/{uuid}": {
+      "delete": {
+        "summary": "ABitOfEverythingService.Delete",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.EmptyMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    ".gengo.grpc.gateway.examples.examplepb.ABitOfEverything": {
+      "properties": {
+        "bool_value": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "double_value": {
+          "type": "number",
+          "format": "double"
+        },
+        "fixed32_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fixed64_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "float_value": {
+          "type": "number",
+          "format": "float"
+        },
+        "int32_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "int64_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nested": {
+          "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.ABitOfEverything.Nested"
+        },
+        "sfixed32_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sfixed64_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sint32_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sint64_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "string_value": {
+          "type": "string",
+          "format": "string"
+        },
+        "uint32_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "uint64_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "uuid": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    ".gengo.grpc.gateway.examples.examplepb.ABitOfEverything.Nested": {
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    ".gengo.grpc.gateway.examples.examplepb.IdMessage": {
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    ".gengo.grpc.gateway.examples.sub.StringMessage": {
+      "properties": {
+        "value": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    }
+  }
+}

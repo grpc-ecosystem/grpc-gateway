@@ -1,6 +1,9 @@
 {
   "swagger": "2.0",
-  "info": {},
+  "info": {
+    "version": "",
+    "title": ""
+  },
   "schemes": [
     "http",
     "https"
@@ -13,42 +16,53 @@
   ],
   "paths": {
     "/v1/example/echo/{id}": {
-      "get": {
-        "summary": "",
-        "response": null
-      },
       "post": {
-        "summary": "Generated for EchoService.Echo - ",
-        "response": {
+        "summary": "EchoService.Echo",
+        "responses": {
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/SimpleMessage"
+              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.SimpleMessage"
             }
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          }
+        ]
       }
     },
     "/v1/example/echo_body": {
-      "get": {
-        "summary": "",
-        "response": null
-      },
       "post": {
-        "summary": "Generated for EchoService.EchoBody - ",
-        "response": {
+        "summary": "EchoService.EchoBody",
+        "responses": {
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/SimpleMessage"
+              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.SimpleMessage"
             }
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.SimpleMessage"
+            }
+          }
+        ]
       }
     }
   },
   "definitions": {
-    "SimpleMessage": {
+    ".gengo.grpc.gateway.examples.examplepb.SimpleMessage": {
       "properties": {
         "id": {
           "type": "string",
