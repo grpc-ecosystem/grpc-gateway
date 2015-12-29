@@ -435,6 +435,7 @@ func TestTemplateToSwaggerPathThatShouldBlowUp(t *testing.T) {
 	var tests = []struct {
 		input string
 	}{
+		{"/}"},
 		{"/}}"},
 	}
 
