@@ -18,7 +18,7 @@ type responseStreamChunk struct {
 }
 
 type responseStreamError struct {
-	GrpcCode   int    `json:"grcp_code, omitempty"`
+	GrpcCode   int    `json:"grpc_code, omitempty"`
 	HTTPCode   int    `json:"http_code, omitempty"`
 	Message    string `json:"message, omitempty"`
 	HTTPStatus string `json:"http_status, omitempty"`
