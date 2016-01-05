@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"reflect"
 	"strings"
 	"testing"
@@ -148,12 +149,14 @@ func testABECreate(t *testing.T) {
 		BoolValue:     true,
 		StringValue:   "strprefix/foo",
 		Uint32Value:   4294967295,
+		BytesValue:    []byte{0, 1, 2, 3, 4, 127, 128, 129, 251, 252, 253, 254, 255},
 		Sfixed32Value: 2147483647,
 		Sfixed64Value: -4611686018427387904,
 		Sint32Value:   2147483647,
 		Sint64Value:   4611686018427387903,
 	}
-	url := fmt.Sprintf("http://localhost:8080/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d", want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value)
+	bytes := url.QueryEscape(string(want.BytesValue))
+	url := fmt.Sprintf("http://localhost:8080/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%s/%d/%d/%d/%d", want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, bytes, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value)
 
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
 	if err != nil {
@@ -198,6 +201,7 @@ func testABECreateBody(t *testing.T) {
 		BoolValue:     true,
 		StringValue:   "strprefix/foo",
 		Uint32Value:   4294967295,
+		BytesValue:    []byte{0, 1, 2, 3, 4, 127, 128, 129, 251, 252, 253, 254, 255},
 		Sfixed32Value: 2147483647,
 		Sfixed64Value: -4611686018427387904,
 		Sint32Value:   2147483647,
@@ -273,6 +277,7 @@ func testABEBulkCreate(t *testing.T) {
 				BoolValue:     true,
 				StringValue:   fmt.Sprintf("strprefix/%s", val),
 				Uint32Value:   4294967295,
+				BytesValue:    []byte{0, 1, 2, 3, 4, 127, 128, 129, 251, 252, 253, 254, 255},
 				Sfixed32Value: 2147483647,
 				Sfixed64Value: -4611686018427387904,
 				Sint32Value:   2147483647,

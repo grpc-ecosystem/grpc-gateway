@@ -4,12 +4,12 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/gengo/grpc-gateway/runtime"
+	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/golang/protobuf/proto"
 )
 
-func TestPopulateParameters(t *testing.T) {
+func TestPopulateQueryParameters(t *testing.T) {
 	for _, spec := range []struct {
 		values url.Values
 		filter *utilities.DoubleArray
@@ -25,6 +25,7 @@ func TestPopulateParameters(t *testing.T) {
 				"uint32_value":   {"4"},
 				"bool_value":     {"true"},
 				"string_value":   {"str"},
+				"bytes_value":    {"\x00\x02\x25\x00\xfe\xff"},
 				"repeated_value": {"a", "b", "c"},
 			},
 			filter: utilities.NewDoubleArray(nil),
@@ -37,6 +38,7 @@ func TestPopulateParameters(t *testing.T) {
 				Uint32Value:   4,
 				BoolValue:     true,
 				StringValue:   "str",
+				BytesValue:    []byte{0x00, 0x02, 0x25, 0x00, 0xfe, 0xff},
 				RepeatedValue: []string{"a", "b", "c"},
 			},
 		},
@@ -50,6 +52,7 @@ func TestPopulateParameters(t *testing.T) {
 				"uint32_value":   {"4"},
 				"bool_value":     {"true"},
 				"string_value":   {"str"},
+				"bytes_value":    {"\x00\x02\x25\x00\xfe\xff"},
 				"repeated_value": {"a", "b", "c"},
 			},
 			filter: utilities.NewDoubleArray(nil),
@@ -62,6 +65,7 @@ func TestPopulateParameters(t *testing.T) {
 				Uint32Value:   proto.Uint32(4),
 				BoolValue:     proto.Bool(true),
 				StringValue:   proto.String("str"),
+				BytesValue:    []byte{0x00, 0x02, 0x25, 0x00, 0xfe, 0xff},
 				RepeatedValue: []string{"a", "b", "c"},
 			},
 		},
@@ -199,7 +203,7 @@ func TestPopulateParametersWithFilters(t *testing.T) {
 
 type proto3Message struct {
 	Nested        *proto2Message `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
-	NestedNonNull proto2Message  `protobuf:"bytes,11,opt,name=nested_non_null" json:"nested_non_null,omitempty"`
+	NestedNonNull proto2Message  `protobuf:"bytes,12,opt,name=nested_non_null" json:"nested_non_null,omitempty"`
 	FloatValue    float32        `protobuf:"fixed32,2,opt,name=float_value" json:"float_value,omitempty"`
 	DoubleValue   float64        `protobuf:"fixed64,3,opt,name=double_value" json:"double_value,omitempty"`
 	Int64Value    int64          `protobuf:"varint,4,opt,name=int64_value" json:"int64_value,omitempty"`
@@ -207,8 +211,9 @@ type proto3Message struct {
 	Uint64Value   uint64         `protobuf:"varint,6,opt,name=uint64_value" json:"uint64_value,omitempty"`
 	Uint32Value   uint32         `protobuf:"varint,7,opt,name=uint32_value" json:"uint32_value,omitempty"`
 	BoolValue     bool           `protobuf:"varint,8,opt,name=bool_value" json:"bool_value,omitempty"`
-	StringValue   string         `protobuf:"bytes,9,opt,name=string_value" json:"string_value,omitempty"`
-	RepeatedValue []string       `protobuf:"bytes,10,rep,name=repeated_value" json:"repeated_value,omitempty"`
+	BytesValue    []byte         `protobuf:"bytes,9,opt,name=bytes_value" json:"bytes_value,omitempty"`
+	StringValue   string         `protobuf:"bytes,10,opt,name=string_value" json:"string_value,omitempty"`
+	RepeatedValue []string       `protobuf:"bytes,11,rep,name=repeated_value" json:"repeated_value,omitempty"`
 }
 
 func (m *proto3Message) Reset()         { *m = proto3Message{} }
@@ -231,8 +236,9 @@ type proto2Message struct {
 	Uint64Value      *uint64        `protobuf:"varint,6,opt,name=uint64_value" json:"uint64_value,omitempty"`
 	Uint32Value      *uint32        `protobuf:"varint,7,opt,name=uint32_value" json:"uint32_value,omitempty"`
 	BoolValue        *bool          `protobuf:"varint,8,opt,name=bool_value" json:"bool_value,omitempty"`
-	StringValue      *string        `protobuf:"bytes,9,opt,name=string_value" json:"string_value,omitempty"`
-	RepeatedValue    []string       `protobuf:"bytes,10,rep,name=repeated_value" json:"repeated_value,omitempty"`
+	BytesValue       []byte         `protobuf:"bytes,9,opt,name=bytes_value" json:"bytes_value,omitempty"`
+	StringValue      *string        `protobuf:"bytes,10,opt,name=string_value" json:"string_value,omitempty"`
+	RepeatedValue    []string       `protobuf:"bytes,11,rep,name=repeated_value" json:"repeated_value,omitempty"`
 	XXX_unrecognized []byte         `json:"-"`
 }
 
