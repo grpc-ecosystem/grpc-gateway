@@ -118,15 +118,38 @@ func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *examples.IdMe
 }
 
 func (s *_ABitOfEverythingServer) Echo(ctx context.Context, msg *sub.StringMessage) (*sub.StringMessage, error) {
-	s.m.Lock()
-	defer s.m.Unlock()
-
 	glog.Info(msg)
 	return msg, nil
 }
 
 func (s *_ABitOfEverythingServer) BulkEcho(stream examples.ABitOfEverythingService_BulkEchoServer) error {
 	var msgs []*sub.StringMessage
+	for {
+		msg, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		msgs = append(msgs, msg)
+	}
+	for _, msg := range msgs {
+		glog.Info(msg)
+		if err := stream.Send(msg); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *_ABitOfEverythingServer) EchoABEProto2(ctx context.Context, msg *examples.ABitOfEverythingProto2) (*examples.ABitOfEverythingProto2, error) {
+	glog.Info(msg)
+	return msg, nil
+}
+
+func (s *_ABitOfEverythingServer) BulkEchoABEProto2(stream examples.ABitOfEverythingService_BulkEchoABEProto2Server) error {
+	var msgs []*examples.ABitOfEverythingProto2
 	for {
 		msg, err := stream.Recv()
 		if err == io.EOF {

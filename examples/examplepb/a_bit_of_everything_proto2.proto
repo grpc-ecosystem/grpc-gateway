@@ -1,0 +1,31 @@
+syntax = "proto2";
+option go_package = "examplepb";
+package gengo.grpc.gateway.examples.examplepb;
+
+import "google/api/annotations.proto";
+
+message ABitOfEverythingProto2 {
+	message Nested {
+		required string name = 1;
+		required uint32 amount = 2;
+	}
+
+	optional string uuid = 1;
+	repeated Nested nested = 2;
+	optional float float_value = 3;
+	optional double double_value = 4;
+	optional int64 int64_value = 5;
+	optional uint64 uint64_value = 6;
+	optional int32 int32_value = 7;
+	optional fixed64 fixed64_value = 8;
+	optional fixed32 fixed32_value = 9;
+	optional bool bool_value = 10;
+	optional string string_value = 11;
+	optional bytes bytes_value = 12;
+	optional uint32 uint32_value = 13;
+	// TODO(yugui) add enum_value
+	optional sfixed32 sfixed32_value = 15;
+	optional sfixed64 sfixed64_value = 16;
+	optional sint32 sint32_value = 17;
+	optional sint64 sint64_value = 18;
+}
