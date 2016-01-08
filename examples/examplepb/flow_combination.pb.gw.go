@@ -816,7 +816,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcEmptyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -827,7 +827,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcEmptyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -838,7 +838,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_StreamEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_StreamEmptyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -849,7 +849,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_StreamEmptyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_StreamEmptyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -860,7 +860,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -871,7 +871,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyRpc_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -882,7 +882,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyRpc_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -893,7 +893,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_3, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyRpc_3(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -904,7 +904,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_4, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyRpc_4(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -915,7 +915,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_5, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyRpc_5(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -926,7 +926,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_6, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyRpc_6(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -937,7 +937,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathSingleNestedRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcPathSingleNestedRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -948,7 +948,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcPathNestedRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -959,7 +959,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcPathNestedRpc_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -970,7 +970,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcPathNestedRpc_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -981,7 +981,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -992,7 +992,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyStream_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -1003,7 +1003,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyStream_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -1014,7 +1014,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_3, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyStream_3(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -1025,7 +1025,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_4, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyStream_4(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -1036,7 +1036,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_5, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyStream_5(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -1047,7 +1047,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_6, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcBodyStream_6(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -1058,7 +1058,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathSingleNestedStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcPathSingleNestedStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -1069,7 +1069,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcPathNestedStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -1080,7 +1080,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcPathNestedStream_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
@@ -1091,7 +1091,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		resp, err := request_FlowCombination_RpcPathNestedStream_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
-			runtime.HTTPError(ctx, w, err)
+			runtime.HTTPError(ctx, w, req, err)
 			return
 		}
 
