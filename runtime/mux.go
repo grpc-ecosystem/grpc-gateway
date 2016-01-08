@@ -57,7 +57,7 @@ func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	if !strings.HasPrefix(path, "/") {
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		OtherErrorHandler(w, r, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 
@@ -65,7 +65,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	l := len(components)
 	var verb string
 	if idx := strings.LastIndex(components[l-1], ":"); idx == 0 {
-		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		OtherErrorHandler(w, r, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	} else if idx > 0 {
 		c := components[l-1]
@@ -75,7 +75,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && isPathLengthFallback(r) {
 		r.Method = strings.ToUpper(override)
 		if err := r.ParseForm(); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			OtherErrorHandler(w, r, err.Error(), http.StatusBadRequest)
 			return
 		}
 	}
@@ -103,17 +103,17 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			// X-HTTP-Method-Override is optional. Always allow fallback to POST.
 			if isPathLengthFallback(r) {
 				if err := r.ParseForm(); err != nil {
-					http.Error(w, err.Error(), http.StatusBadRequest)
+					OtherErrorHandler(w, r, err.Error(), http.StatusBadRequest)
 					return
 				}
 				h.h(w, r, pathParams)
 				return
 			}
-			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+			OtherErrorHandler(w, r, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 			return
 		}
 	}
-	http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	OtherErrorHandler(w, r, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 }
 
 // GetForwardResponseOptions returns the ForwardResponseOptions associated with this ServeMux.
