@@ -112,57 +112,57 @@
             "name": "float_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "number",
+            "format": "float"
           },
           {
             "name": "double_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "number",
+            "format": "double"
           },
           {
             "name": "int64_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "integer",
+            "format": "int64"
           },
           {
             "name": "uint64_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "integer",
+            "format": "int64"
           },
           {
             "name": "int32_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "fixed64_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "integer",
+            "format": "int64"
           },
           {
             "name": "fixed32_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "bool_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "boolean",
+            "format": "boolean"
           },
           {
             "name": "string_value",
@@ -175,36 +175,36 @@
             "name": "uint32_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "integer",
+            "format": "int64"
           },
           {
             "name": "sfixed32_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "sfixed64_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "sint32_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "integer",
+            "format": "int32"
           },
           {
             "name": "sint64_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "integer",
+            "format": "int64"
           }
         ]
       }

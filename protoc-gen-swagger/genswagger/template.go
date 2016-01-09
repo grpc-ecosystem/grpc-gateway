@@ -255,13 +255,92 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject) er
 				// Iterate over all the swagger parameters
 				parameters := swaggerParametersObject{}
 				for _, parameter := range b.PathParams {
+
+					var paramType, paramFormat string
+					switch parameter.Target.FieldDescriptorProto.Type.String() {
+					case "TYPE_DOUBLE":
+						paramType = "number"
+						paramFormat = "double"
+						break
+					case "TYPE_FLOAT":
+						paramType = "number"
+						paramFormat = "float"
+						break
+					case "TYPE_INT64":
+						paramType = "integer"
+						paramFormat = "int64"
+						break
+					case "TYPE_UINT64":
+						paramType = "integer"
+						paramFormat = "int64"
+						break
+					case "TYPE_INT32":
+						paramType = "integer"
+						paramFormat = "int32"
+						break
+					case "TYPE_FIXED64":
+						paramType = "integer"
+						paramFormat = "int64"
+						break
+					case "TYPE_FIXED32":
+						paramType = "integer"
+						paramFormat = "int32"
+						break
+					case "TYPE_BOOL":
+						paramType = "boolean"
+						paramFormat = "boolean"
+						break
+					case "TYPE_STRING":
+						paramType = "string"
+						paramFormat = "string"
+						break
+					case "TYPE_GROUP":
+						panic("Groups are not allowed in the path for a HTTP RPC. Please use a primitive type instead (string, int64, etc)")
+						break
+					case "TYPE_MESSAGE":
+						panic("Groups are not allowed in the path for a HTTP RPC. Please use a primitive type instead (string, int64, etc)")
+						break
+					case "TYPE_BYTES":
+						paramType = "string"
+						paramFormat = "byte"
+						break
+					case "TYPE_UINT32":
+						paramType = "integer"
+						paramFormat = "int64"
+						break
+					case "TYPE_ENUM":
+						paramType = "integer"
+						paramFormat = "int64"
+						break
+					case "TYPE_SFIXED32":
+						paramType = "integer"
+						paramFormat = "int32"
+						break
+					case "TYPE_SFIXED64":
+						paramType = "integer"
+						paramFormat = "int32"
+						break
+					case "TYPE_SINT32":
+						paramType = "integer"
+						paramFormat = "int32"
+						break
+					case "TYPE_SINT64":
+						paramType = "integer"
+						paramFormat = "int64"
+						break
+					default:
+						paramType = parameter.Target.FieldDescriptorProto.Type.String()
+						panic("Detected field type of '" + paramType + "' which is unknown. Please use a primitive type (Ex: string, int64)")
+
+					}
+
 					parameters = append(parameters, swaggerParameterObject{
 						Name:     parameter.String(),
 						In:       "path",
 						Required: true,
 						// Parameters in gRPC-Gateway can only be strings?
-						Type:   "string",
-						Format: "string",
+						Type:   paramType,
+						Format: paramFormat,
 					})
 				}
 				// Now check if there is a body parameter
