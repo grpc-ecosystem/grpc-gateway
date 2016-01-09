@@ -50,7 +50,7 @@
         },
         "parameters": [
           {
-            "name": "",
+            "name": "body",
             "in": "body",
             "required": true,
             "schema": {

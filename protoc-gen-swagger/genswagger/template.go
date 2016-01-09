@@ -8,6 +8,8 @@ import (
 	"regexp"
 	"strings"
 
+	//"github.com/golang/glog"
+
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
@@ -39,7 +41,7 @@ func findServicesMessages(s []*descriptor.Service, reg *descriptor.Registry, m m
 		for _, meth := range svc.Methods {
 			m[meth.RequestType.FQMN()] = meth.RequestType
 			findNestedMessages(meth.RequestType, reg, m)
-			m[meth.ResponseType.FQMN()] = meth.RequestType
+			m[meth.ResponseType.FQMN()] = meth.ResponseType
 			findNestedMessages(meth.ResponseType, reg, m)
 		}
 	}
@@ -157,7 +159,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject)
 			}
 
 			if primitive {
-				// if repeated
+				// If repeated render as an array of items.
 				if field.FieldDescriptorProto.GetLabel() == pbdescriptor.FieldDescriptorProto_LABEL_REPEATED {
 					object.Properties[field.GetName()] = swaggerSchemaObject{
 						Type: "array",
@@ -265,6 +267,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject) er
 				// Now check if there is a body parameter
 				if b.Body != nil {
 					parameters = append(parameters, swaggerParameterObject{
+						Name:     "body",
 						In:       "body",
 						Required: true,
 						Schema: &swaggerSchemaObject{

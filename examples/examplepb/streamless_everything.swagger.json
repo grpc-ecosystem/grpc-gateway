@@ -28,6 +28,29 @@
         }
       }
     },
+    "/v1/example/a_bit_of_everything/bulk": {
+      "post": {
+        "summary": "ABitOfEverythingService.BulkCreate",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.EmptyMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.ABitOfEverything"
+            }
+          }
+        ]
+      }
+    },
     "/v1/example/a_bit_of_everything/echo": {
       "post": {
         "summary": "ABitOfEverythingService.BulkEcho",
@@ -41,7 +64,7 @@
         },
         "parameters": [
           {
-            "name": "",
+            "name": "body",
             "in": "body",
             "required": true,
             "schema": {
@@ -299,6 +322,7 @@
         }
       }
     },
+    ".gengo.grpc.gateway.examples.examplepb.EmptyMessage": {},
     ".gengo.grpc.gateway.examples.examplepb.IdMessage": {
       "properties": {
         "uuid": {
