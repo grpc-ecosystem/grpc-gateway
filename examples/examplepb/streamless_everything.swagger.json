@@ -241,7 +241,17 @@
           "format": "int64"
         },
         "nested": {
-          "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.ABitOfEverything.Nested"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.ABitOfEverything.Nested"
+          }
+        },
+        "repeated_string_value": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "string"
+          }
         },
         "sfixed32_value": {
           "type": "integer",

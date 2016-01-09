@@ -29,6 +29,7 @@ message ABitOfEverything {
 	sfixed64 sfixed64_value = 16;
 	sint32 sint32_value = 17;
 	sint64 sint64_value = 18;
+  repeated string repeated_string_value = 19;
 }
 
 message EmptyMessage {
