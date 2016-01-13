@@ -71,14 +71,14 @@ func ForwardResponseStream(ctx context.Context, w http.ResponseWriter, req *http
 func ForwardResponseMessage(ctx context.Context, w http.ResponseWriter, req *http.Request, resp proto.Message, opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
 	w.Header().Set("Content-Type", "application/json")
 	if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {
-		HTTPError(ctx, w, err)
+		HTTPError(ctx, w, req, err)
 		return
 	}
 
 	buf, err := json.Marshal(resp)
 	if err != nil {
 		glog.Errorf("Marshal error: %v", err)
-		HTTPError(ctx, w, err)
+		HTTPError(ctx, w, req, err)
 		return
 	}
 
