@@ -18,6 +18,7 @@
     "/v1/example/a_bit_of_everything": {
       "get": {
         "summary": "ABitOfEverythingService.List",
+        "operationId": "List",
         "responses": {
           "default": {
             "description": "Description",
@@ -31,6 +32,7 @@
     "/v1/example/a_bit_of_everything/bulk": {
       "post": {
         "summary": "ABitOfEverythingService.BulkCreate",
+        "operationId": "BulkCreate",
         "responses": {
           "default": {
             "description": "Description",
@@ -54,6 +56,7 @@
     "/v1/example/a_bit_of_everything/echo": {
       "post": {
         "summary": "ABitOfEverythingService.BulkEcho",
+        "operationId": "BulkEcho",
         "responses": {
           "default": {
             "description": "Description",
@@ -77,6 +80,7 @@
     "/v1/example/a_bit_of_everything/echo/{value}": {
       "get": {
         "summary": "ABitOfEverythingService.Echo",
+        "operationId": "Echo",
         "responses": {
           "default": {
             "description": "Description",
@@ -99,6 +103,7 @@
     "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}": {
       "post": {
         "summary": "ABitOfEverythingService.Create",
+        "operationId": "Create",
         "responses": {
           "default": {
             "description": "Description",
@@ -212,6 +217,7 @@
     "/v1/example/a_bit_of_everything/{uuid}": {
       "delete": {
         "summary": "ABitOfEverythingService.Delete",
+        "operationId": "Delete",
         "responses": {
           "default": {
             "description": "Description",

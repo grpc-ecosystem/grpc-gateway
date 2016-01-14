@@ -18,6 +18,7 @@
     "/v1/example/echo/{id}": {
       "post": {
         "summary": "EchoService.Echo",
+        "operationId": "Echo",
         "responses": {
           "default": {
             "description": "Description",
@@ -40,6 +41,7 @@
     "/v1/example/echo_body": {
       "post": {
         "summary": "EchoService.EchoBody",
+        "operationId": "EchoBody",
         "responses": {
           "default": {
             "description": "Description",
