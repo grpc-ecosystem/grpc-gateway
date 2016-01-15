@@ -49,6 +49,7 @@ type swaggerOperationObject struct {
 	OperationId string                  `json:"operationId"`
 	Responses   swaggerResponsesObject  `json:"responses"`
 	Parameters  swaggerParametersObject `json:"parameters,omitempty"`
+	Tags        []string                `json:"tags,omitempty"`
 }
 
 type swaggerParametersObject []swaggerParameterObject

@@ -26,7 +26,10 @@
               "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.ABitOfEverything"
             }
           }
-        }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
       }
     },
     "/v1/example/a_bit_of_everything/bulk": {
@@ -50,6 +53,9 @@
               "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.ABitOfEverything"
             }
           }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
         ]
       }
     },
@@ -74,6 +80,9 @@
               "$ref": "#/definitions/.gengo.grpc.gateway.examples.sub.StringMessage"
             }
           }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
         ]
       }
     },
@@ -97,6 +106,9 @@
             "type": "string",
             "format": "string"
           }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
         ]
       }
     },
@@ -211,6 +223,9 @@
             "type": "integer",
             "format": "int64"
           }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
         ]
       }
     },
@@ -234,6 +249,9 @@
             "type": "string",
             "format": "string"
           }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
         ]
       }
     }

@@ -35,6 +35,9 @@
             "type": "string",
             "format": "string"
           }
+        ],
+        "tags": [
+          "EchoService"
         ]
       }
     },
@@ -59,6 +62,9 @@
               "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.SimpleMessage"
             }
           }
+        ],
+        "tags": [
+          "EchoService"
         ]
       }
     }

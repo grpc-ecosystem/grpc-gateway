@@ -358,6 +358,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject) er
 				pathItemObject := swaggerPathItemObject{}
 				operationObject := &swaggerOperationObject{
 					Summary:     fmt.Sprintf("%s.%s", svc.GetName(), meth.GetName()),
+					Tags:        []string{svc.GetName()},
 					OperationId: fmt.Sprintf("%s", meth.GetName()),
 					Parameters:  parameters,
 					Responses: swaggerResponsesObject{
