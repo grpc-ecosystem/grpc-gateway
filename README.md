@@ -133,6 +133,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      "github.com/golang/glog"
      "golang.org/x/net/context"
      "github.com/gengo/grpc-gateway/runtime"
+     "google.golang.org/grpc"
    	
      gw "path/to/your_service_package"
    )
@@ -147,7 +148,8 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      defer cancel()
    
      mux := runtime.NewServeMux()
-     err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint)
+     opts := []grpc.DialOption{grpc.WithInsecure()}
+     err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint, opts)
      if err != nil {
        return err
      }
