@@ -8,6 +8,7 @@ import (
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/glog"
 	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
 
 var (
@@ -22,15 +23,16 @@ func Run(address string, opts ...runtime.ServeMuxOption) error {
 	defer cancel()
 
 	mux := runtime.NewServeMux(opts...)
-	err := examplepb.RegisterEchoServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint)
+	dialOpts := []grpc.DialOption{grpc.WithInsecure()}
+	err := examplepb.RegisterEchoServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint, dialOpts)
 	if err != nil {
 		return err
 	}
-	err = examplepb.RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx, mux, *abeEndpoint)
+	err = examplepb.RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx, mux, *abeEndpoint, dialOpts)
 	if err != nil {
 		return err
 	}
-	err = examplepb.RegisterFlowCombinationHandlerFromEndpoint(ctx, mux, *flowEndpoint)
+	err = examplepb.RegisterFlowCombinationHandlerFromEndpoint(ctx, mux, *flowEndpoint, dialOpts)
 	if err != nil {
 		return err
 	}
