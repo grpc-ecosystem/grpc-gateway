@@ -44,12 +44,12 @@ func TestDefaultHTTPError(t *testing.T) {
 			t.Errorf("w.Code = %d; want %d", got, want)
 		}
 
-		body := make(map[string]string)
+		body := make(map[string]interface{})
 		if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
 			t.Errorf("json.Unmarshal(%q, &body) failed with %v; want success", w.Body.Bytes(), err)
 			continue
 		}
-		if got, want := body["error"], spec.msg; !strings.Contains(got, want) {
+		if got, want := body["error"].(string), spec.msg; !strings.Contains(got, want) {
 			t.Errorf(`body["error"] = %q; want %q; on spec.err=%v`, got, want, spec.err)
 		}
 	}
