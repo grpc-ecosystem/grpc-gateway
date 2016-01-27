@@ -64,6 +64,7 @@ var (
 
 type errorBody struct {
 	Error string `json:"error"`
+	Code  int    `json:"code"`
 }
 
 // DefaultHTTPError is the default implementation of HTTPError.
@@ -76,7 +77,7 @@ func DefaultHTTPError(ctx context.Context, w http.ResponseWriter, _ *http.Reques
 	const fallback = `{"error": "failed to marshal error message"}`
 
 	w.Header().Set("Content-Type", "application/json")
-	body := errorBody{Error: err.Error()}
+	body := errorBody{Error: grpc.ErrorDesc(err), Code: int(grpc.Code(err))}
 	buf, merr := json.Marshal(body)
 	if merr != nil {
 		glog.Errorf("Failed to marshal error message %q: %v", body, merr)
