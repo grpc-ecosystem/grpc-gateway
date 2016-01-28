@@ -23,7 +23,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.ABitOfEverything"
+              "$ref": "#/definitions/examplepbABitOfEverything"
             }
           }
         },
@@ -40,7 +40,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.EmptyMessage"
+              "$ref": "#/definitions/examplepbEmptyMessage"
             }
           }
         },
@@ -50,7 +50,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.ABitOfEverything"
+              "$ref": "#/definitions/examplepbABitOfEverything"
             }
           }
         ],
@@ -67,7 +67,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/.gengo.grpc.gateway.examples.sub.StringMessage"
+              "$ref": "#/definitions/subStringMessage"
             }
           }
         },
@@ -77,7 +77,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/.gengo.grpc.gateway.examples.sub.StringMessage"
+              "$ref": "#/definitions/subStringMessage"
             }
           }
         ],
@@ -94,7 +94,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/.gengo.grpc.gateway.examples.sub.StringMessage"
+              "$ref": "#/definitions/subStringMessage"
             }
           }
         },
@@ -120,7 +120,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.ABitOfEverything"
+              "$ref": "#/definitions/examplepbABitOfEverything"
             }
           }
         },
@@ -237,7 +237,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.EmptyMessage"
+              "$ref": "#/definitions/examplepbEmptyMessage"
             }
           }
         },
@@ -257,7 +257,19 @@
     }
   },
   "definitions": {
-    ".gengo.grpc.gateway.examples.examplepb.ABitOfEverything": {
+    "ABitOfEverythingNested": {
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "examplepbABitOfEverything": {
       "properties": {
         "bool_value": {
           "type": "boolean",
@@ -290,7 +302,7 @@
         "nested": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/.gengo.grpc.gateway.examples.examplepb.ABitOfEverything.Nested"
+            "$ref": "#/definitions/ABitOfEverythingNested"
           }
         },
         "repeated_string_value": {
@@ -334,20 +346,8 @@
         }
       }
     },
-    ".gengo.grpc.gateway.examples.examplepb.ABitOfEverything.Nested": {
-      "properties": {
-        "amount": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "name": {
-          "type": "string",
-          "format": "string"
-        }
-      }
-    },
-    ".gengo.grpc.gateway.examples.examplepb.EmptyMessage": {},
-    ".gengo.grpc.gateway.examples.examplepb.IdMessage": {
+    "examplepbEmptyMessage": {},
+    "examplepbIdMessage": {
       "properties": {
         "uuid": {
           "type": "string",
@@ -355,7 +355,7 @@
         }
       }
     },
-    ".gengo.grpc.gateway.examples.sub.StringMessage": {
+    "subStringMessage": {
       "properties": {
         "value": {
           "type": "string",

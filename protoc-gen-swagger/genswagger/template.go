@@ -5,14 +5,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
+	"reflect"
 	"regexp"
 	"strings"
-
-	//"github.com/golang/glog"
 
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
+
+var _ = log.Printf
 
 // Discover all possible enums that can be generated and insert them in the
 // definitions object.  Right now gRPC gateway doesn't support enums during the
@@ -39,9 +41,9 @@ func findEnumerations(enums []*pbdescriptor.EnumDescriptorProto, d swaggerDefini
 func findServicesMessages(s []*descriptor.Service, reg *descriptor.Registry, m messageMap) {
 	for _, svc := range s {
 		for _, meth := range svc.Methods {
-			m[meth.RequestType.FQMN()] = meth.RequestType
+			m[fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)] = meth.RequestType
 			findNestedMessages(meth.RequestType, reg, m)
-			m[meth.ResponseType.FQMN()] = meth.ResponseType
+			m[fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)] = meth.ResponseType
 			findNestedMessages(meth.ResponseType, reg, m)
 		}
 	}
@@ -67,7 +69,7 @@ func findNestedMessages(message *descriptor.Message, reg *descriptor.Registry, m
 	}
 }
 
-func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject) {
+func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
 	for _, msg := range messages {
 		object := swaggerSchemaObject{
 			Properties: map[string]swaggerSchemaObject{},
@@ -179,19 +181,107 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject)
 					object.Properties[field.GetName()] = swaggerSchemaObject{
 						Type: "array",
 						Items: &swaggerItemsObject{
-							Ref: "#/definitions/" + field.GetTypeName(),
+							Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(field.GetTypeName(), reg),
 						},
 					}
 				} else {
 					object.Properties[field.GetName()] = swaggerSchemaObject{
-						Ref: "#/definitions/" + field.GetTypeName(),
+						Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(field.GetTypeName(), reg),
 					}
 				}
 			}
 		}
-		d[msg.FQMN()] = object
+		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = object
 	}
 }
+
+// Take in a FQMN and return a swagger safe version of the FQMN
+func fullyQualifiedNameToSwaggerName(fqmn string, reg *descriptor.Registry) string {
+	return resolveFullyQualifiedNameToSwaggerName(fqmn, reg.GetAllFQMNs())
+}
+
+// Take the names of every proto and "uniq-ify" them. The idea is to produce a
+// set of names that meet a couple of conditions. They must be stable, they
+// must be unique, and they must be shorter than the FQMN.
+//
+// This likely could be made better. This will always generate the same names
+// but may not always produce optimal names. This is a reasonably close
+// approximation of what they should look like in most cases.
+func resolveFullyQualifiedNameToSwaggerName(fqmn string, messages []string) string {
+	packagesByDepth := make(map[int][][]string)
+	uniqueNames := make(map[string]string)
+
+	hierarchy := func(pkg string) []string {
+		return strings.Split(pkg, ".")
+	}
+
+	for _, p := range messages {
+		h := hierarchy(p)
+		for depth, _ := range h {
+			if _, ok := packagesByDepth[depth]; !ok {
+				packagesByDepth[depth] = make([][]string, 0)
+			}
+			packagesByDepth[depth] = append(packagesByDepth[depth], h[len(h)-depth:])
+		}
+	}
+
+	count := func(list [][]string, item []string) int {
+		i := 0
+		for _, element := range list {
+			if reflect.DeepEqual(element, item) {
+				i++
+			}
+		}
+		return i
+	}
+
+	for _, p := range messages {
+		h := hierarchy(p)
+		for depth := 0; depth < len(h); depth++ {
+			if count(packagesByDepth[depth], h[len(h)-depth:]) == 1 {
+				uniqueNames[p] = strings.Join(h[len(h)-depth-1:], "")
+				break
+			}
+			if depth == len(h)-1 {
+				uniqueNames[p] = strings.Join(h, "")
+			}
+		}
+	}
+	return uniqueNames[fqmn]
+}
+
+//func resolveFullyQualifiedNameToSwaggerName(fqmn string, messages []string) string {
+//	// Iterate over the set creating naive solutions
+//	// Check for collisions
+//	//
+//
+//
+//	// This array will hold our final results
+//	longNamesToShort := make(map[string]string)
+//
+//	// Since we will (a number of times) use the split form of the fqmn, precompute it
+//	longNamesToArray := make(map[string][]string)
+//	for _, entry := range messages {
+//		longNamesToArray[entry] = strings.Split(fqmn, ".")
+//		longNamesToShort[entry] = longNamesToArray[entry][len(longNamesToArray[entry])-1]
+//	}
+//
+//	log.Printf("Running...")
+//
+//	//// Iterate over each elemnt in the array and check if it is unique on the last element
+//	//for _, subject := range messages {
+//	//	context := 0
+//	//	log.Printf("Subject: %v", subject)
+//	//	subjectArray = longNamesToArray[subject]
+//	//	for key, entry := range longNamesToArray {
+//	//		toCompare = longNamesToArray[entry]
+//	//		log.Printf("parts[%v]: %v", key, entry)
+//	//		log.Printf("%v ?= %v", subjectArray[len(
+//	//		//longNamesToShort[entry] = longNamesToArray[entry][len(longNamesToArray[entry])-1]
+//	//	}
+//	//}
+//	return longNamesToShort[fqmn]
+//}
 
 // Swagger expects paths of the form /path/{string_value} but grpc-gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
 func templateToSwaggerPath(path string) string {
@@ -245,7 +335,7 @@ func templateToSwaggerPath(path string) string {
 	return strings.Join(parts, "/")
 }
 
-func renderServices(services []*descriptor.Service, paths swaggerPathsObject) error {
+func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry) error {
 	for _, svc := range services {
 		for _, meth := range svc.Methods {
 			if meth.GetClientStreaming() || meth.GetServerStreaming() {
@@ -350,7 +440,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject) er
 						In:       "body",
 						Required: true,
 						Schema: &swaggerSchemaObject{
-							Ref: fmt.Sprintf("#/definitions/%s", meth.RequestType.FQMN()),
+							Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)),
 						},
 					})
 				}
@@ -365,7 +455,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject) er
 						"default": swaggerResponseObject{
 							Description: "Description",
 							Schema: swaggerSchemaObject{
-								Ref: fmt.Sprintf("#/definitions/%s", meth.ResponseType.FQMN()),
+								Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)),
 							},
 						},
 					},
@@ -410,7 +500,7 @@ func applyTemplate(p param) (string, error) {
 
 	// Loops through all the services and their exposed GET/POST/PUT/DELETE definitions
 	// and create entries for all of them.
-	renderServices(p.Services, s.Paths)
+	renderServices(p.Services, s.Paths, p.reg)
 
 	// Find all enumerations defined in the current file and create a definition for it.
 	// Don't forget to map from the enums native name to the FQMN of grpc-gateway.
@@ -420,7 +510,7 @@ func applyTemplate(p param) (string, error) {
 	// write their request and response types out as definition objects.
 	m := messageMap{}
 	findServicesMessages(p.Services, p.reg, m)
-	renderMessagesAsDefinition(m, s.Definitions)
+	renderMessagesAsDefinition(m, s.Definitions, p.reg)
 
 	// We now have rendered the entire swagger object. Write the bytes out to a
 	// string so it can be written to disk.

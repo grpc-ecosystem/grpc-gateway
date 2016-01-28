@@ -431,27 +431,64 @@ func TestTemplateToSwaggerPath(t *testing.T) {
 	}
 }
 
-func TestTemplateToSwaggerPathThatShouldBlowUp(t *testing.T) {
+func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
 	var tests = []struct {
-		input string
+		input       string
+		output      string
+		listOfFQMNs []string
 	}{
-		{"/}"},
-		{"/}}"},
+		{
+			".a.b.C",
+			"C",
+			[]string{
+				".a.b.C",
+			},
+		},
+		{
+			".a.b.C",
+			"abC",
+			[]string{
+				".a.C",
+				".a.b.C",
+			},
+		},
+		{
+			".a.b.C",
+			"abC",
+			[]string{
+				".C",
+				".a.C",
+				".a.b.C",
+			},
+		},
 	}
 
 	for _, data := range tests {
-		// Wrap in a closure so that the panic catcher is destroyed every time
-		func() {
-			var err interface{}
-			defer func() {
-				// recover from panic if one occured. Set err to nil otherwise.
-				err = recover()
-			}()
+		output := resolveFullyQualifiedNameToSwaggerName(data.input, data.listOfFQMNs)
+		if output != data.output {
+			t.Errorf("Expected fullyQualifiedNameToSwaggerName(%v) to be %s but got %s",
+				data.input, data.output, output)
+		}
+	}
+}
 
-			_ = templateToSwaggerPath(data.input)
-			if err == nil {
-				t.Errorf("Expected templateToSwaggerPath(%v) to blow up", data.input)
-			}
-		}()
+func TestFQMNtoSwaggerName(t *testing.T) {
+	var tests = []struct {
+		input    string
+		expected string
+	}{
+		{"/test", "/test"},
+		{"/{test}", "/{test}"},
+		{"/{test=prefix/*}", "/{test}"},
+		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/{test}"},
+		{"/{test1}/{test2}", "/{test1}/{test2}"},
+		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
+	}
+
+	for _, data := range tests {
+		actual := templateToSwaggerPath(data.input)
+		if data.expected != actual {
+			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+		}
 	}
 }
