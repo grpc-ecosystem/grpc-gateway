@@ -188,13 +188,11 @@ func (r *Registry) goPackagePath(f *descriptor.FileDescriptorProto) string {
 	return path.Join(r.prefix, path.Dir(name))
 }
 
-// Return a list of all FQMNs
+// GetAllFQMNs returns a list of all FQMNs
 func (r *Registry) GetAllFQMNs() []string {
-	keys := make([]string, len(r.msgs))
-	i := 0
+	var keys []string
 	for k := range r.msgs {
-		keys[i] = k
-		i++
+		keys = append(keys, k)
 	}
 	return keys
 }

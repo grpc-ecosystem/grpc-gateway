@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"reflect"
 	"regexp"
 	"strings"
@@ -12,8 +11,6 @@ import (
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
-
-var _ = log.Printf
 
 // findEnumerations that can be generated and insert them in the
 // definitions object.  Right now gRPC gateway doesn't support enums during the
@@ -52,7 +49,6 @@ func findServicesMessages(s []*descriptor.Service, reg *descriptor.Registry, m m
 func findNestedMessages(message *descriptor.Message, reg *descriptor.Registry, m messageMap) {
 	// Iterate over all the fields that
 	for _, t := range message.Fields {
-
 		fieldType := t.GetTypeName()
 		// If the type is an empty string then it is a proto primitive
 		if fieldType != "" {
@@ -248,39 +244,6 @@ func resolveFullyQualifiedNameToSwaggerName(fqmn string, messages []string) stri
 	}
 	return uniqueNames[fqmn]
 }
-
-//func resolveFullyQualifiedNameToSwaggerName(fqmn string, messages []string) string {
-//	// Iterate over the set creating naive solutions
-//	// Check for collisions
-//	//
-//
-//
-//	// This array will hold our final results
-//	longNamesToShort := make(map[string]string)
-//
-//	// Since we will (a number of times) use the split form of the fqmn, precompute it
-//	longNamesToArray := make(map[string][]string)
-//	for _, entry := range messages {
-//		longNamesToArray[entry] = strings.Split(fqmn, ".")
-//		longNamesToShort[entry] = longNamesToArray[entry][len(longNamesToArray[entry])-1]
-//	}
-//
-//	log.Printf("Running...")
-//
-//	//// Iterate over each elemnt in the array and check if it is unique on the last element
-//	//for _, subject := range messages {
-//	//	context := 0
-//	//	log.Printf("Subject: %v", subject)
-//	//	subjectArray = longNamesToArray[subject]
-//	//	for key, entry := range longNamesToArray {
-//	//		toCompare = longNamesToArray[entry]
-//	//		log.Printf("parts[%v]: %v", key, entry)
-//	//		log.Printf("%v ?= %v", subjectArray[len(
-//	//		//longNamesToShort[entry] = longNamesToArray[entry][len(longNamesToArray[entry])-1]
-//	//	}
-//	//}
-//	return longNamesToShort[fqmn]
-//}
 
 // Swagger expects paths of the form /path/{string_value} but grpc-gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
 func templateToSwaggerPath(path string) string {
