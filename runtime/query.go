@@ -54,7 +54,11 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 		case reflect.Bool, reflect.Float32, reflect.Float64, reflect.Int32, reflect.Int64, reflect.String, reflect.Uint32, reflect.Uint64:
 			m = f
 		case reflect.Slice:
-			// TODO(yugui) Support []byte
+			if f.Type().Elem().Kind() == reflect.Uint8 {
+				// Handle []byte
+				m = f
+				continue
+			}
 			if !isLast {
 				return fmt.Errorf("unexpected repeated field in %s", strings.Join(fieldPath, "."))
 			}
@@ -123,6 +127,7 @@ var (
 		reflect.Int32:   reflect.ValueOf(Int32),
 		reflect.Uint64:  reflect.ValueOf(Uint64),
 		reflect.Uint32:  reflect.ValueOf(Uint32),
-		// TODO(yugui) Support []byte
+		// Only []byte reaches here. Other slice types do not.
+		reflect.Slice: reflect.ValueOf(Bytes),
 	}
 )

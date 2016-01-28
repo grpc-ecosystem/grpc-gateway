@@ -4,6 +4,7 @@ package gengo.grpc.gateway.examples.examplepb;
 
 import "google/api/annotations.proto";
 import "examples/sub/message.proto";
+import "examples/examplepb/a_bit_of_everything_proto2.proto";
 
 message ABitOfEverything {
 	message Nested {
@@ -22,7 +23,7 @@ message ABitOfEverything {
 	fixed32 fixed32_value = 9;
 	bool bool_value = 10;
 	string string_value = 11;
-	// TODO(yugui) add bytes_value
+	bytes bytes_value = 12;
 	uint32 uint32_value = 13;
 	// TODO(yugui) add enum_value
 	sfixed32 sfixed32_value = 15;
@@ -41,7 +42,7 @@ message IdMessage {
 service ABitOfEverythingService {
 	rpc Create(ABitOfEverything) returns (ABitOfEverything) {
 		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}"
+			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{bytes_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}"
 		};
 	}
 	rpc CreateBody(ABitOfEverything) returns (ABitOfEverything) {
@@ -92,6 +93,21 @@ service ABitOfEverythingService {
 	rpc BulkEcho(stream gengo.grpc.gateway.examples.sub.StringMessage) returns (stream gengo.grpc.gateway.examples.sub.StringMessage) {
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything/echo"
+			body: "*"
+		};
+	}
+	rpc EchoABEProto2(ABitOfEverythingProto2) returns (ABitOfEverythingProto2) {
+		option (google.api.http) = {
+			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{bytes_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}:proto2_echo"
+			additional_bindings {
+				post: "/v1/example/a_bit_of_everything:proto2_echo"
+				body: "*"
+			}
+		};
+	}
+	rpc BulkEchoABEProto2(stream ABitOfEverythingProto2) returns (stream ABitOfEverythingProto2) {
+		option (google.api.http) = {
+			post: "/v1/example/a_bit_of_everything/bulk:proto2_echo"
 			body: "*"
 		};
 	}

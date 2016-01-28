@@ -25,7 +25,7 @@ type EmptyProto struct {
 func (m *EmptyProto) Reset()                    { *m = EmptyProto{} }
 func (m *EmptyProto) String() string            { return proto.CompactTextString(m) }
 func (*EmptyProto) ProtoMessage()               {}
-func (*EmptyProto) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{0} }
+func (*EmptyProto) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{0} }
 
 type NonEmptyProto struct {
 	A string `protobuf:"bytes,1,opt,name=a" json:"a,omitempty"`
@@ -36,7 +36,7 @@ type NonEmptyProto struct {
 func (m *NonEmptyProto) Reset()                    { *m = NonEmptyProto{} }
 func (m *NonEmptyProto) String() string            { return proto.CompactTextString(m) }
 func (*NonEmptyProto) ProtoMessage()               {}
-func (*NonEmptyProto) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{1} }
+func (*NonEmptyProto) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{1} }
 
 type UnaryProto struct {
 	Str string `protobuf:"bytes,1,opt,name=str" json:"str,omitempty"`
@@ -45,7 +45,7 @@ type UnaryProto struct {
 func (m *UnaryProto) Reset()                    { *m = UnaryProto{} }
 func (m *UnaryProto) String() string            { return proto.CompactTextString(m) }
 func (*UnaryProto) ProtoMessage()               {}
-func (*UnaryProto) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{2} }
+func (*UnaryProto) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{2} }
 
 type NestedProto struct {
 	A *UnaryProto `protobuf:"bytes,1,opt,name=a" json:"a,omitempty"`
@@ -56,7 +56,7 @@ type NestedProto struct {
 func (m *NestedProto) Reset()                    { *m = NestedProto{} }
 func (m *NestedProto) String() string            { return proto.CompactTextString(m) }
 func (*NestedProto) ProtoMessage()               {}
-func (*NestedProto) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{3} }
+func (*NestedProto) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{3} }
 
 func (m *NestedProto) GetA() *UnaryProto {
 	if m != nil {
@@ -72,7 +72,7 @@ type SingleNestedProto struct {
 func (m *SingleNestedProto) Reset()                    { *m = SingleNestedProto{} }
 func (m *SingleNestedProto) String() string            { return proto.CompactTextString(m) }
 func (*SingleNestedProto) ProtoMessage()               {}
-func (*SingleNestedProto) Descriptor() ([]byte, []int) { return fileDescriptor2, []int{4} }
+func (*SingleNestedProto) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{4} }
 
 func (m *SingleNestedProto) GetA() *UnaryProto {
 	if m != nil {
@@ -604,7 +604,7 @@ var _FlowCombination_serviceDesc = grpc.ServiceDesc{
 	},
 }
 
-var fileDescriptor2 = []byte{
+var fileDescriptor3 = []byte{
 	// 658 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xbc, 0x96, 0xbf, 0x6f, 0xd3, 0x40,
 	0x14, 0xc7, 0x75, 0xa9, 0x84, 0xd4, 0x4b, 0x53, 0x52, 0x07, 0x85, 0x24, 0x84, 0xfe, 0x38, 0x8a,

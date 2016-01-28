@@ -45,6 +45,7 @@ SWAGGER_EXAMPLES=examples/examplepb/echo_service.proto \
 	 examples/examplepb/streamless_everything.proto
 EXAMPLES=examples/examplepb/echo_service.proto \
 	 examples/examplepb/a_bit_of_everything.proto \
+	 examples/examplepb/a_bit_of_everything_proto2.proto \
 	 examples/examplepb/flow_combination.proto
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)

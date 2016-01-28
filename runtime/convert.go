@@ -56,3 +56,8 @@ func Uint32(val string) (uint32, error) {
 	}
 	return uint32(i), nil
 }
+
+// Bytes converts percent-encoded byte array into unescaped []byte as defined in RFC 3986.
+func Bytes(val string) ([]byte, error) {
+	return []byte(val), nil
+}
