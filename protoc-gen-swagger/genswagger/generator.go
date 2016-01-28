@@ -31,7 +31,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 	var files []*plugin.CodeGeneratorResponse_File
 	for _, file := range targets {
 		glog.V(1).Infof("Processing %s", file.GetName())
-		code, err := g.generate(file)
+		code, err := applyTemplate(param{File: file, reg: g.reg})
 		if err == errNoTargetService {
 			glog.V(1).Infof("%s: %v", file.GetName(), err)
 			continue
@@ -49,26 +49,9 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 		output := fmt.Sprintf("%s.swagger.json", base)
 		files = append(files, &plugin.CodeGeneratorResponse_File{
 			Name:    proto.String(output),
-			Content: proto.String(string(formatted.Bytes())),
+			Content: proto.String(formatted.String()),
 		})
 		glog.V(1).Infof("Will emit %s", output)
 	}
 	return files, nil
-}
-
-func (g *generator) generate(file *descriptor.File) (string, error) {
-	pkgSeen := make(map[string]bool)
-	for _, svc := range file.Services {
-		for _, m := range svc.Methods {
-			pkg := m.RequestType.File.GoPkg
-			if pkg == file.GoPkg {
-				continue
-			}
-			if pkgSeen[pkg.Path] {
-				continue
-			}
-			pkgSeen[pkg.Path] = true
-		}
-	}
-	return applyTemplate(param{File: file, reg: g.reg})
 }

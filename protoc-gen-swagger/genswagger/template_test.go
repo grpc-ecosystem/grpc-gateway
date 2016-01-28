@@ -74,7 +74,7 @@ func TestApplyTemplateSimple(t *testing.T) {
 								PathTmpl: httprule.Template{
 									Version:  1,
 									OpCodes:  []int{0, 0},
-									Template: "/v1/echo", // TODO(achew): Figure out what this hsould really be
+									Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
 								},
 							},
 						},
@@ -83,7 +83,7 @@ func TestApplyTemplateSimple(t *testing.T) {
 			},
 		},
 	}
-	result, err := applyTemplate(param{File: crossLinkFixture(&file)})
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: descriptor.NewRegistry()})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
