@@ -10,7 +10,7 @@ cache:
   directories:
   - $HOME/local
 before_install:
-- ./.travis.build-protoc.sh 3.0.0-beta-1
+- ./.travis.build-protoc.sh 3.0.0-beta-2
 - go get github.com/golang/lint/golint
 install:
 - go get github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway
