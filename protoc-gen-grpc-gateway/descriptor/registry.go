@@ -188,6 +188,17 @@ func (r *Registry) goPackagePath(f *descriptor.FileDescriptorProto) string {
 	return path.Join(r.prefix, path.Dir(name))
 }
 
+// Return a list of all FQMNs
+func (r *Registry) GetAllFQMNs() []string {
+	keys := make([]string, len(r.msgs))
+	i := 0
+	for k := range r.msgs {
+		keys[i] = k
+		i++
+	}
+	return keys
+}
+
 // defaultGoPackageName returns the default go package name to be used for go files generated from "f".
 // You might need to use an unique alias for the package when you import it.  Use ReserveGoPackageAlias to get a unique alias.
 func defaultGoPackageName(f *descriptor.FileDescriptorProto) string {

@@ -1,0 +1,367 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "",
+    "title": ""
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/example/a_bit_of_everything": {
+      "get": {
+        "summary": "ABitOfEverythingService.List",
+        "operationId": "List",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/bulk": {
+      "post": {
+        "summary": "ABitOfEverythingService.BulkCreate",
+        "operationId": "BulkCreate",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/examplepbEmptyMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/echo": {
+      "post": {
+        "summary": "ABitOfEverythingService.BulkEcho",
+        "operationId": "BulkEcho",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/subStringMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/subStringMessage"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/echo/{value}": {
+      "get": {
+        "summary": "ABitOfEverythingService.Echo",
+        "operationId": "Echo",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/subStringMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}": {
+      "post": {
+        "summary": "ABitOfEverythingService.Create",
+        "operationId": "Create",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "float_value",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "double_value",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "int64_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "uint64_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "int32_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "fixed64_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "fixed32_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "bool_value",
+            "in": "path",
+            "required": true,
+            "type": "boolean",
+            "format": "boolean"
+          },
+          {
+            "name": "string_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "uint32_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "sfixed32_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "sfixed64_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "sint32_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "sint64_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/{uuid}": {
+      "delete": {
+        "summary": "ABitOfEverythingService.Delete",
+        "operationId": "Delete",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/examplepbEmptyMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ABitOfEverythingNested": {
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "examplepbABitOfEverything": {
+      "properties": {
+        "bool_value": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "double_value": {
+          "type": "number",
+          "format": "double"
+        },
+        "fixed32_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fixed64_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "float_value": {
+          "type": "number",
+          "format": "float"
+        },
+        "int32_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "int64_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "nested": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ABitOfEverythingNested"
+          }
+        },
+        "repeated_string_value": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "string"
+          }
+        },
+        "sfixed32_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sfixed64_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sint32_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sint64_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "string_value": {
+          "type": "string",
+          "format": "string"
+        },
+        "uint32_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "uint64_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "uuid": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "examplepbEmptyMessage": {},
+    "examplepbIdMessage": {
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "subStringMessage": {
+      "properties": {
+        "value": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    }
+  }
+}

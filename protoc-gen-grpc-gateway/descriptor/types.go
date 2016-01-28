@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/httprule"
+	"github.com/gengo/grpc-gateway/utilities"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 
@@ -143,6 +143,8 @@ func (b *Binding) ExplicitParams() []string {
 type Field struct {
 	// Message is the message type which this field belongs to.
 	Message *Message
+	// FieldMessage is the message type of the field.
+	FieldMessage *Message
 	*descriptor.FieldDescriptorProto
 }
 
