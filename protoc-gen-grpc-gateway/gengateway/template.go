@@ -114,7 +114,7 @@ var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
 var _ = json.Marshal
-var _ = utilities.PascalFromSnake
+var _ = utilities.NewDoubleArray
 `))
 
 	handlerTemplate = template.Must(template.New("handler").Parse(`
