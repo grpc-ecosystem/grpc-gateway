@@ -65,6 +65,7 @@ func TestIntegration(t *testing.T) {
 		}
 	}()
 
+	time.Sleep(100 * time.Millisecond)
 	testEcho(t, 8081, "application/vnd.docker.plugins.v1.1+json")
 }
 
