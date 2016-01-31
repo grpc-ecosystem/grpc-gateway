@@ -12,6 +12,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 )
 
 // Implements of ABitOfEverythingServiceServer
@@ -52,6 +53,7 @@ func (s *_ABitOfEverythingServer) CreateBody(ctx context.Context, msg *examples.
 }
 
 func (s *_ABitOfEverythingServer) BulkCreate(stream examples.ABitOfEverythingService_BulkCreateServer) error {
+
 	ctx := stream.Context()
 	for {
 		msg, err := stream.Recv()
@@ -66,6 +68,15 @@ func (s *_ABitOfEverythingServer) BulkCreate(stream examples.ABitOfEverythingSer
 			return err
 		}
 	}
+
+	stream.SendHeader(metadata.New(map[string]string{
+		"foo": "foo1",
+		"bar": "bar1",
+	}))
+	stream.SetTrailer(metadata.New(map[string]string{
+		"foo": "foo2",
+		"bar": "bar2",
+	}))
 	return stream.SendAndClose(new(examples.EmptyMessage))
 }
 
@@ -137,11 +148,25 @@ func (s *_ABitOfEverythingServer) BulkEcho(stream examples.ABitOfEverythingServi
 		}
 		msgs = append(msgs, msg)
 	}
+
+	hmd := metadata.New(map[string]string{
+		"foo": "foo1",
+		"bar": "bar1",
+	})
+	if err := stream.SendHeader(hmd); err != nil {
+		return err
+	}
+
 	for _, msg := range msgs {
 		glog.Info(msg)
 		if err := stream.Send(msg); err != nil {
 			return err
 		}
 	}
+
+	stream.SetTrailer(metadata.New(map[string]string{
+		"foo": "foo2",
+		"bar": "bar2",
+	}))
 	return nil
 }

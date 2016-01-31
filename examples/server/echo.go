@@ -4,6 +4,8 @@ import (
 	examples "github.com/gengo/grpc-gateway/examples/examplepb"
 	"github.com/golang/glog"
 	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 // Implements of EchoServiceServer
@@ -21,5 +23,13 @@ func (s *echoServer) Echo(ctx context.Context, msg *examples.SimpleMessage) (*ex
 
 func (s *echoServer) EchoBody(ctx context.Context, msg *examples.SimpleMessage) (*examples.SimpleMessage, error) {
 	glog.Info(msg)
+	grpc.SendHeader(ctx, metadata.New(map[string]string{
+		"foo": "foo1",
+		"bar": "bar1",
+	}))
+	grpc.SetTrailer(ctx, metadata.New(map[string]string{
+		"foo": "foo2",
+		"bar": "bar2",
+	}))
 	return msg, nil
 }

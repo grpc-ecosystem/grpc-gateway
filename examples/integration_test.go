@@ -34,7 +34,26 @@ func TestIntegration(t *testing.T) {
 		}
 	}()
 	go func() {
-		if err := Run(":8080"); err != nil {
+		if err := Run(
+			":8080",
+			runtime.WithForwardResponseOption(
+				func(ctx context.Context, w http.ResponseWriter, _ proto.Message) error {
+					if md, ok := runtime.ServerMetadataFromContext(ctx); ok {
+						for k, vs := range md.HeaderMD {
+							for i := range vs {
+								w.Header().Add(fmt.Sprintf("Grpc-Header-%s", k), vs[i])
+							}
+						}
+						for k, vs := range md.TrailerMD {
+							for i := range vs {
+								w.Header().Add(fmt.Sprintf("Grpc-Trailer-%s", k), vs[i])
+							}
+						}
+					}
+					return nil
+				},
+			),
+		); err != nil {
 			t.Errorf("gw.Run() failed with %v; want success", err)
 			return
 		}
@@ -134,6 +153,22 @@ func testEchoBody(t *testing.T) {
 	}
 	if got, want := received, sent; !reflect.DeepEqual(got, want) {
 		t.Errorf("msg.Id = %q; want %q", got, want)
+	}
+
+	if value := resp.Header.Get("Grpc-Header-foo"); value != "foo1" {
+		t.Errorf("Grpc-Header-foo was %s, wanted %s", value, "foo1")
+	}
+
+	if value := resp.Header.Get("Grpc-Header-bar"); value != "bar1" {
+		t.Errorf("Grpc-Header-bar was %s, wanted %s", value, "bar1")
+	}
+
+	if value := resp.Header.Get("Grpc-Trailer-foo"); value != "foo2" {
+		t.Errorf("Grpc-Trailer-foo was %s, wanted %s", value, "foo2")
+	}
+
+	if value := resp.Header.Get("Grpc-Trailer-bar"); value != "bar2" {
+		t.Errorf("Grpc-Trailer-bar was %s, wanted %s", value, "bar2")
 	}
 }
 
@@ -326,6 +361,14 @@ func testABEBulkCreate(t *testing.T) {
 	if err := json.Unmarshal(buf, &msg); err != nil {
 		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
+	}
+
+	if value := resp.Header.Get("Grpc-Trailer-foo"); value != "foo2" {
+		t.Errorf("Grpc-Trailer-foo was %q, wanted %q", value, "foo2")
+	}
+
+	if value := resp.Header.Get("Grpc-Trailer-bar"); value != "bar2" {
+		t.Errorf("Grpc-Trailer-bar was %q, wanted %q", value, "bar2")
 	}
 }
 
