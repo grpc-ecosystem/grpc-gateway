@@ -94,6 +94,14 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 	client := NewEchoServiceClient(conn)
 
 	mux.Handle("POST", pattern_EchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(ctx)
+		closeNotifier, ok := w.(http.CloseNotifier)
+		if ok {
+			go func() {
+				<-closeNotifier.CloseNotify()
+				cancel()
+			}()
+		}
 		resp, err := request_EchoService_Echo_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
@@ -105,6 +113,14 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 	})
 
 	mux.Handle("POST", pattern_EchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(ctx)
+		closeNotifier, ok := w.(http.CloseNotifier)
+		if ok {
+			go func() {
+				<-closeNotifier.CloseNotify()
+				cancel()
+			}()
+		}
 		resp, err := request_EchoService_EchoBody_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
