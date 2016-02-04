@@ -27,7 +27,7 @@ var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
 var _ = json.Marshal
-var _ = utilities.PascalFromSnake
+var _ = utilities.NewDoubleArray
 
 func request_FlowCombination_RpcEmptyRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq EmptyProto

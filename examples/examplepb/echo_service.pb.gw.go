@@ -27,7 +27,7 @@ var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
 var _ = json.Marshal
-var _ = utilities.PascalFromSnake
+var _ = utilities.NewDoubleArray
 
 func request_EchoService_Echo_0(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
 	var protoReq SimpleMessage

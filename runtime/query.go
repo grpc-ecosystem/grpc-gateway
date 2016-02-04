@@ -12,7 +12,7 @@ import (
 )
 
 // PopulateQueryParameters populates "values" into "msg".
-// A value is ignored if its key starts with one of the elements in "filters".
+// A value is ignored if its key starts with one of the elements in "filter".
 func PopulateQueryParameters(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error {
 	for key, values := range values {
 		fieldPath := strings.Split(key, ".")
@@ -44,7 +44,7 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 		if !isLast && m.Kind() != reflect.Struct {
 			return fmt.Errorf("non-aggregate type in the mid of path: %s", strings.Join(fieldPath, "."))
 		}
-		f := m.FieldByName(utilities.PascalFromSnake(fieldName))
+		f := fieldByProtoName(m, fieldName)
 		if !f.IsValid() {
 			glog.Warningf("field not found in %T: %s", msg, strings.Join(fieldPath, "."))
 			return nil
@@ -81,6 +81,18 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 		glog.Warningf("too many field values: %s", strings.Join(fieldPath, "."))
 	}
 	return populateField(m, values[0])
+}
+
+// fieldByProtoName looks up a field whose corresponding protobuf field name is "name".
+// "m" must be a struct value. It returns zero reflect.Value if no such field found.
+func fieldByProtoName(m reflect.Value, name string) reflect.Value {
+	props := proto.GetProperties(m.Type())
+	for _, p := range props.Prop {
+		if p.OrigName == name {
+			return m.FieldByName(p.Name)
+		}
+	}
+	return reflect.Value{}
 }
 
 func populateRepeatedField(f reflect.Value, values []string) error {

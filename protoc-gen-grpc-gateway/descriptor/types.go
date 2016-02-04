@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/httprule"
-	"github.com/gengo/grpc-gateway/utilities"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
 )
 
 // GoPackage represents a golang package
@@ -235,15 +235,15 @@ type FieldPathComponent struct {
 
 // RHS returns a right-hand-side expression in go for this field.
 func (c FieldPathComponent) RHS() string {
-	return utilities.PascalFromSnake(c.Name)
+	return gogen.CamelCase(c.Name)
 }
 
 // LHS returns a left-hand-side expression in go for this field.
 func (c FieldPathComponent) LHS() string {
 	if c.Target.Message.File.proto2() {
-		return fmt.Sprintf("Get%s()", utilities.PascalFromSnake(c.Name))
+		return fmt.Sprintf("Get%s()", gogen.CamelCase(c.Name))
 	}
-	return utilities.PascalFromSnake(c.Name)
+	return gogen.CamelCase(c.Name)
 }
 
 var (

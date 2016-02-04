@@ -8,8 +8,8 @@ GO_PLUGIN=bin/protoc-gen-go
 GO_PLUGIN_PKG=github.com/golang/protobuf/protoc-gen-go
 SWAGGER_PLUGIN=bin/protoc-gen-swagger
 SWAGGER_PLUGIN_SRC= utilities/doc.go \
-		    utilities/name.go \
 		    utilities/pattern.go \
+		    utilities/trie.go \
 		    protoc-gen-swagger/genswagger/generator.go \
 		    protoc-gen-swagger/genswagger/template.go \
 		    protoc-gen-swagger/main.go
