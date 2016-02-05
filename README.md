@@ -33,11 +33,11 @@ make check
 sudo make install
 ```
 
-Then, `go get` as usual.
+Then, `go get -u` as usual.
 
 ```sh
-go get github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway
-go get github.com/golang/protobuf/protoc-gen-go
+go get -u github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway
+go get -u github.com/golang/protobuf/protoc-gen-go
 ```
  
 ## Usage
