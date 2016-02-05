@@ -8,6 +8,8 @@ and generates a reverse-proxy server which translates a RESTful JSON API into gR
 
 It helps you to provide your APIs in both gRPC and RESTful style at the same time.
 
+![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&amp;h=370)
+
 ## Background
 gRPC is great -- it generates API clients and server stubs in many programming languages,
 it is fast, easy-to-use, bandwidth-efficient and its design is combat-proven by Google.
