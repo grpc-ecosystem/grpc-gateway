@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -9,6 +10,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 )
 
 // HTTPStatusFromCode converts a gRPC error code into the corresponding HTTP response status.
@@ -62,9 +64,10 @@ var (
 	OtherErrorHandler = DefaultOtherErrorHandler
 )
 
-type errorBody struct {
-	Error string `json:"error"`
-	Code  int    `json:"code"`
+type ErrorBody struct {
+	Error   string      `json:"error"`
+	Code    int         `json:"code"`
+	Trailer metadata.MD `json:"trailer,omitempty"`
 }
 
 // DefaultHTTPError is the default implementation of HTTPError.
@@ -77,7 +80,19 @@ func DefaultHTTPError(ctx context.Context, w http.ResponseWriter, _ *http.Reques
 	const fallback = `{"error": "failed to marshal error message"}`
 
 	w.Header().Set("Content-Type", "application/json")
-	body := errorBody{Error: grpc.ErrorDesc(err), Code: int(grpc.Code(err))}
+	body := ErrorBody{
+		Error: grpc.ErrorDesc(err),
+		Code:  int(grpc.Code(err)),
+	}
+	if md, ok := ServerMetadataFromContext(ctx); ok {
+		for k, vs := range md.HeaderMD {
+			hKey := fmt.Sprintf("%s%s", metadataHeaderPrefix, k)
+			for i := range vs {
+				w.Header().Add(hKey, vs[i])
+			}
+		}
+		body.Trailer = md.TrailerMD
+	}
 	buf, merr := json.Marshal(body)
 	if merr != nil {
 		glog.Errorf("Failed to marshal error message %q: %v", body, merr)

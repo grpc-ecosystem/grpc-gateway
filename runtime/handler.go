@@ -80,6 +80,20 @@ func ForwardResponseStream(ctx context.Context, w http.ResponseWriter, req *http
 
 // ForwardResponseMessage forwards the message "resp" from gRPC server to REST client.
 func ForwardResponseMessage(ctx context.Context, w http.ResponseWriter, req *http.Request, resp proto.Message, opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
+	md, ok := ServerMetadataFromContext(ctx)
+	if !ok {
+		glog.Errorf("Failed to extract ServerMetadata from context")
+	}
+
+	if md != nil {
+		for k, vs := range md.HeaderMD {
+			hKey := fmt.Sprintf("%s%s", metadataHeaderPrefix, k)
+			for i := range vs {
+				w.Header().Add(hKey, vs[i])
+			}
+		}
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {
 		HTTPError(ctx, w, req, err)

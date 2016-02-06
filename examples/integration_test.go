@@ -19,6 +19,7 @@ import (
 	sub "github.com/gengo/grpc-gateway/examples/sub"
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/protobuf/proto"
+	"google.golang.org/grpc/codes"
 )
 
 type aBitOfEverything struct {
@@ -44,11 +45,6 @@ func TestIntegration(t *testing.T) {
 			runtime.WithForwardResponseOption(
 				func(ctx context.Context, w http.ResponseWriter, _ proto.Message) error {
 					if md, ok := runtime.ServerMetadataFromContext(ctx); ok {
-						for k, vs := range md.HeaderMD {
-							for i := range vs {
-								w.Header().Add(fmt.Sprintf("Grpc-Header-%s", k), vs[i])
-							}
-						}
 						for k, vs := range md.TrailerMD {
 							for i := range vs {
 								w.Header().Add(fmt.Sprintf("Grpc-Trailer-%s", k), vs[i])
@@ -71,6 +67,7 @@ func TestIntegration(t *testing.T) {
 	testABECreateBody(t)
 	testABEBulkCreate(t)
 	testABELookup(t)
+	testABELookupNotFound(t)
 	testABEList(t)
 	testABEListError(t)
 	testAdditionalBindings(t)
@@ -161,11 +158,11 @@ func testEchoBody(t *testing.T) {
 		t.Errorf("msg.Id = %q; want %q", got, want)
 	}
 
-	if value := resp.Header.Get("Grpc-Header-foo"); value != "foo1" {
+	if value := resp.Header.Get("Grpc-Metadata-foo"); value != "foo1" {
 		t.Errorf("Grpc-Header-foo was %s, wanted %s", value, "foo1")
 	}
 
-	if value := resp.Header.Get("Grpc-Header-bar"); value != "bar1" {
+	if value := resp.Header.Get("Grpc-Metadata-bar"); value != "bar1" {
 		t.Errorf("Grpc-Header-bar was %s, wanted %s", value, "bar1")
 	}
 
@@ -426,6 +423,63 @@ func testABELookup(t *testing.T) {
 	}
 	if got := msg; !reflect.DeepEqual(got, want) {
 		t.Errorf("msg= %v; want %v", &got, &want)
+	}
+
+	if got, want := resp.Header.Get("Grpc-Metadata-uuid"), want.Uuid; got != want {
+		t.Errorf("Grpc-Metadata-foo was %s, wanted %s", got, want)
+	}
+}
+
+func testABELookupNotFound(t *testing.T) {
+	url := "http://localhost:8080/v1/example/a_bit_of_everything"
+	uuid := "not_exist"
+	url = fmt.Sprintf("%s/%s", url, uuid)
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusNotFound; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+		return
+	}
+
+	var msg runtime.ErrorBody
+	if err := json.Unmarshal(buf, &msg); err != nil {
+		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+		return
+	}
+
+	if got, want := msg.Code, int(codes.NotFound); got != want {
+		t.Errorf("msg.Code = %d; want %d", got, want)
+		return
+	}
+
+	if got, want := resp.Header.Get("Grpc-Metadata-uuid"), uuid; got != want {
+		t.Errorf("Grpc-Metadata-foo was %s, wanted %s", got, want)
+	}
+
+	md := msg.Trailer
+	if md.Len() == 0 {
+		t.Errorf("no trailer is set")
+		return
+	}
+
+	if got, want := md["foo"], []string{"foo2"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("msg.Trailer[%q] = %v; want %v", "foo", got, want)
+	}
+
+	if got, want := md["bar"], []string{"bar2"}; !reflect.DeepEqual(got, want) {
+		t.Errorf("msg.Trailer[%q] = %v; want %v", "bar", got, want)
 	}
 }
 

@@ -83,11 +83,20 @@ func (s *_ABitOfEverythingServer) BulkCreate(stream examples.ABitOfEverythingSer
 func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *examples.IdMessage) (*examples.ABitOfEverything, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
-
 	glog.Info(msg)
+
+	grpc.SendHeader(ctx, metadata.New(map[string]string{
+		"uuid": msg.Uuid,
+	}))
+
 	if a, ok := s.v[msg.Uuid]; ok {
 		return a, nil
 	}
+
+	grpc.SetTrailer(ctx, metadata.New(map[string]string{
+		"foo": "foo2",
+		"bar": "bar2",
+	}))
 	return nil, grpc.Errorf(codes.NotFound, "not found")
 }
 
