@@ -39,6 +39,7 @@ Then, `go get -u` as usual.
 
 ```sh
 go get -u github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway
+go get -u github.com/gengo/grpc-gateway/protoc-gen-swagger
 go get -u github.com/golang/protobuf/protoc-gen-go
 ```
  
