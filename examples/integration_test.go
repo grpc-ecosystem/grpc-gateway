@@ -21,6 +21,11 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
+type aBitOfEverything struct {
+	Result gw.ABitOfEverything          `json:"result,omitempty"`
+	Error  *runtime.ResponseStreamError `json:"error,omitempty"`
+}
+
 func TestIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip()
@@ -67,6 +72,7 @@ func TestIntegration(t *testing.T) {
 	testABEBulkCreate(t)
 	testABELookup(t)
 	testABEList(t)
+	testABEListError(t)
 	testAdditionalBindings(t)
 
 	go func() {
@@ -435,7 +441,7 @@ func testABEList(t *testing.T) {
 	dec := json.NewDecoder(resp.Body)
 	var i int
 	for i = 0; ; i++ {
-		var msg gw.ABitOfEverything
+		var msg aBitOfEverything
 		err := dec.Decode(&msg)
 		if err == io.EOF {
 			break
@@ -446,6 +452,64 @@ func testABEList(t *testing.T) {
 	}
 	if i <= 0 {
 		t.Errorf("i == %d; want > 0", i)
+	}
+}
+
+func testABEListError(t *testing.T) {
+	url := "http://localhost:8080/v1/example/a_bit_of_everything"
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		t.Errorf("http.NewReuest(%q) failed with %v; want success", url, err)
+		return
+	}
+	req.Header.Set("Grpc-Metadata-error", "foo")
+
+	client := new(http.Client)
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("client.Do failed with %v; want success", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	dec := json.NewDecoder(resp.Body)
+	var i int
+	var lastMsg aBitOfEverything
+	for i = 0; ; i++ {
+		var msg aBitOfEverything
+		err := dec.Decode(&msg)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			t.Errorf("dec.Decode(&msg) failed with %v; want success; i = %d", err, i)
+		}
+		lastMsg = msg
+	}
+	if i <= 0 {
+		t.Errorf("i == %d; want > 0", i)
+	}
+
+	if got, want := lastMsg.Error.HTTPCode, http.StatusBadRequest; got != want {
+		t.Errorf("lastMsg.Error.HTTPCode = %d; want %d", got, want)
+		return
+	}
+
+	md := lastMsg.Error.Trailer
+	v, ok := md["foo"]
+	if !ok || len(v) == 0 {
+		t.Errorf("Trailer doesn't contain %q", "foo")
+	}
+	if !ok && v[0] != "foo1" {
+		t.Errorf("Trailer %q = %q; want %q", "foo", v[0], "foo2")
+	}
+
+	v, ok = md["bar"]
+	if !ok || len(v) == 0 {
+		t.Errorf("Trailer doesn't contain %q", "bar")
+	}
+	if !ok && v[0] != "bar1" {
+		t.Errorf("Trailer %q = %q; want %q", "bar", v[0], "bar2")
 	}
 }
 

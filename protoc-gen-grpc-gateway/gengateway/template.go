@@ -161,7 +161,6 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 		glog.Errorf("Failed to terminate client stream: %v", err)
 		return nil, metadata, err
 	}
-	metadata.TrailerMD = stream.Trailer()
 	return stream, metadata, nil
 {{else}}
 	msg, err := stream.CloseAndRecv()
@@ -214,7 +213,6 @@ var (
 {{end}}
 {{if .Method.GetServerStreaming}}
 	stream, err := client.{{.Method.GetName}}(ctx, &protoReq)
-	metadata.TrailerMD = stream.Trailer()
 	return stream, metadata, err
 {{else}}
 	msg, err := client.{{.Method.GetName}}(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -271,7 +269,7 @@ func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 		{{if $m.GetServerStreaming}}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, w, req, resp, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 		{{else}}
 		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 		{{end}}

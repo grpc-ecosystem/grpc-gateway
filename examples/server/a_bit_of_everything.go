@@ -99,6 +99,17 @@ func (s *_ABitOfEverythingServer) List(_ *examples.EmptyMessage, stream examples
 			return err
 		}
 	}
+
+	// return error when metadata includes error header
+	if header, ok := metadata.FromContext(stream.Context()); ok {
+		if v, ok := header["error"]; ok {
+			stream.SetTrailer(metadata.New(map[string]string{
+				"foo": "foo2",
+				"bar": "bar2",
+			}))
+			return grpc.Errorf(codes.InvalidArgument, "error metadata: %v", v)
+		}
+	}
 	return nil
 }
 

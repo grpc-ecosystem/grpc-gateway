@@ -10,26 +10,35 @@ import (
 	"github.com/golang/protobuf/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 type responseStreamChunk struct {
-	Result proto.Message       `json:"result,omitempty"`
-	Error  *responseStreamError `json:"error,omitempty"`
+	Result proto.Message        `json:"result,omitempty"`
+	Error  *ResponseStreamError `json:"error,omitempty"`
 }
 
-type responseStreamError struct {
-	GrpcCode   int    `json:"grpc_code, omitempty"`
-	HTTPCode   int    `json:"http_code, omitempty"`
-	Message    string `json:"message, omitempty"`
-	HTTPStatus string `json:"http_status, omitempty"`
+type ResponseStreamError struct {
+	GrpcCode   int         `json:"grpc_code, omitempty"`
+	HTTPCode   int         `json:"http_code, omitempty"`
+	Message    string      `json:"message, omitempty"`
+	HTTPStatus string      `json:"http_status, omitempty"`
+	Trailer    metadata.MD `json:"trailer, omitempty"`
 }
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
-func ForwardResponseStream(ctx context.Context, w http.ResponseWriter, req *http.Request, recv func() (proto.Message, error), opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
+func ForwardResponseStream(ctx context.Context, w http.ResponseWriter, req *http.Request, stream grpc.ClientStream, recv func() (proto.Message, error), opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
 	f, ok := w.(http.Flusher)
 	if !ok {
 		glog.Errorf("Flush not supported in %T", w)
 		http.Error(w, "unexpected type of web server", http.StatusInternalServerError)
+		return
+	}
+
+	md, ok := ServerMetadataFromContext(ctx)
+	if !ok {
+		glog.Errorf("Failed to extract ServerMetadata from context")
+		http.Error(w, "unexpected error", http.StatusInternalServerError)
 		return
 	}
 
@@ -47,11 +56,13 @@ func ForwardResponseStream(ctx context.Context, w http.ResponseWriter, req *http
 			return
 		}
 		if err != nil {
-			handleForwardResponseStreamError(w, err)
+			md.TrailerMD = stream.Trailer()
+			handleForwardResponseStreamError(ctx, w, err)
 			return
 		}
 		if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {
-			handleForwardResponseStreamError(w, err)
+			md.TrailerMD = stream.Trailer()
+			handleForwardResponseStreamError(ctx, w, err)
 			return
 		}
 		buf, err := json.Marshal(responseStreamChunk{Result: resp})
@@ -100,13 +111,23 @@ func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, re
 	return nil
 }
 
-func handleForwardResponseStreamError(w http.ResponseWriter, err error) {
+func handleForwardResponseStreamError(ctx context.Context, w http.ResponseWriter, err error) {
+	md, ok := ServerMetadataFromContext(ctx)
+	if !ok {
+		glog.Errorf("Failed to extract ServerMetadata from context")
+		return
+	}
+
 	grpcCode := grpc.Code(err)
 	httpCode := HTTPStatusFromCode(grpcCode)
-	resp := responseStreamChunk{Error: &responseStreamError{GrpcCode: int(grpcCode),
-		HTTPCode:   httpCode,
-		Message:    err.Error(),
-		HTTPStatus: http.StatusText(httpCode)}}
+	resp := responseStreamChunk{
+		Error: &ResponseStreamError{
+			GrpcCode:   int(grpcCode),
+			HTTPCode:   httpCode,
+			Message:    err.Error(),
+			HTTPStatus: http.StatusText(httpCode),
+			Trailer:    md.TrailerMD,
+		}}
 	buf, merr := json.Marshal(resp)
 	if merr != nil {
 		glog.Errorf("Failed to marshal an error: %v", merr)
