@@ -23,7 +23,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/examplepbSimpleMessage"
+              "$ref": "#/definitions/SimpleMessage"
             }
           }
         },
@@ -49,7 +49,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/examplepbSimpleMessage"
+              "$ref": "#/definitions/SimpleMessage"
             }
           }
         },
@@ -59,7 +59,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/examplepbSimpleMessage"
+              "$ref": "#/definitions/SimpleMessage"
             }
           }
         ],
@@ -70,7 +70,7 @@
     }
   },
   "definitions": {
-    "examplepbSimpleMessage": {
+    "SimpleMessage": {
       "properties": {
         "id": {
           "type": "string",

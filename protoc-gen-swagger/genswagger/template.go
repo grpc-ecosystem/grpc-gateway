@@ -203,6 +203,7 @@ func fullyQualifiedNameToSwaggerName(fqmn string, reg *descriptor.Registry) stri
 // but may not always produce optimal names. This is a reasonably close
 // approximation of what they should look like in most cases.
 func resolveFullyQualifiedNameToSwaggerName(fqmn string, messages []string) string {
+	//log.Printf("Finding name for %s with messages: %v", fqmn, messages)
 	packagesByDepth := make(map[int][][]string)
 	uniqueNames := make(map[string]string)
 
@@ -216,7 +217,7 @@ func resolveFullyQualifiedNameToSwaggerName(fqmn string, messages []string) stri
 			if _, ok := packagesByDepth[depth]; !ok {
 				packagesByDepth[depth] = make([][]string, 0)
 			}
-			packagesByDepth[depth] = append(packagesByDepth[depth], h[len(h)-depth:])
+			packagesByDepth[depth] = append(packagesByDepth[depth], h[len(h)-depth-1:])
 		}
 	}
 
@@ -233,12 +234,12 @@ func resolveFullyQualifiedNameToSwaggerName(fqmn string, messages []string) stri
 	for _, p := range messages {
 		h := hierarchy(p)
 		for depth := 0; depth < len(h); depth++ {
-			if count(packagesByDepth[depth], h[len(h)-depth:]) == 1 {
+			if count(packagesByDepth[depth], h[len(h)-depth-1:]) == 1 {
 				uniqueNames[p] = strings.Join(h[len(h)-depth-1:], "")
 				break
 			}
 			if depth == len(h)-1 {
-				uniqueNames[p] = strings.Join(h, "")
+				uniqueNames[p] = strings.Join(h[1:len(h)-1], "")
 			}
 		}
 	}
