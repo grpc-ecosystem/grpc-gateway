@@ -23,7 +23,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/examplepbABitOfEverything"
+              "$ref": "#/definitions/ABitOfEverything"
             }
           }
         },
@@ -40,7 +40,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/examplepbEmptyMessage"
+              "$ref": "#/definitions/EmptyMessage"
             }
           }
         },
@@ -50,7 +50,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/examplepbABitOfEverything"
+              "$ref": "#/definitions/ABitOfEverything"
             }
           }
         ],
@@ -67,7 +67,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/subStringMessage"
+              "$ref": "#/definitions/StringMessage"
             }
           }
         },
@@ -77,7 +77,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/subStringMessage"
+              "$ref": "#/definitions/StringMessage"
             }
           }
         ],
@@ -94,7 +94,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/subStringMessage"
+              "$ref": "#/definitions/StringMessage"
             }
           }
         },
@@ -120,7 +120,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/examplepbABitOfEverything"
+              "$ref": "#/definitions/ABitOfEverything"
             }
           }
         },
@@ -237,7 +237,7 @@
           "default": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/examplepbEmptyMessage"
+              "$ref": "#/definitions/EmptyMessage"
             }
           }
         },
@@ -257,19 +257,7 @@
     }
   },
   "definitions": {
-    "ABitOfEverythingNested": {
-      "properties": {
-        "amount": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "name": {
-          "type": "string",
-          "format": "string"
-        }
-      }
-    },
-    "examplepbABitOfEverything": {
+    "ABitOfEverything": {
       "properties": {
         "bool_value": {
           "type": "boolean",
@@ -302,7 +290,7 @@
         "nested": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/ABitOfEverythingNested"
+            "$ref": "#/definitions/Nested"
           }
         },
         "repeated_string_value": {
@@ -346,8 +334,8 @@
         }
       }
     },
-    "examplepbEmptyMessage": {},
-    "examplepbIdMessage": {
+    "EmptyMessage": {},
+    "IdMessage": {
       "properties": {
         "uuid": {
           "type": "string",
@@ -355,7 +343,19 @@
         }
       }
     },
-    "subStringMessage": {
+    "Nested": {
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string",
+          "format": "string"
+        }
+      }
+    },
+    "StringMessage": {
       "properties": {
         "value": {
           "type": "string",
