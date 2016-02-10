@@ -16,6 +16,9 @@ type Registry struct {
 	// msgs is a mapping from fully-qualified message name to descriptor
 	msgs map[string]*Message
 
+	// enums is a mapping from fully-qualified enum name to descriptor
+	enums map[string]*Enum
+
 	// files is a mapping from file path to descriptor
 	files map[string]*File
 
@@ -33,6 +36,7 @@ type Registry struct {
 func NewRegistry() *Registry {
 	return &Registry{
 		msgs:       make(map[string]*Message),
+		enums:      make(map[string]*Enum),
 		files:      make(map[string]*File),
 		pkgMap:     make(map[string]string),
 		pkgAliases: make(map[string]string),
@@ -91,6 +95,7 @@ func (r *Registry) loadFile(file *descriptor.FileDescriptorProto) {
 
 	r.files[file.GetName()] = f
 	r.registerMsg(f, nil, file.GetMessageType())
+	r.registerEnum(f, nil, file.GetEnumType())
 }
 
 func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descriptor.DescriptorProto) {
@@ -114,6 +119,20 @@ func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descripto
 		outers = append(outers, outerPath...)
 		outers = append(outers, m.GetName())
 		r.registerMsg(file, outers, m.GetNestedType())
+		r.registerEnum(file, outers, m.GetEnumType())
+	}
+}
+
+func (r *Registry) registerEnum(file *File, outerPath []string, enums []*descriptor.EnumDescriptorProto) {
+	for _, ed := range enums {
+		e := &Enum{
+			File:                file,
+			Outers:              outerPath,
+			EnumDescriptorProto: ed,
+		}
+		file.Enums = append(file.Enums, e)
+		r.enums[e.FQEN()] = e
+		glog.V(1).Infof("register enum name: %s", e.FQEN())
 	}
 }
 
@@ -141,6 +160,32 @@ func (r *Registry) LookupMsg(location, name string) (*Message, error) {
 		components = components[:len(components)-1]
 	}
 	return nil, fmt.Errorf("no message found: %s", name)
+}
+
+// LookupEnum looks up a enum type by "name".
+// It tries to resolve "name" from "location" if "name" is a relative message name.
+func (r *Registry) LookupEnum(location, name string) (*Enum, error) {
+	glog.V(1).Infof("lookup enum %s from %s", name, location)
+	if strings.HasPrefix(name, ".") {
+		e, ok := r.enums[name]
+		if !ok {
+			return nil, fmt.Errorf("no enum found: %s", name)
+		}
+		return e, nil
+	}
+
+	if !strings.HasPrefix(location, ".") {
+		location = fmt.Sprintf(".%s", location)
+	}
+	components := strings.Split(location, ".")
+	for len(components) > 0 {
+		fqen := strings.Join(append(components, name), ".")
+		if e, ok := r.enums[fqen]; ok {
+			return e, nil
+		}
+		components = components[:len(components)-1]
+	}
+	return nil, fmt.Errorf("no enum found: %s", name)
 }
 
 // LookupFile looks up a file by name.
@@ -192,6 +237,15 @@ func (r *Registry) goPackagePath(f *descriptor.FileDescriptorProto) string {
 func (r *Registry) GetAllFQMNs() []string {
 	var keys []string
 	for k := range r.msgs {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+// GetAllFQENs returns a list of all FQENs
+func (r *Registry) GetAllFQENs() []string {
+	var keys []string
+	for k := range r.enums {
 		keys = append(keys, k)
 	}
 	return keys

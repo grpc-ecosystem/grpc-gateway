@@ -39,6 +39,8 @@ type File struct {
 	GoPkg GoPackage
 	// Messages is the list of messages defined in this file.
 	Messages []*Message
+	// Enums is the list of enums defined in this file.
+	Enums []*Enum
 	// Services is the list of services defined in this file.
 	Services []*Service
 }
@@ -86,6 +88,26 @@ func (m *Message) GoType(currentPackage string) string {
 		pkg = alias
 	}
 	return fmt.Sprintf("%s.%s", pkg, name)
+}
+
+// Enum describes a protocol buffer enum types
+type Enum struct {
+	// File is the file where the enum is defined
+	File *File
+	// Outers is a list of outer messages if this enum is a nested type.
+	Outers []string
+	*descriptor.EnumDescriptorProto
+}
+
+// FQEN returns a fully qualified enum name of this enum.
+func (e *Enum) FQEN() string {
+	components := []string{""}
+	if e.File.Package != nil {
+		components = append(components, e.File.GetPackage())
+	}
+	components = append(components, e.Outers...)
+	components = append(components, e.GetName())
+	return strings.Join(components, ".")
 }
 
 // Service wraps descriptor.ServiceDescriptorProto for richer features.
