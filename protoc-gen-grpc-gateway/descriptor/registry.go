@@ -43,7 +43,7 @@ func NewRegistry() *Registry {
 	}
 }
 
-// Load loads definitions of services, methods, messages and fields from "req".
+// Load loads definitions of services, methods, messages, enumerations and fields from "req".
 func (r *Registry) Load(req *plugin.CodeGeneratorRequest) error {
 	for _, file := range req.GetProtoFile() {
 		r.loadFile(file)
@@ -71,7 +71,7 @@ func (r *Registry) Load(req *plugin.CodeGeneratorRequest) error {
 	return nil
 }
 
-// loadFile loads messages and fiels from "file".
+// loadFile loads messages, enumerations and fields from "file".
 // It does not loads services and methods in "file".  You need to call
 // loadServices after loadFiles is called for all files to load services and methods.
 func (r *Registry) loadFile(file *descriptor.FileDescriptorProto) {
@@ -163,7 +163,7 @@ func (r *Registry) LookupMsg(location, name string) (*Message, error) {
 }
 
 // LookupEnum looks up a enum type by "name".
-// It tries to resolve "name" from "location" if "name" is a relative message name.
+// It tries to resolve "name" from "location" if "name" is a relative enum name.
 func (r *Registry) LookupEnum(location, name string) (*Enum, error) {
 	glog.V(1).Infof("lookup enum %s from %s", name, location)
 	if strings.HasPrefix(name, ".") {
