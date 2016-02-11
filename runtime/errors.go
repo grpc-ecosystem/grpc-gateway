@@ -2,7 +2,6 @@ package runtime
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 
@@ -79,19 +78,11 @@ type ErrorBody struct {
 func DefaultHTTPError(ctx context.Context, w http.ResponseWriter, _ *http.Request, err error) {
 	const fallback = `{"error": "failed to marshal error message"}`
 
+	w.Header().Del("Trailer")
 	w.Header().Set("Content-Type", "application/json")
 	body := ErrorBody{
 		Error: grpc.ErrorDesc(err),
 		Code:  int(grpc.Code(err)),
-	}
-	if md, ok := ServerMetadataFromContext(ctx); ok {
-		for k, vs := range md.HeaderMD {
-			hKey := fmt.Sprintf("%s%s", metadataHeaderPrefix, k)
-			for i := range vs {
-				w.Header().Add(hKey, vs[i])
-			}
-		}
-		body.Trailer = md.TrailerMD
 	}
 	buf, merr := json.Marshal(body)
 	if merr != nil {
@@ -103,11 +94,19 @@ func DefaultHTTPError(ctx context.Context, w http.ResponseWriter, _ *http.Reques
 		return
 	}
 
+	md, ok := ServerMetadataFromContext(ctx)
+	if !ok {
+		glog.Errorf("Failed to extract ServerMetadata from context")
+	}
+
+	handleForwardResponseServerMetadata(w, md)
 	st := HTTPStatusFromCode(grpc.Code(err))
 	w.WriteHeader(st)
 	if _, err := w.Write(buf); err != nil {
 		glog.Errorf("Failed to write response: %v", err)
 	}
+
+	handleForwardResponseTrailer(w, md)
 }
 
 func DefaultOtherErrorHandler(w http.ResponseWriter, _ *http.Request, error string, code int) {

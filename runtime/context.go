@@ -9,6 +9,7 @@ import (
 )
 
 const metadataHeaderPrefix = "Grpc-Metadata-"
+const metadataTrailerPrefix = "Grpc-Trailer-"
 
 /*
 AnnotateContext adds context information such as metadata from the request.
