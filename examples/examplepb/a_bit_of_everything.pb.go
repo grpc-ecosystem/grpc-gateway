@@ -67,23 +67,23 @@ func (ABitOfEverything_Nested_DeepEnum) EnumDescriptor() ([]byte, []int) {
 type ABitOfEverything struct {
 	Uuid         string                     `protobuf:"bytes,1,opt,name=uuid" json:"uuid,omitempty"`
 	Nested       []*ABitOfEverything_Nested `protobuf:"bytes,2,rep,name=nested" json:"nested,omitempty"`
-	FloatValue   float32                    `protobuf:"fixed32,3,opt,name=float_value" json:"float_value,omitempty"`
-	DoubleValue  float64                    `protobuf:"fixed64,4,opt,name=double_value" json:"double_value,omitempty"`
-	Int64Value   int64                      `protobuf:"varint,5,opt,name=int64_value" json:"int64_value,omitempty"`
-	Uint64Value  uint64                     `protobuf:"varint,6,opt,name=uint64_value" json:"uint64_value,omitempty"`
-	Int32Value   int32                      `protobuf:"varint,7,opt,name=int32_value" json:"int32_value,omitempty"`
-	Fixed64Value uint64                     `protobuf:"fixed64,8,opt,name=fixed64_value" json:"fixed64_value,omitempty"`
-	Fixed32Value uint32                     `protobuf:"fixed32,9,opt,name=fixed32_value" json:"fixed32_value,omitempty"`
-	BoolValue    bool                       `protobuf:"varint,10,opt,name=bool_value" json:"bool_value,omitempty"`
-	StringValue  string                     `protobuf:"bytes,11,opt,name=string_value" json:"string_value,omitempty"`
+	FloatValue   float32                    `protobuf:"fixed32,3,opt,name=float_value,json=floatValue" json:"float_value,omitempty"`
+	DoubleValue  float64                    `protobuf:"fixed64,4,opt,name=double_value,json=doubleValue" json:"double_value,omitempty"`
+	Int64Value   int64                      `protobuf:"varint,5,opt,name=int64_value,json=int64Value" json:"int64_value,omitempty"`
+	Uint64Value  uint64                     `protobuf:"varint,6,opt,name=uint64_value,json=uint64Value" json:"uint64_value,omitempty"`
+	Int32Value   int32                      `protobuf:"varint,7,opt,name=int32_value,json=int32Value" json:"int32_value,omitempty"`
+	Fixed64Value uint64                     `protobuf:"fixed64,8,opt,name=fixed64_value,json=fixed64Value" json:"fixed64_value,omitempty"`
+	Fixed32Value uint32                     `protobuf:"fixed32,9,opt,name=fixed32_value,json=fixed32Value" json:"fixed32_value,omitempty"`
+	BoolValue    bool                       `protobuf:"varint,10,opt,name=bool_value,json=boolValue" json:"bool_value,omitempty"`
+	StringValue  string                     `protobuf:"bytes,11,opt,name=string_value,json=stringValue" json:"string_value,omitempty"`
 	// TODO(yugui) add bytes_value
-	Uint32Value         uint32      `protobuf:"varint,13,opt,name=uint32_value" json:"uint32_value,omitempty"`
-	EnumValue           NumericEnum `protobuf:"varint,14,opt,name=enum_value,enum=gengo.grpc.gateway.examples.examplepb.NumericEnum" json:"enum_value,omitempty"`
-	Sfixed32Value       int32       `protobuf:"fixed32,15,opt,name=sfixed32_value" json:"sfixed32_value,omitempty"`
-	Sfixed64Value       int64       `protobuf:"fixed64,16,opt,name=sfixed64_value" json:"sfixed64_value,omitempty"`
-	Sint32Value         int32       `protobuf:"zigzag32,17,opt,name=sint32_value" json:"sint32_value,omitempty"`
-	Sint64Value         int64       `protobuf:"zigzag64,18,opt,name=sint64_value" json:"sint64_value,omitempty"`
-	RepeatedStringValue []string    `protobuf:"bytes,19,rep,name=repeated_string_value" json:"repeated_string_value,omitempty"`
+	Uint32Value         uint32      `protobuf:"varint,13,opt,name=uint32_value,json=uint32Value" json:"uint32_value,omitempty"`
+	EnumValue           NumericEnum `protobuf:"varint,14,opt,name=enum_value,json=enumValue,enum=gengo.grpc.gateway.examples.examplepb.NumericEnum" json:"enum_value,omitempty"`
+	Sfixed32Value       int32       `protobuf:"fixed32,15,opt,name=sfixed32_value,json=sfixed32Value" json:"sfixed32_value,omitempty"`
+	Sfixed64Value       int64       `protobuf:"fixed64,16,opt,name=sfixed64_value,json=sfixed64Value" json:"sfixed64_value,omitempty"`
+	Sint32Value         int32       `protobuf:"zigzag32,17,opt,name=sint32_value,json=sint32Value" json:"sint32_value,omitempty"`
+	Sint64Value         int64       `protobuf:"zigzag64,18,opt,name=sint64_value,json=sint64Value" json:"sint64_value,omitempty"`
+	RepeatedStringValue []string    `protobuf:"bytes,19,rep,name=repeated_string_value,json=repeatedStringValue" json:"repeated_string_value,omitempty"`
 }
 
 func (m *ABitOfEverything) Reset()                    { *m = ABitOfEverything{} }

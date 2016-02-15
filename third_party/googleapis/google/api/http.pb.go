@@ -93,7 +93,7 @@ type HttpRule struct {
 	Body string `protobuf:"bytes,7,opt,name=body" json:"body,omitempty"`
 	// Additional HTTP bindings for the selector. Nested bindings must not
 	// specify a selector and must not contain additional bindings.
-	AdditionalBindings []*HttpRule `protobuf:"bytes,11,rep,name=additional_bindings" json:"additional_bindings,omitempty"`
+	AdditionalBindings []*HttpRule `protobuf:"bytes,11,rep,name=additional_bindings,json=additionalBindings" json:"additional_bindings,omitempty"`
 }
 
 func (m *HttpRule) Reset()                    { *m = HttpRule{} }
