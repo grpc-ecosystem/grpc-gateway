@@ -266,8 +266,19 @@
         "name": {
           "type": "string",
           "format": "string"
+        },
+        "ok": {
+          "$ref": "#/definitions/NestedDeepEnum"
         }
       }
+    },
+    "NestedDeepEnum": {
+      "type": "string",
+      "enum": [
+        "FALSE",
+        "TRUE"
+      ],
+      "default": "FALSE"
     },
     "examplepbABitOfEverything": {
       "properties": {
@@ -278,6 +289,9 @@
         "double_value": {
           "type": "number",
           "format": "double"
+        },
+        "enum_value": {
+          "$ref": "#/definitions/examplepbNumericEnum"
         },
         "fixed32_value": {
           "type": "integer",
@@ -354,6 +368,14 @@
           "format": "string"
         }
       }
+    },
+    "examplepbNumericEnum": {
+      "type": "string",
+      "enum": [
+        "ZERO",
+        "ONE"
+      ],
+      "default": "ZERO"
     },
     "subStringMessage": {
       "properties": {
