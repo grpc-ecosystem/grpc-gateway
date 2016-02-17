@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -22,11 +23,6 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
-type aBitOfEverything struct {
-	Result gw.ABitOfEverything          `json:"result,omitempty"`
-	Error  *runtime.ResponseStreamError `json:"error,omitempty"`
-}
-
 func TestIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip()
@@ -40,21 +36,7 @@ func TestIntegration(t *testing.T) {
 		}
 	}()
 	go func() {
-		if err := Run(
-			":8080",
-			runtime.WithForwardResponseOption(
-				func(ctx context.Context, w http.ResponseWriter, _ proto.Message) error {
-					if md, ok := runtime.ServerMetadataFromContext(ctx); ok {
-						for k, vs := range md.TrailerMD {
-							for i := range vs {
-								w.Header().Add(fmt.Sprintf("Grpc-Trailer-%s", k), vs[i])
-							}
-						}
-					}
-					return nil
-				},
-			),
-		); err != nil {
+		if err := Run(":8080"); err != nil {
 			t.Errorf("gw.Run() failed with %v; want success", err)
 			return
 		}
@@ -69,7 +51,6 @@ func TestIntegration(t *testing.T) {
 	testABELookup(t)
 	testABELookupNotFound(t)
 	testABEList(t)
-	testABEListError(t)
 	testAdditionalBindings(t)
 
 	go func() {
@@ -158,20 +139,18 @@ func testEchoBody(t *testing.T) {
 		t.Errorf("msg.Id = %q; want %q", got, want)
 	}
 
-	if value := resp.Header.Get("Grpc-Metadata-foo"); value != "foo1" {
-		t.Errorf("Grpc-Header-foo was %s, wanted %s", value, "foo1")
+	if got, want := resp.Header.Get("Grpc-Metadata-Foo"), "foo1"; got != want {
+		t.Errorf("Grpc-Header-Foo was %q, wanted %q", got, want)
+	}
+	if got, want := resp.Header.Get("Grpc-Metadata-Bar"), "bar1"; got != want {
+		t.Errorf("Grpc-Header-Bar was %q, wanted %q", got, want)
 	}
 
-	if value := resp.Header.Get("Grpc-Metadata-bar"); value != "bar1" {
-		t.Errorf("Grpc-Header-bar was %s, wanted %s", value, "bar1")
+	if got, want := resp.Trailer.Get("Grpc-Trailer-Foo"), "foo2"; got != want {
+		t.Errorf("Grpc-Trailer-Foo was %q, wanted %q", got, want)
 	}
-
-	if value := resp.Header.Get("Grpc-Trailer-foo"); value != "foo2" {
-		t.Errorf("Grpc-Trailer-foo was %s, wanted %s", value, "foo2")
-	}
-
-	if value := resp.Header.Get("Grpc-Trailer-bar"); value != "bar2" {
-		t.Errorf("Grpc-Trailer-bar was %s, wanted %s", value, "bar2")
+	if got, want := resp.Trailer.Get("Grpc-Trailer-Bar"), "bar2"; got != want {
+		t.Errorf("Grpc-Trailer-Bar was %q, wanted %q", got, want)
 	}
 }
 
@@ -291,6 +270,7 @@ func testABECreateBody(t *testing.T) {
 }
 
 func testABEBulkCreate(t *testing.T) {
+	count := 0
 	r, w := io.Pipe()
 	go func(w io.WriteCloser) {
 		defer func() {
@@ -340,6 +320,7 @@ func testABEBulkCreate(t *testing.T) {
 				t.Errorf("w.Write(%s) failed with %v; want success", buf, err)
 				return
 			}
+			count++
 		}
 	}(w)
 	url := "http://localhost:8080/v1/example/a_bit_of_everything/bulk"
@@ -366,12 +347,15 @@ func testABEBulkCreate(t *testing.T) {
 		return
 	}
 
-	if value := resp.Header.Get("Grpc-Trailer-foo"); value != "foo2" {
-		t.Errorf("Grpc-Trailer-foo was %q, wanted %q", value, "foo2")
+	if got, want := resp.Header.Get("Grpc-Metadata-Count"), fmt.Sprintf("%d", count); got != want {
+		t.Errorf("Grpc-Header-Count was %q, wanted %q", got, want)
 	}
 
-	if value := resp.Header.Get("Grpc-Trailer-bar"); value != "bar2" {
-		t.Errorf("Grpc-Trailer-bar was %q, wanted %q", value, "bar2")
+	if got, want := resp.Trailer.Get("Grpc-Trailer-Foo"), "foo2"; got != want {
+		t.Errorf("Grpc-Trailer-Foo was %q, wanted %q", got, want)
+	}
+	if got, want := resp.Trailer.Get("Grpc-Trailer-Bar"), "bar2"; got != want {
+		t.Errorf("Grpc-Trailer-Bar was %q, wanted %q", got, want)
 	}
 }
 
@@ -425,8 +409,8 @@ func testABELookup(t *testing.T) {
 		t.Errorf("msg= %v; want %v", &got, &want)
 	}
 
-	if got, want := resp.Header.Get("Grpc-Metadata-uuid"), want.Uuid; got != want {
-		t.Errorf("Grpc-Metadata-foo was %s, wanted %s", got, want)
+	if got, want := resp.Header.Get("Grpc-Metadata-Uuid"), want.Uuid; got != want {
+		t.Errorf("Grpc-Metadata-Uuid was %s, wanted %s", got, want)
 	}
 }
 
@@ -464,22 +448,8 @@ func testABELookupNotFound(t *testing.T) {
 		return
 	}
 
-	if got, want := resp.Header.Get("Grpc-Metadata-uuid"), uuid; got != want {
-		t.Errorf("Grpc-Metadata-foo was %s, wanted %s", got, want)
-	}
-
-	md := msg.Trailer
-	if md.Len() == 0 {
-		t.Errorf("no trailer is set")
-		return
-	}
-
-	if got, want := md["foo"], []string{"foo2"}; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg.Trailer[%q] = %v; want %v", "foo", got, want)
-	}
-
-	if got, want := md["bar"], []string{"bar2"}; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg.Trailer[%q] = %v; want %v", "bar", got, want)
+	if got, want := resp.Header.Get("Grpc-Metadata-Uuid"), uuid; got != want {
+		t.Errorf("Grpc-Metadata-Uuid was %s, wanted %s", got, want)
 	}
 }
 
@@ -495,7 +465,7 @@ func testABEList(t *testing.T) {
 	dec := json.NewDecoder(resp.Body)
 	var i int
 	for i = 0; ; i++ {
-		var msg aBitOfEverything
+		var msg gw.ABitOfEverything
 		err := dec.Decode(&msg)
 		if err == io.EOF {
 			break
@@ -507,63 +477,19 @@ func testABEList(t *testing.T) {
 	if i <= 0 {
 		t.Errorf("i == %d; want > 0", i)
 	}
-}
 
-func testABEListError(t *testing.T) {
-	url := "http://localhost:8080/v1/example/a_bit_of_everything"
-	req, err := http.NewRequest("GET", url, nil)
+	value := resp.Header.Get("Grpc-Metadata-Count")
+	if value == "" {
+		t.Errorf("Grpc-Header-Count should not be empty")
+	}
+
+	count, err := strconv.Atoi(value)
 	if err != nil {
-		t.Errorf("http.NewReuest(%q) failed with %v; want success", url, err)
-		return
-	}
-	req.Header.Set("Grpc-Metadata-error", "foo")
-
-	client := new(http.Client)
-	resp, err := client.Do(req)
-	if err != nil {
-		t.Errorf("client.Do failed with %v; want success", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	dec := json.NewDecoder(resp.Body)
-	var i int
-	var lastMsg aBitOfEverything
-	for i = 0; ; i++ {
-		var msg aBitOfEverything
-		err := dec.Decode(&msg)
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			t.Errorf("dec.Decode(&msg) failed with %v; want success; i = %d", err, i)
-		}
-		lastMsg = msg
-	}
-	if i <= 0 {
-		t.Errorf("i == %d; want > 0", i)
+		t.Errorf("failed to Atoi %q: %v", value, err)
 	}
 
-	if got, want := lastMsg.Error.HTTPCode, http.StatusBadRequest; got != want {
-		t.Errorf("lastMsg.Error.HTTPCode = %d; want %d", got, want)
-		return
-	}
-
-	md := lastMsg.Error.Trailer
-	v, ok := md["foo"]
-	if !ok || len(v) == 0 {
-		t.Errorf("Trailer doesn't contain %q", "foo")
-	}
-	if !ok && v[0] != "foo1" {
-		t.Errorf("Trailer %q = %q; want %q", "foo", v[0], "foo2")
-	}
-
-	v, ok = md["bar"]
-	if !ok || len(v) == 0 {
-		t.Errorf("Trailer doesn't contain %q", "bar")
-	}
-	if !ok && v[0] != "bar1" {
-		t.Errorf("Trailer %q = %q; want %q", "bar", v[0], "bar2")
+	if count <= 0 {
+		t.Errorf("count == %d; want > 0", count)
 	}
 }
 
@@ -615,7 +541,7 @@ func testAdditionalBindings(t *testing.T) {
 
 		var msg sub.StringMessage
 		if err := json.Unmarshal(buf, &msg); err != nil {
-			t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success; %i", buf, err, i)
+			t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success; %d", buf, err, i)
 			return
 		}
 		if got, want := msg.GetValue(), "hello"; got != want {

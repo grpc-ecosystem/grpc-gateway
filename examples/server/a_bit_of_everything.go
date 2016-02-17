@@ -53,7 +53,7 @@ func (s *_ABitOfEverythingServer) CreateBody(ctx context.Context, msg *examples.
 }
 
 func (s *_ABitOfEverythingServer) BulkCreate(stream examples.ABitOfEverythingService_BulkCreateServer) error {
-
+	count := 0
 	ctx := stream.Context()
 	for {
 		msg, err := stream.Recv()
@@ -63,16 +63,20 @@ func (s *_ABitOfEverythingServer) BulkCreate(stream examples.ABitOfEverythingSer
 		if err != nil {
 			return err
 		}
+		count++
 		glog.Error(msg)
 		if _, err = s.Create(ctx, msg); err != nil {
 			return err
 		}
 	}
 
-	stream.SendHeader(metadata.New(map[string]string{
-		"foo": "foo1",
-		"bar": "bar1",
+	err := stream.SendHeader(metadata.New(map[string]string{
+		"count": fmt.Sprintf("%d", count),
 	}))
+	if err != nil {
+		return nil
+	}
+
 	stream.SetTrailer(metadata.New(map[string]string{
 		"foo": "foo2",
 		"bar": "bar2",
@@ -85,9 +89,12 @@ func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *examples.IdMe
 	defer s.m.Unlock()
 	glog.Info(msg)
 
-	grpc.SendHeader(ctx, metadata.New(map[string]string{
+	err := grpc.SendHeader(ctx, metadata.New(map[string]string{
 		"uuid": msg.Uuid,
 	}))
+	if err != nil {
+		return nil, err
+	}
 
 	if a, ok := s.v[msg.Uuid]; ok {
 		return a, nil
@@ -103,6 +110,14 @@ func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *examples.IdMe
 func (s *_ABitOfEverythingServer) List(_ *examples.EmptyMessage, stream examples.ABitOfEverythingService_ListServer) error {
 	s.m.Lock()
 	defer s.m.Unlock()
+
+	err := stream.SendHeader(metadata.New(map[string]string{
+		"count": fmt.Sprintf("%d", len(s.v)),
+	}))
+	if err != nil {
+		return nil
+	}
+
 	for _, msg := range s.v {
 		if err := stream.Send(msg); err != nil {
 			return err
