@@ -156,11 +156,18 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 			return nil, metadata, err
 		}
 	}
-{{if .Method.GetServerStreaming}}
-	if err = stream.CloseSend(); err != nil {
+
+	if err := stream.CloseSend(); err != nil {
 		glog.Errorf("Failed to terminate client stream: %v", err)
 		return nil, metadata, err
 	}
+	header, err := stream.Header()
+	if err != nil {
+		glog.Errorf("Failed to get header from client: %v", err)
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+{{if .Method.GetServerStreaming}}
 	return stream, metadata, nil
 {{else}}
 	msg, err := stream.CloseAndRecv()
@@ -213,7 +220,15 @@ var (
 {{end}}
 {{if .Method.GetServerStreaming}}
 	stream, err := client.{{.Method.GetName}}(ctx, &protoReq)
-	return stream, metadata, err
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
 {{else}}
 	msg, err := client.{{.Method.GetName}}(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -269,7 +284,7 @@ func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux,
 			return
 		}
 		{{if $m.GetServerStreaming}}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, w, req, resp, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 		{{else}}
 		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
 		{{end}}
