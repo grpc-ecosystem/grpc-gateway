@@ -29,8 +29,9 @@ var _ = runtime.String
 var _ = json.Marshal
 var _ = utilities.NewDoubleArray
 
-func request_EchoService_Echo_0(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_EchoService_Echo_0(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SimpleMessage
+	var metadata runtime.ServerMetadata
 
 	var (
 		val string
@@ -41,26 +42,31 @@ func request_EchoService_Echo_0(ctx context.Context, client EchoServiceClient, r
 
 	val, ok = pathParams["id"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
 	}
 
 	protoReq.Id, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
-	return client.Echo(ctx, &protoReq)
+	msg, err := client.Echo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
-func request_EchoService_EchoBody_0(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_EchoService_EchoBody_0(ctx context.Context, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SimpleMessage
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.EchoBody(ctx, &protoReq)
+	msg, err := client.EchoBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
 // RegisterEchoServiceHandlerFromEndpoint is same as RegisterEchoServiceHandler but
@@ -102,7 +108,8 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 				cancel()
 			}()
 		}
-		resp, err := request_EchoService_Echo_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_EchoService_Echo_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -121,7 +128,8 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 				cancel()
 			}()
 		}
-		resp, err := request_EchoService_EchoBody_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_EchoService_EchoBody_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return

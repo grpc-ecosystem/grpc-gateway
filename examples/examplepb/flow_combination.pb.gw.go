@@ -29,23 +29,38 @@ var _ = runtime.String
 var _ = json.Marshal
 var _ = utilities.NewDoubleArray
 
-func request_FlowCombination_RpcEmptyRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_RpcEmptyRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq EmptyProto
+	var metadata runtime.ServerMetadata
 
-	return client.RpcEmptyRpc(ctx, &protoReq)
+	msg, err := client.RpcEmptyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
-func request_FlowCombination_RpcEmptyStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcEmptyStreamClient, error) {
+func request_FlowCombination_RpcEmptyStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcEmptyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq EmptyProto
+	var metadata runtime.ServerMetadata
 
-	return client.RpcEmptyStream(ctx, &protoReq)
+	stream, err := client.RpcEmptyStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
-func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var metadata runtime.ServerMetadata
 	stream, err := client.StreamEmptyRpc(ctx)
 	if err != nil {
 		glog.Errorf("Failed to start streaming: %v", err)
-		return nil, err
+		return nil, metadata, err
 	}
 	dec := json.NewDecoder(req.Body)
 	for {
@@ -56,23 +71,37 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, client FlowCo
 		}
 		if err != nil {
 			glog.Errorf("Failed to decode request: %v", err)
-			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+			return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
 			glog.Errorf("Failed to send request: %v", err)
-			return nil, err
+			return nil, metadata, err
 		}
 	}
 
-	return stream.CloseAndRecv()
+	if err := stream.CloseSend(); err != nil {
+		glog.Errorf("Failed to terminate client stream: %v", err)
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		glog.Errorf("Failed to get header from client: %v", err)
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+
+	msg, err := stream.CloseAndRecv()
+	metadata.TrailerMD = stream.Trailer()
+	return msg, metadata, err
 
 }
 
-func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_StreamEmptyStreamClient, error) {
+func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_StreamEmptyStreamClient, runtime.ServerMetadata, error) {
+	var metadata runtime.ServerMetadata
 	stream, err := client.StreamEmptyStream(ctx)
 	if err != nil {
 		glog.Errorf("Failed to start streaming: %v", err)
-		return nil, err
+		return nil, metadata, err
 	}
 	dec := json.NewDecoder(req.Body)
 	for {
@@ -83,34 +112,45 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, client Flo
 		}
 		if err != nil {
 			glog.Errorf("Failed to decode request: %v", err)
-			return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+			return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
 			glog.Errorf("Failed to send request: %v", err)
-			return nil, err
+			return nil, metadata, err
 		}
 	}
 
-	if err = stream.CloseSend(); err != nil {
+	if err := stream.CloseSend(); err != nil {
 		glog.Errorf("Failed to terminate client stream: %v", err)
-		return nil, err
+		return nil, metadata, err
 	}
-	return stream, nil
+	header, err := stream.Header()
+	if err != nil {
+		glog.Errorf("Failed to get header from client: %v", err)
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+
+	return stream, metadata, nil
 
 }
 
-func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcBodyRpc(ctx, &protoReq)
+	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
-func request_FlowCombination_RpcBodyRpc_1(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_RpcBodyRpc_1(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	var (
 		val string
@@ -121,59 +161,65 @@ func request_FlowCombination_RpcBodyRpc_1(ctx context.Context, client FlowCombin
 
 	val, ok = pathParams["a"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
 
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	val, ok = pathParams["b"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
 
 	protoReq.B, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	val, ok = pathParams["c"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "c")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "c")
 	}
 
 	protoReq.C, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
-	return client.RpcBodyRpc(ctx, &protoReq)
+	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
 var (
 	filter_FlowCombination_RpcBodyRpc_2 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_FlowCombination_RpcBodyRpc_2(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_RpcBodyRpc_2(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyRpc_2); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcBodyRpc(ctx, &protoReq)
+	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
-func request_FlowCombination_RpcBodyRpc_3(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_RpcBodyRpc_3(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	var (
@@ -185,56 +231,62 @@ func request_FlowCombination_RpcBodyRpc_3(ctx context.Context, client FlowCombin
 
 	val, ok = pathParams["a"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
 
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	val, ok = pathParams["b"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
 
 	protoReq.B, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
-	return client.RpcBodyRpc(ctx, &protoReq)
+	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
 var (
 	filter_FlowCombination_RpcBodyRpc_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_FlowCombination_RpcBodyRpc_4(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_RpcBodyRpc_4(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyRpc_4); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcBodyRpc(ctx, &protoReq)
+	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
 var (
 	filter_FlowCombination_RpcBodyRpc_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
-func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	var (
@@ -246,28 +298,31 @@ func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, client FlowCombin
 
 	val, ok = pathParams["a"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
 
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyRpc_5); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcBodyRpc(ctx, &protoReq)
+	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
 var (
 	filter_FlowCombination_RpcBodyRpc_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_FlowCombination_RpcBodyRpc_6(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_RpcBodyRpc_6(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	var (
 		val string
@@ -278,28 +333,31 @@ func request_FlowCombination_RpcBodyRpc_6(ctx context.Context, client FlowCombin
 
 	val, ok = pathParams["a"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
 
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyRpc_6); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcBodyRpc(ctx, &protoReq)
+	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
 var (
 	filter_FlowCombination_RpcPathSingleNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
-func request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SingleNestedProto
+	var metadata runtime.ServerMetadata
 
 	var (
 		val string
@@ -310,31 +368,34 @@ func request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, clien
 
 	val, ok = pathParams["a.str"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathSingleNestedRpc_0); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcPathSingleNestedRpc(ctx, &protoReq)
+	msg, err := client.RpcPathSingleNestedRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
 var (
 	filter_FlowCombination_RpcPathNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
 )
 
-func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	var (
@@ -346,39 +407,42 @@ func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, client Flow
 
 	val, ok = pathParams["a.str"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	val, ok = pathParams["b"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
 
 	protoReq.B, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedRpc_0); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcPathNestedRpc(ctx, &protoReq)
+	msg, err := client.RpcPathNestedRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
 var (
 	filter_FlowCombination_RpcPathNestedRpc_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
-func request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
+	var metadata runtime.ServerMetadata
 
 	var (
 		val string
@@ -389,31 +453,34 @@ func request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, client Flow
 
 	val, ok = pathParams["a.str"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedRpc_1); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcPathNestedRpc(ctx, &protoReq)
+	msg, err := client.RpcPathNestedRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
 var (
 	filter_FlowCombination_RpcPathNestedRpc_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
 )
 
-func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, error) {
+func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	var (
@@ -425,34 +492,48 @@ func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, client Flow
 
 	val, ok = pathParams["a.str"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedRpc_2); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcPathNestedRpc(ctx, &protoReq)
+	msg, err := client.RpcPathNestedRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
 }
 
-func request_FlowCombination_RpcBodyStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, error) {
+func request_FlowCombination_RpcBodyStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcBodyStream(ctx, &protoReq)
+	stream, err := client.RpcBodyStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
-func request_FlowCombination_RpcBodyStream_1(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, error) {
+func request_FlowCombination_RpcBodyStream_1(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	var (
 		val string
@@ -463,59 +544,81 @@ func request_FlowCombination_RpcBodyStream_1(ctx context.Context, client FlowCom
 
 	val, ok = pathParams["a"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
 
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	val, ok = pathParams["b"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
 
 	protoReq.B, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	val, ok = pathParams["c"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "c")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "c")
 	}
 
 	protoReq.C, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
-	return client.RpcBodyStream(ctx, &protoReq)
+	stream, err := client.RpcBodyStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
 var (
 	filter_FlowCombination_RpcBodyStream_2 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_FlowCombination_RpcBodyStream_2(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, error) {
+func request_FlowCombination_RpcBodyStream_2(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyStream_2); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcBodyStream(ctx, &protoReq)
+	stream, err := client.RpcBodyStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
-func request_FlowCombination_RpcBodyStream_3(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, error) {
+func request_FlowCombination_RpcBodyStream_3(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	var (
@@ -527,56 +630,78 @@ func request_FlowCombination_RpcBodyStream_3(ctx context.Context, client FlowCom
 
 	val, ok = pathParams["a"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
 
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	val, ok = pathParams["b"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
 
 	protoReq.B, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
-	return client.RpcBodyStream(ctx, &protoReq)
+	stream, err := client.RpcBodyStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
 var (
 	filter_FlowCombination_RpcBodyStream_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_FlowCombination_RpcBodyStream_4(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, error) {
+func request_FlowCombination_RpcBodyStream_4(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyStream_4); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcBodyStream(ctx, &protoReq)
+	stream, err := client.RpcBodyStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
 var (
 	filter_FlowCombination_RpcBodyStream_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
-func request_FlowCombination_RpcBodyStream_5(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, error) {
+func request_FlowCombination_RpcBodyStream_5(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	var (
@@ -588,28 +713,39 @@ func request_FlowCombination_RpcBodyStream_5(ctx context.Context, client FlowCom
 
 	val, ok = pathParams["a"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
 
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyStream_5); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcBodyStream(ctx, &protoReq)
+	stream, err := client.RpcBodyStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
 var (
 	filter_FlowCombination_RpcBodyStream_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_FlowCombination_RpcBodyStream_6(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, error) {
+func request_FlowCombination_RpcBodyStream_6(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
+	var metadata runtime.ServerMetadata
 
 	var (
 		val string
@@ -620,28 +756,39 @@ func request_FlowCombination_RpcBodyStream_6(ctx context.Context, client FlowCom
 
 	val, ok = pathParams["a"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a")
 	}
 
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyStream_6); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcBodyStream(ctx, &protoReq)
+	stream, err := client.RpcBodyStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
 var (
 	filter_FlowCombination_RpcPathSingleNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
-func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathSingleNestedStreamClient, error) {
+func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathSingleNestedStreamClient, runtime.ServerMetadata, error) {
 	var protoReq SingleNestedProto
+	var metadata runtime.ServerMetadata
 
 	var (
 		val string
@@ -652,31 +799,42 @@ func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, cl
 
 	val, ok = pathParams["a.str"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathSingleNestedStream_0); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcPathSingleNestedStream(ctx, &protoReq)
+	stream, err := client.RpcPathSingleNestedStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
 var (
 	filter_FlowCombination_RpcPathNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
 )
 
-func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, error) {
+func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	var (
@@ -688,39 +846,50 @@ func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, client F
 
 	val, ok = pathParams["a.str"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	val, ok = pathParams["b"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "b")
 	}
 
 	protoReq.B, err = runtime.String(val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedStream_0); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcPathNestedStream(ctx, &protoReq)
+	stream, err := client.RpcPathNestedStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
 var (
 	filter_FlowCombination_RpcPathNestedStream_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
-func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, error) {
+func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
+	var metadata runtime.ServerMetadata
 
 	var (
 		val string
@@ -731,31 +900,42 @@ func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, client F
 
 	val, ok = pathParams["a.str"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedStream_1); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcPathNestedStream(ctx, &protoReq)
+	stream, err := client.RpcPathNestedStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
 var (
 	filter_FlowCombination_RpcPathNestedStream_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
 )
 
-func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, error) {
+func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
+	var metadata runtime.ServerMetadata
 
 	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	var (
@@ -767,20 +947,30 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, client F
 
 	val, ok = pathParams["a.str"]
 	if !ok {
-		return nil, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "a.str")
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, err
+		return nil, metadata, err
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedStream_2); err != nil {
-		return nil, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	return client.RpcPathNestedStream(ctx, &protoReq)
+	stream, err := client.RpcPathNestedStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
 }
 
 // RegisterFlowCombinationHandlerFromEndpoint is same as RegisterFlowCombinationHandler but
@@ -822,7 +1012,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcEmptyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcEmptyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -841,7 +1032,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcEmptyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcEmptyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -860,7 +1052,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_StreamEmptyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_StreamEmptyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -879,7 +1072,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_StreamEmptyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_StreamEmptyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -898,7 +1092,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -917,7 +1112,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyRpc_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -936,7 +1132,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyRpc_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -955,7 +1152,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyRpc_3(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_3(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -974,7 +1172,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyRpc_4(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_4(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -993,7 +1192,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyRpc_5(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_5(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1012,7 +1212,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyRpc_6(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_6(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1031,7 +1232,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcPathSingleNestedRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcPathSingleNestedRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1050,7 +1252,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcPathNestedRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcPathNestedRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1069,7 +1272,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcPathNestedRpc_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcPathNestedRpc_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1088,7 +1292,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcPathNestedRpc_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcPathNestedRpc_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1107,7 +1312,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1126,7 +1332,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyStream_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyStream_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1145,7 +1352,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyStream_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyStream_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1164,7 +1372,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyStream_3(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyStream_3(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1183,7 +1392,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyStream_4(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyStream_4(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1202,7 +1412,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyStream_5(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyStream_5(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1221,7 +1432,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcBodyStream_6(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcBodyStream_6(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1240,7 +1452,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcPathSingleNestedStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcPathSingleNestedStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1259,7 +1472,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcPathNestedStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcPathNestedStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1278,7 +1492,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcPathNestedStream_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcPathNestedStream_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1297,7 +1512,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 				cancel()
 			}()
 		}
-		resp, err := request_FlowCombination_RpcPathNestedStream_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		resp, md, err := request_FlowCombination_RpcPathNestedStream_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, &md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
