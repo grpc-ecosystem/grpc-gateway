@@ -76,11 +76,7 @@ func ForwardResponseStream(ctx context.Context, w http.ResponseWriter, req *http
 	}
 }
 
-func handleForwardResponseServerMetadata(w http.ResponseWriter, md *ServerMetadata) {
-	if md == nil {
-		return
-	}
-
+func handleForwardResponseServerMetadata(w http.ResponseWriter, md ServerMetadata) {
 	for k, vs := range md.HeaderMD {
 		hKey := fmt.Sprintf("%s%s", metadataHeaderPrefix, k)
 		for i := range vs {
@@ -89,22 +85,14 @@ func handleForwardResponseServerMetadata(w http.ResponseWriter, md *ServerMetada
 	}
 }
 
-func handleForwardResponseTrailerHeader(w http.ResponseWriter, md *ServerMetadata) {
-	if md == nil {
-		return
-	}
-
+func handleForwardResponseTrailerHeader(w http.ResponseWriter, md ServerMetadata) {
 	for k := range md.TrailerMD {
 		tKey := textproto.CanonicalMIMEHeaderKey(fmt.Sprintf("%s%s", metadataTrailerPrefix, k))
 		w.Header().Add("Trailer", tKey)
 	}
 }
 
-func handleForwardResponseTrailer(w http.ResponseWriter, md *ServerMetadata) {
-	if md == nil {
-		return
-	}
-
+func handleForwardResponseTrailer(w http.ResponseWriter, md ServerMetadata) {
 	for k, vs := range md.TrailerMD {
 		tKey := fmt.Sprintf("%s%s", metadataTrailerPrefix, k)
 		for i := range vs {
