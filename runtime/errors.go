@@ -62,10 +62,9 @@ var (
 	OtherErrorHandler = DefaultOtherErrorHandler
 )
 
-type ErrorBody struct {
-	Error   string      `json:"error"`
-	Code    int         `json:"code"`
-	Trailer metadata.MD `json:"trailer,omitempty"`
+type errorBody struct {
+	Error string `json:"error"`
+	Code  int    `json:"code"`
 }
 
 // DefaultHTTPError is the default implementation of HTTPError.
@@ -79,7 +78,7 @@ func DefaultHTTPError(ctx context.Context, w http.ResponseWriter, _ *http.Reques
 
 	w.Header().Del("Trailer")
 	w.Header().Set("Content-Type", "application/json")
-	body := ErrorBody{
+	body := errorBody{
 		Error: grpc.ErrorDesc(err),
 		Code:  int(grpc.Code(err)),
 	}

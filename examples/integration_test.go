@@ -23,6 +23,11 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
+type errorBody struct {
+	Error string `json:"error"`
+	Code  int    `json:"code"`
+}
+
 func TestIntegration(t *testing.T) {
 	if testing.Short() {
 		t.Skip()
@@ -437,7 +442,7 @@ func testABELookupNotFound(t *testing.T) {
 		return
 	}
 
-	var msg runtime.ErrorBody
+	var msg errorBody
 	if err := json.Unmarshal(buf, &msg); err != nil {
 		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
