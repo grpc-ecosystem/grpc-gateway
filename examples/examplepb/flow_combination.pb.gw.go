@@ -1013,7 +1013,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcEmptyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1033,7 +1033,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcEmptyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1053,7 +1053,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_StreamEmptyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1073,7 +1073,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_StreamEmptyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1093,7 +1093,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1113,7 +1113,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyRpc_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1133,7 +1133,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyRpc_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1153,7 +1153,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyRpc_3(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1173,7 +1173,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyRpc_4(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1193,7 +1193,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyRpc_5(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1213,7 +1213,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyRpc_6(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1233,7 +1233,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcPathSingleNestedRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1253,7 +1253,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcPathNestedRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1273,7 +1273,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcPathNestedRpc_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1293,7 +1293,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcPathNestedRpc_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1313,7 +1313,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1333,7 +1333,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyStream_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1353,7 +1353,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyStream_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1373,7 +1373,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyStream_3(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1393,7 +1393,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyStream_4(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1413,7 +1413,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyStream_5(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1433,7 +1433,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcBodyStream_6(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1453,7 +1453,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcPathSingleNestedStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1473,7 +1473,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcPathNestedStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1493,7 +1493,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcPathNestedStream_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -1513,7 +1513,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 			}()
 		}
 		resp, md, err := request_FlowCombination_RpcPathNestedStream_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return

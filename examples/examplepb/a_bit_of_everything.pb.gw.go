@@ -500,7 +500,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			}()
 		}
 		resp, md, err := request_ABitOfEverythingService_Create_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -520,7 +520,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			}()
 		}
 		resp, md, err := request_ABitOfEverythingService_CreateBody_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -540,7 +540,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			}()
 		}
 		resp, md, err := request_ABitOfEverythingService_BulkCreate_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -560,7 +560,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			}()
 		}
 		resp, md, err := request_ABitOfEverythingService_Lookup_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -580,7 +580,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			}()
 		}
 		resp, md, err := request_ABitOfEverythingService_List_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -600,7 +600,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			}()
 		}
 		resp, md, err := request_ABitOfEverythingService_Update_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -620,7 +620,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			}()
 		}
 		resp, md, err := request_ABitOfEverythingService_Delete_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -640,7 +640,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			}()
 		}
 		resp, md, err := request_ABitOfEverythingService_Echo_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -660,7 +660,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			}()
 		}
 		resp, md, err := request_ABitOfEverythingService_Echo_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -680,7 +680,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			}()
 		}
 		resp, md, err := request_ABitOfEverythingService_Echo_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -700,7 +700,7 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 			}()
 		}
 		resp, md, err := request_ABitOfEverythingService_BulkEcho_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return

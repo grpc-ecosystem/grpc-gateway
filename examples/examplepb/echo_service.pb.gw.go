@@ -109,7 +109,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 			}()
 		}
 		resp, md, err := request_EchoService_Echo_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
@@ -129,7 +129,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 			}()
 		}
 		resp, md, err := request_EchoService_EchoBody_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, &md)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, w, req, err)
 			return
