@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -19,7 +20,13 @@ import (
 	sub "github.com/gengo/grpc-gateway/examples/sub"
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/protobuf/proto"
+	"google.golang.org/grpc/codes"
 )
+
+type errorBody struct {
+	Error string `json:"error"`
+	Code  int    `json:"code"`
+}
 
 func TestIntegration(t *testing.T) {
 	if testing.Short() {
@@ -47,6 +54,7 @@ func TestIntegration(t *testing.T) {
 	testABECreateBody(t)
 	testABEBulkCreate(t)
 	testABELookup(t)
+	testABELookupNotFound(t)
 	testABEList(t)
 	testAdditionalBindings(t)
 
@@ -134,6 +142,20 @@ func testEchoBody(t *testing.T) {
 	}
 	if got, want := received, sent; !reflect.DeepEqual(got, want) {
 		t.Errorf("msg.Id = %q; want %q", got, want)
+	}
+
+	if got, want := resp.Header.Get("Grpc-Metadata-Foo"), "foo1"; got != want {
+		t.Errorf("Grpc-Header-Foo was %q, wanted %q", got, want)
+	}
+	if got, want := resp.Header.Get("Grpc-Metadata-Bar"), "bar1"; got != want {
+		t.Errorf("Grpc-Header-Bar was %q, wanted %q", got, want)
+	}
+
+	if got, want := resp.Trailer.Get("Grpc-Trailer-Foo"), "foo2"; got != want {
+		t.Errorf("Grpc-Trailer-Foo was %q, wanted %q", got, want)
+	}
+	if got, want := resp.Trailer.Get("Grpc-Trailer-Bar"), "bar2"; got != want {
+		t.Errorf("Grpc-Trailer-Bar was %q, wanted %q", got, want)
 	}
 }
 
@@ -253,6 +275,7 @@ func testABECreateBody(t *testing.T) {
 }
 
 func testABEBulkCreate(t *testing.T) {
+	count := 0
 	r, w := io.Pipe()
 	go func(w io.WriteCloser) {
 		defer func() {
@@ -302,6 +325,7 @@ func testABEBulkCreate(t *testing.T) {
 				t.Errorf("w.Write(%s) failed with %v; want success", buf, err)
 				return
 			}
+			count++
 		}
 	}(w)
 	url := "http://localhost:8080/v1/example/a_bit_of_everything/bulk"
@@ -326,6 +350,17 @@ func testABEBulkCreate(t *testing.T) {
 	if err := json.Unmarshal(buf, &msg); err != nil {
 		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
+	}
+
+	if got, want := resp.Header.Get("Grpc-Metadata-Count"), fmt.Sprintf("%d", count); got != want {
+		t.Errorf("Grpc-Header-Count was %q, wanted %q", got, want)
+	}
+
+	if got, want := resp.Trailer.Get("Grpc-Trailer-Foo"), "foo2"; got != want {
+		t.Errorf("Grpc-Trailer-Foo was %q, wanted %q", got, want)
+	}
+	if got, want := resp.Trailer.Get("Grpc-Trailer-Bar"), "bar2"; got != want {
+		t.Errorf("Grpc-Trailer-Bar was %q, wanted %q", got, want)
 	}
 }
 
@@ -378,6 +413,49 @@ func testABELookup(t *testing.T) {
 	if got := msg; !reflect.DeepEqual(got, want) {
 		t.Errorf("msg= %v; want %v", &got, &want)
 	}
+
+	if got, want := resp.Header.Get("Grpc-Metadata-Uuid"), want.Uuid; got != want {
+		t.Errorf("Grpc-Metadata-Uuid was %s, wanted %s", got, want)
+	}
+}
+
+func testABELookupNotFound(t *testing.T) {
+	url := "http://localhost:8080/v1/example/a_bit_of_everything"
+	uuid := "not_exist"
+	url = fmt.Sprintf("%s/%s", url, uuid)
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusNotFound; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+		return
+	}
+
+	var msg errorBody
+	if err := json.Unmarshal(buf, &msg); err != nil {
+		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+		return
+	}
+
+	if got, want := msg.Code, int(codes.NotFound); got != want {
+		t.Errorf("msg.Code = %d; want %d", got, want)
+		return
+	}
+
+	if got, want := resp.Header.Get("Grpc-Metadata-Uuid"), uuid; got != want {
+		t.Errorf("Grpc-Metadata-Uuid was %s, wanted %s", got, want)
+	}
 }
 
 func testABEList(t *testing.T) {
@@ -403,6 +481,20 @@ func testABEList(t *testing.T) {
 	}
 	if i <= 0 {
 		t.Errorf("i == %d; want > 0", i)
+	}
+
+	value := resp.Header.Get("Grpc-Metadata-Count")
+	if value == "" {
+		t.Errorf("Grpc-Header-Count should not be empty")
+	}
+
+	count, err := strconv.Atoi(value)
+	if err != nil {
+		t.Errorf("failed to Atoi %q: %v", value, err)
+	}
+
+	if count <= 0 {
+		t.Errorf("count == %d; want > 0", count)
 	}
 }
 
@@ -454,7 +546,7 @@ func testAdditionalBindings(t *testing.T) {
 
 		var msg sub.StringMessage
 		if err := json.Unmarshal(buf, &msg); err != nil {
-			t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success; %i", buf, err, i)
+			t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success; %d", buf, err, i)
 			return
 		}
 		if got, want := msg.GetValue(), "hello"; got != want {
