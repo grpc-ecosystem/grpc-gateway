@@ -411,7 +411,10 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					})
 				}
 
-				pathItemObject := swaggerPathItemObject{}
+				pathItemObject, ok := paths[templateToSwaggerPath(b.PathTmpl.Template)]
+				if !ok {
+					pathItemObject = swaggerPathItemObject{}
+				}
 				operationObject := &swaggerOperationObject{
 					Summary:     fmt.Sprintf("%s.%s", svc.GetName(), meth.GetName()),
 					Tags:        []string{svc.GetName()},
