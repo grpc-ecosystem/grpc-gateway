@@ -295,7 +295,7 @@ func templateToSwaggerPath(path string) string {
 	// Parts is now an array of segments of the path. Interestingly, since the
 	// syntax for this subsection CAN be handled by a regexp since it has no
 	// memory.
-	re := regexp.MustCompile("{([a-z][a-z0-9_]*).*}")
+	re := regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_]*).*}")
 	for index, part := range parts {
 		parts[index] = re.ReplaceAllString(part, "{$1}")
 	}
