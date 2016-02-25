@@ -30,6 +30,31 @@
         "tags": [
           "ABitOfEverythingService"
         ]
+      },
+      "post": {
+        "summary": "ABitOfEverythingService.CreateBody",
+        "operationId": "CreateBody",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
       }
     },
     "/v1/example/a_bit_of_everything/bulk": {
@@ -230,6 +255,30 @@
       }
     },
     "/v1/example/a_bit_of_everything/{uuid}": {
+      "get": {
+        "summary": "ABitOfEverythingService.Lookup",
+        "operationId": "Lookup",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      },
       "delete": {
         "summary": "ABitOfEverythingService.Delete",
         "operationId": "Delete",
@@ -248,6 +297,38 @@
             "required": true,
             "type": "string",
             "format": "string"
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      },
+      "put": {
+        "summary": "ABitOfEverythingService.Update",
+        "operationId": "Update",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/examplepbEmptyMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
           }
         ],
         "tags": [
