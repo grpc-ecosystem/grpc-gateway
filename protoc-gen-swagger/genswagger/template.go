@@ -218,7 +218,7 @@ func resolveFullyQualifiedNameToSwaggerName(fqn string, messages []string) strin
 
 	for _, p := range messages {
 		h := hierarchy(p)
-		for depth, _ := range h {
+		for depth := range h {
 			if _, ok := packagesByDepth[depth]; !ok {
 				packagesByDepth[depth] = make([][]string, 0)
 			}
