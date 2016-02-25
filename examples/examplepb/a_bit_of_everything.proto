@@ -35,6 +35,7 @@ message ABitOfEverything {
 	sint32 sint32_value = 17;
 	sint64 sint64_value = 18;
 	repeated string repeated_string_value = 19;
+	string camelCase_value = 20;
 }
 
 message EmptyMessage {
@@ -53,7 +54,7 @@ service ABitOfEverythingService {
 	rpc Create(ABitOfEverything) returns (ABitOfEverything) {
 		// TODO add enum_value
 		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}"
+			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{camelCase_value}"
 		};
 	}
 	rpc CreateBody(ABitOfEverything) returns (ABitOfEverything) {
