@@ -6,7 +6,6 @@ import (
 
 	"golang.org/x/net/context"
 
-	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -82,7 +81,6 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	for _, h := range s.handlers[r.Method] {
 		pathParams, err := h.pat.Match(components, verb)
 		if err != nil {
-			glog.V(3).Infof("path mismatch: %q to %q", path, h.pat)
 			continue
 		}
 		h.h(w, r, pathParams)

@@ -137,7 +137,7 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 	var metadata runtime.ServerMetadata
 	stream, err := client.{{.Method.GetName}}(ctx)
 	if err != nil {
-		glog.Errorf("Failed to start streaming: %v", err)
+		grpclog.Printf("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
 	dec := json.NewDecoder(req.Body)
@@ -148,22 +148,22 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 			break
 		}
 		if err != nil {
-			glog.Errorf("Failed to decode request: %v", err)
+			grpclog.Printf("Failed to decode request: %v", err)
 			return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
-			glog.Errorf("Failed to send request: %v", err)
+			grpclog.Printf("Failed to send request: %v", err)
 			return nil, metadata, err
 		}
 	}
 
 	if err := stream.CloseSend(); err != nil {
-		glog.Errorf("Failed to terminate client stream: %v", err)
+		grpclog.Printf("Failed to terminate client stream: %v", err)
 		return nil, metadata, err
 	}
 	header, err := stream.Header()
 	if err != nil {
-		glog.Errorf("Failed to get header from client: %v", err)
+		grpclog.Printf("Failed to get header from client: %v", err)
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
@@ -247,14 +247,14 @@ func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runti
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Printf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Printf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
