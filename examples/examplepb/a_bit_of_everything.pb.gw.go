@@ -495,10 +495,11 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -519,10 +520,11 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -543,10 +545,11 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -567,10 +570,11 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -591,10 +595,11 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -615,10 +620,11 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -639,10 +645,11 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -663,10 +670,11 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -687,10 +695,11 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -711,10 +720,11 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -735,10 +745,11 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()

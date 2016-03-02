@@ -1008,10 +1008,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1032,10 +1033,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1056,10 +1058,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1080,10 +1083,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1104,10 +1108,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1128,10 +1133,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1152,10 +1158,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1176,10 +1183,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1200,10 +1208,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1224,10 +1233,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1248,10 +1258,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1272,10 +1283,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1296,10 +1308,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1320,10 +1333,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1344,10 +1358,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1368,10 +1383,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1392,10 +1408,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1416,10 +1433,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1440,10 +1458,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1464,10 +1483,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1488,10 +1508,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1512,10 +1533,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1536,10 +1558,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1560,10 +1583,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1584,10 +1608,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
@@ -1608,10 +1633,11 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 		defer cancel()
 		closeNotifier, ok := w.(http.CloseNotifier)
 		if ok {
+			closeNotify := closeNotifier.CloseNotify()
 			go func() {
 				select {
 				case <-ctx.Done():
-				case <-closeNotifier.CloseNotify():
+				case <-closeNotify:
 					cancel()
 				}
 			}()
