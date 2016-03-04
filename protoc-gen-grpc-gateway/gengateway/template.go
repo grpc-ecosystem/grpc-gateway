@@ -271,16 +271,14 @@ func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux,
 	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			closeNotify := closeNotifier.CloseNotify()
-			go func() {
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
 				select {
-				case <-ctx.Done():
-				case <-closeNotify:
+				case <-done:
+				case <-closed:
 					cancel()
 				}
-			}()
+			}(ctx.Done(), cn.CloseNotify())
 		}
 		resp, md, err := request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)

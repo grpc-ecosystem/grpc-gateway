@@ -81,7 +81,7 @@ $(EXAMPLE_SWAGGERSRCS): $(SWAGGER_PLUGIN) $(SWAGGER_EXAMPLES)
 
 examples: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAGGERSRCS)
 test: examples
-	go test $(PKG)/...
+	go test -race $(PKG)/...
 
 clean distclean:
 	rm -f $(GATEWAY_PLUGIN)
