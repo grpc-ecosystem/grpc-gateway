@@ -102,16 +102,14 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 	mux.Handle("POST", pattern_EchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			closeNotify := closeNotifier.CloseNotify()
-			go func() {
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
 				select {
-				case <-ctx.Done():
-				case <-closeNotify:
+				case <-done:
+				case <-closed:
 					cancel()
 				}
-			}()
+			}(ctx.Done(), cn.CloseNotify())
 		}
 		resp, md, err := request_EchoService_Echo_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
@@ -127,16 +125,14 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 	mux.Handle("POST", pattern_EchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			closeNotify := closeNotifier.CloseNotify()
-			go func() {
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
 				select {
-				case <-ctx.Done():
-				case <-closeNotify:
+				case <-done:
+				case <-closed:
 					cancel()
 				}
-			}()
+			}(ctx.Done(), cn.CloseNotify())
 		}
 		resp, md, err := request_EchoService_EchoBody_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
