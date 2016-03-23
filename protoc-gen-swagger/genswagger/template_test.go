@@ -91,23 +91,23 @@ func TestApplyTemplateSimple(t *testing.T) {
 	got := new(swaggerObject)
 	err = json.Unmarshal([]byte(result), got)
 	if err != nil {
-		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		t.Errorf("json.Unmarshal(%s) failed with %v; want success", result, err)
 		return
 	}
 	if want, is, name := "2.0", got.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 	if want, is, name := "", got.BasePath, "BasePath"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 	if want, is, name := []string{"http", "https"}, got.Schemes, "Schemes"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 	if want, is, name := []string{"application/json"}, got.Consumes, "Consumes"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 	if want, is, name := []string{"application/json"}, got.Produces, "Produces"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 
 	// If there was a failure, print out the input and the json result for debugging.
@@ -247,29 +247,29 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
 	}
-	got := new(swaggerObject)
-	err = json.Unmarshal([]byte(result), got)
+	var obj swaggerObject
+	err = json.Unmarshal([]byte(result), &obj)
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
 	}
-	if want, is, name := "2.0", got.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	if want, got := "2.0", obj.Swagger; !reflect.DeepEqual(got, want) {
+		t.Errorf("applyTemplate(%#v).Swagger = %s want to be %s", file, got, want)
 	}
-	if want, is, name := "", got.BasePath, "BasePath"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	if want, got := "", obj.BasePath; !reflect.DeepEqual(got, want) {
+		t.Errorf("applyTemplate(%#v).BasePath = %s want to be %s", file, got, want)
 	}
-	if want, is, name := []string{"http", "https"}, got.Schemes, "Schemes"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	if want, got := []string{"http", "https"}, obj.Schemes; !reflect.DeepEqual(got, want) {
+		t.Errorf("applyTemplate(%#v).Schemes = %s want to be %s", file, got, want)
 	}
-	if want, is, name := []string{"application/json"}, got.Consumes, "Consumes"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	if want, got := []string{"application/json"}, obj.Consumes; !reflect.DeepEqual(got, want) {
+		t.Errorf("applyTemplate(%#v).Consumes = %s want to be %s", file, got, want)
 	}
-	if want, is, name := []string{"application/json"}, got.Produces, "Produces"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(file).%s = %s want to be %s", file, name, is, want)
+	if want, got := []string{"application/json"}, obj.Produces; !reflect.DeepEqual(got, want) {
+		t.Errorf("applyTemplate(%#v).Produces = %s want to be %s", file, got, want)
 	}
-	if want, is, name := "Generated for ExampleService.Echo - ", got.Paths["/v1/echo"].Post.Summary, "Paths[/v1/echo].Post.Summary"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(file).%s = %s want to be %s", name, is, want)
+	if want, got, name := "Generated for ExampleService.Echo - ", obj.Paths["/v1/echo"].Post.Summary, "Paths[/v1/echo].Post.Summary"; !reflect.DeepEqual(got, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 	}
 
 	// If there was a failure, print out the input and the json result for debugging.
