@@ -15,6 +15,7 @@ import (
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/examples/sub"
+	"github.com/gengo/grpc-gateway/examples/sub2"
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/golang/protobuf/proto"
@@ -263,7 +264,7 @@ func request_ABitOfEverythingService_BulkCreate_0(ctx context.Context, client AB
 }
 
 func request_ABitOfEverythingService_Lookup_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq IdMessage
+	var protoReq sub2.IdMessage
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -338,7 +339,7 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, client ABitOf
 }
 
 func request_ABitOfEverythingService_Delete_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq IdMessage
+	var protoReq sub2.IdMessage
 	var metadata runtime.ServerMetadata
 
 	var (
