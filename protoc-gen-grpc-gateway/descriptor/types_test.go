@@ -21,6 +21,10 @@ func TestGoPackageStandard(t *testing.T) {
 			want: true,
 		},
 		{
+			pkg:  GoPackage{Path: "github.com/golang/protobuf/jsonpb", Name: "jsonpb"},
+			want: true,
+		},
+		{
 			pkg:  GoPackage{Path: "golang.org/x/net/context", Name: "context"},
 			want: false,
 		},
@@ -51,6 +55,10 @@ func TestGoPackageString(t *testing.T) {
 		{
 			pkg:  GoPackage{Path: "encoding/json", Name: "json"},
 			want: `"encoding/json"`,
+		},
+		{
+			pkg:  GoPackage{Path: "github.com/golang/protobuf/jsonpb", Name: "jsonpb"},
+			want: `"github.com/golang/protobuf/jsonpb"`,
 		},
 		{
 			pkg:  GoPackage{Path: "golang.org/x/net/context", Name: "context"},
