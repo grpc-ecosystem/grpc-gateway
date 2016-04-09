@@ -2,7 +2,7 @@
 package generator
 
 import (
-	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	"github.com/willtrking/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
 
