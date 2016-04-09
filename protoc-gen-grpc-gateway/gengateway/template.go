@@ -113,7 +113,6 @@ import (
 var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
-var _ = runtime.JSONAdapter
 var _ = utilities.NewDoubleArray
 `))
 
