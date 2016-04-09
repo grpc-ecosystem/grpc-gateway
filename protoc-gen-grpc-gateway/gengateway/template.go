@@ -6,8 +6,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/willtrking/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
-	"github.com/willtrking/grpc-gateway/utilities"
+	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/golang/glog"
 )
 
