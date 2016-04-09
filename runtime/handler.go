@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/textproto"
 
-	builtinjson "encoding/json"
 	"github.com/golang/protobuf/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -29,6 +28,11 @@ type responseStreamError struct {
 	Message    string `json:"message, omitempty"`
 	HTTPStatus string `json:"http_status, omitempty"`
 }
+
+//Make this also conform to proto.Message for builtin JSONPb JSONAdapter
+func (m *responseStreamError) Reset()                    { *m = responseStreamError{} }
+func (m *responseStreamError) String() string            { return proto.CompactTextString(m) }
+func (*responseStreamError) ProtoMessage()               {}
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
 func ForwardResponseStream(json JSONAdapter, ctx context.Context, w http.ResponseWriter, req *http.Request, recv func() (proto.Message, error), opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
@@ -152,14 +156,14 @@ func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, re
 func handleForwardResponseStreamError(json JSONAdapter,w http.ResponseWriter, err error) {
 	grpcCode := grpc.Code(err)
 	httpCode := HTTPStatusFromCode(grpcCode)
-	resp := responseStreamChunk{
+	resp := &responseStreamChunk{
 		Error: &responseStreamError{
 			GrpcCode:   int(grpcCode),
 			HTTPCode:   httpCode,
 			Message:    err.Error(),
 			HTTPStatus: http.StatusText(httpCode),
 		}}
-	buf, merr := builtinjson.Marshal(resp)
+	buf, merr := json.Marshal(resp)
 	if merr != nil {
 		grpclog.Printf("Failed to marshal an error: %v", merr)
 		return
