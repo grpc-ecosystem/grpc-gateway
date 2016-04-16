@@ -91,5 +91,6 @@ realclean: distclean
 	rm -f $(EXAMPLE_GWSRCS)
 	rm -f $(EXAMPLE_SWAGGERSRCS)
 	rm -f $(GO_PLUGIN)
+	rm -f $(SWAGGER_PLUGIN)
 
 .PHONY: generate examples test clean distclean realclean
