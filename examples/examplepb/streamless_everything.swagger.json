@@ -339,6 +339,7 @@
   },
   "definitions": {
     "ABitOfEverythingNested": {
+      "type": "object",
       "properties": {
         "amount": {
           "type": "integer",
@@ -362,6 +363,7 @@
       "default": "FALSE"
     },
     "examplepbABitOfEverything": {
+      "type": "object",
       "properties": {
         "bool_value": {
           "type": "boolean",
@@ -441,8 +443,11 @@
         }
       }
     },
-    "examplepbEmptyMessage": {},
+    "examplepbEmptyMessage": {
+      "type": "object"
+    },
     "examplepbIdMessage": {
+      "type": "object",
       "properties": {
         "uuid": {
           "type": "string",
@@ -459,6 +464,7 @@
       "default": "ZERO"
     },
     "subStringMessage": {
+      "type": "object",
       "properties": {
         "value": {
           "type": "string",
