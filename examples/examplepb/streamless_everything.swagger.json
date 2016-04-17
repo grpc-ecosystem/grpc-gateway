@@ -254,6 +254,40 @@
         ]
       }
     },
+    "/v1/example/a_bit_of_everything/{single_nested.name}": {
+      "post": {
+        "summary": "ABitOfEverythingService.DeepPathEcho",
+        "operationId": "DeepPathEcho",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "single_nested.name",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v1/example/a_bit_of_everything/{uuid}": {
       "get": {
         "summary": "ABitOfEverythingService.Lookup",
@@ -416,6 +450,9 @@
         "sfixed64_value": {
           "type": "integer",
           "format": "int32"
+        },
+        "single_nested": {
+          "$ref": "#/definitions/ABitOfEverythingNested"
         },
         "sint32_value": {
           "type": "integer",
