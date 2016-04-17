@@ -36,6 +36,7 @@ message ABitOfEverything {
 	sint32 sint32_value = 17;
 	sint64 sint64_value = 18;
 	repeated string repeated_string_value = 19;
+	Nested single_nested = 20;
 }
 
 message EmptyMessage {
@@ -101,6 +102,12 @@ service ABitOfEverythingService {
 	rpc BulkEcho(stream gengo.grpc.gateway.examples.sub.StringMessage) returns (stream gengo.grpc.gateway.examples.sub.StringMessage) {
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything/echo"
+			body: "*"
+		};
+	}
+	rpc DeepPathEcho(ABitOfEverything) returns (ABitOfEverything) {
+		option (google.api.http) = {
+			post: "/v1/example/a_bit_of_everything/{single_nested.name}"
 			body: "*"
 		};
 	}
