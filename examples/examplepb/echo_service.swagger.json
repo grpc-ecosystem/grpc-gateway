@@ -18,6 +18,7 @@
     "/v1/example/echo/{id}": {
       "post": {
         "summary": "EchoService.Echo",
+        "description": "Echo method receives a simple message and returns it.",
         "operationId": "Echo",
         "responses": {
           "default": {
@@ -44,6 +45,7 @@
     "/v1/example/echo_body": {
       "post": {
         "summary": "EchoService.EchoBody",
+        "description": "EchoBody method receives a simple message and returns it.",
         "operationId": "EchoBody",
         "responses": {
           "default": {

@@ -46,6 +46,7 @@ type swaggerPathItemObject struct {
 // http://swagger.io/specification/#operationObject
 type swaggerOperationObject struct {
 	Summary     string                  `json:"summary"`
+	Description string                  `json:"description,omitempty"`
 	OperationId string                  `json:"operationId"`
 	Responses   swaggerResponsesObject  `json:"responses"`
 	Parameters  swaggerParametersObject `json:"parameters,omitempty"`

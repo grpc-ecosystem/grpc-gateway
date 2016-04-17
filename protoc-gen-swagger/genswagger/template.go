@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
@@ -304,8 +305,9 @@ func templateToSwaggerPath(path string) string {
 }
 
 func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry) error {
-	for _, svc := range services {
-		for _, meth := range svc.Methods {
+	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
+	for svcIdx, svc := range services {
+		for methIdx, meth := range svc.Methods {
 			if meth.GetClientStreaming() || meth.GetServerStreaming() {
 				return fmt.Errorf(`service uses streaming, which is not currently supported. Maybe you would like to implement it? It wouldn't be that hard and we don't bite. Why don't you send a pull request to https://github.com/gengo/grpc-gateway?`)
 			}
@@ -415,8 +417,41 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				if !ok {
 					pathItemObject = swaggerPathItemObject{}
 				}
+
+				// TODO(ivucica): make this a module-level function and use elsewhere.
+				protoPath := func(descriptorType reflect.Type, what string) int32 {
+					// TODO(ivucica): handle errors obtaining any of the following.
+					field, ok := descriptorType.Elem().FieldByName(what)
+					if !ok {
+						// TODO(ivucica): consider being more graceful.
+						panic(fmt.Errorf("Could not find type id for %s.", what))
+					}
+					pbtag := field.Tag.Get("protobuf")
+					if pbtag == "" {
+						// TODO(ivucica): consider being more graceful.
+						panic(fmt.Errorf("No protobuf tag on %s.", what))
+					}
+					// TODO(ivucica): handle error
+					path, _ := strconv.Atoi(strings.Split(pbtag, ",")[1])
+
+					return int32(path)
+				}
+				methDescription := ""
+				for _, loc := range svc.File.SourceCodeInfo.Location {
+					if len(loc.Path) < 4 {
+						continue
+					}
+					if loc.Path[0] == protoPath(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Service") && loc.Path[1] == int32(svcIdx) && loc.Path[2] == protoPath(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method") && loc.Path[3] == int32(methIdx) {
+						if loc.LeadingComments != nil {
+							methDescription = strings.TrimRight(*loc.LeadingComments, "\n")
+							methDescription = strings.TrimLeft(methDescription, " ")
+						}
+						break
+					}
+				}
 				operationObject := &swaggerOperationObject{
 					Summary:     fmt.Sprintf("%s.%s", svc.GetName(), meth.GetName()),
+					Description: methDescription,
 					Tags:        []string{svc.GetName()},
 					OperationId: fmt.Sprintf("%s", meth.GetName()),
 					Parameters:  parameters,
