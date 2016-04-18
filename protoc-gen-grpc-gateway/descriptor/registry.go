@@ -223,13 +223,20 @@ func (r *Registry) ReserveGoPackageAlias(alias, pkgpath string) error {
 }
 
 // goPackagePath returns the go package path which go files generated from "f" should have.
-// It respects the mapping registered by AddPkgMap if exists. Or it generates a path from
-// the file name of "f" if otherwise.
+// It respects the mapping registered by AddPkgMap if exists. Or use go_package as import path
+// if it includes a slash,  Otherwide, it generates a path from the file name of "f".
 func (r *Registry) goPackagePath(f *descriptor.FileDescriptorProto) string {
 	name := f.GetName()
 	if pkg, ok := r.pkgMap[name]; ok {
 		return path.Join(r.prefix, pkg)
 	}
+
+	gopkg := f.Options.GetGoPackage()
+	idx := strings.LastIndex(gopkg, "/")
+	if idx >= 0 {
+		return gopkg
+	}
+
 	return path.Join(r.prefix, path.Dir(name))
 }
 
@@ -263,7 +270,13 @@ func defaultGoPackageName(f *descriptor.FileDescriptorProto) string {
 // as protoc-gen-go does.
 func packageIdentityName(f *descriptor.FileDescriptorProto) string {
 	if f.Options != nil && f.Options.GoPackage != nil {
-		return f.Options.GetGoPackage()
+		gopkg := f.Options.GetGoPackage()
+		idx := strings.LastIndex(gopkg, "/")
+		if idx < 0 {
+			return gopkg
+		}
+
+		return gopkg[idx+1:]
 	}
 
 	if f.Package == nil {

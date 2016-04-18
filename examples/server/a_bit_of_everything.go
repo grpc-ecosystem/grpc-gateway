@@ -7,6 +7,7 @@ import (
 
 	examples "github.com/gengo/grpc-gateway/examples/examplepb"
 	sub "github.com/gengo/grpc-gateway/examples/sub"
+	sub2 "github.com/gengo/grpc-gateway/examples/sub2"
 	"github.com/golang/glog"
 	"github.com/rogpeppe/fastuuid"
 	"golang.org/x/net/context"
@@ -84,7 +85,7 @@ func (s *_ABitOfEverythingServer) BulkCreate(stream examples.ABitOfEverythingSer
 	return stream.SendAndClose(new(examples.EmptyMessage))
 }
 
-func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *examples.IdMessage) (*examples.ABitOfEverything, error) {
+func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *sub2.IdMessage) (*examples.ABitOfEverything, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 	glog.Info(msg)
@@ -150,7 +151,7 @@ func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABit
 	return new(examples.EmptyMessage), nil
 }
 
-func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *examples.IdMessage) (*examples.EmptyMessage, error) {
+func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessage) (*examples.EmptyMessage, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
