@@ -51,6 +51,7 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
 	for _, msg := range messages {
 		object := swaggerSchemaObject{
+			Type: "object",
 			Properties: map[string]swaggerSchemaObject{},
 		}
 		for _, field := range msg.Fields {
