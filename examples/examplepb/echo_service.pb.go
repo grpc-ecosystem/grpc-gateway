@@ -14,7 +14,6 @@ It has these top-level messages:
 	SimpleMessage
 	ABitOfEverything
 	EmptyMessage
-	IdMessage
 	EmptyProto
 	NonEmptyProto
 	UnaryProto

@@ -4,6 +4,7 @@ package gengo.grpc.gateway.examples.examplepb;
 
 import "google/api/annotations.proto";
 import "examples/sub/message.proto";
+import "examples/sub2/message.proto";
 
 message ABitOfEverything {
 	message Nested {
@@ -40,10 +41,6 @@ message ABitOfEverything {
 message EmptyMessage {
 }
 
-message IdMessage {
-	string uuid = 1;
-}
-
 enum NumericEnum {
 	ZERO = 0;
 	ONE = 1;
@@ -68,7 +65,7 @@ service ABitOfEverythingService {
 			body: "*"
 		};
 	}
-	rpc Lookup(IdMessage) returns (ABitOfEverything) {
+	rpc Lookup(sub2.IdMessage) returns (ABitOfEverything) {
 		option (google.api.http) = {
 			get: "/v1/example/a_bit_of_everything/{uuid}"
 		};
@@ -84,7 +81,7 @@ service ABitOfEverythingService {
 			body: "*"
 		};
 	}
-	rpc Delete(IdMessage) returns (EmptyMessage) {
+	rpc Delete(sub2.IdMessage) returns (EmptyMessage) {
 		option (google.api.http) = {
 			delete: "/v1/example/a_bit_of_everything/{uuid}"
 		};
