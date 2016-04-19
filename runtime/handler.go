@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,6 +12,11 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
+)
+
+var (
+	// The indent to use for JSON responses.
+	ResponseIndent = ""
 )
 
 type responseStreamChunk struct {
@@ -121,6 +127,11 @@ func ForwardResponseMessage(ctx context.Context, w http.ResponseWriter, req *htt
 		grpclog.Printf("Marshal error: %v", err)
 		HTTPError(ctx, w, req, err)
 		return
+	}
+	if ResponseIndent != "" {
+		var dst bytes.Buffer
+		json.Indent(&dst, buf, "", ResponseIndent)
+		buf = dst.Bytes()
 	}
 
 	if _, err = w.Write(buf); err != nil {
