@@ -84,7 +84,7 @@ func DefaultHTTPError(marshaler Marshaler, ctx context.Context, w http.ResponseW
 
 	w.Header().Del("Trailer")
 	w.Header().Set("Content-Type", marshaler.ContentType())
-	body := errorBody{
+	body := &errorBody{
 		Error: grpc.ErrorDesc(err),
 		Code:  int(grpc.Code(err)),
 	}
