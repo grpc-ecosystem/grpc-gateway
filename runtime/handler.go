@@ -29,12 +29,10 @@ type responseStreamError struct {
 	HTTPStatus string `json:"http_status,omitempty"`
 }
 
-
 //Make this also conform to proto.Message for builtin JSONPb Marshaler
 func (m *responseStreamError) Reset()         { *m = responseStreamError{} }
 func (m *responseStreamError) String() string { return proto.CompactTextString(m) }
 func (*responseStreamError) ProtoMessage()    {}
-
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
 func ForwardResponseStream(marshaler Marshaler, ctx context.Context, w http.ResponseWriter, req *http.Request, recv func() (proto.Message, error), opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
@@ -165,11 +163,8 @@ func handleForwardResponseStreamError(marshaler Marshaler, w http.ResponseWriter
 			Message:    err.Error(),
 			HTTPStatus: http.StatusText(httpCode),
 		}}
-<<<<<<< HEAD
-	buf, merr := json.Marshal(resp)
-=======
+
 	buf, merr := marshaler.Marshal(resp)
->>>>>>> master
 	if merr != nil {
 		grpclog.Printf("Failed to marshal an error: %v", merr)
 		return
