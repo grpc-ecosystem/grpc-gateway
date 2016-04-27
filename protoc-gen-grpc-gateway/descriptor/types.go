@@ -58,6 +58,9 @@ type Message struct {
 	Outers []string
 	*descriptor.DescriptorProto
 	Fields []*Field
+
+	// Index is proto path index of this message in File.
+	Index int
 }
 
 // FQMN returns a fully qualified message name of this message.

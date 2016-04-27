@@ -429,7 +429,8 @@
         },
         "uint32_value": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "description": "TODO(yugui) add bytes_value"
         },
         "uint64_value": {
           "type": "integer",

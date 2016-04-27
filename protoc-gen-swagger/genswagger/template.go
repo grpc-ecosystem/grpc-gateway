@@ -54,7 +54,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		object := swaggerSchemaObject{
 			Properties: map[string]swaggerSchemaObject{},
 		}
-		for _, field := range msg.Fields {
+		for fieldIdx, field := range msg.Fields {
 			var fieldType, fieldFormat string
 			primitive := true
 			// Field type and format from http://swagger.io/specification/ in the
@@ -141,6 +141,20 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 				fieldFormat = "UNKNOWN"
 			}
 
+			fieldDescription := ""
+			for _, loc := range msg.File.SourceCodeInfo.Location {
+				if len(loc.Path) < 4 {
+					continue
+				}
+				if loc.Path[0] == protoPath(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "MessageType") && loc.Path[1] == int32(msg.Index) && loc.Path[2] == protoPath(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "Field") && loc.Path[3] == int32(fieldIdx) {
+					if loc.LeadingComments != nil {
+						fieldDescription = strings.TrimRight(*loc.LeadingComments, "\n")
+						fieldDescription = strings.TrimLeft(fieldDescription, " ")
+					}
+					break
+				}
+			}
+
 			if primitive {
 				// If repeated render as an array of items.
 				if field.FieldDescriptorProto.GetLabel() == pbdescriptor.FieldDescriptorProto_LABEL_REPEATED {
@@ -150,11 +164,13 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 							Type:   fieldType,
 							Format: fieldFormat,
 						},
+						Description: fieldDescription,
 					}
 				} else {
 					object.Properties[field.GetName()] = swaggerSchemaObject{
-						Type:   fieldType,
-						Format: fieldFormat,
+						Type:        fieldType,
+						Format:      fieldFormat,
+						Description: fieldDescription,
 					}
 				}
 			} else {
@@ -164,10 +180,12 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 						Items: &swaggerItemsObject{
 							Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(field.GetTypeName(), reg),
 						},
+						Description: fieldDescription,
 					}
 				} else {
 					object.Properties[field.GetName()] = swaggerSchemaObject{
-						Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(field.GetTypeName(), reg),
+						Ref:         "#/definitions/" + fullyQualifiedNameToSwaggerName(field.GetTypeName(), reg),
+						Description: fieldDescription,
 					}
 				}
 			}
@@ -418,24 +436,6 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					pathItemObject = swaggerPathItemObject{}
 				}
 
-				// TODO(ivucica): make this a module-level function and use elsewhere.
-				protoPath := func(descriptorType reflect.Type, what string) int32 {
-					// TODO(ivucica): handle errors obtaining any of the following.
-					field, ok := descriptorType.Elem().FieldByName(what)
-					if !ok {
-						// TODO(ivucica): consider being more graceful.
-						panic(fmt.Errorf("Could not find type id for %s.", what))
-					}
-					pbtag := field.Tag.Get("protobuf")
-					if pbtag == "" {
-						// TODO(ivucica): consider being more graceful.
-						panic(fmt.Errorf("No protobuf tag on %s.", what))
-					}
-					// TODO(ivucica): handle error
-					path, _ := strconv.Atoi(strings.Split(pbtag, ",")[1])
-
-					return int32(path)
-				}
 				methDescription := ""
 				for _, loc := range svc.File.SourceCodeInfo.Location {
 					if len(loc.Path) < 4 {
@@ -521,4 +521,22 @@ func applyTemplate(p param) (string, error) {
 	enc.Encode(&s)
 
 	return w.String(), nil
+}
+
+func protoPath(descriptorType reflect.Type, what string) int32 {
+	// TODO(ivucica): handle errors obtaining any of the following.
+	field, ok := descriptorType.Elem().FieldByName(what)
+	if !ok {
+		// TODO(ivucica): consider being more graceful.
+		panic(fmt.Errorf("Could not find type id for %s.", what))
+	}
+	pbtag := field.Tag.Get("protobuf")
+	if pbtag == "" {
+		// TODO(ivucica): consider being more graceful.
+		panic(fmt.Errorf("No protobuf tag on %s.", what))
+	}
+	// TODO(ivucica): handle error
+	path, _ := strconv.Atoi(strings.Split(pbtag, ",")[1])
+
+	return int32(path)
 }

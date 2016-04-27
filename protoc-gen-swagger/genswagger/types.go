@@ -100,6 +100,8 @@ type swaggerSchemaObject struct {
 	// start from 0 index it will be great. I don't think that is a good assumption.
 	Enum    []string `json:"enum,omitempty"`
 	Default string   `json:"default,omitempty"`
+
+	Description string `json:"description,omitempty"`
 }
 
 // http://swagger.io/specification/#referenceObject
