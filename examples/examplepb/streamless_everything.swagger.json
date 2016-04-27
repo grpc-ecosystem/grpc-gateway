@@ -346,12 +346,14 @@
         },
         "name": {
           "type": "string",
-          "format": "string"
+          "format": "string",
+          "description": "name is nested field."
         },
         "ok": {
           "$ref": "#/definitions/NestedDeepEnum"
         }
-      }
+      },
+      "description": "Nested is nested type."
     },
     "NestedDeepEnum": {
       "type": "string",
@@ -359,7 +361,8 @@
         "FALSE",
         "TRUE"
       ],
-      "default": "FALSE"
+      "default": "FALSE",
+      "description": "DeepEnum is one or zero. FALSE: FALSE is false. TRUE: TRUE is true."
     },
     "examplepbABitOfEverything": {
       "properties": {
@@ -457,7 +460,8 @@
         "ZERO",
         "ONE"
       ],
-      "default": "ZERO"
+      "default": "ZERO",
+      "description": "NumericEnum is one or zero. ZERO: ZERO means 0 ONE: ONE means 1"
     },
     "subStringMessage": {
       "properties": {

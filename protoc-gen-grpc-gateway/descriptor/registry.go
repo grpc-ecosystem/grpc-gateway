@@ -125,11 +125,12 @@ func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descripto
 }
 
 func (r *Registry) registerEnum(file *File, outerPath []string, enums []*descriptor.EnumDescriptorProto) {
-	for _, ed := range enums {
+	for i, ed := range enums {
 		e := &Enum{
 			File:                file,
 			Outers:              outerPath,
 			EnumDescriptorProto: ed,
+			Index:               i,
 		}
 		file.Enums = append(file.Enums, e)
 		r.enums[e.FQEN()] = e

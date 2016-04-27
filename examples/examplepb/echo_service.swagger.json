@@ -79,7 +79,8 @@
           "format": "string",
           "description": "Id represents the message identifier."
         }
-      }
+      },
+      "description": "SimpleMessage represents a simple message sent to the Echo service."
     }
   }
 }

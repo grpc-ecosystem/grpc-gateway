@@ -100,6 +100,8 @@ type Enum struct {
 	// Outers is a list of outer messages if this enum is a nested type.
 	Outers []string
 	*descriptor.EnumDescriptorProto
+
+	Index int
 }
 
 // FQEN returns a fully qualified enum name of this enum.

@@ -51,8 +51,10 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 
 func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
 	for _, msg := range messages {
+		msgDescription := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
 		object := swaggerSchemaObject{
-			Properties: map[string]swaggerSchemaObject{},
+			Properties:  map[string]swaggerSchemaObject{},
+			Description: msgDescription,
 		}
 		for fieldIdx, field := range msg.Fields {
 			var fieldType, fieldFormat string
@@ -141,19 +143,8 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 				fieldFormat = "UNKNOWN"
 			}
 
-			fieldDescription := ""
-			for _, loc := range msg.File.SourceCodeInfo.Location {
-				if len(loc.Path) < 4 {
-					continue
-				}
-				if loc.Path[0] == protoPath(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "MessageType") && loc.Path[1] == int32(msg.Index) && loc.Path[2] == protoPath(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "Field") && loc.Path[3] == int32(fieldIdx) {
-					if loc.LeadingComments != nil {
-						fieldDescription = strings.TrimRight(*loc.LeadingComments, "\n")
-						fieldDescription = strings.TrimLeft(fieldDescription, " ")
-					}
-					break
-				}
-			}
+			fieldProtoPath := protoPath(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "Field")
+			fieldDescription := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index), fieldProtoPath, int32(fieldIdx))
 
 			if primitive {
 				// If repeated render as an array of items.
@@ -196,21 +187,30 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 
 // renderEnumerationsAsDefinition inserts enums into the definitions object.
 func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
+	valueProtoPath := protoPath(reflect.TypeOf((*pbdescriptor.EnumDescriptorProto)(nil)), "Value")
 	for _, enum := range enums {
+		enumDescription := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index))
+
 		var enumNames []string
 		// it may be necessary to sort the result of the GetValue function.
 		var defaultValue string
-		for _, value := range enum.GetValue() {
+		for valueIdx, value := range enum.GetValue() {
 			enumNames = append(enumNames, value.GetName())
 			if defaultValue == "" && value.GetNumber() == 0 {
 				defaultValue = value.GetName()
 			}
+
+			valueDescription := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index), valueProtoPath, int32(valueIdx))
+			if valueDescription != "" {
+				enumDescription += " " + value.GetName() + ": " + valueDescription
+			}
 		}
 
 		d[fullyQualifiedNameToSwaggerName(enum.FQEN(), reg)] = swaggerSchemaObject{
-			Type:    "string",
-			Enum:    enumNames,
-			Default: defaultValue,
+			Type:        "string",
+			Enum:        enumNames,
+			Default:     defaultValue,
+			Description: enumDescription,
 		}
 	}
 }
@@ -436,19 +436,8 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					pathItemObject = swaggerPathItemObject{}
 				}
 
-				methDescription := ""
-				for _, loc := range svc.File.SourceCodeInfo.Location {
-					if len(loc.Path) < 4 {
-						continue
-					}
-					if loc.Path[0] == protoPath(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Service") && loc.Path[1] == int32(svcIdx) && loc.Path[2] == protoPath(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method") && loc.Path[3] == int32(methIdx) {
-						if loc.LeadingComments != nil {
-							methDescription = strings.TrimRight(*loc.LeadingComments, "\n")
-							methDescription = strings.TrimLeft(methDescription, " ")
-						}
-						break
-					}
-				}
+				methProtoPath := protoPath(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method")
+				methDescription := protoComments(reg, svc.File, nil, "Service", int32(svcIdx), methProtoPath, int32(methIdx))
 				operationObject := &swaggerOperationObject{
 					Summary:     fmt.Sprintf("%s.%s", svc.GetName(), meth.GetName()),
 					Description: methDescription,
@@ -521,6 +510,73 @@ func applyTemplate(p param) (string, error) {
 	enc.Encode(&s)
 
 	return w.String(), nil
+}
+
+func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []string, typeName string, typeIndex int32, fieldPathes ...int32) string {
+	outerPathes := make([]int32, len(outers))
+	for i := range outers {
+		location := ""
+		if file.Package != nil {
+			location = file.GetPackage()
+		}
+
+		msg, err := reg.LookupMsg(location, strings.Join(outers[:i+1], "."))
+		if err != nil {
+			panic(err)
+		}
+		outerPathes[i] = int32(msg.Index)
+	}
+
+	messageProtoPath := protoPath(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "MessageType")
+	nestedProtoPath := protoPath(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "NestedType")
+L1:
+	for _, loc := range file.SourceCodeInfo.Location {
+		if len(loc.Path) < len(outerPathes)*2+2+len(fieldPathes) {
+			continue
+		}
+
+		for i, v := range outerPathes {
+			if i == 0 && loc.Path[i*2+0] != messageProtoPath {
+				continue L1
+			}
+			if i != 0 && loc.Path[i*2+0] != nestedProtoPath {
+				continue L1
+			}
+			if loc.Path[i*2+1] != v {
+				continue L1
+			}
+		}
+
+		outerOffset := len(outerPathes) * 2
+		if outerOffset == 0 && loc.Path[outerOffset] != protoPath(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), typeName) {
+			continue
+		}
+		if outerOffset != 0 {
+			if typeName == "MessageType" {
+				typeName = "NestedType"
+			}
+			if loc.Path[outerOffset] != protoPath(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), typeName) {
+				continue
+			}
+		}
+		if loc.Path[outerOffset+1] != typeIndex {
+			continue
+		}
+
+		for i, v := range fieldPathes {
+			if loc.Path[outerOffset+2+i] != v {
+				continue L1
+			}
+		}
+
+		comments := ""
+		if loc.LeadingComments != nil {
+			comments = strings.TrimRight(*loc.LeadingComments, "\n")
+			comments = strings.TrimSpace(comments)
+		}
+		return comments
+	}
+	return ""
 }
 
 func protoPath(descriptorType reflect.Type, what string) int32 {

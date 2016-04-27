@@ -6,11 +6,16 @@ import "google/api/annotations.proto";
 import "examples/sub/message.proto";
 
 message ABitOfEverything {
+	// Nested is nested type.
 	message Nested {
+		// name is nested field.
 		string name = 1;
 		uint32 amount = 2;
+		// DeepEnum is one or zero.
 		enum DeepEnum {
+			// FALSE is false.
 			FALSE = 0;
+			// TRUE is true.
 			TRUE = 1;
 		}
 		DeepEnum ok = 3;
@@ -44,8 +49,11 @@ message IdMessage {
 	string uuid = 1;
 }
 
+// NumericEnum is one or zero.
 enum NumericEnum {
+	// ZERO means 0
 	ZERO = 0;
+	// ONE means 1
 	ONE  = 1;
 }
 
