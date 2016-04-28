@@ -91,8 +91,9 @@ type swaggerSchemaObject struct {
 	Type   string `json:"type,omitempty"`
 	Format string `json:"format,omitempty"`
 	// Properties can be recursively defined
-	Properties map[string]swaggerSchemaObject `json:"properties,omitempty"`
-	Items      *swaggerItemsObject            `json:"items,omitempty"`
+	Properties           map[string]swaggerSchemaObject `json:"properties,omitempty"`
+	AdditionalProperties *swaggerSchemaObject           `json:"additionalProperties,omitempty"`
+	Items                *swaggerItemsObject            `json:"items,omitempty"`
 
 	// If the item is an enumeration include a list of all the *NAMES* of the
 	// enum values.  I'm not sure how well this will work but assuming all enums
