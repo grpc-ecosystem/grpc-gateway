@@ -36,6 +36,8 @@ message ABitOfEverything {
 	sint32 sint32_value = 17;
 	sint64 sint64_value = 18;
 	repeated string repeated_string_value = 19;
+        map<string, string> mapped_string_value = 20;
+        map<string, Nested> mapped_nested_value = 21;
 }
 
 message EmptyMessage {

@@ -50,16 +50,28 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 
 func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
 	for _, msg := range messages {
+		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
+			continue
+		}
 		object := swaggerSchemaObject{
-			Type: "object",
+			Type:       "object",
 			Properties: map[string]swaggerSchemaObject{},
 		}
 		for _, field := range msg.Fields {
+			fieldDescriptor := field.FieldDescriptorProto
+			mapEntry := false
+			if fieldMessage, err := reg.LookupMsg("", field.GetTypeName()); err == nil {
+				if opt := fieldMessage.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
+					fieldDescriptor = fieldMessage.GetField()[1]
+					mapEntry = true
+				}
+			}
+
 			var fieldType, fieldFormat string
 			primitive := true
 			// Field type and format from http://swagger.io/specification/ in the
 			// "Data Types" table
-			switch field.FieldDescriptorProto.Type.String() {
+			switch fieldDescriptor.Type.String() {
 			case "TYPE_DOUBLE":
 				fieldType = "number"
 				fieldFormat = "double"
@@ -142,8 +154,17 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			}
 
 			if primitive {
-				// If repeated render as an array of items.
-				if field.FieldDescriptorProto.GetLabel() == pbdescriptor.FieldDescriptorProto_LABEL_REPEATED {
+				switch {
+				case mapEntry:
+					object.Properties[field.GetName()] = swaggerSchemaObject{
+						Type: "object",
+						AdditionalProperties: &swaggerSchemaObject{
+							Type:   fieldType,
+							Format: fieldFormat,
+						},
+					}
+				case field.FieldDescriptorProto.GetLabel() == pbdescriptor.FieldDescriptorProto_LABEL_REPEATED:
+					// If repeated render as an array of items.
 					object.Properties[field.GetName()] = swaggerSchemaObject{
 						Type: "array",
 						Items: &swaggerItemsObject{
@@ -151,21 +172,29 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 							Format: fieldFormat,
 						},
 					}
-				} else {
+				default:
 					object.Properties[field.GetName()] = swaggerSchemaObject{
 						Type:   fieldType,
 						Format: fieldFormat,
 					}
 				}
 			} else {
-				if field.FieldDescriptorProto.GetLabel() == pbdescriptor.FieldDescriptorProto_LABEL_REPEATED {
+				switch {
+				case mapEntry:
+					object.Properties[field.GetName()] = swaggerSchemaObject{
+						Type: "object",
+						AdditionalProperties: &swaggerSchemaObject{
+							Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(fieldDescriptor.GetTypeName(), reg),
+						},
+					}
+				case field.FieldDescriptorProto.GetLabel() == pbdescriptor.FieldDescriptorProto_LABEL_REPEATED:
 					object.Properties[field.GetName()] = swaggerSchemaObject{
 						Type: "array",
 						Items: &swaggerItemsObject{
 							Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(field.GetTypeName(), reg),
 						},
 					}
-				} else {
+				default:
 					object.Properties[field.GetName()] = swaggerSchemaObject{
 						Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(field.GetTypeName(), reg),
 					}

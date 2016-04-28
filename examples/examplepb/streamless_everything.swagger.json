@@ -396,6 +396,19 @@
           "type": "integer",
           "format": "int64"
         },
+        "mapped_nested_value": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ABitOfEverythingNested"
+          }
+        },
+        "mapped_string_value": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "format": "string"
+          }
+        },
         "nested": {
           "type": "array",
           "items": {
