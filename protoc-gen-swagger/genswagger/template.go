@@ -143,7 +143,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 				fieldFormat = "UNKNOWN"
 			}
 
-			fieldProtoPath := protoPath(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "Field")
+			fieldProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "Field")
 			fieldDescription := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index), fieldProtoPath, int32(fieldIdx))
 
 			if primitive {
@@ -187,7 +187,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 
 // renderEnumerationsAsDefinition inserts enums into the definitions object.
 func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
-	valueProtoPath := protoPath(reflect.TypeOf((*pbdescriptor.EnumDescriptorProto)(nil)), "Value")
+	valueProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.EnumDescriptorProto)(nil)), "Value")
 	for _, enum := range enums {
 		enumDescription := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index))
 
@@ -436,7 +436,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					pathItemObject = swaggerPathItemObject{}
 				}
 
-				methProtoPath := protoPath(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method")
+				methProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method")
 				methDescription := protoComments(reg, svc.File, nil, "Service", int32(svcIdx), methProtoPath, int32(methIdx))
 				operationObject := &swaggerOperationObject{
 					Summary:     fmt.Sprintf("%s.%s", svc.GetName(), meth.GetName()),
@@ -512,8 +512,8 @@ func applyTemplate(p param) (string, error) {
 	return w.String(), nil
 }
 
-func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []string, typeName string, typeIndex int32, fieldPathes ...int32) string {
-	outerPathes := make([]int32, len(outers))
+func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []string, typeName string, typeIndex int32, fieldPaths ...int32) string {
+	outerPaths := make([]int32, len(outers))
 	for i := range outers {
 		location := ""
 		if file.Package != nil {
@@ -524,18 +524,18 @@ func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []str
 		if err != nil {
 			panic(err)
 		}
-		outerPathes[i] = int32(msg.Index)
+		outerPaths[i] = int32(msg.Index)
 	}
 
-	messageProtoPath := protoPath(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "MessageType")
-	nestedProtoPath := protoPath(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "NestedType")
+	messageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "MessageType")
+	nestedProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "NestedType")
 L1:
 	for _, loc := range file.SourceCodeInfo.Location {
-		if len(loc.Path) < len(outerPathes)*2+2+len(fieldPathes) {
+		if len(loc.Path) < len(outerPaths)*2+2+len(fieldPaths) {
 			continue
 		}
 
-		for i, v := range outerPathes {
+		for i, v := range outerPaths {
 			if i == 0 && loc.Path[i*2+0] != messageProtoPath {
 				continue L1
 			}
@@ -547,15 +547,15 @@ L1:
 			}
 		}
 
-		outerOffset := len(outerPathes) * 2
-		if outerOffset == 0 && loc.Path[outerOffset] != protoPath(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), typeName) {
+		outerOffset := len(outerPaths) * 2
+		if outerOffset == 0 && loc.Path[outerOffset] != protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), typeName) {
 			continue
 		}
 		if outerOffset != 0 {
 			if typeName == "MessageType" {
 				typeName = "NestedType"
 			}
-			if loc.Path[outerOffset] != protoPath(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), typeName) {
+			if loc.Path[outerOffset] != protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), typeName) {
 				continue
 			}
 		}
@@ -563,7 +563,7 @@ L1:
 			continue
 		}
 
-		for i, v := range fieldPathes {
+		for i, v := range fieldPaths {
 			if loc.Path[outerOffset+2+i] != v {
 				continue L1
 			}
@@ -579,20 +579,43 @@ L1:
 	return ""
 }
 
-func protoPath(descriptorType reflect.Type, what string) int32 {
-	// TODO(ivucica): handle errors obtaining any of the following.
+// protoPathIndex returns a path component for google.protobuf.descriptor.SourceCode_Location.
+//
+// Specifically, it returns an id as generated from descriptor proto which
+// can be used to determine what type the id following it in the path is.
+// For example, if we are trying to locate comments related to a field named
+// `Address` in a message named `Person`, the path will be:
+//
+//     [4, a, 2, b]
+//
+// While `a` gets determined by the order in which the messages appear in
+// the proto file, and `b` is the field index specified in the proto
+// file itself, the path actually needs to specify that `a` refers to a
+// message and not, say, a service; and  that `b` refers to a field and not
+// an option.
+//
+// protoPathIndex figures out the values 4 and 2 in the above example. Because
+// messages are top level objects, the value of 4 comes from field id for
+// `MessageType` inside `google.protobuf.descriptor.FileDescriptor` message.
+// This field has a message type `google.protobuf.descriptor.DescriptorProto`.
+// And inside message `DescriptorProto`, there is a field named `Field` with id
+// 2.
+//
+// Some code generators seem to be hardcoding these values; this method instead
+// interprets them from `descriptor.proto`-derived Go source as necessary.
+func protoPathIndex(descriptorType reflect.Type, what string) int32 {
 	field, ok := descriptorType.Elem().FieldByName(what)
 	if !ok {
-		// TODO(ivucica): consider being more graceful.
-		panic(fmt.Errorf("Could not find type id for %s.", what))
+		panic(fmt.Errorf("Could not find protobuf descriptor type id for %s.", what))
 	}
 	pbtag := field.Tag.Get("protobuf")
 	if pbtag == "" {
-		// TODO(ivucica): consider being more graceful.
-		panic(fmt.Errorf("No protobuf tag on %s.", what))
+		panic(fmt.Errorf("No Go tag 'protobuf' on protobuf descriptor for %s.", what))
 	}
-	// TODO(ivucica): handle error
-	path, _ := strconv.Atoi(strings.Split(pbtag, ",")[1])
+	path, err := strconv.Atoi(strings.Split(pbtag, ",")[1])
+	if err != nil {
+		panic(fmt.Errorf("Protobuf descriptor id for %s cannot be converted to a number: %s", what, err.Error()))
+	}
 
 	return int32(path)
 }
