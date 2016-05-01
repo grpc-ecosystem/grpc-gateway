@@ -53,6 +53,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 	for _, msg := range messages {
 		msgDescription := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
 		object := swaggerSchemaObject{
+			Type:        "object",
 			Properties:  map[string]swaggerSchemaObject{},
 			Description: msgDescription,
 		}
