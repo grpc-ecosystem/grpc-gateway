@@ -73,6 +73,7 @@
   },
   "definitions": {
     "examplepbSimpleMessage": {
+      "type": "object",
       "properties": {
         "id": {
           "type": "string",
