@@ -48,11 +48,12 @@ func TestApplyTemplateSimple(t *testing.T) {
 	}
 	file := descriptor.File{
 		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
-			Name:        proto.String("example.proto"),
-			Package:     proto.String("example"),
-			Dependency:  []string{"a.example/b/c.proto", "a.example/d/e.proto"},
-			MessageType: []*protodescriptor.DescriptorProto{msgdesc},
-			Service:     []*protodescriptor.ServiceDescriptorProto{svc},
+			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			Dependency:     []string{"a.example/b/c.proto", "a.example/d/e.proto"},
+			MessageType:    []*protodescriptor.DescriptorProto{msgdesc},
+			Service:        []*protodescriptor.ServiceDescriptorProto{svc},
 		},
 		GoPkg: descriptor.GoPackage{
 			Path: "example.com/path/to/example/example.pb",
@@ -182,10 +183,11 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 	}
 	file := descriptor.File{
 		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
-			Name:        proto.String("example.proto"),
-			Package:     proto.String("example"),
-			MessageType: []*protodescriptor.DescriptorProto{msgdesc, nesteddesc},
-			Service:     []*protodescriptor.ServiceDescriptorProto{svc},
+			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*protodescriptor.DescriptorProto{msgdesc, nesteddesc},
+			Service:        []*protodescriptor.ServiceDescriptorProto{svc},
 		},
 		GoPkg: descriptor.GoPackage{
 			Path: "example.com/path/to/example/example.pb",
@@ -343,10 +345,11 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 	}
 	file := descriptor.File{
 		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
-			Name:        proto.String("example.proto"),
-			Package:     proto.String("example"),
-			MessageType: []*protodescriptor.DescriptorProto{msgdesc, nesteddesc},
-			Service:     []*protodescriptor.ServiceDescriptorProto{svc},
+			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*protodescriptor.DescriptorProto{msgdesc, nesteddesc},
+			Service:        []*protodescriptor.ServiceDescriptorProto{svc},
 		},
 		GoPkg: descriptor.GoPackage{
 			Path: "example.com/path/to/example/example.pb",
