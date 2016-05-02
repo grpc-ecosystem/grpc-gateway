@@ -95,7 +95,7 @@ var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion1
+const _ = grpc.SupportPackageIsVersion2
 
 // Client API for FlowCombination service
 
@@ -368,16 +368,22 @@ func RegisterFlowCombinationServer(s *grpc.Server, srv FlowCombinationServer) {
 	s.RegisterService(&_FlowCombination_serviceDesc, srv)
 }
 
-func _FlowCombination_RpcEmptyRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _FlowCombination_RpcEmptyRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EmptyProto)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(FlowCombinationServer).RpcEmptyRpc(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(FlowCombinationServer).RpcEmptyRpc(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gengo.grpc.gateway.examples.examplepb.FlowCombination/RpcEmptyRpc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FlowCombinationServer).RpcEmptyRpc(ctx, req.(*EmptyProto))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _FlowCombination_RpcEmptyStream_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -453,40 +459,58 @@ func (x *flowCombinationStreamEmptyStreamServer) Recv() (*EmptyProto, error) {
 	return m, nil
 }
 
-func _FlowCombination_RpcBodyRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _FlowCombination_RpcBodyRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NonEmptyProto)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(FlowCombinationServer).RpcBodyRpc(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(FlowCombinationServer).RpcBodyRpc(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gengo.grpc.gateway.examples.examplepb.FlowCombination/RpcBodyRpc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FlowCombinationServer).RpcBodyRpc(ctx, req.(*NonEmptyProto))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-func _FlowCombination_RpcPathSingleNestedRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _FlowCombination_RpcPathSingleNestedRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SingleNestedProto)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(FlowCombinationServer).RpcPathSingleNestedRpc(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(FlowCombinationServer).RpcPathSingleNestedRpc(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gengo.grpc.gateway.examples.examplepb.FlowCombination/RpcPathSingleNestedRpc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FlowCombinationServer).RpcPathSingleNestedRpc(ctx, req.(*SingleNestedProto))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-func _FlowCombination_RpcPathNestedRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _FlowCombination_RpcPathNestedRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NestedProto)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(FlowCombinationServer).RpcPathNestedRpc(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(FlowCombinationServer).RpcPathNestedRpc(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gengo.grpc.gateway.examples.examplepb.FlowCombination/RpcPathNestedRpc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FlowCombinationServer).RpcPathNestedRpc(ctx, req.(*NestedProto))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _FlowCombination_RpcBodyStream_Handler(srv interface{}, stream grpc.ServerStream) error {
