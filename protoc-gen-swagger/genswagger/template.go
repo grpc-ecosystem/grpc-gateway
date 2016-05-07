@@ -558,13 +558,18 @@ func applyTemplate(p param) (string, error) {
 // will be updated instead. (JSON always gets applied directly to the passed
 // object.)
 //
-// If there is no 'Summary', the same behavior will be attempted on 'Title'.
+// If there is no 'Summary', the same behavior will be attempted on 'Title',
+// but only if the last character is not a period.
 //
 // To apply additional Swagger properties, one can pass valid JSON as described
 // before. This JSON gets parsed and applied to the passed swaggerObject
 // directly. This lets users easily apply custom properties such as contact
 // details, API base path, et al.
 func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) error {
+	if len(comment) == 0 {
+		return nil
+	}
+
 	// Find a section containing additional Swagger metadata.
 	matches := swaggerExtrasRegexp.FindStringSubmatch(comment)
 
@@ -597,8 +602,10 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 	// Figure out which properties to update.
 	summaryValue := infoObjectValue.FieldByName("Summary")
 	descriptionValue := infoObjectValue.FieldByName("Description")
+	usingTitle := false
 	if !summaryValue.CanSet() {
 		summaryValue = infoObjectValue.FieldByName("Title")
+		usingTitle = true
 	}
 
 	// If there is a summary (or summary-equivalent), use the first
@@ -608,16 +615,18 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 
 		summary := strings.TrimSpace(paragraphs[0])
 		description := strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
-		if len(summary) > 0 {
-			summaryValue.Set(reflect.ValueOf(summary))
-		}
-		if len(description) > 0 {
-			if !descriptionValue.CanSet() {
-				return fmt.Errorf("Object that has Summary but no Description?")
+		if !usingTitle || summary[len(summary)-1] != '.' {
+			if len(summary) > 0 {
+				summaryValue.Set(reflect.ValueOf(summary))
 			}
-			descriptionValue.Set(reflect.ValueOf(description))
+			if len(description) > 0 {
+				if !descriptionValue.CanSet() {
+					return fmt.Errorf("Encountered object type with a summary, but no description")
+				}
+				descriptionValue.Set(reflect.ValueOf(description))
+			}
+			return nil
 		}
-		return nil
 	}
 
 	// There was no summary field on the swaggerObject. Try to apply the
