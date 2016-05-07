@@ -28,7 +28,7 @@
         "description": "The message posted as the id parameter will also be\nreturned.",
         "operationId": "Echo",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbSimpleMessage"
@@ -58,7 +58,7 @@
         "summary": "EchoBody method receives a simple message and returns it.",
         "operationId": "EchoBody",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbSimpleMessage"

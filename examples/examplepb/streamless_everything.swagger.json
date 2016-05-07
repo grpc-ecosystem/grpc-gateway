@@ -19,7 +19,7 @@
       "get": {
         "operationId": "List",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
@@ -33,7 +33,7 @@
       "post": {
         "operationId": "CreateBody",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
@@ -59,7 +59,7 @@
       "post": {
         "operationId": "BulkCreate",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbEmptyMessage"
@@ -85,7 +85,7 @@
       "post": {
         "operationId": "BulkEcho",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
@@ -111,7 +111,7 @@
       "get": {
         "operationId": "Echo",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
@@ -136,7 +136,7 @@
       "post": {
         "operationId": "Create",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
@@ -252,7 +252,7 @@
       "get": {
         "operationId": "Lookup",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
@@ -275,7 +275,7 @@
       "delete": {
         "operationId": "Delete",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbEmptyMessage"
@@ -298,7 +298,7 @@
       "put": {
         "operationId": "Update",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbEmptyMessage"
