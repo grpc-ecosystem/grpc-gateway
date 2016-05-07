@@ -129,6 +129,7 @@ type swaggerSchemaObject struct {
 	Default string   `json:"default,omitempty"`
 
 	Description string `json:"description,omitempty"`
+	Title       string `json:"title,omitempty"`
 }
 
 // http://swagger.io/specification/#referenceObject
