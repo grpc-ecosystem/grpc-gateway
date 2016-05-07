@@ -13,8 +13,6 @@ import (
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 
-var swaggerExtrasRegexp = regexp.MustCompile(`(?s)^(.*[^\s])[\s]*<!-- swagger extras start(.*)swagger extras end -->[\s]*(.*)$`)
-
 // findServicesMessagesAndEnumerations discovers all messages and enums defined in the RPC methods of the service.
 func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, e enumMap) {
 	for _, svc := range s {
@@ -541,53 +539,18 @@ func applyTemplate(p param) (string, error) {
 // updateSwaggerDataFromComments updates a Swagger object based on a comment
 // from the proto file.
 //
-// As a first step, a section matching:
-//
-//     <!-- swagger extras start.*swagger extras end-->
-//
-// where .* contains valid JSON will be stored for later processing, and then
-// removed from the passed string.
-// (Implementation note: Currently, the JSON gets immediately applied and
-// thus cannot override summary and description.)
-//
 // First paragraph of a comment is used for summary. Remaining paragraphs of a
 // comment are used for description. If 'Summary' field is not present on the
 // passed swaggerObject, the summary and description are joined by \n\n.
 //
 // If there is a field named 'Info', its 'Summary' and 'Description' fields
-// will be updated instead. (JSON always gets applied directly to the passed
-// object.)
+// will be updated instead.
 //
 // If there is no 'Summary', the same behavior will be attempted on 'Title',
 // but only if the last character is not a period.
-//
-// To apply additional Swagger properties, one can pass valid JSON as described
-// before. This JSON gets parsed and applied to the passed swaggerObject
-// directly. This lets users easily apply custom properties such as contact
-// details, API base path, et al.
 func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) error {
 	if len(comment) == 0 {
 		return nil
-	}
-
-	// Find a section containing additional Swagger metadata.
-	matches := swaggerExtrasRegexp.FindStringSubmatch(comment)
-
-	if len(matches) > 0 {
-		// If found, before further processing, replace the
-		// comment with a version that does not contain the
-		// extras.
-		comment = matches[1]
-		if len(matches[3]) > 0 {
-			comment += "\n\n" + matches[3]
-		}
-
-		// Parse the JSON and apply it.
-		// TODO(ivucica): apply extras /after/ applying summary
-		// and description.
-		if err := json.Unmarshal([]byte(matches[2]), swaggerObject); err != nil {
-			return fmt.Errorf("error: %s, parsing: %s", err.Error(), matches[2])
-		}
 	}
 
 	// Figure out what to apply changes to.

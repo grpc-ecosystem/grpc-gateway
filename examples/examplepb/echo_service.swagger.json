@@ -3,14 +3,8 @@
   "info": {
     "title": "Echo Service",
     "description": "Echo Service API consists of a single service which returns\na message.",
-    "version": "1.0",
-    "contact": {
-      "name": "gRPC-Gateway project",
-      "url": "https://github.com/gengo/grpc-gateway",
-      "email": "none@example.com"
-    }
+    "version": "version not set"
   },
-  "host": "localhost",
   "schemes": [
     "http",
     "https"
@@ -46,11 +40,7 @@
         ],
         "tags": [
           "EchoService"
-        ],
-        "externalDocs": {
-          "description": "Find out more about EchoService",
-          "url": "http://github.com/gengo/grpc-gateway"
-        }
+        ]
       }
     },
     "/v1/example/echo_body": {
