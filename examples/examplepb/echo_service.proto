@@ -6,8 +6,7 @@ option go_package = "examplepb";
 // Echo Service API consists of a single service which returns
 // a message.
 //
-// <!-- swagger extras start
-// {
+// Swagger: {
 //   "info": {
 //     "title": "Echo Service",
 //     "version": "1.0",
@@ -23,21 +22,18 @@ option go_package = "examplepb";
 //     "description": "More about gRPC-Gateway"
 //   }
 // }
-// swagger extras end -->
 package grpc.gateway.examples.examplepb;
 
 import "google/api/annotations.proto";
 
 // SimpleMessage represents a simple message sent to the Echo service.
 //
-// <!-- swagger extras start
-// {
+// Swagger: {
 //   "externalDocs": {
 //     "url": "http://github.com/grpc-ecosystem/grpc-gateway",
 //     "description": "Find out more about EchoService"
 //   }
 // }
-// swagger extras end -->
 message SimpleMessage {
 	// Id represents the message identifier.
 	string id = 1;
@@ -51,14 +47,12 @@ service EchoService {
 	// The message posted as the id parameter will also be
 	// returned.
 	//
-	// <!-- swagger extras start
-	// {
+	// Swagger: {
 	//   "externalDocs": {
 	//     "url": "http://github.com/grpc-ecosystem/grpc-gateway",
 	//     "description": "Find out more about EchoService"
 	//   }
 	// }
-	// swagger extras end -->
 	rpc Echo(SimpleMessage) returns (SimpleMessage) {
 		option (google.api.http) = {
 			post: "/v1/example/echo/{id}"
