@@ -9,6 +9,25 @@ Echo Service
 Echo Service API consists of a single service which returns
 a message.
 
+<!-- swagger extras start
+{
+  "info": {
+    "title": "Echo Service",
+    "version": "1.0",
+    "contact": {
+      "name": "gRPC-Gateway project",
+      "url": "https://github.com/gengo/grpc-gateway",
+      "email": "none@example.com"
+    }
+  },
+  "host": "localhost",
+  "externalDocs": {
+    "url": "https://github.com/gengo/grpc-gateway",
+    "description": "More about gRPC-Gateway"
+  }
+}
+swagger extras end -->
+
 It is generated from these files:
 	examples/examplepb/echo_service.proto
 	examples/examplepb/a_bit_of_everything.proto
@@ -48,6 +67,15 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 // SimpleMessage represents a simple message sent to the Echo service.
+//
+// <!-- swagger extras start
+// {
+//   "externalDocs": {
+//     "url": "http://github.com/gengo/grpc-gateway",
+//     "description": "Find out more about EchoService"
+//   }
+// }
+// swagger extras end -->
 type SimpleMessage struct {
 	// Id represents the message identifier.
 	Id  string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
@@ -92,6 +120,15 @@ type EchoServiceClient interface {
 	//
 	// The message posted as the id parameter will also be
 	// returned.
+	//
+	// <!-- swagger extras start
+	// {
+	//   "externalDocs": {
+	//     "url": "http://github.com/gengo/grpc-gateway",
+	//     "description": "Find out more about EchoService"
+	//   }
+	// }
+	// swagger extras end -->
 	Echo(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
 	// EchoBody method receives a simple message and returns it.
 	EchoBody(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
@@ -130,6 +167,15 @@ type EchoServiceServer interface {
 	//
 	// The message posted as the id parameter will also be
 	// returned.
+	//
+	// <!-- swagger extras start
+	// {
+	//   "externalDocs": {
+	//     "url": "http://github.com/gengo/grpc-gateway",
+	//     "description": "Find out more about EchoService"
+	//   }
+	// }
+	// swagger extras end -->
 	Echo(context.Context, *SimpleMessage) (*SimpleMessage, error)
 	// EchoBody method receives a simple message and returns it.
 	EchoBody(context.Context, *SimpleMessage) (*SimpleMessage, error)
