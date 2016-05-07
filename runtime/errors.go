@@ -79,7 +79,7 @@ func (*errorBody) ProtoMessage()    {}
 //
 // The response body returned by this function is a JSON object,
 // which contains a member whose key is "error" and whose value is err.Error().
-func DefaultHTTPError(marshaler Marshaler, ctx context.Context, w http.ResponseWriter, _ *http.Request, err error) {
+func DefaultHTTPError(ctx context.Context, marshaler Marshaler, w http.ResponseWriter, _ *http.Request, err error) {
 	const fallback = `{"error": "failed to marshal error message"}`
 
 	w.Header().Del("Trailer")

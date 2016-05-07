@@ -132,7 +132,7 @@ var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion1
+const _ = grpc.SupportPackageIsVersion2
 
 // Client API for ABitOfEverythingService service
 
@@ -325,28 +325,40 @@ func RegisterABitOfEverythingServiceServer(s *grpc.Server, srv ABitOfEverythingS
 	s.RegisterService(&_ABitOfEverythingService_serviceDesc, srv)
 }
 
-func _ABitOfEverythingService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _ABitOfEverythingService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ABitOfEverything)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(ABitOfEverythingServiceServer).Create(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).Create(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gengo.grpc.gateway.examples.examplepb.ABitOfEverythingService/Create",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).Create(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-func _ABitOfEverythingService_CreateBody_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _ABitOfEverythingService_CreateBody_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ABitOfEverything)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(ABitOfEverythingServiceServer).CreateBody(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).CreateBody(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gengo.grpc.gateway.examples.examplepb.ABitOfEverythingService/CreateBody",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).CreateBody(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ABitOfEverythingService_BulkCreate_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -375,16 +387,22 @@ func (x *aBitOfEverythingServiceBulkCreateServer) Recv() (*ABitOfEverything, err
 	return m, nil
 }
 
-func _ABitOfEverythingService_Lookup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _ABitOfEverythingService_Lookup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(sub2.IdMessage)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(ABitOfEverythingServiceServer).Lookup(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).Lookup(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gengo.grpc.gateway.examples.examplepb.ABitOfEverythingService/Lookup",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).Lookup(ctx, req.(*sub2.IdMessage))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ABitOfEverythingService_List_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -408,40 +426,58 @@ func (x *aBitOfEverythingServiceListServer) Send(m *ABitOfEverything) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _ABitOfEverythingService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _ABitOfEverythingService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ABitOfEverything)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(ABitOfEverythingServiceServer).Update(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).Update(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gengo.grpc.gateway.examples.examplepb.ABitOfEverythingService/Update",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).Update(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-func _ABitOfEverythingService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _ABitOfEverythingService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(sub2.IdMessage)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(ABitOfEverythingServiceServer).Delete(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).Delete(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gengo.grpc.gateway.examples.examplepb.ABitOfEverythingService/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).Delete(ctx, req.(*sub2.IdMessage))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-func _ABitOfEverythingService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _ABitOfEverythingService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(gengo_grpc_gateway_examples_sub.StringMessage)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(ABitOfEverythingServiceServer).Echo(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).Echo(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/gengo.grpc.gateway.examples.examplepb.ABitOfEverythingService/Echo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).Echo(ctx, req.(*gengo_grpc_gateway_examples_sub.StringMessage))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ABitOfEverythingService_BulkEcho_Handler(srv interface{}, stream grpc.ServerStream) error {

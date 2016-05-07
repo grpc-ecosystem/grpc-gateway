@@ -22,7 +22,7 @@ func TestGoPackageStandard(t *testing.T) {
 		},
 		{
 			pkg:  GoPackage{Path: "github.com/golang/protobuf/jsonpb", Name: "jsonpb"},
-			want: true,
+			want: false,
 		},
 		{
 			pkg:  GoPackage{Path: "golang.org/x/net/context", Name: "context"},
