@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "",
-    "title": ""
+    "title": "examples/examplepb/streamless_everything.proto",
+    "version": "version not set"
   },
   "schemes": [
     "http",
@@ -17,7 +17,6 @@
   "paths": {
     "/v1/example/a_bit_of_everything": {
       "get": {
-        "summary": "ABitOfEverythingService.List",
         "operationId": "List",
         "responses": {
           "default": {
@@ -32,7 +31,6 @@
         ]
       },
       "post": {
-        "summary": "ABitOfEverythingService.CreateBody",
         "operationId": "CreateBody",
         "responses": {
           "default": {
@@ -59,7 +57,6 @@
     },
     "/v1/example/a_bit_of_everything/bulk": {
       "post": {
-        "summary": "ABitOfEverythingService.BulkCreate",
         "operationId": "BulkCreate",
         "responses": {
           "default": {
@@ -86,7 +83,6 @@
     },
     "/v1/example/a_bit_of_everything/echo": {
       "post": {
-        "summary": "ABitOfEverythingService.BulkEcho",
         "operationId": "BulkEcho",
         "responses": {
           "default": {
@@ -113,7 +109,6 @@
     },
     "/v1/example/a_bit_of_everything/echo/{value}": {
       "get": {
-        "summary": "ABitOfEverythingService.Echo",
         "operationId": "Echo",
         "responses": {
           "default": {
@@ -139,7 +134,6 @@
     },
     "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}": {
       "post": {
-        "summary": "ABitOfEverythingService.Create",
         "operationId": "Create",
         "responses": {
           "default": {
@@ -256,7 +250,6 @@
     },
     "/v1/example/a_bit_of_everything/{uuid}": {
       "get": {
-        "summary": "ABitOfEverythingService.Lookup",
         "operationId": "Lookup",
         "responses": {
           "default": {
@@ -280,7 +273,6 @@
         ]
       },
       "delete": {
-        "summary": "ABitOfEverythingService.Delete",
         "operationId": "Delete",
         "responses": {
           "default": {
@@ -304,7 +296,6 @@
         ]
       },
       "put": {
-        "summary": "ABitOfEverythingService.Update",
         "operationId": "Update",
         "responses": {
           "default": {
@@ -363,7 +354,7 @@
         "TRUE"
       ],
       "default": "FALSE",
-      "description": "DeepEnum is one or zero. FALSE: FALSE is false. TRUE: TRUE is true."
+      "description": "DeepEnum is one or zero.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true."
     },
     "examplepbABitOfEverything": {
       "type": "object",
@@ -466,7 +457,7 @@
         "ONE"
       ],
       "default": "ZERO",
-      "description": "NumericEnum is one or zero. ZERO: ZERO means 0 ONE: ONE means 1"
+      "description": "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1"
     },
     "subStringMessage": {
       "type": "object",

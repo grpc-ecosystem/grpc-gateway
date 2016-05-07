@@ -13,6 +13,8 @@ import (
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 
+var swaggerExtrasRegexp = regexp.MustCompile(`(?s)^(.*[^\s])[\s]*<!-- swagger extras start(.*)swagger extras end -->[\s]*(.*)$`)
+
 // findServicesMessagesAndEnumerations discovers all messages and enums defined in the RPC methods of the service.
 func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, e enumMap) {
 	for _, svc := range s {
@@ -51,11 +53,13 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 
 func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
 	for _, msg := range messages {
-		msgDescription := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
 		object := swaggerSchemaObject{
-			Type:        "object",
-			Properties:  map[string]swaggerSchemaObject{},
-			Description: msgDescription,
+			Type:       "object",
+			Properties: map[string]swaggerSchemaObject{},
+		}
+		msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
+		if err := updateSwaggerDataFromComments(&object, msgComments); err != nil {
+			panic(err)
 		}
 		for fieldIdx, field := range msg.Fields {
 			var fieldType, fieldFormat string
@@ -145,42 +149,43 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			}
 
 			fieldProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "Field")
-			fieldDescription := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index), fieldProtoPath, int32(fieldIdx))
+			fieldProtoComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index), fieldProtoPath, int32(fieldIdx))
 
+			var fieldValue swaggerSchemaObject
 			if primitive {
 				// If repeated render as an array of items.
 				if field.FieldDescriptorProto.GetLabel() == pbdescriptor.FieldDescriptorProto_LABEL_REPEATED {
-					object.Properties[field.GetName()] = swaggerSchemaObject{
+					fieldValue = swaggerSchemaObject{
 						Type: "array",
 						Items: &swaggerItemsObject{
 							Type:   fieldType,
 							Format: fieldFormat,
 						},
-						Description: fieldDescription,
 					}
 				} else {
-					object.Properties[field.GetName()] = swaggerSchemaObject{
-						Type:        fieldType,
-						Format:      fieldFormat,
-						Description: fieldDescription,
+					fieldValue = swaggerSchemaObject{
+						Type:   fieldType,
+						Format: fieldFormat,
 					}
 				}
 			} else {
 				if field.FieldDescriptorProto.GetLabel() == pbdescriptor.FieldDescriptorProto_LABEL_REPEATED {
-					object.Properties[field.GetName()] = swaggerSchemaObject{
+					fieldValue = swaggerSchemaObject{
 						Type: "array",
 						Items: &swaggerItemsObject{
 							Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(field.GetTypeName(), reg),
 						},
-						Description: fieldDescription,
 					}
 				} else {
-					object.Properties[field.GetName()] = swaggerSchemaObject{
-						Ref:         "#/definitions/" + fullyQualifiedNameToSwaggerName(field.GetTypeName(), reg),
-						Description: fieldDescription,
+					fieldValue = swaggerSchemaObject{
+						Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(field.GetTypeName(), reg),
 					}
 				}
 			}
+			if err := updateSwaggerDataFromComments(&fieldValue, fieldProtoComments); err != nil {
+				panic(err)
+			}
+			object.Properties[field.GetName()] = fieldValue
 		}
 		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = object
 	}
@@ -190,11 +195,12 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
 	valueProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.EnumDescriptorProto)(nil)), "Value")
 	for _, enum := range enums {
-		enumDescription := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index))
+		enumComments := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index))
 
 		var enumNames []string
 		// it may be necessary to sort the result of the GetValue function.
 		var defaultValue string
+		var valueDescriptions []string
 		for valueIdx, value := range enum.GetValue() {
 			enumNames = append(enumNames, value.GetName())
 			if defaultValue == "" && value.GetNumber() == 0 {
@@ -203,16 +209,23 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 
 			valueDescription := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index), valueProtoPath, int32(valueIdx))
 			if valueDescription != "" {
-				enumDescription += " " + value.GetName() + ": " + valueDescription
+				valueDescriptions = append(valueDescriptions, value.GetName()+": "+valueDescription)
 			}
 		}
 
-		d[fullyQualifiedNameToSwaggerName(enum.FQEN(), reg)] = swaggerSchemaObject{
-			Type:        "string",
-			Enum:        enumNames,
-			Default:     defaultValue,
-			Description: enumDescription,
+		if len(valueDescriptions) > 0 {
+			enumComments += "\n\n - " + strings.Join(valueDescriptions, "\n - ")
 		}
+		enumSchemaObject := swaggerSchemaObject{
+			Type:    "string",
+			Enum:    enumNames,
+			Default: defaultValue,
+		}
+		if err := updateSwaggerDataFromComments(&enumSchemaObject, enumComments); err != nil {
+			panic(err)
+		}
+
+		d[fullyQualifiedNameToSwaggerName(enum.FQEN(), reg)] = enumSchemaObject
 	}
 }
 
@@ -438,10 +451,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 
 				methProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method")
-				methDescription := protoComments(reg, svc.File, nil, "Service", int32(svcIdx), methProtoPath, int32(methIdx))
 				operationObject := &swaggerOperationObject{
-					Summary:     fmt.Sprintf("%s.%s", svc.GetName(), meth.GetName()),
-					Description: methDescription,
 					Tags:        []string{svc.GetName()},
 					OperationId: fmt.Sprintf("%s", meth.GetName()),
 					Parameters:  parameters,
@@ -453,6 +463,10 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							},
 						},
 					},
+				}
+				methComments := protoComments(reg, svc.File, nil, "Service", int32(svcIdx), methProtoPath, int32(methIdx))
+				if err := updateSwaggerDataFromComments(operationObject, methComments); err != nil {
+					panic(err)
 				}
 
 				switch b.HTTPMethod {
@@ -490,6 +504,10 @@ func applyTemplate(p param) (string, error) {
 		Produces:    []string{"application/json"},
 		Paths:       make(swaggerPathsObject),
 		Definitions: make(swaggerDefinitionsObject),
+		Info: swaggerInfoObject{
+			Title:   *p.File.Name,
+			Version: "version not set",
+		},
 	}
 
 	// Loops through all the services and their exposed GET/POST/PUT/DELETE definitions
@@ -504,6 +522,13 @@ func applyTemplate(p param) (string, error) {
 	renderMessagesAsDefinition(m, s.Definitions, p.reg)
 	renderEnumerationsAsDefinition(e, s.Definitions, p.reg)
 
+	// File itself might have some comments and metadata.
+	packageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
+	packageComments := protoComments(p.reg, p.File, nil, "Package", packageProtoPath)
+	if err := updateSwaggerDataFromComments(&s, packageComments); err != nil {
+		panic(err)
+	}
+
 	// We now have rendered the entire swagger object. Write the bytes out to a
 	// string so it can be written to disk.
 	var w bytes.Buffer
@@ -511,6 +536,98 @@ func applyTemplate(p param) (string, error) {
 	enc.Encode(&s)
 
 	return w.String(), nil
+}
+
+// updateSwaggerDataFromComments updates a Swagger object based on a comment
+// from the proto file.
+//
+// As a first step, a section matching:
+//
+//     <!-- swagger extras start.*swagger extras end-->
+//
+// where .* contains valid JSON will be stored for later processing, and then
+// removed from the passed string.
+// (Implementation note: Currently, the JSON gets immediately applied and
+// thus cannot override summary and description.)
+//
+// First paragraph of a comment is used for summary. Remaining paragraphs of a
+// comment are used for description. If 'Summary' field is not present on the
+// passed swaggerObject, the summary and description are joined by \n\n.
+//
+// If there is a field named 'Info', its 'Summary' and 'Description' fields
+// will be updated instead. (JSON always gets applied directly to the passed
+// object.)
+//
+// If there is no 'Summary', the same behavior will be attempted on 'Title'.
+//
+// To apply additional Swagger properties, one can pass valid JSON as described
+// before. This JSON gets parsed and applied to the passed swaggerObject
+// directly. This lets users easily apply custom properties such as contact
+// details, API base path, et al.
+func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) error {
+	// Find a section containing additional Swagger metadata.
+	matches := swaggerExtrasRegexp.FindStringSubmatch(comment)
+
+	if len(matches) > 0 {
+		// If found, before further processing, replace the
+		// comment with a version that does not contain the
+		// extras.
+		comment = matches[1]
+		if len(matches[3]) > 0 {
+			comment += "\n\n" + matches[3]
+		}
+
+		// Parse the JSON and apply it.
+		// TODO(ivucica): apply extras /after/ applying summary
+		// and description.
+		if err := json.Unmarshal([]byte(matches[2]), swaggerObject); err != nil {
+			return fmt.Errorf("error: %s, parsing: %s", err.Error(), matches[2])
+		}
+	}
+
+	// Figure out what to apply changes to.
+	swaggerObjectValue := reflect.ValueOf(swaggerObject)
+	infoObjectValue := swaggerObjectValue.Elem().FieldByName("Info")
+	if !infoObjectValue.CanSet() {
+		// No such field? Apply summary and description directly to
+		// passed object.
+		infoObjectValue = swaggerObjectValue.Elem()
+	}
+
+	// Figure out which properties to update.
+	summaryValue := infoObjectValue.FieldByName("Summary")
+	descriptionValue := infoObjectValue.FieldByName("Description")
+	if !summaryValue.CanSet() {
+		summaryValue = infoObjectValue.FieldByName("Title")
+	}
+
+	// If there is a summary (or summary-equivalent), use the first
+	// paragraph as summary, and the rest as description.
+	if summaryValue.CanSet() {
+		paragraphs := strings.Split(comment, "\n\n")
+
+		summary := strings.TrimSpace(paragraphs[0])
+		description := strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
+		if len(summary) > 0 {
+			summaryValue.Set(reflect.ValueOf(summary))
+		}
+		if len(description) > 0 {
+			if !descriptionValue.CanSet() {
+				return fmt.Errorf("Object that has Summary but no Description?")
+			}
+			descriptionValue.Set(reflect.ValueOf(description))
+		}
+		return nil
+	}
+
+	// There was no summary field on the swaggerObject. Try to apply the
+	// whole comment into description.
+	if descriptionValue.CanSet() {
+		descriptionValue.Set(reflect.ValueOf(comment))
+		return nil
+	}
+
+	return fmt.Errorf("No description nor summary property.")
 }
 
 func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []string, typeName string, typeIndex int32, fieldPaths ...int32) string {
@@ -540,50 +657,64 @@ func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []str
 
 	messageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "MessageType")
 	nestedProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "NestedType")
+	packageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
 L1:
 	for _, loc := range file.SourceCodeInfo.Location {
-		if len(loc.Path) < len(outerPaths)*2+2+len(fieldPaths) {
-			continue
-		}
+		if typeIndex != packageProtoPath {
+			if len(loc.Path) < len(outerPaths)*2+2+len(fieldPaths) {
+				continue
+			}
+			for i, v := range outerPaths {
+				if i == 0 && loc.Path[i*2+0] != messageProtoPath {
+					continue L1
+				}
+				if i != 0 && loc.Path[i*2+0] != nestedProtoPath {
+					continue L1
+				}
+				if loc.Path[i*2+1] != v {
+					continue L1
+				}
+			}
 
-		for i, v := range outerPaths {
-			if i == 0 && loc.Path[i*2+0] != messageProtoPath {
-				continue L1
+			outerOffset := len(outerPaths) * 2
+			if outerOffset == 0 && loc.Path[outerOffset] != protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), typeName) {
+				continue
 			}
-			if i != 0 && loc.Path[i*2+0] != nestedProtoPath {
-				continue L1
+			if outerOffset != 0 {
+				if typeName == "MessageType" {
+					typeName = "NestedType"
+				}
+				if loc.Path[outerOffset] != protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), typeName) {
+					continue
+				}
 			}
-			if loc.Path[i*2+1] != v {
-				continue L1
+			if loc.Path[outerOffset+1] != typeIndex {
+				continue
 			}
-		}
 
-		outerOffset := len(outerPaths) * 2
-		if outerOffset == 0 && loc.Path[outerOffset] != protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), typeName) {
-			continue
-		}
-		if outerOffset != 0 {
-			if typeName == "MessageType" {
-				typeName = "NestedType"
+			for i, v := range fieldPaths {
+				if loc.Path[outerOffset+2+i] != v {
+					continue L1
+				}
 			}
-			if loc.Path[outerOffset] != protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), typeName) {
+		} else {
+			// path for package comments is just [2], and all the other processing
+			// is too complex for it.
+			if len(loc.Path) == 0 || typeIndex != loc.Path[0] {
 				continue
 			}
 		}
-		if loc.Path[outerOffset+1] != typeIndex {
-			continue
-		}
-
-		for i, v := range fieldPaths {
-			if loc.Path[outerOffset+2+i] != v {
-				continue L1
-			}
-		}
-
 		comments := ""
 		if loc.LeadingComments != nil {
 			comments = strings.TrimRight(*loc.LeadingComments, "\n")
 			comments = strings.TrimSpace(comments)
+			// TODO(ivucica): this is a hack to fix "// " being interpreted as "//".
+			// perhaps we should:
+			// - split by \n
+			// - determine if every (but first and last) line begins with " "
+			// - trim every line only if that is the case
+			// - join by \n
+			comments = strings.Replace(comments, "\n ", "\n", -1)
 		}
 		return comments
 	}

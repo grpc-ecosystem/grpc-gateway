@@ -1,9 +1,16 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "",
-    "title": ""
+    "title": "Echo Service",
+    "description": "Echo Service API consists of a single service which returns\na message.",
+    "version": "1.0",
+    "contact": {
+      "name": "gRPC-Gateway project",
+      "url": "https://github.com/gengo/grpc-gateway",
+      "email": "none@example.com"
+    }
   },
+  "host": "localhost",
   "schemes": [
     "http",
     "https"
@@ -17,8 +24,8 @@
   "paths": {
     "/v1/example/echo/{id}": {
       "post": {
-        "summary": "EchoService.Echo",
-        "description": "Echo method receives a simple message and returns it.",
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
         "operationId": "Echo",
         "responses": {
           "default": {
@@ -39,13 +46,16 @@
         ],
         "tags": [
           "EchoService"
-        ]
+        ],
+        "externalDocs": {
+          "description": "Find out more about EchoService",
+          "url": "http://github.com/gengo/grpc-gateway"
+        }
       }
     },
     "/v1/example/echo_body": {
       "post": {
-        "summary": "EchoService.EchoBody",
-        "description": "EchoBody method receives a simple message and returns it.",
+        "summary": "EchoBody method receives a simple message and returns it.",
         "operationId": "EchoBody",
         "responses": {
           "default": {
