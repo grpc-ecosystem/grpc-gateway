@@ -456,7 +456,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					OperationId: fmt.Sprintf("%s", meth.GetName()),
 					Parameters:  parameters,
 					Responses: swaggerResponsesObject{
-						"default": swaggerResponseObject{
+						"200": swaggerResponseObject{
 							Description: "Description",
 							Schema: swaggerSchemaObject{
 								Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)),
