@@ -9,7 +9,7 @@ Echo Service
 Echo Service API consists of a single service which returns
 a message.
 
-Swagger: {
+OpenAPI: {
   "info": {
     "title": "Echo Service",
     "version": "1.0",
@@ -66,7 +66,7 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 // SimpleMessage represents a simple message sent to the Echo service.
 //
-// Swagger: {
+// OpenAPI: {
 //   "externalDocs": {
 //     "url": "http://github.com/gengo/grpc-gateway",
 //     "description": "Find out more about EchoService"
@@ -117,7 +117,7 @@ type EchoServiceClient interface {
 	// The message posted as the id parameter will also be
 	// returned.
 	//
-	// Swagger: {
+	// OpenAPI: {
 	//   "externalDocs": {
 	//     "url": "http://github.com/gengo/grpc-gateway",
 	//     "description": "Find out more about EchoService"
@@ -162,7 +162,7 @@ type EchoServiceServer interface {
 	// The message posted as the id parameter will also be
 	// returned.
 	//
-	// Swagger: {
+	// OpenAPI: {
 	//   "externalDocs": {
 	//     "url": "http://github.com/gengo/grpc-gateway",
 	//     "description": "Find out more about EchoService"

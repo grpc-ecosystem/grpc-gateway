@@ -646,7 +646,7 @@ func applyTemplate(p param) (string, error) {
 //
 // To apply additional Swagger properties, one can pass valid JSON
 // in the last paragraph of the comment. The last paragraph needs to start
-// with the string 'Swagger: '. This JSON gets parsed and applied to
+// with the string 'OpenAPI: '. This JSON gets parsed and applied to
 // the passed swaggerObject directly. This lets developers easily apply
 // custom properties such as contact details, API base path, et al.
 func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) error {
@@ -676,8 +676,8 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 	// TODO(ivucica): apply extras /after/ applying summary
 	// and description.
 	paragraphs := strings.Split(comment, "\n\n")
-	if len(paragraphs) > 0 && strings.HasPrefix(strings.TrimLeft(paragraphs[len(paragraphs)-1], " "), "Swagger: ") {
-		if err := json.Unmarshal([]byte(strings.TrimLeft(paragraphs[len(paragraphs)-1], " "))[len("Swagger: "):], swaggerObject); err != nil {
+	if len(paragraphs) > 0 && strings.HasPrefix(strings.TrimLeft(paragraphs[len(paragraphs)-1], " "), "OpenAPI: ") {
+		if err := json.Unmarshal([]byte(strings.TrimLeft(paragraphs[len(paragraphs)-1], " "))[len("OpenAPI: "):], swaggerObject); err != nil {
 			return fmt.Errorf("error: %s, parsing: %s", err.Error(), paragraphs[len(paragraphs)-1])
 		}
 		paragraphs = paragraphs[:len(paragraphs)-1]
