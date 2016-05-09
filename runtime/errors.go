@@ -1,9 +1,10 @@
 package runtime
 
 import (
-	"encoding/json"
 	"io"
 	"net/http"
+
+	"github.com/golang/protobuf/proto"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -67,22 +68,28 @@ type errorBody struct {
 	Code  int    `json:"code"`
 }
 
+//Make this also conform to proto.Message for builtin JSONPb Marshaler
+func (e *errorBody) Reset()         { *e = errorBody{} }
+func (e *errorBody) String() string { return proto.CompactTextString(e) }
+func (*errorBody) ProtoMessage()    {}
+
 // DefaultHTTPError is the default implementation of HTTPError.
 // If "err" is an error from gRPC system, the function replies with the status code mapped by HTTPStatusFromCode.
 // If otherwise, it replies with http.StatusInternalServerError.
 //
 // The response body returned by this function is a JSON object,
 // which contains a member whose key is "error" and whose value is err.Error().
-func DefaultHTTPError(ctx context.Context, w http.ResponseWriter, _ *http.Request, err error) {
+func DefaultHTTPError(ctx context.Context, marshaler Marshaler, w http.ResponseWriter, _ *http.Request, err error) {
 	const fallback = `{"error": "failed to marshal error message"}`
 
 	w.Header().Del("Trailer")
-	w.Header().Set("Content-Type", "application/json")
-	body := errorBody{
+	w.Header().Set("Content-Type", marshaler.ContentType())
+	body := &errorBody{
 		Error: grpc.ErrorDesc(err),
 		Code:  int(grpc.Code(err)),
 	}
-	buf, merr := json.Marshal(body)
+
+	buf, merr := marshaler.Marshal(body)
 	if merr != nil {
 		grpclog.Printf("Failed to marshal error message %q: %v", body, merr)
 		w.WriteHeader(http.StatusInternalServerError)
