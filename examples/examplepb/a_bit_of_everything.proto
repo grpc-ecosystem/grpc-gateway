@@ -36,6 +36,12 @@ message ABitOfEverything {
 	sint32 sint32_value = 17;
 	sint64 sint64_value = 18;
 	repeated string repeated_string_value = 19;
+
+	oneof oneof_value {
+		EmptyMessage oneof_empty = 20;
+		string oneof_string = 21;
+	}
+	map<string, NumericEnum> map_value = 22;
 }
 
 message EmptyMessage {
