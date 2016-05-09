@@ -6,6 +6,8 @@ import "google/api/annotations.proto";
 import "examples/sub/message.proto";
 import "examples/sub2/message.proto";
 
+// Intentionaly complicated message type to cover much features of Protobuf.
+// NEXT ID: 26
 message ABitOfEverything {
 	message Nested {
 		string name = 1;
@@ -16,6 +18,7 @@ message ABitOfEverything {
 		}
 		DeepEnum ok = 3;
 	}
+	Nested single_nested = 25;
 
 	string uuid = 1;
 	repeated Nested nested = 2;
@@ -36,7 +39,14 @@ message ABitOfEverything {
 	sint32 sint32_value = 17;
 	sint64 sint64_value = 18;
 	repeated string repeated_string_value = 19;
-	Nested single_nested = 20;
+	oneof oneof_value {
+		EmptyMessage oneof_empty = 20;
+		string oneof_string = 21;
+	}
+
+	map<string, NumericEnum> map_value = 22;
+	map<string, string> mapped_string_value = 23;
+	map<string, Nested> mapped_nested_value = 24;
 }
 
 message EmptyMessage {

@@ -430,11 +430,37 @@
           "type": "integer",
           "format": "int64"
         },
+        "map_value": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/examplepbNumericEnum"
+          }
+        },
+        "mapped_nested_value": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ABitOfEverythingNested"
+          }
+        },
+        "mapped_string_value": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "format": "string"
+          }
+        },
         "nested": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/ABitOfEverythingNested"
           }
+        },
+        "oneof_empty": {
+          "$ref": "#/definitions/examplepbEmptyMessage"
+        },
+        "oneof_string": {
+          "type": "string",
+          "format": "string"
         },
         "repeated_string_value": {
           "type": "array",

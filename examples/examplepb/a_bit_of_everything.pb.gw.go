@@ -10,7 +10,6 @@ It translates gRPC into RESTful JSON APIs.
 package examplepb
 
 import (
-	"encoding/json"
 	"io"
 	"net/http"
 
@@ -28,14 +27,13 @@ import (
 var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
-var _ = json.Marshal
 var _ = utilities.NewDoubleArray
 
 var (
 	filter_ABitOfEverythingService_Create_0 = &utilities.DoubleArray{Encoding: map[string]int{"float_value": 0, "double_value": 1, "int64_value": 2, "uint64_value": 3, "int32_value": 4, "fixed64_value": 5, "fixed32_value": 6, "bool_value": 7, "string_value": 8, "uint32_value": 9, "sfixed32_value": 10, "sfixed64_value": 11, "sint32_value": 12, "sint64_value": 13}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}}
 )
 
-func request_ABitOfEverythingService_Create_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
@@ -209,11 +207,11 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, client ABitOf
 
 }
 
-func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -222,14 +220,14 @@ func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, client AB
 
 }
 
-func request_ABitOfEverythingService_BulkCreate_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_BulkCreate_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var metadata runtime.ServerMetadata
 	stream, err := client.BulkCreate(ctx)
 	if err != nil {
 		grpclog.Printf("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	dec := json.NewDecoder(req.Body)
+	dec := marshaler.NewDecoder(req.Body)
 	for {
 		var protoReq ABitOfEverything
 		err = dec.Decode(&protoReq)
@@ -263,7 +261,7 @@ func request_ABitOfEverythingService_BulkCreate_0(ctx context.Context, client AB
 
 }
 
-func request_ABitOfEverythingService_Lookup_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_Lookup_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub2.IdMessage
 	var metadata runtime.ServerMetadata
 
@@ -290,7 +288,7 @@ func request_ABitOfEverythingService_Lookup_0(ctx context.Context, client ABitOf
 
 }
 
-func request_ABitOfEverythingService_List_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (ABitOfEverythingService_ListClient, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_List_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (ABitOfEverythingService_ListClient, runtime.ServerMetadata, error) {
 	var protoReq EmptyMessage
 	var metadata runtime.ServerMetadata
 
@@ -307,11 +305,11 @@ func request_ABitOfEverythingService_List_0(ctx context.Context, client ABitOfEv
 
 }
 
-func request_ABitOfEverythingService_Update_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -338,7 +336,7 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, client ABitOf
 
 }
 
-func request_ABitOfEverythingService_Delete_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_Delete_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub2.IdMessage
 	var metadata runtime.ServerMetadata
 
@@ -365,7 +363,7 @@ func request_ABitOfEverythingService_Delete_0(ctx context.Context, client ABitOf
 
 }
 
-func request_ABitOfEverythingService_Echo_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
 
@@ -392,11 +390,11 @@ func request_ABitOfEverythingService_Echo_0(ctx context.Context, client ABitOfEv
 
 }
 
-func request_ABitOfEverythingService_Echo_1(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -409,7 +407,7 @@ var (
 	filter_ABitOfEverythingService_Echo_2 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_ABitOfEverythingService_Echo_2(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_Echo_2(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
 
@@ -422,14 +420,14 @@ func request_ABitOfEverythingService_Echo_2(ctx context.Context, client ABitOfEv
 
 }
 
-func request_ABitOfEverythingService_BulkEcho_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (ABitOfEverythingService_BulkEchoClient, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_BulkEcho_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (ABitOfEverythingService_BulkEchoClient, runtime.ServerMetadata, error) {
 	var metadata runtime.ServerMetadata
 	stream, err := client.BulkEcho(ctx)
 	if err != nil {
 		grpclog.Printf("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	dec := json.NewDecoder(req.Body)
+	dec := marshaler.NewDecoder(req.Body)
 	for {
 		var protoReq sub.StringMessage
 		err = dec.Decode(&protoReq)
@@ -461,11 +459,11 @@ func request_ABitOfEverythingService_BulkEcho_0(ctx context.Context, client ABit
 
 }
 
-func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ABitOfEverything
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -534,14 +532,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 				}
 			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_ABitOfEverythingService_Create_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_ABitOfEverythingService_Create_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_Create_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_Create_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -557,14 +556,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 				}
 			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_ABitOfEverythingService_CreateBody_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_ABitOfEverythingService_CreateBody_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_CreateBody_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_CreateBody_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -580,14 +580,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 				}
 			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_ABitOfEverythingService_BulkCreate_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_ABitOfEverythingService_BulkCreate_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_BulkCreate_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_BulkCreate_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -603,14 +604,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 				}
 			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_ABitOfEverythingService_Lookup_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_ABitOfEverythingService_Lookup_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_Lookup_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_Lookup_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -626,14 +628,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 				}
 			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_ABitOfEverythingService_List_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_ABitOfEverythingService_List_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_List_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_List_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -649,14 +652,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 				}
 			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_ABitOfEverythingService_Update_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_ABitOfEverythingService_Update_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_Update_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_Update_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -672,14 +676,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 				}
 			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_ABitOfEverythingService_Delete_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_ABitOfEverythingService_Delete_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_Delete_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_Delete_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -695,14 +700,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 				}
 			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_ABitOfEverythingService_Echo_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_ABitOfEverythingService_Echo_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_Echo_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_Echo_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -718,14 +724,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 				}
 			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_ABitOfEverythingService_Echo_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_ABitOfEverythingService_Echo_1(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_Echo_1(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_Echo_1(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -741,14 +748,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 				}
 			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_ABitOfEverythingService_Echo_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_ABitOfEverythingService_Echo_2(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_Echo_2(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_Echo_2(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -764,14 +772,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 				}
 			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_ABitOfEverythingService_BulkEcho_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_ABitOfEverythingService_BulkEcho_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_BulkEcho_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_BulkEcho_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -787,14 +796,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 				}
 			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_ABitOfEverythingService_DeepPathEcho_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_ABitOfEverythingService_DeepPathEcho_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_DeepPathEcho_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_DeepPathEcho_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
