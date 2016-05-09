@@ -41,7 +41,7 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 	serveMux := &ServeMux{
 		handlers:               make(map[string][]handler),
 		forwardResponseOptions: make([]func(context.Context, http.ResponseWriter, proto.Message) error, 0),
-		marshalers:             make(marshalerRegistry),
+		marshalers:             makeMarshalerMIMERegistry(),
 	}
 
 	for _, opt := range opts {

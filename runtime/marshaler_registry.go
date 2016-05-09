@@ -5,12 +5,15 @@ import (
 	"net/http"
 )
 
-const mimeWildcard = "*"
+// MIMEWildCard is the fallback MIME type used for requests which do not match
+// a registered MIME type.
+const MIMEWildcard = "*"
 
 var (
-	defaultMarshaler = &JSONPb{OrigName: true}
-
+	acceptHeader      = http.CanonicalHeaderKey("Accept")
 	contentTypeHeader = http.CanonicalHeaderKey("Content-Type")
+
+	defaultMarshaler = &JSONPb{OrigName: true}
 )
 
 // MarshalerForRequest returns the inbound/outbound marshalers for this request.
@@ -20,117 +23,68 @@ var (
 // exactly match in the registry.
 // Otherwise, it follows the above logic for "*"/InboundMarshaler/OutboundMarshaler.
 func MarshalerForRequest(mux *ServeMux, r *http.Request) (inbound Marshaler, outbound Marshaler) {
-	headerVals := append(append([]string(nil), r.Header[contentTypeHeader]...), "*")
-
-	for _, val := range headerVals {
-		m := mux.marshalers.lookup(val)
-		if m != nil {
-			if inbound == nil {
-				inbound = m.inbound
-			}
-			if outbound == nil {
-				outbound = m.outbound
-			}
-		}
-		if inbound != nil && outbound != nil {
-			// Got them both, return
-			return inbound, outbound
+	for _, acceptVal := range r.Header[acceptHeader] {
+		if m, ok := mux.marshalers.mimeMap[acceptVal]; ok {
+			outbound = m
+			break
 		}
 	}
+
+	for _, contentTypeVal := range r.Header[contentTypeHeader] {
+		if m, ok := mux.marshalers.mimeMap[contentTypeVal]; ok {
+			inbound = m
+			break
+		}
+	}
+
 	if inbound == nil {
-		inbound = defaultMarshaler
+		inbound = mux.marshalers.mimeMap[MIMEWildcard]
 	}
 	if outbound == nil {
-		outbound = defaultMarshaler
+		outbound = inbound
 	}
+
 	return inbound, outbound
-
 }
 
-// marshalerRegistry keeps a mapping from MIME types to mimeMarshalers.
-type marshalerRegistry map[string]*mimeMarshaler
-
-type mimeMarshaler struct {
-	inbound  Marshaler
-	outbound Marshaler
+// marshalerRegistry is a mapping from MIME types to Marshalers.
+type marshalerRegistry struct {
+	mimeMap map[string]Marshaler
 }
 
-// addMarshaler adds an inbound and outbund marshaler for a case-sensitive MIME type string ("*" to match any MIME type).
-// Inbound is the marshaler that is used when marshaling inbound requests from the client.
-// Outbound is the marshaler that is used when marshaling outbound responses to the client.
-func (r *marshalerRegistry) add(mime string, inbound, outbound Marshaler) error {
-	if mime == "" {
+// add adds a marshaler for a case-sensitive MIME type string ("*" to match any
+// MIME type).
+func (m marshalerRegistry) add(mime string, marshaler Marshaler) error {
+	if len(mime) == 0 {
 		return errors.New("empty MIME type")
 	}
-	(*r)[mime] = &mimeMarshaler{
-		inbound:  inbound,
-		outbound: outbound,
-	}
+
+	m.mimeMap[mime] = marshaler
+
 	return nil
 }
 
-// addInboundMarshaler adds an inbound marshaler for a case-sensitive MIME type string ("*" to match any MIME type).
-// Inbound is the marshaler that is used when marshaling inbound requests from the client.
-func (r *marshalerRegistry) addInbound(mime string, inbound Marshaler) error {
-	if mime == "" {
-		return errors.New("empty MIME type")
+// makeMarshalerMIMERegistry returns a new registry of marshalers.
+// It allows for a mapping of case-sensitive Content-Type MIME type string to runtime.Marshaler interfaces.
+//
+// For example, you could allow the client to specify the use of the runtime.JSONPb marshaler
+// with a "applicaton/jsonpb" Content-Type and the use of the runtime.JSONBuiltin marshaler
+// with a "application/json" Content-Type.
+// "*" can be used to match any Content-Type.
+// This can be attached to a ServerMux with the marshaler option.
+func makeMarshalerMIMERegistry() marshalerRegistry {
+	return marshalerRegistry{
+		mimeMap: map[string]Marshaler{
+			MIMEWildcard: defaultMarshaler,
+		},
 	}
-	if entry := (*r)[mime]; entry != nil {
-		entry.inbound = inbound
-		return nil
-	}
-	(*r)[mime] = &mimeMarshaler{inbound: inbound}
-	return nil
-}
-
-// addOutBound adds an outbund marshaler for a case-sensitive MIME type string ("*" to match any MIME type).
-// Outbound is the marshaler that is used when marshaling outbound responses to the client.
-func (r *marshalerRegistry) addOutbound(mime string, outbound Marshaler) error {
-	mime = http.CanonicalHeaderKey(mime)
-	if mime == "" {
-		return errors.New("empty MIME type")
-	}
-	if entry := (*r)[mime]; entry != nil {
-		entry.outbound = outbound
-		return nil
-	}
-	(*r)[mime] = &mimeMarshaler{outbound: outbound}
-	return nil
-
-}
-
-func (r *marshalerRegistry) lookup(mime string) *mimeMarshaler {
-	if r == nil {
-		return nil
-	}
-	return (*r)[mime]
 }
 
 // WithMarshalerOption returns a ServeMuxOption which associates inbound and outbound
 // Marshalers to a MIME type in mux.
-func WithMarshalerOption(mime string, in, out Marshaler) ServeMuxOption {
+func WithMarshalerOption(mime string, marshaler Marshaler) ServeMuxOption {
 	return func(mux *ServeMux) {
-		if err := mux.marshalers.add(mime, in, out); err != nil {
-			panic(err)
-		}
-	}
-}
-
-// WithInboundMarshalerOption returns a ServeMuxOption which associates an inbound
-// Marshaler to a MIME type in mux.
-func WithInboundMarshalerOption(mime string, in Marshaler) ServeMuxOption {
-	return func(mux *ServeMux) {
-		if err := mux.marshalers.addInbound(mime, in); err != nil {
-			panic(err)
-		}
-	}
-}
-
-// WithOutboundMarshalerOption returns a ServeMuxOption which associates an outbound
-// Marshaler to a MIME type in mux.
-func WithOutboundMarshalerOption(mime string, out Marshaler) ServeMuxOption {
-	return func(mux *ServeMux) {
-		if err := mux.marshalers.addOutbound(mime, out); err != nil {
+		if err := mux.marshalers.add(mime, marshaler); err != nil {
 			panic(err)
 		}
 	}
