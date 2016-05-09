@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/gengo/grpc-gateway/utilities"
-	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
+	"google.golang.org/grpc/grpclog"
 )
 
 // PopulateQueryParameters populates "values" into "msg".
@@ -46,7 +46,7 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 		}
 		f := fieldByProtoName(m, fieldName)
 		if !f.IsValid() {
-			glog.Warningf("field not found in %T: %s", msg, strings.Join(fieldPath, "."))
+			grpclog.Printf("field not found in %T: %s", msg, strings.Join(fieldPath, "."))
 			return nil
 		}
 
@@ -78,7 +78,7 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 		return fmt.Errorf("no value of field: %s", strings.Join(fieldPath, "."))
 	case 1:
 	default:
-		glog.Warningf("too many field values: %s", strings.Join(fieldPath, "."))
+		grpclog.Printf("too many field values: %s", strings.Join(fieldPath, "."))
 	}
 	return populateField(m, values[0])
 }

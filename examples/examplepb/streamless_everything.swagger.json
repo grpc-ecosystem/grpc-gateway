@@ -137,7 +137,7 @@
         ]
       }
     },
-    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{camelCase_value}": {
+    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}": {
       "post": {
         "summary": "ABitOfEverythingService.Create",
         "operationId": "Create",
@@ -249,11 +249,45 @@
             "format": "int64"
           },
           {
-            "name": "camelCase_value",
+            "name": "nonConventionalNameValue",
             "in": "path",
             "required": true,
             "type": "string",
             "format": "string"
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/{single_nested.name}": {
+      "post": {
+        "summary": "ABitOfEverythingService.DeepPathEcho",
+        "operationId": "DeepPathEcho",
+        "responses": {
+          "default": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "single_nested.name",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
           }
         ],
         "tags": [
@@ -346,6 +380,7 @@
   },
   "definitions": {
     "ABitOfEverythingNested": {
+      "type": "object",
       "properties": {
         "amount": {
           "type": "integer",
@@ -369,14 +404,11 @@
       "default": "FALSE"
     },
     "examplepbABitOfEverything": {
+      "type": "object",
       "properties": {
         "bool_value": {
           "type": "boolean",
           "format": "boolean"
-        },
-        "camelCase_value": {
-          "type": "string",
-          "format": "string"
         },
         "double_value": {
           "type": "number",
@@ -405,11 +437,41 @@
           "type": "integer",
           "format": "int64"
         },
+        "map_value": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/examplepbNumericEnum"
+          }
+        },
+        "mapped_nested_value": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ABitOfEverythingNested"
+          }
+        },
+        "mapped_string_value": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "format": "string"
+          }
+        },
         "nested": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/ABitOfEverythingNested"
           }
+        },
+        "nonConventionalNameValue": {
+          "type": "string",
+          "format": "string"
+        },
+        "oneof_empty": {
+          "$ref": "#/definitions/examplepbEmptyMessage"
+        },
+        "oneof_string": {
+          "type": "string",
+          "format": "string"
         },
         "repeated_string_value": {
           "type": "array",
@@ -425,6 +487,9 @@
         "sfixed64_value": {
           "type": "integer",
           "format": "int32"
+        },
+        "single_nested": {
+          "$ref": "#/definitions/ABitOfEverythingNested"
         },
         "sint32_value": {
           "type": "integer",
@@ -452,8 +517,11 @@
         }
       }
     },
-    "examplepbEmptyMessage": {},
+    "examplepbEmptyMessage": {
+      "type": "object"
+    },
     "examplepbIdMessage": {
+      "type": "object",
       "properties": {
         "uuid": {
           "type": "string",
@@ -470,6 +538,7 @@
       "default": "ZERO"
     },
     "subStringMessage": {
+      "type": "object",
       "properties": {
         "value": {
           "type": "string",

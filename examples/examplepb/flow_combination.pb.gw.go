@@ -10,26 +10,24 @@ It translates gRPC into RESTful JSON APIs.
 package examplepb
 
 import (
-	"encoding/json"
 	"io"
 	"net/http"
 
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/gengo/grpc-gateway/utilities"
-	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/grpclog"
 )
 
 var _ codes.Code
 var _ io.Reader
 var _ = runtime.String
-var _ = json.Marshal
 var _ = utilities.NewDoubleArray
 
-func request_FlowCombination_RpcEmptyRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcEmptyRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq EmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -38,7 +36,7 @@ func request_FlowCombination_RpcEmptyRpc_0(ctx context.Context, client FlowCombi
 
 }
 
-func request_FlowCombination_RpcEmptyStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcEmptyStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcEmptyStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcEmptyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq EmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -55,14 +53,14 @@ func request_FlowCombination_RpcEmptyStream_0(ctx context.Context, client FlowCo
 
 }
 
-func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var metadata runtime.ServerMetadata
 	stream, err := client.StreamEmptyRpc(ctx)
 	if err != nil {
-		glog.Errorf("Failed to start streaming: %v", err)
+		grpclog.Printf("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	dec := json.NewDecoder(req.Body)
+	dec := marshaler.NewDecoder(req.Body)
 	for {
 		var protoReq EmptyProto
 		err = dec.Decode(&protoReq)
@@ -70,22 +68,22 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, client FlowCo
 			break
 		}
 		if err != nil {
-			glog.Errorf("Failed to decode request: %v", err)
+			grpclog.Printf("Failed to decode request: %v", err)
 			return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
-			glog.Errorf("Failed to send request: %v", err)
+			grpclog.Printf("Failed to send request: %v", err)
 			return nil, metadata, err
 		}
 	}
 
 	if err := stream.CloseSend(); err != nil {
-		glog.Errorf("Failed to terminate client stream: %v", err)
+		grpclog.Printf("Failed to terminate client stream: %v", err)
 		return nil, metadata, err
 	}
 	header, err := stream.Header()
 	if err != nil {
-		glog.Errorf("Failed to get header from client: %v", err)
+		grpclog.Printf("Failed to get header from client: %v", err)
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
@@ -96,14 +94,14 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, client FlowCo
 
 }
 
-func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_StreamEmptyStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_StreamEmptyStreamClient, runtime.ServerMetadata, error) {
 	var metadata runtime.ServerMetadata
 	stream, err := client.StreamEmptyStream(ctx)
 	if err != nil {
-		glog.Errorf("Failed to start streaming: %v", err)
+		grpclog.Printf("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	dec := json.NewDecoder(req.Body)
+	dec := marshaler.NewDecoder(req.Body)
 	for {
 		var protoReq EmptyProto
 		err = dec.Decode(&protoReq)
@@ -111,22 +109,22 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, client Flo
 			break
 		}
 		if err != nil {
-			glog.Errorf("Failed to decode request: %v", err)
+			grpclog.Printf("Failed to decode request: %v", err)
 			return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
-			glog.Errorf("Failed to send request: %v", err)
+			grpclog.Printf("Failed to send request: %v", err)
 			return nil, metadata, err
 		}
 	}
 
 	if err := stream.CloseSend(); err != nil {
-		glog.Errorf("Failed to terminate client stream: %v", err)
+		grpclog.Printf("Failed to terminate client stream: %v", err)
 		return nil, metadata, err
 	}
 	header, err := stream.Header()
 	if err != nil {
-		glog.Errorf("Failed to get header from client: %v", err)
+		grpclog.Printf("Failed to get header from client: %v", err)
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
@@ -135,11 +133,11 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, client Flo
 
 }
 
-func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -148,7 +146,7 @@ func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, client FlowCombin
 
 }
 
-func request_FlowCombination_RpcBodyRpc_1(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyRpc_1(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -201,7 +199,7 @@ var (
 	filter_FlowCombination_RpcBodyRpc_2 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_FlowCombination_RpcBodyRpc_2(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyRpc_2(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -214,11 +212,11 @@ func request_FlowCombination_RpcBodyRpc_2(ctx context.Context, client FlowCombin
 
 }
 
-func request_FlowCombination_RpcBodyRpc_3(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -260,11 +258,11 @@ var (
 	filter_FlowCombination_RpcBodyRpc_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_FlowCombination_RpcBodyRpc_4(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -281,11 +279,11 @@ var (
 	filter_FlowCombination_RpcBodyRpc_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
-func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -320,7 +318,7 @@ var (
 	filter_FlowCombination_RpcBodyRpc_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_FlowCombination_RpcBodyRpc_6(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -355,7 +353,7 @@ var (
 	filter_FlowCombination_RpcPathSingleNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
-func request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SingleNestedProto
 	var metadata runtime.ServerMetadata
 
@@ -390,11 +388,11 @@ var (
 	filter_FlowCombination_RpcPathNestedRpc_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
 )
 
-func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -440,7 +438,7 @@ var (
 	filter_FlowCombination_RpcPathNestedRpc_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
-func request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
@@ -475,11 +473,11 @@ var (
 	filter_FlowCombination_RpcPathNestedRpc_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
 )
 
-func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -510,11 +508,11 @@ func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, client Flow
 
 }
 
-func request_FlowCombination_RpcBodyStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -531,7 +529,7 @@ func request_FlowCombination_RpcBodyStream_0(ctx context.Context, client FlowCom
 
 }
 
-func request_FlowCombination_RpcBodyStream_1(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyStream_1(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -592,7 +590,7 @@ var (
 	filter_FlowCombination_RpcBodyStream_2 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_FlowCombination_RpcBodyStream_2(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyStream_2(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -613,11 +611,11 @@ func request_FlowCombination_RpcBodyStream_2(ctx context.Context, client FlowCom
 
 }
 
-func request_FlowCombination_RpcBodyStream_3(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyStream_3(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -667,11 +665,11 @@ var (
 	filter_FlowCombination_RpcBodyStream_4 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_FlowCombination_RpcBodyStream_4(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyStream_4(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -696,11 +694,11 @@ var (
 	filter_FlowCombination_RpcBodyStream_5 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
-func request_FlowCombination_RpcBodyStream_5(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyStream_5(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -743,7 +741,7 @@ var (
 	filter_FlowCombination_RpcBodyStream_6 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_FlowCombination_RpcBodyStream_6(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcBodyStream_6(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcBodyStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -786,7 +784,7 @@ var (
 	filter_FlowCombination_RpcPathSingleNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
-func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathSingleNestedStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathSingleNestedStreamClient, runtime.ServerMetadata, error) {
 	var protoReq SingleNestedProto
 	var metadata runtime.ServerMetadata
 
@@ -829,11 +827,11 @@ var (
 	filter_FlowCombination_RpcPathNestedStream_0 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2, "b": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 1, 3, 1, 2, 4, 5}}
 )
 
-func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -887,7 +885,7 @@ var (
 	filter_FlowCombination_RpcPathNestedStream_1 = &utilities.DoubleArray{Encoding: map[string]int{"a": 0, "str": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
 )
 
-func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
@@ -930,11 +928,11 @@ var (
 	filter_FlowCombination_RpcPathNestedStream_2 = &utilities.DoubleArray{Encoding: map[string]int{"c": 0, "a": 1, "str": 2}, Base: []int{1, 1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 3, 2, 4}}
 )
 
-func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
+func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (FlowCombination_RpcPathNestedStreamClient, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
-	if err := json.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
+	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.C); err != nil {
 		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -983,14 +981,14 @@ func RegisterFlowCombinationHandlerFromEndpoint(ctx context.Context, mux *runtim
 	defer func() {
 		if err != nil {
 			if cerr := conn.Close(); cerr != nil {
-				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Printf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 			return
 		}
 		go func() {
 			<-ctx.Done()
 			if cerr := conn.Close(); cerr != nil {
-				glog.Errorf("Failed to close conn to %s: %v", endpoint, cerr)
+				grpclog.Printf("Failed to close conn to %s: %v", endpoint, cerr)
 			}
 		}()
 	}()
@@ -1005,521 +1003,625 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcEmptyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcEmptyRpc_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcEmptyRpc_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcEmptyRpc_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcEmptyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcEmptyStream_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcEmptyStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcEmptyStream_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_StreamEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_StreamEmptyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_StreamEmptyRpc_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_StreamEmptyRpc_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_StreamEmptyRpc_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_StreamEmptyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_StreamEmptyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_StreamEmptyStream_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_StreamEmptyStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_StreamEmptyStream_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyRpc_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyRpc_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_1(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_1(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyRpc_1(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyRpc_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_2(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_2(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyRpc_2(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_3, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyRpc_3(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_3(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_3(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyRpc_3(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_4, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyRpc_4(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_4(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_4(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyRpc_4(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_5, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyRpc_5(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_5(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_5(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyRpc_5(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_6, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyRpc_6(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyRpc_6(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyRpc_6(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyRpc_6(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathSingleNestedRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcPathSingleNestedRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcPathSingleNestedRpc_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcPathSingleNestedRpc_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcPathSingleNestedRpc_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcPathNestedRpc_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcPathNestedRpc_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcPathNestedRpc_0(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcPathNestedRpc_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcPathNestedRpc_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcPathNestedRpc_1(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcPathNestedRpc_1(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcPathNestedRpc_1(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcPathNestedRpc_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcPathNestedRpc_2(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcPathNestedRpc_2(ctx, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcPathNestedRpc_2(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyStream_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyStream_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyStream_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyStream_1(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_1(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyStream_1(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyStream_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyStream_2(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_2(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyStream_2(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_3, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyStream_3(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyStream_3(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_3(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyStream_3(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_4, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyStream_4(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyStream_4(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_4(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyStream_4(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_5, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyStream_5(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyStream_5(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_5(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyStream_5(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_6, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcBodyStream_6(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcBodyStream_6(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcBodyStream_6(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcBodyStream_6(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathSingleNestedStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcPathSingleNestedStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcPathSingleNestedStream_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcPathSingleNestedStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcPathSingleNestedStream_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcPathNestedStream_0(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcPathNestedStream_0(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcPathNestedStream_0(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcPathNestedStream_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcPathNestedStream_1(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcPathNestedStream_1(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcPathNestedStream_1(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcPathNestedStream_1(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
 	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
-		closeNotifier, ok := w.(http.CloseNotifier)
-		if ok {
-			go func() {
-				<-closeNotifier.CloseNotify()
-				cancel()
-			}()
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
 		}
-		resp, md, err := request_FlowCombination_RpcPathNestedStream_2(runtime.AnnotateContext(ctx, req), client, req, pathParams)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		resp, md, err := request_FlowCombination_RpcPathNestedStream_2(runtime.AnnotateContext(ctx, req), inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
-			runtime.HTTPError(ctx, w, req, err)
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_FlowCombination_RpcPathNestedStream_2(ctx, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_FlowCombination_RpcPathNestedStream_2(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
