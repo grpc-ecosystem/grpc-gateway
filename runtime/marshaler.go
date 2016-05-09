@@ -22,72 +22,36 @@ var (
 // exactly match in the registry.
 // Otherwise, it follows the above logic for "*"/InboundMarshaler/OutboundMarshaler.
 func MarshalerForRequest(mux *ServeMux, r *http.Request) (inbound Marshaler, outbound Marshaler) {
-	inbound = nil
-	outbound = nil
-	headerVals := r.Header[contentTypeHeader]
+	headerVals := append(append([]string(nil), r.Header[contentTypeHeader]...), "*")
 
 	for _, val := range headerVals {
-		if mux.MIMERegistry != nil && mux.MIMERegistry.mimeMap != nil {
-			if m, ok := mux.MIMERegistry.mimeMap[val]; ok {
-				if inbound == nil && m.inbound != nil {
-					inbound = m.inbound
-				}
-				if outbound == nil && m.outbound != nil {
-					outbound = m.outbound
-				}
+		m := mux.MIMERegistry.lookup(val)
+		if m != nil {
+			if inbound == nil {
+				inbound = m.inbound
 			}
-		} else {
-			//Nil mimeMap, no need to bother checking for mimeWildcard
-			if mux.InboundMarshaler == nil {
-				//Its nil, use our default
-				inbound = inboundDefaultMarshaler
-			} else {
-				inbound = mux.InboundMarshaler
-			}
-
-			if mux.OutboundMarshaler == nil {
-				//Its nil, use our default
-				outbound = outboundDefaultMarshaler
-			} else {
-				outbound = mux.OutboundMarshaler
+			if outbound == nil {
+				outbound = m.outbound
 			}
 		}
-
 		if inbound != nil && outbound != nil {
-			//Got them both, return
+			// Got them both, return
 			return inbound, outbound
 		}
 	}
 
-	if mux.MIMERegistry != nil && mux.MIMERegistry.mimeMap != nil {
-		if m, ok := mux.MIMERegistry.mimeMap[mimeWildcard]; ok {
-			if inbound == nil && m.inbound != nil {
-				inbound = m.inbound
-			}
-			if outbound == nil && m.outbound != nil {
-				outbound = m.outbound
-			}
-		}
-	}
-
-	//Haven't gotten anywhere with any of the headers or mimeWildcard
-	//Try to use the mux, otherwise use our default
 	if inbound == nil {
-		if mux.InboundMarshaler == nil {
-			//Its nil, use our default
-			inbound = inboundDefaultMarshaler
-		} else {
-			inbound = mux.InboundMarshaler
-		}
+		inbound = mux.InboundMarshaler
+	}
+	if inbound == nil {
+		inbound = inboundDefaultMarshaler
 	}
 
 	if outbound == nil {
-		if mux.OutboundMarshaler == nil {
-			//Its nil, use our default
-			outbound = outboundDefaultMarshaler
-		} else {
-			outbound = mux.OutboundMarshaler
-		}
+		outbound = mux.OutboundMarshaler
+	}
+	if outbound == nil {
+		outbound = outboundDefaultMarshaler
 	}
 
 	return inbound, outbound
@@ -158,6 +122,13 @@ func (m *MarshalerMIMERegistry) AddOutboundMarshaler(mime string, outbound Marsh
 		}
 	}
 
+}
+
+func (m *MarshalerMIMERegistry) lookup(mime string) *mimeMarshaler {
+	if m == nil {
+		return nil
+	}
+	return m.mimeMap[mime]
 }
 
 // NewMarshalerMIMERegistry returns a new registry of marshalers.
