@@ -6,7 +6,7 @@ import "google/api/annotations.proto";
 import "examples/sub/message.proto";
 
 // Intentionaly complicated message type to cover much features of Protobuf.
-// NEXT ID: 26
+// NEXT ID: 27
 message ABitOfEverything {
 	message Nested {
 		string name = 1;
@@ -46,6 +46,8 @@ message ABitOfEverything {
 	map<string, NumericEnum> map_value = 22;
 	map<string, string> mapped_string_value = 23;
 	map<string, Nested> mapped_nested_value = 24;
+
+	string nonConventionalNameValue = 26;
 }
 
 message EmptyMessage {
@@ -64,7 +66,7 @@ service ABitOfEverythingService {
 	rpc Create(ABitOfEverything) returns (ABitOfEverything) {
 		// TODO add enum_value
 		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}"
+			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}"
 		};
 	}
 	rpc CreateBody(ABitOfEverything) returns (ABitOfEverything) {
