@@ -50,128 +50,115 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 
 func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
 	for _, msg := range messages {
-		object := swaggerSchemaObject{
-			Properties: map[string]swaggerSchemaObject{},
+		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
+			continue
 		}
-		for _, field := range msg.Fields {
-			var fieldType, fieldFormat string
-			primitive := true
-			// Field type and format from http://swagger.io/specification/ in the
-			// "Data Types" table
-			switch field.FieldDescriptorProto.Type.String() {
-			case "TYPE_DOUBLE":
-				fieldType = "number"
-				fieldFormat = "double"
-				break
-			case "TYPE_FLOAT":
-				fieldType = "number"
-				fieldFormat = "float"
-				break
-			case "TYPE_INT64":
-				fieldType = "integer"
-				fieldFormat = "int64"
-				break
-			case "TYPE_UINT64":
-				fieldType = "integer"
-				fieldFormat = "int64"
-				break
-			case "TYPE_INT32":
-				fieldType = "integer"
-				fieldFormat = "int32"
-				break
-			case "TYPE_FIXED64":
-				fieldType = "integer"
-				fieldFormat = "int64"
-				break
-			case "TYPE_FIXED32":
-				fieldType = "integer"
-				fieldFormat = "int32"
-				break
-			case "TYPE_BOOL":
-				fieldType = "boolean"
-				fieldFormat = "boolean"
-				break
-			case "TYPE_STRING":
-				fieldType = "string"
-				fieldFormat = "string"
-				break
-			case "TYPE_GROUP":
-				// WTF is a group? is this sufficient?
-				primitive = false
-				break
-			case "TYPE_MESSAGE":
-				// Check in here if it is the special date/datetime proto and
-				// serialize as a primitive date object
-				primitive = false
-				fieldType = ""
-				fieldFormat = ""
-				break
-			case "TYPE_BYTES":
-				fieldType = "string"
-				fieldFormat = "byte"
-				break
-			case "TYPE_UINT32":
-				fieldType = "integer"
-				fieldFormat = "int64"
-				break
-			case "TYPE_ENUM":
-				primitive = false
-				fieldType = ""
-				fieldFormat = ""
-				break
-			case "TYPE_SFIXED32":
-				fieldType = "integer"
-				fieldFormat = "int32"
-				break
-			case "TYPE_SFIXED64":
-				fieldType = "integer"
-				fieldFormat = "int32"
-				break
-			case "TYPE_SINT32":
-				fieldType = "integer"
-				fieldFormat = "int32"
-				break
-			case "TYPE_SINT64":
-				fieldType = "integer"
-				fieldFormat = "int64"
-				break
-			default:
-				fieldType = field.FieldDescriptorProto.Type.String()
-				fieldFormat = "UNKNOWN"
-			}
+		schema := swaggerSchemaObject{
+			schemaCore: schemaCore{
+				Type: "object",
+			},
+			Properties: make(map[string]swaggerSchemaObject),
+		}
+		for _, f := range msg.Fields {
+			schema.Properties[f.GetName()] = schemaOfField(f, reg)
+		}
+		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
+	}
+}
 
-			if primitive {
-				// If repeated render as an array of items.
-				if field.FieldDescriptorProto.GetLabel() == pbdescriptor.FieldDescriptorProto_LABEL_REPEATED {
-					object.Properties[field.GetName()] = swaggerSchemaObject{
-						Type: "array",
-						Items: &swaggerItemsObject{
-							Type:   fieldType,
-							Format: fieldFormat,
-						},
-					}
-				} else {
-					object.Properties[field.GetName()] = swaggerSchemaObject{
-						Type:   fieldType,
-						Format: fieldFormat,
-					}
-				}
-			} else {
-				if field.FieldDescriptorProto.GetLabel() == pbdescriptor.FieldDescriptorProto_LABEL_REPEATED {
-					object.Properties[field.GetName()] = swaggerSchemaObject{
-						Type: "array",
-						Items: &swaggerItemsObject{
-							Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(field.GetTypeName(), reg),
-						},
-					}
-				} else {
-					object.Properties[field.GetName()] = swaggerSchemaObject{
-						Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(field.GetTypeName(), reg),
-					}
-				}
-			}
+// schemaOfField returns a swagger Schema Object for a protobuf field.
+func schemaOfField(f *descriptor.Field, reg *descriptor.Registry) swaggerSchemaObject {
+	const (
+		singular = 0
+		array    = 1
+		object   = 2
+	)
+	var (
+		core      schemaCore
+		aggregate int
+	)
+
+	fd := f.FieldDescriptorProto
+	if m, err := reg.LookupMsg("", f.GetTypeName()); err == nil {
+		if opt := m.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
+			fd = m.GetField()[1]
+			aggregate = object
 		}
-		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = object
+	}
+	if fd.GetLabel() == pbdescriptor.FieldDescriptorProto_LABEL_REPEATED {
+		aggregate = array
+	}
+
+	switch ft := fd.GetType(); ft {
+	case pbdescriptor.FieldDescriptorProto_TYPE_ENUM, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE, pbdescriptor.FieldDescriptorProto_TYPE_GROUP:
+		core = schemaCore{
+			Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(fd.GetTypeName(), reg),
+		}
+	default:
+		ftype, format, ok := primitiveSchema(ft)
+		if ok {
+			core = schemaCore{Type: ftype, Format: format}
+		} else {
+			core = schemaCore{Type: ft.String(), Format: "UNKNOWN"}
+		}
+	}
+	switch aggregate {
+	case array:
+		return swaggerSchemaObject{
+			schemaCore: schemaCore{
+				Type: "array",
+			},
+			Items: (*swaggerItemsObject)(&core),
+		}
+	case object:
+		return swaggerSchemaObject{
+			schemaCore: schemaCore{
+				Type: "object",
+			},
+			AdditionalProperties: &swaggerSchemaObject{schemaCore: core},
+		}
+	default:
+		return swaggerSchemaObject{schemaCore: core}
+	}
+}
+
+// primitiveSchema returns a pair of "Type" and "Format" in JSON Schema for
+// the given primitive field type.
+// The last return parameter is true iff the field type is actually primitive.
+func primitiveSchema(t pbdescriptor.FieldDescriptorProto_Type) (ftype, format string, ok bool) {
+	switch t {
+	case pbdescriptor.FieldDescriptorProto_TYPE_DOUBLE:
+		return "number", "double", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_FLOAT:
+		return "number", "float", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_INT64:
+		return "integer", "int64", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_UINT64:
+		return "integer", "int64", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_INT32:
+		return "integer", "int32", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_FIXED64:
+		return "integer", "int64", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_FIXED32:
+		return "integer", "int32", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_BOOL:
+		return "boolean", "boolean", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_STRING:
+		return "string", "string", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_BYTES:
+		return "string", "byte", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_UINT32:
+		return "integer", "int64", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_SFIXED32:
+		return "integer", "int32", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_SFIXED64:
+		return "integer", "int32", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_SINT32:
+		return "integer", "int32", true
+	case pbdescriptor.FieldDescriptorProto_TYPE_SINT64:
+		return "integer", "int64", true
+	default:
+		return "", "", false
 	}
 }
 
@@ -189,7 +176,9 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 		}
 
 		d[fullyQualifiedNameToSwaggerName(enum.FQEN(), reg)] = swaggerSchemaObject{
-			Type:    "string",
+			schemaCore: schemaCore{
+				Type: "string",
+			},
 			Enum:    enumNames,
 			Default: defaultValue,
 		}
@@ -218,7 +207,7 @@ func resolveFullyQualifiedNameToSwaggerName(fqn string, messages []string) strin
 
 	for _, p := range messages {
 		h := hierarchy(p)
-		for depth, _ := range h {
+		for depth := range h {
 			if _, ok := packagesByDepth[depth]; !ok {
 				packagesByDepth[depth] = make([][]string, 0)
 			}
@@ -295,7 +284,7 @@ func templateToSwaggerPath(path string) string {
 	// Parts is now an array of segments of the path. Interestingly, since the
 	// syntax for this subsection CAN be handled by a regexp since it has no
 	// memory.
-	re := regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_]*).*}")
+	re := regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*).*}")
 	for index, part := range parts {
 		parts[index] = re.ReplaceAllString(part, "{$1}")
 	}
@@ -315,79 +304,18 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				for _, parameter := range b.PathParams {
 
 					var paramType, paramFormat string
-					switch parameter.Target.FieldDescriptorProto.Type.String() {
-					case "TYPE_DOUBLE":
-						paramType = "number"
-						paramFormat = "double"
-						break
-					case "TYPE_FLOAT":
-						paramType = "number"
-						paramFormat = "float"
-						break
-					case "TYPE_INT64":
-						paramType = "integer"
-						paramFormat = "int64"
-						break
-					case "TYPE_UINT64":
-						paramType = "integer"
-						paramFormat = "int64"
-						break
-					case "TYPE_INT32":
-						paramType = "integer"
-						paramFormat = "int32"
-						break
-					case "TYPE_FIXED64":
-						paramType = "integer"
-						paramFormat = "int64"
-						break
-					case "TYPE_FIXED32":
-						paramType = "integer"
-						paramFormat = "int32"
-						break
-					case "TYPE_BOOL":
-						paramType = "boolean"
-						paramFormat = "boolean"
-						break
-					case "TYPE_STRING":
-						paramType = "string"
-						paramFormat = "string"
-						break
-					case "TYPE_GROUP":
-						return fmt.Errorf("Groups are not allowed in the path for a HTTP RPC. Please use a primitive type instead (string, int64, etc)")
-					case "TYPE_MESSAGE":
-						return fmt.Errorf("Groups are not allowed in the path for a HTTP RPC. Please use a primitive type instead (string, int64, etc)")
-					case "TYPE_BYTES":
-						paramType = "string"
-						paramFormat = "byte"
-						break
-					case "TYPE_UINT32":
-						paramType = "integer"
-						paramFormat = "int64"
-						break
-					case "TYPE_ENUM":
+					switch pt := parameter.Target.GetType(); pt {
+					case pbdescriptor.FieldDescriptorProto_TYPE_GROUP, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE:
+						return fmt.Errorf("only primitive types are allowed in path parameters")
+					case pbdescriptor.FieldDescriptorProto_TYPE_ENUM:
 						paramType = fullyQualifiedNameToSwaggerName(parameter.Target.GetTypeName(), reg)
 						paramFormat = ""
-						break
-					case "TYPE_SFIXED32":
-						paramType = "integer"
-						paramFormat = "int32"
-						break
-					case "TYPE_SFIXED64":
-						paramType = "integer"
-						paramFormat = "int32"
-						break
-					case "TYPE_SINT32":
-						paramType = "integer"
-						paramFormat = "int32"
-						break
-					case "TYPE_SINT64":
-						paramType = "integer"
-						paramFormat = "int64"
-						break
 					default:
-						paramType = parameter.Target.FieldDescriptorProto.Type.String()
-						return fmt.Errorf("Detected field type of '" + paramType + "' which is unknown. Please use a primitive type (Ex: string, int64)")
-
+						var ok bool
+						paramType, paramFormat, ok = primitiveSchema(pt)
+						if !ok {
+							return fmt.Errorf("unknown field type %v", pt)
+						}
 					}
 
 					parameters = append(parameters, swaggerParameterObject{
@@ -406,7 +334,9 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						In:       "body",
 						Required: true,
 						Schema: &swaggerSchemaObject{
-							Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)),
+							schemaCore: schemaCore{
+								Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)),
+							},
 						},
 					})
 				}
@@ -424,7 +354,9 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						"default": swaggerResponseObject{
 							Description: "Description",
 							Schema: swaggerSchemaObject{
-								Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)),
+								schemaCore: schemaCore{
+									Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)),
+								},
 							},
 						},
 					},

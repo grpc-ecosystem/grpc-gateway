@@ -69,12 +69,15 @@ type swaggerParameterObject struct {
 	Schema *swaggerSchemaObject `json:"schema,omitempty"`
 }
 
+// core part of schema, which is common to itemsObject and schemaObject.
 // http://swagger.io/specification/#itemsObject
-type swaggerItemsObject struct {
+type schemaCore struct {
 	Type   string `json:"type,omitempty"`
 	Format string `json:"format,omitempty"`
 	Ref    string `json:"$ref,omitempty"`
 }
+
+type swaggerItemsObject schemaCore
 
 // http://swagger.io/specification/#responsesObject
 type swaggerResponsesObject map[string]swaggerResponseObject
@@ -87,12 +90,11 @@ type swaggerResponseObject struct {
 
 // http://swagger.io/specification/#schemaObject
 type swaggerSchemaObject struct {
-	Ref    string `json:"$ref,omitempty"`
-	Type   string `json:"type,omitempty"`
-	Format string `json:"format,omitempty"`
+	schemaCore
 	// Properties can be recursively defined
-	Properties map[string]swaggerSchemaObject `json:"properties,omitempty"`
-	Items      *swaggerItemsObject            `json:"items,omitempty"`
+	Properties           map[string]swaggerSchemaObject `json:"properties,omitempty"`
+	AdditionalProperties *swaggerSchemaObject           `json:"additionalProperties,omitempty"`
+	Items                *swaggerItemsObject            `json:"items,omitempty"`
 
 	// If the item is an enumeration include a list of all the *NAMES* of the
 	// enum values.  I'm not sure how well this will work but assuming all enums

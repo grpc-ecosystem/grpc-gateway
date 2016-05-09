@@ -28,16 +28,15 @@ type generator struct {
 func New(reg *descriptor.Registry) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
-		"encoding/json",
 		"io",
 		"net/http",
 		"github.com/gengo/grpc-gateway/runtime",
 		"github.com/gengo/grpc-gateway/utilities",
-		"github.com/golang/glog",
 		"github.com/golang/protobuf/proto",
 		"golang.org/x/net/context",
 		"google.golang.org/grpc",
 		"google.golang.org/grpc/codes",
+		"google.golang.org/grpc/grpclog",
 	} {
 		pkg := descriptor.GoPackage{
 			Path: pkgpath,
