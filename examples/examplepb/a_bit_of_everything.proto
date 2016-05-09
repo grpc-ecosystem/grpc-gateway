@@ -6,6 +6,8 @@ import "google/api/annotations.proto";
 import "examples/sub/message.proto";
 import "examples/sub2/message.proto";
 
+// Intentionaly complicated message type to cover much features of Protobuf.
+// NEXT ID: 26
 message ABitOfEverything {
 	message Nested {
 		string name = 1;
@@ -16,6 +18,7 @@ message ABitOfEverything {
 		}
 		DeepEnum ok = 3;
 	}
+	Nested single_nested = 25;
 
 	string uuid = 1;
 	repeated Nested nested = 2;
@@ -109,6 +112,12 @@ service ABitOfEverythingService {
 	rpc BulkEcho(stream gengo.grpc.gateway.examples.sub.StringMessage) returns (stream gengo.grpc.gateway.examples.sub.StringMessage) {
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything/echo"
+			body: "*"
+		};
+	}
+	rpc DeepPathEcho(ABitOfEverything) returns (ABitOfEverything) {
+		option (google.api.http) = {
+			post: "/v1/example/a_bit_of_everything/{single_nested.name}"
 			body: "*"
 		};
 	}
