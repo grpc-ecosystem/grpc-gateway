@@ -8,8 +8,7 @@ import (
 const mimeWildcard = "*"
 
 var (
-	inboundDefaultMarshaler  = new(JSONBuiltin)
-	outboundDefaultMarshaler = new(JSONBuiltin)
+	defaultMarshaler = &JSONPb{OrigName: true}
 
 	contentTypeHeader = http.CanonicalHeaderKey("Content-Type")
 )
@@ -39,10 +38,10 @@ func MarshalerForRequest(mux *ServeMux, r *http.Request) (inbound Marshaler, out
 		}
 	}
 	if inbound == nil {
-		inbound = inboundDefaultMarshaler
+		inbound = defaultMarshaler
 	}
 	if outbound == nil {
-		outbound = outboundDefaultMarshaler
+		outbound = defaultMarshaler
 	}
 	return inbound, outbound
 

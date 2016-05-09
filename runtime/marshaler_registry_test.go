@@ -19,11 +19,11 @@ func TestMarshalerForRequest(t *testing.T) {
 	mux := runtime.NewServeMux()
 
 	in, out := runtime.MarshalerForRequest(mux, r)
-	if _, ok := in.(*runtime.JSONBuiltin); !ok {
-		t.Errorf("in = %#v; want a runtime.JSONBuiltin", in)
+	if _, ok := in.(*runtime.JSONPb); !ok {
+		t.Errorf("in = %#v; want a runtime.JSONPb", in)
 	}
-	if _, ok := out.(*runtime.JSONBuiltin); !ok {
-		t.Errorf("out = %#v; want a runtime.JSONBuiltin", in)
+	if _, ok := out.(*runtime.JSONPb); !ok {
+		t.Errorf("out = %#v; want a runtime.JSONPb", in)
 	}
 
 	var marshalers [6]dummyMarshaler
