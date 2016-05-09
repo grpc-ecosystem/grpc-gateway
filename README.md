@@ -213,4 +213,4 @@ But patch is welcome.
 
 # License
 grpc-gateway is licensed under the BSD 3-Clause License.
-See `LICENSE.txt` for more details.
+See [LICENSE.txt](https://github.com/gengo/grpc-gateway/blob/master/LICENSE.txt) for more details.
