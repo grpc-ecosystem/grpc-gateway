@@ -28,3 +28,15 @@ type Decoder interface {
 type Encoder interface {
 	Encode(v interface{}) error
 }
+
+// DecoderFunc adapts an decoder function into Decoder.
+type DecoderFunc func(v interface{}) error
+
+// Decode delegates invocations to the underlying function itself.
+func (f DecoderFunc) Decode(v interface{}) error { return f(v) }
+
+// EncoderFunc adapts an encoder function into Encoder
+type EncoderFunc func(v interface{}) error
+
+// Encode delegates invocations to the underlying function itself.
+func (f EncoderFunc) Encode(v interface{}) error { return f(v) }
