@@ -238,6 +238,22 @@ func testABECreateBody(t *testing.T) {
 				Amount: 20,
 			},
 		},
+		RepeatedStringValue: []string{"a", "b", "c"},
+		OneofValue: &gw.ABitOfEverything_OneofString{
+			OneofString: "x",
+		},
+		MapValue: map[string]gw.NumericEnum{
+			"a": gw.NumericEnum_ONE,
+			"b": gw.NumericEnum_ZERO,
+		},
+		MappedStringValue: map[string]string{
+			"a": "x",
+			"b": "y",
+		},
+		MappedNestedValue: map[string]*gw.ABitOfEverything_Nested{
+			"a": {Name: "x", Amount: 1},
+			"b": {Name: "y", Amount: 2},
+		},
 	}
 	url := "http://localhost:8080/v1/example/a_bit_of_everything"
 	var m jsonpb.Marshaler
