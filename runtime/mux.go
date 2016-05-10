@@ -18,13 +18,7 @@ type ServeMux struct {
 	// handlers maps HTTP method to a list of handlers.
 	handlers               map[string][]handler
 	forwardResponseOptions []func(context.Context, http.ResponseWriter, proto.Message) error
-	// InboundMarshaler is the marshaler that is used when marshaling inbound requests from
-	// a client. Defaults to runtime.JSONBuiltin
-	InboundMarshaler Marshaler
-	// OutbutMarshaler is the marshaler that is used when marshaling outbound responses to
-	// a client. Defaults to runtime.JSONBuiltin
-	OutboundMarshaler Marshaler
-	MIMERegistry      *MarshalerMIMERegistry
+	marshalers             marshalerRegistry
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -47,9 +41,7 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 	serveMux := &ServeMux{
 		handlers:               make(map[string][]handler),
 		forwardResponseOptions: make([]func(context.Context, http.ResponseWriter, proto.Message) error, 0),
-		InboundMarshaler:       &JSONBuiltin{},
-		OutboundMarshaler:      &JSONBuiltin{},
-		MIMERegistry:           nil,
+		marshalers:             make(marshalerRegistry),
 	}
 
 	for _, opt := range opts {
