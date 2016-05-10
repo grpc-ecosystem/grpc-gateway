@@ -12,28 +12,6 @@ import (
 	"google.golang.org/grpc/grpclog"
 )
 
-type responseStreamChunk struct {
-	Result proto.Message        `json:"result,omitempty"`
-	Error  *responseStreamError `json:"error,omitempty"`
-}
-
-//Make this also conform to proto.Message for builtin JSONPb Marshaler
-func (m *responseStreamChunk) Reset()         { *m = responseStreamChunk{} }
-func (m *responseStreamChunk) String() string { return proto.CompactTextString(m) }
-func (*responseStreamChunk) ProtoMessage()    {}
-
-type responseStreamError struct {
-	GrpcCode   int    `json:"grpc_code,omitempty"`
-	HTTPCode   int    `json:"http_code,omitempty"`
-	Message    string `json:"message,omitempty"`
-	HTTPStatus string `json:"http_status,omitempty"`
-}
-
-//Make this also conform to proto.Message for builtin JSONPb Marshaler
-func (m *responseStreamError) Reset()         { *m = responseStreamError{} }
-func (m *responseStreamError) String() string { return proto.CompactTextString(m) }
-func (*responseStreamError) ProtoMessage()    {}
-
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
 func ForwardResponseStream(ctx context.Context, marshaler Marshaler, w http.ResponseWriter, req *http.Request, recv func() (proto.Message, error), opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
 	f, ok := w.(http.Flusher)
@@ -73,7 +51,7 @@ func ForwardResponseStream(ctx context.Context, marshaler Marshaler, w http.Resp
 			return
 		}
 
-		buf, err := marshaler.Marshal(&responseStreamChunk{Result: resp})
+		buf, err := marshaler.Marshal(streamChunk(resp, nil))
 		if err != nil {
 			grpclog.Printf("Failed to marshal response chunk: %v", err)
 			return
@@ -154,16 +132,7 @@ func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, re
 }
 
 func handleForwardResponseStreamError(marshaler Marshaler, w http.ResponseWriter, err error) {
-	grpcCode := grpc.Code(err)
-	httpCode := HTTPStatusFromCode(grpcCode)
-	resp := &responseStreamChunk{
-		Error: &responseStreamError{
-			GrpcCode:   int(grpcCode),
-			HTTPCode:   httpCode,
-			Message:    err.Error(),
-			HTTPStatus: http.StatusText(httpCode),
-		}}
-	buf, merr := marshaler.Marshal(resp)
+	buf, merr := marshaler.Marshal(streamChunk(nil, err))
 	if merr != nil {
 		grpclog.Printf("Failed to marshal an error: %v", merr)
 		return
@@ -172,4 +141,23 @@ func handleForwardResponseStreamError(marshaler Marshaler, w http.ResponseWriter
 		grpclog.Printf("Failed to notify error to client: %v", werr)
 		return
 	}
+}
+
+func streamChunk(result proto.Message, err error) map[string]proto.Message {
+	if err != nil {
+		grpcCode := grpc.Code(err)
+		httpCode := HTTPStatusFromCode(grpcCode)
+		return map[string]proto.Message{
+			"error": &StreamError{
+				GrpcCode:   int32(grpcCode),
+				HttpCode:   int32(httpCode),
+				Message:    err.Error(),
+				HttpStatus: http.StatusText(httpCode),
+			},
+		}
+	}
+	if result == nil {
+		return streamChunk(nil, fmt.Errorf("empty response"))
+	}
+	return map[string]proto.Message{"result": result}
 }
