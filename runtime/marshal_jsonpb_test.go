@@ -10,6 +10,11 @@ import (
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/ptypes/duration"
+	"github.com/golang/protobuf/ptypes/empty"
+	structpb "github.com/golang/protobuf/ptypes/struct"
+	"github.com/golang/protobuf/ptypes/timestamp"
+	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
 func TestJSONPbMarshal(t *testing.T) {
@@ -108,59 +113,12 @@ func TestJSONPbMarshal(t *testing.T) {
 	}
 }
 
-func TestJSONPbMarshalNonProto(t *testing.T) {
+func TestJSONPbMarshalFields(t *testing.T) {
 	var m runtime.JSONPb
 	for _, spec := range []struct {
 		val  interface{}
 		want string
-	}{
-		{val: int32(1), want: "1"},
-		{val: proto.Int32(1), want: "1"},
-		{val: int64(1), want: "1"},
-		{val: proto.Int64(1), want: "1"},
-		{val: uint32(1), want: "1"},
-		{val: proto.Uint32(1), want: "1"},
-		{val: uint64(1), want: "1"},
-		{val: proto.Uint64(1), want: "1"},
-		{val: "abc", want: `"abc"`},
-		{val: proto.String("abc"), want: `"abc"`},
-		{val: float32(1.5), want: "1.5"},
-		{val: proto.Float32(1.5), want: "1.5"},
-		{val: float64(1.5), want: "1.5"},
-		{val: proto.Float64(1.5), want: "1.5"},
-		{val: true, want: "true"},
-		{val: false, want: "false"},
-		{val: (*string)(nil), want: "null"},
-		{val: examplepb.NumericEnum_ONE, want: `"ONE"`},
-		{
-			val:  (*examplepb.NumericEnum)(proto.Int32(int32(examplepb.NumericEnum_ONE))),
-			want: `"ONE"`,
-		},
-		{
-			val: map[string]int32{
-				"foo": 1,
-			},
-			want: `{"foo":1}`,
-		},
-		{
-			val: map[string]*examplepb.SimpleMessage{
-				"foo": {Id: "bar"},
-			},
-			want: `{"foo":{"id":"bar"}}`,
-		},
-		{
-			val: map[int32]*examplepb.SimpleMessage{
-				1: {Id: "foo"},
-			},
-			want: `{"1":{"id":"foo"}}`,
-		},
-		{
-			val: map[bool]*examplepb.SimpleMessage{
-				true: {Id: "foo"},
-			},
-			want: `{"true":{"id":"foo"}}`,
-		},
-	} {
+	}{} {
 		buf, err := m.Marshal(spec.val)
 		if err != nil {
 			t.Errorf("m.Marshal(%#v) failed with %v; want success", spec.val, err)
@@ -255,61 +213,19 @@ func TestJSONPbUnmarshal(t *testing.T) {
 	}
 }
 
-func TestJSONPbUnmarshalNonProto(t *testing.T) {
+func TestJSONPbUnmarshalFields(t *testing.T) {
 	var m runtime.JSONPb
-	for _, spec := range []struct {
-		input string
-		want  interface{}
-	}{
-		{input: "1", want: int32(1)},
-		{input: "1", want: proto.Int32(1)},
-		{input: "1", want: int64(1)},
-		{input: "1", want: proto.Int64(1)},
-		{input: "1", want: uint32(1)},
-		{input: "1", want: proto.Uint32(1)},
-		{input: "1", want: uint64(1)},
-		{input: "1", want: proto.Uint64(1)},
-		{input: `"abc"`, want: "abc"},
-		{input: `"abc"`, want: proto.String("abc")},
-		{input: "1.5", want: float32(1.5)},
-		{input: "1.5", want: proto.Float32(1.5)},
-		{input: "1.5", want: float64(1.5)},
-		{input: "1.5", want: proto.Float64(1.5)},
-		{input: "true", want: true},
-		{input: "false", want: false},
-		{input: "null", want: (*string)(nil)},
-		// TODO(yugui) Support symbolic enum
-		// {input: `"ONE"`, want: examplepb.NumericEnum_ONE},
-		{input: `1`, want: examplepb.NumericEnum_ONE},
-		{
-			input: `1`,
-			want:  (*examplepb.NumericEnum)(proto.Int32(int32(examplepb.NumericEnum_ONE))),
-		},
-		{
-			input: `{"foo":{"id":"bar"}}`,
-			want: map[string]*examplepb.SimpleMessage{
-				"foo": {Id: "bar"},
-			},
-		},
-		{
-			input: `{"1":{"id":"foo"}}`,
-			want: map[int32]*examplepb.SimpleMessage{
-				1: {Id: "foo"},
-			},
-		},
-		{
-			input: `{"true":{"id":"foo"}}`,
-			want: map[bool]*examplepb.SimpleMessage{
-				true: {Id: "foo"},
-			},
-		},
-	} {
-		dest := reflect.New(reflect.TypeOf(spec.want))
-		if err := m.Unmarshal([]byte(spec.input), dest.Interface()); err != nil {
-			t.Errorf("m.Unmarshal(%q, %T) failed with %v; want success", spec.input, dest.Interface(), err)
+	for _, fixt := range fieldFixtures {
+		if fixt.skipUnmarshal {
+			continue
 		}
-		if got, want := dest.Elem().Interface(), spec.want; !reflect.DeepEqual(got, want) {
-			t.Errorf("dest = %#v; want %#v; input = %v", got, want, spec.input)
+
+		dest := reflect.New(reflect.TypeOf(fixt.data))
+		if err := m.Unmarshal([]byte(fixt.json), dest.Interface()); err != nil {
+			t.Errorf("m.Unmarshal(%q, %T) failed with %v; want success", fixt.json, dest.Interface(), err)
+		}
+		if got, want := dest.Elem().Interface(), fixt.data; !reflect.DeepEqual(got, want) {
+			t.Errorf("dest = %#v; want %#v; input = %v", got, want, fixt.json)
 		}
 	}
 }
@@ -411,66 +327,16 @@ func TestJSONPbEncoder(t *testing.T) {
 	}
 }
 
-func TestJSONPbEncoderNonProto(t *testing.T) {
+func TestJSONPbEncoderFields(t *testing.T) {
 	var m runtime.JSONPb
-	for _, spec := range []struct {
-		val  interface{}
-		want string
-	}{
-		{val: int32(1), want: "1"},
-		{val: proto.Int32(1), want: "1"},
-		{val: int64(1), want: "1"},
-		{val: proto.Int64(1), want: "1"},
-		{val: uint32(1), want: "1"},
-		{val: proto.Uint32(1), want: "1"},
-		{val: uint64(1), want: "1"},
-		{val: proto.Uint64(1), want: "1"},
-		{val: "abc", want: `"abc"`},
-		{val: proto.String("abc"), want: `"abc"`},
-		{val: float32(1.5), want: "1.5"},
-		{val: proto.Float32(1.5), want: "1.5"},
-		{val: float64(1.5), want: "1.5"},
-		{val: proto.Float64(1.5), want: "1.5"},
-		{val: true, want: "true"},
-		{val: false, want: "false"},
-		{val: (*string)(nil), want: "null"},
-		{val: examplepb.NumericEnum_ONE, want: `"ONE"`},
-		{
-			val:  (*examplepb.NumericEnum)(proto.Int32(int32(examplepb.NumericEnum_ONE))),
-			want: `"ONE"`,
-		},
-		{
-			val: map[string]int32{
-				"foo": 1,
-			},
-			want: `{"foo":1}`,
-		},
-		{
-			val: map[string]*examplepb.SimpleMessage{
-				"foo": {Id: "bar"},
-			},
-			want: `{"foo":{"id":"bar"}}`,
-		},
-		{
-			val: map[int32]*examplepb.SimpleMessage{
-				1: {Id: "foo"},
-			},
-			want: `{"1":{"id":"foo"}}`,
-		},
-		{
-			val: map[bool]*examplepb.SimpleMessage{
-				true: {Id: "foo"},
-			},
-			want: `{"true":{"id":"foo"}}`,
-		},
-	} {
+	for _, fixt := range fieldFixtures {
 		var buf bytes.Buffer
 		enc := m.NewEncoder(&buf)
-		if err := enc.Encode(spec.val); err != nil {
-			t.Errorf("enc.Encode(%#v) failed with %v; want success", spec.val, err)
+		if err := enc.Encode(fixt.data); err != nil {
+			t.Errorf("enc.Encode(%#v) failed with %v; want success", fixt.data, err)
 		}
-		if got, want := buf.String(), spec.want; got != want {
-			t.Errorf("m.Marshal(%#v) = %q; want %q", spec.val, got, want)
+		if got, want := buf.String(), fixt.json; got != want {
+			t.Errorf("enc.Encode(%#v) = %q; want %q", fixt.data, got, want)
 		}
 	}
 
@@ -560,62 +426,181 @@ func TestJSONPbDecoder(t *testing.T) {
 	}
 }
 
-func TestJSONPbDecoderNonProto(t *testing.T) {
+func TestJSONPbDecoderFields(t *testing.T) {
 	var m runtime.JSONPb
-	for _, spec := range []struct {
-		input string
-		want  interface{}
-	}{
-		{input: "1", want: int32(1)},
-		{input: "1", want: proto.Int32(1)},
-		{input: "1", want: int64(1)},
-		{input: "1", want: proto.Int64(1)},
-		{input: "1", want: uint32(1)},
-		{input: "1", want: proto.Uint32(1)},
-		{input: "1", want: uint64(1)},
-		{input: "1", want: proto.Uint64(1)},
-		{input: `"abc"`, want: "abc"},
-		{input: `"abc"`, want: proto.String("abc")},
-		{input: "1.5", want: float32(1.5)},
-		{input: "1.5", want: proto.Float32(1.5)},
-		{input: "1.5", want: float64(1.5)},
-		{input: "1.5", want: proto.Float64(1.5)},
-		{input: "true", want: true},
-		{input: "false", want: false},
-		{input: "null", want: (*string)(nil)},
-		// TODO(yugui) Support symbolic enum
-		// {input: `"ONE"`, want: examplepb.NumericEnum_ONE},
-		{input: `1`, want: examplepb.NumericEnum_ONE},
-		{
-			input: `1`,
-			want:  (*examplepb.NumericEnum)(proto.Int32(int32(examplepb.NumericEnum_ONE))),
-		},
-		{
-			input: `{"foo":{"id":"bar"}}`,
-			want: map[string]*examplepb.SimpleMessage{
-				"foo": {Id: "bar"},
-			},
-		},
-		{
-			input: `{"1":{"id":"foo"}}`,
-			want: map[int32]*examplepb.SimpleMessage{
-				1: {Id: "foo"},
-			},
-		},
-		{
-			input: `{"true":{"id":"foo"}}`,
-			want: map[bool]*examplepb.SimpleMessage{
-				true: {Id: "foo"},
-			},
-		},
-	} {
-		dest := reflect.New(reflect.TypeOf(spec.want))
-		dec := m.NewDecoder(strings.NewReader(spec.input))
-		if err := dec.Decode(dest.Interface()); err != nil {
-			t.Errorf("dec.Decode(%T) failed with %v; want success; input = %q", dest.Interface(), err, spec.input)
+	for _, fixt := range fieldFixtures {
+		if fixt.skipUnmarshal {
+			continue
 		}
-		if got, want := dest.Elem().Interface(), spec.want; !reflect.DeepEqual(got, want) {
-			t.Errorf("dest = %#v; want %#v; input = %v", got, want, spec.input)
+
+		dest := reflect.New(reflect.TypeOf(fixt.data))
+		dec := m.NewDecoder(strings.NewReader(fixt.json))
+		if err := dec.Decode(dest.Interface()); err != nil {
+			t.Errorf("dec.Decode(%T) failed with %v; want success; input = %q", dest.Interface(), err, fixt.json)
+		}
+		if got, want := dest.Elem().Interface(), fixt.data; !reflect.DeepEqual(got, want) {
+			t.Errorf("dest = %#v; want %#v; input = %v", got, want, fixt.json)
 		}
 	}
 }
+
+var (
+	fieldFixtures = []struct {
+		data          interface{}
+		json          string
+		skipUnmarshal bool
+	}{
+		{data: int32(1), json: "1"},
+		{data: proto.Int32(1), json: "1"},
+		{data: int64(1), json: "1"},
+		{data: proto.Int64(1), json: "1"},
+		{data: uint32(1), json: "1"},
+		{data: proto.Uint32(1), json: "1"},
+		{data: uint64(1), json: "1"},
+		{data: proto.Uint64(1), json: "1"},
+		{data: "abc", json: `"abc"`},
+		{data: proto.String("abc"), json: `"abc"`},
+		{data: float32(1.5), json: "1.5"},
+		{data: proto.Float32(1.5), json: "1.5"},
+		{data: float64(1.5), json: "1.5"},
+		{data: proto.Float64(1.5), json: "1.5"},
+		{data: true, json: "true"},
+		{data: false, json: "false"},
+		{data: (*string)(nil), json: "null"},
+		{
+			data: examplepb.NumericEnum_ONE,
+			json: `"ONE"`,
+			// TODO(yugui) support unmarshaling of symbolic enum
+			skipUnmarshal: true,
+		},
+		{
+			data: (*examplepb.NumericEnum)(proto.Int32(int32(examplepb.NumericEnum_ONE))),
+			json: `"ONE"`,
+			// TODO(yugui) support unmarshaling of symbolic enum
+			skipUnmarshal: true,
+		},
+
+		{
+			data: map[string]int32{
+				"foo": 1,
+			},
+			json: `{"foo":1}`,
+		},
+		{
+			data: map[string]*examplepb.SimpleMessage{
+				"foo": {Id: "bar"},
+			},
+			json: `{"foo":{"id":"bar"}}`,
+		},
+		{
+			data: map[int32]*examplepb.SimpleMessage{
+				1: {Id: "foo"},
+			},
+			json: `{"1":{"id":"foo"}}`,
+		},
+		{
+			data: map[bool]*examplepb.SimpleMessage{
+				true: {Id: "foo"},
+			},
+			json: `{"true":{"id":"foo"}}`,
+		},
+		{
+			data: &duration.Duration{
+				Seconds: 123,
+				Nanos:   456000000,
+			},
+			json: `"123.456s"`,
+		},
+		{
+			data: &timestamp.Timestamp{
+				Seconds: 1462875553,
+				Nanos:   123000000,
+			},
+			json: `"2016-05-10T10:19:13.123Z"`,
+		},
+		{
+			data: new(empty.Empty),
+			json: "{}",
+		},
+
+		// TODO(yugui) Enable unmarshaling of the following examples
+		// once jsonpb supports them.
+		{
+			data: &structpb.Value{
+				Kind: new(structpb.Value_NullValue),
+			},
+			json:          "null",
+			skipUnmarshal: true,
+		},
+		{
+			data: &structpb.Value{
+				Kind: &structpb.Value_NumberValue{
+					NumberValue: 123.4,
+				},
+			},
+			json:          "123.4",
+			skipUnmarshal: true,
+		},
+		{
+			data: &structpb.Value{
+				Kind: &structpb.Value_StringValue{
+					StringValue: "abc",
+				},
+			},
+			json:          `"abc"`,
+			skipUnmarshal: true,
+		},
+		{
+			data: &structpb.Value{
+				Kind: &structpb.Value_BoolValue{
+					BoolValue: true,
+				},
+			},
+			json:          "true",
+			skipUnmarshal: true,
+		},
+		{
+			data: &structpb.Struct{
+				Fields: map[string]*structpb.Value{
+					"foo_bar": {
+						Kind: &structpb.Value_BoolValue{
+							BoolValue: true,
+						},
+					},
+				},
+			},
+			json:          `{"foo_bar":true}`,
+			skipUnmarshal: true,
+		},
+
+		{
+			data: &wrappers.BoolValue{Value: true},
+			json: "true",
+		},
+		{
+			data: &wrappers.DoubleValue{Value: 123.456},
+			json: "123.456",
+		},
+		{
+			data: &wrappers.FloatValue{Value: 123.456},
+			json: "123.456",
+		},
+		{
+			data: &wrappers.Int32Value{Value: -123},
+			json: "-123",
+		},
+		{
+			data: &wrappers.Int64Value{Value: -123},
+			json: `"-123"`,
+		},
+		{
+			data: &wrappers.UInt32Value{Value: 123},
+			json: "123",
+		},
+		{
+			data: &wrappers.UInt64Value{Value: 123},
+			json: `"123"`,
+		},
+		// TODO(yugui) Add other well-known types once jsonpb supports them
+	}
+)
