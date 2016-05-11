@@ -144,6 +144,9 @@ func decodeNonProtoField(d *json.Decoder, v interface{}) error {
 		if rv.IsNil() {
 			rv.Set(reflect.New(rv.Type().Elem()))
 		}
+		if rv.Type().ConvertibleTo(typeProtoMessage) {
+			return jsonpb.UnmarshalNext(d, rv.Interface().(proto.Message))
+		}
 		rv = rv.Elem()
 	}
 	if rv.Kind() == reflect.Map {
@@ -196,3 +199,5 @@ type protoEnum interface {
 	fmt.Stringer
 	EnumDescriptor() ([]byte, []int)
 }
+
+var typeProtoMessage = reflect.TypeOf((*proto.Message)(nil)).Elem()
