@@ -206,3 +206,11 @@ func (s *_ABitOfEverythingServer) BulkEcho(stream examples.ABitOfEverythingServi
 	}))
 	return nil
 }
+
+func (s *_ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	glog.Info(msg)
+	return msg, nil
+}
