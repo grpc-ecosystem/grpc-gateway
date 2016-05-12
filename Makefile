@@ -41,6 +41,9 @@ OPTIONS_PROTO=$(GOOGLEAPIS_DIR)/google/api/annotations.proto $(GOOGLEAPIS_DIR)/g
 OPTIONS_GO=$(OPTIONS_PROTO:.proto=.pb.go)
 OUTPUT_DIR=_output
 
+RUNTIME_PROTO=runtime/stream_chunk.proto
+RUNTIME_GO=$(RUNTIME_PROTO:.proto=.pb.go)
+
 PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mgoogle/api/annotations.proto=$(PKG)/$(GOOGLEAPIS_DIR)/google/api,Mexamples/sub/message.proto=$(PKG)/examples/sub
 SWAGGER_EXAMPLES=examples/examplepb/echo_service.proto \
 	 examples/examplepb/streamless_everything.proto
@@ -54,7 +57,7 @@ EXAMPLE_DEPS=examples/sub/message.proto examples/sub2/message.proto
 EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
 PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
 
-generate: $(OPTIONS_GO)
+generate: $(OPTIONS_GO) $(RUNTIME_GO)
 
 .SUFFIXES: .go .proto
 
@@ -63,9 +66,11 @@ $(GO_PLUGIN):
 	go build -o $@ $(GO_PLUGIN_PKG)
 
 $(OPTIONS_GO): $(OPTIONS_PROTO) $(GO_PLUGIN)
-	protoc -I $(PROTOC_INC_PATH)  -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP):$(GOOGLEAPIS_DIR) $(OPTIONS_PROTO)
+	protoc -I $(PROTOC_INC_PATH) -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP):$(GOOGLEAPIS_DIR) $(OPTIONS_PROTO)
+$(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
+	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP):. $(RUNTIME_PROTO)
 
-$(GATEWAY_PLUGIN): $(OPTIONS_GO) $(GATEWAY_PLUGIN_SRC)
+$(GATEWAY_PLUGIN): $(OPTIONS_GO) $(RUNTIME_GO) $(GATEWAY_PLUGIN_SRC)
 	go build -o $@ $(GATEWAY_PLUGIN_PKG)
 
 $(SWAGGER_PLUGIN): $(OPTIONS_GO) $(SWAGGER_PLUGIN_SRC)

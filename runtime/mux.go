@@ -18,6 +18,7 @@ type ServeMux struct {
 	// handlers maps HTTP method to a list of handlers.
 	handlers               map[string][]handler
 	forwardResponseOptions []func(context.Context, http.ResponseWriter, proto.Message) error
+	marshalers             marshalerRegistry
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -35,12 +36,14 @@ func WithForwardResponseOption(forwardResponseOption func(context.Context, http.
 	}
 }
 
-// NewServeMux returns a new MuxHandler whose internal mapping is empty.
+// NewServeMux returns a new ServeMux whose internal mapping is empty.
 func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 	serveMux := &ServeMux{
 		handlers:               make(map[string][]handler),
 		forwardResponseOptions: make([]func(context.Context, http.ResponseWriter, proto.Message) error, 0),
+		marshalers:             make(marshalerRegistry),
 	}
+
 	for _, opt := range opts {
 		opt(serveMux)
 	}

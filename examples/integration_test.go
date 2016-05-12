@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -13,13 +12,13 @@ import (
 	"testing"
 	"time"
 
-	"golang.org/x/net/context"
-
 	gw "github.com/gengo/grpc-gateway/examples/examplepb"
 	server "github.com/gengo/grpc-gateway/examples/server"
 	sub "github.com/gengo/grpc-gateway/examples/sub"
 	"github.com/gengo/grpc-gateway/runtime"
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
+	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 )
 
@@ -97,8 +96,8 @@ func testEcho(t *testing.T, port int, contentType string) {
 	}
 
 	var msg gw.SimpleMessage
-	if err := json.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
+		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if got, want := msg.Id, "myid"; got != want {
@@ -112,19 +111,20 @@ func testEcho(t *testing.T, port int, contentType string) {
 
 func testEchoBody(t *testing.T) {
 	sent := gw.SimpleMessage{Id: "example"}
-	buf, err := json.Marshal(sent)
+	var m jsonpb.Marshaler
+	payload, err := m.MarshalToString(&sent)
 	if err != nil {
-		t.Fatalf("json.Marshal(%#v) failed with %v; want success", sent, err)
+		t.Fatalf("m.MarshalToString(%#v) failed with %v; want success", payload, err)
 	}
 
 	url := "http://localhost:8080/v1/example/echo_body"
-	resp, err := http.Post(url, "", bytes.NewReader(buf))
+	resp, err := http.Post(url, "", strings.NewReader(payload))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
 		return
 	}
 	defer resp.Body.Close()
-	buf, err = ioutil.ReadAll(resp.Body)
+	buf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success", err)
 		return
@@ -136,8 +136,8 @@ func testEchoBody(t *testing.T) {
 	}
 
 	var received gw.SimpleMessage
-	if err := json.Unmarshal(buf, &received); err != nil {
-		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	if err := jsonpb.UnmarshalString(string(buf), &received); err != nil {
+		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if got, want := received, sent; !reflect.DeepEqual(got, want) {
@@ -161,22 +161,23 @@ func testEchoBody(t *testing.T) {
 
 func testABECreate(t *testing.T) {
 	want := gw.ABitOfEverything{
-		FloatValue:    1.5,
-		DoubleValue:   2.5,
-		Int64Value:    4294967296,
-		Uint64Value:   9223372036854775807,
-		Int32Value:    -2147483648,
-		Fixed64Value:  9223372036854775807,
-		Fixed32Value:  4294967295,
-		BoolValue:     true,
-		StringValue:   "strprefix/foo",
-		Uint32Value:   4294967295,
-		Sfixed32Value: 2147483647,
-		Sfixed64Value: -4611686018427387904,
-		Sint32Value:   2147483647,
-		Sint64Value:   4611686018427387903,
+		FloatValue:               1.5,
+		DoubleValue:              2.5,
+		Int64Value:               4294967296,
+		Uint64Value:              9223372036854775807,
+		Int32Value:               -2147483648,
+		Fixed64Value:             9223372036854775807,
+		Fixed32Value:             4294967295,
+		BoolValue:                true,
+		StringValue:              "strprefix/foo",
+		Uint32Value:              4294967295,
+		Sfixed32Value:            2147483647,
+		Sfixed64Value:            -4611686018427387904,
+		Sint32Value:              2147483647,
+		Sint64Value:              4611686018427387903,
+		NonConventionalNameValue: "camelCase",
 	}
-	url := fmt.Sprintf("http://localhost:8080/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d", want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value)
+	url := fmt.Sprintf("http://localhost:8080/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s", want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue)
 
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
 	if err != nil {
@@ -196,8 +197,8 @@ func testABECreate(t *testing.T) {
 	}
 
 	var msg gw.ABitOfEverything
-	if err := json.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
+		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if msg.Uuid == "" {
@@ -211,20 +212,21 @@ func testABECreate(t *testing.T) {
 
 func testABECreateBody(t *testing.T) {
 	want := gw.ABitOfEverything{
-		FloatValue:    1.5,
-		DoubleValue:   2.5,
-		Int64Value:    4294967296,
-		Uint64Value:   9223372036854775807,
-		Int32Value:    -2147483648,
-		Fixed64Value:  9223372036854775807,
-		Fixed32Value:  4294967295,
-		BoolValue:     true,
-		StringValue:   "strprefix/foo",
-		Uint32Value:   4294967295,
-		Sfixed32Value: 2147483647,
-		Sfixed64Value: -4611686018427387904,
-		Sint32Value:   2147483647,
-		Sint64Value:   4611686018427387903,
+		FloatValue:               1.5,
+		DoubleValue:              2.5,
+		Int64Value:               4294967296,
+		Uint64Value:              9223372036854775807,
+		Int32Value:               -2147483648,
+		Fixed64Value:             9223372036854775807,
+		Fixed32Value:             4294967295,
+		BoolValue:                true,
+		StringValue:              "strprefix/foo",
+		Uint32Value:              4294967295,
+		Sfixed32Value:            2147483647,
+		Sfixed64Value:            -4611686018427387904,
+		Sint32Value:              2147483647,
+		Sint64Value:              4611686018427387903,
+		NonConventionalNameValue: "camelCase",
 
 		Nested: []*gw.ABitOfEverything_Nested{
 			{
@@ -236,20 +238,37 @@ func testABECreateBody(t *testing.T) {
 				Amount: 20,
 			},
 		},
+		RepeatedStringValue: []string{"a", "b", "c"},
+		OneofValue: &gw.ABitOfEverything_OneofString{
+			OneofString: "x",
+		},
+		MapValue: map[string]gw.NumericEnum{
+			"a": gw.NumericEnum_ONE,
+			"b": gw.NumericEnum_ZERO,
+		},
+		MappedStringValue: map[string]string{
+			"a": "x",
+			"b": "y",
+		},
+		MappedNestedValue: map[string]*gw.ABitOfEverything_Nested{
+			"a": {Name: "x", Amount: 1},
+			"b": {Name: "y", Amount: 2},
+		},
 	}
 	url := "http://localhost:8080/v1/example/a_bit_of_everything"
-	buf, err := json.Marshal(want)
+	var m jsonpb.Marshaler
+	payload, err := m.MarshalToString(&want)
 	if err != nil {
-		t.Fatalf("json.Marshal(%#v) failed with %v; want success", want, err)
+		t.Fatalf("m.MarshalToString(%#v) failed with %v; want success", want, err)
 	}
 
-	resp, err := http.Post(url, "application/json", bytes.NewReader(buf))
+	resp, err := http.Post(url, "application/json", strings.NewReader(payload))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
 		return
 	}
 	defer resp.Body.Close()
-	buf, err = ioutil.ReadAll(resp.Body)
+	buf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success", err)
 		return
@@ -261,8 +280,8 @@ func testABECreateBody(t *testing.T) {
 	}
 
 	var msg gw.ABitOfEverything
-	if err := json.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
+		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if msg.Uuid == "" {
@@ -287,20 +306,21 @@ func testABEBulkCreate(t *testing.T) {
 			"foo", "bar", "baz", "qux", "quux",
 		} {
 			want := gw.ABitOfEverything{
-				FloatValue:    1.5,
-				DoubleValue:   2.5,
-				Int64Value:    4294967296,
-				Uint64Value:   9223372036854775807,
-				Int32Value:    -2147483648,
-				Fixed64Value:  9223372036854775807,
-				Fixed32Value:  4294967295,
-				BoolValue:     true,
-				StringValue:   fmt.Sprintf("strprefix/%s", val),
-				Uint32Value:   4294967295,
-				Sfixed32Value: 2147483647,
-				Sfixed64Value: -4611686018427387904,
-				Sint32Value:   2147483647,
-				Sint64Value:   4611686018427387903,
+				FloatValue:               1.5,
+				DoubleValue:              2.5,
+				Int64Value:               4294967296,
+				Uint64Value:              9223372036854775807,
+				Int32Value:               -2147483648,
+				Fixed64Value:             9223372036854775807,
+				Fixed32Value:             4294967295,
+				BoolValue:                true,
+				StringValue:              fmt.Sprintf("strprefix/%s", val),
+				Uint32Value:              4294967295,
+				Sfixed32Value:            2147483647,
+				Sfixed64Value:            -4611686018427387904,
+				Sint32Value:              2147483647,
+				Sint64Value:              4611686018427387903,
+				NonConventionalNameValue: "camelCase",
 
 				Nested: []*gw.ABitOfEverything_Nested{
 					{
@@ -313,16 +333,12 @@ func testABEBulkCreate(t *testing.T) {
 					},
 				},
 			}
-			buf, err := json.Marshal(want)
-			if err != nil {
-				t.Fatalf("json.Marshal(%#v) failed with %v; want success", want, err)
-			}
-			if _, err := w.Write(buf); err != nil {
-				t.Errorf("w.Write(%s) failed with %v; want success", buf, err)
-				return
+			var m jsonpb.Marshaler
+			if err := m.Marshal(w, &want); err != nil {
+				t.Fatalf("m.Marshal(%#v, w) failed with %v; want success", want, err)
 			}
 			if _, err := io.WriteString(w, "\n"); err != nil {
-				t.Errorf("w.Write(%s) failed with %v; want success", buf, err)
+				t.Errorf("w.Write(%q) failed with %v; want success", "\n", err)
 				return
 			}
 			count++
@@ -347,8 +363,8 @@ func testABEBulkCreate(t *testing.T) {
 	}
 
 	var msg gw.EmptyMessage
-	if err := json.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
+		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 
@@ -386,8 +402,8 @@ func testABELookup(t *testing.T) {
 	}
 
 	var want gw.ABitOfEverything
-	if err := json.Unmarshal(buf, &want); err != nil {
-		t.Errorf("json.Unmarshal(%s, &want) failed with %v; want success", buf, err)
+	if err := jsonpb.UnmarshalString(string(buf), &want); err != nil {
+		t.Errorf("jsonpb.UnmarshalString(%s, &want) failed with %v; want success", buf, err)
 		return
 	}
 
@@ -406,8 +422,8 @@ func testABELookup(t *testing.T) {
 	}
 
 	var msg gw.ABitOfEverything
-	if err := json.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
+		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if got := msg; !reflect.DeepEqual(got, want) {
@@ -444,7 +460,7 @@ func testABELookupNotFound(t *testing.T) {
 
 	var msg errorBody
 	if err := json.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 
@@ -470,13 +486,24 @@ func testABEList(t *testing.T) {
 	dec := json.NewDecoder(resp.Body)
 	var i int
 	for i = 0; ; i++ {
-		var msg gw.ABitOfEverything
-		err := dec.Decode(&msg)
+		var item struct {
+			Result json.RawMessage        `json:"result"`
+			Error  map[string]interface{} `json:"error"`
+		}
+		err := dec.Decode(&item)
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
-			t.Errorf("dec.Decode(&msg) failed with %v; want success; i = %d", err, i)
+			t.Errorf("dec.Decode(&item) failed with %v; want success; i = %d", err, i)
+		}
+		if len(item.Error) != 0 {
+			t.Errorf("item.Error = %#v; want empty; i = %d", item.Error, i)
+			continue
+		}
+		var msg gw.ABitOfEverything
+		if err := jsonpb.UnmarshalString(string(item.Result), &msg); err != nil {
+			t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", item.Result, err)
 		}
 	}
 	if i <= 0 {
@@ -545,8 +572,8 @@ func testAdditionalBindings(t *testing.T) {
 		}
 
 		var msg sub.StringMessage
-		if err := json.Unmarshal(buf, &msg); err != nil {
-			t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success; %d", buf, err, i)
+		if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
+			t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success; %d", buf, err, i)
 			return
 		}
 		if got, want := msg.GetValue(), "hello"; got != want {

@@ -28,7 +28,6 @@ type generator struct {
 func New(reg *descriptor.Registry) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
-		"encoding/json",
 		"io",
 		"net/http",
 		"github.com/gengo/grpc-gateway/runtime",
