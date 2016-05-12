@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/gengo/grpc-gateway/runtime"
 	"golang.org/x/net/context"
@@ -81,5 +82,24 @@ func TestAnnotateContext_XForwardedFor(t *testing.T) {
 	// Note: it must be in order client, proxy1, proxy2
 	if got, want := md["x-forwarded-for"], []string{"192.168.0.100, 8.8.8.8"}; !reflect.DeepEqual(got, want) {
 		t.Errorf("md[\"x-forwarded-for\"] = %v want %v", got, want)
+	}
+}
+
+func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
+	ctx := context.Background()
+	request, _ := http.NewRequest("GET", "http://bar.foo.example.com", nil)
+	annotated := runtime.AnnotateContext(ctx, request)
+	if _, exists := annotated.Deadline(); exists {
+		t.Errorf("by default Timeouts should not be set")
+	}
+	runtime.DefaultContextTimeout = 10 * time.Second
+	annotated = runtime.AnnotateContext(ctx, request)
+	if _, exists := annotated.Deadline(); !exists {
+		t.Errorf("if DefaultContextTimeout is set, the annotated context should have a timeout")
+	}
+	request.Header.Add("Grpc-Timeout", "50S")
+	annotated = runtime.AnnotateContext(ctx, request)
+	if deadline, _ := annotated.Deadline(); deadline.Sub(time.Now()) < 2*time.Second { // in case time.Now() drifts
+		t.Errorf("if Grpc-Timeout=50s is present, the timeout should be 50s")
 	}
 }

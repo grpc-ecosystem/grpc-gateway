@@ -198,6 +198,7 @@ More examples are available under `examples` directory.
 * Mapping streaming APIs to JSON streams
 * Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata
 * Optionally emitting API definition for [Swagger](http://swagger.io).
+* Setting [gRPC timeouts](http://www.grpc.io/docs/guides/wire.html) through inbound HTTP `Grpc-Timeout` header.
 
 ### Want to support
 But not yet.
