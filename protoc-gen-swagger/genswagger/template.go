@@ -564,7 +564,7 @@ func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []str
 	packageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
 L1:
 	for _, loc := range file.SourceCodeInfo.Location {
-		if typeIndex != packageProtoPath {
+		if typeName != "Package" || typeIndex != packageProtoPath {
 			if len(loc.Path) < len(outerPaths)*2+2+len(fieldPaths) {
 				continue
 			}

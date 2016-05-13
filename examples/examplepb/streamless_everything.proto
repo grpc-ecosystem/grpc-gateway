@@ -59,6 +59,7 @@ message EmptyMessage {
 }
 
 message IdMessage {
+	// uuid is UUID value
 	string uuid = 1;
 }
 
