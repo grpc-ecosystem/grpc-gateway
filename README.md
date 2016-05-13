@@ -181,6 +181,12 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      path/to/your_service.proto
    ```
 
+## Parameters and flags
+`protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to Golang import path.
+They are compatible to [the parameters with same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
+
+`protoc-gen-grpc-gateway` also supports some more command line flags to control logging. You can give these flags together with parameters above. Run `protoc-gen-grpc-gateway --help` for more details about the flags.
+
 ## More Examples
 More examples are available under `examples` directory.
 * `examplepb/echo_service.proto`, `examplepb/a_bit_of_everything.proto`: service definition
@@ -198,11 +204,13 @@ More examples are available under `examples` directory.
 * Mapping streaming APIs to JSON streams
 * Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata
 * Optionally emitting API definition for [Swagger](http://swagger.io).
+* Import path parameters compatible to protoc-gen-go.
 
 ### Want to support
 But not yet.
 * bytes and enum fields in path parameter. #5
 * Optionally generating the entrypoint. #8
+* `import_path` parameter
 
 ### No plan to support
 But patch is welcome.
