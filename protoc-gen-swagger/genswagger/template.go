@@ -559,54 +559,9 @@ func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []str
 		outerPaths[i] = int32(msg.Index)
 	}
 
-	messageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "MessageType")
-	nestedProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "NestedType")
-	packageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
-L1:
 	for _, loc := range file.SourceCodeInfo.Location {
-		if typeName != "Package" || typeIndex != packageProtoPath {
-			if len(loc.Path) < len(outerPaths)*2+2+len(fieldPaths) {
-				continue
-			}
-			for i, v := range outerPaths {
-				if i == 0 && loc.Path[i*2+0] != messageProtoPath {
-					continue L1
-				}
-				if i != 0 && loc.Path[i*2+0] != nestedProtoPath {
-					continue L1
-				}
-				if loc.Path[i*2+1] != v {
-					continue L1
-				}
-			}
-
-			outerOffset := len(outerPaths) * 2
-			if outerOffset == 0 && loc.Path[outerOffset] != protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), typeName) {
-				continue
-			}
-			if outerOffset != 0 {
-				if typeName == "MessageType" {
-					typeName = "NestedType"
-				}
-				if loc.Path[outerOffset] != protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), typeName) {
-					continue
-				}
-			}
-			if loc.Path[outerOffset+1] != typeIndex {
-				continue
-			}
-
-			for i, v := range fieldPaths {
-				if loc.Path[outerOffset+2+i] != v {
-					continue L1
-				}
-			}
-		} else {
-			// path for package comments is just [2], and all the other processing
-			// is too complex for it.
-			if len(loc.Path) == 0 || typeIndex != loc.Path[0] {
-				continue
-			}
+		if !isProtoPathMatches(loc.Path, outerPaths, typeName, typeIndex, fieldPaths) {
+			continue
 		}
 		comments := ""
 		if loc.LeadingComments != nil {
@@ -623,6 +578,58 @@ L1:
 		return comments
 	}
 	return ""
+}
+
+var messageProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "MessageType")
+var nestedProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "NestedType")
+var packageProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
+
+func isProtoPathMatches(paths []int32, outerPaths []int32, typeName string, typeIndex int32, fieldPaths []int32) bool {
+	if typeName == "Package" && typeIndex == packageProtoPath {
+		// path for package comments is just [2], and all the other processing
+		// is too complex for it.
+		if len(paths) == 0 || typeIndex != paths[0] {
+			return false
+		}
+		return true
+	}
+
+	if len(paths) != len(outerPaths)*2+2+len(fieldPaths) {
+		return false
+	}
+
+	typeNameDescriptor := reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil))
+	if len(outerPaths) > 0 {
+		if paths[0] != messageProtoPath || paths[1] != outerPaths[0] {
+			return false
+		}
+		paths = paths[2:]
+		outerPaths = outerPaths[1:]
+
+		for i, v := range outerPaths {
+			if paths[i*2] != nestedProtoPath || paths[i*2+1] != v {
+				return false
+			}
+		}
+		paths = paths[len(outerPaths)*2:]
+
+		if typeName == "MessageType" {
+			typeName = "NestedType"
+		}
+		typeNameDescriptor = reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil))
+	}
+
+	if paths[0] != protoPathIndex(typeNameDescriptor, typeName) || paths[1] != typeIndex {
+		return false
+	}
+	paths = paths[2:]
+
+	for i, v := range fieldPaths {
+		if paths[i] != v {
+			return false
+		}
+	}
+	return true
 }
 
 // protoPathIndex returns a path component for google.protobuf.descriptor.SourceCode_Location.
