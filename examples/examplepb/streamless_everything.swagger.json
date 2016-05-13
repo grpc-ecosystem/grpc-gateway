@@ -520,7 +520,8 @@
       "properties": {
         "uuid": {
           "type": "string",
-          "format": "string"
+          "format": "string",
+          "title": "uuid is UUID value"
         }
       }
     },
