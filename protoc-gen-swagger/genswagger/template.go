@@ -510,7 +510,7 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 
 		summary := strings.TrimSpace(paragraphs[0])
 		description := strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
-		if !usingTitle || summary[len(summary)-1] != '.' {
+		if !usingTitle || summary == "" || summary[len(summary)-1] != '.' {
 			if len(summary) > 0 {
 				summaryValue.Set(reflect.ValueOf(summary))
 			}
