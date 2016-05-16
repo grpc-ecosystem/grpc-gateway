@@ -14,7 +14,8 @@ func TestMarshalerForRequest(t *testing.T) {
 	if err != nil {
 		t.Fatalf(`http.NewRequest("GET", "http://example.com", nil) failed with %v; want success`, err)
 	}
-	r.Header.Set("Content-Type", "application/x-example")
+	r.Header.Set("Accept", "application/x-out")
+	r.Header.Set("Content-Type", "application/x-in")
 
 	mux := runtime.NewServeMux()
 
@@ -26,7 +27,7 @@ func TestMarshalerForRequest(t *testing.T) {
 		t.Errorf("out = %#v; want a runtime.JSONPb", in)
 	}
 
-	var marshalers [6]dummyMarshaler
+	var marshalers [3]dummyMarshaler
 	specs := []struct {
 		opt runtime.ServeMuxOption
 
@@ -34,29 +35,19 @@ func TestMarshalerForRequest(t *testing.T) {
 		wantOut runtime.Marshaler
 	}{
 		{
-			opt:     runtime.WithMarshalerOption("*", &marshalers[0], &marshalers[0]),
+			opt:     runtime.WithMarshalerOption(runtime.MIMEWildcard, &marshalers[0]),
 			wantIn:  &marshalers[0],
 			wantOut: &marshalers[0],
 		},
 		{
-			opt:     runtime.WithInboundMarshalerOption("*", &marshalers[1]),
+			opt:     runtime.WithMarshalerOption("application/x-in", &marshalers[1]),
 			wantIn:  &marshalers[1],
 			wantOut: &marshalers[0],
 		},
 		{
-			opt:     runtime.WithOutboundMarshalerOption("application/x-example", &marshalers[2]),
+			opt:     runtime.WithMarshalerOption("application/x-out", &marshalers[2]),
 			wantIn:  &marshalers[1],
 			wantOut: &marshalers[2],
-		},
-		{
-			opt:     runtime.WithInboundMarshalerOption("application/x-example", &marshalers[3]),
-			wantIn:  &marshalers[3],
-			wantOut: &marshalers[2],
-		},
-		{
-			opt:     runtime.WithMarshalerOption("application/x-example", &marshalers[4], &marshalers[5]),
-			wantIn:  &marshalers[4],
-			wantOut: &marshalers[5],
 		},
 	}
 	for i, spec := range specs {
