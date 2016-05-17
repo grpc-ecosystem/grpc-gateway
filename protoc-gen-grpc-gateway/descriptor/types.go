@@ -58,6 +58,9 @@ type Message struct {
 	Outers []string
 	*descriptor.DescriptorProto
 	Fields []*Field
+
+	// Index is proto path index of this message in File.
+	Index int
 }
 
 // FQMN returns a fully qualified message name of this message.
@@ -97,6 +100,8 @@ type Enum struct {
 	// Outers is a list of outer messages if this enum is a nested type.
 	Outers []string
 	*descriptor.EnumDescriptorProto
+
+	Index int
 }
 
 // FQEN returns a fully qualified enum name of this enum.

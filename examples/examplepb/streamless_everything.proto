@@ -8,11 +8,16 @@ import "examples/sub/message.proto";
 // Intentionaly complicated message type to cover much features of Protobuf.
 // NEXT ID: 27
 message ABitOfEverything {
+	// Nested is nested type.
 	message Nested {
+		// name is nested field.
 		string name = 1;
 		uint32 amount = 2;
+		// DeepEnum is one or zero.
 		enum DeepEnum {
+			// FALSE is false.
 			FALSE = 0;
+			// TRUE is true.
 			TRUE = 1;
 		}
 		DeepEnum ok = 3;
@@ -54,11 +59,15 @@ message EmptyMessage {
 }
 
 message IdMessage {
+	// uuid is UUID value
 	string uuid = 1;
 }
 
+// NumericEnum is one or zero.
 enum NumericEnum {
+	// ZERO means 0
 	ZERO = 0;
+	// ONE means 1
 	ONE  = 1;
 }
 

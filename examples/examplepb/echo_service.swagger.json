@@ -1,8 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "",
-    "title": ""
+    "title": "Echo Service",
+    "description": "Echo Service API consists of a single service which returns\na message.",
+    "version": "version not set"
   },
   "schemes": [
     "http",
@@ -17,10 +18,11 @@
   "paths": {
     "/v1/example/echo/{id}": {
       "post": {
-        "summary": "EchoService.Echo",
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
         "operationId": "Echo",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbSimpleMessage"
@@ -43,10 +45,10 @@
     },
     "/v1/example/echo_body": {
       "post": {
-        "summary": "EchoService.EchoBody",
+        "summary": "EchoBody method receives a simple message and returns it.",
         "operationId": "EchoBody",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbSimpleMessage"
@@ -75,9 +77,11 @@
       "properties": {
         "id": {
           "type": "string",
-          "format": "string"
+          "format": "string",
+          "description": "Id represents the message identifier."
         }
-      }
+      },
+      "description": "SimpleMessage represents a simple message sent to the Echo service."
     }
   }
 }

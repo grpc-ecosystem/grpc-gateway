@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "",
-    "title": ""
+    "title": "examples/examplepb/streamless_everything.proto",
+    "version": "version not set"
   },
   "schemes": [
     "http",
@@ -17,10 +17,9 @@
   "paths": {
     "/v1/example/a_bit_of_everything": {
       "get": {
-        "summary": "ABitOfEverythingService.List",
         "operationId": "List",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
@@ -32,10 +31,9 @@
         ]
       },
       "post": {
-        "summary": "ABitOfEverythingService.CreateBody",
         "operationId": "CreateBody",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
@@ -59,10 +57,9 @@
     },
     "/v1/example/a_bit_of_everything/bulk": {
       "post": {
-        "summary": "ABitOfEverythingService.BulkCreate",
         "operationId": "BulkCreate",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbEmptyMessage"
@@ -86,10 +83,9 @@
     },
     "/v1/example/a_bit_of_everything/echo": {
       "post": {
-        "summary": "ABitOfEverythingService.BulkEcho",
         "operationId": "BulkEcho",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
@@ -113,10 +109,9 @@
     },
     "/v1/example/a_bit_of_everything/echo/{value}": {
       "get": {
-        "summary": "ABitOfEverythingService.Echo",
         "operationId": "Echo",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
@@ -139,10 +134,9 @@
     },
     "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}": {
       "post": {
-        "summary": "ABitOfEverythingService.Create",
         "operationId": "Create",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
@@ -263,10 +257,9 @@
     },
     "/v1/example/a_bit_of_everything/{single_nested.name}": {
       "post": {
-        "summary": "ABitOfEverythingService.DeepPathEcho",
         "operationId": "DeepPathEcho",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
@@ -297,10 +290,9 @@
     },
     "/v1/example/a_bit_of_everything/{uuid}": {
       "get": {
-        "summary": "ABitOfEverythingService.Lookup",
         "operationId": "Lookup",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
@@ -321,10 +313,9 @@
         ]
       },
       "delete": {
-        "summary": "ABitOfEverythingService.Delete",
         "operationId": "Delete",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbEmptyMessage"
@@ -345,10 +336,9 @@
         ]
       },
       "put": {
-        "summary": "ABitOfEverythingService.Update",
         "operationId": "Update",
         "responses": {
-          "default": {
+          "200": {
             "description": "Description",
             "schema": {
               "$ref": "#/definitions/examplepbEmptyMessage"
@@ -388,12 +378,14 @@
         },
         "name": {
           "type": "string",
-          "format": "string"
+          "format": "string",
+          "description": "name is nested field."
         },
         "ok": {
           "$ref": "#/definitions/NestedDeepEnum"
         }
-      }
+      },
+      "description": "Nested is nested type."
     },
     "NestedDeepEnum": {
       "type": "string",
@@ -401,7 +393,8 @@
         "FALSE",
         "TRUE"
       ],
-      "default": "FALSE"
+      "default": "FALSE",
+      "description": "DeepEnum is one or zero.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true."
     },
     "examplepbABitOfEverything": {
       "type": "object",
@@ -505,7 +498,8 @@
         },
         "uint32_value": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "title": "TODO(yugui) add bytes_value"
         },
         "uint64_value": {
           "type": "integer",
@@ -515,7 +509,8 @@
           "type": "string",
           "format": "string"
         }
-      }
+      },
+      "title": "Intentionaly complicated message type to cover much features of Protobuf.\nNEXT ID: 27"
     },
     "examplepbEmptyMessage": {
       "type": "object"
@@ -525,7 +520,8 @@
       "properties": {
         "uuid": {
           "type": "string",
-          "format": "string"
+          "format": "string",
+          "title": "uuid is UUID value"
         }
       }
     },
@@ -535,7 +531,8 @@
         "ZERO",
         "ONE"
       ],
-      "default": "ZERO"
+      "default": "ZERO",
+      "description": "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1"
     },
     "subStringMessage": {
       "type": "object",

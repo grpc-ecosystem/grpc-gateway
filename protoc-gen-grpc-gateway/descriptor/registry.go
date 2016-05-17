@@ -99,11 +99,12 @@ func (r *Registry) loadFile(file *descriptor.FileDescriptorProto) {
 }
 
 func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descriptor.DescriptorProto) {
-	for _, md := range msgs {
+	for i, md := range msgs {
 		m := &Message{
 			File:            file,
 			Outers:          outerPath,
 			DescriptorProto: md,
+			Index:           i,
 		}
 		for _, fd := range md.GetField() {
 			m.Fields = append(m.Fields, &Field{
@@ -124,11 +125,12 @@ func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descripto
 }
 
 func (r *Registry) registerEnum(file *File, outerPath []string, enums []*descriptor.EnumDescriptorProto) {
-	for _, ed := range enums {
+	for i, ed := range enums {
 		e := &Enum{
 			File:                file,
 			Outers:              outerPath,
 			EnumDescriptorProto: ed,
+			Index:               i,
 		}
 		file.Enums = append(file.Enums, e)
 		r.enums[e.FQEN()] = e
