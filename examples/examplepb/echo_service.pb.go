@@ -5,6 +5,11 @@
 /*
 Package examplepb is a generated protocol buffer package.
 
+Echo Service
+
+Echo Service API consists of a single service which returns
+a message.
+
 It is generated from these files:
 	examples/examplepb/echo_service.proto
 	examples/examplepb/a_bit_of_everything.proto
@@ -41,7 +46,9 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 const _ = proto.ProtoPackageIsVersion1
 
+// SimpleMessage represents a simple message sent to the Echo service.
 type SimpleMessage struct {
+	// Id represents the message identifier.
 	Id string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
 }
 
@@ -65,7 +72,12 @@ const _ = grpc.SupportPackageIsVersion2
 // Client API for EchoService service
 
 type EchoServiceClient interface {
+	// Echo method receives a simple message and returns it.
+	//
+	// The message posted as the id parameter will also be
+	// returned.
 	Echo(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
+	// EchoBody method receives a simple message and returns it.
 	EchoBody(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
 }
 
@@ -98,7 +110,12 @@ func (c *echoServiceClient) EchoBody(ctx context.Context, in *SimpleMessage, opt
 // Server API for EchoService service
 
 type EchoServiceServer interface {
+	// Echo method receives a simple message and returns it.
+	//
+	// The message posted as the id parameter will also be
+	// returned.
 	Echo(context.Context, *SimpleMessage) (*SimpleMessage, error)
+	// EchoBody method receives a simple message and returns it.
 	EchoBody(context.Context, *SimpleMessage) (*SimpleMessage, error)
 }
 

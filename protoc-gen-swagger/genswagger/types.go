@@ -15,8 +15,33 @@ type binding struct {
 
 // http://swagger.io/specification/#infoObject
 type swaggerInfoObject struct {
-	Version string `json:"version"`
-	Title   string `json:"title"`
+	Title          string `json:"title"`
+	Description    string `json:"description,omitempty"`
+	TermsOfService string `json:"termsOfService,omitempty"`
+	Version        string `json:"version"`
+
+	Contact      *swaggerContactObject               `json:"contact,omitempty"`
+	License      *swaggerLicenseObject               `json:"license,omitempty"`
+	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
+}
+
+// http://swagger.io/specification/#contactObject
+type swaggerContactObject struct {
+	Name  string `json:"name,omitempty"`
+	URL   string `json:"url,omitempty"`
+	Email string `json:"email,omitempty"`
+}
+
+// http://swagger.io/specification/#licenseObject
+type swaggerLicenseObject struct {
+	Name string `json:"name,omitempty"`
+	URL  string `json:"url,omitempty"`
+}
+
+// http://swagger.io/specification/#externalDocumentationObject
+type swaggerExternalDocumentationObject struct {
+	Description string `json:"description,omitempty"`
+	URL         string `json:"url,omitempty"`
 }
 
 // http://swagger.io/specification/#swaggerObject
@@ -45,11 +70,14 @@ type swaggerPathItemObject struct {
 
 // http://swagger.io/specification/#operationObject
 type swaggerOperationObject struct {
-	Summary     string                  `json:"summary"`
+	Summary     string                  `json:"summary,omitempty"`
+	Description string                  `json:"description,omitempty"`
 	OperationId string                  `json:"operationId"`
 	Responses   swaggerResponsesObject  `json:"responses"`
 	Parameters  swaggerParametersObject `json:"parameters,omitempty"`
 	Tags        []string                `json:"tags,omitempty"`
+
+	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }
 
 type swaggerParametersObject []swaggerParameterObject
@@ -101,6 +129,9 @@ type swaggerSchemaObject struct {
 	// start from 0 index it will be great. I don't think that is a good assumption.
 	Enum    []string `json:"enum,omitempty"`
 	Default string   `json:"default,omitempty"`
+
+	Description string `json:"description,omitempty"`
+	Title       string `json:"title,omitempty"`
 }
 
 // http://swagger.io/specification/#referenceObject
