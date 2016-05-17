@@ -14,22 +14,7 @@ import (
 // JSONPb is a Marshaler which marshals/unmarshals into/from JSON
 // with the "github.com/golang/protobuf/jsonpb".
 // It supports fully functionality of protobuf unlike JSONBuiltin.
-type JSONPb struct {
-	// Whether to render enum values as integers, as opposed to string values.
-	EnumsAsInts bool
-
-	// Whether to render fields with zero values.
-	EmitDefaults bool
-
-	// A string to indent each level by. The presence of this field will
-	// also cause a space to appear between the field separator and
-	// value, and for newlines to be appear between fields and array
-	// elements.
-	Indent string
-
-	// Whether to use the original (.proto) name for fields.
-	OrigName bool
-}
+type JSONPb jsonpb.Marshaler
 
 // ContentType always returns "application/json".
 func (*JSONPb) ContentType() string {
@@ -61,13 +46,7 @@ func (j *JSONPb) marshalTo(w io.Writer, v interface{}) error {
 		_, err = w.Write(buf)
 		return err
 	}
-	m := &jsonpb.Marshaler{
-		EnumsAsInts:  j.EnumsAsInts,
-		EmitDefaults: j.EmitDefaults,
-		Indent:       j.Indent,
-		OrigName:     j.OrigName,
-	}
-	return m.Marshal(w, p)
+	return (*jsonpb.Marshaler)(j).Marshal(w, p)
 }
 
 // marshalNonProto marshals a non-message field of a protobuf message.
