@@ -21,7 +21,7 @@ func AnnotateContext(ctx context.Context, req *http.Request) context.Context {
 	var pairs []string
 	for key, vals := range req.Header {
 		for _, val := range vals {
-			if key == "Authorization" {
+			if strings.ToLower(key) == "authorization" {
 				pairs = append(pairs, key, val)
 				continue
 			}
