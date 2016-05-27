@@ -117,7 +117,9 @@ var _ = utilities.NewDoubleArray
 `))
 
 	handlerTemplate = template.Must(template.New("handler").Parse(`
-{{if .Method.GetClientStreaming}}
+{{if and .Method.GetClientStreaming .Method.GetServerStreaming}}
+{{template "bidi-streaming-request-func" .}}
+{{else if .Method.GetClientStreaming}}
 {{template "client-streaming-request-func" .}}
 {{else}}
 {{template "client-rpc-request-func" .}}
@@ -233,6 +235,66 @@ var (
 	return msg, metadata, err
 {{end}}
 }`))
+
+	_ = template.Must(handlerTemplate.New("bidi-streaming-request-func").Parse(`
+{{template "request-func-signature" .}} {
+	var metadata runtime.ServerMetadata
+	stream, err := client.{{.Method.GetName}}(ctx)
+	if err != nil {
+		grpclog.Printf("Failed to start streaming: %v", err)
+		return nil, metadata, err
+	}
+	dec := marshaler.NewDecoder(req.Body)
+	sendErrs := make(chan error, 1)
+	go func(errs chan<- error) {
+		for {
+			var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+			err = dec.Decode(&protoReq)
+			if err == nil {
+				select {
+				    case errs <- err:
+					default:
+				}
+			}
+			if err == io.EOF {
+				select {
+				    case errs <- err:
+					default:
+				}
+				return
+			}
+			if err != nil {
+				grpclog.Printf("Failed to decode request: %v", err)
+				select {
+					case errs <- grpc.Errorf(codes.InvalidArgument, "%v", err):
+					default:
+				}
+			}
+			if err = stream.Send(&protoReq); err != nil {
+				grpclog.Printf("Failed to send request: %v", err)
+				select {
+					case errs <- err:
+					default:
+				}
+			}
+		}
+		if err := stream.CloseSend(); err != nil {
+			grpclog.Printf("Failed to terminate client stream: %v", err)
+			select {
+				case errs <- err:
+				default:
+			}
+		}
+	}(sendErrs)
+	header, err := stream.Header()
+	if err != nil {
+		grpclog.Printf("Failed to get header from client: %v", err)
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, <-sendErrs
+}
+`))
 
 	trailerTemplate = template.Must(template.New("trailer").Parse(`
 {{range $svc := .}}
