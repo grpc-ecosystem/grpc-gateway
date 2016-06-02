@@ -53,3 +53,9 @@ new_git_repository(
     commit = "6724a57986aff9bff1a1770e9347036def7c89f6",
     build_file = "fastuuid.BUILD",
 )
+
+git_repository(
+    name = "com_github_google_protobuf",
+    remote = "https://github.com/google/protobuf.git",
+    tag = "v3.0.0-beta-3",
+)

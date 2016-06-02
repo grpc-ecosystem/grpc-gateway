@@ -28,3 +28,12 @@ go_library(
         "@org_golang_x_net//:context",
     ],
 )
+
+exports_files(
+    [
+        "echo_service.proto",
+        "a_bit_of_everything.proto",
+        "flow_combination.proto",
+    ],
+    visibility = ["//examples/bzl:__pkg__"],
+)

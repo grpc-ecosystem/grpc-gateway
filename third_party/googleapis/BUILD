@@ -15,3 +15,10 @@ go_library(
     ],
 )
 
+exports_files(
+    [
+        "google/api/http.proto",
+        "google/api/annotations.proto",
+    ],
+    visibility = ["//examples/bzl:__pkg__"],
+)

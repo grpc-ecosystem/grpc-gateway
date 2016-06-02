@@ -13,3 +13,7 @@ go_library(
     ],
 )
 
+exports_files(
+    ["message.proto"],
+    visibility = ["//examples/bzl:__pkg__"],
+)
