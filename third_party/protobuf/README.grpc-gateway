@@ -1,0 +1,14 @@
+Protocol Buffers
+=================
+
+Project: Protocol Buffers
+URL: github.com/google/protobuf
+Revision: e845187cf6b490d2c42c2382cfa9d5aef6975ef4
+License: BSD 3-Clause License
+
+Imported Files
+---------------
+
+- README
+- LICENSE
+- protobuf.bzl
