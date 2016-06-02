@@ -2,7 +2,7 @@ load(
     "//:grpc-gateway.bzl",
     "go_proto_library",
     "grpc_gateway_proto_library",
-#    "swagger_proto_library"
+    "grpc_swagger_proto_library"
 )
 load("@com_github_google_protobuf//:protobuf.bzl", "cc_proto_library")
 
@@ -51,6 +51,22 @@ genrule(
         "examples/sub2/message.proto",
         "google/api/http.proto",
         "google/api/annotations.proto",
+    ],
+)
+
+grpc_swagger_proto_library(
+    name = "examples/examplepb_swagger",
+    srcs = [
+        "examples/examplepb/echo_service.proto",
+        "examples/examplepb/a_bit_of_everything.proto",
+        "examples/examplepb/flow_combination.proto",
+    ],
+    deps = [
+        ":google/api_genproto",
+    ],
+    includes = [
+        ".",
+        "examples/bzl",
     ],
 )
 

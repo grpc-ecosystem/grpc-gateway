@@ -135,3 +135,44 @@ def grpc_gateway_proto_library(
       library = go_extra_library,
       **kwargs
   )
+
+def grpc_swagger_proto_library(name,
+                               srcs,
+                               deps=[],
+                               includes=[],
+                               protoc="@com_github_google_protobuf//:protoc",
+                               sw_plugin="//protoc-gen-swagger",
+                               genopts=[]):
+  """Experimental support of protoc-gen-swagger
+
+  Compiles Protocol Buffers definitions into Swagger definitions.
+  This rule is experimental and a subject to change without notice.
+
+  Args:
+    name: A unique name for this rule
+    srcs: Source files to be compiled into Go
+    includes: A list of include directories to be passed to Protocol Buffers
+      compiler.
+    protoc: A label of protoc
+    sw_plugin: A label of protoc-gen-swagger
+    genopts: options to be passed to sw_plugin
+  """
+  genfiles = []
+  for s in srcs:
+    if not s.endswith('.proto'):
+      fail("non proto source file %s" % s, "srcs")
+    out = s[:-len('.proto')] + ".swagger.json"
+    genfiles += [out]
+
+  proto_gen(
+      name = name,
+      srcs = srcs,
+      deps = deps,
+      includes = includes,
+      protoc = protoc,
+      plugin = sw_plugin,
+      plugin_language = "swagger",
+      plugin_options = genopts + ["logtostderr=true"],
+      outs = genfiles,
+      visibility = ["//visibility:private"],
+  )
