@@ -1,7 +1,10 @@
 load(
     "//:grpc-gateway.bzl",
     "go_proto_library",
+    "grpc_gateway_proto_library",
+#    "swagger_proto_library"
 )
+load("@com_github_google_protobuf//:protobuf.bzl", "cc_proto_library")
 
 PKGMAP = {
     "google/protobuf/descriptor.proto": "github.com/golang/protobuf/protoc-gen-go/descriptor",
@@ -51,17 +54,16 @@ genrule(
     ],
 )
 
-go_proto_library(
-    name = "examples/examplepb_proto",
+grpc_gateway_proto_library(
+    name = "examples/examplepb",
     srcs = [
         "examples/examplepb/echo_service.proto",
         "examples/examplepb/a_bit_of_everything.proto",
         "examples/examplepb/flow_combination.proto",
-    ]
+    ],
     deps = [
         ":google/api_genproto",
     ],
-    genopts = ["plugins=grpc"],
     pkgmap = PKGMAP,
     includes = [
         ".",
@@ -77,6 +79,32 @@ go_proto_library(
         #
         # TODO(yugui) Use :examples/sub2 instead once we get a good solution
         # for the unpredictability.
+        "//examples/sub2:go_default_library",
+    ],
+    go_extra_library = ":examples/examplepb_proto",
+)
+
+go_proto_library(
+    name = "examples/examplepb_proto",
+    srcs = [
+        "examples/examplepb/echo_service.proto",
+        "examples/examplepb/a_bit_of_everything.proto",
+        "examples/examplepb/flow_combination.proto",
+    ],
+    deps = [
+        ":google/api_genproto",
+    ],
+    genopts = ["plugins=grpc"],
+    pkgmap = PKGMAP,
+    includes = [
+        ".",
+        "examples/bzl",
+    ],
+    go_deps = [
+        ":google/api",
+        ":examples/sub",
+        # Same as above.
+        # TODO(yugui) Use :examples/sub2 instead.
         "//examples/sub2:go_default_library",
         "@org_golang_x_net//:context",
         "@org_golang_google_grpc//:go_default_library",
