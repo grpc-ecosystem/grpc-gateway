@@ -4,13 +4,13 @@ branches:
 language: go
 sudo: false
 go:
-- 1.5
+- 1.6.2
 - tip
 cache:
   directories:
   - $HOME/local
 before_install:
-- ./.travis.build-protoc.sh 3.0.0-beta-2
+- ./.travis.build-protoc.sh 3.0.0-beta-3
 - go get github.com/golang/lint/golint
 install:
 - go get github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway
