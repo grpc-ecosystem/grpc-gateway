@@ -17,8 +17,11 @@ func TestAnnotateContext(t *testing.T) {
 	if err != nil {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://localhost", err)
 	}
+
+	request.RemoteAddr = "127.0.0.1"
 	request.Header.Add("Some-Irrelevant-Header", "some value")
 	annotated := runtime.AnnotateContext(ctx, request)
+	ctx = metadata.NewContext(ctx, metadata.Pairs("RemoteAddr", "127.0.0.1"))
 	if annotated != ctx {
 		t.Errorf("AnnotateContext(ctx, request) = %v; want %v", annotated, ctx)
 	}
@@ -29,8 +32,8 @@ func TestAnnotateContext(t *testing.T) {
 	request.Header.Add("Authorization", "Token 1234567890")
 	annotated = runtime.AnnotateContext(ctx, request)
 	md, ok := metadata.FromContext(annotated)
-	if !ok || len(md) != 3 {
-		t.Errorf("Expected 3 metadata items in context; got %v", md)
+	if !ok || len(md) != 4 {
+		t.Errorf("Expected 4 metadata items in context; got %v", md)
 	}
 	if got, want := md["foobar"], []string{"Value1"}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["foobar"] = %q; want %q`, got, want)
