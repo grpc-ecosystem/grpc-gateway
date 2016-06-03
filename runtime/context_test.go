@@ -22,7 +22,7 @@ func TestAnnotateContext(t *testing.T) {
 	request.Header.Add("Some-Irrelevant-Header", "some value")
 	annotated := runtime.AnnotateContext(ctx, request)
 	ctx = metadata.NewContext(ctx, metadata.Pairs("RemoteAddr", "127.0.0.1"))
-	if annotated != ctx {
+	if !reflect.DeepEqual(annotated, ctx) {
 		t.Errorf("AnnotateContext(ctx, request) = %v; want %v", annotated, ctx)
 	}
 
