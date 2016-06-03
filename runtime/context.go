@@ -14,14 +14,19 @@ const metadataTrailerPrefix = "Grpc-Trailer-"
 /*
 AnnotateContext adds context information such as metadata from the request.
 
-If there are no metadata headers in the request, then the context returned
-will be the same context.
+At a minimum, the RemoteAddr is included in the fashion of "X-Forwarded-For",
+except that the forwarded destination is not another HTTP service but rather
+a gRPC service.
 */
 func AnnotateContext(ctx context.Context, req *http.Request) context.Context {
 	var pairs []string
+
+	// Include the original RemoteAddr, something the gRPC service may need in the ctx
+	pairs = append(pairs, "RemoteAddr", req.RemoteAddr)
+
 	for key, vals := range req.Header {
 		for _, val := range vals {
-			if strings.ToLower(key) == "authorization" {
+			if key == "Authorization" {
 				pairs = append(pairs, key, val)
 				continue
 			}
