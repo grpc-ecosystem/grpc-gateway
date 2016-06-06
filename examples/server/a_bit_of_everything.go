@@ -214,3 +214,10 @@ func (s *_ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *example
 	glog.Info(msg)
 	return msg, nil
 }
+
+func (s *_ABitOfEverythingServer) Timeout(ctx context.Context, msg *examples.EmptyMessage) (*examples.EmptyMessage, error) {
+	select {
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	}
+}
