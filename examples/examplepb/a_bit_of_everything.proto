@@ -123,4 +123,9 @@ service ABitOfEverythingService {
 			body: "*"
 		};
 	}
+	rpc Timeout(EmptyMessage) returns (EmptyMessage) {
+		option (google.api.http) = {
+			get: "/v2/example/timeout",
+		};
+	}
 }

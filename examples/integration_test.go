@@ -56,6 +56,7 @@ func TestIntegration(t *testing.T) {
 	testABELookupNotFound(t)
 	testABEList(t)
 	testAdditionalBindings(t)
+	testTimeout(t)
 
 	go func() {
 		if err := Run(
@@ -579,5 +580,25 @@ func testAdditionalBindings(t *testing.T) {
 		if got, want := msg.GetValue(), "hello"; got != want {
 			t.Errorf("msg.GetValue() = %q; want %q", got, want)
 		}
+	}
+}
+
+func testTimeout(t *testing.T) {
+	url := "http://localhost:8080/v2/example/timeout"
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		t.Errorf(`http.NewRequest("GET", %q, nil) failed with %v; want success`, url, err)
+		return
+	}
+	req.Header.Set("Grpc-Timeout", "10m")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.DefaultClient.Do(%#v) failed with %v; want success", req, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if got, want := resp.StatusCode, http.StatusRequestTimeout; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
 	}
 }
