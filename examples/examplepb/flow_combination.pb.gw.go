@@ -102,54 +102,37 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler 
 		return nil, metadata, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
-	firstSend := make(chan error, 1)
-	go func(errs chan<- error) {
-		defer func() {
-			if err := stream.CloseSend(); err != nil {
-				grpclog.Printf("Failed to terminate client stream: %v", err)
-			}
-		}()
+	handleSend := func() error {
+		var protoReq EmptyProto
+		err = dec.Decode(&protoReq)
+		if err != nil {
+			grpclog.Printf("Failed to decode request: %v", err)
+			return err
+		}
+		if err = stream.Send(&protoReq); err != nil {
+			grpclog.Printf("Failed to send request: %v", err)
+			return err
+		}
+		return nil
+	}
+	firstResult := handleSend()
+	go func() {
 		for {
-			var protoReq EmptyProto
-			err = dec.Decode(&protoReq)
-			if err == nil {
-				select {
-				case errs <- err:
-				default:
-				}
-			}
-			if err == io.EOF {
-				select {
-				case errs <- err:
-				default:
-				}
-				return
-			}
-			if err != nil {
-				grpclog.Printf("Failed to decode request: %v", err)
-				select {
-				case errs <- grpc.Errorf(codes.InvalidArgument, "%v", err):
-				default:
-				}
-				return
-			}
-			if err = stream.Send(&protoReq); err != nil {
-				grpclog.Printf("Failed to send request: %v", err)
-				select {
-				case errs <- err:
-				default:
-				}
-				return
+			if err := handleSend(); err != nil {
+				break
 			}
 		}
-	}(firstSend)
+		if err := stream.CloseSend(); err != nil {
+			grpclog.Printf("Failed to terminate client stream: %v", err)
+		}
+	}()
 	header, err := stream.Header()
 	if err != nil {
 		grpclog.Printf("Failed to get header from client: %v", err)
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
-	return stream, metadata, <-firstSend
+	return stream, metadata, firstResult
 }
 
 func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
