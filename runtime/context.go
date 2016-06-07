@@ -62,14 +62,17 @@ func AnnotateContext(ctx context.Context, req *http.Request) (context.Context, e
 	} else if req.Host != "" {
 		pairs = append(pairs, strings.ToLower(xForwardedHost), req.Host)
 	}
-	if remoteIP, _, err := net.SplitHostPort(req.RemoteAddr); err == nil {
-		if fwd := req.Header.Get(xForwardedFor); fwd == "" {
-			pairs = append(pairs, strings.ToLower(xForwardedFor), remoteIP)
+
+	if addr := req.RemoteAddr; addr != "" {
+		if remoteIP, _, err := net.SplitHostPort(addr); err == nil {
+			if fwd := req.Header.Get(xForwardedFor); fwd == "" {
+				pairs = append(pairs, strings.ToLower(xForwardedFor), remoteIP)
+			} else {
+				pairs = append(pairs, strings.ToLower(xForwardedFor), fmt.Sprintf("%s, %s", fwd, remoteIP))
+			}
 		} else {
-			pairs = append(pairs, strings.ToLower(xForwardedFor), fmt.Sprintf("%s, %s", fwd, remoteIP))
+			grpclog.Printf("invalid remote addr: %s", addr)
 		}
-	} else {
-		grpclog.Printf("invalid remote addr: %s", req.RemoteAddr)
 	}
 
 	if timeout != 0 {
