@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	emptyForwardMetaCount = 2
+	emptyForwardMetaCount = 1
 )
 
 func TestAnnotateContext_WorksWithEmpty(t *testing.T) {
@@ -22,7 +22,6 @@ func TestAnnotateContext_WorksWithEmpty(t *testing.T) {
 	if err != nil {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
 	}
-	request.RemoteAddr = "192.0.2.1:12345"
 	request.Header.Add("Some-Irrelevant-Header", "some value")
 	annotated, err := runtime.AnnotateContext(ctx, request)
 	if err != nil {
@@ -31,7 +30,7 @@ func TestAnnotateContext_WorksWithEmpty(t *testing.T) {
 	}
 	md, ok := metadata.FromContext(annotated)
 	if !ok || len(md) != emptyForwardMetaCount {
-		t.Errorf("Expected 2 metadata items in context; got %v", md)
+		t.Errorf("Expected %d metadata items in context; got %v", emptyForwardMetaCount, md)
 	}
 }
 
@@ -41,7 +40,6 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	if err != nil {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
 	}
-	request.RemoteAddr = "192.168.0.1:12345"
 	request.Header.Add("Some-Irrelevant-Header", "some value")
 	request.Header.Add("Grpc-Metadata-FooBar", "Value1")
 	request.Header.Add("Grpc-Metadata-Foo-BAZ", "Value2")
@@ -54,7 +52,7 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	}
 	md, ok := metadata.FromContext(annotated)
 	if !ok || len(md) != emptyForwardMetaCount+3 {
-		t.Errorf("Expected 5 metadata items in context; got %v", md)
+		t.Errorf("Expected %d metadata items in context; got %v", md)
 	}
 	if got, want := md["foobar"], []string{"Value1"}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["foobar"] = %q; want %q`, got, want)
@@ -82,8 +80,8 @@ func TestAnnotateContext_XForwardedFor(t *testing.T) {
 		return
 	}
 	md, ok := metadata.FromContext(annotated)
-	if !ok || len(md) != emptyForwardMetaCount {
-		t.Errorf("Expected 2 metadata items in context; got %v", md)
+	if !ok || len(md) != emptyForwardMetaCount+1 {
+		t.Errorf("Expected %d metadata items in context; got %v", emptyForwardMetaCount+1, md)
 	}
 	if got, want := md["x-forwarded-host"], []string{"bar.foo.example.com"}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["host"] = %v; want %v`, got, want)
