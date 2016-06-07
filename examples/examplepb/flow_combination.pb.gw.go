@@ -102,8 +102,13 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler 
 		return nil, metadata, err
 	}
 	dec := marshaler.NewDecoder(req.Body)
-	sendErrs := make(chan error, 1)
+	firstSend := make(chan error, 1)
 	go func(errs chan<- error) {
+		defer func() {
+			if err := stream.CloseSend(); err != nil {
+				grpclog.Printf("Failed to terminate client stream: %v", err)
+			}
+		}()
 		for {
 			var protoReq EmptyProto
 			err = dec.Decode(&protoReq)
@@ -126,6 +131,7 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler 
 				case errs <- grpc.Errorf(codes.InvalidArgument, "%v", err):
 				default:
 				}
+				return
 			}
 			if err = stream.Send(&protoReq); err != nil {
 				grpclog.Printf("Failed to send request: %v", err)
@@ -133,23 +139,17 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler 
 				case errs <- err:
 				default:
 				}
+				return
 			}
 		}
-		if err := stream.CloseSend(); err != nil {
-			grpclog.Printf("Failed to terminate client stream: %v", err)
-			select {
-			case errs <- err:
-			default:
-			}
-		}
-	}(sendErrs)
+	}(firstSend)
 	header, err := stream.Header()
 	if err != nil {
 		grpclog.Printf("Failed to get header from client: %v", err)
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
-	return stream, metadata, <-sendErrs
+	return stream, metadata, <-firstSend
 }
 
 func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
