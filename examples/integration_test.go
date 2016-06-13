@@ -13,7 +13,6 @@ import (
 	"time"
 
 	gw "github.com/gengo/grpc-gateway/examples/examplepb"
-	server "github.com/gengo/grpc-gateway/examples/server"
 	sub "github.com/gengo/grpc-gateway/examples/sub"
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/protobuf/jsonpb"
@@ -28,37 +27,17 @@ type errorBody struct {
 	Code  int    `json:"code"`
 }
 
-func TestIntegration(t *testing.T) {
+func TestEcho(t *testing.T) {
 	if testing.Short() {
 		t.Skip()
 		return
 	}
 
-	go func() {
-		if err := server.Run(); err != nil {
-			t.Errorf("server.Run() failed with %v; want success", err)
-			return
-		}
-	}()
-	go func() {
-		if err := Run(":8080"); err != nil {
-			t.Errorf("gw.Run() failed with %v; want success", err)
-			return
-		}
-	}()
-
-	time.Sleep(100 * time.Millisecond)
 	testEcho(t, 8080, "application/json")
 	testEchoBody(t)
-	testABECreate(t)
-	testABECreateBody(t)
-	testABEBulkCreate(t)
-	testABELookup(t)
-	testABELookupNotFound(t)
-	testABEList(t)
-	testAdditionalBindings(t)
-	testTimeout(t)
+}
 
+func TestForwardResponseOption(t *testing.T) {
 	go func() {
 		if err := Run(
 			":8081",
@@ -159,6 +138,21 @@ func testEchoBody(t *testing.T) {
 	if got, want := resp.Trailer.Get("Grpc-Trailer-Bar"), "bar2"; got != want {
 		t.Errorf("Grpc-Trailer-Bar was %q, wanted %q", got, want)
 	}
+}
+
+func TestABE(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	testABECreate(t)
+	testABECreateBody(t)
+	testABEBulkCreate(t)
+	testABELookup(t)
+	testABELookupNotFound(t)
+	testABEList(t)
+	testAdditionalBindings(t)
 }
 
 func testABECreate(t *testing.T) {
@@ -584,7 +578,7 @@ func testAdditionalBindings(t *testing.T) {
 	}
 }
 
-func testTimeout(t *testing.T) {
+func TestTimeout(t *testing.T) {
 	url := "http://localhost:8080/v2/example/timeout"
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
