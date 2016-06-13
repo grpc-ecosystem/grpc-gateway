@@ -115,7 +115,12 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler 
 		}
 		return nil
 	}
-	firstResult := handleSend()
+	if err := handleSend(); err != nil {
+		if err := stream.CloseSend(); err != nil {
+			grpclog.Printf("Failed to terminate client stream: %v", err)
+		}
+		return nil, metadata, err
+	}
 	go func() {
 		for {
 			if err := handleSend(); err != nil {
@@ -132,7 +137,7 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler 
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
-	return stream, metadata, firstResult
+	return stream, metadata, nil
 }
 
 func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler runtime.Marshaler, client FlowCombinationClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
