@@ -258,7 +258,12 @@ var (
 		}
 		return nil
 	}
-	firstResult := handleSend()
+	if err := handleSend(); err != nil {
+		if err := stream.CloseSend(); err != nil {
+			grpclog.Printf("Failed to terminate client stream: %v", err)
+		}
+		return nil, metadata, err
+	}
 	go func() {
 		for {
 			if err := handleSend(); err != nil {
@@ -275,7 +280,7 @@ var (
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
-	return stream, metadata, firstResult
+	return stream, metadata, nil
 }
 `))
 
