@@ -25,7 +25,12 @@ type _ABitOfEverythingServer struct {
 	m sync.Mutex
 }
 
-func newABitOfEverythingServer() examples.ABitOfEverythingServiceServer {
+type ABitOfEverythingServer interface {
+	examples.ABitOfEverythingServiceServer
+	examples.StreamServiceServer
+}
+
+func newABitOfEverythingServer() ABitOfEverythingServer {
 	return &_ABitOfEverythingServer{
 		v: make(map[string]*examples.ABitOfEverything),
 	}
@@ -53,7 +58,7 @@ func (s *_ABitOfEverythingServer) CreateBody(ctx context.Context, msg *examples.
 	return s.Create(ctx, msg)
 }
 
-func (s *_ABitOfEverythingServer) BulkCreate(stream examples.ABitOfEverythingService_BulkCreateServer) error {
+func (s *_ABitOfEverythingServer) BulkCreate(stream examples.StreamService_BulkCreateServer) error {
 	count := 0
 	ctx := stream.Context()
 	for {
@@ -108,7 +113,7 @@ func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *sub2.IdMessag
 	return nil, grpc.Errorf(codes.NotFound, "not found")
 }
 
-func (s *_ABitOfEverythingServer) List(_ *examples.EmptyMessage, stream examples.ABitOfEverythingService_ListServer) error {
+func (s *_ABitOfEverythingServer) List(_ *examples.EmptyMessage, stream examples.StreamService_ListServer) error {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -172,7 +177,7 @@ func (s *_ABitOfEverythingServer) Echo(ctx context.Context, msg *sub.StringMessa
 	return msg, nil
 }
 
-func (s *_ABitOfEverythingServer) BulkEcho(stream examples.ABitOfEverythingService_BulkEchoServer) error {
+func (s *_ABitOfEverythingServer) BulkEcho(stream examples.StreamService_BulkEchoServer) error {
 	var msgs []*sub.StringMessage
 	for {
 		msg, err := stream.Recv()

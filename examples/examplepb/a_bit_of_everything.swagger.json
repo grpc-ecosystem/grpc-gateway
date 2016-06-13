@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/examplepb/streamless_everything.proto",
+    "title": "examples/examplepb/a_bit_of_everything.proto",
     "version": "version not set"
   },
   "schemes": [
@@ -16,20 +16,6 @@
   ],
   "paths": {
     "/v1/example/a_bit_of_everything": {
-      "get": {
-        "operationId": "List",
-        "responses": {
-          "200": {
-            "description": "Description",
-            "schema": {
-              "$ref": "#/definitions/examplepbABitOfEverything"
-            }
-          }
-        },
-        "tags": [
-          "ABitOfEverythingService"
-        ]
-      },
       "post": {
         "operationId": "CreateBody",
         "responses": {
@@ -47,58 +33,6 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
-            }
-          }
-        ],
-        "tags": [
-          "ABitOfEverythingService"
-        ]
-      }
-    },
-    "/v1/example/a_bit_of_everything/bulk": {
-      "post": {
-        "operationId": "BulkCreate",
-        "responses": {
-          "200": {
-            "description": "Description",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyMessage"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/examplepbABitOfEverything"
-            }
-          }
-        ],
-        "tags": [
-          "ABitOfEverythingService"
-        ]
-      }
-    },
-    "/v1/example/a_bit_of_everything/echo": {
-      "post": {
-        "operationId": "BulkEcho",
-        "responses": {
-          "200": {
-            "description": "Description",
-            "schema": {
-              "$ref": "#/definitions/subStringMessage"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/subStringMessage"
             }
           }
         ],
@@ -366,6 +300,62 @@
           "ABitOfEverythingService"
         ]
       }
+    },
+    "/v2/example/echo": {
+      "get": {
+        "operationId": "Echo",
+        "responses": {
+          "200": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/subStringMessage"
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      },
+      "post": {
+        "operationId": "Echo",
+        "responses": {
+          "200": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/subStringMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/subStringMessage"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/timeout": {
+      "get": {
+        "operationId": "Timeout",
+        "responses": {
+          "200": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/examplepbEmptyMessage"
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -515,16 +505,6 @@
     "examplepbEmptyMessage": {
       "type": "object"
     },
-    "examplepbIdMessage": {
-      "type": "object",
-      "properties": {
-        "uuid": {
-          "type": "string",
-          "format": "string",
-          "title": "uuid is UUID value"
-        }
-      }
-    },
     "examplepbNumericEnum": {
       "type": "string",
       "enum": [
@@ -533,6 +513,15 @@
       ],
       "default": "ZERO",
       "description": "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+    },
+    "sub2IdMessage": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "format": "string"
+        }
+      }
     },
     "subStringMessage": {
       "type": "object",
