@@ -13,12 +13,12 @@ a message.
 It is generated from these files:
 	examples/examplepb/echo_service.proto
 	examples/examplepb/a_bit_of_everything.proto
+	examples/examplepb/stream.proto
 	examples/examplepb/flow_combination.proto
 
 It has these top-level messages:
 	SimpleMessage
 	ABitOfEverything
-	EmptyMessage
 	EmptyProto
 	NonEmptyProto
 	UnaryProto

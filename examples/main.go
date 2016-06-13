@@ -28,6 +28,10 @@ func Run(address string, opts ...runtime.ServeMuxOption) error {
 	if err != nil {
 		return err
 	}
+	err = examplepb.RegisterStreamServiceHandlerFromEndpoint(ctx, mux, *abeEndpoint, dialOpts)
+	if err != nil {
+		return err
+	}
 	err = examplepb.RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx, mux, *abeEndpoint, dialOpts)
 	if err != nil {
 		return err
