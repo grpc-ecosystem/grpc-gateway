@@ -18,6 +18,7 @@ import (
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/ptypes/empty"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 )
@@ -363,7 +364,7 @@ func testABEBulkCreate(t *testing.T) {
 		t.Logf("%s", buf)
 	}
 
-	var msg gw.EmptyMessage
+	var msg empty.Empty
 	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return

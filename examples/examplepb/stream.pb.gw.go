@@ -17,6 +17,7 @@ import (
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/ptypes/empty"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -70,7 +71,7 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 }
 
 func request_StreamService_List_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_ListClient, runtime.ServerMetadata, error) {
-	var protoReq EmptyMessage
+	var protoReq empty.Empty
 	var metadata runtime.ServerMetadata
 
 	stream, err := client.List(ctx, &protoReq)

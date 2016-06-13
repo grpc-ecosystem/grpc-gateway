@@ -3,6 +3,7 @@ option go_package = "examplepb";
 package gengo.grpc.gateway.examples.examplepb;
 
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 import "examples/sub/message.proto";
 import "examples/sub2/message.proto";
 
@@ -45,7 +46,7 @@ message ABitOfEverything {
 	sint64 sint64_value = 18;
 	repeated string repeated_string_value = 19;
 	oneof oneof_value {
-		EmptyMessage oneof_empty = 20;
+		google.protobuf.Empty oneof_empty = 20;
 		string oneof_string = 21;
 	}
 
@@ -54,9 +55,6 @@ message ABitOfEverything {
 	map<string, Nested> mapped_nested_value = 24;
 
 	string nonConventionalNameValue = 26;
-}
-
-message EmptyMessage {
 }
 
 // NumericEnum is one or zero.
@@ -85,13 +83,13 @@ service ABitOfEverythingService {
 			get: "/v1/example/a_bit_of_everything/{uuid}"
 		};
 	}
-	rpc Update(ABitOfEverything) returns (EmptyMessage) {
+	rpc Update(ABitOfEverything) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
 			put: "/v1/example/a_bit_of_everything/{uuid}"
 			body: "*"
 		};
 	}
-	rpc Delete(sub2.IdMessage) returns (EmptyMessage) {
+	rpc Delete(sub2.IdMessage) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
 			delete: "/v1/example/a_bit_of_everything/{uuid}"
 		};
@@ -114,7 +112,7 @@ service ABitOfEverythingService {
 			body: "*"
 		};
 	}
-	rpc Timeout(EmptyMessage) returns (EmptyMessage) {
+	rpc Timeout(google.protobuf.Empty) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
 			get: "/v2/example/timeout",
 		};
