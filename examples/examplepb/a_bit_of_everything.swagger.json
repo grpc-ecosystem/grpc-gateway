@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/examplepb/streamless_everything.proto",
+    "title": "examples/examplepb/a_bit_of_everything.proto",
     "version": "version not set"
   },
   "schemes": [
@@ -16,20 +16,6 @@
   ],
   "paths": {
     "/v1/example/a_bit_of_everything": {
-      "get": {
-        "operationId": "List",
-        "responses": {
-          "200": {
-            "description": "Description",
-            "schema": {
-              "$ref": "#/definitions/examplepbABitOfEverything"
-            }
-          }
-        },
-        "tags": [
-          "ABitOfEverythingService"
-        ]
-      },
       "post": {
         "operationId": "CreateBody",
         "responses": {
@@ -47,58 +33,6 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
-            }
-          }
-        ],
-        "tags": [
-          "ABitOfEverythingService"
-        ]
-      }
-    },
-    "/v1/example/a_bit_of_everything/bulk": {
-      "post": {
-        "operationId": "BulkCreate",
-        "responses": {
-          "200": {
-            "description": "Description",
-            "schema": {
-              "$ref": "#/definitions/examplepbEmptyMessage"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/examplepbABitOfEverything"
-            }
-          }
-        ],
-        "tags": [
-          "ABitOfEverythingService"
-        ]
-      }
-    },
-    "/v1/example/a_bit_of_everything/echo": {
-      "post": {
-        "operationId": "BulkEcho",
-        "responses": {
-          "200": {
-            "description": "Description",
-            "schema": {
-              "$ref": "#/definitions/subStringMessage"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/subStringMessage"
             }
           }
         ],
@@ -318,7 +252,7 @@
           "200": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/examplepbEmptyMessage"
+              "$ref": "#/definitions/protobufEmpty"
             }
           }
         },
@@ -341,7 +275,7 @@
           "200": {
             "description": "Description",
             "schema": {
-              "$ref": "#/definitions/examplepbEmptyMessage"
+              "$ref": "#/definitions/protobufEmpty"
             }
           }
         },
@@ -362,6 +296,62 @@
             }
           }
         ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/echo": {
+      "get": {
+        "operationId": "Echo",
+        "responses": {
+          "200": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/subStringMessage"
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      },
+      "post": {
+        "operationId": "Echo",
+        "responses": {
+          "200": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/subStringMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/subStringMessage"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/timeout": {
+      "get": {
+        "operationId": "Timeout",
+        "responses": {
+          "200": {
+            "description": "Description",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
         "tags": [
           "ABitOfEverythingService"
         ]
@@ -460,7 +450,7 @@
           "format": "string"
         },
         "oneof_empty": {
-          "$ref": "#/definitions/examplepbEmptyMessage"
+          "$ref": "#/definitions/protobufEmpty"
         },
         "oneof_string": {
           "type": "string",
@@ -512,19 +502,6 @@
       },
       "title": "Intentionaly complicated message type to cover much features of Protobuf.\nNEXT ID: 27"
     },
-    "examplepbEmptyMessage": {
-      "type": "object"
-    },
-    "examplepbIdMessage": {
-      "type": "object",
-      "properties": {
-        "uuid": {
-          "type": "string",
-          "format": "string",
-          "title": "uuid is UUID value"
-        }
-      }
-    },
     "examplepbNumericEnum": {
       "type": "string",
       "enum": [
@@ -533,6 +510,20 @@
       ],
       "default": "ZERO",
       "description": "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+    },
+    "protobufEmpty": {
+      "type": "object",
+      "description": "service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
+      "title": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:"
+    },
+    "sub2IdMessage": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "format": "string"
+        }
+      }
     },
     "subStringMessage": {
       "type": "object",
