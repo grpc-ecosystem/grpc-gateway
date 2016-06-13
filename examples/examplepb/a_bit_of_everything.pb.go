@@ -765,6 +765,8 @@ var _ABitOfEverythingService_serviceDesc = grpc.ServiceDesc{
 	},
 }
 
+func init() { proto.RegisterFile("examples/examplepb/a_bit_of_everything.proto", fileDescriptor1) }
+
 var fileDescriptor1 = []byte{
 	// 1216 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xc4, 0x57, 0xdd, 0x6e, 0x1b, 0x45,
