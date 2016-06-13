@@ -9,11 +9,16 @@ import "examples/sub2/message.proto";
 // Intentionaly complicated message type to cover much features of Protobuf.
 // NEXT ID: 27
 message ABitOfEverything {
+	// Nested is nested type.
 	message Nested {
+		// name is nested field.
 		string name = 1;
 		uint32 amount = 2;
+		// DeepEnum is one or zero.
 		enum DeepEnum {
+			// FALSE is false.
 			FALSE = 0;
+			// TRUE is true.
 			TRUE = 1;
 		}
 		DeepEnum ok = 3;
@@ -54,9 +59,12 @@ message ABitOfEverything {
 message EmptyMessage {
 }
 
+// NumericEnum is one or zero.
 enum NumericEnum {
+	// ZERO means 0
 	ZERO = 0;
-	ONE = 1;
+	// ONE means 1
+	ONE  = 1;
 }
 
 service ABitOfEverythingService {
@@ -72,20 +80,9 @@ service ABitOfEverythingService {
 			body: "*"
 		};
 	}
-	rpc BulkCreate(stream ABitOfEverything) returns (EmptyMessage) {
-		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/bulk"
-			body: "*"
-		};
-	}
 	rpc Lookup(sub2.IdMessage) returns (ABitOfEverything) {
 		option (google.api.http) = {
 			get: "/v1/example/a_bit_of_everything/{uuid}"
-		};
-	}
-	rpc List(EmptyMessage) returns (stream ABitOfEverything) {
-		option (google.api.http) = {
-			get: "/v1/example/a_bit_of_everything"
 		};
 	}
 	rpc Update(ABitOfEverything) returns (EmptyMessage) {
@@ -109,12 +106,6 @@ service ABitOfEverythingService {
 			additional_bindings {
 				get: "/v2/example/echo"
 			}
-		};
-	}
-	rpc BulkEcho(stream gengo.grpc.gateway.examples.sub.StringMessage) returns (stream gengo.grpc.gateway.examples.sub.StringMessage) {
-		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/echo"
-			body: "*"
 		};
 	}
 	rpc DeepPathEcho(ABitOfEverything) returns (ABitOfEverything) {
