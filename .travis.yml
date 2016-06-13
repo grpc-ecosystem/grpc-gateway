@@ -1,32 +1,53 @@
 branches:
   only:
     - master
-language: go
 sudo: false
-go:
-- 1.6.2
-- tip
 cache:
   directories:
   - $HOME/local
+  - /tmp/bazel_travis
+
+matrix:
+  include:
+  - language: go
+    go: 1.6.2
+    env:
+    - USE_BAZEL=false
+  - language: go
+    go: tip
+    env:
+    - USE_BAZEL=false
+  - language: java
+    jdk: oraclejdk8
+    addons:
+      apt:
+        packages:
+        - libstdc++6
+    env:
+    - USE_BAZEL=true
+    - PATH="$PATH:$HOME/local/bazel/bin"
+
 before_install:
-- ./.travis.build-protoc.sh 3.0.0-beta-3
-- go get github.com/golang/lint/golint
+- $USE_BAZEL || .travis/build-protoc.sh 3.0.0-beta-3
+- $USE_BAZEL || go get github.com/golang/lint/golint
+- if $USE_BAZEL; then .travis/install-bazel.sh 0.2.3; fi
 install:
-- go get github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway
-- go get github.com/gengo/grpc-gateway/runtime
-- go get github.com/gengo/grpc-gateway/examples
-- go get github.com/gengo/grpc-gateway/examples/server
+- $USE_BAZEL || go get github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway
+- $USE_BAZEL || go get github.com/gengo/grpc-gateway/runtime
+- $USE_BAZEL || go get github.com/gengo/grpc-gateway/examples
+- $USE_BAZEL || go get github.com/gengo/grpc-gateway/examples/server
 script:
+- if $USE_BAZEL; then bazel test //...; exit $?; fi
+
 - make realclean && make examples
 - if ! go version | grep devel; then test -z "$(git status --porcelain)" || (git status; git diff; exit 1); fi
 - env GLOG_logtostderr=1 go test -race -v github.com/gengo/grpc-gateway/...
-- golint github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/...
-- golint github.com/gengo/grpc-gateway/runtime/...
-- golint github.com/gengo/grpc-gateway/utilities/...
+- golint -set_exit_status github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/...
+- golint -set_exit_status github.com/gengo/grpc-gateway/runtime/...
+- golint -set_exit_status github.com/gengo/grpc-gateway/utilities/...
 - go vet github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/...
 - go vet github.com/gengo/grpc-gateway/runtime/... || true
 - go vet github.com/gengo/grpc-gateway/utilities/...
 env:
   global:
-  - "PATH=$PATH:$HOME/local/bin"
+  - "PATH=$PATH:$HOME/local/protobuf/bin"

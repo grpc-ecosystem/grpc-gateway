@@ -1,0 +1,32 @@
+Protocol Buffers
+=================
+
+Project: Protocol Buffers
+URL: github.com/google/protobuf
+Revision: e845187cf6b490d2c42c2382cfa9d5aef6975ef4
+License: BSD 3-Clause License
+
+Imported Files
+---------------
+
+- README
+- LICENSE
+- protobuf.bzl
+
+
+Local Modifications
+--------------------
+
+- Removed the following functions:
+  - _CcOuts
+  - _PyOuts
+  - _RelativeOutputPath
+- Removed the following Skylark macros
+  - cc_proto_library
+  - internal_gen_well_known_protos_java
+  - internal_copied_filegroup
+  - py_proto_library
+  - internal_protobuf_py_tests
+- Renamed a Skylark rule _proto_gen to proto_gen
+- Extended proto_gen 
+  - Generalized gprc_cc_plugin for arbitary plugins
