@@ -632,6 +632,8 @@ var _FlowCombination_serviceDesc = grpc.ServiceDesc{
 	},
 }
 
+func init() { proto.RegisterFile("examples/examplepb/flow_combination.proto", fileDescriptor2) }
+
 var fileDescriptor2 = []byte{
 	// 658 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xbc, 0x96, 0xbf, 0x6f, 0xd3, 0x40,

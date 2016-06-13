@@ -117,7 +117,9 @@ var _ = utilities.NewDoubleArray
 `))
 
 	handlerTemplate = template.Must(template.New("handler").Parse(`
-{{if .Method.GetClientStreaming}}
+{{if and .Method.GetClientStreaming .Method.GetServerStreaming}}
+{{template "bidi-streaming-request-func" .}}
+{{else if .Method.GetClientStreaming}}
 {{template "client-streaming-request-func" .}}
 {{else}}
 {{template "client-rpc-request-func" .}}
@@ -233,6 +235,54 @@ var (
 	return msg, metadata, err
 {{end}}
 }`))
+
+	_ = template.Must(handlerTemplate.New("bidi-streaming-request-func").Parse(`
+{{template "request-func-signature" .}} {
+	var metadata runtime.ServerMetadata
+	stream, err := client.{{.Method.GetName}}(ctx)
+	if err != nil {
+		grpclog.Printf("Failed to start streaming: %v", err)
+		return nil, metadata, err
+	}
+	dec := marshaler.NewDecoder(req.Body)
+	handleSend := func() error {
+		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+		err = dec.Decode(&protoReq)
+		if err != nil {
+			grpclog.Printf("Failed to decode request: %v", err)
+			return err
+		}
+		if err = stream.Send(&protoReq); err != nil {
+			grpclog.Printf("Failed to send request: %v", err)
+			return err
+		}
+		return nil
+	}
+	if err := handleSend(); err != nil {
+		if err := stream.CloseSend(); err != nil {
+			grpclog.Printf("Failed to terminate client stream: %v", err)
+		}
+		return nil, metadata, err
+	}
+	go func() {
+		for {
+			if err := handleSend(); err != nil {
+				break
+			}
+		}
+		if err := stream.CloseSend(); err != nil {
+			grpclog.Printf("Failed to terminate client stream: %v", err)
+		}
+	}()
+	header, err := stream.Header()
+	if err != nil {
+		grpclog.Printf("Failed to get header from client: %v", err)
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+}
+`))
 
 	trailerTemplate = template.Must(template.New("trailer").Parse(`
 {{range $svc := .}}
