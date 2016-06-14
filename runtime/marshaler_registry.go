@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// MIMEWildCard is the fallback MIME type used for requests which do not match
+// MIMEWildcard is the fallback MIME type used for requests which do not match
 // a registered MIME type.
 const MIMEWildcard = "*"
 

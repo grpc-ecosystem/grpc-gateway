@@ -51,8 +51,8 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 		return
 	}
 	md, ok := metadata.FromContext(annotated)
-	if !ok || len(md) != emptyForwardMetaCount+3 {
-		t.Errorf("Expected %d metadata items in context; got %v", md)
+	if got, want := len(md), emptyForwardMetaCount+3; !ok || got != want {
+		t.Errorf("Expected %d metadata items in context; got %d", got, want)
 	}
 	if got, want := md["foobar"], []string{"Value1"}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["foobar"] = %q; want %q`, got, want)

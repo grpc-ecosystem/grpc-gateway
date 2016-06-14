@@ -41,7 +41,7 @@ OPTIONS_PROTO=$(GOOGLEAPIS_DIR)/google/api/annotations.proto $(GOOGLEAPIS_DIR)/g
 OPTIONS_GO=$(OPTIONS_PROTO:.proto=.pb.go)
 OUTPUT_DIR=_output
 
-RUNTIME_PROTO=runtime/stream_chunk.proto
+RUNTIME_PROTO=runtime/internal/stream_chunk.proto
 RUNTIME_GO=$(RUNTIME_PROTO:.proto=.pb.go)
 
 PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mgoogle/api/annotations.proto=$(PKG)/$(GOOGLEAPIS_DIR)/google/api,Mexamples/sub/message.proto=$(PKG)/examples/sub
@@ -119,6 +119,16 @@ examples: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAG
 test: examples
 	go test -race $(PKG)/...
 
+lint:
+	golint --set_exit_status $(PKG)/runtime
+	golint --set_exit_status $(PKG)/utilities/...
+	golint --set_exit_status $(PKG)/protoc-gen-grpc-gateway/...
+	golint --set_exit_status $(PKG)/protoc-gen-swagger/...
+	go vet $(PKG)/runtime || true
+	go vet $(PKG)/utilities/...
+	go vet $(PKG)/protoc-gen-grpc-gateway/...
+	go vet $(PKG)/protoc-gen-swagger/...
+
 clean distclean:
 	rm -f $(GATEWAY_PLUGIN)
 realclean: distclean
@@ -130,4 +140,4 @@ realclean: distclean
 	rm -f $(SWAGGER_PLUGIN)
 	rm -f $(EXAMPLE_CLIENT_SRCS)
 
-.PHONY: generate examples test clean distclean realclean
+.PHONY: generate examples test lint clean distclean realclean
