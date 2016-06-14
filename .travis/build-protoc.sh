@@ -1,7 +1,7 @@
 #!/bin/sh -eu
 protoc_version=$1
 if test -z "${protoc_version}"; then
-	echo "Usage: .travis.build-protoc.sh protoc-version"
+	echo "Usage: .travis/build-protoc.sh protoc-version"
 	exit 1
 fi
 if ! $HOME/local/bin/protoc-${protoc_version} --version 2>/dev/null; then
