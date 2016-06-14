@@ -335,9 +335,6 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	for svcIdx, svc := range services {
 		for methIdx, meth := range svc.Methods {
-			if meth.GetClientStreaming() || meth.GetServerStreaming() {
-				return fmt.Errorf(`service uses streaming, which is not currently supported. Maybe you would like to implement it? It wouldn't be that hard and we don't bite. Why don't you send a pull request to https://github.com/gengo/grpc-gateway?`)
-			}
 			for _, b := range meth.Bindings {
 				// Iterate over all the swagger parameters
 				parameters := swaggerParametersObject{}
@@ -369,10 +366,15 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 				// Now check if there is a body parameter
 				if b.Body != nil {
+					desc := ""
+					if meth.GetClientStreaming() {
+						desc = "(streaming inputs)"
+					}
 					parameters = append(parameters, swaggerParameterObject{
-						Name:     "body",
-						In:       "body",
-						Required: true,
+						Name:        "body",
+						Description: desc,
+						In:          "body",
+						Required:    true,
 						Schema: &swaggerSchemaObject{
 							schemaCore: schemaCore{
 								Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)),
@@ -387,13 +389,17 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 
 				methProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method")
+				desc := ""
+				if meth.GetServerStreaming() {
+					desc += "(streaming responses)"
+				}
 				operationObject := &swaggerOperationObject{
 					Tags:        []string{svc.GetName()},
 					OperationID: fmt.Sprintf("%s", meth.GetName()),
 					Parameters:  parameters,
 					Responses: swaggerResponsesObject{
 						"200": swaggerResponseObject{
-							Description: "Description",
+							Description: desc,
 							Schema: swaggerSchemaObject{
 								schemaCore: schemaCore{
 									Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)),
