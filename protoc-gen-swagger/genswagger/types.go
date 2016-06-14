@@ -72,7 +72,7 @@ type swaggerPathItemObject struct {
 type swaggerOperationObject struct {
 	Summary     string                  `json:"summary,omitempty"`
 	Description string                  `json:"description,omitempty"`
-	OperationId string                  `json:"operationId"`
+	OperationID string                  `json:"operationId"`
 	Responses   swaggerResponsesObject  `json:"responses"`
 	Parameters  swaggerParametersObject `json:"parameters,omitempty"`
 	Tags        []string                `json:"tags,omitempty"`

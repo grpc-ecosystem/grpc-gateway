@@ -1,7 +1,9 @@
 syntax = "proto3";
 package gengo.grpc.gateway.runtime;
-option go_package = "runtime";
+option go_package = "internal";
 
+// StreamError is a response type which is returned when
+// streaming rpc returns an error.
 message StreamError {
 	int32 grpc_code = 1;
 	int32 http_code = 2;
