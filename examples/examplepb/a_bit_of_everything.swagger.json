@@ -96,15 +96,15 @@
             "name": "int64_value",
             "in": "path",
             "required": true,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           },
           {
             "name": "uint64_value",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int64"
+            "type": "string",
+            "format": "uint64"
           },
           {
             "name": "int32_value",
@@ -117,15 +117,15 @@
             "name": "fixed64_value",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int64"
+            "type": "string",
+            "format": "uint64"
           },
           {
             "name": "fixed32_value",
             "in": "path",
             "required": true,
             "type": "integer",
-            "format": "int32"
+            "format": "int64"
           },
           {
             "name": "bool_value",
@@ -159,8 +159,8 @@
             "name": "sfixed64_value",
             "in": "path",
             "required": true,
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "format": "int64"
           },
           {
             "name": "sint32_value",
@@ -173,7 +173,7 @@
             "name": "sint64_value",
             "in": "path",
             "required": true,
-            "type": "integer",
+            "type": "string",
             "format": "int64"
           },
           {
@@ -402,11 +402,11 @@
         },
         "fixed32_value": {
           "type": "integer",
-          "format": "int32"
+          "format": "int64"
         },
         "fixed64_value": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string",
+          "format": "uint64"
         },
         "float_value": {
           "type": "number",
@@ -417,7 +417,7 @@
           "format": "int32"
         },
         "int64_value": {
-          "type": "integer",
+          "type": "string",
           "format": "int64"
         },
         "map_value": {
@@ -468,8 +468,8 @@
           "format": "int32"
         },
         "sfixed64_value": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string",
+          "format": "int64"
         },
         "single_nested": {
           "$ref": "#/definitions/ABitOfEverythingNested"
@@ -479,7 +479,7 @@
           "format": "int32"
         },
         "sint64_value": {
-          "type": "integer",
+          "type": "string",
           "format": "int64"
         },
         "string_value": {
@@ -492,8 +492,8 @@
           "title": "TODO(yugui) add bytes_value"
         },
         "uint64_value": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string",
+          "format": "uint64"
         },
         "uuid": {
           "type": "string",

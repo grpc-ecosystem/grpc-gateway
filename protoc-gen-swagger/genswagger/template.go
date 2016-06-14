@@ -146,15 +146,22 @@ func primitiveSchema(t pbdescriptor.FieldDescriptorProto_Type) (ftype, format st
 	case pbdescriptor.FieldDescriptorProto_TYPE_FLOAT:
 		return "number", "float", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_INT64:
-		return "integer", "int64", true
+		return "string", "int64", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_UINT64:
-		return "integer", "int64", true
+		// 64bit integer types are marshaled as string in the default JSONPb marshaler.
+		// TODO(yugui) Add an option to declare 64bit integers as int64.
+		//
+		// NOTE: uint64 is not a predefined format of integer type in Swagger spec.
+		// So we cannot expect that uint64 is commonly supported by swagger processor.
+		return "string", "uint64", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_INT32:
 		return "integer", "int32", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_FIXED64:
-		return "integer", "int64", true
+		// Ditto.
+		return "string", "uint64", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_FIXED32:
-		return "integer", "int32", true
+		// Ditto.
+		return "integer", "int64", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_BOOL:
 		return "boolean", "boolean", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_STRING:
@@ -162,15 +169,16 @@ func primitiveSchema(t pbdescriptor.FieldDescriptorProto_Type) (ftype, format st
 	case pbdescriptor.FieldDescriptorProto_TYPE_BYTES:
 		return "string", "byte", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_UINT32:
+		// Ditto.
 		return "integer", "int64", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_SFIXED32:
 		return "integer", "int32", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_SFIXED64:
-		return "integer", "int32", true
+		return "string", "int64", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_SINT32:
 		return "integer", "int32", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_SINT64:
-		return "integer", "int64", true
+		return "string", "int64", true
 	default:
 		return "", "", false
 	}

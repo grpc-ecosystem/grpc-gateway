@@ -56,6 +56,24 @@ EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
 EXAMPLE_SWAGGERSRCS=$(EXAMPLES:.proto=.swagger.json)
 EXAMPLE_DEPS=examples/sub/message.proto examples/sub2/message.proto
 EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
+
+EXAMPLE_CLIENT_DIR=examples/clients
+ECHO_EXAMPLE_SPEC=examples/examplepb/echo_service.swagger.json
+ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/echo/EchoServiceApi.go \
+		  $(EXAMPLE_CLIENT_DIR)/echo/ExamplepbSimpleMessage.go
+ABE_EXAMPLE_SPEC=examples/examplepb/a_bit_of_everything.swagger.json
+ABE_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/abe/ABitOfEverythingServiceApi.go \
+		 $(EXAMPLE_CLIENT_DIR)/abe/ABitOfEverythingNested.go \
+		 $(EXAMPLE_CLIENT_DIR)/abe/ExamplepbABitOfEverything.go \
+		 $(EXAMPLE_CLIENT_DIR)/abe/ExamplepbNumericEnum.go \
+		 $(EXAMPLE_CLIENT_DIR)/abe/ExamplepbIdMessage.go \
+		 $(EXAMPLE_CLIENT_DIR)/abe/NestedDeepEnum.go \
+		 $(EXAMPLE_CLIENT_DIR)/abe/ProtobufEmpty.go \
+		 $(EXAMPLE_CLIENT_DIR)/abe/Sub2IdMessage.go \
+		 $(EXAMPLE_CLIENT_DIR)/abe/SubStringMessage.go
+EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS)
+SWAGGER_CODEGEN=swagger-codegen
+
 PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
 
 generate: $(OPTIONS_GO) $(RUNTIME_GO)
@@ -88,7 +106,16 @@ $(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
 $(EXAMPLE_SWAGGERSRCS): $(SWAGGER_PLUGIN) $(SWAGGER_EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(SWAGGER_PLUGIN) --swagger_out=logtostderr=true,$(PKGMAP):. $(SWAGGER_EXAMPLES)
 
-examples: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAGGERSRCS)
+$(ECHO_EXAMPLE_SRCS): $(ECHO_EXAMPLE_SPEC)
+	$(SWAGGER_CODEGEN) generate -i $(ECHO_EXAMPLE_SPEC) \
+	    -l go -o examples/clients --additional-properties packageName=echo
+	@rm -f $(EXAMPLE_CLIENT_DIR)/README.md $(EXAMPLE_CLIENT_DIR)/git_push.sh $(EXAMPLE_CLIENT_DIR)/.gitignore
+$(ABE_EXAMPLE_SRCS): $(ABE_EXAMPLE_SPEC)
+	$(SWAGGER_CODEGEN) generate -i $(ABE_EXAMPLE_SPEC) \
+	    -l go -o examples/clients --additional-properties packageName=abe
+	@rm -f $(EXAMPLE_CLIENT_DIR)/README.md $(EXAMPLE_CLIENT_DIR)/git_push.sh $(EXAMPLE_CLIENT_DIR)/.gitignore
+
+examples: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
 test: examples
 	go test -race $(PKG)/...
 
@@ -101,5 +128,6 @@ realclean: distclean
 	rm -f $(EXAMPLE_SWAGGERSRCS)
 	rm -f $(GO_PLUGIN)
 	rm -f $(SWAGGER_PLUGIN)
+	rm -f $(EXAMPLE_CLIENT_SRCS)
 
 .PHONY: generate examples test clean distclean realclean

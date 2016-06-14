@@ -10,15 +10,17 @@ cache:
   directories:
   - $HOME/local
 before_install:
-- ./.travis.build-protoc.sh 3.0.0-beta-3
+- ./.travis/build-protoc.sh 3.0.0-beta-3
+- ./.travis/install-swagger-codegen.sh 2.1.6
 - go get github.com/golang/lint/golint
+- go get github.com/dghubble/sling
 install:
 - go get github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway
 - go get github.com/gengo/grpc-gateway/runtime
 - go get github.com/gengo/grpc-gateway/examples
 - go get github.com/gengo/grpc-gateway/examples/server
 script:
-- make realclean && make examples
+- make realclean && make examples SWAGGER_CODEGEN="java -jar $HOME/local/swagger-codegen-cli.jar"
 - if ! go version | grep devel; then test -z "$(git status --porcelain)" || (git status; git diff; exit 1); fi
 - env GLOG_logtostderr=1 go test -race -v github.com/gengo/grpc-gateway/...
 - golint github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/...
