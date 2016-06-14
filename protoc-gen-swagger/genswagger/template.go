@@ -293,7 +293,7 @@ func templateToSwaggerPath(path string) string {
 		switch char {
 		case '{':
 			// Push on the stack
-			depth += 1
+			depth++
 			buffer += string(char)
 			break
 		case '}':
@@ -301,7 +301,7 @@ func templateToSwaggerPath(path string) string {
 				panic("Encountered } without matching { before it.")
 			}
 			// Pop from the stack
-			depth -= 1
+			depth--
 			buffer += "}"
 		case '/':
 			if depth == 0 {
@@ -389,7 +389,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				methProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method")
 				operationObject := &swaggerOperationObject{
 					Tags:        []string{svc.GetName()},
-					OperationId: fmt.Sprintf("%s", meth.GetName()),
+					OperationID: fmt.Sprintf("%s", meth.GetName()),
 					Parameters:  parameters,
 					Responses: swaggerResponsesObject{
 						"200": swaggerResponseObject{
