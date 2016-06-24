@@ -248,6 +248,9 @@ var (
 	handleSend := func() error {
 		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 		err = dec.Decode(&protoReq)
+		if err == io.EOF {
+			return err
+		}
 		if err != nil {
 			grpclog.Printf("Failed to decode request: %v", err)
 			return err
