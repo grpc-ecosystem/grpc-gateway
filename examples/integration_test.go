@@ -468,6 +468,12 @@ func testABELookupNotFound(t *testing.T) {
 	if got, want := resp.Header.Get("Grpc-Metadata-Uuid"), uuid; got != want {
 		t.Errorf("Grpc-Metadata-Uuid was %s, wanted %s", got, want)
 	}
+	if got, want := resp.Trailer.Get("Grpc-Trailer-Foo"), "foo2"; got != want {
+		t.Errorf("Grpc-Trailer-Foo was %q, wanted %q", got, want)
+	}
+	if got, want := resp.Trailer.Get("Grpc-Trailer-Bar"), "bar2"; got != want {
+		t.Errorf("Grpc-Trailer-Bar was %q, wanted %q", got, want)
+	}
 }
 
 func testABEList(t *testing.T) {
