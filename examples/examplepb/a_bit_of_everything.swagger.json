@@ -20,7 +20,7 @@
         "operationId": "CreateBody",
         "responses": {
           "200": {
-            "description": "Description",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
@@ -46,7 +46,7 @@
         "operationId": "Echo",
         "responses": {
           "200": {
-            "description": "Description",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
             }
@@ -71,7 +71,7 @@
         "operationId": "Create",
         "responses": {
           "200": {
-            "description": "Description",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
@@ -194,7 +194,7 @@
         "operationId": "DeepPathEcho",
         "responses": {
           "200": {
-            "description": "Description",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
@@ -227,7 +227,7 @@
         "operationId": "Lookup",
         "responses": {
           "200": {
-            "description": "Description",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
@@ -250,7 +250,7 @@
         "operationId": "Delete",
         "responses": {
           "200": {
-            "description": "Description",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
@@ -273,7 +273,7 @@
         "operationId": "Update",
         "responses": {
           "200": {
-            "description": "Description",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
@@ -306,7 +306,7 @@
         "operationId": "Echo",
         "responses": {
           "200": {
-            "description": "Description",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
             }
@@ -320,7 +320,7 @@
         "operationId": "Echo",
         "responses": {
           "200": {
-            "description": "Description",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
             }
@@ -346,7 +346,7 @@
         "operationId": "Timeout",
         "responses": {
           "200": {
-            "description": "Description",
+            "description": "",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
