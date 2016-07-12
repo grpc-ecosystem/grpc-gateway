@@ -10,6 +10,7 @@ It translates gRPC into RESTful JSON APIs.
 package examplepb
 
 import (
+	"google/protobuf"
 	"io"
 	"net/http"
 
@@ -18,7 +19,6 @@ import (
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/empty"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -406,7 +406,7 @@ func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshal
 }
 
 func request_ABitOfEverythingService_Timeout_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq empty.Empty
+	var protoReq google_protobuf.Empty
 	var metadata runtime.ServerMetadata
 
 	msg, err := client.Timeout(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))

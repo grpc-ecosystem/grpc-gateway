@@ -258,12 +258,6 @@ var (
 		}
 		return nil
 	}
-	if err := handleSend(); err != nil {
-		if err := stream.CloseSend(); err != nil {
-			grpclog.Printf("Failed to terminate client stream: %v", err)
-		}
-		return nil, metadata, err
-	}
 	go func() {
 		for {
 			if err := handleSend(); err != nil {

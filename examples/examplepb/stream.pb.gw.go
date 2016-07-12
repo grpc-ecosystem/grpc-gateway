@@ -10,6 +10,7 @@ It translates gRPC into RESTful JSON APIs.
 package examplepb
 
 import (
+	"google/protobuf"
 	"io"
 	"net/http"
 
@@ -17,7 +18,6 @@ import (
 	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/empty"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -71,7 +71,7 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 }
 
 func request_StreamService_List_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_ListClient, runtime.ServerMetadata, error) {
-	var protoReq empty.Empty
+	var protoReq google_protobuf.Empty
 	var metadata runtime.ServerMetadata
 
 	stream, err := client.List(ctx, &protoReq)
@@ -107,12 +107,6 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 			return err
 		}
 		return nil
-	}
-	if err := handleSend(); err != nil {
-		if err := stream.CloseSend(); err != nil {
-			grpclog.Printf("Failed to terminate client stream: %v", err)
-		}
-		return nil, metadata, err
 	}
 	go func() {
 		for {

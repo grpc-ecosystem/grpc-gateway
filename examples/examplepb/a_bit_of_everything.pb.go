@@ -8,7 +8,7 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import _ "github.com/gengo/grpc-gateway/third_party/googleapis/google/api"
-import google_protobuf1 "github.com/golang/protobuf/ptypes/empty"
+import google_protobuf1 "google/protobuf"
 import gengo_grpc_gateway_examples_sub "github.com/gengo/grpc-gateway/examples/sub"
 import sub2 "github.com/gengo/grpc-gateway/examples/sub2"
 
