@@ -98,6 +98,9 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 	handleSend := func() error {
 		var protoReq sub.StringMessage
 		err = dec.Decode(&protoReq)
+		if err == io.EOF {
+			return err
+		}
 		if err != nil {
 			grpclog.Printf("Failed to decode request: %v", err)
 			return err
