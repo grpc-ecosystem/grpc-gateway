@@ -1,6 +1,6 @@
 # grpc-gateway
 
-[![Build Status](https://travis-ci.org/gengo/grpc-gateway.svg?branch=master)](https://travis-ci.org/gengo/grpc-gateway)
+[![Build Status](https://travis-ci.org/grpc-ecosystem/grpc-gateway.svg?branch=master)](https://travis-ci.org/grpc-ecosystem/grpc-gateway)
 
 grpc-gateway is a plugin of [protoc](http://github.com/google/protobuf).
 It reads [gRPC](http://github.com/grpc/grpc-common) service definition,
@@ -38,8 +38,8 @@ sudo make install
 Then, `go get -u` as usual.
 
 ```sh
-go get -u github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway
-go get -u github.com/gengo/grpc-gateway/protoc-gen-swagger
+go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 go get -u github.com/golang/protobuf/protoc-gen-go
 ```
  
@@ -88,8 +88,8 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
-     --go_out=Mgoogle/api/annotations.proto=github.com/gengo/grpc-gateway/third_party/googleapis/google/api,plugins=grpc:. \
+     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+     --go_out=Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api,plugins=grpc:. \
      path/to/your_service.proto
    ```
    
@@ -101,13 +101,13 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      ```sh
      protoc -I/usr/local/include -I. \
        -I$GOPATH/src \
-       -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
+       -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
        --ruby_out=. \
        path/to/your/service_proto
      
      protoc -I/usr/local/include -I. \
        -I$GOPATH/src \
-       -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
+       -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
        --plugin=protoc-gen-grpc-ruby=grpc_ruby_plugin \
        --grpc-ruby_out=. \
        path/to/your/service.proto
@@ -118,7 +118,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
      --grpc-gateway_out=logtostderr=true:. \
      path/to/your_service.proto
    ```
@@ -135,7 +135,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    
      "github.com/golang/glog"
      "golang.org/x/net/context"
-     "github.com/gengo/grpc-gateway/runtime"
+     "github.com/grpc-ecosystem/grpc-gateway/runtime"
      "google.golang.org/grpc"
    	
      gw "path/to/your_service_package"
@@ -176,7 +176,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/gengo/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
      --swagger_out=logtostderr=true:. \
      path/to/your_service.proto
    ```
@@ -221,4 +221,4 @@ But patch is welcome.
 
 # License
 grpc-gateway is licensed under the BSD 3-Clause License.
-See [LICENSE.txt](https://github.com/gengo/grpc-gateway/blob/master/LICENSE.txt) for more details.
+See [LICENSE.txt](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt) for more details.
