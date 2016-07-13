@@ -8,11 +8,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
-	gen "github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/generator"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	gen "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/generator"
 )
 
 var (
@@ -30,8 +30,8 @@ func New(reg *descriptor.Registry) gen.Generator {
 	for _, pkgpath := range []string{
 		"io",
 		"net/http",
-		"github.com/gengo/grpc-gateway/runtime",
-		"github.com/gengo/grpc-gateway/utilities",
+		"github.com/grpc-ecosystem/grpc-gateway/runtime",
+		"github.com/grpc-ecosystem/grpc-gateway/utilities",
 		"github.com/golang/protobuf/proto",
 		"golang.org/x/net/context",
 		"google.golang.org/grpc",

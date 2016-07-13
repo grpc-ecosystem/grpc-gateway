@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/httprule"
-	options "github.com/gengo/grpc-gateway/third_party/googleapis/google/api"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
+	options "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"
 )
 
 // loadServices registers services and their methods from "targetFile" to "r".

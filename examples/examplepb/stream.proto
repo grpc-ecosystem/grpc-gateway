@@ -1,6 +1,6 @@
 syntax = "proto3";
 option go_package = "examplepb";
-package gengo.grpc.gateway.examples.examplepb;
+package grpc.gateway.examples.examplepb;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
@@ -20,7 +20,7 @@ service StreamService {
 			get: "/v1/example/a_bit_of_everything"
 		};
 	}
-	rpc BulkEcho(stream gengo.grpc.gateway.examples.sub.StringMessage) returns (stream gengo.grpc.gateway.examples.sub.StringMessage) {
+	rpc BulkEcho(stream grpc.gateway.examples.sub.StringMessage) returns (stream grpc.gateway.examples.sub.StringMessage) {
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything/echo"
 			body: "*"
