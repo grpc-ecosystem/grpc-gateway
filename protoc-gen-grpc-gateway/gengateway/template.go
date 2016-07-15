@@ -6,9 +6,9 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/gengo/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
-	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/golang/glog"
+	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 )
 
 type param struct {

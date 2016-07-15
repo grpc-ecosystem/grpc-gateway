@@ -1,6 +1,6 @@
 syntax = "proto3";
 option go_package = "examplepb";
-package gengo.grpc.gateway.examples.examplepb;
+package grpc.gateway.examples.examplepb;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
@@ -94,7 +94,7 @@ service ABitOfEverythingService {
 			delete: "/v1/example/a_bit_of_everything/{uuid}"
 		};
 	}
-	rpc Echo(gengo.grpc.gateway.examples.sub.StringMessage) returns (gengo.grpc.gateway.examples.sub.StringMessage) {
+	rpc Echo(grpc.gateway.examples.sub.StringMessage) returns (grpc.gateway.examples.sub.StringMessage) {
 		option (google.api.http) = {
 			get: "/v1/example/a_bit_of_everything/echo/{value}"
 			additional_bindings {
