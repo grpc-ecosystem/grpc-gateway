@@ -4,8 +4,8 @@ import (
 	"flag"
 	"net"
 
-	examples "github.com/gengo/grpc-gateway/examples/examplepb"
 	"github.com/golang/glog"
+	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
 	"google.golang.org/grpc"
 )
 
