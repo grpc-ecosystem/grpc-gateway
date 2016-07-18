@@ -1,8 +1,8 @@
 package main
 
 import (
-	examples "github.com/gengo/grpc-gateway/examples/examplepb"
 	"github.com/golang/glog"
+	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"

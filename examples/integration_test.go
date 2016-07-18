@@ -12,12 +12,12 @@ import (
 	"testing"
 	"time"
 
-	gw "github.com/gengo/grpc-gateway/examples/examplepb"
-	sub "github.com/gengo/grpc-gateway/examples/sub"
-	"github.com/gengo/grpc-gateway/runtime"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
+	gw "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
+	sub "github.com/grpc-ecosystem/grpc-gateway/examples/sub"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 )

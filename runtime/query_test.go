@@ -4,9 +4,9 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/gengo/grpc-gateway/runtime"
-	"github.com/gengo/grpc-gateway/utilities"
 	"github.com/golang/protobuf/proto"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 )
 
 func TestPopulateParameters(t *testing.T) {
