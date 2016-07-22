@@ -13,6 +13,49 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 )
 
+// messageToQueryParameters converts a message to a list of swagger query parameters.
+func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter) ([]swaggerParameterObject, error) {
+	var parameters []swaggerParameterObject
+	var addParameterWithPrefix func(string, *descriptor.Field) error
+	addParameterWithPrefix = func(prefix string, field *descriptor.Field) error {
+		// make sure the parameter is not already listed as a path parameter
+		for _, pathParam := range pathParams {
+			if pathParam.Target == field {
+				return nil
+			}
+		}
+		schema := schemaOfField(field, reg)
+		if schema.Type != "" {
+			// basic type, add a basic query parameter
+			parameters = append(parameters, swaggerParameterObject{
+				Name:        prefix + field.GetName(),
+				Description: schema.Description,
+				In:          "query",
+				Type:        schema.Type,
+			})
+			return nil
+		}
+
+		// nested type, recurse
+		msg, err := reg.LookupMsg("", field.GetTypeName())
+		if err != nil {
+			return fmt.Errorf("unknown message type %s", field.GetTypeName())
+		}
+		for _, nestedField := range msg.Fields {
+			if err := addParameterWithPrefix(field.GetName()+".", nestedField); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	for _, field := range message.Fields {
+		if err := addParameterWithPrefix("", field); err != nil {
+			return parameters, err
+		}
+	}
+	return parameters, nil
+}
+
 // findServicesMessagesAndEnumerations discovers all messages and enums defined in the RPC methods of the service.
 func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, e enumMap) {
 	for _, svc := range s {
@@ -400,6 +443,13 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						Required:    true,
 						Schema:      &schema,
 					})
+				} else if b.HTTPMethod == "GET" {
+					// add the parameters to the query string
+					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams)
+					if err != nil {
+						return err
+					}
+					parameters = append(parameters, queryParams...)
 				}
 
 				pathItemObject, ok := paths[templateToSwaggerPath(b.PathTmpl.Template)]
