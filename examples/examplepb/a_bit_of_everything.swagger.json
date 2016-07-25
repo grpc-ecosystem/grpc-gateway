@@ -312,6 +312,14 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "value",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ABitOfEverythingService"
         ]

@@ -354,10 +354,11 @@ func (a ABitOfEverythingServiceApi) Echo (value string) (SubStringMessage, error
 /**
  * 
  * 
+ * @param value 
  * @return SubStringMessage
  */
-//func (a ABitOfEverythingServiceApi) Echo_1 () (SubStringMessage, error) {
-func (a ABitOfEverythingServiceApi) Echo_1 () (SubStringMessage, error) {
+//func (a ABitOfEverythingServiceApi) Echo_1 (value string) (SubStringMessage, error) {
+func (a ABitOfEverythingServiceApi) Echo_1 (value string) (SubStringMessage, error) {
 
     _sling := sling.New().Get(a.basePath)
 
@@ -366,6 +367,11 @@ func (a ABitOfEverythingServiceApi) Echo_1 () (SubStringMessage, error) {
 
     _sling = _sling.Path(path)
 
+    type QueryParams struct {
+        value    string `url:"value,omitempty"`
+        
+}
+    _sling = _sling.QueryStruct(&QueryParams{ value: value })
     // accept header
     accepts := []string { "application/json" }
     for key := range accepts {
