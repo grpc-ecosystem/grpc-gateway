@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,6 +10,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -152,6 +154,8 @@ func TestABE(t *testing.T) {
 	testABELookup(t)
 	testABELookupNotFound(t)
 	testABEList(t)
+	testABEBulkEcho(t)
+	testABEBulkEchoZeroLength(t)
 	testAdditionalBindings(t)
 }
 
@@ -524,6 +528,116 @@ func testABEList(t *testing.T) {
 
 	if count <= 0 {
 		t.Errorf("count == %d; want > 0", count)
+	}
+}
+
+func testABEBulkEcho(t *testing.T) {
+	reqr, reqw := io.Pipe()
+	var wg sync.WaitGroup
+	var want []*sub.StringMessage
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		defer reqw.Close()
+		var m jsonpb.Marshaler
+		for i := 0; i < 1000; i++ {
+			msg := sub.StringMessage{Value: proto.String(fmt.Sprintf("message %d", i))}
+			buf, err := m.MarshalToString(&msg)
+			if err != nil {
+				t.Errorf("m.Marshal(%v) failed with %v; want success", &msg, err)
+				return
+			}
+			if _, err := fmt.Fprintln(reqw, buf); err != nil {
+				t.Errorf("fmt.Fprintln(reqw, %q) failed with %v; want success", buf, err)
+				return
+			}
+			want = append(want, &msg)
+		}
+	}()
+
+	url := "http://localhost:8080/v1/example/a_bit_of_everything/echo"
+	req, err := http.NewRequest("POST", url, reqr)
+	if err != nil {
+		t.Errorf("http.NewRequest(%q, %q, reqr) failed with %v; want success", "POST", url, err)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Transfer-Encoding", "chunked")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.Post(%q, %q, req) failed with %v; want success", url, "application/json", err)
+		return
+	}
+	defer resp.Body.Close()
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
+
+	var got []*sub.StringMessage
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+
+		dec := json.NewDecoder(resp.Body)
+		for i := 0; ; i++ {
+			var item struct {
+				Result json.RawMessage        `json:"result"`
+				Error  map[string]interface{} `json:"error"`
+			}
+			err := dec.Decode(&item)
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				t.Errorf("dec.Decode(&item) failed with %v; want success; i = %d", err, i)
+			}
+			if len(item.Error) != 0 {
+				t.Errorf("item.Error = %#v; want empty; i = %d", item.Error, i)
+				continue
+			}
+			var msg sub.StringMessage
+			if err := jsonpb.UnmarshalString(string(item.Result), &msg); err != nil {
+				t.Errorf("jsonpb.UnmarshalString(%q, &msg) failed with %v; want success", item.Result, err)
+			}
+			got = append(got, &msg)
+		}
+	}()
+
+	wg.Wait()
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got = %v; want %v", got, want)
+	}
+}
+
+func testABEBulkEchoZeroLength(t *testing.T) {
+	url := "http://localhost:8080/v1/example/a_bit_of_everything/echo"
+	req, err := http.NewRequest("POST", url, bytes.NewReader(nil))
+	if err != nil {
+		t.Errorf("http.NewRequest(%q, %q, bytes.NewReader(nil)) failed with %v; want success", "POST", url, err)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Transfer-Encoding", "chunked")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.Post(%q, %q, req) failed with %v; want success", url, "application/json", err)
+		return
+	}
+	defer resp.Body.Close()
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
+
+	dec := json.NewDecoder(resp.Body)
+	var item struct {
+		Result json.RawMessage        `json:"result"`
+		Error  map[string]interface{} `json:"error"`
+	}
+	if err := dec.Decode(&item); err == nil {
+		t.Errorf("dec.Decode(&item) succeeded; want io.EOF; item = %#v", item)
+	} else if err != io.EOF {
+		t.Errorf("dec.Decode(&item) failed with %v; want success", err)
+		return
 	}
 }
 
