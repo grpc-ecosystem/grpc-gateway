@@ -50,7 +50,11 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 }
 
 func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
-	for _, msg := range messages {
+	for name, msg := range messages {
+		switch name {
+		case ".google.protobuf.Timestamp":
+			continue
+		}
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			continue
 		}
@@ -105,8 +109,15 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry) swaggerSchemaO
 
 	switch ft := fd.GetType(); ft {
 	case pbdescriptor.FieldDescriptorProto_TYPE_ENUM, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE, pbdescriptor.FieldDescriptorProto_TYPE_GROUP:
-		core = schemaCore{
-			Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(fd.GetTypeName(), reg),
+		if fd.GetTypeName() == ".google.protobuf.Timestamp" && pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE == ft {
+			core = schemaCore{
+				Type:   "string",
+				Format: "date-time",
+			}
+		} else {
+			core = schemaCore{
+				Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(fd.GetTypeName(), reg),
+			}
 		}
 	default:
 		ftype, format, ok := primitiveSchema(ft)
