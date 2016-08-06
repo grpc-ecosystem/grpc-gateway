@@ -1,6 +1,7 @@
 package abe
 
 import (
+    "time"
 )
 
 type ExamplepbABitOfEverything struct {
@@ -26,6 +27,7 @@ type ExamplepbABitOfEverything struct {
     Sint32Value  int32  `json:"sint32_value,omitempty"`
     Sint64Value  string  `json:"sint64_value,omitempty"`
     StringValue  string  `json:"string_value,omitempty"`
+    TimestampValue  time.Time  `json:"timestamp_value,omitempty"`
     Uint32Value  int64  `json:"uint32_value,omitempty"`
     Uint64Value  string  `json:"uint64_value,omitempty"`
     Uuid  string  `json:"uuid,omitempty"`
