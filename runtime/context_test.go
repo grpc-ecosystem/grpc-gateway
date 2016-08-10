@@ -1,6 +1,7 @@
 package runtime_test
 
 import (
+	"fmt"
 	"net/http"
 	"reflect"
 	"testing"
@@ -41,9 +42,9 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
 	}
 	request.Header.Add("Some-Irrelevant-Header", "some value")
-	request.Header.Add("Grpc-Metadata-FooBar", "Value1")
-	request.Header.Add("Grpc-Metadata-Foo-BAZ", "Value2")
-	request.Header.Add("Grpc-Metadata-foo-bAz", "Value3")
+	request.Header.Add("GrpcGateway-FooBar", "Value1")
+	request.Header.Add("GrpcGateway-Foo-BAZ", "Value2")
+	request.Header.Add("GrpcGateway-foo-bAz", "Value3")
 	request.Header.Add("Authorization", "Token 1234567890")
 	annotated, err := runtime.AnnotateContext(ctx, request)
 	if err != nil {
@@ -52,16 +53,16 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	}
 	md, ok := metadata.FromContext(annotated)
 	if got, want := len(md), emptyForwardMetaCount+3; !ok || got != want {
-		t.Errorf("Expected %d metadata items in context; got %d", got, want)
+		t.Errorf("Expected %d metadata items in context; got %d", got, want, md)
 	}
 	if got, want := md["foobar"], []string{"Value1"}; !reflect.DeepEqual(got, want) {
-		t.Errorf(`md["foobar"] = %q; want %q`, got, want)
+		t.Errorf(`md["GrpcGateway-foobar"] = %q; want %q`, got, want)
 	}
 	if got, want := md["foo-baz"], []string{"Value2", "Value3"}; !reflect.DeepEqual(got, want) {
-		t.Errorf(`md["foo-baz"] = %q want %q`, got, want)
+		t.Errorf(`md["GrpcGateway-foo-baz"] = %q want %q`, got, want)
 	}
 	if got, want := md["authorization"], []string{"Token 1234567890"}; !reflect.DeepEqual(got, want) {
-		t.Errorf(`md["authorization"] = %q want %q`, got, want)
+		t.Errorf(`md["GrpcGateway-authorization"] = %q want %q`, got, want)
 	}
 }
 
