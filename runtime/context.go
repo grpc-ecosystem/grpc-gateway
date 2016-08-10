@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-const metadataHeaderPrefix = "Grpc-Metadata-"
+const metadataHeaderPrefix = "GrpcGateway-"
 const metadataTrailerPrefix = "Grpc-Trailer-"
 const metadataGrpcTimeout = "Grpc-Timeout"
 
@@ -48,8 +48,8 @@ func AnnotateContext(ctx context.Context, req *http.Request) (context.Context, e
 
 	for key, vals := range req.Header {
 		for _, val := range vals {
-			if key == "Authorization" {
-				pairs = append(pairs, "authorization", val)
+			if isPermanentHTTPHeader(key) {
+				pairs = append(pairs, strings.ToLower(fmt.Sprintf("%s%s", metadataHeaderPrefix, key)), val)
 				continue
 			}
 			if strings.HasPrefix(key, metadataHeaderPrefix) {
@@ -136,4 +136,39 @@ func timeoutUnitToDuration(u uint8) (d time.Duration, ok bool) {
 	default:
 	}
 	return
+}
+
+// isPermanentHTTPHeader checks whether hdr belongs to the list of
+// permenant request headers maintained by IANA.
+// http://www.iana.org/assignments/message-headers/message-headers.xml
+func isPermanentHTTPHeader(hdr string) bool {
+	switch hdr {
+	case
+		"Accept",
+		"Accept-Charset",
+		"Accept-Language",
+		"Accept-Ranges",
+		"Authorization",
+		"Cache-Control",
+		"Content-Type",
+		"Cookie",
+		"Date",
+		"Expect",
+		"From",
+		"Host",
+		"If-Match",
+		"If-Modified-Since",
+		"If-None-Match",
+		"If-Schedule-Tag-Match",
+		"If-Unmodified-Since",
+		"Max-Forwards",
+		"Origin",
+		"Pragma",
+		"Referer",
+		"User-Agent",
+		"Via",
+		"Warning":
+		return true
+	}
+	return false
 }
