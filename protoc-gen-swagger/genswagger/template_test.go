@@ -101,7 +101,7 @@ func TestApplyTemplateSimple(t *testing.T) {
 	if want, is, name := "", got.BasePath, "BasePath"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
-	if want, is, name := []string{"http", "https"}, got.Schemes, "Schemes"; !reflect.DeepEqual(is, want) {
+	if want, is, name := []string{"https", "http"}, got.Schemes, "Schemes"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 	if want, is, name := []string{"application/json"}, got.Consumes, "Consumes"; !reflect.DeepEqual(is, want) {
@@ -261,7 +261,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 	if want, got := "", obj.BasePath; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).BasePath = %s want to be %s", file, got, want)
 	}
-	if want, got := []string{"http", "https"}, obj.Schemes; !reflect.DeepEqual(got, want) {
+	if want, got := []string{"https", "http"}, obj.Schemes; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).Schemes = %s want to be %s", file, got, want)
 	}
 	if want, got := []string{"application/json"}, obj.Consumes; !reflect.DeepEqual(got, want) {
