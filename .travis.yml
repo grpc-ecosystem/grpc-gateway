@@ -11,7 +11,7 @@ cache:
   - $HOME/local
   - ${TRAVIS_BUILD_DIR}/examples/browser/node_modules
 before_install:
-- ./.travis/build-protoc.sh 3.0.0-beta-3
+- ./.travis/install-protoc.sh 3.0.0
 - ./.travis/install-swagger-codegen.sh 2.1.6
 - nvm install v6.1 && nvm use v6.1 && node --version
 - go get github.com/golang/lint/golint
