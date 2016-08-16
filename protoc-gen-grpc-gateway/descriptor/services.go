@@ -27,7 +27,7 @@ func (r *Registry) loadServices(file *File) error {
 			glog.V(2).Infof("Processing %s.%s", sd.GetName(), md.GetName())
 			opts, err := extractAPIOptions(md)
 			if err != nil {
-				glog.Errorf("Failed to extract ApiMethodOptions from %s.%s: %v", svc.GetName(), md.GetName(), err)
+				glog.Errorf("Failed to extract HttpRule from %s.%s: %v", svc.GetName(), md.GetName(), err)
 				return err
 			}
 			if opts == nil {
