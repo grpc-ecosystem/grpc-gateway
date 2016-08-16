@@ -4,7 +4,7 @@ branches:
 language: go
 sudo: false
 go:
-- 1.6.2
+- 1.7
 - tip
 cache:
   directories:
@@ -25,7 +25,7 @@ before_script:
 - sh -c 'cd examples/browser && npm install'
 script:
 - make realclean && make examples SWAGGER_CODEGEN="java -jar $HOME/local/swagger-codegen-cli.jar"
-- if ! go version | grep devel; then test -z "$(git status --porcelain)" || (git status; git diff; exit 1); fi
+- test -z "$(git status --porcelain)" || (git status; git diff; exit 1)
 - env GLOG_logtostderr=1 go test -race -v github.com/grpc-ecosystem/grpc-gateway/...
 - make lint
 - sh -c 'cd examples/browser && gulp'
