@@ -486,6 +486,10 @@
           "type": "string",
           "format": "string"
         },
+        "timestamp_value": {
+          "type": "string",
+          "format": "date-time"
+        },
         "uint32_value": {
           "type": "integer",
           "format": "int64",

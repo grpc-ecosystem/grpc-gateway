@@ -6,6 +6,7 @@ import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "examples/sub/message.proto";
 import "examples/sub2/message.proto";
+import "google/protobuf/timestamp.proto";
 
 // Intentionaly complicated message type to cover much features of Protobuf.
 // NEXT ID: 27
@@ -55,6 +56,8 @@ message ABitOfEverything {
 	map<string, Nested> mapped_nested_value = 24;
 
 	string nonConventionalNameValue = 26;
+
+	google.protobuf.Timestamp timestamp_value = 27;
 }
 
 // NumericEnum is one or zero.
