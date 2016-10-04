@@ -220,6 +220,14 @@ But patch is welcome.
 * Encoding request/response body in XML
 * True bi-directional streaming. (Probably impossible?)
 
+# Mapping gRPC to HTTP
+
+* [How gRPC error codes map to HTTP status codes in the response](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/errors.go#L15)
+* HTTP request source IP is added as `X-Forwarded-For` gRPC request header
+* HTTP request host is added as `X-Forwarded-Host` gRPC request header
+* HTTP `Authorization` header is added as `authorization` gRPC request header 
+* Remaining HTTP header keys are prefixed with `Grpc-Metadata-` and added with their values to gRPC request header
+
 # Contribution
 See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md).
 
