@@ -15,8 +15,8 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-const metadataHeaderPrefix = "Grpc-Metadata-"
-const metadataTrailerPrefix = "Grpc-Trailer-"
+const MetadataHeaderPrefix = "Grpc-Metadata-"
+const MetadataTrailerPrefix = "Grpc-Trailer-"
 const metadataGrpcTimeout = "Grpc-Timeout"
 
 const xForwardedFor = "X-Forwarded-For"
@@ -52,8 +52,8 @@ func AnnotateContext(ctx context.Context, req *http.Request) (context.Context, e
 				pairs = append(pairs, "authorization", val)
 				continue
 			}
-			if strings.HasPrefix(key, metadataHeaderPrefix) {
-				pairs = append(pairs, key[len(metadataHeaderPrefix):], val)
+			if strings.HasPrefix(key, MetadataHeaderPrefix) {
+				pairs = append(pairs, key[len(MetadataHeaderPrefix):], val)
 			}
 		}
 	}
