@@ -15,7 +15,11 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
+// MetadataHeaderPrefix is prepended to HTTP headers in order to convert them to 
+// gRPC metadata for incoming requests processed by grpc-gateway
 const MetadataHeaderPrefix = "Grpc-Metadata-"
+// MetadataTrailerPrefix is prepended to gRPC metadata as it is converted to
+// HTTP headers in a response handled by grpc-gateway
 const MetadataTrailerPrefix = "Grpc-Trailer-"
 const metadataGrpcTimeout = "Grpc-Timeout"
 
