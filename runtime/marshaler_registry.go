@@ -13,7 +13,11 @@ var (
 	acceptHeader      = http.CanonicalHeaderKey("Accept")
 	contentTypeHeader = http.CanonicalHeaderKey("Content-Type")
 
-	defaultMarshaler = &JSONPb{OrigName: true}
+	// defaultMarhaler controls how protobufs are marshalled to JSON. Note that
+	// it uses the JSONpb package, not standard JSON / annotations. To override its
+	// behavior, use the WithMarshalerOption:
+	// 	gwmux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName: true, EmitDefaults: false}))
+	defaultMarshaler = &JSONPb{OrigName: true, EmitDefaults: true}
 )
 
 // MarshalerForRequest returns the inbound/outbound marshalers for this request.
