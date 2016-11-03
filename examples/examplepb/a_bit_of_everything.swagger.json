@@ -332,7 +332,8 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/subStringMessage"
+              "type": "string",
+              "format": "string"
             }
           }
         ],
