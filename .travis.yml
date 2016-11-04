@@ -3,6 +3,7 @@ sudo: false
 go:
 - 1.7.3
 - tip
+go_import_path: github.com/grpc-ecosystem/grpc-gateway
 cache:
   directories:
   - $HOME/local
