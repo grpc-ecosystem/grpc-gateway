@@ -1,6 +1,3 @@
-branches:
-  only:
-    - master
 language: go
 sudo: false
 go:
