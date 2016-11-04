@@ -205,7 +205,7 @@ To use the same port for custom HTTP handlers (e.g. serving `swagger.json`), gRP
 * Method parameters in request path
 * Method parameters in query string
 * Mapping streaming APIs to JSON streams
-* Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata
+* Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata (prefixed with `grpcgateway-`)
 * Optionally emitting API definition for [Swagger](http://swagger.io).
 * Setting [gRPC timeouts](http://www.grpc.io/docs/guides/wire.html) through inbound HTTP `Grpc-Timeout` header.
 
@@ -228,7 +228,8 @@ But patch is welcome.
 * HTTP request source IP is added as `X-Forwarded-For` gRPC request header
 * HTTP request host is added as `X-Forwarded-Host` gRPC request header
 * HTTP `Authorization` header is added as `authorization` gRPC request header 
-* Remaining HTTP header keys are prefixed with `Grpc-Metadata-` and added with their values to gRPC request header
+* Remaining Permanent HTTP header keys (as specified by the IANA [here](http://www.iana.org/assignments/message-headers/message-headers.xhtml) are prefixed with `grpcgateway-` and added with their values to gRPC request header
+* HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata (prefixed with `grpcgateway-`)
 
 # Contribution
 See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md).
