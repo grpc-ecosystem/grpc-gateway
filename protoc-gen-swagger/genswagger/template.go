@@ -377,6 +377,19 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 				// Now check if there is a body parameter
 				if b.Body != nil {
+					var schema swaggerSchemaObject
+
+					if len(b.Body.FieldPath) == 0 {
+						schema = swaggerSchemaObject{
+							schemaCore: schemaCore{
+								Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)),
+							},
+						}
+					} else {
+						lastField := b.Body.FieldPath[len(b.Body.FieldPath) - 1]
+						schema = schemaOfField(lastField.Target, reg)
+					}
+
 					desc := ""
 					if meth.GetClientStreaming() {
 						desc = "(streaming inputs)"
@@ -386,11 +399,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						Description: desc,
 						In:          "body",
 						Required:    true,
-						Schema: &swaggerSchemaObject{
-							schemaCore: schemaCore{
-								Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)),
-							},
-						},
+						Schema: &schema,
 					})
 				}
 

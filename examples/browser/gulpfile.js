@@ -16,7 +16,7 @@ gulp.task('bower', function(){
 });
 
 gulp.task('server', shell.task([
-  'go build -o bin/example-server github.com/grpc-ecosystem/grpc-gateway/examples/server',
+  'go build -o bin/example-server github.com/grpc-ecosystem/grpc-gateway/examples/server/cmd/example-server',
 ]));
 
 gulp.task('gateway', shell.task([

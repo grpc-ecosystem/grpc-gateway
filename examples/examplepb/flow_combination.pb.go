@@ -95,7 +95,7 @@ var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion3
+const _ = grpc.SupportPackageIsVersion4
 
 // Client API for FlowCombination service
 
@@ -630,7 +630,7 @@ var _FlowCombination_serviceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: fileDescriptor3,
+	Metadata: "examples/examplepb/flow_combination.proto",
 }
 
 func init() { proto.RegisterFile("examples/examplepb/flow_combination.proto", fileDescriptor3) }

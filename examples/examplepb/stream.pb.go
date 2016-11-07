@@ -27,7 +27,7 @@ var _ grpc.ClientConn
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion3
+const _ = grpc.SupportPackageIsVersion4
 
 // Client API for StreamService service
 
@@ -249,7 +249,7 @@ var _StreamService_serviceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 	},
-	Metadata: fileDescriptor2,
+	Metadata: "examples/examplepb/stream.proto",
 }
 
 func init() { proto.RegisterFile("examples/examplepb/stream.proto", fileDescriptor2) }
