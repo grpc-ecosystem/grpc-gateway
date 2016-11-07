@@ -200,7 +200,7 @@ No authorization required
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**SubStringMessage**](SubStringMessage.md)|  | 
+ **body** | **string**|  | 
 
 ### Return type
 

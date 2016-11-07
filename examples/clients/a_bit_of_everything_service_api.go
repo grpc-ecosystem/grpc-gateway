@@ -405,7 +405,7 @@ func (a ABitOfEverythingServiceApi) Echo_1() (*SubStringMessage, *APIResponse, e
  * @param body 
  * @return *SubStringMessage
  */
-func (a ABitOfEverythingServiceApi) Echo_2(body SubStringMessage) (*SubStringMessage, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) Echo_2(body string) (*SubStringMessage, *APIResponse, error) {
 
 	var httpMethod = "Post"
 	// create path and map variables
