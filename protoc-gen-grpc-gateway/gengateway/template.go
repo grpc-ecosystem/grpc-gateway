@@ -271,13 +271,14 @@ var (
 		return nil, metadata, err
 	}
 	go func() {
-		for {
-			if err := handleSend(); err != nil {
-				break
-			}
+		var err error
+		for err == nil {
+			err = handleSend()
 		}
-		if err := stream.CloseSend(); err != nil {
-			grpclog.Printf("Failed to terminate client stream: %v", err)
+		if err != io.EOF {
+			if err = stream.CloseSend(); err != nil {
+				grpclog.Printf("Failed to terminate client stream: %v", err)
+			}
 		}
 	}()
 	header, err := stream.Header()
