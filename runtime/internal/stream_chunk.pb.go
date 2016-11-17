@@ -42,6 +42,34 @@ func (m *StreamError) String() string            { return proto.CompactTextStrin
 func (*StreamError) ProtoMessage()               {}
 func (*StreamError) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
 
+func (m *StreamError) GetGrpcCode() int32 {
+	if m != nil {
+		return m.GrpcCode
+	}
+	return 0
+}
+
+func (m *StreamError) GetHttpCode() int32 {
+	if m != nil {
+		return m.HttpCode
+	}
+	return 0
+}
+
+func (m *StreamError) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+func (m *StreamError) GetHttpStatus() string {
+	if m != nil {
+		return m.HttpStatus
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*StreamError)(nil), "grpc.gateway.runtime.StreamError")
 }
