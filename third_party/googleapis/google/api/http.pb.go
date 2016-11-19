@@ -180,6 +180,13 @@ func (m *HttpRule) GetCustom() *CustomHttpPattern {
 	return nil
 }
 
+func (m *HttpRule) GetBody() string {
+	if m != nil {
+		return m.Body
+	}
+	return ""
+}
+
 func (m *HttpRule) GetAdditionalBindings() []*HttpRule {
 	if m != nil {
 		return m.AdditionalBindings
@@ -329,6 +336,20 @@ func (m *CustomHttpPattern) Reset()                    { *m = CustomHttpPattern{
 func (m *CustomHttpPattern) String() string            { return proto.CompactTextString(m) }
 func (*CustomHttpPattern) ProtoMessage()               {}
 func (*CustomHttpPattern) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{1} }
+
+func (m *CustomHttpPattern) GetKind() string {
+	if m != nil {
+		return m.Kind
+	}
+	return ""
+}
+
+func (m *CustomHttpPattern) GetPath() string {
+	if m != nil {
+		return m.Path
+	}
+	return ""
+}
 
 func init() {
 	proto.RegisterType((*HttpRule)(nil), "google.api.HttpRule")

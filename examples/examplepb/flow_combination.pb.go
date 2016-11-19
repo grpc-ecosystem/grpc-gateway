@@ -38,6 +38,27 @@ func (m *NonEmptyProto) String() string            { return proto.CompactTextStr
 func (*NonEmptyProto) ProtoMessage()               {}
 func (*NonEmptyProto) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{1} }
 
+func (m *NonEmptyProto) GetA() string {
+	if m != nil {
+		return m.A
+	}
+	return ""
+}
+
+func (m *NonEmptyProto) GetB() string {
+	if m != nil {
+		return m.B
+	}
+	return ""
+}
+
+func (m *NonEmptyProto) GetC() string {
+	if m != nil {
+		return m.C
+	}
+	return ""
+}
+
 type UnaryProto struct {
 	Str string `protobuf:"bytes,1,opt,name=str" json:"str,omitempty"`
 }
@@ -46,6 +67,13 @@ func (m *UnaryProto) Reset()                    { *m = UnaryProto{} }
 func (m *UnaryProto) String() string            { return proto.CompactTextString(m) }
 func (*UnaryProto) ProtoMessage()               {}
 func (*UnaryProto) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{2} }
+
+func (m *UnaryProto) GetStr() string {
+	if m != nil {
+		return m.Str
+	}
+	return ""
+}
 
 type NestedProto struct {
 	A *UnaryProto `protobuf:"bytes,1,opt,name=a" json:"a,omitempty"`
@@ -63,6 +91,20 @@ func (m *NestedProto) GetA() *UnaryProto {
 		return m.A
 	}
 	return nil
+}
+
+func (m *NestedProto) GetB() string {
+	if m != nil {
+		return m.B
+	}
+	return ""
+}
+
+func (m *NestedProto) GetC() string {
+	if m != nil {
+		return m.C
+	}
+	return ""
 }
 
 type SingleNestedProto struct {

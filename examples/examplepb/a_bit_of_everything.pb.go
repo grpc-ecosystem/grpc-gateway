@@ -140,9 +140,128 @@ func (m *ABitOfEverything) GetSingleNested() *ABitOfEverything_Nested {
 	return nil
 }
 
+func (m *ABitOfEverything) GetUuid() string {
+	if m != nil {
+		return m.Uuid
+	}
+	return ""
+}
+
 func (m *ABitOfEverything) GetNested() []*ABitOfEverything_Nested {
 	if m != nil {
 		return m.Nested
+	}
+	return nil
+}
+
+func (m *ABitOfEverything) GetFloatValue() float32 {
+	if m != nil {
+		return m.FloatValue
+	}
+	return 0
+}
+
+func (m *ABitOfEverything) GetDoubleValue() float64 {
+	if m != nil {
+		return m.DoubleValue
+	}
+	return 0
+}
+
+func (m *ABitOfEverything) GetInt64Value() int64 {
+	if m != nil {
+		return m.Int64Value
+	}
+	return 0
+}
+
+func (m *ABitOfEverything) GetUint64Value() uint64 {
+	if m != nil {
+		return m.Uint64Value
+	}
+	return 0
+}
+
+func (m *ABitOfEverything) GetInt32Value() int32 {
+	if m != nil {
+		return m.Int32Value
+	}
+	return 0
+}
+
+func (m *ABitOfEverything) GetFixed64Value() uint64 {
+	if m != nil {
+		return m.Fixed64Value
+	}
+	return 0
+}
+
+func (m *ABitOfEverything) GetFixed32Value() uint32 {
+	if m != nil {
+		return m.Fixed32Value
+	}
+	return 0
+}
+
+func (m *ABitOfEverything) GetBoolValue() bool {
+	if m != nil {
+		return m.BoolValue
+	}
+	return false
+}
+
+func (m *ABitOfEverything) GetStringValue() string {
+	if m != nil {
+		return m.StringValue
+	}
+	return ""
+}
+
+func (m *ABitOfEverything) GetUint32Value() uint32 {
+	if m != nil {
+		return m.Uint32Value
+	}
+	return 0
+}
+
+func (m *ABitOfEverything) GetEnumValue() NumericEnum {
+	if m != nil {
+		return m.EnumValue
+	}
+	return NumericEnum_ZERO
+}
+
+func (m *ABitOfEverything) GetSfixed32Value() int32 {
+	if m != nil {
+		return m.Sfixed32Value
+	}
+	return 0
+}
+
+func (m *ABitOfEverything) GetSfixed64Value() int64 {
+	if m != nil {
+		return m.Sfixed64Value
+	}
+	return 0
+}
+
+func (m *ABitOfEverything) GetSint32Value() int32 {
+	if m != nil {
+		return m.Sint32Value
+	}
+	return 0
+}
+
+func (m *ABitOfEverything) GetSint64Value() int64 {
+	if m != nil {
+		return m.Sint64Value
+	}
+	return 0
+}
+
+func (m *ABitOfEverything) GetRepeatedStringValue() []string {
+	if m != nil {
+		return m.RepeatedStringValue
 	}
 	return nil
 }
@@ -180,6 +299,13 @@ func (m *ABitOfEverything) GetMappedNestedValue() map[string]*ABitOfEverything_N
 		return m.MappedNestedValue
 	}
 	return nil
+}
+
+func (m *ABitOfEverything) GetNonConventionalNameValue() string {
+	if m != nil {
+		return m.NonConventionalNameValue
+	}
+	return ""
 }
 
 func (m *ABitOfEverything) GetTimestampValue() *google_protobuf2.Timestamp {
@@ -271,6 +397,27 @@ func (m *ABitOfEverything_Nested) Reset()                    { *m = ABitOfEveryt
 func (m *ABitOfEverything_Nested) String() string            { return proto.CompactTextString(m) }
 func (*ABitOfEverything_Nested) ProtoMessage()               {}
 func (*ABitOfEverything_Nested) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0, 0} }
+
+func (m *ABitOfEverything_Nested) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *ABitOfEverything_Nested) GetAmount() uint32 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+func (m *ABitOfEverything_Nested) GetOk() ABitOfEverything_Nested_DeepEnum {
+	if m != nil {
+		return m.Ok
+	}
+	return ABitOfEverything_Nested_FALSE
+}
 
 func init() {
 	proto.RegisterType((*ABitOfEverything)(nil), "grpc.gateway.examples.examplepb.ABitOfEverything")
