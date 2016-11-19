@@ -188,7 +188,6 @@ They are compatible to [the parameters with same names in `protoc-gen-go`](https
 
 In addition we also support the `request_context` parameter in order to use the `http.Request`'s Context (only for Go 1.7 and above).
 This parameter can be useful to pass request scoped context between the gateway and the gRPC service.
-**WARNING**: using `request_context` has breaking API: `context.Context` is removed from all `Register${SvcName}Handler` functions.
 
 `protoc-gen-grpc-gateway` also supports some more command line flags to control logging. You can give these flags together with parameters above. Run `protoc-gen-grpc-gateway --help` for more details about the flags.
 
