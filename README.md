@@ -204,7 +204,7 @@ To use the same port for custom HTTP handlers (e.g. serving `swagger.json`), gRP
 * Method parameters in request body
 * Method parameters in request path
 * Method parameters in query string
-* Mapping streaming APIs to JSON streams
+* Mapping streaming APIs to newline-delimited JSON streams
 * Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata
 * Optionally emitting API definition for [Swagger](http://swagger.io).
 * Setting [gRPC timeouts](http://www.grpc.io/docs/guides/wire.html) through inbound HTTP `Grpc-Timeout` header.
