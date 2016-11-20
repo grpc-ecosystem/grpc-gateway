@@ -59,6 +59,13 @@ func (m *SimpleMessage) String() string            { return proto.CompactTextStr
 func (*SimpleMessage) ProtoMessage()               {}
 func (*SimpleMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
 
+func (m *SimpleMessage) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*SimpleMessage)(nil), "grpc.gateway.examples.examplepb.SimpleMessage")
 }
