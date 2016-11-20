@@ -229,6 +229,7 @@ But patch is welcome.
 * HTTP request host is added as `X-Forwarded-Host` gRPC request header
 * HTTP `Authorization` header is added as `authorization` gRPC request header 
 * Remaining HTTP header keys are prefixed with `Grpc-Metadata-` and added with their values to gRPC request header
+* While configurable, the default {un,}marshaling uses [jsonpb](https://godoc.org/github.com/golang/protobuf/jsonpb) with `OrigName: true`.
 
 # Contribution
 See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md).
