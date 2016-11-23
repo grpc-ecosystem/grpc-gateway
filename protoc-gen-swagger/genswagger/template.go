@@ -62,7 +62,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			schemaCore: schemaCore{
 				Type: "object",
 			},
-			Properties: make(map[string]swaggerSchemaObject),
+			Properties: make(swaggerSchemaObjectProperties, 0),
 		}
 		msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
 		if err := updateSwaggerDataFromComments(&schema, msgComments); err != nil {
@@ -78,7 +78,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 				panic(err)
 			}
 
-			schema.Properties[f.GetName()] = fieldValue
+			schema.Properties = append(schema.Properties, keyVal{f.GetName(), fieldValue})
 		}
 		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
 	}
