@@ -62,7 +62,6 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			schemaCore: schemaCore{
 				Type: "object",
 			},
-			Properties: make(swaggerSchemaObjectProperties, 0),
 		}
 		msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
 		if err := updateSwaggerDataFromComments(&schema, msgComments); err != nil {
