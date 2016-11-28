@@ -31,8 +31,7 @@ func (r *Registry) loadServices(file *File) error {
 				return err
 			}
 			if opts == nil {
-				glog.V(1).Infof("Skip non-target method: %s.%s", svc.GetName(), md.GetName())
-				continue
+				glog.V(1).Infof("Found non-target method: %s.%s", svc.GetName(), md.GetName())
 			}
 			meth, err := r.newMethod(svc, md, opts)
 			if err != nil {
@@ -104,8 +103,8 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 			pathTemplate = custom.Path
 
 		default:
-			glog.Errorf("No pattern specified in google.api.HttpRule: %s", md.GetName())
-			return nil, fmt.Errorf("none of pattern specified")
+			glog.V(1).Infof("No pattern specified in google.api.HttpRule: %s", md.GetName())
+			return nil, nil
 		}
 
 		parsed, err := httprule.Parse(pathTemplate)
@@ -147,7 +146,9 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 		return nil, err
 	}
 
-	meth.Bindings = append(meth.Bindings, b)
+	if b != nil {
+		meth.Bindings = append(meth.Bindings, b)
+	}
 	for i, additional := range opts.GetAdditionalBindings() {
 		if len(additional.AdditionalBindings) > 0 {
 			return nil, fmt.Errorf("additional_binding in additional_binding not allowed: %s.%s", svc.GetName(), meth.GetName())
