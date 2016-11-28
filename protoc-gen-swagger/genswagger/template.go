@@ -445,6 +445,9 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				case "PUT":
 					pathItemObject.Put = operationObject
 					break
+				case "PATCH":
+					pathItemObject.Patch = operationObject
+					break
 				}
 				paths[templateToSwaggerPath(b.PathTmpl.Template)] = pathItemObject
 			}
