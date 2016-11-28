@@ -69,6 +69,7 @@ type swaggerPathItemObject struct {
 	Delete *swaggerOperationObject `json:"delete,omitempty"`
 	Post   *swaggerOperationObject `json:"post,omitempty"`
 	Put    *swaggerOperationObject `json:"put,omitempty"`
+	Patch  *swaggerOperationObject `json:"patch,omitempty"`
 }
 
 // http://swagger.io/specification/#operationObject
