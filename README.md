@@ -204,6 +204,7 @@ To use the same port for custom HTTP handlers (e.g. serving `swagger.json`), gRP
 * Method parameters in request body
 * Method parameters in request path
 * Method parameters in query string
+* Enum fields in path parameter (including repeated enum fields).
 * Mapping streaming APIs to newline-delimited JSON streams
 * Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata
 * Optionally emitting API definition for [Swagger](http://swagger.io).
@@ -211,7 +212,7 @@ To use the same port for custom HTTP handlers (e.g. serving `swagger.json`), gRP
 
 ### Want to support
 But not yet.
-* bytes and enum fields in path parameter. #5
+* bytes fields in path parameter. #5
 * Optionally generating the entrypoint. #8
 * `import_path` parameter
 
