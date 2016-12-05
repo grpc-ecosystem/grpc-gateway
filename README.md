@@ -113,7 +113,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
        --grpc-ruby_out=. \
        path/to/your/service.proto
      ```
-   2. Implement your service
+   2. Add the googleapis-common-protos gem (or your language equivalent) as a dependency to your project.
+   3. Implement your service
+   
 5. Generate reverse-proxy
    
    ```sh
