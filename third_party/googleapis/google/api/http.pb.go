@@ -13,33 +13,183 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
-// `HttpRule` defines the mapping of an RPC method to one or more HTTP REST API
-// methods. The mapping determines what portions of the request message are
-// populated from the path, query parameters, or body of the HTTP request.  The
-// mapping is typically specified as an `google.api.http` annotation, see
-// "google/api/annotations.proto" for details.
+// Defines the HTTP configuration for a service. It contains a list of
+// [HttpRule][google.api.HttpRule], each specifying the mapping of an RPC method
+// to one or more HTTP REST API methods.
+type Http struct {
+	// A list of HTTP configuration rules that apply to individual API methods.
+	//
+	// **NOTE:** All service configuration rules follow "last one wins" order.
+	Rules []*HttpRule `protobuf:"bytes,1,rep,name=rules" json:"rules,omitempty"`
+}
+
+func (m *Http) Reset()                    { *m = Http{} }
+func (m *Http) String() string            { return proto.CompactTextString(m) }
+func (*Http) ProtoMessage()               {}
+func (*Http) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
+
+func (m *Http) GetRules() []*HttpRule {
+	if m != nil {
+		return m.Rules
+	}
+	return nil
+}
+
+// `HttpRule` defines the mapping of an RPC method to one or more HTTP
+// REST APIs.  The mapping determines what portions of the request
+// message are populated from the path, query parameters, or body of
+// the HTTP request.  The mapping is typically specified as an
+// `google.api.http` annotation, see "google/api/annotations.proto"
+// for details.
 //
-// The mapping consists of a mandatory field specifying a path template and an
-// optional `body` field specifying what data is represented in the HTTP request
-// body. The field name for the path indicates the HTTP method. Example:
+// The mapping consists of a field specifying the path template and
+// method kind.  The path template can refer to fields in the request
+// message, as in the example below which describes a REST GET
+// operation on a resource collection of messages:
 //
-// ```
-// package google.storage.v2;
-//
-// import "google/api/annotations.proto";
-//
-// service Storage {
-//   rpc CreateObject(CreateObjectRequest) returns (Object) {
-//     option (google.api.http) {
-//       post: "/v2/{bucket_name=buckets/*}/objects"
-//       body: "object"
-//     };
-//   };
+// ```proto
+// service Messaging {
+//   rpc GetMessage(GetMessageRequest) returns (Message) {
+//     option (google.api.http).get = "/v1/messages/{message_id}/{sub.subfield}";
+//   }
+// }
+// message GetMessageRequest {
+//   message SubMessage {
+//     string subfield = 1;
+//   }
+//   string message_id = 1; // mapped to the URL
+//   SubMessage sub = 2;    // `sub.subfield` is url-mapped
+// }
+// message Message {
+//   string text = 1; // content of the resource
 // }
 // ```
 //
-// Here `bucket_name` and `object` bind to fields of the request message
-// `CreateObjectRequest`.
+// This definition enables an automatic, bidrectional mapping of HTTP
+// JSON to RPC. Example:
+//
+// HTTP | RPC
+// -----|-----
+// `GET /v1/messages/123456/foo`  | `GetMessage(message_id: "123456" sub: SubMessage(subfield: "foo"))`
+//
+// In general, not only fields but also field paths can be referenced
+// from a path pattern. Fields mapped to the path pattern cannot be
+// repeated and must have a primitive (non-message) type.
+//
+// Any fields in the request message which are not bound by the path
+// pattern automatically become (optional) HTTP query
+// parameters. Assume the following definition of the request message:
+//
+// ```proto
+// message GetMessageRequest {
+//   message SubMessage {
+//     string subfield = 1;
+//   }
+//   string message_id = 1; // mapped to the URL
+//   int64 revision = 2;    // becomes a parameter
+//   SubMessage sub = 3;    // `sub.subfield` becomes a parameter
+// }
+// ```
+//
+// This enables a HTTP JSON to RPC mapping as below:
+//
+// HTTP | RPC
+// -----|-----
+// `GET /v1/messages/123456?revision=2&sub.subfield=foo` | `GetMessage(message_id: "123456" revision: 2 sub: SubMessage(subfield: "foo"))`
+//
+// Note that fields which are mapped to HTTP parameters must have a
+// primitive type or a repeated primitive type. Message types are not
+// allowed. In the case of a repeated type, the parameter can be
+// repeated in the URL, as in `...?param=A&param=B`.
+//
+// For HTTP method kinds which allow a request body, the `body` field
+// specifies the mapping. Consider a REST update method on the
+// message resource collection:
+//
+// ```proto
+// service Messaging {
+//   rpc UpdateMessage(UpdateMessageRequest) returns (Message) {
+//     option (google.api.http) = {
+//       put: "/v1/messages/{message_id}"
+//       body: "message"
+//     };
+//   }
+// }
+// message UpdateMessageRequest {
+//   string message_id = 1; // mapped to the URL
+//   Message message = 2;   // mapped to the body
+// }
+// ```
+//
+// The following HTTP JSON to RPC mapping is enabled, where the
+// representation of the JSON in the request body is determined by
+// protos JSON encoding:
+//
+// HTTP | RPC
+// -----|-----
+// `PUT /v1/messages/123456 { "text": "Hi!" }` | `UpdateMessage(message_id: "123456" message { text: "Hi!" })`
+//
+// The special name `*` can be used in the body mapping to define that
+// every field not bound by the path template should be mapped to the
+// request body.  This enables the following alternative definition of
+// the update method:
+//
+// ```proto
+// service Messaging {
+//   rpc UpdateMessage(Message) returns (Message) {
+//     option (google.api.http) = {
+//       put: "/v1/messages/{message_id}"
+//       body: "*"
+//     };
+//   }
+// }
+// message Message {
+//   string message_id = 1;
+//   string text = 2;
+// }
+// ```
+//
+// The following HTTP JSON to RPC mapping is enabled:
+//
+// HTTP | RPC
+// -----|-----
+// `PUT /v1/messages/123456 { "text": "Hi!" }` | `UpdateMessage(message_id: "123456" text: "Hi!")`
+//
+// Note that when using `*` in the body mapping, it is not possible to
+// have HTTP parameters, as all fields not bound by the path end in
+// the body. This makes this option more rarely used in practice of
+// defining REST APIs. The common usage of `*` is in custom methods
+// which don't use the URL at all for transferring data.
+//
+// It is possible to define multiple HTTP methods for one RPC by using
+// the `additional_bindings` option. Example:
+//
+// ```proto
+// service Messaging {
+//   rpc GetMessage(GetMessageRequest) returns (Message) {
+//     option (google.api.http) = {
+//       get: "/v1/messages/{message_id}"
+//       additional_bindings {
+//         get: "/v1/users/{user_id}/messages/{message_id}"
+//       }
+//     };
+//   }
+// }
+// message GetMessageRequest {
+//   string message_id = 1;
+//   string user_id = 2;
+// }
+// ```
+//
+// This enables the following two alternative HTTP JSON to RPC
+// mappings:
+//
+// HTTP | RPC
+// -----|-----
+// `GET /v1/messages/123456` | `GetMessage(message_id: "123456")`
+// `GET /v1/users/me/messages/123456` | `GetMessage(user_id: "me" message_id: "123456")`
+//
+// # Rules for HTTP mapping
 //
 // The rules for mapping HTTP path, query parameters, and body fields
 // to the request message are as follows:
@@ -64,17 +214,33 @@ var _ = math.Inf
 //     FieldPath = IDENT { "." IDENT } ;
 //     Verb     = ":" LITERAL ;
 //
-// `*` matches a single path component, `**` zero or more path components, and
-// `LITERAL` a constant.  A `Variable` can match an entire path as specified
-// again by a template; this nested template must not contain further variables.
-// If no template is given with a variable, it matches a single path component.
-// The notation `{var}` is henceforth equivalent to `{var=*}`.
+// The syntax `*` matches a single path segment. It follows the semantics of
+// [RFC 6570](https://tools.ietf.org/html/rfc6570) Section 3.2.2 Simple String
+// Expansion.
+//
+// The syntax `**` matches zero or more path segments. It follows the semantics
+// of [RFC 6570](https://tools.ietf.org/html/rfc6570) Section 3.2.3 Reserved
+// Expansion.
+//
+// The syntax `LITERAL` matches literal text in the URL path.
+//
+// The syntax `Variable` matches the entire path as specified by its template;
+// this nested template must not contain further variables. If a variable
+// matches a single path segment, its template may be omitted, e.g. `{var}`
+// is equivalent to `{var=*}`.
+//
+// NOTE: the field paths in variables and in the `body` must not refer to
+// repeated fields or map fields.
 //
 // Use CustomHttpPattern to specify any HTTP method that is not included in the
-// pattern field, such as HEAD, or "*" to leave the HTTP method unspecified for
+// `pattern` field, such as HEAD, or "*" to leave the HTTP method unspecified for
 // a given URL path rule. The wild-card rule is useful for services that provide
 // content to Web (HTML) clients.
 type HttpRule struct {
+	// Selects methods to which this rule applies.
+	//
+	// Refer to [selector][google.api.DocumentationRule.selector] for syntax details.
+	Selector string `protobuf:"bytes,1,opt,name=selector" json:"selector,omitempty"`
 	// Determines the URL pattern is matched by this rules. This pattern can be
 	// used with any of the {get|put|post|delete|patch} methods. A custom method
 	// can be defined using the 'custom' field.
@@ -89,17 +255,19 @@ type HttpRule struct {
 	Pattern isHttpRule_Pattern `protobuf_oneof:"pattern"`
 	// The name of the request field whose value is mapped to the HTTP body, or
 	// `*` for mapping all fields not captured by the path pattern to the HTTP
-	// body.
+	// body. NOTE: the referred field must not be a repeated field and must be
+	// present at the top-level of response message type.
 	Body string `protobuf:"bytes,7,opt,name=body" json:"body,omitempty"`
-	// Additional HTTP bindings for the selector. Nested bindings must not
-	// specify a selector and must not contain additional bindings.
+	// Additional HTTP bindings for the selector. Nested bindings must
+	// not contain an `additional_bindings` field themselves (that is,
+	// the nesting may only be one level deep).
 	AdditionalBindings []*HttpRule `protobuf:"bytes,11,rep,name=additional_bindings,json=additionalBindings" json:"additional_bindings,omitempty"`
 }
 
 func (m *HttpRule) Reset()                    { *m = HttpRule{} }
 func (m *HttpRule) String() string            { return proto.CompactTextString(m) }
 func (*HttpRule) ProtoMessage()               {}
-func (*HttpRule) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
+func (*HttpRule) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{1} }
 
 type isHttpRule_Pattern interface {
 	isHttpRule_Pattern()
@@ -136,6 +304,13 @@ func (m *HttpRule) GetPattern() isHttpRule_Pattern {
 		return m.Pattern
 	}
 	return nil
+}
+
+func (m *HttpRule) GetSelector() string {
+	if m != nil {
+		return m.Selector
+	}
+	return ""
 }
 
 func (m *HttpRule) GetGet() string {
@@ -335,7 +510,7 @@ type CustomHttpPattern struct {
 func (m *CustomHttpPattern) Reset()                    { *m = CustomHttpPattern{} }
 func (m *CustomHttpPattern) String() string            { return proto.CompactTextString(m) }
 func (*CustomHttpPattern) ProtoMessage()               {}
-func (*CustomHttpPattern) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{1} }
+func (*CustomHttpPattern) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{2} }
 
 func (m *CustomHttpPattern) GetKind() string {
 	if m != nil {
@@ -352,6 +527,7 @@ func (m *CustomHttpPattern) GetPath() string {
 }
 
 func init() {
+	proto.RegisterType((*Http)(nil), "google.api.Http")
 	proto.RegisterType((*HttpRule)(nil), "google.api.HttpRule")
 	proto.RegisterType((*CustomHttpPattern)(nil), "google.api.CustomHttpPattern")
 }
@@ -359,23 +535,26 @@ func init() {
 func init() { proto.RegisterFile("google/api/http.proto", fileDescriptor1) }
 
 var fileDescriptor1 = []byte{
-	// 280 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x64, 0x91, 0xc1, 0x6a, 0xbb, 0x40,
-	0x10, 0xc6, 0xff, 0x46, 0x63, 0xe2, 0x08, 0x7f, 0xe8, 0x36, 0x2d, 0x7b, 0x09, 0x48, 0x4e, 0x9e,
-	0x0c, 0xa4, 0x87, 0x1e, 0x7a, 0xb3, 0x14, 0x72, 0x0c, 0xbe, 0x40, 0x59, 0xdd, 0x45, 0x97, 0x1a,
-	0x77, 0x88, 0xe3, 0xa1, 0x8f, 0xd2, 0xb7, 0x2d, 0xbb, 0x6b, 0x48, 0xa0, 0xb7, 0xf9, 0x7e, 0x33,
-	0x7e, 0xdf, 0xb8, 0x03, 0x4f, 0xad, 0x31, 0x6d, 0xaf, 0xf6, 0x02, 0xf5, 0xbe, 0x23, 0xc2, 0x02,
-	0x2f, 0x86, 0x0c, 0x03, 0x8f, 0x0b, 0x81, 0x7a, 0xf7, 0xb3, 0x80, 0xf5, 0x91, 0x08, 0xab, 0xa9,
-	0x57, 0x8c, 0x41, 0xd8, 0x2a, 0xe2, 0x8b, 0x2c, 0xc8, 0x93, 0xe3, 0xbf, 0xca, 0x0a, 0xcb, 0x70,
-	0x22, 0x1e, 0x5e, 0x19, 0x4e, 0xc4, 0x36, 0x10, 0xa1, 0x19, 0x89, 0x47, 0x33, 0x74, 0x8a, 0x71,
-	0x88, 0xa5, 0xea, 0x15, 0x29, 0xbe, 0x9c, 0xf9, 0xac, 0xd9, 0x33, 0x2c, 0x51, 0x50, 0xd3, 0xf1,
-	0x78, 0x6e, 0x78, 0xc9, 0x5e, 0x21, 0x6e, 0xa6, 0x91, 0xcc, 0x99, 0xaf, 0xb3, 0x20, 0x4f, 0x0f,
-	0xdb, 0xe2, 0xb6, 0x59, 0xf1, 0xee, 0x3a, 0x76, 0xb7, 0x93, 0x20, 0x52, 0x97, 0xc1, 0x1a, 0xfa,
-	0x71, 0xc6, 0x20, 0xaa, 0x8d, 0xfc, 0xe6, 0x2b, 0xeb, 0x57, 0xb9, 0x9a, 0x7d, 0xc0, 0xa3, 0x90,
-	0x52, 0x93, 0x36, 0x83, 0xe8, 0x3f, 0x6b, 0x3d, 0x48, 0x3d, 0xb4, 0x23, 0x4f, 0xb3, 0x30, 0x4f,
-	0x0f, 0x9b, 0x7b, 0xe7, 0xeb, 0xff, 0x56, 0xec, 0xf6, 0x41, 0x39, 0xcf, 0x97, 0x09, 0xac, 0xd0,
-	0xe7, 0xed, 0xde, 0xe0, 0xe1, 0xcf, 0x12, 0x36, 0xfa, 0x4b, 0x0f, 0x92, 0x07, 0x3e, 0xda, 0xd6,
-	0x96, 0xa1, 0xa0, 0xce, 0x3f, 0x5c, 0xe5, 0xea, 0x72, 0x0b, 0xff, 0x1b, 0x73, 0xbe, 0x8b, 0x2d,
-	0x13, 0x67, 0x63, 0x2f, 0x70, 0x0a, 0xea, 0xd8, 0x9d, 0xe2, 0xe5, 0x37, 0x00, 0x00, 0xff, 0xff,
-	0x2f, 0x89, 0x57, 0x7f, 0xa3, 0x01, 0x00, 0x00,
+	// 322 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x7c, 0x91, 0xcf, 0x4a, 0xc3, 0x40,
+	0x10, 0xc6, 0xdd, 0x36, 0x4d, 0xdb, 0x29, 0x08, 0x8e, 0x55, 0x16, 0x41, 0x28, 0xbd, 0x58, 0x3c,
+	0xa4, 0x50, 0x0f, 0x1e, 0x3c, 0x19, 0x11, 0xeb, 0xad, 0xe4, 0x05, 0x64, 0x9b, 0x2c, 0xc9, 0x62,
+	0x9a, 0x5d, 0x92, 0xc9, 0xc1, 0xd7, 0xf1, 0x1d, 0x7c, 0x37, 0x8f, 0xb2, 0x9b, 0xad, 0x2d, 0x08,
+	0xde, 0xe6, 0xfb, 0xed, 0xb7, 0xf3, 0x17, 0x2e, 0x72, 0xad, 0xf3, 0x52, 0x2e, 0x85, 0x51, 0xcb,
+	0x82, 0xc8, 0x44, 0xa6, 0xd6, 0xa4, 0x11, 0x3a, 0x1c, 0x09, 0xa3, 0xe6, 0x2b, 0x08, 0xd6, 0x44,
+	0x06, 0x6f, 0x61, 0x50, 0xb7, 0xa5, 0x6c, 0x38, 0x9b, 0xf5, 0x17, 0x93, 0xd5, 0x34, 0x3a, 0x78,
+	0x22, 0x6b, 0x48, 0xda, 0x52, 0x26, 0x9d, 0x65, 0xfe, 0xd5, 0x83, 0xd1, 0x9e, 0xe1, 0x15, 0x8c,
+	0x1a, 0x59, 0xca, 0x94, 0x74, 0xcd, 0xd9, 0x8c, 0x2d, 0xc6, 0xc9, 0xaf, 0x46, 0x84, 0x7e, 0x2e,
+	0x89, 0xf7, 0x2c, 0x5e, 0x9f, 0x24, 0x56, 0x58, 0x66, 0x5a, 0xe2, 0xfd, 0x3d, 0x33, 0x2d, 0xe1,
+	0x14, 0x02, 0xa3, 0x1b, 0xe2, 0x81, 0x87, 0x4e, 0x21, 0x87, 0x30, 0x93, 0xa5, 0x24, 0xc9, 0x07,
+	0x9e, 0x7b, 0x8d, 0x97, 0x30, 0x30, 0x82, 0xd2, 0x82, 0x87, 0xfe, 0xa1, 0x93, 0x78, 0x0f, 0x61,
+	0xda, 0x36, 0xa4, 0x77, 0x7c, 0x34, 0x63, 0x8b, 0xc9, 0xea, 0xfa, 0x78, 0x8a, 0x27, 0xf7, 0x62,
+	0xfb, 0xde, 0x08, 0x22, 0x59, 0x57, 0x36, 0x61, 0x67, 0x47, 0x84, 0x60, 0xab, 0xb3, 0x0f, 0x3e,
+	0x74, 0x03, 0xb8, 0x18, 0x9f, 0xe1, 0x5c, 0x64, 0x99, 0x22, 0xa5, 0x2b, 0x51, 0xbe, 0x6d, 0x55,
+	0x95, 0xa9, 0x2a, 0x6f, 0xf8, 0xe4, 0x9f, 0xfd, 0xe0, 0xe1, 0x43, 0xec, 0xfd, 0xf1, 0x18, 0x86,
+	0xa6, 0xab, 0x37, 0x7f, 0x80, 0xb3, 0x3f, 0x4d, 0xd8, 0xd2, 0xef, 0xaa, 0xca, 0xfc, 0xee, 0x5c,
+	0x6c, 0x99, 0x11, 0x54, 0x74, 0x8b, 0x4b, 0x5c, 0x1c, 0xdf, 0xc0, 0x69, 0xaa, 0x77, 0x47, 0x65,
+	0xe3, 0xb1, 0x4b, 0x63, 0x2f, 0xba, 0x61, 0xdf, 0x8c, 0x7d, 0xf6, 0x82, 0x97, 0xc7, 0xcd, 0xeb,
+	0x36, 0x74, 0x47, 0xbe, 0xfb, 0x09, 0x00, 0x00, 0xff, 0xff, 0xab, 0x47, 0x0a, 0x87, 0xfd, 0x01,
+	0x00, 0x00,
 }
