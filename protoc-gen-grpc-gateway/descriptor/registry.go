@@ -239,6 +239,9 @@ func (r *Registry) goPackagePath(f *descriptor.FileDescriptorProto) string {
 	gopkg := f.Options.GetGoPackage()
 	idx := strings.LastIndex(gopkg, "/")
 	if idx >= 0 {
+		if sc := strings.LastIndex(gopkg, ";"); sc > 0 {
+			gopkg = gopkg[:sc+1-1]
+		}
 		return gopkg
 	}
 
@@ -284,10 +287,17 @@ func packageIdentityName(f *descriptor.FileDescriptorProto) string {
 		gopkg := f.Options.GetGoPackage()
 		idx := strings.LastIndex(gopkg, "/")
 		if idx < 0 {
-			return gopkg
+			gopkg = gopkg[idx+1:]
 		}
 
-		return gopkg[idx+1:]
+		gopkg = gopkg[idx+1:]
+		// package name is overrided with the string after the
+		// ';' character
+		sc := strings.IndexByte(gopkg, ';')
+		if sc < 0 {
+			return gopkg
+		}
+		return gopkg[sc+1:]
 	}
 
 	if f.Package == nil {
