@@ -272,11 +272,19 @@ func (r *Registry) SetAllowDeleteBody(allow bool) {
 	r.allowDeleteBody = allow
 }
 
+// sanitizePackageName replaces unallowed character in package name
+// with allowed character.
+func sanitizePackageName(pkgName string) string {
+	pkgName = strings.Replace(pkgName, ".", "_", -1)
+	pkgName = strings.Replace(pkgName, "-", "_", -1)
+	return pkgName
+}
+
 // defaultGoPackageName returns the default go package name to be used for go files generated from "f".
 // You might need to use an unique alias for the package when you import it.  Use ReserveGoPackageAlias to get a unique alias.
 func defaultGoPackageName(f *descriptor.FileDescriptorProto) string {
 	name := packageIdentityName(f)
-	return strings.Replace(name, ".", "_", -1)
+	return sanitizePackageName(name)
 }
 
 // packageIdentityName returns the identity of packages.
@@ -295,9 +303,10 @@ func packageIdentityName(f *descriptor.FileDescriptorProto) string {
 		// ';' character
 		sc := strings.IndexByte(gopkg, ';')
 		if sc < 0 {
-			return gopkg
+			return sanitizePackageName(gopkg)
+
 		}
-		return gopkg[sc+1:]
+		return sanitizePackageName(gopkg[sc+1:])
 	}
 
 	if f.Package == nil {
