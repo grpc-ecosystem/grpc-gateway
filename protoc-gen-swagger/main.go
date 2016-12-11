@@ -15,8 +15,9 @@ import (
 )
 
 var (
-	importPrefix = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
-	file         = flag.String("file", "stdin", "where to load data from")
+	importPrefix    = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
+	file            = flag.String("file", "stdin", "where to load data from")
+	allowDeleteBody = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
 )
 
 func parseReq(r io.Reader) (*plugin.CodeGeneratorRequest, error) {
@@ -54,6 +55,12 @@ func main() {
 		for _, p := range strings.Split(req.GetParameter(), ",") {
 			spec := strings.SplitN(p, "=", 2)
 			if len(spec) == 1 {
+				if spec[0] == "allow_delete_body" {
+					if err := flag.CommandLine.Set(spec[0], "true"); err != nil {
+						glog.Fatalf("Cannot set flag %s", p)
+					}
+					continue
+				}
 				if err := flag.CommandLine.Set(spec[0], ""); err != nil {
 					glog.Fatalf("Cannot set flag %s", p)
 				}
@@ -73,6 +80,8 @@ func main() {
 	g := genswagger.New(reg)
 
 	reg.SetPrefix(*importPrefix)
+	reg.SetAllowDeleteBody(*allowDeleteBody)
+
 	if err := reg.Load(req); err != nil {
 		emitError(err)
 		return
