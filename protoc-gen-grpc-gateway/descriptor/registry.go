@@ -263,6 +263,8 @@ func (r *Registry) GetAllFQENs() []string {
 	return keys
 }
 
+// SetAllowDeleteBody controls whether http delete methods may have a
+// body or fail loading if encountered.
 func (r *Registry) SetAllowDeleteBody(allow bool) {
 	r.allowDeleteBody = allow
 }
