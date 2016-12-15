@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
@@ -113,6 +114,29 @@ func populateRepeatedField(f reflect.Value, values []string) error {
 }
 
 func populateField(f reflect.Value, value string) error {
+	// Handle well known type
+	type wkt interface {
+		XXX_WellKnownType() string
+	}
+	if wkt, ok := f.Addr().Interface().(wkt); ok {
+		switch wkt.XXX_WellKnownType() {
+		case "Timestamp":
+			if value == "null" {
+				f.Field(0).SetInt(0)
+				f.Field(1).SetInt(0)
+				return nil
+			}
+
+			t, err := time.Parse(time.RFC3339Nano, value)
+			if err != nil {
+				return fmt.Errorf("bad Timestamp: %v", err)
+			}
+			f.Field(0).SetInt(int64(t.Unix()))
+			f.Field(1).SetInt(int64(t.Nanosecond()))
+			return nil
+		}
+	}
+
 	conv, ok := convFromType[f.Kind()]
 	if !ok {
 		return fmt.Errorf("unsupported field type %T", f)
