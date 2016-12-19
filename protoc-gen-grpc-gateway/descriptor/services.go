@@ -32,6 +32,7 @@ func (r *Registry) loadServices(file *File) error {
 			}
 			if opts == nil {
 				glog.V(1).Infof("Found non-target method: %s.%s", svc.GetName(), md.GetName())
+				continue
 			}
 			meth, err := r.newMethod(svc, md, opts)
 			if err != nil {
