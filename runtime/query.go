@@ -63,7 +63,7 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 		case reflect.Ptr:
 			if f.IsNil() {
 				m = reflect.New(f.Type().Elem())
-				f.Set(m)
+				f.Set(m.Convert(f.Type()))
 			}
 			m = f.Elem()
 			continue
@@ -102,13 +102,13 @@ func populateRepeatedField(f reflect.Value, values []string) error {
 	if !ok {
 		return fmt.Errorf("unsupported field type %s", elemType)
 	}
-	f.Set(reflect.MakeSlice(f.Type(), len(values), len(values)))
+	f.Set(reflect.MakeSlice(f.Type(), len(values), len(values)).Convert(f.Type()))
 	for i, v := range values {
 		result := conv.Call([]reflect.Value{reflect.ValueOf(v)})
 		if err := result[1].Interface(); err != nil {
 			return err.(error)
 		}
-		f.Index(i).Set(result[0])
+		f.Index(i).Set(result[0].Convert(f.Index(i).Type()))
 	}
 	return nil
 }
@@ -145,7 +145,7 @@ func populateField(f reflect.Value, value string) error {
 	if err := result[1].Interface(); err != nil {
 		return err.(error)
 	}
-	f.Set(result[0])
+	f.Set(result[0].Convert(f.Type()))
 	return nil
 }
 

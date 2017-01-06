@@ -37,6 +37,8 @@ func TestPopulateParameters(t *testing.T) {
 				"bool_value":      {"true"},
 				"string_value":    {"str"},
 				"repeated_value":  {"a", "b", "c"},
+				"enum_value":      {"1"},
+				"repeated_enum":   {"1", "2", "0"},
 				"timestamp_value": {timeStr},
 			},
 			filter: utilities.NewDoubleArray(nil),
@@ -50,6 +52,8 @@ func TestPopulateParameters(t *testing.T) {
 				BoolValue:      true,
 				StringValue:    "str",
 				RepeatedValue:  []string{"a", "b", "c"},
+				EnumValue:      EnumValue_Y,
+				RepeatedEnum:   []EnumValue{EnumValue_Y, EnumValue_Z, EnumValue_X},
 				TimestampValue: timePb,
 			},
 		},
@@ -64,6 +68,8 @@ func TestPopulateParameters(t *testing.T) {
 				"bool_value":     {"true"},
 				"string_value":   {"str"},
 				"repeated_value": {"a", "b", "c"},
+				"enum_value":     {"1"},
+				"repeated_enum":  {"1", "2", "0"},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &proto2Message{
@@ -76,6 +82,8 @@ func TestPopulateParameters(t *testing.T) {
 				BoolValue:     proto.Bool(true),
 				StringValue:   proto.String("str"),
 				RepeatedValue: []string{"a", "b", "c"},
+				EnumValue:     EnumValue_Y,
+				RepeatedEnum:  []EnumValue{EnumValue_Y, EnumValue_Z, EnumValue_X},
 			},
 		},
 		{
@@ -222,6 +230,8 @@ type proto3Message struct {
 	BoolValue      bool                 `protobuf:"varint,8,opt,name=bool_value" json:"bool_value,omitempty"`
 	StringValue    string               `protobuf:"bytes,9,opt,name=string_value" json:"string_value,omitempty"`
 	RepeatedValue  []string             `protobuf:"bytes,10,rep,name=repeated_value" json:"repeated_value,omitempty"`
+	EnumValue      EnumValue            `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=api.EnumValue" json:"enum_value,omitempty"`
+	RepeatedEnum   []EnumValue          `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeated_enum,enum=api.EnumValue" json:"repeated_enum,omitempty"`
 	TimestampValue *timestamp.Timestamp `protobuf:"bytes,11,opt,name=timestamp_value" json:"timestamp_value,omitempty"`
 }
 
@@ -247,6 +257,8 @@ type proto2Message struct {
 	BoolValue        *bool          `protobuf:"varint,8,opt,name=bool_value" json:"bool_value,omitempty"`
 	StringValue      *string        `protobuf:"bytes,9,opt,name=string_value" json:"string_value,omitempty"`
 	RepeatedValue    []string       `protobuf:"bytes,10,rep,name=repeated_value" json:"repeated_value,omitempty"`
+	EnumValue        EnumValue      `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=api.EnumValue" json:"enum_value,omitempty"`
+	RepeatedEnum     []EnumValue    `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeated_enum,enum=api.EnumValue" json:"repeated_enum,omitempty"`
 	XXX_unrecognized []byte         `json:"-"`
 }
 
@@ -323,3 +335,11 @@ func (m *proto2Message) GetRepeatedValue() []string {
 	}
 	return nil
 }
+
+type EnumValue int32
+
+const (
+	EnumValue_X EnumValue = 0
+	EnumValue_Y EnumValue = 1
+	EnumValue_Z EnumValue = 2
+)
