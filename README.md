@@ -196,7 +196,10 @@ More examples are available under `examples` directory.
 * `server/main.go`: service implementation
 * `main.go`: entrypoint of the generated reverse proxy
 
-To use the same port for custom HTTP handlers (e.g. serving `swagger.json`), gRPC-gateway, and a gRPC server, see [this code example by CoreOS](https://github.com/philips/grpc-gateway-example/blob/master/cmd/serve.go) (and its accompanying [blog post](https://coreos.com/blog/gRPC-protobufs-swagger.html))
+A few different approaches are possible to use the same port for serving gRPC services and HTTP handlers:
+* If TLS is terminated at the GO server, see [this code example by CoreOS](https://github.com/philips/grpc-gateway-example/blob/master/cmd/serve.go) (and its accompanying [blog post](https://coreos.com/blog/gRPC-protobufs-swagger.html))
+
+* If TLS is terminated at a frontend loadbalancer, see [Cmux library](https://github.com/soheilhy/cmux) (and its accompanying [blog post](https://open.dgraph.io/post/cmux/)). This also supports terminating TLS at the GO server.
 
 ## Features
 ### Supported
