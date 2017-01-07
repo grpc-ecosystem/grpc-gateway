@@ -71,22 +71,26 @@ func applyTemplate(p param) (string, error) {
 	if err := headerTemplate.Execute(w, p); err != nil {
 		return "", err
 	}
-	var methodSeen bool
+	var targetServices []*descriptor.Service
 	for _, svc := range p.Services {
+		var methodWithBindingsSeen bool
 		for _, meth := range svc.Methods {
 			glog.V(2).Infof("Processing %s.%s", svc.GetName(), meth.GetName())
-			methodSeen = true
 			for _, b := range meth.Bindings {
+				methodWithBindingsSeen = true
 				if err := handlerTemplate.Execute(w, binding{Binding: b}); err != nil {
 					return "", err
 				}
 			}
 		}
+		if methodWithBindingsSeen {
+			targetServices = append(targetServices, svc)
+		}
 	}
-	if !methodSeen {
+	if len(targetServices) == 0 {
 		return "", errNoTargetService
 	}
-	if err := trailerTemplate.Execute(w, p.Services); err != nil {
+	if err := trailerTemplate.Execute(w, targetServices); err != nil {
 		return "", err
 	}
 	return w.String(), nil
