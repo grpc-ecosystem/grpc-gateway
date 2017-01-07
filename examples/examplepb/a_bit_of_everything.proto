@@ -122,3 +122,7 @@ service ABitOfEverythingService {
 		};
 	}
 }
+
+service AnotherServiceWithNoBindings {
+	rpc NoBindings(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+}
