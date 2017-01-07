@@ -13,7 +13,8 @@ import (
 
 type param struct {
 	*descriptor.File
-	Imports []descriptor.GoPackage
+	Imports           []descriptor.GoPackage
+	UseRequestContext bool
 }
 
 type binding struct {
@@ -86,8 +87,14 @@ func applyTemplate(p param) (string, error) {
 	if !methodSeen {
 		return "", errNoTargetService
 	}
-	if err := trailerTemplate.Execute(w, p.Services); err != nil {
-		return "", err
+	if p.UseRequestContext {
+		if err := trailerTemplate17.Execute(w, p.Services); err != nil {
+			return "", err
+		}
+	} else {
+		if err := trailerTemplate.Execute(w, p.Services); err != nil {
+			return "", err
+		}
 	}
 	return w.String(), nil
 }
@@ -325,6 +332,91 @@ func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux,
 	{{range $b := $m.Bindings}}
 	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
+		}
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, req)
+		if err != nil {
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
+		}
+		resp, md, err := request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, outboundMarshaler, w, req, err)
+			return
+		}
+		{{if $m.GetServerStreaming}}
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		{{else}}
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		{{end}}
+	})
+	{{end}}
+	{{end}}
+	return nil
+}
+
+var (
+	{{range $m := $svc.Methods}}
+	{{range $b := $m.Bindings}}
+	pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} = runtime.MustPattern(runtime.NewPattern({{$b.PathTmpl.Version}}, {{$b.PathTmpl.OpCodes | printf "%#v"}}, {{$b.PathTmpl.Pool | printf "%#v"}}, {{$b.PathTmpl.Verb | printf "%q"}}))
+	{{end}}
+	{{end}}
+)
+
+var (
+	{{range $m := $svc.Methods}}
+	{{range $b := $m.Bindings}}
+	forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} = {{if $m.GetServerStreaming}}runtime.ForwardResponseStream{{else}}runtime.ForwardResponseMessage{{end}}
+	{{end}}
+	{{end}}
+)
+{{end}}`))
+
+	// trailerTemplate17 is the Go1.7 (and above) version of trailerTemplate.
+	trailerTemplate17 = template.Must(template.New("trailer-1.7").Parse(`
+{{range $svc := .}}
+// Register{{$svc.GetName}}HandlerFromEndpoint is same as Register{{$svc.GetName}}Handler but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+	conn, err := grpc.Dial(endpoint, opts...)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			if cerr := conn.Close(); cerr != nil {
+				grpclog.Printf("Failed to close conn to %s: %v", endpoint, cerr)
+			}
+			return
+		}
+		go func() {
+			<-ctx.Done()
+			if cerr := conn.Close(); cerr != nil {
+				grpclog.Printf("Failed to close conn to %s: %v", endpoint, cerr)
+			}
+		}()
+	}()
+
+	return Register{{$svc.GetName}}Handler(ctx, mux, conn)
+}
+
+// Register{{$svc.GetName}}Handler registers the http handlers for service {{$svc.GetName}} to "mux".
+// The handlers forward requests to the grpc endpoint over "conn".
+func Register{{$svc.GetName}}Handler(_ context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	client := New{{$svc.GetName}}Client(conn)
+	{{range $m := $svc.Methods}}
+	{{range $b := $m.Bindings}}
+	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
 			go func(done <-chan struct{}, closed <-chan bool) {

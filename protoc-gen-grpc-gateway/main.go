@@ -23,7 +23,8 @@ import (
 )
 
 var (
-	importPrefix = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
+	importPrefix      = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
+	useRequestContext = flag.Bool("request_context", false, "determine whether to use http.Request's context or not")
 )
 
 func parseReq(r io.Reader) (*plugin.CodeGeneratorRequest, error) {
@@ -73,7 +74,7 @@ func main() {
 		}
 	}
 
-	g := gengateway.New(reg)
+	g := gengateway.New(reg, *useRequestContext)
 
 	reg.SetPrefix(*importPrefix)
 	if err := reg.Load(req); err != nil {
