@@ -13,19 +13,13 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/genswagger"
-	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 )
 
 var (
 	importPrefix    = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
 	file            = flag.String("file", "stdin", "where to load data from")
 	allowDeleteBody = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
-	pkgMap          = utilities.NewKVVar()
 )
-
-func init() {
-	flag.Var(pkgMap, "pkg_map", "mapping from imported proto file path to Go pkg with its generated files")
-}
 
 func parseReq(r io.Reader) (*plugin.CodeGeneratorRequest, error) {
 	glog.V(1).Info("Parsing code generator request")
@@ -58,8 +52,9 @@ func main() {
 	if err != nil {
 		glog.Fatal(err)
 	}
+	pkgMap := make(map[string]string)
 	if req.Parameter != nil {
-		err := parseReqParam(req.GetParameter(), flag.CommandLine)
+		err := parseReqParam(req.GetParameter(), flag.CommandLine, pkgMap)
 		if err != nil {
 			glog.Fatalf("Error parsing flags: %v", err)
 		}
@@ -114,9 +109,9 @@ func emitResp(resp *plugin.CodeGeneratorResponse) {
 }
 
 // parseReqParam parses a CodeGeneratorRequest parameter and adds the
-// extracted values to the given FlagSet. Returns a non-nil error if
-// setting a flag failed.
-func parseReqParam(param string, f *flag.FlagSet) error {
+// extracted values to the given FlagSet and pkgMap. Returns a non-nil
+// error if setting a flag failed.
+func parseReqParam(param string, f *flag.FlagSet, pkgMap map[string]string) error {
 	if param == "" {
 		return nil
 	}
@@ -138,7 +133,7 @@ func parseReqParam(param string, f *flag.FlagSet) error {
 		}
 		name, value := spec[0], spec[1]
 		if strings.HasPrefix(name, "M") {
-			f.Set("pkg_map", name[1:]+"="+value)
+			pkgMap[name[1:]] = value
 			continue
 		}
 		if err := f.Set(name, value); err != nil {
