@@ -23,6 +23,14 @@ func TestKVVar(t *testing.T) {
 	kvv2.Set(kvv.String())
 	kveq(kvv, kvv2, t)
 
+	// empty input
+	kvv = NewKVVar()
+	kvv.Set("")
+	kvv.Set("    ")
+	if len(kvv) != 0 {
+		t.Errorf("KVVar should remain empty after empty input string: %v", kvv)
+	}
+
 	// multiple Set() calls with mutiple kv's per calls
 	kvv = NewKVVar()
 	kvv.Set(" c = 1 , d = 2 ")

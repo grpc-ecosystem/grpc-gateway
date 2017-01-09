@@ -38,6 +38,9 @@ func (k KVVar) String() string {
 // added as described above. Leading and trailing whitespace around keys
 // and values is removed.
 func (k KVVar) Set(s string) error {
+	if strings.TrimSpace(s) == "" {
+		return nil
+	}
 	kvs := strings.Split(s, ",")
 	for _, kv := range kvs {
 		p := strings.SplitN(kv, "=", 2)
