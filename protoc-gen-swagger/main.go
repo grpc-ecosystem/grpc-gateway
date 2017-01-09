@@ -124,13 +124,13 @@ func parseReqParam(param string, f *flag.FlagSet) error {
 		spec := strings.SplitN(p, "=", 2)
 		if len(spec) == 1 {
 			if spec[0] == "allow_delete_body" {
-				err := flag.CommandLine.Set(spec[0], "true")
+				err := f.Set(spec[0], "true")
 				if err != nil {
 					return fmt.Errorf("Cannot set flag %s: %v", p, err)
 				}
 				continue
 			}
-			err := flag.CommandLine.Set(spec[0], "")
+			err := f.Set(spec[0], "")
 			if err != nil {
 				return fmt.Errorf("Cannot set flag %s: %v", p, err)
 			}
@@ -141,7 +141,7 @@ func parseReqParam(param string, f *flag.FlagSet) error {
 			f.Set("pkg_map", name[1:]+"="+value)
 			continue
 		}
-		if err := flag.CommandLine.Set(name, value); err != nil {
+		if err := f.Set(name, value); err != nil {
 			return fmt.Errorf("Cannot set flag %s: %v", p, err)
 		}
 	}
