@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -12,13 +13,19 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/genswagger"
+	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 )
 
 var (
 	importPrefix    = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
 	file            = flag.String("file", "stdin", "where to load data from")
 	allowDeleteBody = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
+	pkgMap          = utilities.NewKVVar()
 )
+
+func init() {
+	flag.Var(pkgMap, "pkg_map", "mapping from imported proto file path to Go pkg with its generated files")
+}
 
 func parseReq(r io.Reader) (*plugin.CodeGeneratorRequest, error) {
 	glog.V(1).Info("Parsing code generator request")
@@ -52,35 +59,18 @@ func main() {
 		glog.Fatal(err)
 	}
 	if req.Parameter != nil {
-		for _, p := range strings.Split(req.GetParameter(), ",") {
-			spec := strings.SplitN(p, "=", 2)
-			if len(spec) == 1 {
-				if spec[0] == "allow_delete_body" {
-					if err := flag.CommandLine.Set(spec[0], "true"); err != nil {
-						glog.Fatalf("Cannot set flag %s", p)
-					}
-					continue
-				}
-				if err := flag.CommandLine.Set(spec[0], ""); err != nil {
-					glog.Fatalf("Cannot set flag %s", p)
-				}
-				continue
-			}
-			name, value := spec[0], spec[1]
-			if strings.HasPrefix(name, "M") {
-				reg.AddPkgMap(name[1:], value)
-				continue
-			}
-			if err := flag.CommandLine.Set(name, value); err != nil {
-				glog.Fatalf("Cannot set flag %s", p)
-			}
+		err := parseReqParam(req.GetParameter(), flag.CommandLine)
+		if err != nil {
+			glog.Fatalf("Error parsing flags: %v", err)
 		}
 	}
 
-	g := genswagger.New(reg)
-
 	reg.SetPrefix(*importPrefix)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
+	for k, v := range pkgMap {
+		reg.AddPkgMap(k, v)
+	}
+	g := genswagger.New(reg)
 
 	if err := reg.Load(req); err != nil {
 		emitError(err)
@@ -121,4 +111,39 @@ func emitResp(resp *plugin.CodeGeneratorResponse) {
 	if _, err := os.Stdout.Write(buf); err != nil {
 		glog.Fatal(err)
 	}
+}
+
+// parseReqParam parses a CodeGeneratorRequest parameter and adds the
+// extracted values to the given FlagSet. Returns a non-nil error if
+// setting a flag failed.
+func parseReqParam(param string, f *flag.FlagSet) error {
+	if param == "" {
+		return nil
+	}
+	for _, p := range strings.Split(param, ",") {
+		spec := strings.SplitN(p, "=", 2)
+		if len(spec) == 1 {
+			if spec[0] == "allow_delete_body" {
+				err := flag.CommandLine.Set(spec[0], "true")
+				if err != nil {
+					return fmt.Errorf("Cannot set flag %s: %v", p, err)
+				}
+				continue
+			}
+			err := flag.CommandLine.Set(spec[0], "")
+			if err != nil {
+				return fmt.Errorf("Cannot set flag %s: %v", p, err)
+			}
+			continue
+		}
+		name, value := spec[0], spec[1]
+		if strings.HasPrefix(name, "M") {
+			f.Set("pkg_map", name[1:]+"="+value)
+			continue
+		}
+		if err := flag.CommandLine.Set(name, value); err != nil {
+			return fmt.Errorf("Cannot set flag %s: %v", p, err)
+		}
+	}
+	return nil
 }
