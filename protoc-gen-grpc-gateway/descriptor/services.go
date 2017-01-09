@@ -89,7 +89,7 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 		case opts.GetDelete() != "":
 			httpMethod = "DELETE"
 			pathTemplate = opts.GetDelete()
-			if opts.Body != "" {
+			if opts.Body != "" && !r.allowDeleteBody {
 				return nil, fmt.Errorf("needs request body even though http method is DELETE: %s", md.GetName())
 			}
 
