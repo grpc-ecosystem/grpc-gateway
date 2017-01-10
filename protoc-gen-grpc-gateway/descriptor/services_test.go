@@ -1107,3 +1107,104 @@ func TestResolveFieldPath(t *testing.T) {
 		}
 	}
 }
+
+func TestExtractServicesWithDeleteBody(t *testing.T) {
+	for _, spec := range []struct {
+		allowDeleteBody bool
+		expectErr       bool
+		target          string
+		srcs            []string
+	}{
+		// body for DELETE, but registry configured to allow it
+		{
+			allowDeleteBody: true,
+			expectErr:       false,
+			target:          "path/to/example.proto",
+			srcs: []string{
+				`
+					name: "path/to/example.proto",
+					package: "example"
+					message_type <
+						name: "StringMessage"
+						field <
+							name: "string"
+							number: 1
+							label: LABEL_OPTIONAL
+							type: TYPE_STRING
+						>
+					>
+					service <
+						name: "ExampleService"
+						method <
+							name: "RemoveResource"
+							input_type: "StringMessage"
+							output_type: "StringMessage"
+							options <
+								[google.api.http] <
+									delete: "/v1/example/resource"
+									body: "string"
+								>
+							>
+						>
+					>
+				`,
+			},
+		},
+		// body for DELETE, registry configured not to allow it
+		{
+			allowDeleteBody: false,
+			expectErr:       true,
+			target:          "path/to/example.proto",
+			srcs: []string{
+				`
+					name: "path/to/example.proto",
+					package: "example"
+					message_type <
+						name: "StringMessage"
+						field <
+							name: "string"
+							number: 1
+							label: LABEL_OPTIONAL
+							type: TYPE_STRING
+						>
+					>
+					service <
+						name: "ExampleService"
+						method <
+							name: "RemoveResource"
+							input_type: "StringMessage"
+							output_type: "StringMessage"
+							options <
+								[google.api.http] <
+									delete: "/v1/example/resource"
+									body: "string"
+								>
+							>
+						>
+					>
+				`,
+			},
+		},
+	} {
+		reg := NewRegistry()
+		reg.SetAllowDeleteBody(spec.allowDeleteBody)
+
+		var fds []*descriptor.FileDescriptorProto
+		for _, src := range spec.srcs {
+			var fd descriptor.FileDescriptorProto
+			if err := proto.UnmarshalText(src, &fd); err != nil {
+				t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
+			}
+			reg.loadFile(&fd)
+			fds = append(fds, &fd)
+		}
+		err := reg.loadServices(reg.files[spec.target])
+		if spec.expectErr && err == nil {
+			t.Errorf("loadServices(%q) succeeded; want an error; allowDeleteBody=%v, files=%v", spec.target, spec.allowDeleteBody, spec.srcs)
+		}
+		if !spec.expectErr && err != nil {
+			t.Errorf("loadServices(%q) failed; do not want an error; allowDeleteBody=%v, files=%v", spec.target, spec.allowDeleteBody, spec.srcs)
+		}
+		t.Log(err)
+	}
+}

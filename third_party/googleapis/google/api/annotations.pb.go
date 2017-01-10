@@ -37,6 +37,7 @@ var E_Http = &proto.ExtensionDesc{
 	Field:         72295728,
 	Name:          "google.api.http",
 	Tag:           "bytes,72295728,opt,name=http",
+	Filename:      "google/api/annotations.proto",
 }
 
 func init() {
