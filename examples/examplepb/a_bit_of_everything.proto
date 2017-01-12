@@ -58,6 +58,9 @@ message ABitOfEverything {
 	string nonConventionalNameValue = 26;
 
 	google.protobuf.Timestamp timestamp_value = 27;
+
+        // repeated enum value. it is comma-separated in query
+	repeated NumericEnum repeated_enum_value = 28;
 }
 
 // NumericEnum is one or zero.
@@ -95,6 +98,11 @@ service ABitOfEverythingService {
 	rpc Delete(sub2.IdMessage) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
 			delete: "/v1/example/a_bit_of_everything/{uuid}"
+		};
+	}
+	rpc GetQuery(ABitOfEverything) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			get: "/v1/example/a_bit_of_everything/query/{uuid}"
 		};
 	}
 	rpc Echo(grpc.gateway.examples.sub.StringMessage) returns (grpc.gateway.examples.sub.StringMessage) {
