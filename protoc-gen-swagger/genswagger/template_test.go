@@ -70,6 +70,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 					In:       "query",
 					Required: false,
 					Type:     "number",
+					Format:   "double",
 				},
 			},
 		},
@@ -94,7 +95,38 @@ func TestMessageToQueryParameters(t *testing.T) {
 							Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
 							Number: proto.Int32(1),
 						},
+						{
+							Name:     proto.String("deep"),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.Nested.DeepNested"),
+							Number:   proto.Int32(2),
+						},
 					},
+					NestedType: []*protodescriptor.DescriptorProto{{
+						Name: proto.String("DeepNested"),
+						Field: []*protodescriptor.FieldDescriptorProto{
+							{
+								Name:   proto.String("b"),
+								Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+								Number: proto.Int32(1),
+							},
+							{
+								Name:     proto.String("c"),
+								Type:     protodescriptor.FieldDescriptorProto_TYPE_ENUM.Enum(),
+								TypeName: proto.String(".example.Nested.DeepNested.DeepEnum"),
+								Number:   proto.Int32(2),
+							},
+						},
+						EnumType: []*protodescriptor.EnumDescriptorProto{
+							{
+								Name: proto.String("DeepEnum"),
+								Value: []*protodescriptor.EnumValueDescriptorProto{
+									{Name: proto.String("FALSE"), Number: proto.Int32(0)},
+									{Name: proto.String("TRUE"), Number: proto.Int32(1)},
+								},
+							},
+						},
+					}},
 				},
 			},
 			Message: "ExampleMessage",
@@ -104,6 +136,20 @@ func TestMessageToQueryParameters(t *testing.T) {
 					In:       "query",
 					Required: false,
 					Type:     "string",
+				},
+				swaggerParameterObject{
+					Name:     "nested.deep.b",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+				swaggerParameterObject{
+					Name:     "nested.deep.c",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+					Enum:     []string{"FALSE", "TRUE"},
+					Default:  "FALSE",
 				},
 			},
 		},
