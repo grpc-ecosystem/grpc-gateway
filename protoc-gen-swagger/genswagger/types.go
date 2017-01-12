@@ -95,6 +95,8 @@ type swaggerParameterObject struct {
 	Type        string              `json:"type,omitempty"`
 	Format      string              `json:"format,omitempty"`
 	Items       *swaggerItemsObject `json:"items,omitempty"`
+	Enum        []string            `json:"enum,omitempty"`
+	Default     string              `json:"default,omitempty"`
 
 	// Or you can explicitly refer to another type. If this is defined all
 	// other fields should be empty
@@ -107,6 +109,14 @@ type schemaCore struct {
 	Type   string `json:"type,omitempty"`
 	Format string `json:"format,omitempty"`
 	Ref    string `json:"$ref,omitempty"`
+
+	Items *swaggerItemsObject `json:"items,omitempty"`
+
+	// If the item is an enumeration include a list of all the *NAMES* of the
+	// enum values.  I'm not sure how well this will work but assuming all enums
+	// start from 0 index it will be great. I don't think that is a good assumption.
+	Enum    []string `json:"enum,omitempty"`
+	Default string   `json:"default,omitempty"`
 }
 
 type swaggerItemsObject schemaCore
@@ -157,13 +167,6 @@ type swaggerSchemaObject struct {
 	// Properties can be recursively defined
 	Properties           swaggerSchemaObjectProperties `json:"properties,omitempty"`
 	AdditionalProperties *swaggerSchemaObject          `json:"additionalProperties,omitempty"`
-	Items                *swaggerItemsObject           `json:"items,omitempty"`
-
-	// If the item is an enumeration include a list of all the *NAMES* of the
-	// enum values.  I'm not sure how well this will work but assuming all enums
-	// start from 0 index it will be great. I don't think that is a good assumption.
-	Enum    []string `json:"enum,omitempty"`
-	Default string   `json:"default,omitempty"`
 
 	Description string `json:"description,omitempty"`
 	Title       string `json:"title,omitempty"`
