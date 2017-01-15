@@ -76,6 +76,8 @@ func applyTemplate(p param) (string, error) {
 		var methodWithBindingsSeen bool
 		for _, meth := range svc.Methods {
 			glog.V(2).Infof("Processing %s.%s", svc.GetName(), meth.GetName())
+			methName := strings.Title(*meth.Name)
+			meth.Name = &methName
 			for _, b := range meth.Bindings {
 				methodWithBindingsSeen = true
 				if err := handlerTemplate.Execute(w, binding{Binding: b}); err != nil {
