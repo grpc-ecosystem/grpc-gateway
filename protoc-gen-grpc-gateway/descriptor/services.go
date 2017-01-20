@@ -7,9 +7,9 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
-	google_options "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"
 	gateway_options "github.com/shilkin/grpc-gateway/options"
+	"github.com/shilkin/grpc-gateway/protoc-gen-grpc-gateway/httprule"
+	google_options "github.com/shilkin/grpc-gateway/third_party/googleapis/google/api"
 )
 
 // loadServices registers services and their methods from "targetFile" to "r".
@@ -51,7 +51,7 @@ func (r *Registry) loadServices(file *File) error {
 	return nil
 }
 
-func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto, opts apiOptions) (*Method, error) {
+func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto, opts *apiOptions) (*Method, error) {
 	requestType, err := r.LookupMsg(svc.File.GetPackage(), md.GetInputType())
 	if err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 		ResponseType:          responseType,
 	}
 
-	newBinding := func(opts apiOptions, idx int) (*Binding, error) {
+	newBinding := func(opts *apiOptions, idx int) (*Binding, error) {
 		var (
 			httpMethod   string
 			pathTemplate string
@@ -156,7 +156,8 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 		if len(additional.AdditionalBindings) > 0 {
 			return nil, fmt.Errorf("additional_binding in additional_binding not allowed: %s.%s", svc.GetName(), meth.GetName())
 		}
-		b, err := newBinding(additional, i+1)
+		apiOpts := &apiOptions{httpRule: additional, middleware: opts.middleware}
+		b, err := newBinding(apiOpts, i+1)
 		if err != nil {
 			return nil, err
 		}
@@ -197,7 +198,7 @@ func extractAPIOptions(meth *descriptor.MethodDescriptorProto) (*apiOptions, err
 		opts.middleware = middleware
 	}
 
-	return &apiOptions{httpRule: opts}, nil
+	return &opts, nil
 }
 
 func (r *Registry) newParam(meth *Method, path string) (Parameter, error) {

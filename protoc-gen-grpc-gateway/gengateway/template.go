@@ -7,8 +7,8 @@ import (
 	"text/template"
 
 	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/utilities"
+	"github.com/shilkin/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	"github.com/shilkin/grpc-gateway/utilities"
 )
 
 type param struct {
@@ -326,14 +326,14 @@ func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runti
 func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
 	client := New{{$svc.GetName}}Client(conn)
 	var handler runtime.HandlerFunc
+	var mw []string
 
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
 
-	mw := []string{ {{range $m := $b.Middleware}}
-			$m,
-			{{end}}
-	}
+	mw = []string{ {{range $name := $b.Middleware}}
+			"{{$name}}",
+			{{end}} }
 
 	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
