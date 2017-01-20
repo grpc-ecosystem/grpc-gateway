@@ -987,6 +987,13 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshale
 // RegisterFlowCombinationHandlerFromEndpoint is same as RegisterFlowCombinationHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterFlowCombinationHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+	middleware := map[string]runtime.Middleware{}
+	return RegisterFlowCombinationHandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
+}
+
+// RegisterFlowCombinationHandlerFromEndpointMiddlware is same as RegisterFlowCombinationHandlerMiddleware but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+func RegisterFlowCombinationHandlerFromEndpointWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -1006,15 +1013,26 @@ func RegisterFlowCombinationHandlerFromEndpoint(ctx context.Context, mux *runtim
 		}()
 	}()
 
-	return RegisterFlowCombinationHandler(ctx, mux, conn)
+	return RegisterFlowCombinationHandlerWithMiddleware(ctx, mux, middleware, conn)
 }
 
 // RegisterFlowCombinationHandler registers the http handlers for service FlowCombination to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	client := NewFlowCombinationClient(conn)
+	middleware := map[string]runtime.Middleware{}
+	return RegisterFlowCombinationHandlerWithMiddleware(ctx, mux, middleware, conn)
+}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+// RegisterFlowCombinationHandlerMiddleware registers the http handlers for service FlowCombination to "mux".
+// The handlers forward requests to the grpc endpoint over "conn".
+func RegisterFlowCombinationHandlerWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
+	client := NewFlowCombinationClient(conn)
+	var handler runtime.HandlerFunc
+	var mw []string
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1040,9 +1058,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcEmptyRpc_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcEmptyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcEmptyRpc_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1068,9 +1096,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcEmptyStream_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_StreamEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcEmptyStream_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1096,9 +1134,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_StreamEmptyRpc_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_StreamEmptyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_StreamEmptyRpc_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1124,9 +1172,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_StreamEmptyStream_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_StreamEmptyStream_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1152,9 +1210,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyRpc_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1180,9 +1248,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyRpc_1(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_1, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1208,9 +1286,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyRpc_2(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_3, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_2, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1236,9 +1324,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyRpc_3(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_4, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_3, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1264,9 +1362,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyRpc_4(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_5, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_4, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1292,9 +1400,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyRpc_5(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_6, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_5, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1320,9 +1438,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyRpc_6(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcPathSingleNestedRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyRpc_6, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1348,9 +1476,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcPathSingleNestedRpc_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcPathSingleNestedRpc_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1376,9 +1514,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcPathNestedRpc_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1404,9 +1552,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcPathNestedRpc_1(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_1, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1432,9 +1590,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcPathNestedRpc_2(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedRpc_2, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1460,9 +1628,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyStream_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1488,9 +1666,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyStream_1(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_1, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1516,9 +1704,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyStream_2(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_3, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_2, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1544,9 +1742,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyStream_3(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_4, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_3, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1572,9 +1780,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyStream_4(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_5, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_4, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1600,9 +1818,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyStream_5(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_6, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_5, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1628,9 +1856,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcBodyStream_6(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcPathSingleNestedStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcBodyStream_6, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1656,9 +1894,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcPathSingleNestedStream_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcPathSingleNestedStream_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1684,9 +1932,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcPathNestedStream_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1712,9 +1970,19 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcPathNestedStream_1(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_1, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -1740,7 +2008,15 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 
 		forward_FlowCombination_RpcPathNestedStream_2(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
+
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_FlowCombination_RpcPathNestedStream_2, handler)
 
 	return nil
 }

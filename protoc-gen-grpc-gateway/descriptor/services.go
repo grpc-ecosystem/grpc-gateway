@@ -7,8 +7,9 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	gateway_options "github.com/grpc-ecosystem/grpc-gateway/options"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
-	options "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"
+	google_options "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"
 )
 
 // loadServices registers services and their methods from "targetFile" to "r".
@@ -33,6 +34,7 @@ func (r *Registry) loadServices(file *File) error {
 			if opts == nil {
 				glog.V(1).Infof("Found non-target method: %s.%s", svc.GetName(), md.GetName())
 			}
+			glog.V(2).Infof("API options for %s.%s: %#v", svc.GetName(), md.GetName(), opts)
 			meth, err := r.newMethod(svc, md, opts)
 			if err != nil {
 				return err
@@ -49,7 +51,7 @@ func (r *Registry) loadServices(file *File) error {
 	return nil
 }
 
-func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto, opts *options.HttpRule) (*Method, error) {
+func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto, opts *apiOptions) (*Method, error) {
 	requestType, err := r.LookupMsg(svc.File.GetPackage(), md.GetInputType())
 	if err != nil {
 		return nil, err
@@ -65,40 +67,40 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 		ResponseType:          responseType,
 	}
 
-	newBinding := func(opts *options.HttpRule, idx int) (*Binding, error) {
+	newBinding := func(opts *apiOptions, idx int) (*Binding, error) {
 		var (
 			httpMethod   string
 			pathTemplate string
 		)
 		switch {
-		case opts.GetGet() != "":
+		case opts.httpRule.GetGet() != "":
 			httpMethod = "GET"
-			pathTemplate = opts.GetGet()
-			if opts.Body != "" {
+			pathTemplate = opts.httpRule.GetGet()
+			if opts.httpRule.Body != "" {
 				return nil, fmt.Errorf("needs request body even though http method is GET: %s", md.GetName())
 			}
 
-		case opts.GetPut() != "":
+		case opts.httpRule.GetPut() != "":
 			httpMethod = "PUT"
-			pathTemplate = opts.GetPut()
+			pathTemplate = opts.httpRule.GetPut()
 
-		case opts.GetPost() != "":
+		case opts.httpRule.GetPost() != "":
 			httpMethod = "POST"
-			pathTemplate = opts.GetPost()
+			pathTemplate = opts.httpRule.GetPost()
 
-		case opts.GetDelete() != "":
+		case opts.httpRule.GetDelete() != "":
 			httpMethod = "DELETE"
-			pathTemplate = opts.GetDelete()
-			if opts.Body != "" && !r.allowDeleteBody {
+			pathTemplate = opts.httpRule.GetDelete()
+			if opts.httpRule.Body != "" && !r.allowDeleteBody {
 				return nil, fmt.Errorf("needs request body even though http method is DELETE: %s", md.GetName())
 			}
 
-		case opts.GetPatch() != "":
+		case opts.httpRule.GetPatch() != "":
 			httpMethod = "PATCH"
-			pathTemplate = opts.GetPatch()
+			pathTemplate = opts.httpRule.GetPatch()
 
-		case opts.GetCustom() != nil:
-			custom := opts.GetCustom()
+		case opts.httpRule.GetCustom() != nil:
+			custom := opts.httpRule.GetCustom()
 			httpMethod = custom.Kind
 			pathTemplate = custom.Path
 
@@ -122,6 +124,7 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 			Index:      idx,
 			PathTmpl:   tmpl,
 			HTTPMethod: httpMethod,
+			Middleware: opts.middleware,
 		}
 
 		for _, f := range tmpl.Fields {
@@ -134,7 +137,7 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 
 		// TODO(yugui) Handle query params
 
-		b.Body, err = r.newBody(meth, opts.Body)
+		b.Body, err = r.newBody(meth, opts.httpRule.Body)
 		if err != nil {
 			return nil, err
 		}
@@ -149,11 +152,12 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 	if b != nil {
 		meth.Bindings = append(meth.Bindings, b)
 	}
-	for i, additional := range opts.GetAdditionalBindings() {
+	for i, additional := range opts.httpRule.GetAdditionalBindings() {
 		if len(additional.AdditionalBindings) > 0 {
 			return nil, fmt.Errorf("additional_binding in additional_binding not allowed: %s.%s", svc.GetName(), meth.GetName())
 		}
-		b, err := newBinding(additional, i+1)
+		apiOpts := &apiOptions{httpRule: additional, middleware: opts.middleware}
+		b, err := newBinding(apiOpts, i+1)
 		if err != nil {
 			return nil, err
 		}
@@ -163,22 +167,38 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 	return meth, nil
 }
 
-func extractAPIOptions(meth *descriptor.MethodDescriptorProto) (*options.HttpRule, error) {
+func extractAPIOptions(meth *descriptor.MethodDescriptorProto) (*apiOptions, error) { // (*options.HttpRule, error) {
+	var opts apiOptions
+
 	if meth.Options == nil {
 		return nil, nil
 	}
-	if !proto.HasExtension(meth.Options, options.E_Http) {
-		return nil, nil
+	// google api extension
+	if proto.HasExtension(meth.Options, google_options.E_Http) {
+		ext, err := proto.GetExtension(meth.Options, google_options.E_Http)
+		if err != nil {
+			return nil, err
+		}
+		httpRule, ok := ext.(*google_options.HttpRule)
+		if !ok {
+			return nil, fmt.Errorf("extension is %T; want an HttpRule", ext)
+		}
+		opts.httpRule = httpRule
 	}
-	ext, err := proto.GetExtension(meth.Options, options.E_Http)
-	if err != nil {
-		return nil, err
+	// grpc gateway middleware extension
+	if proto.HasExtension(meth.Options, gateway_options.E_Middleware) {
+		ext, err := proto.GetExtension(meth.Options, gateway_options.E_Middleware)
+		if err != nil {
+			return nil, err
+		}
+		middleware, ok := ext.([]string)
+		if !ok {
+			return nil, fmt.Errorf("extension is %T; want an []string", ext)
+		}
+		opts.middleware = middleware
 	}
-	opts, ok := ext.(*options.HttpRule)
-	if !ok {
-		return nil, fmt.Errorf("extension is %T; want an HttpRule", ext)
-	}
-	return opts, nil
+
+	return &opts, nil
 }
 
 func (r *Registry) newParam(meth *Method, path string) (Parameter, error) {

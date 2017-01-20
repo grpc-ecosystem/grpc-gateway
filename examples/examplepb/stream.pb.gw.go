@@ -142,6 +142,13 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 // RegisterStreamServiceHandlerFromEndpoint is same as RegisterStreamServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterStreamServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+	middleware := map[string]runtime.Middleware{}
+	return RegisterStreamServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
+}
+
+// RegisterStreamServiceHandlerFromEndpointMiddlware is same as RegisterStreamServiceHandlerMiddleware but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+func RegisterStreamServiceHandlerFromEndpointWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -161,15 +168,26 @@ func RegisterStreamServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.
 		}()
 	}()
 
-	return RegisterStreamServiceHandler(ctx, mux, conn)
+	return RegisterStreamServiceHandlerWithMiddleware(ctx, mux, middleware, conn)
 }
 
 // RegisterStreamServiceHandler registers the http handlers for service StreamService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterStreamServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	client := NewStreamServiceClient(conn)
+	middleware := map[string]runtime.Middleware{}
+	return RegisterStreamServiceHandlerWithMiddleware(ctx, mux, middleware, conn)
+}
 
-	mux.Handle("POST", pattern_StreamService_BulkCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+// RegisterStreamServiceHandlerMiddleware registers the http handlers for service StreamService to "mux".
+// The handlers forward requests to the grpc endpoint over "conn".
+func RegisterStreamServiceHandlerWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
+	client := NewStreamServiceClient(conn)
+	var handler runtime.HandlerFunc
+	var mw []string
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -195,9 +213,19 @@ func RegisterStreamServiceHandler(ctx context.Context, mux *runtime.ServeMux, co
 
 		forward_StreamService_BulkCreate_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("GET", pattern_StreamService_List_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_StreamService_BulkCreate_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -223,9 +251,19 @@ func RegisterStreamServiceHandler(ctx context.Context, mux *runtime.ServeMux, co
 
 		forward_StreamService_List_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_StreamService_BulkEcho_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("GET", pattern_StreamService_List_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -251,7 +289,15 @@ func RegisterStreamServiceHandler(ctx context.Context, mux *runtime.ServeMux, co
 
 		forward_StreamService_BulkEcho_0(ctx, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
-	})
+	}
+
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_StreamService_BulkEcho_0, handler)
 
 	return nil
 }
