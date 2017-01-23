@@ -6,7 +6,7 @@ import (
 
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
+	"github.com/shilkin/grpc-gateway/protoc-gen-grpc-gateway/httprule"
 )
 
 // GoPackage represents a golang package
@@ -151,6 +151,8 @@ type Binding struct {
 	PathParams []Parameter
 	// Body describes parameters provided in HTTP request body.
 	Body *Body
+	// Middleware is the list of middleware names
+	Middleware []string
 }
 
 // ExplicitParams returns a list of explicitly bound parameters of "b",

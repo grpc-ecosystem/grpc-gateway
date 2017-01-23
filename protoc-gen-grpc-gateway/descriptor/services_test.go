@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
+	"github.com/shilkin/grpc-gateway/protoc-gen-grpc-gateway/httprule"
 )
 
 func compilePath(t *testing.T, path string) httprule.Template {
@@ -167,6 +167,8 @@ func TestExtractServicesSimple(t *testing.T) {
 				input_type: "StringMessage"
 				output_type: "StringMessage"
 				options <
+					[gengo.grpc.gateway.middleware]: "session"
+					[gengo.grpc.gateway.middleware]: "ratelimit"
 					[google.api.http] <
 						post: "/v1/example/echo"
 						body: "*"
@@ -207,6 +209,7 @@ func TestExtractServicesSimple(t *testing.T) {
 								PathTmpl:   compilePath(t, "/v1/example/echo"),
 								HTTPMethod: "POST",
 								Body:       &Body{FieldPath: nil},
+								Middleware: []string{"session", "ratelimit"},
 							},
 						},
 					},
