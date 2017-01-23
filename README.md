@@ -61,7 +61,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      rpc Echo(StringMessage) returns (StringMessage) {}
    }
    ```
-2. Add a [custom option](https://cloud.google.com/service-management/reference/rpc/google.api#http) to the .proto file
+2. Add a [custom option](https://cloud.google.com/service-management/reference/rpc/google.api#http) to the .proto file.
    Also you can customize every http handler with middleware. Just add gengo.grpc.gateway.middleware option.
    your_service.proto:
    ```diff
