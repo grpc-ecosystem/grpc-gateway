@@ -298,7 +298,14 @@ var (
 {{range $svc := .}}
 // Register{{$svc.GetName}}HandlerFromEndpoint is same as Register{{$svc.GetName}}Handler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, endpoint string, opts []grpc.DialOption) (err error) {
+func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+	middleware := map[string]runtime.Middleware{}
+	return Register{{$svc.GetName}}HandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
+}
+
+// Register{{$svc.GetName}}HandlerFromEndpointMiddlware is same as Register{{$svc.GetName}}HandlerMiddleware but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+func Register{{$svc.GetName}}HandlerFromEndpointWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -318,12 +325,19 @@ func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runti
 		}()
 	}()
 
-	return Register{{$svc.GetName}}Handler(ctx, mux, middleware, conn)
+	return Register{{$svc.GetName}}HandlerWithMiddleware(ctx, mux, middleware, conn)
 }
 
 // Register{{$svc.GetName}}Handler registers the http handlers for service {{$svc.GetName}} to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
+func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	middleware := map[string]runtime.Middleware{}
+	return Register{{$svc.GetName}}HandlerWithMiddleware(ctx, mux, middleware, conn)
+}
+
+// Register{{$svc.GetName}}HandlerMiddleware registers the http handlers for service {{$svc.GetName}} to "mux".
+// The handlers forward requests to the grpc endpoint over "conn".
+func Register{{$svc.GetName}}HandlerWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
 	client := New{{$svc.GetName}}Client(conn)
 	var handler runtime.HandlerFunc
 	var mw []string
