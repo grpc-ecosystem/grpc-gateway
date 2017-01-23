@@ -25,7 +25,7 @@ func (r *Registry) loadServices(file *File) error {
 			ServiceDescriptorProto: sd,
 		}
 		for _, md := range sd.GetMethod() {
-			glog.V(2).Infof("> Processing %s.%s", sd.GetName(), md.GetName())
+			glog.V(2).Infof("Processing %s.%s", sd.GetName(), md.GetName())
 			opts, err := extractAPIOptions(md)
 			if err != nil {
 				glog.Errorf("Failed to extract ApiMethodOptions from %s.%s: %v", svc.GetName(), md.GetName(), err)
