@@ -5,6 +5,7 @@
 grpc-gateway is a plugin of [protoc](http://github.com/google/protobuf).
 It reads [gRPC](http://github.com/grpc/grpc-common) service definition,
 and generates a reverse-proxy server which translates a RESTful JSON API into gRPC.
+This server is generated according to [custom options](https://cloud.google.com/service-management/reference/rpc/google.api#http) in your gRPC definition.
 
 It helps you to provide your APIs in both gRPC and RESTful style at the same time.
 
@@ -60,7 +61,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      rpc Echo(StringMessage) returns (StringMessage) {}
    }
    ```
-2. Add a custom option to the .proto file
+2. Add a [custom option](https://cloud.google.com/service-management/reference/rpc/google.api#http) to the .proto file
    
    your_service.proto:
    ```diff
@@ -195,20 +196,23 @@ More examples are available under `examples` directory.
 * `server/main.go`: service implementation
 * `main.go`: entrypoint of the generated reverse proxy
 
+To use the same port for custom HTTP handlers (e.g. serving `swagger.json`), gRPC-gateway, and a gRPC server, see [this code example by CoreOS](https://github.com/philips/grpc-gateway-example/blob/master/cmd/serve.go) (and its accompanying [blog post](https://coreos.com/blog/gRPC-protobufs-swagger.html))
+
 ## Features
 ### Supported
 * Generating JSON API handlers
 * Method parameters in request body
 * Method parameters in request path
 * Method parameters in query string
-* Mapping streaming APIs to JSON streams
-* Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata
+* Enum fields in path parameter (including repeated enum fields).
+* Mapping streaming APIs to newline-delimited JSON streams
+* Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata (prefixed with `grpcgateway-`)
 * Optionally emitting API definition for [Swagger](http://swagger.io).
 * Setting [gRPC timeouts](http://www.grpc.io/docs/guides/wire.html) through inbound HTTP `Grpc-Timeout` header.
 
 ### Want to support
 But not yet.
-* bytes and enum fields in path parameter. #5
+* bytes fields in path parameter. #5
 * Optionally generating the entrypoint. #8
 * `import_path` parameter
 
@@ -218,6 +222,19 @@ But patch is welcome.
 * Handling trailer metadata
 * Encoding request/response body in XML
 * True bi-directional streaming. (Probably impossible?)
+
+# Mapping gRPC to HTTP
+
+* [How gRPC error codes map to HTTP status codes in the response](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/errors.go#L15)
+* HTTP request source IP is added as `X-Forwarded-For` gRPC request header
+* HTTP request host is added as `X-Forwarded-Host` gRPC request header
+* HTTP `Authorization` header is added as `authorization` gRPC request header 
+* Remaining Permanent HTTP header keys (as specified by the IANA [here](http://www.iana.org/assignments/message-headers/message-headers.xhtml) are prefixed with `grpcgateway-` and added with their values to gRPC request header
+* HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata (prefixed with `grpcgateway-`)
+* While configurable, the default {un,}marshaling uses [jsonpb](https://godoc.org/github.com/golang/protobuf/jsonpb) with `OrigName: true`.
+
+# Contribution
+See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md).
 
 # License
 grpc-gateway is licensed under the BSD 3-Clause License.

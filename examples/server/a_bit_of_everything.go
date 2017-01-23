@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"fmt"
@@ -219,6 +219,10 @@ func (s *_ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *example
 
 	glog.Info(msg)
 	return msg, nil
+}
+
+func (s *_ABitOfEverythingServer) NoBindings(ctx context.Context, msg *empty.Empty) (*empty.Empty, error) {
+	return nil, nil
 }
 
 func (s *_ABitOfEverythingServer) Timeout(ctx context.Context, msg *empty.Empty) (*empty.Empty, error) {

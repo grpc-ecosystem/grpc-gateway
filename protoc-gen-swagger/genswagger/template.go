@@ -93,7 +93,11 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 }
 
 func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
-	for _, msg := range messages {
+	for name, msg := range messages {
+		switch name {
+		case ".google.protobuf.Timestamp":
+			continue
+		}
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			continue
 		}
@@ -101,7 +105,6 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			schemaCore: schemaCore{
 				Type: "object",
 			},
-			Properties: make(map[string]swaggerSchemaObject),
 		}
 		msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
 		if err := updateSwaggerDataFromComments(&schema, msgComments); err != nil {
@@ -117,7 +120,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 				panic(err)
 			}
 
-			schema.Properties[f.GetName()] = fieldValue
+			schema.Properties = append(schema.Properties, keyVal{f.GetName(), fieldValue})
 		}
 		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
 	}
@@ -148,8 +151,15 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry) swaggerSchemaO
 
 	switch ft := fd.GetType(); ft {
 	case pbdescriptor.FieldDescriptorProto_TYPE_ENUM, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE, pbdescriptor.FieldDescriptorProto_TYPE_GROUP:
-		core = schemaCore{
-			Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(fd.GetTypeName(), reg),
+		if fd.GetTypeName() == ".google.protobuf.Timestamp" && pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE == ft {
+			core = schemaCore{
+				Type:   "string",
+				Format: "date-time",
+			}
+		} else {
+			core = schemaCore{
+				Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(fd.GetTypeName(), reg),
+			}
 		}
 	default:
 		ftype, format, ok := primitiveSchema(ft)
@@ -409,6 +419,19 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 				// Now check if there is a body parameter
 				if b.Body != nil {
+					var schema swaggerSchemaObject
+
+					if len(b.Body.FieldPath) == 0 {
+						schema = swaggerSchemaObject{
+							schemaCore: schemaCore{
+								Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)),
+							},
+						}
+					} else {
+						lastField := b.Body.FieldPath[len(b.Body.FieldPath)-1]
+						schema = schemaOfField(lastField.Target, reg)
+					}
+
 					desc := ""
 					if meth.GetClientStreaming() {
 						desc = "(streaming inputs)"
@@ -418,11 +441,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						Description: desc,
 						In:          "body",
 						Required:    true,
-						Schema: &swaggerSchemaObject{
-							schemaCore: schemaCore{
-								Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)),
-							},
-						},
+						Schema:      &schema,
 					})
 				} else if b.HTTPMethod == "GET" {
 					// add the parameters to the query string
@@ -475,6 +494,9 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					break
 				case "PUT":
 					pathItemObject.Put = operationObject
+					break
+				case "PATCH":
+					pathItemObject.Patch = operationObject
 					break
 				}
 				paths[templateToSwaggerPath(b.PathTmpl.Template)] = pathItemObject
@@ -595,7 +617,7 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 		return nil
 	}
 
-	return fmt.Errorf("No description nor summary property.")
+	return fmt.Errorf("no description nor summary property")
 }
 
 func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []string, typeName string, typeIndex int32, fieldPaths ...int32) string {
@@ -723,15 +745,15 @@ func isProtoPathMatches(paths []int32, outerPaths []int32, typeName string, type
 func protoPathIndex(descriptorType reflect.Type, what string) int32 {
 	field, ok := descriptorType.Elem().FieldByName(what)
 	if !ok {
-		panic(fmt.Errorf("Could not find protobuf descriptor type id for %s.", what))
+		panic(fmt.Errorf("could not find protobuf descriptor type id for %s", what))
 	}
 	pbtag := field.Tag.Get("protobuf")
 	if pbtag == "" {
-		panic(fmt.Errorf("No Go tag 'protobuf' on protobuf descriptor for %s.", what))
+		panic(fmt.Errorf("no Go tag 'protobuf' on protobuf descriptor for %s", what))
 	}
 	path, err := strconv.Atoi(strings.Split(pbtag, ",")[1])
 	if err != nil {
-		panic(fmt.Errorf("Protobuf descriptor id for %s cannot be converted to a number: %s", what, err.Error()))
+		panic(fmt.Errorf("protobuf descriptor id for %s cannot be converted to a number: %s", what, err.Error()))
 	}
 
 	return int32(path)

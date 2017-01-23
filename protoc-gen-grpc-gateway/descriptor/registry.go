@@ -30,6 +30,9 @@ type Registry struct {
 
 	// pkgAliases is a mapping from package aliases to package paths in go which are already taken.
 	pkgAliases map[string]string
+
+	// allowDeleteBody permits http delete methods to have a body
+	allowDeleteBody bool
 }
 
 // NewRegistry returns a new Registry.
@@ -258,6 +261,12 @@ func (r *Registry) GetAllFQENs() []string {
 		keys = append(keys, k)
 	}
 	return keys
+}
+
+// SetAllowDeleteBody controls whether http delete methods may have a
+// body or fail loading if encountered.
+func (r *Registry) SetAllowDeleteBody(allow bool) {
+	r.allowDeleteBody = allow
 }
 
 // defaultGoPackageName returns the default go package name to be used for go files generated from "f".

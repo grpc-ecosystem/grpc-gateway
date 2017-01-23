@@ -1,6 +1,9 @@
 package genswagger
 
 import (
+	"bytes"
+	"encoding/json"
+
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 )
 
@@ -66,6 +69,7 @@ type swaggerPathItemObject struct {
 	Delete *swaggerOperationObject `json:"delete,omitempty"`
 	Post   *swaggerOperationObject `json:"post,omitempty"`
 	Put    *swaggerOperationObject `json:"put,omitempty"`
+	Patch  *swaggerOperationObject `json:"patch,omitempty"`
 }
 
 // http://swagger.io/specification/#operationObject
@@ -116,13 +120,44 @@ type swaggerResponseObject struct {
 	Schema      swaggerSchemaObject `json:"schema"`
 }
 
+type keyVal struct {
+	Key   string
+	Value interface{}
+}
+
+type swaggerSchemaObjectProperties []keyVal
+
+func (op swaggerSchemaObjectProperties) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	buf.WriteString("{")
+	for i, kv := range op {
+		if i != 0 {
+			buf.WriteString(",")
+		}
+		key, err := json.Marshal(kv.Key)
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(key)
+		buf.WriteString(":")
+		val, err := json.Marshal(kv.Value)
+		if err != nil {
+			return nil, err
+		}
+		buf.Write(val)
+	}
+
+	buf.WriteString("}")
+	return buf.Bytes(), nil
+}
+
 // http://swagger.io/specification/#schemaObject
 type swaggerSchemaObject struct {
 	schemaCore
 	// Properties can be recursively defined
-	Properties           map[string]swaggerSchemaObject `json:"properties,omitempty"`
-	AdditionalProperties *swaggerSchemaObject           `json:"additionalProperties,omitempty"`
-	Items                *swaggerItemsObject            `json:"items,omitempty"`
+	Properties           swaggerSchemaObjectProperties `json:"properties,omitempty"`
+	AdditionalProperties *swaggerSchemaObject          `json:"additionalProperties,omitempty"`
+	Items                *swaggerItemsObject           `json:"items,omitempty"`
 
 	// If the item is an enumeration include a list of all the *NAMES* of the
 	// enum values.  I'm not sure how well this will work but assuming all enums

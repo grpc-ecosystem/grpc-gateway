@@ -1,17 +1,15 @@
-branches:
-  only:
-    - master
 language: go
 sudo: false
 go:
-- 1.6.2
+- 1.7.3
 - tip
+go_import_path: github.com/grpc-ecosystem/grpc-gateway
 cache:
   directories:
   - $HOME/local
   - ${TRAVIS_BUILD_DIR}/examples/browser/node_modules
 before_install:
-- ./.travis/build-protoc.sh 3.0.0-beta-3
+- ./.travis/install-protoc.sh 3.1.0
 - ./.travis/install-swagger-codegen.sh 2.1.6
 - nvm install v6.1 && nvm use v6.1 && node --version
 - go get github.com/golang/lint/golint

@@ -420,8 +420,8 @@ func (a ABitOfEverythingServiceApi) Echo_1 (value string) (SubStringMessage, err
  * @param body 
  * @return SubStringMessage
  */
-//func (a ABitOfEverythingServiceApi) Echo_2 (body SubStringMessage) (SubStringMessage, error) {
-func (a ABitOfEverythingServiceApi) Echo_2 (body SubStringMessage) (SubStringMessage, error) {
+//func (a ABitOfEverythingServiceApi) Echo_2 (body string) (SubStringMessage, error) {
+func (a ABitOfEverythingServiceApi) Echo_2 (body string) (SubStringMessage, error) {
 
     _sling := sling.New().Post(a.basePath)
 
