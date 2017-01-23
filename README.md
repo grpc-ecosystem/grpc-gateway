@@ -62,7 +62,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    }
    ```
 2. Add a [custom option](https://cloud.google.com/service-management/reference/rpc/google.api#http) to the .proto file
-   
+   Also you can customize every http handler with middleware. Just add gengo.grpc.gateway.middleware option.
    your_service.proto:
    ```diff
     syntax = "proto3";
@@ -77,6 +77,8 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
     service YourService {
    -  rpc Echo(StringMessage) returns (StringMessage) {}
    +  rpc Echo(StringMessage) returns (StringMessage) {
+   +    option (gengo.grpc.gateway.middleware) = "session";
+   +    option (gengo.grpc.gateway.middleware) = "ratelimit";
    +    option (google.api.http) = {
    +      post: "/v1/example/echo"
    +      body: "*"
@@ -171,7 +173,27 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      }
    }
    ```
+   
+   To use middleware you need to pass middleware map in register function.
+   ```go
+   middleware := map[string]runtime.Middleware{
+     "session": func(h runtime.HandlerFunc) runtime.HandlerFunc {
+       return func(w http.ResponseWriter, r *http.Request, p map[string]string) {
+	     // get ssid from cookie and check if session is valid
+	     h(w, r, p)
+	   }
+	 },
+	 "ratelimit": func(h runtime.HandlerFunc) runtime.HandlerFunc {
+	   return func(w http.ResponseWriter, r *http.Request, p map[string]string) {
+	     // check custom rate limit for this handler
+		 h(w, r, p) 
+	   }
+	 },
+   }
 
+   err := gw.RegisterYourServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, *echoEndpoint, opts)
+   ```
+	
 7. (Optional) Generate swagger definitions
 
    ```sh
