@@ -421,7 +421,7 @@ func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux
 	return RegisterABitOfEverythingServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
 }
 
-// RegisterABitOfEverythingServiceHandlerFromEndpointMiddleware is same as RegisterABitOfEverythingServiceHandlerWithMiddleware but
+// RegisterABitOfEverythingServiceHandlerFromEndpointWithMiddleware is same as RegisterABitOfEverythingServiceHandlerWithMiddleware but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 // It receives a map of additional http handlres and wraps final handler with chain of middleware.
 // Each middleware has a name.

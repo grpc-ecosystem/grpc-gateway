@@ -991,7 +991,7 @@ func RegisterFlowCombinationHandlerFromEndpoint(ctx context.Context, mux *runtim
 	return RegisterFlowCombinationHandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
 }
 
-// RegisterFlowCombinationHandlerFromEndpointMiddleware is same as RegisterFlowCombinationHandlerMiddleware but
+// RegisterFlowCombinationHandlerFromEndpointWithMiddleware is same as RegisterFlowCombinationHandlerWithMiddleware but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 // It receives a map of additional http handlres and wraps final handler with chain of middleware.
 // Each middleware has a name.
@@ -1026,7 +1026,7 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	return RegisterFlowCombinationHandlerWithMiddleware(ctx, mux, middleware, conn)
 }
 
-// RegisterFlowCombinationHandlerMiddleware registers the http handlers for service FlowCombination to "mux".
+// RegisterFlowCombinationHandlerWithMiddleware registers the http handlers for service FlowCombination to "mux".
 // It receives a map of additional http handlres and wraps final handler with chain of middleware.
 // Each middleware has a name.
 // To include middleware in chain of calls you need to specify this name in rpc method option.

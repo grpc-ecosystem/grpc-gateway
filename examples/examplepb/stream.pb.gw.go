@@ -146,7 +146,7 @@ func RegisterStreamServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.
 	return RegisterStreamServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
 }
 
-// RegisterStreamServiceHandlerFromEndpointMiddleware is same as RegisterStreamServiceHandlerMiddleware but
+// RegisterStreamServiceHandlerFromEndpointWithMiddleware is same as RegisterStreamServiceHandlerWithMiddleware but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 // It receives a map of additional http handlres and wraps final handler with chain of middleware.
 // Each middleware has a name.
@@ -181,7 +181,7 @@ func RegisterStreamServiceHandler(ctx context.Context, mux *runtime.ServeMux, co
 	return RegisterStreamServiceHandlerWithMiddleware(ctx, mux, middleware, conn)
 }
 
-// RegisterStreamServiceHandlerMiddleware registers the http handlers for service StreamService to "mux".
+// RegisterStreamServiceHandlerWithMiddleware registers the http handlers for service StreamService to "mux".
 // It receives a map of additional http handlres and wraps final handler with chain of middleware.
 // Each middleware has a name.
 // To include middleware in chain of calls you need to specify this name in rpc method option.

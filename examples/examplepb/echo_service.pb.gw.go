@@ -109,7 +109,7 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 	return RegisterEchoServiceHandlerWithMiddleware(ctx, mux, middleware, conn)
 }
 
-// RegisterEchoServiceHandlerMiddleware registers the http handlers for service EchoService to "mux".
+// RegisterEchoServiceHandlerWithMiddleware registers the http handlers for service EchoService to "mux".
 // It receives a map of additional http handlres and wraps final handler with chain of middleware.
 // Each middleware has a name.
 // To include middleware in chain of calls you need to specify this name in rpc method option.
