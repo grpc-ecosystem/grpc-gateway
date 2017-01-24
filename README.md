@@ -222,63 +222,63 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
       ```
    
    ```go
-      package main
-      import (
-        "flag"
-        "net/http"
+   package main
+   import (
+     "flag"
+     "net/http"
       
-        "github.com/golang/glog"
-        "golang.org/x/net/context"
-        "github.com/grpc-ecosystem/grpc-gateway/runtime"
-        "google.golang.org/grpc"
-      	
-        gw "path/to/your_service_package"
-      )
+     "github.com/golang/glog"
+     "golang.org/x/net/context"
+     "github.com/grpc-ecosystem/grpc-gateway/runtime"
+     "google.golang.org/grpc"
+     	
+     gw "path/to/your_service_package"
+   )
       
-      var (
-        echoEndpoint = flag.String("echo_endpoint", "localhost:9090", "endpoint of YourService")
-      )
+   var (
+     echoEndpoint = flag.String("echo_endpoint", "localhost:9090", "endpoint of YourService")
+   )
       
-      func run() error {
-        ctx := context.Background()
-        ctx, cancel := context.WithCancel(ctx)
-        defer cancel()
-        
-        middleware := map[string]runtime.Middleware{
-          "session": func(h runtime.HandlerFunc) runtime.HandlerFunc {
-            return func(w http.ResponseWriter, r *http.Request, p map[string]string) {
-        	  // get ssid from cookie and check if session is valid
-        	  h(w, r, p)
-            }
-          },
-          "ratelimit": func(h runtime.HandlerFunc) runtime.HandlerFunc {
-            return func(w http.ResponseWriter, r *http.Request, p map[string]string) {
-              // check custom rate limit for this handler
-              h(w, r, p) 
-            }
-          },
-        }     
+   func run() error {
+     ctx := context.Background()
+     ctx, cancel := context.WithCancel(ctx)
+     defer cancel()
+     
+     middleware := map[string]runtime.Middleware{
+       "session": func(h runtime.HandlerFunc) runtime.HandlerFunc {
+         return func(w http.ResponseWriter, r *http.Request, p map[string]string) {
+     	  // get ssid from cookie and check if session is valid
+      	  h(w, r, p)
+         }
+       },
+       "ratelimit": func(h runtime.HandlerFunc) runtime.HandlerFunc {
+         return func(w http.ResponseWriter, r *http.Request, p map[string]string) {
+           // check custom rate limit for this handler
+           h(w, r, p) 
+         }
+       },
+     }     
            
-        mux := runtime.NewServeMux()
-        opts := []grpc.DialOption{grpc.WithInsecure()}
-        err := gw.RegisterYourServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, *echoEndpoint, opts)
-        if err != nil {
-          return err
-        }
+     mux := runtime.NewServeMux()
+     opts := []grpc.DialOption{grpc.WithInsecure()}
+     err := gw.RegisterYourServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, *echoEndpoint, opts)
+     if err != nil {
+       return err
+     }
       
-        http.ListenAndServe(":8080", mux)
-        return nil
-      }
+     http.ListenAndServe(":8080", mux)
+       return nil
+     }
       
-      func main() {
-        flag.Parse()
-        defer glog.Flush()
-      
-        if err := run(); err != nil {
-          glog.Fatal(err)
-        }
-      }
-      ```
+     func main() {
+       flag.Parse()
+       defer glog.Flush()
+     
+     if err := run(); err != nil {
+       glog.Fatal(err)
+     }
+   }
+   ```
 8. (Optional) Generate swagger definitions
 
    ```sh
