@@ -303,7 +303,7 @@ func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runti
 	return Register{{$svc.GetName}}HandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
 }
 
-// Register{{$svc.GetName}}HandlerFromEndpointWithMiddleware is same as Register{{$svc.GetName}}HandlerMiddleware but
+// Register{{$svc.GetName}}HandlerFromEndpointWithMiddleware is same as Register{{$svc.GetName}}HandlerWithMiddleware but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 // It receives a map of additional http handlres and wraps final handler with chain of middleware.
 // Each middleware has a name.
