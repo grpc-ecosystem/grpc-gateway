@@ -146,8 +146,11 @@ func RegisterStreamServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.
 	return RegisterStreamServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
 }
 
-// RegisterStreamServiceHandlerFromEndpointMiddlware is same as RegisterStreamServiceHandlerMiddleware but
+// RegisterStreamServiceHandlerFromEndpointMiddleware is same as RegisterStreamServiceHandlerMiddleware but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
 func RegisterStreamServiceHandlerFromEndpointWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
@@ -179,6 +182,9 @@ func RegisterStreamServiceHandler(ctx context.Context, mux *runtime.ServeMux, co
 }
 
 // RegisterStreamServiceHandlerMiddleware registers the http handlers for service StreamService to "mux".
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterStreamServiceHandlerWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
 	client := NewStreamServiceClient(conn)

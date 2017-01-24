@@ -74,8 +74,11 @@ func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.Se
 	return RegisterEchoServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
 }
 
-// RegisterEchoServiceHandlerFromEndpointMiddlware is same as RegisterEchoServiceHandlerMiddleware but
+// RegisterEchoServiceHandlerFromEndpointWithMiddleware is same as RegisterEchoServiceHandlerWithMiddleware but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
 func RegisterEchoServiceHandlerFromEndpointWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
@@ -107,6 +110,9 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 }
 
 // RegisterEchoServiceHandlerMiddleware registers the http handlers for service EchoService to "mux".
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterEchoServiceHandlerWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
 	client := NewEchoServiceClient(conn)

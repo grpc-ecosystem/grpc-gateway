@@ -991,8 +991,11 @@ func RegisterFlowCombinationHandlerFromEndpoint(ctx context.Context, mux *runtim
 	return RegisterFlowCombinationHandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
 }
 
-// RegisterFlowCombinationHandlerFromEndpointMiddlware is same as RegisterFlowCombinationHandlerMiddleware but
+// RegisterFlowCombinationHandlerFromEndpointMiddleware is same as RegisterFlowCombinationHandlerMiddleware but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
 func RegisterFlowCombinationHandlerFromEndpointWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
@@ -1024,6 +1027,9 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 }
 
 // RegisterFlowCombinationHandlerMiddleware registers the http handlers for service FlowCombination to "mux".
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterFlowCombinationHandlerWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
 	client := NewFlowCombinationClient(conn)

@@ -421,8 +421,11 @@ func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux
 	return RegisterABitOfEverythingServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
 }
 
-// RegisterABitOfEverythingServiceHandlerFromEndpointMiddlware is same as RegisterABitOfEverythingServiceHandlerMiddleware but
+// RegisterABitOfEverythingServiceHandlerFromEndpointMiddleware is same as RegisterABitOfEverythingServiceHandlerWithMiddleware but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
 func RegisterABitOfEverythingServiceHandlerFromEndpointWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
@@ -453,7 +456,10 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 	return RegisterABitOfEverythingServiceHandlerWithMiddleware(ctx, mux, middleware, conn)
 }
 
-// RegisterABitOfEverythingServiceHandlerMiddleware registers the http handlers for service ABitOfEverythingService to "mux".
+// RegisterABitOfEverythingServiceHandlerWithMiddleware registers the http handlers for service ABitOfEverythingService to "mux".
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterABitOfEverythingServiceHandlerWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
 	client := NewABitOfEverythingServiceClient(conn)
