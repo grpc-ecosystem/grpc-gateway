@@ -14,8 +14,8 @@ import (
 	"net/http"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/grpc-ecosystem/grpc-gateway/utilities"
+	"github.com/shilkin/grpc-gateway/runtime"
+	"github.com/shilkin/grpc-gateway/utilities"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -70,6 +70,16 @@ func request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marsh
 // RegisterEchoServiceHandlerFromEndpoint is same as RegisterEchoServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+	middleware := map[string]runtime.Middleware{}
+	return RegisterEchoServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
+}
+
+// RegisterEchoServiceHandlerFromEndpointWithMiddleware is same as RegisterEchoServiceHandlerWithMiddleware but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
+func RegisterEchoServiceHandlerFromEndpointWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -89,15 +99,29 @@ func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.Se
 		}()
 	}()
 
-	return RegisterEchoServiceHandler(ctx, mux, conn)
+	return RegisterEchoServiceHandlerWithMiddleware(ctx, mux, middleware, conn)
 }
 
 // RegisterEchoServiceHandler registers the http handlers for service EchoService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	client := NewEchoServiceClient(conn)
+	middleware := map[string]runtime.Middleware{}
+	return RegisterEchoServiceHandlerWithMiddleware(ctx, mux, middleware, conn)
+}
 
-	mux.Handle("POST", pattern_EchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+// RegisterEchoServiceHandlerWithMiddleware registers the http handlers for service EchoService to "mux".
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
+// The handlers forward requests to the grpc endpoint over "conn".
+func RegisterEchoServiceHandlerWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
+	client := NewEchoServiceClient(conn)
+	var handler runtime.HandlerFunc
+	var mw []string
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -123,9 +147,19 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 
 		forward_EchoService_Echo_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_EchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_EchoService_Echo_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -151,7 +185,15 @@ func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 
 		forward_EchoService_EchoBody_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
+
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_EchoService_EchoBody_0, handler)
 
 	return nil
 }

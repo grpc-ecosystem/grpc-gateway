@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/grpc-ecosystem/grpc-gateway/examples/clients/abe"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/clients/echo"
+	"github.com/shilkin/grpc-gateway/examples/clients/abe"
+	"github.com/shilkin/grpc-gateway/examples/clients/echo"
 )
 
 func TestClientIntegration(t *testing.T) {
