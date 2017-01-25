@@ -188,8 +188,10 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    
     service YourService {
       rpc Echo(StringMessage) returns (StringMessage) {
-   +    option (gengo.grpc.gateway.middleware) = "session";
-   +    option (gengo.grpc.gateway.middleware) = "ratelimit";
+   +    option (gengo.grpc.gateway.method_options) = {
+   +      middleware: "session"
+   +      middleware: "ratelimit"
+   +    };
 	    option (google.api.http) = {
 	 	  post: "/v1/example/echo"
 		  body: "*"
