@@ -186,6 +186,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to Golang import path.
 They are compatible to [the parameters with same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
 
+In addition we also support the `request_context` parameter in order to use the `http.Request`'s Context (only for Go 1.7 and above).
+This parameter can be useful to pass request scoped context between the gateway and the gRPC service.
+
 `protoc-gen-grpc-gateway` also supports some more command line flags to control logging. You can give these flags together with parameters above. Run `protoc-gen-grpc-gateway --help` for more details about the flags.
 
 ## More Examples
