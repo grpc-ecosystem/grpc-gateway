@@ -61,8 +61,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      rpc Echo(StringMessage) returns (StringMessage) {}
    }
    ```
-2. Add a [custom option](https://cloud.google.com/service-management/reference/rpc/google.api#http) to the .proto file.
-   Also you can customize every http handler with middleware. Just add gengo.grpc.gateway.middleware option.
+2. Add a [custom option](https://cloud.google.com/service-management/reference/rpc/google.api#http) to the .proto file
    your_service.proto:
    ```diff
     syntax = "proto3";
@@ -195,9 +194,92 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 
    err := gw.RegisterYourServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, *echoEndpoint, opts)
    ```
-	
-7. (Optional) Generate swagger definitions
-
+7. (Optional) Add method middleware
+   You can customize every http handler with middleware. Just add gengo.grpc.gateway.middleware option.
+   
+   your_service.proto:
+      ```diff
+       syntax = "proto3";
+       package example;
+      
+       import "options/middleware.proto"
+       import "google/api/annotations.proto";
+      
+       message StringMessage {
+         string value = 1;
+       }
+       
+       service YourService {
+       rpc Echo(StringMessage) returns (StringMessage) {
+      +    option (gengo.grpc.gateway.middleware) = "session";
+      +    option (gengo.grpc.gateway.middleware) = "ratelimit";
+           option (google.api.http) = {
+            post: "/v1/example/echo"
+            body: "*"
+           };
+         }
+       }
+      ```
+   
+   ```go
+   package main
+   import (
+     "flag"
+     "net/http"
+      
+     "github.com/golang/glog"
+     "golang.org/x/net/context"
+     "github.com/grpc-ecosystem/grpc-gateway/runtime"
+     "google.golang.org/grpc"
+     	
+     gw "path/to/your_service_package"
+   )
+      
+   var (
+     echoEndpoint = flag.String("echo_endpoint", "localhost:9090", "endpoint of YourService")
+   )
+      
+   func run() error {
+     ctx := context.Background()
+     ctx, cancel := context.WithCancel(ctx)
+     defer cancel()
+     
+     middleware := map[string]runtime.Middleware{
+       "session": func(h runtime.HandlerFunc) runtime.HandlerFunc {
+         return func(w http.ResponseWriter, r *http.Request, p map[string]string) {
+     	  // get ssid from cookie and check if session is valid
+      	  h(w, r, p)
+         }
+       },
+       "ratelimit": func(h runtime.HandlerFunc) runtime.HandlerFunc {
+         return func(w http.ResponseWriter, r *http.Request, p map[string]string) {
+           // check custom rate limit for this handler
+           h(w, r, p) 
+         }
+       },
+     }     
+           
+     mux := runtime.NewServeMux()
+     opts := []grpc.DialOption{grpc.WithInsecure()}
+     err := gw.RegisterYourServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, *echoEndpoint, opts)
+     if err != nil {
+       return err
+     }
+      
+     http.ListenAndServe(":8080", mux)
+       return nil
+     }
+      
+     func main() {
+       flag.Parse()
+       defer glog.Flush()
+     
+     if err := run(); err != nil {
+       glog.Fatal(err)
+     }
+   }
+   ```
+8. (Optional) Generate swagger definitions
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
@@ -209,6 +291,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 ## Parameters and flags
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to Golang import path.
 They are compatible to [the parameters with same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
+
+In addition we also support the `request_context` parameter in order to use the `http.Request`'s Context (only for Go 1.7 and above).
+This parameter can be useful to pass request scoped context between the gateway and the gRPC service.
 
 `protoc-gen-grpc-gateway` also supports some more command line flags to control logging. You can give these flags together with parameters above. Run `protoc-gen-grpc-gateway --help` for more details about the flags.
 

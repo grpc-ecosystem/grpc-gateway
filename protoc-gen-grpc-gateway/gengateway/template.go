@@ -13,7 +13,8 @@ import (
 
 type param struct {
 	*descriptor.File
-	Imports []descriptor.GoPackage
+	Imports           []descriptor.GoPackage
+	UseRequestContext bool
 }
 
 type binding struct {
@@ -66,6 +67,11 @@ func (f queryParamFilter) String() string {
 	return fmt.Sprintf("&utilities.DoubleArray{Encoding: map[string]int{%s}, Base: %#v, Check: %#v}", e, f.Base, f.Check)
 }
 
+type trailerParams struct {
+	Services          []*descriptor.Service
+	UseRequestContext bool
+}
+
 func applyTemplate(p param) (string, error) {
 	w := bytes.NewBuffer(nil)
 	if err := headerTemplate.Execute(w, p); err != nil {
@@ -90,7 +96,12 @@ func applyTemplate(p param) (string, error) {
 	if len(targetServices) == 0 {
 		return "", errNoTargetService
 	}
-	if err := trailerTemplate.Execute(w, targetServices); err != nil {
+
+	tp := trailerParams{
+		Services:          targetServices,
+		UseRequestContext: p.UseRequestContext,
+	}
+	if err := trailerTemplate.Execute(w, tp); err != nil {
 		return "", err
 	}
 	return w.String(), nil
@@ -295,7 +306,8 @@ var (
 `))
 
 	trailerTemplate = template.Must(template.New("trailer").Parse(`
-{{range $svc := .}}
+{{$UseRequestContext := .UseRequestContext}}
+{{range $svc := .Services}}
 // Register{{$svc.GetName}}HandlerFromEndpoint is same as Register{{$svc.GetName}}Handler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
@@ -303,8 +315,11 @@ func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runti
 	return Register{{$svc.GetName}}HandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
 }
 
-// Register{{$svc.GetName}}HandlerFromEndpointMiddlware is same as Register{{$svc.GetName}}HandlerMiddleware but
+// Register{{$svc.GetName}}HandlerFromEndpointWithMiddleware is same as Register{{$svc.GetName}}HandlerWithMiddleware but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
 func Register{{$svc.GetName}}HandlerFromEndpointWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
@@ -335,7 +350,10 @@ func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux,
 	return Register{{$svc.GetName}}HandlerWithMiddleware(ctx, mux, middleware, conn)
 }
 
-// Register{{$svc.GetName}}HandlerMiddleware registers the http handlers for service {{$svc.GetName}} to "mux".
+// Register{{$svc.GetName}}HandlerWithMiddleware registers the http handlers for service {{$svc.GetName}} to "mux".
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
 // The handlers forward requests to the grpc endpoint over "conn".
 func Register{{$svc.GetName}}HandlerWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
 	client := New{{$svc.GetName}}Client(conn)
@@ -350,7 +368,11 @@ func Register{{$svc.GetName}}HandlerWithMiddleware(ctx context.Context, mux *run
 			{{end}} }
 
 	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+  {{- if $UseRequestContext }}
+		ctx, cancel := context.WithCancel(req.Context())
+	{{- else -}}
 		ctx, cancel := context.WithCancel(ctx)
+	{{- end }}
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
 			go func(done <-chan struct{}, closed <-chan bool) {
