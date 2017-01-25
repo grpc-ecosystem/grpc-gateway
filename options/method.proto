@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "options";
+
+package gengo.grpc.gateway;
+
+import "google/protobuf/descriptor.proto";
+
+message MethodOptions {
+    // List of named middleware
+    repeated string middleware = 1;
+
+    // Here we can add some other options
+    // ...
+}
+
+extend google.protobuf.MethodOptions {
+    MethodOptions method_options = 72295731;
+}
