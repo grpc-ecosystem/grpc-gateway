@@ -13,6 +13,110 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 )
 
+func listEnumNames(enum *descriptor.Enum) (names []string) {
+	for _, value := range enum.GetValue() {
+		names = append(names, value.GetName())
+	}
+	return names
+}
+
+func getEnumDefault(enum *descriptor.Enum) string {
+	for _, value := range enum.GetValue() {
+		if value.GetNumber() == 0 {
+			return value.GetName()
+		}
+	}
+	return ""
+}
+
+// messageToQueryParameters converts a message to a list of swagger query parameters.
+func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter) (params []swaggerParameterObject, err error) {
+	for _, field := range message.Fields {
+		p, err := queryParams(message, field, "", reg, pathParams)
+		if err != nil {
+			return nil, err
+		}
+		params = append(params, p...)
+	}
+	return params, nil
+}
+
+// queryParams converts a field to a list of swagger query parameters recuresively.
+func queryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter) (params []swaggerParameterObject, err error) {
+	// make sure the parameter is not already listed as a path parameter
+	for _, pathParam := range pathParams {
+		if pathParam.Target == field {
+			return nil, nil
+		}
+	}
+	schema := schemaOfField(field, reg)
+	fieldType := field.GetTypeName()
+	if message.File != nil {
+		comments := fieldProtoComments(reg, message, field)
+		if err := updateSwaggerDataFromComments(&schema, comments); err != nil {
+			return nil, err
+		}
+	}
+
+	isEnum := field.GetType() == pbdescriptor.FieldDescriptorProto_TYPE_ENUM
+	items := schema.Items
+	if schema.Type != "" || isEnum {
+		if schema.Type == "object" {
+			return nil, nil // TODO: currently, mapping object in query parameter is not supported
+		}
+		if items != nil && (items.Type == "" || items.Type == "object") && !isEnum {
+			return nil, nil // TODO: currently, mapping object in query parameter is not supported
+		}
+		desc := schema.Description
+		if schema.Title != "" { // merge title because title of parameter object will be ignored
+			desc = strings.TrimSpace(schema.Title + ". " + schema.Description)
+		}
+		param := swaggerParameterObject{
+			Name:        prefix + field.GetName(),
+			Description: desc,
+			In:          "query",
+			Type:        schema.Type,
+			Items:       schema.Items,
+			Format:      schema.Format,
+		}
+		if isEnum {
+			enum, err := reg.LookupEnum("", fieldType)
+			if err != nil {
+				return nil, fmt.Errorf("unknown enum type %s", fieldType)
+			}
+			if items != nil { // array
+				param.Items = &swaggerItemsObject{
+					Type: "string",
+					Enum: listEnumNames(enum),
+				}
+			} else {
+				param.Type = "string"
+				param.Enum = listEnumNames(enum)
+				param.Default = getEnumDefault(enum)
+			}
+			valueComments := enumValueProtoComments(reg, enum)
+			if valueComments != "" {
+				param.Description = strings.TrimLeft(param.Description+"\n\n "+valueComments, "\n")
+			}
+		}
+		return []swaggerParameterObject{param}, nil
+	}
+
+	// nested type, recurse
+	msg, err := reg.LookupMsg("", fieldType)
+	if err != nil {
+		return nil, fmt.Errorf("unknown message type %s", fieldType)
+	}
+	for _, nestedField := range msg.Fields {
+		p, err := queryParams(msg, nestedField, prefix+field.GetName()+".", reg, pathParams)
+		if err != nil {
+			return nil, err
+		}
+		params = append(params, p...)
+	}
+	return params, nil
+}
+
 // findServicesMessagesAndEnumerations discovers all messages and enums defined in the RPC methods of the service.
 func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, e enumMap) {
 	for _, svc := range s {
@@ -68,12 +172,10 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			panic(err)
 		}
 
-		for i, f := range msg.Fields {
+		for _, f := range msg.Fields {
 			fieldValue := schemaOfField(f, reg)
-
-			fieldProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "Field")
-			fieldProtoComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index), fieldProtoPath, int32(i))
-			if err := updateSwaggerDataFromComments(&fieldValue, fieldProtoComments); err != nil {
+			comments := fieldProtoComments(reg, msg, f)
+			if err := updateSwaggerDataFromComments(&fieldValue, comments); err != nil {
 				panic(err)
 			}
 
@@ -130,9 +232,9 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry) swaggerSchemaO
 	case array:
 		return swaggerSchemaObject{
 			schemaCore: schemaCore{
-				Type: "array",
+				Type:  "array",
+				Items: (*swaggerItemsObject)(&core),
 			},
-			Items: (*swaggerItemsObject)(&core),
 		}
 	case object:
 		return swaggerSchemaObject{
@@ -175,7 +277,8 @@ func primitiveSchema(t pbdescriptor.FieldDescriptorProto_Type) (ftype, format st
 	case pbdescriptor.FieldDescriptorProto_TYPE_BOOL:
 		return "boolean", "boolean", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_STRING:
-		return "string", "string", true
+		// NOTE: in swagger specifition, format should be empty on string type
+		return "string", "", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_BYTES:
 		return "string", "byte", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_UINT32:
@@ -196,35 +299,22 @@ func primitiveSchema(t pbdescriptor.FieldDescriptorProto_Type) (ftype, format st
 
 // renderEnumerationsAsDefinition inserts enums into the definitions object.
 func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
-	valueProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.EnumDescriptorProto)(nil)), "Value")
 	for _, enum := range enums {
 		enumComments := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index))
 
-		var enumNames []string
 		// it may be necessary to sort the result of the GetValue function.
-		var defaultValue string
-		var valueDescriptions []string
-		for valueIdx, value := range enum.GetValue() {
-			enumNames = append(enumNames, value.GetName())
-			if defaultValue == "" && value.GetNumber() == 0 {
-				defaultValue = value.GetName()
-			}
-
-			valueDescription := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index), valueProtoPath, int32(valueIdx))
-			if valueDescription != "" {
-				valueDescriptions = append(valueDescriptions, value.GetName()+": "+valueDescription)
-			}
-		}
-
-		if len(valueDescriptions) > 0 {
-			enumComments += "\n\n - " + strings.Join(valueDescriptions, "\n - ")
+		enumNames := listEnumNames(enum)
+		defaultValue := getEnumDefault(enum)
+		valueComments := enumValueProtoComments(reg, enum)
+		if valueComments != "" {
+			enumComments = strings.TrimLeft(enumComments+"\n\n "+valueComments, "\n")
 		}
 		enumSchemaObject := swaggerSchemaObject{
 			schemaCore: schemaCore{
-				Type: "string",
+				Type:    "string",
+				Enum:    enumNames,
+				Default: defaultValue,
 			},
-			Enum:    enumNames,
-			Default: defaultValue,
 		}
 		if err := updateSwaggerDataFromComments(&enumSchemaObject, enumComments); err != nil {
 			panic(err)
@@ -400,6 +490,13 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						Required:    true,
 						Schema:      &schema,
 					})
+				} else if b.HTTPMethod == "GET" {
+					// add the parameters to the query string
+					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams)
+					if err != nil {
+						return err
+					}
+					parameters = append(parameters, queryParams...)
 				}
 
 				pathItemObject, ok := paths[templateToSwaggerPath(b.PathTmpl.Template)]
@@ -478,7 +575,9 @@ func applyTemplate(p param) (string, error) {
 
 	// Loops through all the services and their exposed GET/POST/PUT/DELETE definitions
 	// and create entries for all of them.
-	renderServices(p.Services, s.Paths, p.reg)
+	if err := renderServices(p.Services, s.Paths, p.reg); err != nil {
+		panic(err)
+	}
 
 	// Find all the service's messages and enumerations that are defined (recursively) and then
 	// write their request and response types out as definition objects.
@@ -568,6 +667,32 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 	}
 
 	return fmt.Errorf("no description nor summary property")
+}
+
+func fieldProtoComments(reg *descriptor.Registry, msg *descriptor.Message, field *descriptor.Field) string {
+	protoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "Field")
+	for i, f := range msg.Fields {
+		if f == field {
+			return protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index), protoPath, int32(i))
+		}
+	}
+	return ""
+}
+
+func enumValueProtoComments(reg *descriptor.Registry, enum *descriptor.Enum) string {
+	protoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.EnumDescriptorProto)(nil)), "Value")
+	var comments []string
+	for idx, value := range enum.GetValue() {
+		name := value.GetName()
+		str := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index), protoPath, int32(idx))
+		if str != "" {
+			comments = append(comments, name+": "+str)
+		}
+	}
+	if len(comments) > 0 {
+		return "- " + strings.Join(comments, "\n - ")
+	}
+	return ""
 }
 
 func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []string, typeName string, typeIndex int32, fieldPaths ...int32) string {
