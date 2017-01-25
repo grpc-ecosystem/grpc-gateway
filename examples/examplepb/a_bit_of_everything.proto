@@ -115,9 +115,14 @@ service ABitOfEverythingService {
 			body: "*"
 		};
 	}
+	rpc NoBindings(google.protobuf.Empty) returns (google.protobuf.Empty) {}
 	rpc Timeout(google.protobuf.Empty) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
 			get: "/v2/example/timeout",
 		};
 	}
+}
+
+service AnotherServiceWithNoBindings {
+	rpc NoBindings(google.protobuf.Empty) returns (google.protobuf.Empty) {}
 }

@@ -128,10 +128,10 @@ func testEchoBody(t *testing.T) {
 	}
 
 	if got, want := resp.Header.Get("Grpc-Metadata-Foo"), "foo1"; got != want {
-		t.Errorf("Grpc-Header-Foo was %q, wanted %q", got, want)
+		t.Errorf("Grpc-Metadata-Foo was %q, wanted %q", got, want)
 	}
 	if got, want := resp.Header.Get("Grpc-Metadata-Bar"), "bar1"; got != want {
-		t.Errorf("Grpc-Header-Bar was %q, wanted %q", got, want)
+		t.Errorf("Grpc-Metadata-Bar was %q, wanted %q", got, want)
 	}
 
 	if got, want := resp.Trailer.Get("Grpc-Trailer-Foo"), "foo2"; got != want {
@@ -369,7 +369,7 @@ func testABEBulkCreate(t *testing.T) {
 	}
 
 	if got, want := resp.Header.Get("Grpc-Metadata-Count"), fmt.Sprintf("%d", count); got != want {
-		t.Errorf("Grpc-Header-Count was %q, wanted %q", got, want)
+		t.Errorf("Grpc-Metadata-Count was %q, wanted %q", got, want)
 	}
 
 	if got, want := resp.Trailer.Get("Grpc-Trailer-Foo"), "foo2"; got != want {
@@ -518,7 +518,7 @@ func testABEList(t *testing.T) {
 
 	value := resp.Header.Get("Grpc-Metadata-Count")
 	if value == "" {
-		t.Errorf("Grpc-Header-Count should not be empty")
+		t.Errorf("Grpc-Metadata-Count should not be empty")
 	}
 
 	count, err := strconv.Atoi(value)

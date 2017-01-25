@@ -363,14 +363,14 @@
     "ABitOfEverythingNested": {
       "type": "object",
       "properties": {
-        "amount": {
-          "type": "integer",
-          "format": "int64"
-        },
         "name": {
           "type": "string",
           "format": "string",
           "description": "name is nested field."
+        },
+        "amount": {
+          "type": "integer",
+          "format": "int64"
         },
         "ok": {
           "$ref": "#/definitions/NestedDeepEnum"
@@ -390,55 +390,12 @@
     "examplepbABitOfEverything": {
       "type": "object",
       "properties": {
-        "bool_value": {
-          "type": "boolean",
-          "format": "boolean"
+        "single_nested": {
+          "$ref": "#/definitions/ABitOfEverythingNested"
         },
-        "double_value": {
-          "type": "number",
-          "format": "double"
-        },
-        "enum_value": {
-          "$ref": "#/definitions/examplepbNumericEnum"
-        },
-        "fixed32_value": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "fixed64_value": {
+        "uuid": {
           "type": "string",
-          "format": "uint64"
-        },
-        "float_value": {
-          "type": "number",
-          "format": "float"
-        },
-        "int32_value": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "int64_value": {
-          "type": "string",
-          "format": "int64"
-        },
-        "map_value": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/examplepbNumericEnum"
-          }
-        },
-        "mapped_nested_value": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/ABitOfEverythingNested"
-          }
-        },
-        "mapped_string_value": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string",
-            "format": "string"
-          }
+          "format": "string"
         },
         "nested": {
           "type": "array",
@@ -446,23 +403,49 @@
             "$ref": "#/definitions/ABitOfEverythingNested"
           }
         },
-        "nonConventionalNameValue": {
+        "float_value": {
+          "type": "number",
+          "format": "float"
+        },
+        "double_value": {
+          "type": "number",
+          "format": "double"
+        },
+        "int64_value": {
+          "type": "string",
+          "format": "int64"
+        },
+        "uint64_value": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "int32_value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fixed64_value": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "fixed32_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "bool_value": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "string_value": {
           "type": "string",
           "format": "string"
         },
-        "oneof_empty": {
-          "$ref": "#/definitions/protobufEmpty"
+        "uint32_value": {
+          "type": "integer",
+          "format": "int64",
+          "title": "TODO(yugui) add bytes_value"
         },
-        "oneof_string": {
-          "type": "string",
-          "format": "string"
-        },
-        "repeated_string_value": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "string"
-          }
+        "enum_value": {
+          "$ref": "#/definitions/examplepbNumericEnum"
         },
         "sfixed32_value": {
           "type": "integer",
@@ -472,9 +455,6 @@
           "type": "string",
           "format": "int64"
         },
-        "single_nested": {
-          "$ref": "#/definitions/ABitOfEverythingNested"
-        },
         "sint32_value": {
           "type": "integer",
           "format": "int32"
@@ -483,26 +463,46 @@
           "type": "string",
           "format": "int64"
         },
-        "string_value": {
+        "repeated_string_value": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "string"
+          }
+        },
+        "oneof_empty": {
+          "$ref": "#/definitions/protobufEmpty"
+        },
+        "oneof_string": {
+          "type": "string",
+          "format": "string"
+        },
+        "map_value": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/examplepbNumericEnum"
+          }
+        },
+        "mapped_string_value": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "format": "string"
+          }
+        },
+        "mapped_nested_value": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ABitOfEverythingNested"
+          }
+        },
+        "nonConventionalNameValue": {
           "type": "string",
           "format": "string"
         },
         "timestamp_value": {
           "type": "string",
           "format": "date-time"
-        },
-        "uint32_value": {
-          "type": "integer",
-          "format": "int64",
-          "title": "TODO(yugui) add bytes_value"
-        },
-        "uint64_value": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "uuid": {
-          "type": "string",
-          "format": "string"
         }
       },
       "title": "Intentionaly complicated message type to cover much features of Protobuf.\nNEXT ID: 27"
