@@ -34,8 +34,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "string"
           }
         ],
         "tags": [
@@ -77,7 +76,6 @@
       "properties": {
         "id": {
           "type": "string",
-          "format": "string",
           "description": "Id represents the message identifier."
         }
       },

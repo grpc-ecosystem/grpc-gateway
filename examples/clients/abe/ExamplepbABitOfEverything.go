@@ -31,5 +31,6 @@ type ExamplepbABitOfEverything struct {
     MappedNestedValue  map[string]ABitOfEverythingNested  `json:"mapped_nested_value,omitempty"`
     NonConventionalNameValue  string  `json:"nonConventionalNameValue,omitempty"`
     TimestampValue  time.Time  `json:"timestamp_value,omitempty"`
+    RepeatedEnumValue  []ExamplepbNumericEnum  `json:"repeated_enum_value,omitempty"`
     
 }

@@ -170,6 +170,19 @@ func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessag
 	return new(empty.Empty), nil
 }
 
+func (s *_ABitOfEverythingServer) GetQuery(ctx context.Context, msg *examples.ABitOfEverything) (*empty.Empty, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	glog.Info(msg)
+	if _, ok := s.v[msg.Uuid]; ok {
+		s.v[msg.Uuid] = msg
+	} else {
+		return nil, grpc.Errorf(codes.NotFound, "not found")
+	}
+	return new(empty.Empty), nil
+}
+
 func (s *_ABitOfEverythingServer) Echo(ctx context.Context, msg *sub.StringMessage) (*sub.StringMessage, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
