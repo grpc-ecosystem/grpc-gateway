@@ -124,7 +124,7 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 			Index:      idx,
 			PathTmpl:   tmpl,
 			HTTPMethod: httpMethod,
-			Middleware: opts.middleware,
+			Middleware: opts.getMiddleware(),
 		}
 
 		for _, f := range tmpl.Fields {
@@ -156,7 +156,7 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 		if len(additional.AdditionalBindings) > 0 {
 			return nil, fmt.Errorf("additional_binding in additional_binding not allowed: %s.%s", svc.GetName(), meth.GetName())
 		}
-		apiOpts := &apiOptions{httpRule: additional, middleware: opts.middleware}
+		apiOpts := &apiOptions{httpRule: additional, methodOpts: opts.methodOpts}
 		b, err := newBinding(apiOpts, i+1)
 		if err != nil {
 			return nil, err
@@ -186,16 +186,16 @@ func extractAPIOptions(meth *descriptor.MethodDescriptorProto) (*apiOptions, err
 		opts.httpRule = httpRule
 	}
 	// grpc gateway middleware extension
-	if proto.HasExtension(meth.Options, gateway_options.E_Middleware) {
-		ext, err := proto.GetExtension(meth.Options, gateway_options.E_Middleware)
+	if proto.HasExtension(meth.Options, gateway_options.E_MethodOptions) {
+		ext, err := proto.GetExtension(meth.Options, gateway_options.E_MethodOptions)
 		if err != nil {
 			return nil, err
 		}
-		middleware, ok := ext.([]string)
+		methodOpts, ok := ext.(*gateway_options.MethodOptions)
 		if !ok {
-			return nil, fmt.Errorf("extension is %T; want an []string", ext)
+			return nil, fmt.Errorf("extension is %T; want an MethodOptions", ext)
 		}
-		opts.middleware = middleware
+		opts.methodOpts = methodOpts
 	}
 
 	return &opts, nil
