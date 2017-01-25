@@ -7,10 +7,10 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/ptypes/empty"
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
-	sub "github.com/grpc-ecosystem/grpc-gateway/examples/sub"
-	sub2 "github.com/grpc-ecosystem/grpc-gateway/examples/sub2"
 	"github.com/rogpeppe/fastuuid"
+	examples "github.com/shilkin/grpc-gateway/examples/examplepb"
+	sub "github.com/shilkin/grpc-gateway/examples/sub"
+	sub2 "github.com/shilkin/grpc-gateway/examples/sub2"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
