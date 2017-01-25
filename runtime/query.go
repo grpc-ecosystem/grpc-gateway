@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/shilkin/grpc-gateway/utilities"
+	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 	"google.golang.org/grpc/grpclog"
 )
 
