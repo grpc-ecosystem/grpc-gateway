@@ -167,8 +167,10 @@ func TestExtractServicesSimple(t *testing.T) {
 				input_type: "StringMessage"
 				output_type: "StringMessage"
 				options <
-					[gengo.grpc.gateway.middleware]: "session"
-					[gengo.grpc.gateway.middleware]: "ratelimit"
+					[gengo.grpc.gateway.method_options]: <
+						middleware: "session"
+						middleware: "ratelimit"
+					>
 					[google.api.http] <
 						post: "/v1/example/echo"
 						body: "*"
