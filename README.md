@@ -280,7 +280,6 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    }
    ```
 8. (Optional) Generate swagger definitions
-
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
