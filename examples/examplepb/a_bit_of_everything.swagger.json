@@ -57,8 +57,209 @@
             "name": "value",
             "in": "path",
             "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/query/{uuid}": {
+      "get": {
+        "operationId": "GetQuery",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "single_nested.name",
+            "description": "name is nested field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "single_nested.amount",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "single_nested.ok",
+            "description": " - FALSE: FALSE is false.\n - TRUE: TRUE is true.",
+            "in": "query",
+            "required": false,
             "type": "string",
-            "format": "string"
+            "enum": [
+              "FALSE",
+              "TRUE"
+            ],
+            "default": "FALSE"
+          },
+          {
+            "name": "float_value",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "double_value",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "int64_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "uint64_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "int32_value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "fixed64_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "fixed32_value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "bool_value",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          },
+          {
+            "name": "string_value",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "uint32_value",
+            "description": "TODO(yugui) add bytes_value.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "enum_value",
+            "description": " - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ZERO",
+              "ONE"
+            ],
+            "default": "ZERO"
+          },
+          {
+            "name": "sfixed32_value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "sfixed64_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "sint32_value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "sint64_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "repeated_string_value",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "oneof_string",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nonConventionalNameValue",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "timestamp_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "repeated_enum_value",
+            "description": "repeated enum value. it is comma-separated in query.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ZERO",
+                "ONE"
+              ]
+            }
           }
         ],
         "tags": [
@@ -138,8 +339,7 @@
             "name": "string_value",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "string"
           },
           {
             "name": "uint32_value",
@@ -180,8 +380,7 @@
             "name": "nonConventionalNameValue",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "string"
           }
         ],
         "tags": [
@@ -205,8 +404,7 @@
             "name": "single_nested.name",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "string"
           },
           {
             "name": "body",
@@ -238,8 +436,7 @@
             "name": "uuid",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "string"
           }
         ],
         "tags": [
@@ -261,8 +458,7 @@
             "name": "uuid",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "string"
           }
         ],
         "tags": [
@@ -284,8 +480,7 @@
             "name": "uuid",
             "in": "path",
             "required": true,
-            "type": "string",
-            "format": "string"
+            "type": "string"
           },
           {
             "name": "body",
@@ -312,6 +507,14 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "value",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "ABitOfEverythingService"
         ]
@@ -332,8 +535,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "string"
+              "type": "string"
             }
           }
         ],
@@ -365,7 +567,6 @@
       "properties": {
         "name": {
           "type": "string",
-          "format": "string",
           "description": "name is nested field."
         },
         "amount": {
@@ -394,8 +595,7 @@
           "$ref": "#/definitions/ABitOfEverythingNested"
         },
         "uuid": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         },
         "nested": {
           "type": "array",
@@ -436,8 +636,7 @@
           "format": "boolean"
         },
         "string_value": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         },
         "uint32_value": {
           "type": "integer",
@@ -466,16 +665,14 @@
         "repeated_string_value": {
           "type": "array",
           "items": {
-            "type": "string",
-            "format": "string"
+            "type": "string"
           }
         },
         "oneof_empty": {
           "$ref": "#/definitions/protobufEmpty"
         },
         "oneof_string": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         },
         "map_value": {
           "type": "object",
@@ -486,8 +683,7 @@
         "mapped_string_value": {
           "type": "object",
           "additionalProperties": {
-            "type": "string",
-            "format": "string"
+            "type": "string"
           }
         },
         "mapped_nested_value": {
@@ -497,12 +693,18 @@
           }
         },
         "nonConventionalNameValue": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         },
         "timestamp_value": {
           "type": "string",
           "format": "date-time"
+        },
+        "repeated_enum_value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/examplepbNumericEnum"
+          },
+          "title": "repeated enum value. it is comma-separated in query"
         }
       },
       "title": "Intentionaly complicated message type to cover much features of Protobuf.\nNEXT ID: 27"
@@ -525,8 +727,7 @@
       "type": "object",
       "properties": {
         "uuid": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         }
       }
     },
@@ -534,8 +735,7 @@
       "type": "object",
       "properties": {
         "value": {
-          "type": "string",
-          "format": "string"
+          "type": "string"
         }
       }
     }
