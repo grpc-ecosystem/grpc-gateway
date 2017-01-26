@@ -405,7 +405,7 @@ type ABitOfEverything_Nested struct {
 func (m *ABitOfEverything_Nested) Reset()                    { *m = ABitOfEverything_Nested{} }
 func (m *ABitOfEverything_Nested) String() string            { return proto.CompactTextString(m) }
 func (*ABitOfEverything_Nested) ProtoMessage()               {}
-func (*ABitOfEverything_Nested) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0, 0} }
+func (*ABitOfEverything_Nested) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0, 0} }
 
 func (m *ABitOfEverything_Nested) GetName() string {
 	if m != nil {
