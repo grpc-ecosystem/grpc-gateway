@@ -2,15 +2,6 @@
 // source: examples/examplepb/a_bit_of_everything.proto
 // DO NOT EDIT!
 
-/*
-Package examplepb is a generated protocol buffer package.
-
-It is generated from these files:
-	examples/examplepb/a_bit_of_everything.proto
-
-It has these top-level messages:
-	ABitOfEverything
-*/
 package examplepb
 
 import proto "github.com/golang/protobuf/proto"
@@ -31,12 +22,6 @@ import (
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
-
-// This is a compile-time assertion to ensure that this generated file
-// is compatible with the proto package it is being compiled against.
-// A compilation error at this line likely means your copy of the
-// proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 // NumericEnum is one or zero.
 type NumericEnum int32
@@ -60,7 +45,7 @@ var NumericEnum_value = map[string]int32{
 func (x NumericEnum) String() string {
 	return proto.EnumName(NumericEnum_name, int32(x))
 }
-func (NumericEnum) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (NumericEnum) EnumDescriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
 
 // DeepEnum is one or zero.
 type ABitOfEverything_Nested_DeepEnum int32
@@ -85,7 +70,7 @@ func (x ABitOfEverything_Nested_DeepEnum) String() string {
 	return proto.EnumName(ABitOfEverything_Nested_DeepEnum_name, int32(x))
 }
 func (ABitOfEverything_Nested_DeepEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor0, []int{0, 0, 0}
+	return fileDescriptor1, []int{0, 0, 0}
 }
 
 // Intentionaly complicated message type to cover much features of Protobuf.
@@ -127,7 +112,7 @@ type ABitOfEverything struct {
 func (m *ABitOfEverything) Reset()                    { *m = ABitOfEverything{} }
 func (m *ABitOfEverything) String() string            { return proto.CompactTextString(m) }
 func (*ABitOfEverything) ProtoMessage()               {}
-func (*ABitOfEverything) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (*ABitOfEverything) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{0} }
 
 type isABitOfEverything_OneofValue interface {
 	isABitOfEverything_OneofValue()
@@ -883,9 +868,9 @@ var _AnotherServiceWithNoBindings_serviceDesc = grpc.ServiceDesc{
 	Metadata: "examples/examplepb/a_bit_of_everything.proto",
 }
 
-func init() { proto.RegisterFile("examples/examplepb/a_bit_of_everything.proto", fileDescriptor0) }
+func init() { proto.RegisterFile("examples/examplepb/a_bit_of_everything.proto", fileDescriptor1) }
 
-var fileDescriptor0 = []byte{
+var fileDescriptor1 = []byte{
 	// 1278 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xbc, 0x57, 0xcf, 0x6e, 0xdb, 0x46,
 	0x13, 0xf7, 0x4a, 0xb6, 0x2c, 0x8d, 0x24, 0x5b, 0x5e, 0x27, 0x8e, 0xa2, 0xe4, 0x83, 0xf8, 0x29,
