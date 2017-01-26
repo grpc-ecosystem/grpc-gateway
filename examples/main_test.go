@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	server "github.com/shilkin/grpc-gateway/examples/server"
+	server "github.com/grpc-ecosystem/grpc-gateway/examples/server"
 )
 
 func runServers() <-chan error {

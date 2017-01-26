@@ -4,7 +4,7 @@ import (
 	"flag"
 
 	"github.com/golang/glog"
-	"github.com/shilkin/grpc-gateway/examples/server"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/server"
 )
 
 func main() {

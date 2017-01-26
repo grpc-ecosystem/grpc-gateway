@@ -12,8 +12,8 @@ import (
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/shilkin/grpc-gateway/examples/examplepb"
-	"github.com/shilkin/grpc-gateway/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
 func TestJSONBuiltinMarshal(t *testing.T) {

@@ -15,9 +15,9 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/shilkin/grpc-gateway/examples/sub"
-	"github.com/shilkin/grpc-gateway/runtime"
-	"github.com/shilkin/grpc-gateway/utilities"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/sub"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
