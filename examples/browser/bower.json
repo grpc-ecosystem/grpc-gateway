@@ -6,7 +6,7 @@
     "Yuki Yugui Sonoda <yugui@gengo.com>"
   ],
   "license": "SEE LICENSE IN LICENSE file",
-  "homepage": "https://github.com/grpc-ecosystem/grpc-gateway",
+  "homepage": "https://github.com/shilkin/grpc-gateway",
   "private": true,
   "dependencies": {
     "swagger-js": "~> 2.1"

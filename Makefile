@@ -3,7 +3,7 @@
 # You don't have to rebuild these targets by yourself unless you develop
 # grpc-gateway itself.
 
-PKG=github.com/grpc-ecosystem/grpc-gateway
+PKG=github.com/shilkin/grpc-gateway
 GO_PLUGIN=bin/protoc-gen-go
 GO_PLUGIN_PKG=github.com/golang/protobuf/protoc-gen-go
 SWAGGER_PLUGIN=bin/protoc-gen-swagger
@@ -121,6 +121,7 @@ $(ABE_EXAMPLE_SRCS): $(ABE_EXAMPLE_SPEC)
 	@rm -f $(EXAMPLE_CLIENT_DIR)/README.md $(EXAMPLE_CLIENT_DIR)/git_push.sh $(EXAMPLE_CLIENT_DIR)/.gitignore
 
 examples: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
+
 test: examples
 	go test -race $(PKG)/...
 

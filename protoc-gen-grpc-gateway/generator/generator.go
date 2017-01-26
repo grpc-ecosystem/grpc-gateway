@@ -3,7 +3,7 @@ package generator
 
 import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	"github.com/shilkin/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 )
 
 // Generator is an abstraction of code generators.

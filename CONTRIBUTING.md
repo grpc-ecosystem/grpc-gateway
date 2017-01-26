@@ -3,8 +3,8 @@
 Thank you for your contribution to grpc-gateway.
 Here's the recommended process of contribution.
 
-1. `go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway`
-2. `cd $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway`
+1. `go get github.com/shilkin/grpc-gateway/protoc-gen-grpc-gateway`
+2. `cd $GOPATH/src/github.com/shilkin/grpc-gateway`
 3. hack, hack, hack...
 4. Make sure that your change follows best practices in Go
    * [Effective Go](https://golang.org/doc/effective_go.html)

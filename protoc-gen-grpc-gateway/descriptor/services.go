@@ -7,9 +7,9 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	gateway_options "github.com/grpc-ecosystem/grpc-gateway/options"
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
-	google_options "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"
+	gateway_options "github.com/shilkin/grpc-gateway/options"
+	"github.com/shilkin/grpc-gateway/protoc-gen-grpc-gateway/httprule"
+	google_options "github.com/shilkin/grpc-gateway/third_party/googleapis/google/api"
 )
 
 // loadServices registers services and their methods from "targetFile" to "r".
