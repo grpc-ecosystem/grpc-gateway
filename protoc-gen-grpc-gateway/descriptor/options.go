@@ -1,8 +1,8 @@
 package descriptor
 
 import (
-	gateway_options "github.com/grpc-ecosystem/grpc-gateway/options"
-	google_options "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"
+	gateway_options "github.com/shilkin/grpc-gateway/options"
+	google_options "github.com/shilkin/grpc-gateway/third_party/googleapis/google/api"
 )
 
 type apiOptions struct {

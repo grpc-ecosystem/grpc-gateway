@@ -29,7 +29,7 @@ func TestGoPackageStandard(t *testing.T) {
 			want: false,
 		},
 		{
-			pkg:  GoPackage{Path: "github.com/grpc-ecosystem/grpc-gateway", Name: "main"},
+			pkg:  GoPackage{Path: "github.com/shilkin/grpc-gateway", Name: "main"},
 			want: false,
 		},
 		{
@@ -65,8 +65,8 @@ func TestGoPackageString(t *testing.T) {
 			want: `"golang.org/x/net/context"`,
 		},
 		{
-			pkg:  GoPackage{Path: "github.com/grpc-ecosystem/grpc-gateway", Name: "main"},
-			want: `"github.com/grpc-ecosystem/grpc-gateway"`,
+			pkg:  GoPackage{Path: "github.com/shilkin/grpc-gateway", Name: "main"},
+			want: `"github.com/shilkin/grpc-gateway"`,
 		},
 		{
 			pkg:  GoPackage{Path: "github.com/google/googleapis/google/api/http.pb", Name: "http_pb", Alias: "htpb"},
