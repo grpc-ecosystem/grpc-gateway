@@ -17,9 +17,9 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
-	gw "github.com/shilkin/grpc-gateway/examples/examplepb"
-	sub "github.com/shilkin/grpc-gateway/examples/sub"
-	"github.com/shilkin/grpc-gateway/runtime"
+	gw "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
+	sub "github.com/grpc-ecosystem/grpc-gateway/examples/sub"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 )
