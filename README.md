@@ -90,7 +90,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      -I$GOPATH/src \
      -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
      --go_out=Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api,plugins=grpc:. \
-     --go_out=Moptions/middleware.proto=github.com/grpc-ecosystem/grpc-gateway/options
+     --go_out=Moptions/method.proto=github.com/grpc-ecosystem/grpc-gateway/options
      path/to/your_service.proto
    ```
    
@@ -179,7 +179,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
     syntax = "proto3";
     package example;
   
-   +import "options/middleware.proto"
+   +import "options/method.proto"
     import "google/api/annotations.proto";
   
     message StringMessage {
