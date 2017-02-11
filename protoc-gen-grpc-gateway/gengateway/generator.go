@@ -13,6 +13,7 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/generator"
+	options "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"
 )
 
 var (
@@ -98,10 +99,8 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 	for _, svc := range file.Services {
 		for _, m := range svc.Methods {
 			pkg := m.RequestType.File.GoPkg
-			if pkg == file.GoPkg {
-				continue
-			}
-			if pkgSeen[pkg.Path] {
+			if m.Options == nil || !proto.HasExtension(m.Options, options.E_Http) ||
+				pkg == file.GoPkg || pkgSeen[pkg.Path] {
 				continue
 			}
 			pkgSeen[pkg.Path] = true
