@@ -80,6 +80,7 @@ type swaggerOperationObject struct {
 	Responses   swaggerResponsesObject  `json:"responses"`
 	Parameters  swaggerParametersObject `json:"parameters,omitempty"`
 	Tags        []string                `json:"tags,omitempty"`
+	Deprecated  bool                    `json:"deprecated,omitempty"`
 
 	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }

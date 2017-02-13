@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package grpc_gateway.protoc_gen_swagger.options;
+
+// `Operation` is a representation of Swagger specification's Operation object.
+//
+// See: http://swagger.io/specification/#operation-object-36
+//
+// TODO(ivucica): document fields
+message Operation {
+  repeated string tags = 1;
+  string summary = 2;
+  string description = 3;
+  ExternalDocumentation external_docs = 4;
+  string operation_id = 5;
+  repeated string consumes = 6;
+  repeated string produces = 7;
+  // field 8 is reserved for 'parameters'.
+  // field 9 is reserved for 'responses'.
+  repeated string schemes = 10;
+  bool deprecated = 11;
+  // field 12 is reserved for 'security'.
+  
+}
+
+// `ExternalDocumentation` is a representation of Swagger specification's
+// ExternalDocumentation object.
+//
+// See: http://swagger.io/specification/#external-documentation-object-40
+//
+// TODO(ivucica): document fields
+message ExternalDocumentation {
+  string description = 1;
+  string url = 2;
+}

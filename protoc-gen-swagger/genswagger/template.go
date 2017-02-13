@@ -12,6 +12,8 @@ import (
 
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
+	"github.com/golang/protobuf/proto"
 )
 
 var swaggerExtrasRegexp = regexp.MustCompile(`(?s)^(.*[^\s])[\s]*<!-- swagger extras start(.*)swagger extras end -->[\s]*(.*)$`)
@@ -555,6 +557,34 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					panic(err)
 				}
 
+				extractOperationOptions := func (meth *pbdescriptor.MethodDescriptorProto) (*swagger_options.Operation, error) {
+					if meth.Options == nil {
+						return nil, nil
+					}
+					if !proto.HasExtension(meth.Options, swagger_options.E_SwaggerOperation) {
+						return nil, nil
+					}
+					ext, err := proto.GetExtension(meth.Options, swagger_options.E_SwaggerOperation)
+					if err != nil {
+						return nil, err
+					}
+					opts, ok := ext.(*swagger_options.Operation)
+					if !ok {
+						return nil, fmt.Errorf("extension is %T; want an Operation", ext)
+					}
+					return opts, nil
+				}
+				opts, err := extractOperationOptions(meth.MethodDescriptorProto)
+				if opts != nil {
+					if err != nil {
+						panic(err)
+					}
+					// TODO(ivucica): this would be better supported by looking whether the method is deprecated in the proto file
+					operationObject.Deprecated = opts.Deprecated
+					
+					// TODO(ivucica): add remaining fields of operation object
+				}
+				
 				switch b.HTTPMethod {
 				case "DELETE":
 					pathItemObject.Delete = operationObject

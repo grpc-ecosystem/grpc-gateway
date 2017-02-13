@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package grpc_gateway.protoc_gen_swagger.options;
+
+import "protoc-gen-swagger/options/swagger.proto";
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.MethodOptions {
+  Operation swagger_operation = 123456789; // TODO(ivucica): how to determine ID?
+}
