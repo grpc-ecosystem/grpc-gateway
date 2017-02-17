@@ -59,6 +59,17 @@ func TestPopulateParameters(t *testing.T) {
 		},
 		{
 			values: url.Values{
+				"enum_value":    {"EnumValue_Z"},
+				"repeated_enum": {"EnumValue_X", "2", "0"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want: &proto3Message{
+				EnumValue:    EnumValue_Z,
+				RepeatedEnum: []EnumValue{EnumValue_X, EnumValue_Z, EnumValue_X},
+			},
+		},
+		{
+			values: url.Values{
 				"float_value":    {"1.5"},
 				"double_value":   {"2.5"},
 				"int64_value":    {"-1"},
@@ -343,3 +354,18 @@ const (
 	EnumValue_Y EnumValue = 1
 	EnumValue_Z EnumValue = 2
 )
+
+var EnumValue_name = map[int32]string{
+	0: "EnumValue_X",
+	1: "EnumValue_Y",
+	2: "EnumValue_Z",
+}
+var EnumValue_value = map[string]int32{
+	"EnumValue_X": 0,
+	"EnumValue_Y": 1,
+	"EnumValue_Z": 2,
+}
+
+func init() {
+	proto.RegisterEnum("runtime_test.EnumValue", EnumValue_name, EnumValue_value)
+}
