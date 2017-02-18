@@ -16,11 +16,11 @@ gulp.task('bower', function(){
 });
 
 gulp.task('server', shell.task([
-  'go build -o bin/example-server github.com/grpc-ecosystem/grpc-gateway/examples/server/cmd/example-server',
+  'go build -o bin/example-server github.com/fische/grpc-gateway/examples/server/cmd/example-server',
 ]));
 
 gulp.task('gateway', shell.task([
-  'go build -o bin/example-gw github.com/grpc-ecosystem/grpc-gateway/examples',
+  'go build -o bin/example-gw github.com/fische/grpc-gateway/examples',
 ]));
 
 gulp.task('serve-server', ['server'], function(){

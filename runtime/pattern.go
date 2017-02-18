@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/grpc-ecosystem/grpc-gateway/utilities"
+	"github.com/fische/grpc-gateway/utilities"
 	"google.golang.org/grpc/grpclog"
 )
 

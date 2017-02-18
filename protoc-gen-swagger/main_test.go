@@ -26,8 +26,8 @@ func TestParseReqParam(t *testing.T) {
 
 	clearFlags()
 	pkgMap = make(map[string]string)
-	expected = map[string]string{"google/api/annotations.proto": "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"}
-	err = parseReqParam("allow_delete_body,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api", f, pkgMap)
+	expected = map[string]string{"google/api/annotations.proto": "github.com/fische/grpc-gateway/third_party/googleapis/google/api"}
+	err = parseReqParam("allow_delete_body,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/fische/grpc-gateway/third_party/googleapis/google/api", f, pkgMap)
 	if err != nil {
 		t.Errorf("Test 1: unexpected parse error '%v'", err)
 	}
@@ -38,8 +38,8 @@ func TestParseReqParam(t *testing.T) {
 
 	clearFlags()
 	pkgMap = make(map[string]string)
-	expected = map[string]string{"google/api/annotations.proto": "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"}
-	err = parseReqParam("allow_delete_body=true,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api", f, pkgMap)
+	expected = map[string]string{"google/api/annotations.proto": "github.com/fische/grpc-gateway/third_party/googleapis/google/api"}
+	err = parseReqParam("allow_delete_body=true,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/fische/grpc-gateway/third_party/googleapis/google/api", f, pkgMap)
 	if err != nil {
 		t.Errorf("Test 2: unexpected parse error '%v'", err)
 	}
