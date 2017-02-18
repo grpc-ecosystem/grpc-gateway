@@ -3,7 +3,7 @@
 # You don't have to rebuild these targets by yourself unless you develop
 # grpc-gateway itself.
 
-PKG=github.com/grpc-ecosystem/grpc-gateway
+PKG=github.com/fische/grpc-gateway
 GO_PLUGIN=bin/protoc-gen-go
 GO_PLUGIN_PKG=github.com/golang/protobuf/protoc-gen-go
 SWAGGER_PLUGIN=bin/protoc-gen-swagger
@@ -85,7 +85,7 @@ generate: $(OPTIONS_GO) $(RUNTIME_GO)
 
 .SUFFIXES: .go .proto
 
-$(GO_PLUGIN): 
+$(GO_PLUGIN):
 	go get $(GO_PLUGIN_PKG)
 	go build -o $@ $(GO_PLUGIN_PKG)
 
