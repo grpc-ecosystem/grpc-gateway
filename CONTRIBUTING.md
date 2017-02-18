@@ -9,7 +9,7 @@ Here's the recommended process of contribution.
 4. Make sure that your change follows best practices in Go
    * [Effective Go](https://golang.org/doc/effective_go.html)
    * [Go Code Review Comments](https://golang.org/wiki/CodeReviewComments)
-5. Make sure that `make test` passes.
+5. Make sure that `make test` passes. (use swagger-codegen 2.1.6, not newer versions)
 6. Sign [a Contributor License Agreement](https://cla.developers.google.com/clas)
 7. Open a pull request in Github
 
