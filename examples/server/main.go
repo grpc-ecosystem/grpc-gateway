@@ -3,7 +3,7 @@ package server
 import (
 	"net"
 
-	examples "github.com/fische/grpc-gateway/examples/examplepb"
+	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
 	"google.golang.org/grpc"
 )
 
