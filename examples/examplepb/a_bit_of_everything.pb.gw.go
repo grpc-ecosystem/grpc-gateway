@@ -14,11 +14,11 @@ import (
 	"net/http"
 
 	"github.com/fische/grpc-gateway/examples/sub"
+	"github.com/fische/grpc-gateway/examples/sub2"
 	"github.com/fische/grpc-gateway/runtime"
 	"github.com/fische/grpc-gateway/utilities"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/fische/grpc-gateway/examples/sub2"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
