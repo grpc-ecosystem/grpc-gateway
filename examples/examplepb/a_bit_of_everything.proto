@@ -4,6 +4,7 @@ package grpc.gateway.examples.examplepb;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/duration.proto";
 import "examples/sub/message.proto";
 import "examples/sub2/message.proto";
 import "google/protobuf/timestamp.proto";
@@ -123,7 +124,7 @@ service ABitOfEverythingService {
 			body: "*"
 		};
 	}
-	rpc NoBindings(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+	rpc NoBindings(google.protobuf.Duration) returns (google.protobuf.Empty) {}
 	rpc Timeout(google.protobuf.Empty) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
 			get: "/v2/example/timeout",
