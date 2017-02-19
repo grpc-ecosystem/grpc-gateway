@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/golang/glog"
+	"github.com/golang/protobuf/ptypes/duration"
 	"github.com/golang/protobuf/ptypes/empty"
 	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
 	sub "github.com/grpc-ecosystem/grpc-gateway/examples/sub"
@@ -234,7 +235,7 @@ func (s *_ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *example
 	return msg, nil
 }
 
-func (s *_ABitOfEverythingServer) NoBindings(ctx context.Context, msg *empty.Empty) (*empty.Empty, error) {
+func (s *_ABitOfEverythingServer) NoBindings(ctx context.Context, msg *duration.Duration) (*empty.Empty, error) {
 	return nil, nil
 }
 
