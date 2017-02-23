@@ -136,7 +136,7 @@ func TestPopulateParameters(t *testing.T) {
 		msg.Reset()
 		err := runtime.PopulateQueryParameters(msg, spec.values, spec.filter)
 		if err != nil {
-			t.Errorf("runtime.PoplateQueryParameters(msg, %v, %v) failed with %v; want success", spec.values, spec.filter, err)
+			t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v) failed with %v; want success", spec.values, spec.filter, err)
 			continue
 		}
 		if got, want := msg, spec.want; !proto.Equal(got, want) {
