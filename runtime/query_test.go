@@ -136,7 +136,7 @@ func TestPopulateParameters(t *testing.T) {
 		msg.Reset()
 		err := runtime.PopulateQueryParameters(msg, spec.values, spec.filter)
 		if err != nil {
-			t.Errorf("runtime.PoplateQueryParameters(msg, %v, %v) failed with %v; want success", spec.values, spec.filter, err)
+			t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v) failed with %v; want success", spec.values, spec.filter, err)
 			continue
 		}
 		if got, want := msg, spec.want; !proto.Equal(got, want) {
@@ -241,8 +241,8 @@ type proto3Message struct {
 	BoolValue      bool                 `protobuf:"varint,8,opt,name=bool_value" json:"bool_value,omitempty"`
 	StringValue    string               `protobuf:"bytes,9,opt,name=string_value" json:"string_value,omitempty"`
 	RepeatedValue  []string             `protobuf:"bytes,10,rep,name=repeated_value" json:"repeated_value,omitempty"`
-	EnumValue      EnumValue            `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=api.EnumValue" json:"enum_value,omitempty"`
-	RepeatedEnum   []EnumValue          `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeated_enum,enum=api.EnumValue" json:"repeated_enum,omitempty"`
+	EnumValue      EnumValue            `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=runtime_test_api.EnumValue" json:"enum_value,omitempty"`
+	RepeatedEnum   []EnumValue          `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeated_enum,enum=runtime_test_api.EnumValue" json:"repeated_enum,omitempty"`
 	TimestampValue *timestamp.Timestamp `protobuf:"bytes,11,opt,name=timestamp_value" json:"timestamp_value,omitempty"`
 }
 
@@ -268,8 +268,8 @@ type proto2Message struct {
 	BoolValue        *bool          `protobuf:"varint,8,opt,name=bool_value" json:"bool_value,omitempty"`
 	StringValue      *string        `protobuf:"bytes,9,opt,name=string_value" json:"string_value,omitempty"`
 	RepeatedValue    []string       `protobuf:"bytes,10,rep,name=repeated_value" json:"repeated_value,omitempty"`
-	EnumValue        EnumValue      `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=api.EnumValue" json:"enum_value,omitempty"`
-	RepeatedEnum     []EnumValue    `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeated_enum,enum=api.EnumValue" json:"repeated_enum,omitempty"`
+	EnumValue        EnumValue      `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=runtime_test_api.EnumValue" json:"enum_value,omitempty"`
+	RepeatedEnum     []EnumValue    `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeated_enum,enum=runtime_test_api.EnumValue" json:"repeated_enum,omitempty"`
 	XXX_unrecognized []byte         `json:"-"`
 }
 
@@ -367,5 +367,5 @@ var EnumValue_value = map[string]int32{
 }
 
 func init() {
-	proto.RegisterEnum("runtime_test.EnumValue", EnumValue_name, EnumValue_value)
+	proto.RegisterEnum("runtime_test_api.EnumValue", EnumValue_name, EnumValue_value)
 }
