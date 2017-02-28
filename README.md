@@ -130,6 +130,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    Now you need to write an entrypoint of the proxy server.
    ```go
    package main
+
    import (
      "flag"
      "net/http"
@@ -158,8 +159,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
        return err
      }
    
-     http.ListenAndServe(":8080", mux)
-     return nil
+     return http.ListenAndServe(":8080", mux)
    }
    
    func main() {
