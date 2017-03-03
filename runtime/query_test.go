@@ -161,7 +161,7 @@ func TestPopulateParameters(t *testing.T) {
 			},
 			filter:  utilities.NewDoubleArray(nil),
 			want:    &proto3Message{},
-			wanterr: errors.New("field already set for oneof"),
+			wanterr: errors.New("field already set for oneof_value oneof"),
 		},
 	} {
 		msg := proto.Clone(spec.want)
