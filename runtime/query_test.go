@@ -369,7 +369,7 @@ func TestPopulateQueryParametersWithInvalidNestedParameters(t *testing.T) {
 
 type proto3Message struct {
 	Nested         *proto2Message           `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
-	NestedNonNull  proto2Message            `protobuf:"bytes,11,opt,name=nested_non_null" json:"nested_non_null,omitempty"`
+	NestedNonNull  proto2Message            `protobuf:"bytes,15,opt,name=nested_non_null" json:"nested_non_null,omitempty"`
 	FloatValue     float32                  `protobuf:"fixed32,2,opt,name=float_value" json:"float_value,omitempty"`
 	DoubleValue    float64                  `protobuf:"fixed64,3,opt,name=double_value" json:"double_value,omitempty"`
 	Int64Value     int64                    `protobuf:"varint,4,opt,name=int64_value" json:"int64_value,omitempty"`
@@ -381,7 +381,7 @@ type proto3Message struct {
 	RepeatedValue  []string                 `protobuf:"bytes,10,rep,name=repeated_value" json:"repeated_value,omitempty"`
 	EnumValue      EnumValue                `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=runtime_test_api.EnumValue" json:"enum_value,omitempty"`
 	RepeatedEnum   []EnumValue              `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeated_enum,enum=runtime_test_api.EnumValue" json:"repeated_enum,omitempty"`
-	TimestampValue *timestamp.Timestamp     `protobuf:"bytes,11,opt,name=timestamp_value" json:"timestamp_value,omitempty"`
+	TimestampValue *timestamp.Timestamp     `protobuf:"bytes,16,opt,name=timestamp_value" json:"timestamp_value,omitempty"`
 	OneofValue     proto3Message_OneofValue `protobuf_oneof:"oneof_value"`
 }
 
