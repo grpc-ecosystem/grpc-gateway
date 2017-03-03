@@ -1,7 +1,10 @@
 package runtime_test
 
 import (
+	"errors"
+	"fmt"
 	"net/url"
+	"reflect"
 	"testing"
 
 	"time"
@@ -22,9 +25,10 @@ func TestPopulateParameters(t *testing.T) {
 	}
 
 	for _, spec := range []struct {
-		values url.Values
-		filter *utilities.DoubleArray
-		want   proto.Message
+		values  url.Values
+		filter  *utilities.DoubleArray
+		want    proto.Message
+		wanterr error
 	}{
 		{
 			values: url.Values{
@@ -131,10 +135,45 @@ func TestPopulateParameters(t *testing.T) {
 				Uint64Value: 1,
 			},
 		},
+		{
+			values: url.Values{
+				"oneof_string_value": {"foobar"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want: &proto3Message{
+				OneofValue: &proto3Message_OneofStringValue{"foobar"},
+			},
+		},
+		{
+			values: url.Values{
+				"oneof_bool_value": {"true"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want: &proto3Message{
+				OneofValue: &proto3Message_OneofBoolValue{true},
+			},
+		},
+		{
+			// Don't allow setting a oneof more than once
+			values: url.Values{
+				"oneof_bool_value":   {"true"},
+				"oneof_string_value": {"foobar"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &proto3Message{},
+			wanterr: errors.New("field already set for oneof"),
+		},
 	} {
 		msg := proto.Clone(spec.want)
 		msg.Reset()
 		err := runtime.PopulateQueryParameters(msg, spec.values, spec.filter)
+		if spec.wanterr != nil {
+			if !reflect.DeepEqual(err, spec.wanterr) {
+				t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v) failed with %v; want error %v", spec.values, spec.filter, err, spec.wanterr)
+			}
+			continue
+		}
+
 		if err != nil {
 			t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v) failed with %v; want success", spec.values, spec.filter, err)
 			continue
@@ -329,20 +368,21 @@ func TestPopulateQueryParametersWithInvalidNestedParameters(t *testing.T) {
 }
 
 type proto3Message struct {
-	Nested         *proto2Message       `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
-	NestedNonNull  proto2Message        `protobuf:"bytes,11,opt,name=nested_non_null" json:"nested_non_null,omitempty"`
-	FloatValue     float32              `protobuf:"fixed32,2,opt,name=float_value" json:"float_value,omitempty"`
-	DoubleValue    float64              `protobuf:"fixed64,3,opt,name=double_value" json:"double_value,omitempty"`
-	Int64Value     int64                `protobuf:"varint,4,opt,name=int64_value" json:"int64_value,omitempty"`
-	Int32Value     int32                `protobuf:"varint,5,opt,name=int32_value" json:"int32_value,omitempty"`
-	Uint64Value    uint64               `protobuf:"varint,6,opt,name=uint64_value" json:"uint64_value,omitempty"`
-	Uint32Value    uint32               `protobuf:"varint,7,opt,name=uint32_value" json:"uint32_value,omitempty"`
-	BoolValue      bool                 `protobuf:"varint,8,opt,name=bool_value" json:"bool_value,omitempty"`
-	StringValue    string               `protobuf:"bytes,9,opt,name=string_value" json:"string_value,omitempty"`
-	RepeatedValue  []string             `protobuf:"bytes,10,rep,name=repeated_value" json:"repeated_value,omitempty"`
-	EnumValue      EnumValue            `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=runtime_test_api.EnumValue" json:"enum_value,omitempty"`
-	RepeatedEnum   []EnumValue          `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeated_enum,enum=runtime_test_api.EnumValue" json:"repeated_enum,omitempty"`
-	TimestampValue *timestamp.Timestamp `protobuf:"bytes,11,opt,name=timestamp_value" json:"timestamp_value,omitempty"`
+	Nested         *proto2Message           `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
+	NestedNonNull  proto2Message            `protobuf:"bytes,11,opt,name=nested_non_null" json:"nested_non_null,omitempty"`
+	FloatValue     float32                  `protobuf:"fixed32,2,opt,name=float_value" json:"float_value,omitempty"`
+	DoubleValue    float64                  `protobuf:"fixed64,3,opt,name=double_value" json:"double_value,omitempty"`
+	Int64Value     int64                    `protobuf:"varint,4,opt,name=int64_value" json:"int64_value,omitempty"`
+	Int32Value     int32                    `protobuf:"varint,5,opt,name=int32_value" json:"int32_value,omitempty"`
+	Uint64Value    uint64                   `protobuf:"varint,6,opt,name=uint64_value" json:"uint64_value,omitempty"`
+	Uint32Value    uint32                   `protobuf:"varint,7,opt,name=uint32_value" json:"uint32_value,omitempty"`
+	BoolValue      bool                     `protobuf:"varint,8,opt,name=bool_value" json:"bool_value,omitempty"`
+	StringValue    string                   `protobuf:"bytes,9,opt,name=string_value" json:"string_value,omitempty"`
+	RepeatedValue  []string                 `protobuf:"bytes,10,rep,name=repeated_value" json:"repeated_value,omitempty"`
+	EnumValue      EnumValue                `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=runtime_test_api.EnumValue" json:"enum_value,omitempty"`
+	RepeatedEnum   []EnumValue              `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeated_enum,enum=runtime_test_api.EnumValue" json:"repeated_enum,omitempty"`
+	TimestampValue *timestamp.Timestamp     `protobuf:"bytes,11,opt,name=timestamp_value" json:"timestamp_value,omitempty"`
+	OneofValue     proto3Message_OneofValue `protobuf_oneof:"oneof_value"`
 }
 
 func (m *proto3Message) Reset()         { *m = proto3Message{} }
@@ -354,6 +394,110 @@ func (m *proto3Message) GetNested() *proto2Message {
 		return m.Nested
 	}
 	return nil
+}
+
+type proto3Message_OneofValue interface {
+	proto3Message_OneofValue()
+}
+
+type proto3Message_OneofBoolValue struct {
+	OneofBoolValue bool `protobuf:"varint,13,opt,name=oneof_bool_value,json=oneofBoolValue,oneof"`
+}
+type proto3Message_OneofStringValue struct {
+	OneofStringValue string `protobuf:"bytes,14,opt,name=oneof_string_value,json=oneofStringValue,oneof"`
+}
+
+func (*proto3Message_OneofBoolValue) proto3Message_OneofValue()   {}
+func (*proto3Message_OneofStringValue) proto3Message_OneofValue() {}
+
+func (m *proto3Message) GetOneofValue() proto3Message_OneofValue {
+	if m != nil {
+		return m.OneofValue
+	}
+	return nil
+}
+
+func (m *proto3Message) GetOneofBoolValue() bool {
+	if x, ok := m.GetOneofValue().(*proto3Message_OneofBoolValue); ok {
+		return x.OneofBoolValue
+	}
+	return false
+}
+
+func (m *proto3Message) GetOneofStringValue() string {
+	if x, ok := m.GetOneofValue().(*proto3Message_OneofStringValue); ok {
+		return x.OneofStringValue
+	}
+	return ""
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*proto3Message) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _proto3Message_OneofMarshaler, _proto3Message_OneofUnmarshaler, _proto3Message_OneofSizer, []interface{}{
+		(*proto3Message_OneofBoolValue)(nil),
+		(*proto3Message_OneofStringValue)(nil),
+	}
+}
+
+func _proto3Message_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*proto3Message)
+	// oneof_value
+	switch x := m.OneofValue.(type) {
+	case *proto3Message_OneofBoolValue:
+		t := uint64(0)
+		if x.OneofBoolValue {
+			t = 1
+		}
+		b.EncodeVarint(13<<3 | proto.WireVarint)
+		b.EncodeVarint(t)
+	case *proto3Message_OneofStringValue:
+		b.EncodeVarint(14<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.OneofStringValue)
+	case nil:
+	default:
+		return fmt.Errorf("proto3Message.OneofValue has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _proto3Message_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*proto3Message)
+	switch tag {
+	case 14: // oneof_value.oneof_bool_value
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.OneofValue = &proto3Message_OneofBoolValue{x != 0}
+		return true, err
+	case 15: // oneof_value.oneof_string_value
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.OneofValue = &proto3Message_OneofStringValue{x}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _proto3Message_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*proto3Message)
+	// oneof_value
+	switch x := m.OneofValue.(type) {
+	case *proto3Message_OneofBoolValue:
+		n += proto.SizeVarint(14<<3 | proto.WireVarint)
+		n += 1
+	case *proto3Message_OneofStringValue:
+		n += proto.SizeVarint(15<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(len(x.OneofStringValue)))
+		n += len(x.OneofStringValue)
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
 }
 
 type proto2Message struct {
