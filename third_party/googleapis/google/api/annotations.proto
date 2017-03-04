@@ -22,6 +22,7 @@ import "google/protobuf/descriptor.proto";
 option java_multiple_files = true;
 option java_outer_classname = "AnnotationsProto";
 option java_package = "com.google.api";
+option objc_class_prefix = "GAPI";
 
 extend google.protobuf.MethodOptions {
   // See `HttpRule`.
