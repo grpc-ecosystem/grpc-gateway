@@ -167,6 +167,10 @@ func TestExtractServicesSimple(t *testing.T) {
 				input_type: "StringMessage"
 				output_type: "StringMessage"
 				options <
+					[gengo.grpc.gateway.method_options]: <
+						middleware: "session"
+						middleware: "ratelimit"
+					>
 					[google.api.http] <
 						post: "/v1/example/echo"
 						body: "*"
@@ -207,6 +211,7 @@ func TestExtractServicesSimple(t *testing.T) {
 								PathTmpl:   compilePath(t, "/v1/example/echo"),
 								HTTPMethod: "POST",
 								Body:       &Body{FieldPath: nil},
+								Middleware: []string{"session", "ratelimit"},
 							},
 						},
 					},

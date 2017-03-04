@@ -452,6 +452,16 @@ func request_ABitOfEverythingService_Timeout_0(ctx context.Context, marshaler ru
 // RegisterABitOfEverythingServiceHandlerFromEndpoint is same as RegisterABitOfEverythingServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+	middleware := map[string]runtime.Middleware{}
+	return RegisterABitOfEverythingServiceHandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
+}
+
+// RegisterABitOfEverythingServiceHandlerFromEndpointWithMiddleware is same as RegisterABitOfEverythingServiceHandlerWithMiddleware but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
+func RegisterABitOfEverythingServiceHandlerFromEndpointWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -471,15 +481,29 @@ func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux
 		}()
 	}()
 
-	return RegisterABitOfEverythingServiceHandler(ctx, mux, conn)
+	return RegisterABitOfEverythingServiceHandlerWithMiddleware(ctx, mux, middleware, conn)
 }
 
 // RegisterABitOfEverythingServiceHandler registers the http handlers for service ABitOfEverythingService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	client := NewABitOfEverythingServiceClient(conn)
+	middleware := map[string]runtime.Middleware{}
+	return RegisterABitOfEverythingServiceHandlerWithMiddleware(ctx, mux, middleware, conn)
+}
 
-	mux.Handle("POST", pattern_ABitOfEverythingService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+// RegisterABitOfEverythingServiceHandlerWithMiddleware registers the http handlers for service ABitOfEverythingService to "mux".
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
+// The handlers forward requests to the grpc endpoint over "conn".
+func RegisterABitOfEverythingServiceHandlerWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
+	client := NewABitOfEverythingServiceClient(conn)
+	var handler runtime.HandlerFunc
+	var mw []string
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -505,9 +529,19 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 
 		forward_ABitOfEverythingService_Create_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_ABitOfEverythingService_CreateBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_ABitOfEverythingService_Create_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -533,9 +567,19 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 
 		forward_ABitOfEverythingService_CreateBody_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("GET", pattern_ABitOfEverythingService_Lookup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_ABitOfEverythingService_CreateBody_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -561,9 +605,19 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 
 		forward_ABitOfEverythingService_Lookup_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("PUT", pattern_ABitOfEverythingService_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("GET", pattern_ABitOfEverythingService_Lookup_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -589,9 +643,19 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 
 		forward_ABitOfEverythingService_Update_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("DELETE", pattern_ABitOfEverythingService_Delete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("PUT", pattern_ABitOfEverythingService_Update_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -617,9 +681,19 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 
 		forward_ABitOfEverythingService_Delete_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("GET", pattern_ABitOfEverythingService_GetQuery_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("DELETE", pattern_ABitOfEverythingService_Delete_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -645,9 +719,19 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 
 		forward_ABitOfEverythingService_GetQuery_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("GET", pattern_ABitOfEverythingService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("GET", pattern_ABitOfEverythingService_GetQuery_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -673,9 +757,19 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 
 		forward_ABitOfEverythingService_Echo_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_ABitOfEverythingService_Echo_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("GET", pattern_ABitOfEverythingService_Echo_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -701,9 +795,19 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 
 		forward_ABitOfEverythingService_Echo_1(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("GET", pattern_ABitOfEverythingService_Echo_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_ABitOfEverythingService_Echo_1, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -729,9 +833,19 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 
 		forward_ABitOfEverythingService_Echo_2(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("POST", pattern_ABitOfEverythingService_DeepPathEcho_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("GET", pattern_ABitOfEverythingService_Echo_2, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -757,9 +871,19 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 
 		forward_ABitOfEverythingService_DeepPathEcho_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
 
-	mux.Handle("GET", pattern_ABitOfEverythingService_Timeout_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("POST", pattern_ABitOfEverythingService_DeepPathEcho_0, handler)
+
+	mw = []string{}
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -785,7 +909,15 @@ func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.Se
 
 		forward_ABitOfEverythingService_Timeout_0(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
-	})
+	}
+
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle("GET", pattern_ABitOfEverythingService_Timeout_0, handler)
 
 	return nil
 }

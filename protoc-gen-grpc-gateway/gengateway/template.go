@@ -313,6 +313,16 @@ var (
 // Register{{$svc.GetName}}HandlerFromEndpoint is same as Register{{$svc.GetName}}Handler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+	middleware := map[string]runtime.Middleware{}
+	return Register{{$svc.GetName}}HandlerFromEndpointWithMiddleware(ctx, mux, middleware, endpoint, opts)
+}
+
+// Register{{$svc.GetName}}HandlerFromEndpointWithMiddleware is same as Register{{$svc.GetName}}HandlerWithMiddleware but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
+func Register{{$svc.GetName}}HandlerFromEndpointWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -332,17 +342,35 @@ func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runti
 		}()
 	}()
 
-	return Register{{$svc.GetName}}Handler(ctx, mux, conn)
+	return Register{{$svc.GetName}}HandlerWithMiddleware(ctx, mux, middleware, conn)
 }
 
 // Register{{$svc.GetName}}Handler registers the http handlers for service {{$svc.GetName}} to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	middleware := map[string]runtime.Middleware{}
+	return Register{{$svc.GetName}}HandlerWithMiddleware(ctx, mux, middleware, conn)
+}
+
+// Register{{$svc.GetName}}HandlerWithMiddleware registers the http handlers for service {{$svc.GetName}} to "mux".
+// It receives a map of additional http handlres and wraps final handler with chain of middleware.
+// Each middleware has a name.
+// To include middleware in chain of calls you need to specify this name in rpc method option.
+// The handlers forward requests to the grpc endpoint over "conn".
+func Register{{$svc.GetName}}HandlerWithMiddleware(ctx context.Context, mux *runtime.ServeMux, middleware map[string]runtime.Middleware, conn *grpc.ClientConn) error {
 	client := New{{$svc.GetName}}Client(conn)
+	var handler runtime.HandlerFunc
+	var mw []string
+
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
-	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-	{{- if $UseRequestContext }}
+
+	mw = []string{ {{range $name := $b.Middleware}}
+			"{{$name}}",
+			{{end}} }
+
+	handler = func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+  {{- if $UseRequestContext }}
 		ctx, cancel := context.WithCancel(req.Context())
 	{{- else -}}
 		ctx, cancel := context.WithCancel(ctx)
@@ -373,7 +401,15 @@ func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux,
 		{{else}}
 		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 		{{end}}
-	})
+	}
+
+	for _, name := range mw {
+		if m, ok := middleware[name]; ok {
+			handler = m(handler)
+		}
+	}
+
+	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, handler)
 	{{end}}
 	{{end}}
 	return nil
