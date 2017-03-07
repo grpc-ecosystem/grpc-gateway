@@ -10,10 +10,10 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/golang/protobuf/proto"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
-	"github.com/golang/protobuf/proto"
 )
 
 var swaggerExtrasRegexp = regexp.MustCompile(`(?s)^(.*[^\s])[\s]*<!-- swagger extras start(.*)swagger extras end -->[\s]*(.*)$`)
@@ -557,34 +557,17 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					panic(err)
 				}
 
-				extractOperationOptions := func (meth *pbdescriptor.MethodDescriptorProto) (*swagger_options.Operation, error) {
-					if meth.Options == nil {
-						return nil, nil
-					}
-					if !proto.HasExtension(meth.Options, swagger_options.E_SwaggerOperation) {
-						return nil, nil
-					}
-					ext, err := proto.GetExtension(meth.Options, swagger_options.E_SwaggerOperation)
-					if err != nil {
-						return nil, err
-					}
-					opts, ok := ext.(*swagger_options.Operation)
-					if !ok {
-						return nil, fmt.Errorf("extension is %T; want an Operation", ext)
-					}
-					return opts, nil
-				}
-				opts, err := extractOperationOptions(meth.MethodDescriptorProto)
+				opts, err := extractOperationOptionFromMethodDescriptor(meth.MethodDescriptorProto)
 				if opts != nil {
 					if err != nil {
 						panic(err)
 					}
 					// TODO(ivucica): this would be better supported by looking whether the method is deprecated in the proto file
 					operationObject.Deprecated = opts.Deprecated
-					
+
 					// TODO(ivucica): add remaining fields of operation object
 				}
-				
+
 				switch b.HTTPMethod {
 				case "DELETE":
 					pathItemObject.Delete = operationObject
@@ -649,6 +632,46 @@ func applyTemplate(p param) (string, error) {
 	packageComments := protoComments(p.reg, p.File, nil, "Package", packageProtoPath)
 	if err := updateSwaggerDataFromComments(&s, packageComments); err != nil {
 		panic(err)
+	}
+
+	// There may be additional options in the swagger option in the proto.
+	spb, err := extractSwaggerOptionFromFileDescriptor(p.FileDescriptorProto)
+	if err != nil {
+		panic(err)
+	}
+	if spb != nil {
+		if spb.Swagger != "" {
+			s.Swagger = spb.Swagger
+		}
+		if spb.BasePath != "" {
+			s.BasePath = spb.BasePath
+		}
+		if spb.Info != nil {
+			if spb.Info.Title != "" {
+				s.Info.Title = spb.Info.Title
+			}
+			if spb.Info.Version != "" {
+				s.Info.Version = spb.Info.Version
+			}
+			if spb.Info.Contact != nil {
+				if s.Info.Contact == nil {
+					s.Info.Contact = &swaggerContactObject{}
+				}
+				if spb.Info.Contact.Name != "" {
+					s.Info.Contact.Name = spb.Info.Contact.Name
+				}
+				if spb.Info.Contact.Url != "" {
+					s.Info.Contact.URL = spb.Info.Contact.Url
+				}
+				if spb.Info.Contact.Email != "" {
+					s.Info.Contact.Email = spb.Info.Contact.Email
+				}
+			}
+		}
+		if spb.Host != "" {
+			s.Host = spb.Host
+		}
+		// TODO(ivucica): import the remaining fields
 	}
 
 	// We now have rendered the entire swagger object. Write the bytes out to a
@@ -903,4 +926,44 @@ func protoPathIndex(descriptorType reflect.Type, what string) int32 {
 	}
 
 	return int32(path)
+}
+
+// extractOperationOptionFromMethodDescriptor extracts the message of type
+// swagger_options.Operation from a given proto method's descriptor.
+func extractOperationOptionFromMethodDescriptor(meth *pbdescriptor.MethodDescriptorProto) (*swagger_options.Operation, error) {
+	if meth.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(meth.Options, swagger_options.E_SwaggerOperation) {
+		return nil, nil
+	}
+	ext, err := proto.GetExtension(meth.Options, swagger_options.E_SwaggerOperation)
+	if err != nil {
+		return nil, err
+	}
+	opts, ok := ext.(*swagger_options.Operation)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want an Operation", ext)
+	}
+	return opts, nil
+}
+
+// extractSwaggerOptionFromFileDescriptor extracts the message of type
+// swagger_options.Swagger from a given proto method's descriptor.
+func extractSwaggerOptionFromFileDescriptor(file *pbdescriptor.FileDescriptorProto) (*swagger_options.Swagger, error) {
+	if file.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(file.Options, swagger_options.E_SwaggerSwagger) {
+		return nil, nil
+	}
+	ext, err := proto.GetExtension(file.Options, swagger_options.E_SwaggerSwagger)
+	if err != nil {
+		return nil, err
+	}
+	opts, ok := ext.(*swagger_options.Swagger)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want an Swagger", ext)
+	}
+	return opts, nil
 }

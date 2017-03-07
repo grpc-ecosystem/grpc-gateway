@@ -2,6 +2,28 @@ syntax = "proto3";
 
 package grpc_gateway.protoc_gen_swagger.options;
 
+// `Swagger` is a representation of Swagger specification's Swagger object.
+//
+// See: http://swagger.io/specification/#swagger-object-14
+//
+// TODO(ivucica): document fields
+message Swagger {
+  string swagger = 1;
+  Info info = 2;
+  string host = 3;
+  string base_path = 4;
+  repeated string schemes = 5;
+  repeated string consumes = 6;
+  repeated string produces = 7;
+  // field 8 is reserved for 'paths'.
+  // field 9 is reserved for 'definitions'.
+  // field 10 is reserved for 'responses'.
+  // field 11 is reserved for 'securityDefinitions'.
+  // field 12 is reserved for repeated 'security'.
+  // field 13 is reserved for repeated 'tags'.
+  ExternalDocumentation external_docs = 14;
+}
+
 // `Operation` is a representation of Swagger specification's Operation object.
 //
 // See: http://swagger.io/specification/#operation-object-36
@@ -21,6 +43,31 @@ message Operation {
   bool deprecated = 11;
   // field 12 is reserved for 'security'.
   
+}
+
+// `Info` is a representation of Swagger specification's Info object.
+//
+// See: http://swagger.io/specification/#info-object-17
+//
+// TODO(ivucica): document fields
+message Info {
+  string title = 1;
+  string description = 2;
+  string terms_of_service = 3;
+  Contact contact = 4;
+  // field 5 is reserved for 'license'
+  string version = 6;
+}
+
+// `Contact` is a representation of Swagger specification's Contact object.
+//
+// See: http://swagger.io/specification/#contact-object-21
+//
+// TODO(ivucica): document fields
+message Contact {
+  string name = 1;
+  string url = 2;
+  string email = 3;
 }
 
 // `ExternalDocumentation` is a representation of Swagger specification's

@@ -5,6 +5,9 @@ package grpc_gateway.protoc_gen_swagger.options;
 import "protoc-gen-swagger/options/swagger.proto";
 import "google/protobuf/descriptor.proto";
 
+extend google.protobuf.FileOptions {
+  Swagger swagger_swagger = 123456788; // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
+}
 extend google.protobuf.MethodOptions {
-  Operation swagger_operation = 123456789; // TODO(ivucica): how to determine ID?
+  Operation swagger_operation = 123456789; // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
 }

@@ -6,7 +6,7 @@
     "version": "1.0",
     "contact": {
       "name": "gRPC-Gateway project",
-      "url": "https://github.com/gengo/grpc-gateway",
+      "url": "https://github.com/grpc-ecosystem/grpc-gateway",
       "email": "none@example.com"
     }
   },
@@ -46,9 +46,10 @@
         "tags": [
           "EchoService"
         ],
+        "deprecated": true,
         "externalDocs": {
           "description": "Find out more about EchoService",
-          "url": "http://github.com/gengo/grpc-gateway"
+          "url": "http://github.com/grpc-ecosystem/grpc-gateway"
         }
       }
     },

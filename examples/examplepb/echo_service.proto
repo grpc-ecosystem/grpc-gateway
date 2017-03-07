@@ -5,26 +5,27 @@ option go_package = "examplepb";
 //
 // Echo Service API consists of a single service which returns
 // a message.
-//
-// OpenAPI: {
-//   "info": {
-//     "title": "Echo Service",
-//     "version": "1.0",
-//     "contact": {
-//       "name": "gRPC-Gateway project",
-//       "url": "https://github.com/grpc-ecosystem/grpc-gateway",
-//       "email": "none@example.com"
-//     }
-//   },
-//   "host": "localhost",
-//   "externalDocs": {
-//     "url": "https://github.com/grpc-ecosystem/grpc-gateway",
-//     "description": "More about gRPC-Gateway"
-//   }
-// }
 package grpc.gateway.examples.examplepb;
 
 import "google/api/annotations.proto";
+import "protoc-gen-swagger/options/annotations.proto";
+
+option (grpc_gateway.protoc_gen_swagger.options.swagger_swagger) = {
+  info: {
+    title: "Echo Service";
+    version: "1.0";
+    contact: {
+      name: "gRPC-Gateway project";
+      url: "https://github.com/grpc-ecosystem/grpc-gateway";
+      email: "none@example.com";
+    };
+  };
+  host: "localhost";
+  external_docs: {
+    url: "https://github.com/grpc-ecosystem/grpc-gateway";
+    description: "More about gRPC-Gateway";
+  }
+};
 
 // SimpleMessage represents a simple message sent to the Echo service.
 //
@@ -59,6 +60,9 @@ service EchoService {
 			additional_bindings {
 				get: "/v1/example/echo/{id}/{num}"
 			}
+		};
+		option (grpc_gateway.protoc_gen_swagger.options.swagger_operation) = {
+		  deprecated: true
 		};
 	}
 	// EchoBody method receives a simple message and returns it.
