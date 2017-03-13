@@ -92,7 +92,7 @@ func tokenize(path string) (tokens []string, verb string) {
 	return tokens, verb
 }
 
-// parser is a parser of the template syntax defined in third_party/googleapis/google/api/httprule.proto.
+// parser is a parser of the template syntax defined in github.com/googleapis/googleapis/google/api/http.proto.
 type parser struct {
 	tokens   []string
 	accepted []string
