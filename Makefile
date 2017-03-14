@@ -38,14 +38,12 @@ GATEWAY_PLUGIN_SRC= utilities/doc.go \
 GATEWAY_PLUGIN_FLAGS?=
 
 GOOGLEAPIS_DIR=third_party/googleapis
-OPTIONS_PROTO=$(GOOGLEAPIS_DIR)/google/api/annotations.proto $(GOOGLEAPIS_DIR)/google/api/http.proto
-OPTIONS_GO=$(OPTIONS_PROTO:.proto=.pb.go)
 OUTPUT_DIR=_output
 
 RUNTIME_PROTO=runtime/internal/stream_chunk.proto
 RUNTIME_GO=$(RUNTIME_PROTO:.proto=.pb.go)
 
-PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mgoogle/api/annotations.proto=$(PKG)/$(GOOGLEAPIS_DIR)/google/api,Mexamples/sub/message.proto=$(PKG)/examples/sub
+PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/sub/message.proto=$(PKG)/examples/sub
 ADDITIONAL_FLAGS=
 ifneq "$(GATEWAY_PLUGIN_FLAGS)" ""
 	ADDITIONAL_FLAGS=,$(GATEWAY_PLUGIN_FLAGS)
@@ -81,7 +79,7 @@ SWAGGER_CODEGEN=swagger-codegen
 
 PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
 
-generate: $(OPTIONS_GO) $(RUNTIME_GO)
+generate: $(RUNTIME_GO)
 
 .SUFFIXES: .go .proto
 
@@ -89,15 +87,13 @@ $(GO_PLUGIN):
 	go get $(GO_PLUGIN_PKG)
 	go build -o $@ $(GO_PLUGIN_PKG)
 
-$(OPTIONS_GO): $(OPTIONS_PROTO) $(GO_PLUGIN)
-	protoc -I $(PROTOC_INC_PATH) -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP):$(GOOGLEAPIS_DIR) $(OPTIONS_PROTO)
 $(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
 	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP):. $(RUNTIME_PROTO)
 
-$(GATEWAY_PLUGIN): $(OPTIONS_GO) $(RUNTIME_GO) $(GATEWAY_PLUGIN_SRC)
+$(GATEWAY_PLUGIN): $(RUNTIME_GO) $(GATEWAY_PLUGIN_SRC)
 	go build -o $@ $(GATEWAY_PLUGIN_PKG)
 
-$(SWAGGER_PLUGIN): $(OPTIONS_GO) $(SWAGGER_PLUGIN_SRC)
+$(SWAGGER_PLUGIN): $(SWAGGER_PLUGIN_SRC)
 	go build -o $@ $(SWAGGER_PLUGIN_PKG)
 
 $(EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(EXAMPLES)
@@ -137,7 +133,6 @@ lint:
 clean distclean:
 	rm -f $(GATEWAY_PLUGIN)
 realclean: distclean
-	rm -f $(OPTIONS_GO)
 	rm -f $(EXAMPLE_SVCSRCS) $(EXAMPLE_DEPSRCS)
 	rm -f $(EXAMPLE_GWSRCS)
 	rm -f $(EXAMPLE_SWAGGERSRCS)

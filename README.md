@@ -89,8 +89,8 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-     --go_out=Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api,plugins=grpc:. \
+     -I$GOPATH/src/github.com/googleapis/googleapis/ \
+     --go_out=,plugins=grpc:. \
      path/to/your_service.proto
    ```
    
