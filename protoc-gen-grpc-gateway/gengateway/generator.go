@@ -13,7 +13,7 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/generator"
-	options "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"
+	options "google.golang.org/genproto/googleapis/api/annotations"
 )
 
 var (
