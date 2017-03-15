@@ -229,6 +229,105 @@ func TestPopulateParametersWithFilters(t *testing.T) {
 	}
 }
 
+func TestPopulateQueryParametersWithInvalidNestedParameters(t *testing.T) {
+	for _, spec := range []struct {
+		msg    proto.Message
+		values url.Values
+		filter *utilities.DoubleArray
+	}{
+		{
+			msg: &proto3Message{},
+			values: url.Values{
+				"float_value.nested": {"test"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+		{
+			msg: &proto3Message{},
+			values: url.Values{
+				"double_value.nested": {"test"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+		{
+			msg: &proto3Message{},
+			values: url.Values{
+				"int64_value.nested": {"test"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+		{
+			msg: &proto3Message{},
+			values: url.Values{
+				"int32_value.nested": {"test"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+		{
+			msg: &proto3Message{},
+			values: url.Values{
+				"uint64_value.nested": {"test"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+		{
+			msg: &proto3Message{},
+			values: url.Values{
+				"uint32_value.nested": {"test"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+		{
+			msg: &proto3Message{},
+			values: url.Values{
+				"bool_value.nested": {"test"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+		{
+			msg: &proto3Message{},
+			values: url.Values{
+				"string_value.nested": {"test"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+		{
+			msg: &proto3Message{},
+			values: url.Values{
+				"repeated_value.nested": {"test"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+		{
+			msg: &proto3Message{},
+			values: url.Values{
+				"enum_value.nested": {"test"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+		{
+			msg: &proto3Message{},
+			values: url.Values{
+				"enum_value.nested": {"test"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+		{
+			msg: &proto3Message{},
+			values: url.Values{
+				"repeated_enum.nested": {"test"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+	} {
+		spec.msg.Reset()
+		err := runtime.PopulateQueryParameters(spec.msg, spec.values, spec.filter)
+		if err == nil {
+			t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v) did not fail; want error", spec.values, spec.filter)
+		}
+	}
+}
+
 type proto3Message struct {
 	Nested         *proto2Message       `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
 	NestedNonNull  proto2Message        `protobuf:"bytes,11,opt,name=nested_non_null" json:"nested_non_null,omitempty"`
