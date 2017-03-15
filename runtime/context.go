@@ -103,7 +103,7 @@ func AnnotateContext(ctx context.Context, req *http.Request) (context.Context, e
 		var err error
 		ctx, err = annotator(ctx, req)
 		if err != nil {
-			return nil, err
+			return context.Background(), err
 		}
 	}
 	if len(pairs) == 0 {
