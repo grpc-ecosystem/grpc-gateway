@@ -36,7 +36,7 @@ make check
 sudo make install
 ```
 
-Then, `go get -u` as usual.
+Then, `go get -u` as usual the following packages:
 
 ```sh
 go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
@@ -89,8 +89,8 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/googleapis/googleapis/ \
-     --go_out=,plugins=grpc:. \
+     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+     --go_out=plugins=grpc:. \
      path/to/your_service.proto
    ```
    
@@ -127,6 +127,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```
    
    It will generate a reverse proxy `path/to/your_service.pb.gw.go`.
+
+   Note: After generating the code for each of the stubs, in order to build the code, you will want to run ```go get .``` from the directory containing the stubs.
+
 6. Write an entrypoint
    
    Now you need to write an entrypoint of the proxy server.
