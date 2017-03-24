@@ -23,7 +23,7 @@ func TestAnnotateContext_WorksWithEmpty(t *testing.T) {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
 	}
 	request.Header.Add("Some-Irrelevant-Header", "some value")
-	annotated, err := runtime.AnnotateContext(ctx, request)
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -45,7 +45,7 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	request.Header.Add("Grpc-Metadata-Foo-BAZ", "Value2")
 	request.Header.Add("Grpc-Metadata-foo-bAz", "Value3")
 	request.Header.Add("Authorization", "Token 1234567890")
-	annotated, err := runtime.AnnotateContext(ctx, request)
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -77,7 +77,7 @@ func TestAnnotateContext_XForwardedFor(t *testing.T) {
 	request.Header.Add("X-Forwarded-For", "192.0.2.100") // client
 	request.RemoteAddr = "192.0.2.200:12345"             // proxy
 
-	annotated, err := runtime.AnnotateContext(ctx, request)
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -101,7 +101,7 @@ func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 	if err != nil {
 		t.Fatalf(`http.NewRequest("GET", "http://example.com", nil failed with %v; want success`, err)
 	}
-	annotated, err := runtime.AnnotateContext(ctx, request)
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -113,7 +113,7 @@ func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 
 	const acceptableError = 50 * time.Millisecond
 	runtime.DefaultContextTimeout = 10 * time.Second
-	annotated, err = runtime.AnnotateContext(ctx, request)
+	annotated, err = runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -156,7 +156,7 @@ func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 		},
 	} {
 		request.Header.Set("Grpc-Timeout", spec.timeout)
-		annotated, err = runtime.AnnotateContext(ctx, request)
+		annotated, err = runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
 		if err != nil {
 			t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 			return
