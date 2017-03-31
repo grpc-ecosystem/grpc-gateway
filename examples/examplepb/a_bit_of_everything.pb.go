@@ -15,7 +15,7 @@ import sub2 "github.com/grpc-ecosystem/grpc-gateway/examples/sub2"
 import google_protobuf3 "github.com/golang/protobuf/ptypes/timestamp"
 
 import (
-	context "golang.org/x/net/context"
+	context "context"
 	grpc "google.golang.org/grpc"
 )
 
