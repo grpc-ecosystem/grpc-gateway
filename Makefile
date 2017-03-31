@@ -38,6 +38,7 @@ GATEWAY_PLUGIN_SRC= utilities/doc.go \
 GATEWAY_PLUGIN_FLAGS?=
 
 GOOGLEAPIS_DIR=third_party/googleapis
+GOOGLEAPIS_GENPROTOS=google.golang.org/genproto/googleapis/api/annotations
 OUTPUT_DIR=_output
 
 RUNTIME_PROTO=runtime/internal/stream_chunk.proto
@@ -116,7 +117,10 @@ $(ABE_EXAMPLE_SRCS): $(ABE_EXAMPLE_SPEC)
 	    -l go -o examples/clients --additional-properties packageName=abe
 	@rm -f $(EXAMPLE_CLIENT_DIR)/README.md $(EXAMPLE_CLIENT_DIR)/git_push.sh $(EXAMPLE_CLIENT_DIR)/.gitignore
 
-examples: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
+deps:
+	go get $(GOOGLEAPIS_GENPROTOS)
+
+examples: deps $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
 test: examples
 	go test -race $(PKG)/...
 
