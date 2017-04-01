@@ -37,7 +37,7 @@ func TestDefaultHTTPError(t *testing.T) {
 		req, _ := http.NewRequest("", "", nil) // Pass in an empty request to match the signature
 		runtime.DefaultHTTPError(ctx, &runtime.JSONBuiltin{}, w, req, spec.err)
 
-		if got, want := w.Header().Get("Content-Type"), "application/json"; got != want {
+		if got, want := w.Header().Get("Content-Type"), "application/json; charset=utf-8"; got != want {
 			t.Errorf(`w.Header().Get("Content-Type") = %q; want %q; on spec.err=%v`, got, want, spec.err)
 		}
 		if got, want := w.Code, spec.status; got != want {
