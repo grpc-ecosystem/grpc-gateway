@@ -10,8 +10,6 @@ import (
 const MIMEWildcard = "*"
 
 const (
-	//MIMEApplicationJSON is the fallback MIME type used for 'application/json'
-	MIMEApplicationJSON = "application/json"
 	//MIMEApplicationXML is the fallback MIME type used for 'application/xml'
 	MIMEApplicationXML = "application/xml"
 	//MIMETextXML is the fallback MIME type used for 'text/xml'
@@ -84,10 +82,9 @@ func (m marshalerRegistry) add(mime string, marshaler Marshaler) error {
 func makeMarshalerMIMERegistry() marshalerRegistry {
 	return marshalerRegistry{
 		mimeMap: map[string]Marshaler{
-			MIMEWildcard:        defaultMarshaler,
-			MIMEApplicationJSON: defaultMarshaler,
-			MIMEApplicationXML:  &XMLBuiltin{},
-			MIMETextXML:         &XMLBuiltin{},
+			MIMEWildcard:       defaultMarshaler,
+			MIMEApplicationXML: &XMLBuiltin{},
+			MIMETextXML:        &XMLBuiltin{},
 		},
 	}
 }
