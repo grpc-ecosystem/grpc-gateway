@@ -85,7 +85,7 @@ func makeMarshalerMIMERegistry() marshalerRegistry {
 	return marshalerRegistry{
 		mimeMap: map[string]Marshaler{
 			MIMEWildcard:        defaultMarshaler,
-			MIMEApplicationJSON: &JSONBuiltin{},
+			MIMEApplicationJSON: defaultMarshaler,
 			MIMEApplicationXML:  &XMLBuiltin{},
 			MIMETextXML:         &XMLBuiltin{},
 		},
