@@ -1,8 +1,14 @@
 # Change Log
 
-## [v1.2.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.2.1) (2017-04-16)
+## [v1.2.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.2.2) (2017-04-17)
 **Merged pull requests:**
 
+- metadata: fix properly and change to Outgoing [\#361](https://github.com/grpc-ecosystem/grpc-gateway/pull/361)
+
+## [v1.2.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.2.1) (2017-04-17)
+**Merged pull requests:**
+
+- Add changelog for 1.2.1 [\#360](https://github.com/grpc-ecosystem/grpc-gateway/pull/360)
 - bugfix: reflect upstream api change. [\#359](https://github.com/grpc-ecosystem/grpc-gateway/pull/359)
 
 ## [v1.2.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.2.0) (2017-03-31)
