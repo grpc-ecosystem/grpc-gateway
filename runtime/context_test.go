@@ -6,6 +6,8 @@ import (
 	"testing"
 	"time"
 
+	"fmt"
+
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/metadata"
@@ -51,6 +53,7 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 		return
 	}
 	md, ok := metadata.FromContext(annotated)
+	fmt.Println(md, ok)
 	if got, want := len(md), emptyForwardMetaCount+4; !ok || got != want {
 		t.Errorf("metadata items in context = %d want %d: %v", got, want, md)
 	}
@@ -83,6 +86,7 @@ func TestAnnotateContext_XForwardedFor(t *testing.T) {
 		return
 	}
 	md, ok := metadata.FromContext(annotated)
+	fmt.Println(md, ok)
 	if !ok || len(md) != emptyForwardMetaCount+1 {
 		t.Errorf("Expected %d metadata items in context; got %v", emptyForwardMetaCount+1, md)
 	}
