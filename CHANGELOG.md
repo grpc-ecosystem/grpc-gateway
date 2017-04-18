@@ -1,6 +1,22 @@
 # Change Log
 
-## [v1.2.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.2.0) (2017-03-30)
+## [v1.2.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.2.2) (2017-04-17)
+**Merged pull requests:**
+
+- metadata: fix properly and change to Outgoing [\#361](https://github.com/grpc-ecosystem/grpc-gateway/pull/361)
+
+## [v1.2.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.2.1) (2017-04-17)
+**Merged pull requests:**
+
+- Add changelog for 1.2.1 [\#360](https://github.com/grpc-ecosystem/grpc-gateway/pull/360)
+- bugfix: reflect upstream api change. [\#359](https://github.com/grpc-ecosystem/grpc-gateway/pull/359)
+
+## [v1.2.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.2.0) (2017-03-31)
+**Merged pull requests:**
+
+- Add changelog for 1.2.0 [\#342](https://github.com/grpc-ecosystem/grpc-gateway/pull/342)
+
+## [v1.2.0.rc1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.2.0.rc1) (2017-03-24)
 **Merged pull requests:**
 
 - Update go\_out parameter to remove comma [\#333](https://github.com/grpc-ecosystem/grpc-gateway/pull/333)
@@ -8,6 +24,7 @@
 - improve documentation regarding external dependencies [\#330](https://github.com/grpc-ecosystem/grpc-gateway/pull/330)
 - Return an error on invalid nested query parameters. [\#329](https://github.com/grpc-ecosystem/grpc-gateway/pull/329)
 - Update upstream proto files and add google.golang.org/genproto support. [\#325](https://github.com/grpc-ecosystem/grpc-gateway/pull/325)
+- Support oneof fields in query params [\#321](https://github.com/grpc-ecosystem/grpc-gateway/pull/321)
 - Do not ignore the error coming from http.ListenAndServe in examples [\#319](https://github.com/grpc-ecosystem/grpc-gateway/pull/319)
 - Look up enum value maps by their proto name [\#315](https://github.com/grpc-ecosystem/grpc-gateway/pull/315)
 - enable parsing enums from query parameters [\#314](https://github.com/grpc-ecosystem/grpc-gateway/pull/314)
