@@ -14,7 +14,7 @@ import (
 )
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
-func ForwardResponseStream(ctx context.Context, marshaler Marshaler, w http.ResponseWriter, req *http.Request, recv func() (proto.Message, error), opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
+func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, req *http.Request, recv func() (proto.Message, error), opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
 	f, ok := w.(http.Flusher)
 	if !ok {
 		grpclog.Printf("Flush not supported in %T", w)
@@ -28,7 +28,7 @@ func ForwardResponseStream(ctx context.Context, marshaler Marshaler, w http.Resp
 		http.Error(w, "unexpected error", http.StatusInternalServerError)
 		return
 	}
-	handleForwardResponseServerMetadata(w, md)
+	handleForwardResponseServerMetadata(w, mux, md)
 
 	w.Header().Set("Transfer-Encoding", "chunked")
 	w.Header().Set("Content-Type", marshaler.ContentType())
@@ -65,9 +65,15 @@ func ForwardResponseStream(ctx context.Context, marshaler Marshaler, w http.Resp
 	}
 }
 
-func handleForwardResponseServerMetadata(w http.ResponseWriter, md ServerMetadata) {
+func handleForwardResponseServerMetadata(w http.ResponseWriter, mux *ServeMux, md ServerMetadata) {
 	for k, vs := range md.HeaderMD {
 		hKey := fmt.Sprintf("%s%s", MetadataHeaderPrefix, k)
+		if mux.outgoingHeaderMatcher != nil {
+			if h, ok := mux.outgoingHeaderMatcher(k); ok {
+				hKey = h
+				break
+			}
+		}
 		for i := range vs {
 			w.Header().Add(hKey, vs[i])
 		}
@@ -91,24 +97,24 @@ func handleForwardResponseTrailer(w http.ResponseWriter, md ServerMetadata) {
 }
 
 // ForwardResponseMessage forwards the message "resp" from gRPC server to REST client.
-func ForwardResponseMessage(ctx context.Context, marshaler Marshaler, w http.ResponseWriter, req *http.Request, resp proto.Message, opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
+func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, req *http.Request, resp proto.Message, opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
 	md, ok := ServerMetadataFromContext(ctx)
 	if !ok {
 		grpclog.Printf("Failed to extract ServerMetadata from context")
 	}
 
-	handleForwardResponseServerMetadata(w, md)
+	handleForwardResponseServerMetadata(w, mux, md)
 	handleForwardResponseTrailerHeader(w, md)
 	w.Header().Set("Content-Type", marshaler.ContentType())
 	if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {
-		HTTPError(ctx, marshaler, w, req, err)
+		HTTPError(ctx, mux, marshaler, w, req, err)
 		return
 	}
 
 	buf, err := marshaler.Marshal(resp)
 	if err != nil {
 		grpclog.Printf("Marshal error: %v", err)
-		HTTPError(ctx, marshaler, w, req, err)
+		HTTPError(ctx, mux, marshaler, w, req, err)
 		return
 	}
 
