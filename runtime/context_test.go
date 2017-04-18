@@ -83,6 +83,7 @@ func TestAnnotateContext_XForwardedFor(t *testing.T) {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
 	}
+
 	md, ok := metadata.FromOutgoingContext(annotated)
 	if !ok || len(md) != emptyForwardMetaCount+1 {
 		t.Errorf("Expected %d metadata items in context; got %v", emptyForwardMetaCount+1, md)
