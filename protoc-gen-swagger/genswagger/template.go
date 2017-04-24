@@ -118,11 +118,14 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 }
 
 // findServicesMessagesAndEnumerations discovers all messages and enums defined in the RPC methods of the service.
-func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, e enumMap) {
+func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, e enumMap, refs refMap) {
 	for _, svc := range s {
 		for _, meth := range svc.Methods {
-			m[fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)] = meth.RequestType
-			findNestedMessagesAndEnumerations(meth.RequestType, reg, m, e)
+			// Request may be fully included in query
+			if _, ok := refs[fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg))]; ok {
+				m[fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)] = meth.RequestType
+				findNestedMessagesAndEnumerations(meth.RequestType, reg, m, e)
+			}
 			m[fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)] = meth.ResponseType
 			findNestedMessagesAndEnumerations(meth.ResponseType, reg, m, e)
 		}
@@ -431,7 +434,7 @@ func templateToSwaggerPath(path string) string {
 	return strings.Join(parts, "/")
 }
 
-func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry) error {
+func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry, refs refMap) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	for svcIdx, svc := range services {
 		for methIdx, meth := range svc.Methods {
@@ -524,6 +527,14 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						},
 					},
 				}
+
+				// Fill reference map with referenced request messages
+				for _, param := range operationObject.Parameters {
+					if param.Schema != nil && param.Schema.Ref != "" {
+						refs[param.Schema.Ref] = struct{}{}
+					}
+				}
+
 				methComments := protoComments(reg, svc.File, nil, "Service", int32(svcIdx), methProtoPath, int32(methIdx))
 				if err := updateSwaggerDataFromComments(operationObject, methComments); err != nil {
 					panic(err)
@@ -575,7 +586,8 @@ func applyTemplate(p param) (string, error) {
 
 	// Loops through all the services and their exposed GET/POST/PUT/DELETE definitions
 	// and create entries for all of them.
-	if err := renderServices(p.Services, s.Paths, p.reg); err != nil {
+	refs := refMap{}
+	if err := renderServices(p.Services, s.Paths, p.reg, refs); err != nil {
 		panic(err)
 	}
 
@@ -583,7 +595,7 @@ func applyTemplate(p param) (string, error) {
 	// write their request and response types out as definition objects.
 	m := messageMap{}
 	e := enumMap{}
-	findServicesMessagesAndEnumerations(p.Services, p.reg, m, e)
+	findServicesMessagesAndEnumerations(p.Services, p.reg, m, e, refs)
 	renderMessagesAsDefinition(m, s.Definitions, p.reg)
 	renderEnumerationsAsDefinition(e, s.Definitions, p.reg)
 
