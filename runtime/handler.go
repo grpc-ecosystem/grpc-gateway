@@ -71,7 +71,6 @@ func handleForwardResponseServerMetadata(w http.ResponseWriter, mux *ServeMux, m
 		if mux.outgoingHeaderMatcher != nil {
 			if h, ok := mux.outgoingHeaderMatcher(k); ok {
 				hKey = h
-				break
 			}
 		}
 		for i := range vs {
