@@ -36,7 +36,7 @@ func TestEcho(t *testing.T) {
 	}
 
 	testEcho(t, 8080, "application/json")
-	testEchoBody(t)
+	testEchoBody(t, 8080)
 }
 
 func TestForwardResponseOption(t *testing.T) {
@@ -92,7 +92,7 @@ func testEcho(t *testing.T, port int, contentType string) {
 	}
 }
 
-func testEchoBody(t *testing.T) {
+func testEchoBody(t *testing.T, port int) {
 	sent := gw.SimpleMessage{Id: "example"}
 	var m jsonpb.Marshaler
 	payload, err := m.MarshalToString(&sent)
@@ -100,7 +100,7 @@ func testEchoBody(t *testing.T) {
 		t.Fatalf("m.MarshalToString(%#v) failed with %v; want success", payload, err)
 	}
 
-	url := "http://localhost:8080/v1/example/echo_body"
+	url := fmt.Sprintf("http://localhost:%d/v1/example/echo_body", port)
 	resp, err := http.Post(url, "", strings.NewReader(payload))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
@@ -148,18 +148,18 @@ func TestABE(t *testing.T) {
 		return
 	}
 
-	testABECreate(t)
-	testABECreateBody(t)
-	testABEBulkCreate(t)
-	testABELookup(t)
-	testABELookupNotFound(t)
-	testABEList(t)
-	testABEBulkEcho(t)
-	testABEBulkEchoZeroLength(t)
-	testAdditionalBindings(t)
+	testABECreate(t, 8080)
+	testABECreateBody(t, 8080)
+	testABEBulkCreate(t, 8080)
+	testABELookup(t, 8080)
+	testABELookupNotFound(t, 8080)
+	testABEList(t, 8080)
+	testABEBulkEcho(t, 8080)
+	testABEBulkEchoZeroLength(t, 8080)
+	testAdditionalBindings(t, 8080)
 }
 
-func testABECreate(t *testing.T) {
+func testABECreate(t *testing.T, port int) {
 	want := gw.ABitOfEverything{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
@@ -177,7 +177,7 @@ func testABECreate(t *testing.T) {
 		Sint64Value:              4611686018427387903,
 		NonConventionalNameValue: "camelCase",
 	}
-	url := fmt.Sprintf("http://localhost:8080/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s", want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue)
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue)
 
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
 	if err != nil {
@@ -210,7 +210,7 @@ func testABECreate(t *testing.T) {
 	}
 }
 
-func testABECreateBody(t *testing.T) {
+func testABECreateBody(t *testing.T, port int) {
 	want := gw.ABitOfEverything{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
@@ -255,7 +255,7 @@ func testABECreateBody(t *testing.T) {
 			"b": {Name: "y", Amount: 2},
 		},
 	}
-	url := "http://localhost:8080/v1/example/a_bit_of_everything"
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	var m jsonpb.Marshaler
 	payload, err := m.MarshalToString(&want)
 	if err != nil {
@@ -293,7 +293,7 @@ func testABECreateBody(t *testing.T) {
 	}
 }
 
-func testABEBulkCreate(t *testing.T) {
+func testABEBulkCreate(t *testing.T, port int) {
 	count := 0
 	r, w := io.Pipe()
 	go func(w io.WriteCloser) {
@@ -344,7 +344,7 @@ func testABEBulkCreate(t *testing.T) {
 			count++
 		}
 	}(w)
-	url := "http://localhost:8080/v1/example/a_bit_of_everything/bulk"
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/bulk", port)
 	resp, err := http.Post(url, "application/json", r)
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
@@ -380,8 +380,8 @@ func testABEBulkCreate(t *testing.T) {
 	}
 }
 
-func testABELookup(t *testing.T) {
-	url := "http://localhost:8080/v1/example/a_bit_of_everything"
+func testABELookup(t *testing.T, port int) {
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	cresp, err := http.Post(url, "application/json", strings.NewReader(`
 		{"bool_value": true, "string_value": "strprefix/example"}
 	`))
@@ -435,8 +435,8 @@ func testABELookup(t *testing.T) {
 	}
 }
 
-func testABELookupNotFound(t *testing.T) {
-	url := "http://localhost:8080/v1/example/a_bit_of_everything"
+func testABELookupNotFound(t *testing.T, port int) {
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	uuid := "not_exist"
 	url = fmt.Sprintf("%s/%s", url, uuid)
 	resp, err := http.Get(url)
@@ -469,6 +469,11 @@ func testABELookupNotFound(t *testing.T) {
 		return
 	}
 
+	if got, want := msg.Error, "not found"; got != want {
+		t.Errorf("msg.Error = %s; want %s", got, want)
+		return
+	}
+
 	if got, want := resp.Header.Get("Grpc-Metadata-Uuid"), uuid; got != want {
 		t.Errorf("Grpc-Metadata-Uuid was %s, wanted %s", got, want)
 	}
@@ -480,8 +485,8 @@ func testABELookupNotFound(t *testing.T) {
 	}
 }
 
-func testABEList(t *testing.T) {
-	url := "http://localhost:8080/v1/example/a_bit_of_everything"
+func testABEList(t *testing.T, port int) {
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	resp, err := http.Get(url)
 	if err != nil {
 		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
@@ -531,7 +536,7 @@ func testABEList(t *testing.T) {
 	}
 }
 
-func testABEBulkEcho(t *testing.T) {
+func testABEBulkEcho(t *testing.T, port int) {
 	reqr, reqw := io.Pipe()
 	var wg sync.WaitGroup
 	var want []*sub.StringMessage
@@ -555,7 +560,7 @@ func testABEBulkEcho(t *testing.T) {
 		}
 	}()
 
-	url := "http://localhost:8080/v1/example/a_bit_of_everything/echo"
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/echo", port)
 	req, err := http.NewRequest("POST", url, reqr)
 	if err != nil {
 		t.Errorf("http.NewRequest(%q, %q, reqr) failed with %v; want success", "POST", url, err)
@@ -609,8 +614,8 @@ func testABEBulkEcho(t *testing.T) {
 	}
 }
 
-func testABEBulkEchoZeroLength(t *testing.T) {
-	url := "http://localhost:8080/v1/example/a_bit_of_everything/echo"
+func testABEBulkEchoZeroLength(t *testing.T, port int) {
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/echo", port)
 	req, err := http.NewRequest("POST", url, bytes.NewReader(nil))
 	if err != nil {
 		t.Errorf("http.NewRequest(%q, %q, bytes.NewReader(nil)) failed with %v; want success", "POST", url, err)
@@ -641,10 +646,10 @@ func testABEBulkEchoZeroLength(t *testing.T) {
 	}
 }
 
-func testAdditionalBindings(t *testing.T) {
+func testAdditionalBindings(t *testing.T, port int) {
 	for i, f := range []func() *http.Response{
 		func() *http.Response {
-			url := "http://localhost:8080/v1/example/a_bit_of_everything/echo/hello"
+			url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/echo/hello", port)
 			resp, err := http.Get(url)
 			if err != nil {
 				t.Errorf("http.Get(%q) failed with %v; want success", url, err)
@@ -653,7 +658,7 @@ func testAdditionalBindings(t *testing.T) {
 			return resp
 		},
 		func() *http.Response {
-			url := "http://localhost:8080/v2/example/echo"
+			url := fmt.Sprintf("http://localhost:%d/v2/example/echo", port)
 			resp, err := http.Post(url, "application/json", strings.NewReader(`"hello"`))
 			if err != nil {
 				t.Errorf("http.Post(%q, %q, %q) failed with %v; want success", url, "application/json", `"hello"`, err)
@@ -662,7 +667,7 @@ func testAdditionalBindings(t *testing.T) {
 			return resp
 		},
 		func() *http.Response {
-			url := "http://localhost:8080/v2/example/echo?value=hello"
+			url := fmt.Sprintf("http://localhost:%d/v2/example/echo?value=hello", port)
 			resp, err := http.Get(url)
 			if err != nil {
 				t.Errorf("http.Get(%q) failed with %v; want success", url, err)
