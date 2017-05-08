@@ -577,6 +577,133 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 	}
 }
 
+func TestApplyTemplateRequestWithUnusedReferences(t *testing.T) {
+	reqdesc := &protodescriptor.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+		Field: []*protodescriptor.FieldDescriptorProto{
+			{
+				Name:   proto.String("string"),
+				Label:  protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+				Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+		},
+	}
+	respdesc := &protodescriptor.DescriptorProto{
+		Name: proto.String("EmptyMessage"),
+	}
+	meth := &protodescriptor.MethodDescriptorProto{
+		Name:            proto.String("Example"),
+		InputType:       proto.String("ExampleMessage"),
+		OutputType:      proto.String("EmptyMessage"),
+		ClientStreaming: proto.Bool(false),
+		ServerStreaming: proto.Bool(false),
+	}
+	svc := &protodescriptor.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*protodescriptor.MethodDescriptorProto{meth},
+	}
+
+	req := &descriptor.Message{
+		DescriptorProto: reqdesc,
+	}
+	resp := &descriptor.Message{
+		DescriptorProto: respdesc,
+	}
+	stringField := &descriptor.Field{
+		Message:              req,
+		FieldDescriptorProto: req.GetField()[0],
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*protodescriptor.DescriptorProto{reqdesc, respdesc},
+			Service:        []*protodescriptor.ServiceDescriptorProto{svc},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{req, resp},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           req,
+						ResponseType:          resp,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/example",
+								},
+							},
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/example/{string}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+											{
+												Name:   "string",
+												Target: stringField,
+											},
+										}),
+										Target: stringField,
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+										{
+											Name:   "string",
+											Target: stringField,
+										},
+									}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	reg := descriptor.NewRegistry()
+	reg.Load(&plugin.CodeGeneratorRequest{ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto}})
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+	var obj swaggerObject
+	err = json.Unmarshal([]byte(result), &obj)
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+
+	// Only EmptyMessage must be present, not ExampleMessage
+	if want, got, name := 1, len(obj.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
+		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
+	}
+
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", result)
+	}
+}
+
 func TestTemplateToSwaggerPath(t *testing.T) {
 	var tests = []struct {
 		input    string
