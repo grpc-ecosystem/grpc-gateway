@@ -10,8 +10,8 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"golang.org/x/net/context"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func TestDefaultHTTPError(t *testing.T) {
@@ -28,7 +28,7 @@ func TestDefaultHTTPError(t *testing.T) {
 			msg:    "example error",
 		},
 		{
-			err:    grpc.Errorf(codes.NotFound, "no such resource"),
+			err:    status.Error(codes.NotFound, "no such resource"),
 			status: http.StatusNotFound,
 			msg:    "no such resource",
 		},
@@ -49,6 +49,7 @@ func TestDefaultHTTPError(t *testing.T) {
 			t.Errorf("json.Unmarshal(%q, &body) failed with %v; want success", w.Body.Bytes(), err)
 			continue
 		}
+
 		if got, want := body["error"].(string), spec.msg; !strings.Contains(got, want) {
 			t.Errorf(`body["error"] = %q; want %q; on spec.err=%v`, got, want, spec.err)
 		}

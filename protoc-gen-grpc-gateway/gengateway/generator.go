@@ -39,6 +39,7 @@ func New(reg *descriptor.Registry, useRequestContext bool) gen.Generator {
 		"google.golang.org/grpc",
 		"google.golang.org/grpc/codes",
 		"google.golang.org/grpc/grpclog",
+		"google.golang.org/grpc/status",
 	} {
 		pkg := descriptor.GoPackage{
 			Path: pkgpath,

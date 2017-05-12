@@ -9,8 +9,9 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime/internal"
 	"golang.org/x/net/context"
-	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/status"
 )
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
@@ -151,7 +152,10 @@ func handleForwardResponseStreamError(marshaler Marshaler, w http.ResponseWriter
 
 func streamChunk(result proto.Message, err error) map[string]proto.Message {
 	if err != nil {
-		grpcCode := grpc.Code(err)
+		grpcCode := codes.Unknown
+		if s, ok := status.FromError(err); ok {
+			grpcCode = s.Code()
+		}
 		httpCode := HTTPStatusFromCode(grpcCode)
 		return map[string]proto.Message{
 			"error": &internal.StreamError{
