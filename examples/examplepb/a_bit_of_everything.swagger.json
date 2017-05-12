@@ -718,34 +718,10 @@
       "default": "ZERO",
       "description": "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1"
     },
-    "protobufDuration": {
-      "type": "object",
-      "properties": {
-        "seconds": {
-          "type": "string",
-          "format": "int64",
-          "description": "Signed seconds of the span of time. Must be from -315,576,000,000\nto +315,576,000,000 inclusive."
-        },
-        "nanos": {
-          "type": "integer",
-          "format": "int32",
-          "description": "Signed fractions of a second at nanosecond resolution of the span\nof time. Durations less than one second are represented with a 0\n`seconds` field and a positive or negative `nanos` field. For durations\nof one second or more, a non-zero value for the `nanos` field must be\nof the same sign as the `seconds` field. Must be from -999,999,999\nto +999,999,999 inclusive."
-        }
-      },
-      "description": "A Duration represents a signed, fixed-length span of time represented\nas a count of seconds and fractions of seconds at nanosecond\nresolution. It is independent of any calendar and concepts like \"day\"\nor \"month\". It is related to Timestamp in that the difference between\ntwo Timestamp values is a Duration and it can be added or subtracted\nfrom a Timestamp. Range is approximately +-10,000 years.\n\nExample 1: Compute Duration from two Timestamps in pseudo code.\n\n    Timestamp start = ...;\n    Timestamp end = ...;\n    Duration duration = ...;\n\n    duration.seconds = end.seconds - start.seconds;\n    duration.nanos = end.nanos - start.nanos;\n\n    if (duration.seconds \u003c 0 \u0026\u0026 duration.nanos \u003e 0) {\n      duration.seconds += 1;\n      duration.nanos -= 1000000000;\n    } else if (durations.seconds \u003e 0 \u0026\u0026 duration.nanos \u003c 0) {\n      duration.seconds -= 1;\n      duration.nanos += 1000000000;\n    }\n\nExample 2: Compute Timestamp from Timestamp + Duration in pseudo code.\n\n    Timestamp start = ...;\n    Duration duration = ...;\n    Timestamp end = ...;\n\n    end.seconds = start.seconds + duration.seconds;\n    end.nanos = start.nanos + duration.nanos;\n\n    if (end.nanos \u003c 0) {\n      end.seconds -= 1;\n      end.nanos += 1000000000;\n    } else if (end.nanos \u003e= 1000000000) {\n      end.seconds += 1;\n      end.nanos -= 1000000000;\n    }\n\nExample 3: Compute Duration from datetime.timedelta in Python.\n\n    td = datetime.timedelta(days=3, minutes=10)\n    duration = Duration()\n    duration.FromTimedelta(td)"
-    },
     "protobufEmpty": {
       "type": "object",
       "description": "service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
       "title": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:"
-    },
-    "sub2IdMessage": {
-      "type": "object",
-      "properties": {
-        "uuid": {
-          "type": "string"
-        }
-      }
     },
     "subStringMessage": {
       "type": "object",
