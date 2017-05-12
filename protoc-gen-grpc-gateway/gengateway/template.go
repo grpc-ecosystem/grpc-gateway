@@ -167,7 +167,7 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 		}
 		if err != nil {
 			grpclog.Printf("Failed to decode request: %v", err)
-			return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
+			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
 			grpclog.Printf("Failed to send request: %v", err)
@@ -206,7 +206,7 @@ var (
 	var metadata runtime.ServerMetadata
 {{if .Body}}
 	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.RHS "protoReq"}}); err != nil {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 {{end}}
 {{if .PathParams}}
@@ -219,7 +219,7 @@ var (
 	{{range $param := .PathParams}}
 	val, ok = pathParams[{{$param | printf "%q"}}]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", {{$param | printf "%q"}})
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", {{$param | printf "%q"}})
 	}
 {{if $param.IsNestedProto3 }}
 	err = runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val)
@@ -233,7 +233,7 @@ var (
 {{end}}
 {{if .HasQueryParam}}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}); err != nil {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 {{end}}
 {{if .Method.GetServerStreaming}}

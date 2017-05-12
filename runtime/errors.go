@@ -6,9 +6,9 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"golang.org/x/net/context"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/status"
 )
 
 // HTTPStatusFromCode converts a gRPC error code into the corresponding HTTP response status.
@@ -83,9 +83,15 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 
 	w.Header().Del("Trailer")
 	w.Header().Set("Content-Type", marshaler.ContentType())
+
+	s, ok := status.FromError(err)
+	if !ok {
+		s = status.New(codes.Unknown, err.Error())
+	}
+
 	body := &errorBody{
-		Error: grpc.ErrorDesc(err),
-		Code:  int32(grpc.Code(err)),
+		Error: s.Message(),
+		Code:  int32(s.Code()),
 	}
 
 	buf, merr := marshaler.Marshal(body)
@@ -105,7 +111,7 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 
 	handleForwardResponseServerMetadata(w, mux, md)
 	handleForwardResponseTrailerHeader(w, md)
-	st := HTTPStatusFromCode(grpc.Code(err))
+	st := HTTPStatusFromCode(s.Code())
 	w.WriteHeader(st)
 	if _, err := w.Write(buf); err != nil {
 		grpclog.Printf("Failed to write response: %v", err)

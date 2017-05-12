@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
 
 // Implements of ABitOfEverythingServiceServer
@@ -112,7 +113,7 @@ func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *sub2.IdMessag
 		"foo": "foo2",
 		"bar": "bar2",
 	}))
-	return nil, grpc.Errorf(codes.NotFound, "not found")
+	return nil, status.Errorf(codes.NotFound, "not found")
 }
 
 func (s *_ABitOfEverythingServer) List(_ *empty.Empty, stream examples.StreamService_ListServer) error {
@@ -139,7 +140,7 @@ func (s *_ABitOfEverythingServer) List(_ *empty.Empty, stream examples.StreamSer
 				"foo": "foo2",
 				"bar": "bar2",
 			}))
-			return grpc.Errorf(codes.InvalidArgument, "error metadata: %v", v)
+			return status.Errorf(codes.InvalidArgument, "error metadata: %v", v)
 		}
 	}
 	return nil
@@ -153,7 +154,7 @@ func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABit
 	if _, ok := s.v[msg.Uuid]; ok {
 		s.v[msg.Uuid] = msg
 	} else {
-		return nil, grpc.Errorf(codes.NotFound, "not found")
+		return nil, status.Errorf(codes.NotFound, "not found")
 	}
 	return new(empty.Empty), nil
 }
@@ -166,7 +167,7 @@ func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessag
 	if _, ok := s.v[msg.Uuid]; ok {
 		delete(s.v, msg.Uuid)
 	} else {
-		return nil, grpc.Errorf(codes.NotFound, "not found")
+		return nil, status.Errorf(codes.NotFound, "not found")
 	}
 	return new(empty.Empty), nil
 }
@@ -179,7 +180,7 @@ func (s *_ABitOfEverythingServer) GetQuery(ctx context.Context, msg *examples.AB
 	if _, ok := s.v[msg.Uuid]; ok {
 		s.v[msg.Uuid] = msg
 	} else {
-		return nil, grpc.Errorf(codes.NotFound, "not found")
+		return nil, status.Errorf(codes.NotFound, "not found")
 	}
 	return new(empty.Empty), nil
 }
