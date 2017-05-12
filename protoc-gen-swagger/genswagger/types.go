@@ -187,3 +187,6 @@ type messageMap map[string]*descriptor.Message
 // Internal type mapping from FQEN to descriptor.Enum. Used as a set by the
 // findServiceMessages function.
 type enumMap map[string]*descriptor.Enum
+
+// Internal type to store used references.
+type refMap map[string]struct{}
