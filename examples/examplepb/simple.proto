@@ -1,0 +1,18 @@
+syntax = "proto3";
+option go_package = "examplepb";
+package grpc.gateway.examples.examplepb;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+service SimpleRequest {
+  rpc SimpleGet(google.protobuf.Empty) returns (SimpleResponse){
+    option (google.api.http) = {
+      get: "/status"
+    };
+  }
+}
+
+message SimpleResponse {
+  string simple_message = 1;
+}
