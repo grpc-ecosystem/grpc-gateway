@@ -23,10 +23,12 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/status"
 )
 
 var _ codes.Code
 var _ io.Reader
+var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
 
@@ -47,7 +49,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["float_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "float_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "float_value")
 	}
 
 	protoReq.FloatValue, err = runtime.Float32(val)
@@ -58,7 +60,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["double_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "double_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "double_value")
 	}
 
 	protoReq.DoubleValue, err = runtime.Float64(val)
@@ -69,7 +71,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["int64_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "int64_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "int64_value")
 	}
 
 	protoReq.Int64Value, err = runtime.Int64(val)
@@ -80,7 +82,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["uint64_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uint64_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "uint64_value")
 	}
 
 	protoReq.Uint64Value, err = runtime.Uint64(val)
@@ -91,7 +93,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["int32_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "int32_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "int32_value")
 	}
 
 	protoReq.Int32Value, err = runtime.Int32(val)
@@ -102,7 +104,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["fixed64_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "fixed64_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "fixed64_value")
 	}
 
 	protoReq.Fixed64Value, err = runtime.Uint64(val)
@@ -113,7 +115,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["fixed32_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "fixed32_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "fixed32_value")
 	}
 
 	protoReq.Fixed32Value, err = runtime.Uint32(val)
@@ -124,7 +126,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["bool_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "bool_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "bool_value")
 	}
 
 	protoReq.BoolValue, err = runtime.Bool(val)
@@ -135,7 +137,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["string_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "string_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "string_value")
 	}
 
 	protoReq.StringValue, err = runtime.String(val)
@@ -146,7 +148,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["uint32_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uint32_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "uint32_value")
 	}
 
 	protoReq.Uint32Value, err = runtime.Uint32(val)
@@ -157,7 +159,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["sfixed32_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "sfixed32_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sfixed32_value")
 	}
 
 	protoReq.Sfixed32Value, err = runtime.Int32(val)
@@ -168,7 +170,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["sfixed64_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "sfixed64_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sfixed64_value")
 	}
 
 	protoReq.Sfixed64Value, err = runtime.Int64(val)
@@ -179,7 +181,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["sint32_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "sint32_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sint32_value")
 	}
 
 	protoReq.Sint32Value, err = runtime.Int32(val)
@@ -190,7 +192,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["sint64_value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "sint64_value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "sint64_value")
 	}
 
 	protoReq.Sint64Value, err = runtime.Int64(val)
@@ -201,7 +203,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["nonConventionalNameValue"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "nonConventionalNameValue")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "nonConventionalNameValue")
 	}
 
 	protoReq.NonConventionalNameValue, err = runtime.String(val)
@@ -211,7 +213,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_Create_0); err != nil {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.Create(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -224,7 +226,7 @@ func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, marshaler
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.CreateBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -245,7 +247,7 @@ func request_ABitOfEverythingService_Lookup_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["uuid"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
 	}
 
 	protoReq.Uuid, err = runtime.String(val)
@@ -264,7 +266,7 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler run
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	var (
@@ -276,7 +278,7 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["uuid"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
 	}
 
 	protoReq.Uuid, err = runtime.String(val)
@@ -303,7 +305,7 @@ func request_ABitOfEverythingService_Delete_0(ctx context.Context, marshaler run
 
 	val, ok = pathParams["uuid"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
 	}
 
 	protoReq.Uuid, err = runtime.String(val)
@@ -334,7 +336,7 @@ func request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marshaler r
 
 	val, ok = pathParams["uuid"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "uuid")
 	}
 
 	protoReq.Uuid, err = runtime.String(val)
@@ -344,7 +346,7 @@ func request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marshaler r
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_GetQuery_0); err != nil {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.GetQuery(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -365,7 +367,7 @@ func request_ABitOfEverythingService_Echo_0(ctx context.Context, marshaler runti
 
 	val, ok = pathParams["value"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "value")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "value")
 	}
 
 	protoReq.Value, err = runtime.StringP(val)
@@ -384,7 +386,7 @@ func request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler runti
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq.Value); err != nil {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.Echo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -401,7 +403,7 @@ func request_ABitOfEverythingService_Echo_2(ctx context.Context, marshaler runti
 	var metadata runtime.ServerMetadata
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_Echo_2); err != nil {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	msg, err := client.Echo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -414,7 +416,7 @@ func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshal
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
 	var (
@@ -426,7 +428,7 @@ func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshal
 
 	val, ok = pathParams["single_nested.name"]
 	if !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "missing parameter %s", "single_nested.name")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "single_nested.name")
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "single_nested.name", val)

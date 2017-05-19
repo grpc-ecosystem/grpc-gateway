@@ -22,10 +22,12 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/status"
 )
 
 var _ codes.Code
 var _ io.Reader
+var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
 
@@ -45,7 +47,7 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 		}
 		if err != nil {
 			grpclog.Printf("Failed to decode request: %v", err)
-			return nil, metadata, grpc.Errorf(codes.InvalidArgument, "%v", err)
+			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
 			grpclog.Printf("Failed to send request: %v", err)
