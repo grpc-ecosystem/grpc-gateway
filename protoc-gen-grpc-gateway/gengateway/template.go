@@ -228,7 +228,7 @@ var (
 	{{$param.RHS "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val)
 {{end}}
 	if err != nil {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "invalid parameter %s", {{$param | printf "%q"}})
+		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "invalid parameter %s : %v", {{$param | printf "%q"}}, err)
 	}
 	{{end}}
 {{end}}
