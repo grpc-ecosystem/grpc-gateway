@@ -13,6 +13,16 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 )
 
+var wktSchemas = map[string]schemaCore{
+	".google.protobuf.Timestamp": schemaCore{
+		Type:   "string",
+		Format: "date-time",
+	},
+	".google.protobuf.Duration": schemaCore{
+		Type: "string",
+	},
+}
+
 func listEnumNames(enum *descriptor.Enum) (names []string) {
 	for _, value := range enum.GetValue() {
 		names = append(names, value.GetName())
@@ -161,6 +171,8 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		switch name {
 		case ".google.protobuf.Timestamp":
 			continue
+		case ".google.protobuf.Duration":
+			continue
 		}
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			continue
@@ -213,11 +225,8 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry) swaggerSchemaO
 
 	switch ft := fd.GetType(); ft {
 	case pbdescriptor.FieldDescriptorProto_TYPE_ENUM, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE, pbdescriptor.FieldDescriptorProto_TYPE_GROUP:
-		if fd.GetTypeName() == ".google.protobuf.Timestamp" && pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE == ft {
-			core = schemaCore{
-				Type:   "string",
-				Format: "date-time",
-			}
+		if wktSchema, ok := wktSchemas[fd.GetTypeName()]; ok {
+			core = wktSchema
 		} else {
 			core = schemaCore{
 				Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(fd.GetTypeName(), reg),
@@ -446,7 +455,13 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					var paramType, paramFormat string
 					switch pt := parameter.Target.GetType(); pt {
 					case pbdescriptor.FieldDescriptorProto_TYPE_GROUP, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE:
-						return fmt.Errorf("only primitive types are allowed in path parameters")
+						if descriptor.IsWellKnownType(parameter.Target.GetTypeName()) {
+							schema := schemaOfField(parameter.Target, reg)
+							paramType = schema.Type
+							paramFormat = schema.Format
+						} else {
+							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
+						}
 					case pbdescriptor.FieldDescriptorProto_TYPE_ENUM:
 						paramType = fullyQualifiedNameToSwaggerName(parameter.Target.GetTypeName(), reg)
 						paramFormat = ""
