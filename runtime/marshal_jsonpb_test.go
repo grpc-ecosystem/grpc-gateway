@@ -19,7 +19,13 @@ import (
 
 func TestJSONPbMarshal(t *testing.T) {
 	msg := examplepb.ABitOfEverything{
-		Uuid: "6EC2446F-7E89-4127-B3E6-5C05E6BECBA7",
+		SingleNested:        &examplepb.ABitOfEverything_Nested{},
+		RepeatedStringValue: []string{},
+		MappedStringValue:   map[string]string{},
+		MappedNestedValue:   map[string]*examplepb.ABitOfEverything_Nested{},
+		RepeatedEnumValue:   []examplepb.NumericEnum{},
+		TimestampValue:      &timestamp.Timestamp{},
+		Uuid:                "6EC2446F-7E89-4127-B3E6-5C05E6BECBA7",
 		Nested: []*examplepb.ABitOfEverything_Nested{
 			{
 				Name:   "foo",
@@ -37,7 +43,7 @@ func TestJSONPbMarshal(t *testing.T) {
 		},
 	}
 
-	for _, spec := range []struct {
+	for i, spec := range []struct {
 		enumsAsInts, emitDefaults bool
 		indent                    string
 		origName                  bool
@@ -105,7 +111,7 @@ func TestJSONPbMarshal(t *testing.T) {
 			t.Errorf("jsonpb.UnmarshalString(%q, &got) failed with %v; want success; spec=%v", string(buf), err, spec)
 		}
 		if want := msg; !reflect.DeepEqual(got, want) {
-			t.Errorf("got = %v; want %v; spec=%v", &got, &want, spec)
+			t.Errorf("case %d: got = %v; want %v; spec=%v", i, &got, &want, spec)
 		}
 		if spec.verifier != nil {
 			spec.verifier(string(buf))
@@ -143,7 +149,7 @@ func TestJSONPbUnmarshal(t *testing.T) {
 		m   runtime.JSONPb
 		got examplepb.ABitOfEverything
 	)
-	for _, data := range []string{
+	for i, data := range []string{
 		`{
 			"uuid": "6EC2446F-7E89-4127-B3E6-5C05E6BECBA7",
 			"nested": [
@@ -185,7 +191,7 @@ func TestJSONPbUnmarshal(t *testing.T) {
 		}`,
 	} {
 		if err := m.Unmarshal([]byte(data), &got); err != nil {
-			t.Errorf("m.Unmarshal(%q, &got) failed with %v; want success", data, err)
+			t.Errorf("case %d: m.Unmarshal(%q, &got) failed with %v; want success", i, data, err)
 		}
 
 		want := examplepb.ABitOfEverything{
@@ -208,7 +214,7 @@ func TestJSONPbUnmarshal(t *testing.T) {
 		}
 
 		if !reflect.DeepEqual(got, want) {
-			t.Errorf("got = %v; want = %v", &got, &want)
+			t.Errorf("case %d: got = %v; want = %v", i, &got, &want)
 		}
 	}
 }
@@ -232,7 +238,13 @@ func TestJSONPbUnmarshalFields(t *testing.T) {
 
 func TestJSONPbEncoder(t *testing.T) {
 	msg := examplepb.ABitOfEverything{
-		Uuid: "6EC2446F-7E89-4127-B3E6-5C05E6BECBA7",
+		SingleNested:        &examplepb.ABitOfEverything_Nested{},
+		RepeatedStringValue: []string{},
+		MappedStringValue:   map[string]string{},
+		MappedNestedValue:   map[string]*examplepb.ABitOfEverything_Nested{},
+		RepeatedEnumValue:   []examplepb.NumericEnum{},
+		TimestampValue:      &timestamp.Timestamp{},
+		Uuid:                "6EC2446F-7E89-4127-B3E6-5C05E6BECBA7",
 		Nested: []*examplepb.ABitOfEverything_Nested{
 			{
 				Name:   "foo",
@@ -249,7 +261,7 @@ func TestJSONPbEncoder(t *testing.T) {
 		},
 	}
 
-	for _, spec := range []struct {
+	for i, spec := range []struct {
 		enumsAsInts, emitDefaults bool
 		indent                    string
 		origName                  bool
@@ -319,7 +331,7 @@ func TestJSONPbEncoder(t *testing.T) {
 			t.Errorf("jsonpb.UnmarshalString(%q, &got) failed with %v; want success; spec=%v", buf.String(), err, spec)
 		}
 		if want := msg; !reflect.DeepEqual(got, want) {
-			t.Errorf("got = %v; want %v; spec=%v", &got, &want, spec)
+			t.Errorf("case %d: got = %v; want %v; spec=%v", i, &got, &want, spec)
 		}
 		if spec.verifier != nil {
 			spec.verifier(buf.String())
