@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"fmt"
 	"net/http"
 	"net/textproto"
 	"strings"
@@ -107,7 +108,6 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 		handlers:               make(map[string][]handler),
 		forwardResponseOptions: make([]func(context.Context, http.ResponseWriter, proto.Message) error, 0),
 		marshalers:             makeMarshalerMIMERegistry(),
-		incomingHeaderMatcher:  DefaultHeaderMatcher,
 	}
 
 	for _, opt := range opts {
@@ -123,6 +123,16 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 			_, outboundMarshaler := MarshalerForRequest(serveMux, r)
 			sterr := status.Error(codes.Unknown, "unexpected use of OtherErrorHandler")
 			serveMux.protoErrorHandler(ctx, serveMux, outboundMarshaler, w, r, sterr)
+		}
+	}
+
+	if serveMux.incomingHeaderMatcher == nil {
+		serveMux.incomingHeaderMatcher = DefaultHeaderMatcher
+	}
+
+	if serveMux.outgoingHeaderMatcher == nil {
+		serveMux.outgoingHeaderMatcher = func(key string) (string, bool) {
+			return fmt.Sprintf("%s%s", MetadataHeaderPrefix, key), true
 		}
 	}
 
