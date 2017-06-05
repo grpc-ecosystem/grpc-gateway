@@ -55,7 +55,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.FloatValue, err = runtime.Float32(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "float_value", err)
 	}
 
 	val, ok = pathParams["double_value"]
@@ -66,7 +66,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.DoubleValue, err = runtime.Float64(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "double_value", err)
 	}
 
 	val, ok = pathParams["int64_value"]
@@ -77,7 +77,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.Int64Value, err = runtime.Int64(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "int64_value", err)
 	}
 
 	val, ok = pathParams["uint64_value"]
@@ -88,7 +88,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.Uint64Value, err = runtime.Uint64(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uint64_value", err)
 	}
 
 	val, ok = pathParams["int32_value"]
@@ -99,7 +99,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.Int32Value, err = runtime.Int32(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "int32_value", err)
 	}
 
 	val, ok = pathParams["fixed64_value"]
@@ -110,7 +110,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.Fixed64Value, err = runtime.Uint64(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "fixed64_value", err)
 	}
 
 	val, ok = pathParams["fixed32_value"]
@@ -121,7 +121,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.Fixed32Value, err = runtime.Uint32(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "fixed32_value", err)
 	}
 
 	val, ok = pathParams["bool_value"]
@@ -132,7 +132,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.BoolValue, err = runtime.Bool(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bool_value", err)
 	}
 
 	val, ok = pathParams["string_value"]
@@ -143,7 +143,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.StringValue, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "string_value", err)
 	}
 
 	val, ok = pathParams["uint32_value"]
@@ -154,7 +154,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.Uint32Value, err = runtime.Uint32(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uint32_value", err)
 	}
 
 	val, ok = pathParams["sfixed32_value"]
@@ -165,7 +165,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.Sfixed32Value, err = runtime.Int32(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sfixed32_value", err)
 	}
 
 	val, ok = pathParams["sfixed64_value"]
@@ -176,7 +176,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.Sfixed64Value, err = runtime.Int64(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sfixed64_value", err)
 	}
 
 	val, ok = pathParams["sint32_value"]
@@ -187,7 +187,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.Sint32Value, err = runtime.Int32(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sint32_value", err)
 	}
 
 	val, ok = pathParams["sint64_value"]
@@ -198,7 +198,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.Sint64Value, err = runtime.Int64(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sint64_value", err)
 	}
 
 	val, ok = pathParams["nonConventionalNameValue"]
@@ -209,7 +209,7 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.NonConventionalNameValue, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nonConventionalNameValue", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_Create_0); err != nil {
@@ -253,7 +253,7 @@ func request_ABitOfEverythingService_Lookup_0(ctx context.Context, marshaler run
 	protoReq.Uuid, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
 
 	msg, err := client.Lookup(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -284,7 +284,7 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler run
 	protoReq.Uuid, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
 
 	msg, err := client.Update(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -311,7 +311,7 @@ func request_ABitOfEverythingService_Delete_0(ctx context.Context, marshaler run
 	protoReq.Uuid, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
 
 	msg, err := client.Delete(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -342,7 +342,7 @@ func request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marshaler r
 	protoReq.Uuid, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_GetQuery_0); err != nil {
@@ -373,7 +373,7 @@ func request_ABitOfEverythingService_Echo_0(ctx context.Context, marshaler runti
 	protoReq.Value, err = runtime.StringP(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "value", err)
 	}
 
 	msg, err := client.Echo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -434,7 +434,7 @@ func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshal
 	err = runtime.PopulateFieldFromPath(&protoReq, "single_nested.name", val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "single_nested.name", err)
 	}
 
 	msg, err := client.DeepPathEcho(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))

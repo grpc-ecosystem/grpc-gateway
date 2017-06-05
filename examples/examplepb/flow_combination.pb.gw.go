@@ -180,7 +180,7 @@ func request_FlowCombination_RpcBodyRpc_1(ctx context.Context, marshaler runtime
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
 
 	val, ok = pathParams["b"]
@@ -191,7 +191,7 @@ func request_FlowCombination_RpcBodyRpc_1(ctx context.Context, marshaler runtime
 	protoReq.B, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
 
 	val, ok = pathParams["c"]
@@ -202,7 +202,7 @@ func request_FlowCombination_RpcBodyRpc_1(ctx context.Context, marshaler runtime
 	protoReq.C, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "c", err)
 	}
 
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -250,7 +250,7 @@ func request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler runtime
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
 
 	val, ok = pathParams["b"]
@@ -261,7 +261,7 @@ func request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler runtime
 	protoReq.B, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
 
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -317,7 +317,7 @@ func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler runtime
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyRpc_5); err != nil {
@@ -352,7 +352,7 @@ func request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler runtime
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyRpc_6); err != nil {
@@ -387,7 +387,7 @@ func request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, marsh
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathSingleNestedRpc_0); err != nil {
@@ -426,7 +426,7 @@ func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler r
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
 
 	val, ok = pathParams["b"]
@@ -437,7 +437,7 @@ func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler r
 	protoReq.B, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedRpc_0); err != nil {
@@ -472,7 +472,7 @@ func request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marshaler r
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedRpc_1); err != nil {
@@ -511,7 +511,7 @@ func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marshaler r
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedRpc_2); err != nil {
@@ -563,7 +563,7 @@ func request_FlowCombination_RpcBodyStream_1(ctx context.Context, marshaler runt
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
 
 	val, ok = pathParams["b"]
@@ -574,7 +574,7 @@ func request_FlowCombination_RpcBodyStream_1(ctx context.Context, marshaler runt
 	protoReq.B, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
 
 	val, ok = pathParams["c"]
@@ -585,7 +585,7 @@ func request_FlowCombination_RpcBodyStream_1(ctx context.Context, marshaler runt
 	protoReq.C, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "c", err)
 	}
 
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
@@ -649,7 +649,7 @@ func request_FlowCombination_RpcBodyStream_3(ctx context.Context, marshaler runt
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
 
 	val, ok = pathParams["b"]
@@ -660,7 +660,7 @@ func request_FlowCombination_RpcBodyStream_3(ctx context.Context, marshaler runt
 	protoReq.B, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
 
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
@@ -732,7 +732,7 @@ func request_FlowCombination_RpcBodyStream_5(ctx context.Context, marshaler runt
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyStream_5); err != nil {
@@ -775,7 +775,7 @@ func request_FlowCombination_RpcBodyStream_6(ctx context.Context, marshaler runt
 	protoReq.A, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyStream_6); err != nil {
@@ -818,7 +818,7 @@ func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, ma
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathSingleNestedStream_0); err != nil {
@@ -865,7 +865,7 @@ func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, marshale
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
 
 	val, ok = pathParams["b"]
@@ -876,7 +876,7 @@ func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, marshale
 	protoReq.B, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "b", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedStream_0); err != nil {
@@ -919,7 +919,7 @@ func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, marshale
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedStream_1); err != nil {
@@ -966,7 +966,7 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshale
 	err = runtime.PopulateFieldFromPath(&protoReq, "a.str", val)
 
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "a.str", err)
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedStream_2); err != nil {
