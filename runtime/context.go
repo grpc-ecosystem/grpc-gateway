@@ -37,6 +37,14 @@ var (
 	DefaultContextTimeout = 0 * time.Second
 )
 
+type ContextAnnotatorFunc func(context.Context, *http.Request) (context.Context, error)
+
+var contextAnnotators []ContextAnnotatorFunc
+
+func AddContextAnnotator(annotator ContextAnnotatorFunc) {
+	contextAnnotators = append(contextAnnotators, annotator)
+}
+
 /*
 AnnotateContext adds context information such as metadata from the request.
 
@@ -88,6 +96,13 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 
 	if timeout != 0 {
 		ctx, _ = context.WithTimeout(ctx, timeout)
+	}
+	for _, annotator := range contextAnnotators {
+		var err error
+		ctx, err = annotator(ctx, req)
+		if err != nil {
+			return context.Background(), err
+		}
 	}
 	if len(pairs) == 0 {
 		return ctx, nil
