@@ -61,10 +61,8 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 			if strings.ToLower(key) == "authorization" {
 				pairs = append(pairs, "authorization", val)
 			}
-			if mux.incomingHeaderMatcher != nil {
-				if h, ok := mux.incomingHeaderMatcher(key); ok {
-					pairs = append(pairs, h, val)
-				}
+			if h, ok := mux.incomingHeaderMatcher(key); ok {
+				pairs = append(pairs, h, val)
 			}
 		}
 	}

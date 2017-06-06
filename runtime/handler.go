@@ -68,14 +68,10 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 
 func handleForwardResponseServerMetadata(w http.ResponseWriter, mux *ServeMux, md ServerMetadata) {
 	for k, vs := range md.HeaderMD {
-		hKey := fmt.Sprintf("%s%s", MetadataHeaderPrefix, k)
-		if mux.outgoingHeaderMatcher != nil {
-			if h, ok := mux.outgoingHeaderMatcher(k); ok {
-				hKey = h
+		if h, ok := mux.outgoingHeaderMatcher(k); ok {
+			for _, v := range vs {
+				w.Header().Add(h, v)
 			}
-		}
-		for i := range vs {
-			w.Header().Add(hKey, vs[i])
 		}
 	}
 }
@@ -90,8 +86,8 @@ func handleForwardResponseTrailerHeader(w http.ResponseWriter, md ServerMetadata
 func handleForwardResponseTrailer(w http.ResponseWriter, md ServerMetadata) {
 	for k, vs := range md.TrailerMD {
 		tKey := fmt.Sprintf("%s%s", MetadataTrailerPrefix, k)
-		for i := range vs {
-			w.Header().Add(tKey, vs[i])
+		for _, v := range vs {
+			w.Header().Add(tKey, v)
 		}
 	}
 }
