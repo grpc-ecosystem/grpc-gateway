@@ -18,7 +18,8 @@ However, you might still want to provide a traditional RESTful API as well. Reas
 This project aims to provide that HTTP+JSON interface to your gRPC service. A small amount of configuration in your service to attach HTTP semantics is all that's needed to generate a reverse-proxy with this library.
 
 ## Installation
-First you need to install ProtocolBuffers 3.0.0-beta-3 or later.
+First you need to install [golang](https://golang.org/dl) and ProtocolBuffers 3.0.0-beta-3 or later for your platform.
+For ProtocolBuffers either download a pre-built [binary](https://github.com/google/protobuf/releases) for your platform or build it from source.
 
 ```sh
 mkdir tmp
@@ -31,6 +32,8 @@ make
 make check
 sudo make install
 ```
+If you are using cygwin and ProtocolBuffers 3.0.0-beta-3 or later is not available for cygwin yet install the Windows version.
+Make sure that `protoc.exe` is in your `$PATH` and copy the `include` directory from the windows binary into cygwin's `/usr/local/include` directory.
 
 Then, `go get -u` as usual the following packages:
 
@@ -89,7 +92,12 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      --go_out=plugins=grpc:. \
      path/to/your_service.proto
    ```
-   
+   If you are a using cygwin replace the first line in the following commands to provide the correct path to the include directory to `protoc`.
+   ```diff
+   -protoc -I/usr/local/include -I. \
+   +protoc -I$(cygpath -w /usr/local/include) -I. \
+   ```
+
    It will generate a stub file `path/to/your_service.pb.go`.
 4. Implement your service in gRPC as usual
    1. (Optional) Generate gRPC stub in the language you want.
@@ -124,7 +132,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    
    It will generate a reverse proxy `path/to/your_service.pb.gw.go`.
 
-   Note: After generating the code for each of the stubs, in order to build the code, you will want to run ```go get .``` from the directory containing the stubs.
+   Note: After generating the code for each of the stubs, in order to build the code, you will want to move the stubs into your `$GOPATH/src` working directory and run ```go get .``` from the directory containing the stubs.
 
 6. Write an entrypoint
    
@@ -181,6 +189,12 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
      --swagger_out=logtostderr=true:. \
      path/to/your_service.proto
+   ```
+8. Generate executable
+
+   Run this inside the directory containg your `main.go`.
+   ```
+   go build
    ```
 
 ## Parameters and flags
