@@ -16,9 +16,9 @@ import (
 // It supports fully functionality of protobuf unlike JSONBuiltin.
 type JSONPb jsonpb.Marshaler
 
-// ContentType always returns "application/json".
+// ContentType always returns "application/json; charset=utf-8".
 func (*JSONPb) ContentType() string {
-	return "application/json"
+	return "application/json; charset=utf-8"
 }
 
 // Marshal marshals "v" into JSON

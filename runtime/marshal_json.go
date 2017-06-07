@@ -11,9 +11,9 @@ import (
 // it does not support advanced features of protobuf, e.g. map, oneof, ....
 type JSONBuiltin struct{}
 
-// ContentType always Returns "application/json".
+// ContentType always Returns "application/json; charset=utf-8".
 func (*JSONBuiltin) ContentType() string {
-	return "application/json"
+	return "application/json; charset=utf-8"
 }
 
 // Marshal marshals "v" into JSON
