@@ -94,7 +94,7 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 	if mux.metadataAnnotator != nil {
 		md = metadata.Join(md, mux.metadataAnnotator(ctx, req))
 	}
-	return metadata.NewOutgoingContext(ctx, md), nil
+	return metadata.NewContext(ctx, md), nil
 }
 
 // ServerMetadata consists of metadata sent from gRPC server.

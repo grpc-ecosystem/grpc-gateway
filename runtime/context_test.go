@@ -28,7 +28,7 @@ func TestAnnotateContext_WorksWithEmpty(t *testing.T) {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
 	}
-	md, ok := metadata.FromOutgoingContext(annotated)
+	md, ok := metadata.FromContext(annotated)
 	if !ok || len(md) != emptyForwardMetaCount {
 		t.Errorf("Expected %d metadata items in context; got %v", emptyForwardMetaCount, md)
 	}
@@ -50,7 +50,7 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
 	}
-	md, ok := metadata.FromOutgoingContext(annotated)
+	md, ok := metadata.FromContext(annotated)
 	if got, want := len(md), emptyForwardMetaCount+4; !ok || got != want {
 		t.Errorf("metadata items in context = %d want %d: %v", got, want, md)
 	}
@@ -82,7 +82,7 @@ func TestAnnotateContext_XForwardedFor(t *testing.T) {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
 	}
-	md, ok := metadata.FromOutgoingContext(annotated)
+	md, ok := metadata.FromContext(annotated)
 	if !ok || len(md) != emptyForwardMetaCount+1 {
 		t.Errorf("Expected %d metadata items in context; got %v", emptyForwardMetaCount+1, md)
 	}
