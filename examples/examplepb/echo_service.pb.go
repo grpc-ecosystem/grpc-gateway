@@ -14,6 +14,7 @@ It is generated from these files:
 	examples/examplepb/a_bit_of_everything.proto
 	examples/examplepb/stream.proto
 	examples/examplepb/flow_combination.proto
+	examples/examplepb/simple.proto
 
 It has these top-level messages:
 	SimpleMessage
@@ -23,6 +24,7 @@ It has these top-level messages:
 	UnaryProto
 	NestedProto
 	SingleNestedProto
+	SimpleResponse
 */
 package examplepb
 
