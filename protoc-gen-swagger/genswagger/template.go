@@ -573,7 +573,7 @@ func applyTemplate(p param) (string, error) {
 	s := swaggerObject{
 		// Swagger 2.0 is the version of this document
 		Swagger:     "2.0",
-		Schemes:     []string{"http", "https"},
+		Schemes:     []string{"https", "http"},
 		Consumes:    []string{"application/json"},
 		Produces:    []string{"application/json"},
 		Paths:       make(swaggerPathsObject),
