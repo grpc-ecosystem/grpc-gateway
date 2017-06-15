@@ -228,7 +228,7 @@ var (
 	{{$param.RHS "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val)
 {{end}}
 	if err != nil {
-		return nil, metadata, err
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
 	{{end}}
 {{end}}
