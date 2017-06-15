@@ -156,7 +156,7 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
 	for name, msg := range messages {
 		switch name {
-		case ".google.protobuf.Timestamp":
+		case ".google.protobuf.Timestamp", ".google.protobuf.DoubleValue", ".google.protobuf.FloatValue", ".google.protobuf.Int64Value", ".google.protobuf.UInt64Value", ".google.protobuf.Int32Value", ".google.protobuf.UInt32Value", ".google.protobuf.BoolValue", ".google.protobuf.StringValue", ".google.protobuf.BytesValue":
 			continue
 		}
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
@@ -214,6 +214,51 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry) swaggerSchemaO
 			core = schemaCore{
 				Type:   "string",
 				Format: "date-time",
+			}
+		} else if fd.GetTypeName() == ".google.protobuf.DoubleValue" && pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE == ft {
+			core = schemaCore{
+				Type:   "number",
+				Format: "double",
+			}
+		} else if fd.GetTypeName() == ".google.protobuf.FloatValue" && pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE == ft {
+			core = schemaCore{
+				Type:   "number",
+				Format: "float",
+			}
+		} else if fd.GetTypeName() == ".google.protobuf.Int64Value" && pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE == ft {
+			core = schemaCore{
+				Type:   "string",
+				Format: "int64",
+			}
+		} else if fd.GetTypeName() == ".google.protobuf.UInt64Value" && pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE == ft {
+			core = schemaCore{
+				Type:   "string",
+				Format: "uint64",
+			}
+		} else if fd.GetTypeName() == ".google.protobuf.Int32Value" && pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE == ft {
+			core = schemaCore{
+				Type:   "integer",
+				Format: "int32",
+			}
+		} else if fd.GetTypeName() == ".google.protobuf.UInt32Value" && pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE == ft {
+			core = schemaCore{
+				Type:   "integer",
+				Format: "int64",
+			}
+		} else if fd.GetTypeName() == ".google.protobuf.BoolValue" && pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE == ft {
+			core = schemaCore{
+				Type:   "boolean",
+				Format: "boolean",
+			}
+		} else if fd.GetTypeName() == ".google.protobuf.StringValue" && pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE == ft {
+			core = schemaCore{
+				Type:   "string",
+				Format: "",
+			}
+		} else if fd.GetTypeName() == ".google.protobuf.BytesValue" && pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE == ft {
+			core = schemaCore{
+				Type:   "string",
+				Format: "byte",
 			}
 		} else {
 			core = schemaCore{
