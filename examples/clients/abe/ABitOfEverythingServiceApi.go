@@ -42,16 +42,17 @@ func NewABitOfEverythingServiceApiWithBasePath(basePath string) *ABitOfEverythin
  * @param sfixed64Value 
  * @param sint32Value 
  * @param sint64Value 
+ * @param oneofString 
  * @param nonConventionalNameValue 
  * @return ExamplepbABitOfEverything
  */
-//func (a ABitOfEverythingServiceApi) Create (floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string) (ExamplepbABitOfEverything, error) {
-func (a ABitOfEverythingServiceApi) Create (floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string) (ExamplepbABitOfEverything, error) {
+//func (a ABitOfEverythingServiceApi) Create (floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, oneofString string, nonConventionalNameValue string) (ExamplepbABitOfEverything, error) {
+func (a ABitOfEverythingServiceApi) Create (floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, oneofString string, nonConventionalNameValue string) (ExamplepbABitOfEverything, error) {
 
     _sling := sling.New().Post(a.basePath)
 
     // create path and map variables
-    path := "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}"
+    path := "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{oneof_string}/{nonConventionalNameValue}"
     path = strings.Replace(path, "{" + "float_value" + "}", fmt.Sprintf("%v", floatValue), -1)
     path = strings.Replace(path, "{" + "double_value" + "}", fmt.Sprintf("%v", doubleValue), -1)
     path = strings.Replace(path, "{" + "int64_value" + "}", fmt.Sprintf("%v", int64Value), -1)
@@ -66,6 +67,7 @@ func (a ABitOfEverythingServiceApi) Create (floatValue float32, doubleValue floa
     path = strings.Replace(path, "{" + "sfixed64_value" + "}", fmt.Sprintf("%v", sfixed64Value), -1)
     path = strings.Replace(path, "{" + "sint32_value" + "}", fmt.Sprintf("%v", sint32Value), -1)
     path = strings.Replace(path, "{" + "sint64_value" + "}", fmt.Sprintf("%v", sint64Value), -1)
+    path = strings.Replace(path, "{" + "oneof_string" + "}", fmt.Sprintf("%v", oneofString), -1)
     path = strings.Replace(path, "{" + "nonConventionalNameValue" + "}", fmt.Sprintf("%v", nonConventionalNameValue), -1)
 
     _sling = _sling.Path(path)

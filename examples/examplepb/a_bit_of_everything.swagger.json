@@ -267,7 +267,7 @@
         ]
       }
     },
-    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}": {
+    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{oneof_string}/{nonConventionalNameValue}": {
       "post": {
         "operationId": "Create",
         "responses": {
@@ -375,6 +375,12 @@
             "required": true,
             "type": "string",
             "format": "int64"
+          },
+          {
+            "name": "oneof_string",
+            "in": "path",
+            "required": true,
+            "type": "string"
           },
           {
             "name": "nonConventionalNameValue",

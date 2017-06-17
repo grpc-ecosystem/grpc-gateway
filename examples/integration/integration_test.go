@@ -270,6 +270,7 @@ func TestABE(t *testing.T) {
 }
 
 func testABECreate(t *testing.T, port int) {
+	const oneofStr = "bar"
 	want := gw.ABitOfEverything{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
@@ -285,12 +286,13 @@ func testABECreate(t *testing.T, port int) {
 		Sfixed64Value:            -4611686018427387904,
 		Sint32Value:              2147483647,
 		Sint64Value:              4611686018427387903,
+		OneofValue:               &gw.ABitOfEverything_OneofString{oneofStr},
 		NonConventionalNameValue: "camelCase",
 		EnumValue:                gw.NumericEnum_ZERO,
 		PathEnumValue:            pathenum.PathEnum_DEF,
 		NestedPathEnumValue:      pathenum.MessagePathEnum_JKL,
 	}
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue, want.EnumValue, want.PathEnumValue, want.NestedPathEnumValue)
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, oneofStr, want.NonConventionalNameValue)
 
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
 	if err != nil {

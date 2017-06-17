@@ -33,7 +33,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 
 var (
-	filter_ABitOfEverythingService_Create_0 = &utilities.DoubleArray{Encoding: map[string]int{"float_value": 0, "double_value": 1, "int64_value": 2, "uint64_value": 3, "int32_value": 4, "fixed64_value": 5, "fixed32_value": 6, "bool_value": 7, "string_value": 8, "uint32_value": 9, "sfixed32_value": 10, "sfixed64_value": 11, "sint32_value": 12, "sint64_value": 13, "nonConventionalNameValue": 14, "enum_value": 15, "path_enum_value": 16, "nested_path_enum_value": 17}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}}
+	filter_ABitOfEverythingService_Create_0 = &utilities.DoubleArray{Encoding: map[string]int{"float_value": 0, "double_value": 1, "int64_value": 2, "uint64_value": 3, "int32_value": 4, "fixed64_value": 5, "fixed32_value": 6, "bool_value": 7, "string_value": 8, "uint32_value": 9, "sfixed32_value": 10, "sfixed64_value": 11, "sint32_value": 12, "sint64_value": 13, "oneof_string": 14, "nonConventionalNameValue": 15}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17}}
 )
 
 func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -200,6 +200,17 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sint64_value", err)
+	}
+
+	val, ok = pathParams["oneof_string"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "oneof_string")
+	}
+
+	protoReq.alloc_OneofString().OneofString, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "oneof_string", err)
 	}
 
 	val, ok = pathParams["nonConventionalNameValue"]
@@ -1297,7 +1308,7 @@ func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runt
 }
 
 var (
-	pattern_ABitOfEverythingService_Create_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 1, 0, 4, 1, 5, 8, 1, 0, 4, 1, 5, 9, 1, 0, 4, 1, 5, 10, 1, 0, 4, 1, 5, 11, 2, 12, 1, 0, 4, 2, 5, 13, 1, 0, 4, 1, 5, 14, 1, 0, 4, 1, 5, 15, 1, 0, 4, 1, 5, 16, 1, 0, 4, 1, 5, 17, 1, 0, 4, 1, 5, 18, 1, 0, 4, 1, 5, 19, 1, 0, 4, 1, 5, 20, 1, 0, 4, 1, 5, 21, 1, 0, 4, 1, 5, 22}, []string{"v1", "example", "a_bit_of_everything", "float_value", "double_value", "int64_value", "separator", "uint64_value", "int32_value", "fixed64_value", "fixed32_value", "bool_value", "strprefix", "string_value", "uint32_value", "sfixed32_value", "sfixed64_value", "sint32_value", "sint64_value", "nonConventionalNameValue", "enum_value", "path_enum_value", "nested_path_enum_value"}, ""))
+	pattern_ABitOfEverythingService_Create_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 1, 0, 4, 1, 5, 8, 1, 0, 4, 1, 5, 9, 1, 0, 4, 1, 5, 10, 1, 0, 4, 1, 5, 11, 2, 12, 1, 0, 4, 2, 5, 13, 1, 0, 4, 1, 5, 14, 1, 0, 4, 1, 5, 15, 1, 0, 4, 1, 5, 16, 1, 0, 4, 1, 5, 17, 1, 0, 4, 1, 5, 18, 1, 0, 4, 1, 5, 19, 1, 0, 4, 1, 5, 20}, []string{"v1", "example", "a_bit_of_everything", "float_value", "double_value", "int64_value", "separator", "uint64_value", "int32_value", "fixed64_value", "fixed32_value", "bool_value", "strprefix", "string_value", "uint32_value", "sfixed32_value", "sfixed64_value", "sint32_value", "sint64_value", "oneof_string", "nonConventionalNameValue"}, ""))
 
 	pattern_ABitOfEverythingService_CreateBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "a_bit_of_everything"}, ""))
 
