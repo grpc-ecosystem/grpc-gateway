@@ -284,6 +284,11 @@ type FieldPathComponent struct {
 
 // RHS returns a right-hand-side expression in go for this field.
 func (c FieldPathComponent) RHS() string {
+	if c.Target.IsOneof() {
+		n := gogen.CamelCase(c.Name)
+		// alloc func is generated in the target .pb.gw.go file
+		return fmt.Sprintf("alloc_%s().%s", n, n)
+	}
 	return gogen.CamelCase(c.Name)
 }
 
