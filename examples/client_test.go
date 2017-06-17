@@ -18,7 +18,7 @@ func TestEchoClient(t *testing.T) {
 	}
 
 	cl := echo.NewEchoServiceApiWithBasePath("http://localhost:8080")
-	resp, err := cl.Echo("foo")
+	resp, _, err := cl.Echo("foo")
 	if err != nil {
 		t.Errorf(`cl.Echo("foo") failed with %v; want success`, err)
 	}
@@ -35,7 +35,7 @@ func TestEchoBodyClient(t *testing.T) {
 
 	cl := echo.NewEchoServiceApiWithBasePath("http://localhost:8080")
 	req := echo.ExamplepbSimpleMessage{Id: "foo"}
-	resp, err := cl.EchoBody(req)
+	resp, _, err := cl.EchoBody(req)
 	if err != nil {
 		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)
 	}
@@ -56,7 +56,7 @@ func TestAbitOfEverythingClient(t *testing.T) {
 }
 
 func testABEClientCreate(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
-	want := abe.ExamplepbABitOfEverything{
+	want := &abe.ExamplepbABitOfEverything{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
 		Int64Value:               "4294967296",
@@ -73,7 +73,7 @@ func testABEClientCreate(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 		Sint64Value:              "4611686018427387903",
 		NonConventionalNameValue: "camelCase",
 	}
-	resp, err := cl.Create(
+	resp, _, err := cl.Create(
 		want.FloatValue,
 		want.DoubleValue,
 		want.Int64Value,
@@ -148,7 +148,7 @@ func testABEClientCreateBody(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 			"b": {Name: "y", Amount: 2},
 		},
 	}
-	resp, err := cl.CreateBody(want)
+	resp, _, err := cl.CreateBody(want)
 	if err != nil {
 		t.Errorf("cl.CreateBody(%#v) failed with %v; want success", want, err)
 	}

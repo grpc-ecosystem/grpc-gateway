@@ -15,6 +15,7 @@ before_install:
 - nvm install v6.1 && nvm use v6.1 && node --version
 - go get github.com/golang/lint/golint
 - go get github.com/dghubble/sling
+- go get github.com/go-resty/resty
 install:
 - go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 - go get github.com/grpc-ecosystem/grpc-gateway/runtime
