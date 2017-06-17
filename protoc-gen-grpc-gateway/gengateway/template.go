@@ -102,13 +102,16 @@ func (f queryParamFilter) String() string {
 	return fmt.Sprintf("&utilities.DoubleArray{Encoding: map[string]int{%s}, Base: %#v, Check: %#v}", e, f.Base, f.Check)
 }
 
-type trailerParams struct {
-	Services           []*descriptor.Service
-	UseRequestContext  bool
-	RegisterFuncSuffix string
+type registererParams struct {
+	Services          []*descriptor.Service
+	UseRequestContext bool
 }
 
-func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
+type decodeHelperParams struct {
+	Messages []*descriptor.Message
+}
+
+func applyTemplate(p param) (string, error) {
 	w := bytes.NewBuffer(nil)
 	if err := headerTemplate.Execute(w, p); err != nil {
 		return "", err
@@ -137,12 +140,18 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 		return "", errNoTargetService
 	}
 
-	tp := trailerParams{
-		Services:           targetServices,
-		UseRequestContext:  p.UseRequestContext,
-		RegisterFuncSuffix: p.RegisterFuncSuffix,
+	rp := registererParams{
+		Services:          targetServices,
+		UseRequestContext: p.UseRequestContext,
 	}
-	if err := trailerTemplate.Execute(w, tp); err != nil {
+	if err := registerersTemplate.Execute(w, rp); err != nil {
+		return "", err
+	}
+
+	hp := decodeHelperParams{
+		Messages: p.Messages,
+	}
+	if err := decodeHelperTemplate.Execute(w, hp); err != nil {
 		return "", err
 	}
 	return w.String(), nil
@@ -365,7 +374,7 @@ var (
 }
 `))
 
-	trailerTemplate = template.Must(template.New("trailer").Parse(`
+	registerersTemplate = template.Must(template.New("registerers").Parse(`
 {{$UseRequestContext := .UseRequestContext}}
 {{range $svc := .Services}}
 // Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}FromEndpoint is same as Register{{$svc.GetName}}{{$.RegisterFuncSuffix}} but
@@ -480,5 +489,24 @@ var (
 	{{end}}
 	{{end}}
 )
-{{end}}`))
+{{end}}
+`))
+	decodeHelperTemplate = template.Must(template.New("decode-helpers").Parse(`
+{{range $m := .Messages}}
+{{range $m.Fields}}
+{{if .IsOneof}}
+{{$mt := $m.GoType $m.File.GoPkg.Path}}
+{{$ft := printf "%s_%s" $mt .GoName}}
+func (m *{{$mt}}) alloc_{{.GoName}}() *{{$ft}} {
+	if x, ok := m.{{.GoOneofName}}.(*{{$ft}}); ok {
+		return x
+	}
+	x := new({{$ft}})
+	m.{{.GoOneofName}} = x
+	return x
+}
+{{end}}
+{{end}}
+{{end}}
+`))
 )

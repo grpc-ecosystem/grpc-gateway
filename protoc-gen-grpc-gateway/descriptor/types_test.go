@@ -79,6 +79,78 @@ func TestGoPackageString(t *testing.T) {
 	}
 }
 
+func TestIsOneof(t *testing.T) {
+	const src = `
+		name: 'M'
+		field <
+			name: 'oneof_option'
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			number: 1
+			oneof_index: 0
+		>
+		oneof_decl <
+			name: 'oneof_field'
+		>
+	`
+	var d descriptor.DescriptorProto
+	if err := proto.UnmarshalText(src, &d); err != nil {
+		t.Fatalf("proto.UnmarshalText(%s, &d) failed with %v; want success", src, err)
+	}
+	m := &Message{DescriptorProto: &d}
+	f := &Field{
+		Message:              m,
+		FieldDescriptorProto: d.Field[0],
+	}
+
+	if got, want := f.IsOneof(), true; got != want {
+		t.Errorf("f.IsOneof() = %v; want %v", got, want)
+	}
+
+	f.OneofIndex = nil
+	if got, want := f.IsOneof(), false; got != want {
+		t.Errorf("f.IsOneof() = %v; want %v", got, want)
+	}
+}
+
+func TestGoOneofName(t *testing.T) {
+	const src = `
+		name: 'M'
+		field <
+			name: 'oneof_option'
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			number: 1
+			oneof_index: 0
+		>
+		oneof_decl <
+			name: 'oneof_field'
+		>
+	`
+	var d descriptor.DescriptorProto
+	if err := proto.UnmarshalText(src, &d); err != nil {
+		t.Fatalf("proto.UnmarshalText(%s, &d) failed with %v; want success", src, err)
+	}
+	m := &Message{DescriptorProto: &d}
+	f := &Field{
+		Message:              m,
+		FieldDescriptorProto: d.Field[0],
+	}
+
+	name, err := f.GoOneofName()
+	if err != nil {
+		t.Errorf("f.GoOneofName() failed with %v; want success", err)
+	}
+	if got, want := name, "OneofField"; got != want {
+		t.Errorf("name = %q; want %q", got, want)
+	}
+
+	f.OneofIndex = nil
+	if name, err := f.GoOneofName(); err == nil {
+		t.Errorf("f.GoOneofName() = %q; want failure", name)
+	}
+}
+
 func TestFieldPath(t *testing.T) {
 	var fds []*descriptor.FileDescriptorProto
 	for _, src := range []string{
