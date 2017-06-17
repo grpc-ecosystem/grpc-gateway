@@ -42,16 +42,17 @@ func NewABitOfEverythingServiceApiWithBasePath(basePath string) *ABitOfEverythin
  * @param sfixed64Value 
  * @param sint32Value 
  * @param sint64Value 
+ * @param oneofString 
  * @param nonConventionalNameValue 
  * @return ExamplepbABitOfEverything
  */
-//func (a ABitOfEverythingServiceApi) Create (floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string) (ExamplepbABitOfEverything, error) {
-func (a ABitOfEverythingServiceApi) Create (floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string) (ExamplepbABitOfEverything, error) {
+//func (a ABitOfEverythingServiceApi) Create (floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, oneofString string, nonConventionalNameValue string) (ExamplepbABitOfEverything, error) {
+func (a ABitOfEverythingServiceApi) Create (floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, oneofString string, nonConventionalNameValue string) (ExamplepbABitOfEverything, error) {
 
     _sling := sling.New().Post(a.basePath)
 
     // create path and map variables
-    path := "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}"
+    path := "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{oneof_string}/{nonConventionalNameValue}"
     path = strings.Replace(path, "{" + "float_value" + "}", fmt.Sprintf("%v", floatValue), -1)
     path = strings.Replace(path, "{" + "double_value" + "}", fmt.Sprintf("%v", doubleValue), -1)
     path = strings.Replace(path, "{" + "int64_value" + "}", fmt.Sprintf("%v", int64Value), -1)
@@ -66,6 +67,7 @@ func (a ABitOfEverythingServiceApi) Create (floatValue float32, doubleValue floa
     path = strings.Replace(path, "{" + "sfixed64_value" + "}", fmt.Sprintf("%v", sfixed64Value), -1)
     path = strings.Replace(path, "{" + "sint32_value" + "}", fmt.Sprintf("%v", sint32Value), -1)
     path = strings.Replace(path, "{" + "sint64_value" + "}", fmt.Sprintf("%v", sint64Value), -1)
+    path = strings.Replace(path, "{" + "oneof_string" + "}", fmt.Sprintf("%v", oneofString), -1)
     path = strings.Replace(path, "{" + "nonConventionalNameValue" + "}", fmt.Sprintf("%v", nonConventionalNameValue), -1)
 
     _sling = _sling.Path(path)
@@ -237,6 +239,66 @@ func (a ABitOfEverythingServiceApi) DeepPathEcho (singleNestedName string, body 
 /**
  * 
  * 
+ * @param body 
+ * @return ExamplepbABitOfEverything
+ */
+//func (a ABitOfEverythingServiceApi) DeepPathEcho_1 (body string) (ExamplepbABitOfEverything, error) {
+func (a ABitOfEverythingServiceApi) DeepPathEcho_1 (body string) (ExamplepbABitOfEverything, error) {
+
+    _sling := sling.New().Post(a.basePath)
+
+    // create path and map variables
+    path := "/v2/example/oneof/echo"
+
+    _sling = _sling.Path(path)
+
+    // accept header
+    accepts := []string { "application/json" }
+    for key := range accepts {
+        _sling = _sling.Set("Accept", accepts[key])
+        break // only use the first Accept
+    }
+
+// body params
+    _sling = _sling.BodyJSON(body)
+
+  var successPayload = new(ExamplepbABitOfEverything)
+
+  // We use this map (below) so that any arbitrary error JSON can be handled.
+  // FIXME: This is in the absence of this Go generator honoring the non-2xx
+  // response (error) models, which needs to be implemented at some point.
+  var failurePayload map[string]interface{}
+
+  httpResponse, err := _sling.Receive(successPayload, &failurePayload)
+
+  if err == nil {
+    // err == nil only means that there wasn't a sub-application-layer error (e.g. no network error)
+    if failurePayload != nil {
+      // If the failurePayload is present, there likely was some kind of non-2xx status
+      // returned (and a JSON payload error present)
+      var str []byte
+      str, err = json.Marshal(failurePayload)
+      if err == nil { // For safety, check for an error marshalling... probably superfluous
+        // This will return the JSON error body as a string
+        err = errors.New(string(str))
+      }
+  } else {
+    // So, there was no network-type error, and nothing in the failure payload,
+    // but we should still check the status code
+    if httpResponse == nil {
+      // This should never happen...
+      err = errors.New("No HTTP Response received.")
+    } else if code := httpResponse.StatusCode; 200 > code || code > 299 {
+        err = errors.New("HTTP Error: " + string(httpResponse.StatusCode))
+      }
+    }
+  }
+
+  return *successPayload, err
+}
+/**
+ * 
+ * 
  * @param uuid 
  * @return ProtobufEmpty
  */
@@ -358,8 +420,8 @@ func (a ABitOfEverythingServiceApi) Echo (value string) (SubStringMessage, error
  * @param value 
  * @return SubStringMessage
  */
-//func (a ABitOfEverythingServiceApi) Echo_1 (value string) (SubStringMessage, error) {
-func (a ABitOfEverythingServiceApi) Echo_1 (value string) (SubStringMessage, error) {
+//func (a ABitOfEverythingServiceApi) Echo_2 (value string) (SubStringMessage, error) {
+func (a ABitOfEverythingServiceApi) Echo_2 (value string) (SubStringMessage, error) {
 
     _sling := sling.New().Get(a.basePath)
 
@@ -421,8 +483,8 @@ func (a ABitOfEverythingServiceApi) Echo_1 (value string) (SubStringMessage, err
  * @param body 
  * @return SubStringMessage
  */
-//func (a ABitOfEverythingServiceApi) Echo_2 (body string) (SubStringMessage, error) {
-func (a ABitOfEverythingServiceApi) Echo_2 (body string) (SubStringMessage, error) {
+//func (a ABitOfEverythingServiceApi) Echo_3 (body string) (SubStringMessage, error) {
+func (a ABitOfEverythingServiceApi) Echo_3 (body string) (SubStringMessage, error) {
 
     _sling := sling.New().Post(a.basePath)
 

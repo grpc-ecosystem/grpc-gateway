@@ -175,6 +175,28 @@ type Field struct {
 	*descriptor.FieldDescriptorProto
 }
 
+// IsOneof returns whether the field is in a oneof definition.
+func (f Field) IsOneof() bool {
+	return f.OneofIndex != nil
+}
+
+// GoOneofName returns the name of the golang field name corresponding to
+// the oneof definition to which this protobuf field "f" belongs.
+// It returns an error if "f" is not a member of oneof definition.
+func (f Field) GoOneofName() (string, error) {
+	if !f.IsOneof() {
+		return "", fmt.Errorf("%s is not a oneof field", f.GetName())
+	}
+	d := f.Message.GetOneofDecl()[f.GetOneofIndex()]
+	return gogen.CamelCase(d.GetName()), nil
+}
+
+// GoName returns the name of the golang field name corresponding to
+// this protobuf field.
+func (f Field) GoName() string {
+	return gogen.CamelCase(f.GetName())
+}
+
 // Parameter is a parameter provided in http requests
 type Parameter struct {
 	// FieldPath is a path to a proto field which this parameter is mapped to.
@@ -262,6 +284,11 @@ type FieldPathComponent struct {
 
 // RHS returns a right-hand-side expression in go for this field.
 func (c FieldPathComponent) RHS() string {
+	if c.Target.IsOneof() {
+		n := gogen.CamelCase(c.Name)
+		// alloc func is generated in the target .pb.gw.go file
+		return fmt.Sprintf("alloc_%s().%s", n, n)
+	}
 	return gogen.CamelCase(c.Name)
 }
 

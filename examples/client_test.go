@@ -71,6 +71,7 @@ func testABEClientCreate(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 		Sfixed64Value:            "-4611686018427387904",
 		Sint32Value:              2147483647,
 		Sint64Value:              "4611686018427387903",
+		OneofString:              "bar",
 		NonConventionalNameValue: "camelCase",
 	}
 	resp, err := cl.Create(
@@ -88,6 +89,7 @@ func testABEClientCreate(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 		want.Sfixed64Value,
 		want.Sint32Value,
 		want.Sint64Value,
+		want.OneofString,
 		want.NonConventionalNameValue,
 	)
 	if err != nil {

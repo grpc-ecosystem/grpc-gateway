@@ -79,7 +79,81 @@ func TestGoPackageString(t *testing.T) {
 	}
 }
 
-func TestFieldPath(t *testing.T) {
+func TestIsOneof(t *testing.T) {
+	const src = `
+		name: 'M'
+		field <
+			name: 'oneof_option'
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			number: 1
+			oneof_index: 0
+		>
+		oneof_decl <
+			name: 'oneof_field'
+		>
+	`
+	var d descriptor.DescriptorProto
+	if err := proto.UnmarshalText(src, &d); err != nil {
+		t.Fatalf("proto.UnmarshalText(%s, &d) failed with %v; want success", src, err)
+	}
+	m := &Message{DescriptorProto: &d}
+	f := &Field{
+		Message:              m,
+		FieldDescriptorProto: d.Field[0],
+	}
+
+	if got, want := f.IsOneof(), true; got != want {
+		t.Errorf("f.IsOneof() = %v; want %v", got, want)
+	}
+
+	f.OneofIndex = nil
+	if got, want := f.IsOneof(), false; got != want {
+		t.Errorf("f.IsOneof() = %v; want %v", got, want)
+	}
+}
+
+func TestGoOneofName(t *testing.T) {
+	const src = `
+		name: 'M'
+		field <
+			name: 'oneof_option'
+			label: LABEL_OPTIONAL
+			type: TYPE_STRING
+			number: 1
+			oneof_index: 0
+		>
+		oneof_decl <
+			name: 'oneof_field'
+		>
+	`
+	var d descriptor.DescriptorProto
+	if err := proto.UnmarshalText(src, &d); err != nil {
+		t.Fatalf("proto.UnmarshalText(%s, &d) failed with %v; want success", src, err)
+	}
+	m := &Message{DescriptorProto: &d}
+	f := &Field{
+		Message:              m,
+		FieldDescriptorProto: d.Field[0],
+	}
+
+	name, err := f.GoOneofName()
+	if err != nil {
+		t.Errorf("f.GoOneofName() failed with %v; want success", err)
+	}
+	if got, want := name, "OneofField"; got != want {
+		t.Errorf("name = %q; want %q", got, want)
+	}
+
+	f.OneofIndex = nil
+	if name, err := f.GoOneofName(); err == nil {
+		t.Errorf("f.GoOneofName() = %q; want failure", name)
+	}
+}
+
+// nestedExamples returns a pair of message descriptors for testing
+// field paths to nested fields with them.
+func nestedExamples(t *testing.T) (proto3, proto2 *Message) {
 	var fds []*descriptor.FileDescriptorProto
 	for _, src := range []string{
 		`
@@ -99,6 +173,16 @@ func TestFieldPath(t *testing.T) {
 				label: LABEL_OPTIONAL
 				type: TYPE_STRING
 				number: 2
+			>
+			field <
+				name: 'oneof_opt'
+				label: LABEL_OPTIONAL
+				type: TYPE_INT32
+				number: 3
+				oneof_index: 0
+			>
+			oneof_decl <
+				name: 'oneof_field'
 			>
 		>
 		syntax: "proto3"
@@ -120,6 +204,7 @@ func TestFieldPath(t *testing.T) {
 				type: TYPE_STRING
 				number: 2
 			>
+			# NOTE: oneof field is not supported in proto2 syntax
 		>
 		syntax: "proto2"
 		`,
@@ -130,14 +215,15 @@ func TestFieldPath(t *testing.T) {
 		}
 		fds = append(fds, &fd)
 	}
-	nest := &Message{
+	proto3 = &Message{
 		DescriptorProto: fds[0].MessageType[0],
 		Fields: []*Field{
 			{FieldDescriptorProto: fds[0].MessageType[0].Field[0]},
 			{FieldDescriptorProto: fds[0].MessageType[0].Field[1]},
+			{FieldDescriptorProto: fds[0].MessageType[0].Field[2]},
 		},
 	}
-	nest2 := &Message{
+	proto2 = &Message{
 		DescriptorProto: fds[1].MessageType[0],
 		Fields: []*Field{
 			{FieldDescriptorProto: fds[1].MessageType[0].Field[0]},
@@ -147,19 +233,25 @@ func TestFieldPath(t *testing.T) {
 	file1 := &File{
 		FileDescriptorProto: fds[0],
 		GoPkg:               GoPackage{Path: "example", Name: "example"},
-		Messages:            []*Message{nest},
+		Messages:            []*Message{proto3},
 	}
 	file2 := &File{
 		FileDescriptorProto: fds[1],
 		GoPkg:               GoPackage{Path: "example", Name: "example"},
-		Messages:            []*Message{nest2},
+		Messages:            []*Message{proto2},
 	}
 	crossLinkFixture(file1)
 	crossLinkFixture(file2)
 
+	return proto3, proto2
+}
+
+func TestFieldPath(t *testing.T) {
+	proto3, proto2 := nestedExamples(t)
+
 	c1 := FieldPathComponent{
 		Name:   "nest_field",
-		Target: nest2.Fields[0],
+		Target: proto2.Fields[0],
 	}
 	if got, want := c1.LHS(), "GetNestField()"; got != want {
 		t.Errorf("c1.LHS() = %q; want %q", got, want)
@@ -170,7 +262,7 @@ func TestFieldPath(t *testing.T) {
 
 	c2 := FieldPathComponent{
 		Name:   "nest2_field",
-		Target: nest.Fields[0],
+		Target: proto3.Fields[0],
 	}
 	if got, want := c2.LHS(), "Nest2Field"; got != want {
 		t.Errorf("c2.LHS() = %q; want %q", got, want)
@@ -182,7 +274,7 @@ func TestFieldPath(t *testing.T) {
 	fp := FieldPath{
 		c1, c2, c1, FieldPathComponent{
 			Name:   "terminal_field",
-			Target: nest.Fields[1],
+			Target: proto3.Fields[1],
 		},
 	}
 	if got, want := fp.RHS("resp"), "resp.GetNestField().Nest2Field.GetNestField().TerminalField"; got != want {
@@ -192,7 +284,7 @@ func TestFieldPath(t *testing.T) {
 	fp2 := FieldPath{
 		c2, c1, c2, FieldPathComponent{
 			Name:   "terminal_field",
-			Target: nest2.Fields[1],
+			Target: proto2.Fields[1],
 		},
 	}
 	if got, want := fp2.RHS("resp"), "resp.Nest2Field.GetNestField().Nest2Field.TerminalField"; got != want {
@@ -202,5 +294,28 @@ func TestFieldPath(t *testing.T) {
 	var fpEmpty FieldPath
 	if got, want := fpEmpty.RHS("resp"), "resp"; got != want {
 		t.Errorf("fpEmpty.RHS(%q) = %q; want %q", "resp", got, want)
+	}
+}
+
+func TestOneofFieldPath(t *testing.T) {
+	proto3, proto2 := nestedExamples(t)
+
+	c1 := FieldPathComponent{
+		Name:   "nest_field",
+		Target: proto2.Fields[0],
+	}
+	c2 := FieldPathComponent{
+		Name:   "nest2_field",
+		Target: proto3.Fields[0],
+	}
+
+	fp := FieldPath{
+		c1, c2, c1, FieldPathComponent{
+			Name:   "oneof_opt",
+			Target: proto3.Fields[2],
+		},
+	}
+	if got, want := fp.RHS("resp"), "resp.GetNestField().Nest2Field.GetNestField().alloc_OneofOpt().OneofOpt"; got != want {
+		t.Errorf("fp.RHS(%q) = %q; want %q", "resp", got, want)
 	}
 }

@@ -76,7 +76,7 @@ service ABitOfEverythingService {
 	rpc Create(ABitOfEverything) returns (ABitOfEverything) {
 		// TODO add enum_value
 		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}"
+			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{oneof_string}/{nonConventionalNameValue}"
 		};
 	}
 	rpc CreateBody(ABitOfEverything) returns (ABitOfEverything) {
@@ -122,6 +122,12 @@ service ABitOfEverythingService {
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything/{single_nested.name}"
 			body: "*"
+
+			additional_bindings {
+				post: "/v2/example/oneof/echo"
+				// a oneof option in body
+				body: "oneof_string"
+			}
 		};
 	}
 	rpc NoBindings(google.protobuf.Duration) returns (google.protobuf.Empty) {}
