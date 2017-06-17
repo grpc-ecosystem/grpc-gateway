@@ -1097,7 +1097,7 @@ func TestResolveFieldPath(t *testing.T) {
 		if err != nil {
 			t.Fatalf("reg.LookupFile(%q) failed with %v; want success; on file=%s", file.GetName(), err, spec.src)
 		}
-		_, err = reg.resolveFiledPath(f.Messages[0], spec.path)
+		_, err = reg.resolveFieldPath(f.Messages[0], spec.path)
 		if got, want := err != nil, spec.wantErr; got != want {
 			if want {
 				t.Errorf("reg.resolveFiledPath(%q, %q) succeeded; want an error", f.Messages[0].GetName(), spec.path)
