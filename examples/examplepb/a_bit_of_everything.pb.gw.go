@@ -850,3 +850,21 @@ var (
 
 	forward_ABitOfEverythingService_Timeout_0 = runtime.ForwardResponseMessage
 )
+
+func (m *ABitOfEverything) alloc_OneofEmpty() *ABitOfEverything_OneofEmpty {
+	if x, ok := m.OneofValue.(*ABitOfEverything_OneofEmpty); ok {
+		return x
+	}
+	x := new(ABitOfEverything_OneofEmpty)
+	m.OneofValue = x
+	return x
+}
+
+func (m *ABitOfEverything) alloc_OneofString() *ABitOfEverything_OneofString {
+	if x, ok := m.OneofValue.(*ABitOfEverything_OneofString); ok {
+		return x
+	}
+	x := new(ABitOfEverything_OneofString)
+	m.OneofValue = x
+	return x
+}
