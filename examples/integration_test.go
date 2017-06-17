@@ -703,6 +703,42 @@ func testAdditionalBindings(t *testing.T, port int) {
 	}
 }
 
+func TestOneofInBody(t *testing.T) {
+	const (
+		url     = "http://localhost:8080/v2/example/oneof/echo"
+		payload = `"foo"`
+	)
+	want := gw.ABitOfEverything{
+		OneofValue: &gw.ABitOfEverything_OneofString{"foo"},
+	}
+
+	resp, err := http.Post(url, "application/json", strings.NewReader(payload))
+	if err != nil {
+		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		return
+	}
+	defer resp.Body.Close()
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	var got gw.ABitOfEverything
+	if err := jsonpb.UnmarshalString(string(buf), &got); err != nil {
+		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+		return
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got = %v; want %v", got, want)
+	}
+}
+
 func TestTimeout(t *testing.T) {
 	url := "http://localhost:8080/v2/example/timeout"
 	req, err := http.NewRequest("GET", url, nil)

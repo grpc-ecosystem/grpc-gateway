@@ -544,6 +544,32 @@
         ]
       }
     },
+    "/v2/example/oneof/echo": {
+      "post": {
+        "operationId": "DeepPathEcho",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v2/example/timeout": {
       "get": {
         "operationId": "Timeout",

@@ -122,6 +122,12 @@ service ABitOfEverythingService {
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything/{single_nested.name}"
 			body: "*"
+
+			additional_bindings {
+				post: "/v2/example/oneof/echo"
+				// a oneof option in body
+				body: "oneof_string"
+			}
 		};
 	}
 	rpc NoBindings(google.protobuf.Duration) returns (google.protobuf.Empty) {}
