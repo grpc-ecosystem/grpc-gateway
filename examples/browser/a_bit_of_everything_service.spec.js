@@ -33,6 +33,7 @@ describe('ABitOfEverythingService', function() {
       sfixed64_value: "-4611686018427387904",
       sint32_value: 2147483647,
       sint64_value: "4611686018427387903",
+      oneof_string: "bar",
       nonConventionalNameValue: "camelCase",
     };
 
