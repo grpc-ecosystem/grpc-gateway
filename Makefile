@@ -109,12 +109,16 @@ $(EXAMPLE_SWAGGERSRCS): $(SWAGGER_PLUGIN) $(SWAGGER_EXAMPLES)
 
 $(ECHO_EXAMPLE_SRCS): $(ECHO_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ECHO_EXAMPLE_SPEC) \
-	    -l go -o examples/clients --additional-properties packageName=echo
-	@rm -f $(EXAMPLE_CLIENT_DIR)/README.md $(EXAMPLE_CLIENT_DIR)/git_push.sh $(EXAMPLE_CLIENT_DIR)/.gitignore
+	    -l go -o examples/clients/echo --additional-properties packageName=echo
+	@rm -f $(EXAMPLE_CLIENT_DIR)/echo/README.md \
+		$(EXAMPLE_CLIENT_DIR)/echo/git_push.sh \
+		$(EXAMPLE_CLIENT_DIR)/echo/.travis.yml
 $(ABE_EXAMPLE_SRCS): $(ABE_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ABE_EXAMPLE_SPEC) \
-	    -l go -o examples/clients --additional-properties packageName=abe
-	@rm -f $(EXAMPLE_CLIENT_DIR)/README.md $(EXAMPLE_CLIENT_DIR)/git_push.sh $(EXAMPLE_CLIENT_DIR)/.gitignore
+	    -l go -o examples/clients/abe --additional-properties packageName=abe
+	@rm -f $(EXAMPLE_CLIENT_DIR)/abe/README.md \
+		$(EXAMPLE_CLIENT_DIR)/abe/git_push.sh \
+		$(EXAMPLE_CLIENT_DIR)/abe/.travis.yml
 
 examples: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
 test: examples
