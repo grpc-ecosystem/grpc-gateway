@@ -3,7 +3,6 @@ package integration_test
 import (
 	"bytes"
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -837,99 +836,16 @@ func testAdditionalBindings(t *testing.T, port int) {
 	}
 }
 
-func testABERepeated(t *testing.T, port int) {
-	f := func(v reflect.Value) string {
-		var f func(v reflect.Value, idx int) string
-		s := make([]string, v.Len())
-		switch v.Index(0).Kind() {
-		case reflect.Slice:
-			f = func(v reflect.Value, idx int) string {
-				t := v.Index(idx).Type().Elem().Kind()
-				if t == reflect.Uint8 {
-					return base64.URLEncoding.EncodeToString(v.Index(idx).Interface().([]byte))
-				}
-				// Could handle more elegantly
-				panic("unknown slice of type: " + t.String())
-			}
-		default:
-			f = func(v reflect.Value, idx int) string {
-				return fmt.Sprintf("%v", v.Index(idx).Interface())
-			}
-		}
-		for i := 0; i < v.Len(); i++ {
-			s[i] = f(v, i)
-		}
-		return strings.Join(s, ",")
+func TestOneofInBody(t *testing.T) {
+	const (
+		url     = "http://localhost:8080/v2/example/oneof/echo"
+		payload = `"foo"`
+	)
+	want := gw.ABitOfEverything{
+		OneofValue: &gw.ABitOfEverything_OneofString{"foo"},
 	}
-	want := gw.ABitOfEverythingRepeated{
-		PathRepeatedFloatValue: []float32{
-			1.5,
-			-1.5,
-		},
-		PathRepeatedDoubleValue: []float64{
-			2.5,
-			-2.5,
-		},
-		PathRepeatedInt64Value: []int64{
-			4294967296,
-			-4294967296,
-		},
-		PathRepeatedUint64Value: []uint64{
-			0,
-			9223372036854775807,
-		},
-		PathRepeatedInt32Value: []int32{
-			2147483647,
-			-2147483648,
-		},
-		PathRepeatedFixed64Value: []uint64{
-			0,
-			9223372036854775807,
-		},
-		PathRepeatedFixed32Value: []uint32{
-			0,
-			4294967295,
-		},
-		PathRepeatedBoolValue: []bool{
-			true,
-			false,
-		},
-		PathRepeatedStringValue: []string{
-			"foo",
-			"bar",
-		},
-		PathRepeatedBytesValue: [][]byte{
-			[]byte{0x00},
-			[]byte{0xFF},
-		},
-		PathRepeatedUint32Value: []uint32{
-			0,
-			4294967295,
-		},
-		PathRepeatedEnumValue: []gw.NumericEnum{
-			gw.NumericEnum_ZERO,
-			gw.NumericEnum_ONE,
-		},
-		PathRepeatedSfixed32Value: []int32{
-			2147483647,
-			-2147483648,
-		},
-		PathRepeatedSfixed64Value: []int64{
-			4294967296,
-			-4294967296,
-		},
-		PathRepeatedSint32Value: []int32{
-			2147483647,
-			-2147483648,
-		},
-		PathRepeatedSint64Value: []int64{
-			4611686018427387903,
-			-4611686018427387904,
-		},
-	}
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything_repeated/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s", port, f(reflect.ValueOf(want.PathRepeatedFloatValue)), f(reflect.ValueOf(want.PathRepeatedDoubleValue)), f(reflect.ValueOf(want.PathRepeatedInt64Value)), f(reflect.ValueOf(want.PathRepeatedUint64Value)), f(reflect.ValueOf(want.PathRepeatedInt32Value)), f(reflect.ValueOf(want.PathRepeatedFixed64Value)), f(reflect.ValueOf(want.PathRepeatedFixed32Value)), f(reflect.ValueOf(want.PathRepeatedBoolValue)), f(reflect.ValueOf(want.PathRepeatedStringValue)), f(reflect.ValueOf(want.PathRepeatedBytesValue)), f(reflect.ValueOf(want.PathRepeatedUint32Value)), f(reflect.ValueOf(want.PathRepeatedEnumValue)), f(reflect.ValueOf(want.PathRepeatedSfixed32Value)), f(reflect.ValueOf(want.PathRepeatedSfixed64Value)), f(reflect.ValueOf(want.PathRepeatedSint32Value)), f(reflect.ValueOf(want.PathRepeatedSint64Value)))
 
-	resp, err := http.Get(url)
+	resp, err := http.Post(url, "application/json", strings.NewReader(payload))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
 		return
@@ -946,13 +862,13 @@ func testABERepeated(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg gw.ABitOfEverythingRepeated
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
+	var got gw.ABitOfEverything
+	if err := jsonpb.UnmarshalString(string(buf), &got); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
-	if got := msg; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg= %v; want %v", &got, &want)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got = %v; want %v", got, want)
 	}
 }
 
