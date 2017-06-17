@@ -208,7 +208,7 @@ var (
 	var metadata runtime.ServerMetadata
 {{if .Body}}
 	if req.ContentLength > 0 {
-		if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.RHS "protoReq"}}); err != nil {
+		if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 	}
@@ -228,7 +228,7 @@ var (
 {{if $param.IsNestedProto3 }}
 	err = runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val)
 {{else}}
-	{{$param.RHS "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val)
+	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val)
 {{end}}
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
