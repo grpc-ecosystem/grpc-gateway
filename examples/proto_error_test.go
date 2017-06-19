@@ -111,7 +111,7 @@ func TestUnknownPathWithProtoError(t *testing.T) {
 		return
 	}
 
-	if got, want := resp.StatusCode, http.StatusNotImplemented; got != want {
+	if got, want := resp.StatusCode, http.StatusNotFound; got != want {
 		t.Errorf("resp.StatusCode = %d; want %d", got, want)
 		t.Logf("%s", buf)
 	}
@@ -122,7 +122,7 @@ func TestUnknownPathWithProtoError(t *testing.T) {
 		return
 	}
 
-	if got, want := msg.Code, int32(codes.Unimplemented); got != want {
+	if got, want := msg.Code, int32(codes.NotFound); got != want {
 		t.Errorf("msg.Code = %d; want %d", got, want)
 		return
 	}
@@ -147,7 +147,7 @@ func TestMethodNotAllowedWithProtoError(t *testing.T) {
 		return
 	}
 
-	if got, want := resp.StatusCode, http.StatusNotImplemented; got != want {
+	if got, want := resp.StatusCode, http.StatusMethodNotAllowed; got != want {
 		t.Errorf("resp.StatusCode = %d; want %d", got, want)
 		t.Logf("%s", buf)
 	}
@@ -158,7 +158,7 @@ func TestMethodNotAllowedWithProtoError(t *testing.T) {
 		return
 	}
 
-	if got, want := msg.Code, int32(codes.Unimplemented); got != want {
+	if got, want := msg.Code, int32(runtime.GrpcGatewayMethodNotAllowed); got != want {
 		t.Errorf("msg.Code = %d; want %d", got, want)
 		return
 	}
