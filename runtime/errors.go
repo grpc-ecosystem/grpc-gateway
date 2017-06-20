@@ -109,15 +109,15 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 		grpclog.Printf("Failed to extract ServerMetadata from context")
 	}
 
-	handleForwardResponseServerMetadata(w, mux, md)
-	handleForwardResponseTrailerHeader(w, md)
+	HandleForwardResponseServerMetadata(w, mux, md)
+	HandleForwardResponseTrailerHeader(w, md)
 	st := HTTPStatusFromCode(s.Code())
 	w.WriteHeader(st)
 	if _, err := w.Write(buf); err != nil {
 		grpclog.Printf("Failed to write response: %v", err)
 	}
 
-	handleForwardResponseTrailer(w, md)
+	HandleForwardResponseTrailer(w, md)
 }
 
 // DefaultOtherErrorHandler is the default implementation of OtherErrorHandler.
