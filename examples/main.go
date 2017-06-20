@@ -129,7 +129,7 @@ func HTTPError(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Mar
 
 	body := &errorBody{
 		Error: s.Message(),
-		Code:  200,
+		Code:  int32(s.Code()),
 	}
 
 	buf, merr := marshaler.Marshal(body)
@@ -149,7 +149,7 @@ func HTTPError(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Mar
 
 	runtime.HandleForwardResponseServerMetadata(w, mux, md)
 	runtime.HandleForwardResponseTrailerHeader(w, md)
-	st := runtime.HTTPStatusFromCode(0)
+	st := runtime.HTTPStatusFromCode(s.Code())
 	w.WriteHeader(st)
 	if _, err := w.Write(buf); err != nil {
 		grpclog.Printf("Failed to write response: %v", err)
