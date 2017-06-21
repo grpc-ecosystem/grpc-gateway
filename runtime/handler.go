@@ -66,7 +66,7 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 	}
 }
 
-// Handle Forward Response ServerMetadata sets to http header
+// HandleForwardResponseServerMetadata Handle Forward Response ServerMetadata sets to http header
 func HandleForwardResponseServerMetadata(w http.ResponseWriter, mux *ServeMux, md ServerMetadata) {
 	for k, vs := range md.HeaderMD {
 		if h, ok := mux.outgoingHeaderMatcher(k); ok {
@@ -77,7 +77,7 @@ func HandleForwardResponseServerMetadata(w http.ResponseWriter, mux *ServeMux, m
 	}
 }
 
-// Handle Forward Response TrailerHeader sets to http header trailer
+// HandleForwardResponseTrailerHeader Handle Forward Response TrailerHeader sets to http header trailer
 func HandleForwardResponseTrailerHeader(w http.ResponseWriter, md ServerMetadata) {
 	for k := range md.TrailerMD {
 		tKey := textproto.CanonicalMIMEHeaderKey(fmt.Sprintf("%s%s", MetadataTrailerPrefix, k))
@@ -85,7 +85,7 @@ func HandleForwardResponseTrailerHeader(w http.ResponseWriter, md ServerMetadata
 	}
 }
 
-// Handle Forward Response Trailer
+// HandleForwardResponseTrailer Handle Forward Response Trailer
 func HandleForwardResponseTrailer(w http.ResponseWriter, md ServerMetadata) {
 	for k, vs := range md.TrailerMD {
 		tKey := fmt.Sprintf("%s%s", MetadataTrailerPrefix, k)
