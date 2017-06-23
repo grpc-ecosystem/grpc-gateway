@@ -329,8 +329,18 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 
 // Take in a FQMN or FQEN and return a swagger safe version of the FQMN
 func fullyQualifiedNameToSwaggerName(fqn string, reg *descriptor.Registry) string {
-	return resolveFullyQualifiedNameToSwaggerName(fqn, append(reg.GetAllFQMNs(), reg.GetAllFQENs()...))
+	if lastRegistry != reg {
+		lastRegistryMapping = resolveFullyQualifiedNameToSwaggerNames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...))
+		lastRegistry = reg
+	}
+	return lastRegistryMapping[fqn]
 }
+
+// lastRegistry is used to remember the last registry passed into fullyQualifiedNameToSwaggerName;
+// we use that to memoise calls to resolveFullyQualifiedNamesToSwaggerNames since it can be
+// significantly slow for registries of hundreds of entries.
+var lastRegistry *descriptor.Registry
+var lastRegistryMapping map[string]string
 
 // Take the names of every proto and "uniq-ify" them. The idea is to produce a
 // set of names that meet a couple of conditions. They must be stable, they
@@ -339,7 +349,7 @@ func fullyQualifiedNameToSwaggerName(fqn string, reg *descriptor.Registry) strin
 // This likely could be made better. This will always generate the same names
 // but may not always produce optimal names. This is a reasonably close
 // approximation of what they should look like in most cases.
-func resolveFullyQualifiedNameToSwaggerName(fqn string, messages []string) string {
+func resolveFullyQualifiedNameToSwaggerNames(messages []string) map[string]string {
 	packagesByDepth := make(map[int][][]string)
 	uniqueNames := make(map[string]string)
 
@@ -379,7 +389,7 @@ func resolveFullyQualifiedNameToSwaggerName(fqn string, messages []string) strin
 			}
 		}
 	}
-	return uniqueNames[fqn]
+	return uniqueNames
 }
 
 // Swagger expects paths of the form /path/{string_value} but grpc-gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
