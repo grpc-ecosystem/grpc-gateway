@@ -11,10 +11,11 @@ cache:
   - ${TRAVIS_BUILD_DIR}/examples/browser/node_modules
 before_install:
 - ./.travis/install-protoc.sh 3.1.0
-- ./.travis/install-swagger-codegen.sh 2.1.6
+- ./.travis/install-swagger-codegen.sh 2.2.2
 - nvm install v6.1 && nvm use v6.1 && node --version
 - go get github.com/golang/lint/golint
 - go get github.com/dghubble/sling
+- go get github.com/go-resty/resty
 install:
 - go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 - go get github.com/grpc-ecosystem/grpc-gateway/runtime
