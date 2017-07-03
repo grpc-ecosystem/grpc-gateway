@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
@@ -329,18 +330,20 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 
 // Take in a FQMN or FQEN and return a swagger safe version of the FQMN
 func fullyQualifiedNameToSwaggerName(fqn string, reg *descriptor.Registry) string {
-	if lastRegistry != reg {
-		lastRegistryMapping = resolveFullyQualifiedNameToSwaggerNames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...))
-		lastRegistry = reg
+	registriesSeenMutex.Lock()
+	defer registriesSeenMutex.Unlock()
+	if mapping, present := registriesSeen[reg]; present {
+		return mapping[fqn]
 	}
-	return lastRegistryMapping[fqn]
+	mapping := resolveFullyQualifiedNameToSwaggerNames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...))
+	registriesSeen[reg] = mapping
+	return mapping[fqn]
 }
 
-// lastRegistry is used to remember the last registry passed into fullyQualifiedNameToSwaggerName;
-// we use that to memoise calls to resolveFullyQualifiedNamesToSwaggerNames since it can be
-// significantly slow for registries of hundreds of entries.
-var lastRegistry *descriptor.Registry
-var lastRegistryMapping map[string]string
+// registriesSeen is used to memoise calls to resolveFullyQualifiedNameToSwaggerNames so
+// we don't repeat it unnecessarily, since it can take some time.
+var registriesSeen = map[*descriptor.Registry]map[string]string{}
+var registriesSeenMutex sync.Mutex
 
 // Take the names of every proto and "uniq-ify" them. The idea is to produce a
 // set of names that meet a couple of conditions. They must be stable, they
