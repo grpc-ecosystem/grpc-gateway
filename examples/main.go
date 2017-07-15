@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"io"
 	"net/http"
 	"path"
 	"strings"
@@ -11,6 +12,9 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/status"
 )
 
 var (
@@ -102,8 +106,54 @@ func Run(address string, opts ...runtime.ServeMuxOption) error {
 func main() {
 	flag.Parse()
 	defer glog.Flush()
-
-	if err := Run(":8080"); err != nil {
+	if err := Run(":8080", runtime.WithProtoErrorHandler(HTTPError)); err != nil {
 		glog.Fatal(err)
 	}
+}
+
+func HTTPError(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, _ *http.Request, err error) {
+	const fallback = `{"error": "failed to marshal error message"}`
+
+	w.Header().Del("Trailer")
+	w.Header().Set("Content-Type", marshaler.ContentType())
+
+	s, ok := status.FromError(err)
+	if !ok {
+		s = status.New(codes.Unknown, err.Error())
+	}
+
+	type errorBody struct {
+		Error string `protobuf:"bytes,1,name=error" json:"error"`
+		Code  int32  `protobuf:"varint,2,name=code" json:"code"`
+	}
+
+	body := &errorBody{
+		Error: s.Message(),
+		Code:  int32(s.Code()),
+	}
+
+	buf, merr := marshaler.Marshal(body)
+	if merr != nil {
+		grpclog.Printf("Failed to marshal error message %q: %v", body, merr)
+		w.WriteHeader(http.StatusInternalServerError)
+		if _, err := io.WriteString(w, fallback); err != nil {
+			grpclog.Printf("Failed to write response: %v", err)
+		}
+		return
+	}
+
+	md, ok := runtime.ServerMetadataFromContext(ctx)
+	if !ok {
+		grpclog.Printf("Failed to extract ServerMetadata from context")
+	}
+
+	runtime.HandleForwardResponseServerMetadata(w, mux, md)
+	runtime.HandleForwardResponseTrailerHeader(w, md)
+	st := runtime.HTTPStatusFromCode(s.Code())
+	w.WriteHeader(st)
+	if _, err := w.Write(buf); err != nil {
+		grpclog.Printf("Failed to write response: %v", err)
+	}
+
+	runtime.HandleForwardResponseTrailer(w, md)
 }

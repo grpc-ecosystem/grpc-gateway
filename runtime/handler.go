@@ -29,7 +29,7 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 		http.Error(w, "unexpected error", http.StatusInternalServerError)
 		return
 	}
-	handleForwardResponseServerMetadata(w, mux, md)
+	HandleForwardResponseServerMetadata(w, mux, md)
 
 	w.Header().Set("Transfer-Encoding", "chunked")
 	w.Header().Set("Content-Type", marshaler.ContentType())
@@ -66,7 +66,8 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 	}
 }
 
-func handleForwardResponseServerMetadata(w http.ResponseWriter, mux *ServeMux, md ServerMetadata) {
+// HandleForwardResponseServerMetadata Handle Forward Response ServerMetadata sets to http header
+func HandleForwardResponseServerMetadata(w http.ResponseWriter, mux *ServeMux, md ServerMetadata) {
 	for k, vs := range md.HeaderMD {
 		if h, ok := mux.outgoingHeaderMatcher(k); ok {
 			for _, v := range vs {
@@ -76,14 +77,16 @@ func handleForwardResponseServerMetadata(w http.ResponseWriter, mux *ServeMux, m
 	}
 }
 
-func handleForwardResponseTrailerHeader(w http.ResponseWriter, md ServerMetadata) {
+// HandleForwardResponseTrailerHeader Handle Forward Response TrailerHeader sets to http header trailer
+func HandleForwardResponseTrailerHeader(w http.ResponseWriter, md ServerMetadata) {
 	for k := range md.TrailerMD {
 		tKey := textproto.CanonicalMIMEHeaderKey(fmt.Sprintf("%s%s", MetadataTrailerPrefix, k))
 		w.Header().Add("Trailer", tKey)
 	}
 }
 
-func handleForwardResponseTrailer(w http.ResponseWriter, md ServerMetadata) {
+// HandleForwardResponseTrailer Handle Forward Response Trailer
+func HandleForwardResponseTrailer(w http.ResponseWriter, md ServerMetadata) {
 	for k, vs := range md.TrailerMD {
 		tKey := fmt.Sprintf("%s%s", MetadataTrailerPrefix, k)
 		for _, v := range vs {
@@ -99,8 +102,8 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		grpclog.Printf("Failed to extract ServerMetadata from context")
 	}
 
-	handleForwardResponseServerMetadata(w, mux, md)
-	handleForwardResponseTrailerHeader(w, md)
+	HandleForwardResponseServerMetadata(w, mux, md)
+	HandleForwardResponseTrailerHeader(w, md)
 	w.Header().Set("Content-Type", marshaler.ContentType())
 	if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {
 		HTTPError(ctx, mux, marshaler, w, req, err)
@@ -118,7 +121,7 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		grpclog.Printf("Failed to write response: %v", err)
 	}
 
-	handleForwardResponseTrailer(w, md)
+	HandleForwardResponseTrailer(w, md)
 }
 
 func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, resp proto.Message, opts []func(context.Context, http.ResponseWriter, proto.Message) error) error {
