@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
@@ -329,8 +330,20 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 
 // Take in a FQMN or FQEN and return a swagger safe version of the FQMN
 func fullyQualifiedNameToSwaggerName(fqn string, reg *descriptor.Registry) string {
-	return resolveFullyQualifiedNameToSwaggerName(fqn, append(reg.GetAllFQMNs(), reg.GetAllFQENs()...))
+	registriesSeenMutex.Lock()
+	defer registriesSeenMutex.Unlock()
+	if mapping, present := registriesSeen[reg]; present {
+		return mapping[fqn]
+	}
+	mapping := resolveFullyQualifiedNameToSwaggerNames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...))
+	registriesSeen[reg] = mapping
+	return mapping[fqn]
 }
+
+// registriesSeen is used to memoise calls to resolveFullyQualifiedNameToSwaggerNames so
+// we don't repeat it unnecessarily, since it can take some time.
+var registriesSeen = map[*descriptor.Registry]map[string]string{}
+var registriesSeenMutex sync.Mutex
 
 // Take the names of every proto and "uniq-ify" them. The idea is to produce a
 // set of names that meet a couple of conditions. They must be stable, they
@@ -339,7 +352,7 @@ func fullyQualifiedNameToSwaggerName(fqn string, reg *descriptor.Registry) strin
 // This likely could be made better. This will always generate the same names
 // but may not always produce optimal names. This is a reasonably close
 // approximation of what they should look like in most cases.
-func resolveFullyQualifiedNameToSwaggerName(fqn string, messages []string) string {
+func resolveFullyQualifiedNameToSwaggerNames(messages []string) map[string]string {
 	packagesByDepth := make(map[int][][]string)
 	uniqueNames := make(map[string]string)
 
@@ -379,7 +392,7 @@ func resolveFullyQualifiedNameToSwaggerName(fqn string, messages []string) strin
 			}
 		}
 	}
-	return uniqueNames[fqn]
+	return uniqueNames
 }
 
 // Swagger expects paths of the form /path/{string_value} but grpc-gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.

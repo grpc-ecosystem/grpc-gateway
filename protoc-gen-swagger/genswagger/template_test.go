@@ -758,7 +758,8 @@ func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
 	}
 
 	for _, data := range tests {
-		output := resolveFullyQualifiedNameToSwaggerName(data.input, data.listOfFQMNs)
+		names := resolveFullyQualifiedNameToSwaggerNames(data.listOfFQMNs)
+		output := names[data.input]
 		if output != data.output {
 			t.Errorf("Expected fullyQualifiedNameToSwaggerName(%v) to be %s but got %s",
 				data.input, data.output, output)
