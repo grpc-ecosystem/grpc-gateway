@@ -38,7 +38,7 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	f.Flush()
+	checkFlush(req,f)
 	for {
 		resp, err := recv()
 		if err == io.EOF {
@@ -62,7 +62,7 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			grpclog.Printf("Failed to send response chunk: %v", err)
 			return
 		}
-		f.Flush()
+		checkFlush(req,f)
 	}
 }
 
@@ -144,6 +144,13 @@ func handleForwardResponseStreamError(marshaler Marshaler, w http.ResponseWriter
 		grpclog.Printf("Failed to notify error to client: %v", werr)
 		return
 	}
+}
+
+func checkFlush(req *http.Request, f http.Flusher) {
+	if af := req.Header.Get("Grpc-Metadata-AutoFlush"); af == "" {
+		f.Flush()
+	}
+	return
 }
 
 func streamChunk(result proto.Message, err error) map[string]proto.Message {
