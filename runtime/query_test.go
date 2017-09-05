@@ -439,7 +439,7 @@ type proto3Message struct {
 	BoolValue      bool                     `protobuf:"varint,8,opt,name=bool_value,json=boolValue" json:"bool_value,omitempty"`
 	StringValue    string                   `protobuf:"bytes,9,opt,name=string_value,json=stringValue" json:"string_value,omitempty"`
 	RepeatedValue  []string                 `protobuf:"bytes,10,rep,name=repeated_value,json=repeatedValue" json:"repeated_value,omitempty"`
-	EnumValue      EnumValue                `protobuf:"varint,11,opt,name=enum_value,json=enumValue,json=enumValue,enum=runtime_test_api.EnumValue" json:"enum_value,omitempty"`
+	EnumValue      EnumValue                `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=runtime_test_api.EnumValue" json:"enum_value,omitempty"`
 	RepeatedEnum   []EnumValue              `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeatedEnum,enum=runtime_test_api.EnumValue" json:"repeated_enum,omitempty"`
 	TimestampValue *timestamp.Timestamp     `protobuf:"bytes,16,opt,name=timestamp_value,json=timestampValue" json:"timestamp_value,omitempty"`
 	OneofValue     proto3Message_OneofValue `protobuf_oneof:"oneof_value"`
