@@ -207,7 +207,7 @@ func (r *Registry) AddPkgMap(file, protoPkg string) {
 	r.pkgMap[file] = protoPkg
 }
 
-// SetPrefix registeres the perfix to be added to go package paths generated from proto package names.
+// SetPrefix registers the prefix to be added to go package paths generated from proto package names.
 func (r *Registry) SetPrefix(prefix string) {
 	r.prefix = prefix
 }
