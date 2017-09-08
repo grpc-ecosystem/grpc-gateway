@@ -335,6 +335,39 @@ func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runti
 	return Register{{$svc.GetName}}Handler(ctx, mux, conn)
 }
 
+type methodDesciptionStruct struct {
+	serviceName string
+	methodName string
+	inputType string
+	outputType string
+	httpMethod string
+	pattern string
+}
+
+func (md methodDesciptionStruct) ServiceName() string {
+	return md.serviceName
+}
+
+func (md methodDesciptionStruct) MethodName() string {
+	return md.methodName
+}
+
+func (md methodDesciptionStruct) InputType() string {
+	return md.inputType
+}
+
+func (md methodDesciptionStruct) OutputType() string {
+	return md.outputType
+}
+
+func (md methodDesciptionStruct) HTTPMethod() string {
+	return md.httpMethod
+}
+
+func (md methodDesciptionStruct) Pattern() string {
+	return md.pattern
+}
+
 // Register{{$svc.GetName}}Handler registers the http handlers for service {{$svc.GetName}} to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
@@ -395,5 +428,22 @@ var (
 	{{end}}
 	{{end}}
 )
-{{end}}`))
+{{end}}
+
+var MethodDesciptions = []runtime.MethodDesciption{
+	{{range $svc := .Services}}
+	{{range $m := $svc.Methods}}
+	{{range $b := $m.Bindings}}
+	methodDesciptionStruct{
+		serviceName: {{$svc.GetName | printf "%q"}},
+		methodName: {{$m.GetName | printf "%q"}},
+		inputType: {{$m.GetInputType | printf "%q"}},
+		outputType: {{$m.GetOutputType | printf "%q"}},
+		httpMethod: {{$b.HTTPMethod | printf "%q"}},
+		pattern: pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}.String(),
+	},
+	{{end}}
+	{{end}}
+	{{end}}
+}`))
 )
