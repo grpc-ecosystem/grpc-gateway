@@ -81,9 +81,6 @@ func (*errorBody) ProtoMessage()    {}
 func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, _ *http.Request, err error) {
 	const fallback = `{"error": "failed to marshal error message"}`
 
-	w.Header().Del("Trailer")
-	w.Header().Set("Content-Type", marshaler.ContentType())
-
 	s, ok := status.FromError(err)
 	if !ok {
 		s = status.New(codes.Unknown, err.Error())
@@ -93,6 +90,9 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 		Error: s.Message(),
 		Code:  int32(s.Code()),
 	}
+
+	w.Header().Del("Trailer")
+	w.Header().Set("Content-Type", marshaler.ContentType(body))
 
 	buf, merr := marshaler.Marshal(body)
 	if merr != nil {

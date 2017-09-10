@@ -7,7 +7,7 @@ import (
 	"net/textproto"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime/internal"
+	"github.com/therealwardo/grpc-gateway/runtime/internal"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -32,13 +32,14 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 	handleForwardResponseServerMetadata(w, mux, md)
 
 	w.Header().Set("Transfer-Encoding", "chunked")
-	w.Header().Set("Content-Type", marshaler.ContentType())
+	w.Header().Set("Content-Type", marshaler.ContentType(nil))
 	if err := handleForwardResponseOptions(ctx, w, nil, opts); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
 	f.Flush()
+	ctSet := false
 	for {
 		resp, err := recv()
 		if err == io.EOF {
@@ -53,7 +54,12 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			return
 		}
 
-		buf, err := marshaler.Marshal(streamChunk(resp, nil))
+		chunk := streamChunk(resp, nil)
+		if !ctSet {
+			w.Header().Set("Content-Type", marshaler.ContentType(chunk))
+			ctSet = true
+		}
+		buf, err := marshaler.Marshal(chunk)
 		if err != nil {
 			grpclog.Printf("Failed to marshal response chunk: %v", err)
 			return
@@ -101,7 +107,7 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 
 	handleForwardResponseServerMetadata(w, mux, md)
 	handleForwardResponseTrailerHeader(w, md)
-	w.Header().Set("Content-Type", marshaler.ContentType())
+	w.Header().Set("Content-Type", marshaler.ContentType(resp))
 	if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {
 		HTTPError(ctx, mux, marshaler, w, req, err)
 		return
