@@ -134,7 +134,7 @@ func (s *_ABitOfEverythingServer) List(_ *empty.Empty, stream examples.StreamSer
 	}
 
 	// return error when metadata includes error header
-	if header, ok := metadata.FromContext(stream.Context()); ok {
+	if header, ok := metadata.FromIncomingContext(stream.Context()); ok {
 		if v, ok := header["error"]; ok {
 			stream.SetTrailer(metadata.New(map[string]string{
 				"foo": "foo2",
