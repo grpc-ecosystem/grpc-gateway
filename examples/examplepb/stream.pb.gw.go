@@ -168,7 +168,15 @@ func RegisterStreamServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.
 // RegisterStreamServiceHandler registers the http handlers for service StreamService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterStreamServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	client := NewStreamServiceClient(conn)
+	return RegisterStreamServiceHandlerClient(ctx, mux, NewStreamServiceClient(conn))
+}
+
+// RegisterStreamServiceHandler registers the http handlers for service StreamService to "mux".
+// The handlers forward requests to the grpc endpoint over the given implementation of "StreamServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "StreamServiceClient"
+// doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
+// "StreamServiceClient" to call the correct interceptors.
+func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client StreamServiceClient) error {
 
 	mux.Handle("POST", pattern_StreamService_BulkCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
