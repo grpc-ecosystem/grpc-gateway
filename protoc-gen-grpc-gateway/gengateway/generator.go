@@ -77,7 +77,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 			glog.Errorf("%v: %s", err, code)
 			return nil, err
 		}
-		name := file.GetName()
+		name := file.GoPkg.Path
 		ext := filepath.Ext(name)
 		base := strings.TrimSuffix(name, ext)
 		output := fmt.Sprintf("%s.pb.gw.go", base)
