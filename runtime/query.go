@@ -113,6 +113,9 @@ func fieldByProtoName(m reflect.Value, name string) (reflect.Value, *proto.Prope
 		if p.OrigName == name {
 			return m.FieldByName(p.Name), p, nil
 		}
+		if p.JSONName == name {
+			return m.FieldByName(p.Name), p, nil
+		}
 	}
 	return reflect.Value{}, nil, nil
 }
