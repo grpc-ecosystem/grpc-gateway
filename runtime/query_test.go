@@ -63,6 +63,37 @@ func TestPopulateParameters(t *testing.T) {
 		},
 		{
 			values: url.Values{
+				"floatValue":     {"1.5"},
+				"doubleValue":    {"2.5"},
+				"int64Value":     {"-1"},
+				"int32Value":     {"-2"},
+				"uint64Value":    {"3"},
+				"uint32Value":    {"4"},
+				"boolValue":      {"true"},
+				"stringValue":    {"str"},
+				"repeatedValue":  {"a", "b", "c"},
+				"enumValue":      {"1"},
+				"repeatedEnum":   {"1", "2", "0"},
+				"timestampValue": {timeStr},
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want: &proto3Message{
+				FloatValue:     1.5,
+				DoubleValue:    2.5,
+				Int64Value:     -1,
+				Int32Value:     -2,
+				Uint64Value:    3,
+				Uint32Value:    4,
+				BoolValue:      true,
+				StringValue:    "str",
+				RepeatedValue:  []string{"a", "b", "c"},
+				EnumValue:      EnumValue_Y,
+				RepeatedEnum:   []EnumValue{EnumValue_Y, EnumValue_Z, EnumValue_X},
+				TimestampValue: timePb,
+			},
+		},
+		{
+			values: url.Values{
 				"enum_value":    {"EnumValue_Z"},
 				"repeated_enum": {"EnumValue_X", "2", "0"},
 			},
@@ -85,6 +116,35 @@ func TestPopulateParameters(t *testing.T) {
 				"repeated_value": {"a", "b", "c"},
 				"enum_value":     {"1"},
 				"repeated_enum":  {"1", "2", "0"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want: &proto2Message{
+				FloatValue:    proto.Float32(1.5),
+				DoubleValue:   proto.Float64(2.5),
+				Int64Value:    proto.Int64(-1),
+				Int32Value:    proto.Int32(-2),
+				Uint64Value:   proto.Uint64(3),
+				Uint32Value:   proto.Uint32(4),
+				BoolValue:     proto.Bool(true),
+				StringValue:   proto.String("str"),
+				RepeatedValue: []string{"a", "b", "c"},
+				EnumValue:     EnumValue_Y,
+				RepeatedEnum:  []EnumValue{EnumValue_Y, EnumValue_Z, EnumValue_X},
+			},
+		},
+		{
+			values: url.Values{
+				"floatValue":    {"1.5"},
+				"doubleValue":   {"2.5"},
+				"int64Value":    {"-1"},
+				"int32Value":    {"-2"},
+				"uint64Value":   {"3"},
+				"uint32Value":   {"4"},
+				"boolValue":     {"true"},
+				"stringValue":   {"str"},
+				"repeatedValue": {"a", "b", "c"},
+				"enumValue":     {"1"},
+				"repeatedEnum":  {"1", "2", "0"},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &proto2Message{
@@ -368,20 +428,20 @@ func TestPopulateQueryParametersWithInvalidNestedParameters(t *testing.T) {
 }
 
 type proto3Message struct {
-	Nested         *proto2Message           `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
-	NestedNonNull  proto2Message            `protobuf:"bytes,15,opt,name=nested_non_null" json:"nested_non_null,omitempty"`
-	FloatValue     float32                  `protobuf:"fixed32,2,opt,name=float_value" json:"float_value,omitempty"`
-	DoubleValue    float64                  `protobuf:"fixed64,3,opt,name=double_value" json:"double_value,omitempty"`
-	Int64Value     int64                    `protobuf:"varint,4,opt,name=int64_value" json:"int64_value,omitempty"`
-	Int32Value     int32                    `protobuf:"varint,5,opt,name=int32_value" json:"int32_value,omitempty"`
-	Uint64Value    uint64                   `protobuf:"varint,6,opt,name=uint64_value" json:"uint64_value,omitempty"`
-	Uint32Value    uint32                   `protobuf:"varint,7,opt,name=uint32_value" json:"uint32_value,omitempty"`
-	BoolValue      bool                     `protobuf:"varint,8,opt,name=bool_value" json:"bool_value,omitempty"`
-	StringValue    string                   `protobuf:"bytes,9,opt,name=string_value" json:"string_value,omitempty"`
-	RepeatedValue  []string                 `protobuf:"bytes,10,rep,name=repeated_value" json:"repeated_value,omitempty"`
+	Nested         *proto2Message           `protobuf:"bytes,1,opt,name=nested,json=nested" json:"nested,omitempty"`
+	NestedNonNull  proto2Message            `protobuf:"bytes,15,opt,name=nested_non_null,json=nestedNonNull" json:"nested_non_null,omitempty"`
+	FloatValue     float32                  `protobuf:"fixed32,2,opt,name=float_value,json=floatValue" json:"float_value,omitempty"`
+	DoubleValue    float64                  `protobuf:"fixed64,3,opt,name=double_value,json=doubleValue" json:"double_value,omitempty"`
+	Int64Value     int64                    `protobuf:"varint,4,opt,name=int64_value,json=int64Value" json:"int64_value,omitempty"`
+	Int32Value     int32                    `protobuf:"varint,5,opt,name=int32_value,json=int32Value" json:"int32_value,omitempty"`
+	Uint64Value    uint64                   `protobuf:"varint,6,opt,name=uint64_value,json=uint64Value" json:"uint64_value,omitempty"`
+	Uint32Value    uint32                   `protobuf:"varint,7,opt,name=uint32_value,json=uint32Value" json:"uint32_value,omitempty"`
+	BoolValue      bool                     `protobuf:"varint,8,opt,name=bool_value,json=boolValue" json:"bool_value,omitempty"`
+	StringValue    string                   `protobuf:"bytes,9,opt,name=string_value,json=stringValue" json:"string_value,omitempty"`
+	RepeatedValue  []string                 `protobuf:"bytes,10,rep,name=repeated_value,json=repeatedValue" json:"repeated_value,omitempty"`
 	EnumValue      EnumValue                `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=runtime_test_api.EnumValue" json:"enum_value,omitempty"`
-	RepeatedEnum   []EnumValue              `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeated_enum,enum=runtime_test_api.EnumValue" json:"repeated_enum,omitempty"`
-	TimestampValue *timestamp.Timestamp     `protobuf:"bytes,16,opt,name=timestamp_value" json:"timestamp_value,omitempty"`
+	RepeatedEnum   []EnumValue              `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeatedEnum,enum=runtime_test_api.EnumValue" json:"repeated_enum,omitempty"`
+	TimestampValue *timestamp.Timestamp     `protobuf:"bytes,16,opt,name=timestamp_value,json=timestampValue" json:"timestamp_value,omitempty"`
 	OneofValue     proto3Message_OneofValue `protobuf_oneof:"oneof_value"`
 }
 
@@ -501,18 +561,18 @@ func _proto3Message_OneofSizer(msg proto.Message) (n int) {
 }
 
 type proto2Message struct {
-	Nested           *proto3Message `protobuf:"bytes,1,opt,name=nested" json:"nested,omitempty"`
-	FloatValue       *float32       `protobuf:"fixed32,2,opt,name=float_value" json:"float_value,omitempty"`
-	DoubleValue      *float64       `protobuf:"fixed64,3,opt,name=double_value" json:"double_value,omitempty"`
-	Int64Value       *int64         `protobuf:"varint,4,opt,name=int64_value" json:"int64_value,omitempty"`
-	Int32Value       *int32         `protobuf:"varint,5,opt,name=int32_value" json:"int32_value,omitempty"`
-	Uint64Value      *uint64        `protobuf:"varint,6,opt,name=uint64_value" json:"uint64_value,omitempty"`
-	Uint32Value      *uint32        `protobuf:"varint,7,opt,name=uint32_value" json:"uint32_value,omitempty"`
-	BoolValue        *bool          `protobuf:"varint,8,opt,name=bool_value" json:"bool_value,omitempty"`
-	StringValue      *string        `protobuf:"bytes,9,opt,name=string_value" json:"string_value,omitempty"`
-	RepeatedValue    []string       `protobuf:"bytes,10,rep,name=repeated_value" json:"repeated_value,omitempty"`
+	Nested           *proto3Message `protobuf:"bytes,1,opt,name=nested,json=nested" json:"nested,omitempty"`
+	FloatValue       *float32       `protobuf:"fixed32,2,opt,name=float_value,json=floatValue" json:"float_value,omitempty"`
+	DoubleValue      *float64       `protobuf:"fixed64,3,opt,name=double_value,json=doubleValue" json:"double_value,omitempty"`
+	Int64Value       *int64         `protobuf:"varint,4,opt,name=int64_value,json=int64Value" json:"int64_value,omitempty"`
+	Int32Value       *int32         `protobuf:"varint,5,opt,name=int32_value,json=int32Value" json:"int32_value,omitempty"`
+	Uint64Value      *uint64        `protobuf:"varint,6,opt,name=uint64_value,json=uint64Value" json:"uint64_value,omitempty"`
+	Uint32Value      *uint32        `protobuf:"varint,7,opt,name=uint32_value,json=uint32Value" json:"uint32_value,omitempty"`
+	BoolValue        *bool          `protobuf:"varint,8,opt,name=bool_value,json=boolValue" json:"bool_value,omitempty"`
+	StringValue      *string        `protobuf:"bytes,9,opt,name=string_value,json=stringValue" json:"string_value,omitempty"`
+	RepeatedValue    []string       `protobuf:"bytes,10,rep,name=repeated_value,json=repeatedValue" json:"repeated_value,omitempty"`
 	EnumValue        EnumValue      `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=runtime_test_api.EnumValue" json:"enum_value,omitempty"`
-	RepeatedEnum     []EnumValue    `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeated_enum,enum=runtime_test_api.EnumValue" json:"repeated_enum,omitempty"`
+	RepeatedEnum     []EnumValue    `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeatedEnum,enum=runtime_test_api.EnumValue" json:"repeated_enum,omitempty"`
 	XXX_unrecognized []byte         `json:"-"`
 }
 
