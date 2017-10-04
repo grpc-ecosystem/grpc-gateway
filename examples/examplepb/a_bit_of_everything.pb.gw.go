@@ -478,7 +478,15 @@ func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux
 // RegisterABitOfEverythingServiceHandler registers the http handlers for service ABitOfEverythingService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	client := NewABitOfEverythingServiceClient(conn)
+	return RegisterABitOfEverythingServiceHandlerClient(ctx, mux, NewABitOfEverythingServiceClient(conn))
+}
+
+// RegisterABitOfEverythingServiceHandler registers the http handlers for service ABitOfEverythingService to "mux".
+// The handlers forward requests to the grpc endpoint over the given implementation of "ABitOfEverythingServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ABitOfEverythingServiceClient"
+// doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
+// "ABitOfEverythingServiceClient" to call the correct interceptors.
+func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ABitOfEverythingServiceClient) error {
 
 	mux.Handle("POST", pattern_ABitOfEverythingService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)

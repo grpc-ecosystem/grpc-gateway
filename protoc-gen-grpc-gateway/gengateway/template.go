@@ -338,7 +338,15 @@ func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runti
 // Register{{$svc.GetName}}Handler registers the http handlers for service {{$svc.GetName}} to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	client := New{{$svc.GetName}}Client(conn)
+	return Register{{$svc.GetName}}HandlerClient(ctx, mux, New{{$svc.GetName}}Client(conn))
+}
+
+// Register{{$svc.GetName}}Handler registers the http handlers for service {{$svc.GetName}} to "mux".
+// The handlers forward requests to the grpc endpoint over the given implementation of "{{$svc.GetName}}Client".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "{{$svc.GetName}}Client"
+// doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
+// "{{$svc.GetName}}Client" to call the correct interceptors.
+func Register{{$svc.GetName}}HandlerClient(ctx context.Context, mux *runtime.ServeMux, client {{$svc.GetName}}Client) error {
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
 	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {

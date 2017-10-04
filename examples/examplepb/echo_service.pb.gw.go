@@ -142,7 +142,15 @@ func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.Se
 // RegisterEchoServiceHandler registers the http handlers for service EchoService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
 func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	client := NewEchoServiceClient(conn)
+	return RegisterEchoServiceHandlerClient(ctx, mux, NewEchoServiceClient(conn))
+}
+
+// RegisterEchoServiceHandler registers the http handlers for service EchoService to "mux".
+// The handlers forward requests to the grpc endpoint over the given implementation of "EchoServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "EchoServiceClient"
+// doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
+// "EchoServiceClient" to call the correct interceptors.
+func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client EchoServiceClient) error {
 
 	mux.Handle("POST", pattern_EchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(ctx)
