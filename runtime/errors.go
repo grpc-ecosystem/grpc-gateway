@@ -11,6 +11,9 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// GrpcGatewayMethodNotAllowed is a code mapped to HTTP code 405
+var GrpcGatewayMethodNotAllowed codes.Code = 100
+
 // HTTPStatusFromCode converts a gRPC error code into the corresponding HTTP response status.
 func HTTPStatusFromCode(code codes.Code) int {
 	switch code {
@@ -48,6 +51,8 @@ func HTTPStatusFromCode(code codes.Code) int {
 		return http.StatusServiceUnavailable
 	case codes.DataLoss:
 		return http.StatusInternalServerError
+	case GrpcGatewayMethodNotAllowed:
+		return http.StatusMethodNotAllowed
 	}
 
 	grpclog.Printf("Unknown gRPC error code: %v", code)

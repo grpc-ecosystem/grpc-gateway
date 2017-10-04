@@ -102,6 +102,18 @@ func WithProtoErrorHandler(fn ProtoErrorHandlerFunc) ServeMuxOption {
 	}
 }
 
+// protoErrorHandlerAdapter adapts OtherErrorHandler for ProtoErrorHandlerFunc
+func protoErrorHandlerAdapter(f func(http.ResponseWriter, *http.Request, string, int)) ProtoErrorHandlerFunc {
+	return func(_ context.Context, _ *ServeMux, _ Marshaler, w http.ResponseWriter, r *http.Request, err error) {
+		s, ok := status.FromError(err)
+		if !ok {
+			s = status.New(codes.Unknown, err.Error())
+		}
+		st := HTTPStatusFromCode(s.Code())
+		f(w, r, s.Message(), st)
+	}
+}
+
 // NewServeMux returns a new ServeMux whose internal mapping is empty.
 func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 	serveMux := &ServeMux{
@@ -114,7 +126,9 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 		opt(serveMux)
 	}
 
-	if serveMux.protoErrorHandler != nil {
+	if serveMux.protoErrorHandler == nil {
+		serveMux.protoErrorHandler = protoErrorHandlerAdapter(OtherErrorHandler)
+	} else {
 		HTTPError = serveMux.protoErrorHandler
 		// OtherErrorHandler is no longer used when protoErrorHandler is set.
 		// Overwritten by a special error handler to return Unknown.
@@ -148,16 +162,12 @@ func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// TODO: use r.Context for go 1.7+
 	ctx := context.Background()
+	_, outboundMarshaler := MarshalerForRequest(s, r)
 
 	path := r.URL.Path
 	if !strings.HasPrefix(path, "/") {
-		if s.protoErrorHandler != nil {
-			_, outboundMarshaler := MarshalerForRequest(s, r)
-			sterr := status.Error(codes.InvalidArgument, http.StatusText(http.StatusBadRequest))
-			s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
-		} else {
-			OtherErrorHandler(w, r, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		}
+		s.protoErrorHandler(ctx, s, outboundMarshaler, w, r,
+			status.Error(codes.InvalidArgument, http.StatusText(http.StatusBadRequest)))
 		return
 	}
 
@@ -165,13 +175,8 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	l := len(components)
 	var verb string
 	if idx := strings.LastIndex(components[l-1], ":"); idx == 0 {
-		if s.protoErrorHandler != nil {
-			_, outboundMarshaler := MarshalerForRequest(s, r)
-			sterr := status.Error(codes.Unimplemented, http.StatusText(http.StatusNotImplemented))
-			s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
-		} else {
-			OtherErrorHandler(w, r, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		}
+		s.protoErrorHandler(ctx, s, outboundMarshaler, w, r,
+			status.Error(codes.NotFound, http.StatusText(http.StatusNotFound)))
 		return
 	} else if idx > 0 {
 		c := components[l-1]
@@ -181,13 +186,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && isPathLengthFallback(r) {
 		r.Method = strings.ToUpper(override)
 		if err := r.ParseForm(); err != nil {
-			if s.protoErrorHandler != nil {
-				_, outboundMarshaler := MarshalerForRequest(s, r)
-				sterr := status.Error(codes.InvalidArgument, err.Error())
-				s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
-			} else {
-				OtherErrorHandler(w, r, err.Error(), http.StatusBadRequest)
-			}
+			s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, status.Error(codes.InvalidArgument, err.Error()))
 			return
 		}
 	}
@@ -214,36 +213,21 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			// X-HTTP-Method-Override is optional. Always allow fallback to POST.
 			if isPathLengthFallback(r) {
 				if err := r.ParseForm(); err != nil {
-					if s.protoErrorHandler != nil {
-						_, outboundMarshaler := MarshalerForRequest(s, r)
-						sterr := status.Error(codes.InvalidArgument, err.Error())
-						s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
-					} else {
-						OtherErrorHandler(w, r, err.Error(), http.StatusBadRequest)
-					}
+					s.protoErrorHandler(ctx, s, outboundMarshaler, w, r,
+						status.Error(codes.InvalidArgument, err.Error()))
 					return
 				}
 				h.h(w, r, pathParams)
 				return
 			}
-			if s.protoErrorHandler != nil {
-				_, outboundMarshaler := MarshalerForRequest(s, r)
-				sterr := status.Error(codes.Unimplemented, http.StatusText(http.StatusMethodNotAllowed))
-				s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
-			} else {
-				OtherErrorHandler(w, r, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
-			}
+			s.protoErrorHandler(ctx, s, outboundMarshaler, w, r,
+				status.Error(GrpcGatewayMethodNotAllowed, http.StatusText(http.StatusMethodNotAllowed)))
 			return
 		}
 	}
 
-	if s.protoErrorHandler != nil {
-		_, outboundMarshaler := MarshalerForRequest(s, r)
-		sterr := status.Error(codes.Unimplemented, http.StatusText(http.StatusNotImplemented))
-		s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
-	} else {
-		OtherErrorHandler(w, r, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-	}
+	s.protoErrorHandler(ctx, s, outboundMarshaler, w, r,
+		status.Error(codes.NotFound, http.StatusText(http.StatusNotFound)))
 }
 
 // GetForwardResponseOptions returns the ForwardResponseOptions associated with this ServeMux.
