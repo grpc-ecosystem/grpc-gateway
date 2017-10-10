@@ -146,8 +146,7 @@ func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 
 // ServeHTTP dispatches the request to the first handler whose pattern matches to r.Method and r.Path.
 func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// TODO: use r.Context for go 1.7+
-	ctx := context.Background()
+	ctx := r.Context()
 
 	path := r.URL.Path
 	if !strings.HasPrefix(path, "/") {
