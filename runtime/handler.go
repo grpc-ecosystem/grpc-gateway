@@ -58,7 +58,7 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			grpclog.Printf("Failed to marshal response chunk: %v", err)
 			return
 		}
-		if _, err = fmt.Fprintf(w, "%s\n", buf); err != nil {
+		if _, err = w.Write(buf); err != nil {
 			grpclog.Printf("Failed to send response chunk: %v", err)
 			return
 		}
