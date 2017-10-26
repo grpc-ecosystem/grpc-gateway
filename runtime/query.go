@@ -164,6 +164,45 @@ func populateField(f reflect.Value, value string, props *proto.Properties) error
 			f.Field(0).SetInt(int64(t.Unix()))
 			f.Field(1).SetInt(int64(t.Nanosecond()))
 			return nil
+		case "DoubleValue":
+			fallthrough
+		case "FloatValue":
+			float64Val, err := strconv.ParseFloat(value, 64)
+			if err != nil {
+				return fmt.Errorf("bad DoubleValue: %s", value)
+			}
+			f.Field(0).SetFloat(float64Val)
+			return nil
+		case "Int64Value":
+			fallthrough
+		case "Int32Value":
+			int64Val, err := strconv.ParseInt(value, 10, 64)
+			if err != nil {
+				return fmt.Errorf("bad DoubleValue: %s", value)
+			}
+			f.Field(0).SetInt(int64Val)
+			return nil
+		case "UInt64Value":
+			fallthrough
+		case "UInt32Value":
+			uint64Val, err := strconv.ParseUint(value, 10, 64)
+			if err != nil {
+				return fmt.Errorf("bad DoubleValue: %s", value)
+			}
+			f.Field(0).SetUint(uint64Val)
+			return nil
+		case "BoolValue":
+			if value == "true" {
+				f.Field(0).SetBool(true)
+			} else if value == "false" {
+				f.Field(0).SetBool(false)
+			} else {
+				return fmt.Errorf("bad BoolValue: %s", value)
+			}
+			return nil
+		case "StringValue":
+			f.Field(0).SetString(value)
+			return nil
 		}
 	}
 
