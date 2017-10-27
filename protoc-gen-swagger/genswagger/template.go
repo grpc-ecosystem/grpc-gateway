@@ -684,15 +684,14 @@ func applyTemplate(p param) (string, error) {
 			copy(s.Produces, spb.Produces)
 		}
 		if spb.ExternalDocs != nil {
-			// TODO(ivucica): externalDocs does not belong in s.Info according to the spec.
-			if s.Info.ExternalDocs == nil {
-				s.Info.ExternalDocs = &swaggerExternalDocumentationObject{}
+			if s.ExternalDocs == nil {
+				s.ExternalDocs = &swaggerExternalDocumentationObject{}
 			}
 			if spb.ExternalDocs.Description != "" {
-				s.Info.ExternalDocs.Description = spb.ExternalDocs.Description
+				s.ExternalDocs.Description = spb.ExternalDocs.Description
 			}
 			if spb.ExternalDocs.Url != "" {
-				s.Info.ExternalDocs.URL = spb.ExternalDocs.Url
+				s.ExternalDocs.URL = spb.ExternalDocs.Url
 			}
 		}
 

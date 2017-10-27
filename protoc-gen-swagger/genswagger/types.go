@@ -25,7 +25,6 @@ type swaggerInfoObject struct {
 
 	Contact      *swaggerContactObject               `json:"contact,omitempty"`
 	License      *swaggerLicenseObject               `json:"license,omitempty"`
-	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }
 
 // http://swagger.io/specification/#contactObject
@@ -58,6 +57,7 @@ type swaggerObject struct {
 	Produces    []string                 `json:"produces"`
 	Paths       swaggerPathsObject       `json:"paths"`
 	Definitions swaggerDefinitionsObject `json:"definitions"`
+	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }
 
 // http://swagger.io/specification/#pathsObject

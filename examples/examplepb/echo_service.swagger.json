@@ -8,10 +8,6 @@
       "name": "gRPC-Gateway project",
       "url": "https://github.com/grpc-ecosystem/grpc-gateway",
       "email": "none@example.com"
-    },
-    "externalDocs": {
-      "description": "More about gRPC-Gateway",
-      "url": "https://github.com/grpc-ecosystem/grpc-gateway"
     }
   },
   "host": "localhost",
@@ -141,5 +137,9 @@
       },
       "description": "SimpleMessage represents a simple message sent to the Echo service."
     }
+  },
+  "externalDocs": {
+    "description": "More about gRPC-Gateway",
+    "url": "https://github.com/grpc-ecosystem/grpc-gateway"
   }
 }
