@@ -934,10 +934,10 @@ func extractOperationOptionFromMethodDescriptor(meth *pbdescriptor.MethodDescrip
 	if meth.Options == nil {
 		return nil, nil
 	}
-	if !proto.HasExtension(meth.Options, swagger_options.E_SwaggerOperation) {
+	if !proto.HasExtension(meth.Options, swagger_options.E_Openapiv2Operation) {
 		return nil, nil
 	}
-	ext, err := proto.GetExtension(meth.Options, swagger_options.E_SwaggerOperation)
+	ext, err := proto.GetExtension(meth.Options, swagger_options.E_Openapiv2Operation)
 	if err != nil {
 		return nil, err
 	}
@@ -954,10 +954,10 @@ func extractSwaggerOptionFromFileDescriptor(file *pbdescriptor.FileDescriptorPro
 	if file.Options == nil {
 		return nil, nil
 	}
-	if !proto.HasExtension(file.Options, swagger_options.E_SwaggerSwagger) {
+	if !proto.HasExtension(file.Options, swagger_options.E_Openapiv2Swagger) {
 		return nil, nil
 	}
-	ext, err := proto.GetExtension(file.Options, swagger_options.E_SwaggerSwagger)
+	ext, err := proto.GetExtension(file.Options, swagger_options.E_Openapiv2Swagger)
 	if err != nil {
 		return nil, err
 	}

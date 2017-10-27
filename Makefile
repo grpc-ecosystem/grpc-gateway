@@ -43,8 +43,8 @@ OUTPUT_DIR=_output
 RUNTIME_PROTO=runtime/internal/stream_chunk.proto
 RUNTIME_GO=$(RUNTIME_PROTO:.proto=.pb.go)
 
-SWAGGER_PROTO=protoc-gen-swagger/options/swagger.proto protoc-gen-swagger/options/annotations.proto
-SWAGGER_GO=$(SWAGGER_PROTO:.proto=.pb.go)
+OPENAPIV2_PROTO=protoc-gen-swagger/options/openapiv2.proto protoc-gen-swagger/options/annotations.proto
+OPENAPIV2_GO=$(OPENAPIV2_PROTO:.proto=.pb.go)
 
 PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/sub/message.proto=$(PKG)/examples/sub
 ADDITIONAL_FLAGS=
@@ -93,13 +93,13 @@ $(GO_PLUGIN):
 $(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
 	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP):. $(RUNTIME_PROTO)
 
-$(SWAGGER_GO): $(SWAGGER_PROTO) $(GO_PLUGIN)
-	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP):. $(SWAGGER_PROTO)
+$(OPENAPIV2_GO): $(OPENAPIV2_PROTO) $(GO_PLUGIN)
+	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP):$(GOPATH)/src $(OPENAPIV2_PROTO)
 
 $(GATEWAY_PLUGIN): $(RUNTIME_GO) $(GATEWAY_PLUGIN_SRC)
 	go build -o $@ $(GATEWAY_PLUGIN_PKG)
 
-$(SWAGGER_PLUGIN): $(SWAGGER_PLUGIN_SRC) $(SWAGGER_GO)
+$(SWAGGER_PLUGIN): $(SWAGGER_PLUGIN_SRC) $(OPENAPIV2_GO)
 	go build -o $@ $(SWAGGER_PLUGIN_PKG)
 
 $(EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(EXAMPLES)

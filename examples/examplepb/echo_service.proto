@@ -10,7 +10,7 @@ package grpc.gateway.examples.examplepb;
 import "google/api/annotations.proto";
 import "protoc-gen-swagger/options/annotations.proto";
 
-option (grpc_gateway.protoc_gen_swagger.options.swagger_swagger) = {
+option (grpc_gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
   info: {
     title: "Echo Service";
     version: "1.0";
@@ -61,7 +61,7 @@ service EchoService {
 				get: "/v1/example/echo/{id}/{num}"
 			}
 		};
-		option (grpc_gateway.protoc_gen_swagger.options.swagger_operation) = {
+		option (grpc_gateway.protoc_gen_swagger.options.openapiv2_operation) = {
 		  deprecated: true
 		};
 	}

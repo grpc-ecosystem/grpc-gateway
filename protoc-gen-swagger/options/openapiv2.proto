@@ -2,7 +2,9 @@ syntax = "proto3";
 
 package grpc_gateway.protoc_gen_swagger.options;
 
-// `Swagger` is a representation of Swagger specification's Swagger object.
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options";
+
+// `Swagger` is a representation of OpenAPI v2 specification's Swagger object.
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#swaggerObject
 //
@@ -30,7 +32,7 @@ message Swagger {
   ExternalDocumentation external_docs = 14;
 }
 
-// `Operation` is a representation of Swagger specification's Operation object.
+// `Operation` is a representation of OpenAPI v2 specification's Operation object.
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#operationObject
 //
@@ -54,7 +56,7 @@ message Operation {
   
 }
 
-// `Info` is a representation of Swagger specification's Info object.
+// `Info` is a representation of OpenAPI v2 specification's Info object.
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#infoObject
 //
@@ -69,7 +71,7 @@ message Info {
   string version = 6;
 }
 
-// `Contact` is a representation of Swagger specification's Contact object.
+// `Contact` is a representation of OpenAPI v2 specification's Contact object.
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#contactObject
 //
@@ -80,7 +82,7 @@ message Contact {
   string email = 3;
 }
 
-// `ExternalDocumentation` is a representation of Swagger specification's
+// `ExternalDocumentation` is a representation of OpenAPI v2 specification's
 // ExternalDocumentation object.
 //
 // https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#externalDocumentationObject

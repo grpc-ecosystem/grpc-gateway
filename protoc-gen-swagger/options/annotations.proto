@@ -2,7 +2,9 @@ syntax = "proto3";
 
 package grpc_gateway.protoc_gen_swagger.options;
 
-import "protoc-gen-swagger/options/swagger.proto";
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options";
+
+import "protoc-gen-swagger/options/openapiv2.proto";
 import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.FileOptions {
