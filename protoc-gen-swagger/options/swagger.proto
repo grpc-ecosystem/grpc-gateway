@@ -4,7 +4,7 @@ package grpc_gateway.protoc_gen_swagger.options;
 
 // `Swagger` is a representation of Swagger specification's Swagger object.
 //
-// See: http://swagger.io/specification/#swagger-object-14
+// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#swaggerObject
 //
 // TODO(ivucica): document fields
 message Swagger {
@@ -16,17 +16,23 @@ message Swagger {
   repeated string consumes = 6;
   repeated string produces = 7;
   // field 8 is reserved for 'paths'.
+  reserved 8;
   // field 9 is reserved for 'definitions'.
+  reserved 9;
   // field 10 is reserved for 'responses'.
+  reserved 10;
   // field 11 is reserved for 'securityDefinitions'.
+  reserved 11;
   // field 12 is reserved for repeated 'security'.
+  reserved 12;
   // field 13 is reserved for repeated 'tags'.
+  reserved 13;
   ExternalDocumentation external_docs = 14;
 }
 
 // `Operation` is a representation of Swagger specification's Operation object.
 //
-// See: http://swagger.io/specification/#operation-object-36
+// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#operationObject
 //
 // TODO(ivucica): document fields
 message Operation {
@@ -38,16 +44,19 @@ message Operation {
   repeated string consumes = 6;
   repeated string produces = 7;
   // field 8 is reserved for 'parameters'.
+  reserved 8;
   // field 9 is reserved for 'responses'.
+  reserved 9;
   repeated string schemes = 10;
   bool deprecated = 11;
   // field 12 is reserved for 'security'.
+  reserved 12;
   
 }
 
 // `Info` is a representation of Swagger specification's Info object.
 //
-// See: http://swagger.io/specification/#info-object-17
+// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#infoObject
 //
 // TODO(ivucica): document fields
 message Info {
@@ -55,13 +64,14 @@ message Info {
   string description = 2;
   string terms_of_service = 3;
   Contact contact = 4;
-  // field 5 is reserved for 'license'
+  // field 5 is reserved for 'license'.
+  reserved 5;
   string version = 6;
 }
 
 // `Contact` is a representation of Swagger specification's Contact object.
 //
-// See: http://swagger.io/specification/#contact-object-21
+// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#contactObject
 //
 // TODO(ivucica): document fields
 message Contact {
@@ -73,7 +83,7 @@ message Contact {
 // `ExternalDocumentation` is a representation of Swagger specification's
 // ExternalDocumentation object.
 //
-// See: http://swagger.io/specification/#external-documentation-object-40
+// https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#externalDocumentationObject
 //
 // TODO(ivucica): document fields
 message ExternalDocumentation {

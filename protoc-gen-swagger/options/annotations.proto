@@ -6,8 +6,10 @@ import "protoc-gen-swagger/options/swagger.proto";
 import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.FileOptions {
-  Swagger swagger_swagger = 123456788; // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
+  // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
+  Swagger openapiv2_swagger = 123456788;
 }
 extend google.protobuf.MethodOptions {
-  Operation swagger_operation = 123456789; // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
+  // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
+  Operation openapiv2_operation = 123456789;
 }
