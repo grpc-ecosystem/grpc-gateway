@@ -9,23 +9,6 @@ Echo Service
 Echo Service API consists of a single service which returns
 a message.
 
-OpenAPI: {
-  "info": {
-    "title": "Echo Service",
-    "version": "1.0",
-    "contact": {
-      "name": "gRPC-Gateway project",
-      "url": "https://github.com/gengo/grpc-gateway",
-      "email": "none@example.com"
-    }
-  },
-  "host": "localhost",
-  "externalDocs": {
-    "url": "https://github.com/gengo/grpc-gateway",
-    "description": "More about gRPC-Gateway"
-  }
-}
-
 It is generated from these files:
 	examples/examplepb/echo_service.proto
 	examples/examplepb/a_bit_of_everything.proto
