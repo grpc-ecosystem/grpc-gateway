@@ -963,7 +963,7 @@ func extractSwaggerOptionFromFileDescriptor(file *pbdescriptor.FileDescriptorPro
 	}
 	opts, ok := ext.(*swagger_options.Swagger)
 	if !ok {
-		return nil, fmt.Errorf("extension is %T; want an Swagger", ext)
+		return nil, fmt.Errorf("extension is %T; want a Swagger object", ext)
 	}
 	return opts, nil
 }

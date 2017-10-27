@@ -83,7 +83,12 @@
         ],
         "tags": [
           "EchoService"
-        ]
+        ],
+        "deprecated": true,
+        "externalDocs": {
+          "description": "Find out more about EchoService",
+          "url": "http://github.com/grpc-ecosystem/grpc-gateway"
+        }
       }
     },
     "/v1/example/echo_body": {
