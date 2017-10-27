@@ -149,5 +149,6 @@ realclean: distclean
 	rm -f $(GO_PLUGIN)
 	rm -f $(SWAGGER_PLUGIN)
 	rm -f $(EXAMPLE_CLIENT_SRCS)
+	rm -f $(OPENAPIV2_GO)
 
 .PHONY: generate examples test lint clean distclean realclean
