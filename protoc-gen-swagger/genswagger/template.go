@@ -643,9 +643,6 @@ func applyTemplate(p param) (string, error) {
 		if spb.Swagger != "" {
 			s.Swagger = spb.Swagger
 		}
-		if spb.BasePath != "" {
-			s.BasePath = spb.BasePath
-		}
 		if spb.Info != nil {
 			if spb.Info.Title != "" {
 				s.Info.Title = spb.Info.Title
@@ -671,7 +668,36 @@ func applyTemplate(p param) (string, error) {
 		if spb.Host != "" {
 			s.Host = spb.Host
 		}
-		// TODO(ivucica): import the remaining fields
+		if spb.BasePath != "" {
+			s.BasePath = spb.BasePath
+		}
+		if len(spb.Schemes) > 0 {
+			s.Schemes = make([]string, len(spb.Schemes))
+			copy(s.Schemes, spb.Schemes)
+		}
+		if len(spb.Consumes) > 0 {
+			s.Consumes = make([]string, len(spb.Consumes))
+			copy(s.Consumes, spb.Consumes)
+		}
+		if len(spb.Produces) > 0 {
+			s.Produces = make([]string, len(spb.Produces))
+			copy(s.Produces, spb.Produces)
+		}
+		if spb.ExternalDocs != nil {
+			// TODO(ivucica): externalDocs does not belong in s.Info according to the spec.
+			if s.Info.ExternalDocs == nil {
+				s.Info.ExternalDocs = &swaggerExternalDocumentationObject{}
+			}
+			if spb.ExternalDocs.Description != "" {
+				s.Info.ExternalDocs.Description = spb.ExternalDocs.Description
+			}
+			if spb.ExternalDocs.Url != "" {
+				s.Info.ExternalDocs.URL = spb.ExternalDocs.Url
+			}
+		}
+
+		// Additional fields on the OpenAPI v2 spec's "Swagger" object
+		// should be added here, once supported in the proto.
 	}
 
 	// We now have rendered the entire swagger object. Write the bytes out to a

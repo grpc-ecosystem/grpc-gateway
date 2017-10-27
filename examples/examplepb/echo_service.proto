@@ -25,6 +25,13 @@ option (grpc_gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
     url: "https://github.com/grpc-ecosystem/grpc-gateway";
     description: "More about gRPC-Gateway";
   }
+  schemes: "http";
+  schemes: "https";
+  schemes: "x-foo-scheme";
+  consumes: "application/json";
+  consumes: "application/x-foo-mime";
+  produces: "application/json";
+  produces: "application/x-foo-mime";
 };
 
 // SimpleMessage represents a simple message sent to the Echo service.

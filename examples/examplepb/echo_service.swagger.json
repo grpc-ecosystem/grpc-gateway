@@ -8,18 +8,25 @@
       "name": "gRPC-Gateway project",
       "url": "https://github.com/grpc-ecosystem/grpc-gateway",
       "email": "none@example.com"
+    },
+    "externalDocs": {
+      "description": "More about gRPC-Gateway",
+      "url": "https://github.com/grpc-ecosystem/grpc-gateway"
     }
   },
   "host": "localhost",
   "schemes": [
     "http",
-    "https"
+    "https",
+    "x-foo-scheme"
   ],
   "consumes": [
-    "application/json"
+    "application/json",
+    "application/x-foo-mime"
   ],
   "produces": [
-    "application/json"
+    "application/json",
+    "application/x-foo-mime"
   ],
   "paths": {
     "/v1/example/echo/{id}": {
