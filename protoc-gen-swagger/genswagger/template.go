@@ -179,25 +179,25 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		if err := updateSwaggerDataFromComments(&schema, msgComments); err != nil {
 			panic(err)
 		}
-				opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
-				if opts != nil {
-					if err != nil {
-						panic(err)
-					}
-		if opts.ExternalDocs != nil {
-			if schema.ExternalDocs == nil {
-				schema.ExternalDocs = &swaggerExternalDocumentationObject{}
+		opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
+		if opts != nil {
+			if err != nil {
+				panic(err)
 			}
-			if opts.ExternalDocs.Description != "" {
-				schema.ExternalDocs.Description = opts.ExternalDocs.Description
-			}
-			if opts.ExternalDocs.Url != "" {
-				schema.ExternalDocs.URL = opts.ExternalDocs.Url
-			}
-		}
-
-					// TODO(ivucica): add remaining fields of schema object
+			if opts.ExternalDocs != nil {
+				if schema.ExternalDocs == nil {
+					schema.ExternalDocs = &swaggerExternalDocumentationObject{}
 				}
+				if opts.ExternalDocs.Description != "" {
+					schema.ExternalDocs.Description = opts.ExternalDocs.Description
+				}
+				if opts.ExternalDocs.Url != "" {
+					schema.ExternalDocs.URL = opts.ExternalDocs.Url
+				}
+			}
+
+			// TODO(ivucica): add remaining fields of schema object
+		}
 
 		for _, f := range msg.Fields {
 			fieldValue := schemaOfField(f, reg)
@@ -1008,7 +1008,6 @@ func extractSchemaOptionFromMessageDescriptor(msg *pbdescriptor.DescriptorProto)
 	}
 	return opts, nil
 }
-
 
 // extractSwaggerOptionFromFileDescriptor extracts the message of type
 // swagger_options.Swagger from a given proto method's descriptor.
