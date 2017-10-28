@@ -179,6 +179,25 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		if err := updateSwaggerDataFromComments(&schema, msgComments); err != nil {
 			panic(err)
 		}
+				opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
+				if opts != nil {
+					if err != nil {
+						panic(err)
+					}
+		if opts.ExternalDocs != nil {
+			if schema.ExternalDocs == nil {
+				schema.ExternalDocs = &swaggerExternalDocumentationObject{}
+			}
+			if opts.ExternalDocs.Description != "" {
+				schema.ExternalDocs.Description = opts.ExternalDocs.Description
+			}
+			if opts.ExternalDocs.Url != "" {
+				schema.ExternalDocs.URL = opts.ExternalDocs.Url
+			}
+		}
+
+					// TODO(ivucica): add remaining fields of schema object
+				}
 
 		for _, f := range msg.Fields {
 			fieldValue := schemaOfField(f, reg)
@@ -562,6 +581,17 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					if err != nil {
 						panic(err)
 					}
+					if opts.ExternalDocs != nil {
+						if operationObject.ExternalDocs == nil {
+							operationObject.ExternalDocs = &swaggerExternalDocumentationObject{}
+						}
+						if opts.ExternalDocs.Description != "" {
+							operationObject.ExternalDocs.Description = opts.ExternalDocs.Description
+						}
+						if opts.ExternalDocs.Url != "" {
+							operationObject.ExternalDocs.URL = opts.ExternalDocs.Url
+						}
+					}
 					// TODO(ivucica): this would be better supported by looking whether the method is deprecated in the proto file
 					operationObject.Deprecated = opts.Deprecated
 
@@ -673,7 +703,9 @@ func applyTemplate(p param) (string, error) {
 		}
 		if len(spb.Schemes) > 0 {
 			s.Schemes = make([]string, len(spb.Schemes))
-			copy(s.Schemes, spb.Schemes)
+			for i, scheme := range spb.Schemes {
+				s.Schemes[i] = strings.ToLower(scheme.String())
+			}
 		}
 		if len(spb.Consumes) > 0 {
 			s.Consumes = make([]string, len(spb.Consumes))
@@ -716,17 +748,10 @@ func applyTemplate(p param) (string, error) {
 // the passed swaggerObject, the summary and description are joined by \n\n.
 //
 // If there is a field named 'Info', its 'Summary' and 'Description' fields
-// will be updated instead. (JSON always gets applied directly to the passed
-// object, never to 'Info'.)
+// will be updated instead.
 //
 // If there is no 'Summary', the same behavior will be attempted on 'Title',
 // but only if the last character is not a period.
-//
-// To apply additional Swagger properties, one can pass valid JSON
-// in the last paragraph of the comment. The last paragraph needs to start
-// with the string 'OpenAPI: '. This JSON gets parsed and applied to
-// the passed swaggerObject directly. This lets developers easily apply
-// custom properties such as contact details, API base path, et al.
 func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) error {
 	if len(comment) == 0 {
 		return nil
@@ -750,16 +775,7 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 		usingTitle = true
 	}
 
-	// Parse the JSON and apply it.
-	// TODO(ivucica): apply extras /after/ applying summary
-	// and description.
 	paragraphs := strings.Split(comment, "\n\n")
-	if len(paragraphs) > 0 && strings.HasPrefix(strings.TrimLeft(paragraphs[len(paragraphs)-1], " "), "OpenAPI: ") {
-		if err := json.Unmarshal([]byte(strings.TrimLeft(paragraphs[len(paragraphs)-1], " "))[len("OpenAPI: "):], swaggerObject); err != nil {
-			return fmt.Errorf("error: %s, parsing: %s", err.Error(), paragraphs[len(paragraphs)-1])
-		}
-		paragraphs = paragraphs[:len(paragraphs)-1]
-	}
 
 	// If there is a summary (or summary-equivalent), use the first
 	// paragraph as summary, and the rest as description.
@@ -972,6 +988,27 @@ func extractOperationOptionFromMethodDescriptor(meth *pbdescriptor.MethodDescrip
 	}
 	return opts, nil
 }
+
+// extractSchemaOptionFromMessageDescriptor extracts the message of type
+// swagger_options.Schema from a given proto message's descriptor.
+func extractSchemaOptionFromMessageDescriptor(msg *pbdescriptor.DescriptorProto) (*swagger_options.Schema, error) {
+	if msg.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(msg.Options, swagger_options.E_Openapiv2Schema) {
+		return nil, nil
+	}
+	ext, err := proto.GetExtension(msg.Options, swagger_options.E_Openapiv2Schema)
+	if err != nil {
+		return nil, err
+	}
+	opts, ok := ext.(*swagger_options.Schema)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want an Schema", ext)
+	}
+	return opts, nil
+}
+
 
 // extractSwaggerOptionFromFileDescriptor extracts the message of type
 // swagger_options.Swagger from a given proto method's descriptor.

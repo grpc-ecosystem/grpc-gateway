@@ -25,9 +25,9 @@ option (grpc_gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
     url: "https://github.com/grpc-ecosystem/grpc-gateway";
     description: "More about gRPC-Gateway";
   }
-  schemes: "http";
-  schemes: "https";
-  schemes: "x-foo-scheme";
+  schemes: HTTP;
+  schemes: HTTPS;
+  schemes: WSS;
   consumes: "application/json";
   consumes: "application/x-foo-mime";
   produces: "application/json";
@@ -35,17 +35,16 @@ option (grpc_gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 };
 
 // SimpleMessage represents a simple message sent to the Echo service.
-//
-// OpenAPI: {
-//   "externalDocs": {
-//     "url": "http://github.com/grpc-ecosystem/grpc-gateway",
-//     "description": "Find out more about EchoService"
-//   }
-// }
 message SimpleMessage {
 	// Id represents the message identifier.
 	string id = 1;
 	int64 num = 2;
+	option (grpc_gateway.protoc_gen_swagger.options.openapiv2_schema) = {
+		external_docs: {
+			url: "https://github.com/grpc-ecosystem/grpc-gateway";
+			description: "Find out more about EchoService";
+		}
+	};
 }
 
 // Echo service responds to incoming echo requests.
@@ -54,13 +53,6 @@ service EchoService {
 	//
 	// The message posted as the id parameter will also be
 	// returned.
-	//
-	// OpenAPI: {
-	//   "externalDocs": {
-	//     "url": "http://github.com/grpc-ecosystem/grpc-gateway",
-	//     "description": "Find out more about EchoService"
-	//   }
-	// }
 	rpc Echo(SimpleMessage) returns (SimpleMessage) {
 		option (google.api.http) = {
 			post: "/v1/example/echo/{id}"
@@ -70,6 +62,10 @@ service EchoService {
 		};
 		option (grpc_gateway.protoc_gen_swagger.options.openapiv2_operation) = {
 		  deprecated: true
+		  external_docs: {
+		    url: "https://github.com/grpc-ecosystem/grpc-gateway";
+		    description: "Find out more about SimpleMessage";
+		  }
 		};
 	}
 	// EchoBody method receives a simple message and returns it.
@@ -79,4 +75,12 @@ service EchoService {
 			body: "*"
 		};
 	}
+
+	option (grpc_gateway.protoc_gen_swagger.options.openapiv2_tag) = {
+		description: "Echo service description which should not be used in place of the comment!"
+		external_docs: {
+			url: "https://github.com/grpc-ecosystem/grpc-gateway";
+			description: "Find out more about EchoService";
+		}
+	};
 }

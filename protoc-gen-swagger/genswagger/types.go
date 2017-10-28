@@ -171,6 +171,8 @@ type swaggerSchemaObject struct {
 
 	Description string `json:"description,omitempty"`
 	Title       string `json:"title,omitempty"`
+
+	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }
 
 // http://swagger.io/specification/#referenceObject

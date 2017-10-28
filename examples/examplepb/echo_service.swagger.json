@@ -14,7 +14,7 @@
   "schemes": [
     "http",
     "https",
-    "x-foo-scheme"
+    "wss"
   ],
   "consumes": [
     "application/json",
@@ -51,8 +51,8 @@
         ],
         "deprecated": true,
         "externalDocs": {
-          "description": "Find out more about EchoService",
-          "url": "http://github.com/grpc-ecosystem/grpc-gateway"
+          "description": "Find out more about SimpleMessage",
+          "url": "https://github.com/grpc-ecosystem/grpc-gateway"
         }
       }
     },
@@ -89,8 +89,8 @@
         ],
         "deprecated": true,
         "externalDocs": {
-          "description": "Find out more about EchoService",
-          "url": "http://github.com/grpc-ecosystem/grpc-gateway"
+          "description": "Find out more about SimpleMessage",
+          "url": "https://github.com/grpc-ecosystem/grpc-gateway"
         }
       }
     },
@@ -135,7 +135,11 @@
           "format": "int64"
         }
       },
-      "description": "SimpleMessage represents a simple message sent to the Echo service."
+      "description": "SimpleMessage represents a simple message sent to the Echo service.",
+      "externalDocs": {
+        "description": "Find out more about EchoService",
+        "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+      }
     }
   },
   "externalDocs": {

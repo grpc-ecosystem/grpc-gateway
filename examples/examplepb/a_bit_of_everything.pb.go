@@ -7,11 +7,11 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import _ "google.golang.org/genproto/googleapis/api/annotations"
-import google_protobuf1 "github.com/golang/protobuf/ptypes/empty"
-import google_protobuf2 "github.com/golang/protobuf/ptypes/duration"
+import google_protobuf2 "github.com/golang/protobuf/ptypes/empty"
+import google_protobuf3 "github.com/golang/protobuf/ptypes/duration"
 import grpc_gateway_examples_sub "github.com/grpc-ecosystem/grpc-gateway/examples/sub"
 import sub2 "github.com/grpc-ecosystem/grpc-gateway/examples/sub2"
-import google_protobuf3 "github.com/golang/protobuf/ptypes/timestamp"
+import google_protobuf4 "github.com/golang/protobuf/ptypes/timestamp"
 
 import (
 	context "golang.org/x/net/context"
@@ -104,7 +104,7 @@ type ABitOfEverything struct {
 	MappedStringValue        map[string]string                   `protobuf:"bytes,23,rep,name=mapped_string_value,json=mappedStringValue" json:"mapped_string_value,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	MappedNestedValue        map[string]*ABitOfEverything_Nested `protobuf:"bytes,24,rep,name=mapped_nested_value,json=mappedNestedValue" json:"mapped_nested_value,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	NonConventionalNameValue string                              `protobuf:"bytes,26,opt,name=nonConventionalNameValue" json:"nonConventionalNameValue,omitempty"`
-	TimestampValue           *google_protobuf3.Timestamp         `protobuf:"bytes,27,opt,name=timestamp_value,json=timestampValue" json:"timestamp_value,omitempty"`
+	TimestampValue           *google_protobuf4.Timestamp         `protobuf:"bytes,27,opt,name=timestamp_value,json=timestampValue" json:"timestamp_value,omitempty"`
 	// repeated enum value. it is comma-separated in query
 	RepeatedEnumValue []NumericEnum `protobuf:"varint,28,rep,packed,name=repeated_enum_value,json=repeatedEnumValue,enum=grpc.gateway.examples.examplepb.NumericEnum" json:"repeated_enum_value,omitempty"`
 }
@@ -119,7 +119,7 @@ type isABitOfEverything_OneofValue interface {
 }
 
 type ABitOfEverything_OneofEmpty struct {
-	OneofEmpty *google_protobuf1.Empty `protobuf:"bytes,20,opt,name=oneof_empty,json=oneofEmpty,oneof"`
+	OneofEmpty *google_protobuf2.Empty `protobuf:"bytes,20,opt,name=oneof_empty,json=oneofEmpty,oneof"`
 }
 type ABitOfEverything_OneofString struct {
 	OneofString string `protobuf:"bytes,21,opt,name=oneof_string,json=oneofString,oneof"`
@@ -268,7 +268,7 @@ func (m *ABitOfEverything) GetRepeatedStringValue() []string {
 	return nil
 }
 
-func (m *ABitOfEverything) GetOneofEmpty() *google_protobuf1.Empty {
+func (m *ABitOfEverything) GetOneofEmpty() *google_protobuf2.Empty {
 	if x, ok := m.GetOneofValue().(*ABitOfEverything_OneofEmpty); ok {
 		return x.OneofEmpty
 	}
@@ -310,7 +310,7 @@ func (m *ABitOfEverything) GetNonConventionalNameValue() string {
 	return ""
 }
 
-func (m *ABitOfEverything) GetTimestampValue() *google_protobuf3.Timestamp {
+func (m *ABitOfEverything) GetTimestampValue() *google_protobuf4.Timestamp {
 	if m != nil {
 		return m.TimestampValue
 	}
@@ -358,7 +358,7 @@ func _ABitOfEverything_OneofUnmarshaler(msg proto.Message, tag, wire int, b *pro
 		if wire != proto.WireBytes {
 			return true, proto.ErrInternalBadWireType
 		}
-		msg := new(google_protobuf1.Empty)
+		msg := new(google_protobuf2.Empty)
 		err := b.DecodeMessage(msg)
 		m.OneofValue = &ABitOfEverything_OneofEmpty{msg}
 		return true, err
@@ -449,13 +449,13 @@ type ABitOfEverythingServiceClient interface {
 	Create(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	CreateBody(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	Lookup(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*ABitOfEverything, error)
-	Update(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*google_protobuf1.Empty, error)
-	Delete(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*google_protobuf1.Empty, error)
-	GetQuery(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*google_protobuf1.Empty, error)
+	Update(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*google_protobuf2.Empty, error)
+	Delete(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*google_protobuf2.Empty, error)
+	GetQuery(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*google_protobuf2.Empty, error)
 	Echo(ctx context.Context, in *grpc_gateway_examples_sub.StringMessage, opts ...grpc.CallOption) (*grpc_gateway_examples_sub.StringMessage, error)
 	DeepPathEcho(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
-	NoBindings(ctx context.Context, in *google_protobuf2.Duration, opts ...grpc.CallOption) (*google_protobuf1.Empty, error)
-	Timeout(ctx context.Context, in *google_protobuf1.Empty, opts ...grpc.CallOption) (*google_protobuf1.Empty, error)
+	NoBindings(ctx context.Context, in *google_protobuf3.Duration, opts ...grpc.CallOption) (*google_protobuf2.Empty, error)
+	Timeout(ctx context.Context, in *google_protobuf2.Empty, opts ...grpc.CallOption) (*google_protobuf2.Empty, error)
 }
 
 type aBitOfEverythingServiceClient struct {
@@ -493,8 +493,8 @@ func (c *aBitOfEverythingServiceClient) Lookup(ctx context.Context, in *sub2.IdM
 	return out, nil
 }
 
-func (c *aBitOfEverythingServiceClient) Update(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*google_protobuf1.Empty, error) {
-	out := new(google_protobuf1.Empty)
+func (c *aBitOfEverythingServiceClient) Update(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*google_protobuf2.Empty, error) {
+	out := new(google_protobuf2.Empty)
 	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Update", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -502,8 +502,8 @@ func (c *aBitOfEverythingServiceClient) Update(ctx context.Context, in *ABitOfEv
 	return out, nil
 }
 
-func (c *aBitOfEverythingServiceClient) Delete(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*google_protobuf1.Empty, error) {
-	out := new(google_protobuf1.Empty)
+func (c *aBitOfEverythingServiceClient) Delete(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*google_protobuf2.Empty, error) {
+	out := new(google_protobuf2.Empty)
 	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Delete", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -511,8 +511,8 @@ func (c *aBitOfEverythingServiceClient) Delete(ctx context.Context, in *sub2.IdM
 	return out, nil
 }
 
-func (c *aBitOfEverythingServiceClient) GetQuery(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*google_protobuf1.Empty, error) {
-	out := new(google_protobuf1.Empty)
+func (c *aBitOfEverythingServiceClient) GetQuery(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*google_protobuf2.Empty, error) {
+	out := new(google_protobuf2.Empty)
 	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/GetQuery", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -538,8 +538,8 @@ func (c *aBitOfEverythingServiceClient) DeepPathEcho(ctx context.Context, in *AB
 	return out, nil
 }
 
-func (c *aBitOfEverythingServiceClient) NoBindings(ctx context.Context, in *google_protobuf2.Duration, opts ...grpc.CallOption) (*google_protobuf1.Empty, error) {
-	out := new(google_protobuf1.Empty)
+func (c *aBitOfEverythingServiceClient) NoBindings(ctx context.Context, in *google_protobuf3.Duration, opts ...grpc.CallOption) (*google_protobuf2.Empty, error) {
+	out := new(google_protobuf2.Empty)
 	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/NoBindings", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -547,8 +547,8 @@ func (c *aBitOfEverythingServiceClient) NoBindings(ctx context.Context, in *goog
 	return out, nil
 }
 
-func (c *aBitOfEverythingServiceClient) Timeout(ctx context.Context, in *google_protobuf1.Empty, opts ...grpc.CallOption) (*google_protobuf1.Empty, error) {
-	out := new(google_protobuf1.Empty)
+func (c *aBitOfEverythingServiceClient) Timeout(ctx context.Context, in *google_protobuf2.Empty, opts ...grpc.CallOption) (*google_protobuf2.Empty, error) {
+	out := new(google_protobuf2.Empty)
 	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Timeout", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -562,13 +562,13 @@ type ABitOfEverythingServiceServer interface {
 	Create(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	CreateBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	Lookup(context.Context, *sub2.IdMessage) (*ABitOfEverything, error)
-	Update(context.Context, *ABitOfEverything) (*google_protobuf1.Empty, error)
-	Delete(context.Context, *sub2.IdMessage) (*google_protobuf1.Empty, error)
-	GetQuery(context.Context, *ABitOfEverything) (*google_protobuf1.Empty, error)
+	Update(context.Context, *ABitOfEverything) (*google_protobuf2.Empty, error)
+	Delete(context.Context, *sub2.IdMessage) (*google_protobuf2.Empty, error)
+	GetQuery(context.Context, *ABitOfEverything) (*google_protobuf2.Empty, error)
 	Echo(context.Context, *grpc_gateway_examples_sub.StringMessage) (*grpc_gateway_examples_sub.StringMessage, error)
 	DeepPathEcho(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
-	NoBindings(context.Context, *google_protobuf2.Duration) (*google_protobuf1.Empty, error)
-	Timeout(context.Context, *google_protobuf1.Empty) (*google_protobuf1.Empty, error)
+	NoBindings(context.Context, *google_protobuf3.Duration) (*google_protobuf2.Empty, error)
+	Timeout(context.Context, *google_protobuf2.Empty) (*google_protobuf2.Empty, error)
 }
 
 func RegisterABitOfEverythingServiceServer(s *grpc.Server, srv ABitOfEverythingServiceServer) {
@@ -720,7 +720,7 @@ func _ABitOfEverythingService_DeepPathEcho_Handler(srv interface{}, ctx context.
 }
 
 func _ABitOfEverythingService_NoBindings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(google_protobuf2.Duration)
+	in := new(google_protobuf3.Duration)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -732,13 +732,13 @@ func _ABitOfEverythingService_NoBindings_Handler(srv interface{}, ctx context.Co
 		FullMethod: "/grpc.gateway.examples.examplepb.ABitOfEverythingService/NoBindings",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ABitOfEverythingServiceServer).NoBindings(ctx, req.(*google_protobuf2.Duration))
+		return srv.(ABitOfEverythingServiceServer).NoBindings(ctx, req.(*google_protobuf3.Duration))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _ABitOfEverythingService_Timeout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(google_protobuf1.Empty)
+	in := new(google_protobuf2.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -750,7 +750,7 @@ func _ABitOfEverythingService_Timeout_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Timeout",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ABitOfEverythingServiceServer).Timeout(ctx, req.(*google_protobuf1.Empty))
+		return srv.(ABitOfEverythingServiceServer).Timeout(ctx, req.(*google_protobuf2.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -807,7 +807,7 @@ var _ABitOfEverythingService_serviceDesc = grpc.ServiceDesc{
 // Client API for AnotherServiceWithNoBindings service
 
 type AnotherServiceWithNoBindingsClient interface {
-	NoBindings(ctx context.Context, in *google_protobuf1.Empty, opts ...grpc.CallOption) (*google_protobuf1.Empty, error)
+	NoBindings(ctx context.Context, in *google_protobuf2.Empty, opts ...grpc.CallOption) (*google_protobuf2.Empty, error)
 }
 
 type anotherServiceWithNoBindingsClient struct {
@@ -818,8 +818,8 @@ func NewAnotherServiceWithNoBindingsClient(cc *grpc.ClientConn) AnotherServiceWi
 	return &anotherServiceWithNoBindingsClient{cc}
 }
 
-func (c *anotherServiceWithNoBindingsClient) NoBindings(ctx context.Context, in *google_protobuf1.Empty, opts ...grpc.CallOption) (*google_protobuf1.Empty, error) {
-	out := new(google_protobuf1.Empty)
+func (c *anotherServiceWithNoBindingsClient) NoBindings(ctx context.Context, in *google_protobuf2.Empty, opts ...grpc.CallOption) (*google_protobuf2.Empty, error) {
+	out := new(google_protobuf2.Empty)
 	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.AnotherServiceWithNoBindings/NoBindings", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -830,7 +830,7 @@ func (c *anotherServiceWithNoBindingsClient) NoBindings(ctx context.Context, in 
 // Server API for AnotherServiceWithNoBindings service
 
 type AnotherServiceWithNoBindingsServer interface {
-	NoBindings(context.Context, *google_protobuf1.Empty) (*google_protobuf1.Empty, error)
+	NoBindings(context.Context, *google_protobuf2.Empty) (*google_protobuf2.Empty, error)
 }
 
 func RegisterAnotherServiceWithNoBindingsServer(s *grpc.Server, srv AnotherServiceWithNoBindingsServer) {
@@ -838,7 +838,7 @@ func RegisterAnotherServiceWithNoBindingsServer(s *grpc.Server, srv AnotherServi
 }
 
 func _AnotherServiceWithNoBindings_NoBindings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(google_protobuf1.Empty)
+	in := new(google_protobuf2.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -850,7 +850,7 @@ func _AnotherServiceWithNoBindings_NoBindings_Handler(srv interface{}, ctx conte
 		FullMethod: "/grpc.gateway.examples.examplepb.AnotherServiceWithNoBindings/NoBindings",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnotherServiceWithNoBindingsServer).NoBindings(ctx, req.(*google_protobuf1.Empty))
+		return srv.(AnotherServiceWithNoBindingsServer).NoBindings(ctx, req.(*google_protobuf2.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }

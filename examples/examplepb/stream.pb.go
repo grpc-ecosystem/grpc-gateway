@@ -7,7 +7,7 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import _ "google.golang.org/genproto/googleapis/api/annotations"
-import google_protobuf1 "github.com/golang/protobuf/ptypes/empty"
+import google_protobuf2 "github.com/golang/protobuf/ptypes/empty"
 import grpc_gateway_examples_sub "github.com/grpc-ecosystem/grpc-gateway/examples/sub"
 
 import (
@@ -32,7 +32,7 @@ const _ = grpc.SupportPackageIsVersion4
 
 type StreamServiceClient interface {
 	BulkCreate(ctx context.Context, opts ...grpc.CallOption) (StreamService_BulkCreateClient, error)
-	List(ctx context.Context, in *google_protobuf1.Empty, opts ...grpc.CallOption) (StreamService_ListClient, error)
+	List(ctx context.Context, in *google_protobuf2.Empty, opts ...grpc.CallOption) (StreamService_ListClient, error)
 	BulkEcho(ctx context.Context, opts ...grpc.CallOption) (StreamService_BulkEchoClient, error)
 }
 
@@ -55,7 +55,7 @@ func (c *streamServiceClient) BulkCreate(ctx context.Context, opts ...grpc.CallO
 
 type StreamService_BulkCreateClient interface {
 	Send(*ABitOfEverything) error
-	CloseAndRecv() (*google_protobuf1.Empty, error)
+	CloseAndRecv() (*google_protobuf2.Empty, error)
 	grpc.ClientStream
 }
 
@@ -67,18 +67,18 @@ func (x *streamServiceBulkCreateClient) Send(m *ABitOfEverything) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *streamServiceBulkCreateClient) CloseAndRecv() (*google_protobuf1.Empty, error) {
+func (x *streamServiceBulkCreateClient) CloseAndRecv() (*google_protobuf2.Empty, error) {
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
-	m := new(google_protobuf1.Empty)
+	m := new(google_protobuf2.Empty)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func (c *streamServiceClient) List(ctx context.Context, in *google_protobuf1.Empty, opts ...grpc.CallOption) (StreamService_ListClient, error) {
+func (c *streamServiceClient) List(ctx context.Context, in *google_protobuf2.Empty, opts ...grpc.CallOption) (StreamService_ListClient, error) {
 	stream, err := grpc.NewClientStream(ctx, &_StreamService_serviceDesc.Streams[1], c.cc, "/grpc.gateway.examples.examplepb.StreamService/List", opts...)
 	if err != nil {
 		return nil, err
@@ -145,7 +145,7 @@ func (x *streamServiceBulkEchoClient) Recv() (*grpc_gateway_examples_sub.StringM
 
 type StreamServiceServer interface {
 	BulkCreate(StreamService_BulkCreateServer) error
-	List(*google_protobuf1.Empty, StreamService_ListServer) error
+	List(*google_protobuf2.Empty, StreamService_ListServer) error
 	BulkEcho(StreamService_BulkEchoServer) error
 }
 
@@ -158,7 +158,7 @@ func _StreamService_BulkCreate_Handler(srv interface{}, stream grpc.ServerStream
 }
 
 type StreamService_BulkCreateServer interface {
-	SendAndClose(*google_protobuf1.Empty) error
+	SendAndClose(*google_protobuf2.Empty) error
 	Recv() (*ABitOfEverything, error)
 	grpc.ServerStream
 }
@@ -167,7 +167,7 @@ type streamServiceBulkCreateServer struct {
 	grpc.ServerStream
 }
 
-func (x *streamServiceBulkCreateServer) SendAndClose(m *google_protobuf1.Empty) error {
+func (x *streamServiceBulkCreateServer) SendAndClose(m *google_protobuf2.Empty) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -180,7 +180,7 @@ func (x *streamServiceBulkCreateServer) Recv() (*ABitOfEverything, error) {
 }
 
 func _StreamService_List_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(google_protobuf1.Empty)
+	m := new(google_protobuf2.Empty)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}

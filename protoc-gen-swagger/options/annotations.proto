@@ -15,3 +15,11 @@ extend google.protobuf.MethodOptions {
   // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
   Operation openapiv2_operation = 123456789;
 }
+extend google.protobuf.MessageOptions {
+  // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
+  Schema openapiv2_schema = 123456790;
+}
+extend google.protobuf.ServiceOptions {
+  // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
+  Tag openapiv2_tag = 123456791;
+}
