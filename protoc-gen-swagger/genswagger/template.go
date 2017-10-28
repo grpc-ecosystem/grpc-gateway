@@ -474,7 +474,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	for svcIdx, svc := range services {
 		for methIdx, meth := range svc.Methods {
-			for _, b := range meth.Bindings {
+			for bIdx, b := range meth.Bindings {
 				// Iterate over all the swagger parameters
 				parameters := swaggerParametersObject{}
 				for _, parameter := range b.PathParams {
@@ -549,9 +549,8 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					desc += "(streaming responses)"
 				}
 				operationObject := &swaggerOperationObject{
-					Tags:        []string{svc.GetName()},
-					OperationID: fmt.Sprintf("%s", meth.GetName()),
-					Parameters:  parameters,
+					Tags:       []string{svc.GetName()},
+					Parameters: parameters,
 					Responses: swaggerResponsesObject{
 						"200": swaggerResponseObject{
 							Description: desc,
@@ -562,6 +561,12 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							},
 						},
 					},
+				}
+				if bIdx == 0 {
+					operationObject.OperationID = fmt.Sprintf("%s", meth.GetName())
+				} else {
+					// OperationID must be unique in an OpenAPI v2 definition.
+					operationObject.OperationID = fmt.Sprintf("%s%d", meth.GetName(), bIdx+1)
 				}
 
 				// Fill reference map with referenced request messages

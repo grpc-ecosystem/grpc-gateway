@@ -498,7 +498,7 @@
     },
     "/v2/example/echo": {
       "get": {
-        "operationId": "Echo",
+        "operationId": "Echo3",
         "responses": {
           "200": {
             "description": "",
@@ -520,7 +520,7 @@
         ]
       },
       "post": {
-        "operationId": "Echo",
+        "operationId": "Echo2",
         "responses": {
           "200": {
             "description": "",

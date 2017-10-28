@@ -60,7 +60,7 @@
       "get": {
         "summary": "Echo method receives a simple message and returns it.",
         "description": "The message posted as the id parameter will also be\nreturned.",
-        "operationId": "Echo",
+        "operationId": "Echo2",
         "responses": {
           "200": {
             "description": "",
