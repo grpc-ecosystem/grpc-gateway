@@ -20,7 +20,7 @@ option (grpc_gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
       email: "none@example.com";
     };
   };
-  host: "localhost";
+  //host: "localhost";
   external_docs: {
     url: "https://github.com/grpc-ecosystem/grpc-gateway";
     description: "More about gRPC-Gateway";

@@ -10,7 +10,6 @@
       "email": "none@example.com"
     }
   },
-  "host": "localhost",
   "schemes": [
     "http",
     "https",
