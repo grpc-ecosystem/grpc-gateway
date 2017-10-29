@@ -1007,7 +1007,7 @@ func extractSchemaOptionFromMessageDescriptor(msg *pbdescriptor.DescriptorProto)
 	}
 	opts, ok := ext.(*swagger_options.Schema)
 	if !ok {
-		return nil, fmt.Errorf("extension is %T; want an Schema", ext)
+		return nil, fmt.Errorf("extension is %T; want a Schema", ext)
 	}
 	return opts, nil
 }
