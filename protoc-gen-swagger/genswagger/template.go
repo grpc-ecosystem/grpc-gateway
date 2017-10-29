@@ -16,8 +16,6 @@ import (
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 )
 
-var swaggerExtrasRegexp = regexp.MustCompile(`(?s)^(.*[^\s])[\s]*<!-- swagger extras start(.*)swagger extras end -->[\s]*(.*)$`)
-
 func listEnumNames(enum *descriptor.Enum) (names []string) {
 	for _, value := range enum.GetValue() {
 		names = append(names, value.GetName())
