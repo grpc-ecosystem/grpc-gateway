@@ -178,10 +178,10 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			panic(err)
 		}
 		opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
+		if err != nil {
+			panic(err)
+		}
 		if opts != nil {
-			if err != nil {
-				panic(err)
-			}
 			if opts.ExternalDocs != nil {
 				if schema.ExternalDocs == nil {
 					schema.ExternalDocs = &swaggerExternalDocumentationObject{}
