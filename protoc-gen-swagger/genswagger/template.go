@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"os"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -722,13 +723,8 @@ func enumValueProtoComments(reg *descriptor.Registry, enum *descriptor.Enum) str
 
 func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []string, typeName string, typeIndex int32, fieldPaths ...int32) string {
 	if file.SourceCodeInfo == nil {
-		// Curious! A file without any source code info.
-		// This could be a test that's providing incomplete
-		// descriptor.File information.
-		//
-		// We could simply return no comments, but panic
-		// could make debugging easier.
-		panic("descriptor.File should not contain nil SourceCodeInfo")
+		fmt.Fprintln(os.Stderr, "descriptor.File should not contain nil SourceCodeInfo")
+		return ""
 	}
 
 	outerPaths := make([]int32, len(outers))
