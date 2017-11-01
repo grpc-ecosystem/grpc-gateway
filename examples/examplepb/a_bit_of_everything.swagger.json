@@ -1,18 +1,26 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/examplepb/a_bit_of_everything.proto",
-    "version": "version not set"
+    "title": "A Bit of Everything",
+    "version": "1.0",
+    "contact": {
+      "name": "gRPC-Gateway project",
+      "url": "https://github.com/grpc-ecosystem/grpc-gateway",
+      "email": "none@example.com"
+    }
   },
   "schemes": [
     "http",
-    "https"
+    "https",
+    "wss"
   ],
   "consumes": [
-    "application/json"
+    "application/json",
+    "application/x-foo-mime"
   ],
   "produces": [
-    "application/json"
+    "application/json",
+    "application/x-foo-mime"
   ],
   "paths": {
     "/v1/example/a_bit_of_everything": {
@@ -43,6 +51,8 @@
     },
     "/v1/example/a_bit_of_everything/echo/{value}": {
       "get": {
+        "summary": "Echo allows posting a StringMessage value.",
+        "description": "It also exposes multiple bindings.\n\nThis makes it useful when validating that the OpenAPI v2 API\ndescription exposes documentation correctly on all paths\ndefined as additional_bindings in the proto.",
         "operationId": "Echo",
         "responses": {
           "200": {
@@ -62,7 +72,11 @@
         ],
         "tags": [
           "ABitOfEverythingService"
-        ]
+        ],
+        "externalDocs": {
+          "description": "Find out more Echo",
+          "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+        }
       }
     },
     "/v1/example/a_bit_of_everything/query/{uuid}": {
@@ -264,7 +278,12 @@
         ],
         "tags": [
           "ABitOfEverythingService"
-        ]
+        ],
+        "deprecated": true,
+        "externalDocs": {
+          "description": "Find out more about GetQuery",
+          "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+        }
       }
     },
     "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}": {
@@ -498,6 +517,8 @@
     },
     "/v2/example/echo": {
       "get": {
+        "summary": "Echo allows posting a StringMessage value.",
+        "description": "It also exposes multiple bindings.\n\nThis makes it useful when validating that the OpenAPI v2 API\ndescription exposes documentation correctly on all paths\ndefined as additional_bindings in the proto.",
         "operationId": "Echo3",
         "responses": {
           "200": {
@@ -517,9 +538,15 @@
         ],
         "tags": [
           "ABitOfEverythingService"
-        ]
+        ],
+        "externalDocs": {
+          "description": "Find out more Echo",
+          "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+        }
       },
       "post": {
+        "summary": "Echo allows posting a StringMessage value.",
+        "description": "It also exposes multiple bindings.\n\nThis makes it useful when validating that the OpenAPI v2 API\ndescription exposes documentation correctly on all paths\ndefined as additional_bindings in the proto.",
         "operationId": "Echo2",
         "responses": {
           "200": {
@@ -541,7 +568,11 @@
         ],
         "tags": [
           "ABitOfEverythingService"
-        ]
+        ],
+        "externalDocs": {
+          "description": "Find out more Echo",
+          "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+        }
       }
     },
     "/v2/example/timeout": {
@@ -707,7 +738,11 @@
           "title": "repeated enum value. it is comma-separated in query"
         }
       },
-      "title": "Intentionaly complicated message type to cover much features of Protobuf.\nNEXT ID: 27"
+      "title": "Intentionaly complicated message type to cover much features of Protobuf.\nNEXT ID: 27",
+      "externalDocs": {
+        "description": "Find out more about ABitOfEverything",
+        "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+      }
     },
     "examplepbNumericEnum": {
       "type": "string",
@@ -731,5 +766,9 @@
         }
       }
     }
+  },
+  "externalDocs": {
+    "description": "More about gRPC-Gateway",
+    "url": "https://github.com/grpc-ecosystem/grpc-gateway"
   }
 }

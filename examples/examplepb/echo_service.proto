@@ -8,43 +8,12 @@ option go_package = "examplepb";
 package grpc.gateway.examples.examplepb;
 
 import "google/api/annotations.proto";
-import "protoc-gen-swagger/options/annotations.proto";
-
-option (grpc_gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
-  info: {
-    title: "Echo Service";
-    version: "1.0";
-    contact: {
-      name: "gRPC-Gateway project";
-      url: "https://github.com/grpc-ecosystem/grpc-gateway";
-      email: "none@example.com";
-    };
-  };
-  //host: "localhost";
-  external_docs: {
-    url: "https://github.com/grpc-ecosystem/grpc-gateway";
-    description: "More about gRPC-Gateway";
-  }
-  schemes: HTTP;
-  schemes: HTTPS;
-  schemes: WSS;
-  consumes: "application/json";
-  consumes: "application/x-foo-mime";
-  produces: "application/json";
-  produces: "application/x-foo-mime";
-};
 
 // SimpleMessage represents a simple message sent to the Echo service.
 message SimpleMessage {
 	// Id represents the message identifier.
 	string id = 1;
 	int64 num = 2;
-	option (grpc_gateway.protoc_gen_swagger.options.openapiv2_schema) = {
-		external_docs: {
-			url: "https://github.com/grpc-ecosystem/grpc-gateway";
-			description: "Find out more about EchoService";
-		}
-	};
 }
 
 // Echo service responds to incoming echo requests.
@@ -60,13 +29,6 @@ service EchoService {
 				get: "/v1/example/echo/{id}/{num}"
 			}
 		};
-		option (grpc_gateway.protoc_gen_swagger.options.openapiv2_operation) = {
-		  deprecated: true
-		  external_docs: {
-		    url: "https://github.com/grpc-ecosystem/grpc-gateway";
-		    description: "Find out more about SimpleMessage";
-		  }
-		};
 	}
 	// EchoBody method receives a simple message and returns it.
 	rpc EchoBody(SimpleMessage) returns (SimpleMessage) {
@@ -75,12 +37,4 @@ service EchoService {
 			body: "*"
 		};
 	}
-
-	option (grpc_gateway.protoc_gen_swagger.options.openapiv2_tag) = {
-		description: "Echo service description which should not be used in place of the comment!"
-		external_docs: {
-			url: "https://github.com/grpc-ecosystem/grpc-gateway";
-			description: "Find out more about EchoService";
-		}
-	};
 }

@@ -3,25 +3,17 @@
   "info": {
     "title": "Echo Service",
     "description": "Echo Service API consists of a single service which returns\na message.",
-    "version": "1.0",
-    "contact": {
-      "name": "gRPC-Gateway project",
-      "url": "https://github.com/grpc-ecosystem/grpc-gateway",
-      "email": "none@example.com"
-    }
+    "version": "version not set"
   },
   "schemes": [
     "http",
-    "https",
-    "wss"
+    "https"
   ],
   "consumes": [
-    "application/json",
-    "application/x-foo-mime"
+    "application/json"
   ],
   "produces": [
-    "application/json",
-    "application/x-foo-mime"
+    "application/json"
   ],
   "paths": {
     "/v1/example/echo/{id}": {
@@ -47,12 +39,7 @@
         ],
         "tags": [
           "EchoService"
-        ],
-        "deprecated": true,
-        "externalDocs": {
-          "description": "Find out more about SimpleMessage",
-          "url": "https://github.com/grpc-ecosystem/grpc-gateway"
-        }
+        ]
       }
     },
     "/v1/example/echo/{id}/{num}": {
@@ -85,12 +72,7 @@
         ],
         "tags": [
           "EchoService"
-        ],
-        "deprecated": true,
-        "externalDocs": {
-          "description": "Find out more about SimpleMessage",
-          "url": "https://github.com/grpc-ecosystem/grpc-gateway"
-        }
+        ]
       }
     },
     "/v1/example/echo_body": {
@@ -134,15 +116,7 @@
           "format": "int64"
         }
       },
-      "description": "SimpleMessage represents a simple message sent to the Echo service.",
-      "externalDocs": {
-        "description": "Find out more about EchoService",
-        "url": "https://github.com/grpc-ecosystem/grpc-gateway"
-      }
+      "description": "SimpleMessage represents a simple message sent to the Echo service."
     }
-  },
-  "externalDocs": {
-    "description": "More about gRPC-Gateway",
-    "url": "https://github.com/grpc-ecosystem/grpc-gateway"
   }
 }
