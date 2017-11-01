@@ -8,18 +8,18 @@ import "protoc-gen-swagger/options/openapiv2.proto";
 import "google/protobuf/descriptor.proto";
 
 extend google.protobuf.FileOptions {
-  // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
-  Swagger openapiv2_swagger = 123456788;
+  // ID assigned by protobuf-global-extension-registry@google.com for grpc-gateway project.
+  Swagger openapiv2_swagger = 1042;
 }
 extend google.protobuf.MethodOptions {
-  // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
-  Operation openapiv2_operation = 123456789;
+  // ID assigned by protobuf-global-extension-registry@google.com for grpc-gateway project.
+  Operation openapiv2_operation = 1042;
 }
 extend google.protobuf.MessageOptions {
-  // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
-  Schema openapiv2_schema = 123456790;
+  // ID assigned by protobuf-global-extension-registry@google.com for grpc-gateway project.
+  Schema openapiv2_schema = 1042;
 }
 extend google.protobuf.ServiceOptions {
-  // TODO(ivucica): ask protobuf-global-extension-registry@google.com to assign ID
-  Tag openapiv2_tag = 123456791;
+  // ID assigned by protobuf-global-extension-registry@google.com for grpc-gateway project.
+  Tag openapiv2_tag = 1042;
 }
