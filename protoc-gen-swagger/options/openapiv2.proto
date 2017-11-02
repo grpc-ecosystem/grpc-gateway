@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package grpc_gateway.protoc_gen_swagger.options;
+package grpc.gateway.protoc_gen_swagger.options;
 
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options";
 
