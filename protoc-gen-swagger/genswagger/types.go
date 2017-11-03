@@ -23,9 +23,8 @@ type swaggerInfoObject struct {
 	TermsOfService string `json:"termsOfService,omitempty"`
 	Version        string `json:"version"`
 
-	Contact      *swaggerContactObject               `json:"contact,omitempty"`
-	License      *swaggerLicenseObject               `json:"license,omitempty"`
-	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
+	Contact *swaggerContactObject `json:"contact,omitempty"`
+	License *swaggerLicenseObject `json:"license,omitempty"`
 }
 
 // http://swagger.io/specification/#contactObject
@@ -49,15 +48,16 @@ type swaggerExternalDocumentationObject struct {
 
 // http://swagger.io/specification/#swaggerObject
 type swaggerObject struct {
-	Swagger     string                   `json:"swagger"`
-	Info        swaggerInfoObject        `json:"info"`
-	Host        string                   `json:"host,omitempty"`
-	BasePath    string                   `json:"basePath,omitempty"`
-	Schemes     []string                 `json:"schemes"`
-	Consumes    []string                 `json:"consumes"`
-	Produces    []string                 `json:"produces"`
-	Paths       swaggerPathsObject       `json:"paths"`
-	Definitions swaggerDefinitionsObject `json:"definitions"`
+	Swagger      string                              `json:"swagger"`
+	Info         swaggerInfoObject                   `json:"info"`
+	Host         string                              `json:"host,omitempty"`
+	BasePath     string                              `json:"basePath,omitempty"`
+	Schemes      []string                            `json:"schemes"`
+	Consumes     []string                            `json:"consumes"`
+	Produces     []string                            `json:"produces"`
+	Paths        swaggerPathsObject                  `json:"paths"`
+	Definitions  swaggerDefinitionsObject            `json:"definitions"`
+	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }
 
 // http://swagger.io/specification/#pathsObject
@@ -80,6 +80,7 @@ type swaggerOperationObject struct {
 	Responses   swaggerResponsesObject  `json:"responses"`
 	Parameters  swaggerParametersObject `json:"parameters,omitempty"`
 	Tags        []string                `json:"tags,omitempty"`
+	Deprecated  bool                    `json:"deprecated,omitempty"`
 
 	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }
@@ -170,6 +171,8 @@ type swaggerSchemaObject struct {
 
 	Description string `json:"description,omitempty"`
 	Title       string `json:"title,omitempty"`
+
+	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }
 
 // http://swagger.io/specification/#referenceObject

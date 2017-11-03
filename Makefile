@@ -43,6 +43,9 @@ OUTPUT_DIR=_output
 RUNTIME_PROTO=runtime/internal/stream_chunk.proto
 RUNTIME_GO=$(RUNTIME_PROTO:.proto=.pb.go)
 
+OPENAPIV2_PROTO=protoc-gen-swagger/options/openapiv2.proto protoc-gen-swagger/options/annotations.proto
+OPENAPIV2_GO=$(OPENAPIV2_PROTO:.proto=.pb.go)
+
 PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/sub/message.proto=$(PKG)/examples/sub
 ADDITIONAL_FLAGS=
 ifneq "$(GATEWAY_PLUGIN_FLAGS)" ""
@@ -83,17 +86,20 @@ generate: $(RUNTIME_GO)
 
 .SUFFIXES: .go .proto
 
-$(GO_PLUGIN): 
+$(GO_PLUGIN):
 	go get $(GO_PLUGIN_PKG)
 	go build -o $@ $(GO_PLUGIN_PKG)
 
 $(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
 	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP):. $(RUNTIME_PROTO)
 
+$(OPENAPIV2_GO): $(OPENAPIV2_PROTO) $(GO_PLUGIN)
+	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP):$(GOPATH)/src $(OPENAPIV2_PROTO)
+
 $(GATEWAY_PLUGIN): $(RUNTIME_GO) $(GATEWAY_PLUGIN_SRC)
 	go build -o $@ $(GATEWAY_PLUGIN_PKG)
 
-$(SWAGGER_PLUGIN): $(SWAGGER_PLUGIN_SRC)
+$(SWAGGER_PLUGIN): $(SWAGGER_PLUGIN_SRC) $(OPENAPIV2_GO)
 	go build -o $@ $(SWAGGER_PLUGIN_PKG)
 
 $(EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(EXAMPLES)
@@ -143,5 +149,6 @@ realclean: distclean
 	rm -f $(GO_PLUGIN)
 	rm -f $(SWAGGER_PLUGIN)
 	rm -f $(EXAMPLE_CLIENT_SRCS)
+	rm -f $(OPENAPIV2_GO)
 
 .PHONY: generate examples test lint clean distclean realclean
