@@ -11,8 +11,10 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/golang/protobuf/proto"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
+	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 )
 
 func listEnumNames(enum *descriptor.Enum) (names []string) {
@@ -175,6 +177,25 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
 		if err := updateSwaggerDataFromComments(&schema, msgComments); err != nil {
 			panic(err)
+		}
+		opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
+		if err != nil {
+			panic(err)
+		}
+		if opts != nil {
+			if opts.ExternalDocs != nil {
+				if schema.ExternalDocs == nil {
+					schema.ExternalDocs = &swaggerExternalDocumentationObject{}
+				}
+				if opts.ExternalDocs.Description != "" {
+					schema.ExternalDocs.Description = opts.ExternalDocs.Description
+				}
+				if opts.ExternalDocs.Url != "" {
+					schema.ExternalDocs.URL = opts.ExternalDocs.Url
+				}
+			}
+
+			// TODO(ivucica): add remaining fields of schema object
 		}
 
 		for _, f := range msg.Fields {
@@ -452,7 +473,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	for svcIdx, svc := range services {
 		for methIdx, meth := range svc.Methods {
-			for _, b := range meth.Bindings {
+			for bIdx, b := range meth.Bindings {
 				// Iterate over all the swagger parameters
 				parameters := swaggerParametersObject{}
 				for _, parameter := range b.PathParams {
@@ -527,9 +548,8 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					desc += "(streaming responses)"
 				}
 				operationObject := &swaggerOperationObject{
-					Tags:        []string{svc.GetName()},
-					OperationID: fmt.Sprintf("%s", meth.GetName()),
-					Parameters:  parameters,
+					Tags:       []string{svc.GetName()},
+					Parameters: parameters,
 					Responses: swaggerResponsesObject{
 						"200": swaggerResponseObject{
 							Description: desc,
@@ -540,6 +560,12 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							},
 						},
 					},
+				}
+				if bIdx == 0 {
+					operationObject.OperationID = fmt.Sprintf("%s", meth.GetName())
+				} else {
+					// OperationID must be unique in an OpenAPI v2 definition.
+					operationObject.OperationID = fmt.Sprintf("%s%d", meth.GetName(), bIdx+1)
 				}
 
 				// Fill reference map with referenced request messages
@@ -552,6 +578,28 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				methComments := protoComments(reg, svc.File, nil, "Service", int32(svcIdx), methProtoPath, int32(methIdx))
 				if err := updateSwaggerDataFromComments(operationObject, methComments); err != nil {
 					panic(err)
+				}
+
+				opts, err := extractOperationOptionFromMethodDescriptor(meth.MethodDescriptorProto)
+				if opts != nil {
+					if err != nil {
+						panic(err)
+					}
+					if opts.ExternalDocs != nil {
+						if operationObject.ExternalDocs == nil {
+							operationObject.ExternalDocs = &swaggerExternalDocumentationObject{}
+						}
+						if opts.ExternalDocs.Description != "" {
+							operationObject.ExternalDocs.Description = opts.ExternalDocs.Description
+						}
+						if opts.ExternalDocs.Url != "" {
+							operationObject.ExternalDocs.URL = opts.ExternalDocs.Url
+						}
+					}
+					// TODO(ivucica): this would be better supported by looking whether the method is deprecated in the proto file
+					operationObject.Deprecated = opts.Deprecated
+
+					// TODO(ivucica): add remaining fields of operation object
 				}
 
 				switch b.HTTPMethod {
@@ -620,6 +668,73 @@ func applyTemplate(p param) (string, error) {
 		panic(err)
 	}
 
+	// There may be additional options in the swagger option in the proto.
+	spb, err := extractSwaggerOptionFromFileDescriptor(p.FileDescriptorProto)
+	if err != nil {
+		panic(err)
+	}
+	if spb != nil {
+		if spb.Swagger != "" {
+			s.Swagger = spb.Swagger
+		}
+		if spb.Info != nil {
+			if spb.Info.Title != "" {
+				s.Info.Title = spb.Info.Title
+			}
+			if spb.Info.Version != "" {
+				s.Info.Version = spb.Info.Version
+			}
+			if spb.Info.Contact != nil {
+				if s.Info.Contact == nil {
+					s.Info.Contact = &swaggerContactObject{}
+				}
+				if spb.Info.Contact.Name != "" {
+					s.Info.Contact.Name = spb.Info.Contact.Name
+				}
+				if spb.Info.Contact.Url != "" {
+					s.Info.Contact.URL = spb.Info.Contact.Url
+				}
+				if spb.Info.Contact.Email != "" {
+					s.Info.Contact.Email = spb.Info.Contact.Email
+				}
+			}
+		}
+		if spb.Host != "" {
+			s.Host = spb.Host
+		}
+		if spb.BasePath != "" {
+			s.BasePath = spb.BasePath
+		}
+		if len(spb.Schemes) > 0 {
+			s.Schemes = make([]string, len(spb.Schemes))
+			for i, scheme := range spb.Schemes {
+				s.Schemes[i] = strings.ToLower(scheme.String())
+			}
+		}
+		if len(spb.Consumes) > 0 {
+			s.Consumes = make([]string, len(spb.Consumes))
+			copy(s.Consumes, spb.Consumes)
+		}
+		if len(spb.Produces) > 0 {
+			s.Produces = make([]string, len(spb.Produces))
+			copy(s.Produces, spb.Produces)
+		}
+		if spb.ExternalDocs != nil {
+			if s.ExternalDocs == nil {
+				s.ExternalDocs = &swaggerExternalDocumentationObject{}
+			}
+			if spb.ExternalDocs.Description != "" {
+				s.ExternalDocs.Description = spb.ExternalDocs.Description
+			}
+			if spb.ExternalDocs.Url != "" {
+				s.ExternalDocs.URL = spb.ExternalDocs.Url
+			}
+		}
+
+		// Additional fields on the OpenAPI v2 spec's "Swagger" object
+		// should be added here, once supported in the proto.
+	}
+
 	// We now have rendered the entire swagger object. Write the bytes out to a
 	// string so it can be written to disk.
 	var w bytes.Buffer
@@ -632,9 +747,9 @@ func applyTemplate(p param) (string, error) {
 // updateSwaggerDataFromComments updates a Swagger object based on a comment
 // from the proto file.
 //
-// First paragraph of a comment is used for summary. Remaining paragraphs of a
-// comment are used for description. If 'Summary' field is not present on the
-// passed swaggerObject, the summary and description are joined by \n\n.
+// First paragraph of a comment is used for summary. Remaining paragraphs of
+// a comment are used for description. If 'Summary' field is not present on
+// the passed swaggerObject, the summary and description are joined by \n\n.
 //
 // If there is a field named 'Info', its 'Summary' and 'Description' fields
 // will be updated instead.
@@ -664,17 +779,15 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 		usingTitle = true
 	}
 
+	paragraphs := strings.Split(comment, "\n\n")
+
 	// If there is a summary (or summary-equivalent), use the first
 	// paragraph as summary, and the rest as description.
 	if summaryValue.CanSet() {
-		paragraphs := strings.Split(comment, "\n\n")
-
 		summary := strings.TrimSpace(paragraphs[0])
 		description := strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
-		if !usingTitle || summary == "" || summary[len(summary)-1] != '.' {
-			if len(summary) > 0 {
-				summaryValue.Set(reflect.ValueOf(summary))
-			}
+		if !usingTitle || (len(summary) > 0 && summary[len(summary)-1] != '.') {
+			summaryValue.Set(reflect.ValueOf(summary))
 			if len(description) > 0 {
 				if !descriptionValue.CanSet() {
 					return fmt.Errorf("Encountered object type with a summary, but no description")
@@ -688,7 +801,7 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 	// There was no summary field on the swaggerObject. Try to apply the
 	// whole comment into description.
 	if descriptionValue.CanSet() {
-		descriptionValue.Set(reflect.ValueOf(comment))
+		descriptionValue.Set(reflect.ValueOf(strings.Join(paragraphs, "\n\n")))
 		return nil
 	}
 
@@ -853,4 +966,64 @@ func protoPathIndex(descriptorType reflect.Type, what string) int32 {
 	}
 
 	return int32(path)
+}
+
+// extractOperationOptionFromMethodDescriptor extracts the message of type
+// swagger_options.Operation from a given proto method's descriptor.
+func extractOperationOptionFromMethodDescriptor(meth *pbdescriptor.MethodDescriptorProto) (*swagger_options.Operation, error) {
+	if meth.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(meth.Options, swagger_options.E_Openapiv2Operation) {
+		return nil, nil
+	}
+	ext, err := proto.GetExtension(meth.Options, swagger_options.E_Openapiv2Operation)
+	if err != nil {
+		return nil, err
+	}
+	opts, ok := ext.(*swagger_options.Operation)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want an Operation", ext)
+	}
+	return opts, nil
+}
+
+// extractSchemaOptionFromMessageDescriptor extracts the message of type
+// swagger_options.Schema from a given proto message's descriptor.
+func extractSchemaOptionFromMessageDescriptor(msg *pbdescriptor.DescriptorProto) (*swagger_options.Schema, error) {
+	if msg.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(msg.Options, swagger_options.E_Openapiv2Schema) {
+		return nil, nil
+	}
+	ext, err := proto.GetExtension(msg.Options, swagger_options.E_Openapiv2Schema)
+	if err != nil {
+		return nil, err
+	}
+	opts, ok := ext.(*swagger_options.Schema)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want a Schema", ext)
+	}
+	return opts, nil
+}
+
+// extractSwaggerOptionFromFileDescriptor extracts the message of type
+// swagger_options.Swagger from a given proto method's descriptor.
+func extractSwaggerOptionFromFileDescriptor(file *pbdescriptor.FileDescriptorProto) (*swagger_options.Swagger, error) {
+	if file.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(file.Options, swagger_options.E_Openapiv2Swagger) {
+		return nil, nil
+	}
+	ext, err := proto.GetExtension(file.Options, swagger_options.E_Openapiv2Swagger)
+	if err != nil {
+		return nil, err
+	}
+	opts, ok := ext.(*swagger_options.Swagger)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want a Swagger object", ext)
+	}
+	return opts, nil
 }
