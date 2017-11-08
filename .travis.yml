@@ -35,4 +35,4 @@ env:
   - "PATH=$PATH:$HOME/local/bin"
   matrix:
   - GATEWAY_PLUGIN_FLAGS=
-  - GATEWAY_PLUGIN_FLAGS=request_context=true
+  - GATEWAY_PLUGIN_FLAGS=request_context=false

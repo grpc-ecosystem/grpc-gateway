@@ -179,7 +179,7 @@ func RegisterStreamServiceHandler(ctx context.Context, mux *runtime.ServeMux, co
 func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client StreamServiceClient) error {
 
 	mux.Handle("POST", pattern_StreamService_BulkCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(ctx)
+		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
 			go func(done <-chan struct{}, closed <-chan bool) {
@@ -208,7 +208,7 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 	})
 
 	mux.Handle("GET", pattern_StreamService_List_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(ctx)
+		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
 			go func(done <-chan struct{}, closed <-chan bool) {
@@ -237,7 +237,7 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 	})
 
 	mux.Handle("POST", pattern_StreamService_BulkEcho_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(ctx)
+		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
 			go func(done <-chan struct{}, closed <-chan bool) {
