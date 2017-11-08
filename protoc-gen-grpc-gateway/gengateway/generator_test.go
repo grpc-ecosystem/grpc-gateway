@@ -1,6 +1,7 @@
 package gengateway
 
 import (
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -9,7 +10,16 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 )
 
-func TestGenerateServiceWithoutBindings(t *testing.T) {
+func newExampleFileDescriptor() *descriptor.File {
+	return newExampleFileDescriptorWithGoPkg(
+		&descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+	)
+}
+
+func newExampleFileDescriptorWithGoPkg(gp *descriptor.GoPackage) *descriptor.File {
 	msgdesc := &protodescriptor.DescriptorProto{
 		Name: proto.String("ExampleMessage"),
 	}
@@ -39,7 +49,7 @@ func TestGenerateServiceWithoutBindings(t *testing.T) {
 		Name:   proto.String("ExampleService"),
 		Method: []*protodescriptor.MethodDescriptorProto{meth, meth1},
 	}
-	file := descriptor.File{
+	return &descriptor.File{
 		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
 			Name:        proto.String("example.proto"),
 			Package:     proto.String("example"),
@@ -47,10 +57,7 @@ func TestGenerateServiceWithoutBindings(t *testing.T) {
 			MessageType: []*protodescriptor.DescriptorProto{msgdesc},
 			Service:     []*protodescriptor.ServiceDescriptorProto{svc},
 		},
-		GoPkg: descriptor.GoPackage{
-			Path: "example.com/path/to/example/example.pb",
-			Name: "example_pb",
-		},
+		GoPkg:    *gp,
 		Messages: []*descriptor.Message{msg},
 		Services: []*descriptor.Service{
 			{
@@ -76,13 +83,71 @@ func TestGenerateServiceWithoutBindings(t *testing.T) {
 			},
 		},
 	}
+}
+
+func TestGenerateServiceWithoutBindings(t *testing.T) {
+	file := newExampleFileDescriptor()
 	g := &generator{}
-	got, err := g.generate(crossLinkFixture(&file))
+	got, err := g.generate(crossLinkFixture(file))
 	if err != nil {
 		t.Errorf("generate(%#v) failed with %v; want success", file, err)
 		return
 	}
 	if notwanted := `"github.com/golang/protobuf/ptypes/empty"`; strings.Contains(got, notwanted) {
 		t.Errorf("generate(%#v) = %s; does not want to contain %s", file, got, notwanted)
+	}
+}
+
+func TestGenerateOutputPath(t *testing.T) {
+	cases := []struct {
+		file     *descriptor.File
+		expected string
+	}{
+		{
+			file: newExampleFileDescriptorWithGoPkg(
+				&descriptor.GoPackage{
+					Path: "example.com/path/to/example",
+					Name: "example_pb",
+				},
+			),
+			expected: "example.com/path/to/example",
+		},
+		{
+			file: newExampleFileDescriptorWithGoPkg(
+				&descriptor.GoPackage{
+					Path: "example",
+					Name: "example_pb",
+				},
+			),
+			expected: "example",
+		},
+	}
+
+	g := &generator{}
+	for _, c := range cases {
+		file := c.file
+		gots, err := g.Generate([]*descriptor.File{crossLinkFixture(file)})
+		if err != nil {
+			t.Errorf("Generate(%#v) failed with %v; wants success", file, err)
+			return
+		}
+
+		if len(gots) != 1 {
+			t.Errorf("Generate(%#v) failed; expects on result got %d", file, len(gots))
+			return
+		}
+
+		got := gots[0]
+		if got.Name == nil {
+			t.Errorf("Generate(%#v) failed; expects non-nil Name(%v)", file, got.Name)
+			return
+		}
+
+		gotPath := filepath.Dir(*got.Name)
+		expectedPath := c.expected
+		if gotPath != expectedPath {
+			t.Errorf("Generate(%#v) failed; got path: %s expected path: %s", file, gotPath, expectedPath)
+			return
+		}
 	}
 }
