@@ -38,6 +38,11 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 		return
 	}
 
+	var delimiter []byte
+	if d, ok := marshaler.(Delimited); ok {
+		delimiter = d.Delimiter()
+	}
+
 	var wroteHeader bool
 	for {
 		resp, err := recv()
@@ -64,6 +69,10 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			return
 		}
 		wroteHeader = true
+		if _, err = w.Write(delimiter); err != nil {
+			grpclog.Printf("Failed to send delimiter chunk: %v", err)
+			return
+		}
 		f.Flush()
 	}
 }
