@@ -54,6 +54,7 @@ func TestPopulateParameters(t *testing.T) {
 				"wrapper_u_int32_value": {"4"},
 				"wrapper_bool_value":    {"true"},
 				"wrapper_string_value":  {"str"},
+				"wrapper_bytes_value":   {"Ynl0ZXM"},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &proto3Message{
@@ -78,6 +79,7 @@ func TestPopulateParameters(t *testing.T) {
 				WrapperUInt32Value: &wrappers.UInt32Value{4},
 				WrapperBoolValue:   &wrappers.BoolValue{true},
 				WrapperStringValue: &wrappers.StringValue{"str"},
+				WrapperBytesValue:  &wrappers.BytesValue{[]byte("bytes")},
 			},
 		},
 		{
@@ -103,6 +105,7 @@ func TestPopulateParameters(t *testing.T) {
 				"wrapperUInt32Value": {"4"},
 				"wrapperBoolValue":   {"true"},
 				"wrapperStringValue": {"str"},
+				"wrapperBytesValue":  {"Ynl0ZXM"},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &proto3Message{
@@ -127,6 +130,7 @@ func TestPopulateParameters(t *testing.T) {
 				WrapperUInt32Value: &wrappers.UInt32Value{4},
 				WrapperBoolValue:   &wrappers.BoolValue{true},
 				WrapperStringValue: &wrappers.StringValue{"str"},
+				WrapperBytesValue:  &wrappers.BytesValue{[]byte("bytes")},
 			},
 		},
 		{
@@ -489,6 +493,7 @@ type proto3Message struct {
 	WrapperUInt32Value *wrappers.UInt32Value    `protobuf:"bytes,22,opt,name=wrapper_u_int32_value,json=wrapperUInt32Value" json:"wrapper_u_int32_value,omitempty"`
 	WrapperBoolValue   *wrappers.BoolValue      `protobuf:"bytes,23,opt,name=wrapper_bool_value,json=wrapperBoolValue" json:"wrapper_bool_value,omitempty"`
 	WrapperStringValue *wrappers.StringValue    `protobuf:"bytes,24,opt,name=wrapper_string_value,json=wrapperStringValue" json:"wrapper_string_value,omitempty"`
+	WrapperBytesValue  *wrappers.BytesValue     `protobuf:"bytes,26,opt,name=wrapper_bytes_value,json=wrapperBytesValue" json:"wrapper_bytes_value,omitempty"`
 }
 
 func (m *proto3Message) Reset()         { *m = proto3Message{} }
