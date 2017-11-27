@@ -295,8 +295,7 @@ var (
 		descriptor.FieldDescriptorProto_TYPE_STRING:  "runtime.String",
 		// FieldDescriptorProto_TYPE_GROUP
 		// FieldDescriptorProto_TYPE_MESSAGE
-		// FieldDescriptorProto_TYPE_BYTES
-		// TODO(yugui) Handle bytes
+		descriptor.FieldDescriptorProto_TYPE_BYTES:  "runtime.Bytes",
 		descriptor.FieldDescriptorProto_TYPE_UINT32: "runtime.Uint32",
 		// FieldDescriptorProto_TYPE_ENUM
 		// TODO(yugui) Handle Enum
