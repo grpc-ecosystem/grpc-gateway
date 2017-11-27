@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"encoding/base64"
 	"strconv"
 
 	"github.com/golang/protobuf/jsonpb"
@@ -73,4 +74,14 @@ func Duration(val string) (*duration.Duration, error) {
 	var r *duration.Duration
 	err := jsonpb.UnmarshalString(val, r)
 	return r, err
+}
+
+// Bytes converts the given string representation of a byte sequence into a slice of bytes
+// A bytes sequence is encoded in URL-safe base64 without padding
+func Bytes(val string) ([]byte, error) {
+	b, err := base64.RawURLEncoding.DecodeString(val)
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
 }

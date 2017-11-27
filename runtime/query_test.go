@@ -41,6 +41,7 @@ func TestPopulateParameters(t *testing.T) {
 				"uint32_value":          {"4"},
 				"bool_value":            {"true"},
 				"string_value":          {"str"},
+				"bytes_value":           {"Ynl0ZXM"},
 				"repeated_value":        {"a", "b", "c"},
 				"enum_value":            {"1"},
 				"repeated_enum":         {"1", "2", "0"},
@@ -64,6 +65,7 @@ func TestPopulateParameters(t *testing.T) {
 				Uint32Value:        4,
 				BoolValue:          true,
 				StringValue:        "str",
+				BytesValue:         []byte("bytes"),
 				RepeatedValue:      []string{"a", "b", "c"},
 				EnumValue:          EnumValue_Y,
 				RepeatedEnum:       []EnumValue{EnumValue_Y, EnumValue_Z, EnumValue_X},
@@ -88,6 +90,7 @@ func TestPopulateParameters(t *testing.T) {
 				"uint32Value":        {"4"},
 				"boolValue":          {"true"},
 				"stringValue":        {"str"},
+				"bytesValue":         {"Ynl0ZXM"},
 				"repeatedValue":      {"a", "b", "c"},
 				"enumValue":          {"1"},
 				"repeatedEnum":       {"1", "2", "0"},
@@ -111,6 +114,7 @@ func TestPopulateParameters(t *testing.T) {
 				Uint32Value:        4,
 				BoolValue:          true,
 				StringValue:        "str",
+				BytesValue:         []byte("bytes"),
 				RepeatedValue:      []string{"a", "b", "c"},
 				EnumValue:          EnumValue_Y,
 				RepeatedEnum:       []EnumValue{EnumValue_Y, EnumValue_Z, EnumValue_X},
@@ -471,6 +475,7 @@ type proto3Message struct {
 	Uint32Value        uint32                   `protobuf:"varint,7,opt,name=uint32_value,json=uint32Value" json:"uint32_value,omitempty"`
 	BoolValue          bool                     `protobuf:"varint,8,opt,name=bool_value,json=boolValue" json:"bool_value,omitempty"`
 	StringValue        string                   `protobuf:"bytes,9,opt,name=string_value,json=stringValue" json:"string_value,omitempty"`
+	BytesValue         []byte                   `protobuf:"bytes,25,opt,name=bytes_value,json=bytesValue" json:"bytes_value,omitempty"`
 	RepeatedValue      []string                 `protobuf:"bytes,10,rep,name=repeated_value,json=repeatedValue" json:"repeated_value,omitempty"`
 	EnumValue          EnumValue                `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=runtime_test_api.EnumValue" json:"enum_value,omitempty"`
 	RepeatedEnum       []EnumValue              `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeatedEnum,enum=runtime_test_api.EnumValue" json:"repeated_enum,omitempty"`
