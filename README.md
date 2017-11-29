@@ -216,7 +216,6 @@ To use the same port for custom HTTP handlers (e.g. serving `swagger.json`), gRP
 
 ### Want to support
 But not yet.
-* bytes fields in path parameter. #5
 * Optionally generating the entrypoint. #8
 * `import_path` parameter
 
