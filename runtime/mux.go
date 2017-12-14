@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/textproto"
+	"net/url"
 	"strings"
 
 	"github.com/golang/protobuf/proto"
@@ -148,8 +149,7 @@ func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	path := r.URL.Path
-	if !strings.HasPrefix(path, "/") {
+	if !strings.HasPrefix(r.URL.Path, "/") {
 		if s.protoErrorHandler != nil {
 			_, outboundMarshaler := MarshalerForRequest(s, r)
 			sterr := status.Error(codes.InvalidArgument, http.StatusText(http.StatusBadRequest))
@@ -160,7 +160,14 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	components := strings.Split(path[1:], "/")
+	components, err := parsePathComponents(r.URL)
+	if err != nil {
+		sterr := status.Error(codes.InvalidArgument, http.StatusText(http.StatusBadRequest))
+		_, outboundMarshaler := MarshalerForRequest(s, r)
+		s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
+		return
+	}
+
 	l := len(components)
 	var verb string
 	if idx := strings.LastIndex(components[l-1], ":"); idx == 0 {
@@ -248,6 +255,22 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // GetForwardResponseOptions returns the ForwardResponseOptions associated with this ServeMux.
 func (s *ServeMux) GetForwardResponseOptions() []func(context.Context, http.ResponseWriter, proto.Message) error {
 	return s.forwardResponseOptions
+}
+
+func parsePathComponents(reqURL *url.URL) ([]string, error) {
+	if reqURL.RawPath != "" {
+		rawComponents := strings.Split(reqURL.RawPath[1:], "/")
+		components := make([]string, len(rawComponents))
+		for i, rawStr := range rawComponents {
+			var pathComponent, err = url.PathUnescape(rawStr)
+			if err != nil {
+				return nil, err
+			}
+			components[i] = pathComponent
+		}
+		return components, nil
+	}
+	return strings.Split(reqURL.Path[1:], "/"), nil
 }
 
 func isPathLengthFallback(r *http.Request) bool {
