@@ -248,7 +248,7 @@ func (r *Registry) goPackagePath(f *descriptor.FileDescriptorProto) string {
 
 	gopkg := f.Options.GetGoPackage()
 	if len(gopkg) == 0 {
-		return path.Join(r.importPath, path.Dir(name))
+		gopkg = r.importPath
 	}
 	idx := strings.LastIndex(gopkg, "/")
 	if idx >= 0 {
