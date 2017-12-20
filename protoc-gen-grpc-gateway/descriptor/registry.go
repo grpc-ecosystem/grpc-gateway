@@ -25,6 +25,9 @@ type Registry struct {
 	// prefix is a prefix to be inserted to golang package paths generated from proto package names.
 	prefix string
 
+	// importPath is used as the package if no input files declare go_package. If it contains slashes, everything up to the rightmost slash is ignored.
+	importPath string
+
 	// pkgMap is a user-specified mapping from file path to proto package.
 	pkgMap map[string]string
 
@@ -212,6 +215,13 @@ func (r *Registry) SetPrefix(prefix string) {
 	r.prefix = prefix
 }
 
+// SetImportPath registers the importPath which is used as the package if no
+// input files declare go_package. If it contains slashes, everything up to the
+// rightmost slash is ignored.
+func (r *Registry) SetImportPath(importPath string) {
+	r.importPath = importPath
+}
+
 // ReserveGoPackageAlias reserves the unique alias of go package.
 // If succeeded, the alias will be never used for other packages in generated go files.
 // If failed, the alias is already taken by another package, so you need to use another
@@ -237,6 +247,9 @@ func (r *Registry) goPackagePath(f *descriptor.FileDescriptorProto) string {
 	}
 
 	gopkg := f.Options.GetGoPackage()
+	if len(gopkg) == 0 {
+		gopkg = r.importPath
+	}
 	idx := strings.LastIndex(gopkg, "/")
 	if idx >= 0 {
 		if sc := strings.LastIndex(gopkg, ";"); sc > 0 {
