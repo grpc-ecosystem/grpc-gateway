@@ -138,8 +138,9 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 			// Request may be fully included in query
 			if _, ok := refs[fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg))]; ok {
 				m[fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)] = meth.RequestType
-				findNestedMessagesAndEnumerations(meth.RequestType, reg, m, e)
 			}
+			findNestedMessagesAndEnumerations(meth.RequestType, reg, m, e)
+
 			m[fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)] = meth.ResponseType
 			findNestedMessagesAndEnumerations(meth.ResponseType, reg, m, e)
 		}

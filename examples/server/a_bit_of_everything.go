@@ -17,6 +17,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	
 )
 
 // Implements of ABitOfEverythingServiceServer
@@ -245,4 +246,8 @@ func (s *_ABitOfEverythingServer) Timeout(ctx context.Context, msg *empty.Empty)
 	case <-ctx.Done():
 		return nil, ctx.Err()
 	}
+}
+
+func (s *_ABitOfEverythingServer) GetMessageWithBody(ctx context.Context, msg *examples.MessageWithBody) (*empty.Empty, error) {
+	return &empty.Empty{}, nil
 }
