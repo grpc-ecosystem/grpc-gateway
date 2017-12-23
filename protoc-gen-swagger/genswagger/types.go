@@ -122,6 +122,13 @@ type schemaCore struct {
 
 type swaggerItemsObject schemaCore
 
+func (o *swaggerItemsObject) getType() string {
+	if o == nil {
+		return ""
+	}
+	return o.Type
+}
+
 // http://swagger.io/specification/#responsesObject
 type swaggerResponsesObject map[string]swaggerResponseObject
 
