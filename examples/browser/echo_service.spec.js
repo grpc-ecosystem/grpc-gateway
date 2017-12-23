@@ -21,7 +21,7 @@ describe('EchoService', function() {
           {id: "foo"},
           {responseContentType: "application/json"}
       ).then(function(resp) {
-        expect(resp.obj).toEqual({id: "foo"});
+        expect(resp.obj).toEqual({id: "foo", num: '0'});
       }).catch(function(err) {
         done.fail(err);
       }).then(done);
@@ -34,7 +34,7 @@ describe('EchoService', function() {
           {body: {id: "foo"}},
           {responseContentType: "application/json"}
       ).then(function(resp) {
-        expect(resp.obj).toEqual({id: "foo"});
+        expect(resp.obj).toEqual({id: "foo", num: '0'});
       }).catch(function(err) {
         done.fail(err);
       }).then(done);

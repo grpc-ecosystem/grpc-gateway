@@ -34,6 +34,15 @@ describe('ABitOfEverythingService', function() {
       sint32_value: 2147483647,
       sint64_value: "4611686018427387903",
       nonConventionalNameValue: "camelCase",
+      single_nested: null,
+      nested: [  ],
+      enum_value: "ZERO",
+      repeated_string_value: [  ],
+      map_value: Object({  }),
+      mapped_string_value: Object({  }),
+      mapped_nested_value: Object({  }),
+      timestamp_value: null,
+      repeated_enum_value: [  ],
     };
 
     beforeEach(function(done) {
@@ -72,10 +81,9 @@ describe('ABitOfEverythingService', function() {
       sint32_value: 2147483647,
       sint64_value: "4611686018427387903",
       nonConventionalNameValue: "camelCase",
-
       nested: [
-       { name: "bar", amount: 10 },
-       { name: "baz", amount: 20 },
+        { name: "bar", amount: 10, ok: 'FALSE' },
+        { name: "baz", amount: 20, ok: 'FALSE' },
       ],
       repeated_string_value: ["a", "b", "c"],
       oneof_string: "x",
@@ -83,9 +91,13 @@ describe('ABitOfEverythingService', function() {
       map_value: { a: 1, b: 2 },
       mapped_string_value: { a: "x", b: "y" },
       mapped_nested_value: {
-        a: { name: "x", amount: 1 },
-        b: { name: "y", amount: 2 },
+        a: { name: "x", amount: 1, ok: 'FALSE' },
+        b: { name: "y", amount: 2, ok: 'FALSE' },
       },
+      single_nested: null,
+      enum_value: "ZERO",
+      timestamp_value: null,
+      repeated_enum_value: [  ],
     };
 
     beforeEach(function(done) {
