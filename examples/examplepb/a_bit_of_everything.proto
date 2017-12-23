@@ -97,6 +97,16 @@ message ABitOfEverything {
 	repeated NumericEnum repeated_enum_value = 28;
 }
 
+message Body {
+	string name = 1;
+}
+
+message MessageWithBody {
+	string id = 1;
+	Body data = 2;
+}
+
+
 // NumericEnum is one or zero.
 enum NumericEnum {
 	// ZERO means 0
@@ -192,6 +202,12 @@ service ABitOfEverythingService {
 	rpc Timeout(google.protobuf.Empty) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
 			get: "/v2/example/timeout",
+		};
+	}
+	rpc GetMessageWithBody(MessageWithBody) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			post: "/v2/example/withbody/{id}",
+			body: "data"
 		};
 	}
 }

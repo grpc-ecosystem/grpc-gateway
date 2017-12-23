@@ -18,6 +18,8 @@ It is generated from these files:
 It has these top-level messages:
 	SimpleMessage
 	ABitOfEverything
+	Body
+	MessageWithBody
 	EmptyProto
 	NonEmptyProto
 	UnaryProto

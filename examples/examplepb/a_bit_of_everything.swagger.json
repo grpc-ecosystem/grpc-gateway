@@ -590,6 +590,38 @@
           "ABitOfEverythingService"
         ]
       }
+    },
+    "/v2/example/withbody/{id}": {
+      "post": {
+        "operationId": "GetMessageWithBody",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbBody"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -742,6 +774,14 @@
       "externalDocs": {
         "description": "Find out more about ABitOfEverything",
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+      }
+    },
+    "examplepbBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
       }
     },
     "examplepbNumericEnum": {
