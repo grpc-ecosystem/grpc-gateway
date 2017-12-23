@@ -25,6 +25,29 @@ var wktSchemas = map[string]schemaCore{
 	".google.protobuf.Duration": schemaCore{
 		Type: "string",
 	},
+	".google.protobuf.StringValue": schemaCore{
+		Type: "string",
+	},
+	".google.protobuf.Int32Value": schemaCore{
+		Type:   "integer",
+		Format: "int32",
+	},
+	".google.protobuf.Int64Value": schemaCore{
+		Type:   "integer",
+		Format: "int64",
+	},
+	".google.protobuf.FloatValue": schemaCore{
+		Type:   "number",
+		Format: "float",
+	},
+	".google.protobuf.DoubleValue": schemaCore{
+		Type:   "number",
+		Format: "double",
+	},
+	".google.protobuf.BoolValue": schemaCore{
+		Type:   "boolean",
+		Format: "boolean",
+	},
 }
 
 func listEnumNames(enum *descriptor.Enum) (names []string) {

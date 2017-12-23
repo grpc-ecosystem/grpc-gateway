@@ -787,3 +787,121 @@ func TestFQMNtoSwaggerName(t *testing.T) {
 		}
 	}
 }
+
+func TestSchemaOfField(t *testing.T) {
+	type test struct {
+		field    *descriptor.Field
+		expected schemaCore
+	}
+
+	tests := []test{
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name: proto.String("primitive_field"),
+					Type: protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+				},
+			},
+			expected: schemaCore{
+				Type: "string",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:  proto.String("repeated_primitive_field"),
+					Type:  protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+					Label: protodescriptor.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+				},
+			},
+			expected: schemaCore{
+				Type: "array",
+				Items: &swaggerItemsObject{
+					Type: "string",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.StringValue"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			expected: schemaCore{
+				Type: "string",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("repeated_wrapped_field"),
+					TypeName: proto.String(".google.protobuf.StringValue"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					Label:    protodescriptor.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+				},
+			},
+			expected: schemaCore{
+				Type: "array",
+				Items: &swaggerItemsObject{
+					Type: "string",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("message_field"),
+					TypeName: proto.String(".example.Message"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			expected: schemaCore{
+				Ref: "#/definitions/exampleMessage",
+			},
+		},
+	}
+
+	reg := descriptor.NewRegistry()
+	reg.Load(&plugin.CodeGeneratorRequest{
+		ProtoFile: []*protodescriptor.FileDescriptorProto{
+			{
+				SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType: []*protodescriptor.DescriptorProto{
+					{
+						Name: proto.String("Message"),
+						Field: []*protodescriptor.FieldDescriptorProto{
+							{
+								Name: proto.String("value"),
+								Type: protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+							},
+						},
+					},
+				},
+				EnumType: []*protodescriptor.EnumDescriptorProto{
+					{
+						Name: proto.String("Message"),
+					},
+				},
+				Service: []*protodescriptor.ServiceDescriptorProto{},
+			},
+		},
+	})
+
+	for _, test := range tests {
+		actual := schemaOfField(test.field, reg)
+		if e, a := test.expected.Type, actual.Type; e != a {
+			t.Errorf("Expected schemaOfField(%v).Type = %s, actual: %s", test.field, e, a)
+		}
+		if e, a := test.expected.Ref, actual.Ref; e != a {
+			t.Errorf("Expected schemaOfField(%v).Ref = %s, actual: %s", test.field, e, a)
+		}
+		if e, a := test.expected.Items.getType(), actual.Items.getType(); e != a {
+			t.Errorf("Expected schemaOfField(%v).Items.Type = %v, actual.Type: %v", test.field, e, a)
+		}
+	}
+}
