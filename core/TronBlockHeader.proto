@@ -12,6 +12,5 @@ message BlockHeader{
     bytes hash = 4;
     bytes nonce = 5;
     bytes difficulty = 6;
-    bool isPoW = 7;
-    int64 number = 8;
+    int64 number = 7;
 }
