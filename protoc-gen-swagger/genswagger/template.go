@@ -720,6 +720,12 @@ func applyTemplate(p param) (string, error) {
 			if spb.Info.Title != "" {
 				s.Info.Title = spb.Info.Title
 			}
+			if spb.Info.Description != "" {
+				s.Info.Description = spb.Info.Description
+			}
+			if spb.Info.TermsOfService != "" {
+				s.Info.TermsOfService = spb.Info.TermsOfService
+			}
 			if spb.Info.Version != "" {
 				s.Info.Version = spb.Info.Version
 			}
