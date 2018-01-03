@@ -26,10 +26,13 @@ before_script:
 - sh -c 'cd examples/browser && npm install'
 script:
 - make realclean && make examples SWAGGER_CODEGEN="java -jar $HOME/local/swagger-codegen-cli.jar"
-- if (go version | grep -q 1.8) && [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then test -z "$(git status --porcelain)" || (git status; git diff; exit 1); fi
+- if (go version | grep -q 1.9) && [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then test -z "$(git status --porcelain)" || (git status; git diff; exit 1); fi
 - env GLOG_logtostderr=1 go test -race -v github.com/grpc-ecosystem/grpc-gateway/...
+- if (go version | grep -q 1.9) && [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then env GLOG_logtostderr=1 ./bin/coverage; fi
 - make lint
 - sh -c 'cd examples/browser && node ./node_modules/gulp/bin/gulp'
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 env:
   global:
   - "PATH=$PATH:$HOME/local/bin"
