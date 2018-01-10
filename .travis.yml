@@ -1,7 +1,6 @@
 language: go
 sudo: false
 go:
-- 1.7.x
 - 1.8.x
 - 1.9.x
 - master
@@ -26,9 +25,9 @@ before_script:
 - sh -c 'cd examples/browser && npm install'
 script:
 - make realclean && make examples SWAGGER_CODEGEN="java -jar $HOME/local/swagger-codegen-cli.jar"
-- if (go version | grep -q 1.9) && [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then test -z "$(git status --porcelain)" || (git status; git diff; exit 1); fi
+- if (go version | grep -q "${GO_VERSION_TO_DIFF_TEST}") && [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then test -z "$(git status --porcelain)" || (git status; git diff; exit 1); fi
 - env GLOG_logtostderr=1 go test -race -v github.com/grpc-ecosystem/grpc-gateway/...
-- if (go version | grep -q 1.9) && [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then env GLOG_logtostderr=1 ./bin/coverage; fi
+- if (go version | grep -q "${GO_VERSION_TO_DIFF_TEST}") && [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then env GLOG_logtostderr=1 ./bin/coverage; fi
 - make lint
 - sh -c 'cd examples/browser && node ./node_modules/gulp/bin/gulp'
 after_success:
@@ -36,6 +35,7 @@ after_success:
 env:
   global:
   - "PATH=$PATH:$HOME/local/bin"
+  - GO_VERSION_TO_DIFF_TEST="go version go1\.9\.[0-9]+ linux/amd64"
   matrix:
   - GATEWAY_PLUGIN_FLAGS=
   - GATEWAY_PLUGIN_FLAGS=request_context=false
