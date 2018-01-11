@@ -25,8 +25,9 @@ import (
 )
 
 type errorBody struct {
-	Error string `json:"error"`
-	Code  int    `json:"code"`
+	Error   string        `json:"error"`
+	Code    int           `json:"code"`
+	Details []interface{} `json:"details"`
 }
 
 func TestEcho(t *testing.T) {
@@ -460,7 +461,7 @@ func testABELookupNotFound(t *testing.T, port int) {
 
 	var msg errorBody
 	if err := json.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 
@@ -720,6 +721,59 @@ func TestTimeout(t *testing.T) {
 
 	if got, want := resp.StatusCode, http.StatusRequestTimeout; got != want {
 		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
+}
+
+func TestErrorWithDetails(t *testing.T) {
+	url := "http://localhost:8080/v2/example/errorwithdetails"
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatalf("iotuil.ReadAll(resp.Body) failed with %v; want success", err)
+	}
+
+	if got, want := resp.StatusCode, http.StatusInternalServerError; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
+
+	var msg errorBody
+	if err := json.Unmarshal(buf, &msg); err != nil {
+		t.Fatalf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	}
+
+	if got, want := msg.Code, int(codes.Unknown); got != want {
+		t.Errorf("msg.Code = %d; want %d", got, want)
+	}
+	if got, want := msg.Error, "with details"; got != want {
+		t.Errorf("msg.Error = %s; want %s", got, want)
+	}
+	if got, want := len(msg.Details), 1; got != want {
+		t.Fatalf("len(msg.Details) = %q; want %q", got, want)
+	}
+
+	details, ok := msg.Details[0].(map[string]interface{})
+	if got, want := ok, true; got != want {
+		t.Fatalf("msg.Details[0] got type: %T, want %T", msg.Details[0], map[string]interface{}{})
+	}
+	if got, want := details["detail"], "error debug details"; got != want {
+		t.Errorf("msg.Details[\"detail\"] = %q; want %q", got, want)
+	}
+	entries, ok := details["stack_entries"].([]interface{})
+	if got, want := ok, true; got != want {
+		t.Fatalf("msg.Details[0][\"stack_entries\"] got type: %T, want %T", entries, []string{})
+	}
+	entry, ok := entries[0].(string)
+	if got, want := ok, true; got != want {
+		t.Fatalf("msg.Details[0][\"stack_entries\"][0] got type: %T, want %T", entry, "")
+	}
+	if got, want := entries[0], "foo:1"; got != want {
+		t.Errorf("msg.Details[\"stack_entries\"][0] = %q; want %q", got, want)
 	}
 }
 
