@@ -581,6 +581,22 @@
         }
       }
     },
+    "/v2/example/errorwithdetails": {
+      "get": {
+        "operationId": "ErrorWithDetails",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v2/example/timeout": {
       "get": {
         "operationId": "Timeout",

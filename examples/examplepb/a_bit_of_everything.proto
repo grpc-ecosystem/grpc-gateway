@@ -204,6 +204,11 @@ service ABitOfEverythingService {
 			get: "/v2/example/timeout",
 		};
 	}
+	rpc ErrorWithDetails(google.protobuf.Empty) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			get: "/v2/example/errorwithdetails",
+		};
+	}
 	rpc GetMessageWithBody(MessageWithBody) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
 			post: "/v2/example/withbody/{id}",
