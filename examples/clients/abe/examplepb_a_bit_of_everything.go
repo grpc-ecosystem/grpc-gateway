@@ -40,6 +40,8 @@ type ExamplepbABitOfEverything struct {
 
 	StringValue string `json:"string_value,omitempty"`
 
+	BytesValue string `json:"bytes_value,omitempty"`
+
 	Uint32Value int64 `json:"uint32_value,omitempty"`
 
 	EnumValue ExamplepbNumericEnum `json:"enum_value,omitempty"`
