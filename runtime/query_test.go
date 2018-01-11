@@ -41,6 +41,7 @@ func TestPopulateParameters(t *testing.T) {
 				"uint32_value":          {"4"},
 				"bool_value":            {"true"},
 				"string_value":          {"str"},
+				"bytes_value":           {"Ynl0ZXM"},
 				"repeated_value":        {"a", "b", "c"},
 				"enum_value":            {"1"},
 				"repeated_enum":         {"1", "2", "0"},
@@ -53,6 +54,7 @@ func TestPopulateParameters(t *testing.T) {
 				"wrapper_u_int32_value": {"4"},
 				"wrapper_bool_value":    {"true"},
 				"wrapper_string_value":  {"str"},
+				"wrapper_bytes_value":   {"Ynl0ZXM"},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &proto3Message{
@@ -64,6 +66,7 @@ func TestPopulateParameters(t *testing.T) {
 				Uint32Value:        4,
 				BoolValue:          true,
 				StringValue:        "str",
+				BytesValue:         []byte("bytes"),
 				RepeatedValue:      []string{"a", "b", "c"},
 				EnumValue:          EnumValue_Y,
 				RepeatedEnum:       []EnumValue{EnumValue_Y, EnumValue_Z, EnumValue_X},
@@ -76,6 +79,7 @@ func TestPopulateParameters(t *testing.T) {
 				WrapperUInt32Value: &wrappers.UInt32Value{4},
 				WrapperBoolValue:   &wrappers.BoolValue{true},
 				WrapperStringValue: &wrappers.StringValue{"str"},
+				WrapperBytesValue:  &wrappers.BytesValue{[]byte("bytes")},
 			},
 		},
 		{
@@ -88,6 +92,7 @@ func TestPopulateParameters(t *testing.T) {
 				"uint32Value":        {"4"},
 				"boolValue":          {"true"},
 				"stringValue":        {"str"},
+				"bytesValue":         {"Ynl0ZXM"},
 				"repeatedValue":      {"a", "b", "c"},
 				"enumValue":          {"1"},
 				"repeatedEnum":       {"1", "2", "0"},
@@ -100,6 +105,7 @@ func TestPopulateParameters(t *testing.T) {
 				"wrapperUInt32Value": {"4"},
 				"wrapperBoolValue":   {"true"},
 				"wrapperStringValue": {"str"},
+				"wrapperBytesValue":  {"Ynl0ZXM"},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &proto3Message{
@@ -111,6 +117,7 @@ func TestPopulateParameters(t *testing.T) {
 				Uint32Value:        4,
 				BoolValue:          true,
 				StringValue:        "str",
+				BytesValue:         []byte("bytes"),
 				RepeatedValue:      []string{"a", "b", "c"},
 				EnumValue:          EnumValue_Y,
 				RepeatedEnum:       []EnumValue{EnumValue_Y, EnumValue_Z, EnumValue_X},
@@ -123,6 +130,7 @@ func TestPopulateParameters(t *testing.T) {
 				WrapperUInt32Value: &wrappers.UInt32Value{4},
 				WrapperBoolValue:   &wrappers.BoolValue{true},
 				WrapperStringValue: &wrappers.StringValue{"str"},
+				WrapperBytesValue:  &wrappers.BytesValue{[]byte("bytes")},
 			},
 		},
 		{
@@ -471,6 +479,7 @@ type proto3Message struct {
 	Uint32Value        uint32                   `protobuf:"varint,7,opt,name=uint32_value,json=uint32Value" json:"uint32_value,omitempty"`
 	BoolValue          bool                     `protobuf:"varint,8,opt,name=bool_value,json=boolValue" json:"bool_value,omitempty"`
 	StringValue        string                   `protobuf:"bytes,9,opt,name=string_value,json=stringValue" json:"string_value,omitempty"`
+	BytesValue         []byte                   `protobuf:"bytes,25,opt,name=bytes_value,json=bytesValue" json:"bytes_value,omitempty"`
 	RepeatedValue      []string                 `protobuf:"bytes,10,rep,name=repeated_value,json=repeatedValue" json:"repeated_value,omitempty"`
 	EnumValue          EnumValue                `protobuf:"varint,11,opt,name=enum_value,json=enumValue,enum=runtime_test_api.EnumValue" json:"enum_value,omitempty"`
 	RepeatedEnum       []EnumValue              `protobuf:"varint,12,rep,packed,name=repeated_enum,json=repeatedEnum,enum=runtime_test_api.EnumValue" json:"repeated_enum,omitempty"`
@@ -484,6 +493,7 @@ type proto3Message struct {
 	WrapperUInt32Value *wrappers.UInt32Value    `protobuf:"bytes,22,opt,name=wrapper_u_int32_value,json=wrapperUInt32Value" json:"wrapper_u_int32_value,omitempty"`
 	WrapperBoolValue   *wrappers.BoolValue      `protobuf:"bytes,23,opt,name=wrapper_bool_value,json=wrapperBoolValue" json:"wrapper_bool_value,omitempty"`
 	WrapperStringValue *wrappers.StringValue    `protobuf:"bytes,24,opt,name=wrapper_string_value,json=wrapperStringValue" json:"wrapper_string_value,omitempty"`
+	WrapperBytesValue  *wrappers.BytesValue     `protobuf:"bytes,26,opt,name=wrapper_bytes_value,json=wrapperBytesValue" json:"wrapper_bytes_value,omitempty"`
 }
 
 func (m *proto3Message) Reset()         { *m = proto3Message{} }

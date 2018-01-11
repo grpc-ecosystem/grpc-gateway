@@ -186,8 +186,14 @@
             "type": "string"
           },
           {
+            "name": "bytes_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          },
+          {
             "name": "uint32_value",
-            "description": "TODO(yugui) add bytes_value.",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -701,10 +707,13 @@
         "string_value": {
           "type": "string"
         },
+        "bytes_value": {
+          "type": "string",
+          "format": "byte"
+        },
         "uint32_value": {
           "type": "integer",
-          "format": "int64",
-          "title": "TODO(yugui) add bytes_value"
+          "format": "int64"
         },
         "enum_value": {
           "$ref": "#/definitions/examplepbNumericEnum"
@@ -770,7 +779,7 @@
           "title": "repeated enum value. it is comma-separated in query"
         }
       },
-      "title": "Intentionaly complicated message type to cover much features of Protobuf.\nNEXT ID: 27",
+      "title": "Intentionaly complicated message type to cover much features of Protobuf.\nNEXT ID: 30",
       "externalDocs": {
         "description": "Find out more about ABitOfEverything",
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"
