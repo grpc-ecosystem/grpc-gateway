@@ -141,23 +141,40 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 
 		return b, nil
 	}
-	b, err := newBinding(opts, 0)
-	if err != nil {
+
+	applyOpts := func(opts *options.HttpRule) error {
+		b, err := newBinding(opts, len(meth.Bindings))
+		if err != nil {
+			return err
+		}
+
+		if b != nil {
+			meth.Bindings = append(meth.Bindings, b)
+		}
+		for _, additional := range opts.GetAdditionalBindings() {
+			if len(additional.AdditionalBindings) > 0 {
+				return fmt.Errorf("additional_binding in additional_binding not allowed: %s.%s", svc.GetName(), meth.GetName())
+			}
+			b, err := newBinding(additional, len(meth.Bindings))
+			if err != nil {
+				return err
+			}
+			meth.Bindings = append(meth.Bindings, b)
+		}
+
+		return nil
+	}
+
+	if err := applyOpts(opts); err != nil {
 		return nil, err
 	}
 
-	if b != nil {
-		meth.Bindings = append(meth.Bindings, b)
-	}
-	for i, additional := range opts.GetAdditionalBindings() {
-		if len(additional.AdditionalBindings) > 0 {
-			return nil, fmt.Errorf("additional_binding in additional_binding not allowed: %s.%s", svc.GetName(), meth.GetName())
+	if extOpts, hasExtOpts := r.externalHTTPRules[meth.FQMN()]; hasExtOpts {
+		for _, extOpt := range extOpts {
+			if err := applyOpts(extOpt); err != nil {
+				return nil, err
+			}
 		}
-		b, err := newBinding(additional, i+1)
-		if err != nil {
-			return nil, err
-		}
-		meth.Bindings = append(meth.Bindings, b)
 	}
 
 	return meth, nil

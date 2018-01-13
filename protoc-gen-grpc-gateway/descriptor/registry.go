@@ -9,6 +9,7 @@ import (
 	"github.com/golang/glog"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"google.golang.org/genproto/googleapis/api/annotations"
 )
 
 // Registry is a registry of information extracted from plugin.CodeGeneratorRequest.
@@ -36,16 +37,20 @@ type Registry struct {
 
 	// allowDeleteBody permits http delete methods to have a body
 	allowDeleteBody bool
+
+	// externalHttpRules is a mapping from fully qualified service method names to additional HttpRules applicable besides the ones found in annotations.
+	externalHTTPRules map[string][]*annotations.HttpRule
 }
 
 // NewRegistry returns a new Registry.
 func NewRegistry() *Registry {
 	return &Registry{
-		msgs:       make(map[string]*Message),
-		enums:      make(map[string]*Enum),
-		files:      make(map[string]*File),
-		pkgMap:     make(map[string]string),
-		pkgAliases: make(map[string]string),
+		msgs:              make(map[string]*Message),
+		enums:             make(map[string]*Enum),
+		files:             make(map[string]*File),
+		pkgMap:            make(map[string]string),
+		pkgAliases:        make(map[string]string),
+		externalHTTPRules: make(map[string][]*annotations.HttpRule),
 	}
 }
 
