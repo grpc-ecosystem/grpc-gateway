@@ -80,6 +80,8 @@ func applyTemplate(p param) (string, error) {
 	var targetServices []*descriptor.Service
 	for _, svc := range p.Services {
 		var methodWithBindingsSeen bool
+		svcName := strings.Title(*svc.Name)
+		svc.Name = &svcName
 		for _, meth := range svc.Methods {
 			glog.V(2).Infof("Processing %s.%s", svc.GetName(), meth.GetName())
 			methName := strings.Title(*meth.Name)
