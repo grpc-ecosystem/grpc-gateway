@@ -187,6 +187,7 @@ service ABitOfEverythingService {
 		};
 		option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
             description: "Description Echo";
+            summary: "Summary: Echo rpc";
 			external_docs: {
 				url: "https://github.com/grpc-ecosystem/grpc-gateway";
 				description: "Find out more Echo";
