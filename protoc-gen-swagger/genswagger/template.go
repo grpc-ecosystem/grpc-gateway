@@ -638,16 +638,16 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					// TODO(ivucica): this would be better supported by looking whether the method is deprecated in the proto file
 					operationObject.Deprecated = opts.Deprecated
 
-                    if opts.Summary != "" {
-                        operationObject.Summary = opts.Summary
-                    }
-                    if opts.Description != "" {
-                        operationObject.Description = opts.Description
-                    }
-                    if len(opts.Tags) > 0 {
-                        operationObject.Tags = make([]string, len(opts.Tags))
-                        copy(operationObject.Tags, opts.Tags)
-                    }
+					if opts.Summary != "" {
+						operationObject.Summary = opts.Summary
+					}
+					if opts.Description != "" {
+						operationObject.Description = opts.Description
+					}
+					if len(opts.Tags) > 0 {
+						operationObject.Tags = make([]string, len(opts.Tags))
+						copy(operationObject.Tags, opts.Tags)
+					}
 
 					// TODO(ivucica): add remaining fields of operation object
 				}
