@@ -644,6 +644,10 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
                     if opts.Description != "" {
                         operationObject.Description = opts.Description
                     }
+                    if len(opts.Tags) > 0 {
+                        operationObject.Tags = make([]string, len(opts.Tags))
+                        copy(operationObject.Tags, opts.Tags)
+                    }
 
 					// TODO(ivucica): add remaining fields of operation object
 				}
