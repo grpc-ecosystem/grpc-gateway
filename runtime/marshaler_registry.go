@@ -13,7 +13,7 @@ var (
 	acceptHeader      = http.CanonicalHeaderKey("Accept")
 	contentTypeHeader = http.CanonicalHeaderKey("Content-Type")
 
-	defaultMarshaler = &HttpBodyMarshaler{}
+	defaultMarshaler = &HTTPBodyMarshaler{}
 )
 
 // MarshalerForRequest returns the inbound/outbound marshalers for this request.
