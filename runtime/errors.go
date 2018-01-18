@@ -98,6 +98,9 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 		}
 	}
 
+	w.Header().Del("Trailer")
+	w.Header().Set("Content-Type", marshaler.ContentType(body))
+
 	buf, merr := marshaler.Marshal(body)
 	if merr != nil {
 		grpclog.Printf("Failed to marshal error message %q: %v", body, merr)
