@@ -103,17 +103,16 @@ func TestForwardResponseStream(t *testing.T) {
 	}
 }
 
-
 // A custom marshaler implementation, that doesn't implement the delimited interface
 type CustomMarshaler struct {
-    m *runtime.JSONPb
+	m *runtime.JSONPb
 }
-func (c *CustomMarshaler) Marshal(v interface{}) ([]byte, error) { return c.m.Marshal(v) }
-func (c *CustomMarshaler) Unmarshal(data []byte, v interface{}) error { return c.m.Unmarshal(data, v) }
-func (c *CustomMarshaler) NewDecoder(r io.Reader) runtime.Decoder { return c.m.NewDecoder(r) }
-func (c *CustomMarshaler) NewEncoder(w io.Writer) runtime.Encoder { return c.m.NewEncoder(w) }
-func (c *CustomMarshaler) ContentType() string { return c.m.ContentType() }
 
+func (c *CustomMarshaler) Marshal(v interface{}) ([]byte, error)      { return c.m.Marshal(v) }
+func (c *CustomMarshaler) Unmarshal(data []byte, v interface{}) error { return c.m.Unmarshal(data, v) }
+func (c *CustomMarshaler) NewDecoder(r io.Reader) runtime.Decoder     { return c.m.NewDecoder(r) }
+func (c *CustomMarshaler) NewEncoder(w io.Writer) runtime.Encoder     { return c.m.NewEncoder(w) }
+func (c *CustomMarshaler) ContentType(i interface{}) string           { return c.m.ContentType(i) }
 
 func TestForwardResponseStreamCustomMarshaler(t *testing.T) {
 	type msg struct {
