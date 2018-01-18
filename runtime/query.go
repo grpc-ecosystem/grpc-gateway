@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/url"
 	"reflect"
@@ -64,9 +65,13 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 			}
 			m = f
 		case reflect.Slice:
-			// TODO(yugui) Support []byte
 			if !isLast {
 				return fmt.Errorf("unexpected repeated field in %s", strings.Join(fieldPath, "."))
+			}
+			// Handle []byte
+			if f.Type().Elem().Kind() == reflect.Uint8 {
+				m = f
+				break
 			}
 			return populateRepeatedField(f, values, props)
 		case reflect.Ptr:
@@ -203,6 +208,13 @@ func populateField(f reflect.Value, value string, props *proto.Properties) error
 		case "StringValue":
 			f.Field(0).SetString(value)
 			return nil
+		case "BytesValue":
+			bytesVal, err := base64.RawURLEncoding.DecodeString(value)
+			if err != nil {
+				return fmt.Errorf("bad BytesValue: %s", value)
+			}
+			f.Field(0).SetBytes(bytesVal)
+			return nil
 		}
 	}
 
@@ -274,6 +286,6 @@ var (
 		reflect.Int32:   reflect.ValueOf(Int32),
 		reflect.Uint64:  reflect.ValueOf(Uint64),
 		reflect.Uint32:  reflect.ValueOf(Uint32),
-		// TODO(yugui) Support []byte
+		reflect.Slice:   reflect.ValueOf(Bytes),
 	}
 )

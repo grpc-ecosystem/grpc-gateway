@@ -1,8 +1,53 @@
 # Change Log
 
+## [1.3.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/1.3.1) (2017-12-23)
+**Merged pull requests:**
+
+- Add support for --Import\_path [\#507](https://github.com/grpc-ecosystem/grpc-gateway/pull/507)
+- Fix \#504 Missing Definitions [\#505](https://github.com/grpc-ecosystem/grpc-gateway/pull/505)
+- Maintain default delimiter of newline [\#497](https://github.com/grpc-ecosystem/grpc-gateway/pull/497)
+- Fix gen-swagger to support more well known types [\#496](https://github.com/grpc-ecosystem/grpc-gateway/pull/496)
+- Use golang/protobuf instead of gogo/protobuf [\#494](https://github.com/grpc-ecosystem/grpc-gateway/pull/494)
+- Fix stream delimiters [\#488](https://github.com/grpc-ecosystem/grpc-gateway/pull/488)
+- ForwardResponseStream status code errors [\#482](https://github.com/grpc-ecosystem/grpc-gateway/pull/482)
+- protoc-gen-grpc-gateway: flip request\_context default to true [\#474](https://github.com/grpc-ecosystem/grpc-gateway/pull/474)
+- grpc-gateway/generator: respect full package [\#462](https://github.com/grpc-ecosystem/grpc-gateway/pull/462)
+- Add proto marshaller for proto-over-http [\#459](https://github.com/grpc-ecosystem/grpc-gateway/pull/459)
+
+## [v1.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3) (2017-11-03)
+## [v1.3.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.0) (2017-11-03)
+**Merged pull requests:**
+
+- Streaming forward handler fix chunk encoding [\#479](https://github.com/grpc-ecosystem/grpc-gateway/pull/479)
+- Fix logic handling primitive wrapper in URL params [\#478](https://github.com/grpc-ecosystem/grpc-gateway/pull/478)
+- runtime: use r.Context\(\) [\#473](https://github.com/grpc-ecosystem/grpc-gateway/pull/473)
+- Optional SourceCodeInfo [\#466](https://github.com/grpc-ecosystem/grpc-gateway/pull/466)
+- Some steps to fix Travis CI [\#461](https://github.com/grpc-ecosystem/grpc-gateway/pull/461)
+- fix 2 typos in Registry.SetPrefix's comment [\#455](https://github.com/grpc-ecosystem/grpc-gateway/pull/455)
+- Add Handler method to pass in client [\#454](https://github.com/grpc-ecosystem/grpc-gateway/pull/454)
+- Fallback to JSON name when matching URL parameter. [\#450](https://github.com/grpc-ecosystem/grpc-gateway/pull/450)
+- Update DO NOT EDIT template. [\#434](https://github.com/grpc-ecosystem/grpc-gateway/pull/434)
+- Memoise calls to fullyQualifiedNameToSwaggerName to speed it up for large registries [\#421](https://github.com/grpc-ecosystem/grpc-gateway/pull/421)
+- Update Swagger Codegen from 2.1.6 to 2.2.2 [\#415](https://github.com/grpc-ecosystem/grpc-gateway/pull/415)
+- Return codes.InvalidArgument to rather return HTTP 400 instead of HTTP 500 [\#409](https://github.com/grpc-ecosystem/grpc-gateway/pull/409)
+- improve {incoming,outgoing}HeaderMatcher logic [\#408](https://github.com/grpc-ecosystem/grpc-gateway/pull/408)
+- improve WKT handling in gateway and openapi output [\#404](https://github.com/grpc-ecosystem/grpc-gateway/pull/404)
+- Return if runtime.AnnotateContext gave error [\#403](https://github.com/grpc-ecosystem/grpc-gateway/pull/403)
+- jsonpb: update tests to reflect new jsonpb behavior [\#401](https://github.com/grpc-ecosystem/grpc-gateway/pull/401)
+- Reference import grpc Status to suppress unused errors. [\#387](https://github.com/grpc-ecosystem/grpc-gateway/pull/387)
+- ci: regen with current protoc-gen-go [\#385](https://github.com/grpc-ecosystem/grpc-gateway/pull/385)
+- Use status package for error and introduce WithProtoErrorHandler option [\#378](https://github.com/grpc-ecosystem/grpc-gateway/pull/378)
+- Return response headers from grpc server [\#374](https://github.com/grpc-ecosystem/grpc-gateway/pull/374)
+- Skip unreferenced messages in definitions. [\#371](https://github.com/grpc-ecosystem/grpc-gateway/pull/371)
+- Use canonical header form in default header matcher. [\#369](https://github.com/grpc-ecosystem/grpc-gateway/pull/369)
+- support allow\_delete\_body for protoc-gen-grpc-gateway [\#318](https://github.com/grpc-ecosystem/grpc-gateway/pull/318)
+- fixes package name override doesn't work [\#277](https://github.com/grpc-ecosystem/grpc-gateway/pull/277)
+- add custom options to allow more control of swagger/openapi output [\#145](https://github.com/grpc-ecosystem/grpc-gateway/pull/145)
+
 ## [v1.2.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.2.2) (2017-04-17)
 **Merged pull requests:**
 
+- Add changelog for 1.2.2 [\#363](https://github.com/grpc-ecosystem/grpc-gateway/pull/363)
 - metadata: fix properly and change to Outgoing [\#361](https://github.com/grpc-ecosystem/grpc-gateway/pull/361)
 
 ## [v1.2.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.2.1) (2017-04-17)
@@ -19,6 +64,7 @@
 ## [v1.2.0.rc1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.2.0.rc1) (2017-03-24)
 **Merged pull requests:**
 
+- Support user configurable header forwarding & context metadata [\#336](https://github.com/grpc-ecosystem/grpc-gateway/pull/336)
 - Update go\_out parameter to remove comma [\#333](https://github.com/grpc-ecosystem/grpc-gateway/pull/333)
 - Update stale path in README [\#332](https://github.com/grpc-ecosystem/grpc-gateway/pull/332)
 - improve documentation regarding external dependencies [\#330](https://github.com/grpc-ecosystem/grpc-gateway/pull/330)

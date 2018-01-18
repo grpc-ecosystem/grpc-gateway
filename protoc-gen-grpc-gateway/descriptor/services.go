@@ -194,7 +194,12 @@ func (r *Registry) newParam(meth *Method, path string) (Parameter, error) {
 	target := fields[l-1].Target
 	switch target.GetType() {
 	case descriptor.FieldDescriptorProto_TYPE_MESSAGE, descriptor.FieldDescriptorProto_TYPE_GROUP:
-		return Parameter{}, fmt.Errorf("aggregate type %s in parameter of %s.%s: %s", target.Type, meth.Service.GetName(), meth.GetName(), path)
+		glog.V(2).Infoln("found aggregate type:", target, target.TypeName)
+		if IsWellKnownType(*target.TypeName) {
+			glog.V(2).Infoln("found well known aggregate type:", target)
+		} else {
+			return Parameter{}, fmt.Errorf("aggregate type %s in parameter of %s.%s: %s", target.Type, meth.Service.GetName(), meth.GetName(), path)
+		}
 	}
 	return Parameter{
 		FieldPath: FieldPath(fields),
