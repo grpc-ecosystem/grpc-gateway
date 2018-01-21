@@ -149,11 +149,13 @@ func populateRepeatedField(f reflect.Value, values []string, props *proto.Proper
 }
 
 func populateField(f reflect.Value, value string, props *proto.Properties) error {
-	// Handle well known type
+	i := f.Addr().Interface()
+
+	// Handle protobuf well known types
 	type wkt interface {
 		XXX_WellKnownType() string
 	}
-	if wkt, ok := f.Addr().Interface().(wkt); ok {
+	if wkt, ok := i.(wkt); ok {
 		switch wkt.XXX_WellKnownType() {
 		case "Timestamp":
 			if value == "null" {
@@ -214,6 +216,20 @@ func populateField(f reflect.Value, value string, props *proto.Properties) error
 				return fmt.Errorf("bad BytesValue: %s", value)
 			}
 			f.Field(0).SetBytes(bytesVal)
+			return nil
+		}
+	}
+
+	// Handle google well known types
+	if gwkt, ok := i.(proto.Message); ok {
+		switch proto.MessageName(gwkt) {
+		case "google.protobuf.FieldMask":
+			p := f.Field(0)
+			for _, v := range strings.Split(value, ",") {
+				if v != "" {
+					p.Set(reflect.Append(p, reflect.ValueOf(v)))
+				}
+			}
 			return nil
 		}
 	}
