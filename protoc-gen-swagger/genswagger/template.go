@@ -635,8 +635,13 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							operationObject.ExternalDocs.URL = opts.ExternalDocs.Url
 						}
 					}
+
 					// TODO(ivucica): this would be better supported by looking whether the method is deprecated in the proto file
 					operationObject.Deprecated = opts.Deprecated
+
+					if opts.Tags != nil {
+						operationObject.Tags = opts.Tags
+					}
 
 					// TODO(ivucica): add remaining fields of operation object
 				}
