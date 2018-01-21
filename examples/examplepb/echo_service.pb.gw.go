@@ -105,8 +105,10 @@ func request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marsh
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
-	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	if req.ContentLength > 0 {
+		if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil {
+			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		}
 	}
 
 	msg, err := client.EchoBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))

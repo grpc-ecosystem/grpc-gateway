@@ -266,3 +266,7 @@ func (s *_ABitOfEverythingServer) ErrorWithDetails(ctx context.Context, msg *emp
 func (s *_ABitOfEverythingServer) GetMessageWithBody(ctx context.Context, msg *examples.MessageWithBody) (*empty.Empty, error) {
 	return &empty.Empty{}, nil
 }
+
+func (s *_ABitOfEverythingServer) PostWithEmptyBody(ctx context.Context, msg *examples.Body) (*empty.Empty, error) {
+	return &empty.Empty{}, nil
+}
