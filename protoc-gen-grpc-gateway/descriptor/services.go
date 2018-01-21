@@ -30,10 +30,14 @@ func (r *Registry) loadServices(file *File) error {
 				glog.Errorf("Failed to extract HttpRule from %s.%s: %v", svc.GetName(), md.GetName(), err)
 				return err
 			}
-			if opts == nil {
+			optss := r.LookupExternalHTTPRules((&Method{Service: svc, MethodDescriptorProto: md}).FQMN())
+			if opts != nil {
+				optss = append(optss, opts)
+			}
+			if len(optss) == 0 {
 				glog.V(1).Infof("Found non-target method: %s.%s", svc.GetName(), md.GetName())
 			}
-			meth, err := r.newMethod(svc, md, opts)
+			meth, err := r.newMethod(svc, md, optss)
 			if err != nil {
 				return err
 			}
@@ -49,7 +53,7 @@ func (r *Registry) loadServices(file *File) error {
 	return nil
 }
 
-func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto, opts *options.HttpRule) (*Method, error) {
+func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto, optss []*options.HttpRule) (*Method, error) {
 	requestType, err := r.LookupMsg(svc.File.GetPackage(), md.GetInputType())
 	if err != nil {
 		return nil, err
@@ -165,15 +169,9 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 		return nil
 	}
 
-	if err := applyOpts(opts); err != nil {
-		return nil, err
-	}
-
-	if extOpts, hasExtOpts := r.externalHTTPRules[meth.FQMN()]; hasExtOpts {
-		for _, extOpt := range extOpts {
-			if err := applyOpts(extOpt); err != nil {
-				return nil, err
-			}
+	for _, opts := range optss {
+		if err := applyOpts(opts); err != nil {
+			return nil, err
 		}
 	}
 

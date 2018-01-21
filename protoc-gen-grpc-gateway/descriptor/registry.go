@@ -210,6 +210,11 @@ func (r *Registry) LookupFile(name string) (*File, error) {
 	return f, nil
 }
 
+// LookupExternalHTTPRules looks up external http rules by fully qualified service method name
+func (r *Registry) LookupExternalHTTPRules(qualifiedMethodName string) []*annotations.HttpRule {
+	return r.externalHTTPRules[qualifiedMethodName]
+}
+
 // AddPkgMap adds a mapping from a .proto file to proto package name.
 func (r *Registry) AddPkgMap(file, protoPkg string) {
 	r.pkgMap[file] = protoPkg
