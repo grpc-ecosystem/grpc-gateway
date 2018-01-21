@@ -51,8 +51,8 @@
     },
     "/v1/example/a_bit_of_everything/echo/{value}": {
       "get": {
-        "summary": "Echo allows posting a StringMessage value.",
-        "description": "It also exposes multiple bindings.\n\nThis makes it useful when validating that the OpenAPI v2 API\ndescription exposes documentation correctly on all paths\ndefined as additional_bindings in the proto.",
+        "summary": "Summary: Echo rpc",
+        "description": "Description Echo",
         "operationId": "Echo",
         "responses": {
           "200": {
@@ -71,7 +71,8 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "echo service",
+          "echo rpc"
         ],
         "externalDocs": {
           "description": "Find out more Echo",
@@ -523,8 +524,8 @@
     },
     "/v2/example/echo": {
       "get": {
-        "summary": "Echo allows posting a StringMessage value.",
-        "description": "It also exposes multiple bindings.\n\nThis makes it useful when validating that the OpenAPI v2 API\ndescription exposes documentation correctly on all paths\ndefined as additional_bindings in the proto.",
+        "summary": "Summary: Echo rpc",
+        "description": "Description Echo",
         "operationId": "Echo3",
         "responses": {
           "200": {
@@ -543,7 +544,8 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "echo service",
+          "echo rpc"
         ],
         "externalDocs": {
           "description": "Find out more Echo",
@@ -551,8 +553,8 @@
         }
       },
       "post": {
-        "summary": "Echo allows posting a StringMessage value.",
-        "description": "It also exposes multiple bindings.\n\nThis makes it useful when validating that the OpenAPI v2 API\ndescription exposes documentation correctly on all paths\ndefined as additional_bindings in the proto.",
+        "summary": "Summary: Echo rpc",
+        "description": "Description Echo",
         "operationId": "Echo2",
         "responses": {
           "200": {
@@ -573,7 +575,8 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "echo service",
+          "echo rpc"
         ],
         "externalDocs": {
           "description": "Find out more Echo",
