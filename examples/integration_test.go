@@ -777,6 +777,22 @@ func TestErrorWithDetails(t *testing.T) {
 	}
 }
 
+func TestPostWithEmptyBody(t *testing.T) {
+	url := "http://localhost:8080/v2/example/postwithemptybody/name"
+	rep, err := http.Post(url, "application/json", nil)
+
+	if err != nil {
+		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		return
+	}
+
+	if rep.StatusCode != http.StatusOK {
+		t.Errorf("http.Post(%q) response code is %d; want %d", url,
+			rep.StatusCode, http.StatusOK)
+		return
+	}
+}
+
 func TestUnknownPath(t *testing.T) {
 	url := "http://localhost:8080"
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
