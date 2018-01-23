@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package protos;
+
+import "core/TronTransaction.proto";
+import "core/TronBlockHeader.proto";
+import "core/TronBlock.proto";
+
+option java_package = "org.tron.protos.core"; //Specify the name of the package that generated the Java file
+option java_outer_classname = "Tron"; //Specify the class name of the generated Java file
+
+message Blocks {
+    repeated Block blocks = 1;
+}
+
+message BlockHeaders {
+    repeated BlockHeader blockHeaders = 1;
+}
+
+message Transactions {
+    repeated Transaction transactions = 1;
+}
