@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package protos;
+import "core/TronTransaction.proto";
+
+option java_package = "org.tron.protos.core"; //Specify the name of the package that generated the Java file
+option java_outer_classname = "TronTransactionAndlockSript"; //Specify the class name of the generated Java file
+
+message TransactionAndlockSript{
+   Transaction transaction = 1;
+   repeated  bytes pubKeyHash = 2;
+}

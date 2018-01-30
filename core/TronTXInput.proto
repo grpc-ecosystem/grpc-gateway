@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package protos;
+
+option java_package = "org.tron.protos.core"; //Specify the name of the package that generated the Java file
+option java_outer_classname = "TronTXInput"; //Specify the class name of the generated Java file
+
+message TXInput {
+    bytes txID = 1;
+    int64 vout = 2;
+    bytes signature = 3;
+    bytes pubKey = 4;
+}

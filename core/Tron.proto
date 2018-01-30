@@ -6,6 +6,12 @@ option java_package = "org.tron.protos"; //Specify the name of the package that 
 option java_outer_classname = "Protocal"; //Specify the class name of the generated Java file
 
 
+
+enum TranscationType {
+  Transfer = 0;
+  DeployContract =  1;
+}
+
 message Transaction {
     message TXOutput {
         int64 value = 1;
@@ -31,7 +37,8 @@ message BlockHeader{
     bytes hash = 4;
     bytes nonce = 5;
     bytes difficulty = 6;
-    int64 number = 7;
+    uint64 number = 7;
+    uint64 witness_id = 8;
 }
 
 message Block {
