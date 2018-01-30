@@ -96,7 +96,7 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 			continue
 		case reflect.Map:
 			if !isLast {
-				return fmt.Errorf("unexpected map field in %s", strings.Join(fieldPath, "."))
+				return fmt.Errorf("unexpected nested field %s in %s", fieldPath[i+1], strings.Join(fieldPath[:i+1], "."))
 			}
 			return populateMapField(f, values, props)
 		default:
@@ -142,7 +142,7 @@ func fieldByProtoName(m reflect.Value, name string) (reflect.Value, *proto.Prope
 
 func populateMapField(f reflect.Value, values []string, props *proto.Properties) error {
 	if len(values) != 2 {
-		return fmt.Errorf("more than one value provided for key '%s' in map '%s'", values[0], props.Name)
+		return fmt.Errorf("more than one value provided for key %s in map %s", values[0], props.Name)
 	}
 
 	key, value := values[0], values[1]
