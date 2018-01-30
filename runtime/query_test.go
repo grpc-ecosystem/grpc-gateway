@@ -6,7 +6,6 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
-
 	"time"
 
 	"github.com/golang/protobuf/proto"
@@ -37,29 +36,48 @@ func TestPopulateParameters(t *testing.T) {
 	}{
 		{
 			values: url.Values{
-				"float_value":           {"1.5"},
-				"double_value":          {"2.5"},
-				"int64_value":           {"-1"},
-				"int32_value":           {"-2"},
-				"uint64_value":          {"3"},
-				"uint32_value":          {"4"},
-				"bool_value":            {"true"},
-				"string_value":          {"str"},
-				"bytes_value":           {"Ynl0ZXM"},
-				"repeated_value":        {"a", "b", "c"},
-				"enum_value":            {"1"},
-				"repeated_enum":         {"1", "2", "0"},
-				"timestamp_value":       {timeStr},
-				"fieldmask_value":       {fieldmaskStr},
-				"wrapper_float_value":   {"1.5"},
-				"wrapper_double_value":  {"2.5"},
-				"wrapper_int64_value":   {"-1"},
-				"wrapper_int32_value":   {"-2"},
-				"wrapper_u_int64_value": {"3"},
-				"wrapper_u_int32_value": {"4"},
-				"wrapper_bool_value":    {"true"},
-				"wrapper_string_value":  {"str"},
-				"wrapper_bytes_value":   {"Ynl0ZXM"},
+				"float_value":            {"1.5"},
+				"double_value":           {"2.5"},
+				"int64_value":            {"-1"},
+				"int32_value":            {"-2"},
+				"uint64_value":           {"3"},
+				"uint32_value":           {"4"},
+				"bool_value":             {"true"},
+				"string_value":           {"str"},
+				"bytes_value":            {"Ynl0ZXM"},
+				"repeated_value":         {"a", "b", "c"},
+				"enum_value":             {"1"},
+				"repeated_enum":          {"1", "2", "0"},
+				"timestamp_value":        {timeStr},
+				"fieldmask_value":        {fieldmaskStr},
+				"wrapper_float_value":    {"1.5"},
+				"wrapper_double_value":   {"2.5"},
+				"wrapper_int64_value":    {"-1"},
+				"wrapper_int32_value":    {"-2"},
+				"wrapper_u_int64_value":  {"3"},
+				"wrapper_u_int32_value":  {"4"},
+				"wrapper_bool_value":     {"true"},
+				"wrapper_string_value":   {"str"},
+				"wrapper_bytes_value":    {"Ynl0ZXM"},
+				"map_value[key]":         {"value"},
+				"map_value[second]":      {"bar"},
+				"map_value[third]":       {"zzz"},
+				"map_value[fourth]":      {""},
+				`map_value[~!@#$%^&*()]`: {"value"},
+				"map_value2[key]":        {"-2"},
+				"map_value3[-2]":         {"value"},
+				"map_value4[key]":        {"-1"},
+				"map_value5[-1]":         {"value"},
+				"map_value6[key]":        {"3"},
+				"map_value7[3]":          {"value"},
+				"map_value8[key]":        {"4"},
+				"map_value9[4]":          {"value"},
+				"map_value10[key]":       {"1.5"},
+				"map_value11[1.5]":       {"value"},
+				"map_value12[key]":       {"2.5"},
+				"map_value13[2.5]":       {"value"},
+				"map_value14[key]":       {"true"},
+				"map_value15[true]":      {"value"},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &proto3Message{
@@ -86,6 +104,27 @@ func TestPopulateParameters(t *testing.T) {
 				WrapperBoolValue:   &wrappers.BoolValue{true},
 				WrapperStringValue: &wrappers.StringValue{"str"},
 				WrapperBytesValue:  &wrappers.BytesValue{[]byte("bytes")},
+				MapValue: map[string]string{
+					"key":         "value",
+					"second":      "bar",
+					"third":       "zzz",
+					"fourth":      "",
+					`~!@#$%^&*()`: "value",
+				},
+				MapValue2:  map[string]int32{"key": -2},
+				MapValue3:  map[int32]string{-2: "value"},
+				MapValue4:  map[string]int64{"key": -1},
+				MapValue5:  map[int64]string{-1: "value"},
+				MapValue6:  map[string]uint32{"key": 3},
+				MapValue7:  map[uint32]string{3: "value"},
+				MapValue8:  map[string]uint64{"key": 4},
+				MapValue9:  map[uint64]string{4: "value"},
+				MapValue10: map[string]float32{"key": 1.5},
+				MapValue11: map[float32]string{1.5: "value"},
+				MapValue12: map[string]float64{"key": 2.5},
+				MapValue13: map[float64]string{2.5: "value"},
+				MapValue14: map[string]bool{"key": true},
+				MapValue15: map[bool]string{true: "value"},
 			},
 		},
 		{
@@ -217,11 +256,17 @@ func TestPopulateParameters(t *testing.T) {
 				"nested.nested.string_value":          {"t"},
 				"nested.string_value":                 {"u"},
 				"nested_non_null.string_value":        {"v"},
+				"nested.nested.map_value[first]":      {"foo"},
+				"nested.nested.map_value[second]":     {"bar"},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &proto3Message{
 				Nested: &proto2Message{
 					Nested: &proto3Message{
+						MapValue: map[string]string{
+							"first":  "foo",
+							"second": "bar",
+						},
 						Nested: &proto2Message{
 							RepeatedValue: []string{"a", "b", "c"},
 							StringValue:   proto.String("s"),
@@ -503,6 +548,21 @@ type proto3Message struct {
 	WrapperBoolValue   *wrappers.BoolValue      `protobuf:"bytes,23,opt,name=wrapper_bool_value,json=wrapperBoolValue" json:"wrapper_bool_value,omitempty"`
 	WrapperStringValue *wrappers.StringValue    `protobuf:"bytes,24,opt,name=wrapper_string_value,json=wrapperStringValue" json:"wrapper_string_value,omitempty"`
 	WrapperBytesValue  *wrappers.BytesValue     `protobuf:"bytes,26,opt,name=wrapper_bytes_value,json=wrapperBytesValue" json:"wrapper_bytes_value,omitempty"`
+	MapValue           map[string]string        `protobuf:"bytes,27,opt,name=map_value,json=mapValue" json:"map_value,omitempty"`
+	MapValue2          map[string]int32         `protobuf:"bytes,28,opt,name=map_value2,json=mapValue2" json:"map_value2,omitempty"`
+	MapValue3          map[int32]string         `protobuf:"bytes,29,opt,name=map_value3,json=mapValue3" json:"map_value3,omitempty"`
+	MapValue4          map[string]int64         `protobuf:"bytes,30,opt,name=map_value4,json=mapValue4" json:"map_value4,omitempty"`
+	MapValue5          map[int64]string         `protobuf:"bytes,31,opt,name=map_value5,json=mapValue5" json:"map_value5,omitempty"`
+	MapValue6          map[string]uint32        `protobuf:"bytes,32,opt,name=map_value6,json=mapValue6" json:"map_value6,omitempty"`
+	MapValue7          map[uint32]string        `protobuf:"bytes,33,opt,name=map_value7,json=mapValue7" json:"map_value7,omitempty"`
+	MapValue8          map[string]uint64        `protobuf:"bytes,34,opt,name=map_value8,json=mapValue8" json:"map_value8,omitempty"`
+	MapValue9          map[uint64]string        `protobuf:"bytes,35,opt,name=map_value9,json=mapValue9" json:"map_value9,omitempty"`
+	MapValue10         map[string]float32       `protobuf:"bytes,36,opt,name=map_value10,json=mapValue10" json:"map_value10,omitempty"`
+	MapValue11         map[float32]string       `protobuf:"bytes,37,opt,name=map_value11,json=mapValue11" json:"map_value11,omitempty"`
+	MapValue12         map[string]float64       `protobuf:"bytes,38,opt,name=map_value12,json=mapValue12" json:"map_value12,omitempty"`
+	MapValue13         map[float64]string       `protobuf:"bytes,39,opt,name=map_value13,json=mapValue13" json:"map_value13,omitempty"`
+	MapValue14         map[string]bool          `protobuf:"bytes,40,opt,name=map_value14,json=mapValue14" json:"map_value14,omitempty"`
+	MapValue15         map[bool]string          `protobuf:"bytes,41,opt,name=map_value15,json=mapValue15" json:"map_value15,omitempty"`
 }
 
 func (m *proto3Message) Reset()         { *m = proto3Message{} }

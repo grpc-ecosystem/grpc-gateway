@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -18,6 +19,15 @@ import (
 // A value is ignored if its key starts with one of the elements in "filter".
 func PopulateQueryParameters(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error {
 	for key, values := range values {
+		re, err := regexp.Compile("^(.*)\\[(.*)\\]$")
+		if err != nil {
+			return err
+		}
+		match := re.FindStringSubmatch(key)
+		if len(match) == 3 {
+			key = match[1]
+			values = append([]string{match[2]}, values...)
+		}
 		fieldPath := strings.Split(key, ".")
 		if filter.HasCommonPrefix(fieldPath) {
 			continue
@@ -84,6 +94,11 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 		case reflect.Struct:
 			m = f
 			continue
+		case reflect.Map:
+			if !isLast {
+				return fmt.Errorf("unexpected nested field %s in %s", fieldPath[i+1], strings.Join(fieldPath[:i+1], "."))
+			}
+			return populateMapField(f, values, props)
 		default:
 			return fmt.Errorf("unexpected type %s in %T", f.Type(), msg)
 		}
@@ -123,6 +138,41 @@ func fieldByProtoName(m reflect.Value, name string) (reflect.Value, *proto.Prope
 		}
 	}
 	return reflect.Value{}, nil, nil
+}
+
+func populateMapField(f reflect.Value, values []string, props *proto.Properties) error {
+	if len(values) != 2 {
+		return fmt.Errorf("more than one value provided for key %s in map %s", values[0], props.Name)
+	}
+
+	key, value := values[0], values[1]
+	keyType := f.Type().Key()
+	valueType := f.Type().Elem()
+	if f.IsNil() {
+		f.Set(reflect.MakeMap(f.Type()))
+	}
+
+	keyConv, ok := convFromType[keyType.Kind()]
+	if !ok {
+		return fmt.Errorf("unsupported key type %s in map %s", keyType, props.Name)
+	}
+	valueConv, ok := convFromType[valueType.Kind()]
+	if !ok {
+		return fmt.Errorf("unsupported value type %s in map %s", valueType, props.Name)
+	}
+
+	keyV := keyConv.Call([]reflect.Value{reflect.ValueOf(key)})
+	if err := keyV[1].Interface(); err != nil {
+		return err.(error)
+	}
+	valueV := valueConv.Call([]reflect.Value{reflect.ValueOf(value)})
+	if err := valueV[1].Interface(); err != nil {
+		return err.(error)
+	}
+
+	f.SetMapIndex(keyV[0].Convert(keyType), valueV[0].Convert(valueType))
+
+	return nil
 }
 
 func populateRepeatedField(f reflect.Value, values []string, props *proto.Properties) error {
