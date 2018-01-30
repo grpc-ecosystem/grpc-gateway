@@ -1,22 +1,65 @@
 syntax = "proto3";
 
-package protos;
+package protocal;
 
-import "core/TronTransaction.proto";
-import "core/TronBlockHeader.proto";
-import "core/TronBlock.proto";
+option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
+option java_outer_classname = "Protocal"; //Specify the class name of the generated Java file
 
-option java_package = "org.tron.protos.core"; //Specify the name of the package that generated the Java file
-option java_outer_classname = "Tron"; //Specify the class name of the generated Java file
 
-message Blocks {
-    repeated Block blocks = 1;
+message Transaction {
+    message TXOutput {
+        int64 value = 1;
+        bytes pubKeyHash = 2;
+    }
+
+    message TXInput {
+        bytes txID = 1;
+        int64 vout = 2;
+        bytes signature = 3;
+        bytes pubKey = 4;
+    }
+
+    bytes id = 1;
+    repeated TXInput vin = 2;
+    repeated TXOutput vout = 3;
 }
 
-message BlockHeaders {
-    repeated BlockHeader blockHeaders = 1;
+message BlockHeader{
+    int64 timestamp = 1;
+    bytes txTrieRoot = 2;
+    bytes parentHash = 3;
+    bytes hash = 4;
+    bytes nonce = 5;
+    bytes difficulty = 6;
+    int64 number = 7;
 }
 
-message Transactions {
+message Block {
     repeated Transaction transactions = 1;
+    BlockHeader blockHeader = 2;
+}
+
+message Inventory {
+    enum InventoryType //枚举消息类型
+    {
+        TRX = 0;
+        BLOCK = 1;
+    }
+    InventoryType type = 1;
+    repeated bytes ids = 2;
+}
+
+message Items {
+    enum ItemType //枚举消息类型
+    {
+        ERR= 0; //proto3版本中，首成员必须为0，成员不应有相同的值
+        TRX = 1;
+        BLOCK = 2;
+        BLOCKHEADER = 3;
+    }
+
+    ItemType type = 1;
+    repeated Block blocks = 2;
+    repeated BlockHeader blockHeaders = 3;
+    repeated Transaction transactions = 4;
 }
