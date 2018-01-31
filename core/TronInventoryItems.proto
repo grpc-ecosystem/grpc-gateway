@@ -1,14 +1,13 @@
 syntax = "proto3";
 
-package protos;
+package protocal;
 
-import "core/TronTransaction.proto";
-import "core/TronBlockHeader.proto";
+import "core/Tron.proto";
 
-option java_package = "org.tron.protos.core"; //Specify the name of the package that generated the Java file
+option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
 option java_outer_classname = "TronInventoryItems"; //Specify the class name of the generated Java file
 
 message InventoryItems {
-    int32 type = 1;
-    repeated bytes items = 2;
+  int32 type = 1;
+  repeated bytes items = 2;
 }
