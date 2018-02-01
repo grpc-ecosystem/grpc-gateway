@@ -6,19 +6,20 @@ option java_package = "org.tron.protos"; //Specify the name of the package that 
 option java_outer_classname = "Protocal"; //Specify the class name of the generated Java file
 
 // Account
-
 message Account {
   bytes address = 1;
   int64 balance = 2;
   repeated string votes = 3;
   map<string, int64> asset = 4;
+  int32 type = 5;
 }
 
 // Transcation
-
 enum TranscationType {
   Transfer = 0;
   DeployContract = 1;
+  CreateAccount = 2;
+  VoteWitess = 3;
 }
 
 message TXOutput {
@@ -39,8 +40,11 @@ message TXOutputs {
 
 message Transaction {
   bytes id = 1;
-  repeated TXInput vin = 2;
-  repeated TXOutput vout = 3;
+  TranscationType type = 2;
+  repeated TXInput vin = 3;
+  repeated TXOutput vout = 4;
+  bytes data = 10;
+  bytes scripts = 12;
 }
 
 message BlockHeader {
@@ -54,10 +58,14 @@ message BlockHeader {
   uint64 witness_id = 8;
 }
 
+// block
+
 message Block {
   repeated Transaction transactions = 1;
   BlockHeader blockHeader = 2;
 }
+
+// Inventory
 
 message Inventory {
   enum InventoryType //枚举消息类型
@@ -68,6 +76,7 @@ message Inventory {
   InventoryType type = 1;
   repeated bytes ids = 2;
 }
+
 
 message Items {
   enum ItemType //枚举消息类型
