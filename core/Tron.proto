@@ -14,13 +14,15 @@ message Account {
   int32 type = 5;
 }
 
-// Transcation
-enum TranscationType {
-  Transfer = 0;
-  DeployContract = 1;
-  CreateAccount = 2;
-  VoteWitess = 3;
+// Contract
+message Contract {
+  bytes address = 1;
+  bytes scripts = 2;
+  string name = 3;
 }
+
+// Transcation
+
 
 message TXOutput {
   int64 value = 1;
@@ -39,6 +41,13 @@ message TXOutputs {
 }
 
 message Transaction {
+  enum TranscationType {
+    Transfer = 0;
+    DeployContract = 1;
+    CreateAccount = 2;
+    VoteWitess = 3;
+  }
+
   bytes id = 1;
   TranscationType type = 2;
   repeated TXInput vin = 3;
