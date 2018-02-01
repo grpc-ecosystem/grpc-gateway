@@ -6,9 +6,12 @@ option java_package = "org.tron.api"; //Specify the name of the package that gen
 option java_outer_classname = "GrpcAPI"; //Specify the class name of the generated Java file
 
 service Wallet {
-   rpc GetBalance (Account) returns (Account) {};
-   rpc CreateTransaction(Coin)  returns (Transaction) {};
-   rpc BroadcastTransaction(Transaction) returns (Return) {};
+  rpc GetBalance (Account) returns (Account) {
+  };
+  rpc CreateTransaction (Coin) returns (Transaction) {
+  };
+  rpc BroadcastTransaction (Transaction) returns (Return) {
+  };
 };
 
 message Return {
@@ -18,8 +21,4 @@ message Coin {
   bytes from = 1;
   bytes to = 2;
   int64 amount = 3;
-};
-message Account {
-  int64 balance = 1;
-  bytes address = 2;
 };

@@ -5,6 +5,16 @@ package protocal;
 option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
 option java_outer_classname = "Protocal"; //Specify the class name of the generated Java file
 
+// Account
+
+message Account {
+  bytes address = 1;
+  int64 balance = 2;
+  repeated string votes = 3;
+  map<string, int64> asset = 4;
+}
+
+// Transcation
 
 enum TranscationType {
   Transfer = 0;
