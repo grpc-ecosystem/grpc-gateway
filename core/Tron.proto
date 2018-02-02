@@ -57,7 +57,6 @@ message Transaction {
     CreateAccount = 2;
     VoteWitess = 3;
   }
-
   bytes id = 1;
   TranscationType type = 2;
   repeated TXInput vin = 3;
