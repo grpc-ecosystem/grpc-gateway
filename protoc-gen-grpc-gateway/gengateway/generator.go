@@ -21,14 +21,16 @@ var (
 )
 
 type generator struct {
-	reg               *descriptor.Registry
-	baseImports       []descriptor.GoPackage
-	useRequestContext bool
+	reg                *descriptor.Registry
+	baseImports        []descriptor.GoPackage
+	useRequestContext  bool
+	forwardResponsePkg string
 }
 
 // New returns a new generator which generates grpc gateway files.
 func New(reg *descriptor.Registry, useRequestContext bool) gen.Generator {
 	var imports []descriptor.GoPackage
+
 	for _, pkgpath := range []string{
 		"io",
 		"net/http",
@@ -57,7 +59,26 @@ func New(reg *descriptor.Registry, useRequestContext bool) gen.Generator {
 		}
 		imports = append(imports, pkg)
 	}
-	return &generator{reg: reg, baseImports: imports, useRequestContext: useRequestContext}
+
+	var forwardResponsePkg string
+	if pkg := reg.ForwardResponsePkg(); pkg != nil {
+		imports = append(imports, *pkg)
+
+		if pkg.Alias != "" {
+			forwardResponsePkg = pkg.Alias
+		} else {
+			forwardResponsePkg = pkg.Name
+		}
+	} else {
+		forwardResponsePkg = "runtime"
+	}
+
+	return &generator{
+		reg:                reg,
+		baseImports:        imports,
+		useRequestContext:  useRequestContext,
+		forwardResponsePkg: forwardResponsePkg,
+	}
 }
 
 func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGeneratorResponse_File, error) {
@@ -111,5 +132,12 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 			imports = append(imports, pkg)
 		}
 	}
-	return applyTemplate(param{File: file, Imports: imports, UseRequestContext: g.useRequestContext})
+
+	return applyTemplate(
+		param{
+			File:               file,
+			Imports:            imports,
+			UseRequestContext:  g.useRequestContext,
+			ForwardResponsePkg: g.forwardResponsePkg,
+		})
 }

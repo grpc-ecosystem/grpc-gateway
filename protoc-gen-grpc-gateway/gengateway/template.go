@@ -13,8 +13,9 @@ import (
 
 type param struct {
 	*descriptor.File
-	Imports           []descriptor.GoPackage
-	UseRequestContext bool
+	Imports            []descriptor.GoPackage
+	UseRequestContext  bool
+	ForwardResponsePkg string
 }
 
 type binding struct {
@@ -68,8 +69,9 @@ func (f queryParamFilter) String() string {
 }
 
 type trailerParams struct {
-	Services          []*descriptor.Service
-	UseRequestContext bool
+	Services           []*descriptor.Service
+	UseRequestContext  bool
+	ForwardResponsePkg string
 }
 
 func applyTemplate(p param) (string, error) {
@@ -100,8 +102,9 @@ func applyTemplate(p param) (string, error) {
 	}
 
 	tp := trailerParams{
-		Services:          targetServices,
-		UseRequestContext: p.UseRequestContext,
+		Services:           targetServices,
+		UseRequestContext:  p.UseRequestContext,
+		ForwardResponsePkg: p.ForwardResponsePkg,
 	}
 	if err := trailerTemplate.Execute(w, tp); err != nil {
 		return "", err
@@ -311,6 +314,7 @@ var (
 
 	trailerTemplate = template.Must(template.New("trailer").Parse(`
 {{$UseRequestContext := .UseRequestContext}}
+{{$ForwardResponsePkg := .ForwardResponsePkg}}
 {{range $svc := .Services}}
 // Register{{$svc.GetName}}HandlerFromEndpoint is same as Register{{$svc.GetName}}Handler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
@@ -401,7 +405,7 @@ var (
 var (
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
-	forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} = {{if $m.GetServerStreaming}}runtime.ForwardResponseStream{{else}}runtime.ForwardResponseMessage{{end}}
+	forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} = {{$ForwardResponsePkg}}.{{if $m.GetServerStreaming}}ForwardResponseStream{{else}}ForwardResponseMessage{{end}}
 	{{end}}
 	{{end}}
 )

@@ -549,3 +549,47 @@ func TestLoadOverridedPackageName(t *testing.T) {
 		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
 	}
 }
+
+func TestSetForwardResponsePkg(t *testing.T) {
+	reg := NewRegistry()
+
+	// set absolute path
+	if err := reg.SetForwardResponsePkg("/root"); err == nil {
+		t.Error("reg.SetForwardResponsePkg(/absolute/path) - ok; absolute path cannot be used as a forward response package")
+	}
+
+	var value = "github.com/grpc-ecosystem/grpc-gateway/runtime"
+	// set standard package name
+	if err := reg.SetForwardResponsePkg(value); err != nil {
+		t.Error("reg.SetForwardResponsePkg - failed to set standard forward response package")
+	}
+	if reg.ForwardResponsePkg().Name != "runtime" {
+		t.Errorf("invalid  value reg.ForwardResponsePkg().Name = %q, expected %q", reg.ForwardResponsePkg().Name, "runtime")
+	}
+	if reg.ForwardResponsePkg().Path != value {
+		t.Errorf("invalid  value reg.ForwardResponsePkg().Path = %q, expected %q", reg.ForwardResponsePkg().Path, value)
+	}
+	if reg.ForwardResponsePkg().Alias != "" {
+		t.Errorf("invalid  value reg.ForwardResponsePkg().Alias = %q, expected %q", reg.ForwardResponsePkg().Alias, "")
+	}
+
+	// set external package name
+	value = "github.com/third-party-lib/runtime"
+	if err := reg.SetForwardResponsePkg(value); err != nil {
+		t.Error("reg.SetForwardResponsePkg - failed to set external forward response package")
+	}
+	if reg.ForwardResponsePkg().Name != "runtime" {
+		t.Errorf("invalid  value reg.ForwardResponsePkg().Name = %q, expected %q", reg.ForwardResponsePkg().Name, "runtime")
+	}
+	if reg.ForwardResponsePkg().Path != value {
+		t.Errorf("invalid  value reg.ForwardResponsePkg().Path = %q, expected %q", reg.ForwardResponsePkg().Path, value)
+	}
+	if reg.ForwardResponsePkg().Alias != "runtime_0" {
+		t.Errorf("invalid  value reg.ForwardResponsePkg().Alias = %q, expected %q", reg.ForwardResponsePkg().Alias, "runtime_0")
+	}
+
+	// set empty package
+	if err := reg.SetForwardResponsePkg(""); err != nil {
+		t.Error("reg.SetForwardResponsePkg- failed to set empty forward response package")
+	}
+}

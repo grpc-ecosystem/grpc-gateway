@@ -222,7 +222,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 				},
 			},
 		}
-		got, err := applyTemplate(param{File: crossLinkFixture(&file)})
+		got, err := applyTemplate(param{File: crossLinkFixture(&file), ForwardResponsePkg: "runtime"})
 		if err != nil {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 			return
@@ -244,6 +244,9 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		}
 		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+		}
+		if want := `forward_ExampleService_Echo_0 = runtime.ForwardResponse`; !strings.Contains(got, want) {
+			t.Errorf("applytTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 	}
 }
@@ -383,7 +386,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 				},
 			},
 		}
-		got, err := applyTemplate(param{File: crossLinkFixture(&file)})
+		got, err := applyTemplate(param{File: crossLinkFixture(&file), ForwardResponsePkg: "nonstandard"})
 		if err != nil {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 			return
@@ -399,6 +402,9 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		}
 		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+		}
+		if want := `forward_ExampleService_Echo_0 = nonstandard.ForwardResponse`; !strings.Contains(got, want) {
+			t.Errorf("applytTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 	}
 }
