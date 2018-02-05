@@ -74,6 +74,7 @@ message BlockHeader {
   bytes difficulty = 6;
   uint64 number = 7;
   uint64 witness_id = 8;
+  bytes witness_address = 9;
 }
 
 // block
