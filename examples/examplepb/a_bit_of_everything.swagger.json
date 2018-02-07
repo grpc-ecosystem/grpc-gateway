@@ -711,7 +711,7 @@
     "examplepbABitOfEverything": {
       "type": "object",
       "properties": {
-        "single_nested": {
+        "singleNested": {
           "$ref": "#/definitions/ABitOfEverythingNested"
         },
         "uuid": {
@@ -723,93 +723,93 @@
             "$ref": "#/definitions/ABitOfEverythingNested"
           }
         },
-        "float_value": {
+        "floatValue": {
           "type": "number",
           "format": "float"
         },
-        "double_value": {
+        "doubleValue": {
           "type": "number",
           "format": "double"
         },
-        "int64_value": {
+        "int64Value": {
           "type": "string",
           "format": "int64"
         },
-        "uint64_value": {
+        "uint64Value": {
           "type": "string",
           "format": "uint64"
         },
-        "int32_value": {
+        "int32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "fixed64_value": {
+        "fixed64Value": {
           "type": "string",
           "format": "uint64"
         },
-        "fixed32_value": {
+        "fixed32Value": {
           "type": "integer",
           "format": "int64"
         },
-        "bool_value": {
+        "boolValue": {
           "type": "boolean",
           "format": "boolean"
         },
-        "string_value": {
+        "stringValue": {
           "type": "string"
         },
-        "bytes_value": {
+        "bytesValue": {
           "type": "string",
           "format": "byte"
         },
-        "uint32_value": {
+        "uint32Value": {
           "type": "integer",
           "format": "int64"
         },
-        "enum_value": {
+        "enumValue": {
           "$ref": "#/definitions/examplepbNumericEnum"
         },
-        "sfixed32_value": {
+        "sfixed32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "sfixed64_value": {
+        "sfixed64Value": {
           "type": "string",
           "format": "int64"
         },
-        "sint32_value": {
+        "sint32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "sint64_value": {
+        "sint64Value": {
           "type": "string",
           "format": "int64"
         },
-        "repeated_string_value": {
+        "repeatedStringValue": {
           "type": "array",
           "items": {
             "type": "string"
           }
         },
-        "oneof_empty": {
+        "oneofEmpty": {
           "$ref": "#/definitions/protobufEmpty"
         },
-        "oneof_string": {
+        "oneofString": {
           "type": "string"
         },
-        "map_value": {
+        "mapValue": {
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/examplepbNumericEnum"
           }
         },
-        "mapped_string_value": {
+        "mappedStringValue": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
           }
         },
-        "mapped_nested_value": {
+        "mappedNestedValue": {
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/ABitOfEverythingNested"
@@ -818,11 +818,11 @@
         "nonConventionalNameValue": {
           "type": "string"
         },
-        "timestamp_value": {
+        "timestampValue": {
           "type": "string",
           "format": "date-time"
         },
-        "repeated_enum_value": {
+        "repeatedEnumValue": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/examplepbNumericEnum"
