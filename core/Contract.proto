@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package protocal;
+
+option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
+option java_outer_classname = "Contract"; //Specify the class name of the generated Java file
+
+
+message VoteContract{
+  bytes address = 1;
+  repeated bytes voidAddress = 2;
+  bool support = 3;
+}
+
+message TransferContract{
+
+}
+
+
+message DeployContract{
+  bytes address = 1;
+  bytes script = 2;
+}
+
+
+message CustomContract {
+
+}
