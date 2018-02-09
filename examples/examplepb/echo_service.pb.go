@@ -18,6 +18,7 @@ It is generated from these files:
 It has these top-level messages:
 	SimpleMessage
 	ABitOfEverything
+	ABitOfEverythingSansEnum
 	Body
 	MessageWithBody
 	EmptyProto

@@ -18,7 +18,7 @@ describe('ABitOfEverythingService', function() {
 
   describe('Create', function() {
     var created;
-    var expected = {
+    var params = {
       float_value: 1.5,
       double_value: 2.5,
       int64_value: "4294967296",
@@ -35,9 +35,37 @@ describe('ABitOfEverythingService', function() {
       sint64_value: "4611686018427387903",
       nonConventionalNameValue: "camelCase",
     };
+    var expected = {
+      floatValue: 1.5,
+      doubleValue: 2.5,
+      int64Value: "4294967296",
+      uint64Value: "9223372036854775807",
+      int32Value: -2147483648,
+      fixed64Value: "9223372036854775807",
+      fixed32Value: 4294967295,
+      boolValue: true,
+      stringValue: "strprefix/foo",
+      uint32Value: 4294967295,
+      sfixed32Value: 2147483647,
+      sfixed64Value: "-4611686018427387904",
+      sint32Value: 2147483647,
+      sint64Value: "4611686018427387903",
+      nonConventionalNameValue: "camelCase",
+
+      bytesValue: null,
+      singleNested: null,
+      nested: [],
+      enumValue: "ZERO",
+      repeatedStringValue: [],
+      mapValue: Object({}),
+      mappedStringValue: Object({}),
+      mappedNestedValue: Object({}),
+      timestampValue: null,
+      repeatedEnumValue: [],
+    };
 
     beforeEach(function(done) {
-      client.ABitOfEverythingService.Create(expected).then(function(resp) {
+      client.ABitOfEverythingService.Create(params).then(function(resp) {
         created = resp.obj;
       }).catch(function(err) {
         done.fail(err);
@@ -57,35 +85,41 @@ describe('ABitOfEverythingService', function() {
   describe('CreateBody', function() {
     var created;
     var expected = {
-      float_value: 1.5,
-      double_value: 2.5,
-      int64_value: "4294967296",
-      uint64_value: "9223372036854775807",
-      int32_value: -2147483648,
-      fixed64_value: "9223372036854775807",
-      fixed32_value: 4294967295,
-      bool_value: true,
-      string_value: "strprefix/foo",
-      uint32_value: 4294967295,
-      sfixed32_value: 2147483647,
-      sfixed64_value: "-4611686018427387904",
-      sint32_value: 2147483647,
-      sint64_value: "4611686018427387903",
+      floatValue: 1.5,
+      doubleValue: 2.5,
+      int64Value: "4294967296",
+      uint64Value: "9223372036854775807",
+      int32Value: -2147483648,
+      fixed64Value: "9223372036854775807",
+      fixed32Value: 4294967295,
+      boolValue: true,
+      stringValue: "strprefix/foo",
+      uint32Value: 4294967295,
+      sfixed32Value: 2147483647,
+      sfixed64Value: "-4611686018427387904",
+      sint32Value: 2147483647,
+      sint64Value: "4611686018427387903",
       nonConventionalNameValue: "camelCase",
 
       nested: [
-       { name: "bar", amount: 10 },
-       { name: "baz", amount: 20 },
+       { name: "bar", amount: 10, ok: 'FALSE' },
+       { name: "baz", amount: 20, ok: 'FALSE' },
       ],
-      repeated_string_value: ["a", "b", "c"],
-      oneof_string: "x",
+      repeatedStringValue: ["a", "b", "c"],
+      oneofString: "x",
       // TODO(yugui) Support enum by name
-      map_value: { a: 1, b: 2 },
-      mapped_string_value: { a: "x", b: "y" },
-      mapped_nested_value: {
-        a: { name: "x", amount: 1 },
-        b: { name: "y", amount: 2 },
+      mapValue: { a: 1, b: 2 },
+      mappedStringValue: { a: "x", b: "y" },
+      mappedNestedValue: {
+        a: { name: "x", amount: 1, ok: 'FALSE' },
+        b: { name: "y", amount: 2, ok: 'FALSE' },
       },
+
+      bytesValue: null,
+      singleNested: null,
+      enumValue: "ZERO",
+      timestampValue: null,
+      repeatedEnumValue: [],
     };
 
     beforeEach(function(done) {

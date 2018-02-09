@@ -56,7 +56,7 @@ func TestAbitOfEverythingClient(t *testing.T) {
 }
 
 func testABEClientCreate(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
-	want := &abe.ExamplepbABitOfEverything{
+	want := &abe.ExamplepbABitOfEverythingSansEnum{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
 		Int64Value:               "4294967296",
@@ -72,8 +72,13 @@ func testABEClientCreate(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 		Sint32Value:              2147483647,
 		Sint64Value:              "4611686018427387903",
 		NonConventionalNameValue: "camelCase",
+
+		Nested:              []abe.ExamplepbABitOfEverythingSansEnumNested{},
+		RepeatedStringValue: []string{},
+		MappedStringValue:   map[string]string{},
+		MappedNestedValue:   map[string]abe.ExamplepbABitOfEverythingSansEnumNested{},
 	}
-	resp, _, err := cl.Create(
+	resp, _, err := cl.CreateSansEnum(
 		want.FloatValue,
 		want.DoubleValue,
 		want.Int64Value,
@@ -103,10 +108,7 @@ func testABEClientCreate(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 }
 
 func testABEClientCreateBody(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
-	t.Log("TODO: support enum")
-	return
-
-	want := abe.ExamplepbABitOfEverything{
+	want := &abe.ExamplepbABitOfEverythingSansEnum{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
 		Int64Value:               "4294967296",
@@ -123,7 +125,7 @@ func testABEClientCreateBody(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 		Sint64Value:              "4611686018427387903",
 		NonConventionalNameValue: "camelCase",
 
-		Nested: []abe.ABitOfEverythingNested{
+		Nested: []abe.ExamplepbABitOfEverythingSansEnumNested{
 			{
 				Name:   "bar",
 				Amount: 10,
@@ -135,20 +137,16 @@ func testABEClientCreateBody(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 		},
 		RepeatedStringValue: []string{"a", "b", "c"},
 		OneofString:         "x",
-		MapValue:            map[string]abe.ExamplepbNumericEnum{
-		// "a": abe.ExamplepbNumericEnum_ONE,
-		// "b": abe.ExamplepbNumericEnum_ZERO,
-		},
 		MappedStringValue: map[string]string{
 			"a": "x",
 			"b": "y",
 		},
-		MappedNestedValue: map[string]abe.ABitOfEverythingNested{
+		MappedNestedValue: map[string]abe.ExamplepbABitOfEverythingSansEnumNested{
 			"a": {Name: "x", Amount: 1},
 			"b": {Name: "y", Amount: 2},
 		},
 	}
-	resp, _, err := cl.CreateBody(want)
+	resp, _, err := cl.CreateBodySansEnum(*want)
 	if err != nil {
 		t.Errorf("cl.CreateBody(%#v) failed with %v; want success", want, err)
 	}

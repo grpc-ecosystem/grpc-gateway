@@ -14,13 +14,13 @@ import (
 	"time"
 )
 
-type ExamplepbABitOfEverything struct {
+type ExamplepbABitOfEverythingSansEnum struct {
 
-	SingleNested ExamplepbABitOfEverythingNested `json:"singleNested,omitempty"`
+	SingleNested ExamplepbABitOfEverythingSansEnumNested `json:"singleNested,omitempty"`
 
 	Uuid string `json:"uuid,omitempty"`
 
-	Nested []ExamplepbABitOfEverythingNested `json:"nested,omitempty"`
+	Nested []ExamplepbABitOfEverythingSansEnumNested `json:"nested,omitempty"`
 
 	FloatValue float32 `json:"floatValue,omitempty"`
 
@@ -44,8 +44,6 @@ type ExamplepbABitOfEverything struct {
 
 	Uint32Value int64 `json:"uint32Value,omitempty"`
 
-	EnumValue ExamplepbNumericEnum `json:"enumValue,omitempty"`
-
 	Sfixed32Value int32 `json:"sfixed32Value,omitempty"`
 
 	Sfixed64Value string `json:"sfixed64Value,omitempty"`
@@ -60,15 +58,11 @@ type ExamplepbABitOfEverything struct {
 
 	OneofString string `json:"oneofString,omitempty"`
 
-	MapValue map[string]ExamplepbNumericEnum `json:"mapValue,omitempty"`
-
 	MappedStringValue map[string]string `json:"mappedStringValue,omitempty"`
 
-	MappedNestedValue map[string]ExamplepbABitOfEverythingNested `json:"mappedNestedValue,omitempty"`
+	MappedNestedValue map[string]ExamplepbABitOfEverythingSansEnumNested `json:"mappedNestedValue,omitempty"`
 
 	NonConventionalNameValue string `json:"nonConventionalNameValue,omitempty"`
 
 	TimestampValue time.Time `json:"timestampValue,omitempty"`
-
-	RepeatedEnumValue []ExamplepbNumericEnum `json:"repeatedEnumValue,omitempty"`
 }
