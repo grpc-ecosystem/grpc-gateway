@@ -737,9 +737,7 @@ func _ABitOfEverythingSansEnum_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-// Nested is nested type.
 type ABitOfEverythingSansEnum_Nested struct {
-	// name is nested field.
 	Name   string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 	Amount uint32 `protobuf:"varint,2,opt,name=amount" json:"amount,omitempty"`
 }

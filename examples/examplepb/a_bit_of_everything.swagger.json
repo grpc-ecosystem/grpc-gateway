@@ -1094,15 +1094,13 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string",
-          "description": "name is nested field."
+          "type": "string"
         },
         "amount": {
           "type": "integer",
           "format": "int64"
         }
-      },
-      "description": "Nested is nested type."
+      }
     },
     "examplepbBody": {
       "type": "object",
