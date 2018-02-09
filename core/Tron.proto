@@ -1,6 +1,9 @@
 syntax = "proto3";
 
+import "google/protobuf/any.proto";
+
 package protocal;
+
 
 option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
 option java_outer_classname = "Protocal"; //Specify the class name of the generated Java file
@@ -62,6 +65,7 @@ message Transaction {
   repeated TXInput vin = 3;
   repeated TXOutput vout = 4;
   bytes data = 10;
+  repeated google.protobuf.Any parameter = 11;
   bytes scripts = 12;
 }
 
