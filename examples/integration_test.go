@@ -177,6 +177,13 @@ func testABECreate(t *testing.T, port int) {
 		Sint32Value:              2147483647,
 		Sint64Value:              4611686018427387903,
 		NonConventionalNameValue: "camelCase",
+
+		Nested:              []*gw.ABitOfEverything_Nested{},
+		RepeatedStringValue: []string{},
+		MapValue:            map[string]gw.NumericEnum{},
+		MappedStringValue:   map[string]string{},
+		MappedNestedValue:   map[string]*gw.ABitOfEverything_Nested{},
+		RepeatedEnumValue:   []gw.NumericEnum{},
 	}
 	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue)
 
@@ -207,7 +214,7 @@ func testABECreate(t *testing.T, port int) {
 	}
 	msg.Uuid = ""
 	if got := msg; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg= %v; want %v", &got, &want)
+		t.Errorf("msg= %#v; want %#v", &got, &want)
 	}
 }
 
@@ -255,6 +262,8 @@ func testABECreateBody(t *testing.T, port int) {
 			"a": {Name: "x", Amount: 1},
 			"b": {Name: "y", Amount: 2},
 		},
+
+		RepeatedEnumValue: []gw.NumericEnum{},
 	}
 	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	var m jsonpb.Marshaler
@@ -290,7 +299,7 @@ func testABECreateBody(t *testing.T, port int) {
 	}
 	msg.Uuid = ""
 	if got := msg; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg= %v; want %v", &got, &want)
+		t.Errorf("msg= %#v; want %#v", &got, &want)
 	}
 }
 

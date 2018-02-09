@@ -7,8 +7,7 @@ import (
 	"testing"
 	"time"
 
-	server "github.com/grpc-ecosystem/grpc-gateway/examples/server"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/server"
 )
 
 func runServers() <-chan error {
@@ -19,7 +18,7 @@ func runServers() <-chan error {
 		}
 	}()
 	go func() {
-		if err := Run(":8080", runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName: false})); err != nil {
+		if err := Run(":8080"); err != nil {
 			ch <- fmt.Errorf("cannot run gateway service: %v", err)
 		}
 	}()

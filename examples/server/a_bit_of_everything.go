@@ -26,8 +26,9 @@ import (
 var uuidgen = fastuuid.MustNewGenerator()
 
 type _ABitOfEverythingServer struct {
-	v map[string]*examples.ABitOfEverything
-	m sync.Mutex
+	v  map[string]*examples.ABitOfEverything
+	v2 map[string]*examples.ABitOfEverythingSansEnum
+	m  sync.Mutex
 }
 
 type ABitOfEverythingServer interface {
@@ -37,7 +38,8 @@ type ABitOfEverythingServer interface {
 
 func newABitOfEverythingServer() ABitOfEverythingServer {
 	return &_ABitOfEverythingServer{
-		v: make(map[string]*examples.ABitOfEverything),
+		v:  make(map[string]*examples.ABitOfEverything),
+		v2: make(map[string]*examples.ABitOfEverythingSansEnum),
 	}
 }
 
@@ -61,6 +63,28 @@ func (s *_ABitOfEverythingServer) Create(ctx context.Context, msg *examples.ABit
 
 func (s *_ABitOfEverythingServer) CreateBody(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	return s.Create(ctx, msg)
+}
+
+func (s *_ABitOfEverythingServer) CreateSansEnum(ctx context.Context, msg *examples.ABitOfEverythingSansEnum) (*examples.ABitOfEverythingSansEnum, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	glog.Info(msg)
+	var uuid string
+	for {
+		uuid = fmt.Sprintf("%x", uuidgen.Next())
+		if _, ok := s.v[uuid]; !ok {
+			break
+		}
+	}
+	s.v2[uuid] = msg
+	s.v2[uuid].Uuid = uuid
+	glog.Infof("%v", s.v2[uuid])
+	return s.v2[uuid], nil
+}
+
+func (s *_ABitOfEverythingServer) CreateBodySansEnum(ctx context.Context, msg *examples.ABitOfEverythingSansEnum) (*examples.ABitOfEverythingSansEnum, error) {
+	return s.CreateSansEnum(ctx, msg)
 }
 
 func (s *_ABitOfEverythingServer) BulkCreate(stream examples.StreamService_BulkCreateServer) error {

@@ -522,6 +522,153 @@
         ]
       }
     },
+    "/v1/example/a_bit_of_everything_sans_enum": {
+      "post": {
+        "operationId": "CreateBodySansEnum",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverythingSansEnum"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverythingSansEnum"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything_sans_enum/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}": {
+      "post": {
+        "operationId": "CreateSansEnum",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverythingSansEnum"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "float_value",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "double_value",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "int64_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "uint64_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "int32_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "fixed64_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "fixed32_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "bool_value",
+            "in": "path",
+            "required": true,
+            "type": "boolean",
+            "format": "boolean"
+          },
+          {
+            "name": "string_value",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "uint32_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "sfixed32_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "sfixed64_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "sint32_value",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "sint64_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "nonConventionalNameValue",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v2/example/echo": {
       "get": {
         "summary": "Summary: Echo rpc",
@@ -682,23 +829,6 @@
     }
   },
   "definitions": {
-    "ABitOfEverythingNested": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "name is nested field."
-        },
-        "amount": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "ok": {
-          "$ref": "#/definitions/NestedDeepEnum"
-        }
-      },
-      "description": "Nested is nested type."
-    },
     "NestedDeepEnum": {
       "type": "string",
       "enum": [
@@ -712,7 +842,7 @@
       "type": "object",
       "properties": {
         "singleNested": {
-          "$ref": "#/definitions/ABitOfEverythingNested"
+          "$ref": "#/definitions/examplepbABitOfEverythingNested"
         },
         "uuid": {
           "type": "string"
@@ -720,7 +850,7 @@
         "nested": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/ABitOfEverythingNested"
+            "$ref": "#/definitions/examplepbABitOfEverythingNested"
           }
         },
         "floatValue": {
@@ -812,7 +942,7 @@
         "mappedNestedValue": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/definitions/ABitOfEverythingNested"
+            "$ref": "#/definitions/examplepbABitOfEverythingNested"
           }
         },
         "nonConventionalNameValue": {
@@ -835,6 +965,144 @@
         "description": "Find out more about ABitOfEverything",
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"
       }
+    },
+    "examplepbABitOfEverythingNested": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "name is nested field."
+        },
+        "amount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ok": {
+          "$ref": "#/definitions/NestedDeepEnum"
+        }
+      },
+      "description": "Nested is nested type."
+    },
+    "examplepbABitOfEverythingSansEnum": {
+      "type": "object",
+      "properties": {
+        "singleNested": {
+          "$ref": "#/definitions/examplepbABitOfEverythingSansEnumNested"
+        },
+        "uuid": {
+          "type": "string"
+        },
+        "nested": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/examplepbABitOfEverythingSansEnumNested"
+          }
+        },
+        "floatValue": {
+          "type": "number",
+          "format": "float"
+        },
+        "doubleValue": {
+          "type": "number",
+          "format": "double"
+        },
+        "int64Value": {
+          "type": "string",
+          "format": "int64"
+        },
+        "uint64Value": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "int32Value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fixed64Value": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "fixed32Value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "boolValue": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "stringValue": {
+          "type": "string"
+        },
+        "bytesValue": {
+          "type": "string",
+          "format": "byte"
+        },
+        "uint32Value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sfixed32Value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sfixed64Value": {
+          "type": "string",
+          "format": "int64"
+        },
+        "sint32Value": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "sint64Value": {
+          "type": "string",
+          "format": "int64"
+        },
+        "repeatedStringValue": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "oneofEmpty": {
+          "$ref": "#/definitions/protobufEmpty"
+        },
+        "oneofString": {
+          "type": "string"
+        },
+        "mappedStringValue": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "mappedNestedValue": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/examplepbABitOfEverythingSansEnumNested"
+          }
+        },
+        "nonConventionalNameValue": {
+          "type": "string"
+        },
+        "timestampValue": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "examplepbABitOfEverythingSansEnumNested": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "name is nested field."
+        },
+        "amount": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "description": "Nested is nested type."
     },
     "examplepbBody": {
       "type": "object",
