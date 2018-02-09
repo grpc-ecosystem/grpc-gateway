@@ -1,0 +1,1 @@
+protoc --java_out=./  ./core/*.proto ./api/*.proto
