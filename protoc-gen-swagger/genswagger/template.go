@@ -840,6 +840,9 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 	// If there is a summary (or summary-equivalent), use the first
 	// paragraph as summary, and the rest as description.
 	if summaryValue.CanSet() {
+		for i, p := range paragraphs {
+			paragraphs[i] = strings.Replace(p, "\n", " ", -1)
+		}
 		summary := strings.TrimSpace(paragraphs[0])
 		description := strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
 		if !usingTitle || (len(summary) > 0 && summary[len(summary)-1] != '.') {
