@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Echo Service",
-    "description": "Echo Service API consists of a single service which returns\na message.",
+    "description": "Echo Service API consists of a single service which returns a message.",
     "version": "version not set"
   },
   "schemes": [
@@ -19,7 +19,7 @@
     "/v1/example/echo/{id}": {
       "post": {
         "summary": "Echo method receives a simple message and returns it.",
-        "description": "The message posted as the id parameter will also be\nreturned.",
+        "description": "The message posted as the id parameter will also be returned.",
         "operationId": "Echo",
         "responses": {
           "200": {
@@ -45,7 +45,7 @@
     "/v1/example/echo/{id}/{num}": {
       "get": {
         "summary": "Echo method receives a simple message and returns it.",
-        "description": "The message posted as the id parameter will also be\nreturned.",
+        "description": "The message posted as the id parameter will also be returned.",
         "operationId": "Echo2",
         "responses": {
           "200": {

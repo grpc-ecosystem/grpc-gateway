@@ -1,0 +1,714 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0"
+  title: "A Bit of Everything"
+  contact:
+    name: "gRPC-Gateway project"
+    url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    email: "none@example.com"
+schemes:
+- "http"
+- "https"
+- "wss"
+consumes:
+- "application/json"
+- "application/x-foo-mime"
+produces:
+- "application/json"
+- "application/x-foo-mime"
+paths:
+  /v1/example/a_bit_of_everything:
+    post:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "CreateBody"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbABitOfEverything"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/examplepbABitOfEverything"
+  /v1/example/a_bit_of_everything/echo/{value}:
+    get:
+      tags:
+      - "echo service"
+      - "echo rpc"
+      summary: "Summary: Echo rpc"
+      description: "Description Echo"
+      operationId: "Echo"
+      parameters:
+      - name: "value"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Value"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/subStringMessage"
+      externalDocs:
+        description: "Find out more Echo"
+        url: "https://github.com/grpc-ecosystem/grpc-gateway"
+  /v1/example/a_bit_of_everything/query/{uuid}:
+    get:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "GetQuery"
+      parameters:
+      - name: "uuid"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Uuid"
+      - name: "single_nested.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "SingleNestedName"
+      - name: "single_nested.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "SingleNestedAmount"
+      - name: "single_nested.ok"
+        in: "query"
+        description: " - FALSE: FALSE is false.\n - TRUE: TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "SingleNestedOk"
+      - name: "float_value"
+        in: "query"
+        required: false
+        type: "number"
+        format: "float"
+        x-exportParamName: "FloatValue"
+      - name: "double_value"
+        in: "query"
+        required: false
+        type: "number"
+        format: "double"
+        x-exportParamName: "DoubleValue"
+      - name: "int64_value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Int64Value"
+      - name: "uint64_value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "uint64"
+        x-exportParamName: "Uint64Value"
+      - name: "int32_value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Int32Value"
+      - name: "fixed64_value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "uint64"
+        x-exportParamName: "Fixed64Value"
+      - name: "fixed32_value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Fixed32Value"
+      - name: "bool_value"
+        in: "query"
+        required: false
+        type: "boolean"
+        format: "boolean"
+        x-exportParamName: "BoolValue"
+      - name: "string_value"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StringValue"
+      - name: "bytes_value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "byte"
+        x-exportParamName: "BytesValue"
+      - name: "uint32_value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Uint32Value"
+      - name: "enum_value"
+        in: "query"
+        description: " - ZERO: ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "string"
+        default: "ZERO"
+        enum:
+        - "ZERO"
+        - "ONE"
+        x-exportParamName: "EnumValue"
+      - name: "sfixed32_value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Sfixed32Value"
+      - name: "sfixed64_value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Sfixed64Value"
+      - name: "sint32_value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Sint32Value"
+      - name: "sint64_value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Sint64Value"
+      - name: "repeated_string_value"
+        in: "query"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        x-exportParamName: "RepeatedStringValue"
+      - name: "oneof_string"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OneofString"
+      - name: "nonConventionalNameValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NonConventionalNameValue"
+      - name: "timestamp_value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "date-time"
+        x-exportParamName: "TimestampValue"
+      - name: "repeated_enum_value"
+        in: "query"
+        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        x-exportParamName: "RepeatedEnumValue"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/protobufEmpty"
+      externalDocs:
+        description: "Find out more about GetQuery"
+        url: "https://github.com/grpc-ecosystem/grpc-gateway"
+      deprecated: true
+  ? /v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}
+  : post:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "Create"
+      parameters:
+      - name: "float_value"
+        in: "path"
+        required: true
+        type: "number"
+        format: "float"
+        x-exportParamName: "FloatValue"
+      - name: "double_value"
+        in: "path"
+        required: true
+        type: "number"
+        format: "double"
+        x-exportParamName: "DoubleValue"
+      - name: "int64_value"
+        in: "path"
+        required: true
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Int64Value"
+      - name: "uint64_value"
+        in: "path"
+        required: true
+        type: "string"
+        format: "uint64"
+        x-exportParamName: "Uint64Value"
+      - name: "int32_value"
+        in: "path"
+        required: true
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Int32Value"
+      - name: "fixed64_value"
+        in: "path"
+        required: true
+        type: "string"
+        format: "uint64"
+        x-exportParamName: "Fixed64Value"
+      - name: "fixed32_value"
+        in: "path"
+        required: true
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Fixed32Value"
+      - name: "bool_value"
+        in: "path"
+        required: true
+        type: "boolean"
+        format: "boolean"
+        x-exportParamName: "BoolValue"
+      - name: "string_value"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "StringValue"
+      - name: "uint32_value"
+        in: "path"
+        required: true
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Uint32Value"
+      - name: "sfixed32_value"
+        in: "path"
+        required: true
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Sfixed32Value"
+      - name: "sfixed64_value"
+        in: "path"
+        required: true
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Sfixed64Value"
+      - name: "sint32_value"
+        in: "path"
+        required: true
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Sint32Value"
+      - name: "sint64_value"
+        in: "path"
+        required: true
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Sint64Value"
+      - name: "nonConventionalNameValue"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "NonConventionalNameValue"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/examplepbABitOfEverything"
+  /v1/example/a_bit_of_everything/{single_nested.name}:
+    post:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "DeepPathEcho"
+      parameters:
+      - name: "single_nested.name"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "SingleNestedName"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbABitOfEverything"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/examplepbABitOfEverything"
+  /v1/example/a_bit_of_everything/{uuid}:
+    get:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "Lookup"
+      parameters:
+      - name: "uuid"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Uuid"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/examplepbABitOfEverything"
+    put:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "Update"
+      parameters:
+      - name: "uuid"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Uuid"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbABitOfEverything"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/protobufEmpty"
+    delete:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "Delete"
+      parameters:
+      - name: "uuid"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Uuid"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/protobufEmpty"
+  /v2/example/echo:
+    get:
+      tags:
+      - "echo service"
+      - "echo rpc"
+      summary: "Summary: Echo rpc"
+      description: "Description Echo"
+      operationId: "Echo3"
+      parameters:
+      - name: "value"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Value"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/subStringMessage"
+      externalDocs:
+        description: "Find out more Echo"
+        url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    post:
+      tags:
+      - "echo service"
+      - "echo rpc"
+      summary: "Summary: Echo rpc"
+      description: "Description Echo"
+      operationId: "Echo2"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "string"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/subStringMessage"
+      externalDocs:
+        description: "Find out more Echo"
+        url: "https://github.com/grpc-ecosystem/grpc-gateway"
+  /v2/example/errorwithdetails:
+    get:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ErrorWithDetails"
+      parameters: []
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/protobufEmpty"
+  /v2/example/postwithemptybody/{name}:
+    post:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "PostWithEmptyBody"
+      parameters:
+      - name: "name"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Name"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbBody"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/protobufEmpty"
+  /v2/example/timeout:
+    get:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "Timeout"
+      parameters: []
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/protobufEmpty"
+  /v2/example/withbody/{id}:
+    post:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "GetMessageWithBody"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Id"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbBody"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/protobufEmpty"
+definitions:
+  ABitOfEverythingNested:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "name is nested field."
+      amount:
+        type: "integer"
+        format: "int64"
+      ok:
+        $ref: "#/definitions/NestedDeepEnum"
+    description: "Nested is nested type."
+    example:
+      amount: 0
+      name: "name"
+      ok: {}
+  NestedDeepEnum:
+    type: "string"
+    description: "DeepEnum is one or zero.\n\n- FALSE: FALSE is false. - TRUE: TRUE\
+      \ is true."
+    enum:
+    - "FALSE"
+    - "TRUE"
+    default: "FALSE"
+  examplepbABitOfEverything:
+    type: "object"
+    properties:
+      single_nested:
+        $ref: "#/definitions/ABitOfEverythingNested"
+      uuid:
+        type: "string"
+      nested:
+        type: "array"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      float_value:
+        type: "number"
+        format: "float"
+      double_value:
+        type: "number"
+        format: "double"
+      int64_value:
+        type: "string"
+        format: "int64"
+      uint64_value:
+        type: "string"
+        format: "uint64"
+      int32_value:
+        type: "integer"
+        format: "int32"
+      fixed64_value:
+        type: "string"
+        format: "uint64"
+      fixed32_value:
+        type: "integer"
+        format: "int64"
+      bool_value:
+        type: "boolean"
+        format: "boolean"
+      string_value:
+        type: "string"
+      bytes_value:
+        type: "string"
+        format: "byte"
+        pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+      uint32_value:
+        type: "integer"
+        format: "int64"
+      enum_value:
+        $ref: "#/definitions/examplepbNumericEnum"
+      sfixed32_value:
+        type: "integer"
+        format: "int32"
+      sfixed64_value:
+        type: "string"
+        format: "int64"
+      sint32_value:
+        type: "integer"
+        format: "int32"
+      sint64_value:
+        type: "string"
+        format: "int64"
+      repeated_string_value:
+        type: "array"
+        items:
+          type: "string"
+      oneof_empty:
+        $ref: "#/definitions/protobufEmpty"
+      oneof_string:
+        type: "string"
+      map_value:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/examplepbNumericEnum"
+      mapped_string_value:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      mapped_nested_value:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nonConventionalNameValue:
+        type: "string"
+      timestamp_value:
+        type: "string"
+        format: "date-time"
+      repeated_enum_value:
+        type: "array"
+        title: "repeated enum value. it is comma-separated in query"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+    externalDocs:
+      description: "Find out more about ABitOfEverything"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    title: "Intentionaly complicated message type to cover much features of Protobuf.\
+      \ NEXT ID: 30"
+    example:
+      uint32_value: 2
+      nonConventionalNameValue: "nonConventionalNameValue"
+      bool_value: true
+      sfixed32_value: 7
+      bytes_value: "bytes_value"
+      uuid: "uuid"
+      nested:
+      - amount: 0
+        name: "name"
+        ok: {}
+      - amount: 0
+        name: "name"
+        ok: {}
+      repeated_string_value:
+      - "repeated_string_value"
+      - "repeated_string_value"
+      timestamp_value: "2000-01-23T04:56:07.000+00:00"
+      uint64_value: "uint64_value"
+      fixed32_value: 5
+      mapped_nested_value:
+        key:
+          amount: 0
+          name: "name"
+          ok: {}
+      fixed64_value: "fixed64_value"
+      string_value: "string_value"
+      repeated_enum_value:
+      - null
+      - null
+      single_nested:
+        amount: 0
+        name: "name"
+        ok: {}
+      enum_value: {}
+      mapped_string_value:
+        key: "mapped_string_value"
+      sint32_value: 9
+      double_value: 1.4658129805029452
+      int64_value: "int64_value"
+      map_value:
+        key: null
+      sfixed64_value: "sfixed64_value"
+      float_value: 6.0274563
+      int32_value: 5
+      sint64_value: "sint64_value"
+      oneof_string: "oneof_string"
+      oneof_empty: {}
+  examplepbBody:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+  examplepbNumericEnum:
+    type: "string"
+    description: "NumericEnum is one or zero.\n\n- ZERO: ZERO means 0 - ONE: ONE means\
+      \ 1"
+    enum:
+    - "ZERO"
+    - "ONE"
+    default: "ZERO"
+  protobufEmpty:
+    type: "object"
+    title: "A generic empty message that you can re-use to avoid defining duplicated\
+      \ empty messages in your APIs. A typical example is to use it as the request\
+      \ or the response type of an API method. For instance:"
+    description: "service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\
+      \ }\n\nThe JSON representation for `Empty` is empty JSON object `{}`."
+  subStringMessage:
+    type: "object"
+    properties:
+      value:
+        type: "string"
+    example:
+      value: "value"
+externalDocs:
+  description: "More about gRPC-Gateway"
+  url: "https://github.com/grpc-ecosystem/grpc-gateway"
