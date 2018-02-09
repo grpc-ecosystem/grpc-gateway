@@ -706,7 +706,7 @@
         "TRUE"
       ],
       "default": "FALSE",
-      "description": "DeepEnum is one or zero.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true."
+      "description": "DeepEnum is one or zero.\n\n- FALSE: FALSE is false. - TRUE: TRUE is true."
     },
     "examplepbABitOfEverything": {
       "type": "object",
@@ -830,7 +830,7 @@
           "title": "repeated enum value. it is comma-separated in query"
         }
       },
-      "title": "Intentionaly complicated message type to cover much features of Protobuf.\nNEXT ID: 30",
+      "title": "Intentionaly complicated message type to cover much features of Protobuf. NEXT ID: 30",
       "externalDocs": {
         "description": "Find out more about ABitOfEverything",
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -851,12 +851,12 @@
         "ONE"
       ],
       "default": "ZERO",
-      "description": "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+      "description": "NumericEnum is one or zero.\n\n- ZERO: ZERO means 0 - ONE: ONE means 1"
     },
     "protobufEmpty": {
       "type": "object",
-      "description": "service Foo {\n      rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n    }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
-      "title": "A generic empty message that you can re-use to avoid defining duplicated\nempty messages in your APIs. A typical example is to use it as the request\nor the response type of an API method. For instance:"
+      "description": "service Foo { rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty); }\n\nThe JSON representation for `Empty` is empty JSON object `{}`.",
+      "title": "A generic empty message that you can re-use to avoid defining duplicated empty messages in your APIs. A typical example is to use it as the request or the response type of an API method. For instance:"
     },
     "subStringMessage": {
       "type": "object",

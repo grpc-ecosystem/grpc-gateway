@@ -837,6 +837,33 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 
 	paragraphs := strings.Split(comment, "\n\n")
 
+	// Cleanup single line breaks in all paragraphs. Lists indicated by an '*'
+	// are preserved.
+	for i, p := range paragraphs {
+		// Split items at linebreaks to get individual lines. After that the
+		// paragraph is recomposed: A line break is added between list items and
+		// a whitespace is used to concat lines belonging together, effectively
+		// removing the line break between them.
+		var buf bytes.Buffer
+		items := strings.Split(p, "\n")
+		for _, item := range items {
+			item = strings.TrimSpace(item)
+			if strings.HasPrefix(item, "*") {
+				buf.WriteByte('\n')
+				buf.WriteString(item)
+			} else {
+				buf.WriteByte(' ')
+				buf.WriteString(item)
+			}
+		}
+
+		// Remove unnecessary whitespaces and line breaks from the new
+		// paragraph.
+		new := strings.TrimSpace(buf.String())
+		new = strings.TrimPrefix(new, "\n")
+		paragraphs[i] = new
+	}
+
 	// If there is a summary (or summary-equivalent), use the first
 	// paragraph as summary, and the rest as description.
 	if summaryValue.CanSet() {
