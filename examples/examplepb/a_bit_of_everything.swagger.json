@@ -125,83 +125,83 @@
             "default": "FALSE"
           },
           {
-            "name": "float_value",
+            "name": "floatValue",
             "in": "query",
             "required": false,
             "type": "number",
             "format": "float"
           },
           {
-            "name": "double_value",
+            "name": "doubleValue",
             "in": "query",
             "required": false,
             "type": "number",
             "format": "double"
           },
           {
-            "name": "int64_value",
+            "name": "int64Value",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "int64"
           },
           {
-            "name": "uint64_value",
+            "name": "uint64Value",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "uint64"
           },
           {
-            "name": "int32_value",
+            "name": "int32Value",
             "in": "query",
             "required": false,
             "type": "integer",
             "format": "int32"
           },
           {
-            "name": "fixed64_value",
+            "name": "fixed64Value",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "uint64"
           },
           {
-            "name": "fixed32_value",
+            "name": "fixed32Value",
             "in": "query",
             "required": false,
             "type": "integer",
             "format": "int64"
           },
           {
-            "name": "bool_value",
+            "name": "boolValue",
             "in": "query",
             "required": false,
             "type": "boolean",
             "format": "boolean"
           },
           {
-            "name": "string_value",
+            "name": "stringValue",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "bytes_value",
+            "name": "bytesValue",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "byte"
           },
           {
-            "name": "uint32_value",
+            "name": "uint32Value",
             "in": "query",
             "required": false,
             "type": "integer",
             "format": "int64"
           },
           {
-            "name": "enum_value",
+            "name": "enumValue",
             "description": " - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
@@ -213,35 +213,35 @@
             "default": "ZERO"
           },
           {
-            "name": "sfixed32_value",
+            "name": "sfixed32Value",
             "in": "query",
             "required": false,
             "type": "integer",
             "format": "int32"
           },
           {
-            "name": "sfixed64_value",
+            "name": "sfixed64Value",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "int64"
           },
           {
-            "name": "sint32_value",
+            "name": "sint32Value",
             "in": "query",
             "required": false,
             "type": "integer",
             "format": "int32"
           },
           {
-            "name": "sint64_value",
+            "name": "sint64Value",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "int64"
           },
           {
-            "name": "repeated_string_value",
+            "name": "repeatedStringValue",
             "in": "query",
             "required": false,
             "type": "array",
@@ -250,7 +250,7 @@
             }
           },
           {
-            "name": "oneof_string",
+            "name": "oneofString",
             "in": "query",
             "required": false,
             "type": "string"
@@ -262,14 +262,14 @@
             "type": "string"
           },
           {
-            "name": "timestamp_value",
+            "name": "timestampValue",
             "in": "query",
             "required": false,
             "type": "string",
             "format": "date-time"
           },
           {
-            "name": "repeated_enum_value",
+            "name": "repeatedEnumValue",
             "description": "repeated enum value. it is comma-separated in query.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
@@ -736,7 +736,7 @@
     "examplepbABitOfEverything": {
       "type": "object",
       "properties": {
-        "single_nested": {
+        "singleNested": {
           "$ref": "#/definitions/ABitOfEverythingNested"
         },
         "uuid": {
@@ -748,93 +748,93 @@
             "$ref": "#/definitions/ABitOfEverythingNested"
           }
         },
-        "float_value": {
+        "floatValue": {
           "type": "number",
           "format": "float"
         },
-        "double_value": {
+        "doubleValue": {
           "type": "number",
           "format": "double"
         },
-        "int64_value": {
+        "int64Value": {
           "type": "string",
           "format": "int64"
         },
-        "uint64_value": {
+        "uint64Value": {
           "type": "string",
           "format": "uint64"
         },
-        "int32_value": {
+        "int32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "fixed64_value": {
+        "fixed64Value": {
           "type": "string",
           "format": "uint64"
         },
-        "fixed32_value": {
+        "fixed32Value": {
           "type": "integer",
           "format": "int64"
         },
-        "bool_value": {
+        "boolValue": {
           "type": "boolean",
           "format": "boolean"
         },
-        "string_value": {
+        "stringValue": {
           "type": "string"
         },
-        "bytes_value": {
+        "bytesValue": {
           "type": "string",
           "format": "byte"
         },
-        "uint32_value": {
+        "uint32Value": {
           "type": "integer",
           "format": "int64"
         },
-        "enum_value": {
+        "enumValue": {
           "$ref": "#/definitions/examplepbNumericEnum"
         },
-        "sfixed32_value": {
+        "sfixed32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "sfixed64_value": {
+        "sfixed64Value": {
           "type": "string",
           "format": "int64"
         },
-        "sint32_value": {
+        "sint32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "sint64_value": {
+        "sint64Value": {
           "type": "string",
           "format": "int64"
         },
-        "repeated_string_value": {
+        "repeatedStringValue": {
           "type": "array",
           "items": {
             "type": "string"
           }
         },
-        "oneof_empty": {
+        "oneofEmpty": {
           "$ref": "#/definitions/protobufEmpty"
         },
-        "oneof_string": {
+        "oneofString": {
           "type": "string"
         },
-        "map_value": {
+        "mapValue": {
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/examplepbNumericEnum"
           }
         },
-        "mapped_string_value": {
+        "mappedStringValue": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
           }
         },
-        "mapped_nested_value": {
+        "mappedNestedValue": {
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/ABitOfEverythingNested"
@@ -843,11 +843,11 @@
         "nonConventionalNameValue": {
           "type": "string"
         },
-        "timestamp_value": {
+        "timestampValue": {
           "type": "string",
           "format": "date-time"
         },
-        "repeated_enum_value": {
+        "repeatedEnumValue": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/examplepbNumericEnum"

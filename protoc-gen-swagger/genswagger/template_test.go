@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/go-test/deep"
+
 	"github.com/golang/protobuf/proto"
 	protodescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
@@ -45,14 +47,16 @@ func TestMessageToQueryParameters(t *testing.T) {
 					Name: proto.String("ExampleMessage"),
 					Field: []*protodescriptor.FieldDescriptorProto{
 						{
-							Name:   proto.String("a"),
-							Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
-							Number: proto.Int32(1),
+							Name:     proto.String("a"),
+							JsonName: proto.String("a"),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:   proto.Int32(1),
 						},
 						{
-							Name:   proto.String("b"),
-							Type:   protodescriptor.FieldDescriptorProto_TYPE_DOUBLE.Enum(),
-							Number: proto.Int32(2),
+							Name:     proto.String("b"),
+							JsonName: proto.String("b"),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_DOUBLE.Enum(),
+							Number:   proto.Int32(2),
 						},
 					},
 				},
@@ -91,12 +95,14 @@ func TestMessageToQueryParameters(t *testing.T) {
 					Name: proto.String("Nested"),
 					Field: []*protodescriptor.FieldDescriptorProto{
 						{
-							Name:   proto.String("a"),
-							Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
-							Number: proto.Int32(1),
+							Name:     proto.String("a"),
+							JsonName: proto.String("a"),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:   proto.Int32(1),
 						},
 						{
 							Name:     proto.String("deep"),
+							JsonName: proto.String("deep"),
 							Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
 							TypeName: proto.String(".example.Nested.DeepNested"),
 							Number:   proto.Int32(2),
@@ -106,12 +112,14 @@ func TestMessageToQueryParameters(t *testing.T) {
 						Name: proto.String("DeepNested"),
 						Field: []*protodescriptor.FieldDescriptorProto{
 							{
-								Name:   proto.String("b"),
-								Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
-								Number: proto.Int32(1),
+								Name:     proto.String("b"),
+								JsonName: proto.String("b"),
+								Type:     protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+								Number:   proto.Int32(1),
 							},
 							{
 								Name:     proto.String("c"),
+								JsonName: proto.String("c"),
 								Type:     protodescriptor.FieldDescriptorProto_TYPE_ENUM.Enum(),
 								TypeName: proto.String(".example.Nested.DeepNested.DeepEnum"),
 								Number:   proto.Int32(2),
@@ -188,8 +196,8 @@ func TestMessageToQueryParameters(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
-		if !reflect.DeepEqual(params, test.Params) {
-			t.Errorf("expected %v, got %v", test.Params, params)
+		if diff := deep.Equal(params, test.Params); diff != nil {
+			t.Error(diff)
 		}
 	}
 }

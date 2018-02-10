@@ -7,13 +7,13 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"reflect"
 	"strconv"
 	"strings"
 	"sync"
 	"testing"
 	"time"
 
+	"github.com/go-test/deep"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
@@ -124,8 +124,8 @@ func testEchoBody(t *testing.T, port int) {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
-	if got, want := received, sent; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg.Id = %q; want %q", got, want)
+	if diff := deep.Equal(received, sent); diff != nil {
+		t.Error(diff)
 	}
 
 	if got, want := resp.Header.Get("Grpc-Metadata-Foo"), "foo1"; got != want {
@@ -177,6 +177,12 @@ func testABECreate(t *testing.T, port int) {
 		Sint32Value:              2147483647,
 		Sint64Value:              4611686018427387903,
 		NonConventionalNameValue: "camelCase",
+		MapValue:                 map[string]gw.NumericEnum{},
+		MappedStringValue:        map[string]string{},
+		RepeatedStringValue:      []string{},
+		RepeatedEnumValue:        []gw.NumericEnum{},
+		MappedNestedValue:        map[string]*gw.ABitOfEverything_Nested{},
+		Nested:                   []*gw.ABitOfEverything_Nested{},
 	}
 	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue)
 
@@ -206,8 +212,8 @@ func testABECreate(t *testing.T, port int) {
 		t.Error("msg.Uuid is empty; want not empty")
 	}
 	msg.Uuid = ""
-	if got := msg; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg= %v; want %v", &got, &want)
+	if diff := deep.Equal(msg, want); diff != nil {
+		t.Error(diff)
 	}
 }
 
@@ -239,6 +245,7 @@ func testABECreateBody(t *testing.T, port int) {
 				Amount: 20,
 			},
 		},
+		RepeatedEnumValue:   []gw.NumericEnum{},
 		RepeatedStringValue: []string{"a", "b", "c"},
 		OneofValue: &gw.ABitOfEverything_OneofString{
 			OneofString: "x",
@@ -289,8 +296,8 @@ func testABECreateBody(t *testing.T, port int) {
 		t.Error("msg.Uuid is empty; want not empty")
 	}
 	msg.Uuid = ""
-	if got := msg; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg= %v; want %v", &got, &want)
+	if diff := deep.Equal(msg, want); diff != nil {
+		t.Error(diff)
 	}
 }
 
@@ -427,8 +434,8 @@ func testABELookup(t *testing.T, port int) {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
-	if got := msg; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg= %v; want %v", &got, &want)
+	if diff := deep.Equal(msg, want); diff != nil {
+		t.Error(diff)
 	}
 
 	if got, want := resp.Header.Get("Grpc-Metadata-Uuid"), want.Uuid; got != want {
@@ -610,8 +617,8 @@ func testABEBulkEcho(t *testing.T, port int) {
 	}()
 
 	wg.Wait()
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got = %v; want %v", got, want)
+	if diff := deep.Equal(got, want); diff != nil {
+		t.Error(diff)
 	}
 }
 
@@ -771,16 +778,16 @@ func TestErrorWithDetails(t *testing.T) {
 	if got, want := details["detail"], "error debug details"; got != want {
 		t.Errorf("msg.Details[\"detail\"] = %q; want %q", got, want)
 	}
-	entries, ok := details["stack_entries"].([]interface{})
+	entries, ok := details["stackEntries"].([]interface{})
 	if got, want := ok, true; got != want {
-		t.Fatalf("msg.Details[0][\"stack_entries\"] got type: %T, want %T", entries, []string{})
+		t.Fatalf("msg.Details[0][\"stackEntries\"] got type: %T, want %T", entries, []interface{}{})
 	}
 	entry, ok := entries[0].(string)
 	if got, want := ok, true; got != want {
-		t.Fatalf("msg.Details[0][\"stack_entries\"][0] got type: %T, want %T", entry, "")
+		t.Fatalf("msg.Details[0][\"stackEntries\"][0] got type: %T, want %T", entry, "")
 	}
 	if got, want := entries[0], "foo:1"; got != want {
-		t.Errorf("msg.Details[\"stack_entries\"][0] = %q; want %q", got, want)
+		t.Errorf("msg.Details[\"stackEntries\"][0] = %q; want %q", got, want)
 	}
 }
 

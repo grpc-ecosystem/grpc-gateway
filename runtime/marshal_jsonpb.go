@@ -11,6 +11,10 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
+var unmarshaler = &jsonpb.Unmarshaler{
+	AllowUnknownFields: true,
+}
+
 // JSONPb is a Marshaler which marshals/unmarshals into/from JSON
 // with the "github.com/golang/protobuf/jsonpb".
 // It supports fully functionality of protobuf unlike JSONBuiltin.
@@ -111,7 +115,6 @@ func decodeJSONPb(d *json.Decoder, v interface{}) error {
 	if !ok {
 		return decodeNonProtoField(d, v)
 	}
-	unmarshaler := &jsonpb.Unmarshaler{AllowUnknownFields: true}
 	return unmarshaler.UnmarshalNext(d, p)
 }
 
@@ -125,7 +128,6 @@ func decodeNonProtoField(d *json.Decoder, v interface{}) error {
 			rv.Set(reflect.New(rv.Type().Elem()))
 		}
 		if rv.Type().ConvertibleTo(typeProtoMessage) {
-			unmarshaler := &jsonpb.Unmarshaler{AllowUnknownFields: true}
 			return unmarshaler.UnmarshalNext(d, rv.Interface().(proto.Message))
 		}
 		rv = rv.Elem()

@@ -46,26 +46,26 @@
     "examplepbWrappers": {
       "type": "object",
       "properties": {
-        "string_value": {
+        "stringValue": {
           "type": "string"
         },
-        "int32_value": {
+        "int32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "int64_value": {
+        "int64Value": {
           "type": "integer",
           "format": "int64"
         },
-        "float_value": {
+        "floatValue": {
           "type": "number",
           "format": "float"
         },
-        "double_value": {
+        "doubleValue": {
           "type": "number",
           "format": "double"
         },
-        "bool_value": {
+        "boolValue": {
           "type": "boolean",
           "format": "boolean"
         }

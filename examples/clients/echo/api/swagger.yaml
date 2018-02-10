@@ -1,0 +1,88 @@
+---
+swagger: "2.0"
+info:
+  description: "Echo Service API consists of a single service which returns\na message."
+  version: "version not set"
+  title: "Echo Service"
+schemes:
+- "http"
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /v1/example/echo/{id}:
+    post:
+      tags:
+      - "EchoService"
+      summary: "Echo method receives a simple message and returns it."
+      description: "The message posted as the id parameter will also be\nreturned."
+      operationId: "Echo"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Id"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+  /v1/example/echo/{id}/{num}:
+    get:
+      tags:
+      - "EchoService"
+      summary: "Echo method receives a simple message and returns it."
+      description: "The message posted as the id parameter will also be\nreturned."
+      operationId: "Echo2"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Id"
+      - name: "num"
+        in: "path"
+        required: true
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Num"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+  /v1/example/echo_body:
+    post:
+      tags:
+      - "EchoService"
+      summary: "EchoBody method receives a simple message and returns it."
+      operationId: "EchoBody"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbSimpleMessage"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+definitions:
+  examplepbSimpleMessage:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Id represents the message identifier."
+      num:
+        type: "string"
+        format: "int64"
+    description: "SimpleMessage represents a simple message sent to the Echo service."
+    example:
+      num: "num"
+      id: "id"

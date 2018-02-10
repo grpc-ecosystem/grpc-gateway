@@ -11,11 +11,14 @@ cache:
   - ${TRAVIS_BUILD_DIR}/examples/browser/node_modules
 before_install:
 - ./.travis/install-protoc.sh 3.1.0
-- ./.travis/install-swagger-codegen.sh 2.2.2
+- ./.travis/install-swagger-codegen.sh 2.4.0
 - nvm install v6.1 && nvm use v6.1 && node --version
 - go get github.com/golang/lint/golint
 - go get github.com/dghubble/sling
 - go get github.com/go-resty/resty
+- go get golang.org/x/oauth2
+- go get golang.org/x/net/context
+- go get github.com/go-test/deep
 install:
 - go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 - go get github.com/grpc-ecosystem/grpc-gateway/runtime
@@ -24,7 +27,7 @@ install:
 before_script:
 - sh -c 'cd examples/browser && npm install'
 script:
-- make realclean && make examples SWAGGER_CODEGEN="java -jar $HOME/local/swagger-codegen-cli.jar"
+- make realclean && make examples SWAGGER_CODEGEN="java -jar /tmp/swagger-codegen-cli.jar"
 - if (go version | grep -q "${GO_VERSION_TO_DIFF_TEST}") && [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then test -z "$(git status --porcelain)" || (git status; git diff; exit 1); fi
 - env GLOG_logtostderr=1 go test -race -v github.com/grpc-ecosystem/grpc-gateway/...
 - if (go version | grep -q "${GO_VERSION_TO_DIFF_TEST}") && [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then env GLOG_logtostderr=1 ./bin/coverage; fi
@@ -34,8 +37,8 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
 env:
   global:
-  - "PATH=$PATH:$HOME/local/bin"
-  - GO_VERSION_TO_DIFF_TEST="go version go1\.9\.[0-9]+ linux/amd64"
+  - "PATH=$PATH:/tmp/proto/bin"
+  - GO_VERSION_TO_DIFF_TEST="go version go1\.9\.[0-9]\+ linux/amd64"
   matrix:
   - GATEWAY_PLUGIN_FLAGS=
   - GATEWAY_PLUGIN_FLAGS=request_context=false
