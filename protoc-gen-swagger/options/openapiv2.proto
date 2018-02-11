@@ -33,10 +33,8 @@ message Swagger {
   reserved 9;
   // field 10 is reserved for 'responses'.
   reserved 10;
-  // field 11 is reserved for 'securityDefinitions'.
-  reserved 11;
-  // field 12 is reserved for repeated 'security'.
-  reserved 12;
+  SecurityDefinitions security_definitions = 11;
+  repeated SecurityRequirement security = 12;
   // field 13 is reserved for 'tags', which are supposed to be exposed as and
   // customizable as proto services. TODO(ivucica): add processing of proto
   // service objects into OpenAPI v2 Tag objects.
@@ -63,9 +61,7 @@ message Operation {
   reserved 9;
   repeated string schemes = 10;
   bool deprecated = 11;
-  // field 12 is reserved for 'security'.
-  reserved 12;
-  
+  repeated SecurityRequirement security = 12;
 }
 
 // `Info` is a representation of OpenAPI v2 specification's Info object.
@@ -220,4 +216,123 @@ message Tag {
   // service object.
   string description = 2;
   ExternalDocumentation external_docs = 3;
+}
+
+// `SecurityDefinitions` is a representation of OpenAPI v2 specification's
+// Security Definitions object.
+//
+// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#securityDefinitionsObject
+//
+// A declaration of the security schemes available to be used in the
+// specification. This does not enforce the security schemes on the operations
+// and only serves to provide the relevant details for each scheme.
+message SecurityDefinitions {
+  // A single security scheme definition, mapping a "name" to the scheme it defines.
+  map<string, SecurityScheme> security = 1;
+}
+
+// `SecurityScheme` is a representation of OpenAPI v2 specification's
+// Security Scheme object.
+//
+// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#securitySchemeObject
+//
+// Allows the definition of a security scheme that can be used by the
+// operations. Supported schemes are basic authentication, an API key (either as
+// a header or as a query parameter) and OAuth2's common flows (implicit,
+// password, application and access code).
+message SecurityScheme {
+  // Required. The type of the security scheme. Valid values are "basic",
+  // "apiKey" or "oauth2".
+  enum Type {
+    TYPE_INVALID = 0;
+    TYPE_BASIC = 1;
+    TYPE_API_KEY = 2;
+    TYPE_OAUTH2 = 3;
+  }
+
+  // Required. The location of the API key. Valid values are "query" or "header".
+  enum In {
+    IN_INVALID = 0;
+    IN_QUERY = 1;
+    IN_HEADER = 2;
+  }
+
+  // Required. The flow used by the OAuth2 security scheme. Valid values are
+  // "implicit", "password", "application" or "accessCode".
+  enum Flow {
+    FLOW_INVALID = 0;
+    FLOW_IMPLICIT = 1;
+    FLOW_PASSWORD = 2;
+    FLOW_APPLICATION = 3;
+    FLOW_ACCESS_CODE = 4;
+  }
+
+  // Required. The type of the security scheme. Valid values are "basic",
+  // "apiKey" or "oauth2".
+  Type type = 1;
+  // A short description for security scheme.
+  string description = 2;
+  // Required. The name of the header or query parameter to be used.
+  //
+  // Valid for apiKey.
+  string name = 3;
+  // Required. The location of the API key. Valid values are "query" or "header".
+  //
+  // Valid for apiKey.
+  In in = 4;
+  // Required. The flow used by the OAuth2 security scheme. Valid values are
+  // "implicit", "password", "application" or "accessCode".
+  //
+  // Valid for oauth2.
+  Flow flow = 5;
+  // Required. The authorization URL to be used for this flow. This SHOULD be in
+  // the form of a URL.
+  //
+  // Valid for oauth2/implicit and oauth2/accessCode.
+  string authorization_url = 6;
+  // Required. The token URL to be used for this flow. This SHOULD be in the
+  // form of a URL.
+  //
+  // Valid for oauth2/password, oauth2/application and oauth2/accessCode.
+  string token_url = 7;
+  // Required. The available scopes for the OAuth2 security scheme.
+  //
+  // Valid for oauth2.
+  Scopes scopes = 8;
+}
+
+// `SecurityRequirement` is a representation of OpenAPI v2 specification's
+// Security Requirement object.
+//
+// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#securityRequirementObject
+//
+// Lists the required security schemes to execute this operation. The object can
+// have multiple security schemes declared in it which are all required (that
+// is, there is a logical AND between the schemes).
+//
+// The name used for each property MUST correspond to a security scheme
+// declared in the Security Definitions.
+message SecurityRequirement {
+  // If the security scheme is of type "oauth2", then the value is a list of
+  // scope names required for the execution. For other security scheme types,
+  // the array MUST be empty.
+  message SecurityRequirementValue {
+    repeated string scope = 1;
+  }
+  // Each name must correspond to a security scheme which is declared in
+  // the Security Definitions. If the security scheme is of type "oauth2",
+  // then the value is a list of scope names required for the execution.
+  // For other security scheme types, the array MUST be empty.
+  map<string, SecurityRequirementValue> security_requirement = 1;
+}
+
+// `Scopes` is a representation of OpenAPI v2 specification's Scopes object.
+//
+// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#scopesObject
+//
+// Lists the available scopes for an OAuth2 security scheme.
+message Scopes {
+  // Maps between a name of a scope to a short description of it (as the value
+  // of the property).
+  map<string, string> scope = 1;
 }
