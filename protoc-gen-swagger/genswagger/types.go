@@ -48,17 +48,40 @@ type swaggerExternalDocumentationObject struct {
 
 // http://swagger.io/specification/#swaggerObject
 type swaggerObject struct {
-	Swagger      string                              `json:"swagger"`
-	Info         swaggerInfoObject                   `json:"info"`
-	Host         string                              `json:"host,omitempty"`
-	BasePath     string                              `json:"basePath,omitempty"`
-	Schemes      []string                            `json:"schemes"`
-	Consumes     []string                            `json:"consumes"`
-	Produces     []string                            `json:"produces"`
-	Paths        swaggerPathsObject                  `json:"paths"`
-	Definitions  swaggerDefinitionsObject            `json:"definitions"`
-	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
+	Swagger             string                              `json:"swagger"`
+	Info                swaggerInfoObject                   `json:"info"`
+	Host                string                              `json:"host,omitempty"`
+	BasePath            string                              `json:"basePath,omitempty"`
+	Schemes             []string                            `json:"schemes"`
+	Consumes            []string                            `json:"consumes"`
+	Produces            []string                            `json:"produces"`
+	Paths               swaggerPathsObject                  `json:"paths"`
+	Definitions         swaggerDefinitionsObject            `json:"definitions"`
+	SecurityDefinitions swaggerSecurityDefinitionsObject    `json:"securityDefinitions,omitempty"`
+	Security            []swaggerSecurityRequirementObject  `json:"security,omitempty"`
+	ExternalDocs        *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }
+
+// http://swagger.io/specification/#securityDefinitionsObject
+type swaggerSecurityDefinitionsObject map[string]swaggerSecuritySchemeObject
+
+// http://swagger.io/specification/#securitySchemeObject
+type swaggerSecuritySchemeObject struct {
+	Type             string              `json:"type"`
+	Description      string              `json:"description,omitempty"`
+	Name             string              `json:"name,omitempty"`
+	In               string              `json:"in,omitempty"`
+	Flow             string              `json:"flow,omitempty"`
+	AuthorizationURL string              `json:"authorizationUrl,omitempty"`
+	TokenURL         string              `json:"tokenUrl,omitempty"`
+	Scopes           swaggerScopesObject `json:"scopes,omitempty"`
+}
+
+// http://swagger.io/specification/#scopesObject
+type swaggerScopesObject map[string]string
+
+// http://swagger.io/specification/#securityRequirementObject
+type swaggerSecurityRequirementObject map[string][]string
 
 // http://swagger.io/specification/#pathsObject
 type swaggerPathsObject map[string]swaggerPathItemObject
@@ -82,6 +105,7 @@ type swaggerOperationObject struct {
 	Tags        []string                `json:"tags,omitempty"`
 	Deprecated  bool                    `json:"deprecated,omitempty"`
 
+	Security     []swaggerSecurityRequirementObject  `json:"security,omitempty"`
 	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }
 
