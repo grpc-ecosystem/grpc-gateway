@@ -593,6 +593,22 @@
         }
       }
     },
+    "/v2/example/empty": {
+      "get": {
+        "operationId": "Empty",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "tags": [
+          "camelCaseServiceName"
+        ]
+      }
+    },
     "/v2/example/errorwithdetails": {
       "get": {
         "operationId": "ErrorWithDetails",
