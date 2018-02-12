@@ -303,7 +303,14 @@ service ABitOfEverythingService {
 		};
    }
 }
-
+// camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
+service camelCaseServiceName {
+    rpc Empty(google.protobuf.Empty) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+			get: "/v2/example/empty",
+		};
+    }
+}
 service AnotherServiceWithNoBindings {
 	rpc NoBindings(google.protobuf.Empty) returns (google.protobuf.Empty) {}
 }
