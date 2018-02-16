@@ -239,6 +239,16 @@ But patch is welcome.
 # Contribution
 See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md).
 
+# FAQ
+
+> Why are the models in the swagger spec prefixed with the last bit of the proto package name? Is there a reason for this? I find this pretty ugly tbh and don’t see the advantage.
+
+The reason to generate the prefixes is that we don't have a guaranteed unique namespace. If two packages produce different Foo messages then we will have trouble.
+
+> Why not strip the prefix if it isn't necessary?
+
+I tried that, but the problem is that if you do that then when you add a message in that happens to conflict it will break code that is very far away from the code that changed. This is in an effort to adhere to the principle of least astonishment.
+
 # License
 grpc-gateway is licensed under the BSD 3-Clause License.
 See [LICENSE.txt](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt) for more details.
