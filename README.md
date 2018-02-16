@@ -247,7 +247,7 @@ The reason to generate the prefixes is that we don't have a guaranteed unique na
 
 > Why not strip the prefix if it isn't necessary?
 
-I tried that, but the problem is that if you do that then when you add a message in that happens to conflict it will break code that is very far away from the code that changed. This is in an effort to adhere to the principle of least astonishment.
+I tried that, but the problem is that if you do that then when you add a message in that happens to conflict it will break code that is very far away from the code that changed. This is in an effort to adhere to the [principle of least astonishment](https://en.wikipedia.org/wiki/Principle_of_least_astonishment).
 
 # License
 grpc-gateway is licensed under the BSD 3-Clause License.
