@@ -301,12 +301,6 @@ func (r *Registry) defaultGoPackageName(f *descriptor.FileDescriptorProto) strin
 // protoc-gen-grpc-gateway rejects CodeGenerationRequests which contains more than one packages
 // as protoc-gen-go does.
 func (r *Registry) packageIdentityName(f *descriptor.FileDescriptorProto) string {
-	if p := r.importPath; len(p) != 0 {
-		if i := strings.LastIndex(p, "/"); i >= 0 {
-			p = p[i+1:]
-		}
-		return p
-	}
 	if f.Options != nil && f.Options.GoPackage != nil {
 		gopkg := f.Options.GetGoPackage()
 		idx := strings.LastIndex(gopkg, "/")
@@ -323,6 +317,12 @@ func (r *Registry) packageIdentityName(f *descriptor.FileDescriptorProto) string
 
 		}
 		return sanitizePackageName(gopkg[sc+1:])
+	}
+	if p := r.importPath; len(p) != 0 {
+		if i := strings.LastIndex(p, "/"); i >= 0 {
+			p = p[i+1:]
+		}
+		return p
 	}
 
 	if f.Package == nil {
