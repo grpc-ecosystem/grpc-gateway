@@ -22,7 +22,7 @@ func TestParseReqParam(t *testing.T) {
 	if !reflect.DeepEqual(pkgMap, expected) {
 		t.Errorf("Test 0: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
 	}
-	checkFlags(false, "stdin", "", t, 0)
+	checkFlags(false, "-", "", t, 0)
 
 	clearFlags()
 	pkgMap = make(map[string]string)
