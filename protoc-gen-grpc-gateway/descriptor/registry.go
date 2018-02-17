@@ -215,6 +215,11 @@ func (r *Registry) LookupExternalHTTPRules(qualifiedMethodName string) []*annota
 	return r.externalHTTPRules[qualifiedMethodName]
 }
 
+// AddExternalHTTPRule adds an external http rule for the given fully qualified service method name
+func (r *Registry) AddExternalHTTPRule(qualifiedMethodName string, rule *annotations.HttpRule) {
+	r.externalHTTPRules[qualifiedMethodName] = append(r.externalHTTPRules[qualifiedMethodName], rule)
+}
+
 // AddPkgMap adds a mapping from a .proto file to proto package name.
 func (r *Registry) AddPkgMap(file, protoPkg string) {
 	r.pkgMap[file] = protoPkg
