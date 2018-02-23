@@ -549,3 +549,40 @@ func TestLoadOverridedPackageName(t *testing.T) {
 		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
 	}
 }
+
+func TestLoadSetInputPath(t *testing.T) {
+	reg := NewRegistry()
+	reg.SetImportPath("foo/examplepb")
+	loadFile(t, reg, `
+		name: 'example.proto'
+		package: 'example'
+	`)
+	file := reg.files["example.proto"]
+	if file == nil {
+		t.Errorf("reg.files[%q] = nil; want non-nil", "example.proto")
+		return
+	}
+	wantPkg := GoPackage{Path: ".", Name: "examplepb"}
+	if got, want := file.GoPkg, wantPkg; got != want {
+		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
+	}
+}
+
+func TestLoadGoPackageInputPath(t *testing.T) {
+	reg := NewRegistry()
+	reg.SetImportPath("examplepb")
+	loadFile(t, reg, `
+		name: 'example.proto'
+		package: 'example'
+		options < go_package: 'example.com/xyz;pb' >
+	`)
+	file := reg.files["example.proto"]
+	if file == nil {
+		t.Errorf("reg.files[%q] = nil; want non-nil", "example.proto")
+		return
+	}
+	wantPkg := GoPackage{Path: "example.com/xyz", Name: "pb"}
+	if got, want := file.GoPkg, wantPkg; got != want {
+		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
+	}
+}
