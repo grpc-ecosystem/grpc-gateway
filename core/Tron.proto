@@ -69,6 +69,7 @@ message Transaction {
   bytes scripts = 12;
 }
 
+
 message BlockHeader {
   int64 timestamp = 1;
   bytes txTrieRoot = 2;
@@ -79,6 +80,7 @@ message BlockHeader {
   uint64 number = 7;
   uint64 witness_id = 8;
   bytes witness_address = 9;
+  bytes witness_signature = 12;
 }
 
 // block
