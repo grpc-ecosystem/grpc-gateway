@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/ptypes"
+	"github.com/golang/protobuf/ptypes/any"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -63,9 +65,9 @@ var (
 )
 
 type errorBody struct {
-	Error   string          `protobuf:"bytes,1,name=error" json:"error"`
-	Code    int32           `protobuf:"varint,2,name=code" json:"code"`
-	Details []proto.Message `protobuf:"bytes,3,name=details" json:"details"`
+	Error   string    `protobuf:"bytes,1,name=error" json:"error"`
+	Code    int32     `protobuf:"varint,2,name=code" json:"code"`
+	Details []any.Any `protobuf:"bytes,3,name=details" json:"details"`
 }
 
 // Make this also conform to proto.Message for builtin JSONPb Marshaler
@@ -97,7 +99,12 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 
 	for _, detail := range s.Details() {
 		if det, ok := detail.(proto.Message); ok {
-			body.Details = append(body.Details, det)
+			a, err := ptypes.MarshalAny(det)
+			if err != nil {
+				grpclog.Printf("Failed to marshal any: %v", err)
+			} else {
+				body.Details = append(body.Details, *a)
+			}
 		}
 	}
 

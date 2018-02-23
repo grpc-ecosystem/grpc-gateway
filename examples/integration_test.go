@@ -761,6 +761,13 @@ func TestErrorWithDetails(t *testing.T) {
 	if got, want := ok, true; got != want {
 		t.Fatalf("msg.Details[0] got type: %T, want %T", msg.Details[0], map[string]interface{}{})
 	}
+	typ, ok := details["@type"].(string)
+	if got, want := ok, true; got != want {
+		t.Fatalf("msg.Details[0][\"@type\"] got type: %T, want %T", typ, "")
+	}
+	if got, want := details["@type"], "type.googleapis.com/google.rpc.DebugInfo"; got != want {
+		t.Errorf("msg.Details[\"@type\"] = %q; want %q", got, want)
+	}
 	if got, want := details["detail"], "error debug details"; got != want {
 		t.Errorf("msg.Details[\"detail\"] = %q; want %q", got, want)
 	}
