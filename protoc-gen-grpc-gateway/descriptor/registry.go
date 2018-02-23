@@ -61,7 +61,7 @@ func (r *Registry) Load(req *plugin.CodeGeneratorRequest) error {
 		if target == nil {
 			return fmt.Errorf("no such file: %s", name)
 		}
-		name := packageIdentityName(target.FileDescriptorProto)
+		name := r.packageIdentityName(target.FileDescriptorProto)
 		if targetPkg == "" {
 			targetPkg = name
 		} else {
@@ -83,7 +83,7 @@ func (r *Registry) Load(req *plugin.CodeGeneratorRequest) error {
 func (r *Registry) loadFile(file *descriptor.FileDescriptorProto) {
 	pkg := GoPackage{
 		Path: r.goPackagePath(file),
-		Name: defaultGoPackageName(file),
+		Name: r.defaultGoPackageName(file),
 	}
 	if err := r.ReserveGoPackageAlias(pkg.Name, pkg.Path); err != nil {
 		for i := 0; ; i++ {
@@ -247,9 +247,6 @@ func (r *Registry) goPackagePath(f *descriptor.FileDescriptorProto) string {
 	}
 
 	gopkg := f.Options.GetGoPackage()
-	if len(gopkg) == 0 {
-		gopkg = r.importPath
-	}
 	idx := strings.LastIndex(gopkg, "/")
 	if idx >= 0 {
 		if sc := strings.LastIndex(gopkg, ";"); sc > 0 {
@@ -295,15 +292,15 @@ func sanitizePackageName(pkgName string) string {
 
 // defaultGoPackageName returns the default go package name to be used for go files generated from "f".
 // You might need to use an unique alias for the package when you import it.  Use ReserveGoPackageAlias to get a unique alias.
-func defaultGoPackageName(f *descriptor.FileDescriptorProto) string {
-	name := packageIdentityName(f)
+func (r *Registry) defaultGoPackageName(f *descriptor.FileDescriptorProto) string {
+	name := r.packageIdentityName(f)
 	return sanitizePackageName(name)
 }
 
 // packageIdentityName returns the identity of packages.
 // protoc-gen-grpc-gateway rejects CodeGenerationRequests which contains more than one packages
 // as protoc-gen-go does.
-func packageIdentityName(f *descriptor.FileDescriptorProto) string {
+func (r *Registry) packageIdentityName(f *descriptor.FileDescriptorProto) string {
 	if f.Options != nil && f.Options.GoPackage != nil {
 		gopkg := f.Options.GetGoPackage()
 		idx := strings.LastIndex(gopkg, "/")
@@ -320,6 +317,12 @@ func packageIdentityName(f *descriptor.FileDescriptorProto) string {
 
 		}
 		return sanitizePackageName(gopkg[sc+1:])
+	}
+	if p := r.importPath; len(p) != 0 {
+		if i := strings.LastIndex(p, "/"); i >= 0 {
+			p = p[i+1:]
+		}
+		return p
 	}
 
 	if f.Package == nil {
