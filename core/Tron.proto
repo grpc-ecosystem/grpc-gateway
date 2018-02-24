@@ -64,6 +64,7 @@ message Transaction {
   TranscationType type = 2;
   repeated TXInput vin = 3;
   repeated TXOutput vout = 4;
+  bytes hash = 5;
   bytes data = 10;
   repeated google.protobuf.Any parameter = 11;
   bytes scripts = 12;
