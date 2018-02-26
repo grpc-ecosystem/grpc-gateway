@@ -39,6 +39,6 @@ message Return {
 }
 message Coin {
   bytes from = 1;
-  bytes to = 1;
+  bytes to = 2;
   int64 amount = 3;
 };
