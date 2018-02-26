@@ -1,7 +1,19 @@
----
-sudo: required
-language: java
-jdk: oraclejdk8
+language: ruby
 
+cache:
+  directories:
+  - $HOME/protobuf
+
+sudo: false
+
+before_install:
+  - bash install-protobuf.sh
+
+# check what has been installed by listing contents of protobuf folder
+before_script:
+  - ls -R $HOME/protobuf
+
+# let's use protobuf
 script:
-  - protoc --java_out=./  ./core/*.proto ./api/*.proto
+  - $HOME/protobuf/bin/protoc --java_out=./  ./core/*.proto ./api/*.proto
+  - ls -l
