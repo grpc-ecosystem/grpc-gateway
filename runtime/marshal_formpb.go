@@ -17,8 +17,13 @@ import (
 // This Marshal is to parse application/x-www-form-urlencoded and return json
 // You should add `runtime.WithMarshalerOption("application/x-www-form-urlencoded", &runtime.FORMPb{}),`
 // before MIMEWildcard
+
+// FORMPb is a Marshaler which marshals into JSON
+// with the "github.com/golang/protobuf/jsonpb".
+// It supports fully functionality of protobuf unlike JSONBuiltin.
 type FORMPb jsonpb.Marshaler
 
+// NewDecoder returns a Decoder which reads form data stream from "r".
 func (j *FORMPb) NewDecoder(r io.Reader) Decoder {
 	return DecoderFunc(func(v interface{}) error { return decodeFORMPb(r, v) })
 }
@@ -53,14 +58,19 @@ func decodeFORMPb(d io.Reader, v interface{}) error {
 	return nil
 }
 
+// Unmarshal not realized for the moment
 func (j *FORMPb) Unmarshal(data []byte, v interface{}) error {
 	return nil
 }
 
+// ContentType always returns "application/json".
 func (*FORMPb) ContentType() string {
 	return "application/json"
 }
 
+// Marshal marshals "v" into JSON
+// Currently it can marshal only proto.Message.
+// TODO(yugui) Support fields of primitive types in a message.
 func (j *FORMPb) Marshal(v interface{}) ([]byte, error) {
 	if _, ok := v.(proto.Message); !ok {
 		return j.marshalNonProtoField(v)
@@ -114,6 +124,8 @@ func (j *FORMPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 	}
 	return json.Marshal(rv.Interface())
 }
+
+// NewEncoder returns an Encoder which writes JSON stream into "w".
 func (j *FORMPb) NewEncoder(w io.Writer) Encoder {
 	return EncoderFunc(func(v interface{}) error { return j.marshalTo(w, v) })
 }
