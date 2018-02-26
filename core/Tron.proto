@@ -59,6 +59,7 @@ message Transaction {
     DeployContract = 1;
     CreateAccount = 2;
     VoteWitess = 3;
+    AssetIssue = 4;
   }
   bytes id = 1;
   TranscationType type = 2;
