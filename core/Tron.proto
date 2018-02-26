@@ -52,10 +52,14 @@ message TXOutput {
 }
 
 message TXInput {
-  bytes txID = 1;
-  int64 vout = 2;
+  message raw {
+    bytes txID = 1;
+    int64 vout = 2;
+    bytes pubKey = 4;
+  }
+
   bytes signature = 3;
-  bytes pubKey = 4;
+
 }
 
 message TXOutputs {
@@ -76,7 +80,7 @@ message Transaction {
   TranscationType type = 2;
   repeated TXInput vin = 3;
   repeated TXOutput vout = 4;
-  bytes hash = 5;
+  //bytes hash = 5;
   bytes data = 10;
   repeated google.protobuf.Any parameter = 11;
   bytes scripts = 12;
@@ -84,23 +88,27 @@ message Transaction {
 
 
 message BlockHeader {
-  int64 timestamp = 1;
-  bytes txTrieRoot = 2;
-  bytes parentHash = 3;
-  bytes hash = 4;
-  bytes nonce = 5;
-  bytes difficulty = 6;
-  uint64 number = 7;
-  uint64 witness_id = 8;
-  bytes witness_address = 9;
+
+  message raw {
+    int64 timestamp = 1;
+    bytes txTrieRoot = 2;
+    bytes parentHash = 3;
+    bytes nonce = 5;
+    bytes difficulty = 6;
+    uint64 number = 7;
+    uint64 witness_id = 8;
+    bytes witness_address = 9;
+  }
+
   bytes witness_signature = 12;
+
 }
 
 // block
 
 message Block {
   repeated Transaction transactions = 1;
-  BlockHeader blockHeader = 2;
+  BlockHeader block_header = 2;
 }
 
 // Inventory
@@ -127,6 +135,6 @@ message Items {
 
   ItemType type = 1;
   repeated Block blocks = 2;
-  repeated BlockHeader blockHeaders = 3;
+  repeated BlockHeader block_headers = 3;
   repeated Transaction transactions = 4;
 }
