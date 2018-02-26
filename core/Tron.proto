@@ -58,7 +58,7 @@ message TXInput {
     int64 vout = 2;
     bytes pubKey = 4;
   }
-  raw data = 1;
+  raw raw_data = 1;
   bytes signature = 3;
 
 }
