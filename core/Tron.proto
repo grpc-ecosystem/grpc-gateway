@@ -84,16 +84,18 @@ message Transaction {
 
 
 message BlockHeader {
-  int64 timestamp = 1;
-  bytes txTrieRoot = 2;
-  bytes parentHash = 3;
-  bytes hash = 4;
-  bytes nonce = 5;
-  bytes difficulty = 6;
-  uint64 number = 7;
-  uint64 witness_id = 8;
-  bytes witness_address = 9;
-  bytes witness_signature = 12;
+  message raw {
+    int64 timestamp = 1;
+    bytes txTrieRoot = 2;
+    bytes parentHash = 3;
+    bytes nonce = 5;
+    bytes difficulty = 6;
+    uint64 number = 7;
+    uint64 witness_id = 8;
+    bytes witness_address = 9;
+  };
+  raw raw_data = 1;
+  bytes witness_signature = 2;
 }
 
 // block
