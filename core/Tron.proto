@@ -51,6 +51,7 @@ message TXOutput {
   bytes pubKeyHash = 2;
 }
 
+
 message TXInput {
   message raw {
     bytes txID = 1;
