@@ -6,11 +6,36 @@ option java_package = "org.tron.protos"; //Specify the name of the package that 
 option java_outer_classname = "Contract"; //Specify the class name of the generated Java file
 
 
-message VoteContract{
+message TransferContract{
+  bytes from_address = 1;
+  bytes to_address = 2;
+  int64 amount = 3;
+}
+
+message TransferAssertContract{
+  bytes assert_name =1;
+  bytes from_address = 2;
+  bytes to_address = 3;
+  int64 amount = 4;
+}
+
+
+message VoteAssetContract{
   bytes address = 1;
   repeated bytes vote_address = 2;
   bool support = 3;
   int32 count = 5;
+}
+
+message VoteWitnessContract{
+  bytes address = 1;
+  repeated bytes vote_address = 2;
+  bool support = 3;
+  int32 count = 5;
+}
+
+message WitnessContract{
+
 }
 
 message AssetIssueContract {
@@ -21,20 +46,13 @@ message AssetIssueContract {
   int64 start_time = 5;
   int64 end_time = 6;
   int32 decay_ratio = 7;
-
+  int32 vote_score = 8;
+  bytes description = 10;
+  bytes url =20;
 }
-
-message TransferContract{
-
-}
-
 
 message DeployContract{
   bytes address = 1;
   bytes script = 2;
 }
 
-
-message CustomContract {
-
-}

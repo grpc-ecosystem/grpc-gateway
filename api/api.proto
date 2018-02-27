@@ -12,7 +12,7 @@ service Wallet {
   rpc GetBalance (Account) returns (Account) {
 
   };
-  rpc CreateTransaction (Coin) returns (Transaction) {
+  rpc CreateTransaction (TransferContract) returns (Transaction) {
 
   };
 
@@ -20,25 +20,17 @@ service Wallet {
 
   };
 
-  rpc CreateAccount(Account) returns (Account) {
+  rpc CreateAccount(Account) returns (Transaction) {
 
   };
 
-  rpc CreateAssetIssue(AssetIssueContract) returns (AssetIssueContract) {
+  rpc CreateAssetIssue(AssetIssueContract) returns (Transaction) {
 
   };
+
+
 };
-
-
-
-
-
 
 message Return {
   bool result = 1;
 }
-message Coin {
-  bytes from = 1;
-  bytes to = 2;
-  int64 amount = 3;
-};

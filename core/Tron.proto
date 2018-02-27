@@ -75,18 +75,18 @@ message Transaction {
     CreateAccount = 2;
     VoteWitess = 3;
     AssetIssue = 4;
+    VoteAsset = 5;
   }
 
   bytes id = 1;
   TranscationType type = 2;
   repeated TXInput vin = 3;
   repeated TXOutput vout = 4;
-  //bytes hash = 5;
   bytes data = 10;
   repeated google.protobuf.Any parameter = 11;
-  bytes scripts = 12;
+  repeated bytes signature = 14;
+  bytes scripts = 16;
 }
-
 
 message BlockHeader {
   message raw {
@@ -113,7 +113,7 @@ message Block {
 // Inventory
 
 message Inventory {
-  enum InventoryType //枚举消息类型
+  enum InventoryType
   {
     TRX = 0;
     BLOCK = 1;
@@ -124,9 +124,9 @@ message Inventory {
 
 
 message Items {
-  enum ItemType //枚举消息类型
+  enum ItemType
   {
-    ERR = 0; //proto3版本中，首成员必须为0，成员不应有相同的值
+    ERR = 0;
     TRX = 1;
     BLOCK = 2;
     BLOCKHEADER = 3;
