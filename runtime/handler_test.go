@@ -100,6 +100,7 @@ func TestForwardResponseStream(t *testing.T) {
 							HttpCode:   int32(httpCode),
 							Message:    st.Message(),
 							HttpStatus: http.StatusText(httpCode),
+							Details:    st.Proto().GetDetails(),
 						},
 					})
 					if err != nil {
