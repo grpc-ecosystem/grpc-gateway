@@ -93,8 +93,8 @@ message BlockHeader {
     int64 timestamp = 1;
     bytes txTrieRoot = 2;
     bytes parentHash = 3;
-    bytes nonce = 5;
-    bytes difficulty = 6;
+    //bytes nonce = 5;
+    //bytes difficulty = 6;
     uint64 number = 7;
     uint64 witness_id = 8;
     bytes witness_address = 9;
