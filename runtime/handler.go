@@ -42,7 +42,7 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 	if d, ok := marshaler.(Delimited); ok {
 		delimiter = d.Delimiter()
 	} else {
-	    delimiter = []byte("\n")
+		delimiter = []byte("\n")
 	}
 
 	var wroteHeader bool
@@ -168,16 +168,13 @@ func handleForwardResponseStreamError(wroteHeader bool, marshaler Marshaler, w h
 
 func streamChunk(result proto.Message, err error) map[string]proto.Message {
 	if err != nil {
-		grpcCode := codes.Unknown
-		if s, ok := status.FromError(err); ok {
-			grpcCode = s.Code()
-		}
-		httpCode := HTTPStatusFromCode(grpcCode)
+		s, _ := status.FromError(err)
+		httpCode := HTTPStatusFromCode(s.Code())
 		return map[string]proto.Message{
 			"error": &internal.StreamError{
-				GrpcCode:   int32(grpcCode),
+				GrpcCode:   int32(s.Code()),
 				HttpCode:   int32(httpCode),
-				Message:    err.Error(),
+				Message:    s.Message(),
 				HttpStatus: http.StatusText(httpCode),
 			},
 		}
