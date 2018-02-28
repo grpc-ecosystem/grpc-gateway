@@ -4,6 +4,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/golang/protobuf/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -58,4 +59,23 @@ func DefaultHTTPProtoErrorHandler(ctx context.Context, mux *ServeMux, marshaler 
 	}
 
 	handleForwardResponseTrailer(w, md)
+}
+
+// ProtoStreamErrorFormatterFunc handles the error as a gRPC error generated via status package and sends it on the stream.
+type ProtoStreamErrorFormatterFunc func(error) map[string]proto.Message
+
+var _ ProtoStreamErrorFormatterFunc = DefaultStreamProtoErrorFormatter
+
+// DefaultStreamProtoErrorFormatter is an implementation of ProtoStreamErrorFormatterFunc.
+// It simply returns the protobuf representation of the gRPC status.
+// This is consistent with DefaultHTTPProtoErrorHandler.
+func DefaultStreamProtoErrorFormatter(err error) map[string]proto.Message {
+	s, ok := status.FromError(err)
+	if !ok {
+		s = status.New(codes.Unknown, err.Error())
+	}
+
+	return map[string]proto.Message{
+		"error": s.Proto(),
+	}
 }
