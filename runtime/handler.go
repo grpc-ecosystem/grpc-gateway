@@ -42,7 +42,7 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 	if d, ok := marshaler.(Delimited); ok {
 		delimiter = d.Delimiter()
 	} else {
-	    delimiter = []byte("\n")
+		delimiter = []byte("\n")
 	}
 
 	var wroteHeader bool
@@ -52,18 +52,18 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			return
 		}
 		if err != nil {
-			handleForwardResponseStreamError(wroteHeader, marshaler, w, err)
+			handleForwardResponseStreamError(wroteHeader, marshaler, mux, w, err)
 			return
 		}
 		if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {
-			handleForwardResponseStreamError(wroteHeader, marshaler, w, err)
+			handleForwardResponseStreamError(wroteHeader, marshaler, mux, w, err)
 			return
 		}
 
-		buf, err := marshaler.Marshal(streamChunk(resp, nil))
+		buf, err := marshaler.Marshal(streamChunk(resp, nil, mux.protoStreamErrorFormatter))
 		if err != nil {
 			grpclog.Printf("Failed to marshal response chunk: %v", err)
-			handleForwardResponseStreamError(wroteHeader, marshaler, w, err)
+			handleForwardResponseStreamError(wroteHeader, marshaler, mux, w, err)
 			return
 		}
 		if _, err = w.Write(buf); err != nil {
@@ -147,8 +147,8 @@ func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, re
 	return nil
 }
 
-func handleForwardResponseStreamError(wroteHeader bool, marshaler Marshaler, w http.ResponseWriter, err error) {
-	buf, merr := marshaler.Marshal(streamChunk(nil, err))
+func handleForwardResponseStreamError(wroteHeader bool, marshaler Marshaler, mux *ServeMux, w http.ResponseWriter, err error) {
+	buf, merr := marshaler.Marshal(streamChunk(nil, err, mux.protoStreamErrorFormatter))
 	if merr != nil {
 		grpclog.Printf("Failed to marshal an error: %v", merr)
 		return
@@ -166,8 +166,11 @@ func handleForwardResponseStreamError(wroteHeader bool, marshaler Marshaler, w h
 	}
 }
 
-func streamChunk(result proto.Message, err error) map[string]proto.Message {
+func streamChunk(result proto.Message, err error, errorFormatter ProtoStreamErrorFormatterFunc) map[string]proto.Message {
 	if err != nil {
+		if errorFormatter != nil {
+			return errorFormatter(err)
+		}
 		grpcCode := codes.Unknown
 		if s, ok := status.FromError(err); ok {
 			grpcCode = s.Code()
@@ -183,7 +186,7 @@ func streamChunk(result proto.Message, err error) map[string]proto.Message {
 		}
 	}
 	if result == nil {
-		return streamChunk(nil, fmt.Errorf("empty response"))
+		return streamChunk(nil, fmt.Errorf("empty response"), errorFormatter)
 	}
 	return map[string]proto.Message{"result": result}
 }

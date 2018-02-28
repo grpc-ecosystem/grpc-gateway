@@ -20,13 +20,14 @@ type HandlerFunc func(w http.ResponseWriter, r *http.Request, pathParams map[str
 // It matches http requests to patterns and invokes the corresponding handler.
 type ServeMux struct {
 	// handlers maps HTTP method to a list of handlers.
-	handlers               map[string][]handler
-	forwardResponseOptions []func(context.Context, http.ResponseWriter, proto.Message) error
-	marshalers             marshalerRegistry
-	incomingHeaderMatcher  HeaderMatcherFunc
-	outgoingHeaderMatcher  HeaderMatcherFunc
-	metadataAnnotator      func(context.Context, *http.Request) metadata.MD
-	protoErrorHandler      ProtoErrorHandlerFunc
+	handlers                  map[string][]handler
+	forwardResponseOptions    []func(context.Context, http.ResponseWriter, proto.Message) error
+	marshalers                marshalerRegistry
+	incomingHeaderMatcher     HeaderMatcherFunc
+	outgoingHeaderMatcher     HeaderMatcherFunc
+	metadataAnnotator         func(context.Context, *http.Request) metadata.MD
+	protoErrorHandler         ProtoErrorHandlerFunc
+	protoStreamErrorFormatter ProtoStreamErrorFormatterFunc
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -91,12 +92,22 @@ func WithMetadata(annotator func(context.Context, *http.Request) metadata.MD) Se
 	}
 }
 
-// WithProtoErrorHandler returns a ServeMuxOption for passing metadata to a gRPC context.
+// WithProtoErrorHandler returns a ServeMuxOption for controlling the error output of the gateway.
 //
 // This can be used to handle an error as general proto message defined by gRPC.
 // The response including body and status is not backward compatible with the default error handler.
 // When this option is used, HTTPError and OtherErrorHandler are overwritten on initialization.
 func WithProtoErrorHandler(fn ProtoErrorHandlerFunc) ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		serveMux.protoErrorHandler = fn
+	}
+}
+
+// WithProtoStreamErrorFormatter returns a ServeMuxOption for controlling
+// the error output of streaming endpoints of the gateway.
+//
+// This can be used to control the message returned to streaming endpoints when an error occurs.
+func WithProtoStreamErrorFormatter(fn ProtoErrorHandlerFunc) ServeMuxOption {
 	return func(serveMux *ServeMux) {
 		serveMux.protoErrorHandler = fn
 	}
