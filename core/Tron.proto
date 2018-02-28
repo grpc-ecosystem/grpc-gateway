@@ -26,12 +26,6 @@ message Account {
 
 }
 
-// Contract
-message Contract {
-  bytes address = 1;
-  bytes scripts = 2;
-  string name = 3;
-}
 
 // Witness
 message Witness {
