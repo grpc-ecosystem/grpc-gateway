@@ -47,10 +47,13 @@ message TXOutput {
 
 
 message TXInput {
+  message raw {
     bytes txID = 1;
     int64 vout = 2;
     bytes pubKey = 3;
-    bytes signature = 4;
+  }
+  raw raw_data = 1;
+  bytes signature = 4;
 
 }
 
