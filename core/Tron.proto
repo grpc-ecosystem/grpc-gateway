@@ -47,13 +47,10 @@ message TXOutput {
 
 
 message TXInput {
-  message raw {
     bytes txID = 1;
     int64 vout = 2;
-    bytes pubKey = 4;
-  }
-  raw raw_data = 1;
-  bytes signature = 3;
+    bytes pubKey = 3;
+    bytes signature = 4;
 
 }
 
@@ -62,7 +59,6 @@ message TXOutputs {
 }
 
 message Transaction {
-
   enum TranscationType {
     Transfer = 0;
     DeployContract = 1;
@@ -71,16 +67,17 @@ message Transaction {
     AssetIssue = 4;
     VoteAsset = 5;
   }
-
-  bytes id = 1;
-  TranscationType type = 2;
-  repeated TXInput vin = 5;
-  repeated TXOutput vout = 7;
-  int64 expiration = 8;
-  bytes data = 10;
-  repeated google.protobuf.Any parameter = 11;
-  repeated bytes signature = 14;
-  bytes scripts = 16;
+  message raw {
+    TranscationType type = 2;
+    repeated TXInput vin = 5;
+    repeated TXOutput vout = 7;
+    int64 expiration = 8;
+    bytes data = 10;
+    repeated google.protobuf.Any parameter = 11;
+    bytes scripts = 16;
+  }
+  raw raw_data =1 ;
+  repeated bytes signature = 5;
 }
 
 message BlockHeader {

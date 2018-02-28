@@ -25,58 +25,61 @@ import "core/Tron.proto";
 message AccountCreateContract{
   AccountType type = 1;
   bytes accout_name = 2;
-  bytes address = 3;
+  bytes owner_address = 3;
+
+
 }
 
 message TransferContract{
-  bytes from_address = 1;
+  bytes owner_address = 1;
   bytes to_address = 2;
   int64 amount = 3;
 }
 
 message TransferAssertContract{
   bytes assert_name =1;
-  bytes from_address = 2;
+  bytes owner_address = 2;
   bytes to_address = 3;
   int64 amount = 4;
 }
 
 
 message VoteAssetContract{
-  bytes address = 1;
+  bytes owner_address = 1;
   repeated bytes vote_address = 2;
   bool support = 3;
   int32 count = 5;
 }
 
 message VoteWitnessContract{
-  bytes address = 1;
+  bytes owner_address = 1;
   repeated bytes vote_address = 2;
   bool support = 3;
   int32 count = 5;
 }
 
 message WitnessCreateContract{
-  bytes account_address = 1;
+  bytes owner_address = 1;
   bytes private_key = 2;
   bytes url = 12;
 }
 
 message AssetIssueContract {
-  bytes name = 1;
-  int64 total_supply = 2;
-  int32 trx_num = 3;
-  int32 num = 4;
-  int64 start_time = 5;
-  int64 end_time = 6;
-  int32 decay_ratio = 7;
-  int32 vote_score = 8;
-  bytes description = 10;
-  bytes url =20;
+  bytes owner_address =1;
+  bytes name = 2;
+  int64 total_supply = 4;
+  int32 trx_num = 6;
+  int32 num = 8;
+  int64 start_time = 9;
+  int64 end_time = 10;
+  int32 decay_ratio = 15;
+  int32 vote_score = 16;
+  bytes description = 20;
+  bytes url =21;
 }
 
 message DeployContract{
-  bytes address = 1;
+  bytes owner_address = 1;
   bytes script = 2;
 }
 
