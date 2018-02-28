@@ -8,15 +8,15 @@ package protocol;
 option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
 option java_outer_classname = "Protocal"; //Specify the class name of the generated Java file
 
+
+enum AccountType {
+  Normal = 0;
+  AssertIssue = 1;
+  Contract = 2;
+}
+
 // Account
 message Account {
-
-  enum AccountType {
-    Normal = 0;
-    AssertIssue = 1;
-    Contract = 2;
-  }
-
   bytes accout_name = 1;
   AccountType type = 2;
   bytes address = 3;
@@ -80,8 +80,9 @@ message Transaction {
 
   bytes id = 1;
   TranscationType type = 2;
-  repeated TXInput vin = 3;
-  repeated TXOutput vout = 4;
+  repeated TXInput vin = 5;
+  repeated TXOutput vout = 7;
+  int64 expiration = 8;
   bytes data = 10;
   repeated google.protobuf.Any parameter = 11;
   repeated bytes signature = 14;

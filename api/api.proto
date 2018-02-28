@@ -20,14 +20,13 @@ service Wallet {
 
   };
 
-  rpc CreateAccount(Account) returns (Transaction) {
+  rpc CreateAccount(AccountCreateContract) returns (Transaction) {
 
   };
 
   rpc CreateAssetIssue(AssetIssueContract) returns (Transaction) {
 
   };
-
 
 };
 

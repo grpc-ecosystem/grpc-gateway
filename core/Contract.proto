@@ -1,3 +1,18 @@
+/*
+ * java-tron is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * java-tron is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 syntax = "proto3";
 
 package protocol;
@@ -5,6 +20,13 @@ package protocol;
 option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
 option java_outer_classname = "Contract"; //Specify the class name of the generated Java file
 
+import "core/Tron.proto";
+
+message AccountCreateContract{
+  AccountType type = 1;
+  bytes accout_name = 2;
+  bytes address = 3;
+}
 
 message TransferContract{
   bytes from_address = 1;
@@ -34,8 +56,10 @@ message VoteWitnessContract{
   int32 count = 5;
 }
 
-message WitnessContract{
-
+message WitnessCreateContract{
+  bytes account_address = 1;
+  bytes private_key = 2;
+  bytes url = 12;
 }
 
 message AssetIssueContract {
