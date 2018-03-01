@@ -63,8 +63,8 @@ message TXOutputs {
 
 message Transaction {
   enum TranscationType {
-    Utxo = 0;
-    Contract = 1;
+    UtxoType = 0;
+    ContractType = 1;
   }
   message Contract{
     enum ContractType{
