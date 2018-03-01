@@ -63,12 +63,22 @@ message TXOutputs {
 
 message Transaction {
   enum TranscationType {
-    Transfer = 0;
-    DeployContract = 1;
-    CreateAccount = 2;
-    VoteWitess = 3;
-    AssetIssue = 4;
-    VoteAsset = 5;
+    Utxo = 0;
+    Contract = 1;
+  }
+  message Contract{
+    enum ContractType{
+      AccountCreateContract = 0;
+      TransferContract = 1;
+      TransferAssertContract = 2;
+      VoteAssetContract = 3;
+      VoteWitnessContract = 4;
+      WitnessCreateContract = 5;
+      AssetIssueContract = 6;
+      DeployContract = 7;
+    }
+    ContractType type = 1;
+    google.protobuf.Any parameter = 11;
   }
   message raw {
     TranscationType type = 2;
@@ -76,7 +86,7 @@ message Transaction {
     repeated TXOutput vout = 7;
     int64 expiration = 8;
     bytes data = 10;
-    repeated google.protobuf.Any parameter = 11;
+    repeated Contract contract = 11;
     bytes scripts = 16;
   }
   raw raw_data =1 ;
