@@ -27,6 +27,7 @@ func TestMuxServeHTTP(t *testing.T) {
 
 		respStatus  int
 		respContent string
+		pathParams  map[string]string
 	}{
 		{
 			patterns:   nil,
@@ -176,6 +177,28 @@ func TestMuxServeHTTP(t *testing.T) {
 			respStatus:  http.StatusOK,
 			respContent: "POST /foo:bar",
 		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops: []int{
+						int(utilities.OpLitPush), 0,
+						int(utilities.OpLitPush), 1,
+						int(utilities.OpPush), 0,
+						int(utilities.OpConcatN), 1,
+						int(utilities.OpCapture), 2,
+					},
+					pool: []string{"v1", "bucket", "name"},
+				},
+			},
+			reqMethod:   "GET",
+			reqPath:     "/v1/bucket/my%2Fname",
+			respStatus:  http.StatusOK,
+			respContent: "GET /v1/bucket/{name=*}",
+			pathParams: map[string]string{
+				"name": "my%2Fname",
+			},
+		},
 	} {
 		mux := runtime.NewServeMux()
 		for _, p := range spec.patterns {
@@ -186,7 +209,15 @@ func TestMuxServeHTTP(t *testing.T) {
 				}
 				mux.Handle(p.method, pat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 					fmt.Fprintf(w, "%s %s", p.method, pat.String())
+
+					// Assert agains the expected path parameters
+					for name, value := range spec.pathParams {
+						if pathParams[name] != value {
+							t.Fatalf("expected pathParam %q to have value %q instead of %q", name, value, pathParams[name])
+						}
+					}
 				})
+
 			}(p)
 		}
 
