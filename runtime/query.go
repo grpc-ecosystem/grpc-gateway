@@ -261,7 +261,7 @@ func populateField(f reflect.Value, value string, props *proto.Properties) error
 			f.Field(0).SetString(value)
 			return nil
 		case "BytesValue":
-			bytesVal, err := base64.RawURLEncoding.DecodeString(value)
+			bytesVal, err := base64.StdEncoding.DecodeString(value)
 			if err != nil {
 				return fmt.Errorf("bad BytesValue: %s", value)
 			}
