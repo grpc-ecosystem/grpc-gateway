@@ -17,15 +17,18 @@ enum AccountType {
 
 // Account
 message Account {
+  message Vote {
+    bytes vote_address = 1;
+    int64 vote_count = 2;
+  }
   bytes accout_name = 1;
   AccountType type = 2;
   bytes address = 3;
   int64 balance = 4;
-  repeated string votes = 5;
+  repeated Vote votes = 5;
   map<string, int64> asset = 6;
 
 }
-
 
 // Witness
 message Witness {
@@ -66,8 +69,8 @@ message Transaction {
     UtxoType = 0;
     ContractType = 1;
   }
-  message Contract{
-    enum ContractType{
+  message Contract {
+    enum ContractType {
       AccountCreateContract = 0;
       TransferContract = 1;
       TransferAssertContract = 2;
@@ -78,7 +81,7 @@ message Transaction {
       DeployContract = 7;
     }
     ContractType type = 1;
-    google.protobuf.Any parameter = 11;
+    google.protobuf.Any parameter = 2;
   }
   message raw {
     TranscationType type = 2;
@@ -89,7 +92,7 @@ message Transaction {
     repeated Contract contract = 11;
     bytes scripts = 16;
   }
-  raw raw_data =1 ;
+  raw raw_data = 1;
   repeated bytes signature = 5;
 }
 
@@ -118,8 +121,7 @@ message Block {
 // Inventory
 
 message Inventory {
-  enum InventoryType
-  {
+  enum InventoryType {
     TRX = 0;
     BLOCK = 1;
   }
@@ -129,8 +131,7 @@ message Inventory {
 
 
 message Items {
-  enum ItemType
-  {
+  enum ItemType {
     ERR = 0;
     TRX = 1;
     BLOCK = 2;
