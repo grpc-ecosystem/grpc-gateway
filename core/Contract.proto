@@ -22,50 +22,48 @@ option java_outer_classname = "Contract"; //Specify the class name of the genera
 
 import "core/Tron.proto";
 
-message AccountCreateContract{
+message AccountCreateContract {
   AccountType type = 1;
-  bytes accout_name = 2;
+  bytes account_name = 2;
   bytes owner_address = 3;
-
-
 }
 
-message TransferContract{
+message TransferContract {
   bytes owner_address = 1;
   bytes to_address = 2;
   int64 amount = 3;
 }
 
-message TransferAssertContract{
-  bytes assert_name =1;
+message TransferAssertContract {
+  bytes assert_name = 1;
   bytes owner_address = 2;
   bytes to_address = 3;
   int64 amount = 4;
 }
 
 
-message VoteAssetContract{
+message VoteAssetContract {
   bytes owner_address = 1;
   repeated bytes vote_address = 2;
   bool support = 3;
   int32 count = 5;
 }
 
-message VoteWitnessContract{
+message VoteWitnessContract {
   bytes owner_address = 1;
   repeated bytes vote_address = 2;
   bool support = 3;
   int32 count = 5;
 }
 
-message WitnessCreateContract{
+message WitnessCreateContract {
   bytes owner_address = 1;
   bytes private_key = 2;
   bytes url = 12;
 }
 
 message AssetIssueContract {
-  bytes owner_address =1;
+  bytes owner_address = 1;
   bytes name = 2;
   int64 total_supply = 4;
   int32 trx_num = 6;
@@ -75,10 +73,10 @@ message AssetIssueContract {
   int32 decay_ratio = 15;
   int32 vote_score = 16;
   bytes description = 20;
-  bytes url =21;
+  bytes url = 21;
 }
 
-message DeployContract{
+message DeployContract {
   bytes owner_address = 1;
   bytes script = 2;
 }
