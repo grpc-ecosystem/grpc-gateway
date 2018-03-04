@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"sort"
 )
 
 // MIMEWildcard is the fallback MIME type used for requests which do not match
@@ -67,7 +68,15 @@ func (m marshalerRegistry) add(mime string, marshaler Marshaler) error {
 
 // get gets a marshaler for a MIME type string ("*" means as wildcard).
 func (m marshalerRegistry) get(mime string) Marshaler {
-	for mapKey, marshaler := range m.mimeMap {
+	var mapKeys []string
+	for mapKey := range m.mimeMap {
+		mapKeys = append(mapKeys, mapKey)
+	}
+	sort.Slice(mapKeys, func(i, j int) bool {
+		return mapKeys[i] > mapKeys[j]
+	})
+
+	for _, mapKey := range mapKeys {
 		if mapKey == MIMEWildcard {
 			continue
 		}
@@ -80,7 +89,7 @@ func (m marshalerRegistry) get(mime string) Marshaler {
 			continue
 		}
 		if keyRegex.Match([]byte(mime)) {
-			return marshaler
+			return m.mimeMap[mapKey]
 		}
 	}
 	return nil
