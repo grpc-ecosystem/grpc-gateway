@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 	"regexp"
-	"strings"
 	"sort"
+	"strings"
 )
 
 // MIMEWildcard is the fallback MIME type used for requests which do not match
