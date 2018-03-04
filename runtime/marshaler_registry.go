@@ -3,11 +3,14 @@ package runtime
 import (
 	"errors"
 	"net/http"
+	"regexp"
+	"strings"
 )
 
 // MIMEWildcard is the fallback MIME type used for requests which do not match
 // a registered MIME type.
 const MIMEWildcard = "*"
+const WildcardRegex = ".*"
 
 var (
 	acceptHeader      = http.CanonicalHeaderKey("Accept")
@@ -31,10 +34,8 @@ func MarshalerForRequest(mux *ServeMux, r *http.Request) (inbound Marshaler, out
 	}
 
 	for _, contentTypeVal := range r.Header[contentTypeHeader] {
-		if m, ok := mux.marshalers.mimeMap[contentTypeVal]; ok {
-			inbound = m
-			break
-		}
+		inbound = mux.marshalers.get(contentTypeVal)
+		break
 	}
 
 	if inbound == nil {
@@ -61,6 +62,27 @@ func (m marshalerRegistry) add(mime string, marshaler Marshaler) error {
 
 	m.mimeMap[mime] = marshaler
 
+	return nil
+}
+
+// get gets a marshaler for a MIME type string ("*" means as wildcard).
+func (m marshalerRegistry) get(mime string) Marshaler {
+	for mapKey, marshaler := range m.mimeMap {
+		if mapKey == MIMEWildcard {
+			continue
+		}
+
+		r := strings.NewReplacer(MIMEWildcard, WildcardRegex, "/", "\\/", ".", "\\.", "+", "\\+")
+		replaced := r.Replace(mapKey)
+
+		keyRegex, err := regexp.Compile(replaced)
+		if err != nil {
+			continue
+		}
+		if keyRegex.Match([]byte(mime)) {
+			return marshaler
+		}
+	}
 	return nil
 }
 
