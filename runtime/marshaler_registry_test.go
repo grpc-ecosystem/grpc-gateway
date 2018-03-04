@@ -131,6 +131,28 @@ func TestMarshalerForRequest2(t *testing.T) {
 	if _, ok := out.(*runtime.JSONPb); !ok {
 		t.Errorf("in = %#v; want a runtime.JSONPb", out)
 	}
+
+	r.Header.Set("Accept", "*")
+	_, out = runtime.MarshalerForRequest(mux, r)
+	if _, ok := out.(*runtime.JSONPb); !ok {
+		t.Errorf("in = %#v; want a runtime.JSONPb", out)
+	}
+
+	r.Header.Set("Accept", "multipart/form-data")
+	_, out = runtime.MarshalerForRequest(mux, r)
+	if got, want := out, marshalers[2]; got != want {
+		t.Errorf("out = %#v; want %#v", got, want)
+	}
+
+	r.Header.Set("Accept", "multipart/x-out")
+	r.Header.Set("Content-Type", "multipart/form-data")
+	in, out := runtime.MarshalerForRequest(mux, r)
+	if got, want := in, marshalers[2]; got != want {
+		t.Errorf("out = %#v; want %#v", got, want)
+	}
+	if got, want := out, marshalers[1]; got != want {
+		t.Errorf("out = %#v; want %#v", got, want)
+	}
 }
 
 type dummyMarshaler struct{}
