@@ -11,6 +11,7 @@ import (
 // MIMEWildcard is the fallback MIME type used for requests which do not match
 // a registered MIME type.
 const MIMEWildcard = "*"
+// WildcardRegex is the wildcard strings as regex
 const WildcardRegex = ".*"
 
 var (
