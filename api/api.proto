@@ -20,13 +20,23 @@ service Wallet {
 
   };
 
-  rpc CreateAccount(AccountCreateContract) returns (Transaction) {
+  rpc CreateAccount (AccountCreateContract) returns (Transaction) {
 
   };
 
-  rpc CreateAssetIssue(AssetIssueContract) returns (Transaction) {
+  rpc VoteWitnessAccount (VoteWitnessContract) returns (Transaction) {
 
   };
+
+  rpc CreateAssetIssue (AssetIssueContract) returns (Transaction) {
+
+  };
+
+
+  rpc CreateWitness (WitnessCreateContract) returns (Transaction) {
+
+  };
+
 
 };
 
