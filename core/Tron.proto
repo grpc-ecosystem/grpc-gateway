@@ -11,7 +11,7 @@ option java_outer_classname = "Protocal"; //Specify the class name of the genera
 
 enum AccountType {
   Normal = 0;
-  AssertIssue = 1;
+  AssetIssue = 1;
   Contract = 2;
 }
 
