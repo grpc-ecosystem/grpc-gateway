@@ -53,12 +53,12 @@ message VoteWitnessContract {
   bytes owner_address = 1;
   repeated bytes vote_address = 2;
   bool support = 3;
-  int32 count = 5;
+  repeated int32 count = 5;
 }
 
 message WitnessCreateContract {
   bytes owner_address = 1;
-  bytes private_key = 2;
+  bytes public_key = 2;
   bytes url = 12;
 }
 
