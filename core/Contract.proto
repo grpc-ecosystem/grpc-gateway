@@ -50,10 +50,13 @@ message VoteAssetContract {
 }
 
 message VoteWitnessContract {
+  message Vote {
+    bytes vote_address = 1;
+    int64 vote_count = 2;
+  }
   bytes owner_address = 1;
-  repeated bytes vote_address = 2;
+  repeated Vote votes = 2;
   bool support = 3;
-  repeated int32 count = 5;
 }
 
 message WitnessCreateContract {
