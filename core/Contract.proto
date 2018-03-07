@@ -61,7 +61,6 @@ message VoteWitnessContract {
 
 message WitnessCreateContract {
   bytes owner_address = 1;
-  bytes public_key = 2;
   bytes url = 12;
 }
 
