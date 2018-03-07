@@ -103,8 +103,8 @@ message BlockHeader {
     bytes parentHash = 3;
     //bytes nonce = 5;
     //bytes difficulty = 6;
-    uint64 number = 7;
-    uint64 witness_id = 8;
+    int64 number = 7;
+    int64 witness_id = 8;
     bytes witness_address = 9;
   }
   raw raw_data = 1;
@@ -120,6 +120,21 @@ message Block {
 
 // Inventory
 
+message BlockInventory {
+  enum Type {
+    SYNC = 0;
+    ADVTISE = 1;
+    FETCH = 2;
+  }
+
+  message BlockId {
+    bytes hash = 1;
+    int64 number = 2;
+  }
+  repeated BlockId ids = 1;
+  Type type = 2;
+}
+
 message Inventory {
   enum InventoryType {
     TRX = 0;
@@ -128,7 +143,6 @@ message Inventory {
   InventoryType type = 1;
   repeated bytes ids = 2;
 }
-
 
 message Items {
   enum ItemType {
