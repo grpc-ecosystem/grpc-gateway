@@ -20,7 +20,7 @@ service Wallet {
 
   };
 
-  rpc ListAccounts (NullMessage) returns (AccountList) {
+  rpc ListAccounts (EmptyMessage) returns (AccountList) {
 
   };
 
@@ -36,7 +36,7 @@ service Wallet {
 
   };
 
-  rpc ListWitnesses (NullMessage) returns (WitnessList) {
+  rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
 
   };
 
@@ -48,4 +48,15 @@ service Wallet {
 
 message Return {
   bool result = 1;
+}
+
+message AccountList{
+  repeated Account accounts = 1;
+}
+
+message WitnessList{
+  repeated Witness witnesses = 1;
+}
+
+message EmptyMessage{
 }

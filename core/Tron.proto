@@ -30,9 +30,7 @@ message Account {
 
 }
 
-message AccountList{
-  repeated Account accounts = 1;
-}
+
 
 // Witness
 message Witness {
@@ -45,12 +43,6 @@ message Witness {
   int64 latestBlockNum = 7;
 }
 
-message WitnessList{
-  repeated Witness witnesses = 1;
-}
-
-message NullMessage{
-}
 
 // Transcation
 
