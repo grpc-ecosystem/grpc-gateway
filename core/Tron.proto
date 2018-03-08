@@ -49,6 +49,9 @@ message WitnessList{
   repeated Witness witnesses = 1;
 }
 
+message NullMessage{
+}
+
 // Transcation
 
 message TXOutput {

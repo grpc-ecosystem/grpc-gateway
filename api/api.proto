@@ -20,7 +20,7 @@ service Wallet {
 
   };
 
-  rpc ListAccounts () returns (AccountList) {
+  rpc ListAccounts (NullMessage) returns (AccountList) {
 
   };
 
@@ -36,7 +36,7 @@ service Wallet {
 
   };
 
-  rpc ListWitnesses () returns (WitnessList) {
+  rpc ListWitnesses (NullMessage) returns (WitnessList) {
 
   };
 
