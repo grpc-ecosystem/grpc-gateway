@@ -29,6 +29,10 @@ message Account {
   map<string, int64> asset = 6;
 }
 
+message AccountList {
+  repeated Account accounts = 1;
+}
+
 // Witness
 message Witness {
   bytes address = 1;
@@ -40,7 +44,16 @@ message Witness {
   int64 latestBlockNum = 7;
 }
 
-// Transaction
+
+message WitnessList {
+  repeated Witness witnesses = 1;
+}
+
+message NullMessage {
+}
+
+// Transcation
+
 message TXOutput {
   int64 value = 1;
   bytes pubKeyHash = 2;
