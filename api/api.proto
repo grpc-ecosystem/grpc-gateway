@@ -20,6 +20,10 @@ service Wallet {
 
   };
 
+  rpc ListAccounts () returns (AccountList) {
+
+  };
+
   rpc CreateAccount (AccountCreateContract) returns (Transaction) {
 
   };
@@ -32,11 +36,13 @@ service Wallet {
 
   };
 
+  rpc ListWitnesses () returns (WitnessList) {
+
+  };
 
   rpc CreateWitness (WitnessCreateContract) returns (Transaction) {
 
   };
-
 
 };
 
