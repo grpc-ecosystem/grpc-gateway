@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package protocal;
+package protocol;
 
 option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
 option java_outer_classname = "TronInventoryItems"; //Specify the class name of the generated Java file
