@@ -44,19 +44,38 @@ service Wallet {
 
   };
 
+  rpc ListNodes (EmptyMessage) returns (NodeList) {
+
+  }
 };
 
 message Return {
   bool result = 1;
 }
 
-message AccountList{
+message AccountList {
   repeated Account accounts = 1;
 }
 
-message WitnessList{
+message WitnessList {
   repeated Witness witnesses = 1;
 }
 
-message EmptyMessage{
+// Gossip node list
+message NodeList {
+  repeated Node nodes = 1;
+}
+
+// Gossip node
+message Node {
+  Address address = 1;
+}
+
+// Gossip node address
+message Address {
+  bytes host = 1;
+  int32 port = 2;
+}
+
+message EmptyMessage {
 }
