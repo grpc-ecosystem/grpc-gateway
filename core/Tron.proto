@@ -41,6 +41,7 @@ message Witness {
   int64 totalProduced = 5;
   int64 totalMissed = 6;
   int64 latestBlockNum = 7;
+  int64 latestSlotNum = 8;
 }
 
 
