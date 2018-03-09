@@ -24,6 +24,7 @@ import (
 var (
 	importPrefix         = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
 	importPath           = flag.String("import_path", "", "used as the package if no input files declare go_package. If it contains slashes, everything up to the rightmost slash is ignored.")
+	registerFuncSuffix   = flag.String("register_func_suffix", "Handler", "used to construct names of generated Register*<Suffix> methods.")
 	useRequestContext    = flag.Bool("request_context", true, "determine whether to use http.Request's context or not")
 	allowDeleteBody      = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
 	grpcAPIConfiguration = flag.String("grpc_api_configuration", "", "path to gRPC API Configuration in YAML format")
@@ -61,7 +62,7 @@ func main() {
 		}
 	}
 
-	g := gengateway.New(reg, *useRequestContext)
+	g := gengateway.New(reg, *useRequestContext, *registerFuncSuffix)
 
 	if *grpcAPIConfiguration != "" {
 		if err := reg.LoadGrpcAPIServiceFromYAML(*grpcAPIConfiguration); err != nil {

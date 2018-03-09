@@ -1016,8 +1016,8 @@ func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, 
 	return RegisterFlowCombinationHandlerClient(ctx, mux, NewFlowCombinationClient(conn))
 }
 
-// RegisterFlowCombinationHandler registers the http handlers for service FlowCombination to "mux".
-// The handlers forward requests to the grpc endpoint over the given implementation of "FlowCombinationClient".
+// RegisterFlowCombinationHandlerClient registers the http handlers for service FlowCombination
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "FlowCombinationClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "FlowCombinationClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "FlowCombinationClient" to call the correct interceptors.

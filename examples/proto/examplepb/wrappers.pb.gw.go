@@ -72,8 +72,8 @@ func RegisterWrappersServiceHandler(ctx context.Context, mux *runtime.ServeMux, 
 	return RegisterWrappersServiceHandlerClient(ctx, mux, NewWrappersServiceClient(conn))
 }
 
-// RegisterWrappersServiceHandler registers the http handlers for service WrappersService to "mux".
-// The handlers forward requests to the grpc endpoint over the given implementation of "WrappersServiceClient".
+// RegisterWrappersServiceHandlerClient registers the http handlers for service WrappersService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "WrappersServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "WrappersServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "WrappersServiceClient" to call the correct interceptors.
