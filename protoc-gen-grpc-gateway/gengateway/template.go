@@ -13,8 +13,9 @@ import (
 
 type param struct {
 	*descriptor.File
-	Imports           []descriptor.GoPackage
-	UseRequestContext bool
+	Imports            []descriptor.GoPackage
+	UseRequestContext  bool
+	RegisterFuncSuffix string
 }
 
 type binding struct {
@@ -68,8 +69,9 @@ func (f queryParamFilter) String() string {
 }
 
 type trailerParams struct {
-	Services          []*descriptor.Service
-	UseRequestContext bool
+	Services           []*descriptor.Service
+	UseRequestContext  bool
+	RegisterFuncSuffix string
 }
 
 func applyTemplate(p param) (string, error) {
@@ -102,8 +104,9 @@ func applyTemplate(p param) (string, error) {
 	}
 
 	tp := trailerParams{
-		Services:          targetServices,
-		UseRequestContext: p.UseRequestContext,
+		Services:           targetServices,
+		UseRequestContext:  p.UseRequestContext,
+		RegisterFuncSuffix: p.RegisterFuncSuffix,
 	}
 	if err := trailerTemplate.Execute(w, tp); err != nil {
 		return "", err
@@ -312,9 +315,9 @@ var (
 	trailerTemplate = template.Must(template.New("trailer").Parse(`
 {{$UseRequestContext := .UseRequestContext}}
 {{range $svc := .Services}}
-// Register{{$svc.GetName}}HandlerFromEndpoint is same as Register{{$svc.GetName}}Handler but
+// Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}FromEndpoint is same as Register{{$svc.GetName}}{{$.RegisterFuncSuffix}} but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}FromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -334,21 +337,21 @@ func Register{{$svc.GetName}}HandlerFromEndpoint(ctx context.Context, mux *runti
 		}()
 	}()
 
-	return Register{{$svc.GetName}}Handler(ctx, mux, conn)
+	return Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}(ctx, mux, conn)
 }
 
-// Register{{$svc.GetName}}Handler registers the http handlers for service {{$svc.GetName}} to "mux".
+// Register{{$svc.GetName}}{{$.RegisterFuncSuffix}} registers the http handlers for service {{$svc.GetName}} to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func Register{{$svc.GetName}}Handler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return Register{{$svc.GetName}}HandlerClient(ctx, mux, New{{$svc.GetName}}Client(conn))
+func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx, mux, New{{$svc.GetName}}Client(conn))
 }
 
-// Register{{$svc.GetName}}Handler registers the http handlers for service {{$svc.GetName}} to "mux".
-// The handlers forward requests to the grpc endpoint over the given implementation of "{{$svc.GetName}}Client".
+// Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client registers the http handlers for service {{$svc.GetName}}
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "{{$svc.GetName}}Client".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "{{$svc.GetName}}Client"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "{{$svc.GetName}}Client" to call the correct interceptors.
-func Register{{$svc.GetName}}HandlerClient(ctx context.Context, mux *runtime.ServeMux, client {{$svc.GetName}}Client) error {
+func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context, mux *runtime.ServeMux, client {{$svc.GetName}}Client) error {
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
 	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
