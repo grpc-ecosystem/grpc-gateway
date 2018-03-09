@@ -170,8 +170,8 @@ func RegisterUnannotatedEchoServiceHandler(ctx context.Context, mux *runtime.Ser
 	return RegisterUnannotatedEchoServiceHandlerClient(ctx, mux, NewUnannotatedEchoServiceClient(conn))
 }
 
-// RegisterUnannotatedEchoServiceHandler registers the http handlers for service UnannotatedEchoService to "mux".
-// The handlers forward requests to the grpc endpoint over the given implementation of "UnannotatedEchoServiceClient".
+// RegisterUnannotatedEchoServiceHandlerClient registers the http handlers for service UnannotatedEchoService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "UnannotatedEchoServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "UnannotatedEchoServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "UnannotatedEchoServiceClient" to call the correct interceptors.

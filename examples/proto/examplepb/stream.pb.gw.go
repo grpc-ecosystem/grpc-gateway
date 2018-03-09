@@ -171,8 +171,8 @@ func RegisterStreamServiceHandler(ctx context.Context, mux *runtime.ServeMux, co
 	return RegisterStreamServiceHandlerClient(ctx, mux, NewStreamServiceClient(conn))
 }
 
-// RegisterStreamServiceHandler registers the http handlers for service StreamService to "mux".
-// The handlers forward requests to the grpc endpoint over the given implementation of "StreamServiceClient".
+// RegisterStreamServiceHandlerClient registers the http handlers for service StreamService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "StreamServiceClient".
 // Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "StreamServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
 // "StreamServiceClient" to call the correct interceptors.
