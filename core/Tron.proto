@@ -39,11 +39,13 @@ message Witness {
   int64 totalProduced = 5;
   int64 totalMissed = 6;
   int64 latestBlockNum = 7;
+  bool isJobs = 8;
 }
 
 // Transcation
 
-message TXOutput {
+message
+  TXOutput {
   int64 value = 1;
   bytes pubKeyHash = 2;
 }
