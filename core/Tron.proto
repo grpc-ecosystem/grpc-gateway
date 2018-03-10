@@ -6,12 +6,12 @@ package protocol;
 
 
 option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
-option java_outer_classname = "Protocal"; //Specify the class name of the generated Java file
+option java_outer_classname = "Protocol"; //Specify the class name of the generated Java file
 
 
 enum AccountType {
   Normal = 0;
-  AssertIssue = 1;
+  AssetIssue = 1;
   Contract = 2;
 }
 
@@ -21,7 +21,7 @@ message Account {
     bytes vote_address = 1;
     int64 vote_count = 2;
   }
-  bytes accout_name = 1;
+  bytes account_name = 1;
   AccountType type = 2;
   bytes address = 3;
   int64 balance = 4;
@@ -29,6 +29,8 @@ message Account {
   map<string, int64> asset = 6;
 
 }
+
+
 
 // Witness
 message Witness {
@@ -39,17 +41,16 @@ message Witness {
   int64 totalProduced = 5;
   int64 totalMissed = 6;
   int64 latestBlockNum = 7;
-  bool isJobs = 8;
+  int64 latestSlotNum = 8;
 }
+
 
 // Transcation
 
-message
-  TXOutput {
+message TXOutput {
   int64 value = 1;
   bytes pubKeyHash = 2;
 }
-
 
 message TXInput {
   message raw {
@@ -59,7 +60,6 @@ message TXInput {
   }
   raw raw_data = 1;
   bytes signature = 4;
-
 }
 
 message TXOutputs {
@@ -67,7 +67,7 @@ message TXOutputs {
 }
 
 message Transaction {
-  enum TranscationType {
+  enum TransactionType {
     UtxoType = 0;
     ContractType = 1;
   }
@@ -86,7 +86,7 @@ message Transaction {
     google.protobuf.Any parameter = 2;
   }
   message raw {
-    TranscationType type = 2;
+    TransactionType type = 2;
     repeated TXInput vin = 5;
     repeated TXOutput vout = 7;
     int64 expiration = 8;
@@ -114,14 +114,12 @@ message BlockHeader {
 }
 
 // block
-
 message Block {
   repeated Transaction transactions = 1;
   BlockHeader block_header = 2;
 }
 
 // Inventory
-
 message BlockInventory {
   enum Type {
     SYNC = 0;
