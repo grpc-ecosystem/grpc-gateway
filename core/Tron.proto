@@ -30,8 +30,6 @@ message Account {
 
 }
 
-
-
 // Witness
 message Witness {
   bytes address = 1;
@@ -44,7 +42,6 @@ message Witness {
   int64 latestSlotNum = 8;
   bool isJobs = 9;
 }
-
 
 // Transcation
 
