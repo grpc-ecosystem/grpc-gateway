@@ -201,6 +201,18 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			continue
 		case ".google.protobuf.Duration":
 			continue
+		case ".google.protobuf.StringValue":
+			continue
+		case ".google.protobuf.Int32Value":
+			continue
+		case ".google.protobuf.Int64Value":
+			continue
+		case ".google.protobuf.FloatValue":
+			continue
+		case ".google.protobuf.DoubleValue":
+			continue
+		case ".google.protobuf.BoolValue":
+			continue
 		}
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			continue
