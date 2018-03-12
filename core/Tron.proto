@@ -117,6 +117,15 @@ message Block {
   BlockHeader block_header = 2;
 }
 
+message ChainInventory {
+  message BlockId {
+    bytes hash = 1;
+    int64 number = 2;
+  }
+  repteated BlockId ids = 1;
+  int64 remain_num = 2;
+}
+
 // Inventory
 message BlockInventory {
   enum Type {
