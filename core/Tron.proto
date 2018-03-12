@@ -83,6 +83,16 @@ message Transaction {
     ContractType type = 1;
     google.protobuf.Any parameter = 2;
   }
+
+  message Result {
+    enum code {
+      SUCESS = 0;
+      FAILED = 1;
+    }
+    int64 fee = 1;
+    code ret = 2;
+  }
+
   message raw {
     TransactionType type = 2;
     repeated TXInput vin = 5;
@@ -92,8 +102,10 @@ message Transaction {
     repeated Contract contract = 11;
     bytes scripts = 16;
   }
+
   raw raw_data = 1;
-  repeated bytes signature = 5;
+  repeated bytes signature = 2;
+  repeated Result ret = 5;
 }
 
 message BlockHeader {
