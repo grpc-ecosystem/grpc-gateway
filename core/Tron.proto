@@ -27,7 +27,7 @@ message Account {
   int64 balance = 4;
   repeated Vote votes = 5;
   map<string, int64> asset = 6;
-
+  int64 latest_opration_time = 10;
 }
 
 // Witness
