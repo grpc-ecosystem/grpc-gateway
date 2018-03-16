@@ -47,7 +47,7 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 	}
 
 	var wroteHeader bool
-	ctSet := false
+	contentTypeSet := false
 	for {
 		resp, err := recv()
 		if err == io.EOF {
@@ -63,9 +63,9 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 		}
 
 		chunk := streamChunk(resp, nil)
-		if !ctSet {
+		if !contentTypeSet {
 			w.Header().Set("Content-Type", marshaler.ContentType(chunk))
-			ctSet = true
+			contentTypeSet = true
 		}
 		buf, err := marshaler.Marshal(chunk)
 		if err != nil {
