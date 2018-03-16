@@ -10,9 +10,11 @@ import (
 	"github.com/golang/protobuf/proto"
 	pb "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime/internal"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func TestForwardResponseStream(t *testing.T) {
@@ -84,9 +86,32 @@ func TestForwardResponseStream(t *testing.T) {
 			w.Body.Close()
 
 			var want []byte
-			for _, msg := range tt.msgs {
+			for i, msg := range tt.msgs {
 				if msg.err != nil {
-					t.Skip("checking erorr encodings")
+					if i == 0 {
+						// Skip non-stream errors
+						t.Skip("checking error encodings")
+					}
+					st, _ := status.FromError(msg.err)
+					httpCode := runtime.HTTPStatusFromCode(st.Code())
+					b, err := marshaler.Marshal(map[string]proto.Message{
+						"error": &internal.StreamError{
+							GrpcCode:   int32(st.Code()),
+							HttpCode:   int32(httpCode),
+							Message:    st.Message(),
+							HttpStatus: http.StatusText(httpCode),
+							Details:    st.Proto().GetDetails(),
+						},
+					})
+					if err != nil {
+						t.Errorf("marshaler.Marshal() failed %v", err)
+					}
+					errBytes := body[len(want):]
+					if string(errBytes) != string(b) {
+						t.Errorf("ForwardResponseStream() = \"%s\" want \"%s\"", errBytes, b)
+					}
+
+					return
 				}
 				b, err := marshaler.Marshal(map[string]proto.Message{"result": msg.pb})
 				if err != nil {

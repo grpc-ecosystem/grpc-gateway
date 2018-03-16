@@ -75,7 +75,7 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 			httpMethod = "GET"
 			pathTemplate = opts.GetGet()
 			if opts.Body != "" {
-				return nil, fmt.Errorf("needs request body even though http method is GET: %s", md.GetName())
+				return nil, fmt.Errorf("must not set request body when http method is GET: %s", md.GetName())
 			}
 
 		case opts.GetPut() != "":
@@ -90,7 +90,7 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 			httpMethod = "DELETE"
 			pathTemplate = opts.GetDelete()
 			if opts.Body != "" && !r.allowDeleteBody {
-				return nil, fmt.Errorf("needs request body even though http method is DELETE: %s", md.GetName())
+				return nil, fmt.Errorf("must not set request body when http method is DELETE except allow_delete_body option is true: %s", md.GetName())
 			}
 
 		case opts.GetPatch() != "":

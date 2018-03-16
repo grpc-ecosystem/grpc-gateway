@@ -51,8 +51,8 @@
     },
     "/v1/example/a_bit_of_everything/echo/{value}": {
       "get": {
-        "summary": "Echo allows posting a StringMessage value.",
-        "description": "It also exposes multiple bindings.\n\nThis makes it useful when validating that the OpenAPI v2 API\ndescription exposes documentation correctly on all paths\ndefined as additional_bindings in the proto.",
+        "summary": "Summary: Echo rpc",
+        "description": "Description Echo",
         "operationId": "Echo",
         "responses": {
           "200": {
@@ -71,7 +71,8 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "echo service",
+          "echo rpc"
         ],
         "externalDocs": {
           "description": "Find out more Echo",
@@ -488,6 +489,15 @@
         ],
         "tags": [
           "ABitOfEverythingService"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": [],
+            "OAuth2": [
+              "read",
+              "write"
+            ]
+          }
         ]
       },
       "put": {
@@ -523,8 +533,8 @@
     },
     "/v2/example/echo": {
       "get": {
-        "summary": "Echo allows posting a StringMessage value.",
-        "description": "It also exposes multiple bindings.\n\nThis makes it useful when validating that the OpenAPI v2 API\ndescription exposes documentation correctly on all paths\ndefined as additional_bindings in the proto.",
+        "summary": "Summary: Echo rpc",
+        "description": "Description Echo",
         "operationId": "Echo3",
         "responses": {
           "200": {
@@ -543,7 +553,8 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "echo service",
+          "echo rpc"
         ],
         "externalDocs": {
           "description": "Find out more Echo",
@@ -551,8 +562,8 @@
         }
       },
       "post": {
-        "summary": "Echo allows posting a StringMessage value.",
-        "description": "It also exposes multiple bindings.\n\nThis makes it useful when validating that the OpenAPI v2 API\ndescription exposes documentation correctly on all paths\ndefined as additional_bindings in the proto.",
+        "summary": "Summary: Echo rpc",
+        "description": "Description Echo",
         "operationId": "Echo2",
         "responses": {
           "200": {
@@ -573,12 +584,29 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "echo service",
+          "echo rpc"
         ],
         "externalDocs": {
           "description": "Find out more Echo",
           "url": "https://github.com/grpc-ecosystem/grpc-gateway"
         }
+      }
+    },
+    "/v2/example/empty": {
+      "get": {
+        "operationId": "Empty",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "tags": [
+          "camelCaseServiceName"
+        ]
       }
     },
     "/v2/example/errorwithdetails": {
@@ -592,6 +620,38 @@
             }
           }
         },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/postwithemptybody/{name}": {
+      "post": {
+        "operationId": "PostWithEmptyBody",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbBody"
+            }
+          }
+        ],
         "tags": [
           "ABitOfEverythingService"
         ]
@@ -832,6 +892,40 @@
       }
     }
   },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "X-API-Key",
+      "in": "header"
+    },
+    "BasicAuth": {
+      "type": "basic"
+    },
+    "OAuth2": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "authorizationUrl": "https://example.com/oauth/authorize",
+      "tokenUrl": "https://example.com/oauth/token",
+      "scopes": {
+        "admin": "Grants read and write access to administrative information",
+        "read": "Grants read access",
+        "write": "Grants write access"
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": [],
+      "BasicAuth": []
+    },
+    {
+      "ApiKeyAuth": [],
+      "OAuth2": [
+        "read",
+        "write"
+      ]
+    }
+  ],
   "externalDocs": {
     "description": "More about gRPC-Gateway",
     "url": "https://github.com/grpc-ecosystem/grpc-gateway"

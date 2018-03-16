@@ -5,7 +5,9 @@
 
 PKG=github.com/grpc-ecosystem/grpc-gateway
 GO_PLUGIN=bin/protoc-gen-go
-GO_PLUGIN_PKG=github.com/golang/protobuf/protoc-gen-go
+GO_PROTOBUF_REPO=github.com/golang/protobuf
+GO_PLUGIN_PKG=$(GO_PROTOBUF_REPO)/protoc-gen-go
+GO_PTYPES_ANY_PKG=$(GO_PROTOBUF_REPO)/ptypes/any
 SWAGGER_PLUGIN=bin/protoc-gen-swagger
 SWAGGER_PLUGIN_SRC= utilities/doc.go \
 		    utilities/pattern.go \
@@ -52,11 +54,13 @@ ifneq "$(GATEWAY_PLUGIN_FLAGS)" ""
 	ADDITIONAL_FLAGS=,$(GATEWAY_PLUGIN_FLAGS)
 endif
 SWAGGER_EXAMPLES=examples/examplepb/echo_service.proto \
-	 examples/examplepb/a_bit_of_everything.proto
+	 examples/examplepb/a_bit_of_everything.proto \
+	 examples/examplepb/wrappers.proto
 EXAMPLES=examples/examplepb/echo_service.proto \
 	 examples/examplepb/a_bit_of_everything.proto \
 	 examples/examplepb/stream.proto \
-	 examples/examplepb/flow_combination.proto
+	 examples/examplepb/flow_combination.proto \
+	 examples/examplepb/wrappers.proto
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
 EXAMPLE_SWAGGERSRCS=$(EXAMPLES:.proto=.swagger.json)
@@ -91,7 +95,7 @@ $(GO_PLUGIN):
 	go build -o $@ $(GO_PLUGIN_PKG)
 
 $(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
-	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP):. $(RUNTIME_PROTO)
+	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I $(GOPATH)/src/$(GO_PTYPES_ANY_PKG) -I. --go_out=$(PKGMAP):. $(RUNTIME_PROTO)
 
 $(OPENAPIV2_GO): $(OPENAPIV2_PROTO) $(GO_PLUGIN)
 	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP):$(GOPATH)/src $(OPENAPIV2_PROTO)

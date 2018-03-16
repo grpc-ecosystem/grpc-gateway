@@ -201,6 +201,18 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			continue
 		case ".google.protobuf.Duration":
 			continue
+		case ".google.protobuf.StringValue":
+			continue
+		case ".google.protobuf.Int32Value":
+			continue
+		case ".google.protobuf.Int64Value":
+			continue
+		case ".google.protobuf.FloatValue":
+			continue
+		case ".google.protobuf.DoubleValue":
+			continue
+		case ".google.protobuf.BoolValue":
+			continue
 		}
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			continue
@@ -638,6 +650,35 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					// TODO(ivucica): this would be better supported by looking whether the method is deprecated in the proto file
 					operationObject.Deprecated = opts.Deprecated
 
+					if opts.Summary != "" {
+						operationObject.Summary = opts.Summary
+					}
+					if opts.Description != "" {
+						operationObject.Description = opts.Description
+					}
+					if len(opts.Tags) > 0 {
+						operationObject.Tags = make([]string, len(opts.Tags))
+						copy(operationObject.Tags, opts.Tags)
+					}
+					if opts.Security != nil {
+						newSecurity := []swaggerSecurityRequirementObject{}
+						if operationObject.Security == nil {
+							newSecurity = []swaggerSecurityRequirementObject{}
+						} else {
+							newSecurity = operationObject.Security
+						}
+						for _, secReq := range opts.Security {
+							newSecReq := swaggerSecurityRequirementObject{}
+							for secReqKey, secReqValue := range secReq.SecurityRequirement {
+								newSecReqValue := make([]string, len(secReqValue.Scope))
+								copy(newSecReqValue, secReqValue.Scope)
+								newSecReq[secReqKey] = newSecReqValue
+							}
+							newSecurity = append(newSecurity, newSecReq)
+						}
+						operationObject.Security = newSecurity
+					}
+
 					// TODO(ivucica): add remaining fields of operation object
 				}
 
@@ -763,6 +804,88 @@ func applyTemplate(p param) (string, error) {
 		if len(spb.Produces) > 0 {
 			s.Produces = make([]string, len(spb.Produces))
 			copy(s.Produces, spb.Produces)
+		}
+		if spb.SecurityDefinitions != nil && spb.SecurityDefinitions.Security != nil {
+			if s.SecurityDefinitions == nil {
+				s.SecurityDefinitions = swaggerSecurityDefinitionsObject{}
+			}
+			for secDefKey, secDefValue := range spb.SecurityDefinitions.Security {
+				var newSecDefValue swaggerSecuritySchemeObject
+				if oldSecDefValue, ok := s.SecurityDefinitions[secDefKey]; !ok {
+					newSecDefValue = swaggerSecuritySchemeObject{}
+				} else {
+					newSecDefValue = oldSecDefValue
+				}
+				if secDefValue.Type != swagger_options.SecurityScheme_TYPE_INVALID {
+					switch secDefValue.Type {
+					case swagger_options.SecurityScheme_TYPE_BASIC:
+						newSecDefValue.Type = "basic"
+					case swagger_options.SecurityScheme_TYPE_API_KEY:
+						newSecDefValue.Type = "apiKey"
+					case swagger_options.SecurityScheme_TYPE_OAUTH2:
+						newSecDefValue.Type = "oauth2"
+					}
+				}
+				if secDefValue.Description != "" {
+					newSecDefValue.Description = secDefValue.Description
+				}
+				if secDefValue.Name != "" {
+					newSecDefValue.Name = secDefValue.Name
+				}
+				if secDefValue.In != swagger_options.SecurityScheme_IN_INVALID {
+					switch secDefValue.In {
+					case swagger_options.SecurityScheme_IN_QUERY:
+						newSecDefValue.In = "query"
+					case swagger_options.SecurityScheme_IN_HEADER:
+						newSecDefValue.In = "header"
+					}
+				}
+				if secDefValue.Flow != swagger_options.SecurityScheme_FLOW_INVALID {
+					switch secDefValue.Flow {
+					case swagger_options.SecurityScheme_FLOW_IMPLICIT:
+						newSecDefValue.Flow = "implicit"
+					case swagger_options.SecurityScheme_FLOW_PASSWORD:
+						newSecDefValue.Flow = "password"
+					case swagger_options.SecurityScheme_FLOW_APPLICATION:
+						newSecDefValue.Flow = "application"
+					case swagger_options.SecurityScheme_FLOW_ACCESS_CODE:
+						newSecDefValue.Flow = "accessCode"
+					}
+				}
+				if secDefValue.AuthorizationUrl != "" {
+					newSecDefValue.AuthorizationURL = secDefValue.AuthorizationUrl
+				}
+				if secDefValue.TokenUrl != "" {
+					newSecDefValue.TokenURL = secDefValue.TokenUrl
+				}
+				if secDefValue.Scopes != nil {
+					if newSecDefValue.Scopes == nil {
+						newSecDefValue.Scopes = swaggerScopesObject{}
+					}
+					for scopeKey, scopeDesc := range secDefValue.Scopes.Scope {
+						newSecDefValue.Scopes[scopeKey] = scopeDesc
+					}
+				}
+				s.SecurityDefinitions[secDefKey] = newSecDefValue
+			}
+		}
+		if spb.Security != nil {
+			newSecurity := []swaggerSecurityRequirementObject{}
+			if s.Security == nil {
+				newSecurity = []swaggerSecurityRequirementObject{}
+			} else {
+				newSecurity = s.Security
+			}
+			for _, secReq := range spb.Security {
+				newSecReq := swaggerSecurityRequirementObject{}
+				for secReqKey, secReqValue := range secReq.SecurityRequirement {
+					newSecReqValue := make([]string, len(secReqValue.Scope))
+					copy(newSecReqValue, secReqValue.Scope)
+					newSecReq[secReqKey] = newSecReqValue
+				}
+				newSecurity = append(newSecurity, newSecReq)
+			}
+			s.Security = newSecurity
 		}
 		if spb.ExternalDocs != nil {
 			if s.ExternalDocs == nil {

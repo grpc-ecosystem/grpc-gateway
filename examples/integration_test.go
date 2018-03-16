@@ -761,6 +761,13 @@ func TestErrorWithDetails(t *testing.T) {
 	if got, want := ok, true; got != want {
 		t.Fatalf("msg.Details[0] got type: %T, want %T", msg.Details[0], map[string]interface{}{})
 	}
+	typ, ok := details["@type"].(string)
+	if got, want := ok, true; got != want {
+		t.Fatalf("msg.Details[0][\"@type\"] got type: %T, want %T", typ, "")
+	}
+	if got, want := details["@type"], "type.googleapis.com/google.rpc.DebugInfo"; got != want {
+		t.Errorf("msg.Details[\"@type\"] = %q; want %q", got, want)
+	}
 	if got, want := details["detail"], "error debug details"; got != want {
 		t.Errorf("msg.Details[\"detail\"] = %q; want %q", got, want)
 	}
@@ -774,6 +781,22 @@ func TestErrorWithDetails(t *testing.T) {
 	}
 	if got, want := entries[0], "foo:1"; got != want {
 		t.Errorf("msg.Details[\"stack_entries\"][0] = %q; want %q", got, want)
+	}
+}
+
+func TestPostWithEmptyBody(t *testing.T) {
+	url := "http://localhost:8080/v2/example/postwithemptybody/name"
+	rep, err := http.Post(url, "application/json", nil)
+
+	if err != nil {
+		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		return
+	}
+
+	if rep.StatusCode != http.StatusOK {
+		t.Errorf("http.Post(%q) response code is %d; want %d", url,
+			rep.StatusCode, http.StatusOK)
+		return
 	}
 }
 

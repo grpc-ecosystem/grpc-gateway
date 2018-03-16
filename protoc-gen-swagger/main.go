@@ -17,7 +17,7 @@ import (
 
 var (
 	importPrefix    = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
-	file            = flag.String("file", "stdin", "where to load data from")
+	file            = flag.String("file", "-", "where to load data from")
 	allowDeleteBody = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
 )
 
@@ -45,8 +45,12 @@ func main() {
 
 	glog.V(1).Info("Processing code generator request")
 	f := os.Stdin
-	if *file != "stdin" {
-		f, _ = os.Open("input.txt")
+	if *file != "-" {
+		var err error
+		f, err = os.Open(*file)
+		if err != nil {
+			glog.Fatal(err)
+		}
 	}
 	req, err := parseReq(f)
 	if err != nil {
