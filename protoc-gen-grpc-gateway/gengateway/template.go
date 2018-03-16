@@ -268,7 +268,7 @@ var (
 	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
 		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
-		err = dec.Decode(&protoReq)
+		err := dec.Decode(&protoReq)
 		if err == io.EOF {
 			return err
 		}
@@ -276,7 +276,7 @@ var (
 			grpclog.Printf("Failed to decode request: %v", err)
 			return err
 		}
-		if err = stream.Send(&protoReq); err != nil {
+		if err := stream.Send(&protoReq); err != nil {
 			grpclog.Printf("Failed to send request: %v", err)
 			return err
 		}
