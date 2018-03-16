@@ -39,6 +39,10 @@ service Wallet {
   rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
 
   };
+  
+  rpc UpdateWitness (WitnessUpdateContract) returns (Transaction) {
+
+  };
 
   rpc CreateWitness (WitnessCreateContract) returns (Transaction) {
 

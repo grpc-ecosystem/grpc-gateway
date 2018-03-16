@@ -64,6 +64,11 @@ message WitnessCreateContract {
   bytes url = 12;
 }
 
+message WitnessUpdateContract {
+  bytes owner_address = 1;
+  bytes update_url = 12;
+}
+
 message AssetIssueContract {
   bytes owner_address = 1;
   bytes name = 2;
