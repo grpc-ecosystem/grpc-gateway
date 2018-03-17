@@ -11,6 +11,16 @@ message Capability {
   int32 version = 2;
 }
 
+enum P2pMessageCode {
+  HELLO = 0;
+  DISCONNECT = 1;
+  PING = 2;
+  PONG = 3;
+  GET_PEERS = 4;
+  PEERS = 5;
+  USER = 6;
+}
+
 enum ReasonCode {
   REQUESTED = 0;
   TCP_ERROR = 1;
