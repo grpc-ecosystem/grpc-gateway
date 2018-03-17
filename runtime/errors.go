@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -94,19 +93,9 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 	}
 
 	body := &errorBody{
-		Error: s.Message(),
-		Code:  int32(s.Code()),
-	}
-
-	for _, detail := range s.Details() {
-		if det, ok := detail.(proto.Message); ok {
-			a, err := ptypes.MarshalAny(det)
-			if err != nil {
-				grpclog.Infof("Failed to marshal any: %v", err)
-			} else {
-				body.Details = append(body.Details, a)
-			}
-		}
+		Error:   s.Message(),
+		Code:    int32(s.Code()),
+		Details: s.Proto().GetDetails(),
 	}
 
 	buf, merr := marshaler.Marshal(body)
