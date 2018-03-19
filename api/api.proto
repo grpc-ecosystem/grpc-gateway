@@ -39,7 +39,7 @@ service Wallet {
   rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
 
   };
-  
+
   rpc UpdateWitness (WitnessUpdateContract) returns (Transaction) {
 
   };
@@ -48,7 +48,23 @@ service Wallet {
 
   };
 
+  rpc TransferAssert (TransferAssertContract) returns (Transaction) {
+
+  }
+  rpc TransferTokenToAssert (TransferTokenToAssetContract) returns (Transaction) {
+
+  }
+
   rpc ListNodes (EmptyMessage) returns (NodeList) {
+
+  }
+  rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
+
+  }
+  rpc GetNowBlock (EmptyMessage) returns (Block) {
+
+  }
+  rpc GetBlockByNum (NumberMessage) returns (Block) {
 
   }
 };
@@ -63,6 +79,10 @@ message AccountList {
 
 message WitnessList {
   repeated Witness witnesses = 1;
+}
+
+message AssetIssueList {
+  repeated AssetIssueContract witnesses = 1;
 }
 
 // Gossip node list
@@ -82,4 +102,7 @@ message Address {
 }
 
 message EmptyMessage {
+}
+message NumberMessage {
+  int64 num = 1;
 }
