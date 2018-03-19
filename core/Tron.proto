@@ -102,6 +102,7 @@ message Transaction {
     bytes data = 10;
     repeated Contract contract = 11;
     bytes scripts = 16;
+    int64 timestamp = 17;
   }
 
   raw raw_data = 1;
