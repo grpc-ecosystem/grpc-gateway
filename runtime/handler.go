@@ -8,7 +8,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/any"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime/internal"
+	"github.com/nebulasio/grpc-gateway/runtime/internal"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -67,10 +67,20 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			handleForwardResponseStreamError(wroteHeader, marshaler, w, err)
 			return
 		}
+    if _, err = w.Write([]byte("{\"result\":")); err != nil {
+			grpclog.Printf("Failed to send response chunk: %v", err)
+      return
+    }
+
 		if _, err = w.Write(buf); err != nil {
 			grpclog.Printf("Failed to send response chunk: %v", err)
 			return
 		}
+
+    if _, err = w.Write([]byte("}")); err != nil {
+			grpclog.Printf("Failed to send response chunk: %v", err)
+      return
+    }
 		wroteHeader = true
 		if _, err = w.Write(delimiter); err != nil {
 			grpclog.Printf("Failed to send delimiter chunk: %v", err)
