@@ -20,6 +20,10 @@ service Wallet {
 
   };
 
+  rpc GetAccountByAddress (BytesMessage) returns (Account) {
+
+  };
+
   rpc ListAccounts (EmptyMessage) returns (AccountList) {
 
   };
@@ -105,4 +109,7 @@ message EmptyMessage {
 }
 message NumberMessage {
   int64 num = 1;
+}
+message BytesMessage {
+  bytes num = 1;
 }
