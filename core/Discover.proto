@@ -58,7 +58,7 @@ message PingMessage {
 }
 
 message PongMessage {
-  Endpoint to = 1;
+  Endpoint from = 1;
   int32 echo = 2;
   int64 timestamp = 3;
 }
