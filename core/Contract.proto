@@ -34,8 +34,8 @@ message TransferContract {
   int64 amount = 3;
 }
 
-message TransferAssertContract {
-  bytes assert_name = 1;
+message TransferAssetContract {
+  bytes asset_name = 1;
   bytes owner_address = 2;
   bytes to_address = 3;
   int64 amount = 4;

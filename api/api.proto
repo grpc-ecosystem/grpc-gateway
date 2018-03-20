@@ -48,10 +48,10 @@ service Wallet {
 
   };
 
-  rpc TransferAssert (TransferAssertContract) returns (Transaction) {
+  rpc TransferAsset (TransferAssetContract) returns (Transaction) {
 
   }
-  rpc TransferTokenToAssert (TransferTokenToAssetContract) returns (Transaction) {
+  rpc TransferTokenToAsset (TransferTokenToAssetContract) returns (Transaction) {
 
   }
 
