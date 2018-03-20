@@ -35,7 +35,7 @@ func HTTPStatusFromCode(code codes.Code) int {
 	case codes.Unauthenticated:
 		return http.StatusUnauthorized
 	case codes.ResourceExhausted:
-		return http.StatusServiceUnavailable
+		return http.StatusRequestEntityTooLarge
 	case codes.FailedPrecondition:
 		return http.StatusPreconditionFailed
 	case codes.Aborted:
