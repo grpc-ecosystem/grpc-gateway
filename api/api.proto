@@ -51,7 +51,7 @@ service Wallet {
   rpc TransferAsset (TransferAssetContract) returns (Transaction) {
 
   }
-  rpc TransferTokenToAsset (TransferTokenToAssetContract) returns (Transaction) {
+  rpc TransferTokenToAsset (ParticipateAssetIssueContract) returns (Transaction) {
 
   }
 
