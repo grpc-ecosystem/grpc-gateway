@@ -83,11 +83,11 @@ message AssetIssueContract {
   bytes url = 21;
 }
 
-message TransferTokenToAssetContract {
+message ParticipateAssetIssueContract {
   bytes owner_address = 1;
   bytes to_address = 2;
-  bytes name = 3;
-  int32 trx_num = 4;
+  bytes asset_name = 3;
+  int64 amount = 4;
 }
 
 message DeployContract {
