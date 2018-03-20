@@ -82,7 +82,7 @@ message WitnessList {
 }
 
 message AssetIssueList {
-  repeated AssetIssueContract witnesses = 1;
+  repeated AssetIssueContract assetIssue = 1;
 }
 
 // Gossip node list
