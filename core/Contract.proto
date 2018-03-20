@@ -87,7 +87,7 @@ message ParticipateAssetIssueContract {
   bytes owner_address = 1;
   bytes to_address = 2;
   bytes asset_name = 3;
-  int32 amount = 4;
+  int64 amount = 4;
 }
 
 message DeployContract {
