@@ -73,7 +73,7 @@ message Transaction {
     enum ContractType {
       AccountCreateContract = 0;
       TransferContract = 1;
-      TransferAssertContract = 2;
+      TransferAssetContract = 2;
       VoteAssetContract = 3;
       VoteWitnessContract = 4;
       WitnessCreateContract = 5;
