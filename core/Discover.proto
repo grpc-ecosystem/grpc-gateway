@@ -6,44 +6,6 @@ package protocol;
 option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
 option java_outer_classname = "Discover"; //Specify the class name of the generated Java file
 
-enum ReasonCode {
-  REQUESTED = 0;
-  TCP_ERROR = 1;
-  BAD_PROTOCOL = 2;
-  USELESS_PEER = 3;
-  TOO_MANY_PEERS = 4;
-  DUPLICATE_PEER = 5;
-  INCOMPATIBLE_PROTOCOL = 6;
-  NULL_IDENTITY = 7;
-  PEER_QUITING = 8;
-  UNEXPECTED_IDENTITY = 9;
-  LOCAL_IDENTITY = 10;
-  PING_TIMEOUT = 11;
-  USER_REASON = 12;
-  UNKNOWN = 13;
-}
-
-message Peer {
-  bytes address = 1;
-  int32 port = 2;
-  string peerId = 3;
-}
-
-message DisconnectMessage {
-  ReasonCode reason = 1;
-}
-
-message HelloMessage {
-  int32 p2pVersion = 1;
-  string clientId = 2;
-  int32 listenPort = 4;
-  string peerId = 5;
-}
-
-message PeersMessage {
-  repeated Peer peers = 1;
-}
-
 message Endpoint {
   bytes address = 1;
   int32 port = 2;
