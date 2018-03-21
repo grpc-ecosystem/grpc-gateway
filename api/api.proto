@@ -9,9 +9,10 @@ option java_outer_classname = "GrpcAPI"; //Specify the class name of the generat
 
 service Wallet {
 
-  rpc GetBalance (Account) returns (Account) {
+  rpc GetAccount (Account) returns (Account) {
 
   };
+
   rpc CreateTransaction (TransferContract) returns (Transaction) {
 
   };
