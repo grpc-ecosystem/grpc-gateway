@@ -52,6 +52,7 @@ service Wallet {
   rpc TransferAsset (TransferAssetContract) returns (Transaction) {
 
   }
+
   rpc ParticipateAssetIssue (ParticipateAssetIssueContract) returns (Transaction) {
 
   }
@@ -60,6 +61,9 @@ service Wallet {
 
   }
   rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
+
+  }
+  rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
 
   }
   rpc GetNowBlock (EmptyMessage) returns (Block) {
