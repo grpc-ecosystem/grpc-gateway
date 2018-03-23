@@ -13,9 +13,9 @@ message Endpoint {
 }
 
 message PingMessage {
-  int32 version = 1;
-  Endpoint from = 2;
-  Endpoint to = 3;
+  Endpoint from = 1;
+  Endpoint to = 2;
+  int32 version = 3;
   int64 timestamp = 4;
 }
 
