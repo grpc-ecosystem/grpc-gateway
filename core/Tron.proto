@@ -205,7 +205,4 @@ message DisconnectMessage {
 message HelloMessage {
   Endpoint from = 1;
   int32 version = 2;
-  string clientId = 3;
-  int32 listenPort = 4;
-  string peerId = 5;
 }
