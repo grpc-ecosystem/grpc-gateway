@@ -66,6 +66,9 @@ service Wallet {
   rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
 
   }
+  rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
+
+  }
   rpc GetNowBlock (EmptyMessage) returns (Block) {
 
   }
@@ -110,4 +113,7 @@ message EmptyMessage {
 }
 message NumberMessage {
   int64 num = 1;
+}
+message BytesMessage {
+  bytes value = 1;
 }
