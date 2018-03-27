@@ -76,6 +76,16 @@ service Wallet {
 
   }
 };
+// the api of tron's db
+service Database {
+
+};
+
+// the api of tron's network such as node list.
+service Network {
+
+};
+
 
 message Return {
   bool result = 1;
