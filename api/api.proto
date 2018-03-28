@@ -75,6 +75,9 @@ service Wallet {
   rpc GetBlockByNum (NumberMessage) returns (Block) {
 
   }
+  rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
+
+  }
 };
 // the api of tron's db
 service Database {
