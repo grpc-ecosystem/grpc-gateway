@@ -105,7 +105,7 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler 
 	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
 		var protoReq EmptyProto
-		err = dec.Decode(&protoReq)
+		err := dec.Decode(&protoReq)
 		if err == io.EOF {
 			return err
 		}
@@ -113,7 +113,7 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler 
 			grpclog.Printf("Failed to decode request: %v", err)
 			return err
 		}
-		if err = stream.Send(&protoReq); err != nil {
+		if err := stream.Send(&protoReq); err != nil {
 			grpclog.Printf("Failed to send request: %v", err)
 			return err
 		}
