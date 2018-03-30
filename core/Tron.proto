@@ -195,6 +195,7 @@ enum ReasonCode {
   LOCAL_IDENTITY = 10;
   PING_TIMEOUT = 11;
   USER_REASON = 12;
+  RESET = 16;
   UNKNOWN = 255;
 }
 
