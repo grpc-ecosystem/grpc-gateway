@@ -25,6 +25,10 @@ service Wallet {
 
   };
 
+  rpc UpdateAccount (AccountUpdateContract) returns (Transaction) {
+
+  };
+
   rpc CreateAccount (AccountCreateContract) returns (Transaction) {
 
   };

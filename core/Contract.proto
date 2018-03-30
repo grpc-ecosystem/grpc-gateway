@@ -28,6 +28,12 @@ message AccountCreateContract {
   bytes owner_address = 3;
 }
 
+// update account name if the account has no name.
+message AccountUpdateContract{
+  bytes account_name = 1;
+  bytes owner_address = 2;
+}
+
 message TransferContract {
   bytes owner_address = 1;
   bytes to_address = 2;
