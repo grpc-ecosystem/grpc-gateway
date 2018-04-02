@@ -98,8 +98,6 @@ message Transaction {
 
   message raw {
     TransactionType type = 2;
-    repeated TXInput vin = 5;
-    repeated TXOutput vout = 7;
     int64 expiration = 8;
     bytes data = 10;
     repeated Contract contract = 11;
