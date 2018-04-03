@@ -719,7 +719,7 @@ func TestTimeout(t *testing.T) {
 	}
 	defer resp.Body.Close()
 
-	if got, want := resp.StatusCode, http.StatusRequestTimeout; got != want {
+	if got, want := resp.StatusCode, http.StatusGatewayTimeout; got != want {
 		t.Errorf("resp.StatusCode = %d; want %d", got, want)
 	}
 }
