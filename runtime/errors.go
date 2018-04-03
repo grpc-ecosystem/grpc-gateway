@@ -14,6 +14,7 @@ import (
 )
 
 // HTTPStatusFromCode converts a gRPC error code into the corresponding HTTP response status.
+// See: https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
 func HTTPStatusFromCode(code codes.Code) int {
 	switch code {
 	case codes.OK:
@@ -25,7 +26,7 @@ func HTTPStatusFromCode(code codes.Code) int {
 	case codes.InvalidArgument:
 		return http.StatusBadRequest
 	case codes.DeadlineExceeded:
-		return http.StatusRequestTimeout
+		return http.StatusGatewayTimeout
 	case codes.NotFound:
 		return http.StatusNotFound
 	case codes.AlreadyExists:
@@ -35,9 +36,9 @@ func HTTPStatusFromCode(code codes.Code) int {
 	case codes.Unauthenticated:
 		return http.StatusUnauthorized
 	case codes.ResourceExhausted:
-		return http.StatusRequestEntityTooLarge
+		return http.StatusTooManyRequests
 	case codes.FailedPrecondition:
-		return http.StatusPreconditionFailed
+		return http.StatusBadRequest
 	case codes.Aborted:
 		return http.StatusConflict
 	case codes.OutOfRange:
