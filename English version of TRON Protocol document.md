@@ -448,24 +448,24 @@ Input, transaction and head block all require signature.
          Type type = 2;
         }
      
-   `ReasonCode`: the type of reason. 
+     `ReasonCode`: the type of reason. 
     
-   `ReasonCode` contains 15 types of disconnect reasons:  
-   `REQUESTED`  
-   `TCP_ERROR`  
-   `BAD_PROTOCOL`  
-   `USELESS_PEER`  
-   `TOO_MANY_PEERS`  
-   `DUPLICATE_PEER`  
-   `INCOMPATIBLE_PROTOCOL`  
-   `NULL_IDENTITY`  
-   `PEER_QUITING`  
-   `UNEXPECTED_IDENTITY`  
-   `LOCAL_IDENTITY`  
-   `PING_TIMEOUT`  
-   `USER_REASON`  
-   `RESET`  
-   `UNKNOWN` 
+     `ReasonCode` contains 15 types of disconnect reasons:  
+     `REQUESTED`  
+     `TCP_ERROR`  
+     `BAD_PROTOCOL`  
+     `USELESS_PEER`  
+     `TOO_MANY_PEERS`  
+     `DUPLICATE_PEER`  
+     `INCOMPATIBLE_PROTOCOL`  
+     `NULL_IDENTITY`  
+     `PEER_QUITING`  
+     `UNEXPECTED_IDENTITY`  
+     `LOCAL_IDENTITY`  
+     `PING_TIMEOUT`  
+     `USER_REASON`  
+     `RESET`  
+     `UNKNOWN` 
       
       enum ReasonCode {
         REQUESTED = 0;
@@ -485,14 +485,14 @@ Input, transaction and head block all require signature.
         UNKNOWN = 255;
       }
       
-   message`DisconnectMessage` contains `reason`.  
-   `DisconnectMessage`: the message when disconnection occurs.  
-   `reason`: the reason for disconnecting.
+     message`DisconnectMessage` contains `reason`.  
+     `DisconnectMessage`: the message when disconnection occurs.  
+     `reason`: the reason for disconnecting.
       
-   message`HelloMessage` contains 2 parameters:  
-   `HelloMessage`: the message for building connection.  
-   `from`: the nodes that request for building connection.  
-   `version`: the version when connection is built.
+     message`HelloMessage` contains 2 parameters:  
+     `HelloMessage`: the message for building connection.  
+     `from`: the nodes that request for building connection.  
+     `version`: the version when connection is built.
       
       
       
