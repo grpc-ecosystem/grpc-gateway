@@ -35,7 +35,7 @@ after_success:
 env:
   global:
   - "PATH=$PATH:$HOME/local/bin"
-  - GO_VERSION_TO_DIFF_TEST="go version go1\.9\.[0-9]+ linux/amd64"
+  - GO_VERSION_TO_DIFF_TEST="go version go1\.9\.[0-9]\+ linux/amd64"
   matrix:
   - GATEWAY_PLUGIN_FLAGS=
   - GATEWAY_PLUGIN_FLAGS=request_context=false
