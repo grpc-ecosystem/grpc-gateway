@@ -561,7 +561,7 @@ Input, transaction and head block all require signature.
    
    `PingMessage`: the message sent from one node to another in the connecting process.  
    message`PingMessage` contains 4 parameters:  
-   `from`: whcih node does the message send from.  
+   `from`: which node does the message send from.  
    `to`: which node will the message send to.  
    `version`: the version of the Internet.  
    `timestamp`: the timestamp of message.
@@ -573,7 +573,7 @@ Input, transaction and head block all require signature.
          int64 timestamp = 4;
         }
    
-   `PongMessage`: the message implies that nodes are connected.
+   `PongMessage`: the message implies that nodes are connected.  
    message`PongMessage` contains 3 parameters:  
    `from`: which node does the message send from.  
    `echo`:  
@@ -588,7 +588,7 @@ Input, transaction and head block all require signature.
    `FindNeighbours`: the message sent from one node to find another one.  
    message`FindNeighbours` contains 3 parameters:  
    `from`: which node does the message send from.  
-   `targetId`: the ID of targeted node.
+   `targetId`: the ID of targeted node.  
    `timestamp`: the timestamp of message. 
     
         message FindNeighbours {
