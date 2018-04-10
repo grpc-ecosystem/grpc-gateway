@@ -633,8 +633,8 @@
               
 +  网络UDP消息结构。
 
-  `Endpoint`：网络中节点信息存储结构.
-   消息体`Endpoint` 包含3个参数：  
+  `Endpoint`：网络中节点信息存储结构.  
+  消息体`Endpoint` 包含3个参数：  
    `address`：节点地址。  
    `port`：端口号。  
    `nodeId`： 节点ID信息。
@@ -659,7 +659,7 @@
        int64 timestamp = 4;
      }
     
-   `PongMessage`：连接建立成功时的回复消息。 
+   `PongMessage`：连接建立成功时的回复消息。  
    消息体`PongMessage` 包含3个参数：  
    `from`：消息来自的节点。  
    `echo`：  
@@ -683,11 +683,11 @@
       int64 timestamp = 3;
      }
 
-   `Neighbour`：相邻接点回复消息。
+   `Neighbour`：相邻接点回复消息。  
    消息体`Neighbours` 包含3个参数：  
    `from`: 消息来自的节点。  
    `neighbours`: 相邻节点。  
-   `timestamp`: 消息体创建时的时间戳。
+   `timestamp`: 消息创建时的时间戳。
    
     message Neighbours {
       Endpoint from = 1;
