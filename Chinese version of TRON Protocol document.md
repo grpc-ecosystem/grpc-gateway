@@ -216,7 +216,7 @@
    `decav_ratio`：衰减速率。  
    `vote_score`：合约的评分——比如：_12343_。  
    `description`：合约的描述——比如：_”trondada”_。  
-   `url`：合约的url地址链接——比如：_“https://www.noonetrust.cn”_。
+   `url`：合约的url地址链接。
 
     message AssetIssueContract {   
       bytes owner_address = 1;   
@@ -576,29 +576,5 @@
       repeated Endpoint neighbours = 2;
       int64 timestamp = 3;
      }
-
-
      
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # 详细的协议见附属文件。详细协议随着程序的迭代随时都可能发生变化，请以最新的版本为准。
