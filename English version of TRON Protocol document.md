@@ -279,56 +279,56 @@ Input, transaction and head block all require signature.
     There are 8 different of contract types: `AccountCreateContract`, `TransferContract`, `TransferAssetContract`, `VoteAssetContract`, `VoteWitnessContract`,`WitnessCreateContract`, `AssetIssueContract` and `DeployContract`.  
     `TransactionType` have two types: `UtxoType` and `ContractType`.
 
-      message Transaction {   
-        enum TranscationType {     
-          UtxoType = 0;     
-          ContractType = 1;   
-         }   
-         message Contract {     
-           enum ContractType {       
-             AccountCreateContract = 0;       
-             TransferContract = 1;       
-             TransferAssetContract = 2;       
-             VoteAssetContract = 3;       
-             VoteWitnessContract = 4;       
-             WitnessCreateContract = 5;       
-             AssetIssueContract = 6;       
-             DeployContract = 7; 
-             WitnessUpdateContract = 8;
-             ParticipateAssetIssueContract = 9    
-            }     
-            ContractType type = 1;     
-            google.protobuf.Any parameter = 2;   
-          }   
-          message raw {     
-            TranscationType type = 2;     
-            repeated TXInput vin = 5;     
-            repeated TXOutput vout = 7;     
-            int64 expiration = 8;     
-            bytes data = 10;     
-            repeated Contract contract = 11;     
-            bytes scripts = 16;   
-            int64 timestamp = 17;
+        message Transaction {   
+          enum TranscationType {     
+            UtxoType = 0;     
+            ContractType = 1;   
            }   
-           raw raw_data = 1;   
-           repeated bytes signature = 5;
-        }
+           message Contract {     
+             enum ContractType {       
+               AccountCreateContract = 0;       
+               TransferContract = 1;       
+               TransferAssetContract = 2;       
+               VoteAssetContract = 3;       
+               VoteWitnessContract = 4;       
+               WitnessCreateContract = 5;       
+               AssetIssueContract = 6;       
+               DeployContract = 7; 
+               WitnessUpdateContract = 8;
+               ParticipateAssetIssueContract = 9    
+              }     
+              ContractType type = 1;     
+              google.protobuf.Any parameter = 2;   
+            }   
+            message raw {     
+              TranscationType type = 2;     
+              repeated TXInput vin = 5;     
+              repeated TXOutput vout = 7;     
+              int64 expiration = 8;     
+              bytes data = 10;     
+              repeated Contract contract = 11;     
+              bytes scripts = 16;   
+              int64 timestamp = 17;
+             }   
+             raw raw_data = 1;   
+             repeated bytes signature = 5;
+          }
 
     message `TXOutputs` contains `outputs`.  
     `outputs`: an array of `TXOutput`.  
 
-      message TXOutputs {   
-        repeated TXOutput outputs = 1; 
-       }
+        message TXOutputs {   
+           repeated TXOutput outputs = 1; 
+         }
 
     message `TXOutput` contains `value` and `pubKeyHash`.  
     `value`: output value.  
     `pubKeyHash`: Hash of public key
 
-      message TXOutput {   
-        int64 value = 1;   
-        bytes pubKeyHash = 2; 
-       }
+        message TXOutput {   
+           int64 value = 1;   
+           bytes pubKeyHash = 2; 
+         }
 
     message `TXInput` contains `raw_data` and `signature`.  
     `raw_data`: a message `raw`.  
@@ -339,15 +339,15 @@ Input, transaction and head block all require signature.
     `vout`: value of last output.  
     `pubKey`: public key.
 
-      message TXInput {   
-        message raw {     
-          bytes txID = 1;     
-          int64 vout = 2;     
-          bytes pubKey = 3;   
+        message TXInput {   
+           message raw {     
+           bytes txID = 1;     
+           int64 vout = 2;     
+           bytes pubKey = 3;   
          }   
          raw raw_data = 1;   
          bytes signature = 4;
-        }
+          }
        
      message `Result` contains `fee` and `ret`.  
      `ret`: the state of transaction.  
@@ -374,15 +374,15 @@ Input, transaction and head block all require signature.
     `TRX`: transaction.  
     `BLOCK`: block.
 
-      // Inventory 
-      message Inventory {   
-        enum InventoryType {     
-          TRX = 0;     
-          BLOCK = 1;   
-         }   
-         InventoryType type = 1;   
-         repeated bytes ids = 2; 
-       }
+        // Inventory 
+        message Inventory {   
+          enum InventoryType {     
+            TRX = 0;     
+            BLOCK = 1;   
+           }   
+           InventoryType type = 1;   
+           repeated bytes ids = 2; 
+         }
 
     message `Items` contains 4 parameters:  
     `type`: type of items – e.g. _1_ stands for `TRX`.  
@@ -396,41 +396,41 @@ Input, transaction and head block all require signature.
     `BLOCK`: block.  
     `BLOCKHEADER`: block header.
 
-      message Items {   
-        enum ItemType {     
-          ERR = 0;     
-          TRX = 1;    
-          BLOCK = 2;     
-          BLOCKHEADER = 3;  
-         }   
-         ItemType type = 1;   
-         repeated Block blocks = 2;   
-         repeated BlockHeader 
-         block_headers = 3;   
-         repeated Transaction transactions = 4;
-       }
+        message Items {   
+          enum ItemType {     
+            ERR = 0;     
+            TRX = 1;    
+            BLOCK = 2;     
+            BLOCKHEADER = 3;  
+           }   
+           ItemType type = 1;   
+           repeated Block blocks = 2;   
+           repeated BlockHeader 
+           block_headers = 3;   
+           repeated Transaction transactions = 4;
+         }
 
     `InventoryItems` contains `type` and `items`.  
     `type`: what type of item.  
     `items`: items in an `InventoryItems`.
 
-      message InventoryItems {   
-        int32 type = 1;   
-        repeated bytes items = 2;
-        }
+        message InventoryItems {   
+          int32 type = 1;   
+          repeated bytes items = 2;
+          }
 
     message `BlockInventory` contains `type`.  
     `type`: what type of inventory.
     
     There are 3 types:`SYNC`, `ADVTISE`, `FETCH`.
     
-      // Inventory
-       message BlockInventory {
-         enum Type {
-           SYNC = 0;
-           ADVTISE = 1;
-           FETCH = 2;
-         }
+        // Inventory
+         message BlockInventory {
+           enum Type {
+             SYNC = 0;
+             ADVTISE = 1;
+             FETCH = 2;
+           }
     
      message `BlockId` contains `ids` and `type`.  
      `ids`: the identification of block.  
@@ -440,13 +440,13 @@ Input, transaction and head block all require signature.
      `hash`: the hash of block.  
      `number`: the hash and height of block.
       
-        message BlockId {
-           bytes hash = 1;
-           int64 number = 2;
+         message BlockId {
+            bytes hash = 1;
+            int64 number = 2;
+          }
+          repeated BlockId ids = 1;
+          Type type = 2;
          }
-         repeated BlockId ids = 1;
-         Type type = 2;
-        }
      
      `ReasonCode`: the type of reason. 
     
@@ -467,23 +467,23 @@ Input, transaction and head block all require signature.
      `RESET`  
      `UNKNOWN` 
       
-      enum ReasonCode {
-        REQUESTED = 0;
-        TCP_ERROR = 1;
-        BAD_PROTOCOL = 2;
-        USELESS_PEER = 3;
-        TOO_MANY_PEERS = 4;
-        DUPLICATE_PEER = 5;
-        INCOMPATIBLE_PROTOCOL = 6;
-        NULL_IDENTITY = 7;
-        PEER_QUITING = 8;
-        UNEXPECTED_IDENTITY = 9;
-        LOCAL_IDENTITY = 10;
-        PING_TIMEOUT = 11;
-        USER_REASON = 12;
-        RESET = 16;
-        UNKNOWN = 255;
-      }
+        enum ReasonCode {
+          REQUESTED = 0;
+          TCP_ERROR = 1;
+          BAD_PROTOCOL = 2;
+          USELESS_PEER = 3;
+          TOO_MANY_PEERS = 4;
+          DUPLICATE_PEER = 5;
+          INCOMPATIBLE_PROTOCOL = 6;
+          NULL_IDENTITY = 7;
+          PEER_QUITING = 8;
+          UNEXPECTED_IDENTITY = 9;
+          LOCAL_IDENTITY = 10;
+          PING_TIMEOUT = 11;
+          USER_REASON = 12;
+          RESET = 16;
+          UNKNOWN = 255;
+        }
       
      message`DisconnectMessage` contains `reason`.  
      `DisconnectMessage`: the message when disconnection occurs.  
@@ -550,11 +550,11 @@ Input, transaction and head block all require signature.
   `nodeId`:the ID of nodes.
    
    
-    message Endpoint {
-      bytes address = 1;
-      int32 port = 2;
-      bytes nodeId = 3;
-     }
+      message Endpoint {
+         bytes address = 1;
+         int32 port = 2;
+         bytes nodeId = 3;
+       }
    
    `PingMessage`: the message sent from one node to another in the connecting process.  
    message`PingMessage` contains 4 parameters:  
@@ -563,12 +563,12 @@ Input, transaction and head block all require signature.
    `version`: the version of the Internet.  
    `timestamp`: the timestamp of message.
    
-    message PingMessage {
-      Endpoint from = 1;
-      Endpoint to = 2;
-      int32 version = 3;
-      int64 timestamp = 4;
-     }
+       message PingMessage {
+          Endpoint from = 1;
+          Endpoint to = 2;
+         int32 version = 3;
+         int64 timestamp = 4;
+        }
    
    `PongMessage`: the message implies that nodes are connected.
    message`PongMessage` contains 3 parameters:  
@@ -576,11 +576,11 @@ Input, transaction and head block all require signature.
    `echo`:  
    `timestamp`: the timestamp of message.
 
-    message PongMessage {
-      Endpoint from = 1;
-      int32 echo = 2;
-      int64 timestamp = 3;
-     }
+        message PongMessage {
+          Endpoint from = 1;
+          int32 echo = 2;
+          int64 timestamp = 3;
+         }
    
    `FindNeighbours`: the message sent from one node to find another one.  
    message`FindNeighbours` contains 3 parameters:  
@@ -588,11 +588,11 @@ Input, transaction and head block all require signature.
    `targetId`: the ID of targeted node.
    `timestamp`: the timestamp of message. 
     
-    message FindNeighbours {
-      Endpoint from = 1;
-      bytes targetId = 2;
-      int64 timestamp = 3;
-     }
+        message FindNeighbours {
+          Endpoint from = 1;
+          bytes targetId = 2;
+          int64 timestamp = 3;
+         }
   
    `FindNeighbour`: the message replied by the neighbour node.  
     message`Neighbours` contains 3 parameters:  
@@ -600,10 +600,10 @@ Input, transaction and head block all require signature.
     `neighbours`: the neighbour node.  
     `timestamp`: the timestamp of message.
 
-    message Neighbours {
-      Endpoint from = 1;
-      repeated Endpoint neighbours = 2;
-      int64 timestamp = 3;
-     }
+        message Neighbours {
+          Endpoint from = 1;
+          repeated Endpoint neighbours = 2;
+          int64 timestamp = 3;
+         }
 
 # Please check detailed protocol document that may change with the iteration of the program at any time. Please refer to the latest version.
