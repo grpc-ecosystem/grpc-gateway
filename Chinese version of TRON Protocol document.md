@@ -500,7 +500,7 @@
    __`GetAssetIssueByAccount`__：通过`Account`获取发行资产。  
    __`GetAssetIssueByName`__：通过`Name`获取发行资产。  
    __`GetNowBlock`__：获取区块。  
-   __`GetBlockByNum`__：获取块号获取区块。  
+   __`GetBlockByNum`__：根据块号获取区块。  
    __`TotalTransaction`__：查看总交易量。  
    
        service Wallet {
