@@ -539,7 +539,10 @@ Input, transaction and head block all require signature.
 
    message `Return` has only one parameter:  
     `result`: a bool flag.  
-   message `Return` {   bool result = 1; }
+   
+       message `Return` {   
+           bool result = 1;
+         }
 
 + The message structure of UDP.
 
