@@ -516,8 +516,8 @@
 +  网络UDP消息结构。
 
   `Endpoint`：网络中节点信息存储结构.
-   消息体`Endpoint` 包含3个参数： 
-   `address`： 节点地址。  
+   消息体`Endpoint` 包含3个参数：  
+   `address`：节点地址。  
    `port`：端口号。  
    `nodeId`： 节点ID信息。
 
@@ -554,9 +554,9 @@
      }
    
    `FindNeighbours`：节点查询相邻节点时所发送的消息。  
-   消息体`FindNeighbours` 包含3个参数： 
+   消息体`FindNeighbours` 包含3个参数：  
    `from`: 消息来自的节点。  
-   `targetId`: 目标节点的信息。
+   `targetId`: 目标节点的信息。  
    `timestamp`: 消息创建时的时间戳。
 
     message FindNeighbours {
