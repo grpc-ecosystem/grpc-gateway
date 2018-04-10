@@ -536,9 +536,74 @@ Input, transaction and head block all require signature.
           
        };
 
-    message `Return` has only one parameter:  
-    `result`: a bool flag.  
-    message `Return` {   bool result = 1; }
 
+   message `Return` has only one parameter:  
+    `result`: a bool flag.  
+   message `Return` {   bool result = 1; }
+
++ The message structure of UDP.
+
+  `Endpoint`: the storage structure of nodes' information.  
+  message`Endpoint` contains 3 parameters:  
+  `address`: the address of nodes.  
+  `port`: the port number.  
+  `nodeId`:the ID of nodes.
+   
+   
+    message Endpoint {
+      bytes address = 1;
+      int32 port = 2;
+      bytes nodeId = 3;
+     }
+   
+   `PingMessage`: the message sent from one node to another in the connecting process.  
+   message`PingMessage` contains 4 parameters:  
+   `from`: whcih node does the message send from.  
+   `to`: which node will the message send to.  
+   `version`: the version of the Internet.  
+   `timestamp`: the timestamp of message.
+   
+    message PingMessage {
+      Endpoint from = 1;
+      Endpoint to = 2;
+      int32 version = 3;
+      int64 timestamp = 4;
+     }
+   
+   `PongMessage`: the message implies that nodes are connected.
+   message`PongMessage` contains 3 parameters:  
+   `from`: whcih node does the message send from. 
+   `echo`:  
+   `timestamp`: the timestamp of message.
+
+    message PongMessage {
+      Endpoint from = 1;
+      int32 echo = 2;
+      int64 timestamp = 3;
+     }
+   
+   `FindNeighbours`: the message sent from one node to find another one.  
+   message`FindNeighbours` contains 3 parameters:  
+   `from`: whcih node does the message send from.  
+   `targetId`: the ID of targeted node.
+   `timestamp`: the timestamp of message. 
+    
+    message FindNeighbours {
+      Endpoint from = 1;
+      bytes targetId = 2;
+      int64 timestamp = 3;
+     }
+  
+   `FindNeighbour`: the message replied by the neighbour node.  
+    message`Neighbours` contains 3 parameters:  
+    `from`: whcih node does the message send from.    
+    `neighbours`: the neighbour node.  
+    `timestamp`: the timestamp of message.
+
+    message Neighbours {
+      Endpoint from = 1;
+      repeated Endpoint neighbours = 2;
+      int64 timestamp = 3;
+     }
 
 # Please check detailed protocol document that may change with the iteration of the program at any time. Please refer to the latest version.
