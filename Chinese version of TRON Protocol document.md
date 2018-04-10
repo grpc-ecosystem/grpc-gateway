@@ -40,7 +40,7 @@
    `address`：验证节点的地址——比如：_“0xu82h…7237”_。   
    `voteCount`：验证节点所得投票数——比如：_234234_。  
    `pubKey`：验证节点的公钥——比如：_“0xu82h…7237”_。  
-   `url`：验证节点的url链接——比如：_“https://www.noonetrust.com”_。  
+   `url`：验证节点的url链接。  
    `totalProduce`：验证节点产生的区块数——比如：_2434_。  
    `totalMissed`：验证节点丢失的区块数——比如：_7_。  
    `latestBlockNum`：最新的区块高度——比如：_4522_。
@@ -188,8 +188,8 @@
    `WitnessCreateContract`包含3种参数：  
    `private_key`：合约的私钥——比如：_“0xu82h…7237”_。  
    `owner_address`：合约持有人地址——比如：_“0xu82h…7237”_。  
-   `url`：合约的url链接——比如：_“https://www.noonetrust.cn”_。
-
+   `url`：合约的url链接。
+   
     message WitnessCreateContract {   
       bytes owner_address = 1;   
       bytes private_key = 2;   
@@ -198,7 +198,7 @@
 
    `WitnessUpdateContract`包含2种参数：  
    `owner_address`：合约持有人地址——比如：_“0xu82h…7237”_。  
-   `update_url`：合约的url链接——比如：_“https://www.noonetrust.cn”_。
+   `update_url`：合约的url链接。
    
     message WitnessUpdateContract {
       bytes owner_address = 1;
