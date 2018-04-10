@@ -575,7 +575,7 @@ Input, transaction and head block all require signature.
    
    `PongMessage`: the message implies that nodes are connected.
    message`PongMessage` contains 3 parameters:  
-   `from`: whcih node does the message send from.  
+   `from`: which node does the message send from.  
    `echo`:  
    `timestamp`: the timestamp of message.
 
@@ -587,7 +587,7 @@ Input, transaction and head block all require signature.
    
    `FindNeighbours`: the message sent from one node to find another one.  
    message`FindNeighbours` contains 3 parameters:  
-   `from`: whcih node does the message send from.  
+   `from`: which node does the message send from.  
    `targetId`: the ID of targeted node.
    `timestamp`: the timestamp of message. 
     
@@ -599,7 +599,7 @@ Input, transaction and head block all require signature.
   
    `FindNeighbour`: the message replied by the neighbour node.  
     message`Neighbours` contains 3 parameters:  
-    `from`: whcih node does the message send from.    
+    `from`: which node does the message send from.    
     `neighbours`: the neighbour node.  
     `timestamp`: the timestamp of message.
 
