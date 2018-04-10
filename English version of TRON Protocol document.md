@@ -496,7 +496,7 @@ Input, transaction and head block all require signature.
       
       
       
-+	Wallet Service RPC
++	Wallet Service RPC and blockchain explorer
         
    `Wallet` service contains several RPCs.  
     __`GetBalance`__ :  
@@ -507,42 +507,164 @@ Input, transaction and head block all require signature.
     Broadcast a `Transaction`. A `Return` will be returned indicating if broadcast is success of not.  
     __`CreateAccount`__ :  
     Create an account by giving a `AccountCreateContract`.  
-    __`CreatAssetContract`__ :  
-    Issue an asset by giving a `AssetIssueContract`.
-
-      service Wallet {    
+    __`CreatAssetIssue`__ :  
+    Issue an asset by giving a `AssetIssueContract`.  
+    __`ListAccounts`__:  
+    Check out the list of accounts by giving a `ListAccounts`.  
+    __`UpdateAccount`__:  
+    Issue an asset by giving a `UpdateAccountContract`.  
+    __`VoteWitnessAccount`__:  
+    Issue an asset by giving a `VoteWitnessContract`.  
+    __`WitnessList`__:  
+    Check out the list of witnesses by giving a `WitnessList`.  
+    __`UpdateWitness`__:  
+    Issue an asset by giving a `WitnessUpdateContract`.  
+    __`CreateWitness`__:  
+    Issue an asset by giving a `WitnessCreateContract`.  
+    __`TransferAsset`__:  
+    Issue an asset by giving a `TransferAssetContract`.  
+    __`ParticipateAssetIssue`__:  
+    Issue an asset by giving a `ParticipateAssetIssueContract`.  
+    __`ListNodes`__:  
+    Check out the list of nodes by giving a `ListNodes`.  
+    __`GetAssetIssueList`__:  
+    Get the list of issue asset by giving a `GetAssetIssueList`.  
+    __`GetAssetIssueByAccount`__:  
+    Get issue asset by giving a `Account`.  
+    __`GetAssetIssueByName`__:  
+    Get issue asset by giving a`Name`.  
+    __`GetNowBlock`__:  
+    Get block.  
+    __`GetBlockByNum`__:  
+    Get block by block number.  
+    __`TotalTransaction`__:  
+    Check out the total transaction.
+   
+      service Wallet {
       
-        rpc GetBalance (Account) returns (Account) {    
+        rpc GetAccount (Account) returns (Account) {
+      
+        };
+      
+        rpc CreateTransaction (TransferContract) returns (Transaction) {
+      
+        };
+      
+        rpc BroadcastTransaction (Transaction) returns (Return) {
+      
+        };
+      
+        rpc ListAccounts (EmptyMessage) returns (AccountList) {
+      
+        };
+      
+        rpc UpdateAccount (AccountUpdateContract) returns (Transaction) {
+      
+        };
+      
+        rpc CreateAccount (AccountCreateContract) returns (Transaction) {
+      
+        };
+      
+        rpc VoteWitnessAccount (VoteWitnessContract) returns (Transaction) {
+      
+        };
+      
+        rpc CreateAssetIssue (AssetIssueContract) returns (Transaction) {
+      
+        };
+      
+        rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
+      
+        };
+      
+        rpc UpdateWitness (WitnessUpdateContract) returns (Transaction) {
+      
+        };
+      
+        rpc CreateWitness (WitnessCreateContract) returns (Transaction) {
+      
+        };
+      
+        rpc TransferAsset (TransferAssetContract) returns (Transaction) {
+      
+        }
+      
+        rpc ParticipateAssetIssue (ParticipateAssetIssueContract) returns (Transaction) {
+      
+        }
+      
+        rpc ListNodes (EmptyMessage) returns (NodeList) {
+      
+        }
+        rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
+      
+        }
+        rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
+      
+        }
+        rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
+      
+        }
+        rpc GetNowBlock (EmptyMessage) returns (Block) {
+      
+        }
+        rpc GetBlockByNum (NumberMessage) returns (Block) {
+      
+        }
+        rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
+      
+        }
+      };
+   
+   `AccountList`: the list of acounts in the blockchain explorer.  
+   message `AccountList` contains one parameter:  
+   `account`:
+   
+       message AccountList {
+         repeated Account accounts = 1;
+       }
+       
+   `WitnessList`: the list of witnesses in the blockchain explorer.  
+   message `WitnessList` contains one parameter:  
+   `witnesses`:
+   
+        message WitnessList {
+          repeated Witness witnesses = 1;
+        }
         
-        };   
-        rpc CreateTransaction (TransferContract) returns 
-       (Transaction) {    
-       
-         };    
-         
-         rpc BroadcastTransaction (Transaction) returns (Return) {   
-          
-         };    
-         
-         rpc CreateAccount(AccountCreateContract) returns 
-       (Transaction) {    
-       
-         };    
-         
-         rpc CreateAssetIssue(AssetIssueContract) returns 
-       (Transaction) {    
-         
-          };  
-          
-       };
-
-
+   `AssetIssueList`: the list of issue asset in the blockchain explorer.  
+   message `AssetIssueList` contains one parameter:  
+   `assetIssue`:
+   
+        message AssetIssueList {
+          repeated AssetIssueContract assetIssue = 1;
+        }
+   
+   `NodeList`: the list of nodes in the node distribution map.  
+   message `NodeList` contains one parameter:  
+   `nodes`:
+   
+         message NodeList {
+           repeated Node nodes = 1;
+         }
+   
+   `Address`: the address  of nodes.  
+   message`Address` contains 2 parameters:  
+   `host`: the host of nodes.  
+   `port`: the port number of nodes.
+   
+          message Address {
+            bytes host = 1;
+            int32 port = 2;
+          }
+               
    message `Return` has only one parameter:  
     `result`: a bool flag.  
    
-       message `Return` {   
-           bool result = 1;
-         }
+          message `Return` {   
+            bool result = 1;
+           }
 
 + The message structure of UDP.
 
@@ -608,5 +730,7 @@ Input, transaction and head block all require signature.
           repeated Endpoint neighbours = 2;
           int64 timestamp = 3;
          }
+
+
 
 # Please check detailed protocol document that may change with the iteration of the program at any time. Please refer to the latest version.

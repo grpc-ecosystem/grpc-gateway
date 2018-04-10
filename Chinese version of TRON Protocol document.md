@@ -479,41 +479,158 @@
    `from`请：求建立连接的节点。  
    `version`：建立连接的节点。
          
-+	钱包服务RPC
++	钱包服务RPC和区块链浏览器。
 
    `Wallet`钱包服务包含多个RPC。  
    __`Getbalance`__：获取`Account`的余额。  
    __`CreatTransaction`__：通过`TransferContract`创建交易。  
    __`BroadcastTransaction`__：广播`Transaction`。  
    __`CreateAccount`__：通过`AccountCreateContract`创建账户。  
-   __`CreatAssetContract`__：通过`AssetIssueContract`发布一个资产。
+   __`CreatAssetIssue`__：通过`AssetIssueContract`发布一个资产。  
+   __`ListAccounts`__：通过`ListAccounts`查看账户列表。  
+   __`UpdateAccount`__：通过`UpdateAccountContract`发布一个资产。  
+   __`VoteWitnessAccount`__：通过`VoteWitnessContract`发布一个资产。  
+   __`WitnessList`__：通过`WitnessList`查看见证节点列表。  
+   __`UpdateWitness`__：通过`WitnessUpdateContract`发布一个资产。  
+   __`CreateWitness`__：通过`WitnessCreateContract`发布一个资产。  
+   __`TransferAsset`__：通过`TransferAssetContract`发布一个资产。  
+   __`ParticipateAssetIssue`__：通过`ParticipateAssetIssueContract`发布一个资产。  
+   __`ListNodes`__：通过`ListNodes`查看节点列表。  
+   __`GetAssetIssueList`__：通过`GetAssetIssueList`查看资产发布节点列表。  
+   __`GetAssetIssueByAccount`__：通过`Account`获取发行资产。  
+   __`GetAssetIssueByName`__：通过`Name`获取发行资产。  
+   __`GetNowBlock`__：获取区块。  
+   __`GetBlockByNum`__：获取块号获取区块。  
+   __`TotalTransaction`__：查看总交易量。  
+   
+       service Wallet {
+       
+         rpc GetAccount (Account) returns (Account) {
+       
+         };
+       
+         rpc CreateTransaction (TransferContract) returns (Transaction) {
+       
+         };
+       
+         rpc BroadcastTransaction (Transaction) returns (Return) {
+       
+         };
+       
+         rpc ListAccounts (EmptyMessage) returns (AccountList) {
+       
+         };
+       
+         rpc UpdateAccount (AccountUpdateContract) returns (Transaction) {
+              
+         };
+       
+         rpc CreateAccount (AccountCreateContract) returns (Transaction) {
+       
+         };
+       
+         rpc VoteWitnessAccount (VoteWitnessContract) returns (Transaction) {
+       
+         };
+       
+         rpc CreateAssetIssue (AssetIssueContract) returns (Transaction) {
+       
+         };
+       
+         rpc WitnessList (EmptyMessage) returns (WitnessList) {
+       
+         };
+       
+         rpc UpdateWitness (WitnessUpdateContract) returns (Transaction) {
+       
+         };
+       
+         rpc CreateWitness (WitnessCreateContract) returns (Transaction) {
+       
+         };
+       
+         rpc TransferAsset (TransferAssetContract) returns (Transaction) {
+       
+         }
+       
+         rpc ParticipateAssetIssue (ParticipateAssetIssueContract) returns (Transaction) {
+       
+         }
+       
+         rpc ListNodes (EmptyMessage) returns (NodeList) {
+       
+         }
+         rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
+       
+         }
+         rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
+       
+         }
+         rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
+       
+         }
+         rpc GetNowBlock (EmptyMessage) returns (Block) {
+       
+         }
+         rpc GetBlockByNum (NumberMessage) returns (Block) {
+       
+         }
+         rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
+       
+         }
+       };
 
-    service Wallet {    
+   `AccountList`： 区块链浏览器中的账户列表。  
+   消息体 `AccountList` 包含1个参数：  
+   `account`：
+   
+        message AccountList {
+          repeated Account accounts = 1;
+        }  
+   
+   `WitnessList`：区块链浏览器中的见证节点列表。  
+   消息体 `WitnessList` 包含1个参数：  
+   `witnesses`：
+      
+           message WitnessList {
+             repeated Witness witnesses = 1;
+           }
+           
+   `AssetIssueList`：区块链浏览器中的发布资产列表。  
+   消息体 `AssetIssueList` 包含1个参数:  
+   `assetIssue`：
+      
+           message AssetIssueList {
+             repeated AssetIssueContract assetIssue = 1;
+           }
+      
+     
+   `NodeList`： 分布节点图中的节点列表。  
+   消息体 `NodeList` 包含1个参数：  
+   `nodes`：
+      
+            message NodeList {
+              repeated Node nodes = 1;
+            }
+      
+   `Address`: 节点地址。  
+   消息体`Address` 包含2个参数：  
+   `host`：节点所有者。  
+   `port`：节点的端口号。
+      
+             message Address {
+               bytes host = 1;
+               int32 port = 2;
+             }
+                  
     
-      rpc GetBalance (Account) returns (Account) {    
-      
-      };   
-      rpc CreateTransaction (TransferContract) returns (Transaction) {    
-      
-      };    
-      rpc BroadcastTransaction (Transaction) returns (Return) {    
-      
-      };    
-      rpc CreateAccount(AccountCreateContract) returns (Transaction) {    
-      
-      };    rpc CreateAssetIssue(AssetIssueContract) returns (Transaction) {    
-      
-      };  
-      
-     };
-
-
    消息体`Return`只含有一个参数：  
    `result`: 布尔表类型标志位。  
 
-    message `Return` {   
-      bool result = 1; 
-     }
+              message `Return` {   
+                 bool result = 1; 
+              }
+              
 +  网络UDP消息结构。
 
   `Endpoint`：网络中节点信息存储结构.
