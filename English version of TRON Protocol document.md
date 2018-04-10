@@ -575,7 +575,7 @@ Input, transaction and head block all require signature.
    
    `PongMessage`: the message implies that nodes are connected.
    message`PongMessage` contains 3 parameters:  
-   `from`: whcih node does the message send from. 
+   `from`: whcih node does the message send from.  
    `echo`:  
    `timestamp`: the timestamp of message.
 
