@@ -83,6 +83,9 @@ service Wallet {
   rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
 
   }
+  rpc GetDynamicProperties (EmptyMessage) returns (DynamicProperties) {
+
+  }
 };
 // the api of tron's db
 service Database {
