@@ -182,6 +182,11 @@ message Items {
   repeated Transaction transactions = 4;
 }
 
+// DynamicProperties
+message DynamicProperties {
+  int64 last_solidity_block_num = 1;
+}
+
 enum ReasonCode {
   REQUESTED = 0;
   TCP_ERROR = 1;
