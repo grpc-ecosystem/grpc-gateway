@@ -19,3 +19,11 @@ protoc -I=./protocol \
     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
     --grpc-gateway_out=logtostderr=true:../../../ \
     ./protocol/api/*.proto
+
+
+# (Optional) Generate swagger definitions
+protoc -I./protocol   \
+    -I$GOPATH/src \
+    -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+    --swagger_out=logtostderr=true:../../../ \
+    ./protocol/api/*.proto
