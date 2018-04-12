@@ -1,0 +1,140 @@
+syntax = "proto3";
+package protocol;
+
+import "core/Tron.proto";
+import "core/Contract.proto";
+
+option java_package = "org.tron.api"; //Specify the name of the package that generated the Java file
+option java_outer_classname = "GrpcAPI"; //Specify the class name of the generated Java file
+option go_package = "github.com/tronprotocol/go-client-api/api";
+
+service Wallet {
+
+  rpc GetAccount (Account) returns (Account) {
+
+  };
+
+  rpc CreateTransaction (TransferContract) returns (Transaction) {
+
+  };
+
+  rpc BroadcastTransaction (Transaction) returns (Return) {
+
+  };
+
+  rpc ListAccounts (EmptyMessage) returns (AccountList) {
+
+  };
+
+  rpc UpdateAccount (AccountUpdateContract) returns (Transaction) {
+
+  };
+
+  rpc CreateAccount (AccountCreateContract) returns (Transaction) {
+
+  };
+
+  rpc VoteWitnessAccount (VoteWitnessContract) returns (Transaction) {
+
+  };
+
+  rpc CreateAssetIssue (AssetIssueContract) returns (Transaction) {
+
+  };
+
+  rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
+
+  };
+
+  rpc UpdateWitness (WitnessUpdateContract) returns (Transaction) {
+
+  };
+
+  rpc CreateWitness (WitnessCreateContract) returns (Transaction) {
+
+  };
+
+  rpc TransferAsset (TransferAssetContract) returns (Transaction) {
+
+  }
+
+  rpc ParticipateAssetIssue (ParticipateAssetIssueContract) returns (Transaction) {
+
+  }
+
+  rpc ListNodes (EmptyMessage) returns (NodeList) {
+
+  }
+  rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
+
+  }
+  rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
+
+  }
+  rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
+
+  }
+  rpc GetNowBlock (EmptyMessage) returns (Block) {
+
+  }
+  rpc GetBlockByNum (NumberMessage) returns (Block) {
+
+  }
+  rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
+
+  }
+  rpc GetDynamicProperties (EmptyMessage) returns (DynamicProperties) {
+
+  }
+};
+// the api of tron's db
+service Database {
+
+};
+
+// the api of tron's network such as node list.
+service Network {
+
+};
+
+
+message Return {
+  bool result = 1;
+}
+
+message AccountList {
+  repeated Account accounts = 1;
+}
+
+message WitnessList {
+  repeated Witness witnesses = 1;
+}
+
+message AssetIssueList {
+  repeated AssetIssueContract assetIssue = 1;
+}
+
+// Gossip node list
+message NodeList {
+  repeated Node nodes = 1;
+}
+
+// Gossip node
+message Node {
+  Address address = 1;
+}
+
+// Gossip node address
+message Address {
+  bytes host = 1;
+  int32 port = 2;
+}
+
+message EmptyMessage {
+}
+message NumberMessage {
+  int64 num = 1;
+}
+message BytesMessage {
+  bytes value = 1;
+}
