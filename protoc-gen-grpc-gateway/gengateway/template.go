@@ -207,10 +207,8 @@ var (
 	var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 	var metadata runtime.ServerMetadata
 {{if .Body}}
-	if req.ContentLength > 0 {
-		if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil {
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-		}
+	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 {{end}}
 {{if .PathParams}}
