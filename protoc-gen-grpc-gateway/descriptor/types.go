@@ -56,6 +56,16 @@ func (f *File) proto2() bool {
 	return f.Syntax == nil || f.GetSyntax() == "proto2"
 }
 
+// Weak returns whether the ith import of the file is a weak import.
+func (f *File) Weak(i int32) bool {
+	for _, j := range f.WeakDependency {
+		if j == i {
+			return true
+		}
+	}
+	return false
+}
+
 // Message describes a protocol buffer message types
 type Message struct {
 	// File is the file where the message is defined

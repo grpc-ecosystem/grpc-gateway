@@ -87,7 +87,7 @@ func newExampleFileDescriptorWithGoPkg(gp *descriptor.GoPackage) *descriptor.Fil
 
 func TestGenerateServiceWithoutBindings(t *testing.T) {
 	file := newExampleFileDescriptor()
-	g := &generator{}
+	g := &generator{reg: &descriptor.Registry{}}
 	got, err := g.generate(crossLinkFixture(file))
 	if err != nil {
 		t.Errorf("generate(%#v) failed with %v; want success", file, err)
@@ -123,7 +123,7 @@ func TestGenerateOutputPath(t *testing.T) {
 		},
 	}
 
-	g := &generator{}
+	g := &generator{reg: &descriptor.Registry{}}
 	for _, c := range cases {
 		file := c.file
 		gots, err := g.Generate([]*descriptor.File{crossLinkFixture(file)})

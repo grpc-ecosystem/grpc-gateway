@@ -111,5 +111,23 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 			imports = append(imports, pkg)
 		}
 	}
+
+	for i, dep := range file.Dependency {
+		fd, err := g.reg.LookupFile(dep)
+		if err != nil {
+			continue
+		}
+
+		if file.Weak(int32(i)) {
+			continue
+		}
+
+		if fd.GetPackage() == file.GetPackage() {
+			fd.GoPkg.Alias = fmt.Sprintf("%s_%s", fd.GoPkg.Name, "local")
+		}
+
+		imports = append(imports, fd.GoPkg)
+	}
+
 	return applyTemplate(param{File: file, Imports: imports, UseRequestContext: g.useRequestContext})
 }
