@@ -84,10 +84,20 @@ service Wallet {
 
   }
 };
+
 // the api of tron's db
 service Database {
   // for tapos
   rpc getBlockReference (EmptyMessage) returns (BlockReference) {
+
+  }
+  rpc GetDynamicProperties (EmptyMessage) returns (DynamicProperties) {
+
+  }
+  rpc GetNowBlock (EmptyMessage) returns (Block) {
+
+  }
+  rpc GetBlockByNum (NumberMessage) returns (Block) {
 
   }
 };
