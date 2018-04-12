@@ -14,7 +14,7 @@ service Wallet {
 
   rpc GetAccount (Account) returns (Account) {
     option (google.api.http) = {
-          post: "v1/account"
+          post: "/v1/account"
           body: "*"
       };
 
