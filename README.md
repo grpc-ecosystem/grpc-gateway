@@ -18,22 +18,17 @@ However, you might still want to provide a traditional RESTful API as well. Reas
 This project aims to provide that HTTP+JSON interface to your gRPC service. A small amount of configuration in your service to attach HTTP semantics is all that's needed to generate a reverse-proxy with this library.
 
 ## Installation
-First you need to install ProtocolBuffers 3.0.0-beta-3 or later.
+First you need to install ProtocolBuffers 3.0.0-beta-3 or later. If you have not install proto, you can install protoc as fellow
 
 ```sh
-wget https://github.com/google/protobuf/releases/download/v3.5.1/protobuf-go-3.5.1.tar.gz
-tar -xzvf protobuf-go-3.5.1.tar.gz
-cd protobuf-3.5.1 && ./configure --prefix=$HOME/protobuf && make && make install
+cd /tmp
+wget https://github.com/google/protobuf/releases/download/v3.5.1/protoc-3.5.1-linux-x86_64.zip
+mkdir protobuf
+tar -xzvf protoc-3.5.1-linux-x86_64.zip -C ./protobuf
+exprot PATH=$PATH:./protobuf/bin
 ```
 
-Then, `go get -u` as usual the following packages:
-
-```sh
-go get -u github.com/golang/protobuf/protoc-gen-go
-go get -u github.com/tronprotocol/grpc-gateway
-```
-
-
+> note: you can chose to  download other os realeas on https://github.com/google/protobuf/releases instead of linux realease
 
 ## Usage
 
@@ -43,7 +38,16 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 2. Start tron grpc inverse proxy
 
 ```
+# download project
+go get -u github.com/tronprotocol/grpc-gateway
+
+# change to project dir
 cd $GOPATH/src/github.com/tronprotocol/grpc-gateway
+
+# (Optional) Generate gRPC stub and reverse-proxy
+./gen_proto.sh
+
+# run proxy-server
 go run tron_http/main.go
 ```
 
