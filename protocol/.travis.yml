@@ -17,8 +17,8 @@ before_script:
 # let's use protobuf
 script:
   - $HOME/protobuf/bin/protoc --java_out=./  ./core/*.proto ./api/*.proto
-  - $HOME/protobuf/bin/protoc --go_out=./  ./core/*.proto
-  - $HOME/protobuf/bin/protoc --go_out=./  ./api/*.proto
-  - $HOME/protobuf/bin/protoc --grpc-gateway_out=logtostderr=true:./  ./api/*.proto
+  - $HOME/protobuf/bin/protoc I. -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --go_out=./  ./core/*.proto
+  - $HOME/protobuf/bin/protoc I. -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --go_out=./  ./api/*.proto
+  - $HOME/protobuf/bin/protoc I. -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --grpc-gateway_out=logtostderr=true:./  ./api/*.proto
 
   - ls -l
