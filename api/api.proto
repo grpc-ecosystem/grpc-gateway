@@ -68,7 +68,7 @@ service Wallet {
   rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
 
   }
-  rpc GetAssetIssueListBy (EmptyMessage) returns (AssetIssueList) {
+  rpc GetAssetIssueListByTimestamp (NumberMessage) returns (AssetIssueList) {
 
   }
   rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
