@@ -50,7 +50,7 @@ go run tron_http/main.go
 3. Test API of tron http
 
 ```
-curl -X POST -k http://localhost:8080/wallet/account/list
+curl -X POST -k http://localhost:8080/wallet/listaccount
 ```
 
 If you get account list josn data, congratulations
