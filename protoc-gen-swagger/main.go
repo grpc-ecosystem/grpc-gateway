@@ -16,9 +16,11 @@ import (
 
 var (
 	importPrefix         = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
-	file            = flag.String("file", "-", "where to load data from")
+	file                 = flag.String("file", "-", "where to load data from")
 	allowDeleteBody      = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
 	grpcAPIConfiguration = flag.String("grpc_api_configuration", "", "path to gRPC API Configuration in YAML format")
+	allowDeleteBody      = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
+	allowMerge           = flag.Bool("allow_merge", false, "if set, generation one swagger file out of multiple protos")
 )
 
 func main() {
@@ -34,7 +36,7 @@ func main() {
 		f, err = os.Open(*file)
 		if err != nil {
 			glog.Fatal(err)
-	}
+		}
 	}
 	glog.V(1).Info("Parsing code generator request")
 	req, err := codegenerator.ParseRequest(f)
@@ -52,6 +54,7 @@ func main() {
 
 	reg.SetPrefix(*importPrefix)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
+	reg.SetAllowMerge(*allowMerge)
 	for k, v := range pkgMap {
 		reg.AddPkgMap(k, v)
 	}
