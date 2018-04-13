@@ -1,22 +1,3 @@
-# grpc-gateway
-
-[![Build Status](https://travis-ci.org/grpc-ecosystem/grpc-gateway.svg?branch=master)](https://travis-ci.org/grpc-ecosystem/grpc-gateway)
-
-grpc-gateway is a plugin of [protoc](http://github.com/google/protobuf).
-It reads [gRPC](http://github.com/grpc/grpc-common) service definition,
-and generates a reverse-proxy server which translates a RESTful JSON API into gRPC.
-This server is generated according to [custom options](https://cloud.google.com/service-management/reference/rpc/google.api#http) in your gRPC definition.
-
-It helps you to provide your APIs in both gRPC and RESTful style at the same time.
-
-![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&amp;h=370)
-
-## Background
-gRPC is great -- it generates API clients and server stubs in many programming languages, it is fast, easy-to-use, bandwidth-efficient and its design is combat-proven by Google.
-However, you might still want to provide a traditional RESTful API as well. Reasons can range from maintaining backwards-compatibility, supporting languages or clients not well supported by gRPC to simply maintaining the aesthetics and tooling involved with a RESTful architecture.
-
-This project aims to provide that HTTP+JSON interface to your gRPC service. A small amount of configuration in your service to attach HTTP semantics is all that's needed to generate a reverse-proxy with this library.
-
 ## Installation
 First you need to install ProtocolBuffers 3.0.0-beta-3 or later. If you have not install proto, you can install protoc as fellow
 
@@ -32,10 +13,9 @@ exprot PATH=$PATH:./protobuf/bin
 
 ## Usage
 
-Make sure that your `$GOPATH/bin` is in your `$PATH`.
-
-1. Make sure your tron grpc serivice has started on `localhost:50051`
-2. Start tron grpc inverse proxy
+1. Make sure your tron grpc serivice has been started on `localhost:50051`  , **you can visit [Tron wiki: quick start](http://wiki.tron.network/en/latest/quick_start.html) for starting Tron service.**
+2. Make sure that your `$GOPATH/bin` is in your `$PATH`.
+3. Start tron grpc inverse proxy
 
 ```
 # download project
@@ -44,7 +24,7 @@ go get -u github.com/tronprotocol/grpc-gateway
 # change to project dir
 cd $GOPATH/src/github.com/tronprotocol/grpc-gateway
 
-# (Optional) Generate gRPC stub and reverse-proxy
+# (Optional) Generate gRPC stub and reverse-proxy. Make sure you have install protoc
 ./gen_proto.sh
 
 # run proxy-server
@@ -60,6 +40,26 @@ curl -X POST -k http://localhost:8080/wallet/listaccount
 If you get account list josn data, congratulations
 
 
+
+# grpc-gateway
+
+[![Build Status](https://travis-ci.org/grpc-ecosystem/grpc-gateway.svg?branch=master)](https://travis-ci.org/grpc-ecosystem/grpc-gateway)
+
+grpc-gateway is a plugin of [protoc](http://github.com/google/protobuf).
+It reads [gRPC](http://github.com/grpc/grpc-common) service definition,
+and generates a reverse-proxy server which translates a RESTful JSON API into gRPC.
+This server is generated according to [custom options](https://cloud.google.com/service-management/reference/rpc/google.api#http) in your gRPC definition.
+
+It helps you to provide your APIs in both gRPC and RESTful style at the same time.
+
+![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&h=370)
+
+## Background
+
+gRPC is great -- it generates API clients and server stubs in many programming languages, it is fast, easy-to-use, bandwidth-efficient and its design is combat-proven by Google.
+However, you might still want to provide a traditional RESTful API as well. Reasons can range from maintaining backwards-compatibility, supporting languages or clients not well supported by gRPC to simply maintaining the aesthetics and tooling involved with a RESTful architecture.
+
+This project aims to provide that HTTP+JSON interface to your gRPC service. A small amount of configuration in your service to attach HTTP semantics is all that's needed to generate a reverse-proxy with this library.
 
 ## Parameters and flags
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to Golang import path.
