@@ -1,5 +1,9 @@
 language: ruby
 
+cache:
+  directories:
+  - $HOME/protobuf
+
 sudo: false
 
 before_install:
