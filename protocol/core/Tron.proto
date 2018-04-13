@@ -1,0 +1,214 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+import "core/Discover.proto";
+
+package protocol;
+
+
+option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
+option java_outer_classname = "Protocol"; //Specify the class name of the generated Java file
+option go_package = "github.com/tronprotocol/grpc-gateway/core";
+
+enum AccountType {
+  Normal = 0;
+  AssetIssue = 1;
+  Contract = 2;
+}
+
+// Account
+message Account {
+  message Vote {
+    bytes vote_address = 1;
+    int64 vote_count = 2;
+  }
+  bytes account_name = 1;
+  AccountType type = 2;
+  bytes address = 3;
+  int64 balance = 4;
+  repeated Vote votes = 5;
+  map<string, int64> asset = 6;
+  int64 latest_opration_time = 10;
+}
+
+// Witness
+message Witness {
+  bytes address = 1;
+  int64 voteCount = 2;
+  bytes pubKey = 3;
+  string url = 4;
+  int64 totalProduced = 5;
+  int64 totalMissed = 6;
+  int64 latestBlockNum = 7;
+  int64 latestSlotNum = 8;
+  bool isJobs = 9;
+}
+
+// Transcation
+
+message TXOutput {
+  int64 value = 1;
+  bytes pubKeyHash = 2;
+}
+
+message TXInput {
+  message raw {
+    bytes txID = 1;
+    int64 vout = 2;
+    bytes pubKey = 3;
+  }
+  raw raw_data = 1;
+  bytes signature = 4;
+}
+
+message TXOutputs {
+  repeated TXOutput outputs = 1;
+}
+
+message Transaction {
+  enum TransactionType {
+    UtxoType = 0;
+    ContractType = 1;
+  }
+  message Contract {
+    enum ContractType {
+      AccountCreateContract = 0;
+      TransferContract = 1;
+      TransferAssetContract = 2;
+      VoteAssetContract = 3;
+      VoteWitnessContract = 4;
+      WitnessCreateContract = 5;
+      AssetIssueContract = 6;
+      DeployContract = 7;
+      WitnessUpdateContract = 8;
+      ParticipateAssetIssueContract = 9;
+    }
+    ContractType type = 1;
+    google.protobuf.Any parameter = 2;
+  }
+
+  message Result {
+    enum code {
+      SUCESS = 0;
+      FAILED = 1;
+    }
+    int64 fee = 1;
+    code ret = 2;
+  }
+
+  message raw {
+    TransactionType type = 1;
+    int64 ref_block_num = 3;
+    bytes ref_block_hash = 4;
+    int64 expiration = 8;
+    bytes data = 10;
+    repeated Contract contract = 11;
+    bytes scripts = 12;
+    int64 timestamp = 14;
+  }
+
+  raw raw_data = 1;
+  repeated bytes signature = 2;
+  repeated Result ret = 5;
+}
+
+message BlockHeader {
+  message raw {
+    int64 timestamp = 1;
+    bytes txTrieRoot = 2;
+    bytes parentHash = 3;
+    //bytes nonce = 5;
+    //bytes difficulty = 6;
+    int64 number = 7;
+    int64 witness_id = 8;
+    bytes witness_address = 9;
+  }
+  raw raw_data = 1;
+  bytes witness_signature = 2;
+}
+
+// block
+message Block {
+  repeated Transaction transactions = 1;
+  BlockHeader block_header = 2;
+}
+
+message ChainInventory {
+  message BlockId {
+    bytes hash = 1;
+    int64 number = 2;
+  }
+  repeated BlockId ids = 1;
+  int64 remain_num = 2;
+}
+
+// Inventory
+message BlockInventory {
+  enum Type {
+    SYNC = 0;
+    ADVTISE = 1;
+    FETCH = 2;
+  }
+
+  message BlockId {
+    bytes hash = 1;
+    int64 number = 2;
+  }
+  repeated BlockId ids = 1;
+  Type type = 2;
+}
+
+message Inventory {
+  enum InventoryType {
+    TRX = 0;
+    BLOCK = 1;
+  }
+  InventoryType type = 1;
+  repeated bytes ids = 2;
+}
+
+message Items {
+  enum ItemType {
+    ERR = 0;
+    TRX = 1;
+    BLOCK = 2;
+    BLOCKHEADER = 3;
+  }
+
+  ItemType type = 1;
+  repeated Block blocks = 2;
+  repeated BlockHeader block_headers = 3;
+  repeated Transaction transactions = 4;
+}
+
+// DynamicProperties
+message DynamicProperties {
+  int64 last_solidity_block_num = 1;
+}
+
+enum ReasonCode {
+  REQUESTED = 0;
+  TCP_ERROR = 1;
+  BAD_PROTOCOL = 2;
+  USELESS_PEER = 3;
+  TOO_MANY_PEERS = 4;
+  DUPLICATE_PEER = 5;
+  INCOMPATIBLE_PROTOCOL = 6;
+  NULL_IDENTITY = 7;
+  PEER_QUITING = 8;
+  UNEXPECTED_IDENTITY = 9;
+  LOCAL_IDENTITY = 10;
+  PING_TIMEOUT = 11;
+  USER_REASON = 12;
+  RESET = 16;
+  UNKNOWN = 255;
+}
+
+message DisconnectMessage {
+  ReasonCode reason = 1;
+}
+
+message HelloMessage {
+  Endpoint from = 1;
+  int32 version = 2;
+}

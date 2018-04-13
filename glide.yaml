@@ -1,0 +1,46 @@
+package: github.com/tronprotocol/grpc-gateway
+import:
+- package: github.com/go-resty/resty
+- package: github.com/golang/glog
+- package: github.com/golang/protobuf
+  subpackages:
+  - jsonpb
+  - proto
+  - protoc-gen-go/descriptor
+  - protoc-gen-go/generator
+  - protoc-gen-go/plugin
+  - ptypes
+  - ptypes/any
+  - ptypes/duration
+  - ptypes/empty
+  - ptypes/timestamp
+  - ptypes/wrappers
+- package: github.com/grpc-ecosystem/grpc-gateway
+  subpackages:
+  - examples/examplepb
+  - examples/server
+  - examples/sub
+  - examples/sub2
+  - protoc-gen-grpc-gateway/descriptor
+  - protoc-gen-grpc-gateway/generator
+  - protoc-gen-grpc-gateway/gengateway
+  - protoc-gen-grpc-gateway/httprule
+  - protoc-gen-swagger/genswagger
+  - protoc-gen-swagger/options
+  - runtime
+  - runtime/internal
+  - utilities
+- package: github.com/rogpeppe/fastuuid
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: google.golang.org/genproto
+  subpackages:
+  - googleapis/api/annotations
+  - googleapis/rpc/errdetails
+- package: google.golang.org/grpc
+  subpackages:
+  - codes
+  - grpclog
+  - metadata
+  - status
