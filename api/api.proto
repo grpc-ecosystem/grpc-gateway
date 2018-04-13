@@ -68,6 +68,43 @@ service Wallet {
   rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
 
   }
+  rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
+
+  }
+  rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
+
+  }
+  rpc GetNowBlock (EmptyMessage) returns (Block) {
+
+  }
+  rpc GetBlockByNum (NumberMessage) returns (Block) {
+
+  }
+  rpc GetDynamicProperties (EmptyMessage) returns (DynamicProperties) {
+
+  }
+};
+
+service WalletSolidity {
+
+  rpc GetAccount (Account) returns (Account) {
+
+  };
+
+  rpc ListAccounts (EmptyMessage) returns (AccountList) {
+
+  };
+
+  rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
+
+  };
+
+  rpc ListNodes (EmptyMessage) returns (NodeList) {
+
+  }
+  rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
+
+  }
   rpc GetAssetIssueListByTimestamp (NumberMessage) returns (AssetIssueList) {
 
   }
