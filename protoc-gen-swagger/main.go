@@ -19,6 +19,7 @@ var (
 	importPrefix    = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
 	file            = flag.String("file", "-", "where to load data from")
 	allowDeleteBody = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
+	allowMerge      = flag.Bool("allow_merge", false, "if set, generation one swagger file out of multiple protos")
 )
 
 func parseReq(r io.Reader) (*plugin.CodeGeneratorRequest, error) {
@@ -66,6 +67,7 @@ func main() {
 
 	reg.SetPrefix(*importPrefix)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
+	reg.SetAllowMerge(*allowMerge)
 	for k, v := range pkgMap {
 		reg.AddPkgMap(k, v)
 	}
