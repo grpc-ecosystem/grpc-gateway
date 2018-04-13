@@ -16,7 +16,11 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/getaccount"
       body: "*"
+      additional_bindings {
+        get: "/wallet/getaccount"
+      }
     };
+
 
   };
 
@@ -36,9 +40,12 @@ service Wallet {
 
   rpc ListAccounts (EmptyMessage) returns (AccountList) {
     option (google.api.http) = {
-          post: "/wallet/listaccount"
-          body: "*"
-      };
+      post: "/wallet/listaccount"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/listaccount"
+      }
+    };
 
   };
 
