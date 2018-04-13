@@ -8,6 +8,7 @@ sudo: false
 
 before_install:
   - bash install-protobuf.sh
+  - bash install-googleapis.sh
 
 # check what has been installed by listing contents of protobuf folder
 before_script:
