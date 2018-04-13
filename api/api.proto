@@ -68,6 +68,9 @@ service Wallet {
   rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
 
   }
+  rpc GetAssetIssueListBy (EmptyMessage) returns (AssetIssueList) {
+
+  }
   rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
 
   }
@@ -80,10 +83,23 @@ service Wallet {
   rpc GetBlockByNum (NumberMessage) returns (Block) {
 
   }
+  rpc GetDynamicProperties (EmptyMessage) returns (DynamicProperties) {
+
+  }
+  //get transaction
   rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
 
   }
-  rpc GetDynamicProperties (EmptyMessage) returns (DynamicProperties) {
+  rpc getTransactionById (BytesMessage) returns (Transaction) {
+
+  }
+  rpc getTransactionsByTimestamp (TimeMessage) returns (TransactionList) {
+
+  }
+  rpc getTransactionsFromThis (Account) returns (TransactionList) {
+
+  }
+  rpc getTransactionsToThis (Account) returns (NumberMessage) {
 
   }
 };
@@ -113,6 +129,12 @@ message WitnessList {
 message AssetIssueList {
   repeated AssetIssueContract assetIssue = 1;
 }
+message BlockList {
+  repeated Block block = 1;
+}
+message TransactionList {
+  repeated Transaction transaction = 1;
+}
 
 // Gossip node list
 message NodeList {
@@ -137,4 +159,8 @@ message NumberMessage {
 }
 message BytesMessage {
   bytes value = 1;
+}
+message TimeMessage {
+  int64 beginInMilliseconds = 1;
+  int64 endInMilliseconds = 2;
 }
