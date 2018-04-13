@@ -20,14 +20,15 @@ service Wallet {
         get: "/wallet/getaccount"
       }
     };
-
-
   };
 
   rpc CreateTransaction (TransferContract) returns (Transaction) {
     option (google.api.http) = {
       post: "/wallet/createtransaction"
       body: "*"
+      additional_bindings {
+        get: "/wallet/createtransaction"
+      }
     };
   };
 
@@ -81,6 +82,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/listwitnesses"
       body: "*"
+      additional_bindings {
+        get: "/wallet/listwitnesses"
+      }
     };
   };
 
@@ -116,12 +120,18 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/listnodes"
       body: "*"
+      additional_bindings {
+        get: "/wallet/listnodes"
+      }
     };
   }
   rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
     option (google.api.http) = {
       post: "/wallet/getassetissuelist"
       body: "*"
+      additional_bindings {
+        get: "/wallet/getassetissuelist"
+      }
     };
   }
   rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
@@ -134,24 +144,36 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/getassetissuebyname"
       body: "*"
+      additional_bindings {
+        get: "/wallet/getassetissuebyname"
+      }
     };
   }
   rpc GetNowBlock (EmptyMessage) returns (Block) {
     option (google.api.http) = {
       post: "/wallet/getnowblock"
       body: "*"
+      additional_bindings {
+        get: "/wallet/getnowblock"
+      }
     };
   }
   rpc GetBlockByNum (NumberMessage) returns (Block) {
     option (google.api.http) = {
       post: "/wallet/getblockbynum"
       body: "*"
+      additional_bindings {
+        get: "/wallet/getblockbynum"
+      }
     };
   }
   rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
     option (google.api.http) = {
       post: "/wallet/totaltransaction"
       body: "*"
+      additional_bindings {
+        get: "/wallet/totaltransaction"
+      }
     };
   }
 };
