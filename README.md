@@ -1,4 +1,4 @@
-## Requirements
+# Requirements
 
 ##### Go 1.6 or higher
 
@@ -28,7 +28,7 @@ exprot PATH=$PATH:./protobuf/bin
 
 
 
-## Usage
+# Usage
 
 1. Make sure your Tron grpc serivice has been started on `localhost:50051`  , **you can visit [Tron wiki: quick start](http://wiki.tron.network/en/latest/quick_start.html) for starting Tron service.**
 2. Get the source code and change word dir
@@ -49,6 +49,10 @@ cd $GOPATH/src/github.com/tronprotocol/grpc-gateway
 4. run proxy-server
 ```
 go run tron_http/main.go
+or
+go run tron_http/main.go -port 50051 -host localhost
+or
+go run tron_http/main.go -port 50051 -host 10.0.8.214
 ```
 5. Test API of tron http
 
@@ -107,7 +111,7 @@ This parameter can be useful to pass request scoped context between the gateway 
 
 
 
-# Mapping gRPC to HTTP
+## Mapping gRPC to HTTP
 
 * [How gRPC error codes map to HTTP status codes in the response](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/errors.go#L15)
 * HTTP request source IP is added as `X-Forwarded-For` gRPC request header
@@ -117,9 +121,9 @@ This parameter can be useful to pass request scoped context between the gateway 
 * HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata (prefixed with `grpcgateway-`)
 * While configurable, the default {un,}marshaling uses [jsonpb](https://godoc.org/github.com/golang/protobuf/jsonpb) with `OrigName: true`.
 
-# Contribution
+## Contribution
 See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md).
 
-# License
+## License
 grpc-gateway is licensed under the BSD 3-Clause License.
 See [LICENSE.txt](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt) for more details.
