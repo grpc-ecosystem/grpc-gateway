@@ -1,5 +1,20 @@
-## Installation
-First you need to install ProtocolBuffers 3.0.0-beta-3 or later. If you have not install proto, you can install protoc as fellow
+## Requirements
+
+##### Go 1.6 or higher
+
+You can download the binary release from [releases](https://golang.org/dl/) or compile the source release.
+
+Make sure that your `$GOPATH/bin` is in your `$PATH`.
+
+
+
+##### (Optional)ProtocolBuffers 3.0.0-beta-3 or later
+
+In project, we have provided  gRPC stub and reverse-proxy so that this step is optional.
+
+If you want to enerate gRPC stub and reverse-proxy by yourself, you need to install ProtocolBuffers 3.0.0-beta-3 or later. 
+
+You can download the binary release from [releases](https://github.com/google/protobuf/releases) or compile the source release. 
 
 ```sh
 cd /tmp
@@ -11,11 +26,12 @@ exprot PATH=$PATH:./protobuf/bin
 
 > note: you can chose to  download other os realeas on https://github.com/google/protobuf/releases instead of linux realease
 
+
+
 ## Usage
 
-1. Make sure your tron grpc serivice has been started on `localhost:50051`  , **you can visit [Tron wiki: quick start](http://wiki.tron.network/en/latest/quick_start.html) for starting Tron service.**
-2. Make sure that your `$GOPATH/bin` is in your `$PATH`.
-3. Start tron grpc inverse proxy
+1. Make sure your Tron grpc serivice has been started on `localhost:50051`  , **you can visit [Tron wiki: quick start](http://wiki.tron.network/en/latest/quick_start.html) for starting Tron service.**
+2. Get the source code and change word dir
 
 ```
 # download project
@@ -23,21 +39,26 @@ go get -u github.com/tronprotocol/grpc-gateway
 
 # change to project dir
 cd $GOPATH/src/github.com/tronprotocol/grpc-gateway
-
-# (Optional) Generate gRPC stub and reverse-proxy. Make sure you have install protoc
-./gen_proto.sh
-
-# run proxy-server
-go run tron_http/main.go
 ```
 
-3. Test API of tron http
+3. (Optional) Generate gRPC stub and reverse-proxy. Make sure you have install protoc
+
+```
+./gen_proto.sh
+```
+4. run proxy-server
+```
+go run tron_http/main.go
+```
+5. Test API of tron http
 
 ```
 curl -X POST -k http://localhost:8080/wallet/listaccount
 ```
 
 If you get account list josn data, congratulations
+
+
 
 
 
