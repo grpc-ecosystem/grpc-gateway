@@ -19,7 +19,7 @@ package protocol;
 
 option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
 option java_outer_classname = "Contract"; //Specify the class name of the generated Java file
-option go_package = "github.com/tronprotocol/go-client-api/core";
+option go_package = "github.com/tronprotocol/grpc-gateway/core";
 
 import "core/Tron.proto";
 
