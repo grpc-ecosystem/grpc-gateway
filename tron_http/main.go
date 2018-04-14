@@ -17,7 +17,6 @@ import (
 var (
 	port = flag.Int("port",50051, "port of your tron grpc service" )
 	host = flag.String("host", "localhost", "host of your tron grpc service")
-	echoEndpoint = flag.String("echo_endpoint", *host + ":"  + strconv.Itoa(*port), "endpoint of Tron grpc service")
 )
 
 func run() error {
@@ -25,15 +24,17 @@ func run() error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	//port := flag.Int("port",50051, "port of your tron grpc service" )
-	//host := flag.String("host", "lcoalhost", "host of your tron grpc service")
-
 	mux := runtime.NewServeMux()
+	echoEndpoint := *host + ":"  + strconv.Itoa(*port)
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err := gw.RegisterWalletHandlerFromEndpoint(ctx, mux, *echoEndpoint, opts)
+
+
+	err := gw.RegisterWalletHandlerFromEndpoint(ctx, mux, echoEndpoint, opts)
 	if err != nil {
 		return err
 	}
+
+	//fmt.Printf("connecting %s", echoEndpoint)
 
 
 	return http.ListenAndServe(":8086", mux)
@@ -42,7 +43,6 @@ func run() error {
 func main() {
 	flag.Parse()
 	defer glog.Flush()
-
 
 	if err := run(); err != nil {
 		glog.Fatal(err)

@@ -41,10 +41,10 @@ service Wallet {
 
   rpc ListAccounts (EmptyMessage) returns (AccountList) {
     option (google.api.http) = {
-      post: "/wallet/listaccount"
+      post: "/wallet/listaccounts"
       body: "*"
       additional_bindings {
-        get: "/wallet/listaccount"
+        get: "/wallet/listaccounts"
       }
     };
 
