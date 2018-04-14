@@ -23,6 +23,7 @@ go_library(
 
 go_test(
     name = "go_default_test",
+    size = "small",
     srcs = [
         "registry_test.go",
         "services_test.go",

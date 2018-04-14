@@ -41,6 +41,7 @@ go_library(
 
 go_test(
     name = "go_default_test",
+    size = "small",
     srcs = ["pattern_test.go"],
     embed = [":go_default_library"],
     deps = ["//utilities:go_default_library"],
@@ -48,6 +49,7 @@ go_test(
 
 go_test(
     name = "go_default_xtest",
+    size = "small",
     srcs = [
         "context_test.go",
         "errors_test.go",
