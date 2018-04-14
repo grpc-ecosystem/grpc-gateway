@@ -1373,9 +1373,9 @@ var (
 
 	pattern_Wallet_BroadcastTransaction_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"wallet", "broadcasttransaction"}, ""))
 
-	pattern_Wallet_ListAccounts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"wallet", "listaccount"}, ""))
+	pattern_Wallet_ListAccounts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"wallet", "listaccounts"}, ""))
 
-	pattern_Wallet_ListAccounts_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"wallet", "listaccount"}, ""))
+	pattern_Wallet_ListAccounts_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"wallet", "listaccounts"}, ""))
 
 	pattern_Wallet_UpdateAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"wallet", "updateaccount"}, ""))
 
