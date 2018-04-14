@@ -53,7 +53,7 @@ go run tron_http/main.go
 5. Test API of tron http
 
 ```
-curl -X POST -k http://localhost:8080/wallet/listaccount
+curl -X POST -k http://localhost:8086/wallet/listaccount
 ```
 
 If you get account-list jsonn data, congratulations
