@@ -1,3 +1,7 @@
+--
+category: documentation
+--
+
 # Examples
 
 Examples are available under `examples` directory.

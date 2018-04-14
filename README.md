@@ -11,6 +11,8 @@ It helps you to provide your APIs in both gRPC and RESTful style at the same tim
 
 ![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&amp;h=370)
 
+## Check out our [documentation](https://grpc-ecosystem.github.io/grpc-gateway/)!
+
 ## Background
 gRPC is great -- it generates API clients and server stubs in many programming languages, it is fast, easy-to-use, bandwidth-efficient and its design is combat-proven by Google.
 However, you might still want to provide a traditional RESTful API as well. Reasons can range from maintaining backwards-compatibility, supporting languages or clients not well supported by gRPC to simply maintaining the aesthetics and tooling involved with a RESTful architecture.

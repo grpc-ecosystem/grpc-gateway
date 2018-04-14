@@ -13,10 +13,10 @@ It helps you to provide your APIs in both gRPC and RESTful style at the same tim
 
 To learn more about us check out our documentation on:
 
-*   [Our background](background.md)
-*   [Installation and usage](usage.md)
-*   [Examples](examples.md)
-*   [Features](features.md)
+*   [Our background](_docs/background.md)
+*   [Installation and usage](_docs/usage.md)
+*   [Examples](_docs/examples.md)
+*   [Features](_docs/features.md)
 
 
 # Contribution

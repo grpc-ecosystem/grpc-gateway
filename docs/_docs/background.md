@@ -1,3 +1,7 @@
+--
+category: documentation
+--
+
 # Background
 
 gRPC is great -- it generates API clients and server stubs in many programming languages, it is fast, easy-to-use, bandwidth-efficient and its design is combat-proven by Google.

@@ -1,3 +1,7 @@
+--
+category: documentation
+--
+
 # Features
 
 ## Supported
