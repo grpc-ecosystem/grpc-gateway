@@ -1,24 +1,20 @@
-# grpc-gateway
+# Requirements
 
-[![Build Status](https://travis-ci.org/grpc-ecosystem/grpc-gateway.svg?branch=master)](https://travis-ci.org/grpc-ecosystem/grpc-gateway)
+##### Go 1.6 or higher
 
-grpc-gateway is a plugin of [protoc](http://github.com/google/protobuf).
-It reads [gRPC](http://github.com/grpc/grpc-common) service definition,
-and generates a reverse-proxy server which translates a RESTful JSON API into gRPC.
-This server is generated according to [custom options](https://cloud.google.com/service-management/reference/rpc/google.api#http) in your gRPC definition.
+You can download the binary release from [releases](https://golang.org/dl/) or compile the source release.
 
-It helps you to provide your APIs in both gRPC and RESTful style at the same time.
+Make sure that your `$GOPATH/bin` is in your `$PATH`.
 
-![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&amp;h=370)
 
-## Background
-gRPC is great -- it generates API clients and server stubs in many programming languages, it is fast, easy-to-use, bandwidth-efficient and its design is combat-proven by Google.
-However, you might still want to provide a traditional RESTful API as well. Reasons can range from maintaining backwards-compatibility, supporting languages or clients not well supported by gRPC to simply maintaining the aesthetics and tooling involved with a RESTful architecture.
 
-This project aims to provide that HTTP+JSON interface to your gRPC service. A small amount of configuration in your service to attach HTTP semantics is all that's needed to generate a reverse-proxy with this library.
+##### (Optional)ProtocolBuffers 3.0.0-beta-3 or later
 
-## Installation
-First you need to install ProtocolBuffers 3.0.0-beta-3 or later. If you have not install proto, you can install protoc as fellow
+In project, we have provided  gRPC stub and reverse-proxy so that this step is optional.
+
+If you want to enerate gRPC stub and reverse-proxy by yourself, you need to install ProtocolBuffers 3.0.0-beta-3 or later. 
+
+You can download the binary release from [releases](https://github.com/google/protobuf/releases) or compile the source release. 
 
 ```sh
 cd /tmp
@@ -30,12 +26,12 @@ exprot PATH=$PATH:./protobuf/bin
 
 > note: you can chose to  download other os realeas on https://github.com/google/protobuf/releases instead of linux realease
 
-## Usage
 
-Make sure that your `$GOPATH/bin` is in your `$PATH`.
 
-1. Make sure your tron grpc serivice has started on `localhost:50051`
-2. Start tron grpc inverse proxy
+# Usage
+
+1. Make sure your Tron grpc serivice has been started on `localhost:50051`  , **you can visit [Tron wiki: quick start](http://wiki.tron.network/en/latest/quick_start.html) for starting Tron service.**
+2. Get the source code and change word dir
 
 ```
 # download project
@@ -43,23 +39,52 @@ go get -u github.com/tronprotocol/grpc-gateway
 
 # change to project dir
 cd $GOPATH/src/github.com/tronprotocol/grpc-gateway
+```
 
-# (Optional) Generate gRPC stub and reverse-proxy
+3. (Optional) Generate gRPC stub and reverse-proxy. Make sure you have install protoc
+
+```
 ./gen_proto.sh
-
-# run proxy-server
+```
+4. run proxy-server
+```
 go run tron_http/main.go
+or
+go run tron_http/main.go -port 50051 -host localhost
+or
+go run tron_http/main.go -port 50051 -host 10.0.8.214
+```
+5. Test API of tron http
+
+```
+curl -X POST -k http://localhost:8086/wallet/listaccount
 ```
 
-3. Test API of tron http
-
-```
-curl -X POST -k http://localhost:8080/wallet/listaccount
-```
-
-If you get account list josn data, congratulations
+If you get account-list jsonn data, congratulations
 
 
+
+
+
+# grpc-gateway
+
+[![Build Status](https://travis-ci.org/grpc-ecosystem/grpc-gateway.svg?branch=master)](https://travis-ci.org/grpc-ecosystem/grpc-gateway)
+
+grpc-gateway is a plugin of [protoc](http://github.com/google/protobuf).
+It reads [gRPC](http://github.com/grpc/grpc-common) service definition,
+and generates a reverse-proxy server which translates a RESTful JSON API into gRPC.
+This server is generated according to [custom options](https://cloud.google.com/service-management/reference/rpc/google.api#http) in your gRPC definition.
+
+It helps you to provide your APIs in both gRPC and RESTful style at the same time.
+
+![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&h=370)
+
+## Background
+
+gRPC is great -- it generates API clients and server stubs in many programming languages, it is fast, easy-to-use, bandwidth-efficient and its design is combat-proven by Google.
+However, you might still want to provide a traditional RESTful API as well. Reasons can range from maintaining backwards-compatibility, supporting languages or clients not well supported by gRPC to simply maintaining the aesthetics and tooling involved with a RESTful architecture.
+
+This project aims to provide that HTTP+JSON interface to your gRPC service. A small amount of configuration in your service to attach HTTP semantics is all that's needed to generate a reverse-proxy with this library.
 
 ## Parameters and flags
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to Golang import path.
@@ -86,7 +111,7 @@ This parameter can be useful to pass request scoped context between the gateway 
 
 
 
-# Mapping gRPC to HTTP
+## Mapping gRPC to HTTP
 
 * [How gRPC error codes map to HTTP status codes in the response](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/errors.go#L15)
 * HTTP request source IP is added as `X-Forwarded-For` gRPC request header
@@ -96,9 +121,9 @@ This parameter can be useful to pass request scoped context between the gateway 
 * HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata (prefixed with `grpcgateway-`)
 * While configurable, the default {un,}marshaling uses [jsonpb](https://godoc.org/github.com/golang/protobuf/jsonpb) with `OrigName: true`.
 
-# Contribution
+## Contribution
 See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md).
 
-# License
+## License
 grpc-gateway is licensed under the BSD 3-Clause License.
 See [LICENSE.txt](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt) for more details.
