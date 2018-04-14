@@ -162,7 +162,11 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 	}
 	dec := marshaler.NewDecoder(req.Body)
 	for {
+		{{if .Method.RequestType.File.GoPkg.Alias}}
+		var protoReq {{.Method.RequestType.File.GoPkg.Alias}}.{{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+		{{else}}
 		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+		{{end}}
 		err = dec.Decode(&protoReq)
 		if err == io.EOF {
 			break
@@ -204,7 +208,11 @@ var (
 )
 {{end}}
 {{template "request-func-signature" .}} {
+	{{if .Method.RequestType.File.GoPkg.Alias}}
+	var protoReq {{.Method.RequestType.File.GoPkg.Alias}}.{{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+	{{else}}
 	var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+	{{end}}
 	var metadata runtime.ServerMetadata
 {{if .Body}}
 	if req.ContentLength > 0 {
@@ -267,7 +275,11 @@ var (
 	}
 	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
+		{{if .Method.RequestType.File.GoPkg.Alias}}
+		var protoReq {{.Method.RequestType.File.GoPkg.Alias}}.{{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+		{{else}}
 		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+		{{end}}
 		err = dec.Decode(&protoReq)
 		if err == io.EOF {
 			return err
