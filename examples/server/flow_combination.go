@@ -3,8 +3,8 @@ package server
 import (
 	"io"
 
+	"context"
 	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
-	"golang.org/x/net/context"
 )
 
 type flowCombinationServer struct{}

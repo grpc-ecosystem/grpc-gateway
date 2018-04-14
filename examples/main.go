@@ -6,10 +6,10 @@ import (
 	"path"
 	"strings"
 
+	"context"
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
 

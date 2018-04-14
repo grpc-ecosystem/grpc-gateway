@@ -15,7 +15,7 @@ import google_protobuf3 "github.com/golang/protobuf/ptypes/timestamp"
 import _ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 
 import (
-	context "golang.org/x/net/context"
+	context "context"
 	grpc "google.golang.org/grpc"
 )
 
