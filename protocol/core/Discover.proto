@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package protocol;
+
+
+option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
+option java_outer_classname = "Discover"; //Specify the class name of the generated Java file
+option go_package = "github.com/tronprotocol/grpc-gateway/core";
+
+message Endpoint {
+  bytes address = 1;
+  int32 port = 2;
+  bytes nodeId = 3;
+}
+
+message PingMessage {
+  Endpoint from = 1;
+  Endpoint to = 2;
+  int32 version = 3;
+  int64 timestamp = 4;
+}
+
+message PongMessage {
+  Endpoint from = 1;
+  int32 echo = 2;
+  int64 timestamp = 3;
+}
+
+message FindNeighbours {
+  Endpoint from = 1;
+  bytes targetId = 2;
+  int64 timestamp = 3;
+}
+
+message Neighbours {
+  Endpoint from = 1;
+  repeated Endpoint neighbours = 2;
+  int64 timestamp = 3;
+}
