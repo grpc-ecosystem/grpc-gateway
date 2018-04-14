@@ -1,8 +1,8 @@
 language: go
 sudo: false
 go:
-- 1.8.x
 - 1.9.x
+- 1.10.x
 - master
 go_import_path: github.com/grpc-ecosystem/grpc-gateway
 cache:
@@ -35,7 +35,7 @@ after_success:
 env:
   global:
   - "PATH=$PATH:$HOME/local/bin"
-  - GO_VERSION_TO_DIFF_TEST="go version go1\.9\.[0-9]\+ linux/amd64"
+  - GO_VERSION_TO_DIFF_TEST="go version go1\.10\.[0-9]\+ linux/amd64"
   matrix:
   - GATEWAY_PLUGIN_FLAGS=
   - GATEWAY_PLUGIN_FLAGS=request_context=false

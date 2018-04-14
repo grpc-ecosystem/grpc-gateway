@@ -11,7 +11,7 @@ import google_protobuf1 "github.com/golang/protobuf/ptypes/empty"
 import grpc_gateway_examples_sub "github.com/grpc-ecosystem/grpc-gateway/examples/sub"
 
 import (
-	context "golang.org/x/net/context"
+	context "context"
 	grpc "google.golang.org/grpc"
 )
 

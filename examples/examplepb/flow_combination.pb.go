@@ -9,7 +9,7 @@ import math "math"
 import _ "google.golang.org/genproto/googleapis/api/annotations"
 
 import (
-	context "golang.org/x/net/context"
+	context "context"
 	grpc "google.golang.org/grpc"
 )
 
