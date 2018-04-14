@@ -56,7 +56,7 @@ go run tron_http/main.go
 curl -X POST -k http://localhost:8080/wallet/listaccount
 ```
 
-If you get account list josn data, congratulations
+If you get account-list jsonn data, congratulations
 
 
 
