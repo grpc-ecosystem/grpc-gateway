@@ -1,3 +1,4 @@
 theme: jekyll-theme-architect
 collections:
-- docs
+  docs:
+    output: true
