@@ -1,6 +1,6 @@
 # Requirements
 
-##### Go 1.6 or higher
+#### Go 1.6 or higher
 
 You can download the binary release from [releases](https://golang.org/dl/) or compile the source release.
 
@@ -8,7 +8,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 
 
 
-##### (Optional)ProtocolBuffers 3.0.0-beta-3 or later
+#### (Optional)ProtocolBuffers 3.0.0-beta-3 or later
 
 In project, we have provided  gRPC stub and reverse-proxy so that this step is optional.
 
