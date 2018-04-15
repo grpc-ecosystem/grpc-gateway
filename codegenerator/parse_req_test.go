@@ -39,7 +39,7 @@ var parseReqTests = []struct {
 	},
 }
 
-func TestFlagParser(t *testing.T) {
+func TestParseRequest(t *testing.T) {
 	for _, tt := range parseReqTests {
 		t.Run(tt.name, func(t *testing.T) {
 			out, err := codegenerator.ParseRequest(tt.in)
@@ -54,7 +54,10 @@ func TestFlagParser(t *testing.T) {
 }
 
 func mustGetReader(pb proto.Message) io.Reader {
-	b, _ := proto.Marshal(pb)
+	b, err := proto.Marshal(pb)
+	if err != nil {
+		panic(err)
+	}
 	return bytes.NewBuffer(b)
 }
 

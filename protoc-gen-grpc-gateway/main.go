@@ -34,7 +34,6 @@ func main() {
 
 	reg := descriptor.NewRegistry()
 
-	glog.V(1).Info("Processing code generator request")
 	glog.V(1).Info("Parsing code generator request")
 	req, err := codegenerator.ParseRequest(os.Stdin)
 	if err != nil {
