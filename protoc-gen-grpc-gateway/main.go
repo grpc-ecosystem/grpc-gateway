@@ -10,14 +10,13 @@ package main
 
 import (
 	"flag"
-	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/grpc-ecosystem/grpc-gateway/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/gengateway"
 )
@@ -29,33 +28,18 @@ var (
 	allowDeleteBody   = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
 )
 
-func parseReq(r io.Reader) (*plugin.CodeGeneratorRequest, error) {
-	glog.V(1).Info("Parsing code generator request")
-	input, err := ioutil.ReadAll(r)
-	if err != nil {
-		glog.Errorf("Failed to read code generator request: %v", err)
-		return nil, err
-	}
-	req := new(plugin.CodeGeneratorRequest)
-	if err = proto.Unmarshal(input, req); err != nil {
-		glog.Errorf("Failed to unmarshal code generator request: %v", err)
-		return nil, err
-	}
-	glog.V(1).Info("Parsed code generator request")
-	return req, nil
-}
-
 func main() {
 	flag.Parse()
 	defer glog.Flush()
 
 	reg := descriptor.NewRegistry()
 
-	glog.V(1).Info("Processing code generator request")
-	req, err := parseReq(os.Stdin)
+	glog.V(1).Info("Parsing code generator request")
+	req, err := codegenerator.ParseRequest(os.Stdin)
 	if err != nil {
 		glog.Fatal(err)
 	}
+	glog.V(1).Info("Parsed code generator request")
 	if req.Parameter != nil {
 		for _, p := range strings.Split(req.GetParameter(), ",") {
 			spec := strings.SplitN(p, "=", 2)
