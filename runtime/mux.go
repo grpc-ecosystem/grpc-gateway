@@ -25,7 +25,7 @@ type ServeMux struct {
 	marshalers             marshalerRegistry
 	incomingHeaderMatcher  HeaderMatcherFunc
 	outgoingHeaderMatcher  HeaderMatcherFunc
-	metadataAnnotator      func(context.Context, *http.Request) metadata.MD
+	metadataAnnotators     []func(context.Context, *http.Request) metadata.MD
 	protoErrorHandler      ProtoErrorHandlerFunc
 }
 
@@ -87,7 +87,7 @@ func WithOutgoingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
 // is reading token from cookie and adding it in gRPC context.
 func WithMetadata(annotator func(context.Context, *http.Request) metadata.MD) ServeMuxOption {
 	return func(serveMux *ServeMux) {
-		serveMux.metadataAnnotator = annotator
+		serveMux.metadataAnnotators = append(serveMux.metadataAnnotators, annotator)
 	}
 }
 

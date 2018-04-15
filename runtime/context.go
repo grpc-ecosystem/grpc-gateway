@@ -91,8 +91,8 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 		return ctx, nil
 	}
 	md := metadata.Pairs(pairs...)
-	if mux.metadataAnnotator != nil {
-		md = metadata.Join(md, mux.metadataAnnotator(ctx, req))
+	for _, mda := range mux.metadataAnnotators {
+		md = metadata.Join(md, mda(ctx, req))
 	}
 	return metadata.NewOutgoingContext(ctx, md), nil
 }
