@@ -460,6 +460,20 @@ func (m *Marshaler) marshalValue(out *errWriter, prop *proto.Properties, v refle
 		return out.err
 	}
 
+	if v.Kind() == reflect.Slice && v.Type().Elem().Kind() == reflect.Uint8 {
+		realValue := fmt.Sprintf("\"%s\"", v)
+
+		for _, r := range realValue {
+			if r > 126 {
+				realValue = fmt.Sprintf("\"%x\"", v)
+				break
+			}
+		}
+
+		out.write(realValue)
+		return out.err
+	}
+
 	// Handle repeated elements.
 	if v.Kind() == reflect.Slice && v.Type().Elem().Kind() != reflect.Uint8 {
 		out.write("[")
