@@ -50,7 +50,7 @@ func (j *JSONPb) marshalTo(w io.Writer, v interface{}) error {
 }
 
 // marshalNonProto marshals a non-message field of a protobuf message.
-// This function does not correctly marshals arbitary data structure into JSON,
+// This function does not correctly marshals arbitrary data structure into JSON,
 // but it is only capable of marshaling non-message field values of protobuf,
 // i.e. primitive types, enums; pointers to primitives or enums; maps from
 // integer/string types to primitives/enums/pointers to messages.
