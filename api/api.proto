@@ -147,12 +147,6 @@ service Wallet {
       body: "*"
     };
   }
-  rpc GetDynamicProperties (EmptyMessage) returns (DynamicProperties) {
-    option (google.api.http) = {
-      post: "/wallet/getdynamicproperties"
-      body: "*"
-    };
-  }
 };
 
 
@@ -189,9 +183,6 @@ service WalletSolidity {
 
   }
   rpc GetBlockByNum (NumberMessage) returns (Block) {
-
-  }
-  rpc GetDynamicProperties (EmptyMessage) returns (DynamicProperties) {
 
   }
   //get transaction
