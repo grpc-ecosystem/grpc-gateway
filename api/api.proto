@@ -149,6 +149,60 @@ service Wallet {
   }
 };
 
+
+service WalletSolidity {
+
+  rpc GetAccount (Account) returns (Account) {
+
+  };
+
+  rpc ListAccounts (EmptyMessage) returns (AccountList) {
+
+  };
+
+  rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
+
+  };
+
+  rpc ListNodes (EmptyMessage) returns (NodeList) {
+
+  }
+  rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
+
+  }
+  rpc GetAssetIssueListByTimestamp (NumberMessage) returns (AssetIssueList) {
+
+  }
+  rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
+
+  }
+  rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
+
+  }
+  rpc GetNowBlock (EmptyMessage) returns (Block) {
+
+  }
+  rpc GetBlockByNum (NumberMessage) returns (Block) {
+
+  }
+  //get transaction
+  rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
+
+  }
+  rpc getTransactionById (BytesMessage) returns (Transaction) {
+
+  }
+  rpc getTransactionsByTimestamp (TimeMessage) returns (TransactionList) {
+
+  }
+  rpc getTransactionsFromThis (Account) returns (TransactionList) {
+
+  }
+  rpc getTransactionsToThis (Account) returns (NumberMessage) {
+
+  }
+};
+
 // the api of tron's db
 service Database {
   // for tapos
@@ -192,6 +246,12 @@ message WitnessList {
 message AssetIssueList {
   repeated AssetIssueContract assetIssue = 1;
 }
+message BlockList {
+  repeated Block block = 1;
+}
+message TransactionList {
+  repeated Transaction transaction = 1;
+}
 
 // Gossip node list
 message NodeList {
@@ -216,4 +276,8 @@ message NumberMessage {
 }
 message BytesMessage {
   bytes value = 1;
+}
+message TimeMessage {
+  int64 beginInMilliseconds = 1;
+  int64 endInMilliseconds = 2;
 }
