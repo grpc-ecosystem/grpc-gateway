@@ -25,20 +25,30 @@ func main()  {
 	},
 */
 
+	fmt.Println(hexstr2base64("a0b4750e2cd76e19dca331bf5d089b71c3c2798548"))
+	fmt.Println(base64Tohexstr("oLR1DizXbhncozG/XQibccPCeYVI"))
 
+	fmt.Println(strToBase64("Zion"))
+	fmt.Println(base64ToStr("Wmlvbg=="))
 
+}
 
-	address := "a0b4750e2cd76e19dca331bf5d089b71c3c2798548"
-	addressBytes, _ := hex.DecodeString(address)
-	hex.EncodeToString(addressBytes)
-	encodeString := base64.StdEncoding.EncodeToString(addressBytes)
-	fmt.Printf("address->base64: %s %s\n", address, encodeString)
+func hexstr2base64(s string) (string){
+	addressBytes, _ := hex.DecodeString(s)
+	return base64.StdEncoding.EncodeToString(addressBytes)
+}
 
-	base64Address := "oLR1DizXbhncozG/XQibccPCeYVI"
-	unBase64Bytes, _ := base64.StdEncoding.DecodeString(base64Address)
-	toAddress := hex.EncodeToString(unBase64Bytes)
-	fmt.Printf("base64->address: %s %s\n", base64Address, toAddress)
+func base64Tohexstr(s string) (string) {
+	unBase64Bytes, _ := base64.StdEncoding.DecodeString(s)
+	return hex.EncodeToString(unBase64Bytes)
+}
 
+func strToBase64(s string) (string) {
+	bytes := []byte(s)
+	return base64.StdEncoding.EncodeToString(bytes)
+}
 
-
+func base64ToStr(s string) (string) {
+	bytes, _ := base64.StdEncoding.DecodeString(s)
+	return string(bytes)
 }
