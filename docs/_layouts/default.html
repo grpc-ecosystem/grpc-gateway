@@ -62,7 +62,7 @@
               <ul>
                 {% assign items = cat.items | sort: 'order' %}
                 {% for item in items %}
-                  <li><a href="{{ item.url }}">
+                  <li><a href="{{ item.url | relative_url }}">
                       {% if item.url == page.url %}
                         <b>{{ item.title }}</b>
                       {% else %}
