@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"context"
+
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
@@ -661,6 +662,20 @@ func testAdditionalBindings(t *testing.T, port int) {
 		func() *http.Response {
 			url := fmt.Sprintf("http://localhost:%d/v2/example/echo", port)
 			resp, err := http.Post(url, "application/json", strings.NewReader(`"hello"`))
+			if err != nil {
+				t.Errorf("http.Post(%q, %q, %q) failed with %v; want success", url, "application/json", `"hello"`, err)
+				return nil
+			}
+			return resp
+		},
+		func() *http.Response {
+			r, w := io.Pipe()
+			go func() {
+				defer w.Close()
+				w.Write([]byte(`"hello"`))
+			}()
+			url := fmt.Sprintf("http://localhost:%d/v2/example/echo", port)
+			resp, err := http.Post(url, "application/json", r)
 			if err != nil {
 				t.Errorf("http.Post(%q, %q, %q) failed with %v; want success", url, "application/json", `"hello"`, err)
 				return nil
