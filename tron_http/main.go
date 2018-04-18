@@ -12,11 +12,14 @@ import (
 
 	gw "github.com/tronprotocol/grpc-gateway/api"
 
+	"fmt"
 )
 
 var (
 	port = flag.Int("port",50051, "port of your tron grpc service" )
 	host = flag.String("host", "localhost", "host of your tron grpc service")
+	listen = flag.Int("listen", 18890, "the port that http server listen")
+
 )
 
 func run() error {
@@ -25,19 +28,21 @@ func run() error {
 	defer cancel()
 
 	mux := runtime.NewServeMux()
-	echoEndpoint := *host + ":"  + strconv.Itoa(*port)
+	grpcEndpoint := *host + ":"  + strconv.Itoa(*port)
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 
 
-	err := gw.RegisterWalletHandlerFromEndpoint(ctx, mux, echoEndpoint, opts)
+	fmt.Printf("grpc server:  %s\n", grpcEndpoint)
+	fmt.Printf("http port  :  %d\n", *listen)
+
+	err := gw.RegisterWalletHandlerFromEndpoint(ctx, mux, grpcEndpoint, opts)
 	if err != nil {
 		return err
 	}
 
-	//fmt.Printf("connecting %s", echoEndpoint)
 
 
-	return http.ListenAndServe(":8086", mux)
+	return http.ListenAndServe(":" + strconv.Itoa(*listen), mux)
 }
 
 func main() {
