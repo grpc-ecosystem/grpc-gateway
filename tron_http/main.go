@@ -18,7 +18,7 @@ import (
 var (
 	port = flag.Int("port",50051, "port of your tron grpc service" )
 	host = flag.String("host", "localhost", "host of your tron grpc service")
-	listen = flag.Int("listen", 8086, "the port that http server listen")
+	listen = flag.Int("listen", 18890, "the port that http server listen")
 
 )
 
@@ -32,8 +32,8 @@ func run() error {
 	opts := []grpc.DialOption{grpc.WithInsecure()}
 
 
-	fmt.Printf("grpc server: %s\n", grpcEndpoint)
-	fmt.Printf("http port: %d\n", *listen)
+	fmt.Printf("grpc server:  %s\n", grpcEndpoint)
+	fmt.Printf("http port  :  %d\n", *listen)
 
 	err := gw.RegisterWalletHandlerFromEndpoint(ctx, mux, grpcEndpoint, opts)
 	if err != nil {
