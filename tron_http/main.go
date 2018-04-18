@@ -17,6 +17,8 @@ import (
 var (
 	port = flag.Int("port",50051, "port of your tron grpc service" )
 	host = flag.String("host", "localhost", "host of your tron grpc service")
+	listen = flag.Int("listen", 8086, "the port that http server listen")
+
 )
 
 func run() error {
@@ -34,10 +36,7 @@ func run() error {
 		return err
 	}
 
-	//fmt.Printf("connecting %s", echoEndpoint)
-
-
-	return http.ListenAndServe(":8086", mux)
+	return http.ListenAndServe(":" + strconv.Itoa(*listen), mux)
 }
 
 func main() {
