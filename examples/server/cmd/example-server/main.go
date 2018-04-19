@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 
 	"github.com/golang/glog"
@@ -11,7 +12,8 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	if err := server.Run(); err != nil {
+	ctx := context.Background()
+	if err := server.Run(ctx); err != nil {
 		glog.Fatal(err)
 	}
 }

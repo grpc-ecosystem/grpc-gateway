@@ -82,8 +82,7 @@ func preflightHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Run starts a HTTP server and blocks forever if successful.
-func Run(address string, opts ...runtime.ServeMuxOption) error {
-	ctx := context.Background()
+func Run(ctx context.Context, address string, opts ...runtime.ServeMuxOption) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -96,14 +95,32 @@ func Run(address string, opts ...runtime.ServeMuxOption) error {
 	}
 	mux.Handle("/", gw)
 
-	return http.ListenAndServe(address, allowCORS(mux))
+	s := &http.Server{
+		Addr:    address,
+		Handler: allowCORS(mux),
+	}
+	go func() {
+		<-ctx.Done()
+		glog.Infof("Shutting down the http server")
+		if err := s.Shutdown(context.Background()); err != nil {
+			glog.Errorf("Failed to shutdown http server: %v", err)
+		}
+	}()
+
+	glog.Infof("Starting listening at %s", address)
+	if err := s.ListenAndServe(); err != http.ErrServerClosed {
+		glog.Errorf("Failed to listen and serve: %v", err)
+		return err
+	}
+	return nil
 }
 
 func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	if err := Run(":8080"); err != nil {
+	ctx := context.Background()
+	if err := Run(ctx, ":8080"); err != nil {
 		glog.Fatal(err)
 	}
 }

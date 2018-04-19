@@ -10,24 +10,32 @@ import (
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"golang.org/x/net/context"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/codes"
 )
 
-func TestWithProtoErrorHandler(t *testing.T) {
-	go func() {
-		if err := Run(
-			":8082",
-			runtime.WithProtoErrorHandler(runtime.DefaultHTTPProtoErrorHandler),
-		); err != nil {
-			t.Errorf("gw.Run() failed with %v; want success", err)
-			return
-		}
-	}()
+func runServer(ctx context.Context, t *testing.T, port uint16) {
+	opt := runtime.WithProtoErrorHandler(runtime.DefaultHTTPProtoErrorHandler)
+	if err := Run(ctx, fmt.Sprintf(":%d", port), opt); err != nil {
+		t.Errorf("gw.Run() failed with %v; want success", err)
+	}
+}
 
+func TestWithProtoErrorHandler(t *testing.T) {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	const port = 8082
+	go runServer(ctx, t, port)
+
+	// Waiting for the server's getting available.
+	// TODO(yugui) find a better way to wait
 	time.Sleep(100 * time.Millisecond)
-	testEcho(t, 8082, "application/json")
-	testEchoBody(t, 8082)
+
+	testEcho(t, port, "application/json")
+	testEchoBody(t, port)
 }
 
 func TestABEWithProtoErrorHandler(t *testing.T) {
@@ -36,19 +44,29 @@ func TestABEWithProtoErrorHandler(t *testing.T) {
 		return
 	}
 
-	testABECreate(t, 8082)
-	testABECreateBody(t, 8082)
-	testABEBulkCreate(t, 8082)
-	testABELookup(t, 8082)
-	testABELookupNotFoundWithProtoError(t)
-	testABEList(t, 8082)
-	testABEBulkEcho(t, 8082)
-	testABEBulkEchoZeroLength(t, 8082)
-	testAdditionalBindings(t, 8082)
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	const port = 8083
+	go runServer(ctx, t, port)
+	// Waiting for the server's getting available.
+	// TODO(yugui) find a better way to wait
+	time.Sleep(100 * time.Millisecond)
+
+	testABECreate(t, port)
+	testABECreateBody(t, port)
+	testABEBulkCreate(t, port)
+	testABELookup(t, port)
+	testABELookupNotFoundWithProtoError(t, port)
+	testABEList(t, port)
+	testABEBulkEcho(t, port)
+	testABEBulkEchoZeroLength(t, port)
+	testAdditionalBindings(t, port)
 }
 
-func testABELookupNotFoundWithProtoError(t *testing.T) {
-	url := "http://localhost:8082/v1/example/a_bit_of_everything"
+func testABELookupNotFoundWithProtoError(t *testing.T, port uint16) {
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	uuid := "not_exist"
 	url = fmt.Sprintf("%s/%s", url, uuid)
 	resp, err := http.Get(url)
@@ -98,7 +116,18 @@ func testABELookupNotFoundWithProtoError(t *testing.T) {
 }
 
 func TestUnknownPathWithProtoError(t *testing.T) {
-	url := "http://localhost:8082"
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	const port = 8084
+	go runServer(ctx, t, port)
+
+	// Waiting for the server's getting available.
+	// TODO(yugui) find a better way to wait
+	time.Sleep(100 * time.Millisecond)
+
+	url := fmt.Sprintf("http://localhost:%d", port)
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
@@ -134,7 +163,18 @@ func TestUnknownPathWithProtoError(t *testing.T) {
 }
 
 func TestMethodNotAllowedWithProtoError(t *testing.T) {
-	url := "http://localhost:8082/v1/example/echo/myid"
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	const port = 8085
+	go runServer(ctx, t, port)
+
+	// Waiting for the server's getting available.
+	// TODO(yugui) find a better way to wait
+	time.Sleep(100 * time.Millisecond)
+
+	url := fmt.Sprintf("http://localhost:%d/v1/example/echo/myid", port)
 	resp, err := http.Get(url)
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
