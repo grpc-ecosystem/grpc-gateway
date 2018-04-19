@@ -1,48 +1,23 @@
 package main
 
 import (
+	"context"
 	"flag"
+	"fmt"
 	"net/http"
 	"path"
 	"strings"
 
-	"context"
 	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/gateway"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"google.golang.org/grpc"
 )
 
 var (
-	echoEndpoint = flag.String("echo_endpoint", "localhost:9090", "endpoint of EchoService")
-	abeEndpoint  = flag.String("more_endpoint", "localhost:9090", "endpoint of ABitOfEverythingService")
-	flowEndpoint = flag.String("flow_endpoint", "localhost:9090", "endpoint of FlowCombination")
-
+	endpoint   = flag.String("endpoint", "localhost:9090", "endpoint of the gRPC service")
+	network    = flag.String("network", "tcp", `one of "tcp" or "unix". Must be consistent to -endpoint`)
 	swaggerDir = flag.String("swagger_dir", "examples/examplepb", "path to the directory which contains swagger definitions")
 )
-
-// newGateway returns a new gateway server which translates HTTP into gRPC.
-func newGateway(ctx context.Context, opts ...runtime.ServeMuxOption) (http.Handler, error) {
-	mux := runtime.NewServeMux(opts...)
-	dialOpts := []grpc.DialOption{grpc.WithInsecure()}
-	err := examplepb.RegisterEchoServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint, dialOpts)
-	if err != nil {
-		return nil, err
-	}
-	err = examplepb.RegisterStreamServiceHandlerFromEndpoint(ctx, mux, *abeEndpoint, dialOpts)
-	if err != nil {
-		return nil, err
-	}
-	err = examplepb.RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx, mux, *abeEndpoint, dialOpts)
-	if err != nil {
-		return nil, err
-	}
-	err = examplepb.RegisterFlowCombinationHandlerFromEndpoint(ctx, mux, *flowEndpoint, dialOpts)
-	if err != nil {
-		return nil, err
-	}
-	return mux, nil
-}
 
 func serveSwagger(w http.ResponseWriter, r *http.Request) {
 	if !strings.HasSuffix(r.URL.Path, ".swagger.json") {
@@ -79,6 +54,17 @@ func preflightHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", strings.Join(methods, ","))
 	glog.Infof("preflight request for %s", r.URL.Path)
 	return
+}
+
+func newGateway(ctx context.Context, opts ...runtime.ServeMuxOption) (http.Handler, error) {
+	switch *network {
+	case "tcp":
+		return gateway.NewTCPGateway(ctx, *endpoint, opts...)
+	case "unix":
+		return gateway.NewUnixGateway(ctx, *endpoint, opts...)
+	default:
+		return nil, fmt.Errorf("unsupported network type %q:", *network)
+	}
 }
 
 // Run starts a HTTP server and blocks forever if successful.

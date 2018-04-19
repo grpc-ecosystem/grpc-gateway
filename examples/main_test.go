@@ -15,7 +15,7 @@ import (
 func runServers(ctx context.Context) <-chan error {
 	ch := make(chan error, 2)
 	go func() {
-		if err := server.Run(ctx); err != nil {
+		if err := server.Run(ctx, *network, *endpoint); err != nil {
 			ch <- fmt.Errorf("cannot run grpc service: %v", err)
 		}
 	}()

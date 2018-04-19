@@ -10,14 +10,15 @@ import (
 )
 
 // Run starts the example gRPC service.
-func Run(ctx context.Context) error {
-	l, err := net.Listen("tcp", ":9090")
+// "network" and "address" are passed to net.Listen.
+func Run(ctx context.Context, network, address string) error {
+	l, err := net.Listen(network, address)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err := l.Close(); err != nil {
-			glog.Errorf("Failed to close tcp :9090: %v", err)
+			glog.Errorf("Failed to close %s %s: %v", network, address, err)
 		}
 	}()
 
