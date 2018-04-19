@@ -201,6 +201,7 @@ enum ReasonCode {
   PING_TIMEOUT = 0x0B;
   USER_REASON = 0x10;
   RESET = 0x11;
+  SYNC_FAIL = 0x12;
   UNKNOWN = 0xFF;
 }
 
