@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>查看信息</title>
+  <script type="text/javascript" src="test.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script type="text/javascript">
+    var b = new Base64();
+    var result;
+    convert = function (input) {
+      if (input !== null) {
+        for (var key in input) {
+          var value = input[key];
+          if (typeof value == "object") {
+            convert(value);
+          } else {
+            switch (key) {
+              case "account_name":
+              case "host":
+
+                input[key] = b.decodeToString(input[key]);
+                break;
+              case "address":
+              case "parentHash":
+              case "witness_signature":
+              case "txTrieRoot":
+              case "witness_address":
+              case "owner_address":
+              case "to_address":
+                input[key] = b.decodeToHexString(input[key]);
+                break;
+              default:
+                break;
+            }
+          }
+        }
+      }
+    };
+
+    function listaccounts() {
+      var requestaddress = "http://" + document.getElementById("ip").value
+          + "/wallet/listaccounts";
+      axios.get(requestaddress)
+      .then(function (response) {
+            convert(response.data);
+            result = JSON.stringify(response.data);
+            document.documentElement.innerHTML = result;
+          }
+      )
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+
+    function listwitnesses() {
+      var requestaddress = "http://" + document.getElementById("ip").value
+          + "/wallet/listwitnesses";
+      axios.get(requestaddress)
+      .then(function (response) {
+            convert(response.data);
+            result = JSON.stringify(response.data);
+            document.documentElement.innerHTML = result;
+          }
+      )
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+
+    function listnodes() {
+      var requestaddress = "http://" + document.getElementById("ip").value
+          + "/wallet/listnodes";
+      axios.get(requestaddress)
+      .then(function (response) {
+            convert(response.data);
+            result = JSON.stringify(response.data);
+            document.documentElement.innerHTML = result;
+          }
+      )
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+
+    function getassetissuelist() {
+      var requestaddress = "http://" + document.getElementById("ip").value
+          + "/wallet/getassetissuelist";
+      axios.get(requestaddress)
+      .then(function (response) {
+            convert(response.data);
+            result = JSON.stringify(response.data);
+            document.documentElement.innerHTML = result;
+          }
+      )
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+
+    function getnowblock() {
+      var requestaddress = "http://" + document.getElementById("ip").value
+          + "/wallet/getnowblock";
+      axios.get(requestaddress)
+      .then(function (response) {
+            convert(response.data);
+            result = JSON.stringify(response.data);
+            document.documentElement.innerHTML = result;
+          }
+      )
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+
+    function totaltransaction() {
+      var requestaddress = "http://" + document.getElementById("ip").value
+          + "/wallet/totaltransaction";
+      axios.get(requestaddress)
+      .then(function (response) {
+            convert(response.data);
+            result = JSON.stringify(response.data);
+            document.documentElement.innerHTML = result;
+          }
+      )
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+  </script>
+</head>
+
+<body>
+<br/>输入IP：
+<input id="ip" type="text" value="127.0.0.1:8086" autocomplete="on">
+<br/>
+
+<br/>查看accounts：
+<button onclick="listaccounts()">listaccounts</button>
+<br/>查看witness：
+<button onclick="listwitnesses()">listwitnesses</button>
+
+<br/>查看nodes：
+<button onclick="listnodes()">listnodes</button>
+<br/>查看资产列表：
+<button onclick="getassetissuelist()">getassetissuelist</button>
+<br/>查看当前块：
+<button onclick="getnowblock()">getnowblock</button>
+<br/>查看全部交易：
+<button onclick="totaltransaction()">totaltransaction</button>
+<br/>
+</body>
+</html>
