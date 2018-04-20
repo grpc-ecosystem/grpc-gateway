@@ -198,7 +198,7 @@ service WalletSolidity {
   rpc getTransactionsFromThis (Account) returns (TransactionList) {
 
   }
-  rpc getTransactionsToThis (Account) returns (NumberMessage) {
+  rpc getTransactionsToThis (Account) returns (TransactionList) {
 
   }
 };
