@@ -24,7 +24,7 @@ var (
 )
 
 func allowCORS(h http.Handler) http.Handler {
-	return http.HanedlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if origin := r.Header.Get("Origin"); origin != "" {
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			if r.Method == "OPTIONS" && r.Header.Get("Access-Control-Request-Method") != "" {
