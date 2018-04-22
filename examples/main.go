@@ -1,48 +1,23 @@
 package main
 
 import (
+	"context"
 	"flag"
+	"fmt"
 	"net/http"
 	"path"
 	"strings"
 
-	"context"
 	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/gateway"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"google.golang.org/grpc"
 )
 
 var (
-	echoEndpoint = flag.String("echo_endpoint", "localhost:9090", "endpoint of EchoService")
-	abeEndpoint  = flag.String("more_endpoint", "localhost:9090", "endpoint of ABitOfEverythingService")
-	flowEndpoint = flag.String("flow_endpoint", "localhost:9090", "endpoint of FlowCombination")
-
+	endpoint   = flag.String("endpoint", "localhost:9090", "endpoint of the gRPC service")
+	network    = flag.String("network", "tcp", `one of "tcp" or "unix". Must be consistent to -endpoint`)
 	swaggerDir = flag.String("swagger_dir", "examples/examplepb", "path to the directory which contains swagger definitions")
 )
-
-// newGateway returns a new gateway server which translates HTTP into gRPC.
-func newGateway(ctx context.Context, opts ...runtime.ServeMuxOption) (http.Handler, error) {
-	mux := runtime.NewServeMux(opts...)
-	dialOpts := []grpc.DialOption{grpc.WithInsecure()}
-	err := examplepb.RegisterEchoServiceHandlerFromEndpoint(ctx, mux, *echoEndpoint, dialOpts)
-	if err != nil {
-		return nil, err
-	}
-	err = examplepb.RegisterStreamServiceHandlerFromEndpoint(ctx, mux, *abeEndpoint, dialOpts)
-	if err != nil {
-		return nil, err
-	}
-	err = examplepb.RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx, mux, *abeEndpoint, dialOpts)
-	if err != nil {
-		return nil, err
-	}
-	err = examplepb.RegisterFlowCombinationHandlerFromEndpoint(ctx, mux, *flowEndpoint, dialOpts)
-	if err != nil {
-		return nil, err
-	}
-	return mux, nil
-}
 
 func serveSwagger(w http.ResponseWriter, r *http.Request) {
 	if !strings.HasSuffix(r.URL.Path, ".swagger.json") {
@@ -81,9 +56,19 @@ func preflightHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func newGateway(ctx context.Context, opts ...runtime.ServeMuxOption) (http.Handler, error) {
+	switch *network {
+	case "tcp":
+		return gateway.NewTCPGateway(ctx, *endpoint, opts...)
+	case "unix":
+		return gateway.NewUnixGateway(ctx, *endpoint, opts...)
+	default:
+		return nil, fmt.Errorf("unsupported network type %q:", *network)
+	}
+}
+
 // Run starts a HTTP server and blocks forever if successful.
-func Run(address string, opts ...runtime.ServeMuxOption) error {
-	ctx := context.Background()
+func Run(ctx context.Context, address string, opts ...runtime.ServeMuxOption) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
@@ -96,14 +81,32 @@ func Run(address string, opts ...runtime.ServeMuxOption) error {
 	}
 	mux.Handle("/", gw)
 
-	return http.ListenAndServe(address, allowCORS(mux))
+	s := &http.Server{
+		Addr:    address,
+		Handler: allowCORS(mux),
+	}
+	go func() {
+		<-ctx.Done()
+		glog.Infof("Shutting down the http server")
+		if err := s.Shutdown(context.Background()); err != nil {
+			glog.Errorf("Failed to shutdown http server: %v", err)
+		}
+	}()
+
+	glog.Infof("Starting listening at %s", address)
+	if err := s.ListenAndServe(); err != http.ErrServerClosed {
+		glog.Errorf("Failed to listen and serve: %v", err)
+		return err
+	}
+	return nil
 }
 
 func main() {
 	flag.Parse()
 	defer glog.Flush()
 
-	if err := Run(":8080"); err != nil {
+	ctx := context.Background()
+	if err := Run(ctx, ":8080"); err != nil {
 		glog.Fatal(err)
 	}
 }

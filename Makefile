@@ -133,6 +133,7 @@ $(ABE_EXAMPLE_SRCS): $(ABE_EXAMPLE_SPEC)
 examples: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
 test: examples
 	go test -race $(PKG)/...
+	go test -race $(PKG)/examples -args -network=unix -endpoint=test.sock
 
 lint:
 	golint --set_exit_status $(PKG)/runtime

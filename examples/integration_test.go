@@ -42,8 +42,13 @@ func TestEcho(t *testing.T) {
 }
 
 func TestForwardResponseOption(t *testing.T) {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
 	go func() {
 		if err := Run(
+			ctx,
 			":8081",
 			runtime.WithForwardResponseOption(
 				func(_ context.Context, w http.ResponseWriter, _ proto.Message) error {
