@@ -6,6 +6,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/examples/clients/abe"
 	"github.com/grpc-ecosystem/grpc-gateway/examples/clients/echo"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/clients/unannotatedecho"
 )
 
 func TestClientIntegration(t *testing.T) {
@@ -158,5 +159,38 @@ func testABEClientCreateBody(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 	resp.Uuid = ""
 	if got := resp; !reflect.DeepEqual(got, want) {
 		t.Errorf("resp = %#v; want %#v", got, want)
+	}
+}
+
+func TestUnannotatedEchoClient(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	cl := unannotatedecho.NewUnannotatedEchoServiceApiWithBasePath("http://localhost:8080")
+	resp, _, err := cl.Echo("foo")
+	if err != nil {
+		t.Errorf(`cl.Echo("foo") failed with %v; want success`, err)
+	}
+	if got, want := resp.Id, "foo"; got != want {
+		t.Errorf("resp.Id = %q; want %q", got, want)
+	}
+}
+
+func TestUnannotatedEchoBodyClient(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	cl := unannotatedecho.NewUnannotatedEchoServiceApiWithBasePath("http://localhost:8080")
+	req := unannotatedecho.ExamplepbUnannotatedSimpleMessage{Id: "foo"}
+	resp, _, err := cl.EchoBody(req)
+	if err != nil {
+		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)
+	}
+	if got, want := resp.Id, "foo"; got != want {
+		t.Errorf("resp.Id = %q; want %q", got, want)
 	}
 }

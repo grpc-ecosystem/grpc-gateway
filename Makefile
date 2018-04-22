@@ -38,6 +38,7 @@ GATEWAY_PLUGIN_SRC= utilities/doc.go \
 		    protoc-gen-grpc-gateway/httprule/types.go \
 		    protoc-gen-grpc-gateway/main.go
 GATEWAY_PLUGIN_FLAGS?=
+SWAGGER_PLUGIN_FLAGS?=
 
 GOOGLEAPIS_DIR=third_party/googleapis
 OUTPUT_DIR=_output
@@ -49,18 +50,24 @@ OPENAPIV2_PROTO=protoc-gen-swagger/options/openapiv2.proto protoc-gen-swagger/op
 OPENAPIV2_GO=$(OPENAPIV2_PROTO:.proto=.pb.go)
 
 PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/sub/message.proto=$(PKG)/examples/sub
-ADDITIONAL_FLAGS=
+ADDITIONAL_GW_FLAGS=
 ifneq "$(GATEWAY_PLUGIN_FLAGS)" ""
-	ADDITIONAL_FLAGS=,$(GATEWAY_PLUGIN_FLAGS)
+	ADDITIONAL_GW_FLAGS=,$(GATEWAY_PLUGIN_FLAGS)
+endif
+ADDITIONAL_SWG_FLAGS=
+ifneq "$(SWAGGER_PLUGIN_FLAGS)" ""
+	ADDITIONAL_SWG_FLAGS=,$(SWAGGER_PLUGIN_FLAGS)
 endif
 SWAGGER_EXAMPLES=examples/examplepb/echo_service.proto \
 	 examples/examplepb/a_bit_of_everything.proto \
-	 examples/examplepb/wrappers.proto
+	 examples/examplepb/wrappers.proto \
+	 examples/examplepb/unannotated_echo_service.proto
 EXAMPLES=examples/examplepb/echo_service.proto \
 	 examples/examplepb/a_bit_of_everything.proto \
 	 examples/examplepb/stream.proto \
 	 examples/examplepb/flow_combination.proto \
-	 examples/examplepb/wrappers.proto
+	 examples/examplepb/wrappers.proto \
+	 examples/examplepb/unannotated_echo_service.proto
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
 EXAMPLE_SWAGGERSRCS=$(EXAMPLES:.proto=.swagger.json)
@@ -81,7 +88,10 @@ ABE_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/abe/ABitOfEverythingServiceApi.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/ProtobufEmpty.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/Sub2IdMessage.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/SubStringMessage.go
-EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS)
+UNANNOTATED_ECHO_EXAMPLE_SPEC=examples/examplepb/unannotated_echo_service.swagger.json
+UNANNOTATED_ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/unannotatedecho/UnannotatedEchoServiceApi.go \
+		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/ExamplepbUnannotatedSimpleMessage.go
+EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS)
 SWAGGER_CODEGEN=swagger-codegen
 
 PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
@@ -112,10 +122,14 @@ $(EXAMPLE_DEPSRCS): $(GO_PLUGIN) $(EXAMPLE_DEPS)
 	mkdir -p $(OUTPUT_DIR)
 	protoc -I $(PROTOC_INC_PATH) -I. --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc:$(OUTPUT_DIR) $(@:.pb.go=.proto)
 	cp $(OUTPUT_DIR)/$(PKG)/$@ $@ || cp $(OUTPUT_DIR)/$@ $@
+
+$(EXAMPLE_GWSRCS): ADDITIONAL_GW_FLAGS+=,grpc_api_configuration=examples/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,$(PKGMAP)$(ADDITIONAL_FLAGS):. $(EXAMPLES)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,$(PKGMAP)$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
+
+$(EXAMPLE_SWAGGERSRCS): ADDITIONAL_SWG_FLAGS+=,grpc_api_configuration=examples/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_SWAGGERSRCS): $(SWAGGER_PLUGIN) $(SWAGGER_EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(SWAGGER_PLUGIN) --swagger_out=logtostderr=true,$(PKGMAP):. $(SWAGGER_EXAMPLES)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(SWAGGER_PLUGIN) --swagger_out=logtostderr=true,$(PKGMAP)$(ADDITIONAL_SWG_FLAGS):. $(SWAGGER_EXAMPLES)
 
 $(ECHO_EXAMPLE_SRCS): $(ECHO_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ECHO_EXAMPLE_SPEC) \
@@ -129,6 +143,12 @@ $(ABE_EXAMPLE_SRCS): $(ABE_EXAMPLE_SPEC)
 	@rm -f $(EXAMPLE_CLIENT_DIR)/abe/README.md \
 		$(EXAMPLE_CLIENT_DIR)/abe/git_push.sh \
 		$(EXAMPLE_CLIENT_DIR)/abe/.travis.yml
+$(UNANNOTATED_ECHO_EXAMPLE_SRCS): $(UNANNOTATED_ECHO_EXAMPLE_SPEC)
+	$(SWAGGER_CODEGEN) generate -i $(UNANNOTATED_ECHO_EXAMPLE_SPEC) \
+	    -l go -o examples/clients/unannotatedecho --additional-properties packageName=unannotatedecho
+	@rm -f $(EXAMPLE_CLIENT_DIR)/unannotatedecho/README.md \
+		$(EXAMPLE_CLIENT_DIR)/unannotatedecho/git_push.sh \
+		$(EXAMPLE_CLIENT_DIR)/unannotatedecho/.travis.yml
 
 examples: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
 test: examples
