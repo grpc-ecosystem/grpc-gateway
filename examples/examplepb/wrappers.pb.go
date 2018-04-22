@@ -10,7 +10,7 @@ import _ "google.golang.org/genproto/googleapis/api/annotations"
 import google_protobuf5 "github.com/golang/protobuf/ptypes/wrappers"
 
 import (
-	context "context"
+	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
 )
 

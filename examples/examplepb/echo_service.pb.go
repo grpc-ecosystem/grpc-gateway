@@ -15,6 +15,7 @@ It is generated from these files:
 	examples/examplepb/stream.proto
 	examples/examplepb/flow_combination.proto
 	examples/examplepb/wrappers.proto
+	examples/examplepb/unannotated_echo_service.proto
 
 It has these top-level messages:
 	SimpleMessage
@@ -27,6 +28,7 @@ It has these top-level messages:
 	NestedProto
 	SingleNestedProto
 	Wrappers
+	UnannotatedSimpleMessage
 */
 package examplepb
 
@@ -36,7 +38,7 @@ import math "math"
 import _ "google.golang.org/genproto/googleapis/api/annotations"
 
 import (
-	context "context"
+	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
 )
 
