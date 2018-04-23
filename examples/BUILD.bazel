@@ -31,6 +31,7 @@ go_test(
     deps = [
         "//examples/clients/abe:go_default_library",
         "//examples/clients/echo:go_default_library",
+        "//examples/clients/unannotatedecho:go_default_library",
         "//examples/examplepb:go_default_library",
         "//examples/server:go_default_library",
         "//examples/sub:go_default_library",

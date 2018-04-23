@@ -8,8 +8,8 @@ go_library(
         "a_bit_of_everything.go",
         "echo.go",
         "flow_combination.go",
-        "unannotatedecho.go",
         "main.go",
+        "unannotatedecho.go",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/server",
     deps = [
