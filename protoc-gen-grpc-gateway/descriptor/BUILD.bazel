@@ -8,6 +8,8 @@ go_library(
         "registry.go",
         "services.go",
         "types.go",
+        "grpc_api_service.go",
+        "grpc_api_configuration.go",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor",
     deps = [
@@ -28,6 +30,7 @@ go_test(
         "registry_test.go",
         "services_test.go",
         "types_test.go",
+        "grpc_api_configuration_test.go",
     ],
     embed = [":go_default_library"],
     deps = [
