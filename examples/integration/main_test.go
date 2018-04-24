@@ -17,7 +17,7 @@ import (
 var (
 	endpoint   = flag.String("endpoint", "localhost:9090", "endpoint of the gRPC service")
 	network    = flag.String("network", "tcp", `one of "tcp" or "unix". Must be consistent to -endpoint`)
-	swaggerDir = flag.String("swagger_dir", "examples/examplepb", "path to the directory which contains swagger definitions")
+	swaggerDir = flag.String("swagger_dir", "examples/proto/examplepb", "path to the directory which contains swagger definitions")
 )
 
 func runGateway(ctx context.Context, addr string, opts ...gwruntime.ServeMuxOption) error {

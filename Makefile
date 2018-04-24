@@ -48,33 +48,33 @@ RUNTIME_GO=$(RUNTIME_PROTO:.proto=.pb.go)
 OPENAPIV2_PROTO=protoc-gen-swagger/options/openapiv2.proto protoc-gen-swagger/options/annotations.proto
 OPENAPIV2_GO=$(OPENAPIV2_PROTO:.proto=.pb.go)
 
-PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/sub/message.proto=$(PKG)/examples/sub
+PKGMAP=Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/proto/sub/message.proto=$(PKG)/examples/proto/sub
 ADDITIONAL_FLAGS=
 ifneq "$(GATEWAY_PLUGIN_FLAGS)" ""
 	ADDITIONAL_FLAGS=,$(GATEWAY_PLUGIN_FLAGS)
 endif
-SWAGGER_EXAMPLES=examples/examplepb/echo_service.proto \
-	 examples/examplepb/a_bit_of_everything.proto \
-	 examples/examplepb/wrappers.proto
-EXAMPLES=examples/examplepb/echo_service.proto \
-	 examples/examplepb/a_bit_of_everything.proto \
-	 examples/examplepb/stream.proto \
-	 examples/examplepb/flow_combination.proto \
-	 examples/examplepb/wrappers.proto
+SWAGGER_EXAMPLES=examples/proto/examplepb/echo_service.proto \
+	 examples/proto/examplepb/a_bit_of_everything.proto \
+	 examples/proto/examplepb/wrappers.proto
+EXAMPLES=examples/proto/examplepb/echo_service.proto \
+	 examples/proto/examplepb/a_bit_of_everything.proto \
+	 examples/proto/examplepb/stream.proto \
+	 examples/proto/examplepb/flow_combination.proto \
+	 examples/proto/examplepb/wrappers.proto
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
 EXAMPLE_SWAGGERSRCS=$(SWAGGER_EXAMPLES:.proto=.swagger.json)
-EXAMPLE_DEPS=examples/sub/message.proto examples/sub2/message.proto
+EXAMPLE_DEPS=examples/proto/sub/message.proto examples/proto/sub2/message.proto
 EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
 
 EXAMPLE_CLIENT_DIR=examples/clients
-ECHO_EXAMPLE_SPEC=examples/examplepb/echo_service.swagger.json
+ECHO_EXAMPLE_SPEC=examples/proto/examplepb/echo_service.swagger.json
 ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/echo/api_client.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/api_response.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/configuration.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/echo_service_api.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/examplepb_simple_message.go
-ABE_EXAMPLE_SPEC=examples/examplepb/a_bit_of_everything.swagger.json
+ABE_EXAMPLE_SPEC=examples/proto/examplepb/a_bit_of_everything.swagger.json
 ABE_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/abe/a_bit_of_everything_nested.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/a_bit_of_everything_service_api.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/api_client.go \
