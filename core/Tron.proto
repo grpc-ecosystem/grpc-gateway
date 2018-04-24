@@ -82,6 +82,7 @@ message Transaction {
       DeployContract = 7;
       WitnessUpdateContract = 8;
       ParticipateAssetIssueContract = 9;
+      AccountUpdateContract = 10;
     }
     ContractType type = 1;
     google.protobuf.Any parameter = 2;
