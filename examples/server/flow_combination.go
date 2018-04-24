@@ -1,9 +1,9 @@
 package server
 
 import (
+	"context"
 	"io"
 
-	"context"
 	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
 )
 
