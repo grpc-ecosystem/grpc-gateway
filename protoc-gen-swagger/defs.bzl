@@ -35,27 +35,23 @@ def _run_proto_gen_swagger(direct_proto_srcs, transitive_proto_srcs, actions, pr
     return swagger_files
 
 def _proto_gen_swagger_impl(ctx):
-    direct_sources = []
-    transitive_proto_srcs = depset(ctx.files._well_known_protos)
-    for dep in ctx.attr.deps:
-        direct_sources += dep.proto.direct_sources
-        transitive_proto_srcs = depset(transitive=[transitive_proto_srcs, dep.proto.transitive_sources])
+    proto = ctx.attr.proto.proto
 
     return struct(
         files=depset(
             _run_proto_gen_swagger(
-                direct_sources,
-                transitive_proto_srcs.to_list(),
-                ctx.actions,
-                ctx.executable._protoc,
-                ctx.executable._protoc_gen_swagger,
+                direct_proto_srcs = proto.direct_sources,
+                transitive_proto_srcs = ctx.files._well_known_protos + proto.transitive_sources.to_list(),
+                actions = ctx.actions,
+                protoc = ctx.executable._protoc,
+                protoc_gen_swagger = ctx.executable._protoc_gen_swagger,
             )
         )
     )
 
 protoc_gen_swagger = rule(
     attrs = {
-        "deps": attr.label_list(
+        "proto": attr.label(
             allow_rules = ["proto_library"],
             mandatory = True,
             providers = ['proto'],
