@@ -36,7 +36,7 @@ def _run_proto_gen_swagger(direct_proto_srcs, transitive_proto_srcs, actions, pr
 
 def _proto_gen_swagger_impl(ctx):
     direct_sources = []
-    transitive_proto_srcs = depset([ctx.file._annotations] + ctx.files._well_known_protos)
+    transitive_proto_srcs = depset(ctx.files._well_known_protos)
     for dep in ctx.attr.deps:
         direct_sources += dep.proto.direct_sources
         transitive_proto_srcs = depset(transitive=[transitive_proto_srcs, dep.proto.transitive_sources])
@@ -73,10 +73,6 @@ protoc_gen_swagger = rule(
             default = Label("@grpc_ecosystem_grpc_gateway//protoc-gen-swagger:protoc-gen-swagger"),
             executable = True,
             cfg = "host",
-        ),
-        "_annotations": attr.label(
-            default = Label("@com_github_googleapis_googleapis//google/api:annotations.proto"),
-            allow_single_file = True,
         ),
     },
     implementation = _proto_gen_swagger_impl,
