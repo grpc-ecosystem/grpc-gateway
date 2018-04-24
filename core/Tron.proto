@@ -104,6 +104,7 @@ message Transaction {
       DeployContract = 7;
       WitnessUpdateContract = 8;
       ParticipateAssetIssueContract = 9;
+      AccountUpdateContract = 10;
       CustomContract = 20;
     }
     ContractType type = 1;
