@@ -1,3 +1,7 @@
+/*
+Command example-grpc-server is an example grpc server
+to be called by example-gateway-server.
+*/
 package main
 
 import (

@@ -13,8 +13,8 @@ import (
 	"google.golang.org/grpc"
 )
 
-// NewGateway returns a new gateway server which translates HTTP into gRPC.
-func NewGateway(ctx context.Context, network, addr string, opts []gwruntime.ServeMuxOption) (http.Handler, error) {
+// newGateway returns a new gateway server which translates HTTP into gRPC.
+func newGateway(ctx context.Context, network, addr string, opts []gwruntime.ServeMuxOption) (http.Handler, error) {
 	conn, err := dial(ctx, network, addr)
 	if err != nil {
 		return nil, err

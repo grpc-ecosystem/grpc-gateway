@@ -38,7 +38,7 @@ func Run(ctx context.Context, opts Options) error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/swagger/", swaggerServer(opts.SwaggerDir))
 
-	gw, err := NewGateway(ctx, opts.GRPCServer.Network, opts.GRPCServer.Addr, opts.Mux)
+	gw, err := newGateway(ctx, opts.GRPCServer.Network, opts.GRPCServer.Addr, opts.Mux)
 	if err != nil {
 		return err
 	}
