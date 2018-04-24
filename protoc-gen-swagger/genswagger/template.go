@@ -586,6 +586,13 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						return err
 					}
 					parameters = append(parameters, queryParams...)
+				} else if b.HTTPMethod == "DELETE" {
+					// add the parameters to the query string
+					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams)
+					if err != nil {
+						return err
+					}
+					parameters = append(parameters, queryParams...)
 				}
 
 				pathItemObject, ok := paths[templateToSwaggerPath(b.PathTmpl.Template)]
