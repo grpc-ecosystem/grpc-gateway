@@ -2,7 +2,12 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "go_default_library",
-    srcs = ["gateway.go"],
+    srcs = [
+        "doc.go",
+        "gateway.go",
+        "handlers.go",
+        "main.go",
+    ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/gateway",
     visibility = ["//visibility:public"],
     deps = [
