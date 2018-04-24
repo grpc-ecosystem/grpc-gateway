@@ -16,19 +16,35 @@ enum AccountType {
   Contract = 2;
 }
 
+// AccountId, (name, address) use name, (null, address) use address, (name, null) use name,
+message AccountId {
+  bytes name = 1;
+  bytes address = 2;
+}
+
 // Account
 message Account {
   message Vote {
     bytes vote_address = 1;
     int64 vote_count = 2;
   }
+
   bytes account_name = 1;
   AccountType type = 2;
+  // the create adress
   bytes address = 3;
   int64 balance = 4;
   repeated Vote votes = 5;
   map<string, int64> asset = 6;
+  int64 create_time = 9;
   int64 latest_opration_time = 10;
+  bytes code = 13;
+}
+
+
+message permision {
+  AccountId account = 1;
+
 }
 
 // Witness
@@ -65,6 +81,7 @@ message TXOutputs {
   repeated TXOutput outputs = 1;
 }
 
+
 message Transaction {
   enum TransactionType {
     UtxoType = 0;
@@ -82,9 +99,13 @@ message Transaction {
       DeployContract = 7;
       WitnessUpdateContract = 8;
       ParticipateAssetIssueContract = 9;
+      CustomContract = 20;
     }
     ContractType type = 1;
     google.protobuf.Any parameter = 2;
+    bytes provider = 3;
+    bytes ContractName = 4;
+
   }
 
   message Result {
@@ -95,18 +116,18 @@ message Transaction {
     int64 fee = 1;
     code ret = 2;
   }
-
   message raw {
     TransactionType type = 1;
     int64 ref_block_num = 3;
     bytes ref_block_hash = 4;
     int64 expiration = 8;
+    // data not used
     bytes data = 10;
     repeated Contract contract = 11;
+    // scripts not used
     bytes scripts = 12;
     int64 timestamp = 14;
   }
-
   raw raw_data = 1;
   repeated bytes signature = 2;
   repeated Result ret = 5;
