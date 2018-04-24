@@ -17,7 +17,7 @@ def _run_proto_gen_swagger(proto_service, transitive_proto_srcs, actions, protoc
     args.add("--plugin=%s" % protoc_gen_swagger.path)
     args.add("--swagger_out=logtostderr=true:%s" % swagger_file.dirname)
     args.add("-Iexternal/com_google_protobuf/src")
-    args.add("-Iexternal/grpc_ecosystem_grpc_gateway/third_party/googleapis/")
+    args.add("-Iexternal/com_github_googleapis_googleapis")
     args.add(["-I%s" % include for include in _collect_includes(transitive_proto_srcs)])
     args.add(proto_service.basename)
 
@@ -31,7 +31,7 @@ def _run_proto_gen_swagger(proto_service, transitive_proto_srcs, actions, protoc
     return swagger_file
 
 def _proto_gen_swagger_impl(ctx):
-    transitive_proto_srcs = depset([ctx.file.proto_service] + ctx.files._googleapis + ctx.files._well_known_protos)
+    transitive_proto_srcs = depset([ctx.file.proto_service, ctx.file._annotations] + ctx.files._well_known_protos)
     for dep in ctx.attr.deps:
         transitive_proto_srcs = depset(transitive=[transitive_proto_srcs, dep.proto.transitive_sources])
 
@@ -70,9 +70,9 @@ protoc_gen_swagger = rule(
             executable = True,
             cfg = "host",
         ),
-        "_googleapis": attr.label(
-            default = Label("@grpc_ecosystem_grpc_gateway//third_party/googleapis:googleapis"),
-            allow_files = True,
+        "_annotations": attr.label(
+            default = Label("@com_github_googleapis_googleapis//google/api:annotations.proto"),
+            allow_single_file = True,
         ),
     },
     implementation = _proto_gen_swagger_impl,
