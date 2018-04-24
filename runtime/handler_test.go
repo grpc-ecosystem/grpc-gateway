@@ -9,7 +9,7 @@ import (
 
 	"context"
 	"github.com/golang/protobuf/proto"
-	pb "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
+	pb "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime/internal"
 	"google.golang.org/grpc"

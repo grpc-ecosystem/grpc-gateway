@@ -4,8 +4,8 @@ package grpc.gateway.examples.examplepb;
 
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
-import "examples/examplepb/a_bit_of_everything.proto";
-import "examples/sub/message.proto";
+import "examples/proto/examplepb/a_bit_of_everything.proto";
+import "examples/proto/sub/message.proto";
 
 // Defines some more operations to be added to ABitOfEverythingService
 service StreamService {

@@ -5,8 +5,8 @@ package grpc.gateway.examples.examplepb;
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
-import "examples/sub/message.proto";
-import "examples/sub2/message.proto";
+import "examples/proto/sub/message.proto";
+import "examples/proto/sub2/message.proto";
 import "google/protobuf/timestamp.proto";
 import "protoc-gen-swagger/options/annotations.proto";
 
