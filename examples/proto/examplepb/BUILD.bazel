@@ -1,6 +1,6 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
-load("@grpc_ecosystem_grpc_gateway//protoc-gen-swagger:protoc-gen-swagger.bzl", "protoc_gen_swagger")
+load("@grpc_ecosystem_grpc_gateway//protoc-gen-swagger:defs.bzl", "protoc_gen_swagger")
 
 package(default_visibility = ["//visibility:public"])
 
