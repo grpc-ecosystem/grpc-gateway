@@ -7,10 +7,10 @@ def _collect_includes(srcs):
 
     return includes
 
-def _run_proto_gen_swagger(proto_service, transitive_proto_srcs, actions, protoc, protoc_gen_swagger):
+def _run_proto_gen_swagger(proto, transitive_proto_srcs, actions, protoc, protoc_gen_swagger):
     swagger_file = actions.declare_file(
-        "%s.swagger.json" % proto_service.basename[:-len(".proto")],
-        sibling = proto_service,
+        "%s.swagger.json" % proto.basename[:-len(".proto")],
+        sibling = proto,
     )
 
     args = actions.args()
@@ -19,7 +19,7 @@ def _run_proto_gen_swagger(proto_service, transitive_proto_srcs, actions, protoc
     args.add("-Iexternal/com_google_protobuf/src")
     args.add("-Iexternal/com_github_googleapis_googleapis")
     args.add(["-I%s" % include for include in _collect_includes(transitive_proto_srcs)])
-    args.add(proto_service.basename)
+    args.add(proto.basename)
 
     actions.run(
         executable = protoc,
@@ -31,14 +31,14 @@ def _run_proto_gen_swagger(proto_service, transitive_proto_srcs, actions, protoc
     return swagger_file
 
 def _proto_gen_swagger_impl(ctx):
-    transitive_proto_srcs = depset([ctx.file.proto_service, ctx.file._annotations] + ctx.files._well_known_protos)
+    transitive_proto_srcs = depset([ctx.file.proto, ctx.file._annotations] + ctx.files._well_known_protos)
     for dep in ctx.attr.deps:
         transitive_proto_srcs = depset(transitive=[transitive_proto_srcs, dep.proto.transitive_sources])
 
     return struct(
         files=depset([
             _run_proto_gen_swagger(
-                ctx.file.proto_service,
+                ctx.file.proto,
                 transitive_proto_srcs.to_list(),
                 ctx.actions,
                 ctx.executable._protoc,
@@ -49,7 +49,7 @@ def _proto_gen_swagger_impl(ctx):
 
 protoc_gen_swagger = rule(
     attrs = {
-        "proto_service": attr.label(
+        "proto": attr.label(
             mandatory = True,
             allow_single_file = True,
         ),
