@@ -32,9 +32,9 @@ gulp.task('serve-server', ['server'], function(){
 
 gulp.task('serve-gateway', ['gateway', 'serve-server'], function(){
   gprocess.start('gateway-server', 'bin/example-gw', [
-      '--logtostderr', '--swagger_dir', path.join(__dirname, "../examplepb"),
+      '--logtostderr', '--swagger_dir', path.join(__dirname, "../proto/examplepb"),
   ]);
-  gulp.watch('bin/example-gateway', ['serve-gateway']);
+  gulp.watch('bin/example-gw', ['serve-gateway']);
 });
 
 gulp.task('backends', ['serve-gateway', 'serve-server']);
