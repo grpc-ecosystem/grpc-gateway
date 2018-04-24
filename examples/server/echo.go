@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+
 	"github.com/golang/glog"
 	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
 	"google.golang.org/grpc"
