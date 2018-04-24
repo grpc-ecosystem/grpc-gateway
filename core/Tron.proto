@@ -24,32 +24,34 @@ message AccountId {
 
 // Account
 message Account {
+  // vote message
   message Vote {
+    // the super rep address
     bytes vote_address = 1;
+    // the vote num to this super rep.
     int64 vote_count = 2;
   }
-
   bytes account_name = 1;
   AccountType type = 2;
   // the create adress
   bytes address = 3;
+  // the trx balance
   int64 balance = 4;
+  // the votes
   repeated Vote votes = 5;
+  // the other asset owned by this account
   map<string, int64> asset = 6;
+  // this account create time
   int64 create_time = 9;
+  // this last opration time, including transfer, voting and so on.
   int64 latest_opration_time = 10;
+  // not used so far
   bytes code = 13;
 }
 
 message acuthrity {
   AccountId account = 1;
   bytes permission_name = 2;
-}
-
-
-message permision {
-  AccountId account = 1;
-
 }
 
 // Witness
@@ -88,6 +90,7 @@ message TXOutputs {
 
 
 message Transaction {
+  // transcation type, utxo is desprated.
   enum TransactionType {
     UtxoType = 0;
     ContractType = 1;
