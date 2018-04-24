@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"net/http"
 	"path"
 	"strings"
@@ -56,17 +55,6 @@ func preflightHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func newGateway(ctx context.Context, opts ...runtime.ServeMuxOption) (http.Handler, error) {
-	switch *network {
-	case "tcp":
-		return gateway.NewTCPGateway(ctx, *endpoint, opts...)
-	case "unix":
-		return gateway.NewUnixGateway(ctx, *endpoint, opts...)
-	default:
-		return nil, fmt.Errorf("unsupported network type %q:", *network)
-	}
-}
-
 // Run starts a HTTP server and blocks forever if successful.
 func Run(ctx context.Context, address string, opts ...runtime.ServeMuxOption) error {
 	ctx, cancel := context.WithCancel(ctx)
@@ -75,7 +63,7 @@ func Run(ctx context.Context, address string, opts ...runtime.ServeMuxOption) er
 	mux := http.NewServeMux()
 	mux.HandleFunc("/swagger/", serveSwagger)
 
-	gw, err := newGateway(ctx, opts...)
+	gw, err := gateway.NewGateway(ctx, *network, *endpoint, opts)
 	if err != nil {
 		return err
 	}
