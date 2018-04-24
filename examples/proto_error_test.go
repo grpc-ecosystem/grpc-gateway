@@ -17,8 +17,8 @@ import (
 
 func runServer(ctx context.Context, t *testing.T, port uint16) {
 	opt := runtime.WithProtoErrorHandler(runtime.DefaultHTTPProtoErrorHandler)
-	if err := Run(ctx, fmt.Sprintf(":%d", port), opt); err != nil {
-		t.Errorf("gw.Run() failed with %v; want success", err)
+	if err := runGateway(ctx, fmt.Sprintf(":%d", port), opt); err != nil {
+		t.Errorf("runGateway() failed with %v; want success", err)
 	}
 }
 

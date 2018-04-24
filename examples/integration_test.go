@@ -46,7 +46,7 @@ func TestForwardResponseOption(t *testing.T) {
 	defer cancel()
 
 	go func() {
-		if err := Run(
+		if err := runGateway(
 			ctx,
 			":8081",
 			runtime.WithForwardResponseOption(
@@ -56,7 +56,7 @@ func TestForwardResponseOption(t *testing.T) {
 				},
 			),
 		); err != nil {
-			t.Errorf("gw.Run() failed with %v; want success", err)
+			t.Errorf("runGateway() failed with %v; want success", err)
 			return
 		}
 	}()
