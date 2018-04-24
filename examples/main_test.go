@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -9,7 +10,6 @@ import (
 
 	"github.com/golang/glog"
 	server "github.com/grpc-ecosystem/grpc-gateway/examples/server"
-	"golang.org/x/net/context"
 )
 
 func runServers(ctx context.Context) <-chan error {

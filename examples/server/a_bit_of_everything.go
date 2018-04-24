@@ -1,11 +1,11 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"sync"
 
-	"context"
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/duration"
