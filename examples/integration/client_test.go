@@ -1,4 +1,4 @@
-package main
+package integration_test
 
 import (
 	"reflect"
@@ -136,8 +136,8 @@ func testABEClientCreateBody(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 		RepeatedStringValue: []string{"a", "b", "c"},
 		OneofString:         "x",
 		MapValue:            map[string]abe.ExamplepbNumericEnum{
-		// "a": abe.ExamplepbNumericEnum_ONE,
-		// "b": abe.ExamplepbNumericEnum_ZERO,
+			// "a": abe.ExamplepbNumericEnum_ONE,
+			// "b": abe.ExamplepbNumericEnum_ZERO,
 		},
 		MappedStringValue: map[string]string{
 			"a": "x",
