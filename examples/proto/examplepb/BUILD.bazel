@@ -3,6 +3,12 @@ load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 
 package(default_visibility = ["//visibility:public"])
 
+# gazelle:exclude a_bit_of_everything.pb.gw.go
+# gazelle:exclude echo_service.pb.gw.go
+# gazelle:exclude flow_combination.pb.gw.go
+# gazelle:exclude stream.pb.gw.go
+# gazelle:exclude wrappers.pb.gw.go
+
 proto_library(
     name = "examplepb_proto",
     srcs = [
