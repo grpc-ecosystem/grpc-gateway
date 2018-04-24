@@ -59,15 +59,5 @@ go_library(
 
 protoc_gen_swagger(
     name = "expamplepb_protoc_gen_swagger",
-    proto_service = "a_bit_of_everything.proto",
-    deps = [
-        "//examples/sub:sub_proto",
-        "//examples/sub2:sub2_proto",
-        "//protoc-gen-swagger/options:options_proto",
-        "@com_github_googleapis_googleapis//google/api:api_proto",
-        "@com_google_protobuf//:duration_proto",
-        "@com_google_protobuf//:empty_proto",
-        "@com_google_protobuf//:timestamp_proto",
-        "@com_google_protobuf//:wrappers_proto",
-    ],
+    deps = [":examplepb_proto"],
 )
