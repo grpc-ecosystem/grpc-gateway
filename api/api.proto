@@ -105,6 +105,27 @@ service Wallet {
     };
   }
 
+  rpc FreezeBalance (FreezeBalanceContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/freezebalance"
+      body: "*"
+    };
+  }
+
+  rpc UnfreezeBalance (EmptyMessage) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/unfreezebalance"
+      body: "*"
+    };
+  }
+
+  rpc WithdrawBalance (EmptyMessage) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/withdrawbalance"
+      body: "*"
+    };
+  }
+
   rpc ListNodes (EmptyMessage) returns (NodeList) {
     option (google.api.http) = {
       post: "/wallet/listnodes"
@@ -144,24 +165,6 @@ service Wallet {
   rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
     option (google.api.http) = {
       post: "/wallet/totaltransaction"
-      body: "*"
-    };
-  }
-  rpc FreezeBalance (FreezeBalanceContract) returns (Transaction) {
-    option (google.api.http) = {
-      post: "/wallet/freezebalance"
-      body: "*"
-    };
-  }
-  rpc UnfreezeBalance (EmptyMessage) returns (Transaction) {
-    option (google.api.http) = {
-      post: "/wallet/unfreezebalance"
-      body: "*"
-    };
-  }
-  rpc WithdrawBalance (EmptyMessage) returns (Transaction) {
-    option (google.api.http) = {
-      post: "/withdrawbalance"
       body: "*"
     };
   }
