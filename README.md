@@ -82,6 +82,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    +  }
     }
    ```
+
+   If you do not want to modify the proto file for use with grpc-gateway you can alternatively use an external [gRPC API Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file. [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/grpcapiconfiguration.html) for more information.
+
 3. Generate gRPC stub
    
    ```sh
@@ -196,9 +199,10 @@ This parameter can be useful to pass request scoped context between the gateway 
 
 ## More Examples
 More examples are available under `examples` directory.
-* `examplepb/echo_service.proto`, `examplepb/a_bit_of_everything.proto`: service definition
-  * `examplepb/echo_service.pb.go`, `examplepb/a_bit_of_everything.pb.go`: [generated] stub of the service
-  * `examplepb/echo_service.pb.gw.go`, `examplepb/a_bit_of_everything.pb.gw.go`: [generated] reverse proxy for the service
+* `examplepb/echo_service.proto`, `examplepb/a_bit_of_everything.proto`, `examplepb/unannotated_echo_service.proto`: service definition
+  * `examplepb/echo_service.pb.go`, `examplepb/a_bit_of_everything.pb.go`, `examplepb/unannotated_echo_service.pb.go`: [generated] stub of the service
+  * `examplepb/echo_service.pb.gw.go`, `examplepb/a_bit_of_everything.pb.gw.go`, `examplepb/uannotated_echo_service.pb.gw.go`: [generated] reverse proxy for the service
+  * `examplepb/unannotated_echo_service.yaml`: gRPC API Configuration for ```unannotated_echo_service.proto```
 * `server/main.go`: service implementation
 * `main.go`: entrypoint of the generated reverse proxy
 
@@ -215,6 +219,7 @@ To use the same port for custom HTTP handlers (e.g. serving `swagger.json`), gRP
 * Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata (prefixed with `grpcgateway-`)
 * Optionally emitting API definition for [Swagger](http://swagger.io).
 * Setting [gRPC timeouts](http://www.grpc.io/docs/guides/wire.html) through inbound HTTP `Grpc-Timeout` header.
+* Partial support for [gRPC API Configuration]((https://cloud.google.com/endpoints/docs/grpc/grpc-service-config)) files as an alternative to annotation.
 
 ### Want to support
 But not yet.
@@ -238,47 +243,6 @@ But patch is welcome.
 * HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata (prefixed with `grpcgateway-`)
 * While configurable, the default {un,}marshaling uses [jsonpb](https://godoc.org/github.com/golang/protobuf/jsonpb) with `OrigName: true`.
 
-# Generating for unannotated protos
-If you want to expose a service whose .proto you do not control or you want to map the same gRPC API in different ways for multiple applications annotating it is not an option. Google Cloud Platform offers a way around this for services hosted with them called ["gRPC API Configuration"](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config). It can be used to define the behavior of a gRPC API service without modifications to the service itself in the form of [YAML](https://en.wikipedia.org/wiki/YAML) configuration files. grpc-gateway generators implement the [HTTP rules part](https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#httprule) of this specification. This allows you to take a completely unannotated service proto file, add a YAML file describing its HTTP endpoints and use them together like a annotated proto file with the grpc-gateway generators.
-
-## Usage of gRPC API Configuration YAML files
-Using the usage example from above only some steps require minor changes to use a gRPC API Configuration YAML file:
-
-2. Instead of annotating the .proto file in this step leave it untouched and create a `your_service.yaml` with the following content:
-    ```yaml
-    type: google.api.Service
-    config_version: 3
-
-    http:
-      rules:
-      - selector: example.YourService.Echo
-        post: /v1/example/echo
-        body: "*"
-    ```
-    Use a [linter](http://www.yamllint.com/) to validate your YAML.
-
-5. When generating the reverse-proxy in this step pass the path to the `your_service.yaml` in addition to the .proto:
-   ```sh
-   protoc -I/usr/local/include -I. \
-     -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-     --grpc-gateway_out=logtostderr=true,grpc_api_configuration=path/to/your_service.yaml:. \
-     path/to/your_service.proto
-   ```
-   
-   It will generate a reverse proxy `path/to/your_service.pb.gw.go` that is identical to the one produced for the annotated proto.
- 
-
-7. Swagger generation in this step is equivalent to gateway generation. Again pass the path to the yaml file in addition to the proto:
-   ```sh
-   protoc -I/usr/local/include -I. \
-     -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-     --swagger_out=logtostderr=true,grpc_api_configuration=path/to/your_service.yaml:. \
-     path/to/your_service.proto
-   ```
-
-All other steps work as before. If you want you can remove the googleapis include path in step 3 and 4 as the unannotated proto no longer requires them.
 
 # Contribution
 See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md).
