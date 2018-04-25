@@ -126,6 +126,9 @@ message Transaction {
       WitnessUpdateContract = 8;
       ParticipateAssetIssueContract = 9;
       AccountUpdateContract = 10;
+      FreezeBalanceContract = 11;
+      UnfreezeBalanceContract = 12;
+      WithdrawBalanceContract = 13;
       CustomContract = 20;
     }
     ContractType type = 1;
