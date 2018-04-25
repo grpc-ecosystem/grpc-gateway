@@ -5,7 +5,6 @@ package(default_visibility = ["//visibility:public"])
 go_library(
     name = "go_default_library",
     srcs = [
-        "ProtobufDuration.go",
         "a_bit_of_everything_nested.go",
         "a_bit_of_everything_service_api.go",
         "api_client.go",
