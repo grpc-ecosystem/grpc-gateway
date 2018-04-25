@@ -102,3 +102,7 @@ message DeployContract {
   bytes script = 2;
 }
 
+message FreezeBalanceContract {
+  int64 frozen_balance = 1;
+  int64 frozen_duration 2;
+}

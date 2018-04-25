@@ -147,6 +147,24 @@ service Wallet {
       body: "*"
     };
   }
+  rpc FreezeBalance (FreezeBalanceContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/freezebalance"
+      body: "*"
+    };
+  }
+  rpc UnfreezeBalance (EmptyMessage) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/unfreezebalance"
+      body: "*"
+    };
+  }
+  rpc WithdrawBalance (EmptyMessage) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/withdrawbalance"
+      body: "*"
+    };
+  }
 };
 
 
