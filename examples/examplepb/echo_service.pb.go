@@ -36,7 +36,7 @@ import math "math"
 import _ "google.golang.org/genproto/googleapis/api/annotations"
 
 import (
-	context "context"
+	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
 )
 
