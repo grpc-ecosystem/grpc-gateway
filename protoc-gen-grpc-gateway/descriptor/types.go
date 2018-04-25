@@ -251,17 +251,17 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 	}
 
 	prepare := []string{}
-	fqnm := msgExpr
+	rhs := msgExpr
 	for i, c := range p {
 		// Check if it is a oneOf field. if
 		// This field is one from Oneof definition, we can not assign value directly.
-		if c.Target.FieldDescriptorProto.OneofIndex != nil {
-			index := c.Target.FieldDescriptorProto.OneofIndex
-			msg := c.Target.Message.DescriptorProto
+		if c.Target.OneofIndex != nil {
+			index := c.Target.OneofIndex
+			msg := c.Target.Message
 			oneOf := gogen.CamelCase(msg.GetOneofDecl()[*index].GetName())
-			oneofName := c.Target.Message.DescriptorProto.GetName() + "_" + c.AssignableExpr()
+			oneofName := msg.GetName() + "_" + c.AssignableExpr()
 
-			expr := fqnm + "." + oneOf
+			expr := rhs + "." + oneOf
 			fmtS := `if %s == nil {
 				%s =&%s{}
 			} else if _, ok := %s.(*%s); !ok {
@@ -269,17 +269,17 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 			}`
 
 			prepare = append(prepare, fmt.Sprintf(fmtS, expr, expr, oneofName, expr, oneofName, oneofName, expr))
-			fqnm = fqnm + "." + oneOf + ".(*" + oneofName + ")"
+			rhs = expr + ".(*" + oneofName + ")"
 		}
 
 		if i == l-1 {
-			fqnm = fqnm + "." + c.AssignableExpr()
+			rhs = rhs + "." + c.AssignableExpr()
 			continue
 		}
-		fqnm = fqnm + "." + c.ValueExpr()
+		rhs = rhs + "." + c.ValueExpr()
 	}
 
-	return strings.Join(prepare, "\n") + "\n" + fqnm
+	return strings.Join(prepare, "\n") + "\n" + rhs
 }
 
 // FieldPathComponent is a path component in FieldPath
