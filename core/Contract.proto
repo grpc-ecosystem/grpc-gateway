@@ -104,5 +104,5 @@ message DeployContract {
 
 message FreezeBalanceContract {
   int64 frozen_balance = 1;
-  int64 frozen_duration 2;
+  int64 frozen_duration = 2;
 }
