@@ -244,4 +244,5 @@ message DisconnectMessage {
 message HelloMessage {
   Endpoint from = 1;
   int32 version = 2;
+  int64 timestamp = 3;
 }
