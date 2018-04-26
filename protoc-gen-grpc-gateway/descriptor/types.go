@@ -249,15 +249,37 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 	if l == 0 {
 		return msgExpr
 	}
-	components := []string{msgExpr}
+
+	var preparations []string
+	components := msgExpr
 	for i, c := range p {
+		// Check if it is a oneOf field.
+		if c.Target.OneofIndex != nil {
+			index := c.Target.OneofIndex
+			msg := c.Target.Message
+			oneOfName := gogen.CamelCase(msg.GetOneofDecl()[*index].GetName())
+			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
+
+			components = components + "." + oneOfName
+			s := `if %s == nil {
+				%s =&%s{}
+			} else if _, ok := %s.(*%s); !ok {
+				return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *%s, but: %%t\n",%s)
+			}`
+
+			preparations = append(preparations, fmt.Sprintf(s, components, components, oneofFieldName, components, oneofFieldName, oneofFieldName, components))
+			components = components + ".(*" + oneofFieldName + ")"
+		}
+
 		if i == l-1 {
-			components = append(components, c.AssignableExpr())
+			components = components + "." + c.AssignableExpr()
 			continue
 		}
-		components = append(components, c.ValueExpr())
+		components = components + "." + c.ValueExpr()
 	}
-	return strings.Join(components, ".")
+
+	preparations = append(preparations, components)
+	return strings.Join(preparations, "\n")
 }
 
 // FieldPathComponent is a path component in FieldPath
