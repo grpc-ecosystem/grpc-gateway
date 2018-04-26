@@ -36,6 +36,18 @@ go_repository(
     importpath = "github.com/go-resty/resty",
 )
 
+go_repository(
+	name = "com_github_ghodss_yaml",
+	commit = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7",
+	importpath = "github.com/ghodss/yaml",
+)
+
+go_repository(
+	name = "in_gopkg_yaml_v2",
+	commit = "eb3733d160e74a9c7e442f435eb3bea458e1d19f",
+	importpath = "gopkg.in/yaml.v2",
+)
+
 load("//:repositories.bzl", "repositories")
 
 repositories()

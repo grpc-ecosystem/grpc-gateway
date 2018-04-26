@@ -82,6 +82,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    +  }
     }
    ```
+
+   If you do not want to modify the proto file for use with grpc-gateway you can alternatively use an external [gRPC API Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file. [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/grpcapiconfiguration.html) for more information.
+
 3. Generate gRPC stub
    
    ```sh
@@ -196,9 +199,10 @@ This parameter can be useful to pass request scoped context between the gateway 
 
 ## More Examples
 More examples are available under `examples` directory.
-* `examplepb/echo_service.proto`, `examplepb/a_bit_of_everything.proto`: service definition
-  * `examplepb/echo_service.pb.go`, `examplepb/a_bit_of_everything.pb.go`: [generated] stub of the service
-  * `examplepb/echo_service.pb.gw.go`, `examplepb/a_bit_of_everything.pb.gw.go`: [generated] reverse proxy for the service
+* `proto/examplepb/echo_service.proto`, `proto/examplepb/a_bit_of_everything.proto`, `proto/examplepb/unannotated_echo_service.proto`: service definition
+  * `proto/examplepb/echo_service.pb.go`, `proto/examplepb/a_bit_of_everything.pb.go`, `proto/examplepb/unannotated_echo_service.pb.go`: [generated] stub of the service
+  * `proto/examplepb/echo_service.pb.gw.go`, `proto/examplepb/a_bit_of_everything.pb.gw.go`, `proto/examplepb/uannotated_echo_service.pb.gw.go`: [generated] reverse proxy for the service
+  * `proto/examplepb/unannotated_echo_service.yaml`: gRPC API Configuration for ```unannotated_echo_service.proto```
 * `server/main.go`: service implementation
 * `main.go`: entrypoint of the generated reverse proxy
 
@@ -215,6 +219,7 @@ To use the same port for custom HTTP handlers (e.g. serving `swagger.json`), gRP
 * Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata (prefixed with `grpcgateway-`)
 * Optionally emitting API definition for [Swagger](http://swagger.io).
 * Setting [gRPC timeouts](http://www.grpc.io/docs/guides/wire.html) through inbound HTTP `Grpc-Timeout` header.
+* Partial support for [gRPC API Configuration]((https://cloud.google.com/endpoints/docs/grpc/grpc-service-config)) files as an alternative to annotation.
 
 ### Want to support
 But not yet.
@@ -237,6 +242,7 @@ But patch is welcome.
 * Remaining Permanent HTTP header keys (as specified by the IANA [here](http://www.iana.org/assignments/message-headers/message-headers.xhtml) are prefixed with `grpcgateway-` and added with their values to gRPC request header
 * HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata (prefixed with `grpcgateway-`)
 * While configurable, the default {un,}marshaling uses [jsonpb](https://godoc.org/github.com/golang/protobuf/jsonpb) with `OrigName: true`.
+
 
 # Contribution
 See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md).

@@ -17,6 +17,7 @@ proto_library(
         "echo_service.proto",
         "flow_combination.proto",
         "stream.proto",
+        "unannotated_echo_service.proto",
         "wrappers.proto",
     ],
     deps = [
