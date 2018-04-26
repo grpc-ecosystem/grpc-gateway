@@ -64,4 +64,10 @@ service EchoService {
 			body: "*"
 		};
 	}
+	// EchoDelete method receives a simple message and returns it.
+	rpc EchoDelete(SimpleMessage) returns (SimpleMessage) {
+		option (google.api.http) = {
+			delete: "/v1/example/echo_delete"
+		};
+	}
 }
