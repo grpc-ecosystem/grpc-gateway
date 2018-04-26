@@ -1,6 +1,7 @@
 package gateway
 
 import (
+	"fmt"
 	"net/http"
 	"path"
 	"strings"
@@ -44,5 +45,9 @@ func preflightHandler(w http.ResponseWriter, r *http.Request) {
 	methods := []string{"GET", "HEAD", "POST", "PUT", "DELETE"}
 	w.Header().Set("Access-Control-Allow-Methods", strings.Join(methods, ","))
 	glog.Infof("preflight request for %s", r.URL.Path)
-	return
+}
+
+func healthzHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+	fmt.Fprintln(w, "ok")
 }
