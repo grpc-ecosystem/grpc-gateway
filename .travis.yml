@@ -12,34 +12,55 @@ cache:
     - $HOME/.cache/_grpc_gateway_bazel
 before_install:
   - if [ "${USE_BAZEL}" = true ]; then ./.travis/install-bazel.sh 0.12.0; fi
-  - if [ -z "${USE_BAZEL}" ]; then ./.travis/install-protoc.sh 3.1.0; fi
-  - if [ -z "${USE_BAZEL}" ]; then ./.travis/install-swagger-codegen.sh 2.2.2; fi
-  - if [ -z "${USE_BAZEL}" ]; then nvm install v6.1 && nvm use v6.1 && node --version; fi
-  - go get github.com/golang/lint/golint
-  - go get github.com/dghubble/sling
-  - go get github.com/go-resty/resty
+  - test "${USE_BAZEL}" = true ||  ./.travis/install-protoc.sh 3.1.0
+  - test "${USE_BAZEL}" = true || ./.travis/install-swagger-codegen.sh 2.2.2
+  - test "${USE_BAZEL}" = true || (nvm install v6.1 && nvm use v6.1 && node --version)
+  - test "${USE_BAZEL}" = true || go get github.com/golang/lint/golint
+  - test "${USE_BAZEL}" = true || go get github.com/dghubble/sling
+  - test "${USE_BAZEL}" = true || go get github.com/go-resty/resty
 install:
   # Make sure externally referenced packages are go-gettable.
-  - go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-  - go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
-  - go get github.com/grpc-ecosystem/grpc-gateway/runtime
-  - go get github.com/grpc-ecosystem/grpc-gateway/examples/cmd/example-grpc-server
-  - go get github.com/grpc-ecosystem/grpc-gateway/examples/cmd/example-gateway-server
-before_script:
-  - sh -c 'cd examples/browser && npm install'
-script:
-  - if [ "${USE_BAZEL}" = true ]; then ./.travis/bazel-build.sh; fi
-  - if [ "${USE_BAZEL}" = true ]; then ./.travis/bazel-test.sh; fi
+  - test "${USE_BAZEL}" = true ||
+    go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+  - test "${USE_BAZEL}" = true ||
+    go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+  - test "${USE_BAZEL}" = true ||
+    go get github.com/grpc-ecosystem/grpc-gateway/runtime
+  - test "${USE_BAZEL}" = true ||
+    go get github.com/grpc-ecosystem/grpc-gateway/examples/cmd/example-grpc-server
+  - test "${USE_BAZEL}" = true ||
+    go get github.com/grpc-ecosystem/grpc-gateway/examples/cmd/example-gateway-server
 
+  # Just build if USE_BAZEL
+  - if [ "${USE_BAZEL}" = true ]; then ./.travis/bazel-build.sh; fi
+before_script:
+  - test "${USE_BAZEL}" = true ||
+    (cd examples/browser && npm install)
+script:
   # Make sure examples of generated files are up-to-date
-  - if [ -z "${USE_BAZEL}" ]; then make realclean && make examples SWAGGER_CODEGEN="java -jar $HOME/local/swagger-codegen-cli.jar"; fi
-  - if [ -z "${USE_BAZEL}" ] && (go version | grep -q "${GO_VERSION_TO_DIFF_TEST}") && [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then test -z "$(git status --porcelain)" || (git status; git diff; exit 1); fi
+  - test "${USE_BAZEL}" = true ||
+    (make realclean && make examples SWAGGER_CODEGEN="java -jar $HOME/local/swagger-codegen-cli.jar")
+  - if [ -z "${USE_BAZEL}" ] &&
+    (go version | grep -q "${GO_VERSION_TO_DIFF_TEST}") &&
+    [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then
+      test -z "$(git status --porcelain)" || (git status; git diff; exit 1);
+    fi
 
   # Unit tests, integration tests and code health checks
-  - if [ -z "${USE_BAZEL}" ]; then env GLOG_logtostderr=1 go test -race -v github.com/grpc-ecosystem/grpc-gateway/...; fi
-  - if [ -z "${USE_BAZEL}" ]; then make lint; fi
-  - if [ -z "${USE_BAZEL}" ]; then sh -c 'cd examples/browser && node ./node_modules/gulp/bin/gulp'; fi
-  - if (go version | grep -q "${GO_VERSION_TO_DIFF_TEST}") && [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then env GLOG_logtostderr=1 ./bin/coverage; fi
+  - test "${USE_BAZEL}" = true ||
+    env GLOG_logtostderr=1 go test -race -v github.com/grpc-ecosystem/grpc-gateway/...
+  - test "${USE_BAZEL}" = true ||
+    make lint
+  - test "${USE_BAZEL}" = true ||
+    sh -c 'cd examples/browser && node ./node_modules/gulp/bin/gulp'
+
+  - if [ "${USE_BAZEL}" = true ]; then ./.travis/bazel-test.sh; fi
+
+  # test coverage
+  - if (go version | grep -q "${GO_VERSION_TO_DIFF_TEST}") &&
+      [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then
+      env GLOG_logtostderr=1 ./bin/coverage;
+    fi
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
