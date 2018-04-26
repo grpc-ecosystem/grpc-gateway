@@ -31,7 +31,6 @@ message Account {
     // the vote num to this super rep.
     int64 vote_count = 2;
   }
-
   bytes account_name = 1;
   AccountType type = 2;
   // the create adress
@@ -53,6 +52,7 @@ message Account {
 message acuthrity {
   AccountId account = 1;
   bytes permission_name = 2;
+
 }
 
 
