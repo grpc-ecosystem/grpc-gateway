@@ -278,7 +278,8 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 		components = components + "." + c.ValueExpr()
 	}
 
-	return strings.Join(preparations, "\n") + "\n" + components
+	preparations = append(preparations, components)
+	return strings.Join(preparations, "\n")
 }
 
 // FieldPathComponent is a path component in FieldPath
