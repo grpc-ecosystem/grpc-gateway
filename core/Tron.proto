@@ -50,6 +50,8 @@ message Account {
   map<string, int64> asset = 6;
   // the frozen balance
   repeated Frozen frozen = 7;
+  // bandwidth, get from frozen
+  int64 bandwidth = 8;
   // this account create time
   int64 create_time = 9;
   // this last opration time, including transfer, voting and so on.
