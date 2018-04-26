@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/examplepb/unannotated_echo_service.proto",
+    "title": "examples/proto/examplepb/unannotated_echo_service.proto",
     "description": "Unannotated Echo Service\nSimilar to echo_service.proto but without annotations. See\nunannotated_echo_service.yaml for the equivalent of the annotations in\ngRPC API configuration format.\n\nEcho Service API consists of a single service which returns\na message.",
     "version": "version not set"
   },
@@ -101,6 +101,45 @@
             "schema": {
               "$ref": "#/definitions/examplepbUnannotatedSimpleMessage"
             }
+          }
+        ],
+        "tags": [
+          "UnannotatedEchoService"
+        ]
+      }
+    },
+    "/v1/example/echo_delete": {
+      "delete": {
+        "summary": "EchoDelete method receives a simple message and returns it.",
+        "operationId": "EchoDelete",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbUnannotatedSimpleMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Id represents the message identifier.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "duration",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [

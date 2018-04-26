@@ -102,7 +102,7 @@ UNANNOTATED_ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/unannotatedecho/api_client.g
 		  $(EXAMPLE_CLIENT_DIR)/unannotatedecho/configuration.go \
 		  $(EXAMPLE_CLIENT_DIR)/unannotatedecho/echo_service_api.go \
 		  $(EXAMPLE_CLIENT_DIR)/unannotatedecho/examplepb_simple_message.go
-EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_EXAMPLE_SRCS)
+EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS)
 SWAGGER_CODEGEN=swagger-codegen
 
 PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
