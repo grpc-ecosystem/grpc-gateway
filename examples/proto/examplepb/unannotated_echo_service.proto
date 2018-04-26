@@ -31,4 +31,7 @@ service UnannotatedEchoService {
     
 	// EchoBody method receives a simple message and returns it.
 	rpc EchoBody(UnannotatedSimpleMessage) returns (UnannotatedSimpleMessage);
+	
+        // EchoDelete method receives a simple message and returns it.
+	rpc EchoDelete(UnannotatedSimpleMessage) returns (UnannotatedSimpleMessage);
 }

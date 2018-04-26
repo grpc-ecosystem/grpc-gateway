@@ -10,3 +10,6 @@ http:
   - selector: grpc.gateway.examples.examplepb.UnannotatedEchoService.EchoBody
     post: "/v1/example/echo_body"
     body: "*"
+  - selector: grpc.gateway.examples.examplepb.UnannotatedEchoService.EchoDelete
+    delete: "/v1/example/echo_delete"
+
