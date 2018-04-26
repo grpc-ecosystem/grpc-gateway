@@ -1,17 +1,43 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load(
+    "//examples/clients:clients.bzl",
+    "swagger_codegen",
+    "gen_file_integrity_test",
+)
 
 package(default_visibility = ["//visibility:public"])
 
+# keep
 go_library(
     name = "go_default_library",
     srcs = [
-        "api_client.go",
-        "api_response.go",
-        "configuration.go",
-        "echo_service_api.go",
-        "examplepb_embedded.go",
-        "examplepb_simple_message.go",
+        ":gen_client",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/clients/echo",
     deps = ["@com_github_go_resty_resty//:go_default_library"],
+)
+
+SRCS = [
+    "api_client.go",
+    "api_response.go",
+    "configuration.go",
+    "echo_service_api.go",
+    "examplepb_embedded.go",
+    "examplepb_simple_message.go",
+]
+
+swagger_codegen(
+    name = "gen_client",
+    package_name = "echo",
+    out_dir = "gen",
+    outputs = ["gen/%s" % f for f in SRCS],
+    spec = "//examples/proto/examplepb:echo_service.swagger.json",
+)
+
+gen_file_integrity_test(
+    name = "generated_files_test",
+    size = "small",
+    generated_dir = "gen",
+    generated_files = ["gen/%s" % f for f in SRCS],
+    golden_dir = ".",
 )

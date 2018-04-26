@@ -1,0 +1,15 @@
+# Helper application for the subpackages
+java_binary(
+    name = "swagger-codegen-cli",
+    licenses = ["notice"],  # apache
+    main_class = "io.swagger.codegen.SwaggerCodegen",
+    visibility = ["//examples/clients:__subpackages__"],
+    runtime_deps = [
+        "@io_swagger_swagger_codegen_cli//jar",
+    ],
+)
+
+exports_files(
+    ["diff_test.sh"],
+    visibility = ["//examples/clients:__subpackages__"],
+)

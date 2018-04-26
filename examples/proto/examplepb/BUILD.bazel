@@ -4,10 +4,20 @@ load("@grpc_ecosystem_grpc_gateway//protoc-gen-swagger:defs.bzl", "protoc_gen_sw
 
 package(default_visibility = ["//visibility:public"])
 
+exports_files(
+    [
+        "echo_service.swagger.json",
+        "a_bit_of_everything.swagger.json",
+        "unannotated_echo_service.swagger.json",
+    ],
+    visibility = ["//examples/clients:__subpackages__"],
+)
+
 # gazelle:exclude a_bit_of_everything.pb.gw.go
 # gazelle:exclude echo_service.pb.gw.go
 # gazelle:exclude flow_combination.pb.gw.go
 # gazelle:exclude stream.pb.gw.go
+# gazelle:exclude unannotated_echo_service.pb.gw.go
 # gazelle:exclude wrappers.pb.gw.go
 
 proto_library(

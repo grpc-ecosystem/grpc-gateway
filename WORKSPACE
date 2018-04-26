@@ -50,4 +50,11 @@ go_repository(
 
 load("//:repositories.bzl", "repositories")
 
+maven_jar(
+    name = "io_swagger_swagger_codegen_cli",
+    # Should be consistent with .travis.yaml
+    artifact = "io.swagger:swagger-codegen-cli:2.2.2",
+    sha1 = "a5b48219c1f9898b0a1f639e0cb89396d5f8e0d1",
+)
+
 repositories()
