@@ -16,29 +16,60 @@ enum AccountType {
   Contract = 2;
 }
 
+// AccountId, (name, address) use name, (null, address) use address, (name, null) use name,
+message AccountId {
+  bytes name = 1;
+  bytes address = 2;
+}
+
 // Account
 message Account {
+  // vote message
   message Vote {
+    // the super rep address
     bytes vote_address = 1;
+    // the vote num to this super rep.
     int64 vote_count = 2;
+  }
+  // frozen balance
+  message Frozen {
+    // the frozen trx balance
+    int64 frozen_balance = 1;
+    // the expire time
+    int64 expire_time = 2;
   }
   bytes account_name = 1;
   AccountType type = 2;
+  // the create adress
   bytes address = 3;
+  // the trx balance
   int64 balance = 4;
+  // the votes
   repeated Vote votes = 5;
+  // the other asset owned by this account
   map<string, int64> asset = 6;
+  // the frozen balance
+  repeated Frozen frozen = 7;
+  // this account create time
+  int64 create_time = 9;
+  // this last opration time, including transfer, voting and so on.
   int64 latest_opration_time = 10;
+  // witness block producing allowance
+  int64 allowance = 11;
+  // last withdraw time
+  int64 latest_withdraw_time = 12;
+  // not used so far
+  bytes code = 13;
+}
+
+message acuthrity {
+  AccountId account = 1;
+  bytes permission_name = 2;
 }
 
 
-// freezeAccount
-message FreezeAccount {
-  bytes account_address = 1;
-  int64 freeze_balance = 2;
-  int64 unfreeze_balance = 3;
-  int64 last_freeze_time = 4;
-  int64 last_withdraw_time = 5;
+message permision {
+  AccountId account = 1;
 }
 
 // Witness
@@ -75,7 +106,9 @@ message TXOutputs {
   repeated TXOutput outputs = 1;
 }
 
+
 message Transaction {
+  // transcation type, utxo is desprated.
   enum TransactionType {
     UtxoType = 0;
     ContractType = 1;
@@ -92,10 +125,17 @@ message Transaction {
       DeployContract = 7;
       WitnessUpdateContract = 8;
       ParticipateAssetIssueContract = 9;
-      WithdrawWitnessContract = 10;
+      AccountUpdateContract = 10;
+      FreezeBalanceContract = 11;
+      UnfreezeBalanceContract = 12;
+      WithdrawBalanceContract = 13;
+      CustomContract = 20;
     }
     ContractType type = 1;
     google.protobuf.Any parameter = 2;
+    bytes provider = 3;
+    bytes ContractName = 4;
+
   }
 
   message Result {
@@ -112,8 +152,11 @@ message Transaction {
     int64 ref_block_num = 3;
     bytes ref_block_hash = 4;
     int64 expiration = 8;
+    repeated acuthrity auths = 9;
+    // data not used
     bytes data = 10;
     repeated Contract contract = 11;
+    // scripts not used
     bytes scripts = 12;
     int64 timestamp = 14;
   }
@@ -223,4 +266,5 @@ message DisconnectMessage {
 message HelloMessage {
   Endpoint from = 1;
   int32 version = 2;
+  int64 timestamp = 3;
 }
