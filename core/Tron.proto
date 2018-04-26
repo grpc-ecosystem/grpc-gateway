@@ -38,6 +38,7 @@ message Account {
     // the expire time
     int64 expire_time = 2;
   }
+
   bytes account_name = 1;
   AccountType type = 2;
   // the create adress
@@ -50,10 +51,13 @@ message Account {
   map<string, int64> asset = 6;
   // the frozen balance
   repeated Frozen frozen = 7;
+  // bandwidth, get from frozen
+  int64 bandwidth = 8;
   // this account create time
   int64 create_time = 9;
   // this last opration time, including transfer, voting and so on.
   int64 latest_opration_time = 10;
+
   // witness block producing allowance
   int64 allowance = 11;
   // last withdraw time
@@ -65,6 +69,7 @@ message Account {
 message acuthrity {
   AccountId account = 1;
   bytes permission_name = 2;
+
 }
 
 
