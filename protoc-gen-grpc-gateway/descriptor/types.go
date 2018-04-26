@@ -250,36 +250,35 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 		return msgExpr
 	}
 
-	prepare := []string{}
-	rhs := msgExpr
+	var preparations []string
+	components := msgExpr
 	for i, c := range p {
-		// Check if it is a oneOf field. if
-		// This field is one from Oneof definition, we can not assign value directly.
+		// Check if it is a oneOf field.
 		if c.Target.OneofIndex != nil {
 			index := c.Target.OneofIndex
 			msg := c.Target.Message
-			oneOf := gogen.CamelCase(msg.GetOneofDecl()[*index].GetName())
-			oneofName := msg.GetName() + "_" + c.AssignableExpr()
+			oneOfName := gogen.CamelCase(msg.GetOneofDecl()[*index].GetName())
+			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
 
-			expr := rhs + "." + oneOf
-			fmtS := `if %s == nil {
+			components = components + "." + oneOfName
+			s := `if %s == nil {
 				%s =&%s{}
 			} else if _, ok := %s.(*%s); !ok {
 				return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *%s, but: %%t\n",%s)
 			}`
 
-			prepare = append(prepare, fmt.Sprintf(fmtS, expr, expr, oneofName, expr, oneofName, oneofName, expr))
-			rhs = expr + ".(*" + oneofName + ")"
+			preparations = append(preparations, fmt.Sprintf(s, components, components, oneofFieldName, components, oneofFieldName, oneofFieldName, components))
+			components = components + ".(*" + oneofFieldName + ")"
 		}
 
 		if i == l-1 {
-			rhs = rhs + "." + c.AssignableExpr()
+			components = components + "." + c.AssignableExpr()
 			continue
 		}
-		rhs = rhs + "." + c.ValueExpr()
+		components = components + "." + c.ValueExpr()
 	}
 
-	return strings.Join(prepare, "\n") + "\n" + rhs
+	return strings.Join(preparations, "\n") + "\n" + components
 }
 
 // FieldPathComponent is a path component in FieldPath
