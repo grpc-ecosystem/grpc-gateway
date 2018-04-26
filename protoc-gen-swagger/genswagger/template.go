@@ -579,7 +579,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						Required:    true,
 						Schema:      &schema,
 					})
-				} else if b.HTTPMethod == "GET" {
+				} else if b.HTTPMethod == "GET" || b.HTTPMethod == "DELETE" {
 					// add the parameters to the query string
 					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams)
 					if err != nil {

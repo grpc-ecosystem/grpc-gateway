@@ -1,11 +1,11 @@
 package server
 
 import (
+	"context"
 	"net"
 
 	"github.com/golang/glog"
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
-	"golang.org/x/net/context"
+	examples "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
 	"google.golang.org/grpc"
 )
 

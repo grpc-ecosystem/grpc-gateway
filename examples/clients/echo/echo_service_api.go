@@ -222,3 +222,65 @@ func (a EchoServiceApi) EchoBody(body ExamplepbSimpleMessage) (*ExamplepbSimpleM
 	return successPayload, localVarAPIResponse, err
 }
 
+/**
+ * EchoDelete method receives a simple message and returns it.
+ *
+ * @param id Id represents the message identifier.
+ * @param num 
+ * @return *ExamplepbSimpleMessage
+ */
+func (a EchoServiceApi) EchoDelete(id string, num string) (*ExamplepbSimpleMessage, *APIResponse, error) {
+
+	var localVarHttpMethod = strings.ToUpper("Delete")
+	// create path and map variables
+	localVarPath := a.Configuration.BasePath + "/v1/example/echo_delete"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := make(map[string]string)
+	var localVarPostBody interface{}
+	var localVarFileName string
+	var localVarFileBytes []byte
+	// add default headers if any
+	for key := range a.Configuration.DefaultHeader {
+		localVarHeaderParams[key] = a.Configuration.DefaultHeader[key]
+	}
+	localVarQueryParams.Add("id", a.Configuration.APIClient.ParameterToString(id, ""))
+	localVarQueryParams.Add("num", a.Configuration.APIClient.ParameterToString(num, ""))
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{ "application/json",  }
+
+	// set Content-Type header
+	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{
+		"application/json",
+		}
+
+	// set Accept header
+	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	var successPayload = new(ExamplepbSimpleMessage)
+	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+
+	var localVarURL, _ = url.Parse(localVarPath)
+	localVarURL.RawQuery = localVarQueryParams.Encode()
+	var localVarAPIResponse = &APIResponse{Operation: "EchoDelete", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	if localVarHttpResponse != nil {
+		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
+		localVarAPIResponse.Payload = localVarHttpResponse.Body()
+	}
+
+	if err != nil {
+		return successPayload, localVarAPIResponse, err
+	}
+	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
+	return successPayload, localVarAPIResponse, err
+}
+

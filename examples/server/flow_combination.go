@@ -1,10 +1,10 @@
 package server
 
 import (
+	"context"
 	"io"
 
-	"context"
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
+	examples "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
 )
 
 type flowCombinationServer struct{}

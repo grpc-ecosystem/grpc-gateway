@@ -2,8 +2,9 @@ package server
 
 import (
 	"context"
+
 	"github.com/golang/glog"
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
+	examples "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -31,5 +32,10 @@ func (s *echoServer) EchoBody(ctx context.Context, msg *examples.SimpleMessage) 
 		"foo": "foo2",
 		"bar": "bar2",
 	}))
+	return msg, nil
+}
+
+func (s *echoServer) EchoDelete(ctx context.Context, msg *examples.SimpleMessage) (*examples.SimpleMessage, error) {
+	glog.Info(msg)
 	return msg, nil
 }

@@ -19,6 +19,7 @@ go_library(
 go_binary(
     name = "protoc-gen-swagger",
     embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
 )
 
 go_test(
