@@ -9,6 +9,7 @@ go_library(
         "echo.go",
         "flow_combination.go",
         "main.go",
+        "unannotatedecho.go",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/server",
     deps = [
