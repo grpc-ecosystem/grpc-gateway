@@ -38,7 +38,6 @@ message Account {
     // the expire time
     int64 expire_time = 2;
   }
-
   bytes account_name = 1;
   AccountType type = 2;
   // the create adress
@@ -69,12 +68,12 @@ message Account {
 message acuthrity {
   AccountId account = 1;
   bytes permission_name = 2;
-
 }
 
 
 message permision {
   AccountId account = 1;
+
 }
 
 // Witness
