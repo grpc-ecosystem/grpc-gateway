@@ -34,3 +34,8 @@ func (s *echoServer) EchoBody(ctx context.Context, msg *examples.SimpleMessage) 
 	}))
 	return msg, nil
 }
+
+func (s *echoServer) EchoDelete(ctx context.Context, msg *examples.SimpleMessage) (*examples.SimpleMessage, error) {
+	glog.Info(msg)
+	return msg, nil
+}
