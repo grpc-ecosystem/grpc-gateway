@@ -130,6 +130,16 @@ type Service struct {
 	Methods []*Method
 }
 
+// FQSN returns the fully qualified service name of this service.
+func (s *Service) FQSN() string {
+	components := []string{""}
+	if s.File.Package != nil {
+		components = append(components, s.File.GetPackage())
+	}
+	components = append(components, s.GetName())
+	return strings.Join(components, ".")
+}
+
 // Method wraps descriptor.MethodDescriptorProto for richer features.
 type Method struct {
 	// Service is the service which this method belongs to.
@@ -141,6 +151,14 @@ type Method struct {
 	// ResponseType is the message type of responses from this method.
 	ResponseType *Message
 	Bindings     []*Binding
+}
+
+// FQMN returns a fully qualified rpc method name of this method.
+func (m *Method) FQMN() string {
+	components := []string{}
+	components = append(components, m.Service.FQSN())
+	components = append(components, m.GetName())
+	return strings.Join(components, ".")
 }
 
 // Binding describes how an HTTP endpoint is bound to a gRPC method.

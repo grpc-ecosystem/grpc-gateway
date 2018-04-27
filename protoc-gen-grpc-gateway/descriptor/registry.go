@@ -9,6 +9,7 @@ import (
 	"github.com/golang/glog"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"google.golang.org/genproto/googleapis/api/annotations"
 )
 
 // Registry is a registry of information extracted from plugin.CodeGeneratorRequest.
@@ -36,16 +37,20 @@ type Registry struct {
 
 	// allowDeleteBody permits http delete methods to have a body
 	allowDeleteBody bool
+
+	// externalHttpRules is a mapping from fully qualified service method names to additional HttpRules applicable besides the ones found in annotations.
+	externalHTTPRules map[string][]*annotations.HttpRule
 }
 
 // NewRegistry returns a new Registry.
 func NewRegistry() *Registry {
 	return &Registry{
-		msgs:       make(map[string]*Message),
-		enums:      make(map[string]*Enum),
-		files:      make(map[string]*File),
-		pkgMap:     make(map[string]string),
-		pkgAliases: make(map[string]string),
+		msgs:              make(map[string]*Message),
+		enums:             make(map[string]*Enum),
+		files:             make(map[string]*File),
+		pkgMap:            make(map[string]string),
+		pkgAliases:        make(map[string]string),
+		externalHTTPRules: make(map[string][]*annotations.HttpRule),
 	}
 }
 
@@ -203,6 +208,16 @@ func (r *Registry) LookupFile(name string) (*File, error) {
 		return nil, fmt.Errorf("no such file given: %s", name)
 	}
 	return f, nil
+}
+
+// LookupExternalHTTPRules looks up external http rules by fully qualified service method name
+func (r *Registry) LookupExternalHTTPRules(qualifiedMethodName string) []*annotations.HttpRule {
+	return r.externalHTTPRules[qualifiedMethodName]
+}
+
+// AddExternalHTTPRule adds an external http rule for the given fully qualified service method name
+func (r *Registry) AddExternalHTTPRule(qualifiedMethodName string, rule *annotations.HttpRule) {
+	r.externalHTTPRules[qualifiedMethodName] = append(r.externalHTTPRules[qualifiedMethodName], rule)
 }
 
 // AddPkgMap adds a mapping from a .proto file to proto package name.

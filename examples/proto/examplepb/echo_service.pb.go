@@ -15,6 +15,7 @@ It is generated from these files:
 	examples/proto/examplepb/stream.proto
 	examples/proto/examplepb/flow_combination.proto
 	examples/proto/examplepb/wrappers.proto
+	examples/proto/examplepb/unannotated_echo_service.proto
 
 It has these top-level messages:
 	SimpleMessage
@@ -27,6 +28,7 @@ It has these top-level messages:
 	NestedProto
 	SingleNestedProto
 	Wrappers
+	UnannotatedSimpleMessage
 */
 package examplepb
 

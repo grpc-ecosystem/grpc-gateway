@@ -67,6 +67,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    +  }
     }
    ```
+
+   If you do not want to modify the proto file for use with grpc-gateway you can alternatively use an external [gRPC API Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file. [Check our documentation](grpcapiconfiguration.html) for more information.
+
 3. Generate gRPC stub
    
    ```sh
