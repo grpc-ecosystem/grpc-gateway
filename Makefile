@@ -26,6 +26,8 @@ GATEWAY_PLUGIN_SRC= utilities/doc.go \
 		    protoc-gen-grpc-gateway/descriptor/registry.go \
 		    protoc-gen-grpc-gateway/descriptor/services.go \
 		    protoc-gen-grpc-gateway/descriptor/types.go \
+		    protoc-gen-grpc-gateway/descriptor/grpc_api_configuration.go \
+		    protoc-gen-grpc-gateway/descriptor/grpc_api_service.go \
 		    protoc-gen-grpc-gateway/generator \
 		    protoc-gen-grpc-gateway/generator/generator.go \
 		    protoc-gen-grpc-gateway/gengateway \
@@ -80,7 +82,8 @@ ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/echo/api_client.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/api_response.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/configuration.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/echo_service_api.go \
-		  $(EXAMPLE_CLIENT_DIR)/echo/examplepb_simple_message.go
+		  $(EXAMPLE_CLIENT_DIR)/echo/examplepb_simple_message.go \
+		  $(EXAMPLE_CLIENT_DIR)/echo/examplepb_embedded.go
 ABE_EXAMPLE_SPEC=examples/proto/examplepb/a_bit_of_everything.swagger.json
 ABE_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/abe/a_bit_of_everything_nested.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/a_bit_of_everything_service_api.go \
@@ -98,10 +101,10 @@ ABE_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/abe/a_bit_of_everything_nested.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/sub_string_message.go
 UNANNOTATED_ECHO_EXAMPLE_SPEC=examples/proto/examplepb/unannotated_echo_service.swagger.json
 UNANNOTATED_ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/unannotatedecho/api_client.go \
-		  $(EXAMPLE_CLIENT_DIR)/unannotatedecho/api_response.go \
-		  $(EXAMPLE_CLIENT_DIR)/unannotatedecho/configuration.go \
-		  $(EXAMPLE_CLIENT_DIR)/unannotatedecho/echo_service_api.go \
-		  $(EXAMPLE_CLIENT_DIR)/unannotatedecho/examplepb_simple_message.go
+		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/api_response.go \
+		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/configuration.go \
+		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/examplepb_unannotated_simple_message.go \
+		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/unannotated_echo_service_api.go
 EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS)
 SWAGGER_CODEGEN=swagger-codegen
 
