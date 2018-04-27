@@ -35,10 +35,22 @@ func Run(ctx context.Context, opts Options) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
+	conn, err := dial(ctx, opts.GRPCServer.Network, opts.GRPCServer.Addr)
+	if err != nil {
+		return err
+	}
+	go func() {
+		<-ctx.Done()
+		if err := conn.Close(); err != nil {
+			glog.Errorf("Failed to close a client connection to the gRPC server: %v", err)
+		}
+	}()
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/swagger/", swaggerServer(opts.SwaggerDir))
+	mux.HandleFunc("/healthz", healthzServer(conn))
 
-	gw, err := newGateway(ctx, opts.GRPCServer.Network, opts.GRPCServer.Addr, opts.Mux)
+	gw, err := newGateway(ctx, conn, opts.Mux)
 	if err != nil {
 		return err
 	}

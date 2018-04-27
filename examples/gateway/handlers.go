@@ -1,11 +1,14 @@
 package gateway
 
 import (
+	"fmt"
 	"net/http"
 	"path"
 	"strings"
 
 	"github.com/golang/glog"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/connectivity"
 )
 
 func swaggerServer(dir string) http.HandlerFunc {
@@ -44,5 +47,15 @@ func preflightHandler(w http.ResponseWriter, r *http.Request) {
 	methods := []string{"GET", "HEAD", "POST", "PUT", "DELETE"}
 	w.Header().Set("Access-Control-Allow-Methods", strings.Join(methods, ","))
 	glog.Infof("preflight request for %s", r.URL.Path)
-	return
+}
+
+func healthzServer(conn *grpc.ClientConn) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain")
+		if s := conn.GetState(); s != connectivity.Ready {
+			http.Error(w, fmt.Sprintf("grpc server is %s", s), http.StatusBadGateway)
+			return
+		}
+		fmt.Fprintln(w, "ok")
+	}
 }
