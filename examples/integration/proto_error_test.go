@@ -29,11 +29,9 @@ func TestWithProtoErrorHandler(t *testing.T) {
 
 	const port = 8082
 	go runServer(ctx, t, port)
-
-	// Waiting for the server's getting available.
-	// TODO(yugui) find a better way to wait
-	time.Sleep(100 * time.Millisecond)
-
+	if err := waitForGateway(ctx, 8082); err != nil {
+		t.Errorf("waitForGateway(ctx, 8082) failed with %v; want success", err)
+	}
 	testEcho(t, port, "application/json")
 	testEchoBody(t, port)
 }
@@ -50,9 +48,9 @@ func TestABEWithProtoErrorHandler(t *testing.T) {
 
 	const port = 8083
 	go runServer(ctx, t, port)
-	// Waiting for the server's getting available.
-	// TODO(yugui) find a better way to wait
-	time.Sleep(100 * time.Millisecond)
+	if err := waitForGateway(ctx, 8083); err != nil {
+		t.Errorf("waitForGateway(ctx, 8083) failed with %v; want success", err)
+	}
 
 	testABECreate(t, port)
 	testABECreateBody(t, port)
@@ -122,10 +120,9 @@ func TestUnknownPathWithProtoError(t *testing.T) {
 
 	const port = 8084
 	go runServer(ctx, t, port)
-
-	// Waiting for the server's getting available.
-	// TODO(yugui) find a better way to wait
-	time.Sleep(100 * time.Millisecond)
+	if err := waitForGateway(ctx, 8084); err != nil {
+		t.Errorf("waitForGateway(ctx, 8084) failed with %v; want success", err)
+	}
 
 	url := fmt.Sprintf("http://localhost:%d", port)
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))

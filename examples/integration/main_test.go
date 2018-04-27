@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
 	"testing"
 	"time"
@@ -32,6 +33,29 @@ func runGateway(ctx context.Context, addr string, opts ...gwruntime.ServeMuxOpti
 	})
 }
 
+func waitForGateway(ctx context.Context, port uint16) error {
+	ch := time.After(10 * time.Second)
+
+	var err error
+	for {
+		if r, err := http.Get(fmt.Sprintf("http://localhost:%d/healthz", port)); err == nil {
+			if r.StatusCode == http.StatusOK {
+				return nil
+			}
+			err = fmt.Errorf("server localhost:%d returned an unexpected status %d", port, r.StatusCode)
+		}
+
+		glog.Infof("Waiting for localhost:%d to get ready", port)
+		select {
+		case <-ctx.Done():
+			return err
+		case <-ch:
+			return err
+		case <-time.After(10 * time.Millisecond):
+		}
+	}
+}
+
 func runServers(ctx context.Context) <-chan error {
 	ch := make(chan error, 2)
 	go func() {
@@ -57,7 +81,9 @@ func TestMain(m *testing.M) {
 
 	ch := make(chan int, 1)
 	go func() {
-		time.Sleep(100 * time.Millisecond)
+		if err := waitForGateway(ctx, 8080); err != nil {
+			glog.Errorf("waitForGateway(ctx, 8080) failed with %v; want success", err)
+		}
 		ch <- m.Run()
 	}()
 

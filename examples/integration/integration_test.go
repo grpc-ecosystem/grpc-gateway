@@ -13,7 +13,6 @@ import (
 	"strings"
 	"sync"
 	"testing"
-	"time"
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
@@ -63,8 +62,9 @@ func TestForwardResponseOption(t *testing.T) {
 			return
 		}
 	}()
-
-	time.Sleep(100 * time.Millisecond)
+	if err := waitForGateway(ctx, 8081); err != nil {
+		t.Errorf("waitForGateway(ctx, 8081) failed with %v; want success", err)
+	}
 	testEcho(t, 8081, "application/vnd.docker.plugins.v1.1+json")
 }
 
