@@ -1,5 +1,7 @@
 ---
+title: Customizing your gateway
 category: documentation
+order: 101
 ---
 
 # Customizing your gateway
