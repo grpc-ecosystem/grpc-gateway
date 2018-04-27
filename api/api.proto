@@ -17,7 +17,6 @@ service Wallet {
       post: "/wallet/getaccount"
       body: "*"
     };
-
   };
 
   rpc CreateTransaction (TransferContract) returns (Transaction) {
@@ -168,59 +167,127 @@ service Wallet {
       body: "*"
     };
   }
+  rpc GetBlockById (BytesMessage) returns (Block) {
+    option (google.api.http) = {
+      post: "/wallet/getblockbyid"
+      body: "*"
+    };
+  }
+  rpc GetBlockByLimitNext (BlockLimit) returns (BlockList) {
+    option (google.api.http) = {
+      post: "/wallet/getblockbylimitnext"
+      body: "*"
+    };
+  }
+  rpc GetBlockByLatestNum (NumberMessage) returns (BlockList) {
+    option (google.api.http) = {
+      post: "/wallet/getblockbylatestnum"
+      body: "*"
+    };
+  }
+  rpc GetTransactionById (BytesMessage) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/gettransactionbyid"
+      body: "*"
+    };
+  }
+  rpc GetTransactionByLimitPrev (TransactionLimit) returns (TransactionList) {
+    option (google.api.http) = {
+      post: "/wallet/gettransactionbylimitprev"
+      body: "*"
+    };
+  }
 };
 
 
 service WalletSolidity {
 
   rpc GetAccount (Account) returns (Account) {
-
+    option (google.api.http) = {
+      post: "/walletsolidity/getaccount"
+      body: "*"
+    };
   };
 
   rpc ListAccounts (EmptyMessage) returns (AccountList) {
-
+    option (google.api.http) = {
+      post: "/walletsolidity/listaccounts"
+      body: "*"
+    };
   };
 
   rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
-
+    option (google.api.http) = {
+      post: "/walletsolidity/listwitnesses"
+      body: "*"
+    };
   };
-
-  rpc ListNodes (EmptyMessage) returns (NodeList) {
-
-  }
   rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
-
+    option (google.api.http) = {
+      post: "/walletsolidity/getassetissuelist"
+      body: "*"
+    };
   }
   rpc GetAssetIssueListByTimestamp (NumberMessage) returns (AssetIssueList) {
-
+    option (google.api.http) = {
+      post: "/walletsolidity/getassetissuelistbytimestamp"
+      body: "*"
+    };
   }
   rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
-
+    option (google.api.http) = {
+      post: "/walletsolidity/getassetissuebyaccount"
+      body: "*"
+    };
   }
   rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
-
+    option (google.api.http) = {
+      post: "/walletsolidity/getassetissuebyname"
+      body: "*"
+    };
   }
   rpc GetNowBlock (EmptyMessage) returns (Block) {
-
+    option (google.api.http) = {
+      post: "/walletsolidity/getnowblock"
+      body: "*"
+    };
   }
   rpc GetBlockByNum (NumberMessage) returns (Block) {
-
+    option (google.api.http) = {
+      post: "/walletsolidity/getblockbynum"
+      body: "*"
+    };
   }
   //get transaction
   rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
-
+    option (google.api.http) = {
+      post: "/walletsolidity/totaltransaction"
+      body: "*"
+    };
   }
-  rpc getTransactionById (BytesMessage) returns (Transaction) {
-
+  rpc GetTransactionById (BytesMessage) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionbyid"
+      body: "*"
+    };
   }
-  rpc getTransactionsByTimestamp (TimeMessage) returns (TransactionList) {
-
+  rpc GetTransactionsByTimestamp (TimeMessage) returns (TransactionList) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionsbytimestamp"
+      body: "*"
+    };
   }
-  rpc getTransactionsFromThis (Account) returns (TransactionList) {
-
+  rpc GetTransactionsFromThis (Account) returns (TransactionList) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionsfromthis"
+      body: "*"
+    };
   }
-  rpc getTransactionsToThis (Account) returns (TransactionList) {
-
+  rpc GetTransactionsToThis (Account) returns (TransactionList) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionstothis"
+      body: "*"
+    };
   }
 };
 
@@ -301,4 +368,12 @@ message BytesMessage {
 message TimeMessage {
   int64 beginInMilliseconds = 1;
   int64 endInMilliseconds = 2;
+}
+message BlockLimit {
+  int64 startNum = 1;
+  int64 endNum = 2;
+}
+message TransactionLimit {
+  bytes transactionId = 1;
+  int64 limitNum = 2;
 }
