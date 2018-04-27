@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/connectivity"
 )
 
 func swaggerServer(dir string) http.HandlerFunc {
@@ -47,7 +49,13 @@ func preflightHandler(w http.ResponseWriter, r *http.Request) {
 	glog.Infof("preflight request for %s", r.URL.Path)
 }
 
-func healthzHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/plain")
-	fmt.Fprintln(w, "ok")
+func healthzServer(conn *grpc.ClientConn) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain")
+		if s := conn.GetState(); s != connectivity.Ready {
+			http.Error(w, fmt.Sprintf("grpc server is %s", s), http.StatusBadGateway)
+			return
+		}
+		fmt.Fprintln(w, "ok")
+	}
 }

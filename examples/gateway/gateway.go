@@ -7,24 +7,13 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
 )
 
 // newGateway returns a new gateway server which translates HTTP into gRPC.
-func newGateway(ctx context.Context, network, addr string, opts []gwruntime.ServeMuxOption) (http.Handler, error) {
-	conn, err := dial(ctx, network, addr)
-	if err != nil {
-		return nil, err
-	}
-	go func() {
-		<-ctx.Done()
-		if err := conn.Close(); err != nil {
-			glog.Errorf("Failed to close a client connection to the gRPC server: %v", err)
-		}
-	}()
+func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.ServeMuxOption) (http.Handler, error) {
 
 	mux := gwruntime.NewServeMux(opts...)
 
