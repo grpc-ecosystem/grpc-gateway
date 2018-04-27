@@ -7,7 +7,7 @@ order: 100
 # gRPC API Configuration
 In some sitations annotating the .proto file of a service is not an option. For example you might not have control over the .proto file or you might want to expose the same gRPC API multiple times in completely different ways.
 
-Google Cloud Platform a way to do this for services hosted with them called ["gRPC API Configuration"](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config). It can be used to define the behavior of a gRPC API service without modifications to the service itself in the form of [YAML](https://en.wikipedia.org/wiki/YAML) configuration files.
+Google Cloud Platform offers a way to do this for services hosted with them called ["gRPC API Configuration"](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config). It can be used to define the behavior of a gRPC API service without modifications to the service itself in the form of [YAML](https://en.wikipedia.org/wiki/YAML) configuration files.
 
 grpc-gateway generators implement the [HTTP rules part](https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#httprule) of this specification. This allows you to take a completely unannotated service proto file, add a YAML file describing its HTTP endpoints and use them together like a annotated proto file with the grpc-gateway generators.
 
@@ -83,13 +83,13 @@ The following is equivalent to the basic [usage example](usage.html) but without
      path/to/your_service.proto
    ```
    
-   It will generate a reverse proxy `path/to/your_service.pb.gw.go` that is identical to the one produced for the annotated proto.
+   This will generate a reverse proxy `path/to/your_service.pb.gw.go` that is identical to the one produced for the annotated proto.
  
    Note: After generating the code for each of the stubs, in order to build the code, you will want to run ```go get .``` from the directory containing the stubs.
 
 6. Write an entrypoint 
    
-   Now you need to write an entrypoint of the proxy server. This step is the whether the file is annotated or not.
+   Now you need to write an entrypoint of the proxy server. This step is the same whether the file is annotated or not.
    ```go
    package main
 
