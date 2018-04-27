@@ -126,7 +126,7 @@ func testEchoOneof(t *testing.T, port int, contentType string) {
 		return
 	}
 	if got, want := msg.GetLang(), "golang"; got != want {
-		t.Errorf("msg.Lang = %q; want %q", got, want)
+		t.Errorf("msg.GetLang() = %q; want %q", got, want)
 	}
 
 	if value := resp.Header.Get("Content-Type"); value != contentType {
@@ -159,7 +159,7 @@ func testEchoOneof1(t *testing.T, port int, contentType string) {
 		return
 	}
 	if got, want := msg.GetStatus().GetNote(), "golang"; got != want {
-		t.Errorf("msg.Lang = %q; want %q", got, want)
+		t.Errorf("msg.GetStatus().GetNote() = %q; want %q", got, want)
 	}
 
 	if value := resp.Header.Get("Content-Type"); value != contentType {
@@ -192,7 +192,7 @@ func testEchoOneof2(t *testing.T, port int, contentType string) {
 		return
 	}
 	if got, want := msg.GetNo().GetNote(), "golang"; got != want {
-		t.Errorf("msg.Lang = %q; want %q", got, want)
+		t.Errorf("msg.GetNo().GetNote() = %q; want %q", got, want)
 	}
 
 	if value := resp.Header.Get("Content-Type"); value != contentType {

@@ -26,11 +26,10 @@ message SimpleMessage {
 		int64 line_num = 3;
 		string lang = 4;
 	}
-	int64 time = 5;
-	Embedded status = 6;
+	Embedded status = 5;
 	oneof ext {
-		int64 en = 7;
-		Embedded no = 8;
+		int64 en = 6;
+		Embedded no = 7;
 	}
 }
 
