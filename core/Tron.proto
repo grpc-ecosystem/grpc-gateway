@@ -153,6 +153,7 @@ message Transaction {
 
   message raw {
     TransactionType type = 1;
+    bytes ref_block_bytes = 2;
     int64 ref_block_num = 3;
     bytes ref_block_hash = 4;
     int64 expiration = 8;
