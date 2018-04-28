@@ -66,7 +66,7 @@ protoc_gen_swagger = rule(
             allow_files = True,
         ),
         "_protoc_gen_swagger": attr.label(
-            default = Label("@grpc_ecosystem_grpc_gateway//protoc-gen-swagger:protoc-gen-swagger"),
+            default = Label("//protoc-gen-swagger:protoc-gen-swagger"),
             executable = True,
             cfg = "host",
         ),
