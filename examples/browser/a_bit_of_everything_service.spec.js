@@ -19,7 +19,7 @@ describe('ABitOfEverythingService', function() {
   describe('Create', function() {
     var created;
     var expected = {
-      bytes_value: "bytes_value",
+      bytes_value: null,
       float_value: 1.5,
       double_value: 2.5,
       int64_value: "4294967296",
@@ -67,6 +67,7 @@ describe('ABitOfEverythingService', function() {
   describe('CreateBody', function() {
     var created;
     var expected = {
+      bytes_value: null,
       float_value: 1.5,
       double_value: 2.5,
       int64_value: "4294967296",
