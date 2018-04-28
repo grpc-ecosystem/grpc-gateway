@@ -191,12 +191,6 @@ service Wallet {
       body: "*"
     };
   }
-  rpc GetTransactionByLimitPrev (TransactionLimit) returns (TransactionList) {
-    option (google.api.http) = {
-      post: "/wallet/gettransactionbylimitprev"
-      body: "*"
-    };
-  }
 };
 
 
