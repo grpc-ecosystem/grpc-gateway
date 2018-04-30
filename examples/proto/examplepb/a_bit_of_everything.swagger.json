@@ -742,6 +742,32 @@
         ]
       }
     },
+    "/v2/example/oneof_value_nested/echo": {
+      "post": {
+        "operationId": "DeepPathEcho10",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ABitOfEverythingNested"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v2/example/oneof_value_nested/name/echo/{oneof_value_nested.name}": {
       "post": {
         "operationId": "DeepPathEcho5",
@@ -830,6 +856,32 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/oneof_value_string/echo": {
+      "post": {
+        "operationId": "DeepPathEcho9",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],

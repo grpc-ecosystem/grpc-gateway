@@ -336,6 +336,17 @@ service ABitOfEverythingService {
 				post: "/v2/example/oneof_value_nested/oneof_value_deeper_nested/value/echo/{oneof_value_nested.oneof_value_deeper_nested.value}"
 				body: "*"
 			}
+			
+			additional_bindings {
+				post: "/v2/example/oneof_value_string/echo"
+				// a oneof option in body
+				body: "oneof_value_string"
+			}
+			additional_bindings {
+				post: "/v2/example/oneof_value_nested/echo"
+				// a oneof option in body
+				body: "oneof_value_nested"
+			}
 		};
 	}
 	rpc NoBindings(google.protobuf.Duration) returns (google.protobuf.Empty) {}

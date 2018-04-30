@@ -1,8 +1,10 @@
 package descriptor
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
+	"text/template"
 
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
@@ -260,6 +262,29 @@ func (p FieldPath) IsNestedProto3() bool {
 	return false
 }
 
+type oneofParams struct {
+	// MsgExpr is the the expresson for the message which the oneof field belongs to.
+	MsgExpr string
+	// OneofName is the name of the oneof field in the message
+	OneofName string
+	// ConcreteType is the type name of the concrete struct which implements the isXXX interface
+	ConcreteType string
+}
+
+var (
+	oneofTemplate = template.Must(template.New("oneof").Parse(`
+		func() *{{.ConcreteType}} {
+			msg := &{{.MsgExpr}}
+			oneof := msg.{{.OneofName}}
+			if _, ok := oneof.(*{{.ConcreteType}}); oneof == nil || !ok {
+				oneof = new({{.ConcreteType}})
+				msg.{{.OneofName}} = oneof
+			}
+			return oneof.(*{{.ConcreteType}})
+		}()`,
+	))
+)
+
 // AssignableExpr is an assignable expression in Go to be used to assign a value to the target field.
 // It starts with "msgExpr", which is the go expression of the method request object.
 func (p FieldPath) AssignableExpr(msgExpr string) string {
@@ -268,36 +293,37 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 		return msgExpr
 	}
 
-	var preparations []string
-	components := msgExpr
+	components := []string{msgExpr}
 	for i, c := range p {
 		// Check if it is a oneOf field.
 		if c.Target.OneofIndex != nil {
-			index := c.Target.OneofIndex
-			msg := c.Target.Message
-			oneOfName := gogen.CamelCase(msg.GetOneofDecl()[*index].GetName())
-			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
-
-			components = components + "." + oneOfName
-			s := `if %s == nil {
-				%s =&%s{}
-			} else if _, ok := %s.(*%s); !ok {
-				return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *%s, but: %%t\n",%s)
-			}`
-
-			preparations = append(preparations, fmt.Sprintf(s, components, components, oneofFieldName, components, oneofFieldName, oneofFieldName, components))
-			components = components + ".(*" + oneofFieldName + ")"
+			var (
+				index = c.Target.OneofIndex
+				msg   = c.Target.Message
+				buf   bytes.Buffer
+			)
+			// TODO(yugui) Use the package which the caller tempalte is dealing with.
+			// it will be necessary to correctly deal with oneof fields in messges in another packages than the service.
+			err := oneofTemplate.Execute(&buf, &oneofParams{
+				MsgExpr:   strings.Join(components, "."),
+				OneofName: gogen.CamelCase(msg.GetOneofDecl()[*index].GetName()),
+				//ConcreteType: msg.GetName() + "_" + c.AssignableExpr(),
+				ConcreteType: msg.GoType(msg.File.GoPkg.Path) + "_" + c.AssignableExpr(),
+			})
+			if err != nil {
+				panic(fmt.Sprintf("cannot apply oneofTemplate: %v", err))
+			}
+			components = []string{buf.String()}
 		}
 
 		if i == l-1 {
-			components = components + "." + c.AssignableExpr()
+			components = append(components, c.AssignableExpr())
 			continue
 		}
-		components = components + "." + c.ValueExpr()
+		components = append(components, c.ValueExpr())
 	}
 
-	preparations = append(preparations, components)
-	return strings.Join(preparations, "\n")
+	return strings.Join(components, ".")
 }
 
 // FieldPathComponent is a path component in FieldPath

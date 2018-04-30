@@ -977,6 +977,35 @@ func TestOneof(t *testing.T) {
 				},
 			},
 		},
+
+		// body param: primitive field in a oneof clause
+		{
+			path:    "/v2/example/oneof_value_string/echo",
+			payload: `"foo"`,
+			want: gw.ABitOfEverything{
+				OneofValue: &gw.ABitOfEverything_OneofValueString{"foo"},
+			},
+		},
+		// body param: message field in a oneof clause
+		{
+			path: "/v2/example/oneof_value_nested/echo",
+			payload: `
+					{
+						"name": "foo",
+						"amount": 123
+					}
+				`,
+			want: gw.ABitOfEverything{
+				OneofValue: &gw.ABitOfEverything_OneofValueNested{
+					&gw.ABitOfEverything_Nested{
+						Name:   "foo",
+						Amount: 123,
+					},
+				},
+			},
+		},
+		// NOTE: deeply nested fields are not allowed in body by spec.
+
 	} {
 		url := base + spec.path
 		resp, err := http.Post(url, "application/json", strings.NewReader(spec.payload))
