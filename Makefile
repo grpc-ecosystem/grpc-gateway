@@ -82,8 +82,7 @@ ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/echo/api_client.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/api_response.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/configuration.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/echo_service_api.go \
-		  $(EXAMPLE_CLIENT_DIR)/echo/examplepb_simple_message.go \
-		  $(EXAMPLE_CLIENT_DIR)/echo/examplepb_embedded.go
+		  $(EXAMPLE_CLIENT_DIR)/echo/examplepb_simple_message.go
 ABE_EXAMPLE_SPEC=examples/proto/examplepb/a_bit_of_everything.swagger.json
 ABE_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/abe/a_bit_of_everything_nested.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/a_bit_of_everything_service_api.go \

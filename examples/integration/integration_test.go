@@ -38,9 +38,6 @@ func TestEcho(t *testing.T) {
 	}
 
 	testEcho(t, 8080, "application/json")
-	testEchoOneof(t, 8080, "application/json")
-	testEchoOneof1(t, 8080, "application/json")
-	testEchoOneof2(t, 8080, "application/json")
 	testEchoBody(t, 8080)
 }
 
@@ -97,105 +94,6 @@ func testEcho(t *testing.T, port int, contentType string) {
 	}
 	if got, want := msg.Id, "myid"; got != want {
 		t.Errorf("msg.Id = %q; want %q", got, want)
-	}
-
-	if value := resp.Header.Get("Content-Type"); value != contentType {
-		t.Errorf("Content-Type was %s, wanted %s", value, contentType)
-	}
-}
-
-func testEchoOneof(t *testing.T, port int, contentType string) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/echo/myid/10/golang", port)
-	resp, err := http.Get(url)
-	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
-		return
-	}
-	defer resp.Body.Close()
-	buf, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success", err)
-		return
-	}
-
-	if got, want := resp.StatusCode, http.StatusOK; got != want {
-		t.Errorf("resp.StatusCode = %d; want %d", got, want)
-		t.Logf("%s", buf)
-	}
-
-	var msg gw.SimpleMessage
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
-		return
-	}
-	if got, want := msg.GetLang(), "golang"; got != want {
-		t.Errorf("msg.GetLang() = %q; want %q", got, want)
-	}
-
-	if value := resp.Header.Get("Content-Type"); value != contentType {
-		t.Errorf("Content-Type was %s, wanted %s", value, contentType)
-	}
-}
-
-func testEchoOneof1(t *testing.T, port int, contentType string) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/echo1/myid/10/golang", port)
-	resp, err := http.Get(url)
-	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
-		return
-	}
-	defer resp.Body.Close()
-	buf, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success", err)
-		return
-	}
-
-	if got, want := resp.StatusCode, http.StatusOK; got != want {
-		t.Errorf("resp.StatusCode = %d; want %d", got, want)
-		t.Logf("%s", buf)
-	}
-
-	var msg gw.SimpleMessage
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
-		return
-	}
-	if got, want := msg.GetStatus().GetNote(), "golang"; got != want {
-		t.Errorf("msg.GetStatus().GetNote() = %q; want %q", got, want)
-	}
-
-	if value := resp.Header.Get("Content-Type"); value != contentType {
-		t.Errorf("Content-Type was %s, wanted %s", value, contentType)
-	}
-}
-
-func testEchoOneof2(t *testing.T, port int, contentType string) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/echo2/golang", port)
-	resp, err := http.Get(url)
-	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
-		return
-	}
-	defer resp.Body.Close()
-	buf, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success", err)
-		return
-	}
-
-	if got, want := resp.StatusCode, http.StatusOK; got != want {
-		t.Errorf("resp.StatusCode = %d; want %d", got, want)
-		t.Logf("%s", buf)
-	}
-
-	var msg gw.SimpleMessage
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
-		return
-	}
-	if got, want := msg.GetNo().GetNote(), "golang"; got != want {
-		t.Errorf("msg.GetNo().GetNote() = %q; want %q", got, want)
 	}
 
 	if value := resp.Header.Get("Content-Type"); value != contentType {

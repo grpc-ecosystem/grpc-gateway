@@ -9,7 +9,6 @@ go_library(
         "api_response.go",
         "configuration.go",
         "echo_service_api.go",
-        "examplepb_embedded.go",
         "examplepb_simple_message.go",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/clients/echo",
