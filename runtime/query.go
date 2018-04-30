@@ -30,6 +30,12 @@ func PopulateQueryParameters(msg proto.Message, values url.Values, filter *utili
 		}
 		fieldPath := strings.Split(key, ".")
 		if filter.HasCommonPrefix(fieldPath) {
+			// Query parameters never overwrite explicitly declared parameters.
+			// ref. https://groups.google.com/d/msg/grpc-io/Xqx80hG0D44/1gwmwBcnNScJ
+			//
+			// ref. https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L73
+			// > Any fields in the request message which are not bound by the path
+			// > pattern automatically become (optional) HTTP query
 			continue
 		}
 		if err := populateFieldValueFromPath(msg, fieldPath, values); err != nil {

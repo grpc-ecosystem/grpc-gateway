@@ -193,18 +193,26 @@ service ABitOfEverythingService {
 		}
 	};
 
+	// Covers all types of fields in path parameters.
+
 	rpc Create(ABitOfEverything) returns (ABitOfEverything) {
 		// TODO add enum_value
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}"
 		};
 	}
+
+	// Covers all types of fields in the request body.
+
 	rpc CreateBody(ABitOfEverything) returns (ABitOfEverything) {
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything"
 			body: "*"
 		};
 	}
+
+	// Covers other request methods
+
 	rpc Lookup(sub2.IdMessage) returns (ABitOfEverything) {
 		option (google.api.http) = {
 			get: "/v1/example/a_bit_of_everything/{uuid}"
@@ -236,6 +244,9 @@ service ABitOfEverythingService {
 		  }
 		};
 	}
+
+	// Covers all types of fields in query parameters
+
 	rpc GetQuery(ABitOfEverything) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
 			get: "/v1/example/a_bit_of_everything/query/{uuid}"
@@ -248,6 +259,7 @@ service ABitOfEverythingService {
 		  }
 		};
 	}
+
 	// Echo allows posting a StringMessage value.
 	//
 	// It also exposes multiple bindings.
@@ -256,8 +268,16 @@ service ABitOfEverythingService {
 	// description exposes documentation correctly on all paths
 	// defined as additional_bindings in the proto.
 	rpc Echo(grpc.gateway.examples.sub.StringMessage) returns (grpc.gateway.examples.sub.StringMessage) {
+		// Covers:
+		// 1. additional_bindings feature
+		// 2. non-'*' body
+		// 3. messages defined in another package than the service
 		option (google.api.http) = {
 			get: "/v1/example/a_bit_of_everything/echo/{value}"
+
+			// additonal bindings can have different ways of parameter bindings
+			// and HTTP methods.
+
 			additional_bindings {
 				post: "/v2/example/echo"
 				body: "value"
