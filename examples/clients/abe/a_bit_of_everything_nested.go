@@ -20,4 +20,8 @@ type ABitOfEverythingNested struct {
 	Ok NestedDeepEnum `json:"ok,omitempty"`
 
 	DeeperNestedValue SubStringMessage `json:"deeper_nested_value,omitempty"`
+
+	OneofValueDeeperNested SubStringMessage `json:"oneof_value_deeper_nested,omitempty"`
+
+	OneofValueTerminal string `json:"oneof_value_terminal,omitempty"`
 }

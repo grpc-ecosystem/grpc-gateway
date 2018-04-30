@@ -278,6 +278,7 @@ func TestABE(t *testing.T) {
 
 // testABECreate tests path parameters with various types of fields.
 func testABECreate(t *testing.T, port int) {
+	const oneofStr = "bar"
 	want := gw.ABitOfEverything{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
@@ -293,9 +294,10 @@ func testABECreate(t *testing.T, port int) {
 		Sfixed64Value:            -4611686018427387904,
 		Sint32Value:              2147483647,
 		Sint64Value:              4611686018427387903,
+		OneofValue:               &gw.ABitOfEverything_OneofValueString{oneofStr},
 		NonConventionalNameValue: "camelCase",
 	}
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue)
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, oneofStr, want.NonConventionalNameValue)
 
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
 	if err != nil {
@@ -904,6 +906,103 @@ func TestDeepFields(t *testing.T) {
 		}
 		if !reflect.DeepEqual(got, spec.want) {
 			t.Errorf("got = %v; want %v; at i=%d", got, spec.want, i)
+		}
+	}
+}
+
+func TestOneof(t *testing.T) {
+	const base = "http://localhost:8080"
+
+	for i, spec := range []struct {
+		path    string
+		payload string
+		want    gw.ABitOfEverything
+	}{
+		// path param: primitive field in a oneof clause.
+		{
+			path: "/v2/example/oneof_value_string/echo/foo",
+			want: gw.ABitOfEverything{
+				OneofValue: &gw.ABitOfEverything_OneofValueString{"foo"},
+			},
+		},
+		// path param: primitive field in a message field in a oneof clause
+		{
+			path: "/v2/example/oneof_value_nested/name/echo/foo",
+			want: gw.ABitOfEverything{
+				OneofValue: &gw.ABitOfEverything_OneofValueNested{
+					&gw.ABitOfEverything_Nested{
+						Name: "foo",
+					},
+				},
+			},
+		},
+		// path param: primitive field in a message field in a message field in a oneof clause
+		{
+			path: "/v2/example/oneof_value_nested/deeper_nested_value/value/echo/foo",
+			want: gw.ABitOfEverything{
+				OneofValue: &gw.ABitOfEverything_OneofValueNested{
+					&gw.ABitOfEverything_Nested{
+						DeeperNestedValue: &sub.StringMessage{
+							Value: proto.String("foo"),
+						},
+					},
+				},
+			},
+		},
+		// path param: primitive field in a oneof clause in a message field in a oneof clause.
+		{
+			path: "/v2/example/oneof_value_nested/oneof_value_terminal/echo/foo",
+			want: gw.ABitOfEverything{
+				OneofValue: &gw.ABitOfEverything_OneofValueNested{
+					&gw.ABitOfEverything_Nested{
+						OneofValue: &gw.ABitOfEverything_Nested_OneofValueTerminal{
+							"foo",
+						},
+					},
+				},
+			},
+		},
+		// path param: primitive field in a message field in a oneof clause in a message field in a oneof clause.
+		{
+			path: "/v2/example/oneof_value_nested/oneof_value_deeper_nested/value/echo/foo",
+			want: gw.ABitOfEverything{
+				OneofValue: &gw.ABitOfEverything_OneofValueNested{
+					&gw.ABitOfEverything_Nested{
+						OneofValue: &gw.ABitOfEverything_Nested_OneofValueDeeperNested{
+							&sub.StringMessage{
+								Value: proto.String("foo"),
+							},
+						},
+					},
+				},
+			},
+		},
+	} {
+		url := base + spec.path
+		resp, err := http.Post(url, "application/json", strings.NewReader(spec.payload))
+		if err != nil {
+			t.Errorf("http.Post(%q) failed with %v; want success; at i=%d", url, err, i)
+			return
+		}
+		defer resp.Body.Close()
+		buf, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success; at i=%d", err, i)
+			return
+		}
+
+		if got, want := resp.StatusCode, http.StatusOK; got != want {
+			t.Errorf("resp.StatusCode = %d; want %d; at i=%d", got, want, i)
+			t.Logf("%s", buf)
+		}
+
+		var got gw.ABitOfEverything
+		if err := jsonpb.UnmarshalString(string(buf), &got); err != nil {
+			t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success; at i=%d", buf, err, i)
+			return
+		}
+		if !reflect.DeepEqual(got, spec.want) {
+			t.Errorf("got = %v; want %v; at i=%d", &got, &spec.want, i)
 		}
 	}
 }

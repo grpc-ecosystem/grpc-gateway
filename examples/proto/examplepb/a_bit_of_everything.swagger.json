@@ -131,6 +131,18 @@
             "type": "string"
           },
           {
+            "name": "single_nested.oneof_value_deeper_nested.value",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "single_nested.oneof_value_terminal",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "float_value",
             "in": "query",
             "required": false,
@@ -295,6 +307,18 @@
             "type": "string"
           },
           {
+            "name": "oneof_value_nested.oneof_value_deeper_nested.value",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "oneof_value_nested.oneof_value_terminal",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "nonConventionalNameValue",
             "in": "query",
             "required": false,
@@ -332,7 +356,7 @@
         }
       }
     },
-    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}": {
+    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{oneof_value_string}/{nonConventionalNameValue}": {
       "post": {
         "operationId": "Create",
         "responses": {
@@ -440,6 +464,12 @@
             "required": true,
             "type": "string",
             "format": "int64"
+          },
+          {
+            "name": "oneof_value_string",
+            "in": "path",
+            "required": true,
+            "type": "string"
           },
           {
             "name": "nonConventionalNameValue",
@@ -680,6 +710,166 @@
         ]
       }
     },
+    "/v2/example/oneof_value_nested/deeper_nested_value/value/echo/{oneof_value_nested.deeper_nested_value.value}": {
+      "post": {
+        "operationId": "DeepPathEcho6",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "oneof_value_nested.deeper_nested_value.value",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/oneof_value_nested/name/echo/{oneof_value_nested.name}": {
+      "post": {
+        "operationId": "DeepPathEcho5",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "oneof_value_nested.name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/oneof_value_nested/oneof_value_deeper_nested/value/echo/{oneof_value_nested.oneof_value_deeper_nested.value}": {
+      "post": {
+        "operationId": "DeepPathEcho8",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "oneof_value_nested.oneof_value_deeper_nested.value",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/oneof_value_nested/oneof_value_terminal/echo/{oneof_value_nested.oneof_value_terminal}": {
+      "post": {
+        "operationId": "DeepPathEcho7",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "oneof_value_nested.oneof_value_terminal",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/oneof_value_string/echo/{oneof_value_string}": {
+      "post": {
+        "operationId": "DeepPathEcho4",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "oneof_value_string",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v2/example/postwithemptybody/{name}": {
       "post": {
         "operationId": "PostWithEmptyBody",
@@ -810,9 +1000,15 @@
         },
         "deeper_nested_value": {
           "$ref": "#/definitions/subStringMessage"
+        },
+        "oneof_value_deeper_nested": {
+          "$ref": "#/definitions/subStringMessage"
+        },
+        "oneof_value_terminal": {
+          "type": "string"
         }
       },
-      "title": "Nested is nested type.\nNEXT ID: 5"
+      "title": "Nested is nested type.\nNEXT ID: 7"
     },
     "NestedDeepEnum": {
       "type": "string",

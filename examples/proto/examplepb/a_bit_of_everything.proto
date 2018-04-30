@@ -108,7 +108,7 @@ message ABitOfEverything {
 	};
 
 	// Nested is nested type.
-	// NEXT ID: 5
+	// NEXT ID: 7
 	message Nested {
 		// name is nested field.
 		string name = 1;
@@ -123,6 +123,10 @@ message ABitOfEverything {
 		DeepEnum ok = 3;
 
 		sub.StringMessage deeper_nested_value = 4;
+		oneof oneof_value {
+			sub.StringMessage oneof_value_deeper_nested= 15;
+			string oneof_value_terminal = 16;
+		}
 	}
 	Nested single_nested = 25;
 
@@ -198,7 +202,7 @@ service ABitOfEverythingService {
 	rpc Create(ABitOfEverything) returns (ABitOfEverything) {
 		// TODO add enum_value
 		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}"
+			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{oneof_value_string}/{nonConventionalNameValue}"
 		};
 	}
 
@@ -308,6 +312,28 @@ service ABitOfEverythingService {
 			}
 			additional_bindings {
 				post: "/v2/example/single_nested/deeper_nested_value/{single_nested.deeper_nested_value.value}"
+				body: "*"
+			}
+
+			// deeper oneof fields in path parameters.
+			additional_bindings {
+				post: "/v2/example/oneof_value_string/echo/{oneof_value_string}"
+				body: "*"
+			}
+			additional_bindings {
+				post: "/v2/example/oneof_value_nested/name/echo/{oneof_value_nested.name}"
+				body: "*"
+			}
+			additional_bindings {
+				post: "/v2/example/oneof_value_nested/deeper_nested_value/value/echo/{oneof_value_nested.deeper_nested_value.value}"
+				body: "*"
+			}
+			additional_bindings {
+				post: "/v2/example/oneof_value_nested/oneof_value_terminal/echo/{oneof_value_nested.oneof_value_terminal}"
+				body: "*"
+			}
+			additional_bindings {
+				post: "/v2/example/oneof_value_nested/oneof_value_deeper_nested/value/echo/{oneof_value_nested.oneof_value_deeper_nested.value}"
 				body: "*"
 			}
 		};
