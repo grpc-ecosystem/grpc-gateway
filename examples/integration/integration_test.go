@@ -904,6 +904,65 @@ func TestOneof(t *testing.T) {
 		},
 		// NOTE: deeply nested fields are not allowed in body by spec.
 
+		// query param: primitive field in a oneof clause
+		{
+			path: "/v1/example/a_bit_of_everything;echo?oneof_value_string=foo",
+			want: gw.ABitOfEverything{
+				OneofValue: &gw.ABitOfEverything_OneofValueString{"foo"},
+			},
+		},
+		// path param: primitive field in a message field in a oneof clause
+		{
+			path: "/v1/example/a_bit_of_everything;echo?oneof_value_nested%2Ename=foo",
+			want: gw.ABitOfEverything{
+				OneofValue: &gw.ABitOfEverything_OneofValueNested{
+					&gw.ABitOfEverything_Nested{
+						Name: "foo",
+					},
+				},
+			},
+		},
+		// path param: primitive field in a message field in a message field in a oneof clause
+		{
+			path: "/v1/example/a_bit_of_everything;echo?oneof_value_nested%2Edeeper_nested_value%2Evalue=foo",
+			want: gw.ABitOfEverything{
+				OneofValue: &gw.ABitOfEverything_OneofValueNested{
+					&gw.ABitOfEverything_Nested{
+						DeeperNestedValue: &sub.StringMessage{
+							Value: proto.String("foo"),
+						},
+					},
+				},
+			},
+		},
+		// path param: primitive field in a oneof clause in a message field in a oneof clause.
+		{
+			path: "/v1/example/a_bit_of_everything;echo?oneof_value_nested%2Eoneof_value_terminal=foo",
+			want: gw.ABitOfEverything{
+				OneofValue: &gw.ABitOfEverything_OneofValueNested{
+					&gw.ABitOfEverything_Nested{
+						OneofValue: &gw.ABitOfEverything_Nested_OneofValueTerminal{
+							"foo",
+						},
+					},
+				},
+			},
+		},
+		// path param: primitive field in a message field in a oneof clause in a message field in a oneof clause.
+		{
+			path: "/v1/example/a_bit_of_everything;echo?oneof_value_nested%2Eoneof_value_deeper_nested%2Evalue=foo",
+			want: gw.ABitOfEverything{
+				OneofValue: &gw.ABitOfEverything_OneofValueNested{
+					&gw.ABitOfEverything_Nested{
+						OneofValue: &gw.ABitOfEverything_Nested_OneofValueDeeperNested{
+							&sub.StringMessage{
+								Value: proto.String("foo"),
+							},
+						},
+					},
+				},
+			},
+		},
 	} {
 		url := base + spec.path
 		resp, err := http.Post(url, "application/json", strings.NewReader(spec.payload))
