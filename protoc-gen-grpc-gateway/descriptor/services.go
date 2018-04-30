@@ -235,6 +235,9 @@ func (r *Registry) newBody(meth *Method, path string) (*Body, error) {
 	if err != nil {
 		return nil, err
 	}
+	if len(fields) > 1 {
+		return nil, fmt.Errorf("body field must be present at the top-level of request message type")
+	}
 	return &Body{FieldPath: FieldPath(fields)}, nil
 }
 
@@ -278,6 +281,7 @@ func (r *Registry) resolveFieldPath(msg *Message, path string) ([]FieldPathCompo
 			return nil, fmt.Errorf("no field %q found in %s", path, root.GetName())
 		}
 		if f.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+			// https://groups.google.com/d/msg/grpc-io/Xqx80hG0D44/yyqfF2gTEFMJ
 			return nil, fmt.Errorf("repeated field not allowed in field path: %s in %s", f.GetName(), path)
 		}
 		result = append(result, FieldPathComponent{Name: c, Target: f})

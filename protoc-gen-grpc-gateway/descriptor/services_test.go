@@ -902,6 +902,49 @@ func TestExtractServicesWithError(t *testing.T) {
 				`,
 			},
 		},
+		// 2nd-level field in body
+		{
+			target: "path/to/example.proto",
+			srcs: []string{
+				`
+					name: "path/to/example.proto",
+					package: "example"
+					message_type <
+					name: "OuterMessage"
+						nested_type <
+							name: "StringMessage"
+							field <
+								name: "string"
+								number: 1
+								label: LABEL_OPTIONAL
+								type: TYPE_STRING
+							>
+						>
+						field <
+							name: "nested"
+							number: 1
+							label: LABEL_OPTIONAL
+							type: TYPE_MESSAGE
+							type_name: "StringMessage"
+						>
+					>
+					service <
+						name: "ExampleService"
+						method <
+							name: "Echo"
+							input_type: "OuterMessage"
+							output_type: "OuterMessage"
+							options <
+								[google.api.http] <
+									post: "/v1/example/echo"
+									body: "nested.string"
+								>
+							>
+						>
+					>
+				`,
+			},
+		},
 	} {
 		reg := NewRegistry()
 
