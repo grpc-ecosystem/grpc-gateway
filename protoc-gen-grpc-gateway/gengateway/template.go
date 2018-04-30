@@ -207,6 +207,7 @@ var (
 	var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 	var metadata runtime.ServerMetadata
 {{if .Body}}
+	{{.Body.AssignableExprPrep "protoReq"}}
 	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -226,6 +227,7 @@ var (
 {{if $param.IsNestedProto3 }}
 	err = runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val)
 {{else}}
+	{{$param.AssignableExprPrep "protoReq"}}
 	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val)
 {{end}}
 	if err != nil {

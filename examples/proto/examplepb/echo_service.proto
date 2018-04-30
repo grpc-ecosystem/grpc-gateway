@@ -61,6 +61,10 @@ service EchoService {
 		option (google.api.http) = {
 			post: "/v1/example/echo_body"
 			body: "*"
+			additional_bindings {
+				put: "/v1/example/echo_body/{id}"
+				body: "no"
+			}
 		};
 	}
 	// EchoDelete method receives a simple message and returns it.

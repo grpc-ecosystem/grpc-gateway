@@ -240,6 +240,12 @@ func (b Body) AssignableExpr(msgExpr string) string {
 	return b.FieldPath.AssignableExpr(msgExpr)
 }
 
+// AssignableExprPrep returns prepatory statements for an assignable expression to initialize
+// method request object.
+func (b Body) AssignableExprPrep(msgExpr string) string {
+	return b.FieldPath.AssignableExprPrep(msgExpr)
+}
+
 // FieldPath is a path to a field from a request message.
 type FieldPath []FieldPathComponent
 
@@ -261,11 +267,44 @@ func (p FieldPath) IsNestedProto3() bool {
 }
 
 // AssignableExpr is an assignable expression in Go to be used to assign a value to the target field.
-// It starts with "msgExpr", which is the go expression of the method request object.
+// It starts with "msgExpr", which is the go expression of the method request object. Before using
+// such an expression the prep statements must be emitted first, in case the field path includes
+// a oneof. See FieldPath.AssignableExprPrep.
 func (p FieldPath) AssignableExpr(msgExpr string) string {
 	l := len(p)
 	if l == 0 {
 		return msgExpr
+	}
+
+	components := msgExpr
+	for i, c := range p {
+		// Check if it is a oneOf field.
+		if c.Target.OneofIndex != nil {
+			index := c.Target.OneofIndex
+			msg := c.Target.Message
+			oneOfName := gogen.CamelCase(msg.GetOneofDecl()[*index].GetName())
+			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
+
+			components = components + "." + oneOfName + ".(*" + oneofFieldName + ")"
+		}
+
+		if i == l-1 {
+			components = components + "." + c.AssignableExpr()
+			continue
+		}
+		components = components + "." + c.ValueExpr()
+	}
+
+	return components
+}
+
+// AssignableExprPrep returns preparation statements for an assignable expression to assign a value
+// to the target field. The go expression of the method request object is "msgExpr". This is only
+// needed for field paths that contain oneofs. Otherwise, an empty string is returned.
+func (p FieldPath) AssignableExprPrep(msgExpr string) string {
+	l := len(p)
+	if l == 0 {
+		return ""
 	}
 
 	var preparations []string
@@ -296,7 +335,6 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 		components = components + "." + c.ValueExpr()
 	}
 
-	preparations = append(preparations, components)
 	return strings.Join(preparations, "\n")
 }
 
