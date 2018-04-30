@@ -33,6 +33,7 @@ describe('ABitOfEverythingService', function() {
       sfixed64_value: "-4611686018427387904",
       sint32_value: 2147483647,
       sint64_value: "4611686018427387903",
+      oneof_value_string: "foo",
       nonConventionalNameValue: "camelCase",
     };
 
@@ -78,7 +79,7 @@ describe('ABitOfEverythingService', function() {
        { name: "baz", amount: 20 },
       ],
       repeated_string_value: ["a", "b", "c"],
-      oneof_string: "x",
+      oneof_value_string: "x",
       // TODO(yugui) Support enum by name
       map_value: { a: 1, b: 2 },
       mapped_string_value: { a: "x", b: "y" },

@@ -219,7 +219,7 @@ var (
 			json: "ONE",
 		},
 		{
-			data: &examplepb.ABitOfEverything_OneofString{OneofString: "abc"},
+			data: &examplepb.ABitOfEverything_OneofValueString{OneofValueString: "abc"},
 			json: `"abc"`,
 		},
 		{

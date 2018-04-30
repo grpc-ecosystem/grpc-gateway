@@ -98,7 +98,7 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 
 
 // Intentionaly complicated message type to cover much features of Protobuf.
-// NEXT ID: 30
+// NEXT ID: 31
 message ABitOfEverything {
 	option (grpc.gateway.protoc_gen_swagger.options.openapiv2_schema) = {
 		external_docs: {
@@ -108,6 +108,7 @@ message ABitOfEverything {
 	};
 
 	// Nested is nested type.
+	// NEXT ID: 5
 	message Nested {
 		// name is nested field.
 		string name = 1;
@@ -120,6 +121,8 @@ message ABitOfEverything {
 			TRUE = 1;
 		}
 		DeepEnum ok = 3;
+
+		sub.StringMessage deeper_nested_value = 4;
 	}
 	Nested single_nested = 25;
 
@@ -143,8 +146,9 @@ message ABitOfEverything {
 	sint64 sint64_value = 18;
 	repeated string repeated_string_value = 19;
 	oneof oneof_value {
-		google.protobuf.Empty oneof_empty = 20;
-		string oneof_string = 21;
+		/* tag 20 is reserved */
+		string oneof_value_string = 21;
+		Nested oneof_value_nested = 30;
 	}
 
 	map<string, NumericEnum> map_value = 22;
@@ -275,8 +279,17 @@ service ABitOfEverythingService {
 	}
 	rpc DeepPathEcho(ABitOfEverything) returns (ABitOfEverything) {
 		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/{single_nested.name}"
-			body: "*"
+			post: "/v1/example/a_bit_of_everything;echo"
+
+			// Covers 2nd or even deeper level fields in path parameters.
+			additional_bindings {
+				post: "/v1/example/a_bit_of_everything/{single_nested.name}"
+				body: "*"
+			}
+			additional_bindings {
+				post: "/v2/example/single_nested/deeper_nested_value/{single_nested.deeper_nested_value.value}"
+				body: "*"
+			}
 		};
 	}
 	rpc NoBindings(google.protobuf.Duration) returns (google.protobuf.Empty) {}

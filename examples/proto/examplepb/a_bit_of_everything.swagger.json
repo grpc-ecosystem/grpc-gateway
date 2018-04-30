@@ -125,6 +125,12 @@
             "default": "FALSE"
           },
           {
+            "name": "single_nested.deeper_nested_value.value",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "float_value",
             "in": "query",
             "required": false,
@@ -250,7 +256,40 @@
             }
           },
           {
-            "name": "oneof_string",
+            "name": "oneof_value_string",
+            "description": "tag 20 is reserved.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "oneof_value_nested.name",
+            "description": "name is nested field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "oneof_value_nested.amount",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "oneof_value_nested.ok",
+            "description": " - FALSE: FALSE is false.\n - TRUE: TRUE is true.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "FALSE",
+              "TRUE"
+            ],
+            "default": "FALSE"
+          },
+          {
+            "name": "oneof_value_nested.deeper_nested_value.value",
             "in": "query",
             "required": false,
             "type": "string"
@@ -416,7 +455,7 @@
     },
     "/v1/example/a_bit_of_everything/{single_nested.name}": {
       "post": {
-        "operationId": "DeepPathEcho",
+        "operationId": "DeepPathEcho2",
         "responses": {
           "200": {
             "description": "",
@@ -526,6 +565,22 @@
             }
           }
         ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v1/example/a_bit_of_everything;echo": {
+      "post": {
+        "operationId": "DeepPathEcho",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
         "tags": [
           "ABitOfEverythingService"
         ]
@@ -657,6 +712,38 @@
         ]
       }
     },
+    "/v2/example/single_nested/deeper_nested_value/{single_nested.deeper_nested_value.value}": {
+      "post": {
+        "operationId": "DeepPathEcho3",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "single_nested.deeper_nested_value.value",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v2/example/timeout": {
       "get": {
         "operationId": "Timeout",
@@ -720,9 +807,12 @@
         },
         "ok": {
           "$ref": "#/definitions/NestedDeepEnum"
+        },
+        "deeper_nested_value": {
+          "$ref": "#/definitions/subStringMessage"
         }
       },
-      "description": "Nested is nested type."
+      "title": "Nested is nested type.\nNEXT ID: 5"
     },
     "NestedDeepEnum": {
       "type": "string",
@@ -816,11 +906,12 @@
             "type": "string"
           }
         },
-        "oneof_empty": {
-          "$ref": "#/definitions/protobufEmpty"
+        "oneof_value_string": {
+          "type": "string",
+          "title": "tag 20 is reserved"
         },
-        "oneof_string": {
-          "type": "string"
+        "oneof_value_nested": {
+          "$ref": "#/definitions/ABitOfEverythingNested"
         },
         "map_value": {
           "type": "object",
@@ -855,7 +946,7 @@
           "title": "repeated enum value. it is comma-separated in query"
         }
       },
-      "title": "Intentionaly complicated message type to cover much features of Protobuf.\nNEXT ID: 30",
+      "title": "Intentionaly complicated message type to cover much features of Protobuf.\nNEXT ID: 31",
       "externalDocs": {
         "description": "Find out more about ABitOfEverything",
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"

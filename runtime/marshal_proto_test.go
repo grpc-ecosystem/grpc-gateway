@@ -26,8 +26,8 @@ var message = &examplepb.ABitOfEverything{
 	},
 	Uint64Value: 0xFFFFFFFFFFFFFFFF,
 	EnumValue:   examplepb.NumericEnum_ONE,
-	OneofValue: &examplepb.ABitOfEverything_OneofString{
-		OneofString: "bar",
+	OneofValue: &examplepb.ABitOfEverything_OneofValueString{
+		OneofValueString: "bar",
 	},
 	MapValue: map[string]examplepb.NumericEnum{
 		"a": examplepb.NumericEnum_ONE,

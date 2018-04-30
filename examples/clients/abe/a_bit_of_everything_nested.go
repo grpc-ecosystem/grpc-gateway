@@ -10,7 +10,6 @@
 
 package abe
 
-// Nested is nested type.
 type ABitOfEverythingNested struct {
 
 	// name is nested field.
@@ -19,4 +18,6 @@ type ABitOfEverythingNested struct {
 	Amount int64 `json:"amount,omitempty"`
 
 	Ok NestedDeepEnum `json:"ok,omitempty"`
+
+	DeeperNestedValue SubStringMessage `json:"deeper_nested_value,omitempty"`
 }

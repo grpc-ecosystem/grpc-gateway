@@ -218,11 +218,83 @@ func (a ABitOfEverythingServiceApi) CreateBody(body ExamplepbABitOfEverything) (
 /**
  * 
  *
+ * @return *ExamplepbABitOfEverything
+ */
+func (a ABitOfEverythingServiceApi) DeepPathEcho() (*ExamplepbABitOfEverything, *APIResponse, error) {
+
+	var localVarHttpMethod = strings.ToUpper("Post")
+	// create path and map variables
+	localVarPath := a.Configuration.BasePath + "/v1/example/a_bit_of_everything;echo"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := make(map[string]string)
+	var localVarPostBody interface{}
+	var localVarFileName string
+	var localVarFileBytes []byte
+	// authentication '(OAuth2)' required
+	// oauth required
+	if a.Configuration.AccessToken != ""{
+		localVarHeaderParams["Authorization"] =  "Bearer " + a.Configuration.AccessToken
+	}
+	// authentication '(BasicAuth)' required
+	// http basic authentication required
+	if a.Configuration.Username != "" || a.Configuration.Password != ""{
+		localVarHeaderParams["Authorization"] =  "Basic " + a.Configuration.GetBasicAuthEncodedString()
+	}
+	// authentication '(ApiKeyAuth)' required
+	// set key with prefix in header
+	localVarHeaderParams["X-API-Key"] = a.Configuration.GetAPIKeyWithPrefix("X-API-Key")
+	// add default headers if any
+	for key := range a.Configuration.DefaultHeader {
+		localVarHeaderParams[key] = a.Configuration.DefaultHeader[key]
+	}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{ "application/json", "application/x-foo-mime",  }
+
+	// set Content-Type header
+	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{
+		"application/json",
+		"application/x-foo-mime",
+		}
+
+	// set Accept header
+	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	var successPayload = new(ExamplepbABitOfEverything)
+	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+
+	var localVarURL, _ = url.Parse(localVarPath)
+	localVarURL.RawQuery = localVarQueryParams.Encode()
+	var localVarAPIResponse = &APIResponse{Operation: "DeepPathEcho", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	if localVarHttpResponse != nil {
+		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
+		localVarAPIResponse.Payload = localVarHttpResponse.Body()
+	}
+
+	if err != nil {
+		return successPayload, localVarAPIResponse, err
+	}
+	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
+	return successPayload, localVarAPIResponse, err
+}
+
+/**
+ * 
+ *
  * @param singleNestedName 
  * @param body 
  * @return *ExamplepbABitOfEverything
  */
-func (a ABitOfEverythingServiceApi) DeepPathEcho(singleNestedName string, body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) DeepPathEcho2(singleNestedName string, body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -279,7 +351,84 @@ func (a ABitOfEverythingServiceApi) DeepPathEcho(singleNestedName string, body E
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "DeepPathEcho", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "DeepPathEcho2", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	if localVarHttpResponse != nil {
+		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
+		localVarAPIResponse.Payload = localVarHttpResponse.Body()
+	}
+
+	if err != nil {
+		return successPayload, localVarAPIResponse, err
+	}
+	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
+	return successPayload, localVarAPIResponse, err
+}
+
+/**
+ * 
+ *
+ * @param singleNestedDeeperNestedValueValue 
+ * @param body 
+ * @return *ExamplepbABitOfEverything
+ */
+func (a ABitOfEverythingServiceApi) DeepPathEcho3(singleNestedDeeperNestedValueValue string, body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {
+
+	var localVarHttpMethod = strings.ToUpper("Post")
+	// create path and map variables
+	localVarPath := a.Configuration.BasePath + "/v2/example/single_nested/deeper_nested_value/{single_nested.deeper_nested_value.value}"
+	localVarPath = strings.Replace(localVarPath, "{"+"single_nested.deeper_nested_value.value"+"}", fmt.Sprintf("%v", singleNestedDeeperNestedValueValue), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := make(map[string]string)
+	var localVarPostBody interface{}
+	var localVarFileName string
+	var localVarFileBytes []byte
+	// authentication '(OAuth2)' required
+	// oauth required
+	if a.Configuration.AccessToken != ""{
+		localVarHeaderParams["Authorization"] =  "Bearer " + a.Configuration.AccessToken
+	}
+	// authentication '(BasicAuth)' required
+	// http basic authentication required
+	if a.Configuration.Username != "" || a.Configuration.Password != ""{
+		localVarHeaderParams["Authorization"] =  "Basic " + a.Configuration.GetBasicAuthEncodedString()
+	}
+	// authentication '(ApiKeyAuth)' required
+	// set key with prefix in header
+	localVarHeaderParams["X-API-Key"] = a.Configuration.GetAPIKeyWithPrefix("X-API-Key")
+	// add default headers if any
+	for key := range a.Configuration.DefaultHeader {
+		localVarHeaderParams[key] = a.Configuration.DefaultHeader[key]
+	}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{ "application/json", "application/x-foo-mime",  }
+
+	// set Content-Type header
+	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{
+		"application/json",
+		"application/x-foo-mime",
+		}
+
+	// set Accept header
+	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	// body params
+	localVarPostBody = &body
+	var successPayload = new(ExamplepbABitOfEverything)
+	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+
+	var localVarURL, _ = url.Parse(localVarPath)
+	localVarURL.RawQuery = localVarQueryParams.Encode()
+	var localVarAPIResponse = &APIResponse{Operation: "DeepPathEcho3", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -517,6 +666,7 @@ func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body Examplepb
  * @param singleNestedName name is nested field.
  * @param singleNestedAmount 
  * @param singleNestedOk  - FALSE: FALSE is false.  - TRUE: TRUE is true.
+ * @param singleNestedDeeperNestedValueValue 
  * @param floatValue 
  * @param doubleValue 
  * @param int64Value 
@@ -534,13 +684,17 @@ func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body Examplepb
  * @param sint32Value 
  * @param sint64Value 
  * @param repeatedStringValue 
- * @param oneofString 
+ * @param oneofValueString tag 20 is reserved.
+ * @param oneofValueNestedName name is nested field.
+ * @param oneofValueNestedAmount 
+ * @param oneofValueNestedOk  - FALSE: FALSE is false.  - TRUE: TRUE is true.
+ * @param oneofValueNestedDeeperNestedValueValue 
  * @param nonConventionalNameValue 
  * @param timestampValue 
  * @param repeatedEnumValue repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
  * @return *ProtobufEmpty
  */
-func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName string, singleNestedAmount int64, singleNestedOk string, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string) (*ProtobufEmpty, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName string, singleNestedAmount int64, singleNestedOk string, singleNestedDeeperNestedValueValue string, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofValueString string, oneofValueNestedName string, oneofValueNestedAmount int64, oneofValueNestedOk string, oneofValueNestedDeeperNestedValueValue string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string) (*ProtobufEmpty, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -573,6 +727,7 @@ func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName strin
 	localVarQueryParams.Add("single_nested.name", a.Configuration.APIClient.ParameterToString(singleNestedName, ""))
 	localVarQueryParams.Add("single_nested.amount", a.Configuration.APIClient.ParameterToString(singleNestedAmount, ""))
 	localVarQueryParams.Add("single_nested.ok", a.Configuration.APIClient.ParameterToString(singleNestedOk, ""))
+	localVarQueryParams.Add("single_nested.deeper_nested_value.value", a.Configuration.APIClient.ParameterToString(singleNestedDeeperNestedValueValue, ""))
 	localVarQueryParams.Add("float_value", a.Configuration.APIClient.ParameterToString(floatValue, ""))
 	localVarQueryParams.Add("double_value", a.Configuration.APIClient.ParameterToString(doubleValue, ""))
 	localVarQueryParams.Add("int64_value", a.Configuration.APIClient.ParameterToString(int64Value, ""))
@@ -592,7 +747,11 @@ func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName strin
 	var repeatedStringValueCollectionFormat = "csv"
 	localVarQueryParams.Add("repeated_string_value", a.Configuration.APIClient.ParameterToString(repeatedStringValue, repeatedStringValueCollectionFormat))
 
-	localVarQueryParams.Add("oneof_string", a.Configuration.APIClient.ParameterToString(oneofString, ""))
+	localVarQueryParams.Add("oneof_value_string", a.Configuration.APIClient.ParameterToString(oneofValueString, ""))
+	localVarQueryParams.Add("oneof_value_nested.name", a.Configuration.APIClient.ParameterToString(oneofValueNestedName, ""))
+	localVarQueryParams.Add("oneof_value_nested.amount", a.Configuration.APIClient.ParameterToString(oneofValueNestedAmount, ""))
+	localVarQueryParams.Add("oneof_value_nested.ok", a.Configuration.APIClient.ParameterToString(oneofValueNestedOk, ""))
+	localVarQueryParams.Add("oneof_value_nested.deeper_nested_value.value", a.Configuration.APIClient.ParameterToString(oneofValueNestedDeeperNestedValueValue, ""))
 	localVarQueryParams.Add("nonConventionalNameValue", a.Configuration.APIClient.ParameterToString(nonConventionalNameValue, ""))
 	localVarQueryParams.Add("timestamp_value", a.Configuration.APIClient.ParameterToString(timestampValue, ""))
 	var repeatedEnumValueCollectionFormat = "csv"

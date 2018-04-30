@@ -347,8 +347,8 @@ func testABECreateBody(t *testing.T, port int) {
 			},
 		},
 		RepeatedStringValue: []string{"a", "b", "c"},
-		OneofValue: &gw.ABitOfEverything_OneofString{
-			OneofString: "x",
+		OneofValue: &gw.ABitOfEverything_OneofValueString{
+			OneofValueString: "x",
 		},
 		MapValue: map[string]gw.NumericEnum{
 			"a": gw.NumericEnum_ONE,
@@ -821,6 +821,68 @@ func testAdditionalBindings(t *testing.T, port int) {
 		}
 		if got, want := msg.GetValue(), "hello"; got != want {
 			t.Errorf("msg.GetValue() = %q; want %q", got, want)
+		}
+	}
+}
+
+// TestDeepFields tests deeply nested fields in path parameters.
+//
+// NOTE: deeply nested fields are not allowed in body parameters.
+// c.f. third_party/googleapis/google/api/http.proto
+// > the referred field must not be a repeated field and must be
+// > present at the top-level of request message type.
+func TestDeepFields(t *testing.T) {
+	const base = "http://localhost:8080"
+
+	for i, spec := range []struct {
+		path    string
+		payload string
+		want    gw.ABitOfEverything
+	}{
+		{
+			path: "/v1/example/a_bit_of_everything/foo",
+			want: gw.ABitOfEverything{
+				SingleNested: &gw.ABitOfEverything_Nested{
+					Name: "foo",
+				},
+			},
+		},
+		{
+			path: "/v2/example/single_nested/deeper_nested_value/foo",
+			want: gw.ABitOfEverything{
+				SingleNested: &gw.ABitOfEverything_Nested{
+					DeeperNestedValue: &sub.StringMessage{
+						Value: proto.String("foo"),
+					},
+				},
+			},
+		},
+	} {
+		url := base + spec.path
+		resp, err := http.Post(url, "application/json", strings.NewReader(spec.payload))
+		if err != nil {
+			t.Errorf("http.Post(%q) failed with %v; want success; at i=%d", url, err, i)
+			return
+		}
+		defer resp.Body.Close()
+		buf, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success; at i=%d", err, i)
+			return
+		}
+
+		if got, want := resp.StatusCode, http.StatusOK; got != want {
+			t.Errorf("resp.StatusCode = %d; want %d; at i=%d", got, want, i)
+			t.Logf("%s", buf)
+		}
+
+		var got gw.ABitOfEverything
+		if err := jsonpb.UnmarshalString(string(buf), &got); err != nil {
+			t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success; at i=%d", buf, err, i)
+			return
+		}
+		if !reflect.DeepEqual(got, spec.want) {
+			t.Errorf("got = %v; want %v; at i=%d", got, spec.want, i)
 		}
 	}
 }
