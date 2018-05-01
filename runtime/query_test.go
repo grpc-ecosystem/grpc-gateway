@@ -26,7 +26,7 @@ func TestPopulateParameters(t *testing.T) {
 	}
 
 	fieldmaskStr := "float_value,double_value"
-	fieldmaskPb := &field_mask.FieldMask{[]string{"float_value", "double_value"}}
+	fieldmaskPb := &field_mask.FieldMask{Paths: []string{"float_value", "double_value"}}
 
 	for _, spec := range []struct {
 		values  url.Values
@@ -95,15 +95,15 @@ func TestPopulateParameters(t *testing.T) {
 				RepeatedEnum:       []EnumValue{EnumValue_Y, EnumValue_Z, EnumValue_X},
 				TimestampValue:     timePb,
 				FieldMaskValue:     fieldmaskPb,
-				WrapperFloatValue:  &wrappers.FloatValue{1.5},
-				WrapperDoubleValue: &wrappers.DoubleValue{2.5},
-				WrapperInt64Value:  &wrappers.Int64Value{-1},
-				WrapperInt32Value:  &wrappers.Int32Value{-2},
-				WrapperUInt64Value: &wrappers.UInt64Value{3},
-				WrapperUInt32Value: &wrappers.UInt32Value{4},
-				WrapperBoolValue:   &wrappers.BoolValue{true},
-				WrapperStringValue: &wrappers.StringValue{"str"},
-				WrapperBytesValue:  &wrappers.BytesValue{[]byte("bytes")},
+				WrapperFloatValue:  &wrappers.FloatValue{Value: 1.5},
+				WrapperDoubleValue: &wrappers.DoubleValue{Value: 2.5},
+				WrapperInt64Value:  &wrappers.Int64Value{Value: -1},
+				WrapperInt32Value:  &wrappers.Int32Value{Value: -2},
+				WrapperUInt64Value: &wrappers.UInt64Value{Value: 3},
+				WrapperUInt32Value: &wrappers.UInt32Value{Value: 4},
+				WrapperBoolValue:   &wrappers.BoolValue{Value: true},
+				WrapperStringValue: &wrappers.StringValue{Value: "str"},
+				WrapperBytesValue:  &wrappers.BytesValue{Value: []byte("bytes")},
 				MapValue: map[string]string{
 					"key":         "value",
 					"second":      "bar",
@@ -169,15 +169,15 @@ func TestPopulateParameters(t *testing.T) {
 				RepeatedEnum:       []EnumValue{EnumValue_Y, EnumValue_Z, EnumValue_X},
 				TimestampValue:     timePb,
 				FieldMaskValue:     fieldmaskPb,
-				WrapperFloatValue:  &wrappers.FloatValue{1.5},
-				WrapperDoubleValue: &wrappers.DoubleValue{2.5},
-				WrapperInt64Value:  &wrappers.Int64Value{-1},
-				WrapperInt32Value:  &wrappers.Int32Value{-2},
-				WrapperUInt64Value: &wrappers.UInt64Value{3},
-				WrapperUInt32Value: &wrappers.UInt32Value{4},
-				WrapperBoolValue:   &wrappers.BoolValue{true},
-				WrapperStringValue: &wrappers.StringValue{"str"},
-				WrapperBytesValue:  &wrappers.BytesValue{[]byte("bytes")},
+				WrapperFloatValue:  &wrappers.FloatValue{Value: 1.5},
+				WrapperDoubleValue: &wrappers.DoubleValue{Value: 2.5},
+				WrapperInt64Value:  &wrappers.Int64Value{Value: -1},
+				WrapperInt32Value:  &wrappers.Int32Value{Value: -2},
+				WrapperUInt64Value: &wrappers.UInt64Value{Value: 3},
+				WrapperUInt32Value: &wrappers.UInt32Value{Value: 4},
+				WrapperBoolValue:   &wrappers.BoolValue{Value: true},
+				WrapperStringValue: &wrappers.StringValue{Value: "str"},
+				WrapperBytesValue:  &wrappers.BytesValue{Value: []byte("bytes")},
 			},
 		},
 		{

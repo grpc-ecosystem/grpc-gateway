@@ -3,10 +3,20 @@
 
 package examplepb
 
+/*
+Unannotated Echo Service
+Similar to echo_service.proto but without annotations. See
+unannotated_echo_service.yaml for the equivalent of the annotations in
+gRPC API configuration format.
+
+Echo Service API consists of a single service which returns
+a message.
+*/
+
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import google_protobuf2 "github.com/golang/protobuf/ptypes/duration"
+import duration "github.com/golang/protobuf/ptypes/duration"
 
 import (
 	context "golang.org/x/net/context"
@@ -18,18 +28,46 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
 // UnannotatedSimpleMessage represents a simple message sent to the unannotated Echo service.
 type UnannotatedSimpleMessage struct {
 	// Id represents the message identifier.
-	Id       string                     `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
-	Num      int64                      `protobuf:"varint,2,opt,name=num" json:"num,omitempty"`
-	Duration *google_protobuf2.Duration `protobuf:"bytes,3,opt,name=duration" json:"duration,omitempty"`
+	Id                   string             `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
+	Num                  int64              `protobuf:"varint,2,opt,name=num" json:"num,omitempty"`
+	Duration             *duration.Duration `protobuf:"bytes,3,opt,name=duration" json:"duration,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
 }
 
-func (m *UnannotatedSimpleMessage) Reset()                    { *m = UnannotatedSimpleMessage{} }
-func (m *UnannotatedSimpleMessage) String() string            { return proto.CompactTextString(m) }
-func (*UnannotatedSimpleMessage) ProtoMessage()               {}
-func (*UnannotatedSimpleMessage) Descriptor() ([]byte, []int) { return fileDescriptor5, []int{0} }
+func (m *UnannotatedSimpleMessage) Reset()         { *m = UnannotatedSimpleMessage{} }
+func (m *UnannotatedSimpleMessage) String() string { return proto.CompactTextString(m) }
+func (*UnannotatedSimpleMessage) ProtoMessage()    {}
+func (*UnannotatedSimpleMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_unannotated_echo_service_33987b03bf51a339, []int{0}
+}
+func (m *UnannotatedSimpleMessage) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UnannotatedSimpleMessage.Unmarshal(m, b)
+}
+func (m *UnannotatedSimpleMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UnannotatedSimpleMessage.Marshal(b, m, deterministic)
+}
+func (dst *UnannotatedSimpleMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnannotatedSimpleMessage.Merge(dst, src)
+}
+func (m *UnannotatedSimpleMessage) XXX_Size() int {
+	return xxx_messageInfo_UnannotatedSimpleMessage.Size(m)
+}
+func (m *UnannotatedSimpleMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnannotatedSimpleMessage.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UnannotatedSimpleMessage proto.InternalMessageInfo
 
 func (m *UnannotatedSimpleMessage) GetId() string {
 	if m != nil {
@@ -45,7 +83,7 @@ func (m *UnannotatedSimpleMessage) GetNum() int64 {
 	return 0
 }
 
-func (m *UnannotatedSimpleMessage) GetDuration() *google_protobuf2.Duration {
+func (m *UnannotatedSimpleMessage) GetDuration() *duration.Duration {
 	if m != nil {
 		return m.Duration
 	}
@@ -207,10 +245,10 @@ var _UnannotatedEchoService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("examples/proto/examplepb/unannotated_echo_service.proto", fileDescriptor5)
+	proto.RegisterFile("examples/proto/examplepb/unannotated_echo_service.proto", fileDescriptor_unannotated_echo_service_33987b03bf51a339)
 }
 
-var fileDescriptor5 = []byte{
+var fileDescriptor_unannotated_echo_service_33987b03bf51a339 = []byte{
 	// 268 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x32, 0x4f, 0xad, 0x48, 0xcc,
 	0x2d, 0xc8, 0x49, 0x2d, 0xd6, 0x2f, 0x28, 0xca, 0x2f, 0xc9, 0xd7, 0x87, 0x72, 0x0b, 0x92, 0xf4,
