@@ -1,10 +1,10 @@
 package runtime_test
 
 import (
-	"reflect"
+	"bytes"
 	"testing"
 
-	"bytes"
+	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -51,7 +51,7 @@ func TestProtoMarshalUnmarshal(t *testing.T) {
 		t.Fatalf("Unmarshalling returned error: %s", err.Error())
 	}
 
-	if !reflect.DeepEqual(unmarshalled, message) {
+	if !proto.Equal(unmarshalled, message) {
 		t.Errorf(
 			"Unmarshalled didn't match original message: (original = %v) != (unmarshalled = %v)",
 			unmarshalled,
@@ -81,7 +81,7 @@ func TestProtoEncoderDecodert(t *testing.T) {
 		t.Fatalf("Unmarshalling returned error: %s", err.Error())
 	}
 
-	if !reflect.DeepEqual(unencoded, message) {
+	if !proto.Equal(unencoded, message) {
 		t.Errorf(
 			"Unencoded didn't match original message: (original = %v) != (unencoded = %v)",
 			unencoded,
