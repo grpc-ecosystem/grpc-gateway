@@ -6,8 +6,8 @@ package examplepb
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
+import wrappers "github.com/golang/protobuf/ptypes/wrappers"
 import _ "google.golang.org/genproto/googleapis/api/annotations"
-import google_protobuf5 "github.com/golang/protobuf/ptypes/wrappers"
 
 import (
 	context "golang.org/x/net/context"
@@ -19,56 +19,84 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
 type Wrappers struct {
-	StringValue *google_protobuf5.StringValue `protobuf:"bytes,1,opt,name=string_value,json=stringValue" json:"string_value,omitempty"`
-	Int32Value  *google_protobuf5.Int32Value  `protobuf:"bytes,2,opt,name=int32_value,json=int32Value" json:"int32_value,omitempty"`
-	Int64Value  *google_protobuf5.Int64Value  `protobuf:"bytes,3,opt,name=int64_value,json=int64Value" json:"int64_value,omitempty"`
-	FloatValue  *google_protobuf5.FloatValue  `protobuf:"bytes,4,opt,name=float_value,json=floatValue" json:"float_value,omitempty"`
-	DoubleValue *google_protobuf5.DoubleValue `protobuf:"bytes,5,opt,name=double_value,json=doubleValue" json:"double_value,omitempty"`
-	BoolValue   *google_protobuf5.BoolValue   `protobuf:"bytes,6,opt,name=bool_value,json=boolValue" json:"bool_value,omitempty"`
+	StringValue          *wrappers.StringValue `protobuf:"bytes,1,opt,name=string_value,json=stringValue" json:"string_value,omitempty"`
+	Int32Value           *wrappers.Int32Value  `protobuf:"bytes,2,opt,name=int32_value,json=int32Value" json:"int32_value,omitempty"`
+	Int64Value           *wrappers.Int64Value  `protobuf:"bytes,3,opt,name=int64_value,json=int64Value" json:"int64_value,omitempty"`
+	FloatValue           *wrappers.FloatValue  `protobuf:"bytes,4,opt,name=float_value,json=floatValue" json:"float_value,omitempty"`
+	DoubleValue          *wrappers.DoubleValue `protobuf:"bytes,5,opt,name=double_value,json=doubleValue" json:"double_value,omitempty"`
+	BoolValue            *wrappers.BoolValue   `protobuf:"bytes,6,opt,name=bool_value,json=boolValue" json:"bool_value,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
+	XXX_unrecognized     []byte                `json:"-"`
+	XXX_sizecache        int32                 `json:"-"`
 }
 
-func (m *Wrappers) Reset()                    { *m = Wrappers{} }
-func (m *Wrappers) String() string            { return proto.CompactTextString(m) }
-func (*Wrappers) ProtoMessage()               {}
-func (*Wrappers) Descriptor() ([]byte, []int) { return fileDescriptor4, []int{0} }
+func (m *Wrappers) Reset()         { *m = Wrappers{} }
+func (m *Wrappers) String() string { return proto.CompactTextString(m) }
+func (*Wrappers) ProtoMessage()    {}
+func (*Wrappers) Descriptor() ([]byte, []int) {
+	return fileDescriptor_wrappers_c39e75a579a3cddc, []int{0}
+}
+func (m *Wrappers) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Wrappers.Unmarshal(m, b)
+}
+func (m *Wrappers) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Wrappers.Marshal(b, m, deterministic)
+}
+func (dst *Wrappers) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Wrappers.Merge(dst, src)
+}
+func (m *Wrappers) XXX_Size() int {
+	return xxx_messageInfo_Wrappers.Size(m)
+}
+func (m *Wrappers) XXX_DiscardUnknown() {
+	xxx_messageInfo_Wrappers.DiscardUnknown(m)
+}
 
-func (m *Wrappers) GetStringValue() *google_protobuf5.StringValue {
+var xxx_messageInfo_Wrappers proto.InternalMessageInfo
+
+func (m *Wrappers) GetStringValue() *wrappers.StringValue {
 	if m != nil {
 		return m.StringValue
 	}
 	return nil
 }
 
-func (m *Wrappers) GetInt32Value() *google_protobuf5.Int32Value {
+func (m *Wrappers) GetInt32Value() *wrappers.Int32Value {
 	if m != nil {
 		return m.Int32Value
 	}
 	return nil
 }
 
-func (m *Wrappers) GetInt64Value() *google_protobuf5.Int64Value {
+func (m *Wrappers) GetInt64Value() *wrappers.Int64Value {
 	if m != nil {
 		return m.Int64Value
 	}
 	return nil
 }
 
-func (m *Wrappers) GetFloatValue() *google_protobuf5.FloatValue {
+func (m *Wrappers) GetFloatValue() *wrappers.FloatValue {
 	if m != nil {
 		return m.FloatValue
 	}
 	return nil
 }
 
-func (m *Wrappers) GetDoubleValue() *google_protobuf5.DoubleValue {
+func (m *Wrappers) GetDoubleValue() *wrappers.DoubleValue {
 	if m != nil {
 		return m.DoubleValue
 	}
 	return nil
 }
 
-func (m *Wrappers) GetBoolValue() *google_protobuf5.BoolValue {
+func (m *Wrappers) GetBoolValue() *wrappers.BoolValue {
 	if m != nil {
 		return m.BoolValue
 	}
@@ -151,9 +179,11 @@ var _WrappersService_serviceDesc = grpc.ServiceDesc{
 	Metadata: "examples/proto/examplepb/wrappers.proto",
 }
 
-func init() { proto.RegisterFile("examples/proto/examplepb/wrappers.proto", fileDescriptor4) }
+func init() {
+	proto.RegisterFile("examples/proto/examplepb/wrappers.proto", fileDescriptor_wrappers_c39e75a579a3cddc)
+}
 
-var fileDescriptor4 = []byte{
+var fileDescriptor_wrappers_c39e75a579a3cddc = []byte{
 	// 333 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0xd2, 0xcf, 0x4a, 0x3b, 0x31,
 	0x10, 0x07, 0x70, 0xb6, 0xfd, 0xfd, 0x8a, 0xcd, 0x0a, 0xc2, 0xe2, 0x41, 0xd7, 0x62, 0xa5, 0x17,

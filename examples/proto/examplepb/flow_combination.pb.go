@@ -18,24 +18,74 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+
 type EmptyProto struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *EmptyProto) Reset()                    { *m = EmptyProto{} }
-func (m *EmptyProto) String() string            { return proto.CompactTextString(m) }
-func (*EmptyProto) ProtoMessage()               {}
-func (*EmptyProto) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{0} }
+func (m *EmptyProto) Reset()         { *m = EmptyProto{} }
+func (m *EmptyProto) String() string { return proto.CompactTextString(m) }
+func (*EmptyProto) ProtoMessage()    {}
+func (*EmptyProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_flow_combination_40371c0acedc1fc5, []int{0}
+}
+func (m *EmptyProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EmptyProto.Unmarshal(m, b)
+}
+func (m *EmptyProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EmptyProto.Marshal(b, m, deterministic)
+}
+func (dst *EmptyProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EmptyProto.Merge(dst, src)
+}
+func (m *EmptyProto) XXX_Size() int {
+	return xxx_messageInfo_EmptyProto.Size(m)
+}
+func (m *EmptyProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_EmptyProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EmptyProto proto.InternalMessageInfo
 
 type NonEmptyProto struct {
-	A string `protobuf:"bytes,1,opt,name=a" json:"a,omitempty"`
-	B string `protobuf:"bytes,2,opt,name=b" json:"b,omitempty"`
-	C string `protobuf:"bytes,3,opt,name=c" json:"c,omitempty"`
+	A                    string   `protobuf:"bytes,1,opt,name=a" json:"a,omitempty"`
+	B                    string   `protobuf:"bytes,2,opt,name=b" json:"b,omitempty"`
+	C                    string   `protobuf:"bytes,3,opt,name=c" json:"c,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *NonEmptyProto) Reset()                    { *m = NonEmptyProto{} }
-func (m *NonEmptyProto) String() string            { return proto.CompactTextString(m) }
-func (*NonEmptyProto) ProtoMessage()               {}
-func (*NonEmptyProto) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{1} }
+func (m *NonEmptyProto) Reset()         { *m = NonEmptyProto{} }
+func (m *NonEmptyProto) String() string { return proto.CompactTextString(m) }
+func (*NonEmptyProto) ProtoMessage()    {}
+func (*NonEmptyProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_flow_combination_40371c0acedc1fc5, []int{1}
+}
+func (m *NonEmptyProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NonEmptyProto.Unmarshal(m, b)
+}
+func (m *NonEmptyProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NonEmptyProto.Marshal(b, m, deterministic)
+}
+func (dst *NonEmptyProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NonEmptyProto.Merge(dst, src)
+}
+func (m *NonEmptyProto) XXX_Size() int {
+	return xxx_messageInfo_NonEmptyProto.Size(m)
+}
+func (m *NonEmptyProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_NonEmptyProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NonEmptyProto proto.InternalMessageInfo
 
 func (m *NonEmptyProto) GetA() string {
 	if m != nil {
@@ -59,13 +109,35 @@ func (m *NonEmptyProto) GetC() string {
 }
 
 type UnaryProto struct {
-	Str string `protobuf:"bytes,1,opt,name=str" json:"str,omitempty"`
+	Str                  string   `protobuf:"bytes,1,opt,name=str" json:"str,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *UnaryProto) Reset()                    { *m = UnaryProto{} }
-func (m *UnaryProto) String() string            { return proto.CompactTextString(m) }
-func (*UnaryProto) ProtoMessage()               {}
-func (*UnaryProto) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{2} }
+func (m *UnaryProto) Reset()         { *m = UnaryProto{} }
+func (m *UnaryProto) String() string { return proto.CompactTextString(m) }
+func (*UnaryProto) ProtoMessage()    {}
+func (*UnaryProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_flow_combination_40371c0acedc1fc5, []int{2}
+}
+func (m *UnaryProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UnaryProto.Unmarshal(m, b)
+}
+func (m *UnaryProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UnaryProto.Marshal(b, m, deterministic)
+}
+func (dst *UnaryProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnaryProto.Merge(dst, src)
+}
+func (m *UnaryProto) XXX_Size() int {
+	return xxx_messageInfo_UnaryProto.Size(m)
+}
+func (m *UnaryProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnaryProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UnaryProto proto.InternalMessageInfo
 
 func (m *UnaryProto) GetStr() string {
 	if m != nil {
@@ -75,15 +147,37 @@ func (m *UnaryProto) GetStr() string {
 }
 
 type NestedProto struct {
-	A *UnaryProto `protobuf:"bytes,1,opt,name=a" json:"a,omitempty"`
-	B string      `protobuf:"bytes,2,opt,name=b" json:"b,omitempty"`
-	C string      `protobuf:"bytes,3,opt,name=c" json:"c,omitempty"`
+	A                    *UnaryProto `protobuf:"bytes,1,opt,name=a" json:"a,omitempty"`
+	B                    string      `protobuf:"bytes,2,opt,name=b" json:"b,omitempty"`
+	C                    string      `protobuf:"bytes,3,opt,name=c" json:"c,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
 }
 
-func (m *NestedProto) Reset()                    { *m = NestedProto{} }
-func (m *NestedProto) String() string            { return proto.CompactTextString(m) }
-func (*NestedProto) ProtoMessage()               {}
-func (*NestedProto) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{3} }
+func (m *NestedProto) Reset()         { *m = NestedProto{} }
+func (m *NestedProto) String() string { return proto.CompactTextString(m) }
+func (*NestedProto) ProtoMessage()    {}
+func (*NestedProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_flow_combination_40371c0acedc1fc5, []int{3}
+}
+func (m *NestedProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NestedProto.Unmarshal(m, b)
+}
+func (m *NestedProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NestedProto.Marshal(b, m, deterministic)
+}
+func (dst *NestedProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NestedProto.Merge(dst, src)
+}
+func (m *NestedProto) XXX_Size() int {
+	return xxx_messageInfo_NestedProto.Size(m)
+}
+func (m *NestedProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_NestedProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NestedProto proto.InternalMessageInfo
 
 func (m *NestedProto) GetA() *UnaryProto {
 	if m != nil {
@@ -107,13 +201,35 @@ func (m *NestedProto) GetC() string {
 }
 
 type SingleNestedProto struct {
-	A *UnaryProto `protobuf:"bytes,1,opt,name=a" json:"a,omitempty"`
+	A                    *UnaryProto `protobuf:"bytes,1,opt,name=a" json:"a,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
 }
 
-func (m *SingleNestedProto) Reset()                    { *m = SingleNestedProto{} }
-func (m *SingleNestedProto) String() string            { return proto.CompactTextString(m) }
-func (*SingleNestedProto) ProtoMessage()               {}
-func (*SingleNestedProto) Descriptor() ([]byte, []int) { return fileDescriptor3, []int{4} }
+func (m *SingleNestedProto) Reset()         { *m = SingleNestedProto{} }
+func (m *SingleNestedProto) String() string { return proto.CompactTextString(m) }
+func (*SingleNestedProto) ProtoMessage()    {}
+func (*SingleNestedProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_flow_combination_40371c0acedc1fc5, []int{4}
+}
+func (m *SingleNestedProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SingleNestedProto.Unmarshal(m, b)
+}
+func (m *SingleNestedProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SingleNestedProto.Marshal(b, m, deterministic)
+}
+func (dst *SingleNestedProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SingleNestedProto.Merge(dst, src)
+}
+func (m *SingleNestedProto) XXX_Size() int {
+	return xxx_messageInfo_SingleNestedProto.Size(m)
+}
+func (m *SingleNestedProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_SingleNestedProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SingleNestedProto proto.InternalMessageInfo
 
 func (m *SingleNestedProto) GetA() *UnaryProto {
 	if m != nil {
@@ -674,9 +790,11 @@ var _FlowCombination_serviceDesc = grpc.ServiceDesc{
 	Metadata: "examples/proto/examplepb/flow_combination.proto",
 }
 
-func init() { proto.RegisterFile("examples/proto/examplepb/flow_combination.proto", fileDescriptor3) }
+func init() {
+	proto.RegisterFile("examples/proto/examplepb/flow_combination.proto", fileDescriptor_flow_combination_40371c0acedc1fc5)
+}
 
-var fileDescriptor3 = []byte{
+var fileDescriptor_flow_combination_40371c0acedc1fc5 = []byte{
 	// 655 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x96, 0xbf, 0x8f, 0x12, 0x41,
 	0x14, 0xc7, 0xf3, 0xb8, 0xc4, 0xe4, 0x86, 0xfb, 0xc1, 0x2d, 0x06, 0x81, 0xc3, 0xe3, 0x6e, 0xbc,
