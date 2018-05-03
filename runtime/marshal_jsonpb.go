@@ -24,9 +24,7 @@ func (*JSONPb) ContentType() string {
 	return "application/json"
 }
 
-// Marshal marshals "v" into JSON
-// Currently it can marshal only proto.Message.
-// TODO(yugui) Support fields of primitive types in a message.
+// Marshal marshals "v" into JSON.
 func (j *JSONPb) Marshal(v interface{}) ([]byte, error) {
 	if _, ok := v.(proto.Message); !ok {
 		return j.marshalNonProtoField(v)
@@ -58,6 +56,9 @@ func (j *JSONPb) marshalTo(w io.Writer, v interface{}) error {
 // i.e. primitive types, enums; pointers to primitives or enums; maps from
 // integer/string types to primitives/enums/pointers to messages.
 func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
+	if v == nil {
+		return []byte("null"), nil
+	}
 	rv := reflect.ValueOf(v)
 	for rv.Kind() == reflect.Ptr {
 		if rv.IsNil() {
