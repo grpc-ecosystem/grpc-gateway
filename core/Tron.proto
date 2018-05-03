@@ -112,11 +112,6 @@ message TXOutputs {
 
 
 message Transaction {
-  // transcation type, utxo is desprated.
-  enum TransactionType {
-    UtxoType = 0;
-    ContractType = 1;
-  }
   message Contract {
     enum ContractType {
       AccountCreateContract = 0;
@@ -152,8 +147,7 @@ message Transaction {
   }
 
   message raw {
-    TransactionType type = 1;
-    bytes ref_block_bytes = 2;
+    bytes ref_block_bytes = 1;
     int64 ref_block_num = 3;
     bytes ref_block_hash = 4;
     int64 expiration = 8;
