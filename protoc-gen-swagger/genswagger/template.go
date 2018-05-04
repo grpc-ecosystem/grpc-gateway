@@ -1,8 +1,6 @@
 package genswagger
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"os"
 	"reflect"
@@ -709,7 +707,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 }
 
 // This function is called with a param which contains the entire definition of a method.
-func applyTemplate(p param) (string, error) {
+func applyTemplate(p param) (*swaggerObject, error) {
 	// Create the basic template object. This is the object that everything is
 	// defined off of.
 	s := swaggerObject{
@@ -903,13 +901,7 @@ func applyTemplate(p param) (string, error) {
 		// should be added here, once supported in the proto.
 	}
 
-	// We now have rendered the entire swagger object. Write the bytes out to a
-	// string so it can be written to disk.
-	var w bytes.Buffer
-	enc := json.NewEncoder(&w)
-	enc.Encode(&s)
-
-	return w.String(), nil
+	return &s, nil
 }
 
 // updateSwaggerDataFromComments updates a Swagger object based on a comment

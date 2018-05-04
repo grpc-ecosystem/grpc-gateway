@@ -24,9 +24,55 @@ type generator struct {
 	reg *descriptor.Registry
 }
 
+type wrapper struct {
+	fileName string
+	swagger  *swaggerObject
+}
+
 // New returns a new generator which generates grpc gateway files.
 func New(reg *descriptor.Registry) gen.Generator {
 	return &generator{reg: reg}
+}
+
+// Merge a lot of swagger file (wrapper) to single one swagger file
+func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
+	var mergedTarget *wrapper
+	for _, f := range targets {
+		if mergedTarget == nil {
+			mergedTarget = &wrapper{
+				fileName: mergeFileName,
+				swagger:  f.swagger,
+			}
+		} else {
+			for k, v := range f.swagger.Definitions {
+				mergedTarget.swagger.Definitions[k] = v
+			}
+			for k, v := range f.swagger.Paths {
+				mergedTarget.swagger.Paths[k] = v
+			}
+			for k, v := range f.swagger.SecurityDefinitions {
+				mergedTarget.swagger.SecurityDefinitions[k] = v
+			}
+			mergedTarget.swagger.Security = append(mergedTarget.swagger.Security, f.swagger.Security...)
+		}
+	}
+	return mergedTarget
+}
+
+// convert swagger file obj to plugin.CodeGeneratorResponse_File
+func encodeSwagger(file *wrapper) *plugin.CodeGeneratorResponse_File {
+	var formatted bytes.Buffer
+	enc := json.NewEncoder(&formatted)
+	enc.SetIndent("", "  ")
+	enc.Encode(*file.swagger)
+	name := file.fileName
+	ext := filepath.Ext(name)
+	base := strings.TrimSuffix(name, ext)
+	output := fmt.Sprintf("%s.swagger.json", base)
+	return &plugin.CodeGeneratorResponse_File{
+		Name:    proto.String(output),
+		Content: proto.String(formatted.String()),
+	}
 }
 
 func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGeneratorResponse_File, error) {
@@ -55,9 +101,10 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 		targets = append(targets, mergedTarget)
 	}
 
+	var swaggers []*wrapper
 	for _, file := range targets {
 		glog.V(1).Infof("Processing %s", file.GetName())
-		code, err := applyTemplate(param{File: file, reg: g.reg})
+		swagger, err := applyTemplate(param{File: file, reg: g.reg})
 		if err == errNoTargetService {
 			glog.V(1).Infof("%s: %v", file.GetName(), err)
 			continue
@@ -65,19 +112,21 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 		if err != nil {
 			return nil, err
 		}
-
-		var formatted bytes.Buffer
-		json.Indent(&formatted, []byte(code), "", "  ")
-
-		name := file.GetName()
-		ext := filepath.Ext(name)
-		base := strings.TrimSuffix(name, ext)
-		output := fmt.Sprintf("%s.swagger.json", base)
-		files = append(files, &plugin.CodeGeneratorResponse_File{
-			Name:    proto.String(output),
-			Content: proto.String(formatted.String()),
+		swaggers = append(swaggers, &wrapper{
+			fileName: file.GetName(),
+			swagger:  swagger,
 		})
-		glog.V(1).Infof("Will emit %s", output)
+	}
+
+	if g.reg.IsAllowMerge() {
+		targetSwagger := mergeTargetFile(swaggers, g.reg.GetMergeFileName())
+		files = append(files, encodeSwagger(targetSwagger))
+		glog.V(1).Infof("New swagger file will emit")
+	} else {
+		for _, file := range swaggers {
+			files = append(files, encodeSwagger(file))
+			glog.V(1).Infof("New swagger file will emit")
+		}
 	}
 	return files, nil
 }
