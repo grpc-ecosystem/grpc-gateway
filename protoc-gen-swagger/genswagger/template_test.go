@@ -9,6 +9,7 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
+	"fmt"
 )
 
 func crossLinkFixture(f *descriptor.File) *descriptor.File {
@@ -271,7 +272,7 @@ func TestApplyTemplateSimple(t *testing.T) {
 	// If there was a failure, print out the input and the json result for debugging.
 	if t.Failed() {
 		t.Errorf("had: %s", file)
-		t.Errorf("got: %s", result)
+		t.Errorf("got: %s", fmt.Sprint(result))
 	}
 }
 
@@ -428,7 +429,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 	// If there was a failure, print out the input and the json result for debugging.
 	if t.Failed() {
 		t.Errorf("had: %s", file)
-		t.Errorf("got: %s", result)
+		t.Errorf("got: %s", fmt.Sprint(result))
 	}
 }
 
@@ -681,7 +682,7 @@ func TestApplyTemplateRequestWithUnusedReferences(t *testing.T) {
 	// If there was a failure, print out the input and the json result for debugging.
 	if t.Failed() {
 		t.Errorf("had: %s", file)
-		t.Errorf("got: %s", result)
+		t.Errorf("got: %s", fmt.Sprint(result))
 	}
 }
 
