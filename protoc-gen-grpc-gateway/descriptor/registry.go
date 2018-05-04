@@ -40,6 +40,9 @@ type Registry struct {
 
 	// externalHttpRules is a mapping from fully qualified service method names to additional HttpRules applicable besides the ones found in annotations.
 	externalHTTPRules map[string][]*annotations.HttpRule
+
+	// allowMerge generation one swagger file out of multiple protos
+	allowMerge bool
 }
 
 // NewRegistry returns a new Registry.
@@ -295,6 +298,16 @@ func (r *Registry) GetAllFQENs() []string {
 // body or fail loading if encountered.
 func (r *Registry) SetAllowDeleteBody(allow bool) {
 	r.allowDeleteBody = allow
+}
+
+// SetAllowMerge controls whether generation one swagger file out of multiple protos
+func (r *Registry) SetAllowMerge(allow bool) {
+	r.allowMerge = allow
+}
+
+// IsAllowMerge whether generation one swagger file out of multiple protos
+func (r *Registry) IsAllowMerge() bool {
+		return r.allowMerge
 }
 
 // sanitizePackageName replaces unallowed character in package name

@@ -19,6 +19,7 @@ var (
 	file            = flag.String("file", "-", "where to load data from")
 	allowDeleteBody      = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
 	grpcAPIConfiguration = flag.String("grpc_api_configuration", "", "path to gRPC API Configuration in YAML format")
+	allowMerge      = flag.Bool("allow_merge", false, "if set, generation one swagger file out of multiple protos")
 )
 
 func main() {
@@ -52,6 +53,7 @@ func main() {
 
 	reg.SetPrefix(*importPrefix)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
+	reg.SetAllowMerge(*allowMerge)
 	for k, v := range pkgMap {
 		reg.AddPkgMap(k, v)
 	}
