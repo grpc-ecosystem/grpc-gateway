@@ -7,6 +7,7 @@ import (
 )
 
 func TestParseReqParam(t *testing.T) {
+	
 	f := flag.CommandLine
 
 	// this one must be first - with no leading clearFlags call it
