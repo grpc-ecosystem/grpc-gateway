@@ -48,13 +48,6 @@ service Wallet {
     };
   };
 
-  rpc CreateAccount (AccountCreateContract) returns (Transaction) {
-    option (google.api.http) = {
-      post: "/wallet/createaccount"
-      body: "*"
-    };
-  };
-
   rpc VoteWitnessAccount (VoteWitnessContract) returns (Transaction) {
     option (google.api.http) = {
       post: "/wallet/votewitnessaccount"
