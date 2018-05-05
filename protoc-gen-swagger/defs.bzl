@@ -48,7 +48,6 @@ def _run_proto_gen_swagger(direct_proto_srcs, transitive_proto_srcs, actions, pr
 
 def _proto_gen_swagger_impl(ctx):
     proto = ctx.attr.proto.proto
-    grpc_api_configuration = None
     grpc_api_configuration = ctx.file.grpc_api_configuration
 
     return struct(
