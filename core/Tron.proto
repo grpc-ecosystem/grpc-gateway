@@ -270,7 +270,15 @@ message DisconnectMessage {
 }
 
 message HelloMessage {
+  message BlockId {
+    bytes hash = 1;
+    int64 number = 2;
+  }
+
   Endpoint from = 1;
   int32 version = 2;
   int64 timestamp = 3;
+  BlockId genesisBlockId = 4;
+  BlockId solidBlockId = 5;
+  BlockId headBlockId = 6;
 }
