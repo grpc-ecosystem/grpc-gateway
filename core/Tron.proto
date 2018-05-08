@@ -70,7 +70,6 @@ message Account {
 message acuthrity {
   AccountId account = 1;
   bytes permission_name = 2;
-
 }
 
 //FIXME permission
@@ -114,11 +113,6 @@ message TXOutputs {
 
 
 message Transaction {
-  // transaction type, utxo is desprecated.
-  enum TransactionType {
-    UtxoType = 0;
-    ContractType = 1;
-  }
   message Contract {
     enum ContractType {
       AccountCreateContract = 0;
@@ -154,8 +148,7 @@ message Transaction {
   }
 
   message raw {
-    TransactionType type = 1;
-    bytes ref_block_bytes = 2;
+    bytes ref_block_bytes = 1;
     int64 ref_block_num = 3;
     bytes ref_block_hash = 4;
     int64 expiration = 8;
@@ -249,9 +242,7 @@ message DynamicProperties {
 
 enum ReasonCode {
   REQUESTED = 0x00;
-  TCP_ERROR = 0x01;
   BAD_PROTOCOL = 0x02;
-  USELESS_PEER = 0x03;
   TOO_MANY_PEERS = 0x04;
   DUPLICATE_PEER = 0x05;
   INCOMPATIBLE_PROTOCOL = 0x06;
@@ -263,13 +254,14 @@ enum ReasonCode {
   USER_REASON = 0x10;
   RESET = 0x11;
   SYNC_FAIL = 0x12;
-  TIME_OUT = 0x13;
+  FETCH_FAIL = 0x13;
   BAD_TX = 0x14;
   BAD_BLOCK = 0x15;
   FORKED = 0x16;
   UNLINKABLE = 0x17;
   INCOMPATIBLE_VERSION = 0x18;
   INCOMPATIBLE_CHAIN = 0x19;
+  TIME_OUT = 0x20;
   UNKNOWN = 0xFF;
 }
 
@@ -278,7 +270,15 @@ message DisconnectMessage {
 }
 
 message HelloMessage {
+  message BlockId {
+    bytes hash = 1;
+    int64 number = 2;
+  }
+
   Endpoint from = 1;
   int32 version = 2;
   int64 timestamp = 3;
+  BlockId genesisBlockId = 4;
+  BlockId solidBlockId = 5;
+  BlockId headBlockId = 6;
 }

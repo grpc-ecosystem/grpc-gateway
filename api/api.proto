@@ -26,7 +26,9 @@ service Wallet {
     };
   };
 
-  rpc BroadcastTransaction (Transaction) returns (Return) {
+
+
+rpc BroadcastTransaction (Transaction) returns (Return) {
     option (google.api.http) = {
       post: "/wallet/broadcasttransaction"
       body: "*"
@@ -44,13 +46,6 @@ service Wallet {
   rpc UpdateAccount (AccountUpdateContract) returns (Transaction) {
     option (google.api.http) = {
       post: "/wallet/updateaccount"
-      body: "*"
-    };
-  };
-
-  rpc CreateAccount (AccountCreateContract) returns (Transaction) {
-    option (google.api.http) = {
-      post: "/wallet/createaccount"
       body: "*"
     };
   };
@@ -302,6 +297,24 @@ service Database {
   }
 };
 
+message Return {
+  enum response_code {
+    SUCCESS = 0;
+    SIGERROR = 1; // error in signature
+    CONTRACT_VALIDATE_ERROR = 2;
+    CONTRACT_EXE_ERROR = 3;
+    BANDWITH_ERROR = 4;
+    DUP_TRANSACTION_ERROR = 5;
+    TAPOS_ERROR = 6;
+    TOO_BIG_TRANSACTION_ERROR = 7;
+    OTHER_ERROR = 20;
+  }
+
+  bool result = 1;
+  response_code code = 2;
+  bytes message = 3;
+}
+
 message BlockReference {
   int64 block_num = 1;
   bytes block_hash = 2;
@@ -313,9 +326,6 @@ service Network {
 };
 
 
-message Return {
-  bool result = 1;
-}
 
 message AccountList {
   repeated Account accounts = 1;
