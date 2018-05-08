@@ -26,16 +26,7 @@ service Wallet {
     };
   };
 
-message Return {
-  enum response_code {
-    SUCCESS = 0;
-  }
 
-  bool result = 1;
-  response_code = 2;
-  bytes message = 3;
-
-}
 
 rpc BroadcastTransaction (Transaction) returns (Return) {
     option (google.api.http) = {
@@ -305,6 +296,17 @@ service Database {
 
   }
 };
+
+message Return {
+  enum response_code {
+    SUCCESS = 0;
+  }
+
+  bool result = 1;
+  response_code = 2;
+  bytes message = 3;
+
+}
 
 message BlockReference {
   int64 block_num = 1;
