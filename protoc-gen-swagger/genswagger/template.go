@@ -902,6 +902,17 @@ func applyTemplate(p param) (*swaggerObject, error) {
 					s.Info.Contact.Email = spb.Info.Contact.Email
 				}
 			}
+			if spb.Info.License != nil {
+				if s.Info.License == nil {
+					s.Info.License = &swaggerLicenseObject{}
+				}
+				if spb.Info.License.Name != "" {
+					s.Info.License.Name = spb.Info.License.Name
+				}
+				if spb.Info.License.Url != "" {
+					s.Info.License.URL = spb.Info.License.Url
+				}
+			}
 		}
 		if spb.Host != "" {
 			s.Host = spb.Host
