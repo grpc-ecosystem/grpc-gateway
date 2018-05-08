@@ -26,9 +26,7 @@ service Wallet {
     };
   };
 
-
-
-rpc BroadcastTransaction (Transaction) returns (Return) {
+  rpc BroadcastTransaction (Transaction) returns (Return) {
     option (google.api.http) = {
       post: "/wallet/broadcasttransaction"
       body: "*"
@@ -39,8 +37,7 @@ rpc BroadcastTransaction (Transaction) returns (Return) {
     option (google.api.http) = {
           post: "/wallet/listaccount"
           body: "*"
-      };
-
+    };
   };
 
   rpc UpdateAccount (AccountUpdateContract) returns (Transaction) {
