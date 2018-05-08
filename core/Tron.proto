@@ -241,9 +241,7 @@ message DynamicProperties {
 
 enum ReasonCode {
   REQUESTED = 0x00;
-  TCP_ERROR = 0x01;
   BAD_PROTOCOL = 0x02;
-  USELESS_PEER = 0x03;
   TOO_MANY_PEERS = 0x04;
   DUPLICATE_PEER = 0x05;
   INCOMPATIBLE_PROTOCOL = 0x06;
@@ -255,13 +253,14 @@ enum ReasonCode {
   USER_REASON = 0x10;
   RESET = 0x11;
   SYNC_FAIL = 0x12;
-  TIME_OUT = 0x13;
+  FETCH_FAIL = 0x13;
   BAD_TX = 0x14;
   BAD_BLOCK = 0x15;
   FORKED = 0x16;
   UNLINKABLE = 0x17;
   INCOMPATIBLE_VERSION = 0x18;
   INCOMPATIBLE_CHAIN = 0x19;
+  TIME_OUT = 0x20;
   UNKNOWN = 0xFF;
 }
 
