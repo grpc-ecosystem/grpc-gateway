@@ -1,4 +1,4 @@
-# Stepes to run the example
+# One way to run the example
 
 ```bash
 # Handle dependencies
