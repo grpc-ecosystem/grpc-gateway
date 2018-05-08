@@ -26,7 +26,18 @@ service Wallet {
     };
   };
 
-  rpc BroadcastTransaction (Transaction) returns (Return) {
+message Return {
+  enum response_code {
+    SUCCESS = 0;
+  }
+
+  bool result = 1;
+  response_code = 2;
+  bytes message = 3;
+
+}
+
+rpc BroadcastTransaction (Transaction) returns (Return) {
     option (google.api.http) = {
       post: "/wallet/broadcasttransaction"
       body: "*"
@@ -306,9 +317,6 @@ service Network {
 };
 
 
-message Return {
-  bool result = 1;
-}
 
 message AccountList {
   repeated Account accounts = 1;
