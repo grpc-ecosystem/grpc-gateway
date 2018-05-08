@@ -20,6 +20,10 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 			url: "https://github.com/grpc-ecosystem/grpc-gateway";
 			email: "none@example.com";
 		};
+		license: {
+			name: "BSD 3-Clause License";
+			url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt";
+		};
 	};
 	// Overwriting host entry breaks tests, so this is not done here.
 	external_docs: {
