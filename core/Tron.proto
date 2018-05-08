@@ -64,6 +64,8 @@ message Account {
   int64 latest_withdraw_time = 12;
   // not used so far
   bytes code = 13;
+  bool is_witness = 14;
+  bool is_committee = 15;
 }
 
 message acuthrity {
