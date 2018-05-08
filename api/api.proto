@@ -303,7 +303,7 @@ message Return {
   }
 
   bool result = 1;
-  response_code = 2;
+  response_code code = 2;
   bytes message = 3;
 
 }
