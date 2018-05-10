@@ -166,6 +166,10 @@ message Transaction {
   repeated Result ret = 5;
 }
 
+message Transactions {
+  repeated Transaction transactions = 1;
+}
+
 message BlockHeader {
   message raw {
     int64 timestamp = 1;
