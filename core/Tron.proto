@@ -22,15 +22,16 @@ message AccountId {
   bytes address = 2;
 }
 
+// vote message
+message Vote {
+  // the super rep address
+  bytes vote_address = 1;
+  // the vote num to this super rep.
+  int64 vote_count = 2;
+}
+
 // Account
 message Account {
-  // vote message
-  message Vote {
-    // the super rep address
-    bytes vote_address = 1;
-    // the vote num to this super rep.
-    int64 vote_count = 2;
-  }
   // frozen balance
   message Frozen {
     // the frozen trx balance
@@ -64,6 +65,8 @@ message Account {
   int64 latest_withdraw_time = 12;
   // not used so far
   bytes code = 13;
+  bool is_witness = 14;
+  bool is_committee = 15;
 }
 
 //FIXME authority?
@@ -90,7 +93,15 @@ message Witness {
   bool isJobs = 9;
 }
 
-// Transaction
+
+// Vote Change
+message Votes {
+  bytes address = 1;
+  repeated Vote old_votes = 2;
+  repeated Vote new_votes = 3;
+}
+
+// Transcation
 
 message TXOutput {
   int64 value = 1;
@@ -266,6 +277,7 @@ enum ReasonCode {
   INCOMPATIBLE_VERSION = 0x18;
   INCOMPATIBLE_CHAIN = 0x19;
   TIME_OUT = 0x20;
+  CONNECT_FAIL = 0x21;
   UNKNOWN = 0xFF;
 }
 
