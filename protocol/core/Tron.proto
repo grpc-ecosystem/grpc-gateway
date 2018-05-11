@@ -16,19 +16,67 @@ enum AccountType {
   Contract = 2;
 }
 
+// AccountId, (name, address) use name, (null, address) use address, (name, null) use name,
+message AccountId {
+  bytes name = 1;
+  bytes address = 2;
+}
+
+// vote message
+message Vote {
+  // the super rep address
+  bytes vote_address = 1;
+  // the vote num to this super rep.
+  int64 vote_count = 2;
+}
+
 // Account
 message Account {
-  message Vote {
-    bytes vote_address = 1;
-    int64 vote_count = 2;
+  // frozen balance
+  message Frozen {
+    // the frozen trx balance
+    int64 frozen_balance = 1;
+    // the expire time
+    int64 expire_time = 2;
   }
+
   bytes account_name = 1;
   AccountType type = 2;
+  // the create adress
   bytes address = 3;
+  // the trx balance
   int64 balance = 4;
+  // the votes
   repeated Vote votes = 5;
+  // the other asset owned by this account
   map<string, int64> asset = 6;
+  // the frozen balance
+  repeated Frozen frozen = 7;
+  // bandwidth, get from frozen
+  int64 bandwidth = 8;
+  // this account create time
+  int64 create_time = 9;
+  // this last opration time, including transfer, voting and so on.
   int64 latest_opration_time = 10;
+
+  // witness block producing allowance
+  int64 allowance = 11;
+  // last withdraw time
+  int64 latest_withdraw_time = 12;
+  // not used so far
+  bytes code = 13;
+  bool is_witness = 14;
+  bool is_committee = 15;
+}
+
+message acuthrity {
+  AccountId account = 1;
+  bytes permission_name = 2;
+}
+
+
+message permision {
+  AccountId account = 1;
 }
 
 // Witness
@@ -42,6 +90,13 @@ message Witness {
   int64 latestBlockNum = 7;
   int64 latestSlotNum = 8;
   bool isJobs = 9;
+}
+
+// Vote Change
+message Votes {
+  bytes address = 1;
+  repeated Vote old_votes = 2;
+  repeated Vote new_votes = 3;
 }
 
 // Transcation
@@ -65,11 +120,8 @@ message TXOutputs {
   repeated TXOutput outputs = 1;
 }
 
+
 message Transaction {
-  enum TransactionType {
-    UtxoType = 0;
-    ContractType = 1;
-  }
   message Contract {
     enum ContractType {
       AccountCreateContract = 0;
@@ -82,9 +134,17 @@ message Transaction {
       DeployContract = 7;
       WitnessUpdateContract = 8;
       ParticipateAssetIssueContract = 9;
+      AccountUpdateContract = 10;
+      FreezeBalanceContract = 11;
+      UnfreezeBalanceContract = 12;
+      WithdrawBalanceContract = 13;
+      CustomContract = 20;
     }
     ContractType type = 1;
     google.protobuf.Any parameter = 2;
+    bytes provider = 3;
+    bytes ContractName = 4;
+
   }
 
   message Result {
@@ -97,12 +157,15 @@ message Transaction {
   }
 
   message raw {
-    TransactionType type = 1;
+    bytes ref_block_bytes = 1;
     int64 ref_block_num = 3;
     bytes ref_block_hash = 4;
     int64 expiration = 8;
+    repeated acuthrity auths = 9;
+    // data not used
     bytes data = 10;
     repeated Contract contract = 11;
+    // scripts not used
     bytes scripts = 12;
     int64 timestamp = 14;
   }
@@ -187,21 +250,29 @@ message DynamicProperties {
 }
 
 enum ReasonCode {
-  REQUESTED = 0;
-  TCP_ERROR = 1;
-  BAD_PROTOCOL = 2;
-  USELESS_PEER = 3;
-  TOO_MANY_PEERS = 4;
-  DUPLICATE_PEER = 5;
-  INCOMPATIBLE_PROTOCOL = 6;
-  NULL_IDENTITY = 7;
-  PEER_QUITING = 8;
-  UNEXPECTED_IDENTITY = 9;
-  LOCAL_IDENTITY = 10;
-  PING_TIMEOUT = 11;
-  USER_REASON = 12;
-  RESET = 16;
-  UNKNOWN = 255;
+  REQUESTED = 0x00;
+  BAD_PROTOCOL = 0x02;
+  TOO_MANY_PEERS = 0x04;
+  DUPLICATE_PEER = 0x05;
+  INCOMPATIBLE_PROTOCOL = 0x06;
+  NULL_IDENTITY = 0x07;
+  PEER_QUITING = 0x08;
+  UNEXPECTED_IDENTITY = 0x09;
+  LOCAL_IDENTITY = 0x0A;
+  PING_TIMEOUT = 0x0B;
+  USER_REASON = 0x10;
+  RESET = 0x11;
+  SYNC_FAIL = 0x12;
+  FETCH_FAIL = 0x13;
+  BAD_TX = 0x14;
+  BAD_BLOCK = 0x15;
+  FORKED = 0x16;
+  UNLINKABLE = 0x17;
+  INCOMPATIBLE_VERSION = 0x18;
+  INCOMPATIBLE_CHAIN = 0x19;
+  TIME_OUT = 0x20;
+  CONNECT_FAIL = 0x21;
+  UNKNOWN = 0xFF;
 }
 
 message DisconnectMessage {
@@ -211,4 +282,5 @@ message DisconnectMessage {
 message HelloMessage {
   Endpoint from = 1;
   int32 version = 2;
+  int64 timestamp = 3;
 }

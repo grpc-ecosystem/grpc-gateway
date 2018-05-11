@@ -102,3 +102,16 @@ message DeployContract {
   bytes script = 2;
 }
 
+message FreezeBalanceContract {
+  bytes owner_address = 1;
+  int64 frozen_balance = 2;
+  int64 frozen_duration = 3;
+}
+
+message UnfreezeBalanceContract {
+  bytes owner_address = 1;
+}
+
+message WithdrawBalanceContract {
+  bytes owner_address = 1;
+}
