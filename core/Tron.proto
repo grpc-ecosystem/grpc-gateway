@@ -67,6 +67,8 @@ message Account {
   bytes code = 13;
   bool is_witness = 14;
   bool is_committee = 15;
+  // frozen asset(for asset issuer)
+  map<string, repeated Frozen> frozen_asset = 16;
 }
 
 //FIXME authority?
