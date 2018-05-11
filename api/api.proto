@@ -329,6 +329,7 @@ message Return {
     TAPOS_ERROR = 6;
     TOO_BIG_TRANSACTION_ERROR = 7;
     TRANSACTION_EXPIRATION_ERROR = 8;
+    SERVER_BUSY = 9;
     OTHER_ERROR = 20;
   }
 
