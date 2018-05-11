@@ -63,6 +63,11 @@ func run() error {
 		return err
 	}
 
+	err = gw.RegisterWalletSolidityHandlerFromEndpoint(ctx, mux, grpcEndpoint, opts)
+	if err != nil {
+		return err
+	}
+
 
 	return http.ListenAndServe(":" + strconv.Itoa(*listen), allowCORS(mux))
 }
