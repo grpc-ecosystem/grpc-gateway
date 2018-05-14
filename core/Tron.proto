@@ -68,10 +68,7 @@ message Account {
   bool is_witness = 14;
   bool is_committee = 15;
   // frozen asset(for asset issuer)
-  message RepeatedFrozen {
-    repeated Frozen frozen_asset = 1;
-  }
-  map<string, RepeatedFrozen> frozen_assets = 16;
+  repeated Frozen frozen_asset = 16;
 }
 
 //FIXME authority?
