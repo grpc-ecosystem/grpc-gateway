@@ -68,7 +68,7 @@ message Account {
   bool is_witness = 14;
   bool is_committee = 15;
   // frozen asset(for asset issuer)
-  repeated Frozen frozen_asset = 16;
+  repeated Frozen frozen_supply = 16;
 }
 
 //FIXME authority?
