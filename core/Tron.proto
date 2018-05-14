@@ -145,6 +145,7 @@ message Transaction {
       FreezeBalanceContract = 11;
       UnfreezeBalanceContract = 12;
       WithdrawBalanceContract = 13;
+      UnfreezeAssetContract = 14;
       CustomContract = 20;
     }
     ContractType type = 1;
