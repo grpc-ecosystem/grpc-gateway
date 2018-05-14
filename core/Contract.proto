@@ -119,7 +119,6 @@ message UnfreezeBalanceContract {
 
 message UnfreezeAssetContract {
   bytes owner_address = 1;
-  bytes name = 2;
 }
 
 message WithdrawBalanceContract {
