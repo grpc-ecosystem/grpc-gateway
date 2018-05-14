@@ -67,6 +67,10 @@ message Account {
   bytes code = 13;
   bool is_witness = 14;
   bool is_committee = 15;
+  // frozen asset(for asset issuer)
+  repeated Frozen frozen_supply = 16;
+  // asset_issued_name
+  bytes asset_issued_name = 17;
 }
 
 message acuthrity {
@@ -138,6 +142,7 @@ message Transaction {
       FreezeBalanceContract = 11;
       UnfreezeBalanceContract = 12;
       WithdrawBalanceContract = 13;
+      UnfreezeAssetContract = 14;
       CustomContract = 20;
     }
     ContractType type = 1;

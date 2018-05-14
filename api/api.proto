@@ -119,6 +119,13 @@ service Wallet {
     };
   }
 
+  rpc UnfreezeAsset (UnfreezeAssetContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/unfreezeasset"
+      body: "*"
+    };
+  }
+
   rpc WithdrawBalance (WithdrawBalanceContract) returns (Transaction) {
     option (google.api.http) = {
       post: "/wallet/withdrawbalance"
