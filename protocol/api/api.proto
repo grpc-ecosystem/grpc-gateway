@@ -149,6 +149,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/getassetissuebyaccount"
       body: "*"
+      additional_bindings {
+        get: "/wallet/getassetissuebyaccount"
+      }
     };
   }
   rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
