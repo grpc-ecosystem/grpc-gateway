@@ -213,7 +213,6 @@
    `num`： 对应的自定义资产数目。  
    `start_time`：开始时间——比如：_20170312_。  
    `end_time`：结束时间——比如：_20170512_。  
-   `decav_ratio`：衰减速率。  
    `vote_score`：合约的评分——比如：_12343_。  
    `description`：合约的描述——比如：_”trondada”_。  
    `url`：合约的url地址链接。
@@ -225,8 +224,7 @@
       int32 trx_num = 6;   
       int32 num = 8;   
       int64 start_time = 9;   
-      int64 end_time = 10;   
-      int32 decay_ratio = 15;  
+      int64 end_time = 10; 
       int32 vote_score = 16;  
       bytes description = 20;   
       bytes url = 21; 
