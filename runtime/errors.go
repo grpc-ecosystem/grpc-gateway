@@ -53,7 +53,7 @@ func HTTPStatusFromCode(code codes.Code) int {
 		return http.StatusInternalServerError
 	}
 
-	grpclog.Printf("Unknown gRPC error code: %v", code)
+	grpclog.Infof("Unknown gRPC error code: %v", code)
 	return http.StatusInternalServerError
 }
 
@@ -102,7 +102,7 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 		if det, ok := detail.(proto.Message); ok {
 			a, err := ptypes.MarshalAny(det)
 			if err != nil {
-				grpclog.Printf("Failed to marshal any: %v", err)
+				grpclog.Infof("Failed to marshal any: %v", err)
 			} else {
 				body.Details = append(body.Details, a)
 			}
@@ -111,17 +111,17 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 
 	buf, merr := marshaler.Marshal(body)
 	if merr != nil {
-		grpclog.Printf("Failed to marshal error message %q: %v", body, merr)
+		grpclog.Infof("Failed to marshal error message %q: %v", body, merr)
 		w.WriteHeader(http.StatusInternalServerError)
 		if _, err := io.WriteString(w, fallback); err != nil {
-			grpclog.Printf("Failed to write response: %v", err)
+			grpclog.Infof("Failed to write response: %v", err)
 		}
 		return
 	}
 
 	md, ok := ServerMetadataFromContext(ctx)
 	if !ok {
-		grpclog.Printf("Failed to extract ServerMetadata from context")
+		grpclog.Infof("Failed to extract ServerMetadata from context")
 	}
 
 	handleForwardResponseServerMetadata(w, mux, md)
@@ -129,7 +129,7 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 	st := HTTPStatusFromCode(s.Code())
 	w.WriteHeader(st)
 	if _, err := w.Write(buf); err != nil {
-		grpclog.Printf("Failed to write response: %v", err)
+		grpclog.Infof("Failed to write response: %v", err)
 	}
 
 	handleForwardResponseTrailer(w, md)
