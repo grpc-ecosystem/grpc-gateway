@@ -64,7 +64,7 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 		if err != nil {
 			return err
 		} else if !f.IsValid() {
-			grpclog.Printf("field not found in %T: %s", msg, strings.Join(fieldPath, "."))
+			grpclog.Infof("field not found in %T: %s", msg, strings.Join(fieldPath, "."))
 			return nil
 		}
 
@@ -108,7 +108,7 @@ func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []
 		return fmt.Errorf("no value of field: %s", strings.Join(fieldPath, "."))
 	case 1:
 	default:
-		grpclog.Printf("too many field values: %s", strings.Join(fieldPath, "."))
+		grpclog.Infof("too many field values: %s", strings.Join(fieldPath, "."))
 	}
 	return populateField(m, values[0], props)
 }

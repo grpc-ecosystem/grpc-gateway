@@ -115,8 +115,9 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// Client API for WrappersService service
-
+// WrappersServiceClient is the client API for WrappersService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type WrappersServiceClient interface {
 	Create(ctx context.Context, in *Wrappers, opts ...grpc.CallOption) (*Wrappers, error)
 }
@@ -131,7 +132,7 @@ func NewWrappersServiceClient(cc *grpc.ClientConn) WrappersServiceClient {
 
 func (c *wrappersServiceClient) Create(ctx context.Context, in *Wrappers, opts ...grpc.CallOption) (*Wrappers, error) {
 	out := new(Wrappers)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/Create", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
