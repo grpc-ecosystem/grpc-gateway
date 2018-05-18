@@ -22,15 +22,16 @@ message AccountId {
   bytes address = 2;
 }
 
+// vote message
+message Vote {
+  // the super rep address
+  bytes vote_address = 1;
+  // the vote num to this super rep.
+  int64 vote_count = 2;
+}
+
 // Account
 message Account {
-  // vote message
-  message Vote {
-    // the super rep address
-    bytes vote_address = 1;
-    // the vote num to this super rep.
-    int64 vote_count = 2;
-  }
   // frozen balance
   message Frozen {
     // the frozen trx balance
@@ -38,6 +39,7 @@ message Account {
     // the expire time
     int64 expire_time = 2;
   }
+
   bytes account_name = 1;
   AccountType type = 2;
   // the create adress
@@ -50,16 +52,25 @@ message Account {
   map<string, int64> asset = 6;
   // the frozen balance
   repeated Frozen frozen = 7;
+  // bandwidth, get from frozen
+  int64 bandwidth = 8;
   // this account create time
   int64 create_time = 9;
   // this last opration time, including transfer, voting and so on.
   int64 latest_opration_time = 10;
+
   // witness block producing allowance
   int64 allowance = 11;
   // last withdraw time
   int64 latest_withdraw_time = 12;
   // not used so far
   bytes code = 13;
+  bool is_witness = 14;
+  bool is_committee = 15;
+  // frozen asset(for asset issuer)
+  repeated Frozen frozen_supply = 16;
+  // asset_issued_name
+  bytes asset_issued_name = 17;
 }
 
 message acuthrity {
@@ -85,6 +96,13 @@ message Witness {
   bool isJobs = 9;
 }
 
+// Vote Change
+message Votes {
+  bytes address = 1;
+  repeated Vote old_votes = 2;
+  repeated Vote new_votes = 3;
+}
+
 // Transcation
 
 message TXOutput {
@@ -108,11 +126,6 @@ message TXOutputs {
 
 
 message Transaction {
-  // transcation type, utxo is desprated.
-  enum TransactionType {
-    UtxoType = 0;
-    ContractType = 1;
-  }
   message Contract {
     enum ContractType {
       AccountCreateContract = 0;
@@ -129,6 +142,7 @@ message Transaction {
       FreezeBalanceContract = 11;
       UnfreezeBalanceContract = 12;
       WithdrawBalanceContract = 13;
+      UnfreezeAssetContract = 14;
       CustomContract = 20;
     }
     ContractType type = 1;
@@ -148,7 +162,7 @@ message Transaction {
   }
 
   message raw {
-    TransactionType type = 1;
+    bytes ref_block_bytes = 1;
     int64 ref_block_num = 3;
     bytes ref_block_hash = 4;
     int64 expiration = 8;
@@ -242,9 +256,7 @@ message DynamicProperties {
 
 enum ReasonCode {
   REQUESTED = 0x00;
-  TCP_ERROR = 0x01;
   BAD_PROTOCOL = 0x02;
-  USELESS_PEER = 0x03;
   TOO_MANY_PEERS = 0x04;
   DUPLICATE_PEER = 0x05;
   INCOMPATIBLE_PROTOCOL = 0x06;
@@ -256,6 +268,15 @@ enum ReasonCode {
   USER_REASON = 0x10;
   RESET = 0x11;
   SYNC_FAIL = 0x12;
+  FETCH_FAIL = 0x13;
+  BAD_TX = 0x14;
+  BAD_BLOCK = 0x15;
+  FORKED = 0x16;
+  UNLINKABLE = 0x17;
+  INCOMPATIBLE_VERSION = 0x18;
+  INCOMPATIBLE_CHAIN = 0x19;
+  TIME_OUT = 0x20;
+  CONNECT_FAIL = 0x21;
   UNKNOWN = 0xFF;
 }
 
