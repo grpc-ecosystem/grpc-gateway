@@ -26,6 +26,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/createtransaction"
       body: "*"
+      additional_bindings {
+        get: "/wallet/createtransaction"
+      }
     };
   };
 
@@ -33,15 +36,8 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/broadcasttransaction"
       body: "*"
-    };
-  };
-
-  rpc ListAccounts (EmptyMessage) returns (AccountList) {
-    option (google.api.http) = {
-      post: "/wallet/listaccount"
-      body: "*"
       additional_bindings {
-        get: "/wallet/listaccount"
+        get: "/wallet/broadcasttransaction"
       }
     };
   };
@@ -50,6 +46,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/updateaccount"
       body: "*"
+      additional_bindings {
+        get: "/wallet/updateaccount"
+      }
     };
   };
 
@@ -57,6 +56,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/votewitnessaccount"
       body: "*"
+      additional_bindings {
+        get: "/wallet/votewitnessaccount"
+      }
     };
   };
 
@@ -64,15 +66,8 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/createassetissue"
       body: "*"
-    };
-  };
-
-  rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
-    option (google.api.http) = {
-      post: "/wallet/listwitnesses"
-      body: "*"
       additional_bindings {
-        get: "/wallet/listwitnesses"
+        get: "/wallet/createassetissue"
       }
     };
   };
@@ -81,6 +76,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/updatewitness"
       body: "*"
+      additional_bindings {
+        get: "/wallet/updatewitness"
+      }
     };
   };
 
@@ -88,6 +86,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/createwitness"
       body: "*"
+      additional_bindings {
+        get: "/wallet/createwitness"
+      }
     };
   };
 
@@ -95,6 +96,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/transferasset"
       body: "*"
+      additional_bindings {
+        get: "/wallet/transferasset"
+      }
     };
   }
 
@@ -102,6 +106,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/participateassetissue"
       body: "*"
+      additional_bindings {
+        get: "/wallet/participateassetissue"
+      }
     };
   }
 
@@ -109,6 +116,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/freezebalance"
       body: "*"
+      additional_bindings {
+        get: "/wallet/freezebalance"
+      }
     };
   }
 
@@ -116,6 +126,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/unfreezebalance"
       body: "*"
+      additional_bindings {
+        get: "/wallet/unfreezebalance"
+      }
     };
   }
 
@@ -123,6 +136,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/unfreezeasset"
       body: "*"
+      additional_bindings {
+        get: "/wallet/unfreezeasset"
+      }
     };
   }
 
@@ -130,6 +146,9 @@ service Wallet {
     option (google.api.http) = {
       post: "/wallet/withdrawbalance"
       body: "*"
+      additional_bindings {
+        get: "/wallet/withdrawbalance"
+      }
     };
   }
 
@@ -142,25 +161,23 @@ service Wallet {
       }
     };
   }
-  rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
-    option (google.api.http) = {
-      post: "/wallet/getassetissuelist"
-      body: "*"
-      additional_bindings {
-        get: "/wallet/getassetissuelist"
-      }
-    };
-  }
+
   rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
     option (google.api.http) = {
       post: "/wallet/getassetissuebyaccount"
       body: "*"
+      additional_bindings {
+        get: "/wallet/getassetissuebyaccount"
+      }
     };
   }
   rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
     option (google.api.http) = {
       post: "/wallet/getassetissuebyname"
       body: "*"
+      additional_bindings {
+        get: "/wallet/getassetissuebyname"
+      }
     };
   }
   rpc GetNowBlock (EmptyMessage) returns (Block) {
@@ -181,37 +198,41 @@ service Wallet {
       }
     };
   }
-  rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
-    option (google.api.http) = {
-      post: "/wallet/totaltransaction"
-      body: "*"
-      additional_bindings {
-        get: "/wallet/totaltransaction"
-      }
-    };
-  }
+
   rpc GetBlockById (BytesMessage) returns (Block) {
     option (google.api.http) = {
       post: "/wallet/getblockbyid"
       body: "*"
+      additional_bindings {
+        get: "/wallet/getblockbyid"
+      }
     };
   }
   rpc GetBlockByLimitNext (BlockLimit) returns (BlockList) {
     option (google.api.http) = {
       post: "/wallet/getblockbylimitnext"
       body: "*"
+      additional_bindings {
+        get: "/wallet/getblockbylimitnext"
+      }
     };
   }
   rpc GetBlockByLatestNum (NumberMessage) returns (BlockList) {
     option (google.api.http) = {
       post: "/wallet/getblockbylatestnum"
       body: "*"
+      additional_bindings {
+        get: "/wallet/getblockbylatestnum"
+      }
     };
   }
   rpc GetTransactionById (BytesMessage) returns (Transaction) {
     option (google.api.http) = {
       post: "/wallet/gettransactionbyid"
       body: "*"
+      additional_bindings {
+        get: "/wallet/gettransactionbyid"
+      }
     };
   }
 };
@@ -223,6 +244,9 @@ service WalletSolidity {
     option (google.api.http) = {
       post: "/walletsolidity/getaccount"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getaccount"
+      }
     };
   };
 
@@ -230,6 +254,9 @@ service WalletSolidity {
     option (google.api.http) = {
       post: "/walletsolidity/listaccounts"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/listaccounts"
+      }
     };
   };
 
@@ -237,42 +264,63 @@ service WalletSolidity {
     option (google.api.http) = {
       post: "/walletsolidity/listwitnesses"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/listwitnesses"
+      }
     };
   };
   rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
     option (google.api.http) = {
       post: "/walletsolidity/getassetissuelist"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getassetissuelist"
+      }
     };
   }
   rpc GetAssetIssueListByTimestamp (NumberMessage) returns (AssetIssueList) {
     option (google.api.http) = {
       post: "/walletsolidity/getassetissuelistbytimestamp"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getassetissuelistbytimestamp"
+      }
     };
   }
   rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
     option (google.api.http) = {
       post: "/walletsolidity/getassetissuebyaccount"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getassetissuebyaccount"
+      }
     };
   }
   rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
     option (google.api.http) = {
       post: "/walletsolidity/getassetissuebyname"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getassetissuebyname"
+      }
     };
   }
   rpc GetNowBlock (EmptyMessage) returns (Block) {
     option (google.api.http) = {
       post: "/walletsolidity/getnowblock"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getnowblock"
+      }
     };
   }
   rpc GetBlockByNum (NumberMessage) returns (Block) {
     option (google.api.http) = {
       post: "/walletsolidity/getblockbynum"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getblockbynum"
+      }
     };
   }
   //get transaction
@@ -280,30 +328,45 @@ service WalletSolidity {
     option (google.api.http) = {
       post: "/walletsolidity/totaltransaction"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/totaltransaction"
+      }
     };
   }
   rpc GetTransactionById (BytesMessage) returns (Transaction) {
     option (google.api.http) = {
       post: "/walletsolidity/gettransactionbyid"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionbyid"
+      }
     };
   }
   rpc GetTransactionsByTimestamp (TimeMessage) returns (TransactionList) {
     option (google.api.http) = {
       post: "/walletsolidity/gettransactionsbytimestamp"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionsbytimestamp"
+      }
     };
   }
   rpc GetTransactionsFromThis (Account) returns (TransactionList) {
     option (google.api.http) = {
       post: "/walletsolidity/gettransactionsfromthis"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionsfromthis"
+      }
     };
   }
   rpc GetTransactionsToThis (Account) returns (TransactionList) {
     option (google.api.http) = {
       post: "/walletsolidity/gettransactionstothis"
       body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionstothis"
+      }
     };
   }
 };
@@ -354,7 +417,6 @@ message BlockReference {
 service Network {
 
 };
-
 
 
 message AccountList {
