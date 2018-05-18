@@ -254,6 +254,15 @@ service Wallet {
         }
       };
   }
+  rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/wallet/totaltransaction"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/totaltransaction"
+      }
+    };
+  }
 };
 
 
