@@ -235,6 +235,34 @@ service Wallet {
       }
     };
   }
+
+  rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
+    option (google.api.http) = {
+      post: "/wallet/listwitnesses"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/listwitnesses"
+      }
+    };
+  };
+  rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
+    option (google.api.http) = {
+        post: "/wallet/getassetissuelist"
+        body: "*"
+        additional_bindings {
+          get: "/wallet/getassetissuelist"
+        }
+      };
+  }
+  rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/wallet/totaltransaction"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/totaltransaction"
+      }
+    };
+  }
 };
 
 
