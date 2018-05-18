@@ -235,20 +235,6 @@ service Wallet {
       }
     };
   }
-
-  rpc WithdrawWitnessPay (WithdrawWitnessContract) returns (Transaction) {
-    option (google.api.http) = {
-      post: "/wallet/withdrawwitnessPay"
-      body: "*"
-    };
-  }
-  rpc GetFreezeAccount (BytesMessage) returns (FreezeAccount) {
-    option (google.api.http) = {
-      post: "/wallet/getfreezeaccount"
-      body: "*"
-    };
-  }
-
 };
 
 
