@@ -50,6 +50,8 @@ message Account {
   repeated Vote votes = 5;
   // the other asset owned by this account
   map<string, int64> asset = 6;
+  // latest asset operation time
+  map<string, int64> latest_asset_operation_time = 18;
   // the frozen balance
   repeated Frozen frozen = 7;
   // bandwidth, get from frozen
