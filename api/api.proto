@@ -286,17 +286,6 @@ service WalletSolidity {
       }
     };
   };
-
-  rpc ListAccounts (EmptyMessage) returns (AccountList) {
-    option (google.api.http) = {
-      post: "/walletsolidity/listaccounts"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/listaccounts"
-      }
-    };
-  };
-
   rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
     option (google.api.http) = {
       post: "/walletsolidity/listwitnesses"
