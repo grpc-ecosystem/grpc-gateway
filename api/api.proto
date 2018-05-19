@@ -370,15 +370,6 @@ service WalletSolidity {
       }
     };
   }
-  rpc GetNextMaintenanceTime (EmptyMessage) returns (NumberMessage) {
-    option (google.api.http) = {
-      post: "/wallet/getnextmaintenancetime"
-      body: "*"
-      additional_bindings {
-        get: "/wallet/getnextmaintenancetime"
-      }
-    };
-  }
   rpc GetTransactionById (BytesMessage) returns (Transaction) {
     option (google.api.http) = {
       post: "/walletsolidity/gettransactionbyid"
