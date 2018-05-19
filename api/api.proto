@@ -263,6 +263,15 @@ service Wallet {
       }
     };
   }
+  rpc GetNextMaintenanceTime (EmptyMessage) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/wallet/getnextmaintenancetime"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/getnextmaintenancetime"
+      }
+    };
+  }
 };
 
 
@@ -358,6 +367,15 @@ service WalletSolidity {
       body: "*"
       additional_bindings {
         get: "/walletsolidity/totaltransaction"
+      }
+    };
+  }
+  rpc GetNextMaintenanceTime (EmptyMessage) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/wallet/getnextmaintenancetime"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/getnextmaintenancetime"
       }
     };
   }
