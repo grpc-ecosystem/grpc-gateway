@@ -102,8 +102,9 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// Client API for UnannotatedEchoService service
-
+// UnannotatedEchoServiceClient is the client API for UnannotatedEchoService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type UnannotatedEchoServiceClient interface {
 	// Echo method receives a simple message and returns it.
 	//
@@ -126,7 +127,7 @@ func NewUnannotatedEchoServiceClient(cc *grpc.ClientConn) UnannotatedEchoService
 
 func (c *unannotatedEchoServiceClient) Echo(ctx context.Context, in *UnannotatedSimpleMessage, opts ...grpc.CallOption) (*UnannotatedSimpleMessage, error) {
 	out := new(UnannotatedSimpleMessage)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.UnannotatedEchoService/Echo", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.UnannotatedEchoService/Echo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +136,7 @@ func (c *unannotatedEchoServiceClient) Echo(ctx context.Context, in *Unannotated
 
 func (c *unannotatedEchoServiceClient) EchoBody(ctx context.Context, in *UnannotatedSimpleMessage, opts ...grpc.CallOption) (*UnannotatedSimpleMessage, error) {
 	out := new(UnannotatedSimpleMessage)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.UnannotatedEchoService/EchoBody", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.UnannotatedEchoService/EchoBody", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -144,15 +145,14 @@ func (c *unannotatedEchoServiceClient) EchoBody(ctx context.Context, in *Unannot
 
 func (c *unannotatedEchoServiceClient) EchoDelete(ctx context.Context, in *UnannotatedSimpleMessage, opts ...grpc.CallOption) (*UnannotatedSimpleMessage, error) {
 	out := new(UnannotatedSimpleMessage)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.UnannotatedEchoService/EchoDelete", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.UnannotatedEchoService/EchoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// Server API for UnannotatedEchoService service
-
+// UnannotatedEchoServiceServer is the server API for UnannotatedEchoService service.
 type UnannotatedEchoServiceServer interface {
 	// Echo method receives a simple message and returns it.
 	//
