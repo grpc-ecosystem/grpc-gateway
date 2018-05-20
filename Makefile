@@ -168,7 +168,20 @@ examples: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAG
 test: examples
 	go test -race $(PKG)/...
 	go test -race $(PKG)/examples/integration -args -network=unix -endpoint=test.sock
-
+changelog:
+	docker run --rm \
+		--interactive \
+		--tty \
+		-e "CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN}" \
+		-v "$(PWD):/usr/local/src/your-app" \
+		ferrarimarco/github-changelog-generator \
+				-u grpc-ecosystem \
+				-p grpc-gateway \
+				--author \
+				--compare-link \
+				--github-site=https://grpc-ecosystem.github.io/grpc-gateway \
+				--unreleased-label "**Next release**" \
+				--future-release=v1.4.0
 lint:
 	golint --set_exit_status $(PKG)/runtime
 	golint --set_exit_status $(PKG)/utilities/...
