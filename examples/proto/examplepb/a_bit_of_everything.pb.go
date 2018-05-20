@@ -592,8 +592,9 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// Client API for ABitOfEverythingService service
-
+// ABitOfEverythingServiceClient is the client API for ABitOfEverythingService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ABitOfEverythingServiceClient interface {
 	Create(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	CreateBody(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
@@ -627,7 +628,7 @@ func NewABitOfEverythingServiceClient(cc *grpc.ClientConn) ABitOfEverythingServi
 
 func (c *aBitOfEverythingServiceClient) Create(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
 	out := new(ABitOfEverything)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Create", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -636,7 +637,7 @@ func (c *aBitOfEverythingServiceClient) Create(ctx context.Context, in *ABitOfEv
 
 func (c *aBitOfEverythingServiceClient) CreateBody(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
 	out := new(ABitOfEverything)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/CreateBody", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/CreateBody", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -645,7 +646,7 @@ func (c *aBitOfEverythingServiceClient) CreateBody(ctx context.Context, in *ABit
 
 func (c *aBitOfEverythingServiceClient) Lookup(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*ABitOfEverything, error) {
 	out := new(ABitOfEverything)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Lookup", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Lookup", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -654,7 +655,7 @@ func (c *aBitOfEverythingServiceClient) Lookup(ctx context.Context, in *sub2.IdM
 
 func (c *aBitOfEverythingServiceClient) Update(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Update", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Update", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -663,7 +664,7 @@ func (c *aBitOfEverythingServiceClient) Update(ctx context.Context, in *ABitOfEv
 
 func (c *aBitOfEverythingServiceClient) Delete(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Delete", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -672,7 +673,7 @@ func (c *aBitOfEverythingServiceClient) Delete(ctx context.Context, in *sub2.IdM
 
 func (c *aBitOfEverythingServiceClient) GetQuery(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/GetQuery", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/GetQuery", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -681,7 +682,7 @@ func (c *aBitOfEverythingServiceClient) GetQuery(ctx context.Context, in *ABitOf
 
 func (c *aBitOfEverythingServiceClient) Echo(ctx context.Context, in *sub.StringMessage, opts ...grpc.CallOption) (*sub.StringMessage, error) {
 	out := new(sub.StringMessage)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Echo", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Echo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -690,7 +691,7 @@ func (c *aBitOfEverythingServiceClient) Echo(ctx context.Context, in *sub.String
 
 func (c *aBitOfEverythingServiceClient) DeepPathEcho(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
 	out := new(ABitOfEverything)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/DeepPathEcho", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/DeepPathEcho", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -699,7 +700,7 @@ func (c *aBitOfEverythingServiceClient) DeepPathEcho(ctx context.Context, in *AB
 
 func (c *aBitOfEverythingServiceClient) NoBindings(ctx context.Context, in *duration.Duration, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/NoBindings", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/NoBindings", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -708,7 +709,7 @@ func (c *aBitOfEverythingServiceClient) NoBindings(ctx context.Context, in *dura
 
 func (c *aBitOfEverythingServiceClient) Timeout(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Timeout", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/Timeout", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -717,7 +718,7 @@ func (c *aBitOfEverythingServiceClient) Timeout(ctx context.Context, in *empty.E
 
 func (c *aBitOfEverythingServiceClient) ErrorWithDetails(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/ErrorWithDetails", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/ErrorWithDetails", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -726,7 +727,7 @@ func (c *aBitOfEverythingServiceClient) ErrorWithDetails(ctx context.Context, in
 
 func (c *aBitOfEverythingServiceClient) GetMessageWithBody(ctx context.Context, in *MessageWithBody, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/GetMessageWithBody", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/GetMessageWithBody", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -735,15 +736,14 @@ func (c *aBitOfEverythingServiceClient) GetMessageWithBody(ctx context.Context, 
 
 func (c *aBitOfEverythingServiceClient) PostWithEmptyBody(ctx context.Context, in *Body, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/PostWithEmptyBody", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ABitOfEverythingService/PostWithEmptyBody", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// Server API for ABitOfEverythingService service
-
+// ABitOfEverythingServiceServer is the server API for ABitOfEverythingService service.
 type ABitOfEverythingServiceServer interface {
 	Create(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	CreateBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
@@ -1066,8 +1066,9 @@ var _ABitOfEverythingService_serviceDesc = grpc.ServiceDesc{
 	Metadata: "examples/proto/examplepb/a_bit_of_everything.proto",
 }
 
-// Client API for CamelCaseServiceName service
-
+// CamelCaseServiceNameClient is the client API for CamelCaseServiceName service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type CamelCaseServiceNameClient interface {
 	Empty(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*empty.Empty, error)
 }
@@ -1082,15 +1083,14 @@ func NewCamelCaseServiceNameClient(cc *grpc.ClientConn) CamelCaseServiceNameClie
 
 func (c *camelCaseServiceNameClient) Empty(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.camelCaseServiceName/Empty", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.camelCaseServiceName/Empty", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// Server API for CamelCaseServiceName service
-
+// CamelCaseServiceNameServer is the server API for CamelCaseServiceName service.
 type CamelCaseServiceNameServer interface {
 	Empty(context.Context, *empty.Empty) (*empty.Empty, error)
 }
@@ -1130,8 +1130,9 @@ var _CamelCaseServiceName_serviceDesc = grpc.ServiceDesc{
 	Metadata: "examples/proto/examplepb/a_bit_of_everything.proto",
 }
 
-// Client API for AnotherServiceWithNoBindings service
-
+// AnotherServiceWithNoBindingsClient is the client API for AnotherServiceWithNoBindings service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type AnotherServiceWithNoBindingsClient interface {
 	NoBindings(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*empty.Empty, error)
 }
@@ -1146,15 +1147,14 @@ func NewAnotherServiceWithNoBindingsClient(cc *grpc.ClientConn) AnotherServiceWi
 
 func (c *anotherServiceWithNoBindingsClient) NoBindings(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.AnotherServiceWithNoBindings/NoBindings", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.AnotherServiceWithNoBindings/NoBindings", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// Server API for AnotherServiceWithNoBindings service
-
+// AnotherServiceWithNoBindingsServer is the server API for AnotherServiceWithNoBindings service.
 type AnotherServiceWithNoBindingsServer interface {
 	NoBindings(context.Context, *empty.Empty) (*empty.Empty, error)
 }
