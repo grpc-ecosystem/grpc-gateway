@@ -419,8 +419,9 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// Client API for EchoService service
-
+// EchoServiceClient is the client API for EchoService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type EchoServiceClient interface {
 	// Echo method receives a simple message and returns it.
 	//
@@ -443,7 +444,7 @@ func NewEchoServiceClient(cc *grpc.ClientConn) EchoServiceClient {
 
 func (c *echoServiceClient) Echo(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error) {
 	out := new(SimpleMessage)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.EchoService/Echo", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.EchoService/Echo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -452,7 +453,7 @@ func (c *echoServiceClient) Echo(ctx context.Context, in *SimpleMessage, opts ..
 
 func (c *echoServiceClient) EchoBody(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error) {
 	out := new(SimpleMessage)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.EchoService/EchoBody", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.EchoService/EchoBody", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -461,15 +462,14 @@ func (c *echoServiceClient) EchoBody(ctx context.Context, in *SimpleMessage, opt
 
 func (c *echoServiceClient) EchoDelete(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error) {
 	out := new(SimpleMessage)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.EchoService/EchoDelete", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.EchoService/EchoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// Server API for EchoService service
-
+// EchoServiceServer is the server API for EchoService service.
 type EchoServiceServer interface {
 	// Echo method receives a simple message and returns it.
 	//
