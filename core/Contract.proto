@@ -92,6 +92,8 @@ message AssetIssueContract {
   int32 vote_score = 16;
   bytes description = 20;
   bytes url = 21;
+  int64 free_operation_interval = 22;
+  int64 free_operation_limit = 23;
 }
 
 message ParticipateAssetIssueContract {

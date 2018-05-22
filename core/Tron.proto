@@ -79,6 +79,8 @@ message Account {
 
   // Next time set free_operation_count equal to 0
   int64 next_refresh_count_time = 20;
+
+  map<string, int64> latest_asset_free_operation_count = 21;
 }
 
 //FIXME authority?
