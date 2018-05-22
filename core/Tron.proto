@@ -73,6 +73,12 @@ message Account {
   repeated Frozen frozen_supply = 16;
   // asset_issued_name
   bytes asset_issued_name = 17;
+
+  // The number of free operations used in a cycle
+  int64 free_operation_count = 19;
+
+  // Next time set free_operation_count equal to 0
+  int64 next_refresh_count_time = 20;
 }
 
 //FIXME authority?
