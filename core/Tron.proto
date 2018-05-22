@@ -51,7 +51,6 @@ message Account {
   // the other asset owned by this account
   map<string, int64> asset = 6;
   // latest asset operation time
-  map<string, int64> latest_asset_operation_time = 18;
   // the frozen balance
   repeated Frozen frozen = 7;
   // bandwidth, get from frozen
@@ -60,7 +59,6 @@ message Account {
   int64 create_time = 9;
   // this last operation time, including transfer, voting and so on. //FIXME fix grammar
   int64 latest_opration_time = 10;
-
   // witness block producing allowance
   int64 allowance = 11;
   // last withdraw time
@@ -73,6 +71,7 @@ message Account {
   repeated Frozen frozen_supply = 16;
   // asset_issued_name
   bytes asset_issued_name = 17;
+  map<string, int64> latest_asset_operation_time = 18;
 
   // The number of free operations used in a cycle
   int64 free_operation_count = 19;
@@ -80,7 +79,8 @@ message Account {
   // Next time set free_operation_count equal to 0
   int64 next_refresh_count_time = 20;
 
-  map<string, int64> latest_asset_free_operation_count = 21;
+  map<string, int64> asset_free_operation_count = 21;
+  map<string, int64> asset_next_refresh_count_time = 22;
 }
 
 //FIXME authority?
