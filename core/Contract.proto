@@ -77,14 +77,18 @@ message WitnessUpdateContract {
 }
 
 message AssetIssueContract {
+  message FrozenSupply {
+    int64 frozen_amount = 1;
+    int64 frozen_days = 2;
+  }
   bytes owner_address = 1;
   bytes name = 2;
   int64 total_supply = 4;
+  repeated FrozenSupply frozen_supply = 5;
   int32 trx_num = 6;
   int32 num = 8;
   int64 start_time = 9;
   int64 end_time = 10;
-  int32 decay_ratio = 15;
   int32 vote_score = 16;
   bytes description = 20;
   bytes url = 21;
@@ -109,6 +113,10 @@ message FreezeBalanceContract {
 }
 
 message UnfreezeBalanceContract {
+  bytes owner_address = 1;
+}
+
+message UnfreezeAssetContract {
   bytes owner_address = 1;
 }
 
