@@ -74,7 +74,7 @@ message Account {
   map<string, int64> latest_asset_operation_time = 18;
   int64 free_net_usage = 19;
   map<string, int64> free_asset_net_usage = 20;
-  int64 latest_consume_resource;
+  int64 latest_consume_time = 21;
 }
 
 //FIXME authority?
