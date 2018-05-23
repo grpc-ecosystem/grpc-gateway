@@ -30,7 +30,7 @@ exprot PATH=$PATH:./protobuf/bin
 
 # Usage
 
-1. Make sure your Tron grpc serivice has been started on `localhost:50051`  , **you can visit [Tron wiki: quick start](http://wiki.tron.network/en/latest/quick_start.html) for starting Tron service.**
+1. Make sure your Tron grpc serivice has been started on `localhost:50051`  , **you can visit [How to build](http://wiki.tron.network/en/latest/The_TRON_Network.html) for starting Tron service.**
 2. Get the source code and change word dir
 
 ```
