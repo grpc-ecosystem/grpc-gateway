@@ -173,6 +173,7 @@ message Transaction {
     repeated acuthrity auths = 9; //FIXME authority
     // data not used
     bytes data = 10;
+    //only support size = 1,  repeated list here for extenstion
     repeated Contract contract = 11;
     // scripts not used
     bytes scripts = 12;
@@ -180,6 +181,7 @@ message Transaction {
   }
 
   raw raw_data = 1;
+  // only support size = 1,  repeated list here for muti-sig extenstion
   repeated bytes signature = 2;
   repeated Result ret = 5;
 }

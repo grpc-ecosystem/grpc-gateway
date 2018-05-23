@@ -83,6 +83,7 @@ message AssetIssueContract {
   }
   bytes owner_address = 1;
   bytes name = 2;
+  bytes abbr = 3;
   int64 total_supply = 4;
   repeated FrozenSupply frozen_supply = 5;
   int32 trx_num = 6;
