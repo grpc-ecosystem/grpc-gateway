@@ -181,7 +181,7 @@ changelog:
 				--compare-link \
 				--github-site=https://grpc-ecosystem.github.io/grpc-gateway \
 				--unreleased-label "**Next release**" \
-				--future-release=v1.4.0
+				--future-release=v1.4.1
 lint:
 	golint --set_exit_status $(PKG)/runtime
 	golint --set_exit_status $(PKG)/utilities/...
