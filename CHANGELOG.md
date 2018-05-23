@@ -1,5 +1,16 @@
 # Change Log
 
+## [v1.4.1](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.4.1) (2018-05-23)
+[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.4.0...v1.4.1)
+
+**Closed issues:**
+
+- Next release ? [\#605](https://github.com/grpc-ecosystem/grpc-gateway/issues/605)
+
+**Merged pull requests:**
+
+- Translate gRPC FailedPrecondition as HTTP PreconditionFailed [\#657](https://github.com/grpc-ecosystem/grpc-gateway/pull/657) ([slomek](https://github.com/slomek))
+
 ## [v1.4.0](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.4.0) (2018-05-20)
 [Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.3.1...v1.4.0)
 
@@ -44,6 +55,9 @@
 
 **Merged pull requests:**
 
+- Generate a single swagger definition on demand [\#658](https://github.com/grpc-ecosystem/grpc-gateway/pull/658) ([achew22](https://github.com/achew22))
+- Regenerate example files [\#656](https://github.com/grpc-ecosystem/grpc-gateway/pull/656) ([achew22](https://github.com/achew22))
+- Add v1.4.0 changelog [\#655](https://github.com/grpc-ecosystem/grpc-gateway/pull/655) ([achew22](https://github.com/achew22))
 - Add README.md for examples [\#645](https://github.com/grpc-ecosystem/grpc-gateway/pull/645) ([liukgg](https://github.com/liukgg))
 - JSONPb marshaler panics if input is nil interface [\#639](https://github.com/grpc-ecosystem/grpc-gateway/pull/639) ([jhump](https://github.com/jhump))
 - provide access to underlying \*json.Decoder from JSONPb.NewDecoder [\#637](https://github.com/grpc-ecosystem/grpc-gateway/pull/637) ([jhump](https://github.com/jhump))
