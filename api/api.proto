@@ -377,7 +377,7 @@ service WalletSolidity {
       }
     };
   }
-  rpc GetTransactionsFromThis (Account) returns (TransactionList) {
+  rpc GetTransactionsFromThis (AccountPaginated) returns (TransactionList) {
     option (google.api.http) = {
       post: "/walletsolidity/gettransactionsfromthis"
       body: "*"
@@ -386,12 +386,30 @@ service WalletSolidity {
       }
     };
   }
-  rpc GetTransactionsToThis (Account) returns (TransactionList) {
+  rpc GetTransactionsToThis (AccountPaginated) returns (TransactionList) {
     option (google.api.http) = {
       post: "/walletsolidity/gettransactionstothis"
       body: "*"
       additional_bindings {
         get: "/walletsolidity/gettransactionstothis"
+      }
+    };
+  }
+  rpc GetTransactionsFromThisCount (Account) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/walletsolidity/getTransactionsFromThisCount"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getTransactionsFromThisCount"
+      }
+    };
+  }
+  rpc GetTransactionsToThisCount (Account) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/walletsolidity/getTransactionsToThisCount"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getTransactionsToThisCount"
       }
     };
   }
@@ -492,4 +510,9 @@ message BlockLimit {
 message TransactionLimit {
   bytes transactionId = 1;
   int64 limitNum = 2;
+}
+message AccountPaginated {
+  Account account = 1;
+  int32 offset = 2;
+  int32 limit = 3;
 }
