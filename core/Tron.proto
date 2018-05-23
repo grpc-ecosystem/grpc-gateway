@@ -73,7 +73,7 @@ message Account {
   bytes asset_issued_name = 17;
   map<string, int64> latest_asset_operation_time = 18;
   int64 free_net_usage = 19;
-  int64 free_asset_net_usage = 20;
+  map<string, int64> free_asset_net_usage = 20;
 }
 
 //FIXME authority?
