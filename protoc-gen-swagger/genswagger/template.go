@@ -614,7 +614,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					operationObject.OperationID = fmt.Sprintf("%s%s", svc.GetName(), meth.GetName())
 				} else {
 					// OperationID must be unique in an OpenAPI v2 definition.
-					operationObject.OperationID = fmt.Sprintf("%s%s%d", srv.GetName(), meth.GetName(), bIdx+1)
+					operationObject.OperationID = fmt.Sprintf("%s%s%d", svc.GetName(), meth.GetName(), bIdx+1)
 				}
 
 				// Fill reference map with referenced request messages
