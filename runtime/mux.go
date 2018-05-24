@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"net/textproto"
+	"net/url"
 	"strings"
 
 	"context"
+
 	"github.com/golang/protobuf/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -148,7 +150,7 @@ func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	path := r.URL.Path
+	path := r.URL.RawPath
 	if !strings.HasPrefix(path, "/") {
 		if s.protoErrorHandler != nil {
 			_, outboundMarshaler := MarshalerForRequest(s, r)
@@ -160,7 +162,22 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	components := strings.Split(path[1:], "/")
+	pathParts := strings.Split(path[1:], "/")
+	components := make([]string, len(pathParts))
+	for i, comp := range pathParts {
+		comp, err := url.PathUnescape(comp)
+		if err != nil {
+			if s.protoErrorHandler != nil {
+				_, outboundMarshaler := MarshalerForRequest(s, r)
+				sterr := status.Error(codes.InvalidArgument, err.Error())
+				s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
+			} else {
+				OtherErrorHandler(w, r, err.Error(), http.StatusBadRequest)
+			}
+			return
+		}
+		components[i] = comp
+	}
 	l := len(components)
 	var verb string
 	if idx := strings.LastIndex(components[l-1], ":"); idx == 0 {
