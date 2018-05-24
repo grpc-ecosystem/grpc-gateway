@@ -171,6 +171,15 @@ service Wallet {
       }
     };
   }
+  rpc GetAccountNetLimit (Account) returns (NumberMessage) {
+      option (google.api.http) = {
+        post: "/wallet/getaccountnetlimit"
+        body: "*"
+        additional_bindings {
+          get: "/wallet/getaccountnetlimit"
+        }
+      };
+    };
   rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
     option (google.api.http) = {
       post: "/wallet/getassetissuebyname"
