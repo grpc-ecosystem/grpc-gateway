@@ -368,7 +368,7 @@ service WalletSolidity {
       }
     };
   }
-  rpc GetTransactionsByTimestamp (TimeMessage) returns (TransactionList) {
+  rpc GetTransactionsByTimestamp (TimePaginatedMessage) returns (TransactionList) {
     option (google.api.http) = {
       post: "/walletsolidity/gettransactionsbytimestamp"
       body: "*"
@@ -377,7 +377,16 @@ service WalletSolidity {
       }
     };
   }
-  rpc GetTransactionsFromThis (Account) returns (TransactionList) {
+  rpc GetTransactionsByTimestampCount (TimeMessage) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionsbytimestampcount"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionsbytimestampcount"
+      }
+    };
+  }
+  rpc GetTransactionsFromThis (AccountPaginated) returns (TransactionList) {
     option (google.api.http) = {
       post: "/walletsolidity/gettransactionsfromthis"
       body: "*"
@@ -386,12 +395,30 @@ service WalletSolidity {
       }
     };
   }
-  rpc GetTransactionsToThis (Account) returns (TransactionList) {
+  rpc GetTransactionsToThis (AccountPaginated) returns (TransactionList) {
     option (google.api.http) = {
       post: "/walletsolidity/gettransactionstothis"
       body: "*"
       additional_bindings {
         get: "/walletsolidity/gettransactionstothis"
+      }
+    };
+  }
+  rpc GetTransactionsFromThisCount (Account) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionsfromthiscount"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionsfromthiscount"
+      }
+    };
+  }
+  rpc GetTransactionsToThisCount (Account) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionstothiscount"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionstothiscount"
       }
     };
   }
@@ -492,4 +519,14 @@ message BlockLimit {
 message TransactionLimit {
   bytes transactionId = 1;
   int64 limitNum = 2;
+}
+message AccountPaginated {
+  Account account = 1;
+  int64 offset = 2;
+  int64 limit = 3;
+}
+message TimePaginatedMessage {
+  TimeMessage timeMessage = 1;
+  int64 offset = 2;
+  int64 limit = 3;
 }
