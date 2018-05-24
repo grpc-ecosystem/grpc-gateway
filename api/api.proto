@@ -171,12 +171,12 @@ service Wallet {
       }
     };
   }
-  rpc GetAccountNetLimit (Account) returns (NumberMessage) {
+  rpc GetAccountNet (Account) returns (AccountNetMessage) {
       option (google.api.http) = {
-        post: "/wallet/getaccountnetlimit"
+        post: "/wallet/getaccountnet"
         body: "*"
         additional_bindings {
-          get: "/wallet/getaccountnetlimit"
+          get: "/wallet/getaccountnet"
         }
       };
     };
@@ -501,4 +501,11 @@ message BlockLimit {
 message TransactionLimit {
   bytes transactionId = 1;
   int64 limitNum = 2;
+}
+message AccountNetMessage {
+  int64 freeNetUsed = 1;
+  int64 freeNetLimit = 2;
+  int64 NetUsed = 3;
+  int64 NetLimit = 4;
+  map<string, int64> assetNetUsed = 5;
 }
