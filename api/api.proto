@@ -368,12 +368,21 @@ service WalletSolidity {
       }
     };
   }
-  rpc GetTransactionsByTimestamp (TimeMessage) returns (TransactionList) {
+  rpc GetTransactionsByTimestamp (TimePaginatedMessage) returns (TransactionList) {
     option (google.api.http) = {
       post: "/walletsolidity/gettransactionsbytimestamp"
       body: "*"
       additional_bindings {
         get: "/walletsolidity/gettransactionsbytimestamp"
+      }
+    };
+  }
+  rpc GetTransactionsByTimestampCount (TimeMessage) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionsbytimestampcount"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionsbytimestampcount"
       }
     };
   }
@@ -397,19 +406,19 @@ service WalletSolidity {
   }
   rpc GetTransactionsFromThisCount (Account) returns (NumberMessage) {
     option (google.api.http) = {
-      post: "/walletsolidity/getTransactionsFromThisCount"
+      post: "/walletsolidity/gettransactionsfromthiscount"
       body: "*"
       additional_bindings {
-        get: "/walletsolidity/getTransactionsFromThisCount"
+        get: "/walletsolidity/gettransactionsfromthiscount"
       }
     };
   }
   rpc GetTransactionsToThisCount (Account) returns (NumberMessage) {
     option (google.api.http) = {
-      post: "/walletsolidity/getTransactionsToThisCount"
+      post: "/walletsolidity/gettransactionstothiscount"
       body: "*"
       additional_bindings {
-        get: "/walletsolidity/getTransactionsToThisCount"
+        get: "/walletsolidity/gettransactionstothiscount"
       }
     };
   }
@@ -513,6 +522,11 @@ message TransactionLimit {
 }
 message AccountPaginated {
   Account account = 1;
-  int32 offset = 2;
-  int32 limit = 3;
+  int64 offset = 2;
+  int64 limit = 3;
+}
+message TimePaginatedMessage {
+  TimeMessage timeMessage = 1;
+  int64 offset = 2;
+  int64 limit = 3;
 }
