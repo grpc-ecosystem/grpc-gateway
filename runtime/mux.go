@@ -150,7 +150,13 @@ func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	path := r.URL.RawPath
+	var path string
+	if r.URL.RawPath == "" {
+		path = r.URL.Path
+	} else {
+		path = r.URL.RawPath
+	}
+
 	if !strings.HasPrefix(path, "/") {
 		if s.protoErrorHandler != nil {
 			_, outboundMarshaler := MarshalerForRequest(s, r)
