@@ -508,4 +508,5 @@ message AccountNetMessage {
   int64 NetUsed = 3;
   int64 NetLimit = 4;
   map<string, int64> assetNetUsed = 5;
+  map<string, int64> assetNetLimit = 6;
 }
