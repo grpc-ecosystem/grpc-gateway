@@ -152,7 +152,7 @@ service Wallet {
     };
   }
 
-  rpc UpdateAsset (UpdateFreeAssetNetLimitContract) returns (Transaction) {
+  rpc UpdateAsset (UpdateAssetContract) returns (Transaction) {
     option (google.api.http) = {
       post: "/wallet/updateasset"
       body: "*"
