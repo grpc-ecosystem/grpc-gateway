@@ -126,7 +126,9 @@ message WithdrawBalanceContract {
   bytes owner_address = 1;
 }
 
-message UpdateFreeAssetNetLimitContract {
+message UpdateAssetContract {
   bytes owner_address = 1;
-  int64 new_limit = 2;
+  bytes description = 2;
+  bytes url = 3;
+  int64 new_limit = 4;
 }
