@@ -152,6 +152,16 @@ service Wallet {
     };
   }
 
+  rpc UpdateFreeAssetNetLimit (UpdateFreeAssetNetLimitContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/updatefreeassetnetlimit"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/updatefreeassetnetlimit"
+      }
+    };
+  }
+
   rpc ListNodes (EmptyMessage) returns (NodeList) {
     option (google.api.http) = {
       post: "/wallet/listnodes"
