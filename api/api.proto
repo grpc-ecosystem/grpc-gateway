@@ -152,6 +152,16 @@ service Wallet {
     };
   }
 
+  rpc UpdateAsset (UpdateAssetContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/updateasset"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/updateasset"
+      }
+    };
+  }
+
   rpc ListNodes (EmptyMessage) returns (NodeList) {
     option (google.api.http) = {
       post: "/wallet/listnodes"

@@ -128,3 +128,10 @@ message UnfreezeAssetContract {
 message WithdrawBalanceContract {
   bytes owner_address = 1;
 }
+
+message UpdateAssetContract {
+  bytes owner_address = 1;
+  bytes description = 2;
+  bytes url = 3;
+  int64 new_limit = 4;
+}
