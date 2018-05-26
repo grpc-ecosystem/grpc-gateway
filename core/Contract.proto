@@ -134,4 +134,5 @@ message UpdateAssetContract {
   bytes description = 2;
   bytes url = 3;
   int64 new_limit = 4;
+  int64 new_public_limit = 5;
 }
