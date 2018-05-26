@@ -94,6 +94,9 @@ message AssetIssueContract {
   bytes description = 20;
   bytes url = 21;
   int64 free_asset_net_limit = 22;
+  int64 public_free_asset_net_limit = 23;
+  int64 public_free_asset_net_usage = 24;
+  int64 public_latest_free_net_time = 25;
 }
 
 message ParticipateAssetIssueContract {
