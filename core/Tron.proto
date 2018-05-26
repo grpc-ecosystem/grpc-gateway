@@ -42,7 +42,7 @@ message Account {
 
   bytes account_name = 1;
   AccountType type = 2;
-  // the create adress
+  // the create address
   bytes address = 3;
   // the trx balance
   int64 balance = 4;
@@ -51,16 +51,14 @@ message Account {
   // the other asset owned by this account
   map<string, int64> asset = 6;
   // latest asset operation time
-  map<string, int64> latest_asset_operation_time = 18;
   // the frozen balance
   repeated Frozen frozen = 7;
   // bandwidth, get from frozen
-  int64 bandwidth = 8;
+  int64 net_usage = 8;
   // this account create time
   int64 create_time = 9;
-  // this last opration time, including transfer, voting and so on.
+  // this last operation time, including transfer, voting and so on. //FIXME fix grammar
   int64 latest_opration_time = 10;
-
   // witness block producing allowance
   int64 allowance = 11;
   // last withdraw time
@@ -73,14 +71,20 @@ message Account {
   repeated Frozen frozen_supply = 16;
   // asset_issued_name
   bytes asset_issued_name = 17;
+  map<string, int64> latest_asset_operation_time = 18;
+  int64 free_net_usage = 19;
+  map<string, int64> free_asset_net_usage = 20;
+  int64 latest_consume_time = 21;
+  int64 latest_consume_free_time = 22;
 }
 
+//FIXME authority?
 message acuthrity {
   AccountId account = 1;
   bytes permission_name = 2;
 }
 
-
+//FIXME permission
 message permision {
   AccountId account = 1;
 }
@@ -97,6 +101,7 @@ message Witness {
   int64 latestSlotNum = 8;
   bool isJobs = 9;
 }
+
 
 // Vote Change
 message Votes {
@@ -145,6 +150,7 @@ message Transaction {
       UnfreezeBalanceContract = 12;
       WithdrawBalanceContract = 13;
       UnfreezeAssetContract = 14;
+      UpdateAssetContract = 15;
       CustomContract = 20;
     }
     ContractType type = 1;
@@ -168,7 +174,7 @@ message Transaction {
     int64 ref_block_num = 3;
     bytes ref_block_hash = 4;
     int64 expiration = 8;
-    repeated acuthrity auths = 9;
+    repeated acuthrity auths = 9; //FIXME authority
     // data not used
     bytes data = 10;
     //only support size = 1,  repeated list here for extenstion
@@ -182,6 +188,10 @@ message Transaction {
   // only support size = 1,  repeated list here for muti-sig extenstion
   repeated bytes signature = 2;
   repeated Result ret = 5;
+}
+
+message Transactions {
+  repeated Transaction transactions = 1;
 }
 
 message BlockHeader {
@@ -289,7 +299,15 @@ message DisconnectMessage {
 }
 
 message HelloMessage {
+  message BlockId {
+    bytes hash = 1;
+    int64 number = 2;
+  }
+
   Endpoint from = 1;
   int32 version = 2;
   int64 timestamp = 3;
+  BlockId genesisBlockId = 4;
+  BlockId solidBlockId = 5;
+  BlockId headBlockId = 6;
 }

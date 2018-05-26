@@ -93,6 +93,10 @@ message AssetIssueContract {
   int32 vote_score = 16;
   bytes description = 20;
   bytes url = 21;
+  int64 free_asset_net_limit = 22;
+  int64 public_free_asset_net_limit = 23;
+  int64 public_free_asset_net_usage = 24;
+  int64 public_latest_free_net_time = 25;
 }
 
 message ParticipateAssetIssueContract {
@@ -123,4 +127,12 @@ message UnfreezeAssetContract {
 
 message WithdrawBalanceContract {
   bytes owner_address = 1;
+}
+
+message UpdateAssetContract {
+  bytes owner_address = 1;
+  bytes description = 2;
+  bytes url = 3;
+  int64 new_limit = 4;
+  int64 new_public_limit = 5;
 }
