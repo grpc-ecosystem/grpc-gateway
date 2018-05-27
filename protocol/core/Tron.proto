@@ -1,0 +1,313 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+import "core/Discover.proto";
+
+package protocol;
+
+
+option java_package = "org.tron.protos"; //Specify the name of the package that generated the Java file
+option java_outer_classname = "Protocol"; //Specify the class name of the generated Java file
+option go_package = "github.com/tronprotocol/grpc-gateway/core";
+
+enum AccountType {
+  Normal = 0;
+  AssetIssue = 1;
+  Contract = 2;
+}
+
+// AccountId, (name, address) use name, (null, address) use address, (name, null) use name,
+message AccountId {
+  bytes name = 1;
+  bytes address = 2;
+}
+
+// vote message
+message Vote {
+  // the super rep address
+  bytes vote_address = 1;
+  // the vote num to this super rep.
+  int64 vote_count = 2;
+}
+
+// Account
+message Account {
+  // frozen balance
+  message Frozen {
+    // the frozen trx balance
+    int64 frozen_balance = 1;
+    // the expire time
+    int64 expire_time = 2;
+  }
+
+  bytes account_name = 1;
+  AccountType type = 2;
+  // the create address
+  bytes address = 3;
+  // the trx balance
+  int64 balance = 4;
+  // the votes
+  repeated Vote votes = 5;
+  // the other asset owned by this account
+  map<string, int64> asset = 6;
+  // latest asset operation time
+  // the frozen balance
+  repeated Frozen frozen = 7;
+  // bandwidth, get from frozen
+  int64 net_usage = 8;
+  // this account create time
+  int64 create_time = 9;
+  // this last operation time, including transfer, voting and so on. //FIXME fix grammar
+  int64 latest_opration_time = 10;
+  // witness block producing allowance
+  int64 allowance = 11;
+  // last withdraw time
+  int64 latest_withdraw_time = 12;
+  // not used so far
+  bytes code = 13;
+  bool is_witness = 14;
+  bool is_committee = 15;
+  // frozen asset(for asset issuer)
+  repeated Frozen frozen_supply = 16;
+  // asset_issued_name
+  bytes asset_issued_name = 17;
+  map<string, int64> latest_asset_operation_time = 18;
+  int64 free_net_usage = 19;
+  map<string, int64> free_asset_net_usage = 20;
+  int64 latest_consume_time = 21;
+  int64 latest_consume_free_time = 22;
+}
+
+//FIXME authority?
+message acuthrity {
+  AccountId account = 1;
+  bytes permission_name = 2;
+}
+
+//FIXME permission
+message permision {
+  AccountId account = 1;
+}
+
+// Witness
+message Witness {
+  bytes address = 1;
+  int64 voteCount = 2;
+  bytes pubKey = 3;
+  string url = 4;
+  int64 totalProduced = 5;
+  int64 totalMissed = 6;
+  int64 latestBlockNum = 7;
+  int64 latestSlotNum = 8;
+  bool isJobs = 9;
+}
+
+
+// Vote Change
+message Votes {
+  bytes address = 1;
+  repeated Vote old_votes = 2;
+  repeated Vote new_votes = 3;
+}
+
+// Transcation
+
+message TXOutput {
+  int64 value = 1;
+  bytes pubKeyHash = 2;
+}
+
+message TXInput {
+  message raw {
+    bytes txID = 1;
+    int64 vout = 2;
+    bytes pubKey = 3;
+  }
+  raw raw_data = 1;
+  bytes signature = 4;
+}
+
+message TXOutputs {
+  repeated TXOutput outputs = 1;
+}
+
+
+message Transaction {
+  message Contract {
+    enum ContractType {
+      AccountCreateContract = 0;
+      TransferContract = 1;
+      TransferAssetContract = 2;
+      VoteAssetContract = 3;
+      VoteWitnessContract = 4;
+      WitnessCreateContract = 5;
+      AssetIssueContract = 6;
+      DeployContract = 7;
+      WitnessUpdateContract = 8;
+      ParticipateAssetIssueContract = 9;
+      AccountUpdateContract = 10;
+      FreezeBalanceContract = 11;
+      UnfreezeBalanceContract = 12;
+      WithdrawBalanceContract = 13;
+      UnfreezeAssetContract = 14;
+      UpdateAssetContract = 15;
+      CustomContract = 20;
+    }
+    ContractType type = 1;
+    google.protobuf.Any parameter = 2;
+    bytes provider = 3;
+    bytes ContractName = 4;
+
+  }
+
+  message Result {
+    enum code {
+      SUCESS = 0;
+      FAILED = 1;
+    }
+    int64 fee = 1;
+    code ret = 2;
+  }
+
+  message raw {
+    bytes ref_block_bytes = 1;
+    int64 ref_block_num = 3;
+    bytes ref_block_hash = 4;
+    int64 expiration = 8;
+    repeated acuthrity auths = 9; //FIXME authority
+    // data not used
+    bytes data = 10;
+    //only support size = 1,  repeated list here for extenstion
+    repeated Contract contract = 11;
+    // scripts not used
+    bytes scripts = 12;
+    int64 timestamp = 14;
+  }
+
+  raw raw_data = 1;
+  // only support size = 1,  repeated list here for muti-sig extenstion
+  repeated bytes signature = 2;
+  repeated Result ret = 5;
+}
+
+message Transactions {
+  repeated Transaction transactions = 1;
+}
+
+message BlockHeader {
+  message raw {
+    int64 timestamp = 1;
+    bytes txTrieRoot = 2;
+    bytes parentHash = 3;
+    //bytes nonce = 5;
+    //bytes difficulty = 6;
+    int64 number = 7;
+    int64 witness_id = 8;
+    bytes witness_address = 9;
+  }
+  raw raw_data = 1;
+  bytes witness_signature = 2;
+}
+
+// block
+message Block {
+  repeated Transaction transactions = 1;
+  BlockHeader block_header = 2;
+}
+
+message ChainInventory {
+  message BlockId {
+    bytes hash = 1;
+    int64 number = 2;
+  }
+  repeated BlockId ids = 1;
+  int64 remain_num = 2;
+}
+
+// Inventory
+message BlockInventory {
+  enum Type {
+    SYNC = 0;
+    ADVTISE = 1;
+    FETCH = 2;
+  }
+
+  message BlockId {
+    bytes hash = 1;
+    int64 number = 2;
+  }
+  repeated BlockId ids = 1;
+  Type type = 2;
+}
+
+message Inventory {
+  enum InventoryType {
+    TRX = 0;
+    BLOCK = 1;
+  }
+  InventoryType type = 1;
+  repeated bytes ids = 2;
+}
+
+message Items {
+  enum ItemType {
+    ERR = 0;
+    TRX = 1;
+    BLOCK = 2;
+    BLOCKHEADER = 3;
+  }
+
+  ItemType type = 1;
+  repeated Block blocks = 2;
+  repeated BlockHeader block_headers = 3;
+  repeated Transaction transactions = 4;
+}
+
+// DynamicProperties
+message DynamicProperties {
+  int64 last_solidity_block_num = 1;
+}
+
+enum ReasonCode {
+  REQUESTED = 0x00;
+  BAD_PROTOCOL = 0x02;
+  TOO_MANY_PEERS = 0x04;
+  DUPLICATE_PEER = 0x05;
+  INCOMPATIBLE_PROTOCOL = 0x06;
+  NULL_IDENTITY = 0x07;
+  PEER_QUITING = 0x08;
+  UNEXPECTED_IDENTITY = 0x09;
+  LOCAL_IDENTITY = 0x0A;
+  PING_TIMEOUT = 0x0B;
+  USER_REASON = 0x10;
+  RESET = 0x11;
+  SYNC_FAIL = 0x12;
+  FETCH_FAIL = 0x13;
+  BAD_TX = 0x14;
+  BAD_BLOCK = 0x15;
+  FORKED = 0x16;
+  UNLINKABLE = 0x17;
+  INCOMPATIBLE_VERSION = 0x18;
+  INCOMPATIBLE_CHAIN = 0x19;
+  TIME_OUT = 0x20;
+  CONNECT_FAIL = 0x21;
+  UNKNOWN = 0xFF;
+}
+
+message DisconnectMessage {
+  ReasonCode reason = 1;
+}
+
+message HelloMessage {
+  message BlockId {
+    bytes hash = 1;
+    int64 number = 2;
+  }
+
+  Endpoint from = 1;
+  int32 version = 2;
+  int64 timestamp = 3;
+  BlockId genesisBlockId = 4;
+  BlockId solidBlockId = 5;
+  BlockId headBlockId = 6;
+}

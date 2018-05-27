@@ -1,0 +1,559 @@
+syntax = "proto3";
+package protocol;
+
+import "core/Tron.proto";
+import "core/Contract.proto";
+import "google/api/annotations.proto";
+
+
+option java_package = "org.tron.api"; //Specify the name of the package that generated the Java file
+option java_outer_classname = "GrpcAPI"; //Specify the class name of the generated Java file
+option go_package = "github.com/tronprotocol/grpc-gateway/api";
+
+service Wallet {
+
+  rpc GetAccount (Account) returns (Account) {
+    option (google.api.http) = {
+      post: "/wallet/getaccount"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/getaccount"
+      }
+    };
+  };
+
+  rpc CreateTransaction (TransferContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/createtransaction"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/createtransaction"
+      }
+    };
+  };
+
+  rpc BroadcastTransaction (Transaction) returns (Return) {
+    option (google.api.http) = {
+      post: "/wallet/broadcasttransaction"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/broadcasttransaction"
+      }
+    };
+  };
+
+  rpc UpdateAccount (AccountUpdateContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/updateaccount"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/updateaccount"
+      }
+    };
+  };
+
+  rpc VoteWitnessAccount (VoteWitnessContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/votewitnessaccount"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/votewitnessaccount"
+      }
+    };
+  };
+
+  rpc CreateAssetIssue (AssetIssueContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/createassetissue"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/createassetissue"
+      }
+    };
+  };
+
+  rpc UpdateWitness (WitnessUpdateContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/updatewitness"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/updatewitness"
+      }
+    };
+  };
+
+  rpc CreateWitness (WitnessCreateContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/createwitness"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/createwitness"
+      }
+    };
+  };
+
+  rpc TransferAsset (TransferAssetContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/transferasset"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/transferasset"
+      }
+    };
+  }
+
+  rpc ParticipateAssetIssue (ParticipateAssetIssueContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/participateassetissue"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/participateassetissue"
+      }
+    };
+  }
+
+  rpc FreezeBalance (FreezeBalanceContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/freezebalance"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/freezebalance"
+      }
+    };
+  }
+
+  rpc UnfreezeBalance (UnfreezeBalanceContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/unfreezebalance"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/unfreezebalance"
+      }
+    };
+  }
+
+  rpc UnfreezeAsset (UnfreezeAssetContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/unfreezeasset"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/unfreezeasset"
+      }
+    };
+  }
+
+  rpc WithdrawBalance (WithdrawBalanceContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/withdrawbalance"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/withdrawbalance"
+      }
+    };
+  }
+
+  rpc UpdateAsset (UpdateAssetContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/updateasset"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/updateasset"
+      }
+    };
+  }
+
+  rpc ListNodes (EmptyMessage) returns (NodeList) {
+    option (google.api.http) = {
+      post: "/wallet/listnodes"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/listnodes"
+      }
+    };
+  }
+
+  rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
+    option (google.api.http) = {
+      post: "/wallet/getassetissuebyaccount"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/getassetissuebyaccount"
+      }
+    };
+  }
+  rpc GetAccountNet (Account) returns (AccountNetMessage) {
+      option (google.api.http) = {
+        post: "/wallet/getaccountnet"
+        body: "*"
+        additional_bindings {
+          get: "/wallet/getaccountnet"
+        }
+      };
+    };
+  rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
+    option (google.api.http) = {
+      post: "/wallet/getassetissuebyname"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/getassetissuebyname"
+      }
+    };
+  }
+  rpc GetNowBlock (EmptyMessage) returns (Block) {
+    option (google.api.http) = {
+      post: "/wallet/getnowblock"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/getnowblock"
+      }
+    };
+  }
+  rpc GetBlockByNum (NumberMessage) returns (Block) {
+    option (google.api.http) = {
+      post: "/wallet/getblockbynum"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/getblockbynum"
+      }
+    };
+  }
+
+  rpc GetBlockById (BytesMessage) returns (Block) {
+    option (google.api.http) = {
+      post: "/wallet/getblockbyid"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/getblockbyid"
+      }
+    };
+  }
+  rpc GetBlockByLimitNext (BlockLimit) returns (BlockList) {
+    option (google.api.http) = {
+      post: "/wallet/getblockbylimitnext"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/getblockbylimitnext"
+      }
+    };
+  }
+  rpc GetBlockByLatestNum (NumberMessage) returns (BlockList) {
+    option (google.api.http) = {
+      post: "/wallet/getblockbylatestnum"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/getblockbylatestnum"
+      }
+    };
+  }
+  rpc GetTransactionById (BytesMessage) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/gettransactionbyid"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/gettransactionbyid"
+      }
+    };
+  }
+
+  rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
+    option (google.api.http) = {
+      post: "/wallet/listwitnesses"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/listwitnesses"
+      }
+    };
+  };
+  rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
+    option (google.api.http) = {
+        post: "/wallet/getassetissuelist"
+        body: "*"
+        additional_bindings {
+          get: "/wallet/getassetissuelist"
+        }
+      };
+  }
+  rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/wallet/totaltransaction"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/totaltransaction"
+      }
+    };
+  }
+  rpc GetNextMaintenanceTime (EmptyMessage) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/wallet/getnextmaintenancetime"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/getnextmaintenancetime"
+      }
+    };
+  }
+};
+
+
+service WalletSolidity {
+
+  rpc GetAccount (Account) returns (Account) {
+    option (google.api.http) = {
+      post: "/walletsolidity/getaccount"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getaccount"
+      }
+    };
+  };
+  rpc ListWitnesses (EmptyMessage) returns (WitnessList) {
+    option (google.api.http) = {
+      post: "/walletsolidity/listwitnesses"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/listwitnesses"
+      }
+    };
+  };
+  rpc GetAssetIssueList (EmptyMessage) returns (AssetIssueList) {
+    option (google.api.http) = {
+      post: "/walletsolidity/getassetissuelist"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getassetissuelist"
+      }
+    };
+  }
+  rpc GetAssetIssueListByTimestamp (NumberMessage) returns (AssetIssueList) {
+    option (google.api.http) = {
+      post: "/walletsolidity/getassetissuelistbytimestamp"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getassetissuelistbytimestamp"
+      }
+    };
+  }
+  rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
+    option (google.api.http) = {
+      post: "/walletsolidity/getassetissuebyaccount"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getassetissuebyaccount"
+      }
+    };
+  }
+  rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
+    option (google.api.http) = {
+      post: "/walletsolidity/getassetissuebyname"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getassetissuebyname"
+      }
+    };
+  }
+  rpc GetNowBlock (EmptyMessage) returns (Block) {
+    option (google.api.http) = {
+      post: "/walletsolidity/getnowblock"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getnowblock"
+      }
+    };
+  }
+  rpc GetBlockByNum (NumberMessage) returns (Block) {
+    option (google.api.http) = {
+      post: "/walletsolidity/getblockbynum"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/getblockbynum"
+      }
+    };
+  }
+  //get transaction
+  rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/walletsolidity/totaltransaction"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/totaltransaction"
+      }
+    };
+  }
+  rpc GetTransactionById (BytesMessage) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionbyid"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionbyid"
+      }
+    };
+  }
+  rpc GetTransactionsByTimestamp (TimePaginatedMessage) returns (TransactionList) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionsbytimestamp"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionsbytimestamp"
+      }
+    };
+  }
+  rpc GetTransactionsByTimestampCount (TimeMessage) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionsbytimestampcount"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionsbytimestampcount"
+      }
+    };
+  }
+  rpc GetTransactionsFromThis (AccountPaginated) returns (TransactionList) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionsfromthis"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionsfromthis"
+      }
+    };
+  }
+  rpc GetTransactionsToThis (AccountPaginated) returns (TransactionList) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionstothis"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionstothis"
+      }
+    };
+  }
+  rpc GetTransactionsFromThisCount (Account) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionsfromthiscount"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionsfromthiscount"
+      }
+    };
+  }
+  rpc GetTransactionsToThisCount (Account) returns (NumberMessage) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactionstothiscount"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactionstothiscount"
+      }
+    };
+  }
+};
+
+// the api of tron's db
+service Database {
+  // for tapos
+  rpc getBlockReference (EmptyMessage) returns (BlockReference) {
+
+  }
+  rpc GetDynamicProperties (EmptyMessage) returns (DynamicProperties) {
+
+  }
+  rpc GetNowBlock (EmptyMessage) returns (Block) {
+
+  }
+  rpc GetBlockByNum (NumberMessage) returns (Block) {
+
+  }
+};
+
+message Return {
+  enum response_code {
+    SUCCESS = 0;
+    SIGERROR = 1; // error in signature
+    CONTRACT_VALIDATE_ERROR = 2;
+    CONTRACT_EXE_ERROR = 3;
+    BANDWITH_ERROR = 4;
+    DUP_TRANSACTION_ERROR = 5;
+    TAPOS_ERROR = 6;
+    TOO_BIG_TRANSACTION_ERROR = 7;
+    TRANSACTION_EXPIRATION_ERROR = 8;
+    SERVER_BUSY = 9;
+    OTHER_ERROR = 20;
+  }
+
+  bool result = 1;
+  response_code code = 2;
+  bytes message = 3;
+}
+
+message BlockReference {
+  int64 block_num = 1;
+  bytes block_hash = 2;
+}
+
+// the api of tron's network such as node list.
+service Network {
+
+};
+
+message WitnessList {
+  repeated Witness witnesses = 1;
+}
+message AssetIssueList {
+  repeated AssetIssueContract assetIssue = 1;
+}
+message BlockList {
+  repeated Block block = 1;
+}
+message TransactionList {
+  repeated Transaction transaction = 1;
+}
+
+// Gossip node list
+message NodeList {
+  repeated Node nodes = 1;
+}
+
+// Gossip node
+message Node {
+  Address address = 1;
+}
+
+// Gossip node address
+message Address {
+  bytes host = 1;
+  int32 port = 2;
+}
+
+message EmptyMessage {
+}
+message NumberMessage {
+  int64 num = 1;
+}
+message BytesMessage {
+  bytes value = 1;
+}
+message TimeMessage {
+  int64 beginInMilliseconds = 1;
+  int64 endInMilliseconds = 2;
+}
+message BlockLimit {
+  int64 startNum = 1;
+  int64 endNum = 2;
+}
+message TransactionLimit {
+  bytes transactionId = 1;
+  int64 limitNum = 2;
+}
+message AccountPaginated {
+  Account account = 1;
+  int64 offset = 2;
+  int64 limit = 3;
+}
+message TimePaginatedMessage {
+  TimeMessage timeMessage = 1;
+  int64 offset = 2;
+  int64 limit = 3;
+}
+message AccountNetMessage {
+  int64 freeNetUsed = 1;
+  int64 freeNetLimit = 2;
+  int64 NetUsed = 3;
+  int64 NetLimit = 4;
+  map<string, int64> assetNetUsed = 5;
+  map<string, int64> assetNetLimit = 6;
+}
