@@ -387,57 +387,60 @@ service WalletSolidity {
       }
     };
   }
+};
+
+service WalletExtension {
   rpc GetTransactionsByTimestamp (TimePaginatedMessage) returns (TransactionList) {
     option (google.api.http) = {
-      post: "/walletsolidity/gettransactionsbytimestamp"
+      post: "/walletextension/gettransactionsbytimestamp"
       body: "*"
       additional_bindings {
-        get: "/walletsolidity/gettransactionsbytimestamp"
+        get: "/walletextension/gettransactionsbytimestamp"
       }
     };
   }
   rpc GetTransactionsByTimestampCount (TimeMessage) returns (NumberMessage) {
     option (google.api.http) = {
-      post: "/walletsolidity/gettransactionsbytimestampcount"
+      post: "/walletextension/gettransactionsbytimestampcount"
       body: "*"
       additional_bindings {
-        get: "/walletsolidity/gettransactionsbytimestampcount"
+        get: "/walletextension/gettransactionsbytimestampcount"
       }
     };
   }
   rpc GetTransactionsFromThis (AccountPaginated) returns (TransactionList) {
     option (google.api.http) = {
-      post: "/walletsolidity/gettransactionsfromthis"
+      post: "/walletextension/gettransactionsfromthis"
       body: "*"
       additional_bindings {
-        get: "/walletsolidity/gettransactionsfromthis"
+        get: "/walletextension/gettransactionsfromthis"
       }
     };
   }
   rpc GetTransactionsToThis (AccountPaginated) returns (TransactionList) {
     option (google.api.http) = {
-      post: "/walletsolidity/gettransactionstothis"
+      post: "/walletextension/gettransactionstothis"
       body: "*"
       additional_bindings {
-        get: "/walletsolidity/gettransactionstothis"
+        get: "/walletextension/gettransactionstothis"
       }
     };
   }
   rpc GetTransactionsFromThisCount (Account) returns (NumberMessage) {
     option (google.api.http) = {
-      post: "/walletsolidity/gettransactionsfromthiscount"
+      post: "/walletextension/gettransactionsfromthiscount"
       body: "*"
       additional_bindings {
-        get: "/walletsolidity/gettransactionsfromthiscount"
+        get: "/walletextension/gettransactionsfromthiscount"
       }
     };
   }
   rpc GetTransactionsToThisCount (Account) returns (NumberMessage) {
     option (google.api.http) = {
-      post: "/walletsolidity/gettransactionstothiscount"
+      post: "/walletextension/gettransactionstothiscount"
       body: "*"
       additional_bindings {
-        get: "/walletsolidity/gettransactionstothiscount"
+        get: "/walletextension/gettransactionstothiscount"
       }
     };
   }
