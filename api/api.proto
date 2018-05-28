@@ -82,6 +82,16 @@ service Wallet {
     };
   };
 
+  rpc CreateAccount (AccountCreateContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/createaccount"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/createaccount"
+      }
+    };
+  };
+
   rpc CreateWitness (WitnessCreateContract) returns (Transaction) {
     option (google.api.http) = {
       post: "/wallet/createwitness"
