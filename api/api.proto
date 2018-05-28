@@ -556,4 +556,6 @@ message AccountNetMessage {
   int64 NetLimit = 4;
   map<string, int64> assetNetUsed = 5;
   map<string, int64> assetNetLimit = 6;
+  int64 TotalNetLimit = 7;
+  int64 TotalNetWeight = 8;
 }
