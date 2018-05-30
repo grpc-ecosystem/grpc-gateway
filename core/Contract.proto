@@ -24,9 +24,9 @@ option go_package = "github.com/tronprotocol/grpc-gateway/core";
 import "core/Tron.proto";
 
 message AccountCreateContract {
-  AccountType type = 1;
-  bytes account_name = 2;
-  bytes owner_address = 3;
+  bytes owner_address = 1;
+  bytes account_address = 2;
+  AccountType type = 3;
 }
 
 // update account name if the account has no name.

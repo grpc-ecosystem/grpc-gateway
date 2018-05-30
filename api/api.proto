@@ -82,15 +82,25 @@ service Wallet {
     };
   };
 
-  rpc CreateWitness (WitnessCreateContract) returns (Transaction) {
+  rpc CreateAccount (AccountCreateContract) returns (Transaction) {
     option (google.api.http) = {
-      post: "/wallet/createwitness"
+      post: "/wallet/createaccount"
       body: "*"
       additional_bindings {
-        get: "/wallet/createwitness"
+        get: "/wallet/createaccount"
       }
     };
   };
+
+  rpc CreateWitness (WitnessCreateContract) returns (Transaction) {
+      option (google.api.http) = {
+        post: "/wallet/createwitness"
+        body: "*"
+        additional_bindings {
+          get: "/wallet/createwitness"
+        }
+      };
+    };
 
   rpc TransferAsset (TransferAssetContract) returns (Transaction) {
     option (google.api.http) = {
@@ -559,4 +569,6 @@ message AccountNetMessage {
   int64 NetLimit = 4;
   map<string, int64> assetNetUsed = 5;
   map<string, int64> assetNetLimit = 6;
+  int64 TotalNetLimit = 7;
+  int64 TotalNetWeight = 8;
 }
