@@ -65,6 +65,7 @@ go_test(
         "//examples/proto/examplepb:go_default_library",
         "//runtime/internal:go_default_library",
         "//utilities:go_default_library",
+        "//protoc-gen-grpc-gateway/httprule:go_default_library",
         "@com_github_golang_protobuf//jsonpb:go_default_library",
         "@com_github_golang_protobuf//proto:go_default_library",
         "@com_github_golang_protobuf//ptypes:go_default_library",
