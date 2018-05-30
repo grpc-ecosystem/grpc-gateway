@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 
+	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 )
@@ -208,6 +210,70 @@ func TestMuxServeHTTP(t *testing.T) {
 			if got, want := w.Body.String(), spec.respContent; got != want {
 				t.Errorf("w.Body = %q; want %q; patterns=%v; req=%v", got, want, spec.patterns, r)
 			}
+		}
+	}
+}
+
+// TestSlashEncoding ensures that slashes are supported as part of path when encoded
+func TestSlashEncoding(t *testing.T) {
+	for _, spec := range []struct {
+		method     string
+		template   string
+		reqPath    string
+		respStatus int
+		pathParams map[string]string
+	}{
+		{
+			method:     "GET",
+			template:   "/v1/users/{name}/profile",
+			reqPath:    "/v1/users/some%2Fuser/profile",
+			respStatus: http.StatusOK,
+			pathParams: map[string]string{"name": "some/user"},
+		},
+		{
+			method:     "GET",
+			template:   "/v1/users/{name}",
+			reqPath:    "/v1/users/some%2Fuser",
+			respStatus: http.StatusOK,
+			pathParams: map[string]string{"name": "some/user"},
+		},
+		{
+			method:     "GET",
+			template:   "/v1/users/{name}/profile",
+			reqPath:    "/v1/users/some/user/profile",
+			respStatus: http.StatusNotFound,
+		},
+		{
+			method:     "GET",
+			template:   "/v1/users/{name}",
+			reqPath:    "/v1/users/some/user",
+			respStatus: http.StatusNotFound,
+		},
+	} {
+		mux := runtime.NewServeMux()
+		compiled, err := httprule.Parse(spec.template)
+		if err != nil {
+			t.Fatalf("httprule.Parse(%s) failed with %v; want success", spec.template, err)
+		}
+		template := compiled.Compile()
+		pat, err := runtime.NewPattern(1, template.OpCodes, template.Pool, template.Verb)
+		if err != nil {
+			t.Fatalf("runtime.NewPattern(1, %#v, %#v, %q) failed with %v; want success", template.OpCodes, template.Pool, template.Verb, err)
+		}
+		mux.Handle(spec.method, pat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+			if !reflect.DeepEqual(pathParams, spec.pathParams) {
+				t.Errorf("pathParams got: %v, want: %v", pathParams, spec.pathParams)
+			}
+		})
+		url := fmt.Sprintf("http://host.example%s", spec.reqPath)
+		r, err := http.NewRequest(spec.method, url, bytes.NewReader(nil))
+		if err != nil {
+			t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", spec.method, url, err)
+		}
+		w := httptest.NewRecorder()
+		mux.ServeHTTP(w, r)
+		if got, want := w.Code, spec.respStatus; got != want {
+			t.Errorf("w.Code = %d; want %d; req=%v", got, want, r)
 		}
 	}
 }
