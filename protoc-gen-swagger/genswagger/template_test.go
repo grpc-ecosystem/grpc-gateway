@@ -1,6 +1,7 @@
 package genswagger
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -9,7 +10,6 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
-	"fmt"
 )
 
 func crossLinkFixture(f *descriptor.File) *descriptor.File {
@@ -773,6 +773,7 @@ func TestFQMNtoSwaggerName(t *testing.T) {
 func TestSchemaOfField(t *testing.T) {
 	type test struct {
 		field    *descriptor.Field
+		refs     refMap
 		expected schemaCore
 	}
 
@@ -784,6 +785,7 @@ func TestSchemaOfField(t *testing.T) {
 					Type: protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
 				},
 			},
+			refs: make(refMap),
 			expected: schemaCore{
 				Type: "string",
 			},
@@ -796,6 +798,7 @@ func TestSchemaOfField(t *testing.T) {
 					Label: protodescriptor.FieldDescriptorProto_LABEL_REPEATED.Enum(),
 				},
 			},
+			refs: make(refMap),
 			expected: schemaCore{
 				Type: "array",
 				Items: &swaggerItemsObject{
@@ -811,6 +814,7 @@ func TestSchemaOfField(t *testing.T) {
 					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
 				},
 			},
+			refs: make(refMap),
 			expected: schemaCore{
 				Type: "string",
 			},
@@ -824,6 +828,7 @@ func TestSchemaOfField(t *testing.T) {
 					Label:    protodescriptor.FieldDescriptorProto_LABEL_REPEATED.Enum(),
 				},
 			},
+			refs: make(refMap),
 			expected: schemaCore{
 				Type: "array",
 				Items: &swaggerItemsObject{
@@ -839,6 +844,7 @@ func TestSchemaOfField(t *testing.T) {
 					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
 				},
 			},
+			refs: refMap{".example.Message": struct{}{}},
 			expected: schemaCore{
 				Ref: "#/definitions/exampleMessage",
 			},
@@ -875,7 +881,8 @@ func TestSchemaOfField(t *testing.T) {
 	})
 
 	for _, test := range tests {
-		actual := schemaOfField(test.field, reg)
+		refs := make(refMap)
+		actual := schemaOfField(test.field, reg, refs)
 		if e, a := test.expected.Type, actual.Type; e != a {
 			t.Errorf("Expected schemaOfField(%v).Type = %s, actual: %s", test.field, e, a)
 		}
@@ -884,6 +891,9 @@ func TestSchemaOfField(t *testing.T) {
 		}
 		if e, a := test.expected.Items.getType(), actual.Items.getType(); e != a {
 			t.Errorf("Expected schemaOfField(%v).Items.Type = %v, actual.Type: %v", test.field, e, a)
+		}
+		if !reflect.DeepEqual(refs, test.refs) {
+			t.Errorf("Expected schemaOfField(%v) to add refs %v, not %v", test.field, test.refs, refs)
 		}
 	}
 }

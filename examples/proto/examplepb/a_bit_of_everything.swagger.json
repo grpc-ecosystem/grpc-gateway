@@ -32,6 +32,22 @@
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
           }
         },
         "parameters": [
@@ -60,6 +76,27 @@
             "schema": {
               "$ref": "#/definitions/subStringMessage"
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "int32",
+              "format": "integer"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "503": {
+            "description": "Returned when the resource is temporarily unavailable.",
+            "schema": {}
           }
         },
         "parameters": [
@@ -88,6 +125,22 @@
             "description": "",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
             }
           }
         },
@@ -302,6 +355,22 @@
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
           }
         },
         "parameters": [
@@ -423,6 +492,22 @@
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
           }
         },
         "parameters": [
@@ -455,6 +540,22 @@
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
           }
         },
         "parameters": [
@@ -476,6 +577,22 @@
             "description": "",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
             }
           }
         },
@@ -507,6 +624,22 @@
             "description": "",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
             }
           }
         },
@@ -542,6 +675,27 @@
             "schema": {
               "$ref": "#/definitions/subStringMessage"
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "int32",
+              "format": "integer"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "503": {
+            "description": "Returned when the resource is temporarily unavailable.",
+            "schema": {}
           }
         },
         "parameters": [
@@ -571,6 +725,27 @@
             "schema": {
               "$ref": "#/definitions/subStringMessage"
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "int32",
+              "format": "integer"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "503": {
+            "description": "Returned when the resource is temporarily unavailable.",
+            "schema": {}
           }
         },
         "parameters": [
@@ -602,6 +777,22 @@
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
           }
         },
         "tags": [
@@ -618,6 +809,22 @@
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
           }
         },
         "tags": [
@@ -633,6 +840,22 @@
             "description": "",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
             }
           }
         },
@@ -666,6 +889,22 @@
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
           }
         },
         "tags": [
@@ -681,6 +920,22 @@
             "description": "",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
             }
           }
         },
@@ -855,7 +1110,8 @@
           "title": "repeated enum value. it is comma-separated in query"
         }
       },
-      "title": "Intentionaly complicated message type to cover much features of Protobuf.\nNEXT ID: 30",
+      "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+      "title": "A bit of everything",
       "externalDocs": {
         "description": "Find out more about ABitOfEverything",
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"
