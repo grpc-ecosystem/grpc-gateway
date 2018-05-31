@@ -55,9 +55,9 @@ func (m *EmptyProto) XXX_DiscardUnknown() {
 var xxx_messageInfo_EmptyProto proto.InternalMessageInfo
 
 type NonEmptyProto struct {
-	A                    string   `protobuf:"bytes,1,opt,name=a" json:"a,omitempty"`
-	B                    string   `protobuf:"bytes,2,opt,name=b" json:"b,omitempty"`
-	C                    string   `protobuf:"bytes,3,opt,name=c" json:"c,omitempty"`
+	A                    string   `protobuf:"bytes,1,opt,name=a,proto3" json:"a,omitempty"`
+	B                    string   `protobuf:"bytes,2,opt,name=b,proto3" json:"b,omitempty"`
+	C                    string   `protobuf:"bytes,3,opt,name=c,proto3" json:"c,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -109,7 +109,7 @@ func (m *NonEmptyProto) GetC() string {
 }
 
 type UnaryProto struct {
-	Str                  string   `protobuf:"bytes,1,opt,name=str" json:"str,omitempty"`
+	Str                  string   `protobuf:"bytes,1,opt,name=str,proto3" json:"str,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -147,9 +147,9 @@ func (m *UnaryProto) GetStr() string {
 }
 
 type NestedProto struct {
-	A                    *UnaryProto `protobuf:"bytes,1,opt,name=a" json:"a,omitempty"`
-	B                    string      `protobuf:"bytes,2,opt,name=b" json:"b,omitempty"`
-	C                    string      `protobuf:"bytes,3,opt,name=c" json:"c,omitempty"`
+	A                    *UnaryProto `protobuf:"bytes,1,opt,name=a,proto3" json:"a,omitempty"`
+	B                    string      `protobuf:"bytes,2,opt,name=b,proto3" json:"b,omitempty"`
+	C                    string      `protobuf:"bytes,3,opt,name=c,proto3" json:"c,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
 	XXX_unrecognized     []byte      `json:"-"`
 	XXX_sizecache        int32       `json:"-"`
@@ -201,7 +201,7 @@ func (m *NestedProto) GetC() string {
 }
 
 type SingleNestedProto struct {
-	A                    *UnaryProto `protobuf:"bytes,1,opt,name=a" json:"a,omitempty"`
+	A                    *UnaryProto `protobuf:"bytes,1,opt,name=a,proto3" json:"a,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
 	XXX_unrecognized     []byte      `json:"-"`
 	XXX_sizecache        int32       `json:"-"`

@@ -94,13 +94,45 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 			value: {};
 		}
 	}
+	responses: {
+		key: "403";
+		value: {
+			description: "Returned when the user does not have permission to access the resource.";
+		}
+	}
+	responses: {
+		key: "404";
+		value: {
+			description: "Returned when the resource does not exist.";
+			schema: {
+				json_schema: {
+					type: STRING;
+				}
+			}
+		}
+	}
+	responses: {
+		key: "418";
+		value: {
+			description: "I'm a teapot.";
+			schema: {
+				json_schema: {
+					ref: ".grpc.gateway.examples.examplepb.NumericEnum";
+				}
+			}
+		}
+	}
 };
 
 
-// Intentionaly complicated message type to cover much features of Protobuf.
+// Intentionaly complicated message type to cover many features of Protobuf.
 // NEXT ID: 30
 message ABitOfEverything {
 	option (grpc.gateway.protoc_gen_swagger.options.openapiv2_schema) = {
+		json_schema: {
+			title: "A bit of everything"
+			description: "Intentionaly complicated message type to cover many features of Protobuf."
+		}
 		external_docs: {
 			url: "https://github.com/grpc-ecosystem/grpc-gateway";
 			description: "Find out more about ABitOfEverything";
@@ -155,7 +187,7 @@ message ABitOfEverything {
 
 	google.protobuf.Timestamp timestamp_value = 27;
 
-		// repeated enum value. it is comma-separated in query
+	// repeated enum value. it is comma-separated in query
 	repeated NumericEnum repeated_enum_value = 28;
 }
 
@@ -270,6 +302,24 @@ service ABitOfEverythingService {
 			external_docs: {
 				url: "https://github.com/grpc-ecosystem/grpc-gateway";
 				description: "Find out more Echo";
+			}
+			responses: {
+				key: "503";
+				value: {
+					description: "Returned when the resource is temporarily unavailable.";
+				}
+			}
+			responses: {
+				// Overwrites global definition.
+				key: "404";
+				value: {
+					description: "Returned when the resource does not exist.";
+					schema: {
+						json_schema: {
+							type: INTEGER;
+						}
+					}
+				}
 			}
 		};
 	}
