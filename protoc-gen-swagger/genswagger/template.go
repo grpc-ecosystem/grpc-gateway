@@ -84,7 +84,7 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 			return nil, nil
 		}
 	}
-	schema := schemaOfField(field, reg)
+	schema := schemaOfField(field, reg, nil)
 	fieldType := field.GetTypeName()
 	if message.File != nil {
 		comments := fieldProtoComments(reg, message, field)
@@ -192,7 +192,7 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 	}
 }
 
-func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
+func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry, customRefs refMap) {
 	for name, msg := range messages {
 		switch name {
 		case ".google.protobuf.Timestamp":
@@ -229,23 +229,23 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			panic(err)
 		}
 		if opts != nil {
-			if opts.ExternalDocs != nil {
-				if schema.ExternalDocs == nil {
-					schema.ExternalDocs = &swaggerExternalDocumentationObject{}
-				}
-				if opts.ExternalDocs.Description != "" {
-					schema.ExternalDocs.Description = opts.ExternalDocs.Description
-				}
-				if opts.ExternalDocs.Url != "" {
-					schema.ExternalDocs.URL = opts.ExternalDocs.Url
-				}
-			}
+			protoSchema := swaggerSchemaFromProtoSchema(opts, reg, customRefs)
 
-			// TODO(ivucica): add remaining fields of schema object
+			// Warning: Make sure not to overwrite any fields already set on the schema type.
+			schema.ExternalDocs = protoSchema.ExternalDocs
+			if protoSchema.schemaCore.Type != "" || protoSchema.schemaCore.Ref != "" {
+				schema.schemaCore = protoSchema.schemaCore
+			}
+			if protoSchema.Title != "" {
+				schema.Title = protoSchema.Title
+			}
+			if protoSchema.Description != "" {
+				schema.Description = protoSchema.Description
+			}
 		}
 
 		for _, f := range msg.Fields {
-			fieldValue := schemaOfField(f, reg)
+			fieldValue := schemaOfField(f, reg, customRefs)
 			comments := fieldProtoComments(reg, msg, f)
 			if err := updateSwaggerDataFromComments(&fieldValue, comments); err != nil {
 				panic(err)
@@ -258,7 +258,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 }
 
 // schemaOfField returns a swagger Schema Object for a protobuf field.
-func schemaOfField(f *descriptor.Field, reg *descriptor.Registry) swaggerSchemaObject {
+func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) swaggerSchemaObject {
 	const (
 		singular = 0
 		array    = 1
@@ -287,6 +287,9 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry) swaggerSchemaO
 		} else {
 			core = schemaCore{
 				Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(fd.GetTypeName(), reg),
+			}
+			if refs != nil {
+				refs[fd.GetTypeName()] = struct{}{}
 			}
 		}
 	default:
@@ -512,7 +515,7 @@ func templateToSwaggerPath(path string) string {
 	return strings.Join(parts, "/")
 }
 
-func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry, refs refMap) error {
+func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	for svcIdx, svc := range services {
 		for methIdx, meth := range svc.Methods {
@@ -525,7 +528,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					switch pt := parameter.Target.GetType(); pt {
 					case pbdescriptor.FieldDescriptorProto_TYPE_GROUP, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE:
 						if descriptor.IsWellKnownType(parameter.Target.GetTypeName()) {
-							schema := schemaOfField(parameter.Target, reg)
+							schema := schemaOfField(parameter.Target, reg, customRefs)
 							paramType = schema.Type
 							paramFormat = schema.Format
 						} else {
@@ -563,7 +566,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						}
 					} else {
 						lastField := b.Body.FieldPath[len(b.Body.FieldPath)-1]
-						schema = schemaOfField(lastField.Target, reg)
+						schema = schemaOfField(lastField.Target, reg, customRefs)
 					}
 
 					desc := ""
@@ -620,7 +623,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				// Fill reference map with referenced request messages
 				for _, param := range operationObject.Parameters {
 					if param.Schema != nil && param.Schema.Ref != "" {
-						refs[param.Schema.Ref] = struct{}{}
+						requestResponseRefs[param.Schema.Ref] = struct{}{}
 					}
 				}
 
@@ -634,17 +637,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					if err != nil {
 						panic(err)
 					}
-					if opts.ExternalDocs != nil {
-						if operationObject.ExternalDocs == nil {
-							operationObject.ExternalDocs = &swaggerExternalDocumentationObject{}
-						}
-						if opts.ExternalDocs.Description != "" {
-							operationObject.ExternalDocs.Description = opts.ExternalDocs.Description
-						}
-						if opts.ExternalDocs.Url != "" {
-							operationObject.ExternalDocs.URL = opts.ExternalDocs.Url
-						}
-					}
+					operationObject.ExternalDocs = protoExternalDocumentationToSwaggerExternalDocumentation(opts.ExternalDocs)
 					// TODO(ivucica): this would be better supported by looking whether the method is deprecated in the proto file
 					operationObject.Deprecated = opts.Deprecated
 
@@ -675,6 +668,14 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							newSecurity = append(newSecurity, newSecReq)
 						}
 						operationObject.Security = newSecurity
+					}
+					if opts.Responses != nil {
+						for name, resp := range opts.Responses {
+							operationObject.Responses[name] = swaggerResponseObject{
+								Description: resp.Description,
+								Schema:      swaggerSchemaFromProtoSchema(resp.Schema, reg, customRefs),
+							}
+						}
 					}
 
 					// TODO(ivucica): add remaining fields of operation object
@@ -726,17 +727,18 @@ func applyTemplate(p param) (*swaggerObject, error) {
 
 	// Loops through all the services and their exposed GET/POST/PUT/DELETE definitions
 	// and create entries for all of them.
-	refs := refMap{}
-	if err := renderServices(p.Services, s.Paths, p.reg, refs); err != nil {
+	// Also adds custom user specified references to second map.
+	requestResponseRefs, customRefs := refMap{}, refMap{}
+	if err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs); err != nil {
 		panic(err)
 	}
 
-	// Find all the service's messages and enumerations that are defined (recursively) and then
-	// write their request and response types out as definition objects.
+	// Find all the service's messages and enumerations that are defined (recursively)
+	// and write request, response and other custom (but referenced) types out as definition objects.
 	m := messageMap{}
 	e := enumMap{}
-	findServicesMessagesAndEnumerations(p.Services, p.reg, m, e, refs)
-	renderMessagesAsDefinition(m, s.Definitions, p.reg)
+	findServicesMessagesAndEnumerations(p.Services, p.reg, m, e, requestResponseRefs)
+	renderMessagesAsDefinition(m, s.Definitions, p.reg, customRefs)
 	renderEnumerationsAsDefinition(e, s.Definitions, p.reg)
 
 	// File itself might have some comments and metadata.
@@ -885,21 +887,50 @@ func applyTemplate(p param) (*swaggerObject, error) {
 			}
 			s.Security = newSecurity
 		}
-		if spb.ExternalDocs != nil {
-			if s.ExternalDocs == nil {
-				s.ExternalDocs = &swaggerExternalDocumentationObject{}
-			}
-			if spb.ExternalDocs.Description != "" {
-				s.ExternalDocs.Description = spb.ExternalDocs.Description
-			}
-			if spb.ExternalDocs.Url != "" {
-				s.ExternalDocs.URL = spb.ExternalDocs.Url
+		s.ExternalDocs = protoExternalDocumentationToSwaggerExternalDocumentation(spb.ExternalDocs)
+		// Populate all Paths with Responses set at top level,
+		// preferring Responses already set over those at the top level.
+		if spb.Responses != nil {
+			for _, verbs := range s.Paths {
+				var maps []swaggerResponsesObject
+				if verbs.Delete != nil {
+					maps = append(maps, verbs.Delete.Responses)
+				}
+				if verbs.Get != nil {
+					maps = append(maps, verbs.Get.Responses)
+				}
+				if verbs.Post != nil {
+					maps = append(maps, verbs.Post.Responses)
+				}
+				if verbs.Put != nil {
+					maps = append(maps, verbs.Put.Responses)
+				}
+				if verbs.Patch != nil {
+					maps = append(maps, verbs.Patch.Responses)
+				}
+
+				for k, v := range spb.Responses {
+					for _, respMap := range maps {
+						if _, ok := respMap[k]; ok {
+							// Don't overwrite already existing Responses
+							continue
+						}
+						respMap[k] = swaggerResponseObject{
+							Description: v.Description,
+							Schema:      swaggerSchemaFromProtoSchema(v.Schema, p.reg, customRefs),
+						}
+					}
+				}
 			}
 		}
 
 		// Additional fields on the OpenAPI v2 spec's "Swagger" object
 		// should be added here, once supported in the proto.
 	}
+
+	// Finally add any references added by users that aren't
+	// otherwise rendered.
+	addCustomRefs(s.Definitions, p.reg, customRefs)
 
 	return &s, nil
 }
@@ -1186,4 +1217,106 @@ func extractSwaggerOptionFromFileDescriptor(file *pbdescriptor.FileDescriptorPro
 		return nil, fmt.Errorf("extension is %T; want a Swagger object", ext)
 	}
 	return opts, nil
+}
+
+func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Registry, refs refMap) swaggerSchemaObject {
+	ret := swaggerSchemaObject{
+		ExternalDocs: protoExternalDocumentationToSwaggerExternalDocumentation(s.GetExternalDocs()),
+		Title:        s.GetJsonSchema().GetTitle(),
+		Description:  s.GetJsonSchema().GetDescription(),
+		// TODO(johanbrandhorst): Add more fields?
+	}
+	if s.GetJsonSchema().GetRef() != "" {
+		swaggerName := fullyQualifiedNameToSwaggerName(s.GetJsonSchema().GetRef(), reg)
+		if swaggerName != "" {
+			ret.schemaCore.Ref = "#/definitions/" + swaggerName
+			if refs != nil {
+				refs[s.GetJsonSchema().GetRef()] = struct{}{}
+			}
+		} else {
+			ret.schemaCore.Ref += s.GetJsonSchema().GetRef()
+		}
+	} else {
+		f, t := protoJSONSchemaTypeToFormat(s.GetJsonSchema().GetType())
+		ret.schemaCore.Format = f
+		ret.schemaCore.Type = t
+	}
+	return ret
+}
+
+func protoJSONSchemaTypeToFormat(in []swagger_options.JSONSchema_JSONSchemaSimpleTypes) (string, string) {
+	if len(in) == 0 {
+		return "", ""
+	}
+
+	// Can't support more than 1 type, just return the first element.
+	// This is due to an inconsistency in the design of the openapiv2 proto
+	// and that used in schemaCore. schemaCore uses the v3 definition of types,
+	// which only allows a single string, while the openapiv2 proto uses the OpenAPI v2
+	// definition, which defers to the JSON schema definition, which allows a string or an array.
+	// Sources:
+	// https://swagger.io/specification/#itemsObject
+	// https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.5.2
+	switch in[0] {
+	case swagger_options.JSONSchema_UNKNOWN, swagger_options.JSONSchema_NULL:
+		return "", ""
+	case swagger_options.JSONSchema_OBJECT:
+		return "object", ""
+	case swagger_options.JSONSchema_ARRAY:
+		return "array", ""
+	case swagger_options.JSONSchema_BOOLEAN:
+		return "boolean", "boolean"
+	case swagger_options.JSONSchema_INTEGER:
+		return "integer", "int32"
+	case swagger_options.JSONSchema_NUMBER:
+		return "number", "double"
+	case swagger_options.JSONSchema_STRING:
+		// NOTE: in swagger specifition, format should be empty on string type
+		return "string", ""
+	default:
+		// Maybe panic?
+		return "", ""
+	}
+}
+
+func protoExternalDocumentationToSwaggerExternalDocumentation(in *swagger_options.ExternalDocumentation) *swaggerExternalDocumentationObject {
+	if in == nil {
+		return nil
+	}
+
+	return &swaggerExternalDocumentationObject{
+		Description: in.Description,
+		URL:         in.Url,
+	}
+}
+
+func addCustomRefs(d swaggerDefinitionsObject, reg *descriptor.Registry, refs refMap) {
+	if len(refs) == 0 {
+		return
+	}
+	msgMap := make(messageMap)
+	enumMap := make(enumMap)
+	for ref := range refs {
+		if _, ok := d[fullyQualifiedNameToSwaggerName(ref, reg)]; ok {
+			// Skip already existing definitions
+			delete(refs, ref)
+			continue
+		}
+		msg, err := reg.LookupMsg("", ref)
+		if err == nil {
+			msgMap[fullyQualifiedNameToSwaggerName(ref, reg)] = msg
+			continue
+		}
+		enum, err := reg.LookupEnum("", ref)
+		if err == nil {
+			enumMap[fullyQualifiedNameToSwaggerName(ref, reg)] = enum
+			continue
+		}
+		// ?? Should be either enum or msg
+	}
+	renderMessagesAsDefinition(msgMap, d, reg, refs)
+	renderEnumerationsAsDefinition(enumMap, d, reg)
+
+	// Run again in case any new refs were added
+	addCustomRefs(d, reg, refs)
 }

@@ -26,12 +26,12 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type Wrappers struct {
-	StringValue          *wrappers.StringValue `protobuf:"bytes,1,opt,name=string_value,json=stringValue" json:"string_value,omitempty"`
-	Int32Value           *wrappers.Int32Value  `protobuf:"bytes,2,opt,name=int32_value,json=int32Value" json:"int32_value,omitempty"`
-	Int64Value           *wrappers.Int64Value  `protobuf:"bytes,3,opt,name=int64_value,json=int64Value" json:"int64_value,omitempty"`
-	FloatValue           *wrappers.FloatValue  `protobuf:"bytes,4,opt,name=float_value,json=floatValue" json:"float_value,omitempty"`
-	DoubleValue          *wrappers.DoubleValue `protobuf:"bytes,5,opt,name=double_value,json=doubleValue" json:"double_value,omitempty"`
-	BoolValue            *wrappers.BoolValue   `protobuf:"bytes,6,opt,name=bool_value,json=boolValue" json:"bool_value,omitempty"`
+	StringValue          *wrappers.StringValue `protobuf:"bytes,1,opt,name=string_value,json=stringValue,proto3" json:"string_value,omitempty"`
+	Int32Value           *wrappers.Int32Value  `protobuf:"bytes,2,opt,name=int32_value,json=int32Value,proto3" json:"int32_value,omitempty"`
+	Int64Value           *wrappers.Int64Value  `protobuf:"bytes,3,opt,name=int64_value,json=int64Value,proto3" json:"int64_value,omitempty"`
+	FloatValue           *wrappers.FloatValue  `protobuf:"bytes,4,opt,name=float_value,json=floatValue,proto3" json:"float_value,omitempty"`
+	DoubleValue          *wrappers.DoubleValue `protobuf:"bytes,5,opt,name=double_value,json=doubleValue,proto3" json:"double_value,omitempty"`
+	BoolValue            *wrappers.BoolValue   `protobuf:"bytes,6,opt,name=bool_value,json=boolValue,proto3" json:"bool_value,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
 	XXX_unrecognized     []byte                `json:"-"`
 	XXX_sizecache        int32                 `json:"-"`
