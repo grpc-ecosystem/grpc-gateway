@@ -93,14 +93,14 @@ service Wallet {
   };
 
   rpc CreateWitness (WitnessCreateContract) returns (Transaction) {
-      option (google.api.http) = {
-        post: "/wallet/createwitness"
-        body: "*"
-        additional_bindings {
-          get: "/wallet/createwitness"
-        }
-      };
+    option (google.api.http) = {
+      post: "/wallet/createwitness"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/createwitness"
+      }
     };
+  };
 
   rpc TransferAsset (TransferAssetContract) returns (Transaction) {
     option (google.api.http) = {
@@ -192,14 +192,14 @@ service Wallet {
     };
   }
   rpc GetAccountNet (Account) returns (AccountNetMessage) {
-      option (google.api.http) = {
+    option (google.api.http) = {
         post: "/wallet/getaccountnet"
         body: "*"
         additional_bindings {
           get: "/wallet/getaccountnet"
         }
       };
-    };
+  };
   rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
     option (google.api.http) = {
       post: "/wallet/getassetissuebyname"
@@ -333,33 +333,6 @@ service WalletSolidity {
       }
     };
   }
-  rpc GetAssetIssueListByTimestamp (NumberMessage) returns (AssetIssueList) {
-    option (google.api.http) = {
-      post: "/walletsolidity/getassetissuelistbytimestamp"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/getassetissuelistbytimestamp"
-      }
-    };
-  }
-  rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
-    option (google.api.http) = {
-      post: "/walletsolidity/getassetissuebyaccount"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/getassetissuebyaccount"
-      }
-    };
-  }
-  rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
-    option (google.api.http) = {
-      post: "/walletsolidity/getassetissuebyname"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/getassetissuebyname"
-      }
-    };
-  }
   rpc GetNowBlock (EmptyMessage) returns (Block) {
     option (google.api.http) = {
       post: "/walletsolidity/getnowblock"
@@ -378,46 +351,10 @@ service WalletSolidity {
       }
     };
   }
-  //get transaction
-  rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
-    option (google.api.http) = {
-      post: "/walletsolidity/totaltransaction"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/totaltransaction"
-      }
-    };
-  }
-  rpc GetTransactionById (BytesMessage) returns (Transaction) {
-    option (google.api.http) = {
-      post: "/walletsolidity/gettransactionbyid"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/gettransactionbyid"
-      }
-    };
-  }
 };
 
 service WalletExtension {
-  rpc GetTransactionsByTimestamp (TimePaginatedMessage) returns (TransactionList) {
-    option (google.api.http) = {
-      post: "/walletextension/gettransactionsbytimestamp"
-      body: "*"
-      additional_bindings {
-        get: "/walletextension/gettransactionsbytimestamp"
-      }
-    };
-  }
-  rpc GetTransactionsByTimestampCount (TimeMessage) returns (NumberMessage) {
-    option (google.api.http) = {
-      post: "/walletextension/gettransactionsbytimestampcount"
-      body: "*"
-      additional_bindings {
-        get: "/walletextension/gettransactionsbytimestampcount"
-      }
-    };
-  }
+
   rpc GetTransactionsFromThis (AccountPaginated) returns (TransactionList) {
     option (google.api.http) = {
       post: "/walletextension/gettransactionsfromthis"
@@ -433,24 +370,6 @@ service WalletExtension {
       body: "*"
       additional_bindings {
         get: "/walletextension/gettransactionstothis"
-      }
-    };
-  }
-  rpc GetTransactionsFromThisCount (Account) returns (NumberMessage) {
-    option (google.api.http) = {
-      post: "/walletextension/gettransactionsfromthiscount"
-      body: "*"
-      additional_bindings {
-        get: "/walletextension/gettransactionsfromthiscount"
-      }
-    };
-  }
-  rpc GetTransactionsToThisCount (Account) returns (NumberMessage) {
-    option (google.api.http) = {
-      post: "/walletextension/gettransactionstothiscount"
-      body: "*"
-      additional_bindings {
-        get: "/walletextension/gettransactionstothiscount"
       }
     };
   }
