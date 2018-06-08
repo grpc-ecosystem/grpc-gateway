@@ -105,7 +105,7 @@ type swaggerOperationObject struct {
 	Tags        []string                `json:"tags,omitempty"`
 	Deprecated  bool                    `json:"deprecated,omitempty"`
 
-	Security     []swaggerSecurityRequirementObject  `json:"security,omitempty"`
+	Security     *[]swaggerSecurityRequirementObject `json:"security,omitempty"`
 	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }
 
