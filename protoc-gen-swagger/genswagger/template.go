@@ -653,21 +653,26 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					}
 					if opts.Security != nil {
 						newSecurity := []swaggerSecurityRequirementObject{}
-						if operationObject.Security == nil {
-							newSecurity = []swaggerSecurityRequirementObject{}
-						} else {
-							newSecurity = operationObject.Security
+						if operationObject.Security != nil {
+							newSecurity = *operationObject.Security
 						}
 						for _, secReq := range opts.Security {
 							newSecReq := swaggerSecurityRequirementObject{}
 							for secReqKey, secReqValue := range secReq.SecurityRequirement {
+								if secReqValue == nil {
+									continue
+								}
+
 								newSecReqValue := make([]string, len(secReqValue.Scope))
 								copy(newSecReqValue, secReqValue.Scope)
 								newSecReq[secReqKey] = newSecReqValue
 							}
-							newSecurity = append(newSecurity, newSecReq)
+
+							if len(newSecReq) > 0 {
+								newSecurity = append(newSecurity, newSecReq)
+							}
 						}
-						operationObject.Security = newSecurity
+						operationObject.Security = &newSecurity
 					}
 					if opts.Responses != nil {
 						for name, resp := range opts.Responses {
