@@ -277,6 +277,8 @@ service ABitOfEverythingService {
 				url: "https://github.com/grpc-ecosystem/grpc-gateway";
 				description: "Find out more about GetQuery";
 			}
+			security: {
+			}
 		};
 	}
 	// Echo allows posting a StringMessage value.
