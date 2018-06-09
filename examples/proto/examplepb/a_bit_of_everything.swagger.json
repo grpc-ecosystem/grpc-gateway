@@ -340,6 +340,7 @@
           "ABitOfEverythingService"
         ],
         "deprecated": true,
+        "security": [],
         "externalDocs": {
           "description": "Find out more about GetQuery",
           "url": "https://github.com/grpc-ecosystem/grpc-gateway"
