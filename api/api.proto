@@ -283,6 +283,15 @@ service Wallet {
         }
       };
   }
+  rpc GetPaginatedAssetIssueList (PaginatedMessage) returns (AssetIssueList) {
+    option (google.api.http) = {
+        post: "/wallet/getpaginatedassetissuelist"
+        body: "*"
+        additional_bindings {
+          get: "/wallet/getpaginatedassetissuelist"
+        }
+      };
+  }
   rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
     option (google.api.http) = {
       post: "/wallet/totaltransaction"
@@ -332,6 +341,15 @@ service WalletSolidity {
         get: "/walletsolidity/getassetissuelist"
       }
     };
+  }
+  rpc GetPaginatedAssetIssueList (PaginatedMessage) returns (AssetIssueList) {
+       option (google.api.http) = {
+        post: "/walletsolidity/getpaginatedassetissuelist"
+        body: "*"
+        additional_bindings {
+          get: "/walletsolidity/getpaginatedassetissuelist"
+        }
+      };
   }
   rpc GetNowBlock (EmptyMessage) returns (Block) {
     option (google.api.http) = {
@@ -490,4 +508,9 @@ message AccountNetMessage {
   map<string, int64> assetNetLimit = 6;
   int64 TotalNetLimit = 7;
   int64 TotalNetWeight = 8;
+}
+
+message PaginatedMessage {
+  int64 offset = 1;
+  int64 limit = 2;
 }
