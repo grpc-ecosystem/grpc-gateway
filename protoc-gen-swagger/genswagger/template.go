@@ -627,7 +627,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					}
 				}
 
-				methComments := protoComments(reg, svc.File, nil, "Service", int32(svcIdx), methProtoPath, int32(methIdx))
+				methComments := protoComments(reg, svc.File, nil, "Method", int32(svcIdx), methProtoPath, int32(methIdx))
 				if err := updateSwaggerDataFromComments(operationObject, methComments); err != nil {
 					panic(err)
 				}
@@ -1069,6 +1069,8 @@ func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []str
 var messageProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "MessageType")
 var nestedProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "NestedType")
 var packageProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
+var serviceProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Service")
+var methodProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method")
 
 func isProtoPathMatches(paths []int32, outerPaths []int32, typeName string, typeIndex int32, fieldPaths []int32) bool {
 	if typeName == "Package" && typeIndex == packageProtoPath {
@@ -1084,31 +1086,39 @@ func isProtoPathMatches(paths []int32, outerPaths []int32, typeName string, type
 		return false
 	}
 
-	typeNameDescriptor := reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil))
-	if len(outerPaths) > 0 {
-		if paths[0] != messageProtoPath || paths[1] != outerPaths[0] {
+	if typeName == "Method" {
+		if paths[0] != serviceProtoPath || paths[2] != methodProtoPath {
 			return false
 		}
 		paths = paths[2:]
-		outerPaths = outerPaths[1:]
+	} else {
+		typeNameDescriptor := reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil))
 
-		for i, v := range outerPaths {
-			if paths[i*2] != nestedProtoPath || paths[i*2+1] != v {
+		if len(outerPaths) > 0 {
+			if paths[0] != messageProtoPath || paths[1] != outerPaths[0] {
 				return false
 			}
-		}
-		paths = paths[len(outerPaths)*2:]
+			paths = paths[2:]
+			outerPaths = outerPaths[1:]
 
-		if typeName == "MessageType" {
-			typeName = "NestedType"
-		}
-		typeNameDescriptor = reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil))
-	}
+			for i, v := range outerPaths {
+				if paths[i*2] != nestedProtoPath || paths[i*2+1] != v {
+					return false
+				}
+			}
+			paths = paths[len(outerPaths)*2:]
 
-	if paths[0] != protoPathIndex(typeNameDescriptor, typeName) || paths[1] != typeIndex {
-		return false
+			if typeName == "MessageType" {
+				typeName = "NestedType"
+			}
+			typeNameDescriptor = reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil))
+		}
+
+		if paths[0] != protoPathIndex(typeNameDescriptor, typeName) || paths[1] != typeIndex {
+			return false
+		}
+		paths = paths[2:]
 	}
-	paths = paths[2:]
 
 	for i, v := range fieldPaths {
 		if paths[i] != v {
