@@ -39,7 +39,8 @@ func NewABitOfEverythingServiceApiWithBasePath(basePath string) *ABitOfEverythin
 }
 
 /**
- * 
+ * Create a new ABitOfEverything
+ * This API creates a new ABitOfEverything
  *
  * @param floatValue 
  * @param doubleValue 
