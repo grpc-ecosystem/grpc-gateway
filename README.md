@@ -18,9 +18,9 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
 
 #### (Optional)ProtocolBuffers 3.0.0-beta-3 or later
 
-In project, we have provided  gRPC stub and reverse-proxy so that this step is optional.
+In project, we have provided gRPC stub and reverse-proxy so that this step is optional.
 
-If you want to enerate gRPC stub and reverse-proxy by yourself, you need to install ProtocolBuffers 3.0.0-beta-3 or later. 
+If you want to generate gRPC stub and reverse-proxy by yourself, you need to install ProtocolBuffers 3.0.0-beta-3 or later. 
 
 You can download the binary release from [releases](https://github.com/google/protobuf/releases) or compile the source release. 
 
@@ -29,10 +29,10 @@ cd /tmp
 wget https://github.com/google/protobuf/releases/download/v3.5.1/protoc-3.5.1-linux-x86_64.zip
 mkdir protobuf
 tar -xzvf protoc-3.5.1-linux-x86_64.zip -C ./protobuf
-exprot PATH=$PATH:./protobuf/bin
+export PATH=$PATH:./protobuf/bin
 ```
 
-> note: you can chose to  download other os realeas on https://github.com/google/protobuf/releases instead of linux realease
+> note: you can choose to download other os realeases on https://github.com/google/protobuf/releases instead of linux realease
 
 
 
@@ -49,7 +49,7 @@ go get -u github.com/tronprotocol/grpc-gateway
 cd $GOPATH/src/github.com/tronprotocol/grpc-gateway
 ```
 
-3. (Optional) Generate gRPC stub and reverse-proxy. Make sure you have install protoc
+3. (Optional) Generate gRPC stub and reverse-proxy. Make sure you have installed protoc
 
 ```
 ./gen_proto.sh
@@ -68,7 +68,7 @@ go run tron_http/main.go -port 50051 -host 10.0.8.214
 curl -X POST -k http://localhost:8086/wallet/listwitnesses
 ```
 
-If you get account-list jsonn data, congratulations
+If you get account-list json data, congratulations
 
 
 
@@ -89,7 +89,7 @@ It helps you to provide your APIs in both gRPC and RESTful style at the same tim
 
 ## Background
 
-gRPC is great -- it generates API clients and server stubs in many programming languages, it is fast, easy-to-use, bandwidth-efficient and its design is combat-proven by Google.
+gRPC is great -- it generates API clients and server stubs in many programming languages. It is fast, easy-to-use, bandwidth-efficient and its design is combat-proven by Google.
 However, you might still want to provide a traditional RESTful API as well. Reasons can range from maintaining backwards-compatibility, supporting languages or clients not well supported by gRPC to simply maintaining the aesthetics and tooling involved with a RESTful architecture.
 
 This project aims to provide that HTTP+JSON interface to your gRPC service. A small amount of configuration in your service to attach HTTP semantics is all that's needed to generate a reverse-proxy with this library.
@@ -98,7 +98,7 @@ This project aims to provide that HTTP+JSON interface to your gRPC service. A sm
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to Golang import path.
 They are compatible to [the parameters with same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
 
-In addition we also support the `request_context` parameter in order to use the `http.Request`'s Context (only for Go 1.7 and above).
+In addition, we also support the `request_context` parameter in order to use the `http.Request`'s Context (only for Go 1.7 and above).
 This parameter can be useful to pass request scoped context between the gateway and the gRPC service.
 
 `protoc-gen-grpc-gateway` also supports some more command line flags to control logging. You can give these flags together with parameters above. Run `protoc-gen-grpc-gateway --help` for more details about the flags.
