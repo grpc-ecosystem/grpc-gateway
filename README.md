@@ -1,6 +1,8 @@
 # Note
-The project is just used for *testing* grpc api of java-tron.
-You should *not* be dependent on this project to develop your Wallet or other dApp.
+This project is only for **testing** usability of gRPC api and **cann't** guarantee a stable service.
+
+So you should **not** be dependent on this project to develop your Wallet or other dApp.
+
 
 
 
