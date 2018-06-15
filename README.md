@@ -1,3 +1,9 @@
+# Note
+The project is just used for *testing* grpc api of java-tron.
+You should *not* be dependent on this project to develop your Wallet or other dApp.
+
+
+
 # Requirements
 
 #### Go 1.6 or higher
@@ -57,7 +63,7 @@ go run tron_http/main.go -port 50051 -host 10.0.8.214
 5. Test API of tron http
 
 ```
-curl -X POST -k http://localhost:8086/wallet/listaccounts
+curl -X POST -k http://localhost:8086/wallet/listwitnesses
 ```
 
 If you get account-list jsonn data, congratulations
