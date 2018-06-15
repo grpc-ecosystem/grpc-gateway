@@ -68,9 +68,9 @@ go run tron_http/main.go -port 50051 -host 10.0.8.214
 curl -X POST -k http://localhost:8086/wallet/listwitnesses
 ```
 
-If you get account-list json data, congratulations
+If you get witness-list json data, congratulations
 
-
+> Note: json to protobuf, bytes should be passed via base64 formate
 
 
 
