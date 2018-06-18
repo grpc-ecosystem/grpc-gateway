@@ -82,6 +82,16 @@ service Wallet {
     };
   };
 
+  rpc CreateAccount (AccountCreateContract) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/createaccount"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/createaccount"
+      }
+    };
+  };
+
   rpc CreateWitness (WitnessCreateContract) returns (Transaction) {
     option (google.api.http) = {
       post: "/wallet/createwitness"
@@ -182,14 +192,14 @@ service Wallet {
     };
   }
   rpc GetAccountNet (Account) returns (AccountNetMessage) {
-      option (google.api.http) = {
+    option (google.api.http) = {
         post: "/wallet/getaccountnet"
         body: "*"
         additional_bindings {
           get: "/wallet/getaccountnet"
         }
       };
-    };
+  };
   rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
     option (google.api.http) = {
       post: "/wallet/getassetissuebyname"
@@ -273,6 +283,15 @@ service Wallet {
         }
       };
   }
+  rpc GetPaginatedAssetIssueList (PaginatedMessage) returns (AssetIssueList) {
+    option (google.api.http) = {
+        post: "/wallet/getpaginatedassetissuelist"
+        body: "*"
+        additional_bindings {
+          get: "/wallet/getpaginatedassetissuelist"
+        }
+      };
+  }
   rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
     option (google.api.http) = {
       post: "/wallet/totaltransaction"
@@ -323,32 +342,14 @@ service WalletSolidity {
       }
     };
   }
-  rpc GetAssetIssueListByTimestamp (NumberMessage) returns (AssetIssueList) {
-    option (google.api.http) = {
-      post: "/walletsolidity/getassetissuelistbytimestamp"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/getassetissuelistbytimestamp"
-      }
-    };
-  }
-  rpc GetAssetIssueByAccount (Account) returns (AssetIssueList) {
-    option (google.api.http) = {
-      post: "/walletsolidity/getassetissuebyaccount"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/getassetissuebyaccount"
-      }
-    };
-  }
-  rpc GetAssetIssueByName (BytesMessage) returns (AssetIssueContract) {
-    option (google.api.http) = {
-      post: "/walletsolidity/getassetissuebyname"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/getassetissuebyname"
-      }
-    };
+  rpc GetPaginatedAssetIssueList (PaginatedMessage) returns (AssetIssueList) {
+       option (google.api.http) = {
+        post: "/walletsolidity/getpaginatedassetissuelist"
+        body: "*"
+        additional_bindings {
+          get: "/walletsolidity/getpaginatedassetissuelist"
+        }
+      };
   }
   rpc GetNowBlock (EmptyMessage) returns (Block) {
     option (google.api.http) = {
@@ -368,76 +369,25 @@ service WalletSolidity {
       }
     };
   }
-  //get transaction
-  rpc TotalTransaction (EmptyMessage) returns (NumberMessage) {
-    option (google.api.http) = {
-      post: "/walletsolidity/totaltransaction"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/totaltransaction"
-      }
-    };
-  }
-  rpc GetTransactionById (BytesMessage) returns (Transaction) {
-    option (google.api.http) = {
-      post: "/walletsolidity/gettransactionbyid"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/gettransactionbyid"
-      }
-    };
-  }
-  rpc GetTransactionsByTimestamp (TimePaginatedMessage) returns (TransactionList) {
-    option (google.api.http) = {
-      post: "/walletsolidity/gettransactionsbytimestamp"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/gettransactionsbytimestamp"
-      }
-    };
-  }
-  rpc GetTransactionsByTimestampCount (TimeMessage) returns (NumberMessage) {
-    option (google.api.http) = {
-      post: "/walletsolidity/gettransactionsbytimestampcount"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/gettransactionsbytimestampcount"
-      }
-    };
-  }
+};
+
+service WalletExtension {
+
   rpc GetTransactionsFromThis (AccountPaginated) returns (TransactionList) {
     option (google.api.http) = {
-      post: "/walletsolidity/gettransactionsfromthis"
+      post: "/walletextension/gettransactionsfromthis"
       body: "*"
       additional_bindings {
-        get: "/walletsolidity/gettransactionsfromthis"
+        get: "/walletextension/gettransactionsfromthis"
       }
     };
   }
   rpc GetTransactionsToThis (AccountPaginated) returns (TransactionList) {
     option (google.api.http) = {
-      post: "/walletsolidity/gettransactionstothis"
+      post: "/walletextension/gettransactionstothis"
       body: "*"
       additional_bindings {
-        get: "/walletsolidity/gettransactionstothis"
-      }
-    };
-  }
-  rpc GetTransactionsFromThisCount (Account) returns (NumberMessage) {
-    option (google.api.http) = {
-      post: "/walletsolidity/gettransactionsfromthiscount"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/gettransactionsfromthiscount"
-      }
-    };
-  }
-  rpc GetTransactionsToThisCount (Account) returns (NumberMessage) {
-    option (google.api.http) = {
-      post: "/walletsolidity/gettransactionstothiscount"
-      body: "*"
-      additional_bindings {
-        get: "/walletsolidity/gettransactionstothiscount"
+        get: "/walletextension/gettransactionstothis"
       }
     };
   }
@@ -556,4 +506,11 @@ message AccountNetMessage {
   int64 NetLimit = 4;
   map<string, int64> assetNetUsed = 5;
   map<string, int64> assetNetLimit = 6;
+  int64 TotalNetLimit = 7;
+  int64 TotalNetWeight = 8;
+}
+
+message PaginatedMessage {
+  int64 offset = 1;
+  int64 limit = 2;
 }

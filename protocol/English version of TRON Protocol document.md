@@ -214,7 +214,6 @@
      `num`: number of corresponding asset.  
      `start_time`: the starting date of this contract – e.g._20170312_.  
      `end_time`: the expiring date of this contract – e.g. _20170512_.  
-     `decay_ratio`: decay ratio.  
      `vote_score`: the vote score of this contract received – e.g. _12343_.  
      `description`: the description of this contract – e.g.”_trondada_”.  
      `url`: the url of this contract – e.g. “_https://www.noonetrust.com_”.
@@ -226,8 +225,7 @@
            int32 trx_num = 6;   
            int32 num = 8;   
            int64 start_time = 9;   
-           int64 end_time = 10;   
-           int32 decay_ratio = 15;   
+           int64 end_time = 10;  
            int32 vote_score = 16;   
            bytes description = 20;   
            bytes url = 21; 
