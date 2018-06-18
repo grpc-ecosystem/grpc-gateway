@@ -310,6 +310,16 @@ service Wallet {
       }
     };
   }
+  //Warning: do not invoke this interface that the node provided by others.
+  rpc GetTransactionSign (TransactionSign) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/getTransactionSign"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/getTransactionSign"
+      }
+    };
+  };
 };
 
 
