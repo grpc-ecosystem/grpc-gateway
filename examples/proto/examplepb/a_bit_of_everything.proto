@@ -222,10 +222,10 @@ service ABitOfEverythingService {
 		option (google.api.http) = {
 			put: "/v2/example/a_bit_of_everything/{abe.uuid}"
 			body: "abe"
-            additional_bindings {
-                patch: "/v2/example/a_bit_of_everything/{abe.uuid}"
-                body: "abe"
-            }
+			additional_bindings {
+				patch: "/v2/example/a_bit_of_everything/{abe.uuid}"
+				body: "abe"
+			}
 		};
 	}
 	rpc PatchWithFieldMaskInBody(UpdateV2Request) returns (google.protobuf.Empty) {

@@ -19,10 +19,7 @@ func FieldMaskFromRequestBody(r io.Reader) (*field_mask.FieldMask, error) {
 		return nil, err
 	}
 
-	queue := []struct {
-		path []string
-		node interface{}
-	}{{node: root}}
+	queue := []fieldMaskPathItem{{node: root}}
 	for len(queue) > 0 {
 		// dequeue an item
 		item := queue[0]
@@ -31,10 +28,7 @@ func FieldMaskFromRequestBody(r io.Reader) (*field_mask.FieldMask, error) {
 		if m, ok := item.node.(map[string]interface{}); ok {
 			// if the item is an object, then enqueue all of its children
 			for k, v := range m {
-				queue = append(queue, struct {
-					path []string
-					node interface{}
-				}{path: append(item.path, generator.CamelCase(k)), node: v})
+				queue = append(queue, fieldMaskPathItem{path: append(item.path, generator.CamelCase(k)), node: v})
 			}
 		} else if len(item.path) > 0 {
 			// otherwise, it's a leaf node so print its path
@@ -43,6 +37,15 @@ func FieldMaskFromRequestBody(r io.Reader) (*field_mask.FieldMask, error) {
 	}
 
 	return fm, nil
+}
+
+// fieldMaskPathItem stores a in-progress deconstruction of a path for a fieldmask
+type fieldMaskPathItem struct {
+	// the list of prior fields leading up to node
+	path []string
+
+	// a generic decoded json object the current item to inspect for further path extraction
+	node interface{}
 }
 
 // CamelCaseFieldMask updates the given FieldMask by converting all of its paths to CamelCase, using the same heuristic
