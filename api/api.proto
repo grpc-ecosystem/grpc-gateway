@@ -313,10 +313,10 @@ service Wallet {
   //Warning: do not invoke this interface provided by others.
   rpc GetTransactionSign (TransactionSign) returns (Transaction) {
     option (google.api.http) = {
-      post: "/wallet/getTransactionSign"
+      post: "/wallet/gettransactionsign"
       body: "*"
       additional_bindings {
-        get: "/wallet/getTransactionSign"
+        get: "/wallet/gettransactionsign"
       }
     };
   };
