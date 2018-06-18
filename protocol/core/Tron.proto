@@ -194,6 +194,11 @@ message Transactions {
   repeated Transaction transactions = 1;
 }
 
+message TransactionSign {
+  Transaction transaction = 1;
+  bytes privateKey = 2;
+}
+
 message BlockHeader {
   message raw {
     int64 timestamp = 1;
