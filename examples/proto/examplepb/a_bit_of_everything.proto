@@ -3,6 +3,7 @@ option go_package = "examplepb";
 package grpc.gateway.examples.examplepb;
 
 import "google/api/annotations.proto";
+import "google/protobuf/field_mask.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
 import "examples/proto/sub/message.proto";
@@ -177,6 +178,11 @@ enum NumericEnum {
 	ONE  = 1;
 }
 
+message UpdateV2Request {
+	ABitOfEverything abe = 1;
+	google.protobuf.FieldMask update_mask = 2;
+}
+
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
 service ABitOfEverythingService {
@@ -209,6 +215,22 @@ service ABitOfEverythingService {
 	rpc Update(ABitOfEverything) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
 			put: "/v1/example/a_bit_of_everything/{uuid}"
+			body: "*"
+		};
+	}
+	rpc UpdateV2(UpdateV2Request) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			put: "/v2/example/a_bit_of_everything/{abe.uuid}"
+			body: "abe"
+            additional_bindings {
+                patch: "/v2/example/a_bit_of_everything/{abe.uuid}"
+                body: "abe"
+            }
+		};
+	}
+	rpc PatchWithFieldMaskInBody(UpdateV2Request) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			patch: "/v2a/example/a_bit_of_everything/{abe.uuid}"
 			body: "*"
 		};
 	}

@@ -148,7 +148,8 @@ func (x *streamServiceBulkEchoClient) Recv() (*sub.StringMessage, error) {
 	return m, nil
 }
 
-// StreamServiceServer is the server API for StreamService service.
+// Server API for StreamService service
+
 type StreamServiceServer interface {
 	BulkCreate(StreamService_BulkCreateServer) error
 	List(*empty.Empty, StreamService_ListServer) error

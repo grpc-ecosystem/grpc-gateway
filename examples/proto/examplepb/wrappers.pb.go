@@ -139,7 +139,8 @@ func (c *wrappersServiceClient) Create(ctx context.Context, in *Wrappers, opts .
 	return out, nil
 }
 
-// WrappersServiceServer is the server API for WrappersService service.
+// Server API for WrappersService service
+
 type WrappersServiceServer interface {
 	Create(context.Context, *Wrappers) (*Wrappers, error)
 }

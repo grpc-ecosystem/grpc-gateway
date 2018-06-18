@@ -469,7 +469,8 @@ func (c *echoServiceClient) EchoDelete(ctx context.Context, in *SimpleMessage, o
 	return out, nil
 }
 
-// EchoServiceServer is the server API for EchoService service.
+// Server API for EchoService service
+
 type EchoServiceServer interface {
 	// Echo method receives a simple message and returns it.
 	//

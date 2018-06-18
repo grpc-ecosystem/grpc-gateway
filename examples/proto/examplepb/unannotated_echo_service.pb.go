@@ -152,7 +152,8 @@ func (c *unannotatedEchoServiceClient) EchoDelete(ctx context.Context, in *Unann
 	return out, nil
 }
 
-// UnannotatedEchoServiceServer is the server API for UnannotatedEchoService service.
+// Server API for UnannotatedEchoService service
+
 type UnannotatedEchoServiceServer interface {
 	// Echo method receives a simple message and returns it.
 	//

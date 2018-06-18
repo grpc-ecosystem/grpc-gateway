@@ -9,6 +9,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
+	generator2 "github.com/golang/protobuf/protoc-gen-go/generator"
 )
 
 type param struct {
@@ -52,6 +53,26 @@ func (b binding) QueryParamFilter() queryParamFilter {
 		seqs = append(seqs, strings.Split(p.FieldPath.String(), "."))
 	}
 	return queryParamFilter{utilities.NewDoubleArray(seqs)}
+}
+
+// FieldMaskField returns the golang-style name of the variable for a FieldMask, if there is exactly one of that type in
+// the message. Otherwise, it returns an empty string.
+func (b binding) FieldMaskField() string {
+	var fieldMaskField *descriptor.Field
+	for _, f := range b.Method.RequestType.Fields {
+		if f.GetTypeName() == ".google.protobuf.FieldMask" {
+			// if there is more than 1 FieldMask for this request, then return none
+			if fieldMaskField != nil {
+				return ""
+			}
+			fieldMaskField = f
+		}
+	}
+
+	if fieldMaskField != nil {
+		return generator2.CamelCase(fieldMaskField.GetName())
+	}
+	return ""
 }
 
 // queryParamFilter is a wrapper of utilities.DoubleArray which provides String() to output DoubleArray.Encoding in a stable and predictable format.
@@ -163,7 +184,11 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 		grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	dec := marshaler.NewDecoder(req.Body)
+	body, berr := ioutil.ReadAll(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	dec := marshaler.NewDecoder(bytes.NewReader(body))
 	for {
 		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 		err = dec.Decode(&protoReq)
@@ -210,9 +235,24 @@ var (
 	var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 	var metadata runtime.ServerMetadata
 {{if .Body}}
-	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
+	body, berr := ioutil.ReadAll(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(bytes.NewReader(body)).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
+	{{- if and (eq (.HTTPMethod) "PATCH") (.FieldMaskField)}}
+	if protoReq.{{.FieldMaskField}} != nil && len(protoReq.{{.FieldMaskField}}.GetPaths()) > 0 {
+		runtime.CamelCaseFieldMask(protoReq.{{.FieldMaskField}})
+	} else {
+		if fieldMask, err := runtime.FieldMaskFromRequestBody(bytes.NewReader(body)); err != nil {
+			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		} else {
+			protoReq.{{.FieldMaskField}} = fieldMask
+		}
+	}
+	{{end}}
 {{end}}
 {{if .PathParams}}
 	var (
@@ -266,7 +306,11 @@ var (
 		grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	dec := marshaler.NewDecoder(req.Body)
+	body, berr := ioutil.ReadAll(req.Body)
+	if berr != nil {
+		return nil, metadata, berr
+	}
+	dec := marshaler.NewDecoder(bytes.NewReader(body))
 	handleSend := func() error {
 		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 		err := dec.Decode(&protoReq)

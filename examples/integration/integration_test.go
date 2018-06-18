@@ -18,9 +18,10 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
 	gw "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
-	sub "github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/genproto/protobuf/field_mask"
 )
 
 type errorBody struct {
@@ -541,6 +542,149 @@ func testABELookup(t *testing.T, port int) {
 	if got, want := resp.Header.Get("Grpc-Metadata-Uuid"), want.Uuid; got != want {
 		t.Errorf("Grpc-Metadata-Uuid was %s, wanted %s", got, want)
 	}
+}
+
+// TestABEPatch demonstrates partially updating a resource.
+// First, we'll create an ABE resource with known values for string_value and int32_value
+// Then, issue a PATCH request updating only the string_value
+// Then, GET the resource and verify that string_value is changed, but int32_value isn't
+func TestABEPatch(t *testing.T) {
+	port := 8080
+
+	// create a record with a known string_value and int32_value
+	uuid := postABE(t, port, gw.ABitOfEverything{StringValue: "strprefix/bar", Int32Value: 32})
+
+	// issue PATCH request, only updating string_value
+	req, err := http.NewRequest(
+		http.MethodPatch,
+		fmt.Sprintf("http://localhost:%d/v2/example/a_bit_of_everything/%s", port, uuid),
+		strings.NewReader(`{"string_value": "strprefix/bar"}`),
+	)
+	if err != nil {
+		t.Fatalf("http.NewRequest(PATCH) failed with %v; want success", err)
+	}
+	patchResp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatalf("failed to issue PATCH request: %v", err)
+	}
+	if got, want := patchResp.StatusCode, http.StatusOK; got != want {
+		if body, err := ioutil.ReadAll(patchResp.Body); err != nil {
+			t.Errorf("patchResp body couldn't be read: %v", err)
+		} else {
+			t.Errorf("patchResp.StatusCode= %d; want %d resp: %v", got, want, string(body))
+		}
+	}
+
+	// issue GET request, verifying that string_value is changed and int32_value is not
+	getRespBody := getABE(t, port, uuid)
+	if got, want := getRespBody.StringValue, "strprefix/bar"; got != want {
+		t.Errorf("string_value= %q; want %q", got, want)
+	}
+	if got, want := getRespBody.Int32Value, int32(32); got != want {
+		t.Errorf("int_32_value= %d; want %d", got, want)
+	}
+}
+
+// TestABEPatchBody demonstrates the ability to specify an update mask within the request body.
+// First, we create an ABE resource with known string_value and single_nested values
+// Then, issue a PATCH request specifying a mask that will completely overwrite the single_nested value and not touch the string_value value
+func TestABEPatchBody(t *testing.T) {
+	port := 8080
+	originalABE := gw.ABitOfEverything{
+		StringValue:  "rabbit",
+		SingleNested: &gw.ABitOfEverything_Nested{Name: "some value that will get overwritten", Amount: 345},
+	}
+	uuid := postABE(t, port, originalABE)
+
+	patchBody := gw.UpdateV2Request{Abe: &gw.ABitOfEverything{
+		StringValue:  "some value that won't get updated because it's not in the field mask",
+		SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
+	}, UpdateMask: &field_mask.FieldMask{Paths: []string{"single_nested"}}}
+	patchReq, err := http.NewRequest(
+		http.MethodPatch,
+		fmt.Sprintf("http://localhost:%d/v2a/example/a_bit_of_everything/%s", port, uuid),
+		strings.NewReader(mustMarshal(t, patchBody)),
+	)
+	if err != nil {
+		t.Fatalf("http.NewRequest(PATCH) failed with %v; want success", err)
+	}
+	patchResp, err := http.DefaultClient.Do(patchReq)
+	if err != nil {
+		t.Fatalf("failed to issue PATCH request: %v", err)
+	}
+	if got, want := patchResp.StatusCode, http.StatusOK; got != want {
+		if body, err := ioutil.ReadAll(patchResp.Body); err != nil {
+			t.Errorf("patchResp body couldn't be read: %v", err)
+		} else {
+			t.Errorf("patchResp.StatusCode= %d; want %d resp: %v", got, want, string(body))
+		}
+	}
+
+	updatedABE := getABE(t, port, uuid)
+	if got, want := updatedABE.StringValue, originalABE.StringValue; got != want {
+		t.Errorf("abe.StringValue= %q; want %q", got, want)
+	}
+	if got, want := updatedABE.SingleNested.Name, patchBody.Abe.SingleNested.Name; got != want {
+		t.Errorf("abe.SingleNested.Name= %q; want %q", got, want)
+	}
+	if got, want := updatedABE.SingleNested.Amount, patchBody.Abe.SingleNested.Amount; got != want {
+		t.Errorf("abe.SingleNested.Amount= %d; want %d", got, want)
+	}
+}
+
+func mustMarshal(t *testing.T, i interface{}) string {
+	b, err := json.Marshal(i)
+	if err != nil {
+		t.Fatalf("failed to marshal %#v: %v", i, err)
+	}
+
+	return string(b)
+}
+
+func postABE(t *testing.T, port int, abe gw.ABitOfEverything) (uuid string) {
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
+	postResp, err := http.Post(url, "application/json", strings.NewReader(mustMarshal(t, abe)))
+	if err != nil {
+		t.Fatalf("http.Post(%q) failed with %v; want success", url, err)
+		return
+	}
+	body, err := ioutil.ReadAll(postResp.Body)
+	if err != nil {
+		t.Fatalf("postResp body couldn't be read: %v", err)
+	}
+	var f struct {
+		UUID string `json:"uuid"`
+	}
+	if err := json.Unmarshal(body, &f); err != nil {
+		t.Fatalf("postResp body couldn't be unmarshalled: %v. body: %s", err, string(body))
+	}
+	if f.UUID == "" {
+		t.Fatalf("want uuid from postResp, but got none. body: %s", string(body))
+	}
+	return f.UUID
+}
+
+func getABE(t *testing.T, port int, uuid string) gw.ABitOfEverything {
+	gURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%s", port, uuid)
+	getResp, err := http.Get(gURL)
+	if err != nil {
+		t.Fatalf("http.Get(%s) failed with %v; want success", gURL, err)
+	}
+	defer getResp.Body.Close()
+
+	if got, want := getResp.StatusCode, http.StatusOK; got != want {
+		t.Fatalf("getResp.StatusCode= %d, want %d. resp: %v", got, want, getResp)
+	}
+	var getRespBody gw.ABitOfEverything
+	body, err := ioutil.ReadAll(getResp.Body)
+	if err != nil {
+		t.Fatalf("getResp body couldn't be read: %v", err)
+	}
+	if err := json.Unmarshal(body, &getRespBody); err != nil {
+		t.Fatalf("getResp body couldn't be unmarshalled: %v body: %s", err, string(body))
+	}
+
+	return getRespBody
 }
 
 func testABELookupNotFound(t *testing.T, port int) {

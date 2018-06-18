@@ -507,7 +507,8 @@ func (x *flowCombinationRpcPathNestedStreamClient) Recv() (*EmptyProto, error) {
 	return m, nil
 }
 
-// FlowCombinationServer is the server API for FlowCombination service.
+// Server API for FlowCombination service
+
 type FlowCombinationServer interface {
 	RpcEmptyRpc(context.Context, *EmptyProto) (*EmptyProto, error)
 	RpcEmptyStream(*EmptyProto, FlowCombination_RpcEmptyStreamServer) error

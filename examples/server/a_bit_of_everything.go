@@ -161,6 +161,30 @@ func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABit
 	return new(empty.Empty), nil
 }
 
+func (s *_ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.UpdateV2Request) (*empty.Empty, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	glog.Info(msg)
+
+	if msg.UpdateMask == nil || len(msg.UpdateMask.GetPaths()) == 0 {
+		return s.Update(ctx, msg.Abe)
+	}
+
+	if a, ok := s.v[msg.Abe.Uuid]; ok {
+			applyFieldMask(a, msg.Abe, msg.UpdateMask)
+	} else {
+		return nil, status.Errorf(codes.NotFound, "not found")
+	}
+	return new(empty.Empty), nil
+}
+
+// PatchWithFieldMaskInBody differs from UpdateV2 only in that this method exposes the field mask in the request body,
+// so that clients can specify their mask explicitly
+func (s *_ABitOfEverythingServer) PatchWithFieldMaskInBody(ctx context.Context, request *examples.UpdateV2Request) (*empty.Empty, error) {
+	return s.UpdateV2(ctx, request)
+}
+
 func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessage) (*empty.Empty, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
