@@ -816,7 +816,7 @@ func (m *TXOutputs) GetOutputs() []*TXOutput {
 
 type Transaction struct {
 	RawData *TransactionRaw `protobuf:"bytes,1,opt,name=raw_data,json=rawData" json:"raw_data,omitempty"`
-	// only support size = 1,  repeated list here for muti-sig extenstion
+	// only support size = 1,  repeated list here for muti-sig extension
 	Signature [][]byte              `protobuf:"bytes,2,rep,name=signature,proto3" json:"signature,omitempty"`
 	Ret       []*Transaction_Result `protobuf:"bytes,5,rep,name=ret" json:"ret,omitempty"`
 }
@@ -919,7 +919,7 @@ type TransactionRaw struct {
 	Auths         []*Acuthrity `protobuf:"bytes,9,rep,name=auths" json:"auths,omitempty"`
 	// data not used
 	Data []byte `protobuf:"bytes,10,opt,name=data,proto3" json:"data,omitempty"`
-	// only support size = 1,  repeated list here for extenstion
+	// only support size = 1,  repeated list here for extension
 	Contract []*Transaction_Contract `protobuf:"bytes,11,rep,name=contract" json:"contract,omitempty"`
 	// scripts not used
 	Scripts   []byte `protobuf:"bytes,12,opt,name=scripts,proto3" json:"scripts,omitempty"`
