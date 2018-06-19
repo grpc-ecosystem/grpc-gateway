@@ -37,10 +37,12 @@ func allowCORS(h http.Handler) http.Handler {
 }
 
 func preflightHandler(w http.ResponseWriter, r *http.Request) {
-	headers := []string{"Content-Type", "Accept"}
+	headers := []string{"Content-Type", "Accept","X-Requested-With","token"}
 	w.Header().Set("Access-Control-Allow-Headers", strings.Join(headers, ","))
-	methods := []string{"GET", "HEAD", "POST", "PUT", "DELETE"}
+	methods := []string{"GET", "HEAD", "POST", "PUT", "DELETE","TRACE","OPTIONS","PATCH"}
 	w.Header().Set("Access-Control-Allow-Methods", strings.Join(methods, ","))
+	orgin:=[]string{"*"}
+	w.Header().Set("Access-Control-Allow-Origin", strings.Join(orgin, ","));
 	glog.Infof("preflight request for %s", r.URL.Path)
 	return
 }
