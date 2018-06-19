@@ -343,7 +343,7 @@ service WalletSolidity {
     };
   }
   rpc GetPaginatedAssetIssueList (PaginatedMessage) returns (AssetIssueList) {
-       option (google.api.http) = {
+    option (google.api.http) = {
         post: "/walletsolidity/getpaginatedassetissuelist"
         body: "*"
         additional_bindings {
@@ -366,6 +366,15 @@ service WalletSolidity {
       body: "*"
       additional_bindings {
         get: "/walletsolidity/getblockbynum"
+      }
+    };
+  }
+  rpc GetTransactionById (BytesMessage) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/gettransactionbyid"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/gettransactionbyid"
       }
     };
   }
