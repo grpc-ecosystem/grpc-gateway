@@ -320,6 +320,24 @@ service Wallet {
       }
     };
   };
+  rpc CreateAdresss (BytesMessage) returns (BytesMessage) {
+    option (google.api.http) = {
+      post: "/wallet/createadresss"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/createadresss"
+      }
+    };
+  };
+  rpc EasyTransfer (EasyTransferMessage) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/easytransfer"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/easytransfer"
+      }
+    };
+  };
 };
 
 
