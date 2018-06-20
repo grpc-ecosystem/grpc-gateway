@@ -586,52 +586,79 @@ func TestABEPatch(t *testing.T) {
 }
 
 // TestABEPatchBody demonstrates the ability to specify an update mask within the request body.
-// First, we create an ABE resource with known string_value and single_nested values
-// Then, issue a PATCH request specifying a mask that will completely overwrite the single_nested value and not touch the string_value value
 func TestABEPatchBody(t *testing.T) {
 	port := 8080
-	originalABE := gw.ABitOfEverything{
-		StringValue:  "rabbit",
-		SingleNested: &gw.ABitOfEverything_Nested{Name: "some value that will get overwritten", Amount: 345},
-	}
-	uuid := postABE(t, port, originalABE)
 
-	patchBody := gw.UpdateV2Request{Abe: &gw.ABitOfEverything{
-		StringValue:  "some value that won't get updated because it's not in the field mask",
-		SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
-	}, UpdateMask: &field_mask.FieldMask{Paths: []string{"single_nested"}}}
-	patchReq, err := http.NewRequest(
-		http.MethodPatch,
-		fmt.Sprintf("http://localhost:%d/v2a/example/a_bit_of_everything/%s", port, uuid),
-		strings.NewReader(mustMarshal(t, patchBody)),
-	)
-	if err != nil {
-		t.Fatalf("http.NewRequest(PATCH) failed with %v; want success", err)
-	}
-	patchResp, err := http.DefaultClient.Do(patchReq)
-	if err != nil {
-		t.Fatalf("failed to issue PATCH request: %v", err)
-	}
-	if got, want := patchResp.StatusCode, http.StatusOK; got != want {
-		if body, err := ioutil.ReadAll(patchResp.Body); err != nil {
-			t.Errorf("patchResp body couldn't be read: %v", err)
-		} else {
-			t.Errorf("patchResp.StatusCode= %d; want %d resp: %v", got, want, string(body))
-		}
-	}
+	for _, tc := range []struct {
+		name          string
+		originalValue gw.ABitOfEverything
+		input         gw.UpdateV2Request
+		want          gw.ABitOfEverything
+	}{
+		{
+			name: "with fieldmask provided",
+			originalValue: gw.ABitOfEverything{
+				StringValue:  "rabbit",
+				SingleNested: &gw.ABitOfEverything_Nested{Name: "some value that will get overwritten", Amount: 345},
+			},
+			input: gw.UpdateV2Request{Abe: &gw.ABitOfEverything{
+				StringValue:  "some value that won't get updated because it's not in the field mask",
+				SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
+			}, UpdateMask: &field_mask.FieldMask{Paths: []string{"single_nested"}}},
+			want: gw.ABitOfEverything{StringValue: "rabbit", SingleNested: &gw.ABitOfEverything_Nested{Amount: 456}},
+		},
+		{
+			name: "with nil fieldmask",
+			originalValue: gw.ABitOfEverything{
+				StringValue:  "some value that will get overwritten",
+				SingleNested: &gw.ABitOfEverything_Nested{Name: "some value that will get overwritten", Amount: 345},
+			},
+			input: gw.UpdateV2Request{Abe: &gw.ABitOfEverything{
+				StringValue:  "some updated value because the fieldMask is nil",
+				SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
+			}, UpdateMask: nil},
+			want: gw.ABitOfEverything{
+				StringValue:  "some updated value because the fieldMask is nil",
+				SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			originalABE := tc.originalValue
+			uuid := postABE(t, port, originalABE)
 
-	updatedABE := getABE(t, port, uuid)
-	if got, want := updatedABE.StringValue, originalABE.StringValue; got != want {
-		t.Errorf("abe.StringValue= %q; want %q", got, want)
-	}
-	if got, want := updatedABE.SingleNested.Name, patchBody.Abe.SingleNested.Name; got != want {
-		t.Errorf("abe.SingleNested.Name= %q; want %q", got, want)
-	}
-	if got, want := updatedABE.SingleNested.Amount, patchBody.Abe.SingleNested.Amount; got != want {
-		t.Errorf("abe.SingleNested.Amount= %d; want %d", got, want)
+			patchBody := tc.input
+			patchReq, err := http.NewRequest(
+				http.MethodPatch,
+				fmt.Sprintf("http://localhost:%d/v2a/example/a_bit_of_everything/%s", port, uuid),
+				strings.NewReader(mustMarshal(t, patchBody)),
+			)
+			if err != nil {
+				t.Fatalf("http.NewRequest(PATCH) failed with %v; want success", err)
+			}
+			patchResp, err := http.DefaultClient.Do(patchReq)
+			if err != nil {
+				t.Fatalf("failed to issue PATCH request: %v", err)
+			}
+			if got, want := patchResp.StatusCode, http.StatusOK; got != want {
+				if body, err := ioutil.ReadAll(patchResp.Body); err != nil {
+					t.Errorf("patchResp body couldn't be read: %v", err)
+				} else {
+					t.Errorf("patchResp.StatusCode= %d; want %d resp: %v", got, want, string(body))
+				}
+			}
+
+			want, got := tc.want, getABE(t, port, uuid)
+			got.Uuid = "" // empty out uuid so we don't need to worry about it in comparisons
+			if !reflect.DeepEqual(want, got) {
+				t.Errorf("want %v\ngot %v", want, got)
+			}
+		})
 	}
 }
 
+// mustMarshal marshals the given object into a json string, calling t.Fatal if an error occurs. Useful in testing to
+// inline marshalling whenever you don't expect the marshalling to return an error
 func mustMarshal(t *testing.T, i interface{}) string {
 	b, err := json.Marshal(i)
 	if err != nil {
@@ -641,6 +668,7 @@ func mustMarshal(t *testing.T, i interface{}) string {
 	return string(b)
 }
 
+// postABE conveniently creates a new ABE record for ease in testing
 func postABE(t *testing.T, port int, abe gw.ABitOfEverything) (uuid string) {
 	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	postResp, err := http.Post(url, "application/json", strings.NewReader(mustMarshal(t, abe)))
@@ -664,6 +692,7 @@ func postABE(t *testing.T, port int, abe gw.ABitOfEverything) (uuid string) {
 	return f.UUID
 }
 
+// getABE conveniently fetches an ABE record for ease in testing
 func getABE(t *testing.T, port int, uuid string) gw.ABitOfEverything {
 	gURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%s", port, uuid)
 	getResp, err := http.Get(gURL)
