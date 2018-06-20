@@ -310,6 +310,36 @@ service Wallet {
       }
     };
   }
+  //Warning: do not invoke this interface provided by others.
+  rpc GetTransactionSign (TransactionSign) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/gettransactionsign"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/gettransactionsign"
+      }
+    };
+  };
+  //Warning: do not invoke this interface provided by others.
+  rpc CreateAdresss (BytesMessage) returns (BytesMessage) {
+    option (google.api.http) = {
+      post: "/wallet/createadresss"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/createadresss"
+      }
+    };
+  };
+  //Warning: do not invoke this interface provided by others.
+  rpc EasyTransfer (EasyTransferMessage) returns (EasyTransferResponse) {
+    option (google.api.http) = {
+      post: "/wallet/easytransfer"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/easytransfer"
+      }
+    };
+  };
 };
 
 
@@ -343,7 +373,7 @@ service WalletSolidity {
     };
   }
   rpc GetPaginatedAssetIssueList (PaginatedMessage) returns (AssetIssueList) {
-       option (google.api.http) = {
+    option (google.api.http) = {
         post: "/walletsolidity/getpaginatedassetissuelist"
         body: "*"
         additional_bindings {
@@ -366,6 +396,15 @@ service WalletSolidity {
       body: "*"
       additional_bindings {
         get: "/walletsolidity/getblockbynum"
+      }
+    };
+  }
+  rpc GetTransactionById (BytesMessage) returns (Transaction) {
+    option (google.api.http) = {
+      post: "/wallet/gettransactionbyid"
+      body: "*"
+      additional_bindings {
+        get: "/wallet/gettransactionbyid"
       }
     };
   }
@@ -513,4 +552,15 @@ message AccountNetMessage {
 message PaginatedMessage {
   int64 offset = 1;
   int64 limit = 2;
+}
+
+message EasyTransferMessage{
+  bytes passPhrase = 1;
+  bytes toAddress = 2;
+  int64 amount = 3;
+}
+
+message EasyTransferResponse{
+  Transaction transaction = 1;
+  Return result = 2;
 }
