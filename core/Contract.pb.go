@@ -32,6 +32,7 @@ It has these top-level messages:
 	PongMessage
 	FindNeighbours
 	Neighbours
+	BackupMessage
 	AccountId
 	Vote
 	Account
