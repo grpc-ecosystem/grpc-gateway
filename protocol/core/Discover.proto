@@ -37,3 +37,8 @@ message Neighbours {
   repeated Endpoint neighbours = 2;
   int64 timestamp = 3;
 }
+
+message BackupMessage {
+  bool flag = 1;
+  int32 priority = 2;
+}
