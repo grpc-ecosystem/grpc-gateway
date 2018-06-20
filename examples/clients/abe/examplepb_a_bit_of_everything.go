@@ -14,6 +14,7 @@ import (
 	"time"
 )
 
+// Intentionaly complicated message type to cover many features of Protobuf.
 type ExamplepbABitOfEverything struct {
 
 	SingleNested ABitOfEverythingNested `json:"single_nested,omitempty"`
