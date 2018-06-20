@@ -199,12 +199,6 @@ message TransactionSign {
   bytes privateKey = 2;
 }
 
-message EasyTransferMessage{
-  bytes passPhrase = 1;
-  bytes toAddress = 2;
-  int64 amount = 3;
-}
-
 message BlockHeader {
   message raw {
     int64 timestamp = 1;

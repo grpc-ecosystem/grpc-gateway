@@ -320,6 +320,7 @@ service Wallet {
       }
     };
   };
+  //Warning: do not invoke this interface provided by others.
   rpc CreateAdresss (BytesMessage) returns (BytesMessage) {
     option (google.api.http) = {
       post: "/wallet/createadresss"
@@ -329,7 +330,8 @@ service Wallet {
       }
     };
   };
-  rpc EasyTransfer (EasyTransferMessage) returns (Transaction) {
+  //Warning: do not invoke this interface provided by others.
+  rpc EasyTransfer (EasyTransferMessage) returns (EasyTransferResponse) {
     option (google.api.http) = {
       post: "/wallet/easytransfer"
       body: "*"
@@ -550,4 +552,15 @@ message AccountNetMessage {
 message PaginatedMessage {
   int64 offset = 1;
   int64 limit = 2;
+}
+
+message EasyTransferMessage{
+  bytes passPhrase = 1;
+  bytes toAddress = 2;
+  int64 amount = 3;
+}
+
+message EasyTransferResponse{
+  Transaction transaction = 1;
+  Return result = 2;
 }
