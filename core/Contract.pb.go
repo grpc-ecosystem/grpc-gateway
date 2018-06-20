@@ -44,6 +44,7 @@ It has these top-level messages:
 	TXOutputs
 	Transaction
 	Transactions
+	TransactionSign
 	BlockHeader
 	Block
 	ChainInventory
