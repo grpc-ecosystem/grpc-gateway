@@ -1,11 +1,3 @@
-# Note
-This project is only for **testing** usability of gRPC api and **cann't** guarantee a stable service.
-
-So you should **not** be dependent on this project to develop your Wallet or other dApp.
-
-
-
-
 # Requirements
 
 #### Go 1.6 or higher
@@ -52,6 +44,9 @@ cd $GOPATH/src/github.com/tronprotocol/grpc-gateway
 3. (Optional) Generate gRPC stub and reverse-proxy. Make sure you have installed protoc
 
 ```
+go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+go get -u github.com/golang/protobuf/protoc-gen-go
 ./gen_proto.sh
 ```
 4. run proxy-server
