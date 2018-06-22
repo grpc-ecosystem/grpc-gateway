@@ -401,10 +401,20 @@ service WalletSolidity {
   }
   rpc GetTransactionById (BytesMessage) returns (Transaction) {
     option (google.api.http) = {
-      post: "/wallet/gettransactionbyid"
+      post: "/walletsolidity/gettransactionbyid"
       body: "*"
       additional_bindings {
-        get: "/wallet/gettransactionbyid"
+        get: "/walletsolidity/gettransactionbyid"
+      }
+    };
+  }
+
+  rpc GetTransactionInfoById (BytesMessage) returns (TransactionInfo) {
+    option (google.api.http) = {
+      post: "/walletsolidity/gettransactioninfobyid"
+      body: "*"
+      additional_bindings {
+        get: "/walletsolidity/gettransactioninfobyid"
       }
     };
   }
