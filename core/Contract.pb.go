@@ -44,6 +44,7 @@ It has these top-level messages:
 	TXInput
 	TXOutputs
 	Transaction
+	TransactionInfo
 	Transactions
 	TransactionSign
 	BlockHeader
