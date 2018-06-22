@@ -221,6 +221,9 @@ service ABitOfEverythingService {
 		}
 	};
 
+	// Create a new ABitOfEverything
+	//
+	// This API creates a new ABitOfEverything
 	rpc Create(ABitOfEverything) returns (ABitOfEverything) {
 		// TODO add enum_value
 		option (google.api.http) = {
