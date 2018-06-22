@@ -56,7 +56,7 @@ or
 go run tron_http/main.go -port 50051 -host localhost
 
 # listern is your http port
-go run tron_http/main.go -port 50051 -host 10.0.8.214 -listern
+go run tron_http/main.go -port 50051 -host 10.0.8.214 -listern 8080
 ```
 5. Test API of tron http
 
