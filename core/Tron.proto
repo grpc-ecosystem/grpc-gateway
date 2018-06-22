@@ -190,6 +190,13 @@ message Transaction {
   repeated Result ret = 5;
 }
 
+message TransactionInfo {
+ bytes id = 1;
+ int64 fee = 2;
+ int64 blockNumber = 3;
+ int64 blockTimeStamp = 4;
+}
+
 message Transactions {
   repeated Transaction transactions = 1;
 }
