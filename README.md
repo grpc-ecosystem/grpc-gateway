@@ -18,9 +18,9 @@ You can download the binary release from [releases](https://github.com/google/pr
 
 ```sh
 cd /tmp
-wget https://github.com/google/protobuf/releases/download/v3.5.1/protoc-3.5.1-linux-x86_64.zip
-mkdir protobuf
-tar -xzvf protoc-3.5.1-linux-x86_64.zip -C ./protobuf
+wget https://github.com/google/protobuf/releases/download/v3.5.1/protobuf-all-3.5.1.tar.gz
+tar -xzvf protobuf-all-3.5.1.tar.gz
+cd protobuf-3.5.1 && ./configure --prefix=$HOME/protobuf && make && make install
 export PATH=$PATH:./protobuf/bin
 ```
 
