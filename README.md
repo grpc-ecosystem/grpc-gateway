@@ -54,8 +54,9 @@ go get -u github.com/golang/protobuf/protoc-gen-go
 go run tron_http/main.go
 or
 go run tron_http/main.go -port 50051 -host localhost
-or
-go run tron_http/main.go -port 50051 -host 10.0.8.214
+
+# listern is your http port
+go run tron_http/main.go -port 50051 -host 10.0.8.214 -listern
 ```
 5. Test API of tron http
 
