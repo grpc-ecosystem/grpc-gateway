@@ -26,7 +26,10 @@ export PATH=$PATH:./protobuf/bin
 
 > note: you can choose to download other os realeases on https://github.com/google/protobuf/releases instead of linux realease
 
-
+# Update code 
+```
+go get -u github.com/tronprotocol/grpc-gateway
+```
 
 # Usage
 
@@ -49,7 +52,7 @@ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
 go get -u github.com/golang/protobuf/protoc-gen-go
 ./gen_proto.sh
 ```
-4. run proxy-server
+4. run proxy-server. Make sure your code is lastest version. 
 ```
 go run tron_http/main.go
 or
@@ -67,6 +70,7 @@ curl -X POST -k http://localhost:8086/wallet/listwitnesses
 If you get witness-list json data, congratulations
 
 > Note: json to protobuf, bytes should be passed via base64 formate
+
 
 
 
