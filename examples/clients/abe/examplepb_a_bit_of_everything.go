@@ -19,7 +19,7 @@ type ExamplepbABitOfEverything struct {
 
 	SingleNested ABitOfEverythingNested `json:"single_nested,omitempty"`
 
-	Uuid string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 
 	Nested []ABitOfEverythingNested `json:"nested,omitempty"`
 
