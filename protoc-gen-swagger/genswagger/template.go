@@ -64,6 +64,17 @@ func getEnumDefault(enum *descriptor.Enum) string {
 	return ""
 }
 
+func getFieldName(f *descriptor.Field) string {
+	fd := f.FieldDescriptorProto
+
+	n, err := extractJsonNameFromFieldDescriptor(fd)
+	if err != nil || n == "" {
+		return f.GetName()
+	}
+
+	return n
+}
+
 // messageToQueryParameters converts a message to a list of swagger query parameters.
 func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter) (params []swaggerParameterObject, err error) {
 	for _, field := range message.Fields {
@@ -107,7 +118,7 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 			desc = strings.TrimSpace(schema.Title + ". " + schema.Description)
 		}
 		param := swaggerParameterObject{
-			Name:        prefix + field.GetName(),
+			Name:        prefix + getFieldName(field),
 			Description: desc,
 			In:          "query",
 			Type:        schema.Type,
@@ -143,7 +154,7 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 		return nil, fmt.Errorf("unknown message type %s", fieldType)
 	}
 	for _, nestedField := range msg.Fields {
-		p, err := queryParams(msg, nestedField, prefix+field.GetName()+".", reg, pathParams)
+		p, err := queryParams(msg, nestedField, prefix+getFieldName(field)+".", reg, pathParams)
 		if err != nil {
 			return nil, err
 		}
@@ -251,7 +262,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 				panic(err)
 			}
 
-			schema.Properties = append(schema.Properties, keyVal{f.GetName(), fieldValue})
+			schema.Properties = append(schema.Properties, keyVal{getFieldName(f), fieldValue})
 		}
 		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
 	}
@@ -1232,6 +1243,24 @@ func extractSwaggerOptionFromFileDescriptor(file *pbdescriptor.FileDescriptorPro
 		return nil, fmt.Errorf("extension is %T; want a Swagger object", ext)
 	}
 	return opts, nil
+}
+
+func extractJsonNameFromFieldDescriptor(fd *pbdescriptor.FieldDescriptorProto) (string, error) {
+	if fd.Options == nil {
+		return "", nil
+	}
+	if !proto.HasExtension(fd.Options, swagger_options.E_Openapiv2JsonName) {
+		return "", nil
+	}
+	ext, err := proto.GetExtension(fd.Options, swagger_options.E_Openapiv2JsonName)
+	if err != nil {
+		return "", err
+	}
+	name, ok := ext.(*string)
+	if !ok {
+		return "", fmt.Errorf("extension is %T; want a string", ext)
+	}
+	return *name, nil
 }
 
 func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Registry, refs refMap) swaggerSchemaObject {

@@ -72,4 +72,6 @@ type ExamplepbABitOfEverything struct {
 	TimestampValue time.Time `json:"timestamp_value,omitempty"`
 
 	RepeatedEnumValue []ExamplepbNumericEnum `json:"repeated_enum_value,omitempty"`
+
+	Id bool `json:"@id,omitempty"`
 }

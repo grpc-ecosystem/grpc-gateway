@@ -189,6 +189,8 @@ message ABitOfEverything {
 
 	// repeated enum value. it is comma-separated in query
 	repeated NumericEnum repeated_enum_value = 28;
+
+	bool at_id = 30 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_json_name) = "@id"];
 }
 
 message Body {
