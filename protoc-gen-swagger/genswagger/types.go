@@ -204,6 +204,21 @@ type swaggerSchemaObject struct {
 	Title       string `json:"title,omitempty"`
 
 	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
+
+	MultipleOf       float64  `json:"multiple_of,omitempty"`
+	Maximum          float64  `json:"maximum,omitempty"`
+	ExclusiveMaximum bool     `json:"exclusive_maximum,omitempty"`
+	Minimum          float64  `json:"minimum,omitempty"`
+	ExclusiveMinimum bool     `json:"exclusive_minimum,omitempty"`
+	MaxLength        uint64   `json:"max_length,omitempty"`
+	MinLength        uint64   `json:"min_length,omitempty"`
+	Pattern          string   `json:"pattern,omitempty"`
+	MaxItems         uint64   `json:"max_items,omitempty"`
+	MinItems         uint64   `json:"min_items,omitempty"`
+	UniqueItems      bool     `json:"unique_items,omitempty"`
+	MaxProperties    uint64   `json:"max_properties,omitempty"`
+	MinProperties    uint64   `json:"min_properties,omitempty"`
+	Required         []string `json:"required,omitempty"`
 }
 
 // http://swagger.io/specification/#referenceObject

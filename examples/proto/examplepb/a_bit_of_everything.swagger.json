@@ -1001,7 +1001,8 @@
           "$ref": "#/definitions/ABitOfEverythingNested"
         },
         "uuid": {
-          "type": "string"
+          "type": "string",
+          "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         },
         "nested": {
           "type": "array",
@@ -1121,7 +1122,10 @@
       "externalDocs": {
         "description": "Find out more about ABitOfEverything",
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"
-      }
+      },
+      "required": [
+        "uuid"
+      ]
     },
     "examplepbBody": {
       "type": "object",
