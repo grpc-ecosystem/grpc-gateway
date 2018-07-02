@@ -187,8 +187,7 @@ This parameter can be useful to pass request scoped context between the gateway 
 * [How gRPC error codes map to HTTP status codes in the response](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/errors.go#L15)
 * HTTP request source IP is added as `X-Forwarded-For` gRPC request header
 * HTTP request host is added as `X-Forwarded-Host` gRPC request header
-* HTTP `Authorization` header is added as `authorization` gRPC request header 
+* HTTP `Authorization` header is added as `authorization` gRPC request header
 * Remaining Permanent HTTP header keys (as specified by the IANA [here](http://www.iana.org/assignments/message-headers/message-headers.xhtml) are prefixed with `grpcgateway-` and added with their values to gRPC request header
-* HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata (prefixed with `grpcgateway-`)
+* HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata (after removing prefix 'Grpc-Metadata-')
 * While configurable, the default {un,}marshaling uses [jsonpb](https://godoc.org/github.com/golang/protobuf/jsonpb) with `OrigName: true`.
-
