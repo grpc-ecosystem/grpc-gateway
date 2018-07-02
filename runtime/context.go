@@ -19,7 +19,8 @@ import (
 // parameters to or from a gRPC call.
 const MetadataHeaderPrefix = "Grpc-Metadata-"
 
-// MetadataPrefix is the prefix for grpc-gateway supplied custom metadata fields.
+// MetadataPrefix is prepended to permanent HTTP header keys (as specified
+// by the IANA) when added to the gRPC context.
 const MetadataPrefix = "grpcgateway-"
 
 // MetadataTrailerPrefix is prepended to gRPC metadata as it is converted to
