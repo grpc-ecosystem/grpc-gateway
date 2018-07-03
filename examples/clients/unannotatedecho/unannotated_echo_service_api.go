@@ -41,7 +41,7 @@ func NewUnannotatedEchoServiceApiWithBasePath(basePath string) *UnannotatedEchoS
  * Echo method receives a simple message and returns it.
  * The message posted as the id parameter will also be returned.
  *
- * @param id 
+ * @param id Id represents the message identifier.
  * @return *ExamplepbUnannotatedSimpleMessage
  */
 func (a UnannotatedEchoServiceApi) Echo(id string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
@@ -102,7 +102,7 @@ func (a UnannotatedEchoServiceApi) Echo(id string) (*ExamplepbUnannotatedSimpleM
  * Echo method receives a simple message and returns it.
  * The message posted as the id parameter will also be returned.
  *
- * @param id 
+ * @param id Id represents the message identifier.
  * @param num 
  * @param duration 
  * @return *ExamplepbUnannotatedSimpleMessage
