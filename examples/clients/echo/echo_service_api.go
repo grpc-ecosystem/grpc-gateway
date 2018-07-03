@@ -41,7 +41,7 @@ func NewEchoServiceApiWithBasePath(basePath string) *EchoServiceApi {
  * Echo method receives a simple message and returns it.
  * The message posted as the id parameter will also be returned.
  *
- * @param id 
+ * @param id Id represents the message identifier.
  * @return *ExamplepbSimpleMessage
  */
 func (a EchoServiceApi) Echo(id string) (*ExamplepbSimpleMessage, *APIResponse, error) {
@@ -102,7 +102,7 @@ func (a EchoServiceApi) Echo(id string) (*ExamplepbSimpleMessage, *APIResponse, 
  * Echo method receives a simple message and returns it.
  * The message posted as the id parameter will also be returned.
  *
- * @param id 
+ * @param id Id represents the message identifier.
  * @param num 
  * @param lineNum 
  * @param lang 
@@ -179,7 +179,7 @@ func (a EchoServiceApi) Echo2(id string, num string, lineNum string, lang string
  * Echo method receives a simple message and returns it.
  * The message posted as the id parameter will also be returned.
  *
- * @param id 
+ * @param id Id represents the message identifier.
  * @param num 
  * @param lang 
  * @param lineNum 
@@ -256,7 +256,7 @@ func (a EchoServiceApi) Echo3(id string, num string, lang string, lineNum string
  * Echo method receives a simple message and returns it.
  * The message posted as the id parameter will also be returned.
  *
- * @param id 
+ * @param id Id represents the message identifier.
  * @param lineNum 
  * @param statusNote 
  * @param num 

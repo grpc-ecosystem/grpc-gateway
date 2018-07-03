@@ -524,13 +524,14 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				parameters := swaggerParametersObject{}
 				for _, parameter := range b.PathParams {
 
-					var paramType, paramFormat string
+					var paramType, paramFormat, desc string
 					switch pt := parameter.Target.GetType(); pt {
 					case pbdescriptor.FieldDescriptorProto_TYPE_GROUP, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE:
 						if descriptor.IsWellKnownType(parameter.Target.GetTypeName()) {
 							schema := schemaOfField(parameter.Target, reg, customRefs)
 							paramType = schema.Type
 							paramFormat = schema.Format
+							desc = schema.Description
 						} else {
 							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
@@ -545,10 +546,15 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						}
 					}
 
+					if desc == "" {
+						desc = fieldProtoComments(reg, parameter.Target.Message, parameter.Target)
+					}
+
 					parameters = append(parameters, swaggerParameterObject{
-						Name:     parameter.String(),
-						In:       "path",
-						Required: true,
+						Name:        parameter.String(),
+						Description: desc,
+						In:          "path",
+						Required:    true,
 						// Parameters in gRPC-Gateway can only be strings?
 						Type:   paramType,
 						Format: paramFormat,
@@ -557,6 +563,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				// Now check if there is a body parameter
 				if b.Body != nil {
 					var schema swaggerSchemaObject
+					desc := ""
 
 					if len(b.Body.FieldPath) == 0 {
 						schema = swaggerSchemaObject{
@@ -567,11 +574,15 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					} else {
 						lastField := b.Body.FieldPath[len(b.Body.FieldPath)-1]
 						schema = schemaOfField(lastField.Target, reg, customRefs)
+						if schema.Description != "" {
+							desc = schema.Description
+						} else {
+							desc = fieldProtoComments(reg, lastField.Target.Message, lastField.Target)
+						}
 					}
 
-					desc := ""
 					if meth.GetClientStreaming() {
-						desc = "(streaming inputs)"
+						desc += " (streaming inputs)"
 					}
 					parameters = append(parameters, swaggerParameterObject{
 						Name:        "body",

@@ -32,6 +32,7 @@
         "parameters": [
           {
             "name": "id",
+            "description": "Id represents the message identifier.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -58,6 +59,7 @@
         "parameters": [
           {
             "name": "id",
+            "description": "Id represents the message identifier.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -137,6 +139,7 @@
         "parameters": [
           {
             "name": "id",
+            "description": "Id represents the message identifier.",
             "in": "path",
             "required": true,
             "type": "string"
@@ -216,6 +219,7 @@
         "parameters": [
           {
             "name": "id",
+            "description": "Id represents the message identifier.",
             "in": "path",
             "required": true,
             "type": "string"
