@@ -219,7 +219,7 @@ func (a ABitOfEverythingServiceApi) CreateBody(body ExamplepbABitOfEverything) (
 /**
  * 
  *
- * @param singleNestedName 
+ * @param singleNestedName name is nested field.
  * @param body 
  * @return *ExamplepbABitOfEverything
  */

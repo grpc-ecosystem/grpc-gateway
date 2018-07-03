@@ -516,6 +516,7 @@
         "parameters": [
           {
             "name": "single_nested.name",
+            "description": "name is nested field.",
             "in": "path",
             "required": true,
             "type": "string"
