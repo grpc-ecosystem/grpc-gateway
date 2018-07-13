@@ -13,7 +13,7 @@ import (
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
@@ -121,25 +121,23 @@ func TestJSONPbMarshal(t *testing.T) {
 
 func TestJSONPbMarshalFields(t *testing.T) {
 	var m runtime.JSONPb
-	for _, spec := range []struct {
-		val  interface{}
-		want string
-	}{} {
-		buf, err := m.Marshal(spec.val)
+	m.EnumsAsInts = true // builtin fixtures include an enum, expected to be marshaled as int
+	for _, spec := range builtinFieldFixtures {
+		buf, err := m.Marshal(spec.data)
 		if err != nil {
-			t.Errorf("m.Marshal(%#v) failed with %v; want success", spec.val, err)
+			t.Errorf("m.Marshal(%#v) failed with %v; want success", spec.data, err)
 		}
-		if got, want := string(buf), spec.want; got != want {
-			t.Errorf("m.Marshal(%#v) = %q; want %q", spec.val, got, want)
+		if got, want := string(buf), spec.json; got != want {
+			t.Errorf("m.Marshal(%#v) = %q; want %q", spec.data, got, want)
 		}
 	}
 
-	m.EnumsAsInts = true
+	m.EnumsAsInts = false
 	buf, err := m.Marshal(examplepb.NumericEnum_ONE)
 	if err != nil {
 		t.Errorf("m.Marshal(%#v) failed with %v; want success", examplepb.NumericEnum_ONE, err)
 	}
-	if got, want := string(buf), "1"; got != want {
+	if got, want := string(buf), `"ONE"`; got != want {
 		t.Errorf("m.Marshal(%#v) = %q; want %q", examplepb.NumericEnum_ONE, got, want)
 	}
 }

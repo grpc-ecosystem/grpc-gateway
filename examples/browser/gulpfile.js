@@ -16,11 +16,11 @@ gulp.task('bower', function(){
 });
 
 gulp.task('server', shell.task([
-  'go build -o bin/example-server github.com/grpc-ecosystem/grpc-gateway/examples/server/cmd/example-server',
+  'go build -o bin/example-server github.com/grpc-ecosystem/grpc-gateway/examples/cmd/example-grpc-server',
 ]));
 
 gulp.task('gateway', shell.task([
-  'go build -o bin/example-gw github.com/grpc-ecosystem/grpc-gateway/examples',
+  'go build -o bin/example-gw github.com/grpc-ecosystem/grpc-gateway/examples/cmd/example-gateway-server',
 ]));
 
 gulp.task('serve-server', ['server'], function(){
@@ -32,9 +32,9 @@ gulp.task('serve-server', ['server'], function(){
 
 gulp.task('serve-gateway', ['gateway', 'serve-server'], function(){
   gprocess.start('gateway-server', 'bin/example-gw', [
-      '--logtostderr', '--swagger_dir', path.join(__dirname, "../examplepb"),
+      '--logtostderr', '--swagger_dir', path.join(__dirname, "../proto/examplepb"),
   ]);
-  gulp.watch('bin/example-gateway', ['serve-gateway']);
+  gulp.watch('bin/example-gw', ['serve-gateway']);
 });
 
 gulp.task('backends', ['serve-gateway', 'serve-server']);

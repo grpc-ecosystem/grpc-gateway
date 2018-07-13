@@ -65,7 +65,7 @@ func Uint32(val string) (uint32, error) {
 // Bytes converts the given string representation of a byte sequence into a slice of bytes
 // A bytes sequence is encoded in URL-safe base64 without padding
 func Bytes(val string) ([]byte, error) {
-	b, err := base64.RawURLEncoding.DecodeString(val)
+	b, err := base64.StdEncoding.DecodeString(val)
 	if err != nil {
 		return nil, err
 	}

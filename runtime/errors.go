@@ -1,19 +1,19 @@
 package runtime
 
 import (
+	"context"
 	"io"
 	"net/http"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
-	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
 )
 
 // HTTPStatusFromCode converts a gRPC error code into the corresponding HTTP response status.
+// See: https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
 func HTTPStatusFromCode(code codes.Code) int {
 	switch code {
 	case codes.OK:
@@ -25,7 +25,7 @@ func HTTPStatusFromCode(code codes.Code) int {
 	case codes.InvalidArgument:
 		return http.StatusBadRequest
 	case codes.DeadlineExceeded:
-		return http.StatusRequestTimeout
+		return http.StatusGatewayTimeout
 	case codes.NotFound:
 		return http.StatusNotFound
 	case codes.AlreadyExists:
@@ -35,7 +35,7 @@ func HTTPStatusFromCode(code codes.Code) int {
 	case codes.Unauthenticated:
 		return http.StatusUnauthorized
 	case codes.ResourceExhausted:
-		return http.StatusForbidden
+		return http.StatusTooManyRequests
 	case codes.FailedPrecondition:
 		return http.StatusPreconditionFailed
 	case codes.Aborted:
@@ -52,7 +52,7 @@ func HTTPStatusFromCode(code codes.Code) int {
 		return http.StatusInternalServerError
 	}
 
-	grpclog.Printf("Unknown gRPC error code: %v", code)
+	grpclog.Infof("Unknown gRPC error code: %v", code)
 	return http.StatusInternalServerError
 }
 
@@ -93,34 +93,24 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 	}
 
 	body := &errorBody{
-		Error: s.Message(),
-		Code:  int32(s.Code()),
-	}
-
-	for _, detail := range s.Details() {
-		if det, ok := detail.(proto.Message); ok {
-			a, err := ptypes.MarshalAny(det)
-			if err != nil {
-				grpclog.Printf("Failed to marshal any: %v", err)
-			} else {
-				body.Details = append(body.Details, a)
-			}
-		}
+		Error:   s.Message(),
+		Code:    int32(s.Code()),
+		Details: s.Proto().GetDetails(),
 	}
 
 	buf, merr := marshaler.Marshal(body)
 	if merr != nil {
-		grpclog.Printf("Failed to marshal error message %q: %v", body, merr)
+		grpclog.Infof("Failed to marshal error message %q: %v", body, merr)
 		w.WriteHeader(http.StatusInternalServerError)
 		if _, err := io.WriteString(w, fallback); err != nil {
-			grpclog.Printf("Failed to write response: %v", err)
+			grpclog.Infof("Failed to write response: %v", err)
 		}
 		return
 	}
 
 	md, ok := ServerMetadataFromContext(ctx)
 	if !ok {
-		grpclog.Printf("Failed to extract ServerMetadata from context")
+		grpclog.Infof("Failed to extract ServerMetadata from context")
 	}
 
 	handleForwardResponseServerMetadata(w, mux, md)
@@ -128,7 +118,7 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 	st := HTTPStatusFromCode(s.Code())
 	w.WriteHeader(st)
 	if _, err := w.Write(buf); err != nil {
-		grpclog.Printf("Failed to write response: %v", err)
+		grpclog.Infof("Failed to write response: %v", err)
 	}
 
 	handleForwardResponseTrailer(w, md)

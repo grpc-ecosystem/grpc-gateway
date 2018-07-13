@@ -1,6 +1,12 @@
 #!/bin/bash
 set -euo pipefail
+USE_BAZEL=${USE_BAZEL:-false}
 > coverage.txt
+
+if [ "${USE_BAZEL}" = true ]; then
+	# TODO(yugui) Support bazel
+	exit 0
+fi
 
 for d in $(go list ./... | grep -v vendor); do
     go test -race -coverprofile=profile.out -covermode=atomic $d

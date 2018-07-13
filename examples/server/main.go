@@ -1,17 +1,27 @@
 package server
 
 import (
+	"context"
 	"net"
 
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
+	"github.com/golang/glog"
+	examples "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
 	"google.golang.org/grpc"
 )
 
-func Run() error {
-	l, err := net.Listen("tcp", ":9090")
+// Run starts the example gRPC service.
+// "network" and "address" are passed to net.Listen.
+func Run(ctx context.Context, network, address string) error {
+	l, err := net.Listen(network, address)
 	if err != nil {
 		return err
 	}
+	defer func() {
+		if err := l.Close(); err != nil {
+			glog.Errorf("Failed to close %s %s: %v", network, address, err)
+		}
+	}()
+
 	s := grpc.NewServer()
 	examples.RegisterEchoServiceServer(s, newEchoServer())
 	examples.RegisterFlowCombinationServer(s, newFlowCombinationServer())
@@ -20,6 +30,9 @@ func Run() error {
 	examples.RegisterABitOfEverythingServiceServer(s, abe)
 	examples.RegisterStreamServiceServer(s, abe)
 
-	s.Serve(l)
-	return nil
+	go func() {
+		defer s.GracefulStop()
+		<-ctx.Done()
+	}()
+	return s.Serve(l)
 }

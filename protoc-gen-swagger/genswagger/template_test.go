@@ -1,7 +1,7 @@
 package genswagger
 
 import (
-	"encoding/json"
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -253,32 +253,26 @@ func TestApplyTemplateSimple(t *testing.T) {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
 	}
-	got := new(swaggerObject)
-	err = json.Unmarshal([]byte(result), got)
-	if err != nil {
-		t.Errorf("json.Unmarshal(%s) failed with %v; want success", result, err)
-		return
-	}
-	if want, is, name := "2.0", got.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
+	if want, is, name := "2.0", result.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
-	if want, is, name := "", got.BasePath, "BasePath"; !reflect.DeepEqual(is, want) {
+	if want, is, name := "", result.BasePath, "BasePath"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
-	if want, is, name := []string{"http", "https"}, got.Schemes, "Schemes"; !reflect.DeepEqual(is, want) {
+	if want, is, name := []string{"http", "https"}, result.Schemes, "Schemes"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
-	if want, is, name := []string{"application/json"}, got.Consumes, "Consumes"; !reflect.DeepEqual(is, want) {
+	if want, is, name := []string{"application/json"}, result.Consumes, "Consumes"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
-	if want, is, name := []string{"application/json"}, got.Produces, "Produces"; !reflect.DeepEqual(is, want) {
+	if want, is, name := []string{"application/json"}, result.Produces, "Produces"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 
 	// If there was a failure, print out the input and the json result for debugging.
 	if t.Failed() {
 		t.Errorf("had: %s", file)
-		t.Errorf("got: %s", result)
+		t.Errorf("got: %s", fmt.Sprint(result))
 	}
 }
 
@@ -413,35 +407,29 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
 	}
-	var obj swaggerObject
-	err = json.Unmarshal([]byte(result), &obj)
-	if err != nil {
-		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
-		return
-	}
-	if want, got := "2.0", obj.Swagger; !reflect.DeepEqual(got, want) {
+	if want, got := "2.0", result.Swagger; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).Swagger = %s want to be %s", file, got, want)
 	}
-	if want, got := "", obj.BasePath; !reflect.DeepEqual(got, want) {
+	if want, got := "", result.BasePath; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).BasePath = %s want to be %s", file, got, want)
 	}
-	if want, got := []string{"http", "https"}, obj.Schemes; !reflect.DeepEqual(got, want) {
+	if want, got := []string{"http", "https"}, result.Schemes; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).Schemes = %s want to be %s", file, got, want)
 	}
-	if want, got := []string{"application/json"}, obj.Consumes; !reflect.DeepEqual(got, want) {
+	if want, got := []string{"application/json"}, result.Consumes; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).Consumes = %s want to be %s", file, got, want)
 	}
-	if want, got := []string{"application/json"}, obj.Produces; !reflect.DeepEqual(got, want) {
+	if want, got := []string{"application/json"}, result.Produces; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).Produces = %s want to be %s", file, got, want)
 	}
-	if want, got, name := "Generated for ExampleService.Echo - ", obj.Paths["/v1/echo"].Post.Summary, "Paths[/v1/echo].Post.Summary"; !reflect.DeepEqual(got, want) {
+	if want, got, name := "Generated for ExampleService.Echo - ", result.Paths["/v1/echo"].Post.Summary, "Paths[/v1/echo].Post.Summary"; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 	}
 
 	// If there was a failure, print out the input and the json result for debugging.
 	if t.Failed() {
 		t.Errorf("had: %s", file)
-		t.Errorf("got: %s", result)
+		t.Errorf("got: %s", fmt.Sprint(result))
 	}
 }
 
@@ -685,22 +673,16 @@ func TestApplyTemplateRequestWithUnusedReferences(t *testing.T) {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
 	}
-	var obj swaggerObject
-	err = json.Unmarshal([]byte(result), &obj)
-	if err != nil {
-		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
-		return
-	}
 
 	// Only EmptyMessage must be present, not ExampleMessage
-	if want, got, name := 1, len(obj.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
+	if want, got, name := 1, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
 	}
 
 	// If there was a failure, print out the input and the json result for debugging.
 	if t.Failed() {
 		t.Errorf("had: %s", file)
-		t.Errorf("got: %s", result)
+		t.Errorf("got: %s", fmt.Sprint(result))
 	}
 }
 
@@ -791,6 +773,7 @@ func TestFQMNtoSwaggerName(t *testing.T) {
 func TestSchemaOfField(t *testing.T) {
 	type test struct {
 		field    *descriptor.Field
+		refs     refMap
 		expected schemaCore
 	}
 
@@ -802,6 +785,7 @@ func TestSchemaOfField(t *testing.T) {
 					Type: protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
 				},
 			},
+			refs: make(refMap),
 			expected: schemaCore{
 				Type: "string",
 			},
@@ -814,6 +798,7 @@ func TestSchemaOfField(t *testing.T) {
 					Label: protodescriptor.FieldDescriptorProto_LABEL_REPEATED.Enum(),
 				},
 			},
+			refs: make(refMap),
 			expected: schemaCore{
 				Type: "array",
 				Items: &swaggerItemsObject{
@@ -829,6 +814,7 @@ func TestSchemaOfField(t *testing.T) {
 					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
 				},
 			},
+			refs: make(refMap),
 			expected: schemaCore{
 				Type: "string",
 			},
@@ -842,6 +828,7 @@ func TestSchemaOfField(t *testing.T) {
 					Label:    protodescriptor.FieldDescriptorProto_LABEL_REPEATED.Enum(),
 				},
 			},
+			refs: make(refMap),
 			expected: schemaCore{
 				Type: "array",
 				Items: &swaggerItemsObject{
@@ -857,6 +844,7 @@ func TestSchemaOfField(t *testing.T) {
 					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
 				},
 			},
+			refs: refMap{".example.Message": struct{}{}},
 			expected: schemaCore{
 				Ref: "#/definitions/exampleMessage",
 			},
@@ -893,7 +881,8 @@ func TestSchemaOfField(t *testing.T) {
 	})
 
 	for _, test := range tests {
-		actual := schemaOfField(test.field, reg)
+		refs := make(refMap)
+		actual := schemaOfField(test.field, reg, refs)
 		if e, a := test.expected.Type, actual.Type; e != a {
 			t.Errorf("Expected schemaOfField(%v).Type = %s, actual: %s", test.field, e, a)
 		}
@@ -902,6 +891,9 @@ func TestSchemaOfField(t *testing.T) {
 		}
 		if e, a := test.expected.Items.getType(), actual.Items.getType(); e != a {
 			t.Errorf("Expected schemaOfField(%v).Items.Type = %v, actual.Type: %v", test.field, e, a)
+		}
+		if !reflect.DeepEqual(refs, test.refs) {
+			t.Errorf("Expected schemaOfField(%v) to add refs %v, not %v", test.field, test.refs, refs)
 		}
 	}
 }

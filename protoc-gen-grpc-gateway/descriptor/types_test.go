@@ -161,22 +161,22 @@ func TestFieldPath(t *testing.T) {
 		Name:   "nest_field",
 		Target: nest2.Fields[0],
 	}
-	if got, want := c1.LHS(), "GetNestField()"; got != want {
-		t.Errorf("c1.LHS() = %q; want %q", got, want)
+	if got, want := c1.ValueExpr(), "GetNestField()"; got != want {
+		t.Errorf("c1.ValueExpr() = %q; want %q", got, want)
 	}
-	if got, want := c1.RHS(), "NestField"; got != want {
-		t.Errorf("c1.RHS() = %q; want %q", got, want)
+	if got, want := c1.AssignableExpr(), "NestField"; got != want {
+		t.Errorf("c1.AssignableExpr() = %q; want %q", got, want)
 	}
 
 	c2 := FieldPathComponent{
 		Name:   "nest2_field",
 		Target: nest.Fields[0],
 	}
-	if got, want := c2.LHS(), "Nest2Field"; got != want {
-		t.Errorf("c2.LHS() = %q; want %q", got, want)
+	if got, want := c2.ValueExpr(), "Nest2Field"; got != want {
+		t.Errorf("c2.ValueExpr() = %q; want %q", got, want)
 	}
-	if got, want := c2.LHS(), "Nest2Field"; got != want {
-		t.Errorf("c2.LHS() = %q; want %q", got, want)
+	if got, want := c2.ValueExpr(), "Nest2Field"; got != want {
+		t.Errorf("c2.ValueExpr() = %q; want %q", got, want)
 	}
 
 	fp := FieldPath{
@@ -185,8 +185,8 @@ func TestFieldPath(t *testing.T) {
 			Target: nest.Fields[1],
 		},
 	}
-	if got, want := fp.RHS("resp"), "resp.GetNestField().Nest2Field.GetNestField().TerminalField"; got != want {
-		t.Errorf("fp.RHS(%q) = %q; want %q", "resp", got, want)
+	if got, want := fp.AssignableExpr("resp"), "resp.GetNestField().Nest2Field.GetNestField().TerminalField"; got != want {
+		t.Errorf("fp.AssignableExpr(%q) = %q; want %q", "resp", got, want)
 	}
 
 	fp2 := FieldPath{
@@ -195,12 +195,12 @@ func TestFieldPath(t *testing.T) {
 			Target: nest2.Fields[1],
 		},
 	}
-	if got, want := fp2.RHS("resp"), "resp.Nest2Field.GetNestField().Nest2Field.TerminalField"; got != want {
-		t.Errorf("fp2.RHS(%q) = %q; want %q", "resp", got, want)
+	if got, want := fp2.AssignableExpr("resp"), "resp.Nest2Field.GetNestField().Nest2Field.TerminalField"; got != want {
+		t.Errorf("fp2.AssignableExpr(%q) = %q; want %q", "resp", got, want)
 	}
 
 	var fpEmpty FieldPath
-	if got, want := fpEmpty.RHS("resp"), "resp"; got != want {
-		t.Errorf("fpEmpty.RHS(%q) = %q; want %q", "resp", got, want)
+	if got, want := fpEmpty.AssignableExpr("resp"), "resp"; got != want {
+		t.Errorf("fpEmpty.AssignableExpr(%q) = %q; want %q", "resp", got, want)
 	}
 }

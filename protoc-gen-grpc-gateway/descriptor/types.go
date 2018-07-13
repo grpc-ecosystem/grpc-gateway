@@ -130,6 +130,16 @@ type Service struct {
 	Methods []*Method
 }
 
+// FQSN returns the fully qualified service name of this service.
+func (s *Service) FQSN() string {
+	components := []string{""}
+	if s.File.Package != nil {
+		components = append(components, s.File.GetPackage())
+	}
+	components = append(components, s.GetName())
+	return strings.Join(components, ".")
+}
+
 // Method wraps descriptor.MethodDescriptorProto for richer features.
 type Method struct {
 	// Service is the service which this method belongs to.
@@ -141,6 +151,14 @@ type Method struct {
 	// ResponseType is the message type of responses from this method.
 	ResponseType *Message
 	Bindings     []*Binding
+}
+
+// FQMN returns a fully qualified rpc method name of this method.
+func (m *Method) FQMN() string {
+	components := []string{}
+	components = append(components, m.Service.FQSN())
+	components = append(components, m.GetName())
+	return strings.Join(components, ".")
 }
 
 // Binding describes how an HTTP endpoint is bound to a gRPC method.
@@ -216,10 +234,10 @@ type Body struct {
 	FieldPath FieldPath
 }
 
-// RHS returns a right-hand-side expression in go to be used to initialize method request object.
+// AssignableExpr returns an assignable expression in Go to be used to initialize method request object.
 // It starts with "msgExpr", which is the go expression of the method request object.
-func (b Body) RHS(msgExpr string) string {
-	return b.FieldPath.RHS(msgExpr)
+func (b Body) AssignableExpr(msgExpr string) string {
+	return b.FieldPath.AssignableExpr(msgExpr)
 }
 
 // FieldPath is a path to a field from a request message.
@@ -242,22 +260,44 @@ func (p FieldPath) IsNestedProto3() bool {
 	return false
 }
 
-// RHS is a right-hand-side expression in go to be used to assign a value to the target field.
+// AssignableExpr is an assignable expression in Go to be used to assign a value to the target field.
 // It starts with "msgExpr", which is the go expression of the method request object.
-func (p FieldPath) RHS(msgExpr string) string {
+func (p FieldPath) AssignableExpr(msgExpr string) string {
 	l := len(p)
 	if l == 0 {
 		return msgExpr
 	}
-	components := []string{msgExpr}
+
+	var preparations []string
+	components := msgExpr
 	for i, c := range p {
+		// Check if it is a oneOf field.
+		if c.Target.OneofIndex != nil {
+			index := c.Target.OneofIndex
+			msg := c.Target.Message
+			oneOfName := gogen.CamelCase(msg.GetOneofDecl()[*index].GetName())
+			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
+
+			components = components + "." + oneOfName
+			s := `if %s == nil {
+				%s =&%s{}
+			} else if _, ok := %s.(*%s); !ok {
+				return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *%s, but: %%t\n",%s)
+			}`
+
+			preparations = append(preparations, fmt.Sprintf(s, components, components, oneofFieldName, components, oneofFieldName, oneofFieldName, components))
+			components = components + ".(*" + oneofFieldName + ")"
+		}
+
 		if i == l-1 {
-			components = append(components, c.RHS())
+			components = components + "." + c.AssignableExpr()
 			continue
 		}
-		components = append(components, c.LHS())
+		components = components + "." + c.ValueExpr()
 	}
-	return strings.Join(components, ".")
+
+	preparations = append(preparations, components)
+	return strings.Join(preparations, "\n")
 }
 
 // FieldPathComponent is a path component in FieldPath
@@ -269,13 +309,13 @@ type FieldPathComponent struct {
 	Target *Field
 }
 
-// RHS returns a right-hand-side expression in go for this field.
-func (c FieldPathComponent) RHS() string {
+// AssignableExpr returns an assignable expression in go for this field.
+func (c FieldPathComponent) AssignableExpr() string {
 	return gogen.CamelCase(c.Name)
 }
 
-// LHS returns a left-hand-side expression in go for this field.
-func (c FieldPathComponent) LHS() string {
+// ValueExpr returns an expression in go for this field.
+func (c FieldPathComponent) ValueExpr() string {
 	if c.Target.Message.File.proto2() {
 		return fmt.Sprintf("Get%s()", gogen.CamelCase(c.Name))
 	}

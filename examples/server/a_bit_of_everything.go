@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"sync"
@@ -9,11 +10,10 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/duration"
 	"github.com/golang/protobuf/ptypes/empty"
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
-	sub "github.com/grpc-ecosystem/grpc-gateway/examples/sub"
-	sub2 "github.com/grpc-ecosystem/grpc-gateway/examples/sub2"
+	examples "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
+	sub "github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
+	sub2 "github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub2"
 	"github.com/rogpeppe/fastuuid"
-	"golang.org/x/net/context"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
