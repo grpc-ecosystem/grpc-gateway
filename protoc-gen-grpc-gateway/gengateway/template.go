@@ -23,7 +23,7 @@ type binding struct {
 	*descriptor.Binding
 }
 
-// GetBodyFieldPath returns the binding body fieldpath.
+// GetBodyFieldPath returns the binding body's fieldpath.
 func (b binding) GetBodyFieldPath() string {
 	if b.Body != nil && len(b.Body.FieldPath) != 0 {
 		return b.Body.FieldPath.String()
