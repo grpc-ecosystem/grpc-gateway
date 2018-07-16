@@ -23,6 +23,14 @@ type binding struct {
 	*descriptor.Binding
 }
 
+// GetBinding returns the binding body
+func (b binding) GetBinding() string {
+	if b.Body.FieldPath.String() != "" {
+		return b.Body.FieldPath.String()
+	}
+	return "*"
+}
+
 // HasQueryParam determines if the binding needs parameters in query string.
 //
 // It sometimes returns true even though actually the binding does not need.
@@ -245,7 +253,7 @@ var (
 	{{- if and (eq (.HTTPMethod) "PATCH") (.FieldMaskField)}}
 	if protoReq.{{.FieldMaskField}} != nil && len(protoReq.{{.FieldMaskField}}.GetPaths()) > 0 {
 		runtime.CamelCaseFieldMask(protoReq.{{.FieldMaskField}})
-	} {{if .HasQueryParam}} else {		
+	} {{if not (eq "*" .GetBinding)}} else {	
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(bytes.NewReader(body)); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 			} else {
