@@ -28,7 +28,7 @@ func (b binding) GetBodyFieldPath() string {
 	if b.Body != nil && len(b.Body.FieldPath) != 0 {
 		return b.Body.FieldPath.String()
 	}
-	return ""
+	return "*"
 }
 
 // HasQueryParam determines if the binding needs parameters in query string.
@@ -253,7 +253,7 @@ var (
 	{{- if and (eq (.HTTPMethod) "PATCH") (.FieldMaskField)}}
 	if protoReq.{{.FieldMaskField}} != nil && len(protoReq.{{.FieldMaskField}}.GetPaths()) > 0 {
 		runtime.CamelCaseFieldMask(protoReq.{{.FieldMaskField}})
-	} {{if not (eq "" .GetBodyFieldPath)}} else {
+	} {{if not (eq "*" .GetBodyFieldPath)}} else {
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(bytes.NewReader(body)); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 			} else {
