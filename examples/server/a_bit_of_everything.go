@@ -6,6 +6,8 @@ import (
 	"io"
 	"sync"
 
+	"strings"
+
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/duration"
@@ -19,7 +21,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"strings"
 )
 
 // Implements of ABitOfEverythingServiceServer
@@ -163,15 +164,14 @@ func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABit
 }
 
 func (s *_ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.UpdateV2Request) (*empty.Empty, error) {
-	s.m.Lock()
-	defer s.m.Unlock()
-
 	glog.Info(msg)
-
+	// If there is no update mask do a regular update
 	if msg.UpdateMask == nil || len(msg.UpdateMask.GetPaths()) == 0 {
 		return s.Update(ctx, msg.Abe)
 	}
 
+	s.m.Lock()
+	defer s.m.Unlock()
 	if a, ok := s.v[msg.Abe.Uuid]; ok {
 		applyFieldMask(a, msg.Abe, msg.UpdateMask)
 	} else {
@@ -188,9 +188,7 @@ func (s *_ABitOfEverythingServer) PatchWithFieldMaskInBody(ctx context.Context, 
 	if request.UpdateMask != nil {
 		var shifted []string
 		for _, path := range request.UpdateMask.GetPaths() {
-			if strings.HasPrefix(path, "Abe") {
-				shifted = append(shifted, strings.TrimPrefix(path, "Abe."))
-			}
+			shifted = append(shifted, strings.TrimPrefix(path, "Abe."))
 		}
 		request.UpdateMask.Paths = shifted
 	}

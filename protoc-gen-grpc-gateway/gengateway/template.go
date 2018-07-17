@@ -7,9 +7,9 @@ import (
 	"text/template"
 
 	"github.com/golang/glog"
+	generator2 "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
-	generator2 "github.com/golang/protobuf/protoc-gen-go/generator"
 )
 
 type param struct {
@@ -21,6 +21,14 @@ type param struct {
 
 type binding struct {
 	*descriptor.Binding
+}
+
+// GetBodyFieldPath returns the binding body's fieldpath.
+func (b binding) GetBodyFieldPath() string {
+	if b.Body != nil && len(b.Body.FieldPath) != 0 {
+		return b.Body.FieldPath.String()
+	}
+	return "*"
 }
 
 // HasQueryParam determines if the binding needs parameters in query string.
@@ -245,13 +253,13 @@ var (
 	{{- if and (eq (.HTTPMethod) "PATCH") (.FieldMaskField)}}
 	if protoReq.{{.FieldMaskField}} != nil && len(protoReq.{{.FieldMaskField}}.GetPaths()) > 0 {
 		runtime.CamelCaseFieldMask(protoReq.{{.FieldMaskField}})
-	} else {
-		if fieldMask, err := runtime.FieldMaskFromRequestBody(bytes.NewReader(body)); err != nil {
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-		} else {
-			protoReq.{{.FieldMaskField}} = fieldMask
-		}
-	}
+	} {{if not (eq "*" .GetBodyFieldPath)}} else {
+			if fieldMask, err := runtime.FieldMaskFromRequestBody(bytes.NewReader(body)); err != nil {
+				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			} else {
+				protoReq.{{.FieldMaskField}} = fieldMask
+			}		
+	} {{end}}		
 	{{end}}
 {{end}}
 {{if .PathParams}}

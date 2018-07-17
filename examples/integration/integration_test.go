@@ -20,8 +20,8 @@ import (
 	gw "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/genproto/protobuf/field_mask"
+	"google.golang.org/grpc/codes"
 )
 
 type errorBody struct {
@@ -558,7 +558,7 @@ func TestABEPatch(t *testing.T) {
 	req, err := http.NewRequest(
 		http.MethodPatch,
 		fmt.Sprintf("http://localhost:%d/v2/example/a_bit_of_everything/%s", port, uuid),
-		strings.NewReader(`{"string_value": "strprefix/bar"}`),
+		strings.NewReader(`{"string_value": "strprefix/foo"}`),
 	)
 	if err != nil {
 		t.Fatalf("http.NewRequest(PATCH) failed with %v; want success", err)
@@ -577,7 +577,7 @@ func TestABEPatch(t *testing.T) {
 
 	// issue GET request, verifying that string_value is changed and int32_value is not
 	getRespBody := getABE(t, port, uuid)
-	if got, want := getRespBody.StringValue, "strprefix/bar"; got != want {
+	if got, want := getRespBody.StringValue, "strprefix/foo"; got != want {
 		t.Errorf("string_value= %q; want %q", got, want)
 	}
 	if got, want := getRespBody.Int32Value, int32(32); got != want {
@@ -608,18 +608,33 @@ func TestABEPatchBody(t *testing.T) {
 			want: gw.ABitOfEverything{StringValue: "rabbit", SingleNested: &gw.ABitOfEverything_Nested{Amount: 456}},
 		},
 		{
-			name: "with nil fieldmask",
+			name: "with empty fieldmask",
 			originalValue: gw.ABitOfEverything{
 				StringValue:  "some value that will get overwritten",
-				SingleNested: &gw.ABitOfEverything_Nested{Name: "some value that will get overwritten", Amount: 345},
+				SingleNested: &gw.ABitOfEverything_Nested{Name: "value that will get empty", Amount: 345},
 			},
 			input: gw.UpdateV2Request{Abe: &gw.ABitOfEverything{
 				StringValue:  "some updated value because the fieldMask is nil",
 				SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
-			}, UpdateMask: nil},
+			}, UpdateMask: &field_mask.FieldMask{}},
 			want: gw.ABitOfEverything{
 				StringValue:  "some updated value because the fieldMask is nil",
 				SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
+			},
+		},
+		{
+			name: "with nil fieldmask",
+			originalValue: gw.ABitOfEverything{
+				StringValue:  "some value that will get overwritten",
+				SingleNested: &gw.ABitOfEverything_Nested{Name: "value that will get empty", Amount: 123},
+			},
+			input: gw.UpdateV2Request{Abe: &gw.ABitOfEverything{
+				StringValue:  "some updated value because the fieldMask is nil",
+				SingleNested: &gw.ABitOfEverything_Nested{Amount: 657},
+			}, UpdateMask: nil},
+			want: gw.ABitOfEverything{
+				StringValue:  "some updated value because the fieldMask is nil",
+				SingleNested: &gw.ABitOfEverything_Nested{Amount: 657},
 			},
 		},
 	} {

@@ -409,12 +409,6 @@ func request_ABitOfEverythingService_PatchWithFieldMaskInBody_0(ctx context.Cont
 	}
 	if protoReq.UpdateMask != nil && len(protoReq.UpdateMask.GetPaths()) > 0 {
 		runtime.CamelCaseFieldMask(protoReq.UpdateMask)
-	} else {
-		if fieldMask, err := runtime.FieldMaskFromRequestBody(bytes.NewReader(body)); err != nil {
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-		} else {
-			protoReq.UpdateMask = fieldMask
-		}
 	}
 
 	var (
