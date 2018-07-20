@@ -189,6 +189,9 @@ message ABitOfEverything {
 
 	// repeated enum value. it is comma-separated in query
 	repeated NumericEnum repeated_enum_value = 28;
+
+	// FIXME: MimicObject description realy should be here.
+	MimicObjectHidden mimic_string = 30;
 }
 
 message Body {
@@ -207,6 +210,58 @@ enum NumericEnum {
 	ZERO = 0;
 	// ONE means 1
 	ONE = 1;
+}
+
+message MimicObjectResponse {
+	option (grpc.gateway.protoc_gen_swagger.options.openapiv2_schema) = {
+		json_schema: {
+			type: STRING,
+			description: "this message mimics string type, however when put in response rendered as a definition",
+		},
+	};
+	enum MimicResponseEnum {
+		VALUE_ONE = 0;
+		VALUE_TWO = 1;
+	};
+	string response_value_one = 1;
+	string response_value_two = 2;
+	MimicResponseEnum response_enum = 3;
+}
+
+message MimicObjectRequest {
+	option (grpc.gateway.protoc_gen_swagger.options.openapiv2_schema) = {
+		json_schema: {
+			type: STRING,
+			description: "this message mimics string type, however when put in request rendered as a definition",
+		},
+	};
+	enum MimicRequestEnum {
+		VALUE_ONE = 0;
+		VALUE_TWO = 1;
+	};
+	string request_value_one = 1;
+	string request_value_two = 2;
+	MimicRequestEnum request_enum = 3;
+}
+
+message MimicObjectHidden {
+	option (grpc.gateway.protoc_gen_swagger.options.openapiv2_schema) = {
+		json_schema: {
+			type: STRING,
+			description: "this message mimics string type.",
+		},
+	};
+
+	enum HiddenEnum {
+		VALUE_ONE = 0;
+		VALUE_TWO = 1;
+	};
+
+
+	string hidden_value_one = 1;
+	string hidden_value_two = 2;
+
+	HiddenEnum hidden_enum = 3;
 }
 
 // ABitOfEverything service is used to validate that APIs with complicated
@@ -355,6 +410,19 @@ service ABitOfEverythingService {
 		option (google.api.http) = {
 			post: "/v2/example/postwithemptybody/{name}",
 			body: "*"
+		};
+	}
+
+	rpc GetWithMimicObjectResponse(google.protobuf.Empty) returns (MimicObjectResponse) {
+		option (google.api.http) = {
+			get: "/v2/example/getwithmimicobjectresponse",
+		};
+	}
+
+	rpc PostWithMimicObjectRequest(MimicObjectRequest) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			post: "/v2/example/postwithmimicobjectrequest/{request_value_one}",
+			body: "*",
 		};
 	}
 }

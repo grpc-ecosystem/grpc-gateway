@@ -334,6 +334,13 @@
                 "ONE"
               ]
             }
+          },
+          {
+            "name": "mimic_string",
+            "description": "this message mimics string type.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -838,6 +845,38 @@
         ]
       }
     },
+    "/v2/example/getwithmimicobjectresponse": {
+      "get": {
+        "operationId": "GetWithMimicObjectResponse",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbMimicObjectResponse"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          }
+        },
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v2/example/postwithemptybody/{name}": {
       "post": {
         "operationId": "PostWithEmptyBody",
@@ -878,6 +917,54 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/examplepbBody"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
+    "/v2/example/postwithmimicobjectrequest/{request_value_one}": {
+      "post": {
+        "operationId": "PostWithMimicObjectRequest",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/protobufEmpty"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "request_value_one",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbMimicObjectRequest"
             }
           }
         ],
@@ -984,6 +1071,22 @@
         }
       },
       "description": "Nested is nested type."
+    },
+    "MimicObjectRequestMimicRequestEnum": {
+      "type": "string",
+      "enum": [
+        "VALUE_ONE",
+        "VALUE_TWO"
+      ],
+      "default": "VALUE_ONE"
+    },
+    "MimicObjectResponseMimicResponseEnum": {
+      "type": "string",
+      "enum": [
+        "VALUE_ONE",
+        "VALUE_TWO"
+      ],
+      "default": "VALUE_ONE"
     },
     "NestedDeepEnum": {
       "type": "string",
@@ -1114,6 +1217,10 @@
             "$ref": "#/definitions/examplepbNumericEnum"
           },
           "title": "repeated enum value. it is comma-separated in query"
+        },
+        "mimic_string": {
+          "type": "string",
+          "description": "this message mimics string type."
         }
       },
       "description": "Intentionaly complicated message type to cover many features of Protobuf.",
@@ -1130,6 +1237,36 @@
           "type": "string"
         }
       }
+    },
+    "examplepbMimicObjectRequest": {
+      "type": "object",
+      "properties": {
+        "request_value_one": {
+          "type": "string"
+        },
+        "request_value_two": {
+          "type": "string"
+        },
+        "request_enum": {
+          "$ref": "#/definitions/MimicObjectRequestMimicRequestEnum"
+        }
+      },
+      "description": "this message mimics string type, however when put in request rendered as a definition"
+    },
+    "examplepbMimicObjectResponse": {
+      "type": "object",
+      "properties": {
+        "response_value_one": {
+          "type": "string"
+        },
+        "response_value_two": {
+          "type": "string"
+        },
+        "response_enum": {
+          "$ref": "#/definitions/MimicObjectResponseMimicResponseEnum"
+        }
+      },
+      "description": "this message mimics string type, however when put in response rendered as a definition"
     },
     "examplepbNumericEnum": {
       "type": "string",

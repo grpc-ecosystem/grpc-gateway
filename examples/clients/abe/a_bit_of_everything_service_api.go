@@ -539,9 +539,10 @@ func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body Examplepb
  * @param nonConventionalNameValue 
  * @param timestampValue 
  * @param repeatedEnumValue repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
+ * @param mimicString this message mimics string type.
  * @return *ProtobufEmpty
  */
-func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName string, singleNestedAmount int64, singleNestedOk string, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string) (*ProtobufEmpty, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName string, singleNestedAmount int64, singleNestedOk string, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string, mimicString string) (*ProtobufEmpty, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -586,6 +587,7 @@ func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName strin
 	var repeatedEnumValueCollectionFormat = "csv"
 	localVarQueryParams.Add("repeated_enum_value", a.Configuration.APIClient.ParameterToString(repeatedEnumValue, repeatedEnumValueCollectionFormat))
 
+	localVarQueryParams.Add("mimic_string", a.Configuration.APIClient.ParameterToString(mimicString, ""))
 
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{ "application/json", "application/x-foo-mime",  }
@@ -612,6 +614,78 @@ func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName strin
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
 	var localVarAPIResponse = &APIResponse{Operation: "GetQuery", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	if localVarHttpResponse != nil {
+		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
+		localVarAPIResponse.Payload = localVarHttpResponse.Body()
+	}
+
+	if err != nil {
+		return successPayload, localVarAPIResponse, err
+	}
+	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
+	return successPayload, localVarAPIResponse, err
+}
+
+/**
+ * 
+ *
+ * @return *ExamplepbMimicObjectResponse
+ */
+func (a ABitOfEverythingServiceApi) GetWithMimicObjectResponse() (*ExamplepbMimicObjectResponse, *APIResponse, error) {
+
+	var localVarHttpMethod = strings.ToUpper("Get")
+	// create path and map variables
+	localVarPath := a.Configuration.BasePath + "/v2/example/getwithmimicobjectresponse"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := make(map[string]string)
+	var localVarPostBody interface{}
+	var localVarFileName string
+	var localVarFileBytes []byte
+	// authentication '(OAuth2)' required
+	// oauth required
+	if a.Configuration.AccessToken != ""{
+		localVarHeaderParams["Authorization"] =  "Bearer " + a.Configuration.AccessToken
+	}
+	// authentication '(BasicAuth)' required
+	// http basic authentication required
+	if a.Configuration.Username != "" || a.Configuration.Password != ""{
+		localVarHeaderParams["Authorization"] =  "Basic " + a.Configuration.GetBasicAuthEncodedString()
+	}
+	// authentication '(ApiKeyAuth)' required
+	// set key with prefix in header
+	localVarHeaderParams["X-API-Key"] = a.Configuration.GetAPIKeyWithPrefix("X-API-Key")
+	// add default headers if any
+	for key := range a.Configuration.DefaultHeader {
+		localVarHeaderParams[key] = a.Configuration.DefaultHeader[key]
+	}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{ "application/json", "application/x-foo-mime",  }
+
+	// set Content-Type header
+	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{
+		"application/json",
+		"application/x-foo-mime",
+		}
+
+	// set Accept header
+	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	var successPayload = new(ExamplepbMimicObjectResponse)
+	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+
+	var localVarURL, _ = url.Parse(localVarPath)
+	localVarURL.RawQuery = localVarQueryParams.Encode()
+	var localVarAPIResponse = &APIResponse{Operation: "GetWithMimicObjectResponse", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -763,6 +837,83 @@ func (a ABitOfEverythingServiceApi) PostWithEmptyBody(name string, body Examplep
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
 	var localVarAPIResponse = &APIResponse{Operation: "PostWithEmptyBody", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	if localVarHttpResponse != nil {
+		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
+		localVarAPIResponse.Payload = localVarHttpResponse.Body()
+	}
+
+	if err != nil {
+		return successPayload, localVarAPIResponse, err
+	}
+	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
+	return successPayload, localVarAPIResponse, err
+}
+
+/**
+ * 
+ *
+ * @param requestValueOne 
+ * @param body 
+ * @return *ProtobufEmpty
+ */
+func (a ABitOfEverythingServiceApi) PostWithMimicObjectRequest(requestValueOne string, body ExamplepbMimicObjectRequest) (*ProtobufEmpty, *APIResponse, error) {
+
+	var localVarHttpMethod = strings.ToUpper("Post")
+	// create path and map variables
+	localVarPath := a.Configuration.BasePath + "/v2/example/postwithmimicobjectrequest/{request_value_one}"
+	localVarPath = strings.Replace(localVarPath, "{"+"request_value_one"+"}", fmt.Sprintf("%v", requestValueOne), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := make(map[string]string)
+	var localVarPostBody interface{}
+	var localVarFileName string
+	var localVarFileBytes []byte
+	// authentication '(OAuth2)' required
+	// oauth required
+	if a.Configuration.AccessToken != ""{
+		localVarHeaderParams["Authorization"] =  "Bearer " + a.Configuration.AccessToken
+	}
+	// authentication '(BasicAuth)' required
+	// http basic authentication required
+	if a.Configuration.Username != "" || a.Configuration.Password != ""{
+		localVarHeaderParams["Authorization"] =  "Basic " + a.Configuration.GetBasicAuthEncodedString()
+	}
+	// authentication '(ApiKeyAuth)' required
+	// set key with prefix in header
+	localVarHeaderParams["X-API-Key"] = a.Configuration.GetAPIKeyWithPrefix("X-API-Key")
+	// add default headers if any
+	for key := range a.Configuration.DefaultHeader {
+		localVarHeaderParams[key] = a.Configuration.DefaultHeader[key]
+	}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{ "application/json", "application/x-foo-mime",  }
+
+	// set Content-Type header
+	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{
+		"application/json",
+		"application/x-foo-mime",
+		}
+
+	// set Accept header
+	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	// body params
+	localVarPostBody = &body
+	var successPayload = new(ProtobufEmpty)
+	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+
+	var localVarURL, _ = url.Parse(localVarPath)
+	localVarURL.RawQuery = localVarQueryParams.Encode()
+	var localVarAPIResponse = &APIResponse{Operation: "PostWithMimicObjectRequest", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()

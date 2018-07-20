@@ -72,4 +72,7 @@ type ExamplepbABitOfEverything struct {
 	TimestampValue time.Time `json:"timestamp_value,omitempty"`
 
 	RepeatedEnumValue []ExamplepbNumericEnum `json:"repeated_enum_value,omitempty"`
+
+	// this message mimics string type.
+	MimicString string `json:"mimic_string,omitempty"`
 }

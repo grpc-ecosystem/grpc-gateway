@@ -195,6 +195,15 @@ func (s *_ABitOfEverythingServer) Echo(ctx context.Context, msg *sub.StringMessa
 	return msg, nil
 }
 
+func (s *_ABitOfEverythingServer) GetWithMimicObjectResponse(context.Context, *empty.Empty) (*examples.MimicObjectResponse, error) {
+	return nil, nil
+}
+
+func (s *_ABitOfEverythingServer) PostWithMimicObjectRequest(context.Context, *examples.MimicObjectRequest) (*empty.Empty, error) {
+	return nil, nil
+}
+
+
 func (s *_ABitOfEverythingServer) BulkEcho(stream examples.StreamService_BulkEchoServer) error {
 	var msgs []*sub.StringMessage
 	for {
