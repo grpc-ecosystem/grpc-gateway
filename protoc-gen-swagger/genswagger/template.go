@@ -525,7 +525,7 @@ func templateToSwaggerPath(path string) string {
 			}
 			// Pop from the stack
 			depth--
-			buffer += "}"
+			buffer += string(char)
 		case '/':
 			if depth == 0 {
 				parts = append(parts, buffer)
@@ -534,6 +534,7 @@ func templateToSwaggerPath(path string) string {
 				// section.
 				continue
 			}
+			buffer += string(char)
 		default:
 			buffer += string(char)
 			break
@@ -548,10 +549,22 @@ func templateToSwaggerPath(path string) string {
 	// memory.
 	re := regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*).*}")
 	for index, part := range parts {
+		// If part is a resource name such as "parent", "name", "user.name", the format info must be retained.
+		prefix := re.ReplaceAllString(part, "$1")
+		if isResourceName(prefix) {
+			continue
+		}
 		parts[index] = re.ReplaceAllString(part, "{$1}")
 	}
 
 	return strings.Join(parts, "/")
+}
+
+func isResourceName(prefix string) bool {
+	words := strings.Split(prefix, ".")
+	l := len(words)
+	field := words[l-1]
+	return field == "parent" || field == "name"
 }
 
 func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap) error {
