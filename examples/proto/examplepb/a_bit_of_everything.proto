@@ -190,7 +190,7 @@ message ABitOfEverything {
 	// repeated enum value. it is comma-separated in query
 	repeated NumericEnum repeated_enum_value = 28;
 
-	// FIXME: MimicObject description realy should be here.
+	// This comment will not appear, MimicObject description will be used instead.
 	MimicObjectHidden mimic_string = 30;
 }
 

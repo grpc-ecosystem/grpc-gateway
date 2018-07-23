@@ -53,7 +53,7 @@ func (x NumericEnum) String() string {
 	return proto.EnumName(NumericEnum_name, int32(x))
 }
 func (NumericEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5, []int{0}
+	return fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d, []int{0}
 }
 
 // DeepEnum is one or zero.
@@ -79,7 +79,7 @@ func (x ABitOfEverything_Nested_DeepEnum) String() string {
 	return proto.EnumName(ABitOfEverything_Nested_DeepEnum_name, int32(x))
 }
 func (ABitOfEverything_Nested_DeepEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5, []int{0, 0, 0}
+	return fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d, []int{0, 0, 0}
 }
 
 type MimicObjectResponse_MimicResponseEnum int32
@@ -102,7 +102,7 @@ func (x MimicObjectResponse_MimicResponseEnum) String() string {
 	return proto.EnumName(MimicObjectResponse_MimicResponseEnum_name, int32(x))
 }
 func (MimicObjectResponse_MimicResponseEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5, []int{3, 0}
+	return fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d, []int{3, 0}
 }
 
 type MimicObjectRequest_MimicRequestEnum int32
@@ -125,7 +125,7 @@ func (x MimicObjectRequest_MimicRequestEnum) String() string {
 	return proto.EnumName(MimicObjectRequest_MimicRequestEnum_name, int32(x))
 }
 func (MimicObjectRequest_MimicRequestEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5, []int{4, 0}
+	return fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d, []int{4, 0}
 }
 
 type MimicObjectHidden_HiddenEnum int32
@@ -148,7 +148,7 @@ func (x MimicObjectHidden_HiddenEnum) String() string {
 	return proto.EnumName(MimicObjectHidden_HiddenEnum_name, int32(x))
 }
 func (MimicObjectHidden_HiddenEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5, []int{5, 0}
+	return fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d, []int{5, 0}
 }
 
 // Intentionaly complicated message type to cover many features of Protobuf.
@@ -185,7 +185,7 @@ type ABitOfEverything struct {
 	TimestampValue           *timestamp.Timestamp                `protobuf:"bytes,27,opt,name=timestamp_value,json=timestampValue,proto3" json:"timestamp_value,omitempty"`
 	// repeated enum value. it is comma-separated in query
 	RepeatedEnumValue []NumericEnum `protobuf:"varint,28,rep,packed,name=repeated_enum_value,json=repeatedEnumValue,proto3,enum=grpc.gateway.examples.examplepb.NumericEnum" json:"repeated_enum_value,omitempty"`
-	// FIXME: MimicObject description realy should be here.
+	// This comment will not appear, MimicObject description will be used instead.
 	MimicString          *MimicObjectHidden `protobuf:"bytes,30,opt,name=mimic_string,json=mimicString,proto3" json:"mimic_string,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
 	XXX_unrecognized     []byte             `json:"-"`
@@ -196,7 +196,7 @@ func (m *ABitOfEverything) Reset()         { *m = ABitOfEverything{} }
 func (m *ABitOfEverything) String() string { return proto.CompactTextString(m) }
 func (*ABitOfEverything) ProtoMessage()    {}
 func (*ABitOfEverything) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5, []int{0}
+	return fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d, []int{0}
 }
 func (m *ABitOfEverything) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ABitOfEverything.Unmarshal(m, b)
@@ -525,7 +525,7 @@ func (m *ABitOfEverything_Nested) Reset()         { *m = ABitOfEverything_Nested
 func (m *ABitOfEverything_Nested) String() string { return proto.CompactTextString(m) }
 func (*ABitOfEverything_Nested) ProtoMessage()    {}
 func (*ABitOfEverything_Nested) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5, []int{0, 0}
+	return fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d, []int{0, 0}
 }
 func (m *ABitOfEverything_Nested) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ABitOfEverything_Nested.Unmarshal(m, b)
@@ -577,7 +577,7 @@ func (m *Body) Reset()         { *m = Body{} }
 func (m *Body) String() string { return proto.CompactTextString(m) }
 func (*Body) ProtoMessage()    {}
 func (*Body) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5, []int{1}
+	return fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d, []int{1}
 }
 func (m *Body) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Body.Unmarshal(m, b)
@@ -616,7 +616,7 @@ func (m *MessageWithBody) Reset()         { *m = MessageWithBody{} }
 func (m *MessageWithBody) String() string { return proto.CompactTextString(m) }
 func (*MessageWithBody) ProtoMessage()    {}
 func (*MessageWithBody) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5, []int{2}
+	return fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d, []int{2}
 }
 func (m *MessageWithBody) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageWithBody.Unmarshal(m, b)
@@ -663,7 +663,7 @@ func (m *MimicObjectResponse) Reset()         { *m = MimicObjectResponse{} }
 func (m *MimicObjectResponse) String() string { return proto.CompactTextString(m) }
 func (*MimicObjectResponse) ProtoMessage()    {}
 func (*MimicObjectResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5, []int{3}
+	return fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d, []int{3}
 }
 func (m *MimicObjectResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MimicObjectResponse.Unmarshal(m, b)
@@ -717,7 +717,7 @@ func (m *MimicObjectRequest) Reset()         { *m = MimicObjectRequest{} }
 func (m *MimicObjectRequest) String() string { return proto.CompactTextString(m) }
 func (*MimicObjectRequest) ProtoMessage()    {}
 func (*MimicObjectRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5, []int{4}
+	return fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d, []int{4}
 }
 func (m *MimicObjectRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MimicObjectRequest.Unmarshal(m, b)
@@ -771,7 +771,7 @@ func (m *MimicObjectHidden) Reset()         { *m = MimicObjectHidden{} }
 func (m *MimicObjectHidden) String() string { return proto.CompactTextString(m) }
 func (*MimicObjectHidden) ProtoMessage()    {}
 func (*MimicObjectHidden) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5, []int{5}
+	return fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d, []int{5}
 }
 func (m *MimicObjectHidden) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MimicObjectHidden.Unmarshal(m, b)
@@ -1513,10 +1513,10 @@ var _AnotherServiceWithNoBindings_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("examples/proto/examplepb/a_bit_of_everything.proto", fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5)
+	proto.RegisterFile("examples/proto/examplepb/a_bit_of_everything.proto", fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d)
 }
 
-var fileDescriptor_a_bit_of_everything_b0f5d168a2fe2cb5 = []byte{
+var fileDescriptor_a_bit_of_everything_d757c6b8f60a3e9d = []byte{
 	// 2628 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x59, 0x4d, 0x6c, 0x1b, 0xc7,
 	0x15, 0xd6, 0x92, 0x12, 0x2d, 0x3d, 0xea, 0x87, 0x1a, 0x39, 0xb6, 0xcc, 0x38, 0xd1, 0x98, 0x71,
