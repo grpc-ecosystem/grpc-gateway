@@ -18,6 +18,7 @@ before_install:
   - test "${USE_BAZEL}" = true || go get github.com/golang/lint/golint
   - test "${USE_BAZEL}" = true || go get github.com/dghubble/sling
   - test "${USE_BAZEL}" = true || go get github.com/go-resty/resty
+  - test "${USE_BAZEL}" = true || curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 install:
   # Make sure externally referenced packages are go-gettable.
   - test "${USE_BAZEL}" = true ||
