@@ -59,6 +59,44 @@ Or you might want to mutate the response messages to be returned.
    mux := runtime.NewServeMux(runtime.WithForwardResponseOption(myFilter))
    ```
 
+## OpenTracing Support
+
+If your project uses [OpenTracing](https://github.com/opentracing/opentracing-go) and you'd like spans to propagate through the gateway, you can add some middleware which parses the incoming HTTP headers to create a new span correctly.
+
+```go
+import (
+   ...
+   "github.com/opentracing/opentracing-go"
+   "github.com/opentracing/opentracing-go/ext"
+)
+
+var grpcGatewayTag = opentracing.Tag{Key: string(ext.Component), Value: "grpc-gateway"}
+
+func tracingWrapper(h http.Handler) http.Handler {
+  return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    parentSpanContext, err := opentracing.GlobalTracer().Extract(
+      opentracing.HTTPHeaders,
+      opentracing.HTTPHeadersCarrier(r.Header))
+    if err == nil || err == opentracing.ErrSpanContextNotFound {
+      serverSpan := opentracing.GlobalTracer().StartSpan(
+        "ServeHTTP",
+        // this is magical, it attaches the new span to the parent parentSpanContext, and creates an unparented one if empty.
+        ext.RPCServerOption(parentSpanContext),
+        grpcGatewayTag,
+      )
+      r = r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
+      defer serverSpan.Finish()
+    }
+    h.ServeHTTP(w, r)
+  })
+}
+
+// Then just wrap the mux returned by runtime.NewServeMux() like this
+if err := http.ListenAndServe(":8080", tracingWrapper(mux)); err != nil {
+  log.Fatalf("failed to start gateway server on 8080: %v", err)
+}
+```
+
 ## Error handler
 http://mycodesmells.com/post/grpc-gateway-error-handler
 
