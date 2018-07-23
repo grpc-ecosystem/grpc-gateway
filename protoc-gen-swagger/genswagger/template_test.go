@@ -839,6 +839,118 @@ func TestSchemaOfField(t *testing.T) {
 		{
 			field: &descriptor.Field{
 				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.BytesValue"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type:   "string",
+				Format: "bytes",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.Int32Value"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type:   "integer",
+				Format: "int32",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.UInt32Value"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type:   "integer",
+				Format: "int64",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.Int64Value"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type:   "string",
+				Format: "int64",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.UInt64Value"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type:   "string",
+				Format: "uint64",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.FloatValue"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type:   "number",
+				Format: "float",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.DoubleValue"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type:   "number",
+				Format: "double",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.BoolValue"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type:   "boolean",
+				Format: "boolean",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
 					Name:     proto.String("message_field"),
 					TypeName: proto.String(".example.Message"),
 					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
