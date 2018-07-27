@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
 )
@@ -175,6 +175,8 @@ type Binding struct {
 	PathParams []Parameter
 	// Body describes parameters provided in HTTP request body.
 	Body *Body
+	// ResponseBody describes field in response struct to marshal in HTTP response body.
+	ResponseBody *Body
 }
 
 // ExplicitParams returns a list of explicitly bound parameters of "b",
@@ -227,10 +229,11 @@ func (p Parameter) ConvertFuncExpr() (string, error) {
 	return conv, nil
 }
 
-// Body describes a http requtest body to be sent to the method.
+// Body describes a http (request|response) body to be sent to the (method|client).
+// This is used in body and response_body options in google.api.HttpRule
 type Body struct {
-	// FieldPath is a path to a proto field which the request body is mapped to.
-	// The request body is mapped to the request type itself if FieldPath is empty.
+	// FieldPath is a path to a proto field which the (request|response) body is mapped to.
+	// The (request|response) body is mapped to the (request|response) type itself if FieldPath is empty.
 	FieldPath FieldPath
 }
 
