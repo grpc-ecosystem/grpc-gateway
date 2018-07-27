@@ -26,13 +26,25 @@ var wktSchemas = map[string]schemaCore{
 	".google.protobuf.StringValue": schemaCore{
 		Type: "string",
 	},
+	".google.protobuf.BytesValue": schemaCore{
+		Type:   "string",
+		Format: "byte",
+	},
 	".google.protobuf.Int32Value": schemaCore{
 		Type:   "integer",
 		Format: "int32",
 	},
-	".google.protobuf.Int64Value": schemaCore{
+	".google.protobuf.UInt32Value": schemaCore{
 		Type:   "integer",
 		Format: "int64",
+	},
+	".google.protobuf.Int64Value": schemaCore{
+		Type:   "string",
+		Format: "int64",
+	},
+	".google.protobuf.UInt64Value": schemaCore{
+		Type:   "string",
+		Format: "uint64",
 	},
 	".google.protobuf.FloatValue": schemaCore{
 		Type:   "number",
@@ -245,9 +257,15 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			continue
 		case ".google.protobuf.StringValue":
 			continue
+		case ".google.protobuf.BytesValue":
+			continue
 		case ".google.protobuf.Int32Value":
 			continue
+		case ".google.protobuf.UInt32Value":
+			continue
 		case ".google.protobuf.Int64Value":
+			continue
+		case ".google.protobuf.UInt64Value":
 			continue
 		case ".google.protobuf.FloatValue":
 			continue
