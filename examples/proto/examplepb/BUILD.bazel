@@ -9,6 +9,7 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude flow_combination.pb.gw.go
 # gazelle:exclude stream.pb.gw.go
 # gazelle:exclude wrappers.pb.gw.go
+# gazelle:exclude response_body_service.pb.gw.go
 
 proto_library(
     name = "examplepb_proto",
@@ -19,6 +20,7 @@ proto_library(
         "stream.proto",
         "unannotated_echo_service.proto",
         "wrappers.proto",
+        "response_body_service.proto",
     ],
     deps = [
         "//examples/proto/sub:sub_proto",
