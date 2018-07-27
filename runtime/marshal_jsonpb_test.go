@@ -41,6 +41,11 @@ func TestJSONPbMarshal(t *testing.T) {
 			"a": examplepb.NumericEnum_ONE,
 			"b": examplepb.NumericEnum_ZERO,
 		},
+		MimicString: &examplepb.MimicObjectHidden{
+			HiddenValueOne: "foo",
+			HiddenValueTwo: "baz",
+			HiddenEnum: examplepb.MimicObjectHidden_VALUE_TWO,
+		},
 	}
 
 	for i, spec := range []struct {
@@ -256,6 +261,11 @@ func TestJSONPbEncoder(t *testing.T) {
 		MapValue: map[string]examplepb.NumericEnum{
 			"a": examplepb.NumericEnum_ONE,
 			"b": examplepb.NumericEnum_ZERO,
+		},
+		MimicString: &examplepb.MimicObjectHidden{
+			HiddenValueOne: "foo",
+			HiddenValueTwo: "baz",
+			HiddenEnum: examplepb.MimicObjectHidden_VALUE_TWO,
 		},
 	}
 

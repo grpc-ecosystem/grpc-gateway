@@ -16,8 +16,13 @@
     "gulp-process": "^0.1.2",
     "gulp-shell": "^0.5.2",
     "jasmine": "^2.4.1",
+    "mout": "^1.1.0",
+    "osenv": "^0.1.5",
     "phantomjs": "^2.1.7",
     "swagger-client": "^2.1.28",
-    "webpack-stream": "^3.2.0"
+    "untildify": "^3.0.3",
+    "webpack-stream": "^3.2.0",
+    "write-file-atomic": "^2.3.0",
+    "xdg-basedir": "^3.0.0"
   }
 }
