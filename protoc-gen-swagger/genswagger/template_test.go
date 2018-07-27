@@ -10,6 +10,8 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
+
+	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 )
 
 func crossLinkFixture(f *descriptor.File) *descriptor.File {
@@ -35,6 +37,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 	type test struct {
 		MsgDescs []*protodescriptor.DescriptorProto
 		Message  string
+		Extensions map[string]interface{}
 		Params   []swaggerParameterObject
 	}
 
@@ -153,12 +156,66 @@ func TestMessageToQueryParameters(t *testing.T) {
 				},
 			},
 		},
+		{
+			MsgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{
+					Name: proto.String("ExampleObject"),
+					Field: []*protodescriptor.FieldDescriptorProto{
+						{
+							Name:     proto.String("mimic_string"),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.MimicObject"),
+							Number:   proto.Int32(1),
+						},
+					},
+				},
+				&protodescriptor.DescriptorProto{
+					Name: proto.String("MimicObject"),
+					Field: []*protodescriptor.FieldDescriptorProto{
+						{
+							Name:   proto.String("a"),
+							Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+						},
+						{
+							Name:   proto.String("b"),
+							Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(2),
+						},
+					},
+				},
+			},
+			Extensions: map[string]interface{}{
+				"MimicObject": &swagger_options.Schema{
+					JsonSchema: &swagger_options.JSONSchema{
+						Type: []swagger_options.JSONSchema_JSONSchemaSimpleTypes{
+							swagger_options.JSONSchema_STRING,
+						},
+						Description: "Description for MimicObject",
+					},
+				},
+			},
+			Message: "ExampleObject",
+			Params: []swaggerParameterObject{
+				swaggerParameterObject{
+					Name:     "mimic_string",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+					Description: "Description for MimicObject",
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {
 		reg := descriptor.NewRegistry()
 		msgs := []*descriptor.Message{}
 		for _, msgdesc := range test.MsgDescs {
+			if ext, ok := test.Extensions[msgdesc.GetName()]; ok {
+				msgdesc.Options = new(protodescriptor.MessageOptions)
+				proto.SetExtension(msgdesc.Options, swagger_options.E_Openapiv2Schema, ext)
+			}
 			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
 		}
 		file := descriptor.File{
