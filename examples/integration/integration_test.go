@@ -18,7 +18,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
 	gw "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
-	sub "github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc/codes"
 )
@@ -978,5 +978,38 @@ func TestInvalidArgument(t *testing.T) {
 	if got, want := resp.StatusCode, http.StatusBadRequest; got != want {
 		t.Errorf("resp.StatusCode = %d; want %d", got, want)
 		t.Logf("%s", buf)
+	}
+}
+
+func TestResponseBody(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	testResponseBody(t, 8080)
+}
+
+func testResponseBody(t *testing.T, port int) {
+	url := fmt.Sprintf("http://localhost:%d/responsebody/foo", port)
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		return
+	}
+	defer resp.Body.Close()
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	if got, want := string(buf), `{"data":"foo"}`; got != want {
+		t.Errorf("response = %q; want %q", got, want)
 	}
 }

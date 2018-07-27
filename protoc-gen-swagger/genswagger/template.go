@@ -283,7 +283,13 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 				panic(err)
 			}
 
-			schema.Properties = append(schema.Properties, keyVal{f.GetName(), fieldValue})
+			kv := keyVal{Value: fieldValue}
+			if reg.GetUseJSONNamesForFields() {
+				kv.Key = f.GetJsonName()
+			} else {
+				kv.Key = f.GetName()
+			}
+			schema.Properties = append(schema.Properties, kv)
 		}
 		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
 	}
@@ -659,6 +665,24 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 
 				methProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method")
 				desc := ""
+				var responseSchema swaggerSchemaObject
+
+				if b.ResponseBody == nil || len(b.ResponseBody.FieldPath) == 0 {
+					responseSchema = swaggerSchemaObject{
+						schemaCore: schemaCore{
+							Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)),
+						},
+					}
+				} else {
+					// This is resolving the value of response_body in the google.api.HttpRule
+					lastField := b.ResponseBody.FieldPath[len(b.ResponseBody.FieldPath)-1]
+					responseSchema = schemaOfField(lastField.Target, reg, customRefs)
+					if responseSchema.Description != "" {
+						desc = responseSchema.Description
+					} else {
+						desc = fieldProtoComments(reg, lastField.Target.Message, lastField.Target)
+					}
+				}
 				if meth.GetServerStreaming() {
 					desc += "(streaming responses)"
 				}
@@ -668,11 +692,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					Responses: swaggerResponsesObject{
 						"200": swaggerResponseObject{
 							Description: desc,
-							Schema: swaggerSchemaObject{
-								schemaCore: schemaCore{
-									Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)),
-								},
-							},
+							Schema:      responseSchema,
 						},
 					},
 				}

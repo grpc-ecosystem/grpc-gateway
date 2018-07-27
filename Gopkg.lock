@@ -85,7 +85,7 @@
     "googleapis/rpc/status",
     "protobuf/field_mask"
   ]
-  revision = "86e600f69ee4704c6efbf6a2a40a5c10700e76c2"
+  revision = "383e8b2c3b9e36c4076b235b32537292176bae20"
 
 [[projects]]
   name = "google.golang.org/grpc"

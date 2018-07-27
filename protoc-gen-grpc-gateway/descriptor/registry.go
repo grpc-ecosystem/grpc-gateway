@@ -46,6 +46,14 @@ type Registry struct {
 
 	// mergeFileName target swagger file name after merge
 	mergeFileName string
+
+	// allowRepeatedFieldsInBody permits repeated field in body field path of `google.api.http` annotation option
+	allowRepeatedFieldsInBody bool
+
+	// useJSONNamesForFields if true json tag name is used for generating fields in swagger definitions,
+	// otherwise the original proto name is used. It's helpful for synchronizing the swagger definition
+	// with grpc-gateway response, if it uses json tags for marshaling.
+	useJSONNamesForFields bool
 }
 
 // NewRegistry returns a new Registry.
@@ -316,6 +324,28 @@ func (r *Registry) IsAllowMerge() bool {
 // SetMergeFileName controls the target swagger file name out of multiple protos
 func (r *Registry) SetMergeFileName(mergeFileName string) {
 	r.mergeFileName = mergeFileName
+}
+
+// SetAllowRepeatedFieldsInBody controls whether repeated field can be used
+// in `body` and `response_body` (`google.api.http` annotation option) field path or not
+func (r *Registry) SetAllowRepeatedFieldsInBody(allow bool) {
+	r.allowRepeatedFieldsInBody = allow
+}
+
+// IsAllowRepeatedFieldsInBody checks if repeated field can be used
+// in `body` and `response_body` (`google.api.http` annotation option) field path or not
+func (r *Registry) IsAllowRepeatedFieldsInBody() bool {
+	return r.allowRepeatedFieldsInBody
+}
+
+// SetUseJSONNamesForFields sets useJSONNamesForFields
+func (r *Registry) SetUseJSONNamesForFields(use bool) {
+	r.useJSONNamesForFields = use
+}
+
+// GetUseJSONNamesForFields returns useJSONNamesForFields
+func (r *Registry) GetUseJSONNamesForFields() bool {
+	return r.useJSONNamesForFields
 }
 
 // GetMergeFileName return the target merge swagger file name
