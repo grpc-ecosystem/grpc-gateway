@@ -19,15 +19,23 @@ var (
 	errNoTargetService = errors.New("no target service defined in the file")
 )
 
+type pathType int
+
+const (
+	pathTypeImport pathType = iota
+	pathTypeSourceRelative
+)
+
 type generator struct {
 	reg                *descriptor.Registry
 	baseImports        []descriptor.GoPackage
 	useRequestContext  bool
 	registerFuncSuffix string
+	pathType           pathType
 }
 
 // New returns a new generator which generates grpc gateway files.
-func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix string) gen.Generator {
+func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, pathTypeString string) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
 		"io",
@@ -57,11 +65,23 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix st
 		}
 		imports = append(imports, pkg)
 	}
+
+	var pathType pathType
+	switch pathTypeString {
+	case "", "import":
+		// paths=import is default
+	case "source_relative":
+		pathType = pathTypeSourceRelative
+	default:
+		glog.Fatalf(`Unknown path type %q: want "import" or "source_relative".`, pathTypeString)
+	}
+
 	return &generator{
 		reg:                reg,
 		baseImports:        imports,
 		useRequestContext:  useRequestContext,
 		registerFuncSuffix: registerFuncSuffix,
+		pathType:           pathType,
 	}
 }
 
@@ -83,7 +103,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 			return nil, err
 		}
 		name := file.GetName()
-		if file.GoPkg.Path != "" {
+		if g.pathType == pathTypeImport && file.GoPkg.Path != "" {
 			name = fmt.Sprintf("%s/%s", file.GoPkg.Path, filepath.Base(name))
 		}
 		ext := filepath.Ext(name)
