@@ -66,6 +66,9 @@ var (
 
 type errorBody struct {
 	Error   string     `protobuf:"bytes,1,name=error" json:"error"`
+  // This is to make the error more compatible with users that expect errors to be Status objects. It should be
+  // the exact same message as the Error field.
+	Message string     `protobuf:"bytes,1,name=message" json:"message"`
 	Code    int32      `protobuf:"varint,2,name=code" json:"code"`
 	Details []*any.Any `protobuf:"bytes,3,rep,name=details" json:"details,omitempty"`
 }
@@ -94,6 +97,7 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 
 	body := &errorBody{
 		Error:   s.Message(),
+		Message: s.Message(),
 		Code:    int32(s.Code()),
 		Details: s.Proto().GetDetails(),
 	}
