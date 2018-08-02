@@ -12,6 +12,9 @@ message Wrappers {
 	google.protobuf.FloatValue float_value = 4;
 	google.protobuf.DoubleValue double_value = 5;
 	google.protobuf.BoolValue bool_value = 6;
+	google.protobuf.UInt32Value uint32_value = 7;
+	google.protobuf.UInt64Value uint64_value = 8;
+	google.protobuf.BytesValue bytes_value = 9;
 }
 
 service WrappersService {

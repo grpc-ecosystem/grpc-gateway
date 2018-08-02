@@ -115,7 +115,8 @@ generate: $(RUNTIME_GO)
 .SUFFIXES: .go .proto
 
 $(GO_PLUGIN):
-	go get $(GO_PLUGIN_PKG)
+	dep ensure -vendor-only
+	go install ./vendor/$(GO_PLUGIN_PKG)
 	go build -o $@ $(GO_PLUGIN_PKG)
 
 $(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
