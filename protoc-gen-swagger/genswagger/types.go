@@ -202,6 +202,7 @@ type swaggerSchemaObject struct {
 
 	Description string `json:"description,omitempty"`
 	Title       string `json:"title,omitempty"`
+	Required    []string `json:"required,omitempty"`
 
 	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }
