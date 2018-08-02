@@ -101,6 +101,7 @@ func TestGenerateServiceWithoutBindings(t *testing.T) {
 func TestGenerateOutputPath(t *testing.T) {
 	cases := []struct {
 		file     *descriptor.File
+		pathType pathType
 		expected string
 	}{
 		{
@@ -121,10 +122,31 @@ func TestGenerateOutputPath(t *testing.T) {
 			),
 			expected: "example",
 		},
+		{
+			file: newExampleFileDescriptorWithGoPkg(
+				&descriptor.GoPackage{
+					Path: "example.com/path/to/example",
+					Name: "example_pb",
+				},
+			),
+			pathType: pathTypeSourceRelative,
+			expected: ".",
+		},
+		{
+			file: newExampleFileDescriptorWithGoPkg(
+				&descriptor.GoPackage{
+					Path: "example",
+					Name: "example_pb",
+				},
+			),
+			pathType: pathTypeSourceRelative,
+			expected: ".",
+		},
 	}
 
-	g := &generator{}
 	for _, c := range cases {
+		g := &generator{pathType: c.pathType}
+
 		file := c.file
 		gots, err := g.Generate([]*descriptor.File{crossLinkFixture(file)})
 		if err != nil {
