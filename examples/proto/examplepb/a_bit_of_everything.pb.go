@@ -145,27 +145,6 @@ func (m *ABitOfEverything) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ABitOfEverything proto.InternalMessageInfo
 
-type isABitOfEverything_OneofValue interface {
-	isABitOfEverything_OneofValue()
-}
-
-type ABitOfEverything_OneofEmpty struct {
-	OneofEmpty *empty.Empty `protobuf:"bytes,20,opt,name=oneof_empty,json=oneofEmpty,proto3,oneof"`
-}
-type ABitOfEverything_OneofString struct {
-	OneofString string `protobuf:"bytes,21,opt,name=oneof_string,json=oneofString,proto3,oneof"`
-}
-
-func (*ABitOfEverything_OneofEmpty) isABitOfEverything_OneofValue()  {}
-func (*ABitOfEverything_OneofString) isABitOfEverything_OneofValue() {}
-
-func (m *ABitOfEverything) GetOneofValue() isABitOfEverything_OneofValue {
-	if m != nil {
-		return m.OneofValue
-	}
-	return nil
-}
-
 func (m *ABitOfEverything) GetSingleNested() *ABitOfEverything_Nested {
 	if m != nil {
 		return m.SingleNested
@@ -302,6 +281,29 @@ func (m *ABitOfEverything) GetSint64Value() int64 {
 func (m *ABitOfEverything) GetRepeatedStringValue() []string {
 	if m != nil {
 		return m.RepeatedStringValue
+	}
+	return nil
+}
+
+type isABitOfEverything_OneofValue interface {
+	isABitOfEverything_OneofValue()
+}
+
+type ABitOfEverything_OneofEmpty struct {
+	OneofEmpty *empty.Empty `protobuf:"bytes,20,opt,name=oneof_empty,json=oneofEmpty,proto3,oneof"`
+}
+
+type ABitOfEverything_OneofString struct {
+	OneofString string `protobuf:"bytes,21,opt,name=oneof_string,json=oneofString,proto3,oneof"`
+}
+
+func (*ABitOfEverything_OneofEmpty) isABitOfEverything_OneofValue() {}
+
+func (*ABitOfEverything_OneofString) isABitOfEverything_OneofValue() {}
+
+func (m *ABitOfEverything) GetOneofValue() isABitOfEverything_OneofValue {
+	if m != nil {
+		return m.OneofValue
 	}
 	return nil
 }
