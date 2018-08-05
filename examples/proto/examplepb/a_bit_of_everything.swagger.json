@@ -334,6 +334,13 @@
                 "ONE"
               ]
             }
+          },
+          {
+            "name": "@id",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
           }
         ],
         "tags": [
@@ -1114,6 +1121,10 @@
             "$ref": "#/definitions/examplepbNumericEnum"
           },
           "title": "repeated enum value. it is comma-separated in query"
+        },
+        "@id": {
+          "type": "boolean",
+          "format": "boolean"
         }
       },
       "description": "Intentionaly complicated message type to cover many features of Protobuf.",
