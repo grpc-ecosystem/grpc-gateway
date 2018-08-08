@@ -251,6 +251,20 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 
 			// Warning: Make sure not to overwrite any fields already set on the schema type.
 			schema.ExternalDocs = protoSchema.ExternalDocs
+			schema.MultipleOf = protoSchema.MultipleOf
+			schema.Maximum = protoSchema.Maximum
+			schema.ExclusiveMaximum = protoSchema.ExclusiveMaximum
+			schema.Minimum = protoSchema.Minimum
+			schema.ExclusiveMinimum = protoSchema.ExclusiveMinimum
+			schema.MaxLength = protoSchema.MaxLength
+			schema.MinLength = protoSchema.MinLength
+			schema.Pattern = protoSchema.Pattern
+			schema.MaxItems = protoSchema.MaxItems
+			schema.MinItems = protoSchema.MinItems
+			schema.UniqueItems = protoSchema.UniqueItems
+			schema.MaxProperties = protoSchema.MaxProperties
+			schema.MinProperties = protoSchema.MinProperties
+			schema.Required = protoSchema.Required
 			if protoSchema.schemaCore.Type != "" || protoSchema.schemaCore.Ref != "" {
 				schema.schemaCore = protoSchema.schemaCore
 			}
@@ -318,6 +332,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 			core = schemaCore{Type: ft.String(), Format: "UNKNOWN"}
 		}
 	}
+
 	switch aggregate {
 	case array:
 		return swaggerSchemaObject{
@@ -334,7 +349,13 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 			AdditionalProperties: &swaggerSchemaObject{schemaCore: core},
 		}
 	default:
-		return swaggerSchemaObject{schemaCore: core}
+		ret := swaggerSchemaObject{
+			schemaCore: core,
+		}
+		if j, err := extractJSONSchemaFromFieldDescriptor(fd); err == nil {
+			updateSwaggerObjectFromJSONSchema(&ret, j)
+		}
+		return ret
 	}
 }
 
@@ -1237,28 +1258,73 @@ func extractSwaggerOptionFromFileDescriptor(file *pbdescriptor.FileDescriptorPro
 	return opts, nil
 }
 
+func extractJSONSchemaFromFieldDescriptor(fd *pbdescriptor.FieldDescriptorProto) (*swagger_options.JSONSchema, error) {
+	if fd.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(fd.Options, swagger_options.E_Openapiv2Field) {
+		return nil, nil
+	}
+	ext, err := proto.GetExtension(fd.Options, swagger_options.E_Openapiv2Field)
+	if err != nil {
+		return nil, err
+	}
+	opts, ok := ext.(*swagger_options.JSONSchema)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want a JSONSchema object", ext)
+	}
+	return opts, nil
+}
+
+func protoJSONSchemaToSwaggerSchemaCore(j *swagger_options.JSONSchema, reg *descriptor.Registry, refs refMap) schemaCore {
+	ret := schemaCore{}
+
+	if j.GetRef() != "" {
+		swaggerName := fullyQualifiedNameToSwaggerName(j.GetRef(), reg)
+		if swaggerName != "" {
+			ret.Ref = "#/definitions/" + swaggerName
+			if refs != nil {
+				refs[j.GetRef()] = struct{}{}
+			}
+		} else {
+			ret.Ref += j.GetRef()
+		}
+	} else {
+		f, t := protoJSONSchemaTypeToFormat(j.GetType())
+		ret.Format = f
+		ret.Type = t
+	}
+
+	return ret
+}
+
+func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_options.JSONSchema) {
+	s.Title = j.GetTitle()
+	s.Description = j.GetDescription()
+	s.MultipleOf = j.GetMultipleOf()
+	s.Maximum = j.GetMaximum()
+	s.ExclusiveMaximum = j.GetExclusiveMaximum()
+	s.Minimum = j.GetMinimum()
+	s.ExclusiveMinimum = j.GetExclusiveMinimum()
+	s.MaxLength = j.GetMaxLength()
+	s.MinLength = j.GetMinLength()
+	s.Pattern = j.GetPattern()
+	s.MaxItems = j.GetMaxItems()
+	s.MinItems = j.GetMinItems()
+	s.UniqueItems = j.GetUniqueItems()
+	s.MaxProperties = j.GetMaxProperties()
+	s.MinProperties = j.GetMinProperties()
+	s.Required = j.GetRequired()
+}
+
 func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Registry, refs refMap) swaggerSchemaObject {
 	ret := swaggerSchemaObject{
 		ExternalDocs: protoExternalDocumentationToSwaggerExternalDocumentation(s.GetExternalDocs()),
-		Title:        s.GetJsonSchema().GetTitle(),
-		Description:  s.GetJsonSchema().GetDescription(),
-		// TODO(johanbrandhorst): Add more fields?
 	}
-	if s.GetJsonSchema().GetRef() != "" {
-		swaggerName := fullyQualifiedNameToSwaggerName(s.GetJsonSchema().GetRef(), reg)
-		if swaggerName != "" {
-			ret.schemaCore.Ref = "#/definitions/" + swaggerName
-			if refs != nil {
-				refs[s.GetJsonSchema().GetRef()] = struct{}{}
-			}
-		} else {
-			ret.schemaCore.Ref += s.GetJsonSchema().GetRef()
-		}
-	} else {
-		f, t := protoJSONSchemaTypeToFormat(s.GetJsonSchema().GetType())
-		ret.schemaCore.Format = f
-		ret.schemaCore.Type = t
-	}
+
+	ret.schemaCore = protoJSONSchemaToSwaggerSchemaCore(s.GetJsonSchema(), reg, refs)
+	updateSwaggerObjectFromJSONSchema(&ret, s.GetJsonSchema())
+
 	return ret
 }
 

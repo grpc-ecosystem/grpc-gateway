@@ -133,6 +133,7 @@ message ABitOfEverything {
 		json_schema: {
 			title: "A bit of everything"
 			description: "Intentionaly complicated message type to cover many features of Protobuf."
+			required: ["uuid"]
 		}
 		external_docs: {
 			url: "https://github.com/grpc-ecosystem/grpc-gateway";
@@ -156,7 +157,7 @@ message ABitOfEverything {
 	}
 	Nested single_nested = 25;
 
-	string uuid = 1;
+	string uuid = 1 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"}];
 	repeated Nested nested = 2;
 	float float_value = 3;
 	double double_value = 4;

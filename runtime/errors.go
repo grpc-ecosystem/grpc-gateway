@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -66,7 +65,11 @@ var (
 )
 
 type errorBody struct {
-	Error   string     `protobuf:"bytes,1,name=error" json:"error"`
+	Error string `protobuf:"bytes,1,name=error" json:"error"`
+	// This is to make the error more compatible with users that expect errors to be Status objects:
+	// https://github.com/grpc/grpc/blob/master/src/proto/grpc/status/status.proto
+	// It should be the exact same message as the Error field.
+	Message string     `protobuf:"bytes,1,name=message" json:"message"`
 	Code    int32      `protobuf:"varint,2,name=code" json:"code"`
 	Details []*any.Any `protobuf:"bytes,3,rep,name=details" json:"details,omitempty"`
 }
@@ -94,19 +97,10 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 	}
 
 	body := &errorBody{
-		Error: s.Message(),
-		Code:  int32(s.Code()),
-	}
-
-	for _, detail := range s.Details() {
-		if det, ok := detail.(proto.Message); ok {
-			a, err := ptypes.MarshalAny(det)
-			if err != nil {
-				grpclog.Infof("Failed to marshal any: %v", err)
-			} else {
-				body.Details = append(body.Details, a)
-			}
-		}
+		Error:   s.Message(),
+		Message: s.Message(),
+		Code:    int32(s.Code()),
+		Details: s.Proto().GetDetails(),
 	}
 
 	buf, merr := marshaler.Marshal(body)
