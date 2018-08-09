@@ -86,37 +86,37 @@ func (ABitOfEverything_Nested_DeepEnum) EnumDescriptor() ([]byte, []int) {
 // Intentionaly complicated message type to cover many features of Protobuf.
 // NEXT ID: 30
 type ABitOfEverything struct {
-	SingleNested        *ABitOfEverything_Nested   `protobuf:"bytes,25,opt,name=single_nested,json=singleNested" json:"single_nested,omitempty"`
-	Uuid                string                     `protobuf:"bytes,1,opt,name=uuid" json:"uuid,omitempty"`
-	Nested              []*ABitOfEverything_Nested `protobuf:"bytes,2,rep,name=nested" json:"nested,omitempty"`
-	FloatValue          float32                    `protobuf:"fixed32,3,opt,name=float_value,json=floatValue" json:"float_value,omitempty"`
-	DoubleValue         float64                    `protobuf:"fixed64,4,opt,name=double_value,json=doubleValue" json:"double_value,omitempty"`
-	Int64Value          int64                      `protobuf:"varint,5,opt,name=int64_value,json=int64Value" json:"int64_value,omitempty"`
-	Uint64Value         uint64                     `protobuf:"varint,6,opt,name=uint64_value,json=uint64Value" json:"uint64_value,omitempty"`
-	Int32Value          int32                      `protobuf:"varint,7,opt,name=int32_value,json=int32Value" json:"int32_value,omitempty"`
-	Fixed64Value        uint64                     `protobuf:"fixed64,8,opt,name=fixed64_value,json=fixed64Value" json:"fixed64_value,omitempty"`
-	Fixed32Value        uint32                     `protobuf:"fixed32,9,opt,name=fixed32_value,json=fixed32Value" json:"fixed32_value,omitempty"`
-	BoolValue           bool                       `protobuf:"varint,10,opt,name=bool_value,json=boolValue" json:"bool_value,omitempty"`
-	StringValue         string                     `protobuf:"bytes,11,opt,name=string_value,json=stringValue" json:"string_value,omitempty"`
+	SingleNested        *ABitOfEverything_Nested   `protobuf:"bytes,25,opt,name=single_nested,json=singleNested,proto3" json:"single_nested,omitempty"`
+	Uuid                string                     `protobuf:"bytes,1,opt,name=uuid,proto3" json:"uuid,omitempty"`
+	Nested              []*ABitOfEverything_Nested `protobuf:"bytes,2,rep,name=nested,proto3" json:"nested,omitempty"`
+	FloatValue          float32                    `protobuf:"fixed32,3,opt,name=float_value,json=floatValue,proto3" json:"float_value,omitempty"`
+	DoubleValue         float64                    `protobuf:"fixed64,4,opt,name=double_value,json=doubleValue,proto3" json:"double_value,omitempty"`
+	Int64Value          int64                      `protobuf:"varint,5,opt,name=int64_value,json=int64Value,proto3" json:"int64_value,omitempty"`
+	Uint64Value         uint64                     `protobuf:"varint,6,opt,name=uint64_value,json=uint64Value,proto3" json:"uint64_value,omitempty"`
+	Int32Value          int32                      `protobuf:"varint,7,opt,name=int32_value,json=int32Value,proto3" json:"int32_value,omitempty"`
+	Fixed64Value        uint64                     `protobuf:"fixed64,8,opt,name=fixed64_value,json=fixed64Value,proto3" json:"fixed64_value,omitempty"`
+	Fixed32Value        uint32                     `protobuf:"fixed32,9,opt,name=fixed32_value,json=fixed32Value,proto3" json:"fixed32_value,omitempty"`
+	BoolValue           bool                       `protobuf:"varint,10,opt,name=bool_value,json=boolValue,proto3" json:"bool_value,omitempty"`
+	StringValue         string                     `protobuf:"bytes,11,opt,name=string_value,json=stringValue,proto3" json:"string_value,omitempty"`
 	BytesValue          []byte                     `protobuf:"bytes,29,opt,name=bytes_value,json=bytesValue,proto3" json:"bytes_value,omitempty"`
-	Uint32Value         uint32                     `protobuf:"varint,13,opt,name=uint32_value,json=uint32Value" json:"uint32_value,omitempty"`
-	EnumValue           NumericEnum                `protobuf:"varint,14,opt,name=enum_value,json=enumValue,enum=grpc.gateway.examples.examplepb.NumericEnum" json:"enum_value,omitempty"`
-	Sfixed32Value       int32                      `protobuf:"fixed32,15,opt,name=sfixed32_value,json=sfixed32Value" json:"sfixed32_value,omitempty"`
-	Sfixed64Value       int64                      `protobuf:"fixed64,16,opt,name=sfixed64_value,json=sfixed64Value" json:"sfixed64_value,omitempty"`
-	Sint32Value         int32                      `protobuf:"zigzag32,17,opt,name=sint32_value,json=sint32Value" json:"sint32_value,omitempty"`
-	Sint64Value         int64                      `protobuf:"zigzag64,18,opt,name=sint64_value,json=sint64Value" json:"sint64_value,omitempty"`
-	RepeatedStringValue []string                   `protobuf:"bytes,19,rep,name=repeated_string_value,json=repeatedStringValue" json:"repeated_string_value,omitempty"`
+	Uint32Value         uint32                     `protobuf:"varint,13,opt,name=uint32_value,json=uint32Value,proto3" json:"uint32_value,omitempty"`
+	EnumValue           NumericEnum                `protobuf:"varint,14,opt,name=enum_value,json=enumValue,proto3,enum=grpc.gateway.examples.examplepb.NumericEnum" json:"enum_value,omitempty"`
+	Sfixed32Value       int32                      `protobuf:"fixed32,15,opt,name=sfixed32_value,json=sfixed32Value,proto3" json:"sfixed32_value,omitempty"`
+	Sfixed64Value       int64                      `protobuf:"fixed64,16,opt,name=sfixed64_value,json=sfixed64Value,proto3" json:"sfixed64_value,omitempty"`
+	Sint32Value         int32                      `protobuf:"zigzag32,17,opt,name=sint32_value,json=sint32Value,proto3" json:"sint32_value,omitempty"`
+	Sint64Value         int64                      `protobuf:"zigzag64,18,opt,name=sint64_value,json=sint64Value,proto3" json:"sint64_value,omitempty"`
+	RepeatedStringValue []string                   `protobuf:"bytes,19,rep,name=repeated_string_value,json=repeatedStringValue,proto3" json:"repeated_string_value,omitempty"`
 	// Types that are valid to be assigned to OneofValue:
 	//	*ABitOfEverything_OneofEmpty
 	//	*ABitOfEverything_OneofString
 	OneofValue               isABitOfEverything_OneofValue       `protobuf_oneof:"oneof_value"`
-	MapValue                 map[string]NumericEnum              `protobuf:"bytes,22,rep,name=map_value,json=mapValue" json:"map_value,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value,enum=grpc.gateway.examples.examplepb.NumericEnum"`
-	MappedStringValue        map[string]string                   `protobuf:"bytes,23,rep,name=mapped_string_value,json=mappedStringValue" json:"mapped_string_value,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	MappedNestedValue        map[string]*ABitOfEverything_Nested `protobuf:"bytes,24,rep,name=mapped_nested_value,json=mappedNestedValue" json:"mapped_nested_value,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	NonConventionalNameValue string                              `protobuf:"bytes,26,opt,name=nonConventionalNameValue" json:"nonConventionalNameValue,omitempty"`
-	TimestampValue           *timestamp.Timestamp                `protobuf:"bytes,27,opt,name=timestamp_value,json=timestampValue" json:"timestamp_value,omitempty"`
+	MapValue                 map[string]NumericEnum              `protobuf:"bytes,22,rep,name=map_value,json=mapValue,proto3" json:"map_value,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3,enum=grpc.gateway.examples.examplepb.NumericEnum"`
+	MappedStringValue        map[string]string                   `protobuf:"bytes,23,rep,name=mapped_string_value,json=mappedStringValue,proto3" json:"mapped_string_value,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	MappedNestedValue        map[string]*ABitOfEverything_Nested `protobuf:"bytes,24,rep,name=mapped_nested_value,json=mappedNestedValue,proto3" json:"mapped_nested_value,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	NonConventionalNameValue string                              `protobuf:"bytes,26,opt,name=nonConventionalNameValue,proto3" json:"nonConventionalNameValue,omitempty"`
+	TimestampValue           *timestamp.Timestamp                `protobuf:"bytes,27,opt,name=timestamp_value,json=timestampValue,proto3" json:"timestamp_value,omitempty"`
 	// repeated enum value. it is comma-separated in query
-	RepeatedEnumValue    []NumericEnum `protobuf:"varint,28,rep,packed,name=repeated_enum_value,json=repeatedEnumValue,enum=grpc.gateway.examples.examplepb.NumericEnum" json:"repeated_enum_value,omitempty"`
+	RepeatedEnumValue    []NumericEnum `protobuf:"varint,28,rep,packed,name=repeated_enum_value,json=repeatedEnumValue,proto3,enum=grpc.gateway.examples.examplepb.NumericEnum" json:"repeated_enum_value,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
 	XXX_unrecognized     []byte        `json:"-"`
 	XXX_sizecache        int32         `json:"-"`
@@ -151,10 +151,10 @@ type isABitOfEverything_OneofValue interface {
 }
 
 type ABitOfEverything_OneofEmpty struct {
-	OneofEmpty *empty.Empty `protobuf:"bytes,20,opt,name=oneof_empty,json=oneofEmpty,oneof"`
+	OneofEmpty *empty.Empty `protobuf:"bytes,20,opt,name=oneof_empty,json=oneofEmpty,proto3,oneof"`
 }
 type ABitOfEverything_OneofString struct {
-	OneofString string `protobuf:"bytes,21,opt,name=oneof_string,json=oneofString,oneof"`
+	OneofString string `protobuf:"bytes,21,opt,name=oneof_string,json=oneofString,proto3,oneof"`
 }
 
 func (*ABitOfEverything_OneofEmpty) isABitOfEverything_OneofValue()  {}
@@ -436,9 +436,9 @@ func _ABitOfEverything_OneofSizer(msg proto.Message) (n int) {
 // Nested is nested type.
 type ABitOfEverything_Nested struct {
 	// name is nested field.
-	Name                 string                           `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
-	Amount               uint32                           `protobuf:"varint,2,opt,name=amount" json:"amount,omitempty"`
-	Ok                   ABitOfEverything_Nested_DeepEnum `protobuf:"varint,3,opt,name=ok,enum=grpc.gateway.examples.examplepb.ABitOfEverything_Nested_DeepEnum" json:"ok,omitempty"`
+	Name                 string                           `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Amount               uint32                           `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Ok                   ABitOfEverything_Nested_DeepEnum `protobuf:"varint,3,opt,name=ok,proto3,enum=grpc.gateway.examples.examplepb.ABitOfEverything_Nested_DeepEnum" json:"ok,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                         `json:"-"`
 	XXX_unrecognized     []byte                           `json:"-"`
 	XXX_sizecache        int32                            `json:"-"`
@@ -490,7 +490,7 @@ func (m *ABitOfEverything_Nested) GetOk() ABitOfEverything_Nested_DeepEnum {
 }
 
 type Body struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -528,8 +528,8 @@ func (m *Body) GetName() string {
 }
 
 type MessageWithBody struct {
-	Id                   string   `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
-	Data                 *Body    `protobuf:"bytes,2,opt,name=data" json:"data,omitempty"`
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Data                 *Body    `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -574,8 +574,8 @@ func (m *MessageWithBody) GetData() *Body {
 }
 
 type UpdateV2Request struct {
-	Abe                  *ABitOfEverything     `protobuf:"bytes,1,opt,name=abe" json:"abe,omitempty"`
-	UpdateMask           *field_mask.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask" json:"update_mask,omitempty"`
+	Abe                  *ABitOfEverything     `protobuf:"bytes,1,opt,name=abe,proto3" json:"abe,omitempty"`
+	UpdateMask           *field_mask.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
 	XXX_unrecognized     []byte                `json:"-"`
 	XXX_sizecache        int32                 `json:"-"`
@@ -811,8 +811,7 @@ func (c *aBitOfEverythingServiceClient) PostWithEmptyBody(ctx context.Context, i
 	return out, nil
 }
 
-// Server API for ABitOfEverythingService service
-
+// ABitOfEverythingServiceServer is the server API for ABitOfEverythingService service.
 type ABitOfEverythingServiceServer interface {
 	Create(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	CreateBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
@@ -1205,8 +1204,7 @@ func (c *camelCaseServiceNameClient) Empty(ctx context.Context, in *empty.Empty,
 	return out, nil
 }
 
-// Server API for CamelCaseServiceName service
-
+// CamelCaseServiceNameServer is the server API for CamelCaseServiceName service.
 type CamelCaseServiceNameServer interface {
 	Empty(context.Context, *empty.Empty) (*empty.Empty, error)
 }
@@ -1270,8 +1268,7 @@ func (c *anotherServiceWithNoBindingsClient) NoBindings(ctx context.Context, in 
 	return out, nil
 }
 
-// Server API for AnotherServiceWithNoBindings service
-
+// AnotherServiceWithNoBindingsServer is the server API for AnotherServiceWithNoBindings service.
 type AnotherServiceWithNoBindingsServer interface {
 	NoBindings(context.Context, *empty.Empty) (*empty.Empty, error)
 }

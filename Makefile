@@ -108,7 +108,7 @@ UNANNOTATED_ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/unannotatedecho/api_client.g
 EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS)
 SWAGGER_CODEGEN=swagger-codegen
 
-PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
+PROTOC_INC_PATH=$(dir $(shell which protoc))/../include	
 
 generate: $(RUNTIME_GO)
 
