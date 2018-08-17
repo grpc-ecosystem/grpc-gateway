@@ -143,11 +143,6 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 			return nil, err
 		}
 
-		b.ResponseBody, err = r.newResponse(meth, opts.ResponseBody)
-		if err != nil {
-			return nil, err
-		}
-
 		return b, nil
 	}
 
@@ -243,19 +238,6 @@ func (r *Registry) newBody(meth *Method, path string) (*Body, error) {
 	return &Body{FieldPath: FieldPath(fields)}, nil
 }
 
-func (r *Registry) newResponse(meth *Method, path string) (*Body, error) {
-	msg := meth.ResponseType
-	switch path {
-	case "", "*":
-		return nil, nil
-	}
-	fields, err := r.resolveFieldPath(msg, path)
-	if err != nil {
-		return nil, err
-	}
-	return &Body{FieldPath: FieldPath(fields)}, nil
-}
-
 // lookupField looks up a field named "name" within "msg".
 // It returns nil if no such field found.
 func lookupField(msg *Message, name string) *Field {
@@ -295,7 +277,7 @@ func (r *Registry) resolveFieldPath(msg *Message, path string) ([]FieldPathCompo
 		if f == nil {
 			return nil, fmt.Errorf("no field %q found in %s", path, root.GetName())
 		}
-		if !r.allowRepeatedFieldsInBody && f.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+		if f.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
 			return nil, fmt.Errorf("repeated field not allowed in field path: %s in %s", f.GetName(), path)
 		}
 		result = append(result, FieldPathComponent{Name: c, Target: f})

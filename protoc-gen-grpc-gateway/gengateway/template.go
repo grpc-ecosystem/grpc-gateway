@@ -385,32 +385,13 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context,
 		{{if $m.GetServerStreaming}}
 		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 		{{else}}
-		{{ if $b.ResponseBody }}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}{resp}, mux.GetForwardResponseOptions()...)
-		{{ else }}
 		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-		{{end}}
 		{{end}}
 	})
 	{{end}}
 	{{end}}
 	return nil
 }
-
-{{range $m := $svc.Methods}}
-{{range $b := $m.Bindings}}
-{{if $b.ResponseBody}}
-type response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} struct {
-	proto.Message
-}
-
-func (m response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}) XXX_ResponseBody() interface{} {
-	response := m.Message.(*{{$m.ResponseType.GoType $m.Service.File.GoPkg.Path}})
-	return {{$b.ResponseBody.AssignableExpr "response"}}
-}
-{{end}}
-{{end}}
-{{end}}
 
 var (
 	{{range $m := $svc.Methods}}

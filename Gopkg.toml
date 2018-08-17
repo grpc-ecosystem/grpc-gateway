@@ -23,11 +23,6 @@ required = [
   revision = "6724a57986aff9bff1a1770e9347036def7c89f6"
   name = "github.com/rogpeppe/fastuuid"
 
-[[constraint]]
-  # Also defined in WORKSPACE
-  revision = "383e8b2c3b9e36c4076b235b32537292176bae20"
-  name = "google.golang.org/genproto"
-
 [[override]]
   # Also defined in WORKSPACE
   revision = "eb3733d160e74a9c7e442f435eb3bea458e1d19f"
@@ -52,6 +47,12 @@ required = [
   # https://github.com/bazelbuild/rules_go/blob/436452edc29a2f1e0edc22d180fbb57c27e6d0af/go/private/repositories.bzl#L123
   version = "1.10.3"
   name = "google.golang.org/grpc"
+
+[[constraint]]
+  # Also defined in bazelbuild/rules_go
+  # https://github.com/bazelbuild/rules_go/blob/436452edc29a2f1e0edc22d180fbb57c27e6d0af/go/private/repositories.bzl#L131
+  revision = "86e600f69ee4704c6efbf6a2a40a5c10700e76c2"
+  name = "google.golang.org/genproto"
 
 [[constraint]]
   # Also defined in bazelbuild/rules_go
