@@ -29,7 +29,6 @@ func Run(ctx context.Context, network, address string) error {
 	abe := newABitOfEverythingServer()
 	examples.RegisterABitOfEverythingServiceServer(s, abe)
 	examples.RegisterStreamServiceServer(s, abe)
-	examples.RegisterResponseBodyServiceServer(s, newResponseBodyServer())
 
 	go func() {
 		defer s.GracefulStop()

@@ -22,7 +22,6 @@ func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.Ser
 		examplepb.RegisterStreamServiceHandler,
 		examplepb.RegisterABitOfEverythingServiceHandler,
 		examplepb.RegisterFlowCombinationHandler,
-		examplepb.RegisterResponseBodyServiceHandler,
 	} {
 		if err := f(ctx, mux, conn); err != nil {
 			return nil, err
