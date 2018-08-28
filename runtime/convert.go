@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"encoding/base64"
+	"fmt"
 	"strconv"
 
 	"github.com/golang/protobuf/jsonpb"
@@ -84,4 +85,24 @@ func Duration(val string) (*duration.Duration, error) {
 	var r *duration.Duration
 	err := jsonpb.UnmarshalString(val, r)
 	return r, err
+}
+
+// Enum converts the given string into an int32 that should be type casted into the
+// correct enum proto type.
+func Enum(val string, enumValMap map[string]int32) (int32, error) {
+	e, ok := enumValMap[val]
+	if ok {
+		return e, nil
+	}
+
+	i, err := Int32(val)
+	if err != nil {
+		return 0, fmt.Errorf("%s is not valid", val)
+	}
+	for _, v := range enumValMap {
+		if v == i {
+			return i, nil
+		}
+	}
+	return 0, fmt.Errorf("%s is not valid", val)
 }

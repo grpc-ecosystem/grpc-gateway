@@ -23,6 +23,7 @@ proto_library(
         "response_body_service.proto",
     ],
     deps = [
+        "//examples/proto/pathenum:pathenum_proto",
         "//examples/proto/sub:sub_proto",
         "//examples/proto/sub2:sub2_proto",
         "//protoc-gen-swagger/options:options_proto",
@@ -43,6 +44,7 @@ go_proto_library(
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb",
     proto = ":examplepb_proto",
     deps = [
+        "//examples/proto/pathenum:go_default_library",
         "//examples/proto/sub:go_default_library",
         "//examples/proto/sub2:go_default_library",
         "//protoc-gen-swagger/options:go_default_library",

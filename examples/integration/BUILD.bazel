@@ -14,6 +14,7 @@ go_test(
         "//examples/clients/unannotatedecho:go_default_library",
         "//examples/gateway:go_default_library",
         "//examples/proto/examplepb:go_default_library",
+        "//examples/proto/pathenum:go_default_library",
         "//examples/proto/sub:go_default_library",
         "//examples/server:go_default_library",
         "//runtime:go_default_library",
