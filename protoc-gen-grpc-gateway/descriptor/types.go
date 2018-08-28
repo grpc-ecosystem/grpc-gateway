@@ -121,6 +121,25 @@ func (e *Enum) FQEN() string {
 	return strings.Join(components, ".")
 }
 
+// GoType returns a go type name for the enum type.
+// It prefixes the type name with the package alias if
+// its belonging package is not "currentPackage".
+func (e *Enum) GoType(currentPackage string) string {
+	var components []string
+	components = append(components, e.Outers...)
+	components = append(components, e.GetName())
+
+	name := strings.Join(components, "_")
+	if e.File.GoPkg.Path == currentPackage {
+		return name
+	}
+	pkg := e.File.GoPkg.Name
+	if alias := e.File.GoPkg.Alias; alias != "" {
+		pkg = alias
+	}
+	return fmt.Sprintf("%s.%s", pkg, name)
+}
+
 // Service wraps descriptor.ServiceDescriptorProto for richer features.
 type Service struct {
 	// File is the file where this service is defined.
@@ -338,10 +357,9 @@ var (
 		descriptor.FieldDescriptorProto_TYPE_STRING:  "runtime.String",
 		// FieldDescriptorProto_TYPE_GROUP
 		// FieldDescriptorProto_TYPE_MESSAGE
-		descriptor.FieldDescriptorProto_TYPE_BYTES:  "runtime.Bytes",
-		descriptor.FieldDescriptorProto_TYPE_UINT32: "runtime.Uint32",
-		// FieldDescriptorProto_TYPE_ENUM
-		// TODO(yugui) Handle Enum
+		descriptor.FieldDescriptorProto_TYPE_BYTES:    "runtime.Bytes",
+		descriptor.FieldDescriptorProto_TYPE_UINT32:   "runtime.Uint32",
+		descriptor.FieldDescriptorProto_TYPE_ENUM:     "runtime.Enum",
 		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32",
 		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64",
 		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32",
@@ -362,9 +380,8 @@ var (
 		// FieldDescriptorProto_TYPE_MESSAGE
 		// FieldDescriptorProto_TYPE_BYTES
 		// TODO(yugui) Handle bytes
-		descriptor.FieldDescriptorProto_TYPE_UINT32: "runtime.Uint32P",
-		// FieldDescriptorProto_TYPE_ENUM
-		// TODO(yugui) Handle Enum
+		descriptor.FieldDescriptorProto_TYPE_UINT32:   "runtime.Uint32P",
+		descriptor.FieldDescriptorProto_TYPE_ENUM:     "runtime.EnumP",
 		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32P",
 		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64P",
 		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32P",

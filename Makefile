@@ -77,7 +77,7 @@ EXAMPLES=examples/proto/examplepb/echo_service.proto \
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
 EXAMPLE_SWAGGERSRCS=$(SWAGGER_EXAMPLES:.proto=.swagger.json)
-EXAMPLE_DEPS=examples/proto/sub/message.proto examples/proto/sub2/message.proto
+EXAMPLE_DEPS=examples/proto/pathenum/path_enum.proto examples/proto/sub/message.proto examples/proto/sub2/message.proto
 EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
 
 EXAMPLE_CLIENT_DIR=examples/clients
@@ -182,7 +182,7 @@ $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh \
 		$(EXAMPLE_CLIENT_DIR)/responsebody/.travis.yml
 
-examples: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
+examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
 test: examples
 	go test -race $(PKG)/...
 	go test -race $(PKG)/examples/integration -args -network=unix -endpoint=test.sock

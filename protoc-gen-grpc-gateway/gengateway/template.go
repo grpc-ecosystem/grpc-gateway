@@ -7,6 +7,7 @@ import (
 	"text/template"
 
 	"github.com/golang/glog"
+	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 )
@@ -20,6 +21,7 @@ type param struct {
 
 type binding struct {
 	*descriptor.Binding
+	Registry *descriptor.Registry
 }
 
 // HasQueryParam determines if the binding needs parameters in query string.
@@ -54,6 +56,25 @@ func (b binding) QueryParamFilter() queryParamFilter {
 	return queryParamFilter{utilities.NewDoubleArray(seqs)}
 }
 
+// HasEnumPathParam returns true if the path parameter slice contains a parameter that maps to an enum proto field, if not false is returned.
+func (b binding) HasEnumPathParam() bool {
+	for _, p := range b.PathParams {
+		if p.Target.GetType() == pbdescriptor.FieldDescriptorProto_TYPE_ENUM {
+			return true
+		}
+	}
+	return false
+}
+
+// LookupEnum looks up a enum type by path parameter.
+func (b binding) LookupEnum(p descriptor.Parameter) *descriptor.Enum {
+	e, err := b.Registry.LookupEnum("", p.Target.GetTypeName())
+	if err != nil {
+		return nil
+	}
+	return e
+}
+
 // queryParamFilter is a wrapper of utilities.DoubleArray which provides String() to output DoubleArray.Encoding in a stable and predictable format.
 type queryParamFilter struct {
 	*utilities.DoubleArray
@@ -74,7 +95,7 @@ type trailerParams struct {
 	RegisterFuncSuffix string
 }
 
-func applyTemplate(p param) (string, error) {
+func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 	w := bytes.NewBuffer(nil)
 	if err := headerTemplate.Execute(w, p); err != nil {
 		return "", err
@@ -90,7 +111,7 @@ func applyTemplate(p param) (string, error) {
 			meth.Name = &methName
 			for _, b := range meth.Bindings {
 				methodWithBindingsSeen = true
-				if err := handlerTemplate.Execute(w, binding{Binding: b}); err != nil {
+				if err := handlerTemplate.Execute(w, binding{Binding: b, Registry: reg}); err != nil {
 					return "", err
 				}
 			}
@@ -217,23 +238,33 @@ var (
 {{if .PathParams}}
 	var (
 		val string
+{{- if .HasEnumPathParam}}
+		e int32
+{{- end}}
 		ok bool
 		err error
 		_ = err
 	)
+	{{$binding := .}}
 	{{range $param := .PathParams}}
+	{{$enum := $binding.LookupEnum $param}}
 	val, ok = pathParams[{{$param | printf "%q"}}]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", {{$param | printf "%q"}})
 	}
-{{if $param.IsNestedProto3 }}
+{{if $param.IsNestedProto3}}
 	err = runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val)
+{{else if $enum}}
+	e, err = {{$param.ConvertFuncExpr}}(val, {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}_value)
 {{else}}
 	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val)
 {{end}}
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
+{{if $enum}}
+	{{$param.AssignableExpr "protoReq"}} = {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}(e)
+{{end}}
 	{{end}}
 {{end}}
 {{if .HasQueryParam}}
