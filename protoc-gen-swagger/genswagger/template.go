@@ -583,6 +583,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				for _, parameter := range b.PathParams {
 
 					var paramType, paramFormat, desc string
+					var enumNames []string
 					switch pt := parameter.Target.GetType(); pt {
 					case pbdescriptor.FieldDescriptorProto_TYPE_GROUP, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE:
 						if descriptor.IsWellKnownType(parameter.Target.GetTypeName()) {
@@ -594,8 +595,13 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
 					case pbdescriptor.FieldDescriptorProto_TYPE_ENUM:
-						paramType = fullyQualifiedNameToSwaggerName(parameter.Target.GetTypeName(), reg)
+						paramType = "string"
 						paramFormat = ""
+						enum, err := reg.LookupEnum("", parameter.Target.GetTypeName())
+						if err != nil {
+							return err
+						}
+						enumNames = listEnumNames(enum)
 					default:
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
@@ -616,6 +622,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						// Parameters in gRPC-Gateway can only be strings?
 						Type:   paramType,
 						Format: paramFormat,
+						Enum:   enumNames,
 					})
 				}
 				// Now check if there is a body parameter

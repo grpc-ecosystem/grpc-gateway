@@ -34,6 +34,9 @@ describe('ABitOfEverythingService', function() {
       sint32_value: 2147483647,
       sint64_value: "4611686018427387903",
       nonConventionalNameValue: "camelCase",
+      enum_value: "ONE",
+      path_enum_value: "DEF",
+      nested_path_enum_value: "JKL",
     };
 
     beforeEach(function(done) {
@@ -72,6 +75,9 @@ describe('ABitOfEverythingService', function() {
       sint32_value: 2147483647,
       sint64_value: "4611686018427387903",
       nonConventionalNameValue: "camelCase",
+      enum_value: "ONE",
+      path_enum_value: "DEF",
+      nested_path_enum_value: "JKL",
 
       nested: [
        { name: "bar", amount: 10 },

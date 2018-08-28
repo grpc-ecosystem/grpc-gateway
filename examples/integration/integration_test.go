@@ -18,6 +18,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
 	gw "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/pathenum"
 	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc/codes"
@@ -284,8 +285,11 @@ func testABECreate(t *testing.T, port int) {
 		Sint32Value:              2147483647,
 		Sint64Value:              4611686018427387903,
 		NonConventionalNameValue: "camelCase",
+		EnumValue:                gw.NumericEnum_ZERO,
+		PathEnumValue:            pathenum.PathEnum_DEF,
+		NestedPathEnumValue:      pathenum.MessagePathEnum_JKL,
 	}
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue)
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue, want.EnumValue, want.PathEnumValue, want.NestedPathEnumValue)
 
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
 	if err != nil {
@@ -335,6 +339,9 @@ func testABECreateBody(t *testing.T, port int) {
 		Sint32Value:              2147483647,
 		Sint64Value:              4611686018427387903,
 		NonConventionalNameValue: "camelCase",
+		EnumValue:                gw.NumericEnum_ONE,
+		PathEnumValue:            pathenum.PathEnum_ABC,
+		NestedPathEnumValue:      pathenum.MessagePathEnum_GHI,
 
 		Nested: []*gw.ABitOfEverything_Nested{
 			{
@@ -429,6 +436,9 @@ func testABEBulkCreate(t *testing.T, port int) {
 				Sint32Value:              2147483647,
 				Sint64Value:              4611686018427387903,
 				NonConventionalNameValue: "camelCase",
+				EnumValue:                gw.NumericEnum_ONE,
+				PathEnumValue:            pathenum.PathEnum_ABC,
+				NestedPathEnumValue:      pathenum.MessagePathEnum_GHI,
 
 				Nested: []*gw.ABitOfEverything_Nested{
 					{
