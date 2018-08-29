@@ -9,9 +9,7 @@ It translates gRPC into RESTful JSON APIs.
 package examplepb
 
 import (
-	"bytes"
 	"io"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/golang/protobuf/proto"
@@ -34,11 +32,11 @@ func request_WrappersService_Create_0(ctx context.Context, marshaler runtime.Mar
 	var protoReq Wrappers
 	var metadata runtime.ServerMetadata
 
-	body, berr := ioutil.ReadAll(req.Body)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(bytes.NewReader(body)).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
