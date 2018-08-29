@@ -274,6 +274,9 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			if protoSchema.Description != "" {
 				schema.Description = protoSchema.Description
 			}
+			if protoSchema.Required != nil {
+				schema.Required = protoSchema.Required
+			}
 		}
 
 		for _, f := range msg.Fields {
