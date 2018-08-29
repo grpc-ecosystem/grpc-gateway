@@ -231,6 +231,7 @@ var (
 	var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 	var metadata runtime.ServerMetadata
 {{if .Body}}
+	{{.Body.AssignableExprPrep "protoReq"}}
 	if err := marshaler.NewDecoder(req.Body).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -257,6 +258,7 @@ var (
 {{else if $enum}}
 	e, err = {{$param.ConvertFuncExpr}}(val, {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}_value)
 {{else}}
+	{{$param.AssignableExprPrep "protoReq"}}
 	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val)
 {{end}}
 	if err != nil {

@@ -378,6 +378,39 @@
         ]
       }
     },
+    "/v1/example/echo_body/{id}": {
+      "put": {
+        "summary": "EchoBody method receives a simple message and returns it.",
+        "operationId": "EchoBody2",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbSimpleMessage"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbEmbedded"
+            }
+          }
+        ],
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
     "/v1/example/echo_delete": {
       "delete": {
         "summary": "EchoDelete method receives a simple message and returns it.",
