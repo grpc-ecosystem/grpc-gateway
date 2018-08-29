@@ -54,7 +54,7 @@
           "format": "int32"
         },
         "int64_value": {
-          "type": "integer",
+          "type": "string",
           "format": "int64"
         },
         "float_value": {
@@ -68,6 +68,18 @@
         "bool_value": {
           "type": "boolean",
           "format": "boolean"
+        },
+        "uint32_value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "uint64_value": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "bytes_value": {
+          "type": "string",
+          "format": "byte"
         }
       }
     }

@@ -19,7 +19,7 @@ type ExamplepbABitOfEverything struct {
 
 	SingleNested ABitOfEverythingNested `json:"single_nested,omitempty"`
 
-	Uuid string `json:"uuid,omitempty"`
+	Uuid string `json:"uuid"`
 
 	Nested []ABitOfEverythingNested `json:"nested,omitempty"`
 
@@ -46,6 +46,10 @@ type ExamplepbABitOfEverything struct {
 	Uint32Value int64 `json:"uint32_value,omitempty"`
 
 	EnumValue ExamplepbNumericEnum `json:"enum_value,omitempty"`
+
+	PathEnumValue PathenumPathEnum `json:"path_enum_value,omitempty"`
+
+	NestedPathEnumValue MessagePathEnumNestedPathEnum `json:"nested_path_enum_value,omitempty"`
 
 	Sfixed32Value int32 `json:"sfixed32_value,omitempty"`
 

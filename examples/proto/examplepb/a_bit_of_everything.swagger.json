@@ -266,6 +266,28 @@
             "default": "ZERO"
           },
           {
+            "name": "path_enum_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ABC",
+              "DEF"
+            ],
+            "default": "ABC"
+          },
+          {
+            "name": "nested_path_enum_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "GHI",
+              "JKL"
+            ],
+            "default": "GHI"
+          },
+          {
             "name": "sfixed32_value",
             "in": "query",
             "required": false,
@@ -347,7 +369,7 @@
         }
       }
     },
-    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}": {
+    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}": {
       "post": {
         "summary": "Create a new ABitOfEverything",
         "description": "This API creates a new ABitOfEverything",
@@ -479,6 +501,36 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "enum_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "ZERO",
+              "ONE"
+            ]
+          },
+          {
+            "name": "path_enum_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "ABC",
+              "DEF"
+            ]
+          },
+          {
+            "name": "nested_path_enum_value",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "GHI",
+              "JKL"
+            ]
           }
         ],
         "tags": [
@@ -985,6 +1037,14 @@
       },
       "description": "Nested is nested type."
     },
+    "MessagePathEnumNestedPathEnum": {
+      "type": "string",
+      "enum": [
+        "GHI",
+        "JKL"
+      ],
+      "default": "GHI"
+    },
     "NestedDeepEnum": {
       "type": "string",
       "enum": [
@@ -1001,7 +1061,9 @@
           "$ref": "#/definitions/ABitOfEverythingNested"
         },
         "uuid": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         },
         "nested": {
           "type": "array",
@@ -1054,6 +1116,12 @@
         },
         "enum_value": {
           "$ref": "#/definitions/examplepbNumericEnum"
+        },
+        "path_enum_value": {
+          "$ref": "#/definitions/pathenumPathEnum"
+        },
+        "nested_path_enum_value": {
+          "$ref": "#/definitions/MessagePathEnumNestedPathEnum"
         },
         "sfixed32_value": {
           "type": "integer",
@@ -1121,7 +1189,10 @@
       "externalDocs": {
         "description": "Find out more about ABitOfEverything",
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"
-      }
+      },
+      "required": [
+        "uuid"
+      ]
     },
     "examplepbBody": {
       "type": "object",
@@ -1139,6 +1210,14 @@
       ],
       "default": "ZERO",
       "description": "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+    },
+    "pathenumPathEnum": {
+      "type": "string",
+      "enum": [
+        "ABC",
+        "DEF"
+      ],
+      "default": "ABC"
     },
     "protobufEmpty": {
       "type": "object",

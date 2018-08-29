@@ -3,10 +3,9 @@ package runtime
 import (
 	"fmt"
 	"net/http"
-	"net/textproto"
 	"strings"
-
 	"context"
+
 	"github.com/golang/protobuf/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -51,7 +50,6 @@ type HeaderMatcherFunc func(string) (string, bool)
 // keys (as specified by the IANA) to gRPC context with grpcgateway- prefix. HTTP headers that start with
 // 'Grpc-Metadata-' are mapped to gRPC metadata after removing prefix 'Grpc-Metadata-'.
 func DefaultHeaderMatcher(key string) (string, bool) {
-	key = textproto.CanonicalMIMEHeaderKey(key)
 	if isPermanentHTTPHeader(key) {
 		return MetadataPrefix + key, true
 	} else if strings.HasPrefix(key, MetadataHeaderPrefix) {

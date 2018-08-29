@@ -5,6 +5,7 @@ package grpc.gateway.examples.examplepb;
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
+import "examples/proto/pathenum/path_enum.proto";
 import "examples/proto/sub/message.proto";
 import "examples/proto/sub2/message.proto";
 import "google/protobuf/timestamp.proto";
@@ -132,6 +133,7 @@ message ABitOfEverything {
 		json_schema: {
 			title: "A bit of everything"
 			description: "Intentionaly complicated message type to cover many features of Protobuf."
+			required: ["uuid"]
 		}
 		external_docs: {
 			url: "https://github.com/grpc-ecosystem/grpc-gateway";
@@ -155,7 +157,7 @@ message ABitOfEverything {
 	}
 	Nested single_nested = 25;
 
-	string uuid = 1;
+	string uuid = 1 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}", min_length: 1}];
 	repeated Nested nested = 2;
 	float float_value = 3;
 	double double_value = 4;
@@ -169,6 +171,8 @@ message ABitOfEverything {
 	bytes bytes_value = 29;
 	uint32 uint32_value = 13;
 	NumericEnum enum_value = 14;
+	pathenum.PathEnum path_enum_value = 30;
+	pathenum.MessagePathEnum.NestedPathEnum nested_path_enum_value = 31;
 	sfixed32 sfixed32_value = 15;
 	sfixed64 sfixed64_value = 16;
 	sint32 sint32_value = 17;
@@ -225,9 +229,8 @@ service ABitOfEverythingService {
 	//
 	// This API creates a new ABitOfEverything
 	rpc Create(ABitOfEverything) returns (ABitOfEverything) {
-		// TODO add enum_value
 		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}"
+			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}"
 		};
 	}
 	rpc CreateBody(ABitOfEverything) returns (ABitOfEverything) {

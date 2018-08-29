@@ -18,7 +18,8 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
 	gw "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
-	sub "github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/pathenum"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc/codes"
 )
@@ -284,8 +285,11 @@ func testABECreate(t *testing.T, port int) {
 		Sint32Value:              2147483647,
 		Sint64Value:              4611686018427387903,
 		NonConventionalNameValue: "camelCase",
+		EnumValue:                gw.NumericEnum_ZERO,
+		PathEnumValue:            pathenum.PathEnum_DEF,
+		NestedPathEnumValue:      pathenum.MessagePathEnum_JKL,
 	}
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue)
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue, want.EnumValue, want.PathEnumValue, want.NestedPathEnumValue)
 
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
 	if err != nil {
@@ -335,6 +339,9 @@ func testABECreateBody(t *testing.T, port int) {
 		Sint32Value:              2147483647,
 		Sint64Value:              4611686018427387903,
 		NonConventionalNameValue: "camelCase",
+		EnumValue:                gw.NumericEnum_ONE,
+		PathEnumValue:            pathenum.PathEnum_ABC,
+		NestedPathEnumValue:      pathenum.MessagePathEnum_GHI,
 
 		Nested: []*gw.ABitOfEverything_Nested{
 			{
@@ -429,6 +436,9 @@ func testABEBulkCreate(t *testing.T, port int) {
 				Sint32Value:              2147483647,
 				Sint64Value:              4611686018427387903,
 				NonConventionalNameValue: "camelCase",
+				EnumValue:                gw.NumericEnum_ONE,
+				PathEnumValue:            pathenum.PathEnum_ABC,
+				NestedPathEnumValue:      pathenum.MessagePathEnum_GHI,
 
 				Nested: []*gw.ABitOfEverything_Nested{
 					{
@@ -978,5 +988,38 @@ func TestInvalidArgument(t *testing.T) {
 	if got, want := resp.StatusCode, http.StatusBadRequest; got != want {
 		t.Errorf("resp.StatusCode = %d; want %d", got, want)
 		t.Logf("%s", buf)
+	}
+}
+
+func TestResponseBody(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	testResponseBody(t, 8080)
+}
+
+func testResponseBody(t *testing.T, port int) {
+	url := fmt.Sprintf("http://localhost:%d/responsebody/foo", port)
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		return
+	}
+	defer resp.Body.Close()
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	if got, want := string(buf), `{"data":"foo"}`; got != want {
+		t.Errorf("response = %q; want %q", got, want)
 	}
 }

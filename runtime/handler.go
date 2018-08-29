@@ -106,6 +106,12 @@ func handleForwardResponseTrailer(w http.ResponseWriter, md ServerMetadata) {
 	}
 }
 
+// responseBody interface contains method for getting field for marshaling to the response body
+// this method is generated for response struct from the value of `response_body` in the `google.api.HttpRule`
+type responseBody interface {
+	XXX_ResponseBody() interface{}
+}
+
 // ForwardResponseMessage forwards the message "resp" from gRPC server to REST client.
 func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, req *http.Request, resp proto.Message, opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
 	md, ok := ServerMetadataFromContext(ctx)
@@ -120,8 +126,13 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		HTTPError(ctx, mux, marshaler, w, req, err)
 		return
 	}
-
-	buf, err := marshaler.Marshal(resp)
+	var buf []byte
+	var err error
+	if rb, ok := resp.(responseBody); ok {
+		buf, err = marshaler.Marshal(rb.XXX_ResponseBody())
+	} else {
+		buf, err = marshaler.Marshal(resp)
+	}
 	if err != nil {
 		grpclog.Infof("Marshal error: %v", err)
 		HTTPError(ctx, mux, marshaler, w, req, err)

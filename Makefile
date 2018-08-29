@@ -63,17 +63,21 @@ endif
 SWAGGER_EXAMPLES=examples/proto/examplepb/echo_service.proto \
 	 examples/proto/examplepb/a_bit_of_everything.proto \
 	 examples/proto/examplepb/wrappers.proto \
-	 examples/proto/examplepb/unannotated_echo_service.proto
+	 examples/proto/examplepb/unannotated_echo_service.proto \
+	 examples/proto/examplepb/response_body_service.proto
+
 EXAMPLES=examples/proto/examplepb/echo_service.proto \
 	 examples/proto/examplepb/a_bit_of_everything.proto \
 	 examples/proto/examplepb/stream.proto \
 	 examples/proto/examplepb/flow_combination.proto \
 	 examples/proto/examplepb/wrappers.proto \
-	 examples/proto/examplepb/unannotated_echo_service.proto
+	 examples/proto/examplepb/unannotated_echo_service.proto \
+	 examples/proto/examplepb/response_body_service.proto
+
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
 EXAMPLE_SWAGGERSRCS=$(SWAGGER_EXAMPLES:.proto=.swagger.json)
-EXAMPLE_DEPS=examples/proto/sub/message.proto examples/proto/sub2/message.proto
+EXAMPLE_DEPS=examples/proto/pathenum/path_enum.proto examples/proto/sub/message.proto examples/proto/sub2/message.proto
 EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
 
 EXAMPLE_CLIENT_DIR=examples/clients
@@ -105,7 +109,14 @@ UNANNOTATED_ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/unannotatedecho/api_client.g
 		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/configuration.go \
 		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/examplepb_unannotated_simple_message.go \
 		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/unannotated_echo_service_api.go
-EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS)
+RESPONSE_BODY_EXAMPLE_SPEC=examples/proto/examplepb/response_body_service.swagger.json
+RESPONSE_BODY_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/responsebody/api_client.go \
+		 $(EXAMPLE_CLIENT_DIR)/responsebody/api_response.go \
+		 $(EXAMPLE_CLIENT_DIR)/responsebody/configuration.go \
+		 $(EXAMPLE_CLIENT_DIR)/responsebody/examplepb_response_body.go \
+		 $(EXAMPLE_CLIENT_DIR)/responsebody/response_body_service_api.go
+
+EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS)
 SWAGGER_CODEGEN=swagger-codegen
 
 PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
@@ -115,7 +126,8 @@ generate: $(RUNTIME_GO)
 .SUFFIXES: .go .proto
 
 $(GO_PLUGIN):
-	go get $(GO_PLUGIN_PKG)
+	dep ensure -vendor-only
+	go install ./vendor/$(GO_PLUGIN_PKG)
 	go build -o $@ $(GO_PLUGIN_PKG)
 
 $(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
@@ -163,8 +175,14 @@ $(UNANNOTATED_ECHO_EXAMPLE_SRCS): $(UNANNOTATED_ECHO_EXAMPLE_SPEC)
 	@rm -f $(EXAMPLE_CLIENT_DIR)/unannotatedecho/README.md \
 		$(EXAMPLE_CLIENT_DIR)/unannotatedecho/git_push.sh \
 		$(EXAMPLE_CLIENT_DIR)/unannotatedecho/.travis.yml
+$(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
+	$(SWAGGER_CODEGEN) generate -i $(RESPONSE_BODY_EXAMPLE_SPEC) \
+	    -l go -o examples/clients/responsebody --additional-properties packageName=responsebody
+	@rm -f $(EXAMPLE_CLIENT_DIR)/responsebody/README.md \
+		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh \
+		$(EXAMPLE_CLIENT_DIR)/responsebody/.travis.yml
 
-examples: $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_DEPSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
+examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
 test: examples
 	go test -race $(PKG)/...
 	go test -race $(PKG)/examples/integration -args -network=unix -endpoint=test.sock

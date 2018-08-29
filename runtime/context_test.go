@@ -1,12 +1,13 @@
 package runtime_test
 
 import (
+	"context"
+	"encoding/base64"
 	"net/http"
 	"reflect"
 	"testing"
 	"time"
 
-	"context"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc/metadata"
 )
@@ -65,6 +66,30 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	}
 	if got, want := md["authorization"], []string{"Token 1234567890"}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["authorization"] = %q want %q`, got, want)
+	}
+}
+
+func TestAnnotateContext_ForwardGrpcBinaryMetadata(t *testing.T) {
+	ctx := context.Background()
+	request, err := http.NewRequest("GET", "http://www.example.com", nil)
+	if err != nil {
+		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
+	}
+
+	binData := []byte("\x00test-binary-data")
+	request.Header.Add("Grpc-Metadata-Test-Bin", base64.StdEncoding.EncodeToString(binData))
+
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
+	if err != nil {
+		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
+		return
+	}
+	md, ok := metadata.FromOutgoingContext(annotated)
+	if !ok || len(md) != emptyForwardMetaCount+1 {
+		t.Errorf("Expected %d metadata items in context; got %v", emptyForwardMetaCount+1, md)
+	}
+	if got, want := md["test-bin"], []string{string(binData)}; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["test-bin"] = %q want %q`, got, want)
 	}
 }
 
