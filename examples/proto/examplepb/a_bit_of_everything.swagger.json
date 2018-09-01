@@ -720,6 +720,235 @@
         ]
       }
     },
+    "/v1/example/a_bit_of_everything_repeated/{path_repeated_float_value}/{path_repeated_double_value}/{path_repeated_int64_value}/{path_repeated_uint64_value}/{path_repeated_int32_value}/{path_repeated_fixed64_value}/{path_repeated_fixed32_value}/{path_repeated_bool_value}/{path_repeated_string_value}/{path_repeated_bytes_value}/{path_repeated_uint32_value}/{path_repeated_enum_value}/{path_repeated_sfixed32_value}/{path_repeated_sfixed64_value}/{path_repeated_sint32_value}/{path_repeated_sint64_value}": {
+      "get": {
+        "operationId": "GetRepeatedQuery",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverythingRepeated"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "path_repeated_float_value",
+            "description": "repeated values. they are comma-separated in path",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "float"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_double_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_int64_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "int64"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_uint64_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_int32_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_fixed64_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uint64"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_fixed32_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_bool_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "boolean",
+              "format": "boolean"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_string_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_bytes_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_uint32_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_enum_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ZERO",
+                "ONE"
+              ]
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_sfixed32_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_sfixed64_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "int64"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_sint32_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          },
+          {
+            "name": "path_repeated_sint64_value",
+            "in": "path",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "int64"
+            },
+            "collectionFormat": "csv",
+            "minItems": 1
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v2/example/echo": {
       "get": {
         "summary": "Summary: Echo rpc",
@@ -1193,6 +1422,123 @@
       "required": [
         "uuid"
       ]
+    },
+    "examplepbABitOfEverythingRepeated": {
+      "type": "object",
+      "properties": {
+        "path_repeated_float_value": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "float"
+          },
+          "title": "repeated values. they are comma-separated in path"
+        },
+        "path_repeated_double_value": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "path_repeated_int64_value": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "int64"
+          }
+        },
+        "path_repeated_uint64_value": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uint64"
+          }
+        },
+        "path_repeated_int32_value": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "path_repeated_fixed64_value": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uint64"
+          }
+        },
+        "path_repeated_fixed32_value": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "path_repeated_bool_value": {
+          "type": "array",
+          "items": {
+            "type": "boolean",
+            "format": "boolean"
+          }
+        },
+        "path_repeated_string_value": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "path_repeated_bytes_value": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "byte"
+          }
+        },
+        "path_repeated_uint32_value": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "path_repeated_enum_value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/examplepbNumericEnum"
+          }
+        },
+        "path_repeated_sfixed32_value": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "path_repeated_sfixed64_value": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "int64"
+          }
+        },
+        "path_repeated_sint32_value": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "path_repeated_sint64_value": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "int64"
+          }
+        }
+      },
+      "title": "ABitOfEverythingRepeated is used to validate repeated path parameter functionality"
     },
     "examplepbBody": {
       "type": "object",

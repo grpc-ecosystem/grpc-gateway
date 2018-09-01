@@ -234,8 +234,12 @@ type Parameter struct {
 // The converter function converts a string into a value for the parameter.
 func (p Parameter) ConvertFuncExpr() (string, error) {
 	tbl := proto3ConvertFuncs
-	if p.Target.Message.File.proto2() {
+	if !p.IsProto2() && p.IsRepeated() {
+		tbl = proto3RepeatedConvertFuncs
+	} else if p.IsProto2() && !p.IsRepeated() {
 		tbl = proto2ConvertFuncs
+	} else if p.IsProto2() && p.IsRepeated() {
+		tbl = proto2RepeatedConvertFuncs
 	}
 	typ := p.Target.GetType()
 	conv, ok := tbl[typ]
@@ -246,6 +250,21 @@ func (p Parameter) ConvertFuncExpr() (string, error) {
 		return "", fmt.Errorf("unsupported field type %s of parameter %s in %s.%s", typ, p.FieldPath, p.Method.Service.GetName(), p.Method.GetName())
 	}
 	return conv, nil
+}
+
+// IsEnum returns true if the field is an enum type, otherwise false is returned.
+func (p Parameter) IsEnum() bool {
+	return p.Target.GetType() == descriptor.FieldDescriptorProto_TYPE_ENUM
+}
+
+// IsRepeated returns true if the field is repeated, otherwise false is returned.
+func (p Parameter) IsRepeated() bool {
+	return p.Target.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED
+}
+
+// IsProto2 returns true if the field is proto2, otherwise false is returned.
+func (p Parameter) IsProto2() bool {
+	return p.Target.Message.File.proto2()
 }
 
 // Body describes a http (request|response) body to be sent to the (method|client).
@@ -366,6 +385,27 @@ var (
 		descriptor.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64",
 	}
 
+	proto3RepeatedConvertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
+		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "runtime.Float64Slice",
+		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "runtime.Float32Slice",
+		descriptor.FieldDescriptorProto_TYPE_INT64:   "runtime.Int64Slice",
+		descriptor.FieldDescriptorProto_TYPE_UINT64:  "runtime.Uint64Slice",
+		descriptor.FieldDescriptorProto_TYPE_INT32:   "runtime.Int32Slice",
+		descriptor.FieldDescriptorProto_TYPE_FIXED64: "runtime.Uint64Slice",
+		descriptor.FieldDescriptorProto_TYPE_FIXED32: "runtime.Uint32Slice",
+		descriptor.FieldDescriptorProto_TYPE_BOOL:    "runtime.BoolSlice",
+		descriptor.FieldDescriptorProto_TYPE_STRING:  "runtime.StringSlice",
+		// FieldDescriptorProto_TYPE_GROUP
+		// FieldDescriptorProto_TYPE_MESSAGE
+		descriptor.FieldDescriptorProto_TYPE_BYTES:    "runtime.BytesSlice",
+		descriptor.FieldDescriptorProto_TYPE_UINT32:   "runtime.Uint32Slice",
+		descriptor.FieldDescriptorProto_TYPE_ENUM:     "runtime.EnumSlice",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32Slice",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64Slice",
+		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32Slice",
+		descriptor.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64Slice",
+	}
+
 	proto2ConvertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
 		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "runtime.Float64P",
 		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "runtime.Float32P",
@@ -386,6 +426,28 @@ var (
 		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64P",
 		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32P",
 		descriptor.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64P",
+	}
+
+	proto2RepeatedConvertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
+		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "runtime.Float64Slice",
+		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "runtime.Float32Slice",
+		descriptor.FieldDescriptorProto_TYPE_INT64:   "runtime.Int64Slice",
+		descriptor.FieldDescriptorProto_TYPE_UINT64:  "runtime.Uint64Slice",
+		descriptor.FieldDescriptorProto_TYPE_INT32:   "runtime.Int32Slice",
+		descriptor.FieldDescriptorProto_TYPE_FIXED64: "runtime.Uint64Slice",
+		descriptor.FieldDescriptorProto_TYPE_FIXED32: "runtime.Uint32Slice",
+		descriptor.FieldDescriptorProto_TYPE_BOOL:    "runtime.BoolSlice",
+		descriptor.FieldDescriptorProto_TYPE_STRING:  "runtime.StringSlice",
+		// FieldDescriptorProto_TYPE_GROUP
+		// FieldDescriptorProto_TYPE_MESSAGE
+		// FieldDescriptorProto_TYPE_BYTES
+		// TODO(maros7) Handle bytes
+		descriptor.FieldDescriptorProto_TYPE_UINT32:   "runtime.Uint32Slice",
+		descriptor.FieldDescriptorProto_TYPE_ENUM:     "runtime.EnumSlice",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32Slice",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64Slice",
+		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32Slice",
+		descriptor.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64Slice",
 	}
 
 	wellKnownTypeConv = map[string]string{

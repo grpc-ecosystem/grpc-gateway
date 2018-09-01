@@ -637,6 +637,110 @@ func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName strin
 /**
  * 
  *
+ * @param pathRepeatedFloatValue repeated values. they are comma-separated in path
+ * @param pathRepeatedDoubleValue 
+ * @param pathRepeatedInt64Value 
+ * @param pathRepeatedUint64Value 
+ * @param pathRepeatedInt32Value 
+ * @param pathRepeatedFixed64Value 
+ * @param pathRepeatedFixed32Value 
+ * @param pathRepeatedBoolValue 
+ * @param pathRepeatedStringValue 
+ * @param pathRepeatedBytesValue 
+ * @param pathRepeatedUint32Value 
+ * @param pathRepeatedEnumValue 
+ * @param pathRepeatedSfixed32Value 
+ * @param pathRepeatedSfixed64Value 
+ * @param pathRepeatedSint32Value 
+ * @param pathRepeatedSint64Value 
+ * @return *ExamplepbABitOfEverythingRepeated
+ */
+func (a ABitOfEverythingServiceApi) GetRepeatedQuery(pathRepeatedFloatValue []float32, pathRepeatedDoubleValue []float64, pathRepeatedInt64Value []string, pathRepeatedUint64Value []string, pathRepeatedInt32Value []int32, pathRepeatedFixed64Value []string, pathRepeatedFixed32Value []int64, pathRepeatedBoolValue []bool, pathRepeatedStringValue []string, pathRepeatedBytesValue []string, pathRepeatedUint32Value []int64, pathRepeatedEnumValue []string, pathRepeatedSfixed32Value []int32, pathRepeatedSfixed64Value []string, pathRepeatedSint32Value []int32, pathRepeatedSint64Value []string) (*ExamplepbABitOfEverythingRepeated, *APIResponse, error) {
+
+	var localVarHttpMethod = strings.ToUpper("Get")
+	// create path and map variables
+	localVarPath := a.Configuration.BasePath + "/v1/example/a_bit_of_everything_repeated/{path_repeated_float_value}/{path_repeated_double_value}/{path_repeated_int64_value}/{path_repeated_uint64_value}/{path_repeated_int32_value}/{path_repeated_fixed64_value}/{path_repeated_fixed32_value}/{path_repeated_bool_value}/{path_repeated_string_value}/{path_repeated_bytes_value}/{path_repeated_uint32_value}/{path_repeated_enum_value}/{path_repeated_sfixed32_value}/{path_repeated_sfixed64_value}/{path_repeated_sint32_value}/{path_repeated_sint64_value}"
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_float_value"+"}", fmt.Sprintf("%v", pathRepeatedFloatValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_double_value"+"}", fmt.Sprintf("%v", pathRepeatedDoubleValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_int64_value"+"}", fmt.Sprintf("%v", pathRepeatedInt64Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_uint64_value"+"}", fmt.Sprintf("%v", pathRepeatedUint64Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_int32_value"+"}", fmt.Sprintf("%v", pathRepeatedInt32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_fixed64_value"+"}", fmt.Sprintf("%v", pathRepeatedFixed64Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_fixed32_value"+"}", fmt.Sprintf("%v", pathRepeatedFixed32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_bool_value"+"}", fmt.Sprintf("%v", pathRepeatedBoolValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_string_value"+"}", fmt.Sprintf("%v", pathRepeatedStringValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_bytes_value"+"}", fmt.Sprintf("%v", pathRepeatedBytesValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_uint32_value"+"}", fmt.Sprintf("%v", pathRepeatedUint32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_enum_value"+"}", fmt.Sprintf("%v", pathRepeatedEnumValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_sfixed32_value"+"}", fmt.Sprintf("%v", pathRepeatedSfixed32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_sfixed64_value"+"}", fmt.Sprintf("%v", pathRepeatedSfixed64Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_sint32_value"+"}", fmt.Sprintf("%v", pathRepeatedSint32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_sint64_value"+"}", fmt.Sprintf("%v", pathRepeatedSint64Value), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := make(map[string]string)
+	var localVarPostBody interface{}
+	var localVarFileName string
+	var localVarFileBytes []byte
+	// authentication '(OAuth2)' required
+	// oauth required
+	if a.Configuration.AccessToken != ""{
+		localVarHeaderParams["Authorization"] =  "Bearer " + a.Configuration.AccessToken
+	}
+	// authentication '(BasicAuth)' required
+	// http basic authentication required
+	if a.Configuration.Username != "" || a.Configuration.Password != ""{
+		localVarHeaderParams["Authorization"] =  "Basic " + a.Configuration.GetBasicAuthEncodedString()
+	}
+	// authentication '(ApiKeyAuth)' required
+	// set key with prefix in header
+	localVarHeaderParams["X-API-Key"] = a.Configuration.GetAPIKeyWithPrefix("X-API-Key")
+	// add default headers if any
+	for key := range a.Configuration.DefaultHeader {
+		localVarHeaderParams[key] = a.Configuration.DefaultHeader[key]
+	}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{ "application/json", "application/x-foo-mime",  }
+
+	// set Content-Type header
+	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{
+		"application/json",
+		"application/x-foo-mime",
+		}
+
+	// set Accept header
+	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	var successPayload = new(ExamplepbABitOfEverythingRepeated)
+	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+
+	var localVarURL, _ = url.Parse(localVarPath)
+	localVarURL.RawQuery = localVarQueryParams.Encode()
+	var localVarAPIResponse = &APIResponse{Operation: "GetRepeatedQuery", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	if localVarHttpResponse != nil {
+		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
+		localVarAPIResponse.Payload = localVarHttpResponse.Body()
+	}
+
+	if err != nil {
+		return successPayload, localVarAPIResponse, err
+	}
+	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
+	return successPayload, localVarAPIResponse, err
+}
+
+/**
+ * 
+ *
  * @param uuid 
  * @return *ExamplepbABitOfEverything
  */

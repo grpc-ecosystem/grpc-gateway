@@ -15,6 +15,7 @@ go_library(
         "echo_service_api.go",
         "enum_helper.go",
         "examplepb_a_bit_of_everything.go",
+        "examplepb_a_bit_of_everything_repeated.go",
         "examplepb_body.go",
         "examplepb_numeric_enum.go",
         "message_path_enum_nested_path_enum.go",

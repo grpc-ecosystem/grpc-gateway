@@ -195,6 +195,28 @@ message ABitOfEverything {
 	repeated NumericEnum repeated_enum_value = 28;
 }
 
+// ABitOfEverythingRepeated is used to validate repeated path parameter functionality
+message ABitOfEverythingRepeated {
+
+	// repeated values. they are comma-separated in path
+	repeated float path_repeated_float_value = 1;
+	repeated double path_repeated_double_value = 2;
+	repeated int64 path_repeated_int64_value = 3;
+	repeated uint64 path_repeated_uint64_value = 4;
+	repeated int32 path_repeated_int32_value = 5;
+	repeated fixed64 path_repeated_fixed64_value = 6;
+	repeated fixed32 path_repeated_fixed32_value = 7;
+	repeated bool path_repeated_bool_value = 8;
+	repeated string path_repeated_string_value = 9;
+	repeated bytes path_repeated_bytes_value = 10;
+	repeated uint32 path_repeated_uint32_value = 11;
+	repeated NumericEnum path_repeated_enum_value = 12;
+	repeated sfixed32 path_repeated_sfixed32_value = 13;
+	repeated sfixed64 path_repeated_sfixed64_value = 14;
+	repeated sint32 path_repeated_sint32_value = 15;
+	repeated sint64 path_repeated_sint64_value = 16;
+}
+
 message Body {
 	string name = 1;
 }
@@ -284,6 +306,11 @@ service ABitOfEverythingService {
 			}
 		};
 	}
+	rpc GetRepeatedQuery(ABitOfEverythingRepeated) returns (ABitOfEverythingRepeated) {
+		option (google.api.http) = {
+			get: "/v1/example/a_bit_of_everything_repeated/{path_repeated_float_value}/{path_repeated_double_value}/{path_repeated_int64_value}/{path_repeated_uint64_value}/{path_repeated_int32_value}/{path_repeated_fixed64_value}/{path_repeated_fixed32_value}/{path_repeated_bool_value}/{path_repeated_string_value}/{path_repeated_bytes_value}/{path_repeated_uint32_value}/{path_repeated_enum_value}/{path_repeated_sfixed32_value}/{path_repeated_sfixed64_value}/{path_repeated_sint32_value}/{path_repeated_sint64_value}"
+		};
+	}
 	// Echo allows posting a StringMessage value.
 	//
 	// It also exposes multiple bindings.
@@ -361,6 +388,7 @@ service ABitOfEverythingService {
 		};
 	}
 }
+
 // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
 service camelCaseServiceName {
 	rpc Empty(google.protobuf.Empty) returns (google.protobuf.Empty) {

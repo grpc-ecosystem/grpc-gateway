@@ -7,7 +7,6 @@ import (
 	"text/template"
 
 	"github.com/golang/glog"
-	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 )
@@ -56,10 +55,24 @@ func (b binding) QueryParamFilter() queryParamFilter {
 	return queryParamFilter{utilities.NewDoubleArray(seqs)}
 }
 
-// HasEnumPathParam returns true if the path parameter slice contains a parameter that maps to an enum proto field, if not false is returned.
+// HasEnumPathParam returns true if the path parameter slice contains a parameter
+// that maps to an enum proto field that is not repeated, if not false is returned.
 func (b binding) HasEnumPathParam() bool {
+	return b.hasEnumPathParam(false)
+}
+
+// HasRepeatedEnumPathParam returns true if the path parameter slice contains a parameter
+// that maps to a repeated enum proto field, if not false is returned.
+func (b binding) HasRepeatedEnumPathParam() bool {
+	return b.hasEnumPathParam(true)
+}
+
+// hasEnumPathParam returns true if the path parameter slice contains a parameter
+// that maps to a enum proto field and that the enum proto field is or isn't repeated
+// based on the provided 'repeated' parameter.
+func (b binding) hasEnumPathParam(repeated bool) bool {
 	for _, p := range b.PathParams {
-		if p.Target.GetType() == pbdescriptor.FieldDescriptorProto_TYPE_ENUM {
+		if p.IsEnum() && p.IsRepeated() == repeated {
 			return true
 		}
 	}
@@ -241,6 +254,9 @@ var (
 {{- if .HasEnumPathParam}}
 		e int32
 {{- end}}
+{{- if .HasRepeatedEnumPathParam}}
+		es []int32
+{{- end}}
 		ok bool
 		err error
 		_ = err
@@ -255,14 +271,20 @@ var (
 {{if $param.IsNestedProto3}}
 	err = runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val)
 {{else if $enum}}
-	e, err = {{$param.ConvertFuncExpr}}(val, {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}_value)
+	e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}_value)
 {{else}}
-	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val)
+	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
 {{end}}
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
-{{if $enum}}
+{{if and $enum $param.IsRepeated}}
+	s := make([]{{$enum.GoType $param.Target.Message.File.GoPkg.Path}}, len(es))
+	for i, v := range es {
+		s[i] = {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}(v)
+	}
+	{{$param.AssignableExpr "protoReq"}} = s
+{{else if $enum}}
 	{{$param.AssignableExpr "protoReq"}} = {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}(e)
 {{end}}
 	{{end}}
