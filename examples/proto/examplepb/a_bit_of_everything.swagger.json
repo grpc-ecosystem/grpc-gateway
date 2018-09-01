@@ -69,7 +69,7 @@
       "get": {
         "summary": "Summary: Echo rpc",
         "description": "Description Echo",
-        "operationId": "Echo",
+        "operationId": "performEcho",
         "responses": {
           "200": {
             "description": "",
@@ -953,7 +953,7 @@
       "get": {
         "summary": "Summary: Echo rpc",
         "description": "Description Echo",
-        "operationId": "Echo3",
+        "operationId": "performEcho3",
         "responses": {
           "200": {
             "description": "",
@@ -1003,7 +1003,7 @@
       "post": {
         "summary": "Summary: Echo rpc",
         "description": "Description Echo",
-        "operationId": "Echo2",
+        "operationId": "performEcho2",
         "responses": {
           "200": {
             "description": "",

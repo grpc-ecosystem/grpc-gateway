@@ -330,6 +330,7 @@ service ABitOfEverythingService {
 			}
 		};
 		option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
+			operation_id: "performEcho";
 			description: "Description Echo";
 			summary: "Summary: Echo rpc";
 			tags: "echo service";

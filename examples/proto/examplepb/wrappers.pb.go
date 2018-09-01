@@ -26,15 +26,15 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type Wrappers struct {
-	StringValue          *wrappers.StringValue `protobuf:"bytes,1,opt,name=string_value,json=stringValue,proto3" json:"string_value,omitempty"`
-	Int32Value           *wrappers.Int32Value  `protobuf:"bytes,2,opt,name=int32_value,json=int32Value,proto3" json:"int32_value,omitempty"`
-	Int64Value           *wrappers.Int64Value  `protobuf:"bytes,3,opt,name=int64_value,json=int64Value,proto3" json:"int64_value,omitempty"`
-	FloatValue           *wrappers.FloatValue  `protobuf:"bytes,4,opt,name=float_value,json=floatValue,proto3" json:"float_value,omitempty"`
-	DoubleValue          *wrappers.DoubleValue `protobuf:"bytes,5,opt,name=double_value,json=doubleValue,proto3" json:"double_value,omitempty"`
-	BoolValue            *wrappers.BoolValue   `protobuf:"bytes,6,opt,name=bool_value,json=boolValue,proto3" json:"bool_value,omitempty"`
-	Uint32Value          *wrappers.UInt32Value `protobuf:"bytes,7,opt,name=uint32_value,json=uint32Value,proto3" json:"uint32_value,omitempty"`
-	Uint64Value          *wrappers.UInt64Value `protobuf:"bytes,8,opt,name=uint64_value,json=uint64Value,proto3" json:"uint64_value,omitempty"`
-	BytesValue           *wrappers.BytesValue  `protobuf:"bytes,9,opt,name=bytes_value,json=bytesValue,proto3" json:"bytes_value,omitempty"`
+	StringValue          *wrappers.StringValue `protobuf:"bytes,1,opt,name=string_value,json=stringValue" json:"string_value,omitempty"`
+	Int32Value           *wrappers.Int32Value  `protobuf:"bytes,2,opt,name=int32_value,json=int32Value" json:"int32_value,omitempty"`
+	Int64Value           *wrappers.Int64Value  `protobuf:"bytes,3,opt,name=int64_value,json=int64Value" json:"int64_value,omitempty"`
+	FloatValue           *wrappers.FloatValue  `protobuf:"bytes,4,opt,name=float_value,json=floatValue" json:"float_value,omitempty"`
+	DoubleValue          *wrappers.DoubleValue `protobuf:"bytes,5,opt,name=double_value,json=doubleValue" json:"double_value,omitempty"`
+	BoolValue            *wrappers.BoolValue   `protobuf:"bytes,6,opt,name=bool_value,json=boolValue" json:"bool_value,omitempty"`
+	Uint32Value          *wrappers.UInt32Value `protobuf:"bytes,7,opt,name=uint32_value,json=uint32Value" json:"uint32_value,omitempty"`
+	Uint64Value          *wrappers.UInt64Value `protobuf:"bytes,8,opt,name=uint64_value,json=uint64Value" json:"uint64_value,omitempty"`
+	BytesValue           *wrappers.BytesValue  `protobuf:"bytes,9,opt,name=bytes_value,json=bytesValue" json:"bytes_value,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
 	XXX_unrecognized     []byte                `json:"-"`
 	XXX_sizecache        int32                 `json:"-"`
@@ -139,9 +139,8 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// WrappersServiceClient is the client API for WrappersService service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+// Client API for WrappersService service
+
 type WrappersServiceClient interface {
 	Create(ctx context.Context, in *Wrappers, opts ...grpc.CallOption) (*Wrappers, error)
 }
@@ -156,14 +155,15 @@ func NewWrappersServiceClient(cc *grpc.ClientConn) WrappersServiceClient {
 
 func (c *wrappersServiceClient) Create(ctx context.Context, in *Wrappers, opts ...grpc.CallOption) (*Wrappers, error) {
 	out := new(Wrappers)
-	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/Create", in, out, opts...)
+	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/Create", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// WrappersServiceServer is the server API for WrappersService service.
+// Server API for WrappersService service
+
 type WrappersServiceServer interface {
 	Create(context.Context, *Wrappers) (*Wrappers, error)
 }
