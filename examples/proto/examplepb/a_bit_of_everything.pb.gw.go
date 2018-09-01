@@ -394,6 +394,205 @@ func request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marshaler r
 
 }
 
+func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ABitOfEverythingRepeated
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		es  []int32
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["path_repeated_float_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_float_value")
+	}
+
+	protoReq.PathRepeatedFloatValue, err = runtime.Float32Slice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_float_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_double_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_double_value")
+	}
+
+	protoReq.PathRepeatedDoubleValue, err = runtime.Float64Slice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_double_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_int64_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_int64_value")
+	}
+
+	protoReq.PathRepeatedInt64Value, err = runtime.Int64Slice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_int64_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_uint64_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_uint64_value")
+	}
+
+	protoReq.PathRepeatedUint64Value, err = runtime.Uint64Slice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_uint64_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_int32_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_int32_value")
+	}
+
+	protoReq.PathRepeatedInt32Value, err = runtime.Int32Slice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_int32_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_fixed64_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_fixed64_value")
+	}
+
+	protoReq.PathRepeatedFixed64Value, err = runtime.Uint64Slice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_fixed64_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_fixed32_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_fixed32_value")
+	}
+
+	protoReq.PathRepeatedFixed32Value, err = runtime.Uint32Slice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_fixed32_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_bool_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_bool_value")
+	}
+
+	protoReq.PathRepeatedBoolValue, err = runtime.BoolSlice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_bool_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_string_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_string_value")
+	}
+
+	protoReq.PathRepeatedStringValue, err = runtime.StringSlice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_string_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_bytes_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_bytes_value")
+	}
+
+	protoReq.PathRepeatedBytesValue, err = runtime.BytesSlice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_bytes_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_uint32_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_uint32_value")
+	}
+
+	protoReq.PathRepeatedUint32Value, err = runtime.Uint32Slice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_uint32_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_enum_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_enum_value")
+	}
+
+	es, err = runtime.EnumSlice(val, ",", NumericEnum_value)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_enum_value", err)
+	}
+
+	s := make([]NumericEnum, len(es))
+	for i, v := range es {
+		s[i] = NumericEnum(v)
+	}
+	protoReq.PathRepeatedEnumValue = s
+
+	val, ok = pathParams["path_repeated_sfixed32_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_sfixed32_value")
+	}
+
+	protoReq.PathRepeatedSfixed32Value, err = runtime.Int32Slice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_sfixed32_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_sfixed64_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_sfixed64_value")
+	}
+
+	protoReq.PathRepeatedSfixed64Value, err = runtime.Int64Slice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_sfixed64_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_sint32_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_sint32_value")
+	}
+
+	protoReq.PathRepeatedSint32Value, err = runtime.Int32Slice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_sint32_value", err)
+	}
+
+	val, ok = pathParams["path_repeated_sint64_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "path_repeated_sint64_value")
+	}
+
+	protoReq.PathRepeatedSint64Value, err = runtime.Int64Slice(val, ",")
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_sint64_value", err)
+	}
+
+	msg, err := client.GetRepeatedQuery(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
 func request_ABitOfEverythingService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
@@ -783,6 +982,35 @@ func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runt
 
 	})
 
+	mux.Handle("GET", pattern_ABitOfEverythingService_GetRepeatedQuery_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		if cn, ok := w.(http.CloseNotifier); ok {
+			go func(done <-chan struct{}, closed <-chan bool) {
+				select {
+				case <-done:
+				case <-closed:
+					cancel()
+				}
+			}(ctx.Done(), cn.CloseNotify())
+		}
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ABitOfEverythingService_GetRepeatedQuery_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ABitOfEverythingService_GetRepeatedQuery_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("GET", pattern_ABitOfEverythingService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1031,6 +1259,8 @@ var (
 
 	pattern_ABitOfEverythingService_GetQuery_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "example", "a_bit_of_everything", "query", "uuid"}, ""))
 
+	pattern_ABitOfEverythingService_GetRepeatedQuery_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6, 1, 0, 4, 1, 5, 7, 1, 0, 4, 1, 5, 8, 1, 0, 4, 1, 5, 9, 1, 0, 4, 1, 5, 10, 1, 0, 4, 1, 5, 11, 1, 0, 4, 1, 5, 12, 1, 0, 4, 1, 5, 13, 1, 0, 4, 1, 5, 14, 1, 0, 4, 1, 5, 15, 1, 0, 4, 1, 5, 16, 1, 0, 4, 1, 5, 17, 1, 0, 4, 1, 5, 18}, []string{"v1", "example", "a_bit_of_everything_repeated", "path_repeated_float_value", "path_repeated_double_value", "path_repeated_int64_value", "path_repeated_uint64_value", "path_repeated_int32_value", "path_repeated_fixed64_value", "path_repeated_fixed32_value", "path_repeated_bool_value", "path_repeated_string_value", "path_repeated_bytes_value", "path_repeated_uint32_value", "path_repeated_enum_value", "path_repeated_sfixed32_value", "path_repeated_sfixed64_value", "path_repeated_sint32_value", "path_repeated_sint64_value"}, ""))
+
 	pattern_ABitOfEverythingService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "example", "a_bit_of_everything", "echo", "value"}, ""))
 
 	pattern_ABitOfEverythingService_Echo_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v2", "example", "echo"}, ""))
@@ -1060,6 +1290,8 @@ var (
 	forward_ABitOfEverythingService_Delete_0 = runtime.ForwardResponseMessage
 
 	forward_ABitOfEverythingService_GetQuery_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_GetRepeatedQuery_0 = runtime.ForwardResponseMessage
 
 	forward_ABitOfEverythingService_Echo_0 = runtime.ForwardResponseMessage
 

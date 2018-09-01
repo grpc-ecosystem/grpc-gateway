@@ -187,6 +187,14 @@ func (s *_ABitOfEverythingServer) GetQuery(ctx context.Context, msg *examples.AB
 	return new(empty.Empty), nil
 }
 
+func (s *_ABitOfEverythingServer) GetRepeatedQuery(ctx context.Context, msg *examples.ABitOfEverythingRepeated) (*examples.ABitOfEverythingRepeated, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	glog.Info(msg)
+	return msg, nil
+}
+
 func (s *_ABitOfEverythingServer) Echo(ctx context.Context, msg *sub.StringMessage) (*sub.StringMessage, error) {
 	s.m.Lock()
 	defer s.m.Unlock()

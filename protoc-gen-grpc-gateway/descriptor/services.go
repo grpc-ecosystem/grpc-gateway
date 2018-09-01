@@ -203,7 +203,7 @@ func extractAPIOptions(meth *descriptor.MethodDescriptorProto) (*options.HttpRul
 
 func (r *Registry) newParam(meth *Method, path string) (Parameter, error) {
 	msg := meth.RequestType
-	fields, err := r.resolveFieldPath(msg, path)
+	fields, err := r.resolveFieldPath(msg, path, true)
 	if err != nil {
 		return Parameter{}, err
 	}
@@ -236,7 +236,7 @@ func (r *Registry) newBody(meth *Method, path string) (*Body, error) {
 	case "*":
 		return &Body{FieldPath: nil}, nil
 	}
-	fields, err := r.resolveFieldPath(msg, path)
+	fields, err := r.resolveFieldPath(msg, path, false)
 	if err != nil {
 		return nil, err
 	}
@@ -249,7 +249,7 @@ func (r *Registry) newResponse(meth *Method, path string) (*Body, error) {
 	case "", "*":
 		return nil, nil
 	}
-	fields, err := r.resolveFieldPath(msg, path)
+	fields, err := r.resolveFieldPath(msg, path, false)
 	if err != nil {
 		return nil, err
 	}
@@ -268,7 +268,7 @@ func lookupField(msg *Message, name string) *Field {
 }
 
 // resolveFieldPath resolves "path" into a list of fieldDescriptor, starting from "msg".
-func (r *Registry) resolveFieldPath(msg *Message, path string) ([]FieldPathComponent, error) {
+func (r *Registry) resolveFieldPath(msg *Message, path string, isPathParam bool) ([]FieldPathComponent, error) {
 	if path == "" {
 		return nil, nil
 	}
@@ -295,7 +295,7 @@ func (r *Registry) resolveFieldPath(msg *Message, path string) ([]FieldPathCompo
 		if f == nil {
 			return nil, fmt.Errorf("no field %q found in %s", path, root.GetName())
 		}
-		if !r.allowRepeatedFieldsInBody && f.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+		if !(isPathParam || r.allowRepeatedFieldsInBody) && f.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
 			return nil, fmt.Errorf("repeated field not allowed in field path: %s in %s", f.GetName(), path)
 		}
 		result = append(result, FieldPathComponent{Name: c, Target: f})

@@ -582,11 +582,16 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				parameters := swaggerParametersObject{}
 				for _, parameter := range b.PathParams {
 
-					var paramType, paramFormat, desc string
+					var paramType, paramFormat, desc, collectionFormat string
 					var enumNames []string
+					var items *swaggerItemsObject
+					var minItems *int
 					switch pt := parameter.Target.GetType(); pt {
 					case pbdescriptor.FieldDescriptorProto_TYPE_GROUP, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE:
 						if descriptor.IsWellKnownType(parameter.Target.GetTypeName()) {
+							if parameter.IsRepeated() {
+								return fmt.Errorf("only primitive and enum types are allowed in repeated path parameters")
+							}
 							schema := schemaOfField(parameter.Target, reg, customRefs)
 							paramType = schema.Type
 							paramFormat = schema.Format
@@ -610,6 +615,21 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						}
 					}
 
+					if parameter.IsRepeated() {
+						core := schemaCore{Type: paramType, Format: paramFormat}
+						if parameter.IsEnum() {
+							var s []string
+							core.Enum = enumNames
+							enumNames = s
+						}
+						items = (*swaggerItemsObject)(&core)
+						paramType = "array"
+						paramFormat = ""
+						collectionFormat = reg.GetRepeatedPathParamSeparatorName()
+						minItems = new(int)
+						*minItems = 1
+					}
+
 					if desc == "" {
 						desc = fieldProtoComments(reg, parameter.Target.Message, parameter.Target)
 					}
@@ -620,9 +640,12 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						In:          "path",
 						Required:    true,
 						// Parameters in gRPC-Gateway can only be strings?
-						Type:   paramType,
-						Format: paramFormat,
-						Enum:   enumNames,
+						Type:             paramType,
+						Format:           paramFormat,
+						Enum:             enumNames,
+						Items:            items,
+						CollectionFormat: collectionFormat,
+						MinItems:         minItems,
 					})
 				}
 				// Now check if there is a body parameter
