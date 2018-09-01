@@ -50,10 +50,18 @@ type Registry struct {
 	// allowRepeatedFieldsInBody permits repeated field in body field path of `google.api.http` annotation option
 	allowRepeatedFieldsInBody bool
 
+	// repeatedPathParamSeparator specifies how path parameter repeated fields are separated
+	repeatedPathParamSeparator repeatedFieldSeparator
+
 	// useJSONNamesForFields if true json tag name is used for generating fields in swagger definitions,
 	// otherwise the original proto name is used. It's helpful for synchronizing the swagger definition
 	// with grpc-gateway response, if it uses json tags for marshaling.
 	useJSONNamesForFields bool
+}
+
+type repeatedFieldSeparator struct {
+	name string
+	sep  rune
 }
 
 // NewRegistry returns a new Registry.
@@ -65,6 +73,10 @@ func NewRegistry() *Registry {
 		pkgMap:            make(map[string]string),
 		pkgAliases:        make(map[string]string),
 		externalHTTPRules: make(map[string][]*annotations.HttpRule),
+		repeatedPathParamSeparator: repeatedFieldSeparator{
+			name: "csv",
+			sep:  ',',
+		},
 	}
 }
 
@@ -336,6 +348,41 @@ func (r *Registry) SetAllowRepeatedFieldsInBody(allow bool) {
 // in `body` and `response_body` (`google.api.http` annotation option) field path or not
 func (r *Registry) IsAllowRepeatedFieldsInBody() bool {
 	return r.allowRepeatedFieldsInBody
+}
+
+// GetRepeatedPathParamSeparator returns a rune spcifying how
+// path parameter repeated fields are separated.
+func (r *Registry) GetRepeatedPathParamSeparator() rune {
+	return r.repeatedPathParamSeparator.sep
+}
+
+// GetRepeatedPathParamSeparatorName returns the name path parameter repeated
+// fields repeatedFieldSeparator. I.e. 'csv', 'pipe', 'ssv' or 'tsv'
+func (r *Registry) GetRepeatedPathParamSeparatorName() string {
+	return r.repeatedPathParamSeparator.name
+}
+
+// SetRepeatedPathParamSeparator sets how path parameter repeated fields are
+// separated. Allowed names are 'csv', 'pipe', 'ssv' and 'tsv'.
+func (r *Registry) SetRepeatedPathParamSeparator(name string) error {
+	var sep rune
+	switch name {
+	case "csv":
+		sep = ','
+	case "pipes":
+		sep = '|'
+	case "ssv":
+		sep = ' '
+	case "tsv":
+		sep = '\t'
+	default:
+		return fmt.Errorf("unknown repeated path parameter separator: %s", name)
+	}
+	r.repeatedPathParamSeparator = repeatedFieldSeparator{
+		name: name,
+		sep:  sep,
+	}
+	return nil
 }
 
 // SetUseJSONNamesForFields sets useJSONNamesForFields
