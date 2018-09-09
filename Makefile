@@ -192,14 +192,14 @@ changelog:
 		--tty \
 		-e "CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN}" \
 		-v "$(PWD):/usr/local/src/your-app" \
-		ferrarimarco/github-changelog-generator \
+		ferrarimarco/github-changelog-generator:1.14.3 \
 				-u grpc-ecosystem \
 				-p grpc-gateway \
 				--author \
 				--compare-link \
 				--github-site=https://grpc-ecosystem.github.io/grpc-gateway \
 				--unreleased-label "**Next release**" \
-				--future-release=v1.4.1
+				--future-release=v1.5.0
 lint:
 	golint --set_exit_status $(PKG)/runtime
 	golint --set_exit_status $(PKG)/utilities/...
