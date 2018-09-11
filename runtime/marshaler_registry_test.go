@@ -76,6 +76,85 @@ func TestMarshalerForRequest(t *testing.T) {
 	}
 }
 
+func TestMarshalerForRequest2(t *testing.T) {
+	r, err := http.NewRequest("GET", "http://example.com", nil)
+	if err != nil {
+		t.Fatalf(`http.NewRequest("GET", "http://example.com", nil) failed with %v; want success`, err)
+	}
+
+	marshalers := [4]*dummyMarshaler2{{0}, {1}, {2}, {3}}
+	mux := runtime.NewServeMux(
+		runtime.WithMarshalerOption("multipart/form-data; boundary=*", marshalers[0]),
+		runtime.WithMarshalerOption("multipart/*", marshalers[1]),
+		runtime.WithMarshalerOption("multipart/form-data", marshalers[2]),
+		runtime.WithMarshalerOption("*/form-data", marshalers[3]),
+	)
+
+	r.Header.Set("Content-Type", "multipart/form-data")
+	_, out := runtime.MarshalerForRequest(mux, r)
+	if got, want := out, marshalers[2]; got != want {
+		t.Errorf("out = %#v; want %#v", got, want)
+	}
+
+	r.Header.Set("Content-Type", "multipart/form-data; boundary=foobar")
+	_, out = runtime.MarshalerForRequest(mux, r)
+	if got, want := out, marshalers[0]; got != want {
+		t.Errorf("out = %#v; want %#v", got, want)
+	}
+
+	r.Header.Set("Content-Type", "multipart/form-data; boundary=*")
+	_, out = runtime.MarshalerForRequest(mux, r)
+	if got, want := out, marshalers[0]; got != want {
+		t.Errorf("out = %#v; want %#v", got, want)
+	}
+
+	r.Header.Set("Content-Type", "multipart/octet-stream")
+	_, out = runtime.MarshalerForRequest(mux, r)
+	if got, want := out, marshalers[1]; got != want {
+		t.Errorf("out = %#v; want %#v", got, want)
+	}
+
+	r.Header.Set("Content-Type", "application/form-data")
+	_, out = runtime.MarshalerForRequest(mux, r)
+	if got, want := out, marshalers[3]; got != want {
+		t.Errorf("out = %#v; want %#v", got, want)
+	}
+
+	r.Header.Set("Content-Type", "application/json")
+	_, out = runtime.MarshalerForRequest(mux, r)
+	if _, ok := out.(*runtime.JSONPb); !ok {
+		t.Errorf("in = %#v; want a runtime.JSONPb", out)
+	}
+
+	r.Header.Del("Content-Type")
+	_, out = runtime.MarshalerForRequest(mux, r)
+	if _, ok := out.(*runtime.JSONPb); !ok {
+		t.Errorf("in = %#v; want a runtime.JSONPb", out)
+	}
+
+	r.Header.Set("Accept", "*")
+	_, out = runtime.MarshalerForRequest(mux, r)
+	if _, ok := out.(*runtime.JSONPb); !ok {
+		t.Errorf("in = %#v; want a runtime.JSONPb", out)
+	}
+
+	r.Header.Set("Accept", "multipart/form-data")
+	_, out = runtime.MarshalerForRequest(mux, r)
+	if got, want := out, marshalers[2]; got != want {
+		t.Errorf("out = %#v; want %#v", got, want)
+	}
+
+	r.Header.Set("Accept", "multipart/x-out")
+	r.Header.Set("Content-Type", "multipart/form-data")
+	in, out := runtime.MarshalerForRequest(mux, r)
+	if got, want := in, marshalers[2]; got != want {
+		t.Errorf("out = %#v; want %#v", got, want)
+	}
+	if got, want := out, marshalers[1]; got != want {
+		t.Errorf("out = %#v; want %#v", got, want)
+	}
+}
+
 type dummyMarshaler struct{}
 
 func (dummyMarshaler) ContentType() string { return "" }
@@ -104,4 +183,24 @@ type dummyEncoder struct{}
 
 func (dummyEncoder) Encode(interface{}) error {
 	return errors.New("not implemented")
+}
+
+type dummyMarshaler2 struct {
+	label int
+}
+
+func (dummyMarshaler2) ContentType() string { return "" }
+func (dummyMarshaler2) Marshal(interface{}) ([]byte, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (dummyMarshaler2) Unmarshal([]byte, interface{}) error {
+	return errors.New("not implemented")
+}
+
+func (dummyMarshaler2) NewDecoder(r io.Reader) runtime.Decoder {
+	return dummyDecoder{}
+}
+func (dummyMarshaler2) NewEncoder(w io.Writer) runtime.Encoder {
+	return dummyEncoder{}
 }

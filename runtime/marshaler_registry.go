@@ -3,11 +3,16 @@ package runtime
 import (
 	"errors"
 	"net/http"
+	"regexp"
+	"sort"
+	"strings"
 )
 
 // MIMEWildcard is the fallback MIME type used for requests which do not match
 // a registered MIME type.
 const MIMEWildcard = "*"
+// WildcardRegex is the wildcard strings as regex
+const WildcardRegex = ".*"
 
 var (
 	acceptHeader      = http.CanonicalHeaderKey("Accept")
@@ -24,14 +29,14 @@ var (
 // Otherwise, it follows the above logic for "*"/InboundMarshaler/OutboundMarshaler.
 func MarshalerForRequest(mux *ServeMux, r *http.Request) (inbound Marshaler, outbound Marshaler) {
 	for _, acceptVal := range r.Header[acceptHeader] {
-		if m, ok := mux.marshalers.mimeMap[acceptVal]; ok {
+		if m, ok := mux.marshalers.get(acceptVal); ok {
 			outbound = m
 			break
 		}
 	}
 
 	for _, contentTypeVal := range r.Header[contentTypeHeader] {
-		if m, ok := mux.marshalers.mimeMap[contentTypeVal]; ok {
+		if m, ok := mux.marshalers.get(contentTypeVal); ok {
 			inbound = m
 			break
 		}
@@ -62,6 +67,31 @@ func (m marshalerRegistry) add(mime string, marshaler Marshaler) error {
 	m.mimeMap[mime] = marshaler
 
 	return nil
+}
+
+// get gets a marshaler for a MIME type string ("*" means as wildcard).
+func (m marshalerRegistry) get(mime string) (Marshaler, bool) {
+	var mapKeys []string
+	for mapKey := range m.mimeMap {
+		mapKeys = append(mapKeys, mapKey)
+	}
+	sort.Slice(mapKeys, func(i, j int) bool {
+		return mapKeys[i] > mapKeys[j]
+	})
+
+	for _, mapKey := range mapKeys {
+		r := strings.NewReplacer(MIMEWildcard, WildcardRegex, "/", "\\/", ".", "\\.", "+", "\\+")
+		replaced := r.Replace(mapKey)
+
+		keyRegex, err := regexp.Compile(replaced)
+		if err != nil {
+			continue
+		}
+		if keyRegex.Match([]byte(mime)) {
+			return m.mimeMap[mapKey], true
+		}
+	}
+	return nil, false
 }
 
 // makeMarshalerMIMERegistry returns a new registry of marshalers.
