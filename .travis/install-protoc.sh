@@ -4,7 +4,7 @@ if test -z "${protoc_version}"; then
 	echo "Usage: .travis/install-protoc.sh protoc-version"
 	exit 1
 fi
-if [ "`$HOME/local/bin/protoc-${protoc_version} --version 2>/dev/null | cut -d' ' -f 2`" != ${protoc_version} ]; then
+if [ "`$HOME/local/bin/protoc --version 2>/dev/null | cut -d' ' -f 2`" != ${protoc_version} ]; then
 	rm -rf $HOME/local/bin $HOME/local/include
 
 	mkdir -p $HOME/tmp $HOME/local

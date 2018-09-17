@@ -47,6 +47,10 @@ type ExamplepbABitOfEverything struct {
 
 	EnumValue ExamplepbNumericEnum `json:"enum_value,omitempty"`
 
+	PathEnumValue PathenumPathEnum `json:"path_enum_value,omitempty"`
+
+	NestedPathEnumValue MessagePathEnumNestedPathEnum `json:"nested_path_enum_value,omitempty"`
+
 	Sfixed32Value int32 `json:"sfixed32_value,omitempty"`
 
 	Sfixed64Value string `json:"sfixed64_value,omitempty"`

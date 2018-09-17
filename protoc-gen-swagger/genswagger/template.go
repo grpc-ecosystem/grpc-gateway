@@ -283,7 +283,13 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 				panic(err)
 			}
 
-			schema.Properties = append(schema.Properties, keyVal{f.GetName(), fieldValue})
+			kv := keyVal{Value: fieldValue}
+			if reg.GetUseJSONNamesForFields() {
+				kv.Key = f.GetJsonName()
+			} else {
+				kv.Key = f.GetName()
+			}
+			schema.Properties = append(schema.Properties, kv)
 		}
 		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
 	}
@@ -525,7 +531,7 @@ func templateToSwaggerPath(path string) string {
 			}
 			// Pop from the stack
 			depth--
-			buffer += "}"
+			buffer += string(char)
 		case '/':
 			if depth == 0 {
 				parts = append(parts, buffer)
@@ -534,6 +540,7 @@ func templateToSwaggerPath(path string) string {
 				// section.
 				continue
 			}
+			buffer += string(char)
 		default:
 			buffer += string(char)
 			break
@@ -548,10 +555,22 @@ func templateToSwaggerPath(path string) string {
 	// memory.
 	re := regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*).*}")
 	for index, part := range parts {
+		// If part is a resource name such as "parent", "name", "user.name", the format info must be retained.
+		prefix := re.ReplaceAllString(part, "$1")
+		if isResourceName(prefix) {
+			continue
+		}
 		parts[index] = re.ReplaceAllString(part, "{$1}")
 	}
 
 	return strings.Join(parts, "/")
+}
+
+func isResourceName(prefix string) bool {
+	words := strings.Split(prefix, ".")
+	l := len(words)
+	field := words[l-1]
+	return field == "parent" || field == "name"
 }
 
 func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap) error {
@@ -563,10 +582,16 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				parameters := swaggerParametersObject{}
 				for _, parameter := range b.PathParams {
 
-					var paramType, paramFormat string
+					var paramType, paramFormat, desc, collectionFormat string
+					var enumNames []string
+					var items *swaggerItemsObject
+					var minItems *int
 					switch pt := parameter.Target.GetType(); pt {
 					case pbdescriptor.FieldDescriptorProto_TYPE_GROUP, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE:
 						if descriptor.IsWellKnownType(parameter.Target.GetTypeName()) {
+							if parameter.IsRepeated() {
+								return fmt.Errorf("only primitive and enum types are allowed in repeated path parameters")
+							}
 							schema := schemaOfField(parameter.Target, reg, customRefs)
 							paramType = schema.Type
 							paramFormat = schema.Format
@@ -574,8 +599,13 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
 					case pbdescriptor.FieldDescriptorProto_TYPE_ENUM:
-						paramType = fullyQualifiedNameToSwaggerName(parameter.Target.GetTypeName(), reg)
+						paramType = "string"
 						paramFormat = ""
+						enum, err := reg.LookupEnum("", parameter.Target.GetTypeName())
+						if err != nil {
+							return err
+						}
+						enumNames = listEnumNames(enum)
 					default:
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
@@ -584,13 +614,36 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						}
 					}
 
+					if parameter.IsRepeated() {
+						core := schemaCore{Type: paramType, Format: paramFormat}
+						if parameter.IsEnum() {
+							var s []string
+							core.Enum = enumNames
+							enumNames = s
+						}
+						items = (*swaggerItemsObject)(&core)
+						paramType = "array"
+						paramFormat = ""
+						collectionFormat = reg.GetRepeatedPathParamSeparatorName()
+						minItems = new(int)
+						*minItems = 1
+					}
+
+					if desc == "" {
+						desc = fieldProtoComments(reg, parameter.Target.Message, parameter.Target)
+					}
+
 					parameters = append(parameters, swaggerParameterObject{
 						Name:     parameter.String(),
 						In:       "path",
 						Required: true,
 						// Parameters in gRPC-Gateway can only be strings?
-						Type:   paramType,
-						Format: paramFormat,
+						Type:             paramType,
+						Format:           paramFormat,
+						Enum:             enumNames,
+						Items:            items,
+						CollectionFormat: collectionFormat,
+						MinItems:         minItems,
 					})
 				}
 				// Now check if there is a body parameter
@@ -635,6 +688,24 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 
 				methProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method")
 				desc := ""
+				var responseSchema swaggerSchemaObject
+
+				if b.ResponseBody == nil || len(b.ResponseBody.FieldPath) == 0 {
+					responseSchema = swaggerSchemaObject{
+						schemaCore: schemaCore{
+							Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)),
+						},
+					}
+				} else {
+					// This is resolving the value of response_body in the google.api.HttpRule
+					lastField := b.ResponseBody.FieldPath[len(b.ResponseBody.FieldPath)-1]
+					responseSchema = schemaOfField(lastField.Target, reg, customRefs)
+					if responseSchema.Description != "" {
+						desc = responseSchema.Description
+					} else {
+						desc = fieldProtoComments(reg, lastField.Target.Message, lastField.Target)
+					}
+				}
 				if meth.GetServerStreaming() {
 					desc += "(streaming responses)"
 				}
@@ -644,11 +715,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					Responses: swaggerResponsesObject{
 						"200": swaggerResponseObject{
 							Description: desc,
-							Schema: swaggerSchemaObject{
-								schemaCore: schemaCore{
-									Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)),
-								},
-							},
+							Schema:      responseSchema,
 						},
 					},
 				}

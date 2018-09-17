@@ -6,6 +6,7 @@ import "google/api/annotations.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
+import "examples/proto/pathenum/path_enum.proto";
 import "examples/proto/sub/message.proto";
 import "examples/proto/sub2/message.proto";
 import "google/protobuf/timestamp.proto";
@@ -171,6 +172,8 @@ message ABitOfEverything {
 	bytes bytes_value = 29;
 	uint32 uint32_value = 13;
 	NumericEnum enum_value = 14;
+	pathenum.PathEnum path_enum_value = 30;
+	pathenum.MessagePathEnum.NestedPathEnum nested_path_enum_value = 31;
 	sfixed32 sfixed32_value = 15;
 	sfixed64 sfixed64_value = 16;
 	sint32 sint32_value = 17;
@@ -191,6 +194,28 @@ message ABitOfEverything {
 
 	// repeated enum value. it is comma-separated in query
 	repeated NumericEnum repeated_enum_value = 28;
+}
+
+// ABitOfEverythingRepeated is used to validate repeated path parameter functionality
+message ABitOfEverythingRepeated {
+
+	// repeated values. they are comma-separated in path
+	repeated float path_repeated_float_value = 1;
+	repeated double path_repeated_double_value = 2;
+	repeated int64 path_repeated_int64_value = 3;
+	repeated uint64 path_repeated_uint64_value = 4;
+	repeated int32 path_repeated_int32_value = 5;
+	repeated fixed64 path_repeated_fixed64_value = 6;
+	repeated fixed32 path_repeated_fixed32_value = 7;
+	repeated bool path_repeated_bool_value = 8;
+	repeated string path_repeated_string_value = 9;
+	repeated bytes path_repeated_bytes_value = 10;
+	repeated uint32 path_repeated_uint32_value = 11;
+	repeated NumericEnum path_repeated_enum_value = 12;
+	repeated sfixed32 path_repeated_sfixed32_value = 13;
+	repeated sfixed64 path_repeated_sfixed64_value = 14;
+	repeated sint32 path_repeated_sint32_value = 15;
+	repeated sint64 path_repeated_sint64_value = 16;
 }
 
 message Body {
@@ -229,9 +254,8 @@ service ABitOfEverythingService {
 	};
 
 	rpc Create(ABitOfEverything) returns (ABitOfEverything) {
-		// TODO add enum_value
 		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}"
+			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}"
 		};
 	}
 	rpc CreateBody(ABitOfEverything) returns (ABitOfEverything) {
@@ -297,6 +321,11 @@ service ABitOfEverythingService {
 				url: "https://github.com/grpc-ecosystem/grpc-gateway";
 				description: "Find out more about GetQuery";
 			}
+		};
+	}
+	rpc GetRepeatedQuery(ABitOfEverythingRepeated) returns (ABitOfEverythingRepeated) {
+		option (google.api.http) = {
+			get: "/v1/example/a_bit_of_everything_repeated/{path_repeated_float_value}/{path_repeated_double_value}/{path_repeated_int64_value}/{path_repeated_uint64_value}/{path_repeated_int32_value}/{path_repeated_fixed64_value}/{path_repeated_fixed32_value}/{path_repeated_bool_value}/{path_repeated_string_value}/{path_repeated_bytes_value}/{path_repeated_uint32_value}/{path_repeated_enum_value}/{path_repeated_sfixed32_value}/{path_repeated_sfixed64_value}/{path_repeated_sint32_value}/{path_repeated_sint64_value}"
 		};
 	}
 	// Echo allows posting a StringMessage value.
@@ -376,6 +405,7 @@ service ABitOfEverythingService {
 		};
 	}
 }
+
 // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
 service camelCaseServiceName {
 	rpc Empty(google.protobuf.Empty) returns (google.protobuf.Empty) {

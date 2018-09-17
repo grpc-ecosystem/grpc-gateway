@@ -697,6 +697,11 @@ func TestTemplateToSwaggerPath(t *testing.T) {
 		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/{test}"},
 		{"/{test1}/{test2}", "/{test1}/{test2}"},
 		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
+		{"/{name=prefix/*}", "/{name=prefix/*}"},
+		{"/{name=prefix1/*/prefix2/*}", "/{name=prefix1/*/prefix2/*}"},
+		{"/{user.name=prefix/*}", "/{user.name=prefix/*}"},
+		{"/{user.name=prefix1/*/prefix2/*}", "/{user.name=prefix1/*/prefix2/*}"},
+		{"/{parent=prefix/*}/children", "/{parent=prefix/*}/children"},
 	}
 
 	for _, data := range tests {
