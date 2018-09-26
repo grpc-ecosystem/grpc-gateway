@@ -1,0 +1,42 @@
+---
+swagger: "2.0"
+info:
+  version: "version not set"
+  title: "examples/proto/examplepb/response_body_service.proto"
+schemes:
+- "http"
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /responsebody/{data}:
+    get:
+      tags:
+      - "ResponseBodyService"
+      operationId: "GetResponseBody"
+      parameters:
+      - name: "data"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Data"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/examplepbResponseBodyOutResponse"
+definitions:
+  examplepbResponseBodyOut:
+    type: "object"
+    properties:
+      response:
+        $ref: "#/definitions/examplepbResponseBodyOutResponse"
+  examplepbResponseBodyOutResponse:
+    type: "object"
+    properties:
+      data:
+        type: "string"
+    example:
+      data: "data"

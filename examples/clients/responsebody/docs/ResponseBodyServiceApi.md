@@ -8,16 +8,15 @@ Method | HTTP request | Description
 
 
 # **GetResponseBody**
-> ExamplepbResponseBodyOutResponse GetResponseBody($data)
+> ExamplepbResponseBodyOutResponse GetResponseBody(ctx, data)
 
 
-
-
-### Parameters
+### Required Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **data** | **string**|  | 
+ **ctx** | **context.Context** | context for logging, tracing, authentication, etc.
+  **data** | **string**|  | 
 
 ### Return type
 
