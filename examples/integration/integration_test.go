@@ -3,6 +3,7 @@ package integration_test
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -292,7 +293,7 @@ func testABECreate(t *testing.T, port int) {
 		PathEnumValue:            pathenum.PathEnum_DEF,
 		NestedPathEnumValue:      pathenum.MessagePathEnum_JKL,
 	}
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, oneofStr, want.NonConventionalNameValue)
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue, want.EnumValue, want.PathEnumValue, want.NestedPathEnumValue)
 
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
 	if err != nil {
@@ -835,6 +836,125 @@ func testAdditionalBindings(t *testing.T, port int) {
 		if got, want := msg.GetValue(), "hello"; got != want {
 			t.Errorf("msg.GetValue() = %q; want %q", got, want)
 		}
+	}
+}
+
+func testABERepeated(t *testing.T, port int) {
+	f := func(v reflect.Value) string {
+		var f func(v reflect.Value, idx int) string
+		s := make([]string, v.Len())
+		switch v.Index(0).Kind() {
+		case reflect.Slice:
+			f = func(v reflect.Value, idx int) string {
+				t := v.Index(idx).Type().Elem().Kind()
+				if t == reflect.Uint8 {
+					return base64.URLEncoding.EncodeToString(v.Index(idx).Interface().([]byte))
+				}
+				// Could handle more elegantly
+				panic("unknown slice of type: " + t.String())
+			}
+		default:
+			f = func(v reflect.Value, idx int) string {
+				return fmt.Sprintf("%v", v.Index(idx).Interface())
+			}
+		}
+		for i := 0; i < v.Len(); i++ {
+			s[i] = f(v, i)
+		}
+		return strings.Join(s, ",")
+	}
+	want := gw.ABitOfEverythingRepeated{
+		PathRepeatedFloatValue: []float32{
+			1.5,
+			-1.5,
+		},
+		PathRepeatedDoubleValue: []float64{
+			2.5,
+			-2.5,
+		},
+		PathRepeatedInt64Value: []int64{
+			4294967296,
+			-4294967296,
+		},
+		PathRepeatedUint64Value: []uint64{
+			0,
+			9223372036854775807,
+		},
+		PathRepeatedInt32Value: []int32{
+			2147483647,
+			-2147483648,
+		},
+		PathRepeatedFixed64Value: []uint64{
+			0,
+			9223372036854775807,
+		},
+		PathRepeatedFixed32Value: []uint32{
+			0,
+			4294967295,
+		},
+		PathRepeatedBoolValue: []bool{
+			true,
+			false,
+		},
+		PathRepeatedStringValue: []string{
+			"foo",
+			"bar",
+		},
+		PathRepeatedBytesValue: [][]byte{
+			[]byte{0x00},
+			[]byte{0xFF},
+		},
+		PathRepeatedUint32Value: []uint32{
+			0,
+			4294967295,
+		},
+		PathRepeatedEnumValue: []gw.NumericEnum{
+			gw.NumericEnum_ZERO,
+			gw.NumericEnum_ONE,
+		},
+		PathRepeatedSfixed32Value: []int32{
+			2147483647,
+			-2147483648,
+		},
+		PathRepeatedSfixed64Value: []int64{
+			4294967296,
+			-4294967296,
+		},
+		PathRepeatedSint32Value: []int32{
+			2147483647,
+			-2147483648,
+		},
+		PathRepeatedSint64Value: []int64{
+			4611686018427387903,
+			-4611686018427387904,
+		},
+	}
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything_repeated/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s", port, f(reflect.ValueOf(want.PathRepeatedFloatValue)), f(reflect.ValueOf(want.PathRepeatedDoubleValue)), f(reflect.ValueOf(want.PathRepeatedInt64Value)), f(reflect.ValueOf(want.PathRepeatedUint64Value)), f(reflect.ValueOf(want.PathRepeatedInt32Value)), f(reflect.ValueOf(want.PathRepeatedFixed64Value)), f(reflect.ValueOf(want.PathRepeatedFixed32Value)), f(reflect.ValueOf(want.PathRepeatedBoolValue)), f(reflect.ValueOf(want.PathRepeatedStringValue)), f(reflect.ValueOf(want.PathRepeatedBytesValue)), f(reflect.ValueOf(want.PathRepeatedUint32Value)), f(reflect.ValueOf(want.PathRepeatedEnumValue)), f(reflect.ValueOf(want.PathRepeatedSfixed32Value)), f(reflect.ValueOf(want.PathRepeatedSfixed64Value)), f(reflect.ValueOf(want.PathRepeatedSint32Value)), f(reflect.ValueOf(want.PathRepeatedSint64Value)))
+
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		return
+	}
+	defer resp.Body.Close()
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	var msg gw.ABitOfEverythingRepeated
+	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
+		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+		return
+	}
+	if got := msg; !reflect.DeepEqual(got, want) {
+		t.Errorf("msg= %v; want %v", &got, &want)
 	}
 }
 

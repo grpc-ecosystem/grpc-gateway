@@ -102,16 +102,17 @@ func (f queryParamFilter) String() string {
 	return fmt.Sprintf("&utilities.DoubleArray{Encoding: map[string]int{%s}, Base: %#v, Check: %#v}", e, f.Base, f.Check)
 }
 
-type registererParams struct {
-	Services          []*descriptor.Service
-	UseRequestContext bool
+type trailerParams struct {
+	Services           []*descriptor.Service
+	UseRequestContext  bool
+	RegisterFuncSuffix string
 }
 
 type decodeHelperParams struct {
 	Messages []*descriptor.Message
 }
 
-func applyTemplate(p param) (string, error) {
+func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 	w := bytes.NewBuffer(nil)
 	if err := headerTemplate.Execute(w, p); err != nil {
 		return "", err
@@ -140,11 +141,12 @@ func applyTemplate(p param) (string, error) {
 		return "", errNoTargetService
 	}
 
-	rp := registererParams{
-		Services:          targetServices,
-		UseRequestContext: p.UseRequestContext,
+	tp := trailerParams{
+		Services:           targetServices,
+		UseRequestContext:  p.UseRequestContext,
+		RegisterFuncSuffix: p.RegisterFuncSuffix,
 	}
-	if err := registerersTemplate.Execute(w, rp); err != nil {
+	if err := registerersTemplate.Execute(w, tp); err != nil {
 		return "", err
 	}
 
