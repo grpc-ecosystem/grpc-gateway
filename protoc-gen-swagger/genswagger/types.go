@@ -113,15 +113,17 @@ type swaggerParametersObject []swaggerParameterObject
 
 // http://swagger.io/specification/#parameterObject
 type swaggerParameterObject struct {
-	Name        string              `json:"name"`
-	Description string              `json:"description,omitempty"`
-	In          string              `json:"in,omitempty"`
-	Required    bool                `json:"required"`
-	Type        string              `json:"type,omitempty"`
-	Format      string              `json:"format,omitempty"`
-	Items       *swaggerItemsObject `json:"items,omitempty"`
-	Enum        []string            `json:"enum,omitempty"`
-	Default     string              `json:"default,omitempty"`
+	Name             string              `json:"name"`
+	Description      string              `json:"description,omitempty"`
+	In               string              `json:"in,omitempty"`
+	Required         bool                `json:"required"`
+	Type             string              `json:"type,omitempty"`
+	Format           string              `json:"format,omitempty"`
+	Items            *swaggerItemsObject `json:"items,omitempty"`
+	Enum             []string            `json:"enum,omitempty"`
+	CollectionFormat string              `json:"collectionFormat,omitempty"`
+	Default          string              `json:"default,omitempty"`
+	MinItems         *int                `json:"minItems,omitempty"`
 
 	// Or you can explicitly refer to another type. If this is defined all
 	// other fields should be empty

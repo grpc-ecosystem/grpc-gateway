@@ -15,12 +15,14 @@ import (
 )
 
 var (
-	importPrefix         = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
-	file                 = flag.String("file", "-", "where to load data from")
-	allowDeleteBody      = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
-	grpcAPIConfiguration = flag.String("grpc_api_configuration", "", "path to gRPC API Configuration in YAML format")
-	allowMerge           = flag.Bool("allow_merge", false, "if set, generation one swagger file out of multiple protos")
-	mergeFileName        = flag.String("merge_file_name", "apidocs", "target swagger file name prefix after merge")
+	importPrefix               = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
+	file                       = flag.String("file", "-", "where to load data from")
+	allowDeleteBody            = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
+	grpcAPIConfiguration       = flag.String("grpc_api_configuration", "", "path to gRPC API Configuration in YAML format")
+	allowMerge                 = flag.Bool("allow_merge", false, "if set, generation one swagger file out of multiple protos")
+	mergeFileName              = flag.String("merge_file_name", "apidocs", "target swagger file name prefix after merge")
+	useJSONNamesForFields      = flag.Bool("json_names_for_fields", false, "if it sets Field.GetJsonName() will be used for generating swagger definitions, otherwise Field.GetName() will be used")
+	repeatedPathParamSeparator = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`.")
 )
 
 func main() {
@@ -56,6 +58,11 @@ func main() {
 	reg.SetAllowDeleteBody(*allowDeleteBody)
 	reg.SetAllowMerge(*allowMerge)
 	reg.SetMergeFileName(*mergeFileName)
+	reg.SetUseJSONNamesForFields(*useJSONNamesForFields)
+	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
+		emitError(err)
+		return
+	}
 	for k, v := range pkgMap {
 		reg.AddPkgMap(k, v)
 	}

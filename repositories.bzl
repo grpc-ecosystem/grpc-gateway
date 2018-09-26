@@ -28,12 +28,12 @@ go_library(
 """
 
 def _googleapis_repository_impl(ctx):
-    googleapis_commit = "e1c0c726290a55065c0c46a62dacc9372939973b"
+    googleapis_commit = "3e68e19410baa7d78cdacc45b034eafe7467b439"
     ctx.download_and_extract(
         url = "https://github.com/googleapis/googleapis/archive/{commit}.tar.gz".format(
             commit = googleapis_commit,
         ),
-        sha256 = "9508971cb4a7c0fe03bc1bfafbd0abc9654c80b4c70e360a6c534938d06d8fb9",
+        sha256 = "eb98f16b037a27fd5fa6b3420a1e344014396d8ffbbab83c1adfe1296ea8572e",
         stripPrefix = "googleapis-{}".format(googleapis_commit),
     )
 

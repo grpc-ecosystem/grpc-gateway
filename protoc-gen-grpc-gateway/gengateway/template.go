@@ -21,6 +21,7 @@ type param struct {
 
 type binding struct {
 	*descriptor.Binding
+	Registry *descriptor.Registry
 }
 
 // GetBodyFieldPath returns the binding body's fieldpath.
@@ -63,6 +64,39 @@ func (b binding) QueryParamFilter() queryParamFilter {
 	return queryParamFilter{utilities.NewDoubleArray(seqs)}
 }
 
+// HasEnumPathParam returns true if the path parameter slice contains a parameter
+// that maps to an enum proto field that is not repeated, if not false is returned.
+func (b binding) HasEnumPathParam() bool {
+	return b.hasEnumPathParam(false)
+}
+
+// HasRepeatedEnumPathParam returns true if the path parameter slice contains a parameter
+// that maps to a repeated enum proto field, if not false is returned.
+func (b binding) HasRepeatedEnumPathParam() bool {
+	return b.hasEnumPathParam(true)
+}
+
+// hasEnumPathParam returns true if the path parameter slice contains a parameter
+// that maps to a enum proto field and that the enum proto field is or isn't repeated
+// based on the provided 'repeated' parameter.
+func (b binding) hasEnumPathParam(repeated bool) bool {
+	for _, p := range b.PathParams {
+		if p.IsEnum() && p.IsRepeated() == repeated {
+			return true
+		}
+	}
+	return false
+}
+
+// LookupEnum looks up a enum type by path parameter.
+func (b binding) LookupEnum(p descriptor.Parameter) *descriptor.Enum {
+	e, err := b.Registry.LookupEnum("", p.Target.GetTypeName())
+	if err != nil {
+		return nil
+	}
+	return e
+}
+
 // FieldMaskField returns the golang-style name of the variable for a FieldMask, if there is exactly one of that type in
 // the message. Otherwise, it returns an empty string.
 func (b binding) FieldMaskField() string {
@@ -103,7 +137,7 @@ type trailerParams struct {
 	RegisterFuncSuffix string
 }
 
-func applyTemplate(p param) (string, error) {
+func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 	w := bytes.NewBuffer(nil)
 	if err := headerTemplate.Execute(w, p); err != nil {
 		return "", err
@@ -119,7 +153,7 @@ func applyTemplate(p param) (string, error) {
 			meth.Name = &methName
 			for _, b := range meth.Bindings {
 				methodWithBindingsSeen = true
-				if err := handlerTemplate.Execute(w, binding{Binding: b}); err != nil {
+				if err := handlerTemplate.Execute(w, binding{Binding: b, Registry: reg}); err != nil {
 					return "", err
 				}
 			}
@@ -192,11 +226,11 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 		grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	body, berr := ioutil.ReadAll(req.Body)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	dec := marshaler.NewDecoder(bytes.NewReader(body))
+	dec := marshaler.NewDecoder(newReader())
 	for {
 		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 		err = dec.Decode(&protoReq)
@@ -243,18 +277,18 @@ var (
 	var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 	var metadata runtime.ServerMetadata
 {{if .Body}}
-	body, berr := ioutil.ReadAll(req.Body)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(bytes.NewReader(body)).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
+	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- if and (eq (.HTTPMethod) "PATCH") (.FieldMaskField)}}
 	if protoReq.{{.FieldMaskField}} != nil && len(protoReq.{{.FieldMaskField}}.GetPaths()) > 0 {
 		runtime.CamelCaseFieldMask(protoReq.{{.FieldMaskField}})
 	} {{if not (eq "*" .GetBodyFieldPath)}} else {
-			if fieldMask, err := runtime.FieldMaskFromRequestBody(bytes.NewReader(body)); err != nil {
+			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader()); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 			} else {
 				protoReq.{{.FieldMaskField}} = fieldMask
@@ -265,23 +299,42 @@ var (
 {{if .PathParams}}
 	var (
 		val string
+{{- if .HasEnumPathParam}}
+		e int32
+{{- end}}
+{{- if .HasRepeatedEnumPathParam}}
+		es []int32
+{{- end}}
 		ok bool
 		err error
 		_ = err
 	)
+	{{$binding := .}}
 	{{range $param := .PathParams}}
+	{{$enum := $binding.LookupEnum $param}}
 	val, ok = pathParams[{{$param | printf "%q"}}]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", {{$param | printf "%q"}})
 	}
-{{if $param.IsNestedProto3 }}
+{{if $param.IsNestedProto3}}
 	err = runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val)
+{{else if $enum}}
+	e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}_value)
 {{else}}
-	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val)
+	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
 {{end}}
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
+{{if and $enum $param.IsRepeated}}
+	s := make([]{{$enum.GoType $param.Target.Message.File.GoPkg.Path}}, len(es))
+	for i, v := range es {
+		s[i] = {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}(v)
+	}
+	{{$param.AssignableExpr "protoReq"}} = s
+{{else if $enum}}
+	{{$param.AssignableExpr "protoReq"}} = {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}(e)
+{{end}}
 	{{end}}
 {{end}}
 {{if .HasQueryParam}}
@@ -314,11 +367,11 @@ var (
 		grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	body, berr := ioutil.ReadAll(req.Body)
+	newReader, berr := utilities.IOReaderFactory(req.Body)
 	if berr != nil {
 		return nil, metadata, berr
 	}
-	dec := marshaler.NewDecoder(bytes.NewReader(body))
+	dec := marshaler.NewDecoder(newReader())
 	handleSend := func() error {
 		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 		err := dec.Decode(&protoReq)
@@ -437,13 +490,32 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context,
 		{{if $m.GetServerStreaming}}
 		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 		{{else}}
+		{{ if $b.ResponseBody }}
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}{resp}, mux.GetForwardResponseOptions()...)
+		{{ else }}
 		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		{{end}}
 		{{end}}
 	})
 	{{end}}
 	{{end}}
 	return nil
 }
+
+{{range $m := $svc.Methods}}
+{{range $b := $m.Bindings}}
+{{if $b.ResponseBody}}
+type response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} struct {
+	proto.Message
+}
+
+func (m response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}) XXX_ResponseBody() interface{} {
+	response := m.Message.(*{{$m.ResponseType.GoType $m.Service.File.GoPkg.Path}})
+	return {{$b.ResponseBody.AssignableExpr "response"}}
+}
+{{end}}
+{{end}}
+{{end}}
 
 var (
 	{{range $m := $svc.Methods}}

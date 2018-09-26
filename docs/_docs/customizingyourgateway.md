@@ -7,6 +7,7 @@ order: 101
 # Customizing your gateway
 
 ## Message serialization
+### Custom serializer
 
 You might want to serialize request/response messages in MessagePack instead of JSON, for example.
 
@@ -19,6 +20,13 @@ You might want to serialize request/response messages in MessagePack instead of 
    ```
 
 You can see [the default implementation for JSON](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/marshal_jsonpb.go) for reference.
+
+### Using camelCase for JSON
+
+The protocol buffer compiler generates camelCase JSON tags that can be used with jsonpb package. By default jsonpb Marshaller uses `OrigName: true` which uses the exact case used in the proto files. To use camelCase for the JSON representation,
+   ```go
+   mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName:false}))
+   ```
 
 ## Mapping from HTTP request headers to gRPC client metadata
 You might not like [the default mapping rule](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#DefaultHeaderMatcher) and might want to pass through all the HTTP headers, for example.
