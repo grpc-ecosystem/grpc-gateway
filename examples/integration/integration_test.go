@@ -948,12 +948,12 @@ func testABERepeated(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg gw.ABitOfEverythingRepeated
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
+	var got gw.ABitOfEverythingRepeated
+	if err := jsonpb.UnmarshalString(string(buf), &got); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
-	if got := msg; !reflect.DeepEqual(got, want) {
+	if !reflect.DeepEqual(got, want) {
 		t.Errorf("msg= %v; want %v", &got, &want)
 	}
 }
