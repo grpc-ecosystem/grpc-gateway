@@ -72,7 +72,7 @@ env:
     - GO_VERSION_TO_DIFF_TEST="go version go1\.10\.[0-9]\+ linux/amd64"
     - BAZEL_VERSION=0.12.0
     - NODE_VERSION=v6.1
-    - PROTOC_VERSION=3.6.1
+    - PROTOC_VERSION=3.1.0
     - SWAGGER_CODEGEN_VERSION=2.2.2
   matrix:
     - GATEWAY_PLUGIN_FLAGS=
