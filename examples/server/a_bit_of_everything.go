@@ -4,9 +4,8 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"sync"
-
 	"strings"
+	"sync"
 
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"

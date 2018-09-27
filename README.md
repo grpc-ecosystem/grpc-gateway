@@ -5,7 +5,9 @@
 grpc-gateway is a plugin of [protoc](http://github.com/google/protobuf).
 It reads [gRPC](http://github.com/grpc/grpc-common) service definition,
 and generates a reverse-proxy server which translates a RESTful JSON API into gRPC.
-This server is generated according to [custom options](https://cloud.google.com/service-management/reference/rpc/google.api#http) in your gRPC definition.
+This server is generated according to the
+[`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46)
+annotation in your gRPC service definition.
 
 It helps you to provide your APIs in both gRPC and RESTful style at the same time.
 
@@ -20,7 +22,7 @@ However, you might still want to provide a traditional RESTful API as well. Reas
 This project aims to provide that HTTP+JSON interface to your gRPC service. A small amount of configuration in your service to attach HTTP semantics is all that's needed to generate a reverse-proxy with this library.
 
 ## Installation
-First you need to install ProtocolBuffers 3.0.0-beta-3 or later.
+First you need to install ProtocolBuffers 3.0.0 or later.
 
 ```sh
 mkdir tmp
@@ -59,7 +61,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      rpc Echo(StringMessage) returns (StringMessage) {}
    }
    ```
-2. Add a [custom option](https://cloud.google.com/service-management/reference/rpc/google.api#http) to the .proto file
+2. Add a [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46) to your .proto file
    
    your_service.proto:
    ```diff
@@ -83,7 +85,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
     }
    ```
 
-   If you do not want to modify the proto file for use with grpc-gateway you can alternatively use an external [gRPC API Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file. [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/grpcapiconfiguration.html) for more information.
+   If you do not want to modify the proto file for use with grpc-gateway you can alternatively use an external [gRPC Service Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file. [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/grpcapiconfiguration.html) for more information.
 
 3. Generate gRPC stub
    
