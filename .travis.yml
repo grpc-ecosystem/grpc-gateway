@@ -38,15 +38,6 @@ before_script:
   - test "${USE_BAZEL}" = true ||
     (cd examples/browser && npm install)
 script:
-  # Make sure examples of generated files are up-to-date
-  - test "${USE_BAZEL}" = true ||
-    (make realclean && make examples SWAGGER_CODEGEN="java -jar $HOME/local/swagger-codegen-cli.jar")
-  - if [ -z "${USE_BAZEL}" ] &&
-    (go version | grep -q "${GO_VERSION_TO_DIFF_TEST}") &&
-    [ -z "${GATEWAY_PLUGIN_FLAGS}" ]; then
-      test -z "$(git status --porcelain)" || (git status; git diff; exit 1);
-    fi
-
   # Unit tests, integration tests and code health checks
   - test "${USE_BAZEL}" = true ||
     env GLOG_logtostderr=1 go test -race -v github.com/grpc-ecosystem/grpc-gateway/...
