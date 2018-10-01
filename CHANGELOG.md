@@ -1,11 +1,39 @@
 # Change Log
 
+## [v1.5.1](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.5.1) (2018-10-01)
+[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.5.0...v1.5.1)
+
+**Implemented enhancements:**
+
+- protobuf well known types aren't represented in swagger output correctly [\#160](https://github.com/grpc-ecosystem/grpc-gateway/issues/160)
+
+**Fixed bugs:**
+
+- URLs using verb no longer work after upgrading to v1.5.0 [\#760](https://github.com/grpc-ecosystem/grpc-gateway/issues/760)
+- protoc-gen-swagger doesn't generate any request objects for GET/DELETE [\#747](https://github.com/grpc-ecosystem/grpc-gateway/issues/747)
+
+**Closed issues:**
+
+- how to get proper fields name for method [\#745](https://github.com/grpc-ecosystem/grpc-gateway/issues/745)
+- Make a new release [\#733](https://github.com/grpc-ecosystem/grpc-gateway/issues/733)
+- how to provide interface type inside proto for grpc-gateway [\#723](https://github.com/grpc-ecosystem/grpc-gateway/issues/723)
+- Is there any way we can remove fields from the response json in grpc-gateway? [\#710](https://github.com/grpc-ecosystem/grpc-gateway/issues/710)
+- How to write tests for the gateway? [\#699](https://github.com/grpc-ecosystem/grpc-gateway/issues/699)
+- protoc-gen-swagger: No comments for path parameters [\#694](https://github.com/grpc-ecosystem/grpc-gateway/issues/694)
+- Can you differentiate between an empty map vs field not provided? [\#552](https://github.com/grpc-ecosystem/grpc-gateway/issues/552)
+
+**Merged pull requests:**
+
+- Revert \#708 since it breaks backwards compatibility [\#761](https://github.com/grpc-ecosystem/grpc-gateway/pull/761) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Update README.md [\#757](https://github.com/grpc-ecosystem/grpc-gateway/pull/757) ([wora](https://github.com/wora))
+- Added camelCase Example [\#751](https://github.com/grpc-ecosystem/grpc-gateway/pull/751) ([srikrsna](https://github.com/srikrsna))
+- Add more guidance to issue template [\#750](https://github.com/grpc-ecosystem/grpc-gateway/pull/750) ([johanbrandhorst](https://github.com/johanbrandhorst))
+
 ## [v1.5.0](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.5.0) (2018-09-09)
 [Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.4.1...v1.5.0)
 
 **Fixed bugs:**
 
-- 404s using colons in the middle of the last path segment [\#224](https://github.com/grpc-ecosystem/grpc-gateway/issues/224)
 - forwarding binary metadata is broken [\#218](https://github.com/grpc-ecosystem/grpc-gateway/issues/218)
 
 **Closed issues:**
@@ -42,6 +70,7 @@
 
 **Merged pull requests:**
 
+- Generate release notes for v1.5.0 [\#749](https://github.com/grpc-ecosystem/grpc-gateway/pull/749) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Add missing modules to browser example [\#743](https://github.com/grpc-ecosystem/grpc-gateway/pull/743) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Added support for path param repeated fields [\#742](https://github.com/grpc-ecosystem/grpc-gateway/pull/742) ([maros7](https://github.com/maros7))
 - Add support for enum path parameters [\#738](https://github.com/grpc-ecosystem/grpc-gateway/pull/738) ([maros7](https://github.com/maros7))
