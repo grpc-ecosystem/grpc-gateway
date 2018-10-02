@@ -694,7 +694,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 
 				methProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method")
-				desc := ""
+				desc := "A successful response."
 				var responseSchema swaggerSchemaObject
 
 				if b.ResponseBody == nil || len(b.ResponseBody.FieldPath) == 0 {
