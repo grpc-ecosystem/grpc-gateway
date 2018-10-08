@@ -28,7 +28,7 @@
         "operationId": "CreateBody",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
@@ -72,7 +72,7 @@
         "operationId": "Echo",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
             }
@@ -122,7 +122,7 @@
         "operationId": "GetQuery",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
@@ -376,7 +376,7 @@
         "operationId": "Create",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
@@ -543,7 +543,7 @@
         "operationId": "DeepPathEcho",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
@@ -592,7 +592,7 @@
         "operationId": "Lookup",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
@@ -630,7 +630,7 @@
         "operationId": "Delete",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
@@ -677,7 +677,7 @@
         "operationId": "Update",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
@@ -725,7 +725,7 @@
         "operationId": "GetRepeatedQuery",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverythingRepeated"
             }
@@ -956,7 +956,7 @@
         "operationId": "Echo3",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
             }
@@ -1006,7 +1006,7 @@
         "operationId": "Echo2",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
             }
@@ -1060,7 +1060,7 @@
         "operationId": "Empty",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
@@ -1092,7 +1092,7 @@
         "operationId": "ErrorWithDetails",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
@@ -1124,7 +1124,7 @@
         "operationId": "PostWithEmptyBody",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
@@ -1172,7 +1172,7 @@
         "operationId": "Timeout",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }
@@ -1204,7 +1204,7 @@
         "operationId": "GetMessageWithBody",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/protobufEmpty"
             }

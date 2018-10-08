@@ -7,11 +7,6 @@
   revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
 
 [[projects]]
-  name = "github.com/go-resty/resty"
-  packages = ["."]
-  revision = "f8815663de1e64d57cdd4ee9e2b2fa96977a030e"
-
-[[projects]]
   name = "github.com/golang/glog"
   packages = ["."]
   revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
@@ -35,7 +30,8 @@
     "ptypes/timestamp",
     "ptypes/wrappers"
   ]
-  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
+  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
+  version = "v1.2.0"
 
 [[projects]]
   name = "github.com/rogpeppe/fastuuid"
@@ -52,10 +48,15 @@
     "idna",
     "internal/timeseries",
     "lex/httplex",
-    "publicsuffix",
     "trace"
   ]
   revision = "640f4622ab692b87c2f3a94265e6f579fe38263d"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "4497e2df6f9e69048a54498c7affbbec3294ad47"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -99,9 +100,13 @@
     "credentials",
     "encoding",
     "encoding/proto",
-    "grpclb/grpc_lb_v1/messages",
     "grpclog",
     "internal",
+    "internal/backoff",
+    "internal/channelz",
+    "internal/envconfig",
+    "internal/grpcrand",
+    "internal/transport",
     "keepalive",
     "metadata",
     "naming",
@@ -111,10 +116,10 @@
     "resolver/passthrough",
     "stats",
     "status",
-    "tap",
-    "transport"
+    "tap"
   ]
-  revision = "d11072e7ca9811b1100b80ca0269ac831f06d024"
+  revision = "8dea3dc473e90c8179e519d91302d0597c0ca1d1"
+  version = "v1.15.0"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -124,6 +129,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e3a3d005ebf93db02b6c7ddc886adc39342b492105fc1b6c4d0c362a43e6adf6"
+  inputs-digest = "0dd0ca75836585a54ff3360a296ab4662996a8fa23ea798a597a6cafd796f40a"
   solver-name = "gps-cdcl"
   solver-version = 1

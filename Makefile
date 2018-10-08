@@ -117,7 +117,7 @@ RESPONSE_BODY_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/responsebody/api_client.go \
 		 $(EXAMPLE_CLIENT_DIR)/responsebody/response_body_service_api.go
 
 EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS)
-SWAGGER_CODEGEN=swagger-codegen
+SWAGGER_CODEGEN=java -jar /Users/dsavints/local/swagger-codegen-cli.jar
 
 PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
 

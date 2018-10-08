@@ -36,7 +36,7 @@ func (m *StreamError) Reset()         { *m = StreamError{} }
 func (m *StreamError) String() string { return proto.CompactTextString(m) }
 func (*StreamError) ProtoMessage()    {}
 func (*StreamError) Descriptor() ([]byte, []int) {
-	return fileDescriptor_stream_chunk_6adb10b40700458b, []int{0}
+	return fileDescriptor_stream_chunk_72eb5044e9af9066, []int{0}
 }
 func (m *StreamError) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StreamError.Unmarshal(m, b)
@@ -96,10 +96,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("runtime/internal/stream_chunk.proto", fileDescriptor_stream_chunk_6adb10b40700458b)
+	proto.RegisterFile("runtime/internal/stream_chunk.proto", fileDescriptor_stream_chunk_72eb5044e9af9066)
 }
 
-var fileDescriptor_stream_chunk_6adb10b40700458b = []byte{
+var fileDescriptor_stream_chunk_72eb5044e9af9066 = []byte{
 	// 226 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x34, 0x90, 0xc1, 0x4e, 0x84, 0x30,
 	0x10, 0x86, 0x83, 0xeb, 0xba, 0xbb, 0xc3, 0x8d, 0xec, 0xa1, 0xea, 0x41, 0xa2, 0x17, 0x4e, 0x25,

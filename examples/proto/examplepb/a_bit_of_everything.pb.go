@@ -54,7 +54,7 @@ func (x NumericEnum) String() string {
 	return proto.EnumName(NumericEnum_name, int32(x))
 }
 func (NumericEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_34defd096f52c726, []int{0}
+	return fileDescriptor_a_bit_of_everything_7c7816b5eb73ac38, []int{0}
 }
 
 // DeepEnum is one or zero.
@@ -80,7 +80,7 @@ func (x ABitOfEverything_Nested_DeepEnum) String() string {
 	return proto.EnumName(ABitOfEverything_Nested_DeepEnum_name, int32(x))
 }
 func (ABitOfEverything_Nested_DeepEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_34defd096f52c726, []int{0, 0, 0}
+	return fileDescriptor_a_bit_of_everything_7c7816b5eb73ac38, []int{0, 0, 0}
 }
 
 // Intentionaly complicated message type to cover many features of Protobuf.
@@ -128,7 +128,7 @@ func (m *ABitOfEverything) Reset()         { *m = ABitOfEverything{} }
 func (m *ABitOfEverything) String() string { return proto.CompactTextString(m) }
 func (*ABitOfEverything) ProtoMessage()    {}
 func (*ABitOfEverything) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_34defd096f52c726, []int{0}
+	return fileDescriptor_a_bit_of_everything_7c7816b5eb73ac38, []int{0}
 }
 func (m *ABitOfEverything) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ABitOfEverything.Unmarshal(m, b)
@@ -466,7 +466,7 @@ func (m *ABitOfEverything_Nested) Reset()         { *m = ABitOfEverything_Nested
 func (m *ABitOfEverything_Nested) String() string { return proto.CompactTextString(m) }
 func (*ABitOfEverything_Nested) ProtoMessage()    {}
 func (*ABitOfEverything_Nested) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_34defd096f52c726, []int{0, 0}
+	return fileDescriptor_a_bit_of_everything_7c7816b5eb73ac38, []int{0, 0}
 }
 func (m *ABitOfEverything_Nested) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ABitOfEverything_Nested.Unmarshal(m, b)
@@ -535,7 +535,7 @@ func (m *ABitOfEverythingRepeated) Reset()         { *m = ABitOfEverythingRepeat
 func (m *ABitOfEverythingRepeated) String() string { return proto.CompactTextString(m) }
 func (*ABitOfEverythingRepeated) ProtoMessage()    {}
 func (*ABitOfEverythingRepeated) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_34defd096f52c726, []int{1}
+	return fileDescriptor_a_bit_of_everything_7c7816b5eb73ac38, []int{1}
 }
 func (m *ABitOfEverythingRepeated) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ABitOfEverythingRepeated.Unmarshal(m, b)
@@ -678,7 +678,7 @@ func (m *Body) Reset()         { *m = Body{} }
 func (m *Body) String() string { return proto.CompactTextString(m) }
 func (*Body) ProtoMessage()    {}
 func (*Body) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_34defd096f52c726, []int{2}
+	return fileDescriptor_a_bit_of_everything_7c7816b5eb73ac38, []int{2}
 }
 func (m *Body) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Body.Unmarshal(m, b)
@@ -717,7 +717,7 @@ func (m *MessageWithBody) Reset()         { *m = MessageWithBody{} }
 func (m *MessageWithBody) String() string { return proto.CompactTextString(m) }
 func (*MessageWithBody) ProtoMessage()    {}
 func (*MessageWithBody) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a_bit_of_everything_34defd096f52c726, []int{3}
+	return fileDescriptor_a_bit_of_everything_7c7816b5eb73ac38, []int{3}
 }
 func (m *MessageWithBody) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessageWithBody.Unmarshal(m, b)
@@ -1414,10 +1414,10 @@ var _AnotherServiceWithNoBindings_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("examples/proto/examplepb/a_bit_of_everything.proto", fileDescriptor_a_bit_of_everything_34defd096f52c726)
+	proto.RegisterFile("examples/proto/examplepb/a_bit_of_everything.proto", fileDescriptor_a_bit_of_everything_7c7816b5eb73ac38)
 }
 
-var fileDescriptor_a_bit_of_everything_34defd096f52c726 = []byte{
+var fileDescriptor_a_bit_of_everything_7c7816b5eb73ac38 = []byte{
 	// 2708 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x59, 0x5f, 0x73, 0x1b, 0x57,
 	0x15, 0xf7, 0x6a, 0x65, 0xc5, 0x3e, 0xb6, 0x6c, 0xf9, 0x3a, 0x71, 0x6c, 0xc5, 0xad, 0x6f, 0xd4,
