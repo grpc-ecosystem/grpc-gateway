@@ -34,7 +34,7 @@ go_repository(
 go_repository(
     name = "com_github_go_resty_resty",
     commit = "f8815663de1e64d57cdd4ee9e2b2fa96977a030e",
-    importpath = "github.com/go-resty/resty",
+    importpath = "gopkg.in/resty.v1",
 )
 
 # Also define in Gopkg.toml
