@@ -23,7 +23,7 @@
         "operationId": "Echo",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbSimpleMessage"
             }
@@ -50,7 +50,7 @@
         "operationId": "Echo2",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbSimpleMessage"
             }
@@ -130,7 +130,7 @@
         "operationId": "Echo3",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbSimpleMessage"
             }
@@ -210,7 +210,7 @@
         "operationId": "Echo4",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbSimpleMessage"
             }
@@ -284,7 +284,7 @@
         "operationId": "Echo5",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbSimpleMessage"
             }
@@ -357,7 +357,7 @@
         "operationId": "EchoBody",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbSimpleMessage"
             }
@@ -384,7 +384,7 @@
         "operationId": "EchoDelete",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbSimpleMessage"
             }
