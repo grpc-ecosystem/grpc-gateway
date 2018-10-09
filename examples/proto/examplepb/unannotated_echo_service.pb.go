@@ -37,9 +37,9 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 // UnannotatedSimpleMessage represents a simple message sent to the unannotated Echo service.
 type UnannotatedSimpleMessage struct {
 	// Id represents the message identifier.
-	Id                   string             `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Num                  int64              `protobuf:"varint,2,opt,name=num,proto3" json:"num,omitempty"`
-	Duration             *duration.Duration `protobuf:"bytes,3,opt,name=duration,proto3" json:"duration,omitempty"`
+	Id                   string             `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
+	Num                  int64              `protobuf:"varint,2,opt,name=num" json:"num,omitempty"`
+	Duration             *duration.Duration `protobuf:"bytes,3,opt,name=duration" json:"duration,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
 	XXX_unrecognized     []byte             `json:"-"`
 	XXX_sizecache        int32              `json:"-"`
@@ -102,9 +102,8 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// UnannotatedEchoServiceClient is the client API for UnannotatedEchoService service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+// Client API for UnannotatedEchoService service
+
 type UnannotatedEchoServiceClient interface {
 	// Echo method receives a simple message and returns it.
 	//
@@ -127,7 +126,7 @@ func NewUnannotatedEchoServiceClient(cc *grpc.ClientConn) UnannotatedEchoService
 
 func (c *unannotatedEchoServiceClient) Echo(ctx context.Context, in *UnannotatedSimpleMessage, opts ...grpc.CallOption) (*UnannotatedSimpleMessage, error) {
 	out := new(UnannotatedSimpleMessage)
-	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.UnannotatedEchoService/Echo", in, out, opts...)
+	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.UnannotatedEchoService/Echo", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +135,7 @@ func (c *unannotatedEchoServiceClient) Echo(ctx context.Context, in *Unannotated
 
 func (c *unannotatedEchoServiceClient) EchoBody(ctx context.Context, in *UnannotatedSimpleMessage, opts ...grpc.CallOption) (*UnannotatedSimpleMessage, error) {
 	out := new(UnannotatedSimpleMessage)
-	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.UnannotatedEchoService/EchoBody", in, out, opts...)
+	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.UnannotatedEchoService/EchoBody", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -145,14 +144,15 @@ func (c *unannotatedEchoServiceClient) EchoBody(ctx context.Context, in *Unannot
 
 func (c *unannotatedEchoServiceClient) EchoDelete(ctx context.Context, in *UnannotatedSimpleMessage, opts ...grpc.CallOption) (*UnannotatedSimpleMessage, error) {
 	out := new(UnannotatedSimpleMessage)
-	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.UnannotatedEchoService/EchoDelete", in, out, opts...)
+	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.UnannotatedEchoService/EchoDelete", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// UnannotatedEchoServiceServer is the server API for UnannotatedEchoService service.
+// Server API for UnannotatedEchoService service
+
 type UnannotatedEchoServiceServer interface {
 	// Echo method receives a simple message and returns it.
 	//
