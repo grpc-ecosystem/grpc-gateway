@@ -127,8 +127,7 @@ generate: $(RUNTIME_GO)
 
 $(GO_PLUGIN):
 	dep ensure -vendor-only
-	go install ./vendor/$(GO_PLUGIN_PKG)
-	go build -o $@ $(GO_PLUGIN_PKG)
+	go build -o $@ ./vendor/$(GO_PLUGIN_PKG)
 
 $(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
 	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I $(GOPATH)/src/$(GO_PTYPES_ANY_PKG) -I. --go_out=$(PKGMAP):. $(RUNTIME_PROTO)
