@@ -2,21 +2,28 @@
 
 
 [[projects]]
+  digest = "1:2cd7915ab26ede7d95b8749e6b1f933f1c6d5398030684e6505940a10f31cfda"
   name = "github.com/ghodss/yaml"
   packages = ["."]
+  pruneopts = "UT"
   revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
 
 [[projects]]
+  digest = "1:5cae6c173646d9230aecf8074c171edb4fb9a37f074c5c89ba2fece20b6703b6"
   name = "github.com/go-resty/resty"
   packages = ["."]
+  pruneopts = "UT"
   revision = "f8815663de1e64d57cdd4ee9e2b2fa96977a030e"
 
 [[projects]]
+  digest = "1:1ba1d79f2810270045c328ae5d674321db34e3aae468eb4233883b473c5c0467"
   name = "github.com/golang/glog"
   packages = ["."]
+  pruneopts = "UT"
   revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
 
 [[projects]]
+  digest = "1:77303a120dcd145972685b3465e58e1a0910544fcb323ca24755e073c1ea6d2c"
   name = "github.com/golang/protobuf"
   packages = [
     "jsonpb",
@@ -33,16 +40,34 @@
     "ptypes/empty",
     "ptypes/struct",
     "ptypes/timestamp",
-    "ptypes/wrappers"
+    "ptypes/wrappers",
   ]
-  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
+  pruneopts = "UT"
+  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
+  version = "v1.2.0"
 
 [[projects]]
+  digest = "1:841fcba20c9b41a7519f3910b083d16be2c3479cc282859333fe07145c5b9a9a"
+  name = "github.com/opentracing/opentracing-go"
+  packages = [
+    ".",
+    "ext",
+    "log",
+    "mocktracer",
+  ]
+  pruneopts = "UT"
+  revision = "1949ddbfd147afd4d964a9f00b24eb291e0e7c38"
+  version = "v1.0.2"
+
+[[projects]]
+  digest = "1:d673e95129a1107bfd04e093751a5e1267faabc27d218d824fb013f57ac08f55"
   name = "github.com/rogpeppe/fastuuid"
   packages = ["."]
+  pruneopts = "UT"
   revision = "6724a57986aff9bff1a1770e9347036def7c89f6"
 
 [[projects]]
+  digest = "1:1e482b1582e7b97950f868d6a9d164571f081808a9b3dd353bb03ea120c4c1c0"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -53,11 +78,21 @@
     "internal/timeseries",
     "lex/httplex",
     "publicsuffix",
-    "trace"
+    "trace",
   ]
+  pruneopts = "UT"
   revision = "640f4622ab692b87c2f3a94265e6f579fe38263d"
 
 [[projects]]
+  branch = "master"
+  digest = "1:c2789211d4035eb0843b85958ecf7cb4a5ea91c2d4decee652c94ce898e433cb"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  pruneopts = "UT"
+  revision = "4497e2df6f9e69048a54498c7affbbec3294ad47"
+
+[[projects]]
+  digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -73,21 +108,25 @@
     "unicode/bidi",
     "unicode/cldr",
     "unicode/norm",
-    "unicode/rangetable"
+    "unicode/rangetable",
   ]
+  pruneopts = "UT"
   revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
 
 [[projects]]
+  digest = "1:46be2f6b4d4e4b89f8102668902e68013234da1684fc78da602da95e745f285d"
   name = "google.golang.org/genproto"
   packages = [
     "googleapis/api/annotations",
     "googleapis/rpc/errdetails",
     "googleapis/rpc/status",
-    "protobuf/field_mask"
+    "protobuf/field_mask",
   ]
+  pruneopts = "UT"
   revision = "383e8b2c3b9e36c4076b235b32537292176bae20"
 
 [[projects]]
+  digest = "1:ab8e92d746fb5c4c18846b0879842ac8e53b3d352449423d0924a11f1020ae1b"
   name = "google.golang.org/grpc"
   packages = [
     ".",
@@ -99,9 +138,13 @@
     "credentials",
     "encoding",
     "encoding/proto",
-    "grpclb/grpc_lb_v1/messages",
     "grpclog",
     "internal",
+    "internal/backoff",
+    "internal/channelz",
+    "internal/envconfig",
+    "internal/grpcrand",
+    "internal/transport",
     "keepalive",
     "metadata",
     "naming",
@@ -112,18 +155,53 @@
     "stats",
     "status",
     "tap",
-    "transport"
   ]
-  revision = "d11072e7ca9811b1100b80ca0269ac831f06d024"
+  pruneopts = "UT"
+  revision = "8dea3dc473e90c8179e519d91302d0597c0ca1d1"
+  version = "v1.15.0"
 
 [[projects]]
+  digest = "1:6570992c02a2137a20be83990a979b6fe892e20ecdc6b756449989b2a7efb8ae"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
+  pruneopts = "UT"
   revision = "eb3733d160e74a9c7e442f435eb3bea458e1d19f"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e3a3d005ebf93db02b6c7ddc886adc39342b492105fc1b6c4d0c362a43e6adf6"
+  input-imports = [
+    "github.com/ghodss/yaml",
+    "github.com/go-resty/resty",
+    "github.com/golang/glog",
+    "github.com/golang/protobuf/jsonpb",
+    "github.com/golang/protobuf/proto",
+    "github.com/golang/protobuf/protoc-gen-go",
+    "github.com/golang/protobuf/protoc-gen-go/descriptor",
+    "github.com/golang/protobuf/protoc-gen-go/generator",
+    "github.com/golang/protobuf/protoc-gen-go/plugin",
+    "github.com/golang/protobuf/ptypes",
+    "github.com/golang/protobuf/ptypes/any",
+    "github.com/golang/protobuf/ptypes/duration",
+    "github.com/golang/protobuf/ptypes/empty",
+    "github.com/golang/protobuf/ptypes/struct",
+    "github.com/golang/protobuf/ptypes/timestamp",
+    "github.com/golang/protobuf/ptypes/wrappers",
+    "github.com/opentracing/opentracing-go",
+    "github.com/opentracing/opentracing-go/ext",
+    "github.com/opentracing/opentracing-go/mocktracer",
+    "github.com/rogpeppe/fastuuid",
+    "golang.org/x/net/context",
+    "google.golang.org/genproto/googleapis/api/annotations",
+    "google.golang.org/genproto/googleapis/rpc/errdetails",
+    "google.golang.org/genproto/googleapis/rpc/status",
+    "google.golang.org/genproto/protobuf/field_mask",
+    "google.golang.org/grpc",
+    "google.golang.org/grpc/codes",
+    "google.golang.org/grpc/connectivity",
+    "google.golang.org/grpc/grpclog",
+    "google.golang.org/grpc/metadata",
+    "google.golang.org/grpc/status",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
