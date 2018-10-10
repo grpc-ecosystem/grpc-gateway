@@ -35,7 +35,7 @@ func (m *ResponseBodyIn) Reset()         { *m = ResponseBodyIn{} }
 func (m *ResponseBodyIn) String() string { return proto.CompactTextString(m) }
 func (*ResponseBodyIn) ProtoMessage()    {}
 func (*ResponseBodyIn) Descriptor() ([]byte, []int) {
-	return fileDescriptor_response_body_service_5010ebf28bf7b965, []int{0}
+	return fileDescriptor_response_body_service_a87347c4d2918612, []int{0}
 }
 func (m *ResponseBodyIn) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResponseBodyIn.Unmarshal(m, b)
@@ -73,7 +73,7 @@ func (m *ResponseBodyOut) Reset()         { *m = ResponseBodyOut{} }
 func (m *ResponseBodyOut) String() string { return proto.CompactTextString(m) }
 func (*ResponseBodyOut) ProtoMessage()    {}
 func (*ResponseBodyOut) Descriptor() ([]byte, []int) {
-	return fileDescriptor_response_body_service_5010ebf28bf7b965, []int{1}
+	return fileDescriptor_response_body_service_a87347c4d2918612, []int{1}
 }
 func (m *ResponseBodyOut) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResponseBodyOut.Unmarshal(m, b)
@@ -111,7 +111,7 @@ func (m *ResponseBodyOut_Response) Reset()         { *m = ResponseBodyOut_Respon
 func (m *ResponseBodyOut_Response) String() string { return proto.CompactTextString(m) }
 func (*ResponseBodyOut_Response) ProtoMessage()    {}
 func (*ResponseBodyOut_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_response_body_service_5010ebf28bf7b965, []int{1, 0}
+	return fileDescriptor_response_body_service_a87347c4d2918612, []int{1, 0}
 }
 func (m *ResponseBodyOut_Response) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResponseBodyOut_Response.Unmarshal(m, b)
@@ -217,10 +217,10 @@ var _ResponseBodyService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("examples/proto/examplepb/response_body_service.proto", fileDescriptor_response_body_service_5010ebf28bf7b965)
+	proto.RegisterFile("examples/proto/examplepb/response_body_service.proto", fileDescriptor_response_body_service_a87347c4d2918612)
 }
 
-var fileDescriptor_response_body_service_5010ebf28bf7b965 = []byte{
+var fileDescriptor_response_body_service_a87347c4d2918612 = []byte{
 	// 257 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x32, 0x49, 0xad, 0x48, 0xcc,
 	0x2d, 0xc8, 0x49, 0x2d, 0xd6, 0x2f, 0x28, 0xca, 0x2f, 0xc9, 0xd7, 0x87, 0x72, 0x0b, 0x92, 0xf4,

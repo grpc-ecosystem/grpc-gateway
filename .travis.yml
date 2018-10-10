@@ -17,7 +17,7 @@ before_install:
   - test "${USE_BAZEL}" = true || (nvm install $NODE_VERSION && nvm use $NODE_VERSION && node --version)
   - test "${USE_BAZEL}" = true || go get github.com/golang/lint/golint
   - test "${USE_BAZEL}" = true || go get github.com/dghubble/sling
-  - test "${USE_BAZEL}" = true || go get github.com/go-resty/resty
+  - test "${USE_BAZEL}" = true || go get gopkg.in/resty.v1
   - test "${USE_BAZEL}" = true || curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 install:
   # Make sure externally referenced packages are go-gettable.
