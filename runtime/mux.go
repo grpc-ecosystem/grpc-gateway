@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/proto"
+	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -26,6 +28,7 @@ type ServeMux struct {
 	outgoingHeaderMatcher  HeaderMatcherFunc
 	metadataAnnotators     []func(context.Context, *http.Request) metadata.MD
 	protoErrorHandler      ProtoErrorHandlerFunc
+	tracer                 opentracing.Tracer
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -100,6 +103,19 @@ func WithProtoErrorHandler(fn ProtoErrorHandlerFunc) ServeMuxOption {
 	}
 }
 
+// WithTracer returns a ServeMuxOption for passing an opentracing implementation to the gateway.
+//
+// This can be used to propagate a traced HTTP request from the gateway to the gRPC
+// server. When this option is used, a new span will be attached to the parent
+// span. If a parent span cannot be found, a root span will be created instead.
+func WithTracer(tracer opentracing.Tracer) ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		if tracer != nil {
+			serveMux.tracer = tracer
+		}
+	}
+}
+
 // NewServeMux returns a new ServeMux whose internal mapping is empty.
 func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 	serveMux := &ServeMux{
@@ -144,6 +160,11 @@ func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 
 // ServeHTTP dispatches the request to the first handler whose pattern matches to r.Method and r.Path.
 func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if s.tracer != nil {
+		if span := ServeHTTPSpan(s.tracer, r); span != nil {
+			defer span.Finish()
+		}
+	}
 	ctx := r.Context()
 
 	path := r.URL.Path
@@ -241,6 +262,29 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	} else {
 		OtherErrorHandler(w, r, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
+}
+
+// ServeHTTPSpan a new span to the parent span, and creates an unparented one if empty.
+func ServeHTTPSpan(tracer opentracing.Tracer, r *http.Request) opentracing.Span {
+	if tracer == nil || r == nil {
+		return nil
+	}
+	parentSpanContext, err := tracer.Extract(
+		opentracing.HTTPHeaders,
+		opentracing.HTTPHeadersCarrier(r.Header),
+	)
+	if err == nil || err == opentracing.ErrSpanContextNotFound {
+		serverSpan := tracer.StartSpan(
+			"Serve HTTP",
+			ext.RPCServerOption(parentSpanContext),
+			opentracing.Tag{Key: string(ext.Component), Value: "gRPC Gateway"},
+			opentracing.Tag{Key: "http.url", Value: r.URL},
+			opentracing.Tag{Key: "http.method", Value: r.Method},
+		)
+		*r = *r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
+		return serverSpan
+	}
+	return nil
 }
 
 // GetForwardResponseOptions returns the ForwardResponseOptions associated with this ServeMux.

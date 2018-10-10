@@ -9,6 +9,8 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
+	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/mocktracer"
 )
 
 func TestMuxServeHTTP(t *testing.T) {
@@ -230,6 +232,50 @@ func TestMuxServeHTTP(t *testing.T) {
 			if got, want := w.Body.String(), spec.respContent; got != want {
 				t.Errorf("w.Body = %q; want %q; patterns=%v; req=%v", got, want, spec.patterns, r)
 			}
+		}
+	}
+}
+
+func TestServeHttpSpan(t *testing.T) {
+	for _, spec := range []struct {
+		tracer    opentracing.Tracer
+		reqMethod string
+		reqPath   string
+	}{
+		{
+			tracer: nil,
+		},
+		{
+			tracer:    mocktracer.New(),
+			reqMethod: http.MethodGet,
+			reqPath:   "/endpoint",
+		},
+	} {
+		req, err := http.NewRequest(spec.reqMethod, spec.reqPath, nil)
+		if err != nil {
+			t.Fatalf("unable to create test request: %v", err)
+		}
+		span := runtime.ServeHTTPSpan(spec.tracer, req)
+		if span == nil && spec.tracer != nil {
+			t.Fatal("unexpected nil span with non-nil tracer")
+		} else if span == nil {
+			return
+		}
+		mockspan, ok := span.(*mocktracer.MockSpan)
+		if !ok {
+			t.Fatal("unable to assert span as mocktracer.MockSpan")
+		}
+		if mockspan.OperationName != "Serve HTTP" {
+			t.Errorf("unexpected operation name in span: have %q; expected %q", mockspan.OperationName, "Serve HTTP")
+		}
+		if method := fmt.Sprintf("%s", mockspan.Tags()["http.method"]); method != spec.reqMethod {
+			t.Errorf("unexpected request method in span: have %q; expected %q", method, spec.reqMethod)
+		}
+		if path := fmt.Sprintf("%s", mockspan.Tags()["http.url"]); path != spec.reqPath {
+			t.Errorf("unexpected request path in span: have %s; expected %s", path, spec.reqPath)
+		}
+		if component := fmt.Sprintf("%s", mockspan.Tags()["component"]); component != "gRPC Gateway" {
+			t.Errorf("unexpected component in span: have %q; expected %q", component, "gRPC Gateway")
 		}
 	}
 }
