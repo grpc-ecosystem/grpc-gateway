@@ -19,7 +19,7 @@ import (
 	"reflect"
 	"strings"
 
-	resty "gopkg.in/resty.v1"
+	"gopkg.in/resty.v1"
 )
 
 type APIClient struct {
