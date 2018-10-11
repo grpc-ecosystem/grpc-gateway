@@ -527,7 +527,7 @@ func testABELookup(t *testing.T, port int) {
 		return
 	}
 
-	url = fmt.Sprintf("%s/%s", url, want.Uuid)
+	url = fmt.Sprintf("%s/%s/", url, want.Uuid)
 	resp, err := http.Get(url)
 	if err != nil {
 		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
@@ -606,7 +606,7 @@ func testABELookupNotFound(t *testing.T, port int) {
 }
 
 func testABEList(t *testing.T, port int) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/", port)
 	resp, err := http.Get(url)
 	if err != nil {
 		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
