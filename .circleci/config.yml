@@ -2,22 +2,20 @@ version: 2
 jobs:
   build:
     docker:
-      - image: "golang:latest"
+      - image: "jfbrandhorst/grpc-gateway-build-env"
     working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
     steps:
       - checkout
-      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: dep ensure --vendor-only
       - run: go build ./...
   test:
     docker:
-      - image: "golang:latest"
+      - image: "jfbrandhorst/grpc-gateway-build-env"
     working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
     environment:
       GLOG_logtostderr: "1"
     steps:
       - checkout
-      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: dep ensure --vendor-only
       - run: go test -race -coverprofile=coverage.txt ./...
       - run: bash <(curl -s https://codecov.io/bash)
@@ -27,6 +25,7 @@ jobs:
     working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
     steps:
       - checkout
+      - run: dep ensure --vendor-only
       - run: >
           . $HOME/.nvm/nvm.sh &&
           cd examples/browser &&
@@ -44,13 +43,12 @@ jobs:
       - run: git diff --exit-code
   lint:
     docker:
-      - image: "golang:latest"
+      - image: "jfbrandhorst/grpc-gateway-build-env"
     working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
     steps:
       - checkout
-      - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: dep ensure --vendor-only
-      - run: go get github.com/golang/lint/golint
+      - run: go get golang.org/x/lint/golint
       - run: make lint
   bazel_build:
     docker:
@@ -58,32 +56,14 @@ jobs:
     working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
     steps:
       - checkout
-      - run: >
-          bazel
-            --batch
-            --output_base=$HOME/.cache/_grpc_gateway_bazel
-            --host_jvm_args=-Xmx500m
-            --host_jvm_args=-Xms500m
-            build
-            --local_resources=400,1,1.0
-            //...
+      - run: bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m build --local_resources=400,1,1.0 //...
   bazel_test:
     docker:
       - image: "l.gcr.io/google/bazel:latest"
     working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
     steps:
       - checkout
-      - run: >
-          bazel
-            --batch
-            --output_base=$HOME/.cache/_grpc_gateway_bazel
-            --host_jvm_args=-Xmx500m
-            --host_jvm_args=-Xms500m
-            test
-            --local_resources=400,1,1.0
-            --test_output=errors
-            --features=race
-            //...
+      - run: bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m test --local_resources=400,1,1.0 --test_output=errors --features=race //...
 workflows:
   version: 2
   all:
