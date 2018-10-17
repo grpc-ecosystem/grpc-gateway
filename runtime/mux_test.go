@@ -233,3 +233,43 @@ func TestMuxServeHTTP(t *testing.T) {
 		}
 	}
 }
+
+var defaultHeaderMatcherTests = []struct {
+	name     string
+	in       string
+	outValue string
+	outValid bool
+}{
+	{
+		"permanent HTTP header should return prefixed",
+		"Accept",
+		"grpcgateway-Accept",
+		true,
+	},
+	{
+		"key prefixed with MetadataHeaderPrefix should return without the prefix",
+		"Grpc-Metadata-Custom-Header",
+		"Custom-Header",
+		true,
+	},
+	{
+		"non-permanent HTTP header key without prefix should not return",
+		"Custom-Header",
+		"",
+		false,
+	},
+}
+
+func TestDefaultHeaderMatcher(t *testing.T) {
+	for _, tt := range defaultHeaderMatcherTests {
+		t.Run(tt.name, func(t *testing.T) {
+			out, valid := runtime.DefaultHeaderMatcher(tt.in)
+			if out != tt.outValue {
+				t.Errorf("got %v, want %v", out, tt.outValue)
+			}
+			if valid != tt.outValid {
+				t.Errorf("got %v, want %v", valid, tt.outValid)
+			}
+		})
+	}
+}
