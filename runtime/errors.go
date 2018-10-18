@@ -7,6 +7,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/any"
+	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
@@ -85,6 +86,8 @@ func (*errorBody) ProtoMessage()    {}
 //
 // The response body returned by this function is a JSON object,
 // which contains a member whose key is "error" and whose value is err.Error().
+
+
 func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, _ *http.Request, err error) {
 	const fallback = `{"error": "failed to marshal error message"}`
 
@@ -97,25 +100,43 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 	}
 
 	body := &errorBody{
-		Error:   s.Message(),
-		Message: s.Message(),
-		Code:    int32(s.Code()),
-		Details: s.Proto().GetDetails(),
+		Error: s.Message(),
+		Code:  int32(s.Code()),
+	}
+
+
+	for _, detail := range s.Details() {
+		switch t := detail.(type) {
+		case proto.Message:
+			a, err := ptypes.MarshalAny(t)
+			if err != nil {
+				grpclog.Printf("Failed to marshal any: %v", err)
+			} else {
+				body.Details = append(body.Details, a)
+			}
+
+		//case *errdetails.BadRequest:
+		//	fmt.Println("Oops! Your request was rejected by the server.")
+		//	for _, violation := range t.GetFieldViolations() {
+		//		fmt.Printf("The %q field was wrong:\n", violation.GetField())
+		//		fmt.Printf("\t%s\n", violation.GetDescription())
+		//	}
+		}
 	}
 
 	buf, merr := marshaler.Marshal(body)
 	if merr != nil {
-		grpclog.Infof("Failed to marshal error message %q: %v", body, merr)
+		grpclog.Printf("Failed to marshal error message %q: %v", body, merr)
 		w.WriteHeader(http.StatusInternalServerError)
 		if _, err := io.WriteString(w, fallback); err != nil {
-			grpclog.Infof("Failed to write response: %v", err)
+			grpclog.Printf("Failed to write response: %v", err)
 		}
 		return
 	}
 
 	md, ok := ServerMetadataFromContext(ctx)
 	if !ok {
-		grpclog.Infof("Failed to extract ServerMetadata from context")
+		grpclog.Printf("Failed to extract ServerMetadata from context")
 	}
 
 	handleForwardResponseServerMetadata(w, mux, md)
@@ -123,7 +144,7 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 	st := HTTPStatusFromCode(s.Code())
 	w.WriteHeader(st)
 	if _, err := w.Write(buf); err != nil {
-		grpclog.Infof("Failed to write response: %v", err)
+		grpclog.Printf("Failed to write response: %v", err)
 	}
 
 	handleForwardResponseTrailer(w, md)
