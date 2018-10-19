@@ -4,11 +4,11 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetResponseBody**](ResponseBodyServiceApi.md#GetResponseBody) | **Get** /responsebody/{data} | 
+[**ResponseBodyServiceGetResponseBody**](ResponseBodyServiceApi.md#ResponseBodyServiceGetResponseBody) | **Get** /responsebody/{data} | 
 
 
-# **GetResponseBody**
-> ExamplepbResponseBodyOutResponse GetResponseBody($data)
+# **ResponseBodyServiceGetResponseBody**
+> ExamplepbResponseBodyOutResponse ResponseBodyServiceGetResponseBody($data)
 
 
 

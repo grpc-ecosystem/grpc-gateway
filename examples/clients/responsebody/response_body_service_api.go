@@ -43,7 +43,7 @@ func NewResponseBodyServiceApiWithBasePath(basePath string) *ResponseBodyService
  * @param data 
  * @return *ExamplepbResponseBodyOutResponse
  */
-func (a ResponseBodyServiceApi) GetResponseBody(data string) (*ExamplepbResponseBodyOutResponse, *APIResponse, error) {
+func (a ResponseBodyServiceApi) ResponseBodyServiceGetResponseBody(data string) (*ExamplepbResponseBodyOutResponse, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -84,7 +84,7 @@ func (a ResponseBodyServiceApi) GetResponseBody(data string) (*ExamplepbResponse
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "GetResponseBody", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ResponseBodyServiceGetResponseBody", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()

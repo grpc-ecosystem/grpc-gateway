@@ -17,7 +17,7 @@
   "paths": {
     "/v1/example/wrappers": {
       "post": {
-        "operationId": "Create",
+        "operationId": "WrappersService.Create",
         "responses": {
           "200": {
             "description": "A successful response.",

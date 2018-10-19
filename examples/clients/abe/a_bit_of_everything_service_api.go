@@ -62,7 +62,7 @@ func NewABitOfEverythingServiceApiWithBasePath(basePath string) *ABitOfEverythin
  * @param nestedPathEnumValue 
  * @return *ExamplepbABitOfEverything
  */
-func (a ABitOfEverythingServiceApi) Create(floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string) (*ExamplepbABitOfEverything, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) ABitOfEverythingServiceCreate(floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string) (*ExamplepbABitOfEverything, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -134,7 +134,7 @@ func (a ABitOfEverythingServiceApi) Create(floatValue float32, doubleValue float
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "Create", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceCreate", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -153,7 +153,7 @@ func (a ABitOfEverythingServiceApi) Create(floatValue float32, doubleValue float
  * @param body 
  * @return *ExamplepbABitOfEverything
  */
-func (a ABitOfEverythingServiceApi) CreateBody(body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) ABitOfEverythingServiceCreateBody(body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -209,7 +209,7 @@ func (a ABitOfEverythingServiceApi) CreateBody(body ExamplepbABitOfEverything) (
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "CreateBody", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceCreateBody", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -229,7 +229,7 @@ func (a ABitOfEverythingServiceApi) CreateBody(body ExamplepbABitOfEverything) (
  * @param body 
  * @return *ExamplepbABitOfEverything
  */
-func (a ABitOfEverythingServiceApi) DeepPathEcho(singleNestedName string, body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) ABitOfEverythingServiceDeepPathEcho(singleNestedName string, body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -286,7 +286,7 @@ func (a ABitOfEverythingServiceApi) DeepPathEcho(singleNestedName string, body E
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "DeepPathEcho", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceDeepPathEcho", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -305,7 +305,7 @@ func (a ABitOfEverythingServiceApi) DeepPathEcho(singleNestedName string, body E
  * @param uuid 
  * @return *ProtobufEmpty
  */
-func (a ABitOfEverythingServiceApi) Delete(uuid string) (*ProtobufEmpty, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) ABitOfEverythingServiceDelete(uuid string) (*ProtobufEmpty, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Delete")
 	// create path and map variables
@@ -355,7 +355,7 @@ func (a ABitOfEverythingServiceApi) Delete(uuid string) (*ProtobufEmpty, *APIRes
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "Delete", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceDelete", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -373,7 +373,7 @@ func (a ABitOfEverythingServiceApi) Delete(uuid string) (*ProtobufEmpty, *APIRes
  *
  * @return *ProtobufEmpty
  */
-func (a ABitOfEverythingServiceApi) ErrorWithDetails() (*ProtobufEmpty, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) ABitOfEverythingServiceErrorWithDetails() (*ProtobufEmpty, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -427,7 +427,7 @@ func (a ABitOfEverythingServiceApi) ErrorWithDetails() (*ProtobufEmpty, *APIResp
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "ErrorWithDetails", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceErrorWithDetails", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -447,7 +447,7 @@ func (a ABitOfEverythingServiceApi) ErrorWithDetails() (*ProtobufEmpty, *APIResp
  * @param body 
  * @return *ProtobufEmpty
  */
-func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body ExamplepbBody) (*ProtobufEmpty, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) ABitOfEverythingServiceGetMessageWithBody(id string, body ExamplepbBody) (*ProtobufEmpty, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -504,7 +504,7 @@ func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body Examplepb
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "GetMessageWithBody", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceGetMessageWithBody", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -549,7 +549,7 @@ func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body Examplepb
  * @param repeatedEnumValue repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
  * @return *ProtobufEmpty
  */
-func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName string, singleNestedAmount int64, singleNestedOk string, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, pathEnumValue string, nestedPathEnumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string) (*ProtobufEmpty, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) ABitOfEverythingServiceGetQuery(uuid string, singleNestedName string, singleNestedAmount int64, singleNestedOk string, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, pathEnumValue string, nestedPathEnumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string) (*ProtobufEmpty, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -621,7 +621,7 @@ func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName strin
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "GetQuery", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceGetQuery", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -655,7 +655,7 @@ func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName strin
  * @param pathRepeatedSint64Value 
  * @return *ExamplepbABitOfEverythingRepeated
  */
-func (a ABitOfEverythingServiceApi) GetRepeatedQuery(pathRepeatedFloatValue []float32, pathRepeatedDoubleValue []float64, pathRepeatedInt64Value []string, pathRepeatedUint64Value []string, pathRepeatedInt32Value []int32, pathRepeatedFixed64Value []string, pathRepeatedFixed32Value []int64, pathRepeatedBoolValue []bool, pathRepeatedStringValue []string, pathRepeatedBytesValue []string, pathRepeatedUint32Value []int64, pathRepeatedEnumValue []string, pathRepeatedSfixed32Value []int32, pathRepeatedSfixed64Value []string, pathRepeatedSint32Value []int32, pathRepeatedSint64Value []string) (*ExamplepbABitOfEverythingRepeated, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) ABitOfEverythingServiceGetRepeatedQuery(pathRepeatedFloatValue []float32, pathRepeatedDoubleValue []float64, pathRepeatedInt64Value []string, pathRepeatedUint64Value []string, pathRepeatedInt32Value []int32, pathRepeatedFixed64Value []string, pathRepeatedFixed32Value []int64, pathRepeatedBoolValue []bool, pathRepeatedStringValue []string, pathRepeatedBytesValue []string, pathRepeatedUint32Value []int64, pathRepeatedEnumValue []string, pathRepeatedSfixed32Value []int32, pathRepeatedSfixed64Value []string, pathRepeatedSint32Value []int32, pathRepeatedSint64Value []string) (*ExamplepbABitOfEverythingRepeated, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -725,7 +725,7 @@ func (a ABitOfEverythingServiceApi) GetRepeatedQuery(pathRepeatedFloatValue []fl
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "GetRepeatedQuery", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceGetRepeatedQuery", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -744,7 +744,7 @@ func (a ABitOfEverythingServiceApi) GetRepeatedQuery(pathRepeatedFloatValue []fl
  * @param uuid 
  * @return *ExamplepbABitOfEverything
  */
-func (a ABitOfEverythingServiceApi) Lookup(uuid string) (*ExamplepbABitOfEverything, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) ABitOfEverythingServiceLookup(uuid string) (*ExamplepbABitOfEverything, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -799,7 +799,7 @@ func (a ABitOfEverythingServiceApi) Lookup(uuid string) (*ExamplepbABitOfEveryth
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "Lookup", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceLookup", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -819,7 +819,7 @@ func (a ABitOfEverythingServiceApi) Lookup(uuid string) (*ExamplepbABitOfEveryth
  * @param body 
  * @return *ProtobufEmpty
  */
-func (a ABitOfEverythingServiceApi) PostWithEmptyBody(name string, body ExamplepbBody) (*ProtobufEmpty, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) ABitOfEverythingServicePostWithEmptyBody(name string, body ExamplepbBody) (*ProtobufEmpty, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -876,7 +876,7 @@ func (a ABitOfEverythingServiceApi) PostWithEmptyBody(name string, body Examplep
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "PostWithEmptyBody", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServicePostWithEmptyBody", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -894,7 +894,7 @@ func (a ABitOfEverythingServiceApi) PostWithEmptyBody(name string, body Examplep
  *
  * @return *ProtobufEmpty
  */
-func (a ABitOfEverythingServiceApi) Timeout() (*ProtobufEmpty, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) ABitOfEverythingServiceTimeout() (*ProtobufEmpty, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -948,7 +948,7 @@ func (a ABitOfEverythingServiceApi) Timeout() (*ProtobufEmpty, *APIResponse, err
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "Timeout", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceTimeout", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -968,7 +968,7 @@ func (a ABitOfEverythingServiceApi) Timeout() (*ProtobufEmpty, *APIResponse, err
  * @param body 
  * @return *ProtobufEmpty
  */
-func (a ABitOfEverythingServiceApi) Update(uuid string, body ExamplepbABitOfEverything) (*ProtobufEmpty, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) ABitOfEverythingServiceUpdate(uuid string, body ExamplepbABitOfEverything) (*ProtobufEmpty, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Put")
 	// create path and map variables
@@ -1025,7 +1025,7 @@ func (a ABitOfEverythingServiceApi) Update(uuid string, body ExamplepbABitOfEver
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "Update", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceUpdate", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()

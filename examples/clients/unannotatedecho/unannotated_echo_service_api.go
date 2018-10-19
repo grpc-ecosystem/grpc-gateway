@@ -44,7 +44,7 @@ func NewUnannotatedEchoServiceApiWithBasePath(basePath string) *UnannotatedEchoS
  * @param id Id represents the message identifier.
  * @return *ExamplepbUnannotatedSimpleMessage
  */
-func (a UnannotatedEchoServiceApi) Echo(id string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
+func (a UnannotatedEchoServiceApi) UnannotatedEchoServiceEcho(id string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -85,7 +85,7 @@ func (a UnannotatedEchoServiceApi) Echo(id string) (*ExamplepbUnannotatedSimpleM
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "Echo", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "UnannotatedEchoServiceEcho", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -107,7 +107,7 @@ func (a UnannotatedEchoServiceApi) Echo(id string) (*ExamplepbUnannotatedSimpleM
  * @param duration 
  * @return *ExamplepbUnannotatedSimpleMessage
  */
-func (a UnannotatedEchoServiceApi) Echo2(id string, num string, duration string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
+func (a UnannotatedEchoServiceApi) UnannotatedEchoServiceEcho2(id string, num string, duration string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -150,7 +150,7 @@ func (a UnannotatedEchoServiceApi) Echo2(id string, num string, duration string)
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "Echo2", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "UnannotatedEchoServiceEcho2", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -169,7 +169,7 @@ func (a UnannotatedEchoServiceApi) Echo2(id string, num string, duration string)
  * @param body 
  * @return *ExamplepbUnannotatedSimpleMessage
  */
-func (a UnannotatedEchoServiceApi) EchoBody(body ExamplepbUnannotatedSimpleMessage) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
+func (a UnannotatedEchoServiceApi) UnannotatedEchoServiceEchoBody(body ExamplepbUnannotatedSimpleMessage) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -211,7 +211,7 @@ func (a UnannotatedEchoServiceApi) EchoBody(body ExamplepbUnannotatedSimpleMessa
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "EchoBody", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "UnannotatedEchoServiceEchoBody", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -232,7 +232,7 @@ func (a UnannotatedEchoServiceApi) EchoBody(body ExamplepbUnannotatedSimpleMessa
  * @param duration 
  * @return *ExamplepbUnannotatedSimpleMessage
  */
-func (a UnannotatedEchoServiceApi) EchoDelete(id string, num string, duration string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
+func (a UnannotatedEchoServiceApi) UnannotatedEchoServiceEchoDelete(id string, num string, duration string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Delete")
 	// create path and map variables
@@ -275,7 +275,7 @@ func (a UnannotatedEchoServiceApi) EchoDelete(id string, num string, duration st
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "EchoDelete", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "UnannotatedEchoServiceEchoDelete", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()

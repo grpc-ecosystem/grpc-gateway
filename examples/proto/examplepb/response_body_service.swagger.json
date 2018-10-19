@@ -17,7 +17,7 @@
   "paths": {
     "/responsebody/{data}": {
       "get": {
-        "operationId": "GetResponseBody",
+        "operationId": "ResponseBodyService.GetResponseBody",
         "responses": {
           "200": {
             "description": "",

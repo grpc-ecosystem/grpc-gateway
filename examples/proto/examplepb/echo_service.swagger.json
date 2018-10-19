@@ -20,7 +20,7 @@
       "post": {
         "summary": "Echo method receives a simple message and returns it.",
         "description": "The message posted as the id parameter will also be\nreturned.",
-        "operationId": "Echo",
+        "operationId": "EchoService.Echo",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -47,7 +47,7 @@
       "get": {
         "summary": "Echo method receives a simple message and returns it.",
         "description": "The message posted as the id parameter will also be\nreturned.",
-        "operationId": "Echo2",
+        "operationId": "EchoService.Echo2",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -127,7 +127,7 @@
       "get": {
         "summary": "Echo method receives a simple message and returns it.",
         "description": "The message posted as the id parameter will also be\nreturned.",
-        "operationId": "Echo3",
+        "operationId": "EchoService.Echo3",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -207,7 +207,7 @@
       "get": {
         "summary": "Echo method receives a simple message and returns it.",
         "description": "The message posted as the id parameter will also be\nreturned.",
-        "operationId": "Echo4",
+        "operationId": "EchoService.Echo4",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -281,7 +281,7 @@
       "get": {
         "summary": "Echo method receives a simple message and returns it.",
         "description": "The message posted as the id parameter will also be\nreturned.",
-        "operationId": "Echo5",
+        "operationId": "EchoService.Echo5",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -354,7 +354,7 @@
     "/v1/example/echo_body": {
       "post": {
         "summary": "EchoBody method receives a simple message and returns it.",
-        "operationId": "EchoBody",
+        "operationId": "EchoService.EchoBody",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -381,7 +381,7 @@
     "/v1/example/echo_delete": {
       "delete": {
         "summary": "EchoDelete method receives a simple message and returns it.",
-        "operationId": "EchoDelete",
+        "operationId": "EchoService.EchoDelete",
         "responses": {
           "200": {
             "description": "A successful response.",

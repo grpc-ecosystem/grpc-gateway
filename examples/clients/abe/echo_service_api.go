@@ -44,7 +44,7 @@ func NewEchoServiceApiWithBasePath(basePath string) *EchoServiceApi {
  * @param value 
  * @return *SubStringMessage
  */
-func (a EchoServiceApi) Echo(value string) (*SubStringMessage, *APIResponse, error) {
+func (a EchoServiceApi) ABitOfEverythingServiceEcho(value string) (*SubStringMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -99,7 +99,7 @@ func (a EchoServiceApi) Echo(value string) (*SubStringMessage, *APIResponse, err
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "Echo", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceEcho", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -119,7 +119,7 @@ func (a EchoServiceApi) Echo(value string) (*SubStringMessage, *APIResponse, err
  * @param body 
  * @return *SubStringMessage
  */
-func (a EchoServiceApi) Echo2(body string) (*SubStringMessage, *APIResponse, error) {
+func (a EchoServiceApi) ABitOfEverythingServiceEcho2(body string) (*SubStringMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -175,7 +175,7 @@ func (a EchoServiceApi) Echo2(body string) (*SubStringMessage, *APIResponse, err
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "Echo2", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceEcho2", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
@@ -195,7 +195,7 @@ func (a EchoServiceApi) Echo2(body string) (*SubStringMessage, *APIResponse, err
  * @param value 
  * @return *SubStringMessage
  */
-func (a EchoServiceApi) Echo3(value string) (*SubStringMessage, *APIResponse, error) {
+func (a EchoServiceApi) ABitOfEverythingServiceEcho3(value string) (*SubStringMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -250,7 +250,7 @@ func (a EchoServiceApi) Echo3(value string) (*SubStringMessage, *APIResponse, er
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "Echo3", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "ABitOfEverythingServiceEcho3", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()

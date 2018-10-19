@@ -42,7 +42,7 @@ func NewCamelCaseServiceNameApiWithBasePath(basePath string) *CamelCaseServiceNa
  *
  * @return *ProtobufEmpty
  */
-func (a CamelCaseServiceNameApi) Empty() (*ProtobufEmpty, *APIResponse, error) {
+func (a CamelCaseServiceNameApi) CamelCaseServiceNameEmpty() (*ProtobufEmpty, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -96,7 +96,7 @@ func (a CamelCaseServiceNameApi) Empty() (*ProtobufEmpty, *APIResponse, error) {
 
 	var localVarURL, _ = url.Parse(localVarPath)
 	localVarURL.RawQuery = localVarQueryParams.Encode()
-	var localVarAPIResponse = &APIResponse{Operation: "Empty", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	var localVarAPIResponse = &APIResponse{Operation: "CamelCaseServiceNameEmpty", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
 	if localVarHttpResponse != nil {
 		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
 		localVarAPIResponse.Payload = localVarHttpResponse.Body()
