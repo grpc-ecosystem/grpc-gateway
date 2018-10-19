@@ -1,16 +1,16 @@
 # The gRPC-Gateway project is maintained by volunteers in their spare time. Please follow these troubleshooting steps before submitting an issue.
 
-- [ ] Check if your issue has already been reported (https://github.com/grpc-ecosystem/grpc-gateway/issues).
+- [ ] Check if your issue has already been reported (https://github.com/viettranx/grpc-gateway/issues).
 - [ ] Update your protoc to the [latest version](https://github.com/google/protobuf/releases).
 - [ ] Update your copy of the `grpc-gateway` library to the latest version from github:
   ```sh
-  go get -u github.com/grpc-ecosystem/grpc-gateway
+  go get -u github.com/viettranx/grpc-gateway
   ```
 - [ ] Delete the `protoc-gen-grpc-gateway` and `protoc-gen-swagger` binary from your `PATH`,
   and reinstall the latest versions:
   ```sh
-  go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-  go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+  go get -u github.com/viettranx/grpc-gateway/protoc-gen-grpc-gateway
+  go get -u github.com/viettranx/grpc-gateway/protoc-gen-swagger
   ```
   
 ## I still have a problem!

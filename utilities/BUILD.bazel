@@ -9,7 +9,7 @@ go_library(
         "pattern.go",
         "trie.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/utilities",
+    importpath = "github.com/viettranx/grpc-gateway/utilities",
 )
 
 go_test(

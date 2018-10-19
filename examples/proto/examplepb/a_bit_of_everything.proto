@@ -17,13 +17,13 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 		version: "1.0";
 		contact: {
 			name: "gRPC-Gateway project";
-			url: "https://github.com/grpc-ecosystem/grpc-gateway";
+			url: "https://github.com/viettranx/grpc-gateway";
 			email: "none@example.com";
 		};
 	};
 	// Overwriting host entry breaks tests, so this is not done here.
 	external_docs: {
-		url: "https://github.com/grpc-ecosystem/grpc-gateway";
+		url: "https://github.com/viettranx/grpc-gateway";
 		description: "More about gRPC-Gateway";
 	}
 	schemes: HTTP;
@@ -136,7 +136,7 @@ message ABitOfEverything {
 			required: ["uuid"]
 		}
 		external_docs: {
-			url: "https://github.com/grpc-ecosystem/grpc-gateway";
+			url: "https://github.com/viettranx/grpc-gateway";
 			description: "Find out more about ABitOfEverything";
 		}
 	};
@@ -242,7 +242,7 @@ service ABitOfEverythingService {
 	option (grpc.gateway.protoc_gen_swagger.options.openapiv2_tag) = {
 		description: "ABitOfEverythingService description -- which should not be used in place of the documentation comment!"
 		external_docs: {
-			url: "https://github.com/grpc-ecosystem/grpc-gateway";
+			url: "https://github.com/viettranx/grpc-gateway";
 			description: "Find out more about EchoService";
 		}
 	};
@@ -299,7 +299,7 @@ service ABitOfEverythingService {
 		option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
 			deprecated: true // For testing purposes.
 			external_docs: {
-				url: "https://github.com/grpc-ecosystem/grpc-gateway";
+				url: "https://github.com/viettranx/grpc-gateway";
 				description: "Find out more about GetQuery";
 			}
 			security: {
@@ -335,7 +335,7 @@ service ABitOfEverythingService {
 			tags: "echo service";
 			tags: "echo rpc";
 			external_docs: {
-				url: "https://github.com/grpc-ecosystem/grpc-gateway";
+				url: "https://github.com/viettranx/grpc-gateway";
 				description: "Find out more Echo";
 			}
 			responses: {

@@ -47,7 +47,7 @@ The following is equivalent to the basic [usage example](usage.html) but without
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/viettranx/grpc-gateway/third_party/googleapis \
      --go_out=plugins=grpc:. \
      path/to/your_service.proto
    ```
@@ -60,13 +60,13 @@ The following is equivalent to the basic [usage example](usage.html) but without
      ```sh
      protoc -I/usr/local/include -I. \
        -I$GOPATH/src \
-       -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+       -I$GOPATH/src/github.com/viettranx/grpc-gateway/third_party/googleapis \
        --ruby_out=. \
        path/to/your/service_proto
      
      protoc -I/usr/local/include -I. \
        -I$GOPATH/src \
-       -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+       -I$GOPATH/src/github.com/viettranx/grpc-gateway/third_party/googleapis \
        --plugin=protoc-gen-grpc=grpc_ruby_plugin \
        --grpc-ruby_out=. \
        path/to/your/service.proto
@@ -78,7 +78,7 @@ The following is equivalent to the basic [usage example](usage.html) but without
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/viettranx/grpc-gateway/third_party/googleapis \
      --grpc-gateway_out=logtostderr=true,grpc_api_configuration=path/to/your_service.yaml:. \
      path/to/your_service.proto
    ```
@@ -99,7 +99,7 @@ The following is equivalent to the basic [usage example](usage.html) but without
    
      "github.com/golang/glog"
      "golang.org/x/net/context"
-     "github.com/grpc-ecosystem/grpc-gateway/runtime"
+     "github.com/viettranx/grpc-gateway/runtime"
      "google.golang.org/grpc"
    	
      gw "path/to/your_service_package"
@@ -141,7 +141,7 @@ Swagger generation in this step is equivalent to gateway generation. Again pass 
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/viettranx/grpc-gateway/third_party/googleapis \
      --swagger_out=logtostderr=true,grpc_api_configuration=path/to/your_service.yaml:. \
      path/to/your_service.proto
    ```

@@ -3,8 +3,8 @@
 Thank you for your contribution to grpc-gateway.
 Here's the recommended process of contribution.
 
-1. `go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway`
-2. `cd $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway`
+1. `go get github.com/viettranx/grpc-gateway/protoc-gen-grpc-gateway`
+2. `cd $GOPATH/src/github.com/viettranx/grpc-gateway`
 3. hack, hack, hack...
 4. Make sure that your change follows best practices in Go
    * [Effective Go](https://golang.org/doc/effective_go.html)
@@ -24,8 +24,8 @@ All submissions, including submissions by project members, require review.
 Great, it should be as simple as thus (run from the root of the directory):
 
 ```bash
-$ docker run -v $(pwd):/go/src/github.com/grpc-ecosystem/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env \
-    /bin/bash -c 'cd /go/src/github.com/grpc-ecosystem/grpc-gateway && \
+$ docker run -v $(pwd):/go/src/github.com/viettranx/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env \
+    /bin/bash -c 'cd /go/src/github.com/viettranx/grpc-gateway && \
         make realclean && \
         make examples SWAGGER_CODEGEN="${SWAGGER_CODEGEN}"'
 ```

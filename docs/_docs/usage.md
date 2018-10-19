@@ -22,8 +22,8 @@ sudo make install
 Then, `go get -u` as usual the following packages:
 
 ```sh
-go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+go get -u github.com/viettranx/grpc-gateway/protoc-gen-grpc-gateway
+go get -u github.com/viettranx/grpc-gateway/protoc-gen-swagger
 go get -u github.com/golang/protobuf/protoc-gen-go
 ```
  
@@ -75,7 +75,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/viettranx/grpc-gateway/third_party/googleapis \
      --go_out=plugins=grpc:. \
      path/to/your_service.proto
    ```
@@ -88,13 +88,13 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
      ```sh
      protoc -I/usr/local/include -I. \
        -I$GOPATH/src \
-       -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+       -I$GOPATH/src/github.com/viettranx/grpc-gateway/third_party/googleapis \
        --ruby_out=. \
        path/to/your/service_proto
      
      protoc -I/usr/local/include -I. \
        -I$GOPATH/src \
-       -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+       -I$GOPATH/src/github.com/viettranx/grpc-gateway/third_party/googleapis \
        --plugin=protoc-gen-grpc=grpc_ruby_plugin \
        --grpc-ruby_out=. \
        path/to/your/service.proto
@@ -107,7 +107,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/viettranx/grpc-gateway/third_party/googleapis \
      --grpc-gateway_out=logtostderr=true:. \
      path/to/your_service.proto
    ```
@@ -128,7 +128,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    
      "github.com/golang/glog"
      "golang.org/x/net/context"
-     "github.com/grpc-ecosystem/grpc-gateway/runtime"
+     "github.com/viettranx/grpc-gateway/runtime"
      "google.golang.org/grpc"
    	
      gw "path/to/your_service_package"
@@ -168,7 +168,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```sh
    protoc -I/usr/local/include -I. \
      -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
+     -I$GOPATH/src/github.com/viettranx/grpc-gateway/third_party/googleapis \
      --swagger_out=logtostderr=true:. \
      path/to/your_service.proto
    ```
@@ -184,7 +184,7 @@ This parameter can be useful to pass request scoped context between the gateway 
 
 # Mapping gRPC to HTTP
 
-* [How gRPC error codes map to HTTP status codes in the response](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/errors.go#L15)
+* [How gRPC error codes map to HTTP status codes in the response](https://github.com/viettranx/grpc-gateway/blob/master/runtime/errors.go#L15)
 * HTTP request source IP is added as `X-Forwarded-For` gRPC request header
 * HTTP request host is added as `X-Forwarded-Host` gRPC request header
 * HTTP `Authorization` header is added as `authorization` gRPC request header

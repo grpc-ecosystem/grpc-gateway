@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: "jfbrandhorst/grpc-gateway-build-env"
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    working_directory: /go/src/github.com/viettranx/grpc-gateway
     steps:
       - checkout
       - run: dep ensure --vendor-only
@@ -11,7 +11,7 @@ jobs:
   test:
     docker:
       - image: "jfbrandhorst/grpc-gateway-build-env"
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    working_directory: /go/src/github.com/viettranx/grpc-gateway
     environment:
       GLOG_logtostderr: "1"
     steps:
@@ -22,7 +22,7 @@ jobs:
   node_test:
     docker:
       - image: "jfbrandhorst/grpc-gateway-build-env"
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    working_directory: /go/src/github.com/viettranx/grpc-gateway
     steps:
       - checkout
       - run: dep ensure --vendor-only
@@ -35,7 +35,7 @@ jobs:
   generate:
     docker:
       - image: "jfbrandhorst/grpc-gateway-build-env"
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    working_directory: /go/src/github.com/viettranx/grpc-gateway
     steps:
       - checkout
       - run: make realclean
@@ -44,7 +44,7 @@ jobs:
   lint:
     docker:
       - image: "jfbrandhorst/grpc-gateway-build-env"
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    working_directory: /go/src/github.com/viettranx/grpc-gateway
     steps:
       - checkout
       - run: dep ensure --vendor-only
@@ -53,14 +53,14 @@ jobs:
   bazel_build:
     docker:
       - image: "l.gcr.io/google/bazel:latest"
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    working_directory: /go/src/github.com/viettranx/grpc-gateway
     steps:
       - checkout
       - run: bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m build --local_resources=400,1,1.0 //...
   bazel_test:
     docker:
       - image: "l.gcr.io/google/bazel:latest"
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    working_directory: /go/src/github.com/viettranx/grpc-gateway
     steps:
       - checkout
       - run: bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m test --local_resources=400,1,1.0 --test_output=errors --features=race //...

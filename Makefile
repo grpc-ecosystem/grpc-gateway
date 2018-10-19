@@ -3,7 +3,7 @@
 # You don't have to rebuild these targets by yourself unless you develop
 # grpc-gateway itself.
 
-PKG=github.com/grpc-ecosystem/grpc-gateway
+PKG=github.com/viettranx/grpc-gateway
 GO_PLUGIN=bin/protoc-gen-go
 GO_PROTOBUF_REPO=github.com/golang/protobuf
 GO_PLUGIN_PKG=$(GO_PROTOBUF_REPO)/protoc-gen-go

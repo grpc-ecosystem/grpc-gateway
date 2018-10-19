@@ -11,6 +11,6 @@ go_library(
         "examplepb_unannotated_simple_message.go",
         "unannotated_echo_service_api.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/clients/unannotatedecho",
+    importpath = "github.com/viettranx/grpc-gateway/examples/clients/unannotatedecho",
     deps = ["@com_github_go_resty_resty//:go_default_library"],
 )

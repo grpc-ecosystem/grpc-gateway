@@ -18,10 +18,10 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
-	gw "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/pathenum"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	gw "github.com/viettranx/grpc-gateway/examples/proto/examplepb"
+	"github.com/viettranx/grpc-gateway/examples/proto/pathenum"
+	"github.com/viettranx/grpc-gateway/examples/proto/sub"
+	"github.com/viettranx/grpc-gateway/runtime"
 	"google.golang.org/grpc/codes"
 )
 

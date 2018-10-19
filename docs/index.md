@@ -20,8 +20,8 @@ To learn more about us check out our documentation on:
 
 
 # Contribution
-See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md).
+See [CONTRIBUTING.md](http://github.com/viettranx/grpc-gateway/blob/master/CONTRIBUTING.md).
 
 # License
 grpc-gateway is licensed under the BSD 3-Clause License.
-See [LICENSE.txt](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt) for more details.
+See [LICENSE.txt](https://github.com/viettranx/grpc-gateway/blob/master/LICENSE.txt) for more details.

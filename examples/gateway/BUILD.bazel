@@ -8,7 +8,7 @@ go_library(
         "handlers.go",
         "main.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/gateway",
+    importpath = "github.com/viettranx/grpc-gateway/examples/gateway",
     visibility = ["//visibility:public"],
     deps = [
         "//examples/proto/examplepb:go_default_library",

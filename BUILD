@@ -5,13 +5,13 @@ load("@bazel_gazelle//:def.bzl", "gazelle")
 gazelle(
     name = "gazelle_diff",
     mode = "diff",
-    prefix = "github.com/grpc-ecosystem/grpc-gateway",
+    prefix = "github.com/viettranx/grpc-gateway",
 )
 
 gazelle(
     name = "gazelle_fix",
     mode = "fix",
-    prefix = "github.com/grpc-ecosystem/grpc-gateway",
+    prefix = "github.com/viettranx/grpc-gateway",
 )
 
 package_group(

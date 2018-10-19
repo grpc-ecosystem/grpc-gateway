@@ -11,7 +11,7 @@ proto_library(
 
 go_proto_library(
     name = "internal_go_proto",
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/runtime/internal",
+    importpath = "github.com/viettranx/grpc-gateway/runtime/internal",
     proto = ":internal_proto",
     deps = ["@com_github_golang_protobuf//ptypes/any:go_default_library"],
 )
@@ -19,5 +19,5 @@ go_proto_library(
 go_library(
     name = "go_default_library",
     embed = [":internal_go_proto"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/runtime/internal",
+    importpath = "github.com/viettranx/grpc-gateway/runtime/internal",
 )

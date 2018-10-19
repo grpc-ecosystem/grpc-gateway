@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
+	examples "github.com/viettranx/grpc-gateway/examples/proto/examplepb"
 )
 
 // Implements of ResponseBodyServiceServer

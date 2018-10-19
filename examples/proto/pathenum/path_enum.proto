@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/examples/proto/pathenum";
+option go_package = "github.com/viettranx/grpc-gateway/examples/proto/pathenum";
 package grpc.gateway.examples.pathenum;
 
 enum PathEnum {

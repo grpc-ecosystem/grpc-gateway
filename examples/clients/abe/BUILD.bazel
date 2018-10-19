@@ -24,7 +24,7 @@ go_library(
         "protobuf_empty.go",
         "sub_string_message.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/clients/abe",
+    importpath = "github.com/viettranx/grpc-gateway/examples/clients/abe",
     deps = [
         "//examples/proto/examplepb:go_default_library",
         "//examples/proto/pathenum:go_default_library",
