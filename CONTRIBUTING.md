@@ -18,3 +18,16 @@ with us through the issue tracker.
 
 ### Code reviews
 All submissions, including submissions by project members, require review.
+
+### I want to regenerate the files after making changes!
+
+Great, it should be as simple as thus (run from the root of the directory):
+
+```bash
+$ docker run -v $(pwd):/go/src/github.com/grpc-ecosystem/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env \
+    /bin/bash -c 'cd /go/src/github.com/grpc-ecosystem/grpc-gateway && \
+        make realclean && \
+        make examples SWAGGER_CODEGEN="${SWAGGER_CODEGEN}"'
+```
+
+If this has resulted in some file changes in the repo, please ensure you check those in with your merge request.

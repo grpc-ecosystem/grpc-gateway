@@ -127,8 +127,7 @@ generate: $(RUNTIME_GO)
 
 $(GO_PLUGIN):
 	dep ensure -vendor-only
-	go install ./vendor/$(GO_PLUGIN_PKG)
-	go build -o $@ $(GO_PLUGIN_PKG)
+	go build -o $@ ./vendor/$(GO_PLUGIN_PKG)
 
 $(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
 	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I $(GOPATH)/src/$(GO_PTYPES_ANY_PKG) -I. --go_out=$(PKGMAP):. $(RUNTIME_PROTO)
@@ -199,7 +198,7 @@ changelog:
 				--compare-link \
 				--github-site=https://grpc-ecosystem.github.io/grpc-gateway \
 				--unreleased-label "**Next release**" \
-				--future-release=v1.5.0
+				--future-release=v1.5.1
 lint:
 	golint --set_exit_status $(PKG)/runtime
 	golint --set_exit_status $(PKG)/utilities/...
