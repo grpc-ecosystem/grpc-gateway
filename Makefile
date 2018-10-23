@@ -160,26 +160,22 @@ $(ECHO_EXAMPLE_SRCS): $(ECHO_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ECHO_EXAMPLE_SPEC) \
 	    -l go -o examples/clients/echo --additional-properties packageName=echo
 	@rm -f $(EXAMPLE_CLIENT_DIR)/echo/README.md \
-		$(EXAMPLE_CLIENT_DIR)/echo/git_push.sh \
-		$(EXAMPLE_CLIENT_DIR)/echo/.travis.yml
+		$(EXAMPLE_CLIENT_DIR)/echo/git_push.sh
 $(ABE_EXAMPLE_SRCS): $(ABE_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ABE_EXAMPLE_SPEC) \
 	    -l go -o examples/clients/abe --additional-properties packageName=abe
 	@rm -f $(EXAMPLE_CLIENT_DIR)/abe/README.md \
-		$(EXAMPLE_CLIENT_DIR)/abe/git_push.sh \
-		$(EXAMPLE_CLIENT_DIR)/abe/.travis.yml
+		$(EXAMPLE_CLIENT_DIR)/abe/git_push.sh
 $(UNANNOTATED_ECHO_EXAMPLE_SRCS): $(UNANNOTATED_ECHO_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(UNANNOTATED_ECHO_EXAMPLE_SPEC) \
 	    -l go -o examples/clients/unannotatedecho --additional-properties packageName=unannotatedecho
 	@rm -f $(EXAMPLE_CLIENT_DIR)/unannotatedecho/README.md \
-		$(EXAMPLE_CLIENT_DIR)/unannotatedecho/git_push.sh \
-		$(EXAMPLE_CLIENT_DIR)/unannotatedecho/.travis.yml
+		$(EXAMPLE_CLIENT_DIR)/unannotatedecho/git_push.sh
 $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(RESPONSE_BODY_EXAMPLE_SPEC) \
 	    -l go -o examples/clients/responsebody --additional-properties packageName=responsebody
 	@rm -f $(EXAMPLE_CLIENT_DIR)/responsebody/README.md \
-		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh \
-		$(EXAMPLE_CLIENT_DIR)/responsebody/.travis.yml
+		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh
 
 examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
 test: examples

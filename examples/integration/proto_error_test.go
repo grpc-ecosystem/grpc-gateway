@@ -133,7 +133,7 @@ func TestUnknownPathWithProtoError(t *testing.T) {
 	defer resp.Body.Close()
 	buf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success", err)
+		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
 		return
 	}
 
@@ -180,7 +180,7 @@ func TestMethodNotAllowedWithProtoError(t *testing.T) {
 	defer resp.Body.Close()
 	buf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		t.Errorf("iotuil.ReadAll(resp.Body) failed with %v; want success", err)
+		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
 		return
 	}
 
