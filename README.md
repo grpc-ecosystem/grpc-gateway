@@ -62,7 +62,6 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    }
    ```
 2. Add a [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46) to your .proto file
-
    your_service.proto:
    ```diff
     syntax = "proto3";
