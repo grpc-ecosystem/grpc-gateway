@@ -1,0 +1,77 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: "jfbrandhorst/grpc-gateway-build-env"
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    steps:
+      - checkout
+      - run: dep ensure --vendor-only
+      - run: go build ./...
+  test:
+    docker:
+      - image: "jfbrandhorst/grpc-gateway-build-env"
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    environment:
+      GLOG_logtostderr: "1"
+    steps:
+      - checkout
+      - run: dep ensure --vendor-only
+      - run: go test -race -coverprofile=coverage.txt ./...
+      - run: bash <(curl -s https://codecov.io/bash)
+  node_test:
+    docker:
+      - image: "jfbrandhorst/grpc-gateway-build-env"
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    steps:
+      - checkout
+      - run: dep ensure --vendor-only
+      - run: >
+          . $HOME/.nvm/nvm.sh &&
+          cd examples/browser &&
+          npm install gulp-cli &&
+          npm install &&
+          ./node_modules/.bin/gulp
+  generate:
+    docker:
+      - image: "jfbrandhorst/grpc-gateway-build-env"
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    steps:
+      - checkout
+      - run: make realclean
+      - run: make examples SWAGGER_CODEGEN="${SWAGGER_CODEGEN}" # Set in Docker image
+      - run: git diff --exit-code
+  lint:
+    docker:
+      - image: "jfbrandhorst/grpc-gateway-build-env"
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    steps:
+      - checkout
+      - run: dep ensure --vendor-only
+      - run: go get golang.org/x/lint/golint
+      - run: make lint
+  bazel_build:
+    docker:
+      - image: "l.gcr.io/google/bazel:latest"
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    steps:
+      - checkout
+      - run: bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m build --local_resources=400,1,1.0 //...
+  bazel_test:
+    docker:
+      - image: "l.gcr.io/google/bazel:latest"
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    steps:
+      - checkout
+      - run: bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel --host_jvm_args=-Xmx500m --host_jvm_args=-Xms500m test --local_resources=400,1,1.0 --test_output=errors --features=race //...
+workflows:
+  version: 2
+  all:
+    jobs:
+      - build
+      - test
+      - node_test
+      - generate
+      - lint
+      - bazel_build
+      - bazel_test

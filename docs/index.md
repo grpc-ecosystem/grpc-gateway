@@ -1,6 +1,6 @@
 # grpc-gateway
 
-[![Build Status](https://travis-ci.org/grpc-ecosystem/grpc-gateway.svg?branch=master)](https://travis-ci.org/grpc-ecosystem/grpc-gateway)
+[![CircleCI](https://circleci.com/gh/johanbrandhorst/grpc-gateway.svg?style=svg)](https://circleci.com/gh/johanbrandhorst/grpc-gateway)
 
 grpc-gateway is a plugin of [protoc](http://github.com/google/protobuf).
 It reads [gRPC](http://github.com/grpc/grpc-common) service definition,
