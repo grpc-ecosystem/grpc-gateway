@@ -7,6 +7,10 @@
       "name": "gRPC-Gateway project",
       "url": "https://github.com/grpc-ecosystem/grpc-gateway",
       "email": "none@example.com"
+    },
+    "license": {
+      "name": "BSD 3-Clause License",
+      "url": "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt"
     }
   },
   "schemes": [
