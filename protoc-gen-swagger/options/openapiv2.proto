@@ -89,7 +89,7 @@ message Info {
   string description = 2;
   string terms_of_service = 3;
   Contact contact = 4;
-  License license=5;
+  License license = 5;
   string version = 6;
 }
 
