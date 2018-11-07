@@ -1428,7 +1428,7 @@ func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Reg
 	ret.schemaCore = protoJSONSchemaToSwaggerSchemaCore(s.GetJsonSchema(), reg, refs)
 	updateSwaggerObjectFromJSONSchema(&ret, s.GetJsonSchema())
 
-	if s.Example != nil {
+	if s != nil && s.Example != nil {
 		ret.Example = string(s.Example.Value)
 	}
 
