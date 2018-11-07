@@ -50,23 +50,22 @@ jobs:
       - run: dep ensure --vendor-only
       - run: go get golang.org/x/lint/golint
       - run: make lint
-  bazel_build:
+  bazel_lint:
     docker:
       - image: l.gcr.io/google/bazel:latest
     working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
     steps:
       - checkout
-      - run: 'bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel run //:buildifier_check ||
+      - run: 'bazel --output_base=$HOME/.cache/_grpc_gateway_bazel run //:buildifier_check ||
               (echo "Bazel files not formatted, please run \`bazel run :buildifier\`"; exit 1)'
-      - run: bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel run //:gazelle_diff
-      - run: bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel build //...
+      - run: bazel --output_base=$HOME/.cache/_grpc_gateway_bazel run //:gazelle_diff
   bazel_test:
     docker:
       - image: l.gcr.io/google/bazel:latest
     working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
     steps:
       - checkout
-      - run: bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel test --test_output=errors --features=race //...
+      - run: bazel --output_base=$HOME/.cache/_grpc_gateway_bazel test --test_output=errors --features=race //...
   build_linux_release:
     docker:
       - image: jfbrandhorst/grpc-gateway-build-env
@@ -153,7 +152,7 @@ workflows:
       - node_test
       - generate
       - lint
-      - bazel_build
+      - bazel_lint
       - bazel_test
       - build_linux_release:
           filters:
