@@ -17,10 +17,10 @@ proto_library(
         "a_bit_of_everything.proto",
         "echo_service.proto",
         "flow_combination.proto",
+        "response_body_service.proto",
         "stream.proto",
         "unannotated_echo_service.proto",
         "wrappers.proto",
-        "response_body_service.proto",
     ],
     deps = [
         "//examples/proto/pathenum:pathenum_proto",

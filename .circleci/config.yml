@@ -56,6 +56,8 @@ jobs:
     working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
     steps:
       - checkout
+      - run: 'bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel run //:buildifier_check ||
+              (echo "Bazel files not formatted, please run \`bazel run :buildifier\`"; exit 1)'
       - run: bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel run //:gazelle_diff
       - run: bazel --batch --output_base=$HOME/.cache/_grpc_gateway_bazel build //...
   bazel_test:
