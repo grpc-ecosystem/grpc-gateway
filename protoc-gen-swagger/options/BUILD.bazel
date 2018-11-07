@@ -20,10 +20,6 @@ go_proto_library(
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options",
     proto = ":options_proto",
-    deps = [
-        "@com_github_golang_protobuf//protoc-gen-go/descriptor:go_default_library",
-        "@com_github_golang_protobuf//ptypes/any:go_default_library",
-    ],
 )
 
 go_library(
