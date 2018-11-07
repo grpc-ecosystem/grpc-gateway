@@ -274,6 +274,9 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			if protoSchema.Description != "" {
 				schema.Description = protoSchema.Description
 			}
+			if protoSchema.Example != "" {
+				schema.Example = protoSchema.Example
+			}
 		}
 
 		for _, f := range msg.Fields {
@@ -1424,6 +1427,10 @@ func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Reg
 
 	ret.schemaCore = protoJSONSchemaToSwaggerSchemaCore(s.GetJsonSchema(), reg, refs)
 	updateSwaggerObjectFromJSONSchema(&ret, s.GetJsonSchema())
+
+	if s.Example != nil {
+		ret.Example = string(s.Example.Value)
+	}
 
 	return ret
 }
