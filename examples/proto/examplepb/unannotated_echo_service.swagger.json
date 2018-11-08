@@ -98,6 +98,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "UnannotatedSimpleMessage represents a simple message sent to the unannotated Echo service.",
             "in": "body",
             "required": true,
             "schema": {

@@ -366,6 +366,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "SimpleMessage represents a simple message sent to the Echo service.",
             "in": "body",
             "required": true,
             "schema": {

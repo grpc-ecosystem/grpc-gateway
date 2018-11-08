@@ -150,7 +150,7 @@ func (a ABitOfEverythingServiceApi) Create(floatValue float32, doubleValue float
 /**
  * 
  *
- * @param body 
+ * @param body Intentionaly complicated message type to cover many features of Protobuf.
  * @return *ExamplepbABitOfEverything
  */
 func (a ABitOfEverythingServiceApi) CreateBody(body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {
@@ -226,7 +226,7 @@ func (a ABitOfEverythingServiceApi) CreateBody(body ExamplepbABitOfEverything) (
  * 
  *
  * @param singleNestedName name is nested field.
- * @param body 
+ * @param body Intentionaly complicated message type to cover many features of Protobuf.
  * @return *ExamplepbABitOfEverything
  */
 func (a ABitOfEverythingServiceApi) DeepPathEcho(singleNestedName string, body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {

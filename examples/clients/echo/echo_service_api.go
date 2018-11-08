@@ -405,7 +405,7 @@ func (a EchoServiceApi) Echo5(noNote string, id string, num string, lineNum stri
 /**
  * EchoBody method receives a simple message and returns it.
  *
- * @param body 
+ * @param body SimpleMessage represents a simple message sent to the Echo service.
  * @return *ExamplepbSimpleMessage
  */
 func (a EchoServiceApi) EchoBody(body ExamplepbSimpleMessage) (*ExamplepbSimpleMessage, *APIResponse, error) {

@@ -166,7 +166,7 @@ func (a UnannotatedEchoServiceApi) Echo2(id string, num string, duration string)
 /**
  * EchoBody method receives a simple message and returns it.
  *
- * @param body 
+ * @param body UnannotatedSimpleMessage represents a simple message sent to the unannotated Echo service.
  * @return *ExamplepbUnannotatedSimpleMessage
  */
 func (a UnannotatedEchoServiceApi) EchoBody(body ExamplepbUnannotatedSimpleMessage) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
