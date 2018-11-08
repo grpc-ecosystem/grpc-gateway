@@ -6,6 +6,7 @@ package examplepb
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
+import empty "github.com/golang/protobuf/ptypes/empty"
 import wrappers "github.com/golang/protobuf/ptypes/wrappers"
 import _ "google.golang.org/genproto/googleapis/api/annotations"
 
@@ -44,7 +45,7 @@ func (m *Wrappers) Reset()         { *m = Wrappers{} }
 func (m *Wrappers) String() string { return proto.CompactTextString(m) }
 func (*Wrappers) ProtoMessage()    {}
 func (*Wrappers) Descriptor() ([]byte, []int) {
-	return fileDescriptor_wrappers_5850bd48b0187754, []int{0}
+	return fileDescriptor_wrappers_3d2e9c7780d635b4, []int{0}
 }
 func (m *Wrappers) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Wrappers.Unmarshal(m, b)
@@ -144,6 +145,16 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type WrappersServiceClient interface {
 	Create(ctx context.Context, in *Wrappers, opts ...grpc.CallOption) (*Wrappers, error)
+	CreateStringValue(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*wrappers.StringValue, error)
+	CreateInt32Value(ctx context.Context, in *wrappers.Int32Value, opts ...grpc.CallOption) (*wrappers.Int32Value, error)
+	CreateInt64Value(ctx context.Context, in *wrappers.Int64Value, opts ...grpc.CallOption) (*wrappers.Int64Value, error)
+	CreateFloatValue(ctx context.Context, in *wrappers.FloatValue, opts ...grpc.CallOption) (*wrappers.FloatValue, error)
+	CreateDoubleValue(ctx context.Context, in *wrappers.DoubleValue, opts ...grpc.CallOption) (*wrappers.DoubleValue, error)
+	CreateBoolValue(ctx context.Context, in *wrappers.BoolValue, opts ...grpc.CallOption) (*wrappers.BoolValue, error)
+	CreateUInt32Value(ctx context.Context, in *wrappers.UInt32Value, opts ...grpc.CallOption) (*wrappers.UInt32Value, error)
+	CreateUInt64Value(ctx context.Context, in *wrappers.UInt64Value, opts ...grpc.CallOption) (*wrappers.UInt64Value, error)
+	CreateBytesValue(ctx context.Context, in *wrappers.BytesValue, opts ...grpc.CallOption) (*wrappers.BytesValue, error)
+	CreateEmpty(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type wrappersServiceClient struct {
@@ -163,9 +174,109 @@ func (c *wrappersServiceClient) Create(ctx context.Context, in *Wrappers, opts .
 	return out, nil
 }
 
+func (c *wrappersServiceClient) CreateStringValue(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*wrappers.StringValue, error) {
+	out := new(wrappers.StringValue)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/CreateStringValue", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *wrappersServiceClient) CreateInt32Value(ctx context.Context, in *wrappers.Int32Value, opts ...grpc.CallOption) (*wrappers.Int32Value, error) {
+	out := new(wrappers.Int32Value)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/CreateInt32Value", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *wrappersServiceClient) CreateInt64Value(ctx context.Context, in *wrappers.Int64Value, opts ...grpc.CallOption) (*wrappers.Int64Value, error) {
+	out := new(wrappers.Int64Value)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/CreateInt64Value", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *wrappersServiceClient) CreateFloatValue(ctx context.Context, in *wrappers.FloatValue, opts ...grpc.CallOption) (*wrappers.FloatValue, error) {
+	out := new(wrappers.FloatValue)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/CreateFloatValue", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *wrappersServiceClient) CreateDoubleValue(ctx context.Context, in *wrappers.DoubleValue, opts ...grpc.CallOption) (*wrappers.DoubleValue, error) {
+	out := new(wrappers.DoubleValue)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/CreateDoubleValue", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *wrappersServiceClient) CreateBoolValue(ctx context.Context, in *wrappers.BoolValue, opts ...grpc.CallOption) (*wrappers.BoolValue, error) {
+	out := new(wrappers.BoolValue)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/CreateBoolValue", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *wrappersServiceClient) CreateUInt32Value(ctx context.Context, in *wrappers.UInt32Value, opts ...grpc.CallOption) (*wrappers.UInt32Value, error) {
+	out := new(wrappers.UInt32Value)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/CreateUInt32Value", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *wrappersServiceClient) CreateUInt64Value(ctx context.Context, in *wrappers.UInt64Value, opts ...grpc.CallOption) (*wrappers.UInt64Value, error) {
+	out := new(wrappers.UInt64Value)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/CreateUInt64Value", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *wrappersServiceClient) CreateBytesValue(ctx context.Context, in *wrappers.BytesValue, opts ...grpc.CallOption) (*wrappers.BytesValue, error) {
+	out := new(wrappers.BytesValue)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/CreateBytesValue", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *wrappersServiceClient) CreateEmpty(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.WrappersService/CreateEmpty", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WrappersServiceServer is the server API for WrappersService service.
 type WrappersServiceServer interface {
 	Create(context.Context, *Wrappers) (*Wrappers, error)
+	CreateStringValue(context.Context, *wrappers.StringValue) (*wrappers.StringValue, error)
+	CreateInt32Value(context.Context, *wrappers.Int32Value) (*wrappers.Int32Value, error)
+	CreateInt64Value(context.Context, *wrappers.Int64Value) (*wrappers.Int64Value, error)
+	CreateFloatValue(context.Context, *wrappers.FloatValue) (*wrappers.FloatValue, error)
+	CreateDoubleValue(context.Context, *wrappers.DoubleValue) (*wrappers.DoubleValue, error)
+	CreateBoolValue(context.Context, *wrappers.BoolValue) (*wrappers.BoolValue, error)
+	CreateUInt32Value(context.Context, *wrappers.UInt32Value) (*wrappers.UInt32Value, error)
+	CreateUInt64Value(context.Context, *wrappers.UInt64Value) (*wrappers.UInt64Value, error)
+	CreateBytesValue(context.Context, *wrappers.BytesValue) (*wrappers.BytesValue, error)
+	CreateEmpty(context.Context, *empty.Empty) (*empty.Empty, error)
 }
 
 func RegisterWrappersServiceServer(s *grpc.Server, srv WrappersServiceServer) {
@@ -190,6 +301,186 @@ func _WrappersService_Create_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WrappersService_CreateStringValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(wrappers.StringValue)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WrappersServiceServer).CreateStringValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.examplepb.WrappersService/CreateStringValue",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WrappersServiceServer).CreateStringValue(ctx, req.(*wrappers.StringValue))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WrappersService_CreateInt32Value_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(wrappers.Int32Value)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WrappersServiceServer).CreateInt32Value(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.examplepb.WrappersService/CreateInt32Value",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WrappersServiceServer).CreateInt32Value(ctx, req.(*wrappers.Int32Value))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WrappersService_CreateInt64Value_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(wrappers.Int64Value)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WrappersServiceServer).CreateInt64Value(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.examplepb.WrappersService/CreateInt64Value",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WrappersServiceServer).CreateInt64Value(ctx, req.(*wrappers.Int64Value))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WrappersService_CreateFloatValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(wrappers.FloatValue)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WrappersServiceServer).CreateFloatValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.examplepb.WrappersService/CreateFloatValue",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WrappersServiceServer).CreateFloatValue(ctx, req.(*wrappers.FloatValue))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WrappersService_CreateDoubleValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(wrappers.DoubleValue)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WrappersServiceServer).CreateDoubleValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.examplepb.WrappersService/CreateDoubleValue",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WrappersServiceServer).CreateDoubleValue(ctx, req.(*wrappers.DoubleValue))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WrappersService_CreateBoolValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(wrappers.BoolValue)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WrappersServiceServer).CreateBoolValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.examplepb.WrappersService/CreateBoolValue",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WrappersServiceServer).CreateBoolValue(ctx, req.(*wrappers.BoolValue))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WrappersService_CreateUInt32Value_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(wrappers.UInt32Value)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WrappersServiceServer).CreateUInt32Value(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.examplepb.WrappersService/CreateUInt32Value",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WrappersServiceServer).CreateUInt32Value(ctx, req.(*wrappers.UInt32Value))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WrappersService_CreateUInt64Value_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(wrappers.UInt64Value)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WrappersServiceServer).CreateUInt64Value(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.examplepb.WrappersService/CreateUInt64Value",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WrappersServiceServer).CreateUInt64Value(ctx, req.(*wrappers.UInt64Value))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WrappersService_CreateBytesValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(wrappers.BytesValue)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WrappersServiceServer).CreateBytesValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.examplepb.WrappersService/CreateBytesValue",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WrappersServiceServer).CreateBytesValue(ctx, req.(*wrappers.BytesValue))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WrappersService_CreateEmpty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WrappersServiceServer).CreateEmpty(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.examplepb.WrappersService/CreateEmpty",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WrappersServiceServer).CreateEmpty(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _WrappersService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "grpc.gateway.examples.examplepb.WrappersService",
 	HandlerType: (*WrappersServiceServer)(nil),
@@ -198,39 +489,92 @@ var _WrappersService_serviceDesc = grpc.ServiceDesc{
 			MethodName: "Create",
 			Handler:    _WrappersService_Create_Handler,
 		},
+		{
+			MethodName: "CreateStringValue",
+			Handler:    _WrappersService_CreateStringValue_Handler,
+		},
+		{
+			MethodName: "CreateInt32Value",
+			Handler:    _WrappersService_CreateInt32Value_Handler,
+		},
+		{
+			MethodName: "CreateInt64Value",
+			Handler:    _WrappersService_CreateInt64Value_Handler,
+		},
+		{
+			MethodName: "CreateFloatValue",
+			Handler:    _WrappersService_CreateFloatValue_Handler,
+		},
+		{
+			MethodName: "CreateDoubleValue",
+			Handler:    _WrappersService_CreateDoubleValue_Handler,
+		},
+		{
+			MethodName: "CreateBoolValue",
+			Handler:    _WrappersService_CreateBoolValue_Handler,
+		},
+		{
+			MethodName: "CreateUInt32Value",
+			Handler:    _WrappersService_CreateUInt32Value_Handler,
+		},
+		{
+			MethodName: "CreateUInt64Value",
+			Handler:    _WrappersService_CreateUInt64Value_Handler,
+		},
+		{
+			MethodName: "CreateBytesValue",
+			Handler:    _WrappersService_CreateBytesValue_Handler,
+		},
+		{
+			MethodName: "CreateEmpty",
+			Handler:    _WrappersService_CreateEmpty_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "examples/proto/examplepb/wrappers.proto",
 }
 
 func init() {
-	proto.RegisterFile("examples/proto/examplepb/wrappers.proto", fileDescriptor_wrappers_5850bd48b0187754)
+	proto.RegisterFile("examples/proto/examplepb/wrappers.proto", fileDescriptor_wrappers_3d2e9c7780d635b4)
 }
 
-var fileDescriptor_wrappers_5850bd48b0187754 = []byte{
-	// 381 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0xdf, 0x4a, 0xf3, 0x30,
-	0x18, 0xc6, 0xe9, 0xbe, 0x7d, 0x73, 0x4b, 0x05, 0xa1, 0x78, 0xa0, 0x75, 0x38, 0xd9, 0x89, 0x7f,
-	0x0e, 0x52, 0xdc, 0xc6, 0x40, 0x11, 0x84, 0x29, 0x82, 0xa7, 0x0e, 0x15, 0x3c, 0x91, 0x64, 0xcb,
-	0x4a, 0xa1, 0x36, 0x25, 0x4d, 0x37, 0x77, 0x24, 0x78, 0x09, 0x7a, 0x45, 0x5e, 0x83, 0xb7, 0xe0,
-	0x85, 0x48, 0xb2, 0x37, 0xd9, 0x74, 0x54, 0x3d, 0x7b, 0xde, 0xe6, 0xf9, 0x3d, 0xe1, 0x7d, 0x48,
-	0xd1, 0x2e, 0x7b, 0x24, 0x0f, 0x69, 0xcc, 0xb2, 0x20, 0x15, 0x5c, 0xf2, 0x00, 0xc6, 0x94, 0x06,
-	0x13, 0x41, 0xd2, 0x94, 0x89, 0x0c, 0xeb, 0x03, 0xaf, 0x11, 0x8a, 0x74, 0x80, 0x43, 0x22, 0xd9,
-	0x84, 0x4c, 0xb1, 0xa1, 0xb0, 0xf5, 0xfb, 0xf5, 0x90, 0xf3, 0x30, 0x66, 0x01, 0x49, 0xa3, 0x80,
-	0x24, 0x09, 0x97, 0x44, 0x46, 0x3c, 0x01, 0xdc, 0xdf, 0x86, 0x53, 0x3d, 0xd1, 0x7c, 0xf4, 0x2d,
-	0xbe, 0xf9, 0x56, 0x46, 0xd5, 0x5b, 0xf8, 0xe4, 0x9d, 0xa2, 0xd5, 0x4c, 0x8a, 0x28, 0x09, 0xef,
-	0xc7, 0x24, 0xce, 0xd9, 0x86, 0xb3, 0xe3, 0xec, 0xb9, 0xad, 0x3a, 0x9e, 0x65, 0x60, 0x93, 0x81,
-	0xfb, 0xda, 0x74, 0xa3, 0x3c, 0x57, 0x6e, 0x36, 0x1f, 0xbc, 0x13, 0xe4, 0x46, 0x89, 0x6c, 0xb7,
-	0x80, 0x2f, 0x69, 0x7e, 0x6b, 0x89, 0xbf, 0x54, 0x9e, 0x19, 0x8e, 0x22, 0xab, 0x81, 0xee, 0x76,
-	0x80, 0xfe, 0x57, 0x4c, 0x77, 0x3b, 0x73, 0x1a, 0xb4, 0xa2, 0x47, 0x31, 0x27, 0x12, 0xe8, 0x72,
-	0x01, 0x7d, 0xa1, 0x3c, 0x40, 0x8f, 0xac, 0x56, 0xab, 0x0f, 0x79, 0x4e, 0x63, 0x06, 0xf8, 0xff,
-	0x82, 0xd5, 0xcf, 0xb5, 0x09, 0x56, 0x1f, 0xce, 0x07, 0xef, 0x08, 0x21, 0xca, 0x79, 0x0c, 0x78,
-	0x45, 0xe3, 0xfe, 0x12, 0xde, 0xe3, 0x3c, 0x9e, 0xc1, 0x35, 0x6a, 0xa4, 0xba, 0x3b, 0x5f, 0xac,
-	0x6d, 0xa5, 0xe0, 0xee, 0xeb, 0x85, 0xde, 0xdc, 0x7c, 0xa1, 0x38, 0x08, 0xb0, 0xcd, 0x55, 0x7f,
-	0x08, 0x30, 0xd5, 0xb9, 0xf9, 0xd7, 0xee, 0xe8, 0x54, 0xb2, 0x0c, 0xf8, 0x5a, 0x41, 0x77, 0x3d,
-	0xe5, 0x81, 0xee, 0xa8, 0xd5, 0xad, 0x17, 0x07, 0xad, 0x99, 0x37, 0xd4, 0x67, 0x62, 0x1c, 0x0d,
-	0x98, 0xf7, 0x84, 0x2a, 0x67, 0x82, 0x11, 0xc9, 0xbc, 0x7d, 0xfc, 0xcb, 0x0b, 0xc6, 0x86, 0xf5,
-	0xff, 0x6e, 0x6d, 0x36, 0x9e, 0xdf, 0x3f, 0x5e, 0x4b, 0x9b, 0xcd, 0xf5, 0x60, 0x7c, 0x68, 0x7e,
-	0x1e, 0xfb, 0xb6, 0x8f, 0x9d, 0x83, 0x9e, 0x7b, 0x57, 0xb3, 0x18, 0xad, 0xe8, 0x15, 0xda, 0x9f,
-	0x01, 0x00, 0x00, 0xff, 0xff, 0x0a, 0xc7, 0xe3, 0xe9, 0x76, 0x03, 0x00, 0x00,
+var fileDescriptor_wrappers_3d2e9c7780d635b4 = []byte{
+	// 578 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x95, 0xdd, 0x6e, 0xd3, 0x30,
+	0x14, 0xc7, 0xd5, 0x31, 0xca, 0xea, 0x0c, 0xc6, 0x0c, 0x82, 0xcd, 0x9b, 0x18, 0xca, 0x0d, 0xb0,
+	0x8b, 0x44, 0x74, 0x55, 0x25, 0x26, 0x24, 0xa4, 0xf2, 0x21, 0x71, 0xcb, 0x34, 0x26, 0x71, 0x83,
+	0xec, 0xcd, 0x8d, 0x82, 0xb2, 0x38, 0x4a, 0x9c, 0x8e, 0x5e, 0x21, 0xf1, 0x0a, 0x3c, 0x00, 0xcf,
+	0xc2, 0x33, 0xf0, 0x0a, 0x3c, 0x08, 0xf2, 0x57, 0x3e, 0x9a, 0xe5, 0xc0, 0x9d, 0x9d, 0xff, 0xf9,
+	0x9d, 0x7f, 0x7d, 0x7c, 0x8e, 0x8b, 0x9e, 0xf0, 0xaf, 0xf4, 0x32, 0x4b, 0x78, 0x11, 0x66, 0xb9,
+	0x90, 0x22, 0xb4, 0xdb, 0x8c, 0x85, 0x57, 0x39, 0xcd, 0x32, 0x9e, 0x17, 0x81, 0x16, 0xf0, 0x41,
+	0x94, 0x67, 0xe7, 0x41, 0x44, 0x25, 0xbf, 0xa2, 0xcb, 0xc0, 0x51, 0x41, 0x15, 0x4f, 0xf6, 0x23,
+	0x21, 0xa2, 0x84, 0x87, 0x34, 0x8b, 0x43, 0x9a, 0xa6, 0x42, 0x52, 0x19, 0x8b, 0xd4, 0xe2, 0xe4,
+	0x91, 0x55, 0xf5, 0x8e, 0x95, 0xf3, 0x95, 0xf4, 0x64, 0x6f, 0x55, 0xe7, 0x97, 0x99, 0x5c, 0x1a,
+	0xd1, 0xff, 0xb5, 0x8e, 0x36, 0xce, 0x6c, 0x3c, 0x7e, 0x85, 0x36, 0x0b, 0x99, 0xc7, 0x69, 0xf4,
+	0x79, 0x41, 0x93, 0x92, 0xef, 0x0c, 0x1e, 0x0f, 0x9e, 0x7a, 0xe3, 0xfd, 0xc0, 0x24, 0x08, 0x5c,
+	0x82, 0xe0, 0x44, 0x07, 0x7d, 0x54, 0x31, 0x1f, 0xbc, 0xa2, 0xde, 0xe0, 0x97, 0xc8, 0x8b, 0x53,
+	0x79, 0x34, 0xb6, 0xfc, 0x9a, 0xe6, 0xf7, 0x3a, 0xfc, 0x7b, 0x15, 0x63, 0x70, 0x14, 0x57, 0x6b,
+	0x4b, 0x4f, 0x27, 0x96, 0xbe, 0xd1, 0x4f, 0x4f, 0x27, 0x35, 0x6d, 0xd7, 0x8a, 0x9e, 0x27, 0x82,
+	0x4a, 0x4b, 0xaf, 0xf7, 0xd0, 0xef, 0x54, 0x8c, 0xa5, 0xe7, 0xd5, 0x5a, 0x1d, 0xfd, 0x42, 0x94,
+	0x2c, 0xe1, 0x16, 0xbf, 0xd9, 0x73, 0xf4, 0x37, 0x3a, 0xc8, 0x1e, 0xfd, 0xa2, 0xde, 0xe0, 0x17,
+	0x08, 0x31, 0x21, 0x12, 0x8b, 0x0f, 0x35, 0x4e, 0x3a, 0xf8, 0x4c, 0x88, 0xc4, 0xc0, 0x23, 0xe6,
+	0x96, 0xca, 0xbb, 0x6c, 0x96, 0xed, 0x56, 0x8f, 0xf7, 0x69, 0xa3, 0x6e, 0x5e, 0xd9, 0x28, 0x9c,
+	0x4d, 0x50, 0x55, 0x6e, 0x03, 0x48, 0xe0, 0x4a, 0xe7, 0x95, 0xed, 0xda, 0xb1, 0xa5, 0xe4, 0x85,
+	0xe5, 0x47, 0x3d, 0xb5, 0x9b, 0xa9, 0x18, 0x5b, 0x3b, 0x56, 0xad, 0xc7, 0x3f, 0x47, 0x68, 0xcb,
+	0xf5, 0xd0, 0x09, 0xcf, 0x17, 0xf1, 0x39, 0xc7, 0xdf, 0xd0, 0xf0, 0x75, 0xce, 0xa9, 0xe4, 0xf8,
+	0x59, 0xf0, 0x8f, 0xf6, 0x0e, 0x1c, 0x4b, 0xfe, 0x3f, 0xd4, 0x3f, 0xf8, 0xfe, 0xfb, 0xcf, 0x8f,
+	0xb5, 0x5d, 0xff, 0x7e, 0xb8, 0x78, 0xee, 0x26, 0xab, 0x6a, 0xfc, 0xe3, 0xc1, 0x21, 0xfe, 0x82,
+	0xb6, 0xcd, 0x0f, 0x68, 0x34, 0x2b, 0x06, 0x5b, 0x99, 0x80, 0xaa, 0xbf, 0xab, 0x1d, 0xef, 0xf9,
+	0x77, 0x94, 0xa3, 0xe4, 0x85, 0x34, 0xa2, 0xf2, 0x9a, 0xa3, 0xbb, 0xc6, 0xab, 0xbe, 0x20, 0x0c,
+	0x75, 0x3d, 0x81, 0x44, 0x7f, 0x47, 0x1b, 0x61, 0xff, 0xb6, 0x33, 0xd2, 0xda, 0xaa, 0x8f, 0xbb,
+	0x3a, 0x68, 0x3e, 0x08, 0x24, 0x5e, 0xeb, 0x33, 0x9d, 0xb4, 0x7c, 0xea, 0x61, 0xc1, 0xd0, 0x24,
+	0x11, 0x48, 0xec, 0xfa, 0x68, 0xad, 0x75, 0x47, 0x8d, 0xa9, 0xc2, 0xe0, 0xcc, 0x11, 0x50, 0xed,
+	0xde, 0x91, 0x11, 0x95, 0x17, 0x43, 0x5b, 0xc6, 0xab, 0x1a, 0x41, 0x0c, 0x8c, 0x27, 0x01, 0x34,
+	0xff, 0xa1, 0x76, 0xd9, 0xf6, 0x37, 0x9d, 0x8b, 0x92, 0x5a, 0xe7, 0x69, 0x4c, 0x2a, 0x06, 0xe7,
+	0x98, 0x80, 0x6a, 0xf7, 0x3c, 0xa7, 0xb1, 0xeb, 0x85, 0x96, 0x97, 0x6b, 0x06, 0x70, 0xe4, 0x09,
+	0xa8, 0x5e, 0xef, 0xb5, 0xd2, 0x0f, 0xf5, 0x03, 0x80, 0xa1, 0xd7, 0x81, 0x40, 0x62, 0xb7, 0x1f,
+	0xb4, 0xa6, 0x7c, 0xce, 0x90, 0x67, 0x7c, 0xde, 0xaa, 0x7f, 0x28, 0xfc, 0xa0, 0x93, 0x45, 0x7f,
+	0x27, 0x3d, 0xdf, 0xbb, 0x89, 0xf5, 0xe7, 0xe3, 0xc1, 0xe1, 0xcc, 0xfb, 0x34, 0xaa, 0xde, 0x10,
+	0x36, 0xd4, 0xd8, 0xd1, 0xdf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x05, 0x83, 0xaf, 0x71, 0xa0, 0x07,
+	0x00, 0x00,
 }

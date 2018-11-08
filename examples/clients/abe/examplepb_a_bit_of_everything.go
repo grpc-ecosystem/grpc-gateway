@@ -61,7 +61,7 @@ type ExamplepbABitOfEverything struct {
 
 	RepeatedStringValue []string `json:"repeated_string_value,omitempty"`
 
-	OneofEmpty ProtobufEmpty `json:"oneof_empty,omitempty"`
+	OneofEmpty interface{} `json:"oneof_empty,omitempty"`
 
 	OneofString string `json:"oneof_string,omitempty"`
 

@@ -101,7 +101,6 @@ ABE_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/abe/a_bit_of_everything_nested.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/examplepb_body.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/examplepb_numeric_enum.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/nested_deep_enum.go \
-		 $(EXAMPLE_CLIENT_DIR)/abe/protobuf_empty.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/sub_string_message.go
 UNANNOTATED_ECHO_EXAMPLE_SPEC=examples/proto/examplepb/unannotated_echo_service.swagger.json
 UNANNOTATED_ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/unannotatedecho/api_client.go \
