@@ -9,6 +9,8 @@ import (
 	"strings"
 	"sync"
 
+	"encoding/json"
+
 	"github.com/golang/protobuf/proto"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
@@ -274,7 +276,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			if protoSchema.Description != "" {
 				schema.Description = protoSchema.Description
 			}
-			if protoSchema.Example != "" {
+			if protoSchema.Example != nil {
 				schema.Example = protoSchema.Example
 			}
 		}
@@ -1429,7 +1431,7 @@ func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Reg
 	updateSwaggerObjectFromJSONSchema(&ret, s.GetJsonSchema())
 
 	if s != nil && s.Example != nil {
-		ret.Example = string(s.Example.Value)
+		ret.Example = json.RawMessage(s.Example.Value)
 	}
 
 	return ret
