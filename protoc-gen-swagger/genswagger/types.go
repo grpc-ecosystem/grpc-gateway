@@ -133,10 +133,10 @@ type swaggerParameterObject struct {
 // core part of schema, which is common to itemsObject and schemaObject.
 // http://swagger.io/specification/#itemsObject
 type schemaCore struct {
-	Type    string `json:"type,omitempty"`
-	Format  string `json:"format,omitempty"`
-	Ref     string `json:"$ref,omitempty"`
-	Example string `json:"example,omitempty"`
+	Type    string          `json:"type,omitempty"`
+	Format  string          `json:"format,omitempty"`
+	Ref     string          `json:"$ref,omitempty"`
+	Example json.RawMessage `json:"example,omitempty"`
 
 	Items *swaggerItemsObject `json:"items,omitempty"`
 
