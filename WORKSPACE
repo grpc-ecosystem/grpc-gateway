@@ -4,14 +4,21 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "io_bazel_rules_go",
-    url = "https://github.com/bazelbuild/rules_go/releases/download/0.12.1/rules_go-0.12.1.tar.gz",
     sha256 = "8b68d0630d63d95dacc0016c3bb4b76154fe34fca93efd65d1c366de3fcb4294",
+    url = "https://github.com/bazelbuild/rules_go/releases/download/0.12.1/rules_go-0.12.1.tar.gz",
 )
 
 http_archive(
     name = "bazel_gazelle",
-    url = "https://github.com/bazelbuild/bazel-gazelle/releases/download/0.10.1/bazel-gazelle-0.10.1.tar.gz",
     sha256 = "d03625db67e9fb0905bbd206fa97e32ae9da894fe234a493e7517fd25faec914",
+    url = "https://github.com/bazelbuild/bazel-gazelle/releases/download/0.10.1/bazel-gazelle-0.10.1.tar.gz",
+)
+
+http_archive(
+    name = "com_github_bazelbuild_buildtools",
+    sha256 = "e4c83a7a5d0712e2cea2077112a5eb6bb1af75a84e34c8c9b77330e322966b8b",
+    strip_prefix = "buildtools-e90e7cc6ef3e6d08d4ca8a982935c3eed638e058",
+    url = "https://github.com/bazelbuild/buildtools/archive/e90e7cc6ef3e6d08d4ca8a982935c3eed638e058.tar.gz",
 )
 
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
@@ -20,7 +27,7 @@ gazelle_dependencies()
 
 load("@bazel_gazelle//:def.bzl", "go_repository")
 load("//:repositories.bzl", "repositories")
-load("@io_bazel_rules_go//go:def.bzl", "go_rules_dependencies", "go_register_toolchains")
+load("@io_bazel_rules_go//go:def.bzl", "go_register_toolchains", "go_rules_dependencies")
 
 # Also define in Gopkg.toml
 go_repository(
@@ -45,16 +52,16 @@ go_repository(
 
 # Also define in Gopkg.toml
 go_repository(
-	name = "com_github_ghodss_yaml",
-	commit = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7",
-	importpath = "github.com/ghodss/yaml",
+    name = "com_github_ghodss_yaml",
+    commit = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7",
+    importpath = "github.com/ghodss/yaml",
 )
 
 # Also define in Gopkg.toml
 go_repository(
-	name = "in_gopkg_yaml_v2",
-	commit = "eb3733d160e74a9c7e442f435eb3bea458e1d19f",
-	importpath = "gopkg.in/yaml.v2",
+    name = "in_gopkg_yaml_v2",
+    commit = "eb3733d160e74a9c7e442f435eb3bea458e1d19f",
+    importpath = "gopkg.in/yaml.v2",
 )
 
 repositories()
@@ -62,3 +69,7 @@ repositories()
 go_rules_dependencies()
 
 go_register_toolchains()
+
+load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
+
+buildifier_dependencies()
