@@ -1,6 +1,7 @@
 package genswagger
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"reflect"
@@ -8,8 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-
-	"encoding/json"
 
 	"github.com/golang/protobuf/proto"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
