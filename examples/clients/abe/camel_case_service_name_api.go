@@ -40,9 +40,9 @@ func NewCamelCaseServiceNameApiWithBasePath(basePath string) *CamelCaseServiceNa
  * Create a new ABitOfEverything
  * This API creates a new ABitOfEverything
  *
- * @return *ProtobufEmpty
+ * @return *interface{}
  */
-func (a CamelCaseServiceNameApi) Empty() (*ProtobufEmpty, *APIResponse, error) {
+func (a CamelCaseServiceNameApi) Empty() (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -91,7 +91,7 @@ func (a CamelCaseServiceNameApi) Empty() (*ProtobufEmpty, *APIResponse, error) {
 	if localVarHttpHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
-	var successPayload = new(ProtobufEmpty)
+	var successPayload = new(interface{})
 	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
 
 	var localVarURL, _ = url.Parse(localVarPath)
