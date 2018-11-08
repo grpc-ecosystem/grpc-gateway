@@ -1061,6 +1061,15 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	// otherwise rendered.
 	addCustomRefs(s.Definitions, p.reg, customRefs)
 
+	for _, v := range s.Paths {
+		if v.Post != nil {
+			for i, param := range v.Post.Parameters {
+				refName := strings.TrimPrefix(param.Schema.Ref, "#/definitions/")
+				v.Post.Parameters[i].Description = s.Definitions[refName].Description
+			}
+		}
+	}
+
 	return &s, nil
 }
 
