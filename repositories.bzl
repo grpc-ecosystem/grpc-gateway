@@ -39,11 +39,9 @@ def _googleapis_repository_impl(ctx):
 
     ctx.file("google/api/BUILD.bazel", GOOGLEAPIS_GOOGLE_API_BUILD_CONTENTS)
 
-
 _googleapis_repository = repository_rule(
     implementation = _googleapis_repository_impl,
 )
-
 
 def repositories():
     _googleapis_repository(name = "com_github_googleapis_googleapis")
