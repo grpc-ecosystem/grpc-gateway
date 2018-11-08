@@ -58,6 +58,7 @@ var wktSchemas = map[string]schemaCore{
 		Type:   "boolean",
 		Format: "boolean",
 	},
+	".google.protobuf.Empty": schemaCore{},
 }
 
 func listEnumNames(enum *descriptor.Enum) (names []string) {
@@ -170,11 +171,15 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 		for _, meth := range svc.Methods {
 			// Request may be fully included in query
 			if _, ok := refs[fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg))]; ok {
-				m[fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)] = meth.RequestType
+				if !skipRenderingRef(meth.RequestType.FQMN()) {
+					m[fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)] = meth.RequestType
+				}
 			}
 			findNestedMessagesAndEnumerations(meth.RequestType, reg, m, e)
 
-			m[fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)] = meth.ResponseType
+			if !skipRenderingRef(meth.ResponseType.FQMN()) {
+				m[fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)] = meth.ResponseType
+			}
 			findNestedMessagesAndEnumerations(meth.ResponseType, reg, m, e)
 		}
 	}
@@ -204,32 +209,19 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 	}
 }
 
+func skipRenderingRef(refName string) bool {
+	if _, ok := wktSchemas[refName]; ok {
+		return true
+	}
+	return false
+}
+
 func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry, customRefs refMap) {
 	for name, msg := range messages {
-		switch name {
-		case ".google.protobuf.Timestamp":
-			continue
-		case ".google.protobuf.Duration":
-			continue
-		case ".google.protobuf.StringValue":
-			continue
-		case ".google.protobuf.BytesValue":
-			continue
-		case ".google.protobuf.Int32Value":
-			continue
-		case ".google.protobuf.UInt32Value":
-			continue
-		case ".google.protobuf.Int64Value":
-			continue
-		case ".google.protobuf.UInt64Value":
-			continue
-		case ".google.protobuf.FloatValue":
-			continue
-		case ".google.protobuf.DoubleValue":
-			continue
-		case ".google.protobuf.BoolValue":
+		if skipRenderingRef(name) {
 			continue
 		}
+
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			continue
 		}
@@ -289,7 +281,10 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			} else {
 				kv.Key = f.GetName()
 			}
-			schema.Properties = append(schema.Properties, kv)
+			if schema.Properties == nil {
+				schema.Properties = &swaggerSchemaObjectProperties{}
+			}
+			*schema.Properties = append(*schema.Properties, kv)
 		}
 		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
 	}
@@ -318,16 +313,23 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 		aggregate = array
 	}
 
+	var props *swaggerSchemaObjectProperties
+
 	switch ft := fd.GetType(); ft {
 	case pbdescriptor.FieldDescriptorProto_TYPE_ENUM, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE, pbdescriptor.FieldDescriptorProto_TYPE_GROUP:
 		if wktSchema, ok := wktSchemas[fd.GetTypeName()]; ok {
 			core = wktSchema
+
+			if fd.GetTypeName() == ".google.protobuf.Empty" {
+				props = &swaggerSchemaObjectProperties{}
+			}
 		} else {
 			core = schemaCore{
 				Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(fd.GetTypeName(), reg),
 			}
 			if refs != nil {
 				refs[fd.GetTypeName()] = struct{}{}
+
 			}
 		}
 	default:
@@ -352,11 +354,12 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 			schemaCore: schemaCore{
 				Type: "object",
 			},
-			AdditionalProperties: &swaggerSchemaObject{schemaCore: core},
+			AdditionalProperties: &swaggerSchemaObject{Properties: props, schemaCore: core},
 		}
 	default:
 		ret := swaggerSchemaObject{
 			schemaCore: core,
+			Properties: props,
 		}
 		if j, err := extractJSONSchemaFromFieldDescriptor(fd); err == nil {
 			updateSwaggerObjectFromJSONSchema(&ret, j)
@@ -657,9 +660,19 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 
 					if len(b.Body.FieldPath) == 0 {
 						schema = swaggerSchemaObject{
-							schemaCore: schemaCore{
-								Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)),
-							},
+							schemaCore: schemaCore{},
+						}
+
+						wknSchemaCore, isWkn := wktSchemas[meth.RequestType.FQMN()]
+						if !isWkn {
+							schema.Ref = fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg))
+						} else {
+							schema.schemaCore = wknSchemaCore
+
+							// Special workaround for Empty: it's well-known type but wknSchemas only returns schema.schemaCore; but we need to set schema.Properties which is a level higher.
+							if meth.RequestType.FQMN() == ".google.protobuf.Empty" {
+								schema.Properties = &swaggerSchemaObjectProperties{}
+							}
 						}
 					} else {
 						lastField := b.Body.FieldPath[len(b.Body.FieldPath)-1]
@@ -701,9 +714,23 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 
 				if b.ResponseBody == nil || len(b.ResponseBody.FieldPath) == 0 {
 					responseSchema = swaggerSchemaObject{
-						schemaCore: schemaCore{
-							Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)),
-						},
+						schemaCore: schemaCore{},
+					}
+
+					// Don't link to a full definition for
+					// empty; it's overly verbose.
+					// schema.Properties{} renders it as
+					// well, without a definition
+					wknSchemaCore, isWkn := wktSchemas[meth.ResponseType.FQMN()]
+					if !isWkn {
+						responseSchema.Ref = fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg))
+					} else {
+						responseSchema.schemaCore = wknSchemaCore
+
+						// Special workaround for Empty: it's well-known type but wknSchemas only returns schema.schemaCore; but we need to set schema.Properties which is a level higher.
+						if meth.ResponseType.FQMN() == ".google.protobuf.Empty" {
+							responseSchema.Properties = &swaggerSchemaObjectProperties{}
+						}
 					}
 				} else {
 					// This is resolving the value of response_body in the google.api.HttpRule
@@ -1498,6 +1525,7 @@ func addCustomRefs(d swaggerDefinitionsObject, reg *descriptor.Registry, refs re
 			enumMap[fullyQualifiedNameToSwaggerName(ref, reg)] = enum
 			continue
 		}
+
 		// ?? Should be either enum or msg
 	}
 	renderMessagesAsDefinition(msgMap, d, reg, refs)
