@@ -71,14 +71,16 @@ type isEmbedded_Mark interface {
 }
 
 type Embedded_Progress struct {
-	Progress int64 `protobuf:"varint,1,opt,name=progress,oneof"`
+	Progress int64 `protobuf:"varint,1,opt,name=progress,proto3,oneof"`
 }
+
 type Embedded_Note struct {
-	Note string `protobuf:"bytes,2,opt,name=note,oneof"`
+	Note string `protobuf:"bytes,2,opt,name=note,proto3,oneof"`
 }
 
 func (*Embedded_Progress) isEmbedded_Mark() {}
-func (*Embedded_Note) isEmbedded_Mark()     {}
+
+func (*Embedded_Note) isEmbedded_Mark() {}
 
 func (m *Embedded) GetMark() isEmbedded_Mark {
 	if m != nil {
@@ -169,13 +171,13 @@ func _Embedded_OneofSizer(msg proto.Message) (n int) {
 // SimpleMessage represents a simple message sent to the Echo service.
 type SimpleMessage struct {
 	// Id represents the message identifier.
-	Id  string `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
-	Num int64  `protobuf:"varint,2,opt,name=num" json:"num,omitempty"`
+	Id  string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Num int64  `protobuf:"varint,2,opt,name=num,proto3" json:"num,omitempty"`
 	// Types that are valid to be assigned to Code:
 	//	*SimpleMessage_LineNum
 	//	*SimpleMessage_Lang
 	Code   isSimpleMessage_Code `protobuf_oneof:"code"`
-	Status *Embedded            `protobuf:"bytes,5,opt,name=status" json:"status,omitempty"`
+	Status *Embedded            `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	// Types that are valid to be assigned to Ext:
 	//	*SimpleMessage_En
 	//	*SimpleMessage_No
@@ -209,44 +211,6 @@ func (m *SimpleMessage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SimpleMessage proto.InternalMessageInfo
 
-type isSimpleMessage_Code interface {
-	isSimpleMessage_Code()
-}
-type isSimpleMessage_Ext interface {
-	isSimpleMessage_Ext()
-}
-
-type SimpleMessage_LineNum struct {
-	LineNum int64 `protobuf:"varint,3,opt,name=line_num,json=lineNum,oneof"`
-}
-type SimpleMessage_Lang struct {
-	Lang string `protobuf:"bytes,4,opt,name=lang,oneof"`
-}
-type SimpleMessage_En struct {
-	En int64 `protobuf:"varint,6,opt,name=en,oneof"`
-}
-type SimpleMessage_No struct {
-	No *Embedded `protobuf:"bytes,7,opt,name=no,oneof"`
-}
-
-func (*SimpleMessage_LineNum) isSimpleMessage_Code() {}
-func (*SimpleMessage_Lang) isSimpleMessage_Code()    {}
-func (*SimpleMessage_En) isSimpleMessage_Ext()       {}
-func (*SimpleMessage_No) isSimpleMessage_Ext()       {}
-
-func (m *SimpleMessage) GetCode() isSimpleMessage_Code {
-	if m != nil {
-		return m.Code
-	}
-	return nil
-}
-func (m *SimpleMessage) GetExt() isSimpleMessage_Ext {
-	if m != nil {
-		return m.Ext
-	}
-	return nil
-}
-
 func (m *SimpleMessage) GetId() string {
 	if m != nil {
 		return m.Id
@@ -259,6 +223,29 @@ func (m *SimpleMessage) GetNum() int64 {
 		return m.Num
 	}
 	return 0
+}
+
+type isSimpleMessage_Code interface {
+	isSimpleMessage_Code()
+}
+
+type SimpleMessage_LineNum struct {
+	LineNum int64 `protobuf:"varint,3,opt,name=line_num,json=lineNum,proto3,oneof"`
+}
+
+type SimpleMessage_Lang struct {
+	Lang string `protobuf:"bytes,4,opt,name=lang,proto3,oneof"`
+}
+
+func (*SimpleMessage_LineNum) isSimpleMessage_Code() {}
+
+func (*SimpleMessage_Lang) isSimpleMessage_Code() {}
+
+func (m *SimpleMessage) GetCode() isSimpleMessage_Code {
+	if m != nil {
+		return m.Code
+	}
+	return nil
 }
 
 func (m *SimpleMessage) GetLineNum() int64 {
@@ -278,6 +265,29 @@ func (m *SimpleMessage) GetLang() string {
 func (m *SimpleMessage) GetStatus() *Embedded {
 	if m != nil {
 		return m.Status
+	}
+	return nil
+}
+
+type isSimpleMessage_Ext interface {
+	isSimpleMessage_Ext()
+}
+
+type SimpleMessage_En struct {
+	En int64 `protobuf:"varint,6,opt,name=en,proto3,oneof"`
+}
+
+type SimpleMessage_No struct {
+	No *Embedded `protobuf:"bytes,7,opt,name=no,proto3,oneof"`
+}
+
+func (*SimpleMessage_En) isSimpleMessage_Ext() {}
+
+func (*SimpleMessage_No) isSimpleMessage_Ext() {}
+
+func (m *SimpleMessage) GetExt() isSimpleMessage_Ext {
+	if m != nil {
+		return m.Ext
 	}
 	return nil
 }
@@ -419,8 +429,9 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// Client API for EchoService service
-
+// EchoServiceClient is the client API for EchoService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type EchoServiceClient interface {
 	// Echo method receives a simple message and returns it.
 	//
@@ -443,7 +454,7 @@ func NewEchoServiceClient(cc *grpc.ClientConn) EchoServiceClient {
 
 func (c *echoServiceClient) Echo(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error) {
 	out := new(SimpleMessage)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.EchoService/Echo", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.EchoService/Echo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -452,7 +463,7 @@ func (c *echoServiceClient) Echo(ctx context.Context, in *SimpleMessage, opts ..
 
 func (c *echoServiceClient) EchoBody(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error) {
 	out := new(SimpleMessage)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.EchoService/EchoBody", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.EchoService/EchoBody", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -461,15 +472,14 @@ func (c *echoServiceClient) EchoBody(ctx context.Context, in *SimpleMessage, opt
 
 func (c *echoServiceClient) EchoDelete(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error) {
 	out := new(SimpleMessage)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.EchoService/EchoDelete", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.EchoService/EchoDelete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// Server API for EchoService service
-
+// EchoServiceServer is the server API for EchoService service.
 type EchoServiceServer interface {
 	// Echo method receives a simple message and returns it.
 	//
