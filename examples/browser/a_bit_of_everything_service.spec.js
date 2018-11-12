@@ -85,8 +85,7 @@ describe('ABitOfEverythingService', function() {
       ],
       repeated_string_value: ["a", "b", "c"],
       oneof_string: "x",
-      // TODO(yugui) Support enum by name
-      map_value: { a: 1, b: 2 },
+      map_value: { a: "ONE", b: 2 },
       mapped_string_value: { a: "x", b: "y" },
       mapped_nested_value: {
         a: { name: "x", amount: 1 },
