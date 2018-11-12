@@ -38,6 +38,9 @@ type Registry struct {
 	// allowDeleteBody permits http delete methods to have a body
 	allowDeleteBody bool
 
+	// allowGetBody permits http get methods to have a body
+	allowGetBody bool
+
 	// externalHttpRules is a mapping from fully qualified service method names to additional HttpRules applicable besides the ones found in annotations.
 	externalHTTPRules map[string][]*annotations.HttpRule
 
@@ -321,6 +324,12 @@ func (r *Registry) GetAllFQENs() []string {
 // body or fail loading if encountered.
 func (r *Registry) SetAllowDeleteBody(allow bool) {
 	r.allowDeleteBody = allow
+}
+
+// SetAllowGetBody controls whether http get methods may have a body
+// or fail loading if encountered.
+func (r *Registry) SetAllowGetBody(allow bool) {
+	r.allowGetBody = allow
 }
 
 // SetAllowMerge controls whether generation one swagger file out of multiple protos

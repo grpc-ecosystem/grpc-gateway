@@ -78,7 +78,7 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 		case opts.GetGet() != "":
 			httpMethod = "GET"
 			pathTemplate = opts.GetGet()
-			if opts.Body != "" {
+			if opts.Body != "" && !r.allowGetBody {
 				return nil, fmt.Errorf("must not set request body when http method is GET: %s", md.GetName())
 			}
 

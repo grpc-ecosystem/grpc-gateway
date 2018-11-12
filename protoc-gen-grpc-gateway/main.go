@@ -27,6 +27,7 @@ var (
 	registerFuncSuffix         = flag.String("register_func_suffix", "Handler", "used to construct names of generated Register*<Suffix> methods.")
 	useRequestContext          = flag.Bool("request_context", true, "determine whether to use http.Request's context or not")
 	allowDeleteBody            = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
+	allowGetBody               = flag.Bool("allow_get_body", false, "unless set, HTTP GET methods may not have a body")
 	grpcAPIConfiguration       = flag.String("grpc_api_configuration", "", "path to gRPC API Configuration in YAML format")
 	pathType                   = flag.String("paths", "", "specifies how the paths of generated files are structured")
 	allowRepeatedFieldsInBody  = flag.Bool("allow_repeated_fields_in_body", false, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option")
@@ -77,6 +78,7 @@ func main() {
 	reg.SetPrefix(*importPrefix)
 	reg.SetImportPath(*importPath)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
+	reg.SetAllowGetBody(*allowGetBody)
 	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
