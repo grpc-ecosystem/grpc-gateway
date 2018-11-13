@@ -25,7 +25,7 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type ResponseBodyIn struct {
-	Data                 string   `protobuf:"bytes,1,opt,name=data" json:"data,omitempty"`
+	Data                 string   `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -63,7 +63,7 @@ func (m *ResponseBodyIn) GetData() string {
 }
 
 type ResponseBodyOut struct {
-	Response             *ResponseBodyOut_Response `protobuf:"bytes,2,opt,name=response" json:"response,omitempty"`
+	Response             *ResponseBodyOut_Response `protobuf:"bytes,2,opt,name=response,proto3" json:"response,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
 	XXX_unrecognized     []byte                    `json:"-"`
 	XXX_sizecache        int32                     `json:"-"`
@@ -101,7 +101,7 @@ func (m *ResponseBodyOut) GetResponse() *ResponseBodyOut_Response {
 }
 
 type ResponseBodyOut_Response struct {
-	Data                 string   `protobuf:"bytes,1,opt,name=data" json:"data,omitempty"`
+	Data                 string   `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -152,8 +152,9 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// Client API for ResponseBodyService service
-
+// ResponseBodyServiceClient is the client API for ResponseBodyService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ResponseBodyServiceClient interface {
 	GetResponseBody(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (*ResponseBodyOut, error)
 }
@@ -168,15 +169,14 @@ func NewResponseBodyServiceClient(cc *grpc.ClientConn) ResponseBodyServiceClient
 
 func (c *responseBodyServiceClient) GetResponseBody(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (*ResponseBodyOut, error) {
 	out := new(ResponseBodyOut)
-	err := grpc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ResponseBodyService/GetResponseBody", in, out, c.cc, opts...)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.examplepb.ResponseBodyService/GetResponseBody", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// Server API for ResponseBodyService service
-
+// ResponseBodyServiceServer is the server API for ResponseBodyService service.
 type ResponseBodyServiceServer interface {
 	GetResponseBody(context.Context, *ResponseBodyIn) (*ResponseBodyOut, error)
 }
