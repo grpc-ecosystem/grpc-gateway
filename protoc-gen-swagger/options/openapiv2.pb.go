@@ -190,17 +190,17 @@ func (SecurityScheme_Flow) EnumDescriptor() ([]byte, []int) {
 //
 // TODO(ivucica): document fields
 type Swagger struct {
-	Swagger              string                  `protobuf:"bytes,1,opt,name=swagger" json:"swagger,omitempty"`
-	Info                 *Info                   `protobuf:"bytes,2,opt,name=info" json:"info,omitempty"`
-	Host                 string                  `protobuf:"bytes,3,opt,name=host" json:"host,omitempty"`
-	BasePath             string                  `protobuf:"bytes,4,opt,name=base_path,json=basePath" json:"base_path,omitempty"`
-	Schemes              []Swagger_SwaggerScheme `protobuf:"varint,5,rep,packed,name=schemes,enum=grpc.gateway.protoc_gen_swagger.options.Swagger_SwaggerScheme" json:"schemes,omitempty"`
-	Consumes             []string                `protobuf:"bytes,6,rep,name=consumes" json:"consumes,omitempty"`
-	Produces             []string                `protobuf:"bytes,7,rep,name=produces" json:"produces,omitempty"`
-	Responses            map[string]*Response    `protobuf:"bytes,10,rep,name=responses" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	SecurityDefinitions  *SecurityDefinitions    `protobuf:"bytes,11,opt,name=security_definitions,json=securityDefinitions" json:"security_definitions,omitempty"`
-	Security             []*SecurityRequirement  `protobuf:"bytes,12,rep,name=security" json:"security,omitempty"`
-	ExternalDocs         *ExternalDocumentation  `protobuf:"bytes,14,opt,name=external_docs,json=externalDocs" json:"external_docs,omitempty"`
+	Swagger              string                  `protobuf:"bytes,1,opt,name=swagger,proto3" json:"swagger,omitempty"`
+	Info                 *Info                   `protobuf:"bytes,2,opt,name=info,proto3" json:"info,omitempty"`
+	Host                 string                  `protobuf:"bytes,3,opt,name=host,proto3" json:"host,omitempty"`
+	BasePath             string                  `protobuf:"bytes,4,opt,name=base_path,json=basePath,proto3" json:"base_path,omitempty"`
+	Schemes              []Swagger_SwaggerScheme `protobuf:"varint,5,rep,packed,name=schemes,proto3,enum=grpc.gateway.protoc_gen_swagger.options.Swagger_SwaggerScheme" json:"schemes,omitempty"`
+	Consumes             []string                `protobuf:"bytes,6,rep,name=consumes,proto3" json:"consumes,omitempty"`
+	Produces             []string                `protobuf:"bytes,7,rep,name=produces,proto3" json:"produces,omitempty"`
+	Responses            map[string]*Response    `protobuf:"bytes,10,rep,name=responses,proto3" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	SecurityDefinitions  *SecurityDefinitions    `protobuf:"bytes,11,opt,name=security_definitions,json=securityDefinitions,proto3" json:"security_definitions,omitempty"`
+	Security             []*SecurityRequirement  `protobuf:"bytes,12,rep,name=security,proto3" json:"security,omitempty"`
+	ExternalDocs         *ExternalDocumentation  `protobuf:"bytes,14,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
 	XXX_unrecognized     []byte                  `json:"-"`
 	XXX_sizecache        int32                   `json:"-"`
@@ -313,17 +313,17 @@ func (m *Swagger) GetExternalDocs() *ExternalDocumentation {
 //
 // TODO(ivucica): document fields
 type Operation struct {
-	Tags                 []string               `protobuf:"bytes,1,rep,name=tags" json:"tags,omitempty"`
-	Summary              string                 `protobuf:"bytes,2,opt,name=summary" json:"summary,omitempty"`
-	Description          string                 `protobuf:"bytes,3,opt,name=description" json:"description,omitempty"`
-	ExternalDocs         *ExternalDocumentation `protobuf:"bytes,4,opt,name=external_docs,json=externalDocs" json:"external_docs,omitempty"`
-	OperationId          string                 `protobuf:"bytes,5,opt,name=operation_id,json=operationId" json:"operation_id,omitempty"`
-	Consumes             []string               `protobuf:"bytes,6,rep,name=consumes" json:"consumes,omitempty"`
-	Produces             []string               `protobuf:"bytes,7,rep,name=produces" json:"produces,omitempty"`
-	Responses            map[string]*Response   `protobuf:"bytes,9,rep,name=responses" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	Schemes              []string               `protobuf:"bytes,10,rep,name=schemes" json:"schemes,omitempty"`
-	Deprecated           bool                   `protobuf:"varint,11,opt,name=deprecated" json:"deprecated,omitempty"`
-	Security             []*SecurityRequirement `protobuf:"bytes,12,rep,name=security" json:"security,omitempty"`
+	Tags                 []string               `protobuf:"bytes,1,rep,name=tags,proto3" json:"tags,omitempty"`
+	Summary              string                 `protobuf:"bytes,2,opt,name=summary,proto3" json:"summary,omitempty"`
+	Description          string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	ExternalDocs         *ExternalDocumentation `protobuf:"bytes,4,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
+	OperationId          string                 `protobuf:"bytes,5,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
+	Consumes             []string               `protobuf:"bytes,6,rep,name=consumes,proto3" json:"consumes,omitempty"`
+	Produces             []string               `protobuf:"bytes,7,rep,name=produces,proto3" json:"produces,omitempty"`
+	Responses            map[string]*Response   `protobuf:"bytes,9,rep,name=responses,proto3" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Schemes              []string               `protobuf:"bytes,10,rep,name=schemes,proto3" json:"schemes,omitempty"`
+	Deprecated           bool                   `protobuf:"varint,11,opt,name=deprecated,proto3" json:"deprecated,omitempty"`
+	Security             []*SecurityRequirement `protobuf:"bytes,12,rep,name=security,proto3" json:"security,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
 	XXX_unrecognized     []byte                 `json:"-"`
 	XXX_sizecache        int32                  `json:"-"`
@@ -437,10 +437,10 @@ func (m *Operation) GetSecurity() []*SecurityRequirement {
 type Response struct {
 	// `Description` is a short description of the response.
 	// GFM syntax can be used for rich text representation.
-	Description string `protobuf:"bytes,1,opt,name=description" json:"description,omitempty"`
+	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
 	// `Schema` optionally defines the structure of the response.
 	// If `Schema` is not provided, it means there is no content to the response.
-	Schema               *Schema  `protobuf:"bytes,2,opt,name=schema" json:"schema,omitempty"`
+	Schema               *Schema  `protobuf:"bytes,2,opt,name=schema,proto3" json:"schema,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -490,12 +490,12 @@ func (m *Response) GetSchema() *Schema {
 //
 // TODO(ivucica): document fields
 type Info struct {
-	Title                string   `protobuf:"bytes,1,opt,name=title" json:"title,omitempty"`
-	Description          string   `protobuf:"bytes,2,opt,name=description" json:"description,omitempty"`
-	TermsOfService       string   `protobuf:"bytes,3,opt,name=terms_of_service,json=termsOfService" json:"terms_of_service,omitempty"`
-	Contact              *Contact `protobuf:"bytes,4,opt,name=contact" json:"contact,omitempty"`
-	License              *License `protobuf:"bytes,5,opt,name=license" json:"license,omitempty"`
-	Version              string   `protobuf:"bytes,6,opt,name=version" json:"version,omitempty"`
+	Title                string   `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Description          string   `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	TermsOfService       string   `protobuf:"bytes,3,opt,name=terms_of_service,json=termsOfService,proto3" json:"terms_of_service,omitempty"`
+	Contact              *Contact `protobuf:"bytes,4,opt,name=contact,proto3" json:"contact,omitempty"`
+	License              *License `protobuf:"bytes,5,opt,name=license,proto3" json:"license,omitempty"`
+	Version              string   `protobuf:"bytes,6,opt,name=version,proto3" json:"version,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -573,9 +573,9 @@ func (m *Info) GetVersion() string {
 //
 // TODO(ivucica): document fields
 type Contact struct {
-	Name                 string   `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
-	Url                  string   `protobuf:"bytes,2,opt,name=url" json:"url,omitempty"`
-	Email                string   `protobuf:"bytes,3,opt,name=email" json:"email,omitempty"`
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Url                  string   `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	Email                string   `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -632,9 +632,9 @@ func (m *Contact) GetEmail() string {
 //
 type License struct {
 	// Required. The license name used for the API.
-	Name string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// A URL to the license used for the API.
-	Url                  string   `protobuf:"bytes,2,opt,name=url" json:"url,omitempty"`
+	Url                  string   `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -685,8 +685,8 @@ func (m *License) GetUrl() string {
 //
 // TODO(ivucica): document fields
 type ExternalDocumentation struct {
-	Description          string   `protobuf:"bytes,1,opt,name=description" json:"description,omitempty"`
-	Url                  string   `protobuf:"bytes,2,opt,name=url" json:"url,omitempty"`
+	Description          string   `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	Url                  string   `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -736,11 +736,11 @@ func (m *ExternalDocumentation) GetUrl() string {
 //
 // TODO(ivucica): document fields
 type Schema struct {
-	JsonSchema           *JSONSchema            `protobuf:"bytes,1,opt,name=json_schema,json=jsonSchema" json:"json_schema,omitempty"`
-	Discriminator        string                 `protobuf:"bytes,2,opt,name=discriminator" json:"discriminator,omitempty"`
-	ReadOnly             bool                   `protobuf:"varint,3,opt,name=read_only,json=readOnly" json:"read_only,omitempty"`
-	ExternalDocs         *ExternalDocumentation `protobuf:"bytes,5,opt,name=external_docs,json=externalDocs" json:"external_docs,omitempty"`
-	Example              *any.Any               `protobuf:"bytes,6,opt,name=example" json:"example,omitempty"`
+	JsonSchema           *JSONSchema            `protobuf:"bytes,1,opt,name=json_schema,json=jsonSchema,proto3" json:"json_schema,omitempty"`
+	Discriminator        string                 `protobuf:"bytes,2,opt,name=discriminator,proto3" json:"discriminator,omitempty"`
+	ReadOnly             bool                   `protobuf:"varint,3,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
+	ExternalDocs         *ExternalDocumentation `protobuf:"bytes,5,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
+	Example              *any.Any               `protobuf:"bytes,6,opt,name=example,proto3" json:"example,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
 	XXX_unrecognized     []byte                 `json:"-"`
 	XXX_sizecache        int32                  `json:"-"`
@@ -823,27 +823,27 @@ type JSONSchema struct {
 	// the output.
 	// For example:
 	//  `ref: ".google.protobuf.Timestamp"`.
-	Ref              string   `protobuf:"bytes,3,opt,name=ref" json:"ref,omitempty"`
-	Title            string   `protobuf:"bytes,5,opt,name=title" json:"title,omitempty"`
-	Description      string   `protobuf:"bytes,6,opt,name=description" json:"description,omitempty"`
-	Default          string   `protobuf:"bytes,7,opt,name=default" json:"default,omitempty"`
-	MultipleOf       float64  `protobuf:"fixed64,10,opt,name=multiple_of,json=multipleOf" json:"multiple_of,omitempty"`
-	Maximum          float64  `protobuf:"fixed64,11,opt,name=maximum" json:"maximum,omitempty"`
-	ExclusiveMaximum bool     `protobuf:"varint,12,opt,name=exclusive_maximum,json=exclusiveMaximum" json:"exclusive_maximum,omitempty"`
-	Minimum          float64  `protobuf:"fixed64,13,opt,name=minimum" json:"minimum,omitempty"`
-	ExclusiveMinimum bool     `protobuf:"varint,14,opt,name=exclusive_minimum,json=exclusiveMinimum" json:"exclusive_minimum,omitempty"`
-	MaxLength        uint64   `protobuf:"varint,15,opt,name=max_length,json=maxLength" json:"max_length,omitempty"`
-	MinLength        uint64   `protobuf:"varint,16,opt,name=min_length,json=minLength" json:"min_length,omitempty"`
-	Pattern          string   `protobuf:"bytes,17,opt,name=pattern" json:"pattern,omitempty"`
-	MaxItems         uint64   `protobuf:"varint,20,opt,name=max_items,json=maxItems" json:"max_items,omitempty"`
-	MinItems         uint64   `protobuf:"varint,21,opt,name=min_items,json=minItems" json:"min_items,omitempty"`
-	UniqueItems      bool     `protobuf:"varint,22,opt,name=unique_items,json=uniqueItems" json:"unique_items,omitempty"`
-	MaxProperties    uint64   `protobuf:"varint,24,opt,name=max_properties,json=maxProperties" json:"max_properties,omitempty"`
-	MinProperties    uint64   `protobuf:"varint,25,opt,name=min_properties,json=minProperties" json:"min_properties,omitempty"`
-	Required         []string `protobuf:"bytes,26,rep,name=required" json:"required,omitempty"`
+	Ref              string   `protobuf:"bytes,3,opt,name=ref,proto3" json:"ref,omitempty"`
+	Title            string   `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
+	Description      string   `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
+	Default          string   `protobuf:"bytes,7,opt,name=default,proto3" json:"default,omitempty"`
+	MultipleOf       float64  `protobuf:"fixed64,10,opt,name=multiple_of,json=multipleOf,proto3" json:"multiple_of,omitempty"`
+	Maximum          float64  `protobuf:"fixed64,11,opt,name=maximum,proto3" json:"maximum,omitempty"`
+	ExclusiveMaximum bool     `protobuf:"varint,12,opt,name=exclusive_maximum,json=exclusiveMaximum,proto3" json:"exclusive_maximum,omitempty"`
+	Minimum          float64  `protobuf:"fixed64,13,opt,name=minimum,proto3" json:"minimum,omitempty"`
+	ExclusiveMinimum bool     `protobuf:"varint,14,opt,name=exclusive_minimum,json=exclusiveMinimum,proto3" json:"exclusive_minimum,omitempty"`
+	MaxLength        uint64   `protobuf:"varint,15,opt,name=max_length,json=maxLength,proto3" json:"max_length,omitempty"`
+	MinLength        uint64   `protobuf:"varint,16,opt,name=min_length,json=minLength,proto3" json:"min_length,omitempty"`
+	Pattern          string   `protobuf:"bytes,17,opt,name=pattern,proto3" json:"pattern,omitempty"`
+	MaxItems         uint64   `protobuf:"varint,20,opt,name=max_items,json=maxItems,proto3" json:"max_items,omitempty"`
+	MinItems         uint64   `protobuf:"varint,21,opt,name=min_items,json=minItems,proto3" json:"min_items,omitempty"`
+	UniqueItems      bool     `protobuf:"varint,22,opt,name=unique_items,json=uniqueItems,proto3" json:"unique_items,omitempty"`
+	MaxProperties    uint64   `protobuf:"varint,24,opt,name=max_properties,json=maxProperties,proto3" json:"max_properties,omitempty"`
+	MinProperties    uint64   `protobuf:"varint,25,opt,name=min_properties,json=minProperties,proto3" json:"min_properties,omitempty"`
+	Required         []string `protobuf:"bytes,26,rep,name=required,proto3" json:"required,omitempty"`
 	// Items in 'array' must be unique.
-	Array                []string                           `protobuf:"bytes,34,rep,name=array" json:"array,omitempty"`
-	Type                 []JSONSchema_JSONSchemaSimpleTypes `protobuf:"varint,35,rep,packed,name=type,enum=grpc.gateway.protoc_gen_swagger.options.JSONSchema_JSONSchemaSimpleTypes" json:"type,omitempty"`
+	Array                []string                           `protobuf:"bytes,34,rep,name=array,proto3" json:"array,omitempty"`
+	Type                 []JSONSchema_JSONSchemaSimpleTypes `protobuf:"varint,35,rep,packed,name=type,proto3,enum=grpc.gateway.protoc_gen_swagger.options.JSONSchema_JSONSchemaSimpleTypes" json:"type,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                           `json:"-"`
 	XXX_unrecognized     []byte                             `json:"-"`
 	XXX_sizecache        int32                              `json:"-"`
@@ -1021,8 +1021,8 @@ func (m *JSONSchema) GetType() []JSONSchema_JSONSchemaSimpleTypes {
 type Tag struct {
 	// TODO(ivucica): Description should be extracted from comments on the proto
 	// service object.
-	Description          string                 `protobuf:"bytes,2,opt,name=description" json:"description,omitempty"`
-	ExternalDocs         *ExternalDocumentation `protobuf:"bytes,3,opt,name=external_docs,json=externalDocs" json:"external_docs,omitempty"`
+	Description          string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	ExternalDocs         *ExternalDocumentation `protobuf:"bytes,3,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
 	XXX_unrecognized     []byte                 `json:"-"`
 	XXX_sizecache        int32                  `json:"-"`
@@ -1076,7 +1076,7 @@ func (m *Tag) GetExternalDocs() *ExternalDocumentation {
 // and only serves to provide the relevant details for each scheme.
 type SecurityDefinitions struct {
 	// A single security scheme definition, mapping a "name" to the scheme it defines.
-	Security             map[string]*SecurityScheme `protobuf:"bytes,1,rep,name=security" json:"security,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Security             map[string]*SecurityScheme `protobuf:"bytes,1,rep,name=security,proto3" json:"security,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	XXX_NoUnkeyedLiteral struct{}                   `json:"-"`
 	XXX_unrecognized     []byte                     `json:"-"`
 	XXX_sizecache        int32                      `json:"-"`
@@ -1125,36 +1125,36 @@ func (m *SecurityDefinitions) GetSecurity() map[string]*SecurityScheme {
 type SecurityScheme struct {
 	// Required. The type of the security scheme. Valid values are "basic",
 	// "apiKey" or "oauth2".
-	Type SecurityScheme_Type `protobuf:"varint,1,opt,name=type,enum=grpc.gateway.protoc_gen_swagger.options.SecurityScheme_Type" json:"type,omitempty"`
+	Type SecurityScheme_Type `protobuf:"varint,1,opt,name=type,proto3,enum=grpc.gateway.protoc_gen_swagger.options.SecurityScheme_Type" json:"type,omitempty"`
 	// A short description for security scheme.
-	Description string `protobuf:"bytes,2,opt,name=description" json:"description,omitempty"`
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// Required. The name of the header or query parameter to be used.
 	//
 	// Valid for apiKey.
-	Name string `protobuf:"bytes,3,opt,name=name" json:"name,omitempty"`
+	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	// Required. The location of the API key. Valid values are "query" or "header".
 	//
 	// Valid for apiKey.
-	In SecurityScheme_In `protobuf:"varint,4,opt,name=in,enum=grpc.gateway.protoc_gen_swagger.options.SecurityScheme_In" json:"in,omitempty"`
+	In SecurityScheme_In `protobuf:"varint,4,opt,name=in,proto3,enum=grpc.gateway.protoc_gen_swagger.options.SecurityScheme_In" json:"in,omitempty"`
 	// Required. The flow used by the OAuth2 security scheme. Valid values are
 	// "implicit", "password", "application" or "accessCode".
 	//
 	// Valid for oauth2.
-	Flow SecurityScheme_Flow `protobuf:"varint,5,opt,name=flow,enum=grpc.gateway.protoc_gen_swagger.options.SecurityScheme_Flow" json:"flow,omitempty"`
+	Flow SecurityScheme_Flow `protobuf:"varint,5,opt,name=flow,proto3,enum=grpc.gateway.protoc_gen_swagger.options.SecurityScheme_Flow" json:"flow,omitempty"`
 	// Required. The authorization URL to be used for this flow. This SHOULD be in
 	// the form of a URL.
 	//
 	// Valid for oauth2/implicit and oauth2/accessCode.
-	AuthorizationUrl string `protobuf:"bytes,6,opt,name=authorization_url,json=authorizationUrl" json:"authorization_url,omitempty"`
+	AuthorizationUrl string `protobuf:"bytes,6,opt,name=authorization_url,json=authorizationUrl,proto3" json:"authorization_url,omitempty"`
 	// Required. The token URL to be used for this flow. This SHOULD be in the
 	// form of a URL.
 	//
 	// Valid for oauth2/password, oauth2/application and oauth2/accessCode.
-	TokenUrl string `protobuf:"bytes,7,opt,name=token_url,json=tokenUrl" json:"token_url,omitempty"`
+	TokenUrl string `protobuf:"bytes,7,opt,name=token_url,json=tokenUrl,proto3" json:"token_url,omitempty"`
 	// Required. The available scopes for the OAuth2 security scheme.
 	//
 	// Valid for oauth2.
-	Scopes               *Scopes  `protobuf:"bytes,8,opt,name=scopes" json:"scopes,omitempty"`
+	Scopes               *Scopes  `protobuf:"bytes,8,opt,name=scopes,proto3" json:"scopes,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1256,7 +1256,7 @@ type SecurityRequirement struct {
 	// the Security Definitions. If the security scheme is of type "oauth2",
 	// then the value is a list of scope names required for the execution.
 	// For other security scheme types, the array MUST be empty.
-	SecurityRequirement  map[string]*SecurityRequirement_SecurityRequirementValue `protobuf:"bytes,1,rep,name=security_requirement,json=securityRequirement" json:"security_requirement,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	SecurityRequirement  map[string]*SecurityRequirement_SecurityRequirementValue `protobuf:"bytes,1,rep,name=security_requirement,json=securityRequirement,proto3" json:"security_requirement,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	XXX_NoUnkeyedLiteral struct{}                                                 `json:"-"`
 	XXX_unrecognized     []byte                                                   `json:"-"`
 	XXX_sizecache        int32                                                    `json:"-"`
@@ -1297,7 +1297,7 @@ func (m *SecurityRequirement) GetSecurityRequirement() map[string]*SecurityRequi
 // scope names required for the execution. For other security scheme types,
 // the array MUST be empty.
 type SecurityRequirement_SecurityRequirementValue struct {
-	Scope                []string `protobuf:"bytes,1,rep,name=scope" json:"scope,omitempty"`
+	Scope                []string `protobuf:"bytes,1,rep,name=scope,proto3" json:"scope,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1346,7 +1346,7 @@ func (m *SecurityRequirement_SecurityRequirementValue) GetScope() []string {
 type Scopes struct {
 	// Maps between a name of a scope to a short description of it (as the value
 	// of the property).
-	Scope                map[string]string `protobuf:"bytes,1,rep,name=scope" json:"scope,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Scope                map[string]string `protobuf:"bytes,1,rep,name=scope,proto3" json:"scope,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
 	XXX_unrecognized     []byte            `json:"-"`
 	XXX_sizecache        int32             `json:"-"`

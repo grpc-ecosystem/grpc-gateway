@@ -270,8 +270,8 @@ func TestJSONPbEncoder(t *testing.T) {
 				if strings.ContainsAny(json, " \t\r\n") {
 					t.Errorf("strings.ContainsAny(%q, %q) = true; want false", json, " \t\r\n")
 				}
-				if strings.Contains(json, "ONE") {
-					t.Errorf(`strings.Contains(%q, "ONE") = true; want false`, json)
+				if !strings.Contains(json, "ONE") {
+					t.Errorf(`strings.Contains(%q, "ONE") = false; want true`, json)
 				}
 				if want := "uint64Value"; !strings.Contains(json, want) {
 					t.Errorf(`strings.Contains(%q, %q) = false; want true`, json, want)

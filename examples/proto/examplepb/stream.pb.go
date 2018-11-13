@@ -34,8 +34,9 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// Client API for StreamService service
-
+// StreamServiceClient is the client API for StreamService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type StreamServiceClient interface {
 	BulkCreate(ctx context.Context, opts ...grpc.CallOption) (StreamService_BulkCreateClient, error)
 	List(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (StreamService_ListClient, error)
@@ -51,7 +52,7 @@ func NewStreamServiceClient(cc *grpc.ClientConn) StreamServiceClient {
 }
 
 func (c *streamServiceClient) BulkCreate(ctx context.Context, opts ...grpc.CallOption) (StreamService_BulkCreateClient, error) {
-	stream, err := grpc.NewClientStream(ctx, &_StreamService_serviceDesc.Streams[0], c.cc, "/grpc.gateway.examples.examplepb.StreamService/BulkCreate", opts...)
+	stream, err := c.cc.NewStream(ctx, &_StreamService_serviceDesc.Streams[0], "/grpc.gateway.examples.examplepb.StreamService/BulkCreate", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +86,7 @@ func (x *streamServiceBulkCreateClient) CloseAndRecv() (*empty.Empty, error) {
 }
 
 func (c *streamServiceClient) List(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (StreamService_ListClient, error) {
-	stream, err := grpc.NewClientStream(ctx, &_StreamService_serviceDesc.Streams[1], c.cc, "/grpc.gateway.examples.examplepb.StreamService/List", opts...)
+	stream, err := c.cc.NewStream(ctx, &_StreamService_serviceDesc.Streams[1], "/grpc.gateway.examples.examplepb.StreamService/List", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +118,7 @@ func (x *streamServiceListClient) Recv() (*ABitOfEverything, error) {
 }
 
 func (c *streamServiceClient) BulkEcho(ctx context.Context, opts ...grpc.CallOption) (StreamService_BulkEchoClient, error) {
-	stream, err := grpc.NewClientStream(ctx, &_StreamService_serviceDesc.Streams[2], c.cc, "/grpc.gateway.examples.examplepb.StreamService/BulkEcho", opts...)
+	stream, err := c.cc.NewStream(ctx, &_StreamService_serviceDesc.Streams[2], "/grpc.gateway.examples.examplepb.StreamService/BulkEcho", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -147,8 +148,7 @@ func (x *streamServiceBulkEchoClient) Recv() (*sub.StringMessage, error) {
 	return m, nil
 }
 
-// Server API for StreamService service
-
+// StreamServiceServer is the server API for StreamService service.
 type StreamServiceServer interface {
 	BulkCreate(StreamService_BulkCreateServer) error
 	List(*empty.Empty, StreamService_ListServer) error

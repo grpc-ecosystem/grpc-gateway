@@ -2,16 +2,24 @@ workspace(name = "grpc_ecosystem_grpc_gateway")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+# master as of 2018-11-09. This should be updated when a new release is tagged.
 http_archive(
     name = "io_bazel_rules_go",
-    sha256 = "8b68d0630d63d95dacc0016c3bb4b76154fe34fca93efd65d1c366de3fcb4294",
-    url = "https://github.com/bazelbuild/rules_go/releases/download/0.12.1/rules_go-0.12.1.tar.gz",
+    sha256 = "c23db3b50b8822e153bc5accfea75baeecedb481a162391c4f3b9aec451e34b4",
+    strip_prefix = "rules_go-109c520465fcb418f2c4be967f3744d959ad66d3",
+    urls = [
+        "https://github.com/bazelbuild/rules_go/archive/109c520465fcb418f2c4be967f3744d959ad66d3.tar.gz",
+    ],
 )
 
+# master as of 2018-11-09. This should be updated when a new release is tagged.
 http_archive(
     name = "bazel_gazelle",
-    sha256 = "d03625db67e9fb0905bbd206fa97e32ae9da894fe234a493e7517fd25faec914",
-    url = "https://github.com/bazelbuild/bazel-gazelle/releases/download/0.10.1/bazel-gazelle-0.10.1.tar.gz",
+    sha256 = "a3af4a61d7b2f2c5386761f94a21f474871a32f0e94b13f08824248c4df25229",
+    strip_prefix = "bazel-gazelle-7b1e3c6eb5447c6647955fc93c012635f274f0f0",
+    urls = [
+        "https://github.com/bazelbuild/bazel-gazelle/archive/7b1e3c6eb5447c6647955fc93c012635f274f0f0.tar.gz",
+    ],
 )
 
 http_archive(
@@ -21,12 +29,10 @@ http_archive(
     url = "https://github.com/bazelbuild/buildtools/archive/e90e7cc6ef3e6d08d4ca8a982935c3eed638e058.tar.gz",
 )
 
-load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
 
 gazelle_dependencies()
 
-load("@bazel_gazelle//:def.bzl", "go_repository")
-load("//:repositories.bzl", "repositories")
 load("@io_bazel_rules_go//go:def.bzl", "go_register_toolchains", "go_rules_dependencies")
 
 # Also define in Gopkg.toml
@@ -63,8 +69,6 @@ go_repository(
     commit = "eb3733d160e74a9c7e442f435eb3bea458e1d19f",
     importpath = "gopkg.in/yaml.v2",
 )
-
-repositories()
 
 go_rules_dependencies()
 
