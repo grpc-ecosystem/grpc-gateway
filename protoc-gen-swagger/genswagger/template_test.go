@@ -702,6 +702,11 @@ func TestTemplateToSwaggerPath(t *testing.T) {
 		{"/{user.name=prefix/*}", "/{user.name=prefix/*}"},
 		{"/{user.name=prefix1/*/prefix2/*}", "/{user.name=prefix1/*/prefix2/*}"},
 		{"/{parent=prefix/*}/children", "/{parent=prefix/*}/children"},
+		{"/{name=prefix/*}:customMethod", "/{name=prefix/*}:customMethod"},
+		{"/{name=prefix1/*/prefix2/*}:customMethod", "/{name=prefix1/*/prefix2/*}:customMethod"},
+		{"/{user.name=prefix/*}:customMethod", "/{user.name=prefix/*}:customMethod"},
+		{"/{user.name=prefix1/*/prefix2/*}:customMethod", "/{user.name=prefix1/*/prefix2/*}:customMethod"},
+		{"/{parent=prefix/*}/children:customMethod", "/{parent=prefix/*}/children:customMethod"},
 	}
 
 	for _, data := range tests {
