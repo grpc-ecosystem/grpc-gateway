@@ -570,6 +570,8 @@ func isResourceName(prefix string) bool {
 	words := strings.Split(prefix, ".")
 	l := len(words)
 	field := words[l-1]
+	words = strings.Split(field, ":")
+	field = words[0]
 	return field == "parent" || field == "name"
 }
 
