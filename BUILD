@@ -11,6 +11,7 @@ buildifier(
 )
 
 # gazelle:exclude third_party
+# gazelle:exclude vendor
 
 gazelle(
     name = "gazelle_diff",
