@@ -54,7 +54,7 @@
           "format": "int32"
         },
         "int64_value": {
-          "type": "string",
+          "type": "integer",
           "format": "int64"
         },
         "float_value": {

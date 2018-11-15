@@ -898,7 +898,7 @@ func TestSchemaOfField(t *testing.T) {
 			},
 			refs: make(refMap),
 			expected: schemaCore{
-				Type:   "string",
+				Type:   "integer",
 				Format: "int64",
 			},
 		},
