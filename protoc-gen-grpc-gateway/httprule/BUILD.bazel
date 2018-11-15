@@ -12,7 +12,7 @@ go_library(
     importpath = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule",
     deps = [
         "//utilities:go_default_library",
-        "@com_github_golang_glog//:go_default_library",
+        "//vendor/github.com/golang/glog:go_default_library",
     ],
 )
 
@@ -27,6 +27,6 @@ go_test(
     embed = [":go_default_library"],
     deps = [
         "//utilities:go_default_library",
-        "@com_github_golang_glog//:go_default_library",
+        "//vendor/github.com/golang/glog:go_default_library",
     ],
 )
