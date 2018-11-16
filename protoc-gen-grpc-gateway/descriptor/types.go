@@ -451,7 +451,7 @@ var (
 	}
 
 	wellKnownTypeConv = map[string]string{
-		".google.protobuf.Timestamp": "runtime.Timestamp",
-		".google.protobuf.Duration":  "runtime.Duration",
+		".google.protobuf.Timestamp":   "runtime.Timestamp",
+		".google.protobuf.Duration":    "runtime.Duration",
 	}
 )
