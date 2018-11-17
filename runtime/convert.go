@@ -9,6 +9,7 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/ptypes/duration"
 	"github.com/golang/protobuf/ptypes/timestamp"
+	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
 // String just returns the given string.
@@ -251,4 +252,37 @@ func EnumSlice(val, sep string, enumValMap map[string]int32) ([]int32, error) {
 		values[i] = value
 	}
 	return values, nil
+}
+
+// Support fot google.protobuf.wrappers on top of primitive types
+func StringValue(val string) (*wrappers.StringValue, error) {
+	return &wrappers.StringValue{Value: val}, nil
+}
+
+func Int32Value(val int32) (*wrappers.Int32Value, error) {
+	return &wrappers.Int32Value{Value: val}, nil
+}
+
+func UInt32Value(val uint32) (*wrappers.UInt32Value, error) {
+	return &wrappers.UInt32Value{Value: val}, nil
+}
+
+func Int64Value(val int64) (*wrappers.Int64Value, error) {
+	return &wrappers.Int64Value{Value: val}, nil
+}
+
+func UInt64Value(val uint64) (*wrappers.UInt64Value, error) {
+	return &wrappers.UInt64Value{Value: val}, nil
+}
+
+func FloatValue(val float32) (*wrappers.FloatValue, error) {
+	return &wrappers.FloatValue{Value: val}, nil
+}
+
+func DoubleValue(val float64) (*wrappers.DoubleValue, error) {
+	return &wrappers.DoubleValue{Value: val}, nil
+}
+
+func BoolValue(val bool) (*wrappers.BoolValue, error) {
+	return &wrappers.BoolValue{Value: val}, nil
 }
