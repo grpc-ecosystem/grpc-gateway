@@ -263,6 +263,21 @@ func StringValue(val string) (*wrappers.StringValue, error) {
 	return &wrappers.StringValue{Value: val}, nil
 }
 
+// FloatValue well-known type support as wrapper around float32 type
+func FloatValue(val float32) (*wrappers.FloatValue, error) {
+	return &wrappers.FloatValue{Value: val}, nil
+}
+
+// DoubleValue well-known type support as wrapper around float64 type
+func DoubleValue(val float64) (*wrappers.DoubleValue, error) {
+	return &wrappers.DoubleValue{Value: val}, nil
+}
+
+// BoolValue well-known type support as wrapper around bool type
+func BoolValue(val bool) (*wrappers.BoolValue, error) {
+	return &wrappers.BoolValue{Value: val}, nil
+}
+
 // Int32Value well-known type support as wrapper around int32 type
 func Int32Value(val int32) (*wrappers.Int32Value, error) {
 	return &wrappers.Int32Value{Value: val}, nil
@@ -281,19 +296,4 @@ func Int64Value(val int64) (*wrappers.Int64Value, error) {
 // UInt64Value well-known type support as wrapper around uint64 type
 func UInt64Value(val uint64) (*wrappers.UInt64Value, error) {
 	return &wrappers.UInt64Value{Value: val}, nil
-}
-
-// FloatValue well-known type support as wrapper around float32 type
-func FloatValue(val float32) (*wrappers.FloatValue, error) {
-	return &wrappers.FloatValue{Value: val}, nil
-}
-
-// DoubleValue well-known type support as wrapper around float64 type
-func DoubleValue(val float64) (*wrappers.DoubleValue, error) {
-	return &wrappers.DoubleValue{Value: val}, nil
-}
-
-// BoolValue well-known type support as wrapper around bool type
-func BoolValue(val bool) (*wrappers.BoolValue, error) {
-	return &wrappers.BoolValue{Value: val}, nil
 }
