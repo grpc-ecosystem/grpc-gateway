@@ -27,7 +27,7 @@ First you need to install ProtocolBuffers 3.0.0 or later.
 ```sh
 mkdir tmp
 cd tmp
-git clone https://github.com/google/protobuf
+git clone https://github.com/protocolbuffers/protobuf
 cd protobuf
 ./autogen.sh
 ./configure
