@@ -258,42 +258,42 @@ func EnumSlice(val, sep string, enumValMap map[string]int32) ([]int32, error) {
 	Support fot google.protobuf.wrappers on top of primitive types
 */
 
-//	StringValue well-known type support as wrapper around string type
+// StringValue well-known type support as wrapper around string type
 func StringValue(val string) (*wrappers.StringValue, error) {
 	return &wrappers.StringValue{Value: val}, nil
 }
 
-//	Int32Value well-known type support as wrapper around int32 type
+// Int32Value well-known type support as wrapper around int32 type
 func Int32Value(val int32) (*wrappers.Int32Value, error) {
 	return &wrappers.Int32Value{Value: val}, nil
 }
 
-//	UInt32Value well-known type support as wrapper around uint32 type
+// UInt32Value well-known type support as wrapper around uint32 type
 func UInt32Value(val uint32) (*wrappers.UInt32Value, error) {
 	return &wrappers.UInt32Value{Value: val}, nil
 }
 
-//	Int64Value well-known type support as wrapper around int64 type
+// Int64Value well-known type support as wrapper around int64 type
 func Int64Value(val int64) (*wrappers.Int64Value, error) {
 	return &wrappers.Int64Value{Value: val}, nil
 }
 
-//	UInt64Value well-known type support as wrapper around uint64 type
+// UInt64Value well-known type support as wrapper around uint64 type
 func UInt64Value(val uint64) (*wrappers.UInt64Value, error) {
 	return &wrappers.UInt64Value{Value: val}, nil
 }
 
-//	FloatValue well-known type support as wrapper around float32 type
+// FloatValue well-known type support as wrapper around float32 type
 func FloatValue(val float32) (*wrappers.FloatValue, error) {
 	return &wrappers.FloatValue{Value: val}, nil
 }
 
-//	DoubleValue well-known type support as wrapper around float64 type
+// DoubleValue well-known type support as wrapper around float64 type
 func DoubleValue(val float64) (*wrappers.DoubleValue, error) {
 	return &wrappers.DoubleValue{Value: val}, nil
 }
 
-//	BoolValue well-known type support as wrapper around bool type
+// BoolValue well-known type support as wrapper around bool type
 func BoolValue(val bool) (*wrappers.BoolValue, error) {
 	return &wrappers.BoolValue{Value: val}, nil
 }
