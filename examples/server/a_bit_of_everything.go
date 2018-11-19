@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"strings"
 	"sync"
 
 	"github.com/golang/glog"
@@ -11,8 +12,8 @@ import (
 	"github.com/golang/protobuf/ptypes/duration"
 	"github.com/golang/protobuf/ptypes/empty"
 	examples "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
-	sub "github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
-	sub2 "github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub2"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub2"
 	"github.com/rogpeppe/fastuuid"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
@@ -159,6 +160,39 @@ func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABit
 		return nil, status.Errorf(codes.NotFound, "not found")
 	}
 	return new(empty.Empty), nil
+}
+
+func (s *_ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.UpdateV2Request) (*empty.Empty, error) {
+	glog.Info(msg)
+	// If there is no update mask do a regular update
+	if msg.UpdateMask == nil || len(msg.UpdateMask.GetPaths()) == 0 {
+		return s.Update(ctx, msg.Abe)
+	}
+
+	s.m.Lock()
+	defer s.m.Unlock()
+	if a, ok := s.v[msg.Abe.Uuid]; ok {
+		applyFieldMask(a, msg.Abe, msg.UpdateMask)
+	} else {
+		return nil, status.Errorf(codes.NotFound, "not found")
+	}
+	return new(empty.Empty), nil
+}
+
+// PatchWithFieldMaskInBody differs from UpdateV2 only in that this method exposes the field mask in the request body,
+// so that clients can specify their mask explicitly
+func (s *_ABitOfEverythingServer) PatchWithFieldMaskInBody(ctx context.Context, request *examples.UpdateV2Request) (*empty.Empty, error) {
+	// low-effort attempt to modify the field mask to only include paths for the ABE struct. Since this is only for the
+	// integration tests, this narrow implementaion is fine.
+	if request.UpdateMask != nil {
+		var shifted []string
+		for _, path := range request.UpdateMask.GetPaths() {
+			shifted = append(shifted, strings.TrimPrefix(path, "Abe."))
+		}
+		request.UpdateMask.Paths = shifted
+	}
+
+	return s.UpdateV2(ctx, request)
 }
 
 func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessage) (*empty.Empty, error) {
