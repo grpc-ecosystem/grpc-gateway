@@ -264,36 +264,49 @@ func StringValue(val string) (*wrappers.StringValue, error) {
 }
 
 // FloatValue well-known type support as wrapper around float32 type
-func FloatValue(val float32) (*wrappers.FloatValue, error) {
-	return &wrappers.FloatValue{Value: val}, nil
+func FloatValue(val string) (*wrappers.FloatValue, error) {
+	parsedVal, err := Float32(val)
+	return &wrappers.FloatValue{Value: parsedVal}, err
 }
 
 // DoubleValue well-known type support as wrapper around float64 type
-func DoubleValue(val float64) (*wrappers.DoubleValue, error) {
-	return &wrappers.DoubleValue{Value: val}, nil
+func DoubleValue(val string) (*wrappers.DoubleValue, error) {
+	parsedVal, err := Float64(val)
+	return &wrappers.DoubleValue{Value: parsedVal}, err
 }
 
 // BoolValue well-known type support as wrapper around bool type
-func BoolValue(val bool) (*wrappers.BoolValue, error) {
-	return &wrappers.BoolValue{Value: val}, nil
+func BoolValue(val string) (*wrappers.BoolValue, error) {
+	parsedVal, err := Bool(val)
+	return &wrappers.BoolValue{Value: parsedVal}, err
 }
 
 // Int32Value well-known type support as wrapper around int32 type
-func Int32Value(val int32) (*wrappers.Int32Value, error) {
-	return &wrappers.Int32Value{Value: val}, nil
+func Int32Value(val string) (*wrappers.Int32Value, error) {
+	parsedVal, err := Int32(val)
+	return &wrappers.Int32Value{Value: parsedVal}, err
 }
 
 // UInt32Value well-known type support as wrapper around uint32 type
-func UInt32Value(val uint32) (*wrappers.UInt32Value, error) {
-	return &wrappers.UInt32Value{Value: val}, nil
+func UInt32Value(val string) (*wrappers.UInt32Value, error) {
+	parsedVal, err := Uint32(val)
+	return &wrappers.UInt32Value{Value: parsedVal}, err
 }
 
 // Int64Value well-known type support as wrapper around int64 type
-func Int64Value(val int64) (*wrappers.Int64Value, error) {
-	return &wrappers.Int64Value{Value: val}, nil
+func Int64Value(val string) (*wrappers.Int64Value, error) {
+	parsedVal, err := Int64(val)
+	return &wrappers.Int64Value{Value: parsedVal}, err
 }
 
 // UInt64Value well-known type support as wrapper around uint64 type
-func UInt64Value(val uint64) (*wrappers.UInt64Value, error) {
-	return &wrappers.UInt64Value{Value: val}, nil
+func UInt64Value(val string) (*wrappers.UInt64Value, error) {
+	parsedVal, err := Uint64(val)
+	return &wrappers.UInt64Value{Value: parsedVal}, err
+}
+
+// BytesValue well-known type support as wrapper around bytes[] type
+func BytesValue(val string) (*wrappers.BytesValue, error) {
+	parsedVal, err := Bytes(val)
+	return &wrappers.BytesValue{Value: parsedVal}, err
 }

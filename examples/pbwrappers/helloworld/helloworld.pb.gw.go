@@ -118,7 +118,7 @@ func request_Greeter_SayHello_2(ctx context.Context, marshaler runtime.Marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "floatVal")
 	}
 
-	protoReq.FloatVal, err = runtime.StringValue(val)
+	protoReq.FloatVal, err = runtime.FloatValue(val)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "floatVal", err)
