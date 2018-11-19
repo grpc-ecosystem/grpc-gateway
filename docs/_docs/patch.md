@@ -52,3 +52,15 @@ rpc PatchWithFieldMaskInBody(UpdateV2Request) returns (google.protobuf.Empty) {
 ```
 
 3. Generate gRPC and reverse-proxy stubs and implement your service.
+
+## Curl examples
+
+In the example below we will partially update our ABitOfEverything resource by passing only the field we want to change. Since we are using the endpoint with field mask hidden we only need to pass the field we want to change ("string_value") and it will keep everything else in our resource the same.
+```
+curl --data '{"string_value": "strprefix/foo"}' -X PATCH http://address:port/v2/example/a_bit_of_everything/1
+```
+
+If we know what fields we want to update then we can use PATCH with field mask approach. For this we need to pass the resource and the update_mask. Below only the "single_nested" will get updated because that is what we specify in the field_mask.
+```
+curl --data '{"abe":{"single_nested":{"amount":457},"string_value":"some value that won't get updated because not in the field mask"},"update_mask":{"paths":["single_nested"]}}' -X PATCH http://address:port/v2a/example/a_bit_of_everything/1
+```
