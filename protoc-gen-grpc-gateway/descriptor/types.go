@@ -453,5 +453,14 @@ var (
 	wellKnownTypeConv = map[string]string{
 		".google.protobuf.Timestamp":   "runtime.Timestamp",
 		".google.protobuf.Duration":    "runtime.Duration",
+		".google.protobuf.StringValue": "runtime.StringValue",
+		".google.protobuf.FloatValue":  "runtime.FloatValue",
+		".google.protobuf.DoubleValue": "runtime.DoubleValue",
+		".google.protobuf.BoolValue":   "runtime.BoolValue",
+		".google.protobuf.BytesValue":  "runtime.BytesValue",
+		".google.protobuf.Int32Value":  "runtime.Int32Value",
+		".google.protobuf.UInt32Value": "runtime.UInt32Value",
+		".google.protobuf.Int64Value":  "runtime.Int64Value",
+		".google.protobuf.UInt64Value": "runtime.UInt64Value",
 	}
 )
