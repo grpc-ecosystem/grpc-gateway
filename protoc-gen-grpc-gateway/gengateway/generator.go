@@ -13,21 +13,29 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/generator"
-	options "google.golang.org/genproto/googleapis/api/annotations"
 )
 
 var (
 	errNoTargetService = errors.New("no target service defined in the file")
 )
 
+type pathType int
+
+const (
+	pathTypeImport pathType = iota
+	pathTypeSourceRelative
+)
+
 type generator struct {
-	reg               *descriptor.Registry
-	baseImports       []descriptor.GoPackage
-	useRequestContext bool
+	reg                *descriptor.Registry
+	baseImports        []descriptor.GoPackage
+	useRequestContext  bool
+	registerFuncSuffix string
+	pathType           pathType
 }
 
 // New returns a new generator which generates grpc gateway files.
-func New(reg *descriptor.Registry, useRequestContext bool) gen.Generator {
+func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, pathTypeString string) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
 		"io",
@@ -57,7 +65,24 @@ func New(reg *descriptor.Registry, useRequestContext bool) gen.Generator {
 		}
 		imports = append(imports, pkg)
 	}
-	return &generator{reg: reg, baseImports: imports, useRequestContext: useRequestContext}
+
+	var pathType pathType
+	switch pathTypeString {
+	case "", "import":
+		// paths=import is default
+	case "source_relative":
+		pathType = pathTypeSourceRelative
+	default:
+		glog.Fatalf(`Unknown path type %q: want "import" or "source_relative".`, pathTypeString)
+	}
+
+	return &generator{
+		reg:                reg,
+		baseImports:        imports,
+		useRequestContext:  useRequestContext,
+		registerFuncSuffix: registerFuncSuffix,
+		pathType:           pathType,
+	}
 }
 
 func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGeneratorResponse_File, error) {
@@ -78,7 +103,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 			return nil, err
 		}
 		name := file.GetName()
-		if file.GoPkg.Path != "" {
+		if g.pathType == pathTypeImport && file.GoPkg.Path != "" {
 			name = fmt.Sprintf("%s/%s", file.GoPkg.Path, filepath.Base(name))
 		}
 		ext := filepath.Ext(name)
@@ -102,8 +127,9 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 	}
 	for _, svc := range file.Services {
 		for _, m := range svc.Methods {
+			imports = append(imports, g.addEnumPathParamImports(file, m, pkgSeen)...)
 			pkg := m.RequestType.File.GoPkg
-			if m.Options == nil || !proto.HasExtension(m.Options, options.E_Http) ||
+			if len(m.Bindings) == 0 ||
 				pkg == file.GoPkg || pkgSeen[pkg.Path] {
 				continue
 			}
@@ -111,5 +137,31 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 			imports = append(imports, pkg)
 		}
 	}
-	return applyTemplate(param{File: file, Imports: imports, UseRequestContext: g.useRequestContext})
+	params := param{
+		File:               file,
+		Imports:            imports,
+		UseRequestContext:  g.useRequestContext,
+		RegisterFuncSuffix: g.registerFuncSuffix,
+	}
+	return applyTemplate(params, g.reg)
+}
+
+// addEnumPathParamImports handles adding import of enum path parameter go packages
+func (g *generator) addEnumPathParamImports(file *descriptor.File, m *descriptor.Method, pkgSeen map[string]bool) []descriptor.GoPackage {
+	var imports []descriptor.GoPackage
+	for _, b := range m.Bindings {
+		for _, p := range b.PathParams {
+			e, err := g.reg.LookupEnum("", p.Target.GetTypeName())
+			if err != nil {
+				continue
+			}
+			pkg := e.File.GoPkg
+			if pkg == file.GoPkg || pkgSeen[pkg.Path] {
+				continue
+			}
+			pkgSeen[pkg.Path] = true
+			imports = append(imports, pkg)
+		}
+	}
+	return imports
 }

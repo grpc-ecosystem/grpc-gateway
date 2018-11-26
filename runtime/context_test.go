@@ -1,13 +1,14 @@
 package runtime_test
 
 import (
+	"context"
+	"encoding/base64"
 	"net/http"
 	"reflect"
 	"testing"
 	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"golang.org/x/net/context"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -65,6 +66,30 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	}
 	if got, want := md["authorization"], []string{"Token 1234567890"}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["authorization"] = %q want %q`, got, want)
+	}
+}
+
+func TestAnnotateContext_ForwardGrpcBinaryMetadata(t *testing.T) {
+	ctx := context.Background()
+	request, err := http.NewRequest("GET", "http://www.example.com", nil)
+	if err != nil {
+		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
+	}
+
+	binData := []byte("\x00test-binary-data")
+	request.Header.Add("Grpc-Metadata-Test-Bin", base64.StdEncoding.EncodeToString(binData))
+
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
+	if err != nil {
+		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
+		return
+	}
+	md, ok := metadata.FromOutgoingContext(annotated)
+	if !ok || len(md) != emptyForwardMetaCount+1 {
+		t.Errorf("Expected %d metadata items in context; got %v", emptyForwardMetaCount+1, md)
+	}
+	if got, want := md["test-bin"], []string{string(binData)}; !reflect.DeepEqual(got, want) {
+		t.Errorf(`md["test-bin"] = %q want %q`, got, want)
 	}
 }
 
@@ -167,6 +192,26 @@ func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 		}
 		if got, want := deadline.Sub(time.Now()), spec.want; got-want > acceptableError || got-want < -acceptableError {
 			t.Errorf("deadline.Sub(time.Now()) = %v; want %v; with error %v; timeout= %q", got, want, acceptableError, spec.timeout)
+		}
+	}
+}
+func TestAnnotateContext_SupportsCustomAnnotators(t *testing.T) {
+	md1 := func(context.Context, *http.Request) metadata.MD { return metadata.New(map[string]string{"foo": "bar"}) }
+	md2 := func(context.Context, *http.Request) metadata.MD { return metadata.New(map[string]string{"baz": "qux"}) }
+	expected := metadata.New(map[string]string{"foo": "bar", "baz": "qux"})
+	request, err := http.NewRequest("GET", "http://example.com", nil)
+	if err != nil {
+		t.Fatalf(`http.NewRequest("GET", "http://example.com", nil failed with %v; want success`, err)
+	}
+	annotated, err := runtime.AnnotateContext(context.Background(), runtime.NewServeMux(runtime.WithMetadata(md1), runtime.WithMetadata(md2)), request)
+	if err != nil {
+		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
+		return
+	}
+	actual, _ := metadata.FromOutgoingContext(annotated)
+	for key, e := range expected {
+		if a, ok := actual[key]; !ok || !reflect.DeepEqual(e, a) {
+			t.Errorf("metadata.MD[%s] = %v; want %v", key, a, e)
 		}
 	}
 }

@@ -105,7 +105,7 @@ type swaggerOperationObject struct {
 	Tags        []string                `json:"tags,omitempty"`
 	Deprecated  bool                    `json:"deprecated,omitempty"`
 
-	Security     []swaggerSecurityRequirementObject  `json:"security,omitempty"`
+	Security     *[]swaggerSecurityRequirementObject `json:"security,omitempty"`
 	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 }
 
@@ -113,15 +113,17 @@ type swaggerParametersObject []swaggerParameterObject
 
 // http://swagger.io/specification/#parameterObject
 type swaggerParameterObject struct {
-	Name        string              `json:"name"`
-	Description string              `json:"description,omitempty"`
-	In          string              `json:"in,omitempty"`
-	Required    bool                `json:"required"`
-	Type        string              `json:"type,omitempty"`
-	Format      string              `json:"format,omitempty"`
-	Items       *swaggerItemsObject `json:"items,omitempty"`
-	Enum        []string            `json:"enum,omitempty"`
-	Default     string              `json:"default,omitempty"`
+	Name             string              `json:"name"`
+	Description      string              `json:"description,omitempty"`
+	In               string              `json:"in,omitempty"`
+	Required         bool                `json:"required"`
+	Type             string              `json:"type,omitempty"`
+	Format           string              `json:"format,omitempty"`
+	Items            *swaggerItemsObject `json:"items,omitempty"`
+	Enum             []string            `json:"enum,omitempty"`
+	CollectionFormat string              `json:"collectionFormat,omitempty"`
+	Default          string              `json:"default,omitempty"`
+	MinItems         *int                `json:"minItems,omitempty"`
 
 	// Or you can explicitly refer to another type. If this is defined all
 	// other fields should be empty
@@ -204,6 +206,21 @@ type swaggerSchemaObject struct {
 	Title       string `json:"title,omitempty"`
 
 	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
+
+	MultipleOf       float64  `json:"multipleOf,omitempty"`
+	Maximum          float64  `json:"maximum,omitempty"`
+	ExclusiveMaximum bool     `json:"exclusiveMaximum,omitempty"`
+	Minimum          float64  `json:"minimum,omitempty"`
+	ExclusiveMinimum bool     `json:"exclusiveMinimum,omitempty"`
+	MaxLength        uint64   `json:"maxLength,omitempty"`
+	MinLength        uint64   `json:"minLength,omitempty"`
+	Pattern          string   `json:"pattern,omitempty"`
+	MaxItems         uint64   `json:"maxItems,omitempty"`
+	MinItems         uint64   `json:"minItems,omitempty"`
+	UniqueItems      bool     `json:"uniqueItems,omitempty"`
+	MaxProperties    uint64   `json:"maxProperties,omitempty"`
+	MinProperties    uint64   `json:"minProperties,omitempty"`
+	Required         []string `json:"required,omitempty"`
 }
 
 // http://swagger.io/specification/#referenceObject

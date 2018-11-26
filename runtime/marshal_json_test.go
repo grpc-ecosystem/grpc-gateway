@@ -12,7 +12,7 @@ import (
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/golang/protobuf/ptypes/wrappers"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
@@ -84,7 +84,7 @@ func TestJSONBuiltinsnmarshal(t *testing.T) {
 func TestJSONBuiltinUnmarshalField(t *testing.T) {
 	var m runtime.JSONBuiltin
 	for _, fixt := range builtinFieldFixtures {
-		dest := reflect.New(reflect.TypeOf(fixt.data))
+		dest := alloc(reflect.TypeOf(fixt.data))
 		if err := m.Unmarshal([]byte(fixt.json), dest.Interface()); err != nil {
 			t.Errorf("m.Unmarshal(%q, dest) failed with %v; want success", fixt.json, err)
 		}
@@ -92,6 +92,14 @@ func TestJSONBuiltinUnmarshalField(t *testing.T) {
 		if got, want := dest.Elem().Interface(), fixt.data; !reflect.DeepEqual(got, want) {
 			t.Errorf("got = %#v; want = %#v; input = %q", got, want, fixt.json)
 		}
+	}
+}
+
+func alloc(t reflect.Type) reflect.Value {
+	if t == nil {
+		return reflect.ValueOf(new(interface{}))
+	} else {
+		return reflect.New(t)
 	}
 }
 
@@ -167,7 +175,7 @@ func TestJSONBuiltinDecoderFields(t *testing.T) {
 	for _, fixt := range builtinFieldFixtures {
 		r := strings.NewReader(fixt.json)
 		dec := m.NewDecoder(r)
-		dest := reflect.New(reflect.TypeOf(fixt.data))
+		dest := alloc(reflect.TypeOf(fixt.data))
 		if err := dec.Decode(dest.Interface()); err != nil {
 			t.Errorf("dec.Decode(dest) failed with %v; want success; data = %q", err, fixt.json)
 		}
@@ -204,6 +212,13 @@ var (
 		{data: (*string)(nil), json: "null"},
 		{data: new(empty.Empty), json: "{}"},
 		{data: examplepb.NumericEnum_ONE, json: "1"},
+		{data: nil, json: "null"},
+		{data: (*string)(nil), json: "null"},
+		{data: []interface{}{nil, "foo", -1.0, 1.234, true}, json: `[null,"foo",-1,1.234,true]`},
+		{
+			data: map[string]interface{}{"bar": nil, "baz": -1.0, "fiz": 1.234, "foo": true},
+			json: `{"bar":null,"baz":-1,"fiz":1.234,"foo":true}`,
+		},
 		{
 			data: (*examplepb.NumericEnum)(proto.Int32(int32(examplepb.NumericEnum_ONE))),
 			json: "1",

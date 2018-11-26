@@ -176,6 +176,28 @@ func TestMuxServeHTTP(t *testing.T) {
 			respStatus:  http.StatusOK,
 			respContent: "POST /foo:bar",
 		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
+					pool:   []string{"foo", "id"},
+				},
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
+					pool:   []string{"foo", "id"},
+					verb:   "verb",
+				},
+			},
+			reqMethod: "GET",
+			reqPath:   "/foo/bar:verb",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:  http.StatusOK,
+			respContent: "GET /foo/{id=*}:verb",
+		},
 	} {
 		mux := runtime.NewServeMux()
 		for _, p := range spec.patterns {
@@ -209,5 +231,45 @@ func TestMuxServeHTTP(t *testing.T) {
 				t.Errorf("w.Body = %q; want %q; patterns=%v; req=%v", got, want, spec.patterns, r)
 			}
 		}
+	}
+}
+
+var defaultHeaderMatcherTests = []struct {
+	name     string
+	in       string
+	outValue string
+	outValid bool
+}{
+	{
+		"permanent HTTP header should return prefixed",
+		"Accept",
+		"grpcgateway-Accept",
+		true,
+	},
+	{
+		"key prefixed with MetadataHeaderPrefix should return without the prefix",
+		"Grpc-Metadata-Custom-Header",
+		"Custom-Header",
+		true,
+	},
+	{
+		"non-permanent HTTP header key without prefix should not return",
+		"Custom-Header",
+		"",
+		false,
+	},
+}
+
+func TestDefaultHeaderMatcher(t *testing.T) {
+	for _, tt := range defaultHeaderMatcherTests {
+		t.Run(tt.name, func(t *testing.T) {
+			out, valid := runtime.DefaultHeaderMatcher(tt.in)
+			if out != tt.outValue {
+				t.Errorf("got %v, want %v", out, tt.outValue)
+			}
+			if valid != tt.outValid {
+				t.Errorf("got %v, want %v", valid, tt.outValid)
+			}
+		})
 	}
 }

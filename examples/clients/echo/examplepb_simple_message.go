@@ -17,4 +17,14 @@ type ExamplepbSimpleMessage struct {
 	Id string `json:"id,omitempty"`
 
 	Num string `json:"num,omitempty"`
+
+	LineNum string `json:"line_num,omitempty"`
+
+	Lang string `json:"lang,omitempty"`
+
+	Status ExamplepbEmbedded `json:"status,omitempty"`
+
+	En string `json:"en,omitempty"`
+
+	No ExamplepbEmbedded `json:"no,omitempty"`
 }

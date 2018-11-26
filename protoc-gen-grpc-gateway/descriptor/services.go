@@ -27,13 +27,17 @@ func (r *Registry) loadServices(file *File) error {
 			glog.V(2).Infof("Processing %s.%s", sd.GetName(), md.GetName())
 			opts, err := extractAPIOptions(md)
 			if err != nil {
-				glog.Errorf("Failed to extract ApiMethodOptions from %s.%s: %v", svc.GetName(), md.GetName(), err)
+				glog.Errorf("Failed to extract HttpRule from %s.%s: %v", svc.GetName(), md.GetName(), err)
 				return err
 			}
-			if opts == nil {
+			optsList := r.LookupExternalHTTPRules((&Method{Service: svc, MethodDescriptorProto: md}).FQMN())
+			if opts != nil {
+				optsList = append(optsList, opts)
+			}
+			if len(optsList) == 0 {
 				glog.V(1).Infof("Found non-target method: %s.%s", svc.GetName(), md.GetName())
 			}
-			meth, err := r.newMethod(svc, md, opts)
+			meth, err := r.newMethod(svc, md, optsList)
 			if err != nil {
 				return err
 			}
@@ -49,7 +53,7 @@ func (r *Registry) loadServices(file *File) error {
 	return nil
 }
 
-func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto, opts *options.HttpRule) (*Method, error) {
+func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto, optsList []*options.HttpRule) (*Method, error) {
 	requestType, err := r.LookupMsg(svc.File.GetPackage(), md.GetInputType())
 	if err != nil {
 		return nil, err
@@ -139,25 +143,41 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 			return nil, err
 		}
 
-		return b, nil
-	}
-	b, err := newBinding(opts, 0)
-	if err != nil {
-		return nil, err
-	}
-
-	if b != nil {
-		meth.Bindings = append(meth.Bindings, b)
-	}
-	for i, additional := range opts.GetAdditionalBindings() {
-		if len(additional.AdditionalBindings) > 0 {
-			return nil, fmt.Errorf("additional_binding in additional_binding not allowed: %s.%s", svc.GetName(), meth.GetName())
-		}
-		b, err := newBinding(additional, i+1)
+		b.ResponseBody, err = r.newResponse(meth, opts.ResponseBody)
 		if err != nil {
 			return nil, err
 		}
-		meth.Bindings = append(meth.Bindings, b)
+
+		return b, nil
+	}
+
+	applyOpts := func(opts *options.HttpRule) error {
+		b, err := newBinding(opts, len(meth.Bindings))
+		if err != nil {
+			return err
+		}
+
+		if b != nil {
+			meth.Bindings = append(meth.Bindings, b)
+		}
+		for _, additional := range opts.GetAdditionalBindings() {
+			if len(additional.AdditionalBindings) > 0 {
+				return fmt.Errorf("additional_binding in additional_binding not allowed: %s.%s", svc.GetName(), meth.GetName())
+			}
+			b, err := newBinding(additional, len(meth.Bindings))
+			if err != nil {
+				return err
+			}
+			meth.Bindings = append(meth.Bindings, b)
+		}
+
+		return nil
+	}
+
+	for _, opts := range optsList {
+		if err := applyOpts(opts); err != nil {
+			return nil, err
+		}
 	}
 
 	return meth, nil
@@ -183,7 +203,7 @@ func extractAPIOptions(meth *descriptor.MethodDescriptorProto) (*options.HttpRul
 
 func (r *Registry) newParam(meth *Method, path string) (Parameter, error) {
 	msg := meth.RequestType
-	fields, err := r.resolveFiledPath(msg, path)
+	fields, err := r.resolveFieldPath(msg, path, true)
 	if err != nil {
 		return Parameter{}, err
 	}
@@ -216,7 +236,20 @@ func (r *Registry) newBody(meth *Method, path string) (*Body, error) {
 	case "*":
 		return &Body{FieldPath: nil}, nil
 	}
-	fields, err := r.resolveFiledPath(msg, path)
+	fields, err := r.resolveFieldPath(msg, path, false)
+	if err != nil {
+		return nil, err
+	}
+	return &Body{FieldPath: FieldPath(fields)}, nil
+}
+
+func (r *Registry) newResponse(meth *Method, path string) (*Body, error) {
+	msg := meth.ResponseType
+	switch path {
+	case "", "*":
+		return nil, nil
+	}
+	fields, err := r.resolveFieldPath(msg, path, false)
 	if err != nil {
 		return nil, err
 	}
@@ -235,7 +268,7 @@ func lookupField(msg *Message, name string) *Field {
 }
 
 // resolveFieldPath resolves "path" into a list of fieldDescriptor, starting from "msg".
-func (r *Registry) resolveFiledPath(msg *Message, path string) ([]FieldPathComponent, error) {
+func (r *Registry) resolveFieldPath(msg *Message, path string, isPathParam bool) ([]FieldPathComponent, error) {
 	if path == "" {
 		return nil, nil
 	}
@@ -262,7 +295,7 @@ func (r *Registry) resolveFiledPath(msg *Message, path string) ([]FieldPathCompo
 		if f == nil {
 			return nil, fmt.Errorf("no field %q found in %s", path, root.GetName())
 		}
-		if f.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+		if !(isPathParam || r.allowRepeatedFieldsInBody) && f.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
 			return nil, fmt.Errorf("repeated field not allowed in field path: %s in %s", f.GetName(), path)
 		}
 		result = append(result, FieldPathComponent{Name: c, Target: f})

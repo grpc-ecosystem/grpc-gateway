@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
 )
@@ -121,6 +121,25 @@ func (e *Enum) FQEN() string {
 	return strings.Join(components, ".")
 }
 
+// GoType returns a go type name for the enum type.
+// It prefixes the type name with the package alias if
+// its belonging package is not "currentPackage".
+func (e *Enum) GoType(currentPackage string) string {
+	var components []string
+	components = append(components, e.Outers...)
+	components = append(components, e.GetName())
+
+	name := strings.Join(components, "_")
+	if e.File.GoPkg.Path == currentPackage {
+		return name
+	}
+	pkg := e.File.GoPkg.Name
+	if alias := e.File.GoPkg.Alias; alias != "" {
+		pkg = alias
+	}
+	return fmt.Sprintf("%s.%s", pkg, name)
+}
+
 // Service wraps descriptor.ServiceDescriptorProto for richer features.
 type Service struct {
 	// File is the file where this service is defined.
@@ -128,6 +147,16 @@ type Service struct {
 	*descriptor.ServiceDescriptorProto
 	// Methods is the list of methods defined in this service.
 	Methods []*Method
+}
+
+// FQSN returns the fully qualified service name of this service.
+func (s *Service) FQSN() string {
+	components := []string{""}
+	if s.File.Package != nil {
+		components = append(components, s.File.GetPackage())
+	}
+	components = append(components, s.GetName())
+	return strings.Join(components, ".")
 }
 
 // Method wraps descriptor.MethodDescriptorProto for richer features.
@@ -141,6 +170,14 @@ type Method struct {
 	// ResponseType is the message type of responses from this method.
 	ResponseType *Message
 	Bindings     []*Binding
+}
+
+// FQMN returns a fully qualified rpc method name of this method.
+func (m *Method) FQMN() string {
+	components := []string{}
+	components = append(components, m.Service.FQSN())
+	components = append(components, m.GetName())
+	return strings.Join(components, ".")
 }
 
 // Binding describes how an HTTP endpoint is bound to a gRPC method.
@@ -157,6 +194,8 @@ type Binding struct {
 	PathParams []Parameter
 	// Body describes parameters provided in HTTP request body.
 	Body *Body
+	// ResponseBody describes field in response struct to marshal in HTTP response body.
+	ResponseBody *Body
 }
 
 // ExplicitParams returns a list of explicitly bound parameters of "b",
@@ -195,8 +234,12 @@ type Parameter struct {
 // The converter function converts a string into a value for the parameter.
 func (p Parameter) ConvertFuncExpr() (string, error) {
 	tbl := proto3ConvertFuncs
-	if p.Target.Message.File.proto2() {
+	if !p.IsProto2() && p.IsRepeated() {
+		tbl = proto3RepeatedConvertFuncs
+	} else if p.IsProto2() && !p.IsRepeated() {
 		tbl = proto2ConvertFuncs
+	} else if p.IsProto2() && p.IsRepeated() {
+		tbl = proto2RepeatedConvertFuncs
 	}
 	typ := p.Target.GetType()
 	conv, ok := tbl[typ]
@@ -209,17 +252,33 @@ func (p Parameter) ConvertFuncExpr() (string, error) {
 	return conv, nil
 }
 
-// Body describes a http requtest body to be sent to the method.
+// IsEnum returns true if the field is an enum type, otherwise false is returned.
+func (p Parameter) IsEnum() bool {
+	return p.Target.GetType() == descriptor.FieldDescriptorProto_TYPE_ENUM
+}
+
+// IsRepeated returns true if the field is repeated, otherwise false is returned.
+func (p Parameter) IsRepeated() bool {
+	return p.Target.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED
+}
+
+// IsProto2 returns true if the field is proto2, otherwise false is returned.
+func (p Parameter) IsProto2() bool {
+	return p.Target.Message.File.proto2()
+}
+
+// Body describes a http (request|response) body to be sent to the (method|client).
+// This is used in body and response_body options in google.api.HttpRule
 type Body struct {
-	// FieldPath is a path to a proto field which the request body is mapped to.
-	// The request body is mapped to the request type itself if FieldPath is empty.
+	// FieldPath is a path to a proto field which the (request|response) body is mapped to.
+	// The (request|response) body is mapped to the (request|response) type itself if FieldPath is empty.
 	FieldPath FieldPath
 }
 
-// RHS returns a right-hand-side expression in go to be used to initialize method request object.
+// AssignableExpr returns an assignable expression in Go to be used to initialize method request object.
 // It starts with "msgExpr", which is the go expression of the method request object.
-func (b Body) RHS(msgExpr string) string {
-	return b.FieldPath.RHS(msgExpr)
+func (b Body) AssignableExpr(msgExpr string) string {
+	return b.FieldPath.AssignableExpr(msgExpr)
 }
 
 // FieldPath is a path to a field from a request message.
@@ -242,22 +301,44 @@ func (p FieldPath) IsNestedProto3() bool {
 	return false
 }
 
-// RHS is a right-hand-side expression in go to be used to assign a value to the target field.
+// AssignableExpr is an assignable expression in Go to be used to assign a value to the target field.
 // It starts with "msgExpr", which is the go expression of the method request object.
-func (p FieldPath) RHS(msgExpr string) string {
+func (p FieldPath) AssignableExpr(msgExpr string) string {
 	l := len(p)
 	if l == 0 {
 		return msgExpr
 	}
-	components := []string{msgExpr}
+
+	var preparations []string
+	components := msgExpr
 	for i, c := range p {
+		// Check if it is a oneOf field.
+		if c.Target.OneofIndex != nil {
+			index := c.Target.OneofIndex
+			msg := c.Target.Message
+			oneOfName := gogen.CamelCase(msg.GetOneofDecl()[*index].GetName())
+			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
+
+			components = components + "." + oneOfName
+			s := `if %s == nil {
+				%s =&%s{}
+			} else if _, ok := %s.(*%s); !ok {
+				return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *%s, but: %%t\n",%s)
+			}`
+
+			preparations = append(preparations, fmt.Sprintf(s, components, components, oneofFieldName, components, oneofFieldName, oneofFieldName, components))
+			components = components + ".(*" + oneofFieldName + ")"
+		}
+
 		if i == l-1 {
-			components = append(components, c.RHS())
+			components = components + "." + c.AssignableExpr()
 			continue
 		}
-		components = append(components, c.LHS())
+		components = components + "." + c.ValueExpr()
 	}
-	return strings.Join(components, ".")
+
+	preparations = append(preparations, components)
+	return strings.Join(preparations, "\n")
 }
 
 // FieldPathComponent is a path component in FieldPath
@@ -269,13 +350,13 @@ type FieldPathComponent struct {
 	Target *Field
 }
 
-// RHS returns a right-hand-side expression in go for this field.
-func (c FieldPathComponent) RHS() string {
+// AssignableExpr returns an assignable expression in go for this field.
+func (c FieldPathComponent) AssignableExpr() string {
 	return gogen.CamelCase(c.Name)
 }
 
-// LHS returns a left-hand-side expression in go for this field.
-func (c FieldPathComponent) LHS() string {
+// ValueExpr returns an expression in go for this field.
+func (c FieldPathComponent) ValueExpr() string {
 	if c.Target.Message.File.proto2() {
 		return fmt.Sprintf("Get%s()", gogen.CamelCase(c.Name))
 	}
@@ -295,14 +376,34 @@ var (
 		descriptor.FieldDescriptorProto_TYPE_STRING:  "runtime.String",
 		// FieldDescriptorProto_TYPE_GROUP
 		// FieldDescriptorProto_TYPE_MESSAGE
-		descriptor.FieldDescriptorProto_TYPE_BYTES:  "runtime.Bytes",
-		descriptor.FieldDescriptorProto_TYPE_UINT32: "runtime.Uint32",
-		// FieldDescriptorProto_TYPE_ENUM
-		// TODO(yugui) Handle Enum
+		descriptor.FieldDescriptorProto_TYPE_BYTES:    "runtime.Bytes",
+		descriptor.FieldDescriptorProto_TYPE_UINT32:   "runtime.Uint32",
+		descriptor.FieldDescriptorProto_TYPE_ENUM:     "runtime.Enum",
 		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32",
 		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64",
 		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32",
 		descriptor.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64",
+	}
+
+	proto3RepeatedConvertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
+		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "runtime.Float64Slice",
+		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "runtime.Float32Slice",
+		descriptor.FieldDescriptorProto_TYPE_INT64:   "runtime.Int64Slice",
+		descriptor.FieldDescriptorProto_TYPE_UINT64:  "runtime.Uint64Slice",
+		descriptor.FieldDescriptorProto_TYPE_INT32:   "runtime.Int32Slice",
+		descriptor.FieldDescriptorProto_TYPE_FIXED64: "runtime.Uint64Slice",
+		descriptor.FieldDescriptorProto_TYPE_FIXED32: "runtime.Uint32Slice",
+		descriptor.FieldDescriptorProto_TYPE_BOOL:    "runtime.BoolSlice",
+		descriptor.FieldDescriptorProto_TYPE_STRING:  "runtime.StringSlice",
+		// FieldDescriptorProto_TYPE_GROUP
+		// FieldDescriptorProto_TYPE_MESSAGE
+		descriptor.FieldDescriptorProto_TYPE_BYTES:    "runtime.BytesSlice",
+		descriptor.FieldDescriptorProto_TYPE_UINT32:   "runtime.Uint32Slice",
+		descriptor.FieldDescriptorProto_TYPE_ENUM:     "runtime.EnumSlice",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32Slice",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64Slice",
+		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32Slice",
+		descriptor.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64Slice",
 	}
 
 	proto2ConvertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
@@ -319,17 +420,47 @@ var (
 		// FieldDescriptorProto_TYPE_MESSAGE
 		// FieldDescriptorProto_TYPE_BYTES
 		// TODO(yugui) Handle bytes
-		descriptor.FieldDescriptorProto_TYPE_UINT32: "runtime.Uint32P",
-		// FieldDescriptorProto_TYPE_ENUM
-		// TODO(yugui) Handle Enum
+		descriptor.FieldDescriptorProto_TYPE_UINT32:   "runtime.Uint32P",
+		descriptor.FieldDescriptorProto_TYPE_ENUM:     "runtime.EnumP",
 		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32P",
 		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64P",
 		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32P",
 		descriptor.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64P",
 	}
 
+	proto2RepeatedConvertFuncs = map[descriptor.FieldDescriptorProto_Type]string{
+		descriptor.FieldDescriptorProto_TYPE_DOUBLE:  "runtime.Float64Slice",
+		descriptor.FieldDescriptorProto_TYPE_FLOAT:   "runtime.Float32Slice",
+		descriptor.FieldDescriptorProto_TYPE_INT64:   "runtime.Int64Slice",
+		descriptor.FieldDescriptorProto_TYPE_UINT64:  "runtime.Uint64Slice",
+		descriptor.FieldDescriptorProto_TYPE_INT32:   "runtime.Int32Slice",
+		descriptor.FieldDescriptorProto_TYPE_FIXED64: "runtime.Uint64Slice",
+		descriptor.FieldDescriptorProto_TYPE_FIXED32: "runtime.Uint32Slice",
+		descriptor.FieldDescriptorProto_TYPE_BOOL:    "runtime.BoolSlice",
+		descriptor.FieldDescriptorProto_TYPE_STRING:  "runtime.StringSlice",
+		// FieldDescriptorProto_TYPE_GROUP
+		// FieldDescriptorProto_TYPE_MESSAGE
+		// FieldDescriptorProto_TYPE_BYTES
+		// TODO(maros7) Handle bytes
+		descriptor.FieldDescriptorProto_TYPE_UINT32:   "runtime.Uint32Slice",
+		descriptor.FieldDescriptorProto_TYPE_ENUM:     "runtime.EnumSlice",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32: "runtime.Int32Slice",
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64: "runtime.Int64Slice",
+		descriptor.FieldDescriptorProto_TYPE_SINT32:   "runtime.Int32Slice",
+		descriptor.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64Slice",
+	}
+
 	wellKnownTypeConv = map[string]string{
-		".google.protobuf.Timestamp": "runtime.Timestamp",
-		".google.protobuf.Duration":  "runtime.Duration",
+		".google.protobuf.Timestamp":   "runtime.Timestamp",
+		".google.protobuf.Duration":    "runtime.Duration",
+		".google.protobuf.StringValue": "runtime.StringValue",
+		".google.protobuf.FloatValue":  "runtime.FloatValue",
+		".google.protobuf.DoubleValue": "runtime.DoubleValue",
+		".google.protobuf.BoolValue":   "runtime.BoolValue",
+		".google.protobuf.BytesValue":  "runtime.BytesValue",
+		".google.protobuf.Int32Value":  "runtime.Int32Value",
+		".google.protobuf.UInt32Value": "runtime.UInt32Value",
+		".google.protobuf.Int64Value":  "runtime.Int64Value",
+		".google.protobuf.UInt64Value": "runtime.UInt64Value",
 	}
 )

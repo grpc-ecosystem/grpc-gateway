@@ -31,8 +31,7 @@ message Swagger {
   // field 9 is reserved for 'definitions', which at this time are already
   // exposed as and customizable as proto messages.
   reserved 9;
-  // field 10 is reserved for 'responses'.
-  reserved 10;
+  map<string, Response> responses = 10;
   SecurityDefinitions security_definitions = 11;
   repeated SecurityRequirement security = 12;
   // field 13 is reserved for 'tags', which are supposed to be exposed as and
@@ -57,11 +56,27 @@ message Operation {
   repeated string produces = 7;
   // field 8 is reserved for 'parameters'.
   reserved 8;
-  // field 9 is reserved for 'responses'.
-  reserved 9;
+  map<string, Response> responses = 9;
   repeated string schemes = 10;
   bool deprecated = 11;
   repeated SecurityRequirement security = 12;
+}
+
+// `Response` is a representation of OpenAPI v2 specification's Response object.
+//
+// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#responseObject
+//
+message Response {
+  // `Description` is a short description of the response.
+  // GFM syntax can be used for rich text representation.
+  string description = 1;
+  // `Schema` optionally defines the structure of the response.
+  // If `Schema` is not provided, it means there is no content to the response.
+  Schema schema = 2;
+  // field 3 is reserved for 'headers'.
+  reserved 3;
+  // field 3 is reserved for 'example'.
+  reserved 4;
 }
 
 // `Info` is a representation of OpenAPI v2 specification's Info object.
@@ -74,8 +89,7 @@ message Info {
   string description = 2;
   string terms_of_service = 3;
   Contact contact = 4;
-  // field 5 is reserved for 'license'.
-  reserved 5;
+  License license = 5;
   string version = 6;
 }
 
@@ -88,6 +102,17 @@ message Contact {
   string name = 1;
   string url = 2;
   string email = 3;
+}
+
+// `License` is a representation of OpenAPI v2 specification's License object.
+//
+// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#licenseObject
+//
+message License {
+  // Required. The license name used for the API.
+  string name = 1;
+  // A URL to the license used for the API.
+  string url = 2;
 }
 
 // `ExternalDocumentation` is a representation of OpenAPI v2 specification's
@@ -132,8 +157,13 @@ message JSONSchema {
   reserved 1;
   // field 2 is reserved for '$schema', omitted from OpenAPI v2.
   reserved 2;
-  // field 3 is reserved for '$ref', although it is unclear how it would be used.
-  reserved 3;
+  // Ref is used to define an external reference to include in the message.
+  // This could be a fully qualified proto message reference, and that type must be imported
+  // into the protofile. If no message is identified, the Ref will be used verbatim in
+  // the output.
+  // For example:
+  //  `ref: ".google.protobuf.Timestamp"`.
+  string ref = 3;
   // field 4 is reserved for '$comment', omitted from OpenAPI v2.
   reserved 4;
   string title = 5;

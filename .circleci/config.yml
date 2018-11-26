@@ -1,0 +1,193 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: jfbrandhorst/grpc-gateway-build-env
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    steps:
+      - checkout
+      - run: dep ensure --vendor-only
+      - run: go build ./...
+  test:
+    docker:
+      - image: jfbrandhorst/grpc-gateway-build-env
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    environment:
+      GLOG_logtostderr: "1"
+    steps:
+      - checkout
+      - run: dep ensure --vendor-only
+      - run: go test -race -coverprofile=coverage.txt ./...
+      - run: bash <(curl -s https://codecov.io/bash)
+  node_test:
+    docker:
+      - image: jfbrandhorst/grpc-gateway-build-env
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    steps:
+      - checkout
+      - run: dep ensure --vendor-only
+      - run: >
+          . $HOME/.nvm/nvm.sh &&
+          cd examples/browser &&
+          npm install gulp-cli &&
+          npm install &&
+          ./node_modules/.bin/gulp
+  generate:
+    docker:
+      - image: jfbrandhorst/grpc-gateway-build-env
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    steps:
+      - checkout
+      - run: make realclean
+      - run: make examples SWAGGER_CODEGEN="${SWAGGER_CODEGEN}" # Set in Docker image
+      - run: git diff --exit-code
+  lint:
+    docker:
+      - image: jfbrandhorst/grpc-gateway-build-env
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    steps:
+      - checkout
+      - run: dep ensure --vendor-only
+      - run: go get golang.org/x/lint/golint
+      - run: make lint
+  bazel:
+    docker:
+      - image: l.gcr.io/google/bazel:latest
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    steps:
+      - checkout
+      - run:
+          name: Create Bazel config file (.bazelrc)
+          command: |
+            cat > .bazelrc << EOF
+            startup --output_base $HOME/.cache/_grpc_gateway_bazel
+            build --test_output errors
+            build --features race
+            EOF
+      - run:
+          name: Check that Bazel BUILD files are up-to-date
+          command: 'test -z "$(bazel run //:gazelle_diff)" ||
+          (echo "ERROR: Bazel files out-of-date, please run \`bazel run :gazelle_fix\`" >&2; exit 1)'
+      - run:
+          name: Run tests with Bazel
+          command: bazel test //...
+      - run:
+          name: Check formatting of Bazel BUILD files
+          command: 'bazel run //:buildifier_check ||
+          (echo "ERROR: Bazel files not formatted, please run \`bazel run :buildifier\`" >&2; exit 1)'
+          when: always
+  build_linux_release:
+    docker:
+      - image: jfbrandhorst/grpc-gateway-build-env
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    environment:
+      CGO_ENABLED: "0"
+      GOOS: "linux"
+      GOARCH: "amd64"
+    steps:
+      - checkout
+      - run: mkdir -p release
+      - run: dep ensure --vendor-only
+      - run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          go build -o ./release/protoc-gen-grpc-gateway-${VERSION}-linux-x86_64 ./protoc-gen-grpc-gateway/
+      - run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          go build -o ./release/protoc-gen-swagger-${VERSION}-linux-x86_64 ./protoc-gen-swagger/
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - release
+  build_darwin_release:
+    docker:
+      - image: jfbrandhorst/grpc-gateway-build-env
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    environment:
+      CGO_ENABLED: "0"
+      GOOS: "darwin"
+      GOARCH: "amd64"
+    steps:
+      - checkout
+      - run: mkdir -p release
+      - run: dep ensure --vendor-only
+      - run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          go build -o ./release/protoc-gen-grpc-gateway-${VERSION}-darwin-x86_64 ./protoc-gen-grpc-gateway/
+      - run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          go build -o ./release/protoc-gen-swagger-${VERSION}-darwin-x86_64 ./protoc-gen-swagger/
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - release
+  build_windows_release:
+    docker:
+      - image: jfbrandhorst/grpc-gateway-build-env
+    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    environment:
+      CGO_ENABLED: "0"
+      GOOS: "windows"
+      GOARCH: "amd64"
+    steps:
+      - checkout
+      - run: mkdir -p release
+      - run: dep ensure --vendor-only
+      - run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          go build -o ./release/protoc-gen-grpc-gateway-${VERSION}-windows-x86_64.exe ./protoc-gen-grpc-gateway/
+      - run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          go build -o ./release/protoc-gen-swagger-${VERSION}-windows-x86_64.exe ./protoc-gen-swagger/
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - release
+  publish_github_release:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+          at: ./release
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            VERSION=$(git describe --tags --abbrev=0)
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${VERSION} ./release/
+workflows:
+  version: 2
+  all:
+    jobs:
+      - build
+      - test
+      - node_test
+      - generate
+      - lint
+      - bazel
+      - build_linux_release:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+      - build_windows_release:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+      - build_darwin_release:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+      - publish_github_release:
+          requires:
+            - build_linux_release
+            - build_darwin_release
+            - build_windows_release
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
