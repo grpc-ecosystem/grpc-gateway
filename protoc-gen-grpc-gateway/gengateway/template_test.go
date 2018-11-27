@@ -11,6 +11,52 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 )
 
+func Test_queryParamFilter_String(t *testing.T) {
+	tests := []struct {
+		name        string
+		doubleArray *utilities.DoubleArray
+		want        string
+	}{
+		{
+			name: "Empty queryParamFilter",
+			doubleArray: &utilities.DoubleArray{
+				Encoding: map[string]int{},
+				Base:     []int(nil),
+				Check:    []int(nil),
+			},
+			want: "&utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}",
+		},
+		{
+			name: "Simple queryParamFilter",
+			doubleArray: &utilities.DoubleArray{
+				Encoding: map[string]int{"foo": 0},
+				Base:     []int{1, 1, 0},
+				Check:    []int{0, 1, 2},
+			},
+			want: `&utilities.DoubleArray{Encoding: map[string]int{"foo": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}`,
+		},
+		{
+			name: "Full queryParamFilter",
+			doubleArray: &utilities.DoubleArray{
+				Encoding: map[string]int{"bar": 1, "qux": 3, "baz": 2, "foo": 0},
+				Base:     []int{1, 1, 1, 2, 3, 0, 0, 0},
+				Check:    []int{0, 1, 2, 2, 1, 3, 4, 5},
+			},
+			want: `&utilities.DoubleArray{Encoding: map[string]int{"foo": 0, "bar": 1, "baz": 2, "qux": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 2, 2, 1, 3, 4, 5}}`,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			f := queryParamFilter{
+				DoubleArray: tt.doubleArray,
+			}
+			if got := f.String(); got != tt.want {
+				t.Errorf("queryParamFilter.String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func crossLinkFixture(f *descriptor.File) *descriptor.File {
 	for _, m := range f.Messages {
 		m.File = f
@@ -401,39 +447,5 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-	}
-}
-
-func Test_queryParamFilter_String(t *testing.T) {
-	tests := []struct {
-		name string
-		seqs [][]string
-		want string
-	}{
-		{
-			name: "Empty queryParamFilter",
-			seqs: [][]string{},
-			want: "&utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}",
-		},
-		{
-			name: "Simple queryParamFilter",
-			seqs: [][]string{{"foo"}},
-			want: `&utilities.DoubleArray{Encoding: map[string]int{"foo": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}`,
-		},
-		{
-			name: "Full queryParamFilter",
-			seqs: [][]string{{"foo", "bar"}, {"foo", "baz"}, {"qux"}},
-			want: `&utilities.DoubleArray{Encoding: map[string]int{"foo": 0, "bar": 1, "baz": 2, "qux": 3}, Base: []int{1, 1, 1, 2, 3, 0, 0, 0}, Check: []int{0, 1, 2, 2, 1, 3, 4, 5}}`,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			f := queryParamFilter{
-				DoubleArray: utilities.NewDoubleArray(tt.seqs),
-			}
-			if got := f.String(); got != tt.want {
-				t.Errorf("queryParamFilter.String() = %v, want %v", got, tt.want)
-			}
-		})
 	}
 }
