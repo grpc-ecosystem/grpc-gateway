@@ -693,8 +693,8 @@ func TestTemplateToSwaggerPath(t *testing.T) {
 	}{
 		{"/test", "/test"},
 		{"/{test}", "/{test}"},
-		{"/{test=prefix/*}", "/{test}"},
-		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/{test}"},
+		{"/{test=prefix/*}", "/prefix/*"},
+		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/prefix/that/has/multiple/parts/to/it/*"},
 		{"/{test1}/{test2}", "/{test1}/{test2}"},
 		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
 		{"/{name=prefix/*}", "/{name=prefix/*}"},
@@ -766,8 +766,8 @@ func TestFQMNtoSwaggerName(t *testing.T) {
 	}{
 		{"/test", "/test"},
 		{"/{test}", "/{test}"},
-		{"/{test=prefix/*}", "/{test}"},
-		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/{test}"},
+		{"/{test=prefix/*}", "/prefix/*"},
+		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/prefix/that/has/multiple/parts/to/it/*"},
 		{"/{test1}/{test2}", "/{test1}/{test2}"},
 		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
 	}

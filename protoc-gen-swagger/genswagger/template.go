@@ -560,6 +560,16 @@ func templateToSwaggerPath(path string) string {
 		if isResourceName(prefix) {
 			continue
 		}
+
+		if strings.Contains(part, "=") {
+			v := strings.Split(strings.TrimSuffix(strings.TrimPrefix(part, "{"), "}"), "=")
+			if len(v) == 2 {
+				part = v[1]
+			}
+			parts[index] = part
+			continue
+		}
+
 		parts[index] = re.ReplaceAllString(part, "{$1}")
 	}
 
