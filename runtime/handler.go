@@ -16,6 +16,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// ForwardResponseMessage forward the resonse to client.
+// You can set a custom function to this variable to customize error format.
 var ForwardResponseMessage = DefaultForwardResponseMessage
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
