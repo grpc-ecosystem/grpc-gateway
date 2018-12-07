@@ -117,7 +117,7 @@ type responseBody interface {
 	XXX_ResponseBody() interface{}
 }
 
-// ForwardResponseMessage forwards the message "resp" from gRPC server to REST client.
+// DefaultForwardResponseMessage forwards the message "resp" from gRPC server to REST client.
 func DefaultForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, req *http.Request, resp proto.Message, opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
 	md, ok := ServerMetadataFromContext(ctx)
 	if !ok {
