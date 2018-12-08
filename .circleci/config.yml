@@ -198,14 +198,14 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v\d+\.\d+\.\d+$/
-      - publish_github_release:
-          requires:
-            - write_release_version
-            - build_linux_release
-            - build_darwin_release
-            - build_windows_release
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v\d+\.\d+\.\d+$/
+#      - publish_github_release:
+#          requires:
+#            - write_release_version
+#            - build_linux_release
+#            - build_darwin_release
+#            - build_windows_release
+#          filters:
+#            branches:
+#              ignore: /.*/
+#            tags:
+#              only: /^v\d+\.\d+\.\d+$/
