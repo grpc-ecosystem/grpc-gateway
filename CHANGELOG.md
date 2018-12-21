@@ -1,7 +1,30 @@
 # Change Log
 
+## [v1.6.3](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.6.3) (2018-12-21)
+[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.6.2...v1.6.3)
+
+**Fixed bugs:**
+
+- Comments of rpc method gets copied if multiple services are present in a proto file. [\#746](https://github.com/grpc-ecosystem/grpc-gateway/issues/746)
+
+**Closed issues:**
+
+- Issue with google.protobuf.Empty representation in swagger file [\#831](https://github.com/grpc-ecosystem/grpc-gateway/issues/831)
+
+**Merged pull requests:**
+
+- protoc-gen-swagger: check typeIndex when typeName is Method [\#833](https://github.com/grpc-ecosystem/grpc-gateway/pull/833) ([hexfusion](https://github.com/hexfusion))
+- Replace complicated circle CI release with goreleaser. [\#828](https://github.com/grpc-ecosystem/grpc-gateway/pull/828) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Stop the publishing recursion [\#827](https://github.com/grpc-ecosystem/grpc-gateway/pull/827) ([achew22](https://github.com/achew22))
+
+## [v1.6.2](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.6.2) (2018-12-07)
+[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.6.0...v1.6.2)
+
 ## [v1.6.0](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.6.0) (2018-12-07)
-[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.5.1...v1.6.0)
+[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.6.1...v1.6.0)
+
+## [v1.6.1](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.6.1) (2018-12-07)
+[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.5.1...v1.6.1)
 
 **Implemented enhancements:**
 
@@ -16,6 +39,7 @@
 **Closed issues:**
 
 - Please release the repo, IOReaderFactory is not available on the latest release! [\#823](https://github.com/grpc-ecosystem/grpc-gateway/issues/823)
+- Bazel CI breaks frequently [\#817](https://github.com/grpc-ecosystem/grpc-gateway/issues/817)
 - Unable to add protobuf wrappers in url template option [\#808](https://github.com/grpc-ecosystem/grpc-gateway/issues/808)
 - Class 'GPBMetadata\ProtocGenSwagger\Options\Annotations' not found [\#794](https://github.com/grpc-ecosystem/grpc-gateway/issues/794)
 - REST gateway over RPCS? [\#789](https://github.com/grpc-ecosystem/grpc-gateway/issues/789)
@@ -27,6 +51,9 @@
 
 **Merged pull requests:**
 
+- Write version to intermediate file for release publish [\#826](https://github.com/grpc-ecosystem/grpc-gateway/pull/826) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Check out code before calling ghr [\#825](https://github.com/grpc-ecosystem/grpc-gateway/pull/825) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Generate changelog for 1.6.0 [\#824](https://github.com/grpc-ecosystem/grpc-gateway/pull/824) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Add filegroup for options proto files [\#821](https://github.com/grpc-ecosystem/grpc-gateway/pull/821) ([kellycampbell](https://github.com/kellycampbell))
 - Added support for more WKT [\#816](https://github.com/grpc-ecosystem/grpc-gateway/pull/816) ([mayankcpdixit](https://github.com/mayankcpdixit))
 - Fix protobuf repository's owner name on README.md [\#814](https://github.com/grpc-ecosystem/grpc-gateway/pull/814) ([micnncim](https://github.com/micnncim))
@@ -37,6 +64,7 @@
 - Make Bazel CI failures clearer [\#807](https://github.com/grpc-ecosystem/grpc-gateway/pull/807) ([drigz](https://github.com/drigz))
 - fix bug: the resource name of custom method doesn't be retained [\#805](https://github.com/grpc-ecosystem/grpc-gateway/pull/805) ([ch3rub1m](https://github.com/ch3rub1m))
 - Update rules\_go and gazelle [\#802](https://github.com/grpc-ecosystem/grpc-gateway/pull/802) ([drigz](https://github.com/drigz))
+- Properly omit wrappers and google.protobuf.empty from swagger definitions [\#801](https://github.com/grpc-ecosystem/grpc-gateway/pull/801) ([birdayz](https://github.com/birdayz))
 - Use newer Bazel repo rules [\#798](https://github.com/grpc-ecosystem/grpc-gateway/pull/798) ([drigz](https://github.com/drigz))
 - Run buildifer on Bazel files [\#797](https://github.com/grpc-ecosystem/grpc-gateway/pull/797) ([drigz](https://github.com/drigz))
 - protoc-gen-swagger: Fix formatting of license field definition. [\#796](https://github.com/grpc-ecosystem/grpc-gateway/pull/796) ([ivucica](https://github.com/ivucica))
@@ -260,7 +288,7 @@
 - properly respect file flag for protoc-gen-swagger [\#293](https://github.com/grpc-ecosystem/grpc-gateway/pull/293) ([tmc](https://github.com/tmc))
 
 ## [v1.3.1](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.3.1) (2017-12-23)
-[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.3...v1.3.1)
+[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.3.0...v1.3.1)
 
 **Implemented enhancements:**
 
@@ -317,11 +345,11 @@
 - grpc-gateway/generator: respect full package [\#462](https://github.com/grpc-ecosystem/grpc-gateway/pull/462) ([glerchundi](https://github.com/glerchundi))
 - Add proto marshaller for proto-over-http [\#459](https://github.com/grpc-ecosystem/grpc-gateway/pull/459) ([MatthewDolan](https://github.com/MatthewDolan))
 
-## [v1.3](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.3) (2017-11-03)
-[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.3.0...v1.3)
-
 ## [v1.3.0](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.3.0) (2017-11-03)
-[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.2.2...v1.3.0)
+[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.3...v1.3.0)
+
+## [v1.3](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.3) (2017-11-03)
+[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.2.2...v1.3)
 
 **Closed issues:**
 
