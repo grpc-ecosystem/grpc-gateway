@@ -23,11 +23,24 @@ var (
 	mergeFileName              = flag.String("merge_file_name", "apidocs", "target swagger file name prefix after merge")
 	useJSONNamesForFields      = flag.Bool("json_names_for_fields", false, "if it sets Field.GetJsonName() will be used for generating swagger definitions, otherwise Field.GetName() will be used")
 	repeatedPathParamSeparator = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`.")
+	versionFlag                = flag.Bool("version", false, "print the current verison")
+)
+
+// Variables set by goreleaser at build time
+var (
+	version = "dev"
+	commit  = "unknown"
+	date    = "unknown"
 )
 
 func main() {
 	flag.Parse()
 	defer glog.Flush()
+
+	if *versionFlag {
+		fmt.Printf("Version %v, commit %v, built at %v\n", version, commit, date)
+		os.Exit(0)
+	}
 
 	reg := descriptor.NewRegistry()
 
