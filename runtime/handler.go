@@ -121,7 +121,7 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 
 	handleForwardResponseServerMetadata(w, mux, md)
 	handleForwardResponseTrailerHeader(w, md)
-	w.Header().Set("Content-Type", marshaler.ContentType())
+	w.Header().Set("Content-Type", marshaler.ContentType() + "; charset=utf-8")
 	if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {
 		HTTPError(ctx, mux, marshaler, w, req, err)
 		return
