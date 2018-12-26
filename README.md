@@ -220,7 +220,7 @@ To use the same port for custom HTTP handlers (e.g. serving `swagger.json`), gRP
 * Mapping streaming APIs to newline-delimited JSON streams
 * Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata (prefixed with `grpcgateway-`)
 * Optionally emitting API definition for [Swagger](http://swagger.io).
-* Setting [gRPC timeouts](https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md) through inbound HTTP `Grpc-Timeout` header.
+* Setting [gRPC timeouts](https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests) through inbound HTTP `Grpc-Timeout` header.
 * Partial support for [gRPC API Configuration]((https://cloud.google.com/endpoints/docs/grpc/grpc-service-config)) files as an alternative to annotation.
 
 ### Want to support
