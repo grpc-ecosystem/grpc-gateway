@@ -1,39 +1,37 @@
 workspace(name = "grpc_ecosystem_grpc_gateway")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-# master as of 2018-11-09. This should be updated when a new release is tagged.
 http_archive(
     name = "io_bazel_rules_go",
-    sha256 = "c23db3b50b8822e153bc5accfea75baeecedb481a162391c4f3b9aec451e34b4",
-    strip_prefix = "rules_go-109c520465fcb418f2c4be967f3744d959ad66d3",
-    urls = [
-        "https://github.com/bazelbuild/rules_go/archive/109c520465fcb418f2c4be967f3744d959ad66d3.tar.gz",
-    ],
+    sha256 = "7be7dc01f1e0afdba6c8eb2b43d2fa01c743be1b9273ab1eaf6c233df078d705",
+    urls = ["https://github.com/bazelbuild/rules_go/releases/download/0.16.5/rules_go-0.16.5.tar.gz"],
 )
 
-# master as of 2018-11-09. This should be updated when a new release is tagged.
 http_archive(
     name = "bazel_gazelle",
-    sha256 = "a3af4a61d7b2f2c5386761f94a21f474871a32f0e94b13f08824248c4df25229",
-    strip_prefix = "bazel-gazelle-7b1e3c6eb5447c6647955fc93c012635f274f0f0",
-    urls = [
-        "https://github.com/bazelbuild/bazel-gazelle/archive/7b1e3c6eb5447c6647955fc93c012635f274f0f0.tar.gz",
-    ],
+    sha256 = "7949fc6cc17b5b191103e97481cf8889217263acf52e00b560683413af204fcb",
+    urls = ["https://github.com/bazelbuild/bazel-gazelle/releases/download/0.16.0/bazel-gazelle-0.16.0.tar.gz"],
 )
 
-http_archive(
-    name = "com_github_bazelbuild_buildtools",
-    sha256 = "e4c83a7a5d0712e2cea2077112a5eb6bb1af75a84e34c8c9b77330e322966b8b",
-    strip_prefix = "buildtools-e90e7cc6ef3e6d08d4ca8a982935c3eed638e058",
-    url = "https://github.com/bazelbuild/buildtools/archive/e90e7cc6ef3e6d08d4ca8a982935c3eed638e058.tar.gz",
-)
+load("@io_bazel_rules_go//go:def.bzl", "go_register_toolchains", "go_rules_dependencies")
 
-load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
+go_rules_dependencies()
+
+go_register_toolchains()
+
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
 gazelle_dependencies()
 
 load("@io_bazel_rules_go//go:def.bzl", "go_register_toolchains", "go_rules_dependencies")
+
+go_rules_dependencies()
+
+go_register_toolchains()
+
+load("@bazel_gazelle//:deps.bzl", "go_repository")
 
 # Also define in Gopkg.toml
 go_repository(
@@ -70,9 +68,11 @@ go_repository(
     importpath = "gopkg.in/yaml.v2",
 )
 
-go_rules_dependencies()
-
-go_register_toolchains()
+http_archive(
+    name = "com_github_bazelbuild_buildtools",
+    strip_prefix = "buildtools-bf564b4925ab5876a3f64d8b90fab7f769013d42",
+    url = "https://github.com/bazelbuild/buildtools/archive/bf564b4925ab5876a3f64d8b90fab7f769013d42.zip",
+)
 
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
 
