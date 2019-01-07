@@ -77,7 +77,7 @@ func TestApplyTemplateHeader(t *testing.T) {
 			},
 		},
 	}
-	got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler"}, descriptor.NewRegistry())
+	got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
@@ -222,7 +222,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 				},
 			},
 		}
-		got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler"}, descriptor.NewRegistry())
+		got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
 		if err != nil {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 			return
@@ -383,7 +383,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 				},
 			},
 		}
-		got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler"}, descriptor.NewRegistry())
+		got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
 		if err != nil {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 			return
@@ -399,6 +399,85 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		}
 		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+		}
+	}
+}
+
+func TestAllowPatchFeature(t *testing.T) {
+	updateMaskDesc := &protodescriptor.FieldDescriptorProto{
+		Name:     proto.String("UpdateMask"),
+		Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+		Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+		TypeName: proto.String(".google.protobuf.FieldMask"),
+		Number:   proto.Int32(1),
+	}
+	msgdesc := &protodescriptor.DescriptorProto{
+		Name:  proto.String("ExampleMessage"),
+		Field: []*protodescriptor.FieldDescriptorProto{updateMaskDesc},
+	}
+	meth := &protodescriptor.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc := &protodescriptor.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*protodescriptor.MethodDescriptorProto{meth},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+	updateMaskField := &descriptor.Field{
+		Message:              msg,
+		FieldDescriptorProto: updateMaskDesc,
+	}
+	msg.Fields = append(msg.Fields, updateMaskField)
+	file := descriptor.File{
+		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+			Name:        proto.String("example.proto"),
+			Package:     proto.String("example"),
+			MessageType: []*protodescriptor.DescriptorProto{msgdesc},
+			Service:     []*protodescriptor.ServiceDescriptorProto{svc},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "PATCH",
+								Body:       &descriptor.Body{FieldPath: nil},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	want := "if protoReq.UpdateMask != nil && len(protoReq.UpdateMask.GetPaths()) > 0 {\n"
+	for _, allowPatchFeature := range []bool{true, false} {
+		got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: allowPatchFeature}, descriptor.NewRegistry())
+		if err != nil {
+			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+			return
+		}
+		if allowPatchFeature {
+			if !strings.Contains(got, want) {
+				t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+			}
+		} else {
+			if strings.Contains(got, want) {
+				t.Errorf("applyTemplate(%#v) = %s; want to _not_ contain %s", file, got, want)
+			}
 		}
 	}
 }
