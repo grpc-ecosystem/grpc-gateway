@@ -17,11 +17,13 @@ type param struct {
 	Imports            []descriptor.GoPackage
 	UseRequestContext  bool
 	RegisterFuncSuffix string
+	AllowPatchFeature  bool
 }
 
 type binding struct {
 	*descriptor.Binding
-	Registry *descriptor.Registry
+	Registry          *descriptor.Registry
+	AllowPatchFeature bool
 }
 
 // GetBodyFieldPath returns the binding body's fieldpath.
@@ -153,7 +155,11 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 			meth.Name = &methName
 			for _, b := range meth.Bindings {
 				methodWithBindingsSeen = true
-				if err := handlerTemplate.Execute(w, binding{Binding: b, Registry: reg}); err != nil {
+				if err := handlerTemplate.Execute(w, binding{
+					Binding:           b,
+					Registry:          reg,
+					AllowPatchFeature: p.AllowPatchFeature,
+				}); err != nil {
 					return "", err
 				}
 			}
@@ -268,6 +274,7 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 `))
 
 	_ = template.Must(handlerTemplate.New("client-rpc-request-func").Parse(`
+{{$AllowPatchFeature := .AllowPatchFeature}}
 {{if .HasQueryParam}}
 var (
 	filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}} = {{.QueryParamFilter}}
@@ -284,7 +291,7 @@ var (
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	{{- if and (eq (.HTTPMethod) "PATCH") (.FieldMaskField)}}
+	{{- if and $AllowPatchFeature (and (eq (.HTTPMethod) "PATCH") (.FieldMaskField))}}
 	if protoReq.{{.FieldMaskField}} != nil && len(protoReq.{{.FieldMaskField}}.GetPaths()) > 0 {
 		runtime.CamelCaseFieldMask(protoReq.{{.FieldMaskField}})
 	} {{if not (eq "*" .GetBodyFieldPath)}} else {
