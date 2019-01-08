@@ -1,5 +1,19 @@
 # Change Log
 
+## [v1.6.4](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.6.4) (2019-01-08)
+[Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.6.3...v1.6.4)
+
+**Closed issues:**
+
+- feature request: opt-out fieldmask behaviour in patch [\#839](https://github.com/grpc-ecosystem/grpc-gateway/issues/839)
+- gRPC streaming keepAlive doesn't work with docker swarm [\#838](https://github.com/grpc-ecosystem/grpc-gateway/issues/838)
+
+**Merged pull requests:**
+
+- Update bazel dependencies [\#841](https://github.com/grpc-ecosystem/grpc-gateway/pull/841) ([achew22](https://github.com/achew22))
+- gengateway: allow opting out patch feature [\#840](https://github.com/grpc-ecosystem/grpc-gateway/pull/840) ([glerchundi](https://github.com/glerchundi))
+- Fix the url of gRPC timeouts on README.md [\#836](https://github.com/grpc-ecosystem/grpc-gateway/pull/836) ([royeo](https://github.com/royeo))
+
 ## [v1.6.3](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/tree/v1.6.3) (2018-12-21)
 [Full Changelog](https://grpc-ecosystem.github.io/grpc-gateway/grpc-ecosystem/grpc-gateway/compare/v1.6.2...v1.6.3)
 
@@ -13,6 +27,7 @@
 
 **Merged pull requests:**
 
+- Regenerate changelog for 1.6.3 [\#835](https://github.com/grpc-ecosystem/grpc-gateway/pull/835) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - protoc-gen-swagger: check typeIndex when typeName is Method [\#833](https://github.com/grpc-ecosystem/grpc-gateway/pull/833) ([hexfusion](https://github.com/hexfusion))
 - Replace complicated circle CI release with goreleaser. [\#828](https://github.com/grpc-ecosystem/grpc-gateway/pull/828) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Stop the publishing recursion [\#827](https://github.com/grpc-ecosystem/grpc-gateway/pull/827) ([achew22](https://github.com/achew22))
