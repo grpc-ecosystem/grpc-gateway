@@ -16,7 +16,7 @@ required = [
 [[constraint]]
   # Also defined in WORKSPACE
   revision = "f8815663de1e64d57cdd4ee9e2b2fa96977a030e"
-  name = "github.com/go-resty/resty"
+  name = "gopkg.in/resty.v1"
 
 [[constraint]]
   # Also defined in WORKSPACE

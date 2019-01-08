@@ -10,7 +10,7 @@
 
 [[projects]]
   digest = "1:5cae6c173646d9230aecf8074c171edb4fb9a37f074c5c89ba2fece20b6703b6"
-  name = "github.com/go-resty/resty"
+  name = "gopkg.in/resty.v1"
   packages = ["."]
   pruneopts = "UT"
   revision = "f8815663de1e64d57cdd4ee9e2b2fa96977a030e"
@@ -158,7 +158,6 @@
   analyzer-version = 1
   input-imports = [
     "github.com/ghodss/yaml",
-    "github.com/go-resty/resty",
     "github.com/golang/glog",
     "github.com/golang/protobuf/jsonpb",
     "github.com/golang/protobuf/proto",
@@ -175,6 +174,7 @@
     "github.com/golang/protobuf/ptypes/wrappers",
     "github.com/rogpeppe/fastuuid",
     "golang.org/x/net/context",
+    "gopkg.in/resty.v1",
     "google.golang.org/genproto/googleapis/api/annotations",
     "google.golang.org/genproto/googleapis/rpc/errdetails",
     "google.golang.org/genproto/googleapis/rpc/status",
