@@ -38,8 +38,8 @@ required = [
 [[constraint]]
   # Also defined in bazelbuild/rules_go
   # https://github.com/bazelbuild/rules_go/blob/109c520465fcb418f2c4be967f3744d959ad66d3/go/private/repositories.bzl#L52
-  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
   name = "github.com/golang/protobuf"
+  version = "1.2.0"
 
 [[constraint]]
   # Also defined in bazelbuild/rules_go
