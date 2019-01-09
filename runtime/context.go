@@ -74,6 +74,9 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 			if key == "Authorization" {
 				pairs = append(pairs, "authorization", val)
 			}
+			if key == "User-Agent" {
+				pairs = append(pairs, "client-user-agent", val)
+			}
 			if h, ok := mux.incomingHeaderMatcher(key); ok {
 				// Handles "-bin" metadata in grpc, since grpc will do another base64
 				// encode before sending to server, we need to decode it first.
