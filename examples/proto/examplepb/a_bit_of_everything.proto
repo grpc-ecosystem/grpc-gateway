@@ -144,6 +144,7 @@ message ABitOfEverything {
 			url: "https://github.com/grpc-ecosystem/grpc-gateway";
 			description: "Find out more about ABitOfEverything";
 		}
+		example: { value: '{ "uuid": "0cf361e1-4b44-483d-a159-54dabdf7e814" }' }
 	};
 
 	// Nested is nested type.

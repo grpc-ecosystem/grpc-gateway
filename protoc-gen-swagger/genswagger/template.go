@@ -1,6 +1,7 @@
 package genswagger
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"reflect"
@@ -265,6 +266,9 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			}
 			if protoSchema.Description != "" {
 				schema.Description = protoSchema.Description
+			}
+			if protoSchema.Example != nil {
+				schema.Example = protoSchema.Example
 			}
 		}
 
@@ -1453,6 +1457,10 @@ func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Reg
 
 	ret.schemaCore = protoJSONSchemaToSwaggerSchemaCore(s.GetJsonSchema(), reg, refs)
 	updateSwaggerObjectFromJSONSchema(&ret, s.GetJsonSchema())
+
+	if s != nil && s.Example != nil {
+		ret.Example = json.RawMessage(s.Example.Value)
+	}
 
 	return ret
 }
