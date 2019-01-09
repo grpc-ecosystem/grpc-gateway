@@ -191,7 +191,7 @@ changelog:
 				-p grpc-gateway \
 				--author \
 				--compare-link \
-				--github-site=https://grpc-ecosystem.github.io/grpc-gateway \
+				--github-site=https://github.com \
 				--unreleased-label "**Next release**" \
 				--future-release=v1.6.4
 lint:
