@@ -1429,6 +1429,9 @@
     },
     "examplepbABitOfEverything": {
       "type": "object",
+      "example": {
+        "uuid": "0cf361e1-4b44-483d-a159-54dabdf7e814"
+      },
       "properties": {
         "single_nested": {
           "$ref": "#/definitions/ABitOfEverythingNested"
