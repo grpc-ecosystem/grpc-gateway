@@ -1575,6 +1575,19 @@
     },
     "examplepbABitOfEverythingRepeated": {
       "type": "object",
+      "example": {
+        "path_repeated_bool_value": [
+          true,
+          true,
+          false,
+          true
+        ],
+        "path_repeated_int32_value": [
+          1,
+          2,
+          3
+        ]
+      },
       "properties": {
         "path_repeated_float_value": {
           "type": "array",
