@@ -149,6 +149,9 @@ message ABitOfEverything {
 
 	// Nested is nested type.
 	message Nested {
+		option (grpc.gateway.protoc_gen_swagger.options.openapiv2_schema) = {
+			example: { value: '{ "ok": "TRUE" }' }
+		};
 		// name is nested field.
 		string name = 1;
 		uint32 amount = 2;
