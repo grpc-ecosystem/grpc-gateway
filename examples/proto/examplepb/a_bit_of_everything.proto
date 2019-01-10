@@ -206,6 +206,9 @@ message ABitOfEverything {
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality
 message ABitOfEverythingRepeated {
+	option (grpc.gateway.protoc_gen_swagger.options.openapiv2_schema) = {
+		example: { value: '{ "path_repeated_bool_value": [true, true, false, true], "path_repeated_int32_value": [1, 2, 3] }' }
+	};
 
 	// repeated values. they are comma-separated in path
 	repeated float path_repeated_float_value = 1;
