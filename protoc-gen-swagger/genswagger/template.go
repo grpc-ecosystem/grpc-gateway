@@ -211,10 +211,8 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 }
 
 func skipRenderingRef(refName string) bool {
-	if _, ok := wktSchemas[refName]; ok {
-		return true
-	}
-	return false
+	_, ok := wktSchemas[refName]
+	return ok
 }
 
 func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry, customRefs refMap) {
