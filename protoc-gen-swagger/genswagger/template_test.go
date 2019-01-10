@@ -1024,21 +1024,34 @@ func TestSchemaOfField(t *testing.T) {
 }
 
 func TestRenderMessagesAsDefinition(t *testing.T) {
+
 	tests := []struct {
-		schema swagger_options.Schema
-		defs   swaggerDefinitionsObject
+		descr    string
+		msgDescs []*protodescriptor.DescriptorProto
+		schema   map[string]swagger_options.Schema // per-message schema to add
+		defs     swaggerDefinitionsObject
 	}{
 		{
-			schema: swagger_options.Schema{},
+			descr: "no swagger options",
+			msgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{Name: proto.String("Message")},
+			},
+			schema: map[string]swagger_options.Schema{},
 			defs: map[string]swaggerSchemaObject{
 				"Message": swaggerSchemaObject{schemaCore: schemaCore{Type: "object"}},
 			},
 		},
 		{
-			schema: swagger_options.Schema{
-				Example: &any.Any{
-					TypeUrl: "this_isnt_used",
-					Value:   []byte(`{"foo":"bar"}`),
+			descr: "example option",
+			msgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{Name: proto.String("Message")},
+			},
+			schema: map[string]swagger_options.Schema{
+				"Message": swagger_options.Schema{
+					Example: &any.Any{
+						TypeUrl: "this_isnt_used",
+						Value:   []byte(`{"foo":"bar"}`),
+					},
 				},
 			},
 			defs: map[string]swaggerSchemaObject{
@@ -1049,9 +1062,15 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			},
 		},
 		{
-			schema: swagger_options.Schema{
-				Example: &any.Any{
-					Value: []byte(`XXXX anything goes XXXX`),
+			descr: "example option with something non-json",
+			msgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{Name: proto.String("Message")},
+			},
+			schema: map[string]swagger_options.Schema{
+				"Message": swagger_options.Schema{
+					Example: &any.Any{
+						Value: []byte(`XXXX anything goes XXXX`),
+					},
 				},
 			},
 			defs: map[string]swaggerSchemaObject{
@@ -1062,10 +1081,16 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			},
 		},
 		{
-			schema: swagger_options.Schema{
-				ExternalDocs: &swagger_options.ExternalDocumentation{
-					Description: "glorious docs",
-					Url:         "https://nada",
+			descr: "external docs option",
+			msgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{Name: proto.String("Message")},
+			},
+			schema: map[string]swagger_options.Schema{
+				"Message": swagger_options.Schema{
+					ExternalDocs: &swagger_options.ExternalDocumentation{
+						Description: "glorious docs",
+						Url:         "https://nada",
+					},
 				},
 			},
 			defs: map[string]swaggerSchemaObject{
@@ -1080,25 +1105,31 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 				},
 			},
 		},
-		{ // JSONSchema options
-			schema: swagger_options.Schema{
-				JsonSchema: &swagger_options.JSONSchema{
-					Title:            "title",
-					Description:      "desc",
-					MultipleOf:       100,
-					Maximum:          101,
-					ExclusiveMaximum: true,
-					Minimum:          1,
-					ExclusiveMinimum: true,
-					MaxLength:        10,
-					MinLength:        3,
-					Pattern:          "[a-z]+",
-					MaxItems:         20,
-					MinItems:         2,
-					UniqueItems:      true,
-					MaxProperties:    33,
-					MinProperties:    22,
-					Required:         []string{"req"},
+		{
+			descr: "JSONSchema options",
+			msgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{Name: proto.String("Message")},
+			},
+			schema: map[string]swagger_options.Schema{
+				"Message": swagger_options.Schema{
+					JsonSchema: &swagger_options.JSONSchema{
+						Title:            "title",
+						Description:      "desc",
+						MultipleOf:       100,
+						Maximum:          101,
+						ExclusiveMaximum: true,
+						Minimum:          1,
+						ExclusiveMinimum: true,
+						MaxLength:        10,
+						MinLength:        3,
+						Pattern:          "[a-z]+",
+						MaxItems:         20,
+						MinItems:         2,
+						UniqueItems:      true,
+						MaxProperties:    33,
+						MinProperties:    22,
+						Required:         []string{"req"},
+					},
 				},
 			},
 			defs: map[string]swaggerSchemaObject{
@@ -1128,48 +1159,56 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 	}
 
 	for _, test := range tests {
+		t.Run(test.descr, func(t *testing.T) {
 
-		d := &protodescriptor.DescriptorProto{
-			Name:    proto.String("Message"),
-			Options: &protodescriptor.MessageOptions{},
-		}
-		err := proto.SetExtension(d.Options, swagger_options.E_Openapiv2Schema, &test.schema)
-		if err != nil {
-			t.Fatalf("SetExtension returned error: %v", err)
-		}
+			msgs := []*descriptor.Message{}
+			for _, msgdesc := range test.msgDescs {
+				msgdesc.Options = &protodescriptor.MessageOptions{}
+				msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+			}
 
-		reg := descriptor.NewRegistry()
-		file := descriptor.File{
-			FileDescriptorProto: &protodescriptor.FileDescriptorProto{
-				SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
-				Name:           proto.String("example.proto"),
-				Package:        proto.String("example"),
-				Dependency:     []string{},
-				MessageType:    []*protodescriptor.DescriptorProto{d},
-				EnumType:       []*protodescriptor.EnumDescriptorProto{},
-				Service:        []*protodescriptor.ServiceDescriptorProto{},
-			},
-			Messages: []*descriptor.Message{&descriptor.Message{DescriptorProto: d}},
-		}
-		reg.Load(&plugin.CodeGeneratorRequest{
-			ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto},
+			reg := descriptor.NewRegistry()
+			file := descriptor.File{
+				FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+					SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+					Name:           proto.String("example.proto"),
+					Package:        proto.String("example"),
+					Dependency:     []string{},
+					MessageType:    test.msgDescs,
+					EnumType:       []*protodescriptor.EnumDescriptorProto{},
+					Service:        []*protodescriptor.ServiceDescriptorProto{},
+				},
+				Messages: msgs,
+			}
+			reg.Load(&plugin.CodeGeneratorRequest{
+				ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto},
+			})
+
+			msgMap := map[string]*descriptor.Message{}
+			for _, d := range test.msgDescs {
+				name := d.GetName()
+				msg, err := reg.LookupMsg("example", name)
+				if err != nil {
+					t.Fatalf("lookup message %v: %v", name, err)
+				}
+				msgMap[msg.FQMN()] = msg
+
+				if schema, ok := test.schema[name]; ok {
+					err := proto.SetExtension(d.Options, swagger_options.E_Openapiv2Schema, &schema)
+					if err != nil {
+						t.Fatalf("SetExtension(%s, ...) returned error: %v", msg, err)
+					}
+				}
+			}
+
+			refs := make(refMap)
+			actual := make(swaggerDefinitionsObject)
+			renderMessagesAsDefinition(msgMap, actual, reg, refs)
+
+			if !reflect.DeepEqual(actual, test.defs) {
+				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
+			}
 		})
-
-		msg, err := reg.LookupMsg("", ".example.Message")
-		if err != nil {
-			t.Fatalf("lookup message: %v", err)
-		}
-
-		refs := make(refMap)
-		actual := make(swaggerDefinitionsObject)
-		msgMap := map[string]*descriptor.Message{
-			msg.FQMN(): msg,
-		}
-		renderMessagesAsDefinition(msgMap, actual, reg, refs)
-
-		if !reflect.DeepEqual(actual, test.defs) {
-			t.Errorf("Expected renderMessagesAsDefinition() to add defs %v, not %v", test.defs, actual)
-		}
 	}
 }
 
