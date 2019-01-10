@@ -1395,6 +1395,9 @@
   "definitions": {
     "ABitOfEverythingNested": {
       "type": "object",
+      "example": {
+        "ok": "TRUE"
+      },
       "properties": {
         "name": {
           "type": "string",
