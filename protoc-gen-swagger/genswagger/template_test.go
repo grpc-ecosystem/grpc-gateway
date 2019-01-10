@@ -1,6 +1,7 @@
 package genswagger
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"testing"
@@ -8,8 +9,10 @@ import (
 	"github.com/golang/protobuf/proto"
 	protodescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/golang/protobuf/ptypes/any"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
+	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 )
 
 func crossLinkFixture(f *descriptor.File) *descriptor.File {
@@ -1016,6 +1019,156 @@ func TestSchemaOfField(t *testing.T) {
 		}
 		if !reflect.DeepEqual(refs, test.refs) {
 			t.Errorf("Expected schemaOfField(%v) to add refs %v, not %v", test.field, test.refs, refs)
+		}
+	}
+}
+
+func TestRenderMessagesAsDefinition(t *testing.T) {
+	tests := []struct {
+		schema swagger_options.Schema
+		defs   swaggerDefinitionsObject
+	}{
+		{
+			schema: swagger_options.Schema{},
+			defs: map[string]swaggerSchemaObject{
+				"Message": swaggerSchemaObject{schemaCore: schemaCore{Type: "object"}},
+			},
+		},
+		{
+			schema: swagger_options.Schema{
+				Example: &any.Any{
+					TypeUrl: "this_isnt_used",
+					Value:   []byte(`{"foo":"bar"}`),
+				},
+			},
+			defs: map[string]swaggerSchemaObject{
+				"Message": swaggerSchemaObject{schemaCore: schemaCore{
+					Type:    "object",
+					Example: json.RawMessage(`{"foo":"bar"}`),
+				}},
+			},
+		},
+		{
+			schema: swagger_options.Schema{
+				Example: &any.Any{
+					Value: []byte(`XXXX anything goes XXXX`),
+				},
+			},
+			defs: map[string]swaggerSchemaObject{
+				"Message": swaggerSchemaObject{schemaCore: schemaCore{
+					Type:    "object",
+					Example: json.RawMessage(`XXXX anything goes XXXX`),
+				}},
+			},
+		},
+		{
+			schema: swagger_options.Schema{
+				ExternalDocs: &swagger_options.ExternalDocumentation{
+					Description: "glorious docs",
+					Url:         "https://nada",
+				},
+			},
+			defs: map[string]swaggerSchemaObject{
+				"Message": swaggerSchemaObject{
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					ExternalDocs: &swaggerExternalDocumentationObject{
+						Description: "glorious docs",
+						URL:         "https://nada",
+					},
+				},
+			},
+		},
+		{ // JSONSchema options
+			schema: swagger_options.Schema{
+				JsonSchema: &swagger_options.JSONSchema{
+					Title:            "title",
+					Description:      "desc",
+					MultipleOf:       100,
+					Maximum:          101,
+					ExclusiveMaximum: true,
+					Minimum:          1,
+					ExclusiveMinimum: true,
+					MaxLength:        10,
+					MinLength:        3,
+					Pattern:          "[a-z]+",
+					MaxItems:         20,
+					MinItems:         2,
+					UniqueItems:      true,
+					MaxProperties:    33,
+					MinProperties:    22,
+					Required:         []string{"req"},
+				},
+			},
+			defs: map[string]swaggerSchemaObject{
+				"Message": swaggerSchemaObject{
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:            "title",
+					Description:      "desc",
+					MultipleOf:       100,
+					Maximum:          101,
+					ExclusiveMaximum: true,
+					Minimum:          1,
+					ExclusiveMinimum: true,
+					MaxLength:        10,
+					MinLength:        3,
+					Pattern:          "[a-z]+",
+					MaxItems:         20,
+					MinItems:         2,
+					UniqueItems:      true,
+					MaxProperties:    33,
+					MinProperties:    22,
+					Required:         []string{"req"},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+
+		d := &protodescriptor.DescriptorProto{
+			Name:    proto.String("Message"),
+			Options: &protodescriptor.MessageOptions{},
+		}
+		err := proto.SetExtension(d.Options, swagger_options.E_Openapiv2Schema, &test.schema)
+		if err != nil {
+			t.Fatalf("SetExtension returned error: %v", err)
+		}
+
+		reg := descriptor.NewRegistry()
+		file := descriptor.File{
+			FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+				SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType:    []*protodescriptor.DescriptorProto{d},
+				EnumType:       []*protodescriptor.EnumDescriptorProto{},
+				Service:        []*protodescriptor.ServiceDescriptorProto{},
+			},
+			Messages: []*descriptor.Message{&descriptor.Message{DescriptorProto: d}},
+		}
+		reg.Load(&plugin.CodeGeneratorRequest{
+			ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto},
+		})
+
+		msg, err := reg.LookupMsg("", ".example.Message")
+		if err != nil {
+			t.Fatalf("lookup message: %v", err)
+		}
+
+		refs := make(refMap)
+		actual := make(swaggerDefinitionsObject)
+		msgMap := map[string]*descriptor.Message{
+			msg.FQMN(): msg,
+		}
+		renderMessagesAsDefinition(msgMap, actual, reg, refs)
+
+		if !reflect.DeepEqual(actual, test.defs) {
+			t.Errorf("Expected renderMessagesAsDefinition() to add defs %v, not %v", test.defs, actual)
 		}
 	}
 }
