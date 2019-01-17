@@ -67,6 +67,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 					In:       "query",
 					Required: false,
 					Type:     "string",
+					Default:  "1",
 				},
 				swaggerParameterObject{
 					Name:     "b",
@@ -74,6 +75,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 					Required: false,
 					Type:     "number",
 					Format:   "double",
+					Default:  "2",
 				},
 			},
 		},

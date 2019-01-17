@@ -42,7 +42,7 @@ func NewABitOfEverythingServiceApiWithBasePath(basePath string) *ABitOfEverythin
  * Create a new ABitOfEverything
  * This API creates a new ABitOfEverything
  *
- * @param floatValue 
+ * @param floatValue Float value field
  * @param doubleValue 
  * @param int64Value 
  * @param uint64Value 
@@ -521,10 +521,10 @@ func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body Examplepb
  * 
  *
  * @param uuid 
+ * @param floatValue Float value field
  * @param singleNestedName name is nested field.
  * @param singleNestedAmount 
  * @param singleNestedOk  - FALSE: FALSE is false.  - TRUE: TRUE is true.
- * @param floatValue 
  * @param doubleValue 
  * @param int64Value 
  * @param uint64Value 
@@ -549,7 +549,7 @@ func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body Examplepb
  * @param repeatedEnumValue repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
  * @return *interface{}
  */
-func (a ABitOfEverythingServiceApi) GetQuery(uuid string, singleNestedName string, singleNestedAmount int64, singleNestedOk string, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, pathEnumValue string, nestedPathEnumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string) (*interface{}, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) GetQuery(uuid string, floatValue float32, singleNestedName string, singleNestedAmount int64, singleNestedOk string, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, pathEnumValue string, nestedPathEnumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string) (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables

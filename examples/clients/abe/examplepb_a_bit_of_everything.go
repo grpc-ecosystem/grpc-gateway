@@ -23,6 +23,7 @@ type ExamplepbABitOfEverything struct {
 
 	Nested []ABitOfEverythingNested `json:"nested,omitempty"`
 
+	// Float value field
 	FloatValue float32 `json:"float_value,omitempty"`
 
 	DoubleValue float64 `json:"double_value,omitempty"`
