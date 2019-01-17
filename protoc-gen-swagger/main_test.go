@@ -1,116 +1,129 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"reflect"
 	"testing"
 )
 
 func TestParseReqParam(t *testing.T) {
-	
-	f := flag.CommandLine
 
-	// this one must be first - with no leading clearFlags call it
-	// verifies our expectation of default values as we reset by
-	// clearFlags
-	pkgMap := make(map[string]string)
-	expected := map[string]string{}
-	err := parseReqParam("", f, pkgMap)
-	if err != nil {
-		t.Errorf("Test 0: unexpected parse error '%v'", err)
+	testcases := []struct {
+		name                       string
+		expected                   map[string]string
+		request                    string
+		expectedError              error
+		allowDeleteBodyV           bool
+		allowMergeV                bool
+		allowRepeatedFieldsInBodyV bool
+		fileV                      string
+		importPathV                string
+		mergeFileNameV             string
+	}{
+		{
+			// this one must be first - with no leading clearFlags call it
+			// verifies our expectation of default values as we reset by
+			// clearFlags
+			name:             "Test 0",
+			expected:         map[string]string{},
+			request:          "",
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false,
+			fileV: "-", importPathV: "", mergeFileNameV: "apidocs",
+		},
+		{
+			name:             "Test 1",
+			expected:         map[string]string{"google/api/annotations.proto": "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"},
+			request:          "allow_delete_body,allow_merge,allow_repeated_fields_in_body,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api",
+			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: true,
+			fileV: "./foo.pb", importPathV: "/bar/baz", mergeFileNameV: "apidocs",
+		},
+		{
+			name:             "Test 2",
+			expected:         map[string]string{"google/api/annotations.proto": "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"},
+			request:          "allow_delete_body=true,allow_merge=true,allow_repeated_fields_in_body=true,merge_file_name=test_name,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api",
+			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: true,
+			fileV: "./foo.pb", importPathV: "/bar/baz", mergeFileNameV: "test_name",
+		},
+		{
+			name:             "Test 3",
+			expected:         map[string]string{"a/b/c.proto": "github.com/x/y/z", "f/g/h.proto": "github.com/1/2/3/"},
+			request:          "allow_delete_body=false,allow_merge=false,Ma/b/c.proto=github.com/x/y/z,Mf/g/h.proto=github.com/1/2/3/",
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false,
+			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+		},
+		{
+			name:             "Test 4",
+			expected:         map[string]string{},
+			request:          "",
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false,
+			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+		},
+		{
+			name:             "Test 5",
+			expected:         map[string]string{},
+			request:          "unknown_param=17",
+			expectedError:    errors.New("Cannot set flag unknown_param=17: no such flag -unknown_param"),
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false,
+			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+		},
+		{
+			name:             "Test 6",
+			expected:         map[string]string{},
+			request:          "Mfoo",
+			expectedError:    errors.New("Cannot set flag Mfoo: no such flag -Mfoo"),
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false,
+			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+		},
+		{
+			name:             "Test 7",
+			expected:         map[string]string{},
+			request:          "allow_delete_body,file,import_prefix,allow_merge,allow_repeated_fields_in_body,merge_file_name",
+			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: true,
+			fileV: "", importPathV: "", mergeFileNameV: "",
+		},
+		{
+			name:             "Test 8",
+			expected:         map[string]string{},
+			request:          "allow_delete_body,file,import_prefix,allow_merge,allow_repeated_fields_in_body=3,merge_file_name",
+			expectedError:    errors.New(`Cannot set flag allow_repeated_fields_in_body=3: strconv.ParseBool: parsing "3": invalid syntax`),
+			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: false,
+			fileV: "", importPathV: "", mergeFileNameV: "apidocs",
+		},
 	}
-	if !reflect.DeepEqual(pkgMap, expected) {
-		t.Errorf("Test 0: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
-	}
-	checkFlags(false, false, "-", "", "apidocs", t, 0)
 
-	clearFlags()
-	pkgMap = make(map[string]string)
-	expected = map[string]string{"google/api/annotations.proto": "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"}
-	err = parseReqParam("allow_delete_body,allow_merge,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api", f, pkgMap)
-	if err != nil {
-		t.Errorf("Test 1: unexpected parse error '%v'", err)
-	}
-	if !reflect.DeepEqual(pkgMap, expected) {
-		t.Errorf("Test 1: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
-	}
-	checkFlags(true, true, "./foo.pb", "/bar/baz", "apidocs", t, 1)
+	for i, tc := range testcases {
+		t.Run(tc.name, func(tt *testing.T) {
+			f := flag.CommandLine
+			pkgMap := make(map[string]string)
+			err := parseReqParam(tc.request, f, pkgMap)
+			if tc.expectedError == nil {
+				if err != nil {
+					tt.Errorf("unexpected parse error '%v'", err)
+				}
+				if !reflect.DeepEqual(pkgMap, tc.expected) {
+					tt.Errorf("pkgMap parse error, expected '%v', got '%v'", tc.expected, pkgMap)
+				}
+			} else {
+				if err == nil {
+					tt.Error("expected parse error not returned")
+				}
+				if !reflect.DeepEqual(pkgMap, tc.expected) {
+					tt.Errorf("pkgMap parse error, expected '%v', got '%v'", tc.expected, pkgMap)
+				}
+				if err.Error() != tc.expectedError.Error() {
+					tt.Errorf("expected error malformed, expected %q, go %q", tc.expectedError.Error(), err.Error())
+				}
+			}
+			checkFlags(tc.allowDeleteBodyV, tc.allowMergeV, tc.allowRepeatedFieldsInBodyV, tc.fileV, tc.importPathV, tc.mergeFileNameV, tt, i)
 
-	clearFlags()
-	pkgMap = make(map[string]string)
-	expected = map[string]string{"google/api/annotations.proto": "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"}
-	err = parseReqParam("allow_delete_body=true,allow_merge=true,merge_file_name=test_name,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api", f, pkgMap)
-	if err != nil {
-		t.Errorf("Test 2: unexpected parse error '%v'", err)
+			clearFlags()
+		})
 	}
-	if !reflect.DeepEqual(pkgMap, expected) {
-		t.Errorf("Test 2: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
-	}
-	checkFlags(true, true,"./foo.pb", "/bar/baz", "test_name", t, 2)
-
-	clearFlags()
-	pkgMap = make(map[string]string)
-	expected = map[string]string{"a/b/c.proto": "github.com/x/y/z", "f/g/h.proto": "github.com/1/2/3/"}
-	err = parseReqParam("allow_delete_body=false,allow_merge=false,Ma/b/c.proto=github.com/x/y/z,Mf/g/h.proto=github.com/1/2/3/", f, pkgMap)
-	if err != nil {
-		t.Errorf("Test 3: unexpected parse error '%v'", err)
-	}
-	if !reflect.DeepEqual(pkgMap, expected) {
-		t.Errorf("Test 3: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
-	}
-	checkFlags(false, false,"stdin", "", "apidocs", t, 3)
-
-	clearFlags()
-	pkgMap = make(map[string]string)
-	expected = map[string]string{}
-	err = parseReqParam("", f, pkgMap)
-	if err != nil {
-		t.Errorf("Test 4: unexpected parse error '%v'", err)
-	}
-	if !reflect.DeepEqual(pkgMap, expected) {
-		t.Errorf("Test 4: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
-	}
-	checkFlags(false, false, "stdin", "", "apidocs", t, 4)
-
-	clearFlags()
-	pkgMap = make(map[string]string)
-	expected = map[string]string{}
-	err = parseReqParam("unknown_param=17", f, pkgMap)
-	if err == nil {
-		t.Error("Test 5: expected parse error not returned")
-	}
-	if !reflect.DeepEqual(pkgMap, expected) {
-		t.Errorf("Test 5: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
-	}
-	checkFlags(false, false,"stdin", "", "apidocs", t, 5)
-
-	clearFlags()
-	pkgMap = make(map[string]string)
-	expected = map[string]string{}
-	err = parseReqParam("Mfoo", f, pkgMap)
-	if err == nil {
-		t.Error("Test 6: expected parse error not returned")
-	}
-	if !reflect.DeepEqual(pkgMap, expected) {
-		t.Errorf("Test 6: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
-	}
-	checkFlags(false, false,"stdin", "", "apidocs", t, 6)
-
-	clearFlags()
-	pkgMap = make(map[string]string)
-	expected = map[string]string{}
-	err = parseReqParam("allow_delete_body,file,import_prefix,allow_merge,merge_file_name", f, pkgMap)
-	if err != nil {
-		t.Errorf("Test 7: unexpected parse error '%v'", err)
-	}
-	if !reflect.DeepEqual(pkgMap, expected) {
-		t.Errorf("Test 7: pkgMap parse error, expected '%v', got '%v'", expected, pkgMap)
-	}
-	checkFlags(true, true, "", "", "", t, 7)
 
 }
 
-func checkFlags(allowDeleteV, allowMergeV bool, fileV, importPathV, mergeFileNameV string, t *testing.T, tid int) {
+func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV bool, fileV, importPathV, mergeFileNameV string, t *testing.T, tid int) {
 	if *importPrefix != importPathV {
 		t.Errorf("Test %v: import_prefix misparsed, expected '%v', got '%v'", tid, importPathV, *importPrefix)
 	}
@@ -126,6 +139,9 @@ func checkFlags(allowDeleteV, allowMergeV bool, fileV, importPathV, mergeFileNam
 	if *mergeFileName != mergeFileNameV {
 		t.Errorf("Test %v: merge_file_name misparsed, expected '%v', got '%v'", tid, mergeFileNameV, *mergeFileName)
 	}
+	if *allowRepeatedFieldsInBody != allowRepeatedFieldsInBodyV {
+		t.Errorf("Test %v: allow_repeated_fields_in_body misparsed, expected '%v', got '%v'", tid, allowRepeatedFieldsInBodyV, *allowRepeatedFieldsInBody)
+	}
 }
 
 func clearFlags() {
@@ -133,5 +149,6 @@ func clearFlags() {
 	*file = "stdin"
 	*allowDeleteBody = false
 	*allowMerge = false
+	*allowRepeatedFieldsInBody = false
 	*mergeFileName = "apidocs"
 }

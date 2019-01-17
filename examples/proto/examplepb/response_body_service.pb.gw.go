@@ -55,6 +55,60 @@ func request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshale
 
 }
 
+func request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ResponseBodyIn
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["data"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "data")
+	}
+
+	protoReq.Data, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
+	}
+
+	msg, err := client.ListResponseBodies(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ResponseBodyIn
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["data"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "data")
+	}
+
+	protoReq.Data, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
+	}
+
+	msg, err := client.ListResponseStrings(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
 // RegisterResponseBodyServiceHandlerFromEndpoint is same as RegisterResponseBodyServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterResponseBodyServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
@@ -113,6 +167,46 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 
 	})
 
+	mux.Handle("GET", pattern_ResponseBodyService_ListResponseBodies_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ResponseBodyService_ListResponseBodies_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ResponseBodyService_ListResponseBodies_0(ctx, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseBodies_0{resp}, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ResponseBodyService_ListResponseStrings_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ResponseBodyService_ListResponseStrings_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ResponseBodyService_ListResponseStrings_0(ctx, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseStrings_0{resp}, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -125,10 +219,36 @@ func (m response_ResponseBodyService_GetResponseBody_0) XXX_ResponseBody() inter
 	return response.Response
 }
 
+type response_ResponseBodyService_ListResponseBodies_0 struct {
+	proto.Message
+}
+
+func (m response_ResponseBodyService_ListResponseBodies_0) XXX_ResponseBody() interface{} {
+	response := m.Message.(*RepeatedResponseBodyOut)
+	return response.Response
+}
+
+type response_ResponseBodyService_ListResponseStrings_0 struct {
+	proto.Message
+}
+
+func (m response_ResponseBodyService_ListResponseStrings_0) XXX_ResponseBody() interface{} {
+	response := m.Message.(*RepeatedResponseStrings)
+	return response.Values
+}
+
 var (
 	pattern_ResponseBodyService_GetResponseBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsebody", "data"}, ""))
+
+	pattern_ResponseBodyService_ListResponseBodies_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsebodies", "data"}, ""))
+
+	pattern_ResponseBodyService_ListResponseStrings_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsestrings", "data"}, ""))
 )
 
 var (
 	forward_ResponseBodyService_GetResponseBody_0 = runtime.ForwardResponseMessage
+
+	forward_ResponseBodyService_ListResponseBodies_0 = runtime.ForwardResponseMessage
+
+	forward_ResponseBodyService_ListResponseStrings_0 = runtime.ForwardResponseMessage
 )

@@ -149,11 +149,11 @@ $(EXAMPLE_DEPSRCS): $(GO_PLUGIN) $(EXAMPLE_DEPS)
 
 $(EXAMPLE_GWSRCS): ADDITIONAL_GW_FLAGS:=$(ADDITIONAL_GW_FLAGS),grpc_api_configuration=examples/proto/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,$(PKGMAP)$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,$(PKGMAP)$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
 
 $(EXAMPLE_SWAGGERSRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/proto/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_SWAGGERSRCS): $(SWAGGER_PLUGIN) $(SWAGGER_EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(SWAGGER_PLUGIN) --swagger_out=logtostderr=true,$(PKGMAP)$(ADDITIONAL_SWG_FLAGS):. $(SWAGGER_EXAMPLES)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(SWAGGER_PLUGIN) --swagger_out=logtostderr=true,allow_repeated_fields_in_body=true,$(PKGMAP)$(ADDITIONAL_SWG_FLAGS):. $(SWAGGER_EXAMPLES)
 
 $(ECHO_EXAMPLE_SRCS): $(ECHO_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ECHO_EXAMPLE_SPEC) \
