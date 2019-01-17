@@ -292,6 +292,34 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 	}
 }
 
+func renderMessagesAsStreamDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
+	for name, msg := range messages {
+		if skipRenderingRef(name) {
+			continue
+		}
+
+		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
+			continue
+		}
+		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = swaggerSchemaObject{
+			schemaCore: schemaCore{
+				Type: "object",
+			},
+			Title: fmt.Sprintf("Stream result of %s", fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)),
+			Properties: &swaggerSchemaObjectProperties{
+				keyVal{
+					Key: "result",
+					Value: swaggerSchemaObject{
+						schemaCore: schemaCore{
+							Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)),
+						},
+					},
+				},
+			},
+		}
+	}
+}
+
 // schemaOfField returns a swagger Schema Object for a protobuf field.
 func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) swaggerSchemaObject {
 	const (
@@ -746,6 +774,8 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 				if meth.GetServerStreaming() {
 					desc += "(streaming responses)"
+					// Use the streamdefinition which wraps the message in a "result"
+					responseSchema.Ref = strings.Replace(responseSchema.Ref, `#/definitions/`, `#/streamdefinitions/`, 1)
 				}
 				operationObject := &swaggerOperationObject{
 					Tags:       []string{svc.GetName()},
@@ -862,12 +892,13 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	// defined off of.
 	s := swaggerObject{
 		// Swagger 2.0 is the version of this document
-		Swagger:     "2.0",
-		Schemes:     []string{"http", "https"},
-		Consumes:    []string{"application/json"},
-		Produces:    []string{"application/json"},
-		Paths:       make(swaggerPathsObject),
-		Definitions: make(swaggerDefinitionsObject),
+		Swagger:           "2.0",
+		Schemes:           []string{"http", "https"},
+		Consumes:          []string{"application/json"},
+		Produces:          []string{"application/json"},
+		Paths:             make(swaggerPathsObject),
+		Definitions:       make(swaggerDefinitionsObject),
+		StreamDefinitions: make(swaggerDefinitionsObject),
 		Info: swaggerInfoObject{
 			Title:   *p.File.Name,
 			Version: "version not set",
@@ -888,6 +919,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	e := enumMap{}
 	findServicesMessagesAndEnumerations(p.Services, p.reg, m, e, requestResponseRefs)
 	renderMessagesAsDefinition(m, s.Definitions, p.reg, customRefs)
+	renderMessagesAsStreamDefinition(m, s.StreamDefinitions, p.reg)
 	renderEnumerationsAsDefinition(e, s.Definitions, p.reg)
 
 	// File itself might have some comments and metadata.

@@ -57,6 +57,7 @@ type swaggerObject struct {
 	Produces            []string                            `json:"produces"`
 	Paths               swaggerPathsObject                  `json:"paths"`
 	Definitions         swaggerDefinitionsObject            `json:"definitions"`
+	StreamDefinitions   swaggerDefinitionsObject            `json:"streamdefinitions"`
 	SecurityDefinitions swaggerSecurityDefinitionsObject    `json:"securityDefinitions,omitempty"`
 	Security            []swaggerSecurityRequirementObject  `json:"security,omitempty"`
 	ExternalDocs        *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
