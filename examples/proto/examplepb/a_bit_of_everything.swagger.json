@@ -1422,7 +1422,8 @@
       "enum": [
         "GHI",
         "JKL"
-      ]
+      ],
+      "default": "GHI"
     },
     "NestedDeepEnum": {
       "type": "string",
@@ -1430,6 +1431,7 @@
         "FALSE",
         "TRUE"
       ],
+      "default": "FALSE",
       "description": "DeepEnum is one or zero.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true."
     },
     "examplepbABitOfEverything": {
@@ -1455,11 +1457,11 @@
         "float_value": {
           "type": "number",
           "format": "float",
+          "default": "0.2",
           "description": "Float value field",
           "required": [
             "float_value"
-          ],
-          "default": "0.2"
+          ]
         },
         "double_value": {
           "type": "number",
@@ -1724,6 +1726,7 @@
         "ZERO",
         "ONE"
       ],
+      "default": "ZERO",
       "description": "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1"
     },
     "examplepbUpdateV2Request": {
@@ -1743,7 +1746,8 @@
       "enum": [
         "ABC",
         "DEF"
-      ]
+      ],
+      "default": "ABC"
     },
     "protobufFieldMask": {
       "type": "object",

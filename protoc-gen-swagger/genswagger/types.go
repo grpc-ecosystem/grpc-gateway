@@ -222,7 +222,6 @@ type swaggerSchemaObject struct {
 	MaxProperties    uint64   `json:"maxProperties,omitempty"`
 	MinProperties    uint64   `json:"minProperties,omitempty"`
 	Required         []string `json:"required,omitempty"`
-	Default          string   `json:"default,omitempty"`
 }
 
 // http://swagger.io/specification/#referenceObject

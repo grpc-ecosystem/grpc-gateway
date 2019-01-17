@@ -629,9 +629,6 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							return err
 						}
 						enumNames = listEnumNames(enum)
-						schema := schemaOfField(parameter.Target, reg, customRefs)
-						desc = schema.Description
-						defaultValue = schema.Default
 					default:
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
