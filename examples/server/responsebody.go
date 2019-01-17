@@ -21,3 +21,19 @@ func (s *responseBodyServer) GetResponseBody(ctx context.Context, req *examples.
 		},
 	}, nil
 }
+
+func (s *responseBodyServer) ListResponseBodies(ctx context.Context, req *examples.ResponseBodyIn) (*examples.RepeatedResponseBodyOut, error) {
+	return &examples.RepeatedResponseBodyOut{
+		Response: []*examples.RepeatedResponseBodyOut_Response{
+			&examples.RepeatedResponseBodyOut_Response{
+				Data: req.Data,
+			},
+		},
+	}, nil
+}
+
+func (s *responseBodyServer) ListResponseStrings(ctx context.Context, req *examples.ResponseBodyIn) (*examples.RepeatedResponseStrings, error) {
+	return &examples.RepeatedResponseStrings{
+		Values: []string{"hello", req.Data},
+	}, nil
+}

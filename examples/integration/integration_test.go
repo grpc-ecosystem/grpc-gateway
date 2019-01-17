@@ -1307,6 +1307,8 @@ func TestResponseBody(t *testing.T) {
 	}
 
 	testResponseBody(t, 8080)
+	testResponseBodies(t, 8080)
+	testResponseStrings(t, 8080)
 }
 
 func testResponseBody(t *testing.T, port int) {
@@ -1329,6 +1331,54 @@ func testResponseBody(t *testing.T, port int) {
 	}
 
 	if got, want := string(buf), `{"data":"foo"}`; got != want {
+		t.Errorf("response = %q; want %q", got, want)
+	}
+}
+
+func testResponseBodies(t *testing.T, port int) {
+	url := fmt.Sprintf("http://localhost:%d/responsebodies/foo", port)
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		return
+	}
+	defer resp.Body.Close()
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	if got, want := string(buf), `[{"data":"foo"}]`; got != want {
+		t.Errorf("response = %q; want %q", got, want)
+	}
+}
+
+func testResponseStrings(t *testing.T, port int) {
+	url := fmt.Sprintf("http://localhost:%d/responsestrings/foo", port)
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		return
+	}
+	defer resp.Body.Close()
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	if got, want := string(buf), `["hello","foo"]`; got != want {
 		t.Errorf("response = %q; want %q", got, want)
 	}
 }

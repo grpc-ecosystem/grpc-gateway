@@ -15,6 +15,33 @@
     "application/json"
   ],
   "paths": {
+    "/responsebodies/{data}": {
+      "get": {
+        "operationId": "ListResponseBodies",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/examplepbRepeatedResponseBodyOutResponse"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "data",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ResponseBodyService"
+        ]
+      }
+    },
     "/responsebody/{data}": {
       "get": {
         "operationId": "GetResponseBody",
@@ -38,9 +65,66 @@
           "ResponseBodyService"
         ]
       }
+    },
+    "/responsestrings/{data}": {
+      "get": {
+        "operationId": "ListResponseStrings",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "data",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ResponseBodyService"
+        ]
+      }
     }
   },
   "definitions": {
+    "examplepbRepeatedResponseBodyOut": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/examplepbRepeatedResponseBodyOutResponse"
+          }
+        }
+      }
+    },
+    "examplepbRepeatedResponseBodyOutResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string"
+        }
+      }
+    },
+    "examplepbRepeatedResponseStrings": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "examplepbResponseBodyOut": {
       "type": "object",
       "properties": {

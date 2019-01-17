@@ -82,6 +82,14 @@ func TestParseReqParam(t *testing.T) {
 			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: true,
 			fileV: "", importPathV: "", mergeFileNameV: "",
 		},
+		{
+			name:             "Test 8",
+			expected:         map[string]string{},
+			request:          "allow_delete_body,file,import_prefix,allow_merge,allow_repeated_fields_in_body=3,merge_file_name",
+			expectedError:    errors.New(`Cannot set flag allow_repeated_fields_in_body=3: strconv.ParseBool: parsing "3": invalid syntax`),
+			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: false,
+			fileV: "", importPathV: "", mergeFileNameV: "apidocs",
+		},
 	}
 
 	for i, tc := range testcases {
