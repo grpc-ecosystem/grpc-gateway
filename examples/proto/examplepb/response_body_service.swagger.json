@@ -57,5 +57,25 @@
         }
       }
     }
+  },
+  "streamdefinitions": {
+    "examplepbResponseBodyOut": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/examplepbResponseBodyOut"
+        }
+      },
+      "title": "Stream result of examplepbResponseBodyOut"
+    },
+    "examplepbResponseBodyOutResponse": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/examplepbResponseBodyOutResponse"
+        }
+      },
+      "title": "Stream result of examplepbResponseBodyOutResponse"
+    }
   }
 }

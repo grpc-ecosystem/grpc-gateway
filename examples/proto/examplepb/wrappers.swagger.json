@@ -359,5 +359,16 @@
         }
       }
     }
+  },
+  "streamdefinitions": {
+    "examplepbWrappers": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/examplepbWrappers"
+        }
+      },
+      "title": "Stream result of examplepbWrappers"
+    }
   }
 }

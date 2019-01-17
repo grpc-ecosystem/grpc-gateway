@@ -503,5 +503,25 @@
       },
       "description": "SimpleMessage represents a simple message sent to the Echo service."
     }
+  },
+  "streamdefinitions": {
+    "examplepbEmbedded": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/examplepbEmbedded"
+        }
+      },
+      "title": "Stream result of examplepbEmbedded"
+    },
+    "examplepbSimpleMessage": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/definitions/examplepbSimpleMessage"
+        }
+      },
+      "title": "Stream result of examplepbSimpleMessage"
+    }
   }
 }
