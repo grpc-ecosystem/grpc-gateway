@@ -504,7 +504,7 @@
       "description": "SimpleMessage represents a simple message sent to the Echo service."
     }
   },
-  "streamdefinitions": {
+  "x-stream-definitions": {
     "examplepbEmbedded": {
       "type": "object",
       "properties": {

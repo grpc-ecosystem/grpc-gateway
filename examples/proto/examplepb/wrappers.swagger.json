@@ -360,7 +360,7 @@
       }
     }
   },
-  "streamdefinitions": {
+  "x-stream-definitions": {
     "examplepbWrappers": {
       "type": "object",
       "properties": {

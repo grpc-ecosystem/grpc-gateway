@@ -775,7 +775,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				if meth.GetServerStreaming() {
 					desc += "(streaming responses)"
 					// Use the streamdefinition which wraps the message in a "result"
-					responseSchema.Ref = strings.Replace(responseSchema.Ref, `#/definitions/`, `#/streamdefinitions/`, 1)
+					responseSchema.Ref = strings.Replace(responseSchema.Ref, `#/definitions/`, `#/x-stream-definitions/`, 1)
 				}
 				operationObject := &swaggerOperationObject{
 					Tags:       []string{svc.GetName()},

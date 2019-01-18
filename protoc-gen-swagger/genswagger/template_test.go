@@ -280,7 +280,6 @@ func TestApplyTemplateSimple(t *testing.T) {
 }
 
 func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
-	t.Skip()
 	msgdesc := &protodescriptor.DescriptorProto{
 		Name: proto.String("ExampleMessage"),
 		Field: []*protodescriptor.FieldDescriptorProto{
@@ -405,7 +404,9 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 			},
 		},
 	}
-	result, err := applyTemplate(param{File: crossLinkFixture(&file)})
+	reg := descriptor.NewRegistry()
+	reg.Load(&plugin.CodeGeneratorRequest{ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto}})
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
@@ -425,9 +426,6 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 	if want, got := []string{"application/json"}, result.Produces; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).Produces = %s want to be %s", file, got, want)
 	}
-	if want, got, name := "Generated for ExampleService.Echo - ", result.Paths["/v1/echo"].Post.Summary, "Paths[/v1/echo].Post.Summary"; !reflect.DeepEqual(got, want) {
-		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
-	}
 
 	// If there was a failure, print out the input and the json result for debugging.
 	if t.Failed() {
@@ -437,7 +435,6 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 }
 
 func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
-	t.Skip()
 	msgdesc := &protodescriptor.DescriptorProto{
 		Name: proto.String("ExampleMessage"),
 		Field: []*protodescriptor.FieldDescriptorProto{
@@ -561,10 +558,58 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 			},
 		},
 	}
-	_, err := applyTemplate(param{File: crossLinkFixture(&file)})
-	if err == nil {
-		t.Errorf("applyTemplate(%#v) should have failed cause swagger doesn't support streaming", file)
+	reg := descriptor.NewRegistry()
+	reg.Load(&plugin.CodeGeneratorRequest{ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto}})
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
+	}
+
+	// Only ExampleMessage must be present, not NestedMessage
+	if want, got, name := 1, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
+		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
+	}
+	// stream ExampleMessage must be present
+	if want, got, name := 1, len(result.StreamDefinitions), "len(StreamDefinitions)"; !reflect.DeepEqual(got, want) {
+		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
+	} else {
+		streamExampleExampleMessage := result.StreamDefinitions["exampleExampleMessage"]
+		if want, got, name := "object", streamExampleExampleMessage.Type, `StreamDefinitions["exampleExampleMessage"].Type`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+		}
+		if want, got, name := "Stream result of exampleExampleMessage", streamExampleExampleMessage.Title, `StreamDefinitions["exampleExampleMessage"].Title`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+		}
+		streamExampleExampleMessageProperties := *(streamExampleExampleMessage.Properties)
+		if want, got, name := 1, len(streamExampleExampleMessageProperties), `len(StreamDefinitions["exampleExampleMessage"].Properties)`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
+		} else {
+			resultProperty := streamExampleExampleMessageProperties[0]
+			if want, got, name := "result", resultProperty.Key, `(*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Key`; !reflect.DeepEqual(got, want) {
+				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+			}
+			result := resultProperty.Value.(swaggerSchemaObject)
+			if want, got, name := "#/definitions/exampleExampleMessage", result.Ref, `((*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Value.(swaggerSchemaObject)).Ref`; !reflect.DeepEqual(got, want) {
+				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+			}
+		}
+	}
+	if want, got, name := 1, len(result.Paths["/v1/echo"].Post.Responses), "len(Paths[/v1/echo].Post.Responses)"; !reflect.DeepEqual(got, want) {
+		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
+	} else {
+		if want, got, name := "A successful response.(streaming responses)", result.Paths["/v1/echo"].Post.Responses["200"].Description, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+		}
+		if want, got, name := "#/x-stream-definitions/exampleExampleMessage", result.Paths["/v1/echo"].Post.Responses["200"].Schema.Ref, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+		}
+	}
+
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", fmt.Sprint(result))
 	}
 }
 

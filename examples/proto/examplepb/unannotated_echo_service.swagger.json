@@ -169,7 +169,7 @@
       "description": "UnannotatedSimpleMessage represents a simple message sent to the unannotated Echo service."
     }
   },
-  "streamdefinitions": {
+  "x-stream-definitions": {
     "examplepbUnannotatedSimpleMessage": {
       "type": "object",
       "properties": {

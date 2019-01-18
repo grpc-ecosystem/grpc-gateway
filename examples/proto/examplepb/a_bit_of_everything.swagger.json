@@ -1763,7 +1763,7 @@
       }
     }
   },
-  "streamdefinitions": {
+  "x-stream-definitions": {
     "ABitOfEverythingNested": {
       "type": "object",
       "properties": {
