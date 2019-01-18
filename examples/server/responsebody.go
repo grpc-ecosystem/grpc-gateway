@@ -33,6 +33,11 @@ func (s *responseBodyServer) ListResponseBodies(ctx context.Context, req *exampl
 }
 
 func (s *responseBodyServer) ListResponseStrings(ctx context.Context, req *examples.ResponseBodyIn) (*examples.RepeatedResponseStrings, error) {
+	if req.Data == "empty" {
+		return &examples.RepeatedResponseStrings{
+			Values: []string{},
+		}, nil
+	}
 	return &examples.RepeatedResponseStrings{
 		Values: []string{"hello", req.Data},
 	}, nil

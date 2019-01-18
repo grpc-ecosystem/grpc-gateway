@@ -1360,25 +1360,57 @@ func testResponseBodies(t *testing.T, port int) {
 }
 
 func testResponseStrings(t *testing.T, port int) {
-	url := fmt.Sprintf("http://localhost:%d/responsestrings/foo", port)
-	resp, err := http.Get(url)
-	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
-		return
-	}
-	defer resp.Body.Close()
-	buf, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
-		return
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	// Run Secondary server with different marshalling
+	ch := make(chan error)
+	go func() {
+		if err := runGateway(ctx, ":8081", runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{EmitDefaults: true})); err != nil {
+			ch <- fmt.Errorf("cannot run gateway service: %v", err)
+		}
+	}()
+
+	port = 8081
+
+	for i, spec := range []struct {
+		endpoint     string
+		expectedCode int
+		expectedBody string
+	}{
+		{
+			endpoint:     fmt.Sprintf("http://localhost:%d/responsestrings/foo", port),
+			expectedCode: http.StatusOK,
+			expectedBody: `["hello","foo"]`,
+		},
+		{
+			endpoint:     fmt.Sprintf("http://localhost:%d/responsestrings/empty", port),
+			expectedCode: http.StatusOK,
+			expectedBody: `[]`,
+		},
+	} {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			url := spec.endpoint
+			resp, err := http.Get(url)
+			if err != nil {
+				t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+				return
+			}
+			defer resp.Body.Close()
+			buf, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+				return
+			}
+
+			if got, want := resp.StatusCode, spec.expectedCode; got != want {
+				t.Errorf("resp.StatusCode = %d; want %d", got, want)
+				t.Logf("%s", buf)
+			}
+
+			if got, want := string(buf), spec.expectedBody; got != want {
+				t.Errorf("response = %q; want %q", got, want)
+			}
+		})
 	}
 
-	if got, want := resp.StatusCode, http.StatusOK; got != want {
-		t.Errorf("resp.StatusCode = %d; want %d", got, want)
-		t.Logf("%s", buf)
-	}
-
-	if got, want := string(buf), `["hello","foo"]`; got != want {
-		t.Errorf("response = %q; want %q", got, want)
-	}
 }
