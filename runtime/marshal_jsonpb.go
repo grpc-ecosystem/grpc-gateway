@@ -67,10 +67,8 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 		rv = rv.Elem()
 	}
 
-	if rv.Kind() == reflect.Slice {
-		if rv.IsNil() && j.EmitDefaults {
-			return []byte("[]"), nil
-		}
+	if rv.Kind() == reflect.Slice && rv.IsNil() && j.EmitDefaults {
+		return []byte("[]"), nil
 	}
 
 	if rv.Kind() == reflect.Map {
