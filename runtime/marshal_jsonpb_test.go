@@ -656,7 +656,7 @@ func TestJSONPbMarshalResponseBodies(t *testing.T) {
 			emitDefaults: true,
 			input:        &examplepb.RepeatedResponseBodyOut_Response{},
 			verifier: func(json string) {
-				expected := `{"data":""}`
+				expected := `{"data":"","type":"UNKNOWN"}`
 				if json != expected {
 					t.Errorf("json not equal (%q, %q)", json, expected)
 				}
