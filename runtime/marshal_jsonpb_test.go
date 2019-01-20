@@ -727,6 +727,37 @@ func TestJSONPbMarshalResponseBodies(t *testing.T) {
 				}
 			},
 		},
+		{
+			input: []*examplepb.RepeatedResponseBodyOut_Response{
+				&examplepb.RepeatedResponseBodyOut_Response{},
+				&examplepb.RepeatedResponseBodyOut_Response{
+					Data: "abc",
+					Type: examplepb.RepeatedResponseBodyOut_Response_A,
+				},
+			},
+			verifier: func(json string) {
+				expected := `[{},{"data":"abc","type":"A"}]`
+				if json != expected {
+					t.Errorf("json not equal (%q, %q)", json, expected)
+				}
+			},
+		},
+		{
+			emitDefaults: true,
+			input: []*examplepb.RepeatedResponseBodyOut_Response{
+				&examplepb.RepeatedResponseBodyOut_Response{},
+				&examplepb.RepeatedResponseBodyOut_Response{
+					Data: "abc",
+					Type: examplepb.RepeatedResponseBodyOut_Response_B,
+				},
+			},
+			verifier: func(json string) {
+				expected := `[{"data":"","type":"UNKNOWN"},{"data":"abc","type":"B"}]`
+				if json != expected {
+					t.Errorf("json not equal (%q, %q)", json, expected)
+				}
+			},
+		},
 	} {
 
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
