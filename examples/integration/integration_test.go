@@ -1365,7 +1365,7 @@ func testResponseStrings(t *testing.T, port int) {
 	// Run Secondary server with different marshalling
 	ch := make(chan error)
 	go func() {
-		if err := runGateway(ctx, ":8081", runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{EmitDefaults: true})); err != nil {
+		if err := runGateway(ctx, ":8081", runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{EnumsAsInts: false, EmitDefaults: true})); err != nil {
 			ch <- fmt.Errorf("cannot run gateway service: %v", err)
 		}
 	}()
@@ -1386,6 +1386,11 @@ func testResponseStrings(t *testing.T, port int) {
 			endpoint:     fmt.Sprintf("http://localhost:%d/responsestrings/empty", port),
 			expectedCode: http.StatusOK,
 			expectedBody: `[]`,
+		},
+		{
+			endpoint:     fmt.Sprintf("http://localhost:%d/responsebodies/foo", port),
+			expectedCode: http.StatusOK,
+			expectedBody: `[{"data":"foo","type":"UNKNOWN"}]`,
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {

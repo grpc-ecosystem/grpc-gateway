@@ -95,6 +95,16 @@
     }
   },
   "definitions": {
+    "ResponseResponseType": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "A",
+        "B"
+      ],
+      "default": "UNKNOWN",
+      "title": "- UNKNOWN: UNKNOWN\n - A: A is 1\n - B: B is 2"
+    },
     "examplepbRepeatedResponseBodyOut": {
       "type": "object",
       "properties": {
@@ -111,6 +121,9 @@
       "properties": {
         "data": {
           "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/ResponseResponseType"
         }
       }
     },
