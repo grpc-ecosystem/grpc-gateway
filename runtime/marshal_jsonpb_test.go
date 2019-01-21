@@ -656,7 +656,7 @@ func TestJSONPbMarshalResponseBodies(t *testing.T) {
 			emitDefaults: true,
 			input:        &examplepb.RepeatedResponseBodyOut_Response{},
 			verifier: func(json string) {
-				expected := `{"data":""}`
+				expected := `{"data":"","type":"UNKNOWN"}`
 				if json != expected {
 					t.Errorf("json not equal (%q, %q)", json, expected)
 				}
@@ -722,6 +722,37 @@ func TestJSONPbMarshalResponseBodies(t *testing.T) {
 			input:        ([]string)(nil),
 			verifier: func(json string) {
 				expected := `[]`
+				if json != expected {
+					t.Errorf("json not equal (%q, %q)", json, expected)
+				}
+			},
+		},
+		{
+			input: []*examplepb.RepeatedResponseBodyOut_Response{
+				&examplepb.RepeatedResponseBodyOut_Response{},
+				&examplepb.RepeatedResponseBodyOut_Response{
+					Data: "abc",
+					Type: examplepb.RepeatedResponseBodyOut_Response_A,
+				},
+			},
+			verifier: func(json string) {
+				expected := `[{},{"data":"abc","type":"A"}]`
+				if json != expected {
+					t.Errorf("json not equal (%q, %q)", json, expected)
+				}
+			},
+		},
+		{
+			emitDefaults: true,
+			input: []*examplepb.RepeatedResponseBodyOut_Response{
+				&examplepb.RepeatedResponseBodyOut_Response{},
+				&examplepb.RepeatedResponseBodyOut_Response{
+					Data: "abc",
+					Type: examplepb.RepeatedResponseBodyOut_Response_B,
+				},
+			},
+			verifier: func(json string) {
+				expected := `[{"data":"","type":"UNKNOWN"},{"data":"abc","type":"B"}]`
 				if json != expected {
 					t.Errorf("json not equal (%q, %q)", json, expected)
 				}

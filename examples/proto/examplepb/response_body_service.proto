@@ -13,7 +13,18 @@ message ResponseBodyOut {
 }
 
 message RepeatedResponseBodyOut {
-  message Response { string data = 1; }
+  message Response {
+    string data = 1;
+    enum ResponseType {
+      // UNKNOWN
+      UNKNOWN = 0;
+      // A is 1
+      A = 1;
+      // B is 2
+      B = 2;
+    }
+    ResponseType type = 3;
+  }
   repeated Response response = 2;
 }
 
