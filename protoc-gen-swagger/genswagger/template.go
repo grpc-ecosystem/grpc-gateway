@@ -90,7 +90,7 @@ func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Regis
 	return params, nil
 }
 
-// queryParams converts a field to a list of swagger query parameters recuresively.
+// queryParams converts a field to a list of swagger query parameters recursively.
 func queryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter) (params []swaggerParameterObject, err error) {
 	// make sure the parameter is not already listed as a path parameter
 	for _, pathParam := range pathParams {
@@ -120,14 +120,27 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 		if schema.Title != "" { // merge title because title of parameter object will be ignored
 			desc = strings.TrimSpace(schema.Title + ". " + schema.Description)
 		}
+
+		// verify if the field is required
+		required := false
+		for _, fieldName := range schema.Required {
+			if fieldName == field.GetName() {
+				required = true
+				break
+			}
+		}
+
 		param := swaggerParameterObject{
 			Name:        prefix + field.GetName(),
 			Description: desc,
 			In:          "query",
+			Default:     schema.Default,
 			Type:        schema.Type,
 			Items:       schema.Items,
 			Format:      schema.Format,
+			Required:    required,
 		}
+
 		if isEnum {
 			enum, err := reg.LookupEnum("", fieldType)
 			if err != nil {
@@ -250,6 +263,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			schema.MaxLength = protoSchema.MaxLength
 			schema.MinLength = protoSchema.MinLength
 			schema.Pattern = protoSchema.Pattern
+			schema.Default = protoSchema.Default
 			schema.MaxItems = protoSchema.MaxItems
 			schema.MinItems = protoSchema.MinItems
 			schema.UniqueItems = protoSchema.UniqueItems
@@ -589,7 +603,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				parameters := swaggerParametersObject{}
 				for _, parameter := range b.PathParams {
 
-					var paramType, paramFormat, desc, collectionFormat string
+					var paramType, paramFormat, desc, collectionFormat, defaultValue string
 					var enumNames []string
 					var items *swaggerItemsObject
 					var minItems *int
@@ -603,6 +617,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							paramType = schema.Type
 							paramFormat = schema.Format
 							desc = schema.Description
+							defaultValue = schema.Default
 						} else {
 							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
@@ -620,6 +635,10 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						if !ok {
 							return fmt.Errorf("unknown field type %v", pt)
 						}
+
+						schema := schemaOfField(parameter.Target, reg, customRefs)
+						desc = schema.Description
+						defaultValue = schema.Default
 					}
 
 					if parameter.IsRepeated() {
@@ -646,6 +665,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						Description: desc,
 						In:          "path",
 						Required:    true,
+						Default:     defaultValue,
 						// Parameters in gRPC-Gateway can only be strings?
 						Type:             paramType,
 						Format:           paramFormat,
@@ -1440,6 +1460,7 @@ func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_option
 	s.MaxLength = j.GetMaxLength()
 	s.MinLength = j.GetMinLength()
 	s.Pattern = j.GetPattern()
+	s.Default = j.GetDefault()
 	s.MaxItems = j.GetMaxItems()
 	s.MinItems = j.GetMinItems()
 	s.UniqueItems = j.GetUniqueItems()
