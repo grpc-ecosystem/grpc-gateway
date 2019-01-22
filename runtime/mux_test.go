@@ -27,6 +27,8 @@ func TestMuxServeHTTP(t *testing.T) {
 
 		respStatus  int
 		respContent string
+
+		disablePathLengthFallback bool
 	}{
 		{
 			patterns:   nil,
@@ -129,6 +131,45 @@ func TestMuxServeHTTP(t *testing.T) {
 					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
 				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/foo",
+			headers: map[string]string{
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+			respStatus:                http.StatusMethodNotAllowed,
+			respContent:               "Method Not Allowed\n",
+			disablePathLengthFallback: true,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+				{
+					method: "POST",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/foo",
+			headers: map[string]string{
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+			respStatus:                http.StatusOK,
+			respContent:               "POST /foo",
+			disablePathLengthFallback: true,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
 				{
 					method: "POST",
 					ops:    []int{int(utilities.OpLitPush), 0},
@@ -199,7 +240,11 @@ func TestMuxServeHTTP(t *testing.T) {
 			respContent: "GET /foo/{id=*}:verb",
 		},
 	} {
-		mux := runtime.NewServeMux()
+		var opts []runtime.ServeMuxOption
+		if spec.disablePathLengthFallback {
+			opts = append(opts, runtime.WithDisablePathLengthFallback())
+		}
+		mux := runtime.NewServeMux(opts...)
 		for _, p := range spec.patterns {
 			func(p stubPattern) {
 				pat, err := runtime.NewPattern(1, p.ops, p.pool, p.verb)
