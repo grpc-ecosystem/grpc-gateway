@@ -1579,7 +1579,9 @@
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"
       },
       "required": [
-        "uuid"
+        "uuid",
+        "int64_value",
+        "double_value"
       ]
     },
     "examplepbABitOfEverythingRepeated": {

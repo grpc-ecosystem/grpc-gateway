@@ -138,7 +138,7 @@ message ABitOfEverything {
 		json_schema: {
 			title: "A bit of everything"
 			description: "Intentionaly complicated message type to cover many features of Protobuf."
-			required: ["uuid"]
+			required: ["uuid", "int64_value", "double_value"]
 		}
 		external_docs: {
 			url: "https://github.com/grpc-ecosystem/grpc-gateway";
