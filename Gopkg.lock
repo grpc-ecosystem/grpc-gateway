@@ -54,7 +54,7 @@
   revision = "6724a57986aff9bff1a1770e9347036def7c89f6"
 
 [[projects]]
-  digest = "1:505dbee0833715a72a529bb57c354826ad42a4496fad787fa143699b4de1a6d0"
+  digest = "1:c0b7af9789502fec69b7ab40035a2180e43b9663c32101084ba51c844ea416e9"
   name = "golang.org/x/net"
   packages = [
     "context",
