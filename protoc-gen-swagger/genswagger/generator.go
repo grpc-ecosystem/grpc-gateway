@@ -9,8 +9,12 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
+	pbdescriptor "github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/proto"
+	protocdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/golang/protobuf/ptypes/any"
+	"github.com/grpc-ecosystem/grpc-gateway/internal"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/generator"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
@@ -132,4 +136,26 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 		}
 	}
 	return files, nil
+}
+
+//AddStreamError Adds grpc.gateway.runtime.StreamError and google.protobuf.Any to registry for stream responses
+func AddStreamError(reg *descriptor.Registry) error {
+	//load internal protos
+	any := fileDescriptorProtoForMessage(&any.Any{})
+	streamError := fileDescriptorProtoForMessage(&internal.StreamError{})
+	if err := reg.Load(&plugin.CodeGeneratorRequest{
+		ProtoFile: []*protocdescriptor.FileDescriptorProto{
+			any,
+			streamError,
+		},
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func fileDescriptorProtoForMessage(msg pbdescriptor.Message) *protocdescriptor.FileDescriptorProto {
+	fdp, _ := pbdescriptor.ForMessage(msg)
+	fdp.SourceCodeInfo = &protocdescriptor.SourceCodeInfo{}
+	return fdp
 }

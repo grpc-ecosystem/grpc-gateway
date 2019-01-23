@@ -15,9 +15,6 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/golang/protobuf/ptypes/any"
-	"github.com/grpc-ecosystem/grpc-gateway/internal"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 )
@@ -324,28 +321,6 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		}
 		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
 	}
-}
-
-//AddStreamError Adds internal.StreamError and Any to registry for stream responses
-func AddStreamError(reg *descriptor.Registry) error {
-	//load internal protos
-	any, err := fileDescriptorProtoFromProtoDescriptor(&any.Any{})
-	if err != nil {
-		return err
-	}
-	streamError, err := fileDescriptorProtoFromProtoDescriptor(&internal.StreamError{})
-	if err != nil {
-		return err
-	}
-	if err := reg.Load(&plugin.CodeGeneratorRequest{
-		ProtoFile: []*pbdescriptor.FileDescriptorProto{
-			any,
-			streamError,
-		},
-	}); err != nil {
-		return err
-	}
-	return nil
 }
 
 type protoDescriptor interface {

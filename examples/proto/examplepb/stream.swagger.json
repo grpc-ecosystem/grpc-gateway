@@ -146,7 +146,12 @@
         },
         "float_value": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "default": "0.2",
+          "description": "Float value field",
+          "required": [
+            "float_value"
+          ]
         },
         "double_value": {
           "type": "number",
@@ -264,7 +269,9 @@
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"
       },
       "required": [
-        "uuid"
+        "uuid",
+        "int64_value",
+        "double_value"
       ]
     },
     "examplepbNumericEnum": {

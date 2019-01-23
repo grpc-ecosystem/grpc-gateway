@@ -1,4 +1,5 @@
 required = [
+  "github.com/golang/protobuf/descriptor",
   "github.com/golang/protobuf/protoc-gen-go",
 ]
 
@@ -12,11 +13,6 @@ required = [
   # Also defined in WORKSPACE
   revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
   name = "github.com/ghodss/yaml"
-
-[[constraint]]
-  # Also defined in WORKSPACE
-  revision = "f8815663de1e64d57cdd4ee9e2b2fa96977a030e"
-  name = "github.com/go-resty/resty"
 
 [[constraint]]
   # Also defined in WORKSPACE
