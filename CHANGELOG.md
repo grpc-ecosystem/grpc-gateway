@@ -1,5 +1,25 @@
 # Change Log
 
+## [v1.7.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.7.0) (2019-01-23)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.6.4...v1.7.0)
+
+**Closed issues:**
+
+- Error to build project with go module [\#846](https://github.com/grpc-ecosystem/grpc-gateway/issues/846)
+- Result of gateway's Stream response is wrapped with "result" [\#579](https://github.com/grpc-ecosystem/grpc-gateway/issues/579)
+
+**Merged pull requests:**
+
+- Use github.com/golang/protobuf/descriptor ForMessage and fix CI from not rebasing [\#857](https://github.com/grpc-ecosystem/grpc-gateway/pull/857) ([mechinn](https://github.com/mechinn))
+- marshal\_jsonpb: add check for slice sub types implementing proto.Message [\#856](https://github.com/grpc-ecosystem/grpc-gateway/pull/856) ([abice](https://github.com/abice))
+- Added WithDisablePathLengthFallback option \(to fix issue \#447\) [\#855](https://github.com/grpc-ecosystem/grpc-gateway/pull/855) ([UladzimirTrehubenka](https://github.com/UladzimirTrehubenka))
+- marshal\_jsonpb: Added nil slice default value [\#854](https://github.com/grpc-ecosystem/grpc-gateway/pull/854) ([abice](https://github.com/abice))
+- Add flag 'allow\_repeated\_fields\_in\_body' to protoc-gen-swagger [\#853](https://github.com/grpc-ecosystem/grpc-gateway/pull/853) ([abice](https://github.com/abice))
+- Adding support for default and required swagger annotation fields. [\#852](https://github.com/grpc-ecosystem/grpc-gateway/pull/852) ([fahernandez](https://github.com/fahernandez))
+- make generated swagger json match gateway behavior for server streams [\#850](https://github.com/grpc-ecosystem/grpc-gateway/pull/850) ([mechinn](https://github.com/mechinn))
+- test: "fill attributes of swagger schema if provided for messages" [\#849](https://github.com/grpc-ecosystem/grpc-gateway/pull/849) ([srenatus](https://github.com/srenatus))
+- Fix the generated URL in the changelog [\#845](https://github.com/grpc-ecosystem/grpc-gateway/pull/845) ([johanbrandhorst](https://github.com/johanbrandhorst))
+
 ## [v1.6.4](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.6.4) (2019-01-08)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.6.3...v1.6.4)
 
@@ -81,6 +101,7 @@
 - fix bug: the resource name of custom method doesn't be retained [\#805](https://github.com/grpc-ecosystem/grpc-gateway/pull/805) ([ch3rub1m](https://github.com/ch3rub1m))
 - Update rules\_go and gazelle [\#802](https://github.com/grpc-ecosystem/grpc-gateway/pull/802) ([drigz](https://github.com/drigz))
 - Properly omit wrappers and google.protobuf.empty from swagger definitions [\#801](https://github.com/grpc-ecosystem/grpc-gateway/pull/801) ([birdayz](https://github.com/birdayz))
+- protoc-gen-swagger: honor example field of message option [\#799](https://github.com/grpc-ecosystem/grpc-gateway/pull/799) ([birdayz](https://github.com/birdayz))
 - Use newer Bazel repo rules [\#798](https://github.com/grpc-ecosystem/grpc-gateway/pull/798) ([drigz](https://github.com/drigz))
 - Run buildifer on Bazel files [\#797](https://github.com/grpc-ecosystem/grpc-gateway/pull/797) ([drigz](https://github.com/drigz))
 - protoc-gen-swagger: Fix formatting of license field definition. [\#796](https://github.com/grpc-ecosystem/grpc-gateway/pull/796) ([ivucica](https://github.com/ivucica))
