@@ -1,5 +1,4 @@
 required = [
-  "github.com/golang/protobuf/descriptor",
   "github.com/golang/protobuf/protoc-gen-go",
 ]
 
