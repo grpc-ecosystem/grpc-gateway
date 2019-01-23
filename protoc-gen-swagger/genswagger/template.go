@@ -1,8 +1,6 @@
 package genswagger
 
 import (
-	"bytes"
-	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -15,9 +13,6 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/golang/protobuf/ptypes/any"
-	"github.com/grpc-ecosystem/grpc-gateway/internal"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 )
@@ -324,56 +319,6 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		}
 		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
 	}
-}
-
-//AddStreamError Adds internal.StreamError and Any to registry for stream responses
-func AddStreamError(reg *descriptor.Registry) error {
-	//load internal protos
-	any, err := fileDescriptorProtoFromProtoDescriptor(&any.Any{})
-	if err != nil {
-		return err
-	}
-	streamError, err := fileDescriptorProtoFromProtoDescriptor(&internal.StreamError{})
-	if err != nil {
-		return err
-	}
-	if err := reg.Load(&plugin.CodeGeneratorRequest{
-		ProtoFile: []*pbdescriptor.FileDescriptorProto{
-			any,
-			streamError,
-		},
-	}); err != nil {
-		return err
-	}
-	return nil
-}
-
-type protoDescriptor interface {
-	Descriptor() ([]byte, []int)
-}
-
-func fileDescriptorProtoFromProtoDescriptor(pd protoDescriptor) (*pbdescriptor.FileDescriptorProto, error) {
-	pdd, _ := pd.Descriptor()
-	r, err := gzip.NewReader(bytes.NewReader(pdd))
-	if err != nil {
-		return nil, err
-	}
-	var buf bytes.Buffer
-	_, err = buf.ReadFrom(r)
-	if err != nil {
-		return nil, err
-	}
-	err = r.Close()
-	if err != nil {
-		return nil, err
-	}
-	fdp := &pbdescriptor.FileDescriptorProto{}
-	if err := proto.Unmarshal(buf.Bytes(), fdp); err != nil {
-		return nil, err
-	}
-	//hide the fact that we are loading this from the pb.go instead of the proto directly
-	fdp.SourceCodeInfo = &pbdescriptor.SourceCodeInfo{}
-	return fdp, nil
 }
 
 func renderMessagesAsStreamDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
