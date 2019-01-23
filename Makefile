@@ -45,7 +45,7 @@ SWAGGER_PLUGIN_FLAGS?=
 GOOGLEAPIS_DIR=third_party/googleapis
 OUTPUT_DIR=_output
 
-RUNTIME_PROTO=runtime/internal/stream_chunk.proto
+RUNTIME_PROTO=internal/stream_chunk.proto
 RUNTIME_GO=$(RUNTIME_PROTO:.proto=.pb.go)
 
 OPENAPIV2_PROTO=protoc-gen-swagger/options/openapiv2.proto protoc-gen-swagger/options/annotations.proto
@@ -63,6 +63,7 @@ endif
 SWAGGER_EXAMPLES=examples/proto/examplepb/echo_service.proto \
 	 examples/proto/examplepb/a_bit_of_everything.proto \
 	 examples/proto/examplepb/wrappers.proto \
+	 examples/proto/examplepb/stream.proto \
 	 examples/proto/examplepb/unannotated_echo_service.proto \
 	 examples/proto/examplepb/response_body_service.proto
 
