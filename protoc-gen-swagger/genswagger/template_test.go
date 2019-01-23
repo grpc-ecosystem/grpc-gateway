@@ -559,6 +559,10 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		},
 	}
 	reg := descriptor.NewRegistry()
+	if err := AddStreamError(reg); err != nil {
+		t.Errorf("AddStreamError(%#v) failed with %v; want success", reg, err)
+		return
+	}
 	reg.Load(&plugin.CodeGeneratorRequest{ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto}})
 	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
 	if err != nil {
@@ -567,7 +571,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 	}
 
 	// Only ExampleMessage must be present, not NestedMessage
-	if want, got, name := 1, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
+	if want, got, name := 3, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
 	}
 	// stream ExampleMessage must be present
@@ -582,7 +586,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 		}
 		streamExampleExampleMessageProperties := *(streamExampleExampleMessage.Properties)
-		if want, got, name := 1, len(streamExampleExampleMessageProperties), `len(StreamDefinitions["exampleExampleMessage"].Properties)`; !reflect.DeepEqual(got, want) {
+		if want, got, name := 2, len(streamExampleExampleMessageProperties), `len(StreamDefinitions["exampleExampleMessage"].Properties)`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
 		} else {
 			resultProperty := streamExampleExampleMessageProperties[0]
@@ -591,6 +595,14 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 			}
 			result := resultProperty.Value.(swaggerSchemaObject)
 			if want, got, name := "#/definitions/exampleExampleMessage", result.Ref, `((*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Value.(swaggerSchemaObject)).Ref`; !reflect.DeepEqual(got, want) {
+				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+			}
+			errorProperty := streamExampleExampleMessageProperties[1]
+			if want, got, name := "error", errorProperty.Key, `(*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Key`; !reflect.DeepEqual(got, want) {
+				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+			}
+			err := errorProperty.Value.(swaggerSchemaObject)
+			if want, got, name := "#/definitions/runtimeStreamError", err.Ref, `((*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Value.(swaggerSchemaObject)).Ref`; !reflect.DeepEqual(got, want) {
 				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 			}
 		}

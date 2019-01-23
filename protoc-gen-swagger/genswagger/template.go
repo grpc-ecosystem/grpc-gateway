@@ -1,6 +1,8 @@
 package genswagger
 
 import (
+	"bytes"
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -10,8 +12,12 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/golang/protobuf/ptypes/any"
+	"github.com/grpc-ecosystem/grpc-gateway/internal"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 )
@@ -167,7 +173,7 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 }
 
 // findServicesMessagesAndEnumerations discovers all messages and enums defined in the RPC methods of the service.
-func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, e enumMap, refs refMap) {
+func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, ms messageMap, e enumMap, refs refMap) {
 	for _, svc := range s {
 		for _, meth := range svc.Methods {
 			// Request may be fully included in query
@@ -180,6 +186,20 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 
 			if !skipRenderingRef(meth.ResponseType.FQMN()) {
 				m[fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)] = meth.ResponseType
+				if meth.GetServerStreaming() {
+					runtimeStreamError := fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.StreamError", reg)
+					glog.V(1).Infof("StreamError FQMN: %s", runtimeStreamError)
+					streamError, err := reg.LookupMsg(".grpc.gateway.runtime", "StreamError")
+					if err == nil {
+						glog.V(1).Infof("StreamError: %v", streamError)
+						m[runtimeStreamError] = streamError
+						findNestedMessagesAndEnumerations(streamError, reg, m, e)
+					} else {
+						//just in case there is an error looking up StreamError
+						glog.Error(err)
+					}
+					ms[fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)] = meth.ResponseType
+				}
 			}
 			findNestedMessagesAndEnumerations(meth.ResponseType, reg, m, e)
 		}
@@ -292,6 +312,55 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 	}
 }
 
+func AddStreamError(reg *descriptor.Registry) error {
+	//load internal protos
+	any, err := fileDescriptorProtoFromProtoDescriptor(&any.Any{})
+	if err != nil {
+		return err
+	}
+	streamError, err := fileDescriptorProtoFromProtoDescriptor(&internal.StreamError{})
+	if err != nil {
+		return err
+	}
+	if err := reg.Load(&plugin.CodeGeneratorRequest{
+		ProtoFile: []*pbdescriptor.FileDescriptorProto{
+			any,
+			streamError,
+		},
+	}); err != nil {
+		return err
+	}
+	return nil
+}
+
+type protoDescriptor interface {
+	Descriptor() ([]byte, []int)
+}
+
+func fileDescriptorProtoFromProtoDescriptor(pd protoDescriptor) (*pbdescriptor.FileDescriptorProto, error) {
+	pdd, _ := pd.Descriptor()
+	r, err := gzip.NewReader(bytes.NewReader(pdd))
+	if err != nil {
+		return nil, err
+	}
+	var buf bytes.Buffer
+	_, err = buf.ReadFrom(r)
+	if err != nil {
+		return nil, err
+	}
+	err = r.Close()
+	if err != nil {
+		return nil, err
+	}
+	fdp := &pbdescriptor.FileDescriptorProto{}
+	if err := proto.Unmarshal(buf.Bytes(), fdp); err != nil {
+		return nil, err
+	}
+	//hide the fact that we are loading this from the pb.go instead of the proto directly
+	fdp.SourceCodeInfo = &pbdescriptor.SourceCodeInfo{}
+	return fdp, nil
+}
+
 func renderMessagesAsStreamDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
 	for name, msg := range messages {
 		if skipRenderingRef(name) {
@@ -312,6 +381,14 @@ func renderMessagesAsStreamDefinition(messages messageMap, d swaggerDefinitionsO
 					Value: swaggerSchemaObject{
 						schemaCore: schemaCore{
 							Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)),
+						},
+					},
+				},
+				keyVal{
+					Key: "error",
+					Value: swaggerSchemaObject{
+						schemaCore: schemaCore{
+							Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.StreamError", reg)),
 						},
 					},
 				},
@@ -916,10 +993,11 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	// Find all the service's messages and enumerations that are defined (recursively)
 	// and write request, response and other custom (but referenced) types out as definition objects.
 	m := messageMap{}
+	ms := messageMap{}
 	e := enumMap{}
-	findServicesMessagesAndEnumerations(p.Services, p.reg, m, e, requestResponseRefs)
+	findServicesMessagesAndEnumerations(p.Services, p.reg, m, ms, e, requestResponseRefs)
 	renderMessagesAsDefinition(m, s.Definitions, p.reg, customRefs)
-	renderMessagesAsStreamDefinition(m, s.StreamDefinitions, p.reg)
+	renderMessagesAsStreamDefinition(ms, s.StreamDefinitions, p.reg)
 	renderEnumerationsAsDefinition(e, s.Definitions, p.reg)
 
 	// File itself might have some comments and metadata.
