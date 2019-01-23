@@ -23,9 +23,10 @@
   revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
 
 [[projects]]
-  digest = "1:77303a120dcd145972685b3465e58e1a0910544fcb323ca24755e073c1ea6d2c"
+  digest = "1:329b943e12961fb0c0db5bc18858433e569183178edfd0a8d99033ce032c62cc"
   name = "github.com/golang/protobuf"
   packages = [
+    "descriptor",
     "jsonpb",
     "proto",
     "protoc-gen-go",
@@ -160,6 +161,7 @@
     "github.com/ghodss/yaml",
     "github.com/go-resty/resty",
     "github.com/golang/glog",
+    "github.com/golang/protobuf/descriptor",
     "github.com/golang/protobuf/jsonpb",
     "github.com/golang/protobuf/proto",
     "github.com/golang/protobuf/protoc-gen-go",
