@@ -312,6 +312,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 	}
 }
 
+//AddStreamError Adds internal.StreamError and Any to registry for stream responses
 func AddStreamError(reg *descriptor.Registry) error {
 	//load internal protos
 	any, err := fileDescriptorProtoFromProtoDescriptor(&any.Any{})
