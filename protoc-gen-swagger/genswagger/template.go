@@ -1,8 +1,6 @@
 package genswagger
 
 import (
-	"bytes"
-	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -321,34 +319,6 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		}
 		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
 	}
-}
-
-type protoDescriptor interface {
-	Descriptor() ([]byte, []int)
-}
-
-func fileDescriptorProtoFromProtoDescriptor(pd protoDescriptor) (*pbdescriptor.FileDescriptorProto, error) {
-	pdd, _ := pd.Descriptor()
-	r, err := gzip.NewReader(bytes.NewReader(pdd))
-	if err != nil {
-		return nil, err
-	}
-	var buf bytes.Buffer
-	_, err = buf.ReadFrom(r)
-	if err != nil {
-		return nil, err
-	}
-	err = r.Close()
-	if err != nil {
-		return nil, err
-	}
-	fdp := &pbdescriptor.FileDescriptorProto{}
-	if err := proto.Unmarshal(buf.Bytes(), fdp); err != nil {
-		return nil, err
-	}
-	//hide the fact that we are loading this from the pb.go instead of the proto directly
-	fdp.SourceCodeInfo = &pbdescriptor.SourceCodeInfo{}
-	return fdp, nil
 }
 
 func renderMessagesAsStreamDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
