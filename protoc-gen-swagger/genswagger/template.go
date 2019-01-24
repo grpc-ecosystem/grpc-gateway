@@ -821,7 +821,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					responseSchema.Ref = strings.Replace(responseSchema.Ref, `#/definitions/`, `#/x-stream-definitions/`, 1)
 				}
 				operationObject := &swaggerOperationObject{
-					Tags:       []string{svc.GetName()},
+					Tags:       []string{fmt.Sprintf("%s.%s", svc.File.GetPackage(), svc.GetName())},
 					Parameters: parameters,
 					Responses: swaggerResponsesObject{
 						"200": swaggerResponseObject{
