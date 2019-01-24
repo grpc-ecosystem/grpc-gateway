@@ -16,22 +16,22 @@ import (
 	"encoding/json"
 )
 
-type CamelCaseServiceNameApi struct {
+type GrpcgatewayexamplesexamplepbcamelCaseServiceNameApi struct {
 	Configuration *Configuration
 }
 
-func NewCamelCaseServiceNameApi() *CamelCaseServiceNameApi {
+func NewGrpcgatewayexamplesexamplepbcamelCaseServiceNameApi() *GrpcgatewayexamplesexamplepbcamelCaseServiceNameApi {
 	configuration := NewConfiguration()
-	return &CamelCaseServiceNameApi{
+	return &GrpcgatewayexamplesexamplepbcamelCaseServiceNameApi{
 		Configuration: configuration,
 	}
 }
 
-func NewCamelCaseServiceNameApiWithBasePath(basePath string) *CamelCaseServiceNameApi {
+func NewGrpcgatewayexamplesexamplepbcamelCaseServiceNameApiWithBasePath(basePath string) *GrpcgatewayexamplesexamplepbcamelCaseServiceNameApi {
 	configuration := NewConfiguration()
 	configuration.BasePath = basePath
 
-	return &CamelCaseServiceNameApi{
+	return &GrpcgatewayexamplesexamplepbcamelCaseServiceNameApi{
 		Configuration: configuration,
 	}
 }
@@ -41,7 +41,7 @@ func NewCamelCaseServiceNameApiWithBasePath(basePath string) *CamelCaseServiceNa
  *
  * @return *interface{}
  */
-func (a CamelCaseServiceNameApi) Empty() (*interface{}, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbcamelCaseServiceNameApi) Empty() (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables

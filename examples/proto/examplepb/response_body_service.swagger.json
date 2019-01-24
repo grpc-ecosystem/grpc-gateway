@@ -38,7 +38,7 @@
           }
         ],
         "tags": [
-          "ResponseBodyService"
+          "grpc.gateway.examples.examplepb.ResponseBodyService"
         ]
       }
     },
@@ -62,7 +62,7 @@
           }
         ],
         "tags": [
-          "ResponseBodyService"
+          "grpc.gateway.examples.examplepb.ResponseBodyService"
         ]
       }
     },
@@ -89,7 +89,7 @@
           }
         ],
         "tags": [
-          "ResponseBodyService"
+          "grpc.gateway.examples.examplepb.ResponseBodyService"
         ]
       }
     }

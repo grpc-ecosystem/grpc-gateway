@@ -18,22 +18,22 @@ import (
 	"fmt"
 )
 
-type ABitOfEverythingServiceApi struct {
+type GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi struct {
 	Configuration *Configuration
 }
 
-func NewABitOfEverythingServiceApi() *ABitOfEverythingServiceApi {
+func NewGrpcgatewayexamplesexamplepbABitOfEverythingServiceApi() *GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi {
 	configuration := NewConfiguration()
-	return &ABitOfEverythingServiceApi{
+	return &GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi{
 		Configuration: configuration,
 	}
 }
 
-func NewABitOfEverythingServiceApiWithBasePath(basePath string) *ABitOfEverythingServiceApi {
+func NewGrpcgatewayexamplesexamplepbABitOfEverythingServiceApiWithBasePath(basePath string) *GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi {
 	configuration := NewConfiguration()
 	configuration.BasePath = basePath
 
-	return &ABitOfEverythingServiceApi{
+	return &GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi{
 		Configuration: configuration,
 	}
 }
@@ -62,7 +62,7 @@ func NewABitOfEverythingServiceApiWithBasePath(basePath string) *ABitOfEverythin
  * @param nestedPathEnumValue 
  * @return *ExamplepbABitOfEverything
  */
-func (a ABitOfEverythingServiceApi) Create(floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string) (*ExamplepbABitOfEverything, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) Create(floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string) (*ExamplepbABitOfEverything, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -153,7 +153,7 @@ func (a ABitOfEverythingServiceApi) Create(floatValue float32, doubleValue float
  * @param body 
  * @return *ExamplepbABitOfEverything
  */
-func (a ABitOfEverythingServiceApi) CreateBody(body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) CreateBody(body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -229,7 +229,7 @@ func (a ABitOfEverythingServiceApi) CreateBody(body ExamplepbABitOfEverything) (
  * @param body 
  * @return *ExamplepbABitOfEverything
  */
-func (a ABitOfEverythingServiceApi) DeepPathEcho(singleNestedName string, body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) DeepPathEcho(singleNestedName string, body ExamplepbABitOfEverything) (*ExamplepbABitOfEverything, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -305,7 +305,7 @@ func (a ABitOfEverythingServiceApi) DeepPathEcho(singleNestedName string, body E
  * @param uuid 
  * @return *interface{}
  */
-func (a ABitOfEverythingServiceApi) Delete(uuid string) (*interface{}, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) Delete(uuid string) (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Delete")
 	// create path and map variables
@@ -373,7 +373,7 @@ func (a ABitOfEverythingServiceApi) Delete(uuid string) (*interface{}, *APIRespo
  *
  * @return *interface{}
  */
-func (a ABitOfEverythingServiceApi) ErrorWithDetails() (*interface{}, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) ErrorWithDetails() (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -447,7 +447,7 @@ func (a ABitOfEverythingServiceApi) ErrorWithDetails() (*interface{}, *APIRespon
  * @param body 
  * @return *interface{}
  */
-func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body ExamplepbBody) (*interface{}, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) GetMessageWithBody(id string, body ExamplepbBody) (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -549,7 +549,7 @@ func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body Examplepb
  * @param repeatedEnumValue repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
  * @return *interface{}
  */
-func (a ABitOfEverythingServiceApi) GetQuery(uuid string, floatValue float32, singleNestedName string, singleNestedAmount int64, singleNestedOk string, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, pathEnumValue string, nestedPathEnumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string) (*interface{}, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) GetQuery(uuid string, floatValue float32, singleNestedName string, singleNestedAmount int64, singleNestedOk string, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, pathEnumValue string, nestedPathEnumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string) (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -655,7 +655,7 @@ func (a ABitOfEverythingServiceApi) GetQuery(uuid string, floatValue float32, si
  * @param pathRepeatedSint64Value 
  * @return *ExamplepbABitOfEverythingRepeated
  */
-func (a ABitOfEverythingServiceApi) GetRepeatedQuery(pathRepeatedFloatValue []float32, pathRepeatedDoubleValue []float64, pathRepeatedInt64Value []string, pathRepeatedUint64Value []string, pathRepeatedInt32Value []int32, pathRepeatedFixed64Value []string, pathRepeatedFixed32Value []int64, pathRepeatedBoolValue []bool, pathRepeatedStringValue []string, pathRepeatedBytesValue []string, pathRepeatedUint32Value []int64, pathRepeatedEnumValue []string, pathRepeatedSfixed32Value []int32, pathRepeatedSfixed64Value []string, pathRepeatedSint32Value []int32, pathRepeatedSint64Value []string) (*ExamplepbABitOfEverythingRepeated, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) GetRepeatedQuery(pathRepeatedFloatValue []float32, pathRepeatedDoubleValue []float64, pathRepeatedInt64Value []string, pathRepeatedUint64Value []string, pathRepeatedInt32Value []int32, pathRepeatedFixed64Value []string, pathRepeatedFixed32Value []int64, pathRepeatedBoolValue []bool, pathRepeatedStringValue []string, pathRepeatedBytesValue []string, pathRepeatedUint32Value []int64, pathRepeatedEnumValue []string, pathRepeatedSfixed32Value []int32, pathRepeatedSfixed64Value []string, pathRepeatedSint32Value []int32, pathRepeatedSint64Value []string) (*ExamplepbABitOfEverythingRepeated, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -744,7 +744,7 @@ func (a ABitOfEverythingServiceApi) GetRepeatedQuery(pathRepeatedFloatValue []fl
  * @param uuid 
  * @return *ExamplepbABitOfEverything
  */
-func (a ABitOfEverythingServiceApi) Lookup(uuid string) (*ExamplepbABitOfEverything, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) Lookup(uuid string) (*ExamplepbABitOfEverything, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -819,7 +819,7 @@ func (a ABitOfEverythingServiceApi) Lookup(uuid string) (*ExamplepbABitOfEveryth
  * @param body 
  * @return *interface{}
  */
-func (a ABitOfEverythingServiceApi) PatchWithFieldMaskInBody(abeUuid string, body ExamplepbUpdateV2Request) (*interface{}, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) PatchWithFieldMaskInBody(abeUuid string, body ExamplepbUpdateV2Request) (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Patch")
 	// create path and map variables
@@ -896,7 +896,7 @@ func (a ABitOfEverythingServiceApi) PatchWithFieldMaskInBody(abeUuid string, bod
  * @param body 
  * @return *interface{}
  */
-func (a ABitOfEverythingServiceApi) PostWithEmptyBody(name string, body ExamplepbBody) (*interface{}, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) PostWithEmptyBody(name string, body ExamplepbBody) (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -971,7 +971,7 @@ func (a ABitOfEverythingServiceApi) PostWithEmptyBody(name string, body Examplep
  *
  * @return *interface{}
  */
-func (a ABitOfEverythingServiceApi) Timeout() (*interface{}, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) Timeout() (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -1045,7 +1045,7 @@ func (a ABitOfEverythingServiceApi) Timeout() (*interface{}, *APIResponse, error
  * @param body 
  * @return *interface{}
  */
-func (a ABitOfEverythingServiceApi) Update(uuid string, body ExamplepbABitOfEverything) (*interface{}, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) Update(uuid string, body ExamplepbABitOfEverything) (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Put")
 	// create path and map variables
@@ -1122,7 +1122,7 @@ func (a ABitOfEverythingServiceApi) Update(uuid string, body ExamplepbABitOfEver
  * @param body 
  * @return *interface{}
  */
-func (a ABitOfEverythingServiceApi) UpdateV2(abeUuid string, body ExamplepbABitOfEverything) (*interface{}, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) UpdateV2(abeUuid string, body ExamplepbABitOfEverything) (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Put")
 	// create path and map variables
@@ -1199,7 +1199,7 @@ func (a ABitOfEverythingServiceApi) UpdateV2(abeUuid string, body ExamplepbABitO
  * @param body 
  * @return *interface{}
  */
-func (a ABitOfEverythingServiceApi) UpdateV22(abeUuid string, body ExamplepbABitOfEverything) (*interface{}, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbABitOfEverythingServiceApi) UpdateV22(abeUuid string, body ExamplepbABitOfEverything) (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Patch")
 	// create path and map variables

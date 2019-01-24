@@ -17,22 +17,22 @@ import (
 	"fmt"
 )
 
-type ResponseBodyServiceApi struct {
+type GrpcgatewayexamplesexamplepbResponseBodyServiceApi struct {
 	Configuration *Configuration
 }
 
-func NewResponseBodyServiceApi() *ResponseBodyServiceApi {
+func NewGrpcgatewayexamplesexamplepbResponseBodyServiceApi() *GrpcgatewayexamplesexamplepbResponseBodyServiceApi {
 	configuration := NewConfiguration()
-	return &ResponseBodyServiceApi{
+	return &GrpcgatewayexamplesexamplepbResponseBodyServiceApi{
 		Configuration: configuration,
 	}
 }
 
-func NewResponseBodyServiceApiWithBasePath(basePath string) *ResponseBodyServiceApi {
+func NewGrpcgatewayexamplesexamplepbResponseBodyServiceApiWithBasePath(basePath string) *GrpcgatewayexamplesexamplepbResponseBodyServiceApi {
 	configuration := NewConfiguration()
 	configuration.BasePath = basePath
 
-	return &ResponseBodyServiceApi{
+	return &GrpcgatewayexamplesexamplepbResponseBodyServiceApi{
 		Configuration: configuration,
 	}
 }
@@ -43,7 +43,7 @@ func NewResponseBodyServiceApiWithBasePath(basePath string) *ResponseBodyService
  * @param data 
  * @return *ExamplepbResponseBodyOutResponse
  */
-func (a ResponseBodyServiceApi) GetResponseBody(data string) (*ExamplepbResponseBodyOutResponse, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbResponseBodyServiceApi) GetResponseBody(data string) (*ExamplepbResponseBodyOutResponse, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -103,7 +103,7 @@ func (a ResponseBodyServiceApi) GetResponseBody(data string) (*ExamplepbResponse
  * @param data 
  * @return []ExamplepbRepeatedResponseBodyOutResponse
  */
-func (a ResponseBodyServiceApi) ListResponseBodies(data string) ([]ExamplepbRepeatedResponseBodyOutResponse, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbResponseBodyServiceApi) ListResponseBodies(data string) ([]ExamplepbRepeatedResponseBodyOutResponse, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -163,7 +163,7 @@ func (a ResponseBodyServiceApi) ListResponseBodies(data string) ([]ExamplepbRepe
  * @param data 
  * @return []string
  */
-func (a ResponseBodyServiceApi) ListResponseStrings(data string) ([]string, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbResponseBodyServiceApi) ListResponseStrings(data string) ([]string, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables

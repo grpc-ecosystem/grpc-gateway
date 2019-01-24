@@ -65,7 +65,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       }
     },
@@ -365,7 +365,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ],
         "deprecated": true,
         "security": [],
@@ -542,7 +542,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       }
     },
@@ -591,7 +591,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       }
     },
@@ -631,7 +631,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       },
       "delete": {
@@ -669,7 +669,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ],
         "security": [
           {
@@ -724,7 +724,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       }
     },
@@ -953,7 +953,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       }
     },
@@ -1001,7 +1001,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       },
       "patch": {
@@ -1047,7 +1047,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       }
     },
@@ -1183,7 +1183,7 @@
           }
         },
         "tags": [
-          "camelCaseServiceName"
+          "grpc.gateway.examples.examplepb.camelCaseServiceName"
         ]
       }
     },
@@ -1215,7 +1215,7 @@
           }
         },
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       }
     },
@@ -1263,7 +1263,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       }
     },
@@ -1295,7 +1295,7 @@
           }
         },
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       }
     },
@@ -1343,7 +1343,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       }
     },
@@ -1391,7 +1391,7 @@
           }
         ],
         "tags": [
-          "ABitOfEverythingService"
+          "grpc.gateway.examples.examplepb.ABitOfEverythingService"
         ]
       }
     }

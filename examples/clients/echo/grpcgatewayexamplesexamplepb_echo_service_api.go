@@ -17,22 +17,22 @@ import (
 	"fmt"
 )
 
-type EchoServiceApi struct {
+type GrpcgatewayexamplesexamplepbEchoServiceApi struct {
 	Configuration *Configuration
 }
 
-func NewEchoServiceApi() *EchoServiceApi {
+func NewGrpcgatewayexamplesexamplepbEchoServiceApi() *GrpcgatewayexamplesexamplepbEchoServiceApi {
 	configuration := NewConfiguration()
-	return &EchoServiceApi{
+	return &GrpcgatewayexamplesexamplepbEchoServiceApi{
 		Configuration: configuration,
 	}
 }
 
-func NewEchoServiceApiWithBasePath(basePath string) *EchoServiceApi {
+func NewGrpcgatewayexamplesexamplepbEchoServiceApiWithBasePath(basePath string) *GrpcgatewayexamplesexamplepbEchoServiceApi {
 	configuration := NewConfiguration()
 	configuration.BasePath = basePath
 
-	return &EchoServiceApi{
+	return &GrpcgatewayexamplesexamplepbEchoServiceApi{
 		Configuration: configuration,
 	}
 }
@@ -44,7 +44,7 @@ func NewEchoServiceApiWithBasePath(basePath string) *EchoServiceApi {
  * @param id Id represents the message identifier.
  * @return *ExamplepbSimpleMessage
  */
-func (a EchoServiceApi) Echo(id string) (*ExamplepbSimpleMessage, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbEchoServiceApi) Echo(id string) (*ExamplepbSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -113,7 +113,7 @@ func (a EchoServiceApi) Echo(id string) (*ExamplepbSimpleMessage, *APIResponse, 
  * @param noNote 
  * @return *ExamplepbSimpleMessage
  */
-func (a EchoServiceApi) Echo2(id string, num string, lineNum string, lang string, statusProgress string, statusNote string, en string, noProgress string, noNote string) (*ExamplepbSimpleMessage, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbEchoServiceApi) Echo2(id string, num string, lineNum string, lang string, statusProgress string, statusNote string, en string, noProgress string, noNote string) (*ExamplepbSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -190,7 +190,7 @@ func (a EchoServiceApi) Echo2(id string, num string, lineNum string, lang string
  * @param noNote 
  * @return *ExamplepbSimpleMessage
  */
-func (a EchoServiceApi) Echo3(id string, num string, lang string, lineNum string, statusProgress string, statusNote string, en string, noProgress string, noNote string) (*ExamplepbSimpleMessage, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbEchoServiceApi) Echo3(id string, num string, lang string, lineNum string, statusProgress string, statusNote string, en string, noProgress string, noNote string) (*ExamplepbSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -266,7 +266,7 @@ func (a EchoServiceApi) Echo3(id string, num string, lang string, lineNum string
  * @param noProgress 
  * @return *ExamplepbSimpleMessage
  */
-func (a EchoServiceApi) Echo4(id string, lineNum string, statusNote string, num string, lang string, statusProgress string, en string, noProgress string) (*ExamplepbSimpleMessage, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbEchoServiceApi) Echo4(id string, lineNum string, statusNote string, num string, lang string, statusProgress string, en string, noProgress string) (*ExamplepbSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -341,7 +341,7 @@ func (a EchoServiceApi) Echo4(id string, lineNum string, statusNote string, num 
  * @param noProgress 
  * @return *ExamplepbSimpleMessage
  */
-func (a EchoServiceApi) Echo5(noNote string, id string, num string, lineNum string, lang string, statusProgress string, en string, noProgress string) (*ExamplepbSimpleMessage, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbEchoServiceApi) Echo5(noNote string, id string, num string, lineNum string, lang string, statusProgress string, en string, noProgress string) (*ExamplepbSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -408,7 +408,7 @@ func (a EchoServiceApi) Echo5(noNote string, id string, num string, lineNum stri
  * @param body 
  * @return *ExamplepbSimpleMessage
  */
-func (a EchoServiceApi) EchoBody(body ExamplepbSimpleMessage) (*ExamplepbSimpleMessage, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbEchoServiceApi) EchoBody(body ExamplepbSimpleMessage) (*ExamplepbSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -477,7 +477,7 @@ func (a EchoServiceApi) EchoBody(body ExamplepbSimpleMessage) (*ExamplepbSimpleM
  * @param noNote 
  * @return *ExamplepbSimpleMessage
  */
-func (a EchoServiceApi) EchoDelete(id string, num string, lineNum string, lang string, statusProgress string, statusNote string, en string, noProgress string, noNote string) (*ExamplepbSimpleMessage, *APIResponse, error) {
+func (a GrpcgatewayexamplesexamplepbEchoServiceApi) EchoDelete(id string, num string, lineNum string, lang string, statusProgress string, statusNote string, en string, noProgress string, noNote string) (*ExamplepbSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Delete")
 	// create path and map variables

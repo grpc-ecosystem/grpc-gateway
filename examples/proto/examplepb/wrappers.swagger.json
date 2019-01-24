@@ -37,7 +37,7 @@
           }
         ],
         "tags": [
-          "WrappersService"
+          "grpc.gateway.examples.examplepb.WrappersService"
         ]
       }
     },
@@ -65,7 +65,7 @@
           }
         ],
         "tags": [
-          "WrappersService"
+          "grpc.gateway.examples.examplepb.WrappersService"
         ]
       }
     },
@@ -93,7 +93,7 @@
           }
         ],
         "tags": [
-          "WrappersService"
+          "grpc.gateway.examples.examplepb.WrappersService"
         ]
       }
     },
@@ -121,7 +121,7 @@
           }
         ],
         "tags": [
-          "WrappersService"
+          "grpc.gateway.examples.examplepb.WrappersService"
         ]
       }
     },
@@ -147,7 +147,7 @@
           }
         ],
         "tags": [
-          "WrappersService"
+          "grpc.gateway.examples.examplepb.WrappersService"
         ]
       }
     },
@@ -175,7 +175,7 @@
           }
         ],
         "tags": [
-          "WrappersService"
+          "grpc.gateway.examples.examplepb.WrappersService"
         ]
       }
     },
@@ -203,7 +203,7 @@
           }
         ],
         "tags": [
-          "WrappersService"
+          "grpc.gateway.examples.examplepb.WrappersService"
         ]
       }
     },
@@ -231,7 +231,7 @@
           }
         ],
         "tags": [
-          "WrappersService"
+          "grpc.gateway.examples.examplepb.WrappersService"
         ]
       }
     },
@@ -257,7 +257,7 @@
           }
         ],
         "tags": [
-          "WrappersService"
+          "grpc.gateway.examples.examplepb.WrappersService"
         ]
       }
     },
@@ -285,7 +285,7 @@
           }
         ],
         "tags": [
-          "WrappersService"
+          "grpc.gateway.examples.examplepb.WrappersService"
         ]
       }
     },
@@ -313,7 +313,7 @@
           }
         ],
         "tags": [
-          "WrappersService"
+          "grpc.gateway.examples.examplepb.WrappersService"
         ]
       }
     }
