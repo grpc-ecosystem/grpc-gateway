@@ -820,8 +820,14 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					// Use the streamdefinition which wraps the message in a "result"
 					responseSchema.Ref = strings.Replace(responseSchema.Ref, `#/definitions/`, `#/x-stream-definitions/`, 1)
 				}
+
+				tag := svc.GetName()
+				if pkg := svc.File.GetPackage(); pkg != "" {
+					tag = pkg + "." + tag
+				}
+
 				operationObject := &swaggerOperationObject{
-					Tags:       []string{fmt.Sprintf("%s.%s", svc.File.GetPackage(), svc.GetName())},
+					Tags:       []string{tag},
 					Parameters: parameters,
 					Responses: swaggerResponsesObject{
 						"200": swaggerResponseObject{
