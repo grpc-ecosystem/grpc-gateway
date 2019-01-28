@@ -9,7 +9,6 @@ go_library(
         "api_response.go",
         "configuration.go",
         "examplepb_unannotated_simple_message.go",
-        "grpcgatewayexamplesexamplepb_unannotated_echo_service_api.go",
         "unannotated_echo_service_api.go",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/clients/unannotatedecho",
