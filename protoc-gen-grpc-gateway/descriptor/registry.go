@@ -50,6 +50,10 @@ type Registry struct {
 	// allowRepeatedFieldsInBody permits repeated field in body field path of `google.api.http` annotation option
 	allowRepeatedFieldsInBody bool
 
+	// includePackageInTags controls whether the package name defined in the `package` directive
+	// in the proto file can be prepended to the gRPC service name in the `Tags` field of every operation.
+	includePackageInTags bool
+
 	// repeatedPathParamSeparator specifies how path parameter repeated fields are separated
 	repeatedPathParamSeparator repeatedFieldSeparator
 
@@ -348,6 +352,18 @@ func (r *Registry) SetAllowRepeatedFieldsInBody(allow bool) {
 // in `body` and `response_body` (`google.api.http` annotation option) field path or not
 func (r *Registry) IsAllowRepeatedFieldsInBody() bool {
 	return r.allowRepeatedFieldsInBody
+}
+
+// SetIncludePackageInTags controls whether the package name defined in the `package` directive
+// in the proto file can be prepended to the gRPC service name in the `Tags` field of every operation.
+func (r *Registry) SetIncludePackageInTags(allow bool) {
+	r.includePackageInTags = allow
+}
+
+// IsIncludePackageInTags checks whether the package name defined in the `package` directive
+// in the proto file can be prepended to the gRPC service name in the `Tags` field of every operation.
+func (r *Registry) IsIncludePackageInTags() bool {
+	return r.includePackageInTags
 }
 
 // GetRepeatedPathParamSeparator returns a rune spcifying how
