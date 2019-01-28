@@ -25,6 +25,7 @@ var (
 	repeatedPathParamSeparator = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`.")
 	versionFlag                = flag.Bool("version", false, "print the current verison")
 	allowRepeatedFieldsInBody  = flag.Bool("allow_repeated_fields_in_body", false, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option")
+	includePackageInTags       = flag.Bool("include_package_in_tags", false, "if unset, the gRPC service name is added to the `Tags` field of each operation. if set and the `package` directive is shown in the proto file, the package name will be prepended to the service name")
 )
 
 // Variables set by goreleaser at build time
@@ -74,6 +75,7 @@ func main() {
 	reg.SetMergeFileName(*mergeFileName)
 	reg.SetUseJSONNamesForFields(*useJSONNamesForFields)
 	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
+	reg.SetIncludePackageInTags(*includePackageInTags)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
 		return
@@ -162,6 +164,13 @@ func parseReqParam(param string, f *flag.FlagSet, pkgMap map[string]string) erro
 				continue
 			}
 			if spec[0] == "allow_repeated_fields_in_body" {
+				err := f.Set(spec[0], "true")
+				if err != nil {
+					return fmt.Errorf("Cannot set flag %s: %v", p, err)
+				}
+				continue
+			}
+			if spec[0] == "include_package_in_tags" {
 				err := f.Set(spec[0], "true")
 				if err != nil {
 					return fmt.Errorf("Cannot set flag %s: %v", p, err)
