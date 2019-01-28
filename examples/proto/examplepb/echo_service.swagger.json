@@ -39,7 +39,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.EchoService"
+          "EchoService"
         ]
       }
     },
@@ -119,7 +119,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.EchoService"
+          "EchoService"
         ]
       }
     },
@@ -199,7 +199,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.EchoService"
+          "EchoService"
         ]
       }
     },
@@ -273,7 +273,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.EchoService"
+          "EchoService"
         ]
       }
     },
@@ -347,7 +347,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.EchoService"
+          "EchoService"
         ]
       }
     },
@@ -374,7 +374,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.EchoService"
+          "EchoService"
         ]
       }
     },
@@ -453,7 +453,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.EchoService"
+          "EchoService"
         ]
       }
     }

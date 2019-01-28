@@ -8,6 +8,7 @@ go_library(
         "api_client.go",
         "api_response.go",
         "configuration.go",
+        "echo_service_api.go",
         "examplepb_embedded.go",
         "examplepb_simple_message.go",
         "grpcgatewayexamplesexamplepb_echo_service_api.go",

@@ -39,7 +39,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.UnannotatedEchoService"
+          "UnannotatedEchoService"
         ]
       }
     },
@@ -79,7 +79,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.UnannotatedEchoService"
+          "UnannotatedEchoService"
         ]
       }
     },
@@ -106,7 +106,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.UnannotatedEchoService"
+          "UnannotatedEchoService"
         ]
       }
     },
@@ -145,7 +145,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.UnannotatedEchoService"
+          "UnannotatedEchoService"
         ]
       }
     }

@@ -17,6 +17,7 @@ func TestParseReqParam(t *testing.T) {
 		allowDeleteBodyV           bool
 		allowMergeV                bool
 		allowRepeatedFieldsInBodyV bool
+		allowPackageNameInTagsV    bool
 		fileV                      string
 		importPathV                string
 		mergeFileNameV             string
@@ -28,35 +29,35 @@ func TestParseReqParam(t *testing.T) {
 			name:             "Test 0",
 			expected:         map[string]string{},
 			request:          "",
-			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false,
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, allowPackageNameInTagsV: false,
 			fileV: "-", importPathV: "", mergeFileNameV: "apidocs",
 		},
 		{
 			name:             "Test 1",
 			expected:         map[string]string{"google/api/annotations.proto": "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"},
-			request:          "allow_delete_body,allow_merge,allow_repeated_fields_in_body,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api",
-			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: true,
+			request:          "allow_delete_body,allow_merge,allow_repeated_fields_in_body,allow_package_name_in_tags,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api",
+			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: true, allowPackageNameInTagsV: true,
 			fileV: "./foo.pb", importPathV: "/bar/baz", mergeFileNameV: "apidocs",
 		},
 		{
 			name:             "Test 2",
 			expected:         map[string]string{"google/api/annotations.proto": "github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api"},
-			request:          "allow_delete_body=true,allow_merge=true,allow_repeated_fields_in_body=true,merge_file_name=test_name,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api",
-			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: true,
+			request:          "allow_delete_body=true,allow_merge=true,allow_repeated_fields_in_body=true,allow_package_name_in_tags=true,merge_file_name=test_name,file=./foo.pb,import_prefix=/bar/baz,Mgoogle/api/annotations.proto=github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api",
+			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: true, allowPackageNameInTagsV: true,
 			fileV: "./foo.pb", importPathV: "/bar/baz", mergeFileNameV: "test_name",
 		},
 		{
 			name:             "Test 3",
 			expected:         map[string]string{"a/b/c.proto": "github.com/x/y/z", "f/g/h.proto": "github.com/1/2/3/"},
 			request:          "allow_delete_body=false,allow_merge=false,Ma/b/c.proto=github.com/x/y/z,Mf/g/h.proto=github.com/1/2/3/",
-			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false,
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, allowPackageNameInTagsV: false,
 			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
 		},
 		{
 			name:             "Test 4",
 			expected:         map[string]string{},
 			request:          "",
-			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false,
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, allowPackageNameInTagsV: false,
 			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
 		},
 		{
@@ -64,7 +65,7 @@ func TestParseReqParam(t *testing.T) {
 			expected:         map[string]string{},
 			request:          "unknown_param=17",
 			expectedError:    errors.New("Cannot set flag unknown_param=17: no such flag -unknown_param"),
-			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false,
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, allowPackageNameInTagsV: false,
 			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
 		},
 		{
@@ -72,14 +73,14 @@ func TestParseReqParam(t *testing.T) {
 			expected:         map[string]string{},
 			request:          "Mfoo",
 			expectedError:    errors.New("Cannot set flag Mfoo: no such flag -Mfoo"),
-			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false,
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, allowPackageNameInTagsV: false,
 			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
 		},
 		{
 			name:             "Test 7",
 			expected:         map[string]string{},
-			request:          "allow_delete_body,file,import_prefix,allow_merge,allow_repeated_fields_in_body,merge_file_name",
-			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: true,
+			request:          "allow_delete_body,file,import_prefix,allow_merge,allow_repeated_fields_in_body,allow_package_name_in_tags,merge_file_name",
+			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: true, allowPackageNameInTagsV: true,
 			fileV: "", importPathV: "", mergeFileNameV: "",
 		},
 		{
@@ -87,8 +88,16 @@ func TestParseReqParam(t *testing.T) {
 			expected:         map[string]string{},
 			request:          "allow_delete_body,file,import_prefix,allow_merge,allow_repeated_fields_in_body=3,merge_file_name",
 			expectedError:    errors.New(`Cannot set flag allow_repeated_fields_in_body=3: strconv.ParseBool: parsing "3": invalid syntax`),
-			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: false,
+			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: false, allowPackageNameInTagsV: false,
 			fileV: "", importPathV: "", mergeFileNameV: "apidocs",
+		},
+		{
+			name:             "Test 9",
+			expected:         map[string]string{},
+			request:          "allow_package_name_in_tags=3",
+			expectedError:    errors.New(`Cannot set flag allow_package_name_in_tags=3: strconv.ParseBool: parsing "3": invalid syntax`),
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, allowPackageNameInTagsV: false,
+			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
 		},
 	}
 
@@ -112,10 +121,10 @@ func TestParseReqParam(t *testing.T) {
 					tt.Errorf("pkgMap parse error, expected '%v', got '%v'", tc.expected, pkgMap)
 				}
 				if err.Error() != tc.expectedError.Error() {
-					tt.Errorf("expected error malformed, expected %q, go %q", tc.expectedError.Error(), err.Error())
+					tt.Errorf("expected error malformed, expected %q, got %q", tc.expectedError.Error(), err.Error())
 				}
 			}
-			checkFlags(tc.allowDeleteBodyV, tc.allowMergeV, tc.allowRepeatedFieldsInBodyV, tc.fileV, tc.importPathV, tc.mergeFileNameV, tt, i)
+			checkFlags(tc.allowDeleteBodyV, tc.allowMergeV, tc.allowRepeatedFieldsInBodyV, tc.allowPackageNameInTagsV, tc.fileV, tc.importPathV, tc.mergeFileNameV, tt, i)
 
 			clearFlags()
 		})
@@ -123,7 +132,7 @@ func TestParseReqParam(t *testing.T) {
 
 }
 
-func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV bool, fileV, importPathV, mergeFileNameV string, t *testing.T, tid int) {
+func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV, allowPackageNameInTagsV bool, fileV, importPathV, mergeFileNameV string, t *testing.T, tid int) {
 	if *importPrefix != importPathV {
 		t.Errorf("Test %v: import_prefix misparsed, expected '%v', got '%v'", tid, importPathV, *importPrefix)
 	}
@@ -142,6 +151,9 @@ func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV bool, file
 	if *allowRepeatedFieldsInBody != allowRepeatedFieldsInBodyV {
 		t.Errorf("Test %v: allow_repeated_fields_in_body misparsed, expected '%v', got '%v'", tid, allowRepeatedFieldsInBodyV, *allowRepeatedFieldsInBody)
 	}
+	if *allowPackageNameInTags != allowPackageNameInTagsV {
+		t.Errorf("Test %v: allow_repeated_fields_in_body misparsed, expected '%v', got '%v'", tid, allowPackageNameInTagsV, *allowPackageNameInTags)
+	}
 }
 
 func clearFlags() {
@@ -150,5 +162,6 @@ func clearFlags() {
 	*allowDeleteBody = false
 	*allowMerge = false
 	*allowRepeatedFieldsInBody = false
+	*allowPackageNameInTags = false
 	*mergeFileName = "apidocs"
 }

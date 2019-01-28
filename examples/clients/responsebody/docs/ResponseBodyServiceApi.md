@@ -1,12 +1,12 @@
-# \GrpcgatewayexamplesexamplepbResponseBodyServiceApi
+# \ResponseBodyServiceApi
 
 All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetResponseBody**](GrpcgatewayexamplesexamplepbResponseBodyServiceApi.md#GetResponseBody) | **Get** /responsebody/{data} | 
-[**ListResponseBodies**](GrpcgatewayexamplesexamplepbResponseBodyServiceApi.md#ListResponseBodies) | **Get** /responsebodies/{data} | 
-[**ListResponseStrings**](GrpcgatewayexamplesexamplepbResponseBodyServiceApi.md#ListResponseStrings) | **Get** /responsestrings/{data} | 
+[**GetResponseBody**](ResponseBodyServiceApi.md#GetResponseBody) | **Get** /responsebody/{data} | 
+[**ListResponseBodies**](ResponseBodyServiceApi.md#ListResponseBodies) | **Get** /responsebodies/{data} | 
+[**ListResponseStrings**](ResponseBodyServiceApi.md#ListResponseStrings) | **Get** /responsestrings/{data} | 
 
 
 # **GetResponseBody**

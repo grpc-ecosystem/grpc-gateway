@@ -17,22 +17,22 @@ import (
 	"fmt"
 )
 
-type GrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi struct {
+type UnannotatedEchoServiceApi struct {
 	Configuration *Configuration
 }
 
-func NewGrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi() *GrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi {
+func NewUnannotatedEchoServiceApi() *UnannotatedEchoServiceApi {
 	configuration := NewConfiguration()
-	return &GrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi{
+	return &UnannotatedEchoServiceApi{
 		Configuration: configuration,
 	}
 }
 
-func NewGrpcgatewayexamplesexamplepbUnannotatedEchoServiceApiWithBasePath(basePath string) *GrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi {
+func NewUnannotatedEchoServiceApiWithBasePath(basePath string) *UnannotatedEchoServiceApi {
 	configuration := NewConfiguration()
 	configuration.BasePath = basePath
 
-	return &GrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi{
+	return &UnannotatedEchoServiceApi{
 		Configuration: configuration,
 	}
 }
@@ -44,7 +44,7 @@ func NewGrpcgatewayexamplesexamplepbUnannotatedEchoServiceApiWithBasePath(basePa
  * @param id Id represents the message identifier.
  * @return *ExamplepbUnannotatedSimpleMessage
  */
-func (a GrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi) Echo(id string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
+func (a UnannotatedEchoServiceApi) Echo(id string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -107,7 +107,7 @@ func (a GrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi) Echo(id string) (
  * @param duration 
  * @return *ExamplepbUnannotatedSimpleMessage
  */
-func (a GrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi) Echo2(id string, num string, duration string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
+func (a UnannotatedEchoServiceApi) Echo2(id string, num string, duration string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -169,7 +169,7 @@ func (a GrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi) Echo2(id string, 
  * @param body 
  * @return *ExamplepbUnannotatedSimpleMessage
  */
-func (a GrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi) EchoBody(body ExamplepbUnannotatedSimpleMessage) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
+func (a UnannotatedEchoServiceApi) EchoBody(body ExamplepbUnannotatedSimpleMessage) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
@@ -232,7 +232,7 @@ func (a GrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi) EchoBody(body Exa
  * @param duration 
  * @return *ExamplepbUnannotatedSimpleMessage
  */
-func (a GrpcgatewayexamplesexamplepbUnannotatedEchoServiceApi) EchoDelete(id string, num string, duration string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
+func (a UnannotatedEchoServiceApi) EchoDelete(id string, num string, duration string) (*ExamplepbUnannotatedSimpleMessage, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Delete")
 	// create path and map variables

@@ -27,7 +27,7 @@
           }
         },
         "tags": [
-          "grpc.gateway.examples.examplepb.StreamService"
+          "StreamService"
         ]
       }
     },
@@ -54,7 +54,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.StreamService"
+          "StreamService"
         ]
       }
     },
@@ -81,7 +81,7 @@
           }
         ],
         "tags": [
-          "grpc.gateway.examples.examplepb.StreamService"
+          "StreamService"
         ]
       }
     }

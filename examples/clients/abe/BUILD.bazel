@@ -6,8 +6,10 @@ go_library(
     name = "go_default_library",
     srcs = [
         "a_bit_of_everything_nested.go",
+        "a_bit_of_everything_service_api.go",
         "api_client.go",
         "api_response.go",
+        "camel_case_service_name_api.go",
         "configuration.go",
         "echo_rpc_api.go",
         "echo_service_api.go",
