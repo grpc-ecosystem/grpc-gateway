@@ -822,7 +822,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 
 				tag := svc.GetName()
-				if pkg := svc.File.GetPackage(); pkg != "" && reg.IsAllowPackageNameInTags() {
+				if pkg := svc.File.GetPackage(); pkg != "" && reg.IsIncludePackageInTags() {
 					tag = pkg + "." + tag
 				}
 
