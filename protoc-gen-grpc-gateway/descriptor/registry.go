@@ -57,6 +57,9 @@ type Registry struct {
 	// otherwise the original proto name is used. It's helpful for synchronizing the swagger definition
 	// with grpc-gateway response, if it uses json tags for marshaling.
 	useJSONNamesForFields bool
+
+	// emit examples w/ zero values
+	emitZeroExamples bool
 }
 
 type repeatedFieldSeparator struct {
@@ -399,6 +402,17 @@ func (r *Registry) GetUseJSONNamesForFields() bool {
 func (r *Registry) GetMergeFileName() string {
 	return r.mergeFileName
 }
+
+// SetEmitZeroExamples controls whether to emit zero value examples
+func (r *Registry) SetEmitZeroExamples(emitZeroExamples bool) {
+	r.emitZeroExamples = emitZeroExamples
+}
+
+// GetEmitZeroExamples returns emitZeroExamples
+func (r *Registry) GetEmitZeroExamples() bool {
+	return r.emitZeroExamples
+}
+
 
 // sanitizePackageName replaces unallowed character in package name
 // with allowed character.

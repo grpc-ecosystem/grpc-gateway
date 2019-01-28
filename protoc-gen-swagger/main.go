@@ -25,6 +25,7 @@ var (
 	repeatedPathParamSeparator = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`.")
 	versionFlag                = flag.Bool("version", false, "print the current verison")
 	allowRepeatedFieldsInBody  = flag.Bool("allow_repeated_fields_in_body", false, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option")
+	emitZeroExamples           = flag.Bool("zero_examples", false, "emit zeroed examples")
 )
 
 // Variables set by goreleaser at build time
@@ -74,6 +75,7 @@ func main() {
 	reg.SetMergeFileName(*mergeFileName)
 	reg.SetUseJSONNamesForFields(*useJSONNamesForFields)
 	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
+	reg.SetEmitZeroExamples(*emitZeroExamples)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
 		return

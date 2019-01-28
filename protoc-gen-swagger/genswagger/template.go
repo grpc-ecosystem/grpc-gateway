@@ -387,6 +387,12 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 		if wktSchema, ok := wktSchemas[fd.GetTypeName()]; ok {
 			core = wktSchema
 
+			if reg.GetEmitZeroExamples() {
+				if fd.GetTypeName() == ".google.protobuf.Timestamp" {
+					core.Example = json.RawMessage(`null`)
+				}
+			}
+
 			if fd.GetTypeName() == ".google.protobuf.Empty" {
 				props = &swaggerSchemaObjectProperties{}
 			}
@@ -403,6 +409,10 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 		ftype, format, ok := primitiveSchema(ft)
 		if ok {
 			core = schemaCore{Type: ftype, Format: format}
+
+			if reg.GetEmitZeroExamples() {
+				core.Example = primitiveZeroValue(ft)
+			}
 		} else {
 			core = schemaCore{Type: ft.String(), Format: "UNKNOWN"}
 		}
@@ -481,6 +491,52 @@ func primitiveSchema(t pbdescriptor.FieldDescriptorProto_Type) (ftype, format st
 		return "string", "int64", true
 	default:
 		return "", "", false
+	}
+}
+
+func primitiveZeroValue(t pbdescriptor.FieldDescriptorProto_Type) json.RawMessage {
+	switch t {
+	case pbdescriptor.FieldDescriptorProto_TYPE_DOUBLE:
+		return json.RawMessage(`0`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_FLOAT:
+		return json.RawMessage(`0`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_INT64:
+		return json.RawMessage(`"0"`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_UINT64:
+		// 64bit integer types are marshaled as string in the default JSONPb marshaler.
+		// TODO(yugui) Add an option to declare 64bit integers as int64.
+		//
+		// NOTE: uint64 is not a predefined format of integer type in Swagger spec.
+		// So we cannot expect that uint64 is commonly supported by swagger processor.
+		return json.RawMessage(`"0"`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_INT32:
+		return json.RawMessage(`0`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_FIXED64:
+		// Ditto.
+		return json.RawMessage(`"0"`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_FIXED32:
+		// Ditto.
+		return json.RawMessage(`0`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_BOOL:
+		return json.RawMessage(`false`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_STRING:
+		// NOTE: in swagger specifition, format should be empty on string type
+		return json.RawMessage(`""`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_BYTES:
+		return json.RawMessage(`""`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_UINT32:
+		// Ditto.
+		return json.RawMessage(`0`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_SFIXED32:
+		return json.RawMessage(`0`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_SFIXED64:
+		return json.RawMessage(`""`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_SINT32:
+		return json.RawMessage(`0`)
+	case pbdescriptor.FieldDescriptorProto_TYPE_SINT64:
+		return json.RawMessage(`""`)
+	default:
+		return json.RawMessage(`""`)
 	}
 }
 
@@ -655,6 +711,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				for _, parameter := range b.PathParams {
 
 					var paramType, paramFormat, desc, collectionFormat, defaultValue string
+					var zerov json.RawMessage
 					var enumNames []string
 					var items *swaggerItemsObject
 					var minItems *int
@@ -683,6 +740,11 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					default:
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
+
+						if reg.GetEmitZeroExamples() {
+							zerov = primitiveZeroValue(pt)
+						}
+
 						if !ok {
 							return fmt.Errorf("unknown field type %v", pt)
 						}
@@ -694,6 +756,11 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 
 					if parameter.IsRepeated() {
 						core := schemaCore{Type: paramType, Format: paramFormat}
+
+						if reg.GetEmitZeroExamples() {
+							core.Example = zerov
+						}
+
 						if parameter.IsEnum() {
 							var s []string
 							core.Enum = enumNames
