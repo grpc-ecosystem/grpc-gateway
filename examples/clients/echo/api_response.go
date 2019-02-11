@@ -1,5 +1,5 @@
 /* 
- * Echo Service
+ * examples/proto/examplepb/echo_service.proto
  *
  * Echo Service API consists of a single service which returns a message.
  *
