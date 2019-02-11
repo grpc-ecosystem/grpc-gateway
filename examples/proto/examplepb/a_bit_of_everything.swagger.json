@@ -364,7 +364,7 @@
             }
           },
           {
-            "name": "repeated_enum_value_annotation",
+            "name": "repeated_enum_annotation",
             "description": "Repeated numeric enum title. Repeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
@@ -437,7 +437,7 @@
         }
       }
     },
-    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}/{repeated_enum_value}/{repeated_enum_value_annotation}/{enum_value_annotation}/{repeated_string_annotation}": {
+    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}/{repeated_enum_value}/{enum_value_annotation}/{repeated_string_annotation}": {
       "post": {
         "summary": "Create a new ABitOfEverything",
         "description": "This API creates a new ABitOfEverything",
@@ -605,22 +605,6 @@
           {
             "name": "repeated_enum_value",
             "description": "repeated enum value. it is comma-separated in query",
-            "in": "path",
-            "required": true,
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "ZERO",
-                "ONE"
-              ]
-            },
-            "collectionFormat": "csv",
-            "minItems": 1
-          },
-          {
-            "name": "repeated_enum_value_annotation",
-            "description": "Repeated numeric enum description.",
             "in": "path",
             "required": true,
             "type": "array",
@@ -1688,7 +1672,7 @@
           },
           "title": "repeated enum value. it is comma-separated in query"
         },
-        "repeated_enum_value_annotation": {
+        "repeated_enum_annotation": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/examplepbNumericEnum"
