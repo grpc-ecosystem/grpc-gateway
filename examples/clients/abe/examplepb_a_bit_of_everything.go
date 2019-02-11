@@ -79,7 +79,7 @@ type ExamplepbABitOfEverything struct {
 	RepeatedEnumValue []ExamplepbNumericEnum `json:"repeated_enum_value,omitempty"`
 
 	// Repeated numeric enum description.
-	RepeatedEnumValueAnnotation []ExamplepbNumericEnum `json:"repeated_enum_value_annotation,omitempty"`
+	RepeatedEnumAnnotation []ExamplepbNumericEnum `json:"repeated_enum_annotation,omitempty"`
 
 	// Numeric enum description.
 	EnumValueAnnotation ExamplepbNumericEnum `json:"enum_value_annotation,omitempty"`

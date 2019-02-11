@@ -261,7 +261,7 @@
           },
           "title": "repeated enum value. it is comma-separated in query"
         },
-        "repeated_enum_value_annotation": {
+        "repeated_enum_annotation": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/examplepbNumericEnum"
