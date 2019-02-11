@@ -60,16 +60,14 @@ func NewABitOfEverythingServiceApiWithBasePath(basePath string) *ABitOfEverythin
  * @param enumValue 
  * @param pathEnumValue 
  * @param nestedPathEnumValue 
- * @param repeatedEnumValue repeated enum value. it is comma-separated in query
  * @param enumValueAnnotation Numeric enum description.
- * @param repeatedStringAnnotation Repeated string description.
  * @return *ExamplepbABitOfEverything
  */
-func (a ABitOfEverythingServiceApi) Create(floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, repeatedEnumValue []string, enumValueAnnotation string, repeatedStringAnnotation []string) (*ExamplepbABitOfEverything, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) Create(floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string) (*ExamplepbABitOfEverything, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Post")
 	// create path and map variables
-	localVarPath := a.Configuration.BasePath + "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}/{repeated_enum_value}/{enum_value_annotation}/{repeated_string_annotation}"
+	localVarPath := a.Configuration.BasePath + "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}/{enum_value_annotation}"
 	localVarPath = strings.Replace(localVarPath, "{"+"float_value"+"}", fmt.Sprintf("%v", floatValue), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"double_value"+"}", fmt.Sprintf("%v", doubleValue), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"int64_value"+"}", fmt.Sprintf("%v", int64Value), -1)
@@ -88,9 +86,7 @@ func (a ABitOfEverythingServiceApi) Create(floatValue float32, doubleValue float
 	localVarPath = strings.Replace(localVarPath, "{"+"enum_value"+"}", fmt.Sprintf("%v", enumValue), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"path_enum_value"+"}", fmt.Sprintf("%v", pathEnumValue), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"nested_path_enum_value"+"}", fmt.Sprintf("%v", nestedPathEnumValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"repeated_enum_value"+"}", fmt.Sprintf("%v", repeatedEnumValue), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"enum_value_annotation"+"}", fmt.Sprintf("%v", enumValueAnnotation), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"repeated_string_annotation"+"}", fmt.Sprintf("%v", repeatedStringAnnotation), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

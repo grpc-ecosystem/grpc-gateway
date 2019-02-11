@@ -291,8 +291,9 @@ func testABECreate(t *testing.T, port int) {
 		EnumValue:                gw.NumericEnum_ZERO,
 		PathEnumValue:            pathenum.PathEnum_DEF,
 		NestedPathEnumValue:      pathenum.MessagePathEnum_JKL,
+		EnumValueAnnotation:      gw.NumericEnum_ONE,
 	}
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue, want.EnumValue, want.PathEnumValue, want.NestedPathEnumValue)
+	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s/%s/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue, want.EnumValue, want.PathEnumValue, want.NestedPathEnumValue, want.EnumValueAnnotation)
 
 	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
 	if err != nil {
@@ -371,6 +372,29 @@ func testABECreateBody(t *testing.T, port int) {
 		MappedNestedValue: map[string]*gw.ABitOfEverything_Nested{
 			"a": {Name: "x", Amount: 1},
 			"b": {Name: "y", Amount: 2},
+		},
+		RepeatedEnumAnnotation:   []gw.NumericEnum{
+			gw.NumericEnum_ONE,
+			gw.NumericEnum_ZERO,
+		},
+		EnumValueAnnotation:      gw.NumericEnum_ONE,
+		RepeatedStringAnnotation: []string{
+			"a",
+			"b",
+		},
+		RepeatedNestedAnnotation: []*gw.ABitOfEverything_Nested{
+			{
+				Name:   "hoge",
+				Amount: 10,
+			},
+			{
+				Name:   "fuga",
+				Amount: 20,
+			},
+		},
+		NestedAnnotation: &gw.ABitOfEverything_Nested{
+			Name:   "hoge",
+			Amount: 10,
 		},
 	}
 	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
@@ -452,6 +476,29 @@ func testABEBulkCreate(t *testing.T, port int) {
 						Name:   "fuga",
 						Amount: 20,
 					},
+				},
+				RepeatedEnumAnnotation:   []gw.NumericEnum{
+					gw.NumericEnum_ONE,
+					gw.NumericEnum_ZERO,
+				},
+				EnumValueAnnotation:      gw.NumericEnum_ONE,
+				RepeatedStringAnnotation: []string{
+					"a",
+					"b",
+				},
+				RepeatedNestedAnnotation: []*gw.ABitOfEverything_Nested{
+					{
+						Name:   "hoge",
+						Amount: 10,
+					},
+					{
+						Name:   "fuga",
+						Amount: 20,
+					},
+				},
+				NestedAnnotation: &gw.ABitOfEverything_Nested{
+					Name:   "hoge",
+					Amount: 10,
 				},
 			}
 			var m jsonpb.Marshaler

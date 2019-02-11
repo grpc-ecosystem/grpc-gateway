@@ -1221,7 +1221,7 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 
 	paragraphs := strings.Split(comment, "\n\n")
 
-	// If there is a summary (or summary-equivalent) and its empty, use the first
+	// If there is a summary (or summary-equivalent) and it's empty, use the first
 	// paragraph as summary, and the rest as description.
 	if summaryValue.CanSet() {
 		summary := strings.TrimSpace(paragraphs[0])
