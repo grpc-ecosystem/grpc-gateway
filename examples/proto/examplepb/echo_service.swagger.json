@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/proto/examplepb/echo_service.proto",
+    "title": "Echo Service",
     "description": "Echo Service API consists of a single service which returns\na message.",
     "version": "version not set"
   },
