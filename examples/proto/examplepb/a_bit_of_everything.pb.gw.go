@@ -33,7 +33,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 
 var (
-	filter_ABitOfEverythingService_Create_0 = &utilities.DoubleArray{Encoding: map[string]int{"float_value": 0, "double_value": 1, "int64_value": 2, "uint64_value": 3, "int32_value": 4, "fixed64_value": 5, "fixed32_value": 6, "bool_value": 7, "string_value": 8, "uint32_value": 9, "sfixed32_value": 10, "sfixed64_value": 11, "sint32_value": 12, "sint64_value": 13, "nonConventionalNameValue": 14, "enum_value": 15, "path_enum_value": 16, "nested_path_enum_value": 17, "repeated_enum_value": 18, "enum_value_annotation": 19, "repeated_string_annotation": 20}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22}}
+	filter_ABitOfEverythingService_Create_0 = &utilities.DoubleArray{Encoding: map[string]int{"float_value": 0, "double_value": 1, "int64_value": 2, "uint64_value": 3, "int32_value": 4, "fixed64_value": 5, "fixed32_value": 6, "bool_value": 7, "string_value": 8, "uint32_value": 9, "sfixed32_value": 10, "sfixed64_value": 11, "sint32_value": 12, "sint64_value": 13, "nonConventionalNameValue": 14, "enum_value": 15, "path_enum_value": 16, "nested_path_enum_value": 17, "enum_value_annotation": 18}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}}
 )
 
 func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
@@ -43,7 +43,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	var (
 		val string
 		e   int32
-		es  []int32
 		ok  bool
 		err error
 		_   = err
@@ -253,23 +252,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	protoReq.NestedPathEnumValue = pathenum.MessagePathEnum_NestedPathEnum(e)
 
-	val, ok = pathParams["repeated_enum_value"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repeated_enum_value")
-	}
-
-	es, err = runtime.EnumSlice(val, ",", NumericEnum_value)
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repeated_enum_value", err)
-	}
-
-	s := make([]NumericEnum, len(es))
-	for i, v := range es {
-		s[i] = NumericEnum(v)
-	}
-	protoReq.RepeatedEnumValue = s
-
 	val, ok = pathParams["enum_value_annotation"]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "enum_value_annotation")
@@ -282,17 +264,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.EnumValueAnnotation = NumericEnum(e)
-
-	val, ok = pathParams["repeated_string_annotation"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "repeated_string_annotation")
-	}
-
-	protoReq.RepeatedStringAnnotation, err = runtime.StringSlice(val, ",")
-
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "repeated_string_annotation", err)
-	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_Create_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
@@ -1371,7 +1342,7 @@ func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runt
 }
 
 var (
-	pattern_ABitOfEverythingService_Create_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 1, 0, 4, 1, 5, 8, 1, 0, 4, 1, 5, 9, 1, 0, 4, 1, 5, 10, 1, 0, 4, 1, 5, 11, 2, 12, 1, 0, 4, 2, 5, 13, 1, 0, 4, 1, 5, 14, 1, 0, 4, 1, 5, 15, 1, 0, 4, 1, 5, 16, 1, 0, 4, 1, 5, 17, 1, 0, 4, 1, 5, 18, 1, 0, 4, 1, 5, 19, 1, 0, 4, 1, 5, 20, 1, 0, 4, 1, 5, 21, 1, 0, 4, 1, 5, 22, 1, 0, 4, 1, 5, 23, 1, 0, 4, 1, 5, 24, 1, 0, 4, 1, 5, 25}, []string{"v1", "example", "a_bit_of_everything", "float_value", "double_value", "int64_value", "separator", "uint64_value", "int32_value", "fixed64_value", "fixed32_value", "bool_value", "strprefix", "string_value", "uint32_value", "sfixed32_value", "sfixed64_value", "sint32_value", "sint64_value", "nonConventionalNameValue", "enum_value", "path_enum_value", "nested_path_enum_value", "repeated_enum_value", "enum_value_annotation", "repeated_string_annotation"}, ""))
+	pattern_ABitOfEverythingService_Create_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 2, 6, 1, 0, 4, 1, 5, 7, 1, 0, 4, 1, 5, 8, 1, 0, 4, 1, 5, 9, 1, 0, 4, 1, 5, 10, 1, 0, 4, 1, 5, 11, 2, 12, 1, 0, 4, 2, 5, 13, 1, 0, 4, 1, 5, 14, 1, 0, 4, 1, 5, 15, 1, 0, 4, 1, 5, 16, 1, 0, 4, 1, 5, 17, 1, 0, 4, 1, 5, 18, 1, 0, 4, 1, 5, 19, 1, 0, 4, 1, 5, 20, 1, 0, 4, 1, 5, 21, 1, 0, 4, 1, 5, 22, 1, 0, 4, 1, 5, 23}, []string{"v1", "example", "a_bit_of_everything", "float_value", "double_value", "int64_value", "separator", "uint64_value", "int32_value", "fixed64_value", "fixed32_value", "bool_value", "strprefix", "string_value", "uint32_value", "sfixed32_value", "sfixed64_value", "sint32_value", "sint64_value", "nonConventionalNameValue", "enum_value", "path_enum_value", "nested_path_enum_value", "enum_value_annotation"}, ""))
 
 	pattern_ABitOfEverythingService_CreateBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "a_bit_of_everything"}, ""))
 

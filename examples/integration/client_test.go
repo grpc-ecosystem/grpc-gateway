@@ -76,6 +76,7 @@ func testABEClientCreate(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 		EnumValue:                abe.ExamplepbNumericEnum{},
 		PathEnumValue:            abe.PathenumPathEnum{},
 		NestedPathEnumValue:      abe.MessagePathEnumNestedPathEnum{},
+		EnumValueAnnotation:      abe.ExamplepbNumericEnum{},
 	}
 	resp, _, err := cl.Create(
 		want.FloatValue,
@@ -96,6 +97,7 @@ func testABEClientCreate(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 		want.EnumValue.String(),
 		want.PathEnumValue.String(),
 		want.NestedPathEnumValue.String(),
+		want.EnumValueAnnotation.String(),
 	)
 	if err != nil {
 		t.Errorf("cl.Create(%#v) failed with %v; want success", want, err)
