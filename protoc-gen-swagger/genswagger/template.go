@@ -408,31 +408,35 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 		}
 	}
 
+	ret := swaggerSchemaObject{}
+
 	switch aggregate {
 	case array:
-		return swaggerSchemaObject{
+		ret = swaggerSchemaObject{
 			schemaCore: schemaCore{
 				Type:  "array",
 				Items: (*swaggerItemsObject)(&core),
 			},
 		}
 	case object:
-		return swaggerSchemaObject{
+		ret = swaggerSchemaObject{
 			schemaCore: schemaCore{
 				Type: "object",
 			},
 			AdditionalProperties: &swaggerSchemaObject{Properties: props, schemaCore: core},
 		}
 	default:
-		ret := swaggerSchemaObject{
+		ret = swaggerSchemaObject{
 			schemaCore: core,
 			Properties: props,
 		}
-		if j, err := extractJSONSchemaFromFieldDescriptor(fd); err == nil {
-			updateSwaggerObjectFromJSONSchema(&ret, j)
-		}
-		return ret
 	}
+
+	if j, err := extractJSONSchemaFromFieldDescriptor(fd); err == nil {
+		updateSwaggerObjectFromJSONSchema(&ret, j)
+	}
+
+	return ret
 }
 
 // primitiveSchema returns a pair of "Type" and "Format" in JSON Schema for
@@ -680,6 +684,9 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							return err
 						}
 						enumNames = listEnumNames(enum)
+						schema := schemaOfField(parameter.Target, reg, customRefs)
+						desc = schema.Description
+						defaultValue = schema.Default
 					default:
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
@@ -1214,26 +1221,32 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 
 	paragraphs := strings.Split(comment, "\n\n")
 
-	// If there is a summary (or summary-equivalent), use the first
+	// If there is a summary (or summary-equivalent) and its empty, use the first
 	// paragraph as summary, and the rest as description.
 	if summaryValue.CanSet() {
 		summary := strings.TrimSpace(paragraphs[0])
 		description := strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
 		if !usingTitle || (len(summary) > 0 && summary[len(summary)-1] != '.') {
-			summaryValue.Set(reflect.ValueOf(summary))
+			// overrides the schema value only if it's empty
+			if summaryValue.Len() == 0 {
+				summaryValue.Set(reflect.ValueOf(summary))
+			}
 			if len(description) > 0 {
 				if !descriptionValue.CanSet() {
 					return fmt.Errorf("Encountered object type with a summary, but no description")
 				}
-				descriptionValue.Set(reflect.ValueOf(description))
+				// overrides the schema value only if it's empty
+				if descriptionValue.Len() == 0 {
+					descriptionValue.Set(reflect.ValueOf(description))
+				}
 			}
 			return nil
 		}
 	}
 
 	// There was no summary field on the swaggerObject. Try to apply the
-	// whole comment into description.
-	if descriptionValue.CanSet() {
+	// whole comment into description if the swagger object description is empty.
+	if descriptionValue.CanSet() && descriptionValue.Len() == 0 {
 		descriptionValue.Set(reflect.ValueOf(strings.Join(paragraphs, "\n\n")))
 		return nil
 	}
