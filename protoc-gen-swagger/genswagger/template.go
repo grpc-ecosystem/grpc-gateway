@@ -103,7 +103,7 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 	fieldType := field.GetTypeName()
 	if message.File != nil {
 		comments := fieldProtoComments(reg, message, field)
-		if err := updateSwaggerDataFromComments(&schema, comments); err != nil {
+		if err := updateSwaggerDataFromComments(&schema, comments, "MessageType"); err != nil {
 			return nil, err
 		}
 	}
@@ -258,7 +258,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			},
 		}
 		msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
-		if err := updateSwaggerDataFromComments(&schema, msgComments); err != nil {
+		if err := updateSwaggerDataFromComments(&schema, msgComments, "MessageType"); err != nil {
 			panic(err)
 		}
 		opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
@@ -302,7 +302,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		for _, f := range msg.Fields {
 			fieldValue := schemaOfField(f, reg, customRefs)
 			comments := fieldProtoComments(reg, msg, f)
-			if err := updateSwaggerDataFromComments(&fieldValue, comments); err != nil {
+			if err := updateSwaggerDataFromComments(&fieldValue, comments, "MessageType"); err != nil {
 				panic(err)
 			}
 
@@ -507,7 +507,7 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 				Default: defaultValue,
 			},
 		}
-		if err := updateSwaggerDataFromComments(&enumSchemaObject, enumComments); err != nil {
+		if err := updateSwaggerDataFromComments(&enumSchemaObject, enumComments, "EnumType"); err != nil {
 			panic(err)
 		}
 
@@ -858,7 +858,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 
 				methComments := protoComments(reg, svc.File, nil, "Method", int32(svcIdx), methProtoPath, int32(methIdx))
-				if err := updateSwaggerDataFromComments(operationObject, methComments); err != nil {
+				if err := updateSwaggerDataFromComments(operationObject, methComments, "Method"); err != nil {
 					panic(err)
 				}
 
@@ -982,7 +982,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	// File itself might have some comments and metadata.
 	packageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
 	packageComments := protoComments(p.reg, p.File, nil, "Package", packageProtoPath)
-	if err := updateSwaggerDataFromComments(&s, packageComments); err != nil {
+	if err := updateSwaggerDataFromComments(&s, packageComments, "Package"); err != nil {
 		panic(err)
 	}
 
@@ -1196,7 +1196,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 //
 // If there is no 'Summary', the same behavior will be attempted on 'Title',
 // but only if the last character is not a period.
-func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) error {
+func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, typeName string) error {
 	if len(comment) == 0 {
 		return nil
 	}
@@ -1228,7 +1228,8 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 		description := strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
 		if !usingTitle || (len(summary) > 0 && summary[len(summary)-1] != '.') {
 			// overrides the schema value only if it's empty
-			if summaryValue.Len() == 0 {
+			// keep the comment precedence when updating the package definition
+			if summaryValue.Len() == 0 || typeName == "Package" {
 				summaryValue.Set(reflect.ValueOf(summary))
 			}
 			if len(description) > 0 {
@@ -1236,7 +1237,8 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 					return fmt.Errorf("Encountered object type with a summary, but no description")
 				}
 				// overrides the schema value only if it's empty
-				if descriptionValue.Len() == 0 {
+				// keep the comment precedence when updating the package definition
+				if descriptionValue.Len() == 0 || typeName == "Package" {
 					descriptionValue.Set(reflect.ValueOf(description))
 				}
 			}
