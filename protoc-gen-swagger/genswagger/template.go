@@ -103,7 +103,7 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 	fieldType := field.GetTypeName()
 	if message.File != nil {
 		comments := fieldProtoComments(reg, message, field)
-		if err := updateSwaggerDataFromComments(&schema, comments, "MessageType"); err != nil {
+		if err := updateSwaggerDataFromComments(&schema, comments, false); err != nil {
 			return nil, err
 		}
 	}
@@ -258,7 +258,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			},
 		}
 		msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
-		if err := updateSwaggerDataFromComments(&schema, msgComments, "MessageType"); err != nil {
+		if err := updateSwaggerDataFromComments(&schema, msgComments, false); err != nil {
 			panic(err)
 		}
 		opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
@@ -302,7 +302,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		for _, f := range msg.Fields {
 			fieldValue := schemaOfField(f, reg, customRefs)
 			comments := fieldProtoComments(reg, msg, f)
-			if err := updateSwaggerDataFromComments(&fieldValue, comments, "MessageType"); err != nil {
+			if err := updateSwaggerDataFromComments(&fieldValue, comments, false); err != nil {
 				panic(err)
 			}
 
@@ -507,7 +507,7 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 				Default: defaultValue,
 			},
 		}
-		if err := updateSwaggerDataFromComments(&enumSchemaObject, enumComments, "EnumType"); err != nil {
+		if err := updateSwaggerDataFromComments(&enumSchemaObject, enumComments, false); err != nil {
 			panic(err)
 		}
 
@@ -858,7 +858,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 
 				methComments := protoComments(reg, svc.File, nil, "Method", int32(svcIdx), methProtoPath, int32(methIdx))
-				if err := updateSwaggerDataFromComments(operationObject, methComments, "Method"); err != nil {
+				if err := updateSwaggerDataFromComments(operationObject, methComments, false); err != nil {
 					panic(err)
 				}
 
@@ -982,7 +982,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	// File itself might have some comments and metadata.
 	packageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
 	packageComments := protoComments(p.reg, p.File, nil, "Package", packageProtoPath)
-	if err := updateSwaggerDataFromComments(&s, packageComments, "Package"); err != nil {
+	if err := updateSwaggerDataFromComments(&s, packageComments, true); err != nil {
 		panic(err)
 	}
 
@@ -1196,7 +1196,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 //
 // If there is no 'Summary', the same behavior will be attempted on 'Title',
 // but only if the last character is not a period.
-func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, typeName string) error {
+func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, isPackageObject bool) error {
 	if len(comment) == 0 {
 		return nil
 	}
@@ -1229,7 +1229,7 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, ty
 		if !usingTitle || (len(summary) > 0 && summary[len(summary)-1] != '.') {
 			// overrides the schema value only if it's empty
 			// keep the comment precedence when updating the package definition
-			if summaryValue.Len() == 0 || typeName == "Package" {
+			if summaryValue.Len() == 0 || isPackageObject {
 				summaryValue.Set(reflect.ValueOf(summary))
 			}
 			if len(description) > 0 {
@@ -1238,7 +1238,7 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, ty
 				}
 				// overrides the schema value only if it's empty
 				// keep the comment precedence when updating the package definition
-				 if descriptionValue.Len() == 0 || typeName == "Package" {
+				 if descriptionValue.Len() == 0 || isPackageObject {
 					descriptionValue.Set(reflect.ValueOf(description))
 				 }
 			}
@@ -1248,7 +1248,7 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, ty
 
 	// There was no summary field on the swaggerObject. Try to apply the
 	// whole comment into description if the swagger object description is empty.
-	if descriptionValue.CanSet() && descriptionValue.Len() == 0 {
+	if descriptionValue.CanSet() && (descriptionValue.Len() == 0 || isPackageObject){
 		descriptionValue.Set(reflect.ValueOf(strings.Join(paragraphs, "\n\n")))
 		return nil
 	}
