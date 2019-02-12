@@ -1238,9 +1238,9 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, ty
 				}
 				// overrides the schema value only if it's empty
 				// keep the comment precedence when updating the package definition
-				if descriptionValue.Len() == 0 || typeName == "Package" {
+				 if descriptionValue.Len() == 0 || typeName == "Package" {
 					descriptionValue.Set(reflect.ValueOf(description))
-				}
+				 }
 			}
 			return nil
 		}
