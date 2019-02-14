@@ -37,6 +37,7 @@ describe('ABitOfEverythingService', function() {
       enum_value: "ONE",
       path_enum_value: "DEF",
       nested_path_enum_value: "JKL",
+      enum_value_annotation: "ONE",
     };
 
     beforeEach(function(done) {

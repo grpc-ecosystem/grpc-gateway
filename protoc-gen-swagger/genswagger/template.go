@@ -103,7 +103,7 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 	fieldType := field.GetTypeName()
 	if message.File != nil {
 		comments := fieldProtoComments(reg, message, field)
-		if err := updateSwaggerDataFromComments(&schema, comments); err != nil {
+		if err := updateSwaggerDataFromComments(&schema, comments, false); err != nil {
 			return nil, err
 		}
 	}
@@ -258,7 +258,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			},
 		}
 		msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
-		if err := updateSwaggerDataFromComments(&schema, msgComments); err != nil {
+		if err := updateSwaggerDataFromComments(&schema, msgComments, false); err != nil {
 			panic(err)
 		}
 		opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
@@ -302,7 +302,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		for _, f := range msg.Fields {
 			fieldValue := schemaOfField(f, reg, customRefs)
 			comments := fieldProtoComments(reg, msg, f)
-			if err := updateSwaggerDataFromComments(&fieldValue, comments); err != nil {
+			if err := updateSwaggerDataFromComments(&fieldValue, comments, false); err != nil {
 				panic(err)
 			}
 
@@ -408,31 +408,35 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 		}
 	}
 
+	ret := swaggerSchemaObject{}
+
 	switch aggregate {
 	case array:
-		return swaggerSchemaObject{
+		ret = swaggerSchemaObject{
 			schemaCore: schemaCore{
 				Type:  "array",
 				Items: (*swaggerItemsObject)(&core),
 			},
 		}
 	case object:
-		return swaggerSchemaObject{
+		ret = swaggerSchemaObject{
 			schemaCore: schemaCore{
 				Type: "object",
 			},
 			AdditionalProperties: &swaggerSchemaObject{Properties: props, schemaCore: core},
 		}
 	default:
-		ret := swaggerSchemaObject{
+		ret = swaggerSchemaObject{
 			schemaCore: core,
 			Properties: props,
 		}
-		if j, err := extractJSONSchemaFromFieldDescriptor(fd); err == nil {
-			updateSwaggerObjectFromJSONSchema(&ret, j)
-		}
-		return ret
 	}
+
+	if j, err := extractJSONSchemaFromFieldDescriptor(fd); err == nil {
+		updateSwaggerObjectFromJSONSchema(&ret, j)
+	}
+
+	return ret
 }
 
 // primitiveSchema returns a pair of "Type" and "Format" in JSON Schema for
@@ -503,7 +507,7 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 				Default: defaultValue,
 			},
 		}
-		if err := updateSwaggerDataFromComments(&enumSchemaObject, enumComments); err != nil {
+		if err := updateSwaggerDataFromComments(&enumSchemaObject, enumComments, false); err != nil {
 			panic(err)
 		}
 
@@ -680,6 +684,9 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							return err
 						}
 						enumNames = listEnumNames(enum)
+						schema := schemaOfField(parameter.Target, reg, customRefs)
+						desc = schema.Description
+						defaultValue = schema.Default
 					default:
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
@@ -851,7 +858,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 
 				methComments := protoComments(reg, svc.File, nil, "Method", int32(svcIdx), methProtoPath, int32(methIdx))
-				if err := updateSwaggerDataFromComments(operationObject, methComments); err != nil {
+				if err := updateSwaggerDataFromComments(operationObject, methComments, false); err != nil {
 					panic(err)
 				}
 
@@ -975,7 +982,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	// File itself might have some comments and metadata.
 	packageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
 	packageComments := protoComments(p.reg, p.File, nil, "Package", packageProtoPath)
-	if err := updateSwaggerDataFromComments(&s, packageComments); err != nil {
+	if err := updateSwaggerDataFromComments(&s, packageComments, true); err != nil {
 		panic(err)
 	}
 
@@ -1189,7 +1196,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 //
 // If there is no 'Summary', the same behavior will be attempted on 'Title',
 // but only if the last character is not a period.
-func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) error {
+func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, isPackageObject bool) error {
 	if len(comment) == 0 {
 		return nil
 	}
@@ -1214,26 +1221,34 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string) er
 
 	paragraphs := strings.Split(comment, "\n\n")
 
-	// If there is a summary (or summary-equivalent), use the first
+	// If there is a summary (or summary-equivalent) and it's empty, use the first
 	// paragraph as summary, and the rest as description.
 	if summaryValue.CanSet() {
 		summary := strings.TrimSpace(paragraphs[0])
 		description := strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
 		if !usingTitle || (len(summary) > 0 && summary[len(summary)-1] != '.') {
-			summaryValue.Set(reflect.ValueOf(summary))
+			// overrides the schema value only if it's empty
+			// keep the comment precedence when updating the package definition
+			if summaryValue.Len() == 0 || isPackageObject {
+				summaryValue.Set(reflect.ValueOf(summary))
+			}
 			if len(description) > 0 {
 				if !descriptionValue.CanSet() {
 					return fmt.Errorf("Encountered object type with a summary, but no description")
 				}
-				descriptionValue.Set(reflect.ValueOf(description))
+				// overrides the schema value only if it's empty
+				// keep the comment precedence when updating the package definition
+				 if descriptionValue.Len() == 0 || isPackageObject {
+					descriptionValue.Set(reflect.ValueOf(description))
+				 }
 			}
 			return nil
 		}
 	}
 
 	// There was no summary field on the swaggerObject. Try to apply the
-	// whole comment into description.
-	if descriptionValue.CanSet() {
+	// whole comment into description if the swagger object description is empty.
+	if descriptionValue.CanSet() && (descriptionValue.Len() == 0 || isPackageObject){
 		descriptionValue.Set(reflect.ValueOf(strings.Join(paragraphs, "\n\n")))
 		return nil
 	}

@@ -42,6 +42,11 @@ func TestJSONPbMarshal(t *testing.T) {
 			"a": examplepb.NumericEnum_ONE,
 			"b": examplepb.NumericEnum_ZERO,
 		},
+		RepeatedEnumAnnotation:   []examplepb.NumericEnum{},
+		EnumValueAnnotation: examplepb.NumericEnum_ONE,
+		RepeatedStringAnnotation: []string{},
+		RepeatedNestedAnnotation: []*examplepb.ABitOfEverything_Nested{},
+		NestedAnnotation: &examplepb.ABitOfEverything_Nested{},
 	}
 
 	for i, spec := range []struct {
@@ -258,6 +263,11 @@ func TestJSONPbEncoder(t *testing.T) {
 			"a": examplepb.NumericEnum_ONE,
 			"b": examplepb.NumericEnum_ZERO,
 		},
+		RepeatedEnumAnnotation:   []examplepb.NumericEnum{},
+		EnumValueAnnotation: examplepb.NumericEnum_ONE,
+		RepeatedStringAnnotation: []string{},
+		RepeatedNestedAnnotation: []*examplepb.ABitOfEverything_Nested{},
+		NestedAnnotation: &examplepb.ABitOfEverything_Nested{},
 	}
 
 	for i, spec := range []struct {

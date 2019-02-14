@@ -362,6 +362,68 @@
                 "ONE"
               ]
             }
+          },
+          {
+            "name": "repeated_enum_annotation",
+            "description": "Repeated numeric enum title. Repeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ZERO",
+                "ONE"
+              ]
+            }
+          },
+          {
+            "name": "enum_value_annotation",
+            "description": "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ZERO",
+              "ONE"
+            ],
+            "default": "ZERO"
+          },
+          {
+            "name": "repeated_string_annotation",
+            "description": "Repeated string title. Repeated string description.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nested_annotation.name",
+            "description": "name is nested field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nested_annotation.amount",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "nested_annotation.ok",
+            "description": " - FALSE: FALSE is false.\n - TRUE: TRUE is true.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "FALSE",
+              "TRUE"
+            ],
+            "default": "FALSE"
           }
         ],
         "tags": [
@@ -375,7 +437,7 @@
         }
       }
     },
-    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}": {
+    "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}/{enum_value_annotation}": {
       "post": {
         "summary": "Create a new ABitOfEverything",
         "description": "This API creates a new ABitOfEverything",
@@ -538,6 +600,17 @@
             "enum": [
               "GHI",
               "JKL"
+            ]
+          },
+          {
+            "name": "enum_value_annotation",
+            "description": "Numeric enum description.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "ZERO",
+              "ONE"
             ]
           }
         ],
@@ -1570,6 +1643,40 @@
             "$ref": "#/definitions/examplepbNumericEnum"
           },
           "title": "repeated enum value. it is comma-separated in query"
+        },
+        "repeated_enum_annotation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/examplepbNumericEnum"
+          },
+          "description": "Repeated numeric enum description.",
+          "title": "Repeated numeric enum title"
+        },
+        "enum_value_annotation": {
+          "$ref": "#/definitions/examplepbNumericEnum",
+          "description": "Numeric enum description.",
+          "title": "Numeric enum title"
+        },
+        "repeated_string_annotation": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Repeated string description.",
+          "title": "Repeated string title"
+        },
+        "repeated_nested_annotation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ABitOfEverythingNested"
+          },
+          "description": "Repeated nested object description.",
+          "title": "Repeated nested object title"
+        },
+        "nested_annotation": {
+          "$ref": "#/definitions/ABitOfEverythingNested",
+          "description": "Nested object description.",
+          "title": "Nested object title"
         }
       },
       "description": "Intentionaly complicated message type to cover many features of Protobuf.",

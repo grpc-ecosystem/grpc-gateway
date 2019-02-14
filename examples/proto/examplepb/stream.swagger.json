@@ -260,6 +260,40 @@
             "$ref": "#/definitions/examplepbNumericEnum"
           },
           "title": "repeated enum value. it is comma-separated in query"
+        },
+        "repeated_enum_annotation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/examplepbNumericEnum"
+          },
+          "description": "Repeated numeric enum description.",
+          "title": "Repeated numeric enum title"
+        },
+        "enum_value_annotation": {
+          "$ref": "#/definitions/examplepbNumericEnum",
+          "description": "Numeric enum description.",
+          "title": "Numeric enum title"
+        },
+        "repeated_string_annotation": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Repeated string description.",
+          "title": "Repeated string title"
+        },
+        "repeated_nested_annotation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ABitOfEverythingNested"
+          },
+          "description": "Repeated nested object description.",
+          "title": "Repeated nested object title"
+        },
+        "nested_annotation": {
+          "$ref": "#/definitions/ABitOfEverythingNested",
+          "description": "Nested object description.",
+          "title": "Nested object title"
         }
       },
       "description": "Intentionaly complicated message type to cover many features of Protobuf.",
