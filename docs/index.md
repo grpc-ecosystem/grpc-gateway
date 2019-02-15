@@ -17,6 +17,7 @@ To learn more about us check out our documentation on:
 *   [Installation and usage](_docs/usage.md)
 *   [Examples](_docs/examples.md)
 *   [Features](_docs/features.md)
+*   [Aws](_docs/aws.md)
 
 
 # Contribution
