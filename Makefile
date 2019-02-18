@@ -3,7 +3,6 @@
 # You don't have to rebuild these targets by yourself unless you develop
 # grpc-gateway itself.
 
-PKG=github.com/grpc-ecosystem/grpc-gateway
 GO_PLUGIN=bin/protoc-gen-go
 GO_PROTOBUF_REPO=github.com/golang/protobuf
 GO_PLUGIN_PKG=$(GO_PROTOBUF_REPO)/protoc-gen-go
@@ -15,9 +14,9 @@ SWAGGER_PLUGIN_SRC= utilities/doc.go \
 		    protoc-gen-swagger/genswagger/generator.go \
 		    protoc-gen-swagger/genswagger/template.go \
 		    protoc-gen-swagger/main.go
-SWAGGER_PLUGIN_PKG=$(PKG)/protoc-gen-swagger
+SWAGGER_PLUGIN_PKG=./protoc-gen-swagger
 GATEWAY_PLUGIN=bin/protoc-gen-grpc-gateway
-GATEWAY_PLUGIN_PKG=$(PKG)/protoc-gen-grpc-gateway
+GATEWAY_PLUGIN_PKG=./protoc-gen-grpc-gateway
 GATEWAY_PLUGIN_SRC= utilities/doc.go \
 		    utilities/pattern.go \
 		    utilities/trie.go \
@@ -51,7 +50,7 @@ RUNTIME_GO=$(RUNTIME_PROTO:.proto=.pb.go)
 OPENAPIV2_PROTO=protoc-gen-swagger/options/openapiv2.proto protoc-gen-swagger/options/annotations.proto
 OPENAPIV2_GO=$(OPENAPIV2_PROTO:.proto=.pb.go)
 
-PKGMAP=Mgoogle/protobuf/field_mask.proto=google.golang.org/genproto/protobuf/field_mask,Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/proto/sub/message.proto=$(PKG)/examples/proto/sub
+PKGMAP=Mgoogle/protobuf/field_mask.proto=google.golang.org/genproto/protobuf/field_mask,Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/proto/sub/message.proto=github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub
 ADDITIONAL_GW_FLAGS=
 ifneq "$(GATEWAY_PLUGIN_FLAGS)" ""
 	ADDITIONAL_GW_FLAGS=,$(GATEWAY_PLUGIN_FLAGS)
@@ -126,14 +125,14 @@ generate: $(RUNTIME_GO)
 .SUFFIXES: .go .proto
 
 $(GO_PLUGIN):
-	dep ensure -vendor-only
-	go build -o $@ ./vendor/$(GO_PLUGIN_PKG)
+	go build -o $(GO_PLUGIN) $(GO_PLUGIN_PKG)
 
 $(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
-	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I $(GOPATH)/src/$(GO_PTYPES_ANY_PKG) -I. --go_out=$(PKGMAP):. $(RUNTIME_PROTO)
+	go mod vendor
+	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I ./vendor/$(GO_PTYPES_ANY_PKG) -I. --go_out=$(PKGMAP),paths=source_relative:. $(RUNTIME_PROTO)
 
 $(OPENAPIV2_GO): $(OPENAPIV2_PROTO) $(GO_PLUGIN)
-	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP):$(GOPATH)/src $(OPENAPIV2_PROTO)
+	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP),paths=source_relative:. $(OPENAPIV2_PROTO)
 
 $(GATEWAY_PLUGIN): $(RUNTIME_GO) $(GATEWAY_PLUGIN_SRC)
 	go build -o $@ $(GATEWAY_PLUGIN_PKG)
@@ -142,11 +141,11 @@ $(SWAGGER_PLUGIN): $(SWAGGER_PLUGIN_SRC) $(OPENAPIV2_GO)
 	go build -o $@ $(SWAGGER_PLUGIN_PKG)
 
 $(EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc:. $(EXAMPLES)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc,paths=source_relative:. $(EXAMPLES)
 $(EXAMPLE_DEPSRCS): $(GO_PLUGIN) $(EXAMPLE_DEPS)
 	mkdir -p $(OUTPUT_DIR)
-	protoc -I $(PROTOC_INC_PATH) -I. --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc:$(OUTPUT_DIR) $(@:.pb.go=.proto)
-	cp $(OUTPUT_DIR)/$(PKG)/$@ $@ || cp $(OUTPUT_DIR)/$@ $@
+	protoc -I $(PROTOC_INC_PATH) -I. --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc,paths=source_relative:$(OUTPUT_DIR) $(@:.pb.go=.proto)
+	cp $(OUTPUT_DIR)/$@ $@ || cp $(OUTPUT_DIR)/$@ $@
 
 $(EXAMPLE_GWSRCS): ADDITIONAL_GW_FLAGS:=$(ADDITIONAL_GW_FLAGS),grpc_api_configuration=examples/proto/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
@@ -179,8 +178,8 @@ $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 
 examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
 test: examples
-	go test -race $(PKG)/...
-	go test -race $(PKG)/examples/integration -args -network=unix -endpoint=test.sock
+	go test -race ...
+	go test -race examples/integration -args -network=unix -endpoint=test.sock
 changelog:
 	docker run --rm \
 		--interactive \
@@ -196,14 +195,14 @@ changelog:
 				--unreleased-label "**Next release**" \
 				--future-release=v1.7.0
 lint:
-	golint --set_exit_status $(PKG)/runtime
-	golint --set_exit_status $(PKG)/utilities/...
-	golint --set_exit_status $(PKG)/protoc-gen-grpc-gateway/...
-	golint --set_exit_status $(PKG)/protoc-gen-swagger/...
-	go vet $(PKG)/runtime || true
-	go vet $(PKG)/utilities/...
-	go vet $(PKG)/protoc-gen-grpc-gateway/...
-	go vet $(PKG)/protoc-gen-swagger/...
+	golint --set_exit_status ./runtime
+	golint --set_exit_status ./utilities/...
+	golint --set_exit_status ./protoc-gen-grpc-gateway/...
+	golint --set_exit_status ./protoc-gen-swagger/...
+	go vet ./runtime || true
+	go vet ./utilities/...
+	go vet ./protoc-gen-grpc-gateway/...
+	go vet ./protoc-gen-swagger/...
 
 clean:
 	rm -f $(GATEWAY_PLUGIN) $(SWAGGER_PLUGIN)
