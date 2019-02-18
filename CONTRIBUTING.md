@@ -24,8 +24,8 @@ All submissions, including submissions by project members, require review.
 Great, it should be as simple as thus (run from the root of the directory):
 
 ```bash
-docker run -v $(pwd):/go/src/github.com/grpc-ecosystem/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env \
-    /bin/bash -c 'cd /go/src/github.com/grpc-ecosystem/grpc-gateway && \
+docker run -v $(pwd):/src/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env \
+    /bin/bash -c 'cd /src/grpc-gateway && \
         make realclean && \
         make examples SWAGGER_CODEGEN="${SWAGGER_CODEGEN}"'
 docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
