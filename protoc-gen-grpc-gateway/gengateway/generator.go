@@ -39,12 +39,12 @@ type generator struct {
 func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, pathTypeString string, allowPatchFeature bool) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
+		"context",
 		"io",
 		"net/http",
 		"github.com/grpc-ecosystem/grpc-gateway/runtime",
 		"github.com/grpc-ecosystem/grpc-gateway/utilities",
 		"github.com/golang/protobuf/proto",
-		"golang.org/x/net/context",
 		"google.golang.org/grpc",
 		"google.golang.org/grpc/codes",
 		"google.golang.org/grpc/grpclog",
