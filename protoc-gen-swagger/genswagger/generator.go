@@ -67,11 +67,13 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 }
 
 // convert swagger file obj to plugin.CodeGeneratorResponse_File
-func encodeSwagger(file *wrapper) *plugin.CodeGeneratorResponse_File {
+func encodeSwagger(file *wrapper) (*plugin.CodeGeneratorResponse_File, error) {
 	var formatted bytes.Buffer
 	enc := json.NewEncoder(&formatted)
 	enc.SetIndent("", "  ")
-	enc.Encode(*file.swagger)
+	if err := enc.Encode(*file.swagger); err != nil {
+		return nil, err
+	}
 	name := file.fileName
 	ext := filepath.Ext(name)
 	base := strings.TrimSuffix(name, ext)
@@ -79,7 +81,7 @@ func encodeSwagger(file *wrapper) *plugin.CodeGeneratorResponse_File {
 	return &plugin.CodeGeneratorResponse_File{
 		Name:    proto.String(output),
 		Content: proto.String(formatted.String()),
-	}
+	}, nil
 }
 
 func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGeneratorResponse_File, error) {
@@ -127,11 +129,19 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 
 	if g.reg.IsAllowMerge() {
 		targetSwagger := mergeTargetFile(swaggers, g.reg.GetMergeFileName())
-		files = append(files, encodeSwagger(targetSwagger))
+		f, err := encodeSwagger(targetSwagger)
+		if err != nil {
+			return nil, fmt.Errorf("failed to encode swagger for %s: %s", g.reg.GetMergeFileName(), err)
+		}
+		files = append(files, f)
 		glog.V(1).Infof("New swagger file will emit")
 	} else {
 		for _, file := range swaggers {
-			files = append(files, encodeSwagger(file))
+			f, err := encodeSwagger(file)
+			if err != nil {
+				return nil, fmt.Errorf("failed to encode swagger for %s: %s", file.fileName, err)
+			}
+			files = append(files, f)
 			glog.V(1).Infof("New swagger file will emit")
 		}
 	}
