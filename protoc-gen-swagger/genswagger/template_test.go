@@ -216,11 +216,6 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 							Number:   proto.Int32(1),
 							JsonName: proto.String("testFieldA"),
 						},
-						{
-							Name:   proto.String("test_field_b"),
-							Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
-							Number: proto.Int32(2),
-						},
 					},
 				},
 			},
@@ -228,12 +223,6 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 			Params: []swaggerParameterObject{
 				swaggerParameterObject{
 					Name:     "testFieldA",
-					In:       "query",
-					Required: false,
-					Type:     "string",
-				},
-				swaggerParameterObject{
-					Name:     "test_field_b",
 					In:       "query",
 					Required: false,
 					Type:     "string",

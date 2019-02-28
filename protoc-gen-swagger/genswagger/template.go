@@ -143,9 +143,7 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 
 		if reg.GetUseJSONNamesForFields() {
 			param.Name = prefix + field.GetJsonName()
-		}
-
-		if !reg.GetUseJSONNamesForFields() || param.Name == "" {
+		} else {
 			param.Name = prefix + field.GetName()
 		}
 
