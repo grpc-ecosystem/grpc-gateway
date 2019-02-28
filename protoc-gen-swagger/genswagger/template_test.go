@@ -197,6 +197,91 @@ func TestMessageToQueryParameters(t *testing.T) {
 	}
 }
 
+func TestMessageToQueryParametersWithJsonName(t *testing.T) {
+	type test struct {
+		MsgDescs []*protodescriptor.DescriptorProto
+		Message  string
+		Params   []swaggerParameterObject
+	}
+
+	tests := []test{
+		{
+			MsgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{
+					Name: proto.String("ExampleMessage"),
+					Field: []*protodescriptor.FieldDescriptorProto{
+						{
+							Name:     proto.String("test_field_a"),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:   proto.Int32(1),
+							JsonName: proto.String("testFieldA"),
+						},
+						{
+							Name:   proto.String("test_field_b"),
+							Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(2),
+						},
+					},
+				},
+			},
+			Message: "ExampleMessage",
+			Params: []swaggerParameterObject{
+				swaggerParameterObject{
+					Name:     "testFieldA",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+				swaggerParameterObject{
+					Name:     "test_field_b",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		reg := descriptor.NewRegistry()
+		reg.SetUseJSONNamesForFields(true)
+		msgs := []*descriptor.Message{}
+		for _, msgdesc := range test.MsgDescs {
+			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+		}
+		file := descriptor.File{
+			FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+				SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType:    test.MsgDescs,
+				Service:        []*protodescriptor.ServiceDescriptorProto{},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: msgs,
+		}
+		reg.Load(&plugin.CodeGeneratorRequest{
+			ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto},
+		})
+
+		message, err := reg.LookupMsg("", ".example."+test.Message)
+		if err != nil {
+			t.Fatalf("failed to lookup message: %s", err)
+		}
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		if err != nil {
+			t.Fatalf("failed to convert message to query parameters: %s", err)
+		}
+		if !reflect.DeepEqual(params, test.Params) {
+			t.Errorf("expected %v, got %v", test.Params, params)
+		}
+	}
+}
+
 func TestApplyTemplateSimple(t *testing.T) {
 	msgdesc := &protodescriptor.DescriptorProto{
 		Name: proto.String("ExampleMessage"),
