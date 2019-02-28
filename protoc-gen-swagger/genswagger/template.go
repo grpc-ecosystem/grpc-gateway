@@ -132,7 +132,6 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 		}
 
 		param := swaggerParameterObject{
-			Name:        prefix + field.GetName(),
 			Description: desc,
 			In:          "query",
 			Default:     schema.Default,
@@ -140,6 +139,12 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 			Items:       schema.Items,
 			Format:      schema.Format,
 			Required:    required,
+		}
+
+		if reg.GetUseJSONNamesForFields() {
+			param.Name = prefix + field.GetJsonName()
+		} else {
+			param.Name = prefix + field.GetName()
 		}
 
 		if isEnum {
