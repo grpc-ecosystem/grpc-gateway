@@ -779,9 +779,10 @@ func TestTemplateToSwaggerPath(t *testing.T) {
 
 func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
 	var tests = []struct {
-		input       string
-		output      string
-		listOfFQMNs []string
+		input                string
+		output               string
+		listOfFQMNs          []string
+		useFQNForSwaggerName bool
 	}{
 		{
 			".a.b.C",
@@ -789,6 +790,7 @@ func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
 			[]string{
 				".a.b.C",
 			},
+			false,
 		},
 		{
 			".a.b.C",
@@ -797,6 +799,7 @@ func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
 				".a.C",
 				".a.b.C",
 			},
+			false,
 		},
 		{
 			".a.b.C",
@@ -806,11 +809,22 @@ func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
 				".a.C",
 				".a.b.C",
 			},
+			false,
+		},
+		{
+			".a.b.C",
+			"a.b.C",
+			[]string{
+				".C",
+				".a.C",
+				".a.b.C",
+			},
+			true,
 		},
 	}
 
 	for _, data := range tests {
-		names := resolveFullyQualifiedNameToSwaggerNames(data.listOfFQMNs)
+		names := resolveFullyQualifiedNameToSwaggerNames(data.listOfFQMNs, data.useFQNForSwaggerName)
 		output := names[data.input]
 		if output != data.output {
 			t.Errorf("Expected fullyQualifiedNameToSwaggerName(%v) to be %s but got %s",
