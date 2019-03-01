@@ -61,6 +61,12 @@ type Registry struct {
 	// otherwise the original proto name is used. It's helpful for synchronizing the swagger definition
 	// with grpc-gateway response, if it uses json tags for marshaling.
 	useJSONNamesForFields bool
+
+	// useFQNForSwaggerName if true swagger names will use the full qualified name (FQN) from proto definition,
+	// and generate a dot-separated swagger name concatenating all elements from the proto FQN.
+	// If false, the default behavior is to concat the last 2 elements of the FQN if they are unique, otherwise concat
+	// all the elements of the FQN without any separator
+	useFQNForSwaggerName bool
 }
 
 type repeatedFieldSeparator struct {
@@ -409,6 +415,16 @@ func (r *Registry) SetUseJSONNamesForFields(use bool) {
 // GetUseJSONNamesForFields returns useJSONNamesForFields
 func (r *Registry) GetUseJSONNamesForFields() bool {
 	return r.useJSONNamesForFields
+}
+
+// SetUseFQNForSwaggerName sets useFQNForSwaggerName
+func (r *Registry) SetUseFQNForSwaggerName(use bool) {
+	r.useFQNForSwaggerName = use
+}
+
+// GetUseFQNForSwaggerName returns useFQNForSwaggerName
+func (r *Registry) GetUseFQNForSwaggerName() bool {
+	return r.useFQNForSwaggerName
 }
 
 // GetMergeFileName return the target merge swagger file name
