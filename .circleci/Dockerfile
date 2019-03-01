@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1.11
 
 ## Warm apt cache
 RUN apt-get update
@@ -24,11 +24,6 @@ RUN apt-get install -y wget unzip && \
 ENV NODE_VERSION=v6.1
 RUN apt-get install -y wget bzip2 && \
     wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash && \
-    apt-get remove -y wget
-
-# Install dep
-RUN apt-get install -y wget && \
-    wget -qO- https://raw.githubusercontent.com/golang/dep/master/install.sh | sh && \
     apt-get remove -y wget
 
 # Clean up
