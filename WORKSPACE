@@ -21,11 +21,9 @@ go_rules_dependencies()
 
 go_register_toolchains()
 
-load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
 
 gazelle_dependencies()
-
-load("@bazel_gazelle//:deps.bzl", "go_repository")
 
 # Also define in Gopkg.toml
 go_repository(
@@ -43,9 +41,9 @@ go_repository(
 
 # Also define in Gopkg.toml
 go_repository(
-    name = "com_github_go_resty_resty",
-    commit = "f8815663de1e64d57cdd4ee9e2b2fa96977a030e",
-    importpath = "github.com/go-resty/resty",
+    name = "in_gopkg_resty_v1",
+    commit = "fa5875c0caa5c260ab78acec5a244215a730247f",
+    importpath = "gopkg.in/resty.v1",
 )
 
 # Also define in Gopkg.toml
