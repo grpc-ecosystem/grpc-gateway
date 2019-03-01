@@ -527,7 +527,7 @@ func fullyQualifiedNameToSwaggerName(fqn string, reg *descriptor.Registry) strin
 	if mapping, present := registriesSeen[reg]; present {
 		return mapping[fqn]
 	}
-	mapping := resolveFullyQualifiedNameToSwaggerNames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...))
+	mapping := resolveFullyQualifiedNameToSwaggerNames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...), reg.GetUseFQNForSwaggerName())
 	registriesSeen[reg] = mapping
 	return mapping[fqn]
 }
@@ -544,7 +544,7 @@ var registriesSeenMutex sync.Mutex
 // This likely could be made better. This will always generate the same names
 // but may not always produce optimal names. This is a reasonably close
 // approximation of what they should look like in most cases.
-func resolveFullyQualifiedNameToSwaggerNames(messages []string) map[string]string {
+func resolveFullyQualifiedNameToSwaggerNames(messages []string, useFQNForSwaggerName bool) map[string]string {
 	packagesByDepth := make(map[int][][]string)
 	uniqueNames := make(map[string]string)
 
@@ -573,14 +573,19 @@ func resolveFullyQualifiedNameToSwaggerNames(messages []string) map[string]strin
 	}
 
 	for _, p := range messages {
-		h := hierarchy(p)
-		for depth := 0; depth < len(h); depth++ {
-			if count(packagesByDepth[depth], h[len(h)-depth:]) == 1 {
-				uniqueNames[p] = strings.Join(h[len(h)-depth-1:], "")
-				break
-			}
-			if depth == len(h)-1 {
-				uniqueNames[p] = strings.Join(h, "")
+		if useFQNForSwaggerName {
+			// strip leading dot from proto fqn
+			uniqueNames[p] = p[1:]
+		} else {
+			h := hierarchy(p)
+			for depth := 0; depth < len(h); depth++ {
+				if count(packagesByDepth[depth], h[len(h)-depth:]) == 1 {
+					uniqueNames[p] = strings.Join(h[len(h)-depth-1:], "")
+					break
+				}
+				if depth == len(h)-1 {
+					uniqueNames[p] = strings.Join(h, "")
+				}
 			}
 		}
 	}
