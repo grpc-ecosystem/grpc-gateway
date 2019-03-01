@@ -275,6 +275,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 
 			// Warning: Make sure not to overwrite any fields already set on the schema type.
 			schema.ExternalDocs = protoSchema.ExternalDocs
+			schema.ReadOnly = protoSchema.ReadOnly
 			schema.MultipleOf = protoSchema.MultipleOf
 			schema.Maximum = protoSchema.Maximum
 			schema.ExclusiveMaximum = protoSchema.ExclusiveMaximum
@@ -1223,6 +1224,12 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, is
 	// Figure out which properties to update.
 	summaryValue := infoObjectValue.FieldByName("Summary")
 	descriptionValue := infoObjectValue.FieldByName("Description")
+	readOnlyValue := infoObjectValue.FieldByName("ReadOnly")
+
+	if readOnlyValue.Kind() == reflect.Bool && readOnlyValue.CanSet() && strings.Contains(comment, "Output only.") {
+		readOnlyValue.Set(reflect.ValueOf(true))
+	}
+
 	usingTitle := false
 	if !summaryValue.CanSet() {
 		summaryValue = infoObjectValue.FieldByName("Title")
@@ -1539,6 +1546,7 @@ func protoJSONSchemaToSwaggerSchemaCore(j *swagger_options.JSONSchema, reg *desc
 func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_options.JSONSchema) {
 	s.Title = j.GetTitle()
 	s.Description = j.GetDescription()
+	s.ReadOnly = j.GetReadOnly()
 	s.MultipleOf = j.GetMultipleOf()
 	s.Maximum = j.GetMaximum()
 	s.ExclusiveMaximum = j.GetExclusiveMaximum()

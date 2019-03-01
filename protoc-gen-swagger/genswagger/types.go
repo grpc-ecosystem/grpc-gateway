@@ -209,6 +209,7 @@ type swaggerSchemaObject struct {
 
 	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
 
+	ReadOnly         bool     `json:"readOnly,omitempty"`
 	MultipleOf       float64  `json:"multipleOf,omitempty"`
 	Maximum          float64  `json:"maximum,omitempty"`
 	ExclusiveMaximum bool     `json:"exclusiveMaximum,omitempty"`
