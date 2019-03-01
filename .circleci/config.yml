@@ -39,6 +39,7 @@ jobs:
       - run: make realclean
       - run: make examples SWAGGER_CODEGEN="${SWAGGER_CODEGEN}" # Set in Docker image
       - run: go mod tidy
+      - run: go mod vendor
       - run: git diff --exit-code
   lint:
     docker:
