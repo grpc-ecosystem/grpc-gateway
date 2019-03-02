@@ -34,7 +34,7 @@ func (m *EmptyProto) Reset()         { *m = EmptyProto{} }
 func (m *EmptyProto) String() string { return proto.CompactTextString(m) }
 func (*EmptyProto) ProtoMessage()    {}
 func (*EmptyProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_flow_combination_40371c0acedc1fc5, []int{0}
+	return fileDescriptor_flow_combination_63ace3110e4bd00b, []int{0}
 }
 func (m *EmptyProto) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EmptyProto.Unmarshal(m, b)
@@ -67,7 +67,7 @@ func (m *NonEmptyProto) Reset()         { *m = NonEmptyProto{} }
 func (m *NonEmptyProto) String() string { return proto.CompactTextString(m) }
 func (*NonEmptyProto) ProtoMessage()    {}
 func (*NonEmptyProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_flow_combination_40371c0acedc1fc5, []int{1}
+	return fileDescriptor_flow_combination_63ace3110e4bd00b, []int{1}
 }
 func (m *NonEmptyProto) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonEmptyProto.Unmarshal(m, b)
@@ -119,7 +119,7 @@ func (m *UnaryProto) Reset()         { *m = UnaryProto{} }
 func (m *UnaryProto) String() string { return proto.CompactTextString(m) }
 func (*UnaryProto) ProtoMessage()    {}
 func (*UnaryProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_flow_combination_40371c0acedc1fc5, []int{2}
+	return fileDescriptor_flow_combination_63ace3110e4bd00b, []int{2}
 }
 func (m *UnaryProto) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UnaryProto.Unmarshal(m, b)
@@ -159,7 +159,7 @@ func (m *NestedProto) Reset()         { *m = NestedProto{} }
 func (m *NestedProto) String() string { return proto.CompactTextString(m) }
 func (*NestedProto) ProtoMessage()    {}
 func (*NestedProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_flow_combination_40371c0acedc1fc5, []int{3}
+	return fileDescriptor_flow_combination_63ace3110e4bd00b, []int{3}
 }
 func (m *NestedProto) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NestedProto.Unmarshal(m, b)
@@ -211,7 +211,7 @@ func (m *SingleNestedProto) Reset()         { *m = SingleNestedProto{} }
 func (m *SingleNestedProto) String() string { return proto.CompactTextString(m) }
 func (*SingleNestedProto) ProtoMessage()    {}
 func (*SingleNestedProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_flow_combination_40371c0acedc1fc5, []int{4}
+	return fileDescriptor_flow_combination_63ace3110e4bd00b, []int{4}
 }
 func (m *SingleNestedProto) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SingleNestedProto.Unmarshal(m, b)
@@ -791,10 +791,10 @@ var _FlowCombination_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("examples/proto/examplepb/flow_combination.proto", fileDescriptor_flow_combination_40371c0acedc1fc5)
+	proto.RegisterFile("examples/proto/examplepb/flow_combination.proto", fileDescriptor_flow_combination_63ace3110e4bd00b)
 }
 
-var fileDescriptor_flow_combination_40371c0acedc1fc5 = []byte{
+var fileDescriptor_flow_combination_63ace3110e4bd00b = []byte{
 	// 655 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x96, 0xbf, 0x8f, 0x12, 0x41,
 	0x14, 0xc7, 0xf3, 0xb8, 0xc4, 0xe4, 0x86, 0xfb, 0xc1, 0x2d, 0x06, 0x81, 0xc3, 0xe3, 0x6e, 0xbc,
