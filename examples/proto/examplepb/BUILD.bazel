@@ -40,7 +40,7 @@ go_proto_library(
     name = "examplepb_go_proto",
     compilers = [
         "@io_bazel_rules_go//proto:go_grpc",
-        "//protoc-gen-grpc-gateway:go_gen_grpc_gateway",
+        "//protoc-gen-grpc-gateway:go_gen_grpc_gateway",  # keep
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb",
     proto = ":examplepb_proto",
