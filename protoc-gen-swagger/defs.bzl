@@ -67,7 +67,7 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
     return swagger_files
 
 def _proto_gen_swagger_impl(ctx):
-    proto = ctx.attr.proto.proto
+    proto = ctx.attr.proto[ProtoInfo]
     grpc_api_configuration = ctx.file.grpc_api_configuration
 
     return [DefaultInfo(
