@@ -391,9 +391,6 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		if want := spec.sigWant; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `marshaler.NewDecoder(newReader()`; !strings.Contains(got, want) {
-			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
-		}
 		if want := `func RegisterExampleServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
@@ -482,7 +479,7 @@ func TestAllowPatchFeature(t *testing.T) {
 	}
 }
 
-func TestIdentifierCapitalization(t *testing.T){
+func TestIdentifierCapitalization(t *testing.T) {
 	msgdesc1 := &protodescriptor.DescriptorProto{
 		Name: proto.String("Exam_pleRequest"),
 	}
@@ -492,12 +489,12 @@ func TestIdentifierCapitalization(t *testing.T){
 	meth1 := &protodescriptor.MethodDescriptorProto{
 		Name:       proto.String("ExampleGe2t"),
 		InputType:  proto.String("Exam_pleRequest"),
-		OutputType: proto.String("example_response"),	
+		OutputType: proto.String("example_response"),
 	}
 	meth2 := &protodescriptor.MethodDescriptorProto{
 		Name:       proto.String("Exampl_eGet"),
 		InputType:  proto.String("Exam_pleRequest"),
-		OutputType: proto.String("example_response"),	
+		OutputType: proto.String("example_response"),
 	}
 	svc := &protodescriptor.ServiceDescriptorProto{
 		Name:   proto.String("Example"),

@@ -37,11 +37,7 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 		grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	dec := marshaler.NewDecoder(newReader())
+	dec := marshaler.NewDecoder(req.Body)
 	for {
 		var protoReq ABitOfEverything
 		err = dec.Decode(&protoReq)
@@ -99,11 +95,7 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 		grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, berr
-	}
-	dec := marshaler.NewDecoder(newReader())
+	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
 		var protoReq sub.StringMessage
 		err := dec.Decode(&protoReq)
