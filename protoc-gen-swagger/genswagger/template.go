@@ -1265,8 +1265,10 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, is
 
 	// There was no summary field on the swaggerObject. Try to apply the
 	// whole comment into description if the swagger object description is empty.
-	if descriptionValue.CanSet() && (descriptionValue.Len() == 0 || isPackageObject){
-		descriptionValue.Set(reflect.ValueOf(strings.Join(paragraphs, "\n\n")))
+	if descriptionValue.CanSet() {
+		if descriptionValue.Len() == 0 || isPackageObject {
+			descriptionValue.Set(reflect.ValueOf(strings.Join(paragraphs, "\n\n")))
+		}
 		return nil
 	}
 
