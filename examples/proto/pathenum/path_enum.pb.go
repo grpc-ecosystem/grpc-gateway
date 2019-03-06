@@ -38,7 +38,7 @@ func (x PathEnum) String() string {
 	return proto.EnumName(PathEnum_name, int32(x))
 }
 func (PathEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_path_enum_f14abf5268452f40, []int{0}
+	return fileDescriptor_path_enum_802d5f52757a97bd, []int{0}
 }
 
 type MessagePathEnum_NestedPathEnum int32
@@ -61,7 +61,7 @@ func (x MessagePathEnum_NestedPathEnum) String() string {
 	return proto.EnumName(MessagePathEnum_NestedPathEnum_name, int32(x))
 }
 func (MessagePathEnum_NestedPathEnum) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_path_enum_f14abf5268452f40, []int{0, 0}
+	return fileDescriptor_path_enum_802d5f52757a97bd, []int{0, 0}
 }
 
 type MessagePathEnum struct {
@@ -74,7 +74,7 @@ func (m *MessagePathEnum) Reset()         { *m = MessagePathEnum{} }
 func (m *MessagePathEnum) String() string { return proto.CompactTextString(m) }
 func (*MessagePathEnum) ProtoMessage()    {}
 func (*MessagePathEnum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_path_enum_f14abf5268452f40, []int{0}
+	return fileDescriptor_path_enum_802d5f52757a97bd, []int{0}
 }
 func (m *MessagePathEnum) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MessagePathEnum.Unmarshal(m, b)
@@ -101,10 +101,10 @@ func init() {
 }
 
 func init() {
-	proto.RegisterFile("examples/proto/pathenum/path_enum.proto", fileDescriptor_path_enum_f14abf5268452f40)
+	proto.RegisterFile("examples/proto/pathenum/path_enum.proto", fileDescriptor_path_enum_802d5f52757a97bd)
 }
 
-var fileDescriptor_path_enum_f14abf5268452f40 = []byte{
+var fileDescriptor_path_enum_802d5f52757a97bd = []byte{
 	// 175 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x4f, 0xad, 0x48, 0xcc,
 	0x2d, 0xc8, 0x49, 0x2d, 0xd6, 0x2f, 0x28, 0xca, 0x2f, 0xc9, 0xd7, 0x2f, 0x48, 0x2c, 0xc9, 0x48,

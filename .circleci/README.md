@@ -7,7 +7,7 @@ Contained within is the CI test setup for the Gateway. It runs on Circle CI.
 Great, it should be as simple as thus (run from the root of the directory):
 
 ```bash
-$ docker run -v $(pwd):/go/src/github.com/grpc-ecosystem/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env \
+$ docker run -v $(pwd):/go/src/github.com/grpc-ecosystem/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env:1.12 \
     /bin/bash -c 'cd /go/src/github.com/grpc-ecosystem/grpc-gateway && \
         make realclean && \
         make examples SWAGGER_CODEGEN="${SWAGGER_CODEGEN}"'

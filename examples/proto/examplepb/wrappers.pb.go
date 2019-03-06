@@ -45,7 +45,7 @@ func (m *Wrappers) Reset()         { *m = Wrappers{} }
 func (m *Wrappers) String() string { return proto.CompactTextString(m) }
 func (*Wrappers) ProtoMessage()    {}
 func (*Wrappers) Descriptor() ([]byte, []int) {
-	return fileDescriptor_wrappers_3d2e9c7780d635b4, []int{0}
+	return fileDescriptor_wrappers_1614a2b17737abd3, []int{0}
 }
 func (m *Wrappers) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Wrappers.Unmarshal(m, b)
@@ -535,10 +535,10 @@ var _WrappersService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("examples/proto/examplepb/wrappers.proto", fileDescriptor_wrappers_3d2e9c7780d635b4)
+	proto.RegisterFile("examples/proto/examplepb/wrappers.proto", fileDescriptor_wrappers_1614a2b17737abd3)
 }
 
-var fileDescriptor_wrappers_3d2e9c7780d635b4 = []byte{
+var fileDescriptor_wrappers_1614a2b17737abd3 = []byte{
 	// 578 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x95, 0xdd, 0x6e, 0xd3, 0x30,
 	0x14, 0xc7, 0xd5, 0x31, 0xca, 0xea, 0x0c, 0xc6, 0x0c, 0x82, 0xcd, 0x9b, 0x18, 0xca, 0x0d, 0xb0,

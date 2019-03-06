@@ -391,9 +391,6 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		if want := spec.sigWant; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `marshaler.NewDecoder(newReader()`; !strings.Contains(got, want) {
-			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
-		}
 		if want := `func RegisterExampleServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
@@ -479,5 +476,100 @@ func TestAllowPatchFeature(t *testing.T) {
 				t.Errorf("applyTemplate(%#v) = %s; want to _not_ contain %s", file, got, want)
 			}
 		}
+	}
+}
+
+func TestIdentifierCapitalization(t *testing.T) {
+	msgdesc1 := &protodescriptor.DescriptorProto{
+		Name: proto.String("Exam_pleRequest"),
+	}
+	msgdesc2 := &protodescriptor.DescriptorProto{
+		Name: proto.String("example_response"),
+	}
+	meth1 := &protodescriptor.MethodDescriptorProto{
+		Name:       proto.String("ExampleGe2t"),
+		InputType:  proto.String("Exam_pleRequest"),
+		OutputType: proto.String("example_response"),
+	}
+	meth2 := &protodescriptor.MethodDescriptorProto{
+		Name:       proto.String("Exampl_eGet"),
+		InputType:  proto.String("Exam_pleRequest"),
+		OutputType: proto.String("example_response"),
+	}
+	svc := &protodescriptor.ServiceDescriptorProto{
+		Name:   proto.String("Example"),
+		Method: []*protodescriptor.MethodDescriptorProto{meth1, meth2},
+	}
+	msg1 := &descriptor.Message{
+		DescriptorProto: msgdesc1,
+	}
+	msg2 := &descriptor.Message{
+		DescriptorProto: msgdesc2,
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+			Name:        proto.String("example.proto"),
+			Package:     proto.String("example"),
+			Dependency:  []string{"a.example/b/c.proto", "a.example/d/e.proto"},
+			MessageType: []*protodescriptor.DescriptorProto{msgdesc1, msgdesc2},
+			Service:     []*protodescriptor.ServiceDescriptorProto{svc},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg1, msg2},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth1,
+						RequestType:           msg1,
+						ResponseType:          msg1,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+							},
+						},
+					},
+				},
+			},
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth2,
+						RequestType:           msg2,
+						ResponseType:          msg2,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: true}, descriptor.NewRegistry())
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+	if want := `msg, err := client.ExampleGe2T(ctx, &protoReq, grpc.Header(&metadata.HeaderMD)`; !strings.Contains(got, want) {
+		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+	}
+	if want := `msg, err := client.ExamplEGet(ctx, &protoReq, grpc.Header(&metadata.HeaderMD)`; !strings.Contains(got, want) {
+		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+	}
+	if want := `var protoReq ExamPleRequest`; !strings.Contains(got, want) {
+		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
+	}
+	if want := `var protoReq ExampleResponse`; !strings.Contains(got, want) {
+		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
 }

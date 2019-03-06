@@ -9,13 +9,13 @@ It translates gRPC into RESTful JSON APIs.
 package examplepb
 
 import (
+	"context"
 	"io"
 	"net/http"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
-	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -61,11 +61,7 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, marshaler run
 		grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	dec := marshaler.NewDecoder(newReader())
+	dec := marshaler.NewDecoder(req.Body)
 	for {
 		var protoReq EmptyProto
 		err = dec.Decode(&protoReq)
@@ -106,11 +102,7 @@ func request_FlowCombination_StreamEmptyStream_0(ctx context.Context, marshaler 
 		grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, berr
-	}
-	dec := marshaler.NewDecoder(newReader())
+	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
 		var protoReq EmptyProto
 		err := dec.Decode(&protoReq)

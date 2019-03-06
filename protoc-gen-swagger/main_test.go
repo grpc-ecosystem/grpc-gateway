@@ -21,6 +21,7 @@ func TestParseReqParam(t *testing.T) {
 		fileV                      string
 		importPathV                string
 		mergeFileNameV             string
+		useFQNForSwaggerNameV      bool
 	}{
 		{
 			// this one must be first - with no leading clearFlags call it
@@ -87,7 +88,7 @@ func TestParseReqParam(t *testing.T) {
 			name:             "Test 8",
 			expected:         map[string]string{},
 			request:          "allow_delete_body,file,import_prefix,allow_merge,allow_repeated_fields_in_body=3,merge_file_name",
-			expectedError:    errors.New(`Cannot set flag allow_repeated_fields_in_body=3: strconv.ParseBool: parsing "3": invalid syntax`),
+			expectedError:    errors.New(`Cannot set flag allow_repeated_fields_in_body=3: parse error`),
 			allowDeleteBodyV: true, allowMergeV: true, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false,
 			fileV: "", importPathV: "", mergeFileNameV: "apidocs",
 		},
@@ -95,8 +96,23 @@ func TestParseReqParam(t *testing.T) {
 			name:             "Test 9",
 			expected:         map[string]string{},
 			request:          "include_package_in_tags=3",
-			expectedError:    errors.New(`Cannot set flag include_package_in_tags=3: strconv.ParseBool: parsing "3": invalid syntax`),
+			expectedError:    errors.New(`Cannot set flag include_package_in_tags=3: parse error`),
 			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false,
+			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+		},
+		{
+			name:             "Test 10",
+			expected:         map[string]string{},
+			request:          "fqn_for_swagger_name=3",
+			expectedError:    errors.New(`Cannot set flag fqn_for_swagger_name=3: parse error`),
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false, useFQNForSwaggerNameV: false,
+			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+		},
+		{
+			name:             "Test 11",
+			expected:         map[string]string{},
+			request:          "fqn_for_swagger_name=true",
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false, useFQNForSwaggerNameV: true,
 			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
 		},
 	}
@@ -124,7 +140,7 @@ func TestParseReqParam(t *testing.T) {
 					tt.Errorf("expected error malformed, expected %q, got %q", tc.expectedError.Error(), err.Error())
 				}
 			}
-			checkFlags(tc.allowDeleteBodyV, tc.allowMergeV, tc.allowRepeatedFieldsInBodyV, tc.includePackageInTagsV, tc.fileV, tc.importPathV, tc.mergeFileNameV, tt, i)
+			checkFlags(tc.allowDeleteBodyV, tc.allowMergeV, tc.allowRepeatedFieldsInBodyV, tc.includePackageInTagsV, tc.useFQNForSwaggerNameV, tc.fileV, tc.importPathV, tc.mergeFileNameV, tt, i)
 
 			clearFlags()
 		})
@@ -132,7 +148,7 @@ func TestParseReqParam(t *testing.T) {
 
 }
 
-func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV, includePackageInTagsV bool, fileV, importPathV, mergeFileNameV string, t *testing.T, tid int) {
+func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV, includePackageInTagsV bool, useFQNForSwaggerNameV bool, fileV, importPathV, mergeFileNameV string, t *testing.T, tid int) {
 	if *importPrefix != importPathV {
 		t.Errorf("Test %v: import_prefix misparsed, expected '%v', got '%v'", tid, importPathV, *importPrefix)
 	}
@@ -152,7 +168,10 @@ func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV, includePa
 		t.Errorf("Test %v: allow_repeated_fields_in_body misparsed, expected '%v', got '%v'", tid, allowRepeatedFieldsInBodyV, *allowRepeatedFieldsInBody)
 	}
 	if *includePackageInTags != includePackageInTagsV {
-		t.Errorf("Test %v: allow_repeated_fields_in_body misparsed, expected '%v', got '%v'", tid, includePackageInTagsV, *includePackageInTags)
+		t.Errorf("Test %v: include_package_in_tags misparsed, expected '%v', got '%v'", tid, includePackageInTagsV, *includePackageInTags)
+	}
+	if *useFQNForSwaggerName != useFQNForSwaggerNameV {
+		t.Errorf("Test %v: fqn_for_swagger_name misparsed, expected '%v', got '%v'", tid, useFQNForSwaggerNameV, *useFQNForSwaggerName)
 	}
 }
 

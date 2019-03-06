@@ -2,30 +2,28 @@ version: 2
 jobs:
   build:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+      - image: jfbrandhorst/grpc-gateway-build-env:1.12
+    working_directory: /src/grpc-gateway
     steps:
       - checkout
-      - run: dep ensure --vendor-only
       - run: go build ./...
   test:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+      - image: jfbrandhorst/grpc-gateway-build-env:1.12
+    working_directory: /src/grpc-gateway
     environment:
-      GLOG_logtostderr: "1"
+      GLOG_logtostderr: '1'
     steps:
       - checkout
-      - run: dep ensure --vendor-only
       - run: go test -race -coverprofile=coverage.txt ./...
       - run: bash <(curl -s https://codecov.io/bash)
   node_test:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+      - image: jfbrandhorst/grpc-gateway-build-env:1.12
+    working_directory: /src/grpc-gateway
     steps:
       - checkout
-      - run: dep ensure --vendor-only
+      - run: go mod vendor
       - run: >
           . $HOME/.nvm/nvm.sh &&
           cd examples/browser &&
@@ -34,26 +32,26 @@ jobs:
           ./node_modules/.bin/gulp
   generate:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+      - image: jfbrandhorst/grpc-gateway-build-env:1.12
+    working_directory: /src/grpc-gateway
     steps:
       - checkout
       - run: make realclean
       - run: make examples SWAGGER_CODEGEN="${SWAGGER_CODEGEN}" # Set in Docker image
+      - run: go mod tidy
       - run: git diff --exit-code
   lint:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+      - image: jfbrandhorst/grpc-gateway-build-env:1.12
+    working_directory: /src/grpc-gateway
     steps:
       - checkout
-      - run: dep ensure --vendor-only
       - run: go get golang.org/x/lint/golint
       - run: make lint
   bazel:
     docker:
       - image: l.gcr.io/google/bazel:latest
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+    working_directory: /src/grpc-gateway
     steps:
       - checkout
       - run:
@@ -66,23 +64,23 @@ jobs:
             EOF
       - run:
           name: Check that Bazel BUILD files are up-to-date
-          command: 'test -z "$(bazel run //:gazelle_diff)" ||
-          (echo "ERROR: Bazel files out-of-date, please run \`bazel run :gazelle_fix\`" >&2; exit 1)'
+          command: 'bazel run //:gazelle ||
+            (echo "ERROR: Bazel files out-of-date, please run \`bazel run :gazelle\`" >&2; exit 1)'
       - run:
           name: Run tests with Bazel
           command: bazel test //...
       - run:
           name: Check formatting of Bazel BUILD files
           command: 'bazel run //:buildifier_check ||
-          (echo "ERROR: Bazel files not formatted, please run \`bazel run :buildifier\`" >&2; exit 1)'
+            (echo "ERROR: Bazel files not formatted, please run \`bazel run :buildifier\`" >&2; exit 1)'
           when: always
   release:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env
-    working_directory: /go/src/github.com/grpc-ecosystem/grpc-gateway
+      - image: jfbrandhorst/grpc-gateway-build-env:1.12
+    working_directory: /src/grpc-gateway
     steps:
       - checkout
-      - run: dep ensure --vendor-only
+      - run: go mod vendor
       - run: curl -sL https://git.io/goreleaser | bash
 workflows:
   version: 2

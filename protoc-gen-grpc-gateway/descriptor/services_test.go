@@ -99,11 +99,11 @@ func testExtractServices(t *testing.T, input []*descriptor.FileDescriptorProto, 
 			}
 			for ; k < len(meth.Bindings); k++ {
 				got := meth.Bindings[k]
-				t.Errorf("svcs[%d].Methods[%d].Bindings[%d] = %q; want it to be missing; input = %v", i, j, k, got, input)
+				t.Errorf("svcs[%d].Methods[%d].Bindings[%d] = %v; want it to be missing; input = %v", i, j, k, got, input)
 			}
 			for ; k < len(wantMeth.Bindings); k++ {
 				want := wantMeth.Bindings[k]
-				t.Errorf("svcs[%d].Methods[%d].Bindings[%d] missing; want %q; input = %v", i, j, k, want, input)
+				t.Errorf("svcs[%d].Methods[%d].Bindings[%d] missing; want %v; input = %v", i, j, k, want, input)
 			}
 		}
 		for ; j < len(svc.Methods); j++ {

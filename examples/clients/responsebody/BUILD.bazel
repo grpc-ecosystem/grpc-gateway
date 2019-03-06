@@ -19,5 +19,5 @@ go_library(
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/clients/responsebody",
     visibility = ["//visibility:public"],
-    deps = ["@com_github_go_resty_resty//:go_default_library"],
+    deps = ["@in_gopkg_resty_v1//:go_default_library"],
 )

@@ -132,7 +132,6 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 		}
 
 		param := swaggerParameterObject{
-			Name:        prefix + field.GetName(),
 			Description: desc,
 			In:          "query",
 			Default:     schema.Default,
@@ -140,6 +139,12 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 			Items:       schema.Items,
 			Format:      schema.Format,
 			Required:    required,
+		}
+
+		if reg.GetUseJSONNamesForFields() {
+			param.Name = prefix + field.GetJsonName()
+		} else {
+			param.Name = prefix + field.GetName()
 		}
 
 		if isEnum {
@@ -270,6 +275,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 
 			// Warning: Make sure not to overwrite any fields already set on the schema type.
 			schema.ExternalDocs = protoSchema.ExternalDocs
+			schema.ReadOnly = protoSchema.ReadOnly
 			schema.MultipleOf = protoSchema.MultipleOf
 			schema.Maximum = protoSchema.Maximum
 			schema.ExclusiveMaximum = protoSchema.ExclusiveMaximum
@@ -522,7 +528,7 @@ func fullyQualifiedNameToSwaggerName(fqn string, reg *descriptor.Registry) strin
 	if mapping, present := registriesSeen[reg]; present {
 		return mapping[fqn]
 	}
-	mapping := resolveFullyQualifiedNameToSwaggerNames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...))
+	mapping := resolveFullyQualifiedNameToSwaggerNames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...), reg.GetUseFQNForSwaggerName())
 	registriesSeen[reg] = mapping
 	return mapping[fqn]
 }
@@ -539,7 +545,7 @@ var registriesSeenMutex sync.Mutex
 // This likely could be made better. This will always generate the same names
 // but may not always produce optimal names. This is a reasonably close
 // approximation of what they should look like in most cases.
-func resolveFullyQualifiedNameToSwaggerNames(messages []string) map[string]string {
+func resolveFullyQualifiedNameToSwaggerNames(messages []string, useFQNForSwaggerName bool) map[string]string {
 	packagesByDepth := make(map[int][][]string)
 	uniqueNames := make(map[string]string)
 
@@ -568,14 +574,19 @@ func resolveFullyQualifiedNameToSwaggerNames(messages []string) map[string]strin
 	}
 
 	for _, p := range messages {
-		h := hierarchy(p)
-		for depth := 0; depth < len(h); depth++ {
-			if count(packagesByDepth[depth], h[len(h)-depth:]) == 1 {
-				uniqueNames[p] = strings.Join(h[len(h)-depth-1:], "")
-				break
-			}
-			if depth == len(h)-1 {
-				uniqueNames[p] = strings.Join(h, "")
+		if useFQNForSwaggerName {
+			// strip leading dot from proto fqn
+			uniqueNames[p] = p[1:]
+		} else {
+			h := hierarchy(p)
+			for depth := 0; depth < len(h); depth++ {
+				if count(packagesByDepth[depth], h[len(h)-depth:]) == 1 {
+					uniqueNames[p] = strings.Join(h[len(h)-depth-1:], "")
+					break
+				}
+				if depth == len(h)-1 {
+					uniqueNames[p] = strings.Join(h, "")
+				}
 			}
 		}
 	}
@@ -1213,6 +1224,12 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, is
 	// Figure out which properties to update.
 	summaryValue := infoObjectValue.FieldByName("Summary")
 	descriptionValue := infoObjectValue.FieldByName("Description")
+	readOnlyValue := infoObjectValue.FieldByName("ReadOnly")
+
+	if readOnlyValue.Kind() == reflect.Bool && readOnlyValue.CanSet() && strings.Contains(comment, "Output only.") {
+		readOnlyValue.Set(reflect.ValueOf(true))
+	}
+
 	usingTitle := false
 	if !summaryValue.CanSet() {
 		summaryValue = infoObjectValue.FieldByName("Title")
@@ -1529,6 +1546,7 @@ func protoJSONSchemaToSwaggerSchemaCore(j *swagger_options.JSONSchema, reg *desc
 func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_options.JSONSchema) {
 	s.Title = j.GetTitle()
 	s.Description = j.GetDescription()
+	s.ReadOnly = j.GetReadOnly()
 	s.MultipleOf = j.GetMultipleOf()
 	s.Maximum = j.GetMaximum()
 	s.ExclusiveMaximum = j.GetExclusiveMaximum()

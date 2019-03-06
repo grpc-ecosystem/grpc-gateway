@@ -49,7 +49,7 @@ func (m *UnannotatedSimpleMessage) Reset()         { *m = UnannotatedSimpleMessa
 func (m *UnannotatedSimpleMessage) String() string { return proto.CompactTextString(m) }
 func (*UnannotatedSimpleMessage) ProtoMessage()    {}
 func (*UnannotatedSimpleMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_unannotated_echo_service_33987b03bf51a339, []int{0}
+	return fileDescriptor_unannotated_echo_service_ca2b904682e29806, []int{0}
 }
 func (m *UnannotatedSimpleMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UnannotatedSimpleMessage.Unmarshal(m, b)
@@ -245,10 +245,10 @@ var _UnannotatedEchoService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("examples/proto/examplepb/unannotated_echo_service.proto", fileDescriptor_unannotated_echo_service_33987b03bf51a339)
+	proto.RegisterFile("examples/proto/examplepb/unannotated_echo_service.proto", fileDescriptor_unannotated_echo_service_ca2b904682e29806)
 }
 
-var fileDescriptor_unannotated_echo_service_33987b03bf51a339 = []byte{
+var fileDescriptor_unannotated_echo_service_ca2b904682e29806 = []byte{
 	// 268 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x32, 0x4f, 0xad, 0x48, 0xcc,
 	0x2d, 0xc8, 0x49, 0x2d, 0xd6, 0x2f, 0x28, 0xca, 0x2f, 0xc9, 0xd7, 0x87, 0x72, 0x0b, 0x92, 0xf4,

@@ -2,6 +2,7 @@ package genswagger
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"reflect"
 	"testing"
@@ -160,6 +161,80 @@ func TestMessageToQueryParameters(t *testing.T) {
 
 	for _, test := range tests {
 		reg := descriptor.NewRegistry()
+		msgs := []*descriptor.Message{}
+		for _, msgdesc := range test.MsgDescs {
+			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+		}
+		file := descriptor.File{
+			FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+				SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType:    test.MsgDescs,
+				Service:        []*protodescriptor.ServiceDescriptorProto{},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: msgs,
+		}
+		reg.Load(&plugin.CodeGeneratorRequest{
+			ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto},
+		})
+
+		message, err := reg.LookupMsg("", ".example."+test.Message)
+		if err != nil {
+			t.Fatalf("failed to lookup message: %s", err)
+		}
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		if err != nil {
+			t.Fatalf("failed to convert message to query parameters: %s", err)
+		}
+		if !reflect.DeepEqual(params, test.Params) {
+			t.Errorf("expected %v, got %v", test.Params, params)
+		}
+	}
+}
+
+func TestMessageToQueryParametersWithJsonName(t *testing.T) {
+	type test struct {
+		MsgDescs []*protodescriptor.DescriptorProto
+		Message  string
+		Params   []swaggerParameterObject
+	}
+
+	tests := []test{
+		{
+			MsgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{
+					Name: proto.String("ExampleMessage"),
+					Field: []*protodescriptor.FieldDescriptorProto{
+						{
+							Name:     proto.String("test_field_a"),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:   proto.Int32(1),
+							JsonName: proto.String("testFieldA"),
+						},
+					},
+				},
+			},
+			Message: "ExampleMessage",
+			Params: []swaggerParameterObject{
+				swaggerParameterObject{
+					Name:     "testFieldA",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		reg := descriptor.NewRegistry()
+		reg.SetUseJSONNamesForFields(true)
 		msgs := []*descriptor.Message{}
 		for _, msgdesc := range test.MsgDescs {
 			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
@@ -779,9 +854,10 @@ func TestTemplateToSwaggerPath(t *testing.T) {
 
 func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
 	var tests = []struct {
-		input       string
-		output      string
-		listOfFQMNs []string
+		input                string
+		output               string
+		listOfFQMNs          []string
+		useFQNForSwaggerName bool
 	}{
 		{
 			".a.b.C",
@@ -789,6 +865,7 @@ func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
 			[]string{
 				".a.b.C",
 			},
+			false,
 		},
 		{
 			".a.b.C",
@@ -797,6 +874,7 @@ func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
 				".a.C",
 				".a.b.C",
 			},
+			false,
 		},
 		{
 			".a.b.C",
@@ -806,11 +884,22 @@ func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
 				".a.C",
 				".a.b.C",
 			},
+			false,
+		},
+		{
+			".a.b.C",
+			"a.b.C",
+			[]string{
+				".C",
+				".a.C",
+				".a.b.C",
+			},
+			true,
 		},
 	}
 
 	for _, data := range tests {
-		names := resolveFullyQualifiedNameToSwaggerNames(data.listOfFQMNs)
+		names := resolveFullyQualifiedNameToSwaggerNames(data.listOfFQMNs, data.useFQNForSwaggerName)
 		output := names[data.input]
 		if output != data.output {
 			t.Errorf("Expected fullyQualifiedNameToSwaggerName(%v) to be %s but got %s",
@@ -1186,6 +1275,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 						MaxProperties:    33,
 						MinProperties:    22,
 						Required:         []string{"req"},
+						ReadOnly:         true,
 					},
 				},
 			},
@@ -1210,6 +1300,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					MaxProperties:    33,
 					MinProperties:    22,
 					Required:         []string{"req"},
+					ReadOnly:         true,
 				},
 			},
 		},
@@ -1408,5 +1499,137 @@ func TestProtoComments(t *testing.T) {
 		if got != test.want {
 			t.Errorf("protoComments(%v) got (%s) want %s", test, got, test.want)
 		}
+	}
+}
+
+func TestUpdateSwaggerDataFromComments(t *testing.T) {
+
+	tests := []struct {
+		descr                   string
+		swaggerObject           interface{}
+		comments                string
+		expectedError           error
+		expectedSwaggerObject   interface{}
+	}{
+		{
+			descr: "empty comments",
+			swaggerObject: nil,
+			expectedSwaggerObject: nil,
+			comments: "",
+			expectedError: nil,
+		},
+		{
+			descr: "set field to read only",
+			swaggerObject: &swaggerSchemaObject{},
+			expectedSwaggerObject: &swaggerSchemaObject{
+				ReadOnly: true,
+				Description: "... Output only. ...",
+			},
+			comments: "... Output only. ...",
+			expectedError: nil,
+		},
+		{
+			descr: "set title",
+			swaggerObject: &swaggerSchemaObject{},
+			expectedSwaggerObject: &swaggerSchemaObject{
+				Title: "Comment with no trailing dot",
+			},
+			comments: "Comment with no trailing dot",
+			expectedError: nil,
+		},
+		{
+			descr: "set description",
+			swaggerObject: &swaggerSchemaObject{},
+			expectedSwaggerObject: &swaggerSchemaObject{
+				Description: "Comment with trailing dot.",
+			},
+			comments: "Comment with trailing dot.",
+			expectedError: nil,
+		},
+		{
+			descr: "use info object",
+			swaggerObject: &swaggerObject{
+				Info: swaggerInfoObject{
+				},
+			},
+			expectedSwaggerObject: &swaggerObject{
+				Info: swaggerInfoObject{
+					Description: "Comment with trailing dot.",
+				},
+			},
+			comments: "Comment with trailing dot.",
+			expectedError: nil,
+		},
+		{
+			descr: "multi line comment with title",
+			swaggerObject: &swaggerSchemaObject{},
+			expectedSwaggerObject: &swaggerSchemaObject {
+				Title: "First line",
+				Description: "Second line",
+			},
+			comments: "First line\n\nSecond line",
+			expectedError: nil,
+		},
+		{
+			descr: "multi line comment no title",
+			swaggerObject: &swaggerSchemaObject{},
+			expectedSwaggerObject: &swaggerSchemaObject {
+				Description: "First line.\n\nSecond line",
+			},
+			comments: "First line.\n\nSecond line",
+			expectedError: nil,
+		},
+		{
+			descr: "multi line comment with summary with dot",
+			swaggerObject: &swaggerOperationObject{},
+			expectedSwaggerObject: &swaggerOperationObject {
+				Summary: "First line.",
+				Description: "Second line",
+			},
+			comments: "First line.\n\nSecond line",
+			expectedError: nil,
+		},
+		{
+			descr: "multi line comment with summary no dot",
+			swaggerObject: &swaggerOperationObject{},
+			expectedSwaggerObject: &swaggerOperationObject {
+				Summary: "First line",
+				Description: "Second line",
+			},
+			comments: "First line\n\nSecond line",
+			expectedError: nil,
+		},
+		{
+			descr: "multi line comment with summary no dot",
+			swaggerObject: &schemaCore{},
+			expectedSwaggerObject: &schemaCore{},
+			comments: "Any comment",
+			expectedError: errors.New("no description nor summary property"),
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.descr, func(t *testing.T) {
+			err := updateSwaggerDataFromComments(test.swaggerObject, test.comments, false)
+
+			if test.expectedError == nil {
+				if err != nil {
+					t.Errorf("unexpected error '%v'", err)
+				}
+				if !reflect.DeepEqual(test.swaggerObject, test.expectedSwaggerObject) {
+					t.Errorf("swaggerObject was not updated corretly, expected '%+v', got '%+v'", test.expectedSwaggerObject, test.swaggerObject)
+				}
+			} else {
+				if err == nil {
+					t.Error("expected update error not returned")
+				}
+				if !reflect.DeepEqual(test.swaggerObject, test.expectedSwaggerObject) {
+					t.Errorf("swaggerObject was not updated corretly, expected '%+v', got '%+v'", test.expectedSwaggerObject, test.swaggerObject)
+				}
+				if err.Error() != test.expectedError.Error() {
+					t.Errorf("expected error malformed, expected %q, got %q", test.expectedError.Error(), err.Error())
+				}
+			}
+		})
 	}
 }

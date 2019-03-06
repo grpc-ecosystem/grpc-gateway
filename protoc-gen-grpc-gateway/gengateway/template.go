@@ -112,7 +112,6 @@ func (b binding) FieldMaskField() string {
 			fieldMaskField = f
 		}
 	}
-
 	if fieldMaskField != nil {
 		return generator2.CamelCase(fieldMaskField.GetName())
 	}
@@ -145,13 +144,18 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 		return "", err
 	}
 	var targetServices []*descriptor.Service
+
+	for _, msg := range p.Messages {
+		msgName := generator2.CamelCase(*msg.Name)
+		msg.Name = &msgName
+	}
 	for _, svc := range p.Services {
 		var methodWithBindingsSeen bool
-		svcName := strings.Title(*svc.Name)
+		svcName := generator2.CamelCase(*svc.Name)
 		svc.Name = &svcName
 		for _, meth := range svc.Methods {
 			glog.V(2).Infof("Processing %s.%s", svc.GetName(), meth.GetName())
-			methName := strings.Title(*meth.Name)
+			methName := generator2.CamelCase(*meth.Name)
 			meth.Name = &methName
 			for _, b := range meth.Bindings {
 				methodWithBindingsSeen = true
@@ -232,11 +236,7 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 		grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	dec := marshaler.NewDecoder(newReader())
+	dec := marshaler.NewDecoder(req.Body)
 	for {
 		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 		err = dec.Decode(&protoReq)
@@ -299,8 +299,8 @@ var (
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 			} else {
 				protoReq.{{.FieldMaskField}} = fieldMask
-			}		
-	} {{end}}		
+			}
+	} {{end}}
 	{{end}}
 {{end}}
 {{if .PathParams}}
@@ -374,11 +374,7 @@ var (
 		grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, berr
-	}
-	dec := marshaler.NewDecoder(newReader())
+	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
 		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
 		err := dec.Decode(&protoReq)
