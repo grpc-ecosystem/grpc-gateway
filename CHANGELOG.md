@@ -1,5 +1,36 @@
 # Change Log
 
+## [v1.8.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.2) (2019-03-07)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.1...v1.8.2)
+
+**Implemented enhancements:**
+
+- Update the build environment Dockerfile to Go 1.12 [\#885](https://github.com/grpc-ecosystem/grpc-gateway/issues/885)
+
+**Fixed bugs:**
+
+- Change in behavior of streaming request body \(1.4.1 vs 1.8.1\) [\#894](https://github.com/grpc-ecosystem/grpc-gateway/issues/894)
+- Cannot download 1.8.0 with modules [\#886](https://github.com/grpc-ecosystem/grpc-gateway/issues/886)
+
+**Closed issues:**
+
+- Description and title ignored when field is not a scaler value type [\#892](https://github.com/grpc-ecosystem/grpc-gateway/issues/892)
+
+**Merged pull requests:**
+
+- 897 fixing problem while generating swagger documentation for enum messages  [\#898](https://github.com/grpc-ecosystem/grpc-gateway/pull/898) ([fahernandez](https://github.com/fahernandez))
+- bugfix: disable IOReaderFactory for streaming requests [\#896](https://github.com/grpc-ecosystem/grpc-gateway/pull/896) ([happyalu](https://github.com/happyalu))
+- bazel: Use new ProtoInfo provider [\#893](https://github.com/grpc-ecosystem/grpc-gateway/pull/893) ([drigz](https://github.com/drigz))
+- README: Add some nicer looking badges [\#890](https://github.com/grpc-ecosystem/grpc-gateway/pull/890) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Upgrade generator and runtime versions [\#889](https://github.com/grpc-ecosystem/grpc-gateway/pull/889) ([johanbrandhorst](https://github.com/johanbrandhorst))
+
+## [v1.8.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.1) (2019-03-02)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.1-pre1...v1.8.1)
+
+**Merged pull requests:**
+
+- Generate changelog for v1.8.1 [\#887](https://github.com/grpc-ecosystem/grpc-gateway/pull/887) ([johanbrandhorst](https://github.com/johanbrandhorst))
+
 ## [v1.8.1-pre1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.1-pre1) (2019-03-01)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.0...v1.8.1-pre1)
 
@@ -12,7 +43,6 @@
 
 **Implemented enhancements:**
 
-- Cleaner Swagger-generated schema names \(omitting prefixes\) [\#877](https://github.com/grpc-ecosystem/grpc-gateway/issues/877)
 - Support swagger annotations for default and required fields [\#851](https://github.com/grpc-ecosystem/grpc-gateway/issues/851)
 - Support go modules [\#755](https://github.com/grpc-ecosystem/grpc-gateway/issues/755)
 
