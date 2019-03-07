@@ -162,7 +162,9 @@ message ABitOfEverything {
 			// TRUE is true.
 			TRUE = 1;
 		}
-		DeepEnum ok = 3;
+
+		// DeepEnum comment.
+		DeepEnum ok = 3 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {description: "DeepEnum description."}];
 	}
 	Nested single_nested = 25;
 

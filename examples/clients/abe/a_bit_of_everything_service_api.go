@@ -526,7 +526,7 @@ func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body Examplepb
  * @param floatValue Float value field
  * @param singleNestedName name is nested field.
  * @param singleNestedAmount 
- * @param singleNestedOk  - FALSE: FALSE is false.  - TRUE: TRUE is true.
+ * @param singleNestedOk DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
  * @param doubleValue 
  * @param int64Value 
  * @param uint64Value 
@@ -554,7 +554,7 @@ func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body Examplepb
  * @param repeatedStringAnnotation Repeated string title. Repeated string description.
  * @param nestedAnnotationName name is nested field.
  * @param nestedAnnotationAmount 
- * @param nestedAnnotationOk  - FALSE: FALSE is false.  - TRUE: TRUE is true.
+ * @param nestedAnnotationOk DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
  * @return *interface{}
  */
 func (a ABitOfEverythingServiceApi) GetQuery(uuid string, floatValue float32, singleNestedName string, singleNestedAmount int64, singleNestedOk string, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, pathEnumValue string, nestedPathEnumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string, repeatedEnumAnnotation []string, enumValueAnnotation string, repeatedStringAnnotation []string, nestedAnnotationName string, nestedAnnotationAmount int64, nestedAnnotationOk string) (*interface{}, *APIResponse, error) {

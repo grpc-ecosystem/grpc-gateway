@@ -171,7 +171,7 @@
           },
           {
             "name": "single_nested.ok",
-            "description": " - FALSE: FALSE is false.\n - TRUE: TRUE is true.",
+            "description": "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -415,7 +415,7 @@
           },
           {
             "name": "nested_annotation.ok",
-            "description": " - FALSE: FALSE is false.\n - TRUE: TRUE is true.",
+            "description": "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true.",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1485,7 +1485,8 @@
           "format": "int64"
         },
         "ok": {
-          "$ref": "#/definitions/NestedDeepEnum"
+          "$ref": "#/definitions/NestedDeepEnum",
+          "description": "DeepEnum description."
         }
       },
       "description": "Nested is nested type."

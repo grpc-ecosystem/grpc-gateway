@@ -102,7 +102,8 @@
           "format": "int64"
         },
         "ok": {
-          "$ref": "#/definitions/NestedDeepEnum"
+          "$ref": "#/definitions/NestedDeepEnum",
+          "description": "DeepEnum description."
         }
       },
       "description": "Nested is nested type."

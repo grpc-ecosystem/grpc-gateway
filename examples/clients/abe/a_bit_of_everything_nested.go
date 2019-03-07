@@ -18,5 +18,6 @@ type ABitOfEverythingNested struct {
 
 	Amount int64 `json:"amount,omitempty"`
 
+	// DeepEnum description.
 	Ok NestedDeepEnum `json:"ok,omitempty"`
 }
