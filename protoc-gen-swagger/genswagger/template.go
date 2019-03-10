@@ -132,13 +132,14 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 		}
 
 		param := swaggerParameterObject{
-			Description: desc,
-			In:          "query",
-			Default:     schema.Default,
-			Type:        schema.Type,
-			Items:       schema.Items,
-			Format:      schema.Format,
-			Required:    required,
+			Description:      desc,
+			In:               "query",
+			Default:          schema.Default,
+			Type:             schema.Type,
+			Items:            schema.Items,
+			Format:           schema.Format,
+			CollectionFormat: schema.CollectionFormat,
+			Required:         required,
 		}
 
 		if reg.GetUseJSONNamesForFields() {
@@ -423,6 +424,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 				Type:  "array",
 				Items: (*swaggerItemsObject)(&core),
 			},
+			CollectionFormat: "multi",
 		}
 	case object:
 		ret = swaggerSchemaObject{
@@ -1255,9 +1257,9 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, is
 				}
 				// overrides the schema value only if it's empty
 				// keep the comment precedence when updating the package definition
-				 if descriptionValue.Len() == 0 || isPackageObject {
+				if descriptionValue.Len() == 0 || isPackageObject {
 					descriptionValue.Set(reflect.ValueOf(description))
-				 }
+				}
 			}
 			return nil
 		}
