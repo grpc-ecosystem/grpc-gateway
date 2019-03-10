@@ -595,20 +595,20 @@ func (a ABitOfEverythingServiceApi) GetQuery(uuid string, floatValue float32, si
 	localVarQueryParams.Add("sfixed64_value", a.Configuration.APIClient.ParameterToString(sfixed64Value, ""))
 	localVarQueryParams.Add("sint32_value", a.Configuration.APIClient.ParameterToString(sint32Value, ""))
 	localVarQueryParams.Add("sint64_value", a.Configuration.APIClient.ParameterToString(sint64Value, ""))
-	var repeatedStringValueCollectionFormat = "csv"
+	var repeatedStringValueCollectionFormat = "multi"
 	localVarQueryParams.Add("repeated_string_value", a.Configuration.APIClient.ParameterToString(repeatedStringValue, repeatedStringValueCollectionFormat))
 
 	localVarQueryParams.Add("oneof_string", a.Configuration.APIClient.ParameterToString(oneofString, ""))
 	localVarQueryParams.Add("nonConventionalNameValue", a.Configuration.APIClient.ParameterToString(nonConventionalNameValue, ""))
 	localVarQueryParams.Add("timestamp_value", a.Configuration.APIClient.ParameterToString(timestampValue, ""))
-	var repeatedEnumValueCollectionFormat = "csv"
+	var repeatedEnumValueCollectionFormat = "multi"
 	localVarQueryParams.Add("repeated_enum_value", a.Configuration.APIClient.ParameterToString(repeatedEnumValue, repeatedEnumValueCollectionFormat))
 
-	var repeatedEnumAnnotationCollectionFormat = "csv"
+	var repeatedEnumAnnotationCollectionFormat = "multi"
 	localVarQueryParams.Add("repeated_enum_annotation", a.Configuration.APIClient.ParameterToString(repeatedEnumAnnotation, repeatedEnumAnnotationCollectionFormat))
 
 	localVarQueryParams.Add("enum_value_annotation", a.Configuration.APIClient.ParameterToString(enumValueAnnotation, ""))
-	var repeatedStringAnnotationCollectionFormat = "csv"
+	var repeatedStringAnnotationCollectionFormat = "multi"
 	localVarQueryParams.Add("repeated_string_annotation", a.Configuration.APIClient.ParameterToString(repeatedStringAnnotation, repeatedStringAnnotationCollectionFormat))
 
 	localVarQueryParams.Add("nested_annotation.name", a.Configuration.APIClient.ParameterToString(nestedAnnotationName, ""))
