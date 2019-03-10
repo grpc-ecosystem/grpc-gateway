@@ -25,7 +25,8 @@
               "type": "array",
               "items": {
                 "$ref": "#/definitions/examplepbRepeatedResponseBodyOutResponse"
-              }
+              },
+              "collectionFormat": "multi"
             }
           }
         },
@@ -76,7 +77,8 @@
               "type": "array",
               "items": {
                 "type": "string"
-              }
+              },
+              "collectionFormat": "multi"
             }
           }
         },
@@ -112,7 +114,8 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/examplepbRepeatedResponseBodyOutResponse"
-          }
+          },
+          "collectionFormat": "multi"
         }
       }
     },
@@ -134,7 +137,8 @@
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "collectionFormat": "multi"
         }
       }
     },
