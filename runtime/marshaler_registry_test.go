@@ -78,7 +78,7 @@ func TestMarshalerForRequest(t *testing.T) {
 
 type dummyMarshaler struct{}
 
-func (dummyMarshaler) ContentType() string { return "" }
+func (dummyMarshaler) ContentType(v interface{}) string { return "" }
 func (dummyMarshaler) Marshal(interface{}) ([]byte, error) {
 	return nil, errors.New("not implemented")
 }

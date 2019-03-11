@@ -16,7 +16,7 @@ type Marshaler interface {
 	// NewEncoder returns an Encoder which writes bytes sequence into "w".
 	NewEncoder(w io.Writer) Encoder
 	// ContentType returns the Content-Type which this marshaler is responsible for.
-	ContentType() string
+	ContentType(v interface{}) string
 }
 
 // Decoder decodes a byte sequence

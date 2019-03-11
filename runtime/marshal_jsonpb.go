@@ -20,7 +20,7 @@ import (
 type JSONPb jsonpb.Marshaler
 
 // ContentType always returns "application/json".
-func (*JSONPb) ContentType() string {
+func (*JSONPb) ContentType(v interface{}) string {
 	return "application/json"
 }
 

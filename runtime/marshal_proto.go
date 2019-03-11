@@ -12,7 +12,7 @@ import (
 type ProtoMarshaller struct{}
 
 // ContentType always returns "application/octet-stream".
-func (*ProtoMarshaller) ContentType() string {
+func (*ProtoMarshaller) ContentType(v interface{}) string {
 	return "application/octet-stream"
 }
 
