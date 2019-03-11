@@ -21,9 +21,9 @@ import "google/protobuf/empty.proto";
 service HttpBodyExampleService {
 
  	rpc HelloWorld(google.protobuf.Empty) returns (google.api.HttpBody) {
-        option (google.api.http) = {
-            get: "/helloworld"
-        };
+			option (google.api.http) = {
+				get: "/helloworld"
+			};
 	}	
 
 }
