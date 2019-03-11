@@ -1,15 +1,13 @@
 package runtime
 
 import (
-	"io"
-
 	"google.golang.org/genproto/googleapis/api/httpbody"
 )
 
 // SetHTTPBodyMarshaler overwrite  the default marshaler with the HTTPBodyMarshaler
 func SetHTTPBodyMarshaler(serveMux *ServeMux) {
 	serveMux.marshalers.mimeMap[MIMEWildcard] = &HTTPBodyMarshaler{
-		&JSONPb{OrigName: true},
+		Marshaler: &JSONPb{OrigName: true},
 	}
 }
 
@@ -42,20 +40,4 @@ func (h *HTTPBodyMarshaler) Marshal(v interface{}) ([]byte, error) {
 		return httpBody.Data, nil
 	}
 	return h.Marshaler.Marshal(v)
-}
-
-// Unmarshal unmarshals JSON data into "v".
-// google.api.HttpBody messages are not supported for request messages.
-func (h *HTTPBodyMarshaler) Unmarshal(data []byte, v interface{}) error {
-	return h.Marshaler.Unmarshal(data, v)
-}
-
-// NewDecoder returns a Decoder which reads JSON stream from "r".
-func (h *HTTPBodyMarshaler) NewDecoder(r io.Reader) Decoder {
-	return h.Marshaler.NewDecoder(r)
-}
-
-// NewEncoder returns an Encoder which writes JSON stream into "w".
-func (h *HTTPBodyMarshaler) NewEncoder(w io.Writer) Encoder {
-	return h.Marshaler.NewEncoder(w)
 }
