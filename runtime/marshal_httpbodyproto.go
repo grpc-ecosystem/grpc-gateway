@@ -9,7 +9,7 @@ import (
 // SetHTTPBodyMarshaler overwrite  the default marshaler with the HTTPBodyMarshaler
 func SetHTTPBodyMarshaler(serveMux *ServeMux) {
 	serveMux.marshalers.mimeMap[MIMEWildcard] = &HTTPBodyMarshaler{
-		DefaultMarshaler: &JSONPb{OrigName: true},
+		&JSONPb{OrigName: true},
 	}
 }
 
@@ -18,7 +18,7 @@ func SetHTTPBodyMarshaler(serveMux *ServeMux) {
 // the actual message used as the response. If not, then this will
 // simply fallback to the JSONPb marshaler.
 type HTTPBodyMarshaler struct {
-	DefaultMarshaler Marshaler
+	Marshaler
 }
 
 // ContentType implementation to keep backwards compatability with marshal interface
@@ -32,7 +32,7 @@ func (h *HTTPBodyMarshaler) ContentTypeFromMessage(v interface{}) string {
 	if httpBody, ok := v.(*httpbody.HttpBody); ok {
 		return httpBody.GetContentType()
 	}
-	return h.DefaultMarshaler.ContentType()
+	return h.Marshaler.ContentType()
 }
 
 // Marshal marshals "v" by returning the body bytes if v is a
@@ -41,21 +41,21 @@ func (h *HTTPBodyMarshaler) Marshal(v interface{}) ([]byte, error) {
 	if httpBody, ok := v.(*httpbody.HttpBody); ok {
 		return httpBody.Data, nil
 	}
-	return h.DefaultMarshaler.Marshal(v)
+	return h.Marshaler.Marshal(v)
 }
 
 // Unmarshal unmarshals JSON data into "v".
 // google.api.HttpBody messages are not supported for request messages.
 func (h *HTTPBodyMarshaler) Unmarshal(data []byte, v interface{}) error {
-	return h.DefaultMarshaler.Unmarshal(data, v)
+	return h.Marshaler.Unmarshal(data, v)
 }
 
 // NewDecoder returns a Decoder which reads JSON stream from "r".
 func (h *HTTPBodyMarshaler) NewDecoder(r io.Reader) Decoder {
-	return h.DefaultMarshaler.NewDecoder(r)
+	return h.Marshaler.NewDecoder(r)
 }
 
 // NewEncoder returns an Encoder which writes JSON stream into "w".
 func (h *HTTPBodyMarshaler) NewEncoder(w io.Writer) Encoder {
-	return h.DefaultMarshaler.NewEncoder(w)
+	return h.Marshaler.NewEncoder(w)
 }

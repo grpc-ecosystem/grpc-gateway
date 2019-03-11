@@ -2,14 +2,15 @@ package runtime_test
 
 import (
 	"bytes"
+	"testing"
+
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/genproto/googleapis/api/httpbody"
-	"testing"
 )
 
 func TestHTTPBodyContentType(t *testing.T) {
 	m := runtime.HTTPBodyMarshaler{
-		DefaultMarshaler: &runtime.JSONPb{
+		&runtime.JSONPb{
 			OrigName: true,
 		},
 	}
@@ -29,7 +30,7 @@ func TestHTTPBodyContentType(t *testing.T) {
 
 func TestHTTPBodyMarshal(t *testing.T) {
 	m := runtime.HTTPBodyMarshaler{
-		DefaultMarshaler: &runtime.JSONPb{
+		&runtime.JSONPb{
 			OrigName: true,
 		},
 	}
