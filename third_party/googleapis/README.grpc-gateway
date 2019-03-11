@@ -12,6 +12,7 @@ Imported Files
 
 - google/api/annotations.proto
 - google/api/http.proto
+- google/api/httpbody.proto
 
 
 Generated Files
