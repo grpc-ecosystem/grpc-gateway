@@ -15,7 +15,7 @@ import (
 type JSONBuiltin struct{}
 
 // ContentType always Returns "application/json".
-func (*JSONBuiltin) ContentType(v interface{}) string {
+func (*JSONBuiltin) ContentType() string {
 	return "application/json"
 }
 

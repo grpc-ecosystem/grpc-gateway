@@ -17,10 +17,13 @@ func TestHTTPBodyContentType(t *testing.T) {
 	message := &httpbody.HttpBody{
 		ContentType: expected,
 	}
-	res := m.ContentType(message)
+	res := m.ContentType()
+	if res != "application/json" {
+		t.Errorf("content type not equal (%q, %q)", res, expected)
+	}
+	res = m.ContentTypeFromMessage(message)
 	if res != expected {
 		t.Errorf("content type not equal (%q, %q)", res, expected)
-
 	}
 }
 

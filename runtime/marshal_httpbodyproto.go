@@ -1,8 +1,9 @@
 package runtime
 
 import (
-	"google.golang.org/genproto/googleapis/api/httpbody"
 	"io"
+
+	"google.golang.org/genproto/googleapis/api/httpbody"
 )
 
 // SetHTTPBodyMarshaler overwrite  the default marshaler with the HTTPBodyMarshaler
@@ -20,13 +21,18 @@ type HTTPBodyMarshaler struct {
 	DefaultMarshaler Marshaler
 }
 
-// ContentType in case v is a google.api.HttpBody message it returns
+// ContentType implementation to keep backwards compatability with marshal interface
+func (h *HTTPBodyMarshaler) ContentType() string {
+	return h.ContentTypeFromMessage(nil)
+}
+
+// ContentTypeFromMessage in case v is a google.api.HttpBody message it returns
 // its specified content type otherwise fall back to the JSONPb marshaler.
-func (h *HTTPBodyMarshaler) ContentType(v interface{}) string {
+func (h *HTTPBodyMarshaler) ContentTypeFromMessage(v interface{}) string {
 	if httpBody, ok := v.(*httpbody.HttpBody); ok {
 		return httpBody.GetContentType()
 	}
-	return h.DefaultMarshaler.ContentType(v)
+	return h.DefaultMarshaler.ContentType()
 }
 
 // Marshal marshals "v" by returning the body bytes if v is a

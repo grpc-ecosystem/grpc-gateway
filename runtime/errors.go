@@ -93,9 +93,17 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 		s = status.New(codes.Unknown, err.Error())
 	}
 
-	pb := s.Proto()
 	w.Header().Del("Trailer")
-	w.Header().Set("Content-Type", marshaler.ContentType(pb))
+
+	contentType := marshaler.ContentType()
+	// Check marshaler on run time in order to keep backwards compatability
+	// An interface param needs to be added to the marshal interface to be
+	// able to remove this
+	if httpBodyMarshaler, ok := marshaler.(*HTTPBodyMarshaler); ok {
+		pb := s.Proto()
+		contentType = httpBodyMarshaler.ContentTypeFromMessage(pb)
+	}
+	w.Header().Set("Content-Type", contentType)
 
 	body := &errorBody{
 		Error:   s.Message(),
