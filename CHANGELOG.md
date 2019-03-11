@@ -1,5 +1,25 @@
 # Change Log
 
+## [v1.8.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.3) (2019-03-11)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.2...v1.8.3)
+
+**Implemented enhancements:**
+
+- Feature request from openapi 3: Allow apiKey in cookie [\#900](https://github.com/grpc-ecosystem/grpc-gateway/issues/900)
+
+**Fixed bugs:**
+
+- Error while defining enum comments [\#897](https://github.com/grpc-ecosystem/grpc-gateway/issues/897)
+
+**Closed issues:**
+
+- Its impossible to send response with non 200 status code [\#901](https://github.com/grpc-ecosystem/grpc-gateway/issues/901)
+- Swagger get query param documentation shows repeated fields incorrectly [\#756](https://github.com/grpc-ecosystem/grpc-gateway/issues/756)
+
+**Merged pull requests:**
+
+- Use collectionFormat multi for query params of repeated fields [\#902](https://github.com/grpc-ecosystem/grpc-gateway/pull/902) ([bmperrea](https://github.com/bmperrea))
+
 ## [v1.8.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.2) (2019-03-07)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.1...v1.8.2)
 
@@ -18,6 +38,7 @@
 
 **Merged pull requests:**
 
+- Regenerate changelog for 1.8.2 [\#899](https://github.com/grpc-ecosystem/grpc-gateway/pull/899) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - 897 fixing problem while generating swagger documentation for enum messages  [\#898](https://github.com/grpc-ecosystem/grpc-gateway/pull/898) ([fahernandez](https://github.com/fahernandez))
 - bugfix: disable IOReaderFactory for streaming requests [\#896](https://github.com/grpc-ecosystem/grpc-gateway/pull/896) ([happyalu](https://github.com/happyalu))
 - bazel: Use new ProtoInfo provider [\#893](https://github.com/grpc-ecosystem/grpc-gateway/pull/893) ([drigz](https://github.com/drigz))
@@ -69,6 +90,7 @@
 - Add fqn\_for\_swagger\_name option [\#881](https://github.com/grpc-ecosystem/grpc-gateway/pull/881) ([hypnoce](https://github.com/hypnoce))
 - go.mod: update grpc from v1.16.0 to v1.17.0 [\#880](https://github.com/grpc-ecosystem/grpc-gateway/pull/880) ([klim0v](https://github.com/klim0v))
 - Fix parameter names when using JSON names. [\#879](https://github.com/grpc-ecosystem/grpc-gateway/pull/879) ([brocaar](https://github.com/brocaar))
+- protoc-gen-swagger: return error when encoding swagger file [\#878](https://github.com/grpc-ecosystem/grpc-gateway/pull/878) ([elliots](https://github.com/elliots))
 - protoc-gen-grpc-gateway: use context package from stdlib [\#876](https://github.com/grpc-ecosystem/grpc-gateway/pull/876) ([simonpasquier](https://github.com/simonpasquier))
 - Run buildifer on WORKSPACE [\#875](https://github.com/grpc-ecosystem/grpc-gateway/pull/875) ([achew22](https://github.com/achew22))
 - Upgrade to rules\_go 0.17.0 [\#874](https://github.com/grpc-ecosystem/grpc-gateway/pull/874) ([achew22](https://github.com/achew22))
