@@ -97,8 +97,8 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 
 	contentType := marshaler.ContentType()
 	// Check marshaler on run time in order to keep backwards compatability
-	// An interface param needs to be added to the marshal interface to be
-	// able to remove this
+	// An interface param needs to be added to the ContentType() function on
+	// the Marshal interface to be able to remove this check
 	if httpBodyMarshaler, ok := marshaler.(*HTTPBodyMarshaler); ok {
 		pb := s.Proto()
 		contentType = httpBodyMarshaler.ContentTypeFromMessage(pb)

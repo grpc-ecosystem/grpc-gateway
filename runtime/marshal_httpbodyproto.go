@@ -4,7 +4,7 @@ import (
 	"google.golang.org/genproto/googleapis/api/httpbody"
 )
 
-// SetHTTPBodyMarshaler overwrite  the default marshaler with the HTTPBodyMarshaler
+// SetHTTPBodyMarshaler overwrite the default marshaler with the HTTPBodyMarshaler
 func SetHTTPBodyMarshaler(serveMux *ServeMux) {
 	serveMux.marshalers.mimeMap[MIMEWildcard] = &HTTPBodyMarshaler{
 		Marshaler: &JSONPb{OrigName: true},
@@ -14,7 +14,7 @@ func SetHTTPBodyMarshaler(serveMux *ServeMux) {
 // HTTPBodyMarshaler is a Marshaler which supports marshaling of a
 // google.api.HttpBody message as the full response body if it is
 // the actual message used as the response. If not, then this will
-// simply fallback to the JSONPb marshaler.
+// simply fallback to the Marshaler specified as its default Marshaler.
 type HTTPBodyMarshaler struct {
 	Marshaler
 }
@@ -25,7 +25,7 @@ func (h *HTTPBodyMarshaler) ContentType() string {
 }
 
 // ContentTypeFromMessage in case v is a google.api.HttpBody message it returns
-// its specified content type otherwise fall back to the JSONPb marshaler.
+// its specified content type otherwise fall back to the default Marshaler.
 func (h *HTTPBodyMarshaler) ContentTypeFromMessage(v interface{}) string {
 	if httpBody, ok := v.(*httpbody.HttpBody); ok {
 		return httpBody.GetContentType()
@@ -34,7 +34,7 @@ func (h *HTTPBodyMarshaler) ContentTypeFromMessage(v interface{}) string {
 }
 
 // Marshal marshals "v" by returning the body bytes if v is a
-// google.api.HttpBody message, otherwise it falls back to the JSONPb marshaler.
+// google.api.HttpBody message, otherwise it falls back to the default Marshaler.
 func (h *HTTPBodyMarshaler) Marshal(v interface{}) ([]byte, error) {
 	if httpBody, ok := v.(*httpbody.HttpBody); ok {
 		return httpBody.Data, nil
