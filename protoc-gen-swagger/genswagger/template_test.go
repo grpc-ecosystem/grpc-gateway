@@ -58,12 +58,6 @@ func TestMessageToQueryParameters(t *testing.T) {
 							Type:   protodescriptor.FieldDescriptorProto_TYPE_DOUBLE.Enum(),
 							Number: proto.Int32(2),
 						},
-						{
-							Name:   proto.String("c"),
-							Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
-							Label:  protodescriptor.FieldDescriptorProto_LABEL_REPEATED.Enum(),
-							Number: proto.Int32(3),
-						},
 					},
 				},
 			},
@@ -81,13 +75,6 @@ func TestMessageToQueryParameters(t *testing.T) {
 					Required: false,
 					Type:     "number",
 					Format:   "double",
-				},
-				swaggerParameterObject{
-					Name:             "c",
-					In:               "query",
-					Required:         false,
-					Type:             "array",
-					CollectionFormat: "multi",
 				},
 			},
 		},
@@ -204,10 +191,6 @@ func TestMessageToQueryParameters(t *testing.T) {
 		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{})
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
-		}
-		// avoid checking Items for array types
-		for i := range params {
-			params[i].Items = nil
 		}
 		if !reflect.DeepEqual(params, test.Params) {
 			t.Errorf("expected %v, got %v", test.Params, params)
@@ -1522,105 +1505,106 @@ func TestProtoComments(t *testing.T) {
 func TestUpdateSwaggerDataFromComments(t *testing.T) {
 
 	tests := []struct {
-		descr                 string
-		swaggerObject         interface{}
-		comments              string
-		expectedError         error
-		expectedSwaggerObject interface{}
+		descr                   string
+		swaggerObject           interface{}
+		comments                string
+		expectedError           error
+		expectedSwaggerObject   interface{}
 	}{
 		{
-			descr:                 "empty comments",
-			swaggerObject:         nil,
+			descr: "empty comments",
+			swaggerObject: nil,
 			expectedSwaggerObject: nil,
-			comments:              "",
-			expectedError:         nil,
-		},
-		{
-			descr:         "set field to read only",
-			swaggerObject: &swaggerSchemaObject{},
-			expectedSwaggerObject: &swaggerSchemaObject{
-				ReadOnly:    true,
-				Description: "... Output only. ...",
-			},
-			comments:      "... Output only. ...",
+			comments: "",
 			expectedError: nil,
 		},
 		{
-			descr:         "set title",
+			descr: "set field to read only",
+			swaggerObject: &swaggerSchemaObject{},
+			expectedSwaggerObject: &swaggerSchemaObject{
+				ReadOnly: true,
+				Description: "... Output only. ...",
+			},
+			comments: "... Output only. ...",
+			expectedError: nil,
+		},
+		{
+			descr: "set title",
 			swaggerObject: &swaggerSchemaObject{},
 			expectedSwaggerObject: &swaggerSchemaObject{
 				Title: "Comment with no trailing dot",
 			},
-			comments:      "Comment with no trailing dot",
+			comments: "Comment with no trailing dot",
 			expectedError: nil,
 		},
 		{
-			descr:         "set description",
+			descr: "set description",
 			swaggerObject: &swaggerSchemaObject{},
 			expectedSwaggerObject: &swaggerSchemaObject{
 				Description: "Comment with trailing dot.",
 			},
-			comments:      "Comment with trailing dot.",
+			comments: "Comment with trailing dot.",
 			expectedError: nil,
 		},
 		{
 			descr: "use info object",
 			swaggerObject: &swaggerObject{
-				Info: swaggerInfoObject{},
+				Info: swaggerInfoObject{
+				},
 			},
 			expectedSwaggerObject: &swaggerObject{
 				Info: swaggerInfoObject{
 					Description: "Comment with trailing dot.",
 				},
 			},
-			comments:      "Comment with trailing dot.",
+			comments: "Comment with trailing dot.",
 			expectedError: nil,
 		},
 		{
-			descr:         "multi line comment with title",
+			descr: "multi line comment with title",
 			swaggerObject: &swaggerSchemaObject{},
-			expectedSwaggerObject: &swaggerSchemaObject{
-				Title:       "First line",
+			expectedSwaggerObject: &swaggerSchemaObject {
+				Title: "First line",
 				Description: "Second line",
 			},
-			comments:      "First line\n\nSecond line",
+			comments: "First line\n\nSecond line",
 			expectedError: nil,
 		},
 		{
-			descr:         "multi line comment no title",
+			descr: "multi line comment no title",
 			swaggerObject: &swaggerSchemaObject{},
-			expectedSwaggerObject: &swaggerSchemaObject{
+			expectedSwaggerObject: &swaggerSchemaObject {
 				Description: "First line.\n\nSecond line",
 			},
-			comments:      "First line.\n\nSecond line",
+			comments: "First line.\n\nSecond line",
 			expectedError: nil,
 		},
 		{
-			descr:         "multi line comment with summary with dot",
+			descr: "multi line comment with summary with dot",
 			swaggerObject: &swaggerOperationObject{},
-			expectedSwaggerObject: &swaggerOperationObject{
-				Summary:     "First line.",
+			expectedSwaggerObject: &swaggerOperationObject {
+				Summary: "First line.",
 				Description: "Second line",
 			},
-			comments:      "First line.\n\nSecond line",
+			comments: "First line.\n\nSecond line",
 			expectedError: nil,
 		},
 		{
-			descr:         "multi line comment with summary no dot",
+			descr: "multi line comment with summary no dot",
 			swaggerObject: &swaggerOperationObject{},
-			expectedSwaggerObject: &swaggerOperationObject{
-				Summary:     "First line",
+			expectedSwaggerObject: &swaggerOperationObject {
+				Summary: "First line",
 				Description: "Second line",
 			},
-			comments:      "First line\n\nSecond line",
+			comments: "First line\n\nSecond line",
 			expectedError: nil,
 		},
 		{
-			descr:                 "multi line comment with summary no dot",
-			swaggerObject:         &schemaCore{},
+			descr: "multi line comment with summary no dot",
+			swaggerObject: &schemaCore{},
 			expectedSwaggerObject: &schemaCore{},
-			comments:              "Any comment",
-			expectedError:         errors.New("no description nor summary property"),
+			comments: "Any comment",
+			expectedError: errors.New("no description nor summary property"),
 		},
 	}
 
