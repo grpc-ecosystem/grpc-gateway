@@ -143,8 +143,7 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/ABitOfEverythingNested"
-          },
-          "collectionFormat": "multi"
+          }
         },
         "float_value": {
           "type": "number",
@@ -223,8 +222,7 @@
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "collectionFormat": "multi"
+          }
         },
         "oneof_empty": {
           "properties": {}
@@ -262,8 +260,7 @@
           "items": {
             "$ref": "#/definitions/examplepbNumericEnum"
           },
-          "title": "repeated enum value. it is comma-separated in query",
-          "collectionFormat": "multi"
+          "title": "repeated enum value. it is comma-separated in query"
         },
         "repeated_enum_annotation": {
           "type": "array",
@@ -271,8 +268,7 @@
             "$ref": "#/definitions/examplepbNumericEnum"
           },
           "description": "Repeated numeric enum description.",
-          "title": "Repeated numeric enum title",
-          "collectionFormat": "multi"
+          "title": "Repeated numeric enum title"
         },
         "enum_value_annotation": {
           "$ref": "#/definitions/examplepbNumericEnum",
@@ -285,8 +281,7 @@
             "type": "string"
           },
           "description": "Repeated string description.",
-          "title": "Repeated string title",
-          "collectionFormat": "multi"
+          "title": "Repeated string title"
         },
         "repeated_nested_annotation": {
           "type": "array",
@@ -294,8 +289,7 @@
             "$ref": "#/definitions/ABitOfEverythingNested"
           },
           "description": "Repeated nested object description.",
-          "title": "Repeated nested object title",
-          "collectionFormat": "multi"
+          "title": "Repeated nested object title"
         },
         "nested_annotation": {
           "$ref": "#/definitions/ABitOfEverythingNested",
@@ -368,8 +362,7 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/protobufAny"
-          },
-          "collectionFormat": "multi"
+          }
         }
       }
     },
