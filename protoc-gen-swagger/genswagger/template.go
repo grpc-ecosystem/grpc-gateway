@@ -132,14 +132,16 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 		}
 
 		param := swaggerParameterObject{
-			Description:      desc,
-			In:               "query",
-			Default:          schema.Default,
-			Type:             schema.Type,
-			Items:            schema.Items,
-			Format:           schema.Format,
-			CollectionFormat: schema.CollectionFormat,
-			Required:         required,
+			Description: desc,
+			In:          "query",
+			Default:     schema.Default,
+			Type:        schema.Type,
+			Items:       schema.Items,
+			Format:      schema.Format,
+			Required:    required,
+		}
+		if param.Type == "array" {
+			param.CollectionFormat = "multi"
 		}
 
 		if reg.GetUseJSONNamesForFields() {
@@ -424,7 +426,6 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 				Type:  "array",
 				Items: (*swaggerItemsObject)(&core),
 			},
-			CollectionFormat: "multi",
 		}
 	case object:
 		ret = swaggerSchemaObject{
