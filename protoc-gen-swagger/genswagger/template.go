@@ -140,6 +140,9 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 			Format:      schema.Format,
 			Required:    required,
 		}
+		if param.Type == "array" {
+			param.CollectionFormat = "multi"
+		}
 
 		if reg.GetUseJSONNamesForFields() {
 			param.Name = prefix + field.GetJsonName()
@@ -1255,9 +1258,9 @@ func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, is
 				}
 				// overrides the schema value only if it's empty
 				// keep the comment precedence when updating the package definition
-				 if descriptionValue.Len() == 0 || isPackageObject {
+				if descriptionValue.Len() == 0 || isPackageObject {
 					descriptionValue.Set(reflect.ValueOf(description))
-				 }
+				}
 			}
 			return nil
 		}
