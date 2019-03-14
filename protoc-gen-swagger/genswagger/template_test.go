@@ -1023,7 +1023,7 @@ func TestSchemaOfField(t *testing.T) {
 			refs: make(refMap),
 			expected: schemaCore{
 				Type:   "string",
-				Format: "bytes",
+				Format: "byte",
 			},
 		},
 		{
@@ -1171,14 +1171,9 @@ func TestSchemaOfField(t *testing.T) {
 	for _, test := range tests {
 		refs := make(refMap)
 		actual := schemaOfField(test.field, reg, refs)
-		if e, a := test.expected.Type, actual.Type; e != a {
-			t.Errorf("Expected schemaOfField(%v).Type = %s, actual: %s", test.field, e, a)
-		}
-		if e, a := test.expected.Ref, actual.Ref; e != a {
-			t.Errorf("Expected schemaOfField(%v).Ref = %s, actual: %s", test.field, e, a)
-		}
-		if e, a := test.expected.Items.getType(), actual.Items.getType(); e != a {
-			t.Errorf("Expected schemaOfField(%v).Items.Type = %v, actual.Type: %v", test.field, e, a)
+		expectedSchemaObject := swaggerSchemaObject{schemaCore: test.expected}
+		if e, a := expectedSchemaObject, actual; !reflect.DeepEqual(a, e) {
+			t.Errorf("Expected schemaOfField(%v) = %v, actual: %v", test.field, e, a)
 		}
 		if !reflect.DeepEqual(refs, test.refs) {
 			t.Errorf("Expected schemaOfField(%v) to add refs %v, not %v", test.field, test.refs, refs)
