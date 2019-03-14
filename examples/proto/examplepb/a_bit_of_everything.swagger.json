@@ -328,7 +328,8 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "collectionFormat": "multi"
           },
           {
             "name": "oneof_string",
@@ -361,7 +362,8 @@
                 "ZERO",
                 "ONE"
               ]
-            }
+            },
+            "collectionFormat": "multi"
           },
           {
             "name": "repeated_enum_annotation",
@@ -375,7 +377,8 @@
                 "ZERO",
                 "ONE"
               ]
-            }
+            },
+            "collectionFormat": "multi"
           },
           {
             "name": "enum_value_annotation",
@@ -397,7 +400,8 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "collectionFormat": "multi"
           },
           {
             "name": "nested_annotation.name",
