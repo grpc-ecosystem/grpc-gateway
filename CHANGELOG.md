@@ -1,5 +1,16 @@
 # Change Log
 
+## [v1.8.5](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.5) (2019-03-15)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.4...v1.8.5)
+
+**Closed issues:**
+
+- Swagger get query param documentation shows repeated fields incorrectly [\#756](https://github.com/grpc-ecosystem/grpc-gateway/issues/756)
+
+**Merged pull requests:**
+
+- CollectionFormat multi for query params of repeated fields 2 [\#909](https://github.com/grpc-ecosystem/grpc-gateway/pull/909) ([bmperrea](https://github.com/bmperrea))
+
 ## [v1.8.4](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.4) (2019-03-13)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.3...v1.8.4)
 
@@ -9,6 +20,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.8.4 [\#908](https://github.com/grpc-ecosystem/grpc-gateway/pull/908) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Revert "Use collectionFormat multi for query params of repeated fields \(\#902\)" [\#907](https://github.com/grpc-ecosystem/grpc-gateway/pull/907) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - New proposal: support for the google.api.HttpBody [\#904](https://github.com/grpc-ecosystem/grpc-gateway/pull/904) ([wimspaargaren](https://github.com/wimspaargaren))
 
@@ -439,7 +451,7 @@
 - properly respect file flag for protoc-gen-swagger [\#293](https://github.com/grpc-ecosystem/grpc-gateway/pull/293) ([tmc](https://github.com/tmc))
 
 ## [v1.3.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.1) (2017-12-23)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3.0...v1.3.1)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3...v1.3.1)
 
 **Implemented enhancements:**
 
@@ -496,11 +508,11 @@
 - grpc-gateway/generator: respect full package [\#462](https://github.com/grpc-ecosystem/grpc-gateway/pull/462) ([glerchundi](https://github.com/glerchundi))
 - Add proto marshaller for proto-over-http [\#459](https://github.com/grpc-ecosystem/grpc-gateway/pull/459) ([MatthewDolan](https://github.com/MatthewDolan))
 
-## [v1.3.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.0) (2017-11-03)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3...v1.3.0)
-
 ## [v1.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3) (2017-11-03)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.2.2...v1.3)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3.0...v1.3)
+
+## [v1.3.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.0) (2017-11-03)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.2.2...v1.3.0)
 
 **Closed issues:**
 
