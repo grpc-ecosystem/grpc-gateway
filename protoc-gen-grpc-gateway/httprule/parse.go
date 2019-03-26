@@ -231,8 +231,8 @@ const (
 func (p *parser) accept(term termType) (string, error) {
 	t := p.tokens[0]
 	switch term {
-	case "*", "**", ".", "=", "{", "}":
-		if t != string(term) {
+	case "/", "*", "**", ".", "=", "{", "}":
+		if t != string(term) && t != "/" {
 			return "", fmt.Errorf("expected %q but got %q", term, t)
 		}
 	case typeEOF:
