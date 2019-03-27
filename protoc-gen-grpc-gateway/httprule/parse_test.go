@@ -114,6 +114,12 @@ func TestParseSegments(t *testing.T) {
 			},
 		},
 		{
+			tokens: []string{"/", eof},
+			want: []segment{
+				wildcard{},
+			},
+		},
+		{
 			tokens: []string{"-._~!$&'()*+,;=:@", eof},
 			want: []segment{
 				literal("-._~!$&'()*+,;=:@"),
@@ -247,7 +253,7 @@ func TestParseSegmentsWithErrors(t *testing.T) {
 	}{
 		{
 			// double slash
-			tokens: []string{"/", eof},
+			tokens: []string{"//", eof},
 		},
 		{
 			// invalid literal
