@@ -1,3 +1,19 @@
+# [1.0.0](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.5...v1.0.0) (2019-03-28)
+
+
+
+# [1.0.0](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.5...v1.0.0) (2019-03-28)
+
+
+
+# [1.0.0](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.5...v1.0.0) (2019-03-28)
+
+
+
+# [1.0.0](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.5...v1.0.0) (2019-03-28)
+
+
+
 # Change Log
 
 ## [v1.8.5](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.5) (2019-03-15)

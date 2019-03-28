@@ -40,9 +40,23 @@ https://github.com/protocolbuffers/protobuf/releases
 Then, `go get -u` as usual the following packages:
 
 ```sh
+go get -u google.golang.org/grpc
 go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
-go get -u github.com/golang/protobuf/protoc-gen-go
+```
+protoc-gen-go has problem to integrate latest protobuf. Typically you can type
+
+```sh
+go get -u github.com/golang/protobu/{proto,protoc-gen-go}
+```
+In case that you have problems in using grpc golang plugin with protobuf, install it from source:
+
+```sh
+GIT_TAG="v1.2.0" # change as needed
+go get -d -u github.com/golang/protobuf/protoc-gen-go
+git -C "$(go env GOPATH)"/src/github.com/golang/protobuf checkout $GIT_TAG
+go install github.com/golang/protobuf/protoc-gen-go
+
 ```
 
 This will place three binaries in your `$GOBIN`;
@@ -52,6 +66,8 @@ This will place three binaries in your `$GOBIN`;
 * `protoc-gen-go`
 
 Make sure that your `$GOBIN` is in your `$PATH`.
+
+
 
 ## Usage
 
@@ -102,11 +118,14 @@ annotation to your .proto file
 
 3. Generate gRPC stub
 
+   Suppose `ROOT_TO_PROTO` is where your proto files store and `DEST` is where you want put generated files in, do:  
+
    ```sh
-   protoc -I/usr/local/include -I. \
+   protoc -I/usr/local/include \
+     -I${ROOT_TO_PROTO} \
      -I$GOPATH/src \
      -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-     --go_out=plugins=grpc:. \
+     --go_out=plugins=grpc:${DEST} \
      path/to/your_service.proto
    ```
 
@@ -116,13 +135,15 @@ annotation to your .proto file
 
      e.g.
      ```sh
-     protoc -I/usr/local/include -I. \
+     protoc -I/usr/local/include \
+       -I${ROOT_TO_PROTO} \
        -I$GOPATH/src \
        -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-       --ruby_out=. \
+       --ruby_out=${DEST} \
        path/to/your/service_proto
 
-     protoc -I/usr/local/include -I. \
+     protoc -I/usr/local/include \
+       -I${ROOT_TO_PROTO} \
        -I$GOPATH/src \
        -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
        --plugin=protoc-gen-grpc=grpc_ruby_plugin \
@@ -135,10 +156,12 @@ annotation to your .proto file
 5. Generate reverse-proxy
 
    ```sh
-   protoc -I/usr/local/include -I. \
+   protoc -I/usr/local/include \
+     -I${ROOT_TO_PROTO} \
      -I$GOPATH/src \
      -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-     --grpc-gateway_out=logtostderr=true:. \
+     --plugin=proto-gen-grpc-gateway=${GOPATH}/bin/protoc-gen-grpc-gateway \
+     --grpc-gateway_out=logtostderr=true,grpc_api_configuration="${ROOT_TO_service.yaml}",v=2:${DEST} \
      path/to/your_service.proto
    ```
 
@@ -193,11 +216,15 @@ annotation to your .proto file
 
 7. (Optional) Generate swagger definitions
 
+   Suppose `ROOT` is go project root, do:
+
    ```sh
-   protoc -I/usr/local/include -I. \
+   protoc -I/usr/local/include \
+     -I${ROOT_TO_PROTO} \
      -I$GOPATH/src \
      -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-     --swagger_out=logtostderr=true:. \
+     --plugin=protoc-gen-swagger=${GOPATH}/bin/protoc-gen-swagger \
+     --swagger_out=logtostderr=true,grpc_api_configuration="${ROOT_TO_service.yaml}",v=2:${ROOT}/api/${VERSION} \
      path/to/your_service.proto
    ```
 
@@ -221,8 +248,13 @@ More examples are available under `examples` directory.
   * `proto/examplepb/echo_service.pb.go`, `proto/examplepb/a_bit_of_everything.pb.go`, `proto/examplepb/unannotated_echo_service.pb.go`: [generated] stub of the service
   * `proto/examplepb/echo_service.pb.gw.go`, `proto/examplepb/a_bit_of_everything.pb.gw.go`, `proto/examplepb/uannotated_echo_service.pb.gw.go`: [generated] reverse proxy for the service
   * `proto/examplepb/unannotated_echo_service.yaml`: gRPC API Configuration for ```unannotated_echo_service.proto```
-* `server/main.go`: service implementation
-* `main.go`: entrypoint of the generated reverse proxy
+*  browser/gulpfile.js: entry file in current branch to build and execute grpc server and reverse proxy gateway examples for clients to query though HTTP1.1.
+*  cmd/example-grpc-server/main.go: grpc server entry point
+*  cmd/example-grpc-gateway-server/main.go: http reverse proxy server entry point
+*  server: grpc server and servicesimplementation in golang used in this example.
+*  gateway: gateway customer implementation example
+*  gateway/main.go: gateway http server with services registration implemenation
+*  gateway/gateway.go: register rpc service method into gateway-runtime and return an http server multiplexer
 
 To use the same port for custom HTTP handlers (e.g. serving `swagger.json`),
 gRPC-gateway, and a gRPC server, see
