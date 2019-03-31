@@ -64,7 +64,7 @@ jobs:
             EOF
       - run:
           name: Check that Bazel BUILD files are up-to-date
-          command: 'bazel run //:gazelle ||
+          command: 'bazel run //:gazelle -- --mode=diff ||
             (echo "ERROR: Bazel files out-of-date, please run \`bazel run :gazelle\`" >&2; exit 1)'
       - run:
           name: Run tests with Bazel
