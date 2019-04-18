@@ -46,11 +46,15 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
             options.append("grpc_api_configuration=%s" % grpc_api_configuration.path)
             inputs.append(grpc_api_configuration)
 
+        output_dir = ctx.bin_dir.path
+        if proto.owner.workspace_root:
+            output_dir = "/".join([output_dir, proto.owner.workspace_root])
+
         includes = _collect_includes(ctx.genfiles_dir.path, direct_proto_srcs + transitive_proto_srcs)
 
         args = actions.args()
         args.add("--plugin=%s" % protoc_gen_swagger.path)
-        args.add("--swagger_out=%s:%s" % (",".join(options), ctx.bin_dir.path))
+        args.add("--swagger_out=%s:%s" % (",".join(options), output_dir))
         args.add_all(["-I%s" % include for include in includes])
         args.add(proto.path)
 
