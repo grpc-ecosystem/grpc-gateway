@@ -1,5 +1,26 @@
 # Change Log
 
+## [v1.8.5](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.5) (2019-05-07)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.5...v1.8.5)
+
+**Fixed bugs:**
+
+- can't specify an empty path? [\#414](https://github.com/grpc-ecosystem/grpc-gateway/issues/414)
+
+**Closed issues:**
+
+- JSON stream response not available [\#926](https://github.com/grpc-ecosystem/grpc-gateway/issues/926)
+- why google/api/http.proto annotations.proto Field Numbers is 72295728 ? [\#925](https://github.com/grpc-ecosystem/grpc-gateway/issues/925)
+- Documentation: 'base\_path' Swagger attribute confuses users [\#918](https://github.com/grpc-ecosystem/grpc-gateway/issues/918)
+- go get: error loading module requirements go 1.11 [\#915](https://github.com/grpc-ecosystem/grpc-gateway/issues/915)
+- gateway generation issue on windows [\#911](https://github.com/grpc-ecosystem/grpc-gateway/issues/911)
+
+**Merged pull requests:**
+
+- Delete redundant load statement [\#922](https://github.com/grpc-ecosystem/grpc-gateway/pull/922) ([pcj](https://github.com/pcj))
+- Make gazelle diffs fail the build [\#916](https://github.com/grpc-ecosystem/grpc-gateway/pull/916) ([achew22](https://github.com/achew22))
+- Fixed empty path bug [\#913](https://github.com/grpc-ecosystem/grpc-gateway/pull/913) ([brycematheson1234](https://github.com/brycematheson1234))
+
 ## [v1.8.5](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.5) (2019-03-15)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.4...v1.8.5)
 
@@ -9,6 +30,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.8.5 [\#910](https://github.com/grpc-ecosystem/grpc-gateway/pull/910) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - CollectionFormat multi for query params of repeated fields 2 [\#909](https://github.com/grpc-ecosystem/grpc-gateway/pull/909) ([bmperrea](https://github.com/bmperrea))
 
 ## [v1.8.4](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.4) (2019-03-13)
@@ -778,7 +800,7 @@
 - Method parameter in query string [\#6](https://github.com/grpc-ecosystem/grpc-gateway/issues/6)
 - Integrate authentication [\#4](https://github.com/grpc-ecosystem/grpc-gateway/issues/4)
 - Add swagger support [\#68](https://github.com/grpc-ecosystem/grpc-gateway/pull/68) ([achew22](https://github.com/achew22))
-- Add runtime.WithForwardResponseOption [\#53](https://github.com/grpc-ecosystem/grpc-gateway/pull/53) ([peter-edge](https://github.com/peter-edge))
+- Add runtime.WithForwardResponseOption [\#53](https://github.com/grpc-ecosystem/grpc-gateway/pull/53) ([pedgeio](https://github.com/pedgeio))
 
 **Fixed bugs:**
 
@@ -888,15 +910,15 @@
 - Fix broken test [\#76](https://github.com/grpc-ecosystem/grpc-gateway/pull/76) ([yugui](https://github.com/yugui))
 - Added missing instruction line in README  [\#75](https://github.com/grpc-ecosystem/grpc-gateway/pull/75) ([betrcode](https://github.com/betrcode))
 - Fix a complie error in generated go files [\#71](https://github.com/grpc-ecosystem/grpc-gateway/pull/71) ([yugui](https://github.com/yugui))
-- Update generated .pb.go files in third\_party [\#69](https://github.com/grpc-ecosystem/grpc-gateway/pull/69) ([peter-edge](https://github.com/peter-edge))
+- Update generated .pb.go files in third\_party [\#69](https://github.com/grpc-ecosystem/grpc-gateway/pull/69) ([pedgeio](https://github.com/pedgeio))
 - Bugfix/handling headers for `Authorization` and `Host` [\#65](https://github.com/grpc-ecosystem/grpc-gateway/pull/65) ([mwitkow](https://github.com/mwitkow))
 - Fix `error` field always in chunk response [\#64](https://github.com/grpc-ecosystem/grpc-gateway/pull/64) ([mwitkow](https://github.com/mwitkow))
 - Update .pb.go to latest version. [\#63](https://github.com/grpc-ecosystem/grpc-gateway/pull/63) ([johansja](https://github.com/johansja))
 - Run more tests in Travis CI [\#60](https://github.com/grpc-ecosystem/grpc-gateway/pull/60) ([yugui](https://github.com/yugui))
 - Added http error code and error status for responseStreamChunk error [\#59](https://github.com/grpc-ecosystem/grpc-gateway/pull/59) ([kdima](https://github.com/kdima))
 - Fix parsing of verb and final path component. [\#55](https://github.com/grpc-ecosystem/grpc-gateway/pull/55) ([hbchai](https://github.com/hbchai))
-- add grpc.WithInsecure\(\) as option for grpc.Dial call in template [\#52](https://github.com/grpc-ecosystem/grpc-gateway/pull/52) ([peter-edge](https://github.com/peter-edge))
-- update .pb.go files for latest golang proto generation [\#51](https://github.com/grpc-ecosystem/grpc-gateway/pull/51) ([peter-edge](https://github.com/peter-edge))
+- add grpc.WithInsecure\(\) as option for grpc.Dial call in template [\#52](https://github.com/grpc-ecosystem/grpc-gateway/pull/52) ([pedgeio](https://github.com/pedgeio))
+- update .pb.go files for latest golang proto generation [\#51](https://github.com/grpc-ecosystem/grpc-gateway/pull/51) ([pedgeio](https://github.com/pedgeio))
 - Fix a build error with the latest protoc-gen-go [\#50](https://github.com/grpc-ecosystem/grpc-gateway/pull/50) ([yugui](https://github.com/yugui))
 - Configure Travis CI [\#49](https://github.com/grpc-ecosystem/grpc-gateway/pull/49) ([yugui](https://github.com/yugui))
 - Follow a change of go package name convention in protoc-gen-go [\#48](https://github.com/grpc-ecosystem/grpc-gateway/pull/48) ([yugui](https://github.com/yugui))
