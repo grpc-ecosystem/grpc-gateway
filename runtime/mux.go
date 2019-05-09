@@ -117,7 +117,7 @@ func WithDisablePathLengthFallback() ServeMuxOption {
 //
 // For stream errors that occur before any response has been written, the mux's
 // ProtoErrorHandler will be invoked. However, once data has been written, the errors must
-// be handled differently: they must included in the response body. The response body's
+// be handled differently: they must be included in the response body. The response body's
 // final message will include the error details returned by the stream error handler.
 func WithStreamErrorHandler(fn StreamErrorHandlerFunc) ServeMuxOption {
 	return func(serveMux *ServeMux) {

@@ -1,14 +1,14 @@
 package runtime
 
 import (
+	"context"
 	"io"
 	"net/http"
 
-	"context"
+        "github.com/grpc-ecosystem/grpc-gateway/internal"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime/internal"
 )
 
 // StreamErrorHandlerFunc accepts an error as a gRPC error generated via status package and translates it into a
