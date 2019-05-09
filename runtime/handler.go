@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -8,12 +9,11 @@ import (
 
 	"context"
 	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/any"
 	"github.com/grpc-ecosystem/grpc-gateway/internal"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
-	"google.golang.org/grpc/status"
 )
+
+var errEmptyResponse = errors.New("empty response")
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
 func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, req *http.Request, recv func() (proto.Message, error), opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
@@ -61,7 +61,7 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			return
 		}
 
-		buf, err := marshaler.Marshal(streamChunk(resp, nil))
+		buf, err := marshaler.Marshal(streamChunk(ctx, resp, mux.streamErrorHandler))
 		if err != nil {
 			grpclog.Infof("Failed to marshal response chunk: %v", err)
 			handleForwardResponseStreamError(ctx, wroteHeader, marshaler, w, req, mux, err)
@@ -124,7 +124,7 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 
 	contentType := marshaler.ContentType()
 	// Check marshaler on run time in order to keep backwards compatability
-	// An interface param needs to be added to the ContentType() function on 
+	// An interface param needs to be added to the ContentType() function on
 	// the Marshal interface to be able to remove this check
 	if httpBodyMarshaler, ok := marshaler.(*HTTPBodyMarshaler); ok {
 		contentType = httpBodyMarshaler.ContentTypeFromMessage(resp)
@@ -176,19 +176,7 @@ func handleForwardResponseStreamError(ctx context.Context, wroteHeader bool, mar
 	}
 
 	// otherwise, render the error as a stream chunk in the response
-	var chunk map[string]proto.Message
-	if mux.streamErrorHandler != nil {
-		serr := mux.streamErrorHandler(ctx, err)
-		if serr == nil {
-			// TODO: log error about misbehaving error handler?
-			chunk = streamChunk(nil, err)
-		} else {
-			chunk = map[string]proto.Message{"error": (*internal.StreamError)(serr)}
-		}
-	} else {
-		chunk = streamChunk(nil, err)
-	}
-	buf, merr := marshaler.Marshal(chunk)
+	buf, merr := marshaler.Marshal(streamErrorChunk(ctx, mux.streamErrorHandler, err))
 	if merr != nil {
 		grpclog.Infof("Failed to marshal an error: %v", merr)
 		return
@@ -199,29 +187,22 @@ func handleForwardResponseStreamError(ctx context.Context, wroteHeader bool, mar
 	}
 }
 
-func streamChunk(result proto.Message, err error) map[string]proto.Message {
-	if err != nil {
-		grpcCode := codes.Unknown
-		grpcMessage := err.Error()
-		var grpcDetails []*any.Any
-		if s, ok := status.FromError(err); ok {
-			grpcCode = s.Code()
-			grpcMessage = s.Message()
-			grpcDetails = s.Proto().GetDetails()
-		}
-		httpCode := HTTPStatusFromCode(grpcCode)
-		return map[string]proto.Message{
-			"error": &internal.StreamError{
-				GrpcCode:   int32(grpcCode),
-				HttpCode:   int32(httpCode),
-				Message:    grpcMessage,
-				HttpStatus: http.StatusText(httpCode),
-				Details:    grpcDetails,
-			},
-		}
-	}
+// streamChunk returns a chunk in a response stream for the given result. The
+// given errHandler is used to render an error chunk if result is nil.
+func streamChunk(ctx context.Context, result proto.Message, errHandler StreamErrorHandlerFunc) map[string]proto.Message {
 	if result == nil {
-		return streamChunk(nil, fmt.Errorf("empty response"))
+		return streamErrorChunk(ctx, errHandler, errEmptyResponse)
 	}
 	return map[string]proto.Message{"result": result}
+}
+
+// streamErrorChunk returns the final chunk in a response stream that represents
+// the given err.
+func streamErrorChunk(ctx context.Context, errHandler StreamErrorHandlerFunc, err error) map[string]proto.Message {
+	serr := errHandler(ctx, err)
+	if serr == nil {
+		// TODO: log about misbehaving stream error handler?
+		serr = DefaultHTTPStreamErrorHandler(ctx, err)
+	}
+	return map[string]proto.Message{"error": (*internal.StreamError)(serr)}
 }
