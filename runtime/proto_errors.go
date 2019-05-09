@@ -8,7 +8,16 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime/internal"
 )
+
+// StreamErrorHandlerFunc accepts an error as a gRPC error generated via status package and translates it into a
+// a proto struct used to represent error at the end of a stream.
+type StreamErrorHandlerFunc func(context.Context, error) *StreamError
+
+// StreamError is the payload for the final message in a server stream in the event that the server returns an
+// error after a response message has already been sent.
+type StreamError internal.StreamError
 
 // ProtoErrorHandlerFunc handles the error as a gRPC error generated via status package and replies to the request.
 type ProtoErrorHandlerFunc func(context.Context, *ServeMux, Marshaler, http.ResponseWriter, *http.Request, error)

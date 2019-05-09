@@ -26,6 +26,7 @@ type ServeMux struct {
 	incomingHeaderMatcher     HeaderMatcherFunc
 	outgoingHeaderMatcher     HeaderMatcherFunc
 	metadataAnnotators        []func(context.Context, *http.Request) metadata.MD
+	streamErrorHandler        StreamErrorHandlerFunc
 	protoErrorHandler         ProtoErrorHandlerFunc
 	disablePathLengthFallback bool
 }
@@ -107,6 +108,20 @@ func WithProtoErrorHandler(fn ProtoErrorHandlerFunc) ServeMuxOption {
 func WithDisablePathLengthFallback() ServeMuxOption {
 	return func(serveMux *ServeMux) {
 		serveMux.disablePathLengthFallback = true
+	}
+}
+
+// WithStreamErrorHandler returns a ServeMuxOption that will use the given custom stream
+// error handler, which allows for customizing the error trailer for server-streaming
+// calls.
+//
+// For stream errors that occur before any response has been written, the mux's
+// ProtoErrorHandler will be invoked. However, once data has been written, the errors must
+// be handled differently: they must included in the response body. The response body's
+// final message will include the error details returned by the stream error handler.
+func WithStreamErrorHandler(fn StreamErrorHandlerFunc) ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		serveMux.streamErrorHandler = fn
 	}
 }
 

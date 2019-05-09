@@ -53,18 +53,18 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			return
 		}
 		if err != nil {
-			handleForwardResponseStreamError(wroteHeader, marshaler, w, err)
+			handleForwardResponseStreamError(ctx, wroteHeader, marshaler, w, req, mux, err)
 			return
 		}
 		if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {
-			handleForwardResponseStreamError(wroteHeader, marshaler, w, err)
+			handleForwardResponseStreamError(ctx, wroteHeader, marshaler, w, req, mux, err)
 			return
 		}
 
 		buf, err := marshaler.Marshal(streamChunk(resp, nil))
 		if err != nil {
 			grpclog.Infof("Failed to marshal response chunk: %v", err)
-			handleForwardResponseStreamError(wroteHeader, marshaler, w, err)
+			handleForwardResponseStreamError(ctx, wroteHeader, marshaler, w, req, mux, err)
 			return
 		}
 		if _, err = w.Write(buf); err != nil {
@@ -168,18 +168,30 @@ func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, re
 	return nil
 }
 
-func handleForwardResponseStreamError(wroteHeader bool, marshaler Marshaler, w http.ResponseWriter, err error) {
-	buf, merr := marshaler.Marshal(streamChunk(nil, err))
+func handleForwardResponseStreamError(ctx context.Context, wroteHeader bool, marshaler Marshaler, w http.ResponseWriter, req *http.Request, mux *ServeMux, err error) {
+	if !wroteHeader {
+		// if we haven't already written header, use normal error handler to render
+		HTTPError(ctx, mux, marshaler, w, req, err)
+		return
+	}
+
+	// otherwise, render the error as a stream chunk in the response
+	var chunk map[string]proto.Message
+	if mux.streamErrorHandler != nil {
+		serr := mux.streamErrorHandler(ctx, err)
+		if serr == nil {
+			// TODO: log error about misbehaving error handler?
+			chunk = streamChunk(nil, err)
+		} else {
+			chunk = map[string]proto.Message{"error": (*internal.StreamError)(serr)}
+		}
+	} else {
+		chunk = streamChunk(nil, err)
+	}
+	buf, merr := marshaler.Marshal(chunk)
 	if merr != nil {
 		grpclog.Infof("Failed to marshal an error: %v", merr)
 		return
-	}
-	if !wroteHeader {
-		s, ok := status.FromError(err)
-		if !ok {
-			s = status.New(codes.Unknown, err.Error())
-		}
-		w.WriteHeader(HTTPStatusFromCode(s.Code()))
 	}
 	if _, werr := w.Write(buf); werr != nil {
 		grpclog.Infof("Failed to notify error to client: %v", werr)
