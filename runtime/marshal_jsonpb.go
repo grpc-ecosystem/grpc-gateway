@@ -157,7 +157,7 @@ func (j *JSONPb) NewEncoder(w io.Writer) Encoder {
 		}
 		// mimic json.Encoder by adding a newline (makes output
 		// easier to read when it contains multiple encoded items)
-		_, err := w.Write([]byte("\n"))
+		_, err := w.Write(j.Delimiter())
 		return err
 	})
 }
