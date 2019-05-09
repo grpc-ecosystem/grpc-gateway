@@ -108,6 +108,73 @@ if err := http.ListenAndServe(":8080", tracingWrapper(mux)); err != nil {
 ## Error handler
 http://mycodesmells.com/post/grpc-gateway-error-handler
 
+## Stream Error Handler
+The error handler described in the previous section applies only
+to RPC methods that have a unary response.
+
+When the method has a streaming response, grpc-gateway handles
+that by emitting a newline-separated stream of "chunks". Each
+chunk is an envelope that can container either a response message
+or an error. Only the last chunk will include an error, and only
+when the RPC handler ends abnormally (i.e. with an error code).
+
+Because of the way the errors are included in the response body,
+the other error handler signature is insufficient. So for server
+streams, you must install a _different_ error handler:
+
+```go
+mux := runtime.NewServeMux(
+	runtime.WithStreamErrorHandler(handleStreamError))
+```
+
+The signature of the handler is much more rigid because we need
+to know the structure of the error payload in order to properly
+encode the "chunk" schema into a Swagger/OpenAPI spec.
+
+So the function must return a `*runtime.StreamError`. The handler
+can choose to omit some fields and can filter/transform the original
+error, such as stripping stack traces from error messages.
+
+Here's an example custom handler:
+```go
+// handleStreamError overrides default behavior for computing an error
+// message for a server stream.
+//
+// It uses a default "502 Bad Gateway" HTTP code; only emits "safe"
+// messages; and does not set gRPC code or details fields (so they will
+// be omitted from the resulting JSON object that is sent to client).
+func handleStreamError(ctx context.Context, err error) *runtime.StreamError {
+	code := http.StatusBadGateway
+	msg := "unexpected error"
+	if s, ok := status.FromError(err); ok {
+		code = runtime.HTTPStatusFromCode(s.Code())
+		// default message, based on the name of the gRPC code
+		msg = code.String()
+		// see if error details include "safe" message to send
+		// to external callers
+		for _, msg := s.Details() {
+			if safe, ok := msg.(*SafeMessage); ok {
+				msg = safe.Text
+				break
+			}
+		}
+	}
+	return &runtime.StreamError{
+	    HttpCode:   int32(code),
+	    HttpStatus: http.StatusText(code),
+	    Message:    msg,
+	}
+}
+```
+
+If no custom handler is provided, the default stream error handler
+will include any gRPC error attributes (code, message, detail messages),
+if the error being reported includes them. If the error does not have
+these attributes, a gRPC code of `Unknown` (2) is reported. The default
+handler will also include an HTTP code and status, which is derived
+from the gRPC code (or set to `"500 Internal Server Error"` when
+the source error has no gRPC attributes).
+
 ## Replace a response forwarder per method
 You might want to keep the behavior of the current marshaler but change only a message forwarding of a certain API method.
 
