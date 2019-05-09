@@ -169,14 +169,11 @@ func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, re
 }
 
 func handleForwardResponseStreamError(ctx context.Context, wroteHeader bool, marshaler Marshaler, w http.ResponseWriter, req *http.Request, mux *ServeMux, err error) {
+	serr := streamError(ctx, mux.streamErrorHandler, err)
 	if !wroteHeader {
-		// if we haven't already written header, use normal error handler to render
-		HTTPError(ctx, mux, marshaler, w, req, err)
-		return
+		w.WriteHeader(int(serr.HttpCode))
 	}
-
-	// otherwise, render the error as a stream chunk in the response
-	buf, merr := marshaler.Marshal(streamErrorChunk(ctx, mux.streamErrorHandler, err))
+	buf, merr := marshaler.Marshal(errorChunk(serr))
 	if merr != nil {
 		grpclog.Infof("Failed to marshal an error: %v", merr)
 		return
@@ -191,18 +188,22 @@ func handleForwardResponseStreamError(ctx context.Context, wroteHeader bool, mar
 // given errHandler is used to render an error chunk if result is nil.
 func streamChunk(ctx context.Context, result proto.Message, errHandler StreamErrorHandlerFunc) map[string]proto.Message {
 	if result == nil {
-		return streamErrorChunk(ctx, errHandler, errEmptyResponse)
+		return errorChunk(streamError(ctx, errHandler, errEmptyResponse))
 	}
 	return map[string]proto.Message{"result": result}
 }
 
-// streamErrorChunk returns the final chunk in a response stream that represents
-// the given err.
-func streamErrorChunk(ctx context.Context, errHandler StreamErrorHandlerFunc, err error) map[string]proto.Message {
+// streamError returns the payload for the final message in a response stream
+// that represents the given err.
+func streamError(ctx context.Context, errHandler StreamErrorHandlerFunc, err error) *StreamError {
 	serr := errHandler(ctx, err)
-	if serr == nil {
-		// TODO: log about misbehaving stream error handler?
-		serr = DefaultHTTPStreamErrorHandler(ctx, err)
+	if serr != nil {
+		return serr
 	}
-	return map[string]proto.Message{"error": (*internal.StreamError)(serr)}
+	// TODO: log about misbehaving stream error handler?
+	return DefaultHTTPStreamErrorHandler(ctx, err)
+}
+
+func errorChunk(err *StreamError) map[string]proto.Message {
+	return map[string]proto.Message{"error": (*internal.StreamError)(err)}
 }

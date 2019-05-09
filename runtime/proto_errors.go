@@ -20,8 +20,6 @@ type StreamErrorHandlerFunc func(context.Context, error) *StreamError
 // error after a response message has already been sent.
 type StreamError internal.StreamError
 
-var _ StreamErrorHandlerFunc = DefaultHTTPStreamErrorHandler
-
 // ProtoErrorHandlerFunc handles the error as a gRPC error generated via status package and replies to the request.
 type ProtoErrorHandlerFunc func(context.Context, *ServeMux, Marshaler, http.ResponseWriter, *http.Request, error)
 
