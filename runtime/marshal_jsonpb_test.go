@@ -278,6 +278,9 @@ func TestJSONPbEncoder(t *testing.T) {
 	}{
 		{
 			verifier: func(json string) {
+				// remove trailing delimiter before verifying
+				json = strings.TrimSuffix(json, "\n")
+
 				if strings.ContainsAny(json, " \t\r\n") {
 					t.Errorf("strings.ContainsAny(%q, %q) = true; want false", json, " \t\r\n")
 				}
@@ -356,7 +359,7 @@ func TestJSONPbEncoderFields(t *testing.T) {
 		if err := enc.Encode(fixt.data); err != nil {
 			t.Errorf("enc.Encode(%#v) failed with %v; want success", fixt.data, err)
 		}
-		if got, want := buf.String(), fixt.json; got != want {
+		if got, want := buf.String(), fixt.json + string(m.Delimiter()); got != want {
 			t.Errorf("enc.Encode(%#v) = %q; want %q", fixt.data, got, want)
 		}
 	}
