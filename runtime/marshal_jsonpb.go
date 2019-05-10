@@ -151,7 +151,15 @@ func (d DecoderWrapper) Decode(v interface{}) error {
 
 // NewEncoder returns an Encoder which writes JSON stream into "w".
 func (j *JSONPb) NewEncoder(w io.Writer) Encoder {
-	return EncoderFunc(func(v interface{}) error { return j.marshalTo(w, v) })
+	return EncoderFunc(func(v interface{}) error {
+		if err := j.marshalTo(w, v); err != nil {
+			return err
+		}
+		// mimic json.Encoder by adding a newline (makes output
+		// easier to read when it contains multiple encoded items)
+		_, err := w.Write(j.Delimiter())
+		return err
+	})
 }
 
 func unmarshalJSONPb(data []byte, v interface{}) error {
