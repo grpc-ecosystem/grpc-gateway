@@ -2,6 +2,7 @@ package runtime_test
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -9,6 +10,8 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func TestMuxServeHTTP(t *testing.T) {
@@ -29,6 +32,7 @@ func TestMuxServeHTTP(t *testing.T) {
 		respContent string
 
 		disablePathLengthFallback bool
+		errHandler                runtime.ProtoErrorHandlerFunc
 	}{
 		{
 			patterns:   nil,
@@ -239,10 +243,45 @@ func TestMuxServeHTTP(t *testing.T) {
 			respStatus:  http.StatusOK,
 			respContent: "GET /foo/{id=*}:verb",
 		},
+		{
+			// mux identifying invalid path results in 'Not Found' status
+			// (with custom handler looking for ErrUnknownURI)
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"unimplemented"},
+				},
+			},
+			reqMethod: "GET",
+			reqPath:   "/foobar",
+			respStatus:  http.StatusNotFound,
+			respContent: "GET /foobar",
+			errHandler: unknownPathIs404,
+		},
+		{
+			// server returning unimplemented results in 'Not Implemented' code
+			// even when using custom error handler
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"unimplemented"},
+				},
+			},
+			reqMethod: "GET",
+			reqPath:   "/unimplemented",
+			respStatus:  http.StatusNotImplemented,
+			respContent: `GET /unimplemented`,
+			errHandler: unknownPathIs404,
+		},
 	} {
 		var opts []runtime.ServeMuxOption
 		if spec.disablePathLengthFallback {
 			opts = append(opts, runtime.WithDisablePathLengthFallback())
+		}
+		if spec.errHandler != nil {
+			opts = append(opts, runtime.WithProtoErrorHandler(spec.errHandler))
 		}
 		mux := runtime.NewServeMux(opts...)
 		for _, p := range spec.patterns {
@@ -252,6 +291,13 @@ func TestMuxServeHTTP(t *testing.T) {
 					t.Fatalf("runtime.NewPattern(1, %#v, %#v, %q) failed with %v; want success", p.ops, p.pool, p.verb, err)
 				}
 				mux.Handle(p.method, pat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+					if r.URL.Path == "/unimplemented" {
+						// simulate method returning "unimplemented" error
+						_, m := runtime.MarshalerForRequest(mux, r)
+						runtime.HTTPError(r.Context(), mux, m, w, r, status.Error(codes.Unimplemented, http.StatusText(http.StatusNotImplemented)))
+						w.WriteHeader(http.StatusNotImplemented)
+						return
+					}
 					fmt.Fprintf(w, "%s %s", p.method, pat.String())
 				})
 			}(p)
@@ -277,6 +323,17 @@ func TestMuxServeHTTP(t *testing.T) {
 			}
 		}
 	}
+}
+
+func unknownPathIs404(ctx context.Context, mux *runtime.ServeMux, m runtime.Marshaler, w http.ResponseWriter, r *http.Request, err error) {
+	if err == runtime.ErrUnknownURI {
+		w.WriteHeader(http.StatusNotFound)
+	} else {
+		c := status.Convert(err).Code()
+		w.WriteHeader(runtime.HTTPStatusFromCode(c))
+	}
+
+	fmt.Fprintf(w, "%s %s", r.Method, r.URL.Path)
 }
 
 var defaultHeaderMatcherTests = []struct {

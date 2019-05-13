@@ -16,6 +16,14 @@ import (
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
 type HandlerFunc func(w http.ResponseWriter, r *http.Request, pathParams map[string]string)
 
+// ErrUnknownURI is the error supplied to a custom ProtoErrorHandlerFunc when
+// a request is received with a URI path that does not match any registered
+// service method.
+//
+// Since gRPC servers return an "Unimplemented" code for requests with an
+// unrecognized URI path, this error also has a gRPC "Unimplemented" code.
+var ErrUnknownURI = status.Error(codes.Unimplemented, http.StatusText(http.StatusNotImplemented))
+
 // ServeMux is a request multiplexer for grpc-gateway.
 // It matches http requests to patterns and invokes the corresponding handler.
 type ServeMux struct {
@@ -190,8 +198,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if idx := strings.LastIndex(components[l-1], ":"); idx == 0 {
 		if s.protoErrorHandler != nil {
 			_, outboundMarshaler := MarshalerForRequest(s, r)
-			sterr := status.Error(codes.Unimplemented, http.StatusText(http.StatusNotImplemented))
-			s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
+			s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, ErrUnknownURI)
 		} else {
 			OtherErrorHandler(w, r, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		}
@@ -251,8 +258,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			if s.protoErrorHandler != nil {
 				_, outboundMarshaler := MarshalerForRequest(s, r)
-				sterr := status.Error(codes.Unimplemented, http.StatusText(http.StatusMethodNotAllowed))
-				s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
+				s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, ErrUnknownURI)
 			} else {
 				OtherErrorHandler(w, r, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 			}
@@ -262,8 +268,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if s.protoErrorHandler != nil {
 		_, outboundMarshaler := MarshalerForRequest(s, r)
-		sterr := status.Error(codes.Unimplemented, http.StatusText(http.StatusNotImplemented))
-		s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
+		s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, ErrUnknownURI)
 	} else {
 		OtherErrorHandler(w, r, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
