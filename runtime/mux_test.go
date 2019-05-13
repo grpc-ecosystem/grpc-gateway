@@ -329,8 +329,8 @@ func unknownPathIs404(ctx context.Context, mux *runtime.ServeMux, m runtime.Mars
 	if err == runtime.ErrUnknownURI {
 		w.WriteHeader(http.StatusNotFound)
 	} else {
-		stat, _ := status.FromError(err)
-		w.WriteHeader(runtime.HTTPStatusFromCode(stat.Code()))
+		c := status.Convert(err).Code()
+		w.WriteHeader(runtime.HTTPStatusFromCode(c))
 	}
 
 	fmt.Fprintf(w, "%s %s", r.Method, r.URL.Path)
