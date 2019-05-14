@@ -1,5 +1,18 @@
 # Change Log
 
+## [v1.9.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.9.0) (2019-05-14)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.6...v1.9.0)
+
+**Closed issues:**
+
+- Errors in response streams do not go through the registered error handler [\#584](https://github.com/grpc-ecosystem/grpc-gateway/issues/584)
+
+**Merged pull requests:**
+
+- use error value for bad URI so custom error handler could treat it special [\#932](https://github.com/grpc-ecosystem/grpc-gateway/pull/932) ([jhump](https://github.com/jhump))
+- newline between JSON messages [\#931](https://github.com/grpc-ecosystem/grpc-gateway/pull/931) ([jhump](https://github.com/jhump))
+- ability to customize stream errors [\#930](https://github.com/grpc-ecosystem/grpc-gateway/pull/930) ([jhump](https://github.com/jhump))
+
 ## [v1.8.6](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.6) (2019-05-07)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.5...v1.8.6)
 
@@ -17,10 +30,12 @@
 
 **Merged pull requests:**
 
+- Generate correct changelog version [\#929](https://github.com/grpc-ecosystem/grpc-gateway/pull/929) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Generate changelog for 1.8.6 [\#928](https://github.com/grpc-ecosystem/grpc-gateway/pull/928) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Use proto gen swagger with protos from external repository [\#924](https://github.com/grpc-ecosystem/grpc-gateway/pull/924) ([elenadeneva92](https://github.com/elenadeneva92))
 - Delete redundant load statement [\#922](https://github.com/grpc-ecosystem/grpc-gateway/pull/922) ([pcj](https://github.com/pcj))
 - Make gazelle diffs fail the build [\#916](https://github.com/grpc-ecosystem/grpc-gateway/pull/916) ([achew22](https://github.com/achew22))
 - Fixed empty path bug [\#913](https://github.com/grpc-ecosystem/grpc-gateway/pull/913) ([brycematheson1234](https://github.com/brycematheson1234))
-- Use proto gen swagger with protos from external repository [\#924](https://github.com/grpc-ecosystem/grpc-gateway/pull/924) ([elenadeneva92](https://github.com/elenadeneva92))
 
 ## [v1.8.5](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.8.5) (2019-03-15)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.4...v1.8.5)
@@ -474,7 +489,7 @@
 - properly respect file flag for protoc-gen-swagger [\#293](https://github.com/grpc-ecosystem/grpc-gateway/pull/293) ([tmc](https://github.com/tmc))
 
 ## [v1.3.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.1) (2017-12-23)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3...v1.3.1)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3.0...v1.3.1)
 
 **Implemented enhancements:**
 
@@ -531,11 +546,11 @@
 - grpc-gateway/generator: respect full package [\#462](https://github.com/grpc-ecosystem/grpc-gateway/pull/462) ([glerchundi](https://github.com/glerchundi))
 - Add proto marshaller for proto-over-http [\#459](https://github.com/grpc-ecosystem/grpc-gateway/pull/459) ([MatthewDolan](https://github.com/MatthewDolan))
 
-## [v1.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3) (2017-11-03)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3.0...v1.3)
-
 ## [v1.3.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.0) (2017-11-03)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.2.2...v1.3.0)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3...v1.3.0)
+
+## [v1.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3) (2017-11-03)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.2.2...v1.3)
 
 **Closed issues:**
 
