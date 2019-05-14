@@ -177,7 +177,7 @@ $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh
 
 examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
-	find -type f -name *.go -exec sed -s -i 's;github.com/go-resty/resty;gopkg.in/resty.v1;g' {} +
+	find . -type f -name *.go -exec sed -s -i 's;github.com/go-resty/resty;gopkg.in/resty.v1;g' {} +
 test: examples
 	go test -race ...
 	go test -race examples/integration -args -network=unix -endpoint=test.sock
