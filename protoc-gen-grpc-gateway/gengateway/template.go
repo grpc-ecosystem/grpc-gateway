@@ -345,7 +345,11 @@ var (
 	{{end}}
 {{end}}
 {{if .HasQueryParam}}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}); err != nil {
+	values := req.URL.Query()
+	if req.Method == http.MethodPost {
+		values = req.PostForm
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, values, filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 {{end}}
