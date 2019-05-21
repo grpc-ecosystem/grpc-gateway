@@ -265,11 +265,10 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 
 	protoReq.EnumValueAnnotation = NumericEnum(e)
 
-	values := req.URL.Query()
-	if req.Method == http.MethodPost {
-		values = req.PostForm
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, values, filter_ABitOfEverythingService_Create_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_Create_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -391,11 +390,10 @@ func request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "abe.uuid", err)
 	}
 
-	values := req.URL.Query()
-	if req.Method == http.MethodPost {
-		values = req.PostForm
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, values, filter_ABitOfEverythingService_UpdateV2_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_UpdateV2_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -447,11 +445,10 @@ func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "abe.uuid", err)
 	}
 
-	values := req.URL.Query()
-	if req.Method == http.MethodPost {
-		values = req.PostForm
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, values, filter_ABitOfEverythingService_UpdateV2_1); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_UpdateV2_1); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -551,11 +548,10 @@ func request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
 
-	values := req.URL.Query()
-	if req.Method == http.MethodPost {
-		values = req.PostForm
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, values, filter_ABitOfEverythingService_GetQuery_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_GetQuery_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -815,11 +811,10 @@ func request_ABitOfEverythingService_Echo_2(ctx context.Context, marshaler runti
 	var protoReq sub.StringMessage
 	var metadata runtime.ServerMetadata
 
-	values := req.URL.Query()
-	if req.Method == http.MethodPost {
-		values = req.PostForm
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, values, filter_ABitOfEverythingService_Echo_2); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_Echo_2); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
