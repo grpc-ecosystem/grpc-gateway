@@ -312,3 +312,11 @@ func (s *_ABitOfEverythingServer) GetMessageWithBody(ctx context.Context, msg *e
 func (s *_ABitOfEverythingServer) PostWithEmptyBody(ctx context.Context, msg *examples.Body) (*empty.Empty, error) {
 	return &empty.Empty{}, nil
 }
+
+func (s *_ABitOfEverythingServer) CheckGetQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+	return msg, nil
+}
+
+func (s *_ABitOfEverythingServer) CheckPostQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+	return msg, nil
+}

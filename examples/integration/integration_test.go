@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"reflect"
 	"strconv"
 	"strings"
@@ -373,11 +374,11 @@ func testABECreateBody(t *testing.T, port int) {
 			"a": {Name: "x", Amount: 1},
 			"b": {Name: "y", Amount: 2},
 		},
-		RepeatedEnumAnnotation:   []gw.NumericEnum{
+		RepeatedEnumAnnotation: []gw.NumericEnum{
 			gw.NumericEnum_ONE,
 			gw.NumericEnum_ZERO,
 		},
-		EnumValueAnnotation:      gw.NumericEnum_ONE,
+		EnumValueAnnotation: gw.NumericEnum_ONE,
 		RepeatedStringAnnotation: []string{
 			"a",
 			"b",
@@ -477,11 +478,11 @@ func testABEBulkCreate(t *testing.T, port int) {
 						Amount: 20,
 					},
 				},
-				RepeatedEnumAnnotation:   []gw.NumericEnum{
+				RepeatedEnumAnnotation: []gw.NumericEnum{
 					gw.NumericEnum_ONE,
 					gw.NumericEnum_ZERO,
 				},
-				EnumValueAnnotation:      gw.NumericEnum_ONE,
+				EnumValueAnnotation: gw.NumericEnum_ONE,
 				RepeatedStringAnnotation: []string{
 					"a",
 					"b",
@@ -1465,4 +1466,59 @@ func testResponseStrings(t *testing.T, port int) {
 		})
 	}
 
+}
+
+func TestRequestQueryParams(t *testing.T) {
+	testRequestQueryParamsKind(t, 8080, "GET")
+	testRequestQueryParamsKind(t, 8080, "POST")
+	testRequestQueryParamsKind(t, 8080, "PostForm")
+}
+
+func testRequestQueryParamsKind(t *testing.T, port int, kind string) {
+	var resp *http.Response
+	var err error
+	var apiURL, got, want string
+
+	switch kind {
+	case "GET":
+		apiURL = fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v", port, 1234.56, true)
+		resp, err = http.Get(apiURL)
+		want = `{"single_nested":{"name":"foo"},"double_value":1234.56,"bool_value":true}`
+	case "POST":
+		apiURL = fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/post/hello-world?double_value=%v&bool_value=%v", port, 1234.56, true)
+		resp, err = http.Post(apiURL, "application/json", strings.NewReader(`{"name":"foo","amount":100}`))
+		want = `{"single_nested":{"name":"foo","amount":100},"double_value":1234.56,"bool_value":true,"string_value":"hello-world"}`
+	case "PostForm":
+		apiURL = fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v", port, 1234.56, true)
+		v := url.Values{}
+		v.Set("string_value", "hello-world")
+		v.Add("repeated_string_value", "demo1")
+		v.Add("repeated_string_value", "demo2")
+		resp, err = http.PostForm(apiURL, v)
+		want = `{"single_nested":{"name":"foo"},"double_value":1234.56,"bool_value":true,"string_value":"hello-world","repeated_string_value":["demo1","demo2"]}`
+	default:
+		t.Errorf("not support kind %q", kind)
+	}
+
+	if err != nil {
+		t.Errorf("http.Request(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+	got = string(buf)
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	if got != want {
+		t.Errorf("kind = %q; response = %q; want %q", kind, got, want)
+	}
 }

@@ -946,6 +946,90 @@ func request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Context, ma
 
 }
 
+var (
+	filter_ABitOfEverythingService_CheckGetQueryParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"single_nested": 0, "name": 1}, Base: []int{1, 1, 1, 0}, Check: []int{0, 1, 2, 3}}
+)
+
+func request_ABitOfEverythingService_CheckGetQueryParams_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ABitOfEverything
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["single_nested.name"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "single_nested.name")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "single_nested.name", val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "single_nested.name", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_CheckGetQueryParams_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.CheckGetQueryParams(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+var (
+	filter_ABitOfEverythingService_CheckPostQueryParams_0 = &utilities.DoubleArray{Encoding: map[string]int{"single_nested": 0, "string_value": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+)
+
+func request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ABitOfEverything
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.SingleNested); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["string_value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "string_value")
+	}
+
+	protoReq.StringValue, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "string_value", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_CheckPostQueryParams_0); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.CheckPostQueryParams(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
 func request_CamelCaseServiceName_Empty_0(ctx context.Context, marshaler runtime.Marshaler, client CamelCaseServiceNameClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq empty.Empty
 	var metadata runtime.ServerMetadata
@@ -1353,6 +1437,46 @@ func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runt
 
 	})
 
+	mux.Handle("GET", pattern_ABitOfEverythingService_CheckGetQueryParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ABitOfEverythingService_CheckGetQueryParams_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ABitOfEverythingService_CheckGetQueryParams_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_ABitOfEverythingService_CheckPostQueryParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ABitOfEverythingService_CheckPostQueryParams_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ABitOfEverythingService_CheckPostQueryParams_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -1392,6 +1516,10 @@ var (
 	pattern_ABitOfEverythingService_GetMessageWithBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v2", "example", "withbody", "id"}, ""))
 
 	pattern_ABitOfEverythingService_PostWithEmptyBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v2", "example", "postwithemptybody", "name"}, ""))
+
+	pattern_ABitOfEverythingService_CheckGetQueryParams_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "example", "a_bit_of_everything", "params", "get", "single_nested.name"}, ""))
+
+	pattern_ABitOfEverythingService_CheckPostQueryParams_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "example", "a_bit_of_everything", "params", "post", "string_value"}, ""))
 )
 
 var (
@@ -1430,6 +1558,10 @@ var (
 	forward_ABitOfEverythingService_GetMessageWithBody_0 = runtime.ForwardResponseMessage
 
 	forward_ABitOfEverythingService_PostWithEmptyBody_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_CheckGetQueryParams_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_CheckPostQueryParams_0 = runtime.ForwardResponseMessage
 )
 
 // RegisterCamelCaseServiceNameHandlerFromEndpoint is same as RegisterCamelCaseServiceNameHandler but
