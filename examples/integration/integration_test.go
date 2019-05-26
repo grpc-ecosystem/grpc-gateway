@@ -1477,6 +1477,7 @@ func TestRequestQueryParams(t *testing.T) {
 	formValues.Add("repeated_string_value", "demo2")
 
 	testCases := []struct {
+		name           string
 		httpMethod     string
 		contentType    string
 		apiURL         string
@@ -1484,12 +1485,14 @@ func TestRequestQueryParams(t *testing.T) {
 		requestContent io.Reader
 	}{
 		{
+			name:        "get url query values",
 			httpMethod:  "GET",
 			contentType: "application/json",
 			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v", port, 1234.56, true),
 			wantContent: `{"single_nested":{"name":"foo"},"double_value":1234.56,"bool_value":true}`,
 		},
 		{
+			name:           "post url query values",
 			httpMethod:     "POST",
 			contentType:    "application/json",
 			apiURL:         fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/post/hello-world?double_value=%v&bool_value=%v", port, 1234.56, true),
@@ -1497,6 +1500,7 @@ func TestRequestQueryParams(t *testing.T) {
 			requestContent: strings.NewReader(`{"name":"foo","amount":100}`),
 		},
 		{
+			name:           "post form and url query values",
 			httpMethod:     "POST",
 			contentType:    "application/x-www-form-urlencoded",
 			apiURL:         fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v", port, 1234.56, true),
@@ -1505,8 +1509,8 @@ func TestRequestQueryParams(t *testing.T) {
 		},
 	}
 
-	for idx, tc := range testCases {
-		t.Run(strconv.Itoa(idx), func(t *testing.T) {
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
 			req, err := http.NewRequest(tc.httpMethod, tc.apiURL, tc.requestContent)
 			if err != nil {
 				t.Errorf("http.method (%q) http.url (%q) failed with %v; want success", tc.httpMethod, tc.apiURL, err)
