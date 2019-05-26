@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"reflect"
 	"strconv"
 	"strings"
@@ -72,10 +73,10 @@ func TestForwardResponseOption(t *testing.T) {
 }
 
 func testEcho(t *testing.T, port int, contentType string) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/echo/myid", port)
-	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo/myid", port)
+	resp, err := http.Post(apiURL, "application/json", strings.NewReader("{}"))
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -105,10 +106,10 @@ func testEcho(t *testing.T, port int, contentType string) {
 }
 
 func testEchoOneof(t *testing.T, port int, contentType string) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/echo/myid/10/golang", port)
-	resp, err := http.Get(url)
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo/myid/10/golang", port)
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -138,10 +139,10 @@ func testEchoOneof(t *testing.T, port int, contentType string) {
 }
 
 func testEchoOneof1(t *testing.T, port int, contentType string) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/echo1/myid/10/golang", port)
-	resp, err := http.Get(url)
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo1/myid/10/golang", port)
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -171,10 +172,10 @@ func testEchoOneof1(t *testing.T, port int, contentType string) {
 }
 
 func testEchoOneof2(t *testing.T, port int, contentType string) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/echo2/golang", port)
-	resp, err := http.Get(url)
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo2/golang", port)
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -211,10 +212,10 @@ func testEchoBody(t *testing.T, port int) {
 		t.Fatalf("m.MarshalToString(%#v) failed with %v; want success", payload, err)
 	}
 
-	url := fmt.Sprintf("http://localhost:%d/v1/example/echo_body", port)
-	resp, err := http.Post(url, "", strings.NewReader(payload))
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo_body", port)
+	resp, err := http.Post(apiURL, "", strings.NewReader(payload))
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -293,11 +294,11 @@ func testABECreate(t *testing.T, port int) {
 		NestedPathEnumValue:      pathenum.MessagePathEnum_JKL,
 		EnumValueAnnotation:      gw.NumericEnum_ONE,
 	}
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s/%s/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue, want.EnumValue, want.PathEnumValue, want.NestedPathEnumValue, want.EnumValueAnnotation)
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s/%s/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue, want.EnumValue, want.PathEnumValue, want.NestedPathEnumValue, want.EnumValueAnnotation)
 
-	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
+	resp, err := http.Post(apiURL, "application/json", strings.NewReader("{}"))
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -373,11 +374,11 @@ func testABECreateBody(t *testing.T, port int) {
 			"a": {Name: "x", Amount: 1},
 			"b": {Name: "y", Amount: 2},
 		},
-		RepeatedEnumAnnotation:   []gw.NumericEnum{
+		RepeatedEnumAnnotation: []gw.NumericEnum{
 			gw.NumericEnum_ONE,
 			gw.NumericEnum_ZERO,
 		},
-		EnumValueAnnotation:      gw.NumericEnum_ONE,
+		EnumValueAnnotation: gw.NumericEnum_ONE,
 		RepeatedStringAnnotation: []string{
 			"a",
 			"b",
@@ -397,16 +398,16 @@ func testABECreateBody(t *testing.T, port int) {
 			Amount: 10,
 		},
 	}
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	var m jsonpb.Marshaler
 	payload, err := m.MarshalToString(&want)
 	if err != nil {
 		t.Fatalf("m.MarshalToString(%#v) failed with %v; want success", want, err)
 	}
 
-	resp, err := http.Post(url, "application/json", strings.NewReader(payload))
+	resp, err := http.Post(apiURL, "application/json", strings.NewReader(payload))
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -477,11 +478,11 @@ func testABEBulkCreate(t *testing.T, port int) {
 						Amount: 20,
 					},
 				},
-				RepeatedEnumAnnotation:   []gw.NumericEnum{
+				RepeatedEnumAnnotation: []gw.NumericEnum{
 					gw.NumericEnum_ONE,
 					gw.NumericEnum_ZERO,
 				},
-				EnumValueAnnotation:      gw.NumericEnum_ONE,
+				EnumValueAnnotation: gw.NumericEnum_ONE,
 				RepeatedStringAnnotation: []string{
 					"a",
 					"b",
@@ -512,10 +513,10 @@ func testABEBulkCreate(t *testing.T, port int) {
 			count++
 		}
 	}(w)
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/bulk", port)
-	resp, err := http.Post(url, "application/json", r)
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/bulk", port)
+	resp, err := http.Post(apiURL, "application/json", r)
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -549,12 +550,12 @@ func testABEBulkCreate(t *testing.T, port int) {
 }
 
 func testABELookup(t *testing.T, port int) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
-	cresp, err := http.Post(url, "application/json", strings.NewReader(`
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
+	cresp, err := http.Post(apiURL, "application/json", strings.NewReader(`
 		{"bool_value": true, "string_value": "strprefix/example"}
 	`))
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer cresp.Body.Close()
@@ -575,10 +576,10 @@ func testABELookup(t *testing.T, port int) {
 		return
 	}
 
-	url = fmt.Sprintf("%s/%s", url, want.Uuid)
-	resp, err := http.Get(url)
+	apiURL = fmt.Sprintf("%s/%s", apiURL, want.Uuid)
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -744,10 +745,10 @@ func mustMarshal(t *testing.T, i interface{}) string {
 
 // postABE conveniently creates a new ABE record for ease in testing
 func postABE(t *testing.T, port int, abe gw.ABitOfEverything) (uuid string) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
-	postResp, err := http.Post(url, "application/json", strings.NewReader(mustMarshal(t, abe)))
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
+	postResp, err := http.Post(apiURL, "application/json", strings.NewReader(mustMarshal(t, abe)))
 	if err != nil {
-		t.Fatalf("http.Post(%q) failed with %v; want success", url, err)
+		t.Fatalf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	body, err := ioutil.ReadAll(postResp.Body)
@@ -791,12 +792,12 @@ func getABE(t *testing.T, port int, uuid string) gw.ABitOfEverything {
 }
 
 func testABELookupNotFound(t *testing.T, port int) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	uuid := "not_exist"
-	url = fmt.Sprintf("%s/%s", url, uuid)
-	resp, err := http.Get(url)
+	apiURL = fmt.Sprintf("%s/%s", apiURL, uuid)
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -841,10 +842,10 @@ func testABELookupNotFound(t *testing.T, port int) {
 }
 
 func testABEList(t *testing.T, port int) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
-	resp, err := http.Get(url)
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -915,17 +916,17 @@ func testABEBulkEcho(t *testing.T, port int) {
 		}
 	}()
 
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/echo", port)
-	req, err := http.NewRequest("POST", url, reqr)
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/echo", port)
+	req, err := http.NewRequest("POST", apiURL, reqr)
 	if err != nil {
-		t.Errorf("http.NewRequest(%q, %q, reqr) failed with %v; want success", "POST", url, err)
+		t.Errorf("http.NewRequest(%q, %q, reqr) failed with %v; want success", "POST", apiURL, err)
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Transfer-Encoding", "chunked")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		t.Errorf("http.Post(%q, %q, req) failed with %v; want success", url, "application/json", err)
+		t.Errorf("http.Post(%q, %q, req) failed with %v; want success", apiURL, "application/json", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -970,17 +971,17 @@ func testABEBulkEcho(t *testing.T, port int) {
 }
 
 func testABEBulkEchoZeroLength(t *testing.T, port int) {
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/echo", port)
-	req, err := http.NewRequest("POST", url, bytes.NewReader(nil))
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/echo", port)
+	req, err := http.NewRequest("POST", apiURL, bytes.NewReader(nil))
 	if err != nil {
-		t.Errorf("http.NewRequest(%q, %q, bytes.NewReader(nil)) failed with %v; want success", "POST", url, err)
+		t.Errorf("http.NewRequest(%q, %q, bytes.NewReader(nil)) failed with %v; want success", "POST", apiURL, err)
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Transfer-Encoding", "chunked")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		t.Errorf("http.Post(%q, %q, req) failed with %v; want success", url, "application/json", err)
+		t.Errorf("http.Post(%q, %q, req) failed with %v; want success", apiURL, "application/json", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -1004,19 +1005,19 @@ func testABEBulkEchoZeroLength(t *testing.T, port int) {
 func testAdditionalBindings(t *testing.T, port int) {
 	for i, f := range []func() *http.Response{
 		func() *http.Response {
-			url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/echo/hello", port)
-			resp, err := http.Get(url)
+			apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/echo/hello", port)
+			resp, err := http.Get(apiURL)
 			if err != nil {
-				t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+				t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 				return nil
 			}
 			return resp
 		},
 		func() *http.Response {
-			url := fmt.Sprintf("http://localhost:%d/v2/example/echo", port)
-			resp, err := http.Post(url, "application/json", strings.NewReader(`"hello"`))
+			apiURL := fmt.Sprintf("http://localhost:%d/v2/example/echo", port)
+			resp, err := http.Post(apiURL, "application/json", strings.NewReader(`"hello"`))
 			if err != nil {
-				t.Errorf("http.Post(%q, %q, %q) failed with %v; want success", url, "application/json", `"hello"`, err)
+				t.Errorf("http.Post(%q, %q, %q) failed with %v; want success", apiURL, "application/json", `"hello"`, err)
 				return nil
 			}
 			return resp
@@ -1027,19 +1028,19 @@ func testAdditionalBindings(t *testing.T, port int) {
 				defer w.Close()
 				w.Write([]byte(`"hello"`))
 			}()
-			url := fmt.Sprintf("http://localhost:%d/v2/example/echo", port)
-			resp, err := http.Post(url, "application/json", r)
+			apiURL := fmt.Sprintf("http://localhost:%d/v2/example/echo", port)
+			resp, err := http.Post(apiURL, "application/json", r)
 			if err != nil {
-				t.Errorf("http.Post(%q, %q, %q) failed with %v; want success", url, "application/json", `"hello"`, err)
+				t.Errorf("http.Post(%q, %q, %q) failed with %v; want success", apiURL, "application/json", `"hello"`, err)
 				return nil
 			}
 			return resp
 		},
 		func() *http.Response {
-			url := fmt.Sprintf("http://localhost:%d/v2/example/echo?value=hello", port)
-			resp, err := http.Get(url)
+			apiURL := fmt.Sprintf("http://localhost:%d/v2/example/echo?value=hello", port)
+			resp, err := http.Get(apiURL)
 			if err != nil {
-				t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+				t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 				return nil
 			}
 			return resp
@@ -1162,11 +1163,11 @@ func testABERepeated(t *testing.T, port int) {
 			-4611686018427387904,
 		},
 	}
-	url := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything_repeated/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s", port, f(reflect.ValueOf(want.PathRepeatedFloatValue)), f(reflect.ValueOf(want.PathRepeatedDoubleValue)), f(reflect.ValueOf(want.PathRepeatedInt64Value)), f(reflect.ValueOf(want.PathRepeatedUint64Value)), f(reflect.ValueOf(want.PathRepeatedInt32Value)), f(reflect.ValueOf(want.PathRepeatedFixed64Value)), f(reflect.ValueOf(want.PathRepeatedFixed32Value)), f(reflect.ValueOf(want.PathRepeatedBoolValue)), f(reflect.ValueOf(want.PathRepeatedStringValue)), f(reflect.ValueOf(want.PathRepeatedBytesValue)), f(reflect.ValueOf(want.PathRepeatedUint32Value)), f(reflect.ValueOf(want.PathRepeatedEnumValue)), f(reflect.ValueOf(want.PathRepeatedSfixed32Value)), f(reflect.ValueOf(want.PathRepeatedSfixed64Value)), f(reflect.ValueOf(want.PathRepeatedSint32Value)), f(reflect.ValueOf(want.PathRepeatedSint64Value)))
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything_repeated/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s/%s", port, f(reflect.ValueOf(want.PathRepeatedFloatValue)), f(reflect.ValueOf(want.PathRepeatedDoubleValue)), f(reflect.ValueOf(want.PathRepeatedInt64Value)), f(reflect.ValueOf(want.PathRepeatedUint64Value)), f(reflect.ValueOf(want.PathRepeatedInt32Value)), f(reflect.ValueOf(want.PathRepeatedFixed64Value)), f(reflect.ValueOf(want.PathRepeatedFixed32Value)), f(reflect.ValueOf(want.PathRepeatedBoolValue)), f(reflect.ValueOf(want.PathRepeatedStringValue)), f(reflect.ValueOf(want.PathRepeatedBytesValue)), f(reflect.ValueOf(want.PathRepeatedUint32Value)), f(reflect.ValueOf(want.PathRepeatedEnumValue)), f(reflect.ValueOf(want.PathRepeatedSfixed32Value)), f(reflect.ValueOf(want.PathRepeatedSfixed64Value)), f(reflect.ValueOf(want.PathRepeatedSint32Value)), f(reflect.ValueOf(want.PathRepeatedSint64Value)))
 
-	resp, err := http.Get(url)
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -1192,10 +1193,10 @@ func testABERepeated(t *testing.T, port int) {
 }
 
 func TestTimeout(t *testing.T) {
-	url := "http://localhost:8080/v2/example/timeout"
-	req, err := http.NewRequest("GET", url, nil)
+	apiURL := "http://localhost:8080/v2/example/timeout"
+	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
-		t.Errorf(`http.NewRequest("GET", %q, nil) failed with %v; want success`, url, err)
+		t.Errorf(`http.NewRequest("GET", %q, nil) failed with %v; want success`, apiURL, err)
 		return
 	}
 	req.Header.Set("Grpc-Timeout", "10m")
@@ -1212,10 +1213,10 @@ func TestTimeout(t *testing.T) {
 }
 
 func TestErrorWithDetails(t *testing.T) {
-	url := "http://localhost:8080/v2/example/errorwithdetails"
-	resp, err := http.Get(url)
+	apiURL := "http://localhost:8080/v2/example/errorwithdetails"
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -1272,26 +1273,26 @@ func TestErrorWithDetails(t *testing.T) {
 }
 
 func TestPostWithEmptyBody(t *testing.T) {
-	url := "http://localhost:8080/v2/example/postwithemptybody/name"
-	rep, err := http.Post(url, "application/json", nil)
+	apiURL := "http://localhost:8080/v2/example/postwithemptybody/name"
+	rep, err := http.Post(apiURL, "application/json", nil)
 
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 
 	if rep.StatusCode != http.StatusOK {
-		t.Errorf("http.Post(%q) response code is %d; want %d", url,
+		t.Errorf("http.Post(%q) response code is %d; want %d", apiURL,
 			rep.StatusCode, http.StatusOK)
 		return
 	}
 }
 
 func TestUnknownPath(t *testing.T) {
-	url := "http://localhost:8080"
-	resp, err := http.Post(url, "application/json", strings.NewReader("{}"))
+	apiURL := "http://localhost:8080"
+	resp, err := http.Post(apiURL, "application/json", strings.NewReader("{}"))
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -1308,10 +1309,10 @@ func TestUnknownPath(t *testing.T) {
 }
 
 func TestMethodNotAllowed(t *testing.T) {
-	url := "http://localhost:8080/v1/example/echo/myid"
-	resp, err := http.Get(url)
+	apiURL := "http://localhost:8080/v1/example/echo/myid"
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -1328,10 +1329,10 @@ func TestMethodNotAllowed(t *testing.T) {
 }
 
 func TestInvalidArgument(t *testing.T) {
-	url := "http://localhost:8080/v1/example/echo/myid/not_int64"
-	resp, err := http.Get(url)
+	apiURL := "http://localhost:8080/v1/example/echo/myid/not_int64"
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -1359,10 +1360,10 @@ func TestResponseBody(t *testing.T) {
 }
 
 func testResponseBody(t *testing.T, port int) {
-	url := fmt.Sprintf("http://localhost:%d/responsebody/foo", port)
-	resp, err := http.Get(url)
+	apiURL := fmt.Sprintf("http://localhost:%d/responsebody/foo", port)
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -1383,10 +1384,10 @@ func testResponseBody(t *testing.T, port int) {
 }
 
 func testResponseBodies(t *testing.T, port int) {
-	url := fmt.Sprintf("http://localhost:%d/responsebodies/foo", port)
-	resp, err := http.Get(url)
+	apiURL := fmt.Sprintf("http://localhost:%d/responsebodies/foo", port)
+	resp, err := http.Get(apiURL)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -1441,10 +1442,10 @@ func testResponseStrings(t *testing.T, port int) {
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			url := spec.endpoint
-			resp, err := http.Get(url)
+			apiURL := spec.endpoint
+			resp, err := http.Get(apiURL)
 			if err != nil {
-				t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+				t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
 				return
 			}
 			defer resp.Body.Close()
@@ -1465,4 +1466,81 @@ func testResponseStrings(t *testing.T, port int) {
 		})
 	}
 
+}
+
+func TestRequestQueryParams(t *testing.T) {
+	port := 8080
+
+	formValues := url.Values{}
+	formValues.Set("string_value", "hello-world")
+	formValues.Add("repeated_string_value", "demo1")
+	formValues.Add("repeated_string_value", "demo2")
+
+	testCases := []struct {
+		name           string
+		httpMethod     string
+		contentType    string
+		apiURL         string
+		wantContent    string
+		requestContent io.Reader
+	}{
+		{
+			name:        "get url query values",
+			httpMethod:  "GET",
+			contentType: "application/json",
+			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v", port, 1234.56, true),
+			wantContent: `{"single_nested":{"name":"foo"},"double_value":1234.56,"bool_value":true}`,
+		},
+		{
+			name:           "post url query values",
+			httpMethod:     "POST",
+			contentType:    "application/json",
+			apiURL:         fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/post/hello-world?double_value=%v&bool_value=%v", port, 1234.56, true),
+			wantContent:    `{"single_nested":{"name":"foo","amount":100},"double_value":1234.56,"bool_value":true,"string_value":"hello-world"}`,
+			requestContent: strings.NewReader(`{"name":"foo","amount":100}`),
+		},
+		{
+			name:           "post form and url query values",
+			httpMethod:     "POST",
+			contentType:    "application/x-www-form-urlencoded",
+			apiURL:         fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v", port, 1234.56, true),
+			wantContent:    `{"single_nested":{"name":"foo"},"double_value":1234.56,"bool_value":true,"string_value":"hello-world","repeated_string_value":["demo1","demo2"]}`,
+			requestContent: strings.NewReader(formValues.Encode()),
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			req, err := http.NewRequest(tc.httpMethod, tc.apiURL, tc.requestContent)
+			if err != nil {
+				t.Errorf("http.method (%q) http.url (%q) failed with %v; want success", tc.httpMethod, tc.apiURL, err)
+				return
+			}
+
+			req.Header.Add("Content-Type", tc.contentType)
+
+			resp, err := http.DefaultClient.Do(req)
+			if err != nil {
+				t.Errorf("http.method (%q) http.url (%q) failed with %v; want success", tc.httpMethod, tc.apiURL, err)
+				return
+			}
+			defer resp.Body.Close()
+
+			buf, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+				return
+			}
+
+			if gotCode, wantCode := resp.StatusCode, http.StatusOK; gotCode != wantCode {
+				t.Errorf("resp.StatusCode = %d; want %d", gotCode, wantCode)
+				t.Logf("%s", buf)
+			}
+
+			gotContent := string(buf)
+			if gotContent != tc.wantContent {
+				t.Errorf("http.method (%q) http.url (%q) response = %q; want %q", tc.httpMethod, tc.apiURL, gotContent, tc.wantContent)
+			}
+		})
+	}
 }
