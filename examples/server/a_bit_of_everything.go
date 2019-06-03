@@ -36,6 +36,14 @@ type ABitOfEverythingServer interface {
 	examples.StreamServiceServer
 }
 
+// EDIT @moul
+
+func NewHandler() ABitOfEverythingServer {
+	return newABitOfEverythingServer()
+}
+
+// END OF EDIT @moul
+
 func newABitOfEverythingServer() ABitOfEverythingServer {
 	return &_ABitOfEverythingServer{
 		v: make(map[string]*examples.ABitOfEverything),
