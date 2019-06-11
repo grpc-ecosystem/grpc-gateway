@@ -45,7 +45,7 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
 
     if allow_merge:
         swagger_file = actions.declare_file(
-            "apidocs.swagger.json",
+            "%s.swagger.json" % ctx.attr.name,
             sibling = direct_proto_srcs[0],
         )
         output_dir = ctx.bin_dir.path
@@ -55,6 +55,7 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
         output_dir = "/".join([output_dir, direct_proto_srcs[0].dirname])
 
         options.append("allow_merge=true")
+        options.append("merge_file_name=%s" % ctx.attr.name)
 
         args = actions.args()
         args.add("--plugin=%s" % protoc_gen_swagger.path)
