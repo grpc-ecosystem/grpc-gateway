@@ -1,5 +1,22 @@
 # Change Log
 
+## [v1.9.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.9.1) (2019-06-13)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.9.0...v1.9.1)
+
+**Closed issues:**
+
+- grpc: received message larger than max [\#943](https://github.com/grpc-ecosystem/grpc-gateway/issues/943)
+- json 1.1 api support for grpc-ecosystem to use queryparams with filter [\#938](https://github.com/grpc-ecosystem/grpc-gateway/issues/938)
+- i import a new gateway.Endpoint without recompile [\#937](https://github.com/grpc-ecosystem/grpc-gateway/issues/937)
+- all SubConns are in TransientFailure [\#936](https://github.com/grpc-ecosystem/grpc-gateway/issues/936)
+- Merging swagger specs fails to use rpc comments \(again\) [\#923](https://github.com/grpc-ecosystem/grpc-gateway/issues/923)
+
+**Merged pull requests:**
+
+- Revert "protoc-gen-swagger: check typeIndex when typeName is Method" [\#945](https://github.com/grpc-ecosystem/grpc-gateway/pull/945) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- fix query params not populate if method is post [\#939](https://github.com/grpc-ecosystem/grpc-gateway/pull/939) ([mingqing](https://github.com/mingqing))
+- Fix make test on MacOS [\#935](https://github.com/grpc-ecosystem/grpc-gateway/pull/935) ([emilaasa](https://github.com/emilaasa))
+
 ## [v1.9.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.9.0) (2019-05-14)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.8.6...v1.9.0)
 
@@ -9,6 +26,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.9.0 [\#933](https://github.com/grpc-ecosystem/grpc-gateway/pull/933) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - use error value for bad URI so custom error handler could treat it special [\#932](https://github.com/grpc-ecosystem/grpc-gateway/pull/932) ([jhump](https://github.com/jhump))
 - newline between JSON messages [\#931](https://github.com/grpc-ecosystem/grpc-gateway/pull/931) ([jhump](https://github.com/jhump))
 - ability to customize stream errors [\#930](https://github.com/grpc-ecosystem/grpc-gateway/pull/930) ([jhump](https://github.com/jhump))
@@ -201,10 +219,6 @@
 
 ## [v1.6.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.6.3) (2018-12-21)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.6.2...v1.6.3)
-
-**Fixed bugs:**
-
-- Comments of rpc method gets copied if multiple services are present in a proto file. [\#746](https://github.com/grpc-ecosystem/grpc-gateway/issues/746)
 
 **Closed issues:**
 
