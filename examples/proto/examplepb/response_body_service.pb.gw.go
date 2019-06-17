@@ -55,6 +55,33 @@ func request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshale
 
 }
 
+func local_request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ResponseBodyIn
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["data"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "data")
+	}
+
+	protoReq.Data, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
+	}
+
+	msg, err := server.GetResponseBody(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
@@ -78,6 +105,33 @@ func request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marsh
 	}
 
 	msg, err := client.ListResponseBodies(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ResponseBodyIn
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["data"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "data")
+	}
+
+	protoReq.Data, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
+	}
+
+	msg, err := server.ListResponseBodies(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -107,6 +161,99 @@ func request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, mars
 	msg, err := client.ListResponseStrings(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
+}
+
+func local_request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ResponseBodyIn
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["data"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "data")
+	}
+
+	protoReq.Data, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
+	}
+
+	msg, err := server.ListResponseStrings(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+// ResponseBodyService local server register
+func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ResponseBodyServiceServer) error {
+
+	mux.Handle("GET", pattern_ResponseBodyService_GetResponseBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ResponseBodyService_GetResponseBody_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ResponseBodyService_GetResponseBody_0(ctx, mux, outboundMarshaler, w, req, response_ResponseBodyService_GetResponseBody_0{resp}, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ResponseBodyService_ListResponseBodies_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ResponseBodyService_ListResponseBodies_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ResponseBodyService_ListResponseBodies_0(ctx, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseBodies_0{resp}, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ResponseBodyService_ListResponseStrings_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ResponseBodyService_ListResponseStrings_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ResponseBodyService_ListResponseStrings_0(ctx, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseStrings_0{resp}, mux.GetForwardResponseOptions()...)
+
+	})
+
+	return nil
 }
 
 // RegisterResponseBodyServiceHandlerFromEndpoint is same as RegisterResponseBodyServiceHandler but
