@@ -1,5 +1,17 @@
 # Change Log
 
+## [v1.9.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.9.2) (2019-06-17)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.9.1...v1.9.2)
+
+**Fixed bugs:**
+
+- 404s using colons in the middle of the last path segment [\#224](https://github.com/grpc-ecosystem/grpc-gateway/issues/224)
+
+**Merged pull requests:**
+
+- Improve README file [\#950](https://github.com/grpc-ecosystem/grpc-gateway/pull/950) ([charleswhchan](https://github.com/charleswhchan))
+- Support colon in final path segment, last match wins behavior \(behind flags\) [\#949](https://github.com/grpc-ecosystem/grpc-gateway/pull/949) ([jfhamlin](https://github.com/jfhamlin))
+
 ## [v1.9.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.9.1) (2019-06-13)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.9.0...v1.9.1)
 
@@ -13,6 +25,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.9.1 [\#946](https://github.com/grpc-ecosystem/grpc-gateway/pull/946) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Revert "protoc-gen-swagger: check typeIndex when typeName is Method" [\#945](https://github.com/grpc-ecosystem/grpc-gateway/pull/945) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - fix query params not populate if method is post [\#939](https://github.com/grpc-ecosystem/grpc-gateway/pull/939) ([mingqing](https://github.com/mingqing))
 - Fix make test on MacOS [\#935](https://github.com/grpc-ecosystem/grpc-gateway/pull/935) ([emilaasa](https://github.com/emilaasa))
@@ -503,7 +516,7 @@
 - properly respect file flag for protoc-gen-swagger [\#293](https://github.com/grpc-ecosystem/grpc-gateway/pull/293) ([tmc](https://github.com/tmc))
 
 ## [v1.3.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.1) (2017-12-23)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3.0...v1.3.1)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3...v1.3.1)
 
 **Implemented enhancements:**
 
@@ -560,11 +573,11 @@
 - grpc-gateway/generator: respect full package [\#462](https://github.com/grpc-ecosystem/grpc-gateway/pull/462) ([glerchundi](https://github.com/glerchundi))
 - Add proto marshaller for proto-over-http [\#459](https://github.com/grpc-ecosystem/grpc-gateway/pull/459) ([MatthewDolan](https://github.com/MatthewDolan))
 
-## [v1.3.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.0) (2017-11-03)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3...v1.3.0)
-
 ## [v1.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3) (2017-11-03)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.2.2...v1.3)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3.0...v1.3)
+
+## [v1.3.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.0) (2017-11-03)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.2.2...v1.3.0)
 
 **Closed issues:**
 
