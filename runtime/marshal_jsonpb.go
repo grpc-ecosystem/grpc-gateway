@@ -255,7 +255,7 @@ func (j *JSONPb) Delimiter() []byte {
 var allowUnknownFields = true
 
 // DisallowUnknownFields enables option in decoder (unmarshaller) to
-// return an error when it finds an unknown field
+// return an error when it finds an unknown field. This function must be called before using the JSON marshaller.
 func DisallowUnknownFields() {
 	allowUnknownFields = false
 }
