@@ -404,8 +404,33 @@ func local_request_WrappersService_CreateEmpty_0(ctx context.Context, marshaler 
 
 }
 
-// WrappersService local server register
-func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server WrappersServiceServer) error {
+// RegisterWrappersServiceHandlerServer registers the http handlers for service WrappersService to "mux".
+// UnaryRPC     :call WrappersServiceServer directly.
+// StreamingRPC :need dial the same port for grpc.Server, we can use bufconn package(grpc-go/test/bufconn).
+// If the gateway proto have stream must add DialOption grpc.WithContextDialer. e.g.
+//
+//      bcLis := bufconn.Listen(1024 * 1024)
+// 		go s.Serve(bcLis)
+//
+// 		ctx := context.Background()
+// 		ctx, cancel := context.WithCancel(ctx)
+// 		defer cancel()
+//
+// 		mux := runtime.NewServeMux()
+// 		err := pb.RegisterWrappersServiceHandlerServer(
+// 			ctx,
+// 			mux,
+// 			&srv,
+// 			[]grpc.DialOption{
+// 				grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
+// 					return bcLis.Dial()
+// 				}),
+// 			},
+// 		)
+//
+// RegisterWrappersServiceHandlerServer does not support stream rpc call directly, and grpc-go have an issue "Feature Request:
+// Add support for In-Process transport #906". So it is currently EXPERIMENTAL and subject to change.
+func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server WrappersServiceServer, opts []grpc.DialOption) error {
 
 	mux.Handle("POST", pattern_WrappersService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())

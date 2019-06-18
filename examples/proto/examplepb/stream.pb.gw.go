@@ -74,8 +74,6 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 
 }
 
-// TODO client-streaming-request
-
 func request_StreamService_List_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_ListClient, runtime.ServerMetadata, error) {
 	var protoReq empty.Empty
 	var metadata runtime.ServerMetadata
@@ -92,8 +90,6 @@ func request_StreamService_List_0(ctx context.Context, marshaler runtime.Marshal
 	return stream, metadata, nil
 
 }
-
-// TODO server-streaming-request
 
 func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_BulkEchoClient, runtime.ServerMetadata, error) {
 	var metadata runtime.ServerMetadata
@@ -147,10 +143,54 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 	return stream, metadata, nil
 }
 
-// TODO bidi-streaming-request
+// RegisterStreamServiceHandlerServer registers the http handlers for service StreamService to "mux".
+// UnaryRPC     :call StreamServiceServer directly.
+// StreamingRPC :need dial the same port for grpc.Server, we can use bufconn package(grpc-go/test/bufconn).
+// If the gateway proto have stream must add DialOption grpc.WithContextDialer. e.g.
+//
+//      bcLis := bufconn.Listen(1024 * 1024)
+// 		go s.Serve(bcLis)
+//
+// 		ctx := context.Background()
+// 		ctx, cancel := context.WithCancel(ctx)
+// 		defer cancel()
+//
+// 		mux := runtime.NewServeMux()
+// 		err := pb.RegisterStreamServiceHandlerServer(
+// 			ctx,
+// 			mux,
+// 			&srv,
+// 			[]grpc.DialOption{
+// 				grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
+// 					return bcLis.Dial()
+// 				}),
+// 			},
+// 		)
+//
+// RegisterStreamServiceHandlerServer does not support stream rpc call directly, and grpc-go have an issue "Feature Request:
+// Add support for In-Process transport #906". So it is currently EXPERIMENTAL and subject to change.
+func RegisterStreamServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server StreamServiceServer, opts []grpc.DialOption) error {
 
-// StreamService local server register
-func RegisterStreamServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server StreamServiceServer) error {
+	conn, err := grpc.Dial("", opts...)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			if cerr := conn.Close(); cerr != nil {
+				grpclog.Infof("Failed to close conn: %v", cerr)
+			}
+			return
+		}
+		go func() {
+			<-ctx.Done()
+			if cerr := conn.Close(); cerr != nil {
+				grpclog.Infof("Failed to close conn: %v", cerr)
+			}
+		}()
+	}()
+
+	client := NewStreamServiceClient(conn)
 
 	mux.Handle("POST", pattern_StreamService_BulkCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -161,7 +201,7 @@ func RegisterStreamServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StreamService_BulkCreate_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := request_StreamService_BulkCreate_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -181,14 +221,14 @@ func RegisterStreamServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StreamService_List_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := request_StreamService_List_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		// TODO
+		forward_StreamService_List_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -201,14 +241,14 @@ func RegisterStreamServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StreamService_BulkEcho_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := request_StreamService_BulkEcho_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		// TODO
+		forward_StreamService_BulkEcho_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
 
 	})
 
