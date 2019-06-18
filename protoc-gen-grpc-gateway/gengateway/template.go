@@ -167,6 +167,15 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 				}); err != nil {
 					return "", err
 				}
+
+				// Local
+				if err := localHandlerTemplate.Execute(w, binding{
+					Binding:           b,
+					Registry:          reg,
+					AllowPatchFeature: p.AllowPatchFeature,
+				}); err != nil {
+					return "", err
+				}
 			}
 		}
 		if methodWithBindingsSeen {
@@ -187,6 +196,11 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 		RegisterFuncSuffix: p.RegisterFuncSuffix,
 		AssumeColonVerb:    assumeColonVerb,
 	}
+	// Local
+	if err := localTrailerTemplate.Execute(w, tp); err != nil {
+		return "", err
+	}
+
 	if err := trailerTemplate.Execute(w, tp); err != nil {
 		return "", err
 	}
@@ -431,6 +445,225 @@ var (
 	return stream, metadata, nil
 }
 `))
+
+	localHandlerTemplate = template.Must(template.New("local-handler").Parse(`
+{{if and .Method.GetClientStreaming .Method.GetServerStreaming}}
+{{else if .Method.GetClientStreaming}}
+{{else if .Method.GetServerStreaming}}
+{{else}}
+{{template "local-client-rpc-request-func" .}}
+{{end}}
+`))
+
+	_ = template.Must(localHandlerTemplate.New("local-request-func-signature").Parse(strings.Replace(`
+{{if .Method.GetServerStreaming}}
+{{else}}
+func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, server {{.Method.Service.GetName}}Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error)
+{{end}}`, "\n", "", -1)))
+
+	_ = template.Must(localHandlerTemplate.New("local-client-rpc-request-func").Parse(`
+{{$AllowPatchFeature := .AllowPatchFeature}}
+{{template "local-request-func-signature" .}} {
+	var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
+	var metadata runtime.ServerMetadata
+{{if .Body}}
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	{{- if and $AllowPatchFeature (and (eq (.HTTPMethod) "PATCH") (.FieldMaskField))}}
+	if protoReq.{{.FieldMaskField}} != nil && len(protoReq.{{.FieldMaskField}}.GetPaths()) > 0 {
+		runtime.CamelCaseFieldMask(protoReq.{{.FieldMaskField}})
+	} {{if not (eq "*" .GetBodyFieldPath)}} else {
+			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader()); err != nil {
+				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			} else {
+				protoReq.{{.FieldMaskField}} = fieldMask
+			}		
+	} {{end}}		
+	{{end}}
+{{end}}
+{{if .PathParams}}
+	var (
+		val string
+{{- if .HasEnumPathParam}}
+		e int32
+{{- end}}
+{{- if .HasRepeatedEnumPathParam}}
+		es []int32
+{{- end}}
+		ok bool
+		err error
+		_ = err
+	)
+	{{$binding := .}}
+	{{range $param := .PathParams}}
+	{{$enum := $binding.LookupEnum $param}}
+	val, ok = pathParams[{{$param | printf "%q"}}]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", {{$param | printf "%q"}})
+	}
+{{if $param.IsNestedProto3}}
+	err = runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val)
+{{else if $enum}}
+	e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}_value)
+{{else}}
+	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
+{{end}}
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
+	}
+{{if and $enum $param.IsRepeated}}
+	s := make([]{{$enum.GoType $param.Target.Message.File.GoPkg.Path}}, len(es))
+	for i, v := range es {
+		s[i] = {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}(v)
+	}
+	{{$param.AssignableExpr "protoReq"}} = s
+{{else if $enum}}
+	{{$param.AssignableExpr "protoReq"}} = {{$enum.GoType $param.Target.Message.File.GoPkg.Path}}(e)
+{{end}}
+	{{end}}
+{{end}}
+{{if .HasQueryParam}}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+{{end}}
+{{if .Method.GetServerStreaming}}
+	// TODO
+{{else}}
+	msg, err := server.{{.Method.GetName}}(ctx, &protoReq)
+	return msg, metadata, err
+{{end}}
+}`))
+
+	localTrailerTemplate = template.Must(template.New("local-trailer").Parse(`
+{{$UseRequestContext := .UseRequestContext}}
+{{range $svc := .Services}}
+// Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server registers the http handlers for service {{$svc.GetName}} to "mux".
+// UnaryRPC     :call {{$svc.GetName}}Server directly.
+// StreamingRPC :need dial the same port for grpc.Server, we can use bufconn package(grpc-go/test/bufconn).
+// If the gateway proto have stream must add DialOption grpc.WithContextDialer. e.g.
+//
+//      bcLis := bufconn.Listen(1024 * 1024)
+// 		go s.Serve(bcLis)
+//
+// 		ctx := context.Background()
+// 		ctx, cancel := context.WithCancel(ctx)
+// 		defer cancel()
+//
+// 		mux := runtime.NewServeMux()
+// 		err := pb.Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(
+// 			ctx,
+// 			mux,
+// 			&srv,
+// 			[]grpc.DialOption{
+// 				grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
+// 					return bcLis.Dial()
+// 				}),
+// 			},
+// 		)
+//
+// Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server does not support stream rpc call directly, and grpc-go have an issue "Feature Request:
+// Add support for In-Process transport #906". So it is currently EXPERIMENTAL and subject to change.
+func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context, mux *runtime.ServeMux, server {{$svc.GetName}}Server, opts []grpc.DialOption) error {
+	{{$streaming := 0}}
+	{{range $m := $svc.Methods}}
+		{{if or $m.GetClientStreaming $m.GetServerStreaming}}
+			{{$streaming = 1}}
+		{{end}}
+	{{end}}
+	{{if eq $streaming 1}}
+	conn, err := grpc.Dial("", opts...)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			if cerr := conn.Close(); cerr != nil {
+				grpclog.Infof("Failed to close conn: %v", cerr)
+			}
+			return
+		}
+		go func() {
+			<-ctx.Done()
+			if cerr := conn.Close(); cerr != nil {
+				grpclog.Infof("Failed to close conn: %v", cerr)
+			}
+		}()
+	}()
+
+	client := New{{$svc.GetName}}Client(conn)
+	{{end}}
+
+	{{range $m := $svc.Methods}}
+	{{range $b := $m.Bindings}}
+	{{if or $m.GetClientStreaming $m.GetServerStreaming}}
+	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	{{- if $UseRequestContext }}
+		ctx, cancel := context.WithCancel(req.Context())
+	{{- else -}}
+		ctx, cancel := context.WithCancel(ctx)
+	{{- end }}
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		{{if $m.GetServerStreaming}}
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		{{else}}
+		{{ if $b.ResponseBody }}
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}{resp}, mux.GetForwardResponseOptions()...)
+		{{ else }}
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		{{end}}
+		{{end}}
+	})
+	{{else}}
+	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	{{- if $UseRequestContext }}
+		ctx, cancel := context.WithCancel(req.Context())
+	{{- else -}}
+		ctx, cancel := context.WithCancel(ctx)
+	{{- end }}
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		{{ if $b.ResponseBody }}
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}{resp}, mux.GetForwardResponseOptions()...)
+		{{ else }}
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		{{end}}
+	})
+	{{end}}
+	{{end}}
+	{{end}}
+	return nil
+}
+{{end}}`))
 
 	trailerTemplate = template.Must(template.New("trailer").Parse(`
 {{$UseRequestContext := .UseRequestContext}}
