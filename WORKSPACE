@@ -64,8 +64,9 @@ go_repository(
 
 http_archive(
     name = "com_github_bazelbuild_buildtools",
-    strip_prefix = "buildtools-bf564b4925ab5876a3f64d8b90fab7f769013d42",
-    url = "https://github.com/bazelbuild/buildtools/archive/bf564b4925ab5876a3f64d8b90fab7f769013d42.zip",
+    sha256 = "86592d703ecbe0c5cbb5139333a63268cf58d7efd2c459c8be8e69e77d135e29",
+    strip_prefix = "buildtools-0.26.0",
+    urls = ["https://github.com/bazelbuild/buildtools/archive/0.26.0.tar.gz"],
 )
 
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
