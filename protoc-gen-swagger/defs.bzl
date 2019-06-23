@@ -30,7 +30,7 @@ def _collect_includes(gen_dir, srcs):
 
     return includes
 
-def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, actions, protoc, protoc_gen_swagger, grpc_api_configuration, allow_merge):
+def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, actions, protoc, protoc_gen_swagger, grpc_api_configuration, single_output):
     swagger_files = []
 
     inputs = direct_proto_srcs + transitive_proto_srcs
@@ -43,7 +43,7 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
 
     includes = _collect_includes(ctx.genfiles_dir.path, direct_proto_srcs + transitive_proto_srcs)
 
-    if allow_merge:
+    if single_output:
         swagger_file = actions.declare_file(
             "%s.swagger.json" % ctx.attr.name,
             sibling = direct_proto_srcs[0],
@@ -115,7 +115,7 @@ def _proto_gen_swagger_impl(ctx):
                 protoc = ctx.executable._protoc,
                 protoc_gen_swagger = ctx.executable._protoc_gen_swagger,
                 grpc_api_configuration = grpc_api_configuration,
-                allow_merge = ctx.attr.allow_merge,
+                single_output = ctx.attr.single_output,
             ),
         ),
     )]
@@ -131,7 +131,7 @@ protoc_gen_swagger = rule(
             allow_single_file = True,
             mandatory = False,
         ),
-        "allow_merge": attr.bool(
+        "single_output": attr.bool(
             default = False,
             mandatory = False,
         ),

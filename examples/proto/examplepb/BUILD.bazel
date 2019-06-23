@@ -76,6 +76,6 @@ protoc_gen_swagger(
 
 protoc_gen_swagger(
     name = "examplepb_protoc_gen_swagger_merged",
-    allow_merge = True,  # Outputs a single swagger.json file.
+    single_output = True,  # Outputs a single swagger.json file.
     proto = ":examplepb_proto",
 )
