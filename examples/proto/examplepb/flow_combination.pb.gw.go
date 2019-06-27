@@ -73,6 +73,9 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, marshaler run
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
+			if err == io.EOF {
+				break
+			}
 			grpclog.Infof("Failed to send request: %v", err)
 			return nil, metadata, err
 		}
