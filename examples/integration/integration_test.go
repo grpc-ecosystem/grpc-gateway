@@ -561,7 +561,7 @@ func testABEBulkCreateWithError(t *testing.T, port int) {
 			}
 		}()
 		for _, val := range []string{
-			"foo",
+			"foo", "bar", "baz", "qux", "quux",
 		} {
 			time.Sleep(1 * time.Millisecond)
 
