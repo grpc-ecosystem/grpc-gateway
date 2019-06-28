@@ -49,6 +49,9 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
+			if err == io.EOF {
+				break
+			}
 			grpclog.Infof("Failed to send request: %v", err)
 			return nil, metadata, err
 		}

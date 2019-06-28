@@ -254,6 +254,9 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		}
 		if err = stream.Send(&protoReq); err != nil {
+			if err == io.EOF {
+				break
+			}
 			grpclog.Infof("Failed to send request: %v", err)
 			return nil, metadata, err
 		}
