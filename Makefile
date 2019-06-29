@@ -177,7 +177,7 @@ $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh
 
 examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
-	find -type f -name *.go -exec sed -s -i 's;github.com/go-resty/resty;gopkg.in/resty.v1;g' {} +
+	find . -type f -name *.go -exec sed -s -i 's;github.com/go-resty/resty;gopkg.in/resty.v1;g' {} +
 test: examples
 	go test -race ...
 	go test -race examples/integration -args -network=unix -endpoint=test.sock
@@ -194,7 +194,7 @@ changelog:
 				--compare-link \
 				--github-site=https://github.com \
 				--unreleased-label "**Next release**" \
-				--future-release=v1.8.5
+				--future-release=v1.9.3
 lint:
 	golint --set_exit_status ./runtime
 	golint --set_exit_status ./utilities/...

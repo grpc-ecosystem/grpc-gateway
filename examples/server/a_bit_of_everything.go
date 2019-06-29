@@ -65,8 +65,15 @@ func (s *_ABitOfEverythingServer) CreateBody(ctx context.Context, msg *examples.
 }
 
 func (s *_ABitOfEverythingServer) BulkCreate(stream examples.StreamService_BulkCreateServer) error {
-	count := 0
 	ctx := stream.Context()
+
+	if header, ok := metadata.FromIncomingContext(ctx); ok {
+		if v, ok := header["error"]; ok {
+			return status.Errorf(codes.InvalidArgument, "error metadata: %v", v)
+		}
+	}
+
+	count := 0
 	for {
 		msg, err := stream.Recv()
 		if err == io.EOF {
@@ -311,4 +318,12 @@ func (s *_ABitOfEverythingServer) GetMessageWithBody(ctx context.Context, msg *e
 
 func (s *_ABitOfEverythingServer) PostWithEmptyBody(ctx context.Context, msg *examples.Body) (*empty.Empty, error) {
 	return &empty.Empty{}, nil
+}
+
+func (s *_ABitOfEverythingServer) CheckGetQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+	return msg, nil
+}
+
+func (s *_ABitOfEverythingServer) CheckPostQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+	return msg, nil
 }

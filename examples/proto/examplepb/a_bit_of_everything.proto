@@ -438,6 +438,17 @@ service ABitOfEverythingService {
 			body: "*"
 		};
 	}
+    rpc CheckGetQueryParams(ABitOfEverything) returns (ABitOfEverything) {
+        option (google.api.http) = {
+			get: "/v1/example/a_bit_of_everything/params/get/{single_nested.name}"
+		};
+    }
+    rpc CheckPostQueryParams(ABitOfEverything) returns (ABitOfEverything) {
+        option (google.api.http) = {
+			post: "/v1/example/a_bit_of_everything/params/post/{string_value}"
+			body: "single_nested"
+		};
+    }
 }
 
 // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)

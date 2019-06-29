@@ -39,6 +39,227 @@ func NewABitOfEverythingServiceApiWithBasePath(basePath string) *ABitOfEverythin
 }
 
 /**
+ * 
+ *
+ * @param singleNestedName name is nested field.
+ * @param floatValue Float value field
+ * @param singleNestedAmount 
+ * @param singleNestedOk DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
+ * @param uuid 
+ * @param doubleValue 
+ * @param int64Value 
+ * @param uint64Value 
+ * @param int32Value 
+ * @param fixed64Value 
+ * @param fixed32Value 
+ * @param boolValue 
+ * @param stringValue 
+ * @param bytesValue 
+ * @param uint32Value 
+ * @param enumValue  - ZERO: ZERO means 0  - ONE: ONE means 1
+ * @param pathEnumValue 
+ * @param nestedPathEnumValue 
+ * @param sfixed32Value 
+ * @param sfixed64Value 
+ * @param sint32Value 
+ * @param sint64Value 
+ * @param repeatedStringValue 
+ * @param oneofString 
+ * @param nonConventionalNameValue 
+ * @param timestampValue 
+ * @param repeatedEnumValue repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
+ * @param repeatedEnumAnnotation Repeated numeric enum title. Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+ * @param enumValueAnnotation Numeric enum title. Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+ * @param repeatedStringAnnotation Repeated string title. Repeated string description.
+ * @param nestedAnnotationAmount 
+ * @param nestedAnnotationOk DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
+ * @return *ExamplepbABitOfEverything
+ */
+func (a ABitOfEverythingServiceApi) CheckGetQueryParams(singleNestedName string, floatValue float32, singleNestedAmount int64, singleNestedOk string, uuid string, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, pathEnumValue string, nestedPathEnumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string, repeatedEnumAnnotation []string, enumValueAnnotation string, repeatedStringAnnotation []string, nestedAnnotationAmount int64, nestedAnnotationOk string) (*ExamplepbABitOfEverything, *APIResponse, error) {
+
+	var localVarHttpMethod = strings.ToUpper("Get")
+	// create path and map variables
+	localVarPath := a.Configuration.BasePath + "/v1/example/a_bit_of_everything/params/get/{single_nested.name}"
+	localVarPath = strings.Replace(localVarPath, "{"+"single_nested.name"+"}", fmt.Sprintf("%v", singleNestedName), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := make(map[string]string)
+	var localVarPostBody interface{}
+	var localVarFileName string
+	var localVarFileBytes []byte
+	// authentication '(OAuth2)' required
+	// oauth required
+	if a.Configuration.AccessToken != ""{
+		localVarHeaderParams["Authorization"] =  "Bearer " + a.Configuration.AccessToken
+	}
+	// authentication '(BasicAuth)' required
+	// http basic authentication required
+	if a.Configuration.Username != "" || a.Configuration.Password != ""{
+		localVarHeaderParams["Authorization"] =  "Basic " + a.Configuration.GetBasicAuthEncodedString()
+	}
+	// authentication '(ApiKeyAuth)' required
+	// set key with prefix in header
+	localVarHeaderParams["X-API-Key"] = a.Configuration.GetAPIKeyWithPrefix("X-API-Key")
+	// add default headers if any
+	for key := range a.Configuration.DefaultHeader {
+		localVarHeaderParams[key] = a.Configuration.DefaultHeader[key]
+	}
+	localVarQueryParams.Add("single_nested.amount", a.Configuration.APIClient.ParameterToString(singleNestedAmount, ""))
+	localVarQueryParams.Add("single_nested.ok", a.Configuration.APIClient.ParameterToString(singleNestedOk, ""))
+	localVarQueryParams.Add("uuid", a.Configuration.APIClient.ParameterToString(uuid, ""))
+	localVarQueryParams.Add("float_value", a.Configuration.APIClient.ParameterToString(floatValue, ""))
+	localVarQueryParams.Add("double_value", a.Configuration.APIClient.ParameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64_value", a.Configuration.APIClient.ParameterToString(int64Value, ""))
+	localVarQueryParams.Add("uint64_value", a.Configuration.APIClient.ParameterToString(uint64Value, ""))
+	localVarQueryParams.Add("int32_value", a.Configuration.APIClient.ParameterToString(int32Value, ""))
+	localVarQueryParams.Add("fixed64_value", a.Configuration.APIClient.ParameterToString(fixed64Value, ""))
+	localVarQueryParams.Add("fixed32_value", a.Configuration.APIClient.ParameterToString(fixed32Value, ""))
+	localVarQueryParams.Add("bool_value", a.Configuration.APIClient.ParameterToString(boolValue, ""))
+	localVarQueryParams.Add("string_value", a.Configuration.APIClient.ParameterToString(stringValue, ""))
+	localVarQueryParams.Add("bytes_value", a.Configuration.APIClient.ParameterToString(bytesValue, ""))
+	localVarQueryParams.Add("uint32_value", a.Configuration.APIClient.ParameterToString(uint32Value, ""))
+	localVarQueryParams.Add("enum_value", a.Configuration.APIClient.ParameterToString(enumValue, ""))
+	localVarQueryParams.Add("path_enum_value", a.Configuration.APIClient.ParameterToString(pathEnumValue, ""))
+	localVarQueryParams.Add("nested_path_enum_value", a.Configuration.APIClient.ParameterToString(nestedPathEnumValue, ""))
+	localVarQueryParams.Add("sfixed32_value", a.Configuration.APIClient.ParameterToString(sfixed32Value, ""))
+	localVarQueryParams.Add("sfixed64_value", a.Configuration.APIClient.ParameterToString(sfixed64Value, ""))
+	localVarQueryParams.Add("sint32_value", a.Configuration.APIClient.ParameterToString(sint32Value, ""))
+	localVarQueryParams.Add("sint64_value", a.Configuration.APIClient.ParameterToString(sint64Value, ""))
+	var repeatedStringValueCollectionFormat = "multi"
+	localVarQueryParams.Add("repeated_string_value", a.Configuration.APIClient.ParameterToString(repeatedStringValue, repeatedStringValueCollectionFormat))
+
+	localVarQueryParams.Add("oneof_string", a.Configuration.APIClient.ParameterToString(oneofString, ""))
+	localVarQueryParams.Add("nonConventionalNameValue", a.Configuration.APIClient.ParameterToString(nonConventionalNameValue, ""))
+	localVarQueryParams.Add("timestamp_value", a.Configuration.APIClient.ParameterToString(timestampValue, ""))
+	var repeatedEnumValueCollectionFormat = "multi"
+	localVarQueryParams.Add("repeated_enum_value", a.Configuration.APIClient.ParameterToString(repeatedEnumValue, repeatedEnumValueCollectionFormat))
+
+	var repeatedEnumAnnotationCollectionFormat = "multi"
+	localVarQueryParams.Add("repeated_enum_annotation", a.Configuration.APIClient.ParameterToString(repeatedEnumAnnotation, repeatedEnumAnnotationCollectionFormat))
+
+	localVarQueryParams.Add("enum_value_annotation", a.Configuration.APIClient.ParameterToString(enumValueAnnotation, ""))
+	var repeatedStringAnnotationCollectionFormat = "multi"
+	localVarQueryParams.Add("repeated_string_annotation", a.Configuration.APIClient.ParameterToString(repeatedStringAnnotation, repeatedStringAnnotationCollectionFormat))
+
+	localVarQueryParams.Add("nested_annotation.amount", a.Configuration.APIClient.ParameterToString(nestedAnnotationAmount, ""))
+	localVarQueryParams.Add("nested_annotation.ok", a.Configuration.APIClient.ParameterToString(nestedAnnotationOk, ""))
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{ "application/json", "application/x-foo-mime",  }
+
+	// set Content-Type header
+	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{
+		"application/json",
+		"application/x-foo-mime",
+		}
+
+	// set Accept header
+	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	var successPayload = new(ExamplepbABitOfEverything)
+	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+
+	var localVarURL, _ = url.Parse(localVarPath)
+	localVarURL.RawQuery = localVarQueryParams.Encode()
+	var localVarAPIResponse = &APIResponse{Operation: "CheckGetQueryParams", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	if localVarHttpResponse != nil {
+		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
+		localVarAPIResponse.Payload = localVarHttpResponse.Body()
+	}
+
+	if err != nil {
+		return successPayload, localVarAPIResponse, err
+	}
+	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
+	return successPayload, localVarAPIResponse, err
+}
+
+/**
+ * 
+ *
+ * @param stringValue 
+ * @param body 
+ * @return *ExamplepbABitOfEverything
+ */
+func (a ABitOfEverythingServiceApi) CheckPostQueryParams(stringValue string, body ABitOfEverythingNested) (*ExamplepbABitOfEverything, *APIResponse, error) {
+
+	var localVarHttpMethod = strings.ToUpper("Post")
+	// create path and map variables
+	localVarPath := a.Configuration.BasePath + "/v1/example/a_bit_of_everything/params/post/{string_value}"
+	localVarPath = strings.Replace(localVarPath, "{"+"string_value"+"}", fmt.Sprintf("%v", stringValue), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := make(map[string]string)
+	var localVarPostBody interface{}
+	var localVarFileName string
+	var localVarFileBytes []byte
+	// authentication '(OAuth2)' required
+	// oauth required
+	if a.Configuration.AccessToken != ""{
+		localVarHeaderParams["Authorization"] =  "Bearer " + a.Configuration.AccessToken
+	}
+	// authentication '(BasicAuth)' required
+	// http basic authentication required
+	if a.Configuration.Username != "" || a.Configuration.Password != ""{
+		localVarHeaderParams["Authorization"] =  "Basic " + a.Configuration.GetBasicAuthEncodedString()
+	}
+	// authentication '(ApiKeyAuth)' required
+	// set key with prefix in header
+	localVarHeaderParams["X-API-Key"] = a.Configuration.GetAPIKeyWithPrefix("X-API-Key")
+	// add default headers if any
+	for key := range a.Configuration.DefaultHeader {
+		localVarHeaderParams[key] = a.Configuration.DefaultHeader[key]
+	}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{ "application/json", "application/x-foo-mime",  }
+
+	// set Content-Type header
+	localVarHttpContentType := a.Configuration.APIClient.SelectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{
+		"application/json",
+		"application/x-foo-mime",
+		}
+
+	// set Accept header
+	localVarHttpHeaderAccept := a.Configuration.APIClient.SelectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	// body params
+	localVarPostBody = &body
+	var successPayload = new(ExamplepbABitOfEverything)
+	localVarHttpResponse, err := a.Configuration.APIClient.CallAPI(localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+
+	var localVarURL, _ = url.Parse(localVarPath)
+	localVarURL.RawQuery = localVarQueryParams.Encode()
+	var localVarAPIResponse = &APIResponse{Operation: "CheckPostQueryParams", Method: localVarHttpMethod, RequestURL: localVarURL.String()}
+	if localVarHttpResponse != nil {
+		localVarAPIResponse.Response = localVarHttpResponse.RawResponse
+		localVarAPIResponse.Payload = localVarHttpResponse.Body()
+	}
+
+	if err != nil {
+		return successPayload, localVarAPIResponse, err
+	}
+	err = json.Unmarshal(localVarHttpResponse.Body(), &successPayload)
+	return successPayload, localVarAPIResponse, err
+}
+
+/**
  * Create a new ABitOfEverything
  * This API creates a new ABitOfEverything
  *
