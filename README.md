@@ -48,7 +48,7 @@ go get -u github.com/golang/protobuf/protoc-gen-go
 This will place three binaries in your `$GOBIN`;
 
 * `protoc-gen-grpc-gateway`
-* `protoc-gen-grpc-swagger`
+* `protoc-gen-swagger`
 * `protoc-gen-go`
 
 Make sure that your `$GOBIN` is in your `$PATH`.
@@ -199,7 +199,7 @@ annotation to your .proto file
    }
    ```
 
-7. (Optional) Generate swagger definitions using `protoc-gen-grpc-swagger`
+7. (Optional) Generate swagger definitions using `protoc-gen-swagger`
 
    ```sh
    protoc -I/usr/local/include -I. \
