@@ -1,5 +1,19 @@
 # Change Log
 
+## [v1.9.4](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.9.4) (2019-07-09)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.9.3...v1.9.4)
+
+**Closed issues:**
+
+- Read the Http Post Body  [\#921](https://github.com/grpc-ecosystem/grpc-gateway/issues/921)
+- Swagger document generation, required field is invalid [\#665](https://github.com/grpc-ecosystem/grpc-gateway/issues/665)
+
+**Merged pull requests:**
+
+- Fix query.go to avoid invalid protobuf assumptions [\#967](https://github.com/grpc-ecosystem/grpc-gateway/pull/967) ([dsnet](https://github.com/dsnet))
+- doc\(readme\): fix typo [\#965](https://github.com/grpc-ecosystem/grpc-gateway/pull/965) ([franxois](https://github.com/franxois))
+- Added comments to base\_path to explain behavior [\#919](https://github.com/grpc-ecosystem/grpc-gateway/pull/919) ([nu11ptr](https://github.com/nu11ptr))
+
 ## [v1.9.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.9.3) (2019-06-28)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.9.2...v1.9.3)
 
@@ -9,12 +23,14 @@
 
 **Closed issues:**
 
+- Please make a new release! [\#963](https://github.com/grpc-ecosystem/grpc-gateway/issues/963)
 - application/x-www-form-urlencoded support. [\#960](https://github.com/grpc-ecosystem/grpc-gateway/issues/960)
 - Bazel files are out of date [\#955](https://github.com/grpc-ecosystem/grpc-gateway/issues/955)
 - Configurable AllowUnknownFields in jsonpb? [\#448](https://github.com/grpc-ecosystem/grpc-gateway/issues/448)
 
 **Merged pull requests:**
 
+- Generate changelog for 1.9.3 [\#964](https://github.com/grpc-ecosystem/grpc-gateway/pull/964) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - EOF on send [\#962](https://github.com/grpc-ecosystem/grpc-gateway/pull/962) ([gustavocovas](https://github.com/gustavocovas))
 - Add new option for the decoder - to disallow unknown fields [\#959](https://github.com/grpc-ecosystem/grpc-gateway/pull/959) ([vsaveliev](https://github.com/vsaveliev))
 - Update to rules\_go and buildtools [\#956](https://github.com/grpc-ecosystem/grpc-gateway/pull/956) ([drigz](https://github.com/drigz))
@@ -538,7 +554,7 @@
 - properly respect file flag for protoc-gen-swagger [\#293](https://github.com/grpc-ecosystem/grpc-gateway/pull/293) ([tmc](https://github.com/tmc))
 
 ## [v1.3.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.1) (2017-12-23)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3...v1.3.1)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3.0...v1.3.1)
 
 **Implemented enhancements:**
 
@@ -595,11 +611,11 @@
 - grpc-gateway/generator: respect full package [\#462](https://github.com/grpc-ecosystem/grpc-gateway/pull/462) ([glerchundi](https://github.com/glerchundi))
 - Add proto marshaller for proto-over-http [\#459](https://github.com/grpc-ecosystem/grpc-gateway/pull/459) ([MatthewDolan](https://github.com/MatthewDolan))
 
-## [v1.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3) (2017-11-03)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3.0...v1.3)
-
 ## [v1.3.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.0) (2017-11-03)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.2.2...v1.3.0)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3...v1.3.0)
+
+## [v1.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3) (2017-11-03)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.2.2...v1.3)
 
 **Closed issues:**
 
