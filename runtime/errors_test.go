@@ -40,7 +40,7 @@ func TestDefaultHTTPError(t *testing.T) {
 		},
 		{
 			err:     statusWithDetails.Err(),
-			status:  http.StatusPreconditionFailed,
+			status:  http.StatusBadRequest,
 			msg:     "failed precondition",
 			details: "type.googleapis.com/google.rpc.PreconditionFailure",
 		},
