@@ -1,5 +1,21 @@
 # Change Log
 
+## [v1.9.5](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.9.5) (2019-07-22)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.9.4...v1.9.5)
+
+**Fixed bugs:**
+
+- Non-standard use of 412 HTTP Status Code [\#972](https://github.com/grpc-ecosystem/grpc-gateway/issues/972)
+
+**Closed issues:**
+
+- why response use enum's name [\#970](https://github.com/grpc-ecosystem/grpc-gateway/issues/970)
+
+**Merged pull requests:**
+
+- Fix HTTP Status Code returned for a `Failed Precondition` error [\#974](https://github.com/grpc-ecosystem/grpc-gateway/pull/974) ([cjcormack](https://github.com/cjcormack))
+- Examples fix: Support preflight of auth libraries in js [\#973](https://github.com/grpc-ecosystem/grpc-gateway/pull/973) ([GhiaC](https://github.com/GhiaC))
+
 ## [v1.9.4](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.9.4) (2019-07-09)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.9.3...v1.9.4)
 
@@ -10,6 +26,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.9.4 [\#969](https://github.com/grpc-ecosystem/grpc-gateway/pull/969) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Fix query.go to avoid invalid protobuf assumptions [\#967](https://github.com/grpc-ecosystem/grpc-gateway/pull/967) ([dsnet](https://github.com/dsnet))
 - doc\(readme\): fix typo [\#965](https://github.com/grpc-ecosystem/grpc-gateway/pull/965) ([franxois](https://github.com/franxois))
 - Added comments to base\_path to explain behavior [\#919](https://github.com/grpc-ecosystem/grpc-gateway/pull/919) ([nu11ptr](https://github.com/nu11ptr))
