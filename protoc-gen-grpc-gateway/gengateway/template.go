@@ -545,7 +545,7 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 {{range $svc := .Services}}
 // Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server registers the http handlers for service {{$svc.GetName}} to "mux".
 // UnaryRPC     :call {{$svc.GetName}}Server directly.
-// StreamingRPC :need dial the same port for grpc.Server, we can use bufconn package(grpc-go/test/bufconn).
+// StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // If the gateway proto have stream must add DialOption grpc.WithContextDialer. e.g.
 //
 //      bcLis := bufconn.Listen(1024 * 1024)
