@@ -569,7 +569,7 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 //
 // Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server does not support stream rpc call directly, and grpc-go have an issue "Feature Request:
 // Add support for In-Process transport #906". So it is currently EXPERIMENTAL and subject to change.
-func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context, mux *runtime.ServeMux, server {{$svc.GetName}}Server, opts []grpc.DialOption) error {
+func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context, mux *runtime.ServeMux, server {{$svc.GetName}}Server, opts []grpc.DialOption) (err error) {
 	{{$streaming := 0}}
 	{{range $m := $svc.Methods}}
 		{{if or $m.GetClientStreaming $m.GetServerStreaming}}
