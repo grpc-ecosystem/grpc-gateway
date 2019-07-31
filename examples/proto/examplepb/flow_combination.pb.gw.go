@@ -1462,7 +1462,7 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshale
 
 // RegisterFlowCombinationHandlerServer registers the http handlers for service FlowCombination to "mux".
 // UnaryRPC     :call FlowCombinationServer directly.
-// StreamingRPC :need dial the same port for grpc.Server, we can use bufconn package(grpc-go/test/bufconn).
+// StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // If the gateway proto have stream must add DialOption grpc.WithContextDialer. e.g.
 //
 //      bcLis := bufconn.Listen(1024 * 1024)
@@ -1486,7 +1486,7 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshale
 //
 // RegisterFlowCombinationHandlerServer does not support stream rpc call directly, and grpc-go have an issue "Feature Request:
 // Add support for In-Process transport #906". So it is currently EXPERIMENTAL and subject to change.
-func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.ServeMux, server FlowCombinationServer, opts []grpc.DialOption) error {
+func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.ServeMux, server FlowCombinationServer, opts []grpc.DialOption) (err error) {
 
 	conn, err := grpc.Dial("", opts...)
 	if err != nil {

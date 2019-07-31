@@ -1999,7 +1999,7 @@ func local_request_CamelCaseServiceName_Empty_0(ctx context.Context, marshaler r
 
 // RegisterABitOfEverythingServiceHandlerServer registers the http handlers for service ABitOfEverythingService to "mux".
 // UnaryRPC     :call ABitOfEverythingServiceServer directly.
-// StreamingRPC :need dial the same port for grpc.Server, we can use bufconn package(grpc-go/test/bufconn).
+// StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // If the gateway proto have stream must add DialOption grpc.WithContextDialer. e.g.
 //
 //      bcLis := bufconn.Listen(1024 * 1024)
@@ -2023,7 +2023,7 @@ func local_request_CamelCaseServiceName_Empty_0(ctx context.Context, marshaler r
 //
 // RegisterABitOfEverythingServiceHandlerServer does not support stream rpc call directly, and grpc-go have an issue "Feature Request:
 // Add support for In-Process transport #906". So it is currently EXPERIMENTAL and subject to change.
-func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ABitOfEverythingServiceServer, opts []grpc.DialOption) error {
+func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ABitOfEverythingServiceServer, opts []grpc.DialOption) (err error) {
 
 	mux.Handle("POST", pattern_ABitOfEverythingService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -2430,7 +2430,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 
 // RegisterCamelCaseServiceNameHandlerServer registers the http handlers for service CamelCaseServiceName to "mux".
 // UnaryRPC     :call CamelCaseServiceNameServer directly.
-// StreamingRPC :need dial the same port for grpc.Server, we can use bufconn package(grpc-go/test/bufconn).
+// StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // If the gateway proto have stream must add DialOption grpc.WithContextDialer. e.g.
 //
 //      bcLis := bufconn.Listen(1024 * 1024)
@@ -2454,7 +2454,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 //
 // RegisterCamelCaseServiceNameHandlerServer does not support stream rpc call directly, and grpc-go have an issue "Feature Request:
 // Add support for In-Process transport #906". So it is currently EXPERIMENTAL and subject to change.
-func RegisterCamelCaseServiceNameHandlerServer(ctx context.Context, mux *runtime.ServeMux, server CamelCaseServiceNameServer, opts []grpc.DialOption) error {
+func RegisterCamelCaseServiceNameHandlerServer(ctx context.Context, mux *runtime.ServeMux, server CamelCaseServiceNameServer, opts []grpc.DialOption) (err error) {
 
 	mux.Handle("GET", pattern_CamelCaseServiceName_Empty_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
