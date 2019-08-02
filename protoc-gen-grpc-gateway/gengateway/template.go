@@ -547,13 +547,6 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 // UnaryRPC     :call {{$svc.GetName}}Server directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context, mux *runtime.ServeMux, server {{$svc.GetName}}Server, opts []grpc.DialOption) error {
-	{{$streaming := 0}}
-	{{range $m := $svc.Methods}}
-		{{if or $m.GetClientStreaming $m.GetServerStreaming}}
-			{{$streaming = 1}}
-		{{end}}
-	{{end}}
-
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
 	{{if or $m.GetClientStreaming $m.GetServerStreaming}}
