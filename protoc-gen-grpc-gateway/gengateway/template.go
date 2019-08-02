@@ -546,90 +546,19 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 // Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server registers the http handlers for service {{$svc.GetName}} to "mux".
 // UnaryRPC     :call {{$svc.GetName}}Server directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// If the gateway proto have stream must add DialOption grpc.WithContextDialer. e.g.
-//
-//      bcLis := bufconn.Listen(1024 * 1024)
-// 		go s.Serve(bcLis)
-//
-// 		ctx := context.Background()
-// 		ctx, cancel := context.WithCancel(ctx)
-// 		defer cancel()
-//
-// 		mux := runtime.NewServeMux()
-// 		err := pb.Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(
-// 			ctx,
-// 			mux,
-// 			&srv,
-// 			[]grpc.DialOption{
-// 				grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
-// 					return bcLis.Dial()
-// 				}),
-// 			},
-// 		)
-//
-// Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server does not support stream rpc call directly, and grpc-go have an issue "Feature Request:
-// Add support for In-Process transport #906". So it is currently EXPERIMENTAL and subject to change.
-func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context, mux *runtime.ServeMux, server {{$svc.GetName}}Server, opts []grpc.DialOption) (err error) {
+func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context, mux *runtime.ServeMux, server {{$svc.GetName}}Server, opts []grpc.DialOption) error {
 	{{$streaming := 0}}
 	{{range $m := $svc.Methods}}
 		{{if or $m.GetClientStreaming $m.GetServerStreaming}}
 			{{$streaming = 1}}
 		{{end}}
 	{{end}}
-	{{if eq $streaming 1}}
-	conn, err := grpc.Dial("", opts...)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if err != nil {
-			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn: %v", cerr)
-			}
-			return
-		}
-		go func() {
-			<-ctx.Done()
-			if cerr := conn.Close(); cerr != nil {
-				grpclog.Infof("Failed to close conn: %v", cerr)
-			}
-		}()
-	}()
-
-	client := New{{$svc.GetName}}Client(conn)
-	{{end}}
 
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
 	{{if or $m.GetClientStreaming $m.GetServerStreaming}}
 	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-	{{- if $UseRequestContext }}
-		ctx, cancel := context.WithCancel(req.Context())
-	{{- else -}}
-		ctx, cancel := context.WithCancel(ctx)
-	{{- end }}
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		{{if $m.GetServerStreaming}}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-		{{else}}
-		{{ if $b.ResponseBody }}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}{resp}, mux.GetForwardResponseOptions()...)
-		{{ else }}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-		{{end}}
-		{{end}}
+		return status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 	})
 	{{else}}
 	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
