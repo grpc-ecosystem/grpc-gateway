@@ -193,30 +193,7 @@ func local_request_ResponseBodyService_ListResponseStrings_0(ctx context.Context
 // RegisterResponseBodyServiceHandlerServer registers the http handlers for service ResponseBodyService to "mux".
 // UnaryRPC     :call ResponseBodyServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// If the gateway proto have stream must add DialOption grpc.WithContextDialer. e.g.
-//
-//      bcLis := bufconn.Listen(1024 * 1024)
-// 		go s.Serve(bcLis)
-//
-// 		ctx := context.Background()
-// 		ctx, cancel := context.WithCancel(ctx)
-// 		defer cancel()
-//
-// 		mux := runtime.NewServeMux()
-// 		err := pb.RegisterResponseBodyServiceHandlerServer(
-// 			ctx,
-// 			mux,
-// 			&srv,
-// 			[]grpc.DialOption{
-// 				grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
-// 					return bcLis.Dial()
-// 				}),
-// 			},
-// 		)
-//
-// RegisterResponseBodyServiceHandlerServer does not support stream rpc call directly, and grpc-go have an issue "Feature Request:
-// Add support for In-Process transport #906". So it is currently EXPERIMENTAL and subject to change.
-func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ResponseBodyServiceServer, opts []grpc.DialOption) (err error) {
+func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ResponseBodyServiceServer, opts []grpc.DialOption) error {
 
 	mux.Handle("GET", pattern_ResponseBodyService_GetResponseBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())

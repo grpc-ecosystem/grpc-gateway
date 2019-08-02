@@ -573,30 +573,7 @@ func local_request_EchoService_EchoDelete_0(ctx context.Context, marshaler runti
 // RegisterEchoServiceHandlerServer registers the http handlers for service EchoService to "mux".
 // UnaryRPC     :call EchoServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// If the gateway proto have stream must add DialOption grpc.WithContextDialer. e.g.
-//
-//      bcLis := bufconn.Listen(1024 * 1024)
-// 		go s.Serve(bcLis)
-//
-// 		ctx := context.Background()
-// 		ctx, cancel := context.WithCancel(ctx)
-// 		defer cancel()
-//
-// 		mux := runtime.NewServeMux()
-// 		err := pb.RegisterEchoServiceHandlerServer(
-// 			ctx,
-// 			mux,
-// 			&srv,
-// 			[]grpc.DialOption{
-// 				grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
-// 					return bcLis.Dial()
-// 				}),
-// 			},
-// 		)
-//
-// RegisterEchoServiceHandlerServer does not support stream rpc call directly, and grpc-go have an issue "Feature Request:
-// Add support for In-Process transport #906". So it is currently EXPERIMENTAL and subject to change.
-func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server EchoServiceServer, opts []grpc.DialOption) (err error) {
+func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server EchoServiceServer, opts []grpc.DialOption) error {
 
 	mux.Handle("POST", pattern_EchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
