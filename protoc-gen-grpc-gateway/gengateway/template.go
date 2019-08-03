@@ -547,11 +547,20 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 // UnaryRPC     :call {{$svc.GetName}}Server directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context, mux *runtime.ServeMux, server {{$svc.GetName}}Server, opts []grpc.DialOption) error {
+	{{$streaming := 0}}
+	{{range $m := $svc.Methods}}
+		{{if or $m.GetClientStreaming $m.GetServerStreaming}}
+			{{$streaming = 1}}
+		{{end}}
+	{{end}}
+	{{if eq $streaming 1}}
+	return status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+	{{end}}
+
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
 	{{if or $m.GetClientStreaming $m.GetServerStreaming}}
 	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		return status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 	})
 	{{else}}
 	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
