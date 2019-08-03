@@ -148,16 +148,15 @@ func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Mar
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 func RegisterStreamServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server StreamServiceServer, opts []grpc.DialOption) error {
 
+	return status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+
 	mux.Handle("POST", pattern_StreamService_BulkCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		return status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 	})
 
 	mux.Handle("GET", pattern_StreamService_List_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		return status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 	})
 
 	mux.Handle("POST", pattern_StreamService_BulkEcho_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		return status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 	})
 
 	return nil
