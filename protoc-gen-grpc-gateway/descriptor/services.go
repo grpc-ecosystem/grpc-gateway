@@ -20,7 +20,7 @@ func (r *Registry) loadServices(file *File) error {
 	for _, sd := range file.GetService() {
 		glog.V(2).Infof("Registering %s", sd.GetName())
 		svc := &Service{
-			File: file,
+			File:                   file,
 			ServiceDescriptorProto: sd,
 		}
 		for _, md := range sd.GetMethod() {
@@ -258,10 +258,16 @@ func (r *Registry) newResponse(meth *Method, path string) (*Body, error) {
 
 // lookupField looks up a field named "name" within "msg".
 // It returns nil if no such field found.
-func lookupField(msg *Message, name string) *Field {
+func (r *Registry) lookupField(msg *Message, name string) *Field {
 	for _, f := range msg.Fields {
-		if f.GetName() == name {
-			return f
+		if r.GetUseJSONNamesForFields() {
+			if f.GetJsonName() == name {
+				return f
+			}
+		} else {
+			if f.GetName() == name {
+				return f
+			}
 		}
 	}
 	return nil
@@ -291,7 +297,7 @@ func (r *Registry) resolveFieldPath(msg *Message, path string, isPathParam bool)
 		}
 
 		glog.V(2).Infof("Lookup %s in %s", c, msg.FQMN())
-		f := lookupField(msg, c)
+		f := r.lookupField(msg, c)
 		if f == nil {
 			return nil, fmt.Errorf("no field %q found in %s", path, root.GetName())
 		}
