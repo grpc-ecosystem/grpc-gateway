@@ -264,10 +264,9 @@ func (r *Registry) lookupField(msg *Message, name string) *Field {
 			if f.GetJsonName() == name {
 				return f
 			}
-		} else {
-			if f.GetName() == name {
-				return f
-			}
+		}
+		if f.GetName() == name {
+			return f
 		}
 	}
 	return nil
