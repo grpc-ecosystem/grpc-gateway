@@ -260,10 +260,9 @@ func (r *Registry) newResponse(meth *Method, path string) (*Body, error) {
 // It returns nil if no such field found.
 func (r *Registry) lookupField(msg *Message, name string) *Field {
 	for _, f := range msg.Fields {
-		if r.GetUseJSONNamesForFields() {
-			if f.GetJsonName() == name {
-				return f
-			}
+		if r.GetUseJSONNamesForFields() &&
+			f.GetJsonName() == name {
+			return f
 		}
 		if f.GetName() == name {
 			return f
