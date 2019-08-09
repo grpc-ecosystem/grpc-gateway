@@ -860,9 +860,9 @@ func TestTemplateToSwaggerPath(t *testing.T) {
 		{"/{user.name=prefix1/*/prefix2/*}:customMethod", "/{user.name=prefix1/*/prefix2/*}:customMethod"},
 		{"/{parent=prefix/*}/children:customMethod", "/{parent=prefix/*}/children:customMethod"},
 	}
-
+	reg := descriptor.NewRegistry()
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input)
+		actual := templateToSwaggerPath(data.input, reg)
 		if data.expected != actual {
 			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
@@ -937,9 +937,9 @@ func TestFQMNtoSwaggerName(t *testing.T) {
 		{"/{test1}/{test2}", "/{test1}/{test2}"},
 		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
 	}
-
+	reg := descriptor.NewRegistry()
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input)
+		actual := templateToSwaggerPath(data.input, reg)
 		if data.expected != actual {
 			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
