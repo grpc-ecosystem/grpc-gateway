@@ -13,6 +13,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 )
@@ -597,7 +598,7 @@ func resolveFullyQualifiedNameToSwaggerNames(messages []string, useFQNForSwagger
 }
 
 // Swagger expects paths of the form /path/{string_value} but grpc-gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
-func templateToSwaggerPath(path string) string {
+func templateToSwaggerPath(path string, reg *descriptor.Registry) string {
 	// It seems like the right thing to do here is to just use
 	// strings.Split(path, "/") but that breaks badly when you hit a url like
 	// /{my_field=prefix/*}/ and end up with 2 sections representing my_field.
@@ -606,12 +607,15 @@ func templateToSwaggerPath(path string) string {
 	var parts []string
 	depth := 0
 	buffer := ""
+	jsonBuffer := ""
 	for _, char := range path {
 		switch char {
 		case '{':
 			// Push on the stack
 			depth++
 			buffer += string(char)
+			jsonBuffer = ""
+			jsonBuffer += string(char)
 			break
 		case '}':
 			if depth == 0 {
@@ -620,6 +624,14 @@ func templateToSwaggerPath(path string) string {
 			// Pop from the stack
 			depth--
 			buffer += string(char)
+			if reg.GetUseJSONNamesForFields() &&
+				len(jsonBuffer) > 1 {
+				jsonSnakeCaseName := string(jsonBuffer[1 : len(buffer)-1])
+				jsonCamelCaseName := string(lowerCamelCase(jsonSnakeCaseName))
+				prev := string(buffer[:len(buffer)-len(jsonSnakeCaseName)-2])
+				buffer = strings.Join([]string{prev, "{", jsonCamelCaseName, "}"}, "")
+				jsonBuffer = ""
+			}
 		case '/':
 			if depth == 0 {
 				parts = append(parts, buffer)
@@ -631,6 +643,7 @@ func templateToSwaggerPath(path string) string {
 			buffer += string(char)
 		default:
 			buffer += string(char)
+			jsonBuffer += string(char)
 			break
 		}
 	}
@@ -731,9 +744,12 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					if desc == "" {
 						desc = fieldProtoComments(reg, parameter.Target.Message, parameter.Target)
 					}
-
+					parameterString := parameter.String()
+					if reg.GetUseJSONNamesForFields() {
+						parameterString = lowerCamelCase(parameterString)
+					}
 					parameters = append(parameters, swaggerParameterObject{
-						Name:        parameter.String(),
+						Name:        parameterString,
 						Description: desc,
 						In:          "path",
 						Required:    true,
@@ -797,7 +813,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					parameters = append(parameters, queryParams...)
 				}
 
-				pathItemObject, ok := paths[templateToSwaggerPath(b.PathTmpl.Template)]
+				pathItemObject, ok := paths[templateToSwaggerPath(b.PathTmpl.Template, reg)]
 				if !ok {
 					pathItemObject = swaggerPathItemObject{}
 				}
@@ -947,7 +963,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					pathItemObject.Patch = operationObject
 					break
 				}
-				paths[templateToSwaggerPath(b.PathTmpl.Template)] = pathItemObject
+				paths[templateToSwaggerPath(b.PathTmpl.Template, reg)] = pathItemObject
 			}
 		}
 	}
@@ -1660,4 +1676,12 @@ func addCustomRefs(d swaggerDefinitionsObject, reg *descriptor.Registry, refs re
 
 	// Run again in case any new refs were added
 	addCustomRefs(d, reg, refs)
+}
+
+func lowerCamelCase(parameter string) string {
+	parameterString := gogen.CamelCase(parameter)
+	builder := &strings.Builder{}
+	builder.WriteString(strings.ToLower(string(parameterString[0])))
+	builder.WriteString(parameterString[1:])
+	return builder.String()
 }
