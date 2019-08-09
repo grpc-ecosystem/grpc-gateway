@@ -861,6 +861,29 @@ func TestTemplateWithJsonCamelCase(t *testing.T) {
 	}
 }
 
+func TestTemplateWithoutJsonCamelCase(t *testing.T) {
+	var tests = []struct {
+		input    string
+		expected string
+	}{
+		{"/test/{test_id}", "/test/{test_id}"},
+		{"/test1/{test1_id}/test2/{test2_id}", "/test1/{test1_id}/test2/{test2_id}"},
+		{"/test1/{test1_id}/{test2_id}", "/test1/{test1_id}/{test2_id}"},
+		{"/test1/test2/{test1_id}/{test2_id}", "/test1/test2/{test1_id}/{test2_id}"},
+		{"/test1/{test1_id1_id2}", "/test1/{test1_id1_id2}"},
+		{"/test1/{test1_id1_id2}/test2/{test2_id3_id4}", "/test1/{test1_id1_id2}/test2/{test2_id3_id4}"},
+		{"/test1/test2/{test1_id1_id2}/{test2_id3_id4}", "/test1/test2/{test1_id1_id2}/{test2_id3_id4}"},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(false)
+	for _, data := range tests {
+		actual := templateToSwaggerPath(data.input, reg)
+		if data.expected != actual {
+			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+		}
+	}
+}
+
 func TestTemplateToSwaggerPath(t *testing.T) {
 	var tests = []struct {
 		input    string
