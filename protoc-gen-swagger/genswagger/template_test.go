@@ -850,6 +850,10 @@ func TestTemplateWithJsonCamelCase(t *testing.T) {
 		{"/test1/{test1_id1_id2}", "/test1/{test1Id1Id2}"},
 		{"/test1/{test1_id1_id2}/test2/{test2_id3_id4}", "/test1/{test1Id1Id2}/test2/{test2Id3Id4}"},
 		{"/test1/test2/{test1_id1_id2}/{test2_id3_id4}", "/test1/test2/{test1Id1Id2}/{test2Id3Id4}"},
+		{"test/{a}", "test/{a}"},
+		{"test/{ab}", "test/{ab}"},
+		{"test/{a_a}", "test/{aA}"},
+		{"test/{ab_c}", "test/{abC}"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
@@ -873,6 +877,9 @@ func TestTemplateWithoutJsonCamelCase(t *testing.T) {
 		{"/test1/{test1_id1_id2}", "/test1/{test1_id1_id2}"},
 		{"/test1/{test1_id1_id2}/test2/{test2_id3_id4}", "/test1/{test1_id1_id2}/test2/{test2_id3_id4}"},
 		{"/test1/test2/{test1_id1_id2}/{test2_id3_id4}", "/test1/test2/{test1_id1_id2}/{test2_id3_id4}"},
+		{"test/{a}", "test/{a}"},
+		{"test/{ab}", "test/{ab}"},
+		{"test/{a_a}", "test/{a_a}"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
