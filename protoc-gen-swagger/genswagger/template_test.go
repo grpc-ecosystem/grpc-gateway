@@ -838,6 +838,59 @@ func TestApplyTemplateRequestWithUnusedReferences(t *testing.T) {
 	}
 }
 
+func TestTemplateWithJsonCamelCase(t *testing.T) {
+	var tests = []struct {
+		input    string
+		expected string
+	}{
+		{"/test/{test_id}", "/test/{testId}"},
+		{"/test1/{test1_id}/test2/{test2_id}", "/test1/{test1Id}/test2/{test2Id}"},
+		{"/test1/{test1_id}/{test2_id}", "/test1/{test1Id}/{test2Id}"},
+		{"/test1/test2/{test1_id}/{test2_id}", "/test1/test2/{test1Id}/{test2Id}"},
+		{"/test1/{test1_id1_id2}", "/test1/{test1Id1Id2}"},
+		{"/test1/{test1_id1_id2}/test2/{test2_id3_id4}", "/test1/{test1Id1Id2}/test2/{test2Id3Id4}"},
+		{"/test1/test2/{test1_id1_id2}/{test2_id3_id4}", "/test1/test2/{test1Id1Id2}/{test2Id3Id4}"},
+		{"test/{a}", "test/{a}"},
+		{"test/{ab}", "test/{ab}"},
+		{"test/{a_a}", "test/{aA}"},
+		{"test/{ab_c}", "test/{abC}"},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(true)
+	for _, data := range tests {
+		actual := templateToSwaggerPath(data.input, reg)
+		if data.expected != actual {
+			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+		}
+	}
+}
+
+func TestTemplateWithoutJsonCamelCase(t *testing.T) {
+	var tests = []struct {
+		input    string
+		expected string
+	}{
+		{"/test/{test_id}", "/test/{test_id}"},
+		{"/test1/{test1_id}/test2/{test2_id}", "/test1/{test1_id}/test2/{test2_id}"},
+		{"/test1/{test1_id}/{test2_id}", "/test1/{test1_id}/{test2_id}"},
+		{"/test1/test2/{test1_id}/{test2_id}", "/test1/test2/{test1_id}/{test2_id}"},
+		{"/test1/{test1_id1_id2}", "/test1/{test1_id1_id2}"},
+		{"/test1/{test1_id1_id2}/test2/{test2_id3_id4}", "/test1/{test1_id1_id2}/test2/{test2_id3_id4}"},
+		{"/test1/test2/{test1_id1_id2}/{test2_id3_id4}", "/test1/test2/{test1_id1_id2}/{test2_id3_id4}"},
+		{"test/{a}", "test/{a}"},
+		{"test/{ab}", "test/{ab}"},
+		{"test/{a_a}", "test/{a_a}"},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(false)
+	for _, data := range tests {
+		actual := templateToSwaggerPath(data.input, reg)
+		if data.expected != actual {
+			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+		}
+	}
+}
+
 func TestTemplateToSwaggerPath(t *testing.T) {
 	var tests = []struct {
 		input    string
@@ -860,9 +913,9 @@ func TestTemplateToSwaggerPath(t *testing.T) {
 		{"/{user.name=prefix1/*/prefix2/*}:customMethod", "/{user.name=prefix1/*/prefix2/*}:customMethod"},
 		{"/{parent=prefix/*}/children:customMethod", "/{parent=prefix/*}/children:customMethod"},
 	}
-
+	reg := descriptor.NewRegistry()
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input)
+		actual := templateToSwaggerPath(data.input, reg)
 		if data.expected != actual {
 			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
@@ -937,9 +990,9 @@ func TestFQMNtoSwaggerName(t *testing.T) {
 		{"/{test1}/{test2}", "/{test1}/{test2}"},
 		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
 	}
-
+	reg := descriptor.NewRegistry()
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input)
+		actual := templateToSwaggerPath(data.input, reg)
 		if data.expected != actual {
 			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
