@@ -154,6 +154,28 @@ if err := http.ListenAndServe(":8080", tracingWrapper(mux)); err != nil {
 }
 ```
 
+Finally, don't forget to add a tracing interceptor when registering
+the services. E.g.
+
+```go
+import (
+   ...
+   "google.golang.org/grpc"
+   "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+)
+
+opts := []grpc.DialOption{
+  grpc.WithUnaryInterceptor(
+    grpc_opentracing.UnaryClientInterceptor(
+      grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+    ),
+  ),
+}
+if err := pb.RegisterMyServiceHandlerFromEndpoint(ctx, mux, serviceEndpoint, opts); err != nil {
+	log.Fatalf("could not register HTTP service: %v", err)
+}
+```
+
 ## Error handler
 http://mycodesmells.com/post/grpc-gateway-error-handler
 
