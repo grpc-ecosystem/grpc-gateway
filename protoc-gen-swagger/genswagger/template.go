@@ -626,7 +626,7 @@ func templateToSwaggerPath(path string, reg *descriptor.Registry) string {
 			buffer += string(char)
 			if reg.GetUseJSONNamesForFields() &&
 				len(jsonBuffer) > 1 {
-				jsonSnakeCaseName := string(jsonBuffer[1 : len(buffer)-1])
+				jsonSnakeCaseName := string(jsonBuffer[1:])
 				jsonCamelCaseName := string(lowerCamelCase(jsonSnakeCaseName))
 				prev := string(buffer[:len(buffer)-len(jsonSnakeCaseName)-2])
 				buffer = strings.Join([]string{prev, "{", jsonCamelCaseName, "}"}, "")
@@ -641,6 +641,7 @@ func templateToSwaggerPath(path string, reg *descriptor.Registry) string {
 				continue
 			}
 			buffer += string(char)
+			jsonBuffer += string(char)
 		default:
 			buffer += string(char)
 			jsonBuffer += string(char)
