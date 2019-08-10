@@ -914,6 +914,14 @@ func TestTemplateToSwaggerPath(t *testing.T) {
 		{"/{parent=prefix/*}/children:customMethod", "/{parent=prefix/*}/children:customMethod"},
 	}
 	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(false)
+	for _, data := range tests {
+		actual := templateToSwaggerPath(data.input, reg)
+		if data.expected != actual {
+			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+		}
+	}
+	reg.SetUseJSONNamesForFields(true)
 	for _, data := range tests {
 		actual := templateToSwaggerPath(data.input, reg)
 		if data.expected != actual {
@@ -991,6 +999,14 @@ func TestFQMNtoSwaggerName(t *testing.T) {
 		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
 	}
 	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(false)
+	for _, data := range tests {
+		actual := templateToSwaggerPath(data.input, reg)
+		if data.expected != actual {
+			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+		}
+	}
+	reg.SetUseJSONNamesForFields(true)
 	for _, data := range tests {
 		actual := templateToSwaggerPath(data.input, reg)
 		if data.expected != actual {
