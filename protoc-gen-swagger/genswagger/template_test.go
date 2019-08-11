@@ -1196,6 +1196,61 @@ func TestSchemaOfField(t *testing.T) {
 		{
 			field: &descriptor.Field{
 				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.Struct"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type: "object",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.Value"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type: "object",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.ListValue"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type: "array",
+				Items: (*swaggerItemsObject)(&schemaCore{
+					Type: "object",
+				}),
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.NullValue"),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type: "string",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
 					Name:     proto.String("message_field"),
 					TypeName: proto.String(".example.Message"),
 					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),

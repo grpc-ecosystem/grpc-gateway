@@ -62,6 +62,21 @@ var wktSchemas = map[string]schemaCore{
 		Format: "boolean",
 	},
 	".google.protobuf.Empty": schemaCore{},
+	".google.protobuf.Struct": schemaCore{
+		Type: "object",
+	},
+	".google.protobuf.Value": schemaCore{
+		Type: "object",
+	},
+	".google.protobuf.ListValue": schemaCore{
+		Type: "array",
+		Items: (*swaggerItemsObject)(&schemaCore{
+			Type: "object",
+		}),
+	},
+	".google.protobuf.NullValue": schemaCore{
+		Type: "string",
+	},
 }
 
 func listEnumNames(enum *descriptor.Enum) (names []string) {
