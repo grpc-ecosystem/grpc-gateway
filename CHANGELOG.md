@@ -1,5 +1,31 @@
 # Change Log
 
+## [v1.9.6](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.9.6) (2019-08-16)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.9.5...v1.9.6)
+
+**Closed issues:**
+
+- Returning a primitive type as a response instead of proto messages  [\#994](https://github.com/grpc-ecosystem/grpc-gateway/issues/994)
+- protoc-gen-swagger: fix description of google/protobuf/struct.proto types [\#989](https://github.com/grpc-ecosystem/grpc-gateway/issues/989)
+- Swagger generator does not convert parameters in URLs to camel case when `json\_names\_for\_fields` is enable.  [\#986](https://github.com/grpc-ecosystem/grpc-gateway/issues/986)
+- The release upload job is broken [\#981](https://github.com/grpc-ecosystem/grpc-gateway/issues/981)
+- Schema and field name questions from a front end developer [\#980](https://github.com/grpc-ecosystem/grpc-gateway/issues/980)
+- undefined: runtime.AssumeColonVerbOpt [\#978](https://github.com/grpc-ecosystem/grpc-gateway/issues/978)
+- I want to know how to transfer http+proto to grpc. [\#977](https://github.com/grpc-ecosystem/grpc-gateway/issues/977)
+- Is it possible to use protoc-gen-swagger options in my own protos? [\#976](https://github.com/grpc-ecosystem/grpc-gateway/issues/976)
+
+**Merged pull requests:**
+
+- Disable Windows CI Bazel [\#996](https://github.com/grpc-ecosystem/grpc-gateway/pull/996) ([achew22](https://github.com/achew22))
+- Correct HTTPBody doc [\#995](https://github.com/grpc-ecosystem/grpc-gateway/pull/995) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- protoc-gen-swagger: correctly type struct.proto types [\#990](https://github.com/grpc-ecosystem/grpc-gateway/pull/990) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Camel case backward compatible in Swagger doc [\#988](https://github.com/grpc-ecosystem/grpc-gateway/pull/988) ([xin-au](https://github.com/xin-au))
+- Add doc for opentracing support [\#987](https://github.com/grpc-ecosystem/grpc-gateway/pull/987) ([vthiery](https://github.com/vthiery))
+- Use json camel case when GetUseJSONNamesForFields is enabled [\#985](https://github.com/grpc-ecosystem/grpc-gateway/pull/985) ([xin-au](https://github.com/xin-au))
+- Create presubmit.yaml which configures CI [\#983](https://github.com/grpc-ecosystem/grpc-gateway/pull/983) ([achew22](https://github.com/achew22))
+- Fix release script [\#982](https://github.com/grpc-ecosystem/grpc-gateway/pull/982) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Upgrade to the latest rules\_go [\#979](https://github.com/grpc-ecosystem/grpc-gateway/pull/979) ([achew22](https://github.com/achew22))
+
 ## [v1.9.5](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.9.5) (2019-07-22)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.9.4...v1.9.5)
 
@@ -13,6 +39,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.9.5 [\#975](https://github.com/grpc-ecosystem/grpc-gateway/pull/975) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Fix HTTP Status Code returned for a `Failed Precondition` error [\#974](https://github.com/grpc-ecosystem/grpc-gateway/pull/974) ([cjcormack](https://github.com/cjcormack))
 - Examples fix: Support preflight of auth libraries in js [\#973](https://github.com/grpc-ecosystem/grpc-gateway/pull/973) ([GhiaC](https://github.com/GhiaC))
 
@@ -719,7 +746,6 @@
 **Closed issues:**
 
 - Empty value omitted [\#355](https://github.com/grpc-ecosystem/grpc-gateway/issues/355)
-- Must generate reverse proxy in same package? [\#353](https://github.com/grpc-ecosystem/grpc-gateway/issues/353)
 - Release 1.2.0 [\#340](https://github.com/grpc-ecosystem/grpc-gateway/issues/340)
 - Cut another release [\#278](https://github.com/grpc-ecosystem/grpc-gateway/issues/278)
 
