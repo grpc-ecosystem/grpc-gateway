@@ -30,13 +30,3 @@ platforms:
     - "--test_tag_filters=-nomacos"
     test_targets:
     - "..."
-  windows:
-    build_flags:
-    - "--build_tag_filters=-nowindows"
-    build_targets:
-    - "..."
-    test_flags:
-    - "--test_tag_filters=-nowindows"
-    - "--experimental_enable_runfiles"
-    test_targets:
-    - "..."
