@@ -65,7 +65,6 @@ workflows:
       - node_test
       - generate
       - lint
-      - bazel
       - release:
           filters:
             branches:
