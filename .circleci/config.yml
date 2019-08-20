@@ -48,6 +48,14 @@ jobs:
       - checkout
       - run: go get golang.org/x/lint/golint
       - run: make lint
+  fuzzit:
+    docker:
+      - image: fuzzitdev/fuzzit:golang1.12-stretch-llvm9
+    working_directory: /go/src/github.com/grpc-gateway/grpc-gateway
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: ./fuzzit.sh
   bazel:
     docker:
       - image: l.gcr.io/google/bazel:latest
@@ -88,6 +96,7 @@ workflows:
     jobs:
       - build
       - test
+      - fuzzit
       - node_test
       - generate
       - lint
