@@ -672,24 +672,10 @@ func templateToSwaggerPath(path string, reg *descriptor.Registry) string {
 	// memory.
 	re := regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*).*}")
 	for index, part := range parts {
-		// If part is a resource name such as "parent", "name", "user.name", the format info must be retained.
-		prefix := re.ReplaceAllString(part, "$1")
-		if isResourceName(prefix) {
-			continue
-		}
 		parts[index] = re.ReplaceAllString(part, "{$1}")
 	}
 
 	return strings.Join(parts, "/")
-}
-
-func isResourceName(prefix string) bool {
-	words := strings.Split(prefix, ".")
-	l := len(words)
-	field := words[l-1]
-	words = strings.Split(field, ":")
-	field = words[0]
-	return field == "parent" || field == "name"
 }
 
 func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap) error {
