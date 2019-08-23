@@ -1599,7 +1599,7 @@ func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_option
 	s.MaxProperties = j.GetMaxProperties()
 	s.MinProperties = j.GetMinProperties()
 	s.Required = j.GetRequired()
-	if overrideType := j.GetType(); len(overrideType) == 1 {
+	if overrideType := j.GetType(); len(overrideType) > 0 {
 		s.Type = strings.ToLower(overrideType[0].String())
 	}
 }
