@@ -73,9 +73,10 @@ func NewABitOfEverythingServiceApiWithBasePath(basePath string) *ABitOfEverythin
  * @param repeatedStringAnnotation Repeated string title. Repeated string description.
  * @param nestedAnnotationAmount 
  * @param nestedAnnotationOk DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
+ * @param int64OverrideType 
  * @return *ExamplepbABitOfEverything
  */
-func (a ABitOfEverythingServiceApi) CheckGetQueryParams(singleNestedName string, floatValue float32, singleNestedAmount int64, singleNestedOk string, uuid string, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, pathEnumValue string, nestedPathEnumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string, repeatedEnumAnnotation []string, enumValueAnnotation string, repeatedStringAnnotation []string, nestedAnnotationAmount int64, nestedAnnotationOk string) (*ExamplepbABitOfEverything, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) CheckGetQueryParams(singleNestedName string, floatValue float32, singleNestedAmount int64, singleNestedOk string, uuid string, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, pathEnumValue string, nestedPathEnumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string, repeatedEnumAnnotation []string, enumValueAnnotation string, repeatedStringAnnotation []string, nestedAnnotationAmount int64, nestedAnnotationOk string, int64OverrideType int64) (*ExamplepbABitOfEverything, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -144,6 +145,7 @@ func (a ABitOfEverythingServiceApi) CheckGetQueryParams(singleNestedName string,
 
 	localVarQueryParams.Add("nested_annotation.amount", a.Configuration.APIClient.ParameterToString(nestedAnnotationAmount, ""))
 	localVarQueryParams.Add("nested_annotation.ok", a.Configuration.APIClient.ParameterToString(nestedAnnotationOk, ""))
+	localVarQueryParams.Add("int64_override_type", a.Configuration.APIClient.ParameterToString(int64OverrideType, ""))
 
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{ "application/json", "application/x-foo-mime",  }
@@ -776,9 +778,10 @@ func (a ABitOfEverythingServiceApi) GetMessageWithBody(id string, body Examplepb
  * @param nestedAnnotationName name is nested field.
  * @param nestedAnnotationAmount 
  * @param nestedAnnotationOk DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
+ * @param int64OverrideType 
  * @return *interface{}
  */
-func (a ABitOfEverythingServiceApi) GetQuery(uuid string, floatValue float32, singleNestedName string, singleNestedAmount int64, singleNestedOk string, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, pathEnumValue string, nestedPathEnumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string, repeatedEnumAnnotation []string, enumValueAnnotation string, repeatedStringAnnotation []string, nestedAnnotationName string, nestedAnnotationAmount int64, nestedAnnotationOk string) (*interface{}, *APIResponse, error) {
+func (a ABitOfEverythingServiceApi) GetQuery(uuid string, floatValue float32, singleNestedName string, singleNestedAmount int64, singleNestedOk string, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, bytesValue string, uint32Value int64, enumValue string, pathEnumValue string, nestedPathEnumValue string, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, repeatedStringValue []string, oneofString string, nonConventionalNameValue string, timestampValue time.Time, repeatedEnumValue []string, repeatedEnumAnnotation []string, enumValueAnnotation string, repeatedStringAnnotation []string, nestedAnnotationName string, nestedAnnotationAmount int64, nestedAnnotationOk string, int64OverrideType int64) (*interface{}, *APIResponse, error) {
 
 	var localVarHttpMethod = strings.ToUpper("Get")
 	// create path and map variables
@@ -835,6 +838,7 @@ func (a ABitOfEverythingServiceApi) GetQuery(uuid string, floatValue float32, si
 	localVarQueryParams.Add("nested_annotation.name", a.Configuration.APIClient.ParameterToString(nestedAnnotationName, ""))
 	localVarQueryParams.Add("nested_annotation.amount", a.Configuration.APIClient.ParameterToString(nestedAnnotationAmount, ""))
 	localVarQueryParams.Add("nested_annotation.ok", a.Configuration.APIClient.ParameterToString(nestedAnnotationOk, ""))
+	localVarQueryParams.Add("int64_override_type", a.Configuration.APIClient.ParameterToString(int64OverrideType, ""))
 
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{ "application/json", "application/x-foo-mime",  }
