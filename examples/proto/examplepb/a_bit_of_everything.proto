@@ -172,7 +172,7 @@ message ABitOfEverything {
 	repeated Nested nested = 2;
 	float float_value = 3 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {description: "Float value field", default: "0.2", required: ['float_value']}];
 	double double_value = 4;
-	int64 int64_value = 5;
+	int64 int64_value = 5 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {type: INTEGER}];;
 	uint64 uint64_value = 6;
 	int32 int32_value = 7;
 	fixed64 fixed64_value = 8;
