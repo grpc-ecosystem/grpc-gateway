@@ -295,6 +295,10 @@
           "$ref": "#/definitions/ABitOfEverythingNested",
           "description": "Nested object description.",
           "title": "Nested object title"
+        },
+        "int64_override_type": {
+          "type": "integer",
+          "format": "int64"
         }
       },
       "description": "Intentionaly complicated message type to cover many features of Protobuf.",

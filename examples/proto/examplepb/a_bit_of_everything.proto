@@ -219,6 +219,8 @@ message ABitOfEverything {
 
 	// nested object comments (This comment is overridden by the field annotation)
 	Nested nested_annotation = 36 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {title: "Nested object title", description: "Nested object description."}];
+
+	int64 int64_override_type = 37 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {type: INTEGER}];
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality
