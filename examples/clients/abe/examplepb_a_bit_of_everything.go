@@ -92,4 +92,6 @@ type ExamplepbABitOfEverything struct {
 
 	// Nested object description.
 	NestedAnnotation ABitOfEverythingNested `json:"nested_annotation,omitempty"`
+
+	Int64OverrideType int64 `json:"int64_override_type,omitempty"`
 }

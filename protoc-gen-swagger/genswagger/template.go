@@ -1599,6 +1599,9 @@ func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_option
 	s.MaxProperties = j.GetMaxProperties()
 	s.MinProperties = j.GetMinProperties()
 	s.Required = j.GetRequired()
+	if overrideType := j.GetType(); len(overrideType) > 0 {
+		s.Type = strings.ToLower(overrideType[0].String())
+	}
 }
 
 func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Registry, refs refMap) swaggerSchemaObject {
