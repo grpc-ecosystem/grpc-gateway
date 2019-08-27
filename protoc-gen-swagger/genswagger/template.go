@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"reflect"
 	"regexp"
@@ -17,9 +18,9 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
-	structpb "github.com/golang/protobuf/ptypes/struct"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
+	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 )
@@ -678,13 +679,18 @@ func templateToSwaggerPath(path string, reg *descriptor.Registry) string {
 	// Parts is now an array of segments of the path. Interestingly, since the
 	// syntax for this subsection CAN be handled by a regexp since it has no
 	// memory.
+	keyre := regexp.MustCompile("{(.*)}")
 	for index, part := range parts {
 		// If part is a resource name such as "parent", "name", "user.name", the format info must be retained.
 		prefix := canRegexp.ReplaceAllString(part, "$1")
 		if isResourceName(prefix) {
-			continue
+			sm := keyre.FindStringSubmatch(part)
+			key := sm[1]
+			esckey := url.PathEscape(key)
+			parts[index] = keyre.ReplaceAllString(part, fmt.Sprintf("{%s}", esckey))
+		} else {
+			parts[index] = canRegexp.ReplaceAllString(part, "{$1}")
 		}
-		parts[index] = canRegexp.ReplaceAllString(part, "{$1}")
 	}
 
 	return strings.Join(parts, "/")
@@ -699,11 +705,31 @@ func isResourceName(prefix string) bool {
 	return field == "parent" || field == "name"
 }
 
+func extractResourceName(path string) map[string]string {
+	m := map[string]string{}
+	keyre := regexp.MustCompile("{(.*)}")
+	sm := keyre.FindStringSubmatch(path)
+	count := len(sm)
+	for i := 0; i < count; i++ {
+		key := sm[1]
+		parts := strings.Split(key, "=")
+		label := parts[0]
+		parts = strings.Split(label, ".")
+		l := len(parts)
+		field := parts[l-1]
+		if field == "parent" || field == "name" {
+			m[label] = key
+		}
+	}
+	return m
+}
+
 func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	for svcIdx, svc := range services {
 		for methIdx, meth := range svc.Methods {
 			for bIdx, b := range meth.Bindings {
+				pathParamMap := extractResourceName(templateToSwaggerPath(b.PathTmpl.Template, reg))
 				// Iterate over all the swagger parameters
 				parameters := swaggerParametersObject{}
 				for _, parameter := range b.PathParams {
@@ -770,6 +796,9 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					parameterString := parameter.String()
 					if reg.GetUseJSONNamesForFields() {
 						parameterString = lowerCamelCase(parameterString)
+					}
+					if esckey, ok := pathParamMap[parameterString]; ok {
+						parameterString = esckey
 					}
 					parameters = append(parameters, swaggerParameterObject{
 						Name:        parameterString,
