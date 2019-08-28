@@ -1,5 +1,29 @@
 # Change Log
 
+## [v1.10.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.10.0) (2019-08-28)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.9.6...v1.10.0)
+
+**Implemented enhancements:**
+
+- allow protobuf well known types in params [\#400](https://github.com/grpc-ecosystem/grpc-gateway/issues/400)
+- Add a register, so that the gRPC service can be invoked in-process to provide a HTTP server. [\#947](https://github.com/grpc-ecosystem/grpc-gateway/pull/947) ([hb-chen](https://github.com/hb-chen))
+
+**Fixed bugs:**
+
+- grpc-gateway don't work well when using github.com/golang/protobuf/ptypes/struct with streaming [\#999](https://github.com/grpc-ecosystem/grpc-gateway/issues/999)
+
+**Closed issues:**
+
+- Allow final url path parameter to be optional [\#1005](https://github.com/grpc-ecosystem/grpc-gateway/issues/1005)
+- Update integration test dependencies [\#1004](https://github.com/grpc-ecosystem/grpc-gateway/issues/1004)
+- Suggestion: Continuous Fuzzing [\#998](https://github.com/grpc-ecosystem/grpc-gateway/issues/998)
+- Why grpc gateway does not call grpc callback directly? [\#952](https://github.com/grpc-ecosystem/grpc-gateway/issues/952)
+
+**Merged pull requests:**
+
+- Allow overriding the primitive type of fields [\#1003](https://github.com/grpc-ecosystem/grpc-gateway/pull/1003) ([snowzach](https://github.com/snowzach))
+- Add Continuous Fuzzing Integration via fuzzit.dev [\#1001](https://github.com/grpc-ecosystem/grpc-gateway/pull/1001) ([yevgenypats](https://github.com/yevgenypats))
+
 ## [v1.9.6](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.9.6) (2019-08-16)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.9.5...v1.9.6)
 
@@ -18,6 +42,7 @@
 
 - Disable Windows CI Bazel [\#996](https://github.com/grpc-ecosystem/grpc-gateway/pull/996) ([achew22](https://github.com/achew22))
 - Correct HTTPBody doc [\#995](https://github.com/grpc-ecosystem/grpc-gateway/pull/995) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Generate changelog for 1.9.6 [\#993](https://github.com/grpc-ecosystem/grpc-gateway/pull/993) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - protoc-gen-swagger: correctly type struct.proto types [\#990](https://github.com/grpc-ecosystem/grpc-gateway/pull/990) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Camel case backward compatible in Swagger doc [\#988](https://github.com/grpc-ecosystem/grpc-gateway/pull/988) ([xin-au](https://github.com/xin-au))
 - Add doc for opentracing support [\#987](https://github.com/grpc-ecosystem/grpc-gateway/pull/987) ([vthiery](https://github.com/vthiery))
