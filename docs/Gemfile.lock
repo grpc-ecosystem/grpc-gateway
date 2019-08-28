@@ -25,7 +25,7 @@ GEM
     execjs (2.7.0)
     faraday (0.14.0)
       multipart-post (>= 1.2, < 3)
-    ffi (1.9.23)
+    ffi (1.11.1)
     forwardable-extended (2.6.0)
     gemoji (3.0.0)
     github-pages (182)
