@@ -2000,7 +2000,7 @@ func local_request_CamelCaseServiceName_Empty_0(ctx context.Context, marshaler r
 // RegisterABitOfEverythingServiceHandlerServer registers the http handlers for service ABitOfEverythingService to "mux".
 // UnaryRPC     :call ABitOfEverythingServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ABitOfEverythingServiceServer, opts []grpc.DialOption) error {
+func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ABitOfEverythingServiceServer) error {
 
 	mux.Handle("POST", pattern_ABitOfEverythingService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
@@ -2408,7 +2408,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 // RegisterCamelCaseServiceNameHandlerServer registers the http handlers for service CamelCaseServiceName to "mux".
 // UnaryRPC     :call CamelCaseServiceNameServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-func RegisterCamelCaseServiceNameHandlerServer(ctx context.Context, mux *runtime.ServeMux, server CamelCaseServiceNameServer, opts []grpc.DialOption) error {
+func RegisterCamelCaseServiceNameHandlerServer(ctx context.Context, mux *runtime.ServeMux, server CamelCaseServiceNameServer) error {
 
 	mux.Handle("GET", pattern_CamelCaseServiceName_Empty_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
