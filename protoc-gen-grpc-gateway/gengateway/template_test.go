@@ -570,7 +570,7 @@ func TestApplyTemplateInProcess(t *testing.T) {
 			}
 		}
 
-		if want := `func RegisterExampleServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ExampleServiceServer, opts []grpc.DialOption) error {`; !strings.Contains(got, want) {
+		if want := `func RegisterExampleServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ExampleServiceServer) error {`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 	}
