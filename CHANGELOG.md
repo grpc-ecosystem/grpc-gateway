@@ -1,5 +1,24 @@
 # Change Log
 
+## [v1.11.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.11.0) (2019-08-30)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.10.0...v1.11.0)
+
+**Fixed bugs:**
+
+- protoc-gen-grpc-gateway fails silently after release 1.10 [\#1013](https://github.com/grpc-ecosystem/grpc-gateway/issues/1013)
+
+**Closed issues:**
+
+- protoc-gen-swagger does not generate parameters other than body and path parameters. [\#1012](https://github.com/grpc-ecosystem/grpc-gateway/issues/1012)
+
+**Merged pull requests:**
+
+- remove template func RegisterXXXServer\(\) unused param opts \[\]grpc.DialOption [\#1018](https://github.com/grpc-ecosystem/grpc-gateway/pull/1018) ([hb-chen](https://github.com/hb-chen))
+- Fix hand-crafted protobuf message [\#1016](https://github.com/grpc-ecosystem/grpc-gateway/pull/1016) ([dsnet](https://github.com/dsnet))
+- Bump ffi from 1.9.23 to 1.11.1 in /docs [\#1009](https://github.com/grpc-ecosystem/grpc-gateway/pull/1009) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump rubyzip from 1.2.1 to 1.2.3 in /docs [\#1008](https://github.com/grpc-ecosystem/grpc-gateway/pull/1008) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump nokogiri from 1.8.2 to 1.10.4 in /docs [\#1007](https://github.com/grpc-ecosystem/grpc-gateway/pull/1007) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [v1.10.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.10.0) (2019-08-28)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.9.6...v1.10.0)
 
@@ -21,6 +40,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.10.0 [\#1011](https://github.com/grpc-ecosystem/grpc-gateway/pull/1011) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Allow overriding the primitive type of fields [\#1003](https://github.com/grpc-ecosystem/grpc-gateway/pull/1003) ([snowzach](https://github.com/snowzach))
 - Add Continuous Fuzzing Integration via fuzzit.dev [\#1001](https://github.com/grpc-ecosystem/grpc-gateway/pull/1001) ([yevgenypats](https://github.com/yevgenypats))
 
