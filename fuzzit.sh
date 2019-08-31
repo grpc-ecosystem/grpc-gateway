@@ -1,18 +1,16 @@
 #!/bin/bash
 set -xe
 
-# Go-fuzz doesn't support modules yet, so ensure we do everything in the old style GOPATH way
-export GO111MODULE="off"
+# We use fuzzit fork until go-fuzz will support go-modules
+mkdir -p /go/src/github.com/dvyukov
+cd /go/src/github.com/dvyukov
+git clone https://github.com/fuzzitdev/go-fuzz
+cd go-fuzz
+go get ./...
+go build ./...
 
-# Install go-fuzz
-go get -u github.com/dvyukov/go-fuzz/go-fuzz github.com/dvyukov/go-fuzz/go-fuzz-build
-
-# Compiling fuzz targets in fuzz.go with go-fuzz (https://github.com/dvyukov/go-fuzz) and libFuzzer support
-# This is a workaround until go-fuzz has gomodules support https://github.com/dvyukov/go-fuzz/issues/195
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
-git branch --set-upstream-to=origin/master $BRANCH
-
-go get -v -u ./protoc-gen-grpc-gateway/httprule
+#go get -v -u ./protoc-gen-grpc-gateway/httprule
+cd /src/grpc-gateway
 go-fuzz-build -libfuzzer -o parse-http-rule.a ./protoc-gen-grpc-gateway/httprule
 clang-9 -fsanitize=fuzzer parse-http-rule.a -o parse-http-rule
 
