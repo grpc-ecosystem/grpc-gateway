@@ -60,7 +60,8 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 	ctx, md, err := annotateContext(ctx, mux, req)
 	if err != nil {
 		return nil, err
-	} else if md == nil {
+	}
+	if md == nil {
 		return ctx, nil
 	}
 
@@ -73,7 +74,8 @@ func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Reque
 	ctx, md, err := annotateContext(ctx, mux, req)
 	if err != nil {
 		return nil, err
-	} else if md == nil {
+	}
+	if md == nil {
 		return ctx, nil
 	}
 
