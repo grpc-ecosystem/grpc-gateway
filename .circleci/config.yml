@@ -51,7 +51,7 @@ jobs:
   fuzzit:
     docker:
       - image: fuzzitdev/fuzzit:golang1.12-stretch-llvm9
-    working_directory: /go/src/github.com/grpc-gateway/grpc-gateway
+    working_directory: /src/grpc-gateway
     steps:
       - checkout
       - setup_remote_docker
