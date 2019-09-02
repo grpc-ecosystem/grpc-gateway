@@ -1,5 +1,23 @@
 # Change Log
 
+## [v1.11.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.11.1) (2019-09-02)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.11.0...v1.11.1)
+
+**Fixed bugs:**
+
+- protoc\_gen\_swagger openapiv2\_field definition ignores the type option [\#1002](https://github.com/grpc-ecosystem/grpc-gateway/issues/1002)
+
+**Closed issues:**
+
+- AnnotateIncomingContext not declared by package runtime [\#1023](https://github.com/grpc-ecosystem/grpc-gateway/issues/1023)
+- Fuzzit CI job is failing unexpectedly [\#1019](https://github.com/grpc-ecosystem/grpc-gateway/issues/1019)
+- Bazel Rule? [\#1010](https://github.com/grpc-ecosystem/grpc-gateway/issues/1010)
+
+**Merged pull requests:**
+
+- Fuzzit: use go-fuzz with go-modules support [\#1022](https://github.com/grpc-ecosystem/grpc-gateway/pull/1022) ([yevgenypats](https://github.com/yevgenypats))
+- invoke in process server need attach md to incoming context [\#1021](https://github.com/grpc-ecosystem/grpc-gateway/pull/1021) ([hb-chen](https://github.com/hb-chen))
+
 ## [v1.11.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.11.0) (2019-08-30)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.10.0...v1.11.0)
 
@@ -13,6 +31,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.11.0 [\#1020](https://github.com/grpc-ecosystem/grpc-gateway/pull/1020) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - remove template func RegisterXXXServer\(\) unused param opts \[\]grpc.DialOption [\#1018](https://github.com/grpc-ecosystem/grpc-gateway/pull/1018) ([hb-chen](https://github.com/hb-chen))
 - Fix hand-crafted protobuf message [\#1016](https://github.com/grpc-ecosystem/grpc-gateway/pull/1016) ([dsnet](https://github.com/dsnet))
 - Bump ffi from 1.9.23 to 1.11.1 in /docs [\#1009](https://github.com/grpc-ecosystem/grpc-gateway/pull/1009) ([dependabot[bot]](https://github.com/apps/dependabot))
