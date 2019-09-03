@@ -18,6 +18,70 @@ import (
 	"google.golang.org/genproto/protobuf/field_mask"
 )
 
+func BenchmarkPopulateQueryParameters(b *testing.B) {
+	timeT := time.Date(2016, time.December, 15, 12, 23, 32, 49, time.UTC)
+	timeStr := timeT.Format(time.RFC3339Nano)
+
+	durationT := 13 * time.Hour
+	durationStr := durationT.String()
+
+	fieldmaskStr := "float_value,double_value"
+
+	msg := &proto3Message{}
+	values := url.Values{
+		"float_value":            {"1.5"},
+		"double_value":           {"2.5"},
+		"int64_value":            {"-1"},
+		"int32_value":            {"-2"},
+		"uint64_value":           {"3"},
+		"uint32_value":           {"4"},
+		"bool_value":             {"true"},
+		"string_value":           {"str"},
+		"bytes_value":            {"Ynl0ZXM="},
+		"repeated_value":         {"a", "b", "c"},
+		"enum_value":             {"1"},
+		"repeated_enum":          {"1", "2", "0"},
+		"timestamp_value":        {timeStr},
+		"duration_value":         {durationStr},
+		"fieldmask_value":        {fieldmaskStr},
+		"wrapper_float_value":    {"1.5"},
+		"wrapper_double_value":   {"2.5"},
+		"wrapper_int64_value":    {"-1"},
+		"wrapper_int32_value":    {"-2"},
+		"wrapper_u_int64_value":  {"3"},
+		"wrapper_u_int32_value":  {"4"},
+		"wrapper_bool_value":     {"true"},
+		"wrapper_string_value":   {"str"},
+		"wrapper_bytes_value":    {"Ynl0ZXM="},
+		"map_value[key]":         {"value"},
+		"map_value[second]":      {"bar"},
+		"map_value[third]":       {"zzz"},
+		"map_value[fourth]":      {""},
+		`map_value[~!@#$%^&*()]`: {"value"},
+		"map_value2[key]":        {"-2"},
+		"map_value3[-2]":         {"value"},
+		"map_value4[key]":        {"-1"},
+		"map_value5[-1]":         {"value"},
+		"map_value6[key]":        {"3"},
+		"map_value7[3]":          {"value"},
+		"map_value8[key]":        {"4"},
+		"map_value9[4]":          {"value"},
+		"map_value10[key]":       {"1.5"},
+		"map_value11[1.5]":       {"value"},
+		"map_value12[key]":       {"2.5"},
+		"map_value13[2.5]":       {"value"},
+		"map_value14[key]":       {"true"},
+		"map_value15[true]":      {"value"},
+	}
+	filter := utilities.NewDoubleArray([][]string{
+		{"bool_value"}, {"repeated_value"},
+	})
+
+	for i := 0; i < b.N; i++ {
+		_ = runtime.PopulateQueryParameters(msg, values, filter)
+	}
+}
+
 func TestPopulateParameters(t *testing.T) {
 	timeT := time.Date(2016, time.December, 15, 12, 23, 32, 49, time.UTC)
 	timeStr := timeT.Format(time.RFC3339Nano)
