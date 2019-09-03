@@ -104,7 +104,7 @@ Or you might want to mutate the response messages to be returned.
 1. Write a filter function.
    ```go
    func myFilter(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
-        t, ok := resp.(*external.Tokenizer)
+        t, ok := resp.(*externalpb.Tokenizer)
 
 	if ok {
 	  w.Header().Set("X-My-Tracking-Token", t.Token)
