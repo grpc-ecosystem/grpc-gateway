@@ -930,6 +930,28 @@ func TestTemplateToSwaggerPath(t *testing.T) {
 	}
 }
 
+func BenchmarkTemplateToSwaggerPath(b *testing.B) {
+	const input = "/{user.name=prefix1/*/prefix2/*}:customMethod"
+
+	b.Run("with JSON names", func(b *testing.B) {
+		reg := descriptor.NewRegistry()
+		reg.SetUseJSONNamesForFields(false)
+
+		for i := 0; i < b.N; i++ {
+			_ = templateToSwaggerPath(input, reg)
+		}
+	})
+
+	b.Run("without JSON names", func(b *testing.B) {
+		reg := descriptor.NewRegistry()
+		reg.SetUseJSONNamesForFields(true)
+
+		for i := 0; i < b.N; i++ {
+			_ = templateToSwaggerPath(input, reg)
+		}
+	})
+}
+
 func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
 	var tests = []struct {
 		input                string
