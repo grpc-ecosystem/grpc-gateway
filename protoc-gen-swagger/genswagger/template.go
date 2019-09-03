@@ -612,6 +612,8 @@ func resolveFullyQualifiedNameToSwaggerNames(messages []string, useFQNForSwagger
 	return uniqueNames
 }
 
+var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*).*}")
+
 // Swagger expects paths of the form /path/{string_value} but grpc-gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
 func templateToSwaggerPath(path string, reg *descriptor.Registry) string {
 	// It seems like the right thing to do here is to just use
@@ -670,14 +672,13 @@ func templateToSwaggerPath(path string, reg *descriptor.Registry) string {
 	// Parts is now an array of segments of the path. Interestingly, since the
 	// syntax for this subsection CAN be handled by a regexp since it has no
 	// memory.
-	re := regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*).*}")
 	for index, part := range parts {
 		// If part is a resource name such as "parent", "name", "user.name", the format info must be retained.
-		prefix := re.ReplaceAllString(part, "$1")
+		prefix := canRegexp.ReplaceAllString(part, "$1")
 		if isResourceName(prefix) {
 			continue
 		}
-		parts[index] = re.ReplaceAllString(part, "{$1}")
+		parts[index] = canRegexp.ReplaceAllString(part, "{$1}")
 	}
 
 	return strings.Join(parts, "/")
