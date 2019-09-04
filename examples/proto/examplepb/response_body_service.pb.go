@@ -50,7 +50,7 @@ func (x RepeatedResponseBodyOut_Response_ResponseType) String() string {
 	return proto.EnumName(RepeatedResponseBodyOut_Response_ResponseType_name, int32(x))
 }
 func (RepeatedResponseBodyOut_Response_ResponseType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_response_body_service_d3778d99bb1173be, []int{2, 0, 0}
+	return fileDescriptor_response_body_service_dd1070a6693ff118, []int{2, 0, 0}
 }
 
 type ResponseBodyIn struct {
@@ -64,7 +64,7 @@ func (m *ResponseBodyIn) Reset()         { *m = ResponseBodyIn{} }
 func (m *ResponseBodyIn) String() string { return proto.CompactTextString(m) }
 func (*ResponseBodyIn) ProtoMessage()    {}
 func (*ResponseBodyIn) Descriptor() ([]byte, []int) {
-	return fileDescriptor_response_body_service_d3778d99bb1173be, []int{0}
+	return fileDescriptor_response_body_service_dd1070a6693ff118, []int{0}
 }
 func (m *ResponseBodyIn) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResponseBodyIn.Unmarshal(m, b)
@@ -102,7 +102,7 @@ func (m *ResponseBodyOut) Reset()         { *m = ResponseBodyOut{} }
 func (m *ResponseBodyOut) String() string { return proto.CompactTextString(m) }
 func (*ResponseBodyOut) ProtoMessage()    {}
 func (*ResponseBodyOut) Descriptor() ([]byte, []int) {
-	return fileDescriptor_response_body_service_d3778d99bb1173be, []int{1}
+	return fileDescriptor_response_body_service_dd1070a6693ff118, []int{1}
 }
 func (m *ResponseBodyOut) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResponseBodyOut.Unmarshal(m, b)
@@ -140,7 +140,7 @@ func (m *ResponseBodyOut_Response) Reset()         { *m = ResponseBodyOut_Respon
 func (m *ResponseBodyOut_Response) String() string { return proto.CompactTextString(m) }
 func (*ResponseBodyOut_Response) ProtoMessage()    {}
 func (*ResponseBodyOut_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_response_body_service_d3778d99bb1173be, []int{1, 0}
+	return fileDescriptor_response_body_service_dd1070a6693ff118, []int{1, 0}
 }
 func (m *ResponseBodyOut_Response) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ResponseBodyOut_Response.Unmarshal(m, b)
@@ -178,7 +178,7 @@ func (m *RepeatedResponseBodyOut) Reset()         { *m = RepeatedResponseBodyOut
 func (m *RepeatedResponseBodyOut) String() string { return proto.CompactTextString(m) }
 func (*RepeatedResponseBodyOut) ProtoMessage()    {}
 func (*RepeatedResponseBodyOut) Descriptor() ([]byte, []int) {
-	return fileDescriptor_response_body_service_d3778d99bb1173be, []int{2}
+	return fileDescriptor_response_body_service_dd1070a6693ff118, []int{2}
 }
 func (m *RepeatedResponseBodyOut) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RepeatedResponseBodyOut.Unmarshal(m, b)
@@ -217,7 +217,7 @@ func (m *RepeatedResponseBodyOut_Response) Reset()         { *m = RepeatedRespon
 func (m *RepeatedResponseBodyOut_Response) String() string { return proto.CompactTextString(m) }
 func (*RepeatedResponseBodyOut_Response) ProtoMessage()    {}
 func (*RepeatedResponseBodyOut_Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_response_body_service_d3778d99bb1173be, []int{2, 0}
+	return fileDescriptor_response_body_service_dd1070a6693ff118, []int{2, 0}
 }
 func (m *RepeatedResponseBodyOut_Response) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RepeatedResponseBodyOut_Response.Unmarshal(m, b)
@@ -262,7 +262,7 @@ func (m *RepeatedResponseStrings) Reset()         { *m = RepeatedResponseStrings
 func (m *RepeatedResponseStrings) String() string { return proto.CompactTextString(m) }
 func (*RepeatedResponseStrings) ProtoMessage()    {}
 func (*RepeatedResponseStrings) Descriptor() ([]byte, []int) {
-	return fileDescriptor_response_body_service_d3778d99bb1173be, []int{3}
+	return fileDescriptor_response_body_service_dd1070a6693ff118, []int{3}
 }
 func (m *RepeatedResponseStrings) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RepeatedResponseStrings.Unmarshal(m, b)
@@ -438,10 +438,10 @@ var _ResponseBodyService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("examples/proto/examplepb/response_body_service.proto", fileDescriptor_response_body_service_d3778d99bb1173be)
+	proto.RegisterFile("examples/proto/examplepb/response_body_service.proto", fileDescriptor_response_body_service_dd1070a6693ff118)
 }
 
-var fileDescriptor_response_body_service_d3778d99bb1173be = []byte{
+var fileDescriptor_response_body_service_dd1070a6693ff118 = []byte{
 	// 441 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x94, 0xcf, 0xaa, 0xd3, 0x40,
 	0x14, 0xc6, 0x9d, 0xb4, 0x5e, 0x6f, 0x27, 0x72, 0x6f, 0x99, 0x2b, 0xf7, 0x86, 0x22, 0x1a, 0x07,
