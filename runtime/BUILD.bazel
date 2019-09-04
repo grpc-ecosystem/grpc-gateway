@@ -48,6 +48,7 @@ go_test(
     size = "small",
     srcs = [
         "context_test.go",
+        "convert_test.go",
         "errors_test.go",
         "fieldmask_test.go",
         "handler_test.go",
