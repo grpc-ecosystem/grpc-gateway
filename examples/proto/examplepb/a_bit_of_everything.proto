@@ -131,8 +131,7 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 };
 
 
-// Intentionaly complicated message type to cover many features of Protobuf.
-// NEXT ID: 30
+// Intentionally complicated message type to cover many features of Protobuf.
 message ABitOfEverything {
 	option (grpc.gateway.protoc_gen_swagger.options.openapiv2_schema) = {
 		json_schema: {
@@ -205,7 +204,7 @@ message ABitOfEverything {
 	// repeated enum value. it is comma-separated in query
 	repeated NumericEnum repeated_enum_value = 28;
 
-    // repeated numeric enum comment (This comment is overridden by the field annotation)
+	// repeated numeric enum comment (This comment is overridden by the field annotation)
 	repeated NumericEnum repeated_enum_annotation = 32 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {title: "Repeated numeric enum title", description: "Repeated numeric enum description."}];
 
 	// numeric enum comment (This comment is overridden by the field annotation)
@@ -440,17 +439,17 @@ service ABitOfEverythingService {
 			body: "*"
 		};
 	}
-    rpc CheckGetQueryParams(ABitOfEverything) returns (ABitOfEverything) {
-        option (google.api.http) = {
+	rpc CheckGetQueryParams(ABitOfEverything) returns (ABitOfEverything) {
+		option (google.api.http) = {
 			get: "/v1/example/a_bit_of_everything/params/get/{single_nested.name}"
 		};
-    }
-    rpc CheckPostQueryParams(ABitOfEverything) returns (ABitOfEverything) {
-        option (google.api.http) = {
+	}
+	rpc CheckPostQueryParams(ABitOfEverything) returns (ABitOfEverything) {
+		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything/params/post/{string_value}"
 			body: "single_nested"
 		};
-    }
+	}
 }
 
 // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
