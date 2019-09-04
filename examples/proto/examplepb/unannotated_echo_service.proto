@@ -28,10 +28,10 @@ service UnannotatedEchoService {
 	// The message posted as the id parameter will also be
 	// returned.
 	rpc Echo(UnannotatedSimpleMessage) returns (UnannotatedSimpleMessage);
-    
+
 	// EchoBody method receives a simple message and returns it.
 	rpc EchoBody(UnannotatedSimpleMessage) returns (UnannotatedSimpleMessage);
 	
-        // EchoDelete method receives a simple message and returns it.
+	// EchoDelete method receives a simple message and returns it.
 	rpc EchoDelete(UnannotatedSimpleMessage) returns (UnannotatedSimpleMessage);
 }
