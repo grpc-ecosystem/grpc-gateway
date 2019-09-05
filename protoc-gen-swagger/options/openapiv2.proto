@@ -5,6 +5,7 @@ package grpc.gateway.protoc_gen_swagger.options;
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options";
 
 import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
 
 // `Swagger` is a representation of OpenAPI v2 specification's Swagger object.
 //
@@ -45,6 +46,7 @@ message Swagger {
   // service objects into OpenAPI v2 Tag objects.
   reserved 13;
   ExternalDocumentation external_docs = 14;
+  map<string, google.protobuf.Value> extensions = 15;
 }
 
 // `Operation` is a representation of OpenAPI v2 specification's Operation object.

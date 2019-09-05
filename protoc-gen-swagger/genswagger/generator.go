@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"path/filepath"
+	"reflect"
 	"strings"
 
 	"github.com/golang/glog"
@@ -66,12 +67,50 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 	return mergedTarget
 }
 
-// convert swagger file obj to plugin.CodeGeneratorResponse_File
+func fieldName(k string) string {
+	return strings.ReplaceAll(strings.Title(k), "-", "")
+}
+
+// encodeSwagger converts swagger file obj to plugin.CodeGeneratorResponse_File
 func encodeSwagger(file *wrapper) (*plugin.CodeGeneratorResponse_File, error) {
+	// To append arbitrary keys to the struct we'll render into json,
+	// we're creating another struct that embeds the original one, and
+	// its extra fields:
+	//
+	// The struct will look like
+	// struct {
+	//   *swaggerCore
+	//   XGrpcGatewayFoo json.RawMessage `json:"x-grpc-gateway-foo"`
+	//   XGrpcGatewayBar json.RawMessage `json:"x-grpc-gateway-bar"`
+	// }
+	// and thus render into what we want -- the JSON of swaggerCore with the
+	// extensions appended.
+	fields := []reflect.StructField{
+		reflect.StructField{ // embedded
+			Name:      "Embedded",
+			Type:      reflect.TypeOf(file.swagger),
+			Anonymous: true,
+		},
+	}
+	for _, ext := range file.swagger.extensions {
+		fields = append(fields, reflect.StructField{
+			Name: fieldName(ext.key),
+			Type: reflect.TypeOf(ext.value),
+			Tag:  reflect.StructTag(fmt.Sprintf("json:\"%s\"", ext.key)),
+		})
+	}
+
+	t := reflect.StructOf(fields)
+	s := reflect.New(t).Elem()
+	s.Field(0).Set(reflect.ValueOf(file.swagger))
+	for _, ext := range file.swagger.extensions {
+		s.FieldByName(fieldName(ext.key)).Set(reflect.ValueOf(ext.value))
+	}
+
 	var formatted bytes.Buffer
 	enc := json.NewEncoder(&formatted)
 	enc.SetIndent("", "  ")
-	if err := enc.Encode(*file.swagger); err != nil {
+	if err := enc.Encode(s.Interface()); err != nil {
 		return nil, err
 	}
 	name := file.fileName

@@ -11,6 +11,7 @@ import (
 	"sync"
 
 	"github.com/golang/glog"
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
@@ -1218,6 +1219,18 @@ func applyTemplate(p param) (*swaggerObject, error) {
 					}
 				}
 			}
+		}
+
+		if spb.Extensions != nil {
+			exts := []extension{}
+			for k, v := range spb.Extensions {
+				ext, err := (&jsonpb.Marshaler{Indent: "  "}).MarshalToString(v)
+				if err != nil {
+					return nil, err
+				}
+				exts = append(exts, extension{key: k, value: json.RawMessage(ext)})
+			}
+			s.extensions = exts
 		}
 
 		// Additional fields on the OpenAPI v2 spec's "Swagger" object

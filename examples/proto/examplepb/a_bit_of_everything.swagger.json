@@ -2316,5 +2316,10 @@
   "externalDocs": {
     "description": "More about gRPC-Gateway",
     "url": "https://github.com/grpc-ecosystem/grpc-gateway"
-  }
+  },
+  "x-grpc-gateway-foo": "bar",
+  "x-grpc-gateway-baz-list": [
+    "one",
+    true
+  ]
 }

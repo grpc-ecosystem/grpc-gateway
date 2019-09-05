@@ -128,6 +128,25 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 			}
 		}
 	}
+	extensions: {
+		key: "x-grpc-gateway-foo"
+		value {
+			string_value: "bar"
+		}
+	}
+	extensions: {
+		key: "x-grpc-gateway-baz-list"
+		value {
+			list_value: {
+				values: {
+					string_value: "one";
+				}
+				values: {
+					bool_value: true;
+				}
+			}
+		}
+	}
 };
 
 

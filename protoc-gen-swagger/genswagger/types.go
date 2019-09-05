@@ -46,6 +46,11 @@ type swaggerExternalDocumentationObject struct {
 	URL         string `json:"url,omitempty"`
 }
 
+type extension struct {
+	key   string
+	value json.RawMessage
+}
+
 // http://swagger.io/specification/#swaggerObject
 type swaggerObject struct {
 	Swagger             string                              `json:"swagger"`
@@ -61,6 +66,8 @@ type swaggerObject struct {
 	SecurityDefinitions swaggerSecurityDefinitionsObject    `json:"securityDefinitions,omitempty"`
 	Security            []swaggerSecurityRequirementObject  `json:"security,omitempty"`
 	ExternalDocs        *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
+
+	extensions []extension
 }
 
 // http://swagger.io/specification/#securityDefinitionsObject
