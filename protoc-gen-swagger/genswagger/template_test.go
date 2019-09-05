@@ -11,6 +11,7 @@ import (
 	protodescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/golang/protobuf/ptypes/any"
+	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
@@ -368,6 +369,46 @@ func TestApplyTemplateSimple(t *testing.T) {
 	if t.Failed() {
 		t.Errorf("had: %s", file)
 		t.Errorf("got: %s", fmt.Sprint(result))
+	}
+}
+
+func TestApplyTemplateTopLevelOptions(t *testing.T) {
+	file := descriptor.File{
+		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			Dependency:     []string{},
+			MessageType:    []*protodescriptor.DescriptorProto{},
+			Service:        []*protodescriptor.ServiceDescriptorProto{},
+			Options:        &protodescriptor.FileOptions{},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{},
+		Services: []*descriptor.Service{},
+	}
+	swagger := swagger_options.Swagger{
+		Extensions: map[string]*structpb.Value{
+			"x-foo": &structpb.Value{Kind: &structpb.Value_StringValue{StringValue: "bar"}},
+		},
+	}
+	err := proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), swagger_options.E_Openapiv2Swagger, &swagger)
+	if err != nil {
+		t.Fatalf("proto.SetExtension failed: %v", err)
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: descriptor.NewRegistry()})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+	if want, is, name := "2.0", result.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := []extension{{key: "x-foo", value: json.RawMessage("\"bar\"")}}, result.extensions, "Extensions"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 }
 
