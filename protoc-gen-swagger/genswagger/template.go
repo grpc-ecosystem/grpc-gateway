@@ -1224,6 +1224,9 @@ func applyTemplate(p param) (*swaggerObject, error) {
 		if spb.Extensions != nil {
 			exts := []extension{}
 			for k, v := range spb.Extensions {
+				if !strings.HasPrefix(k, "x-") {
+					return nil, fmt.Errorf("Extension keys need to start with \"x-\": %q", k)
+				}
 				ext, err := (&jsonpb.Marshaler{Indent: "  "}).MarshalToString(v)
 				if err != nil {
 					return nil, err
