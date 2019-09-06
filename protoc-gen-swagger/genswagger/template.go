@@ -6,6 +6,7 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -1233,6 +1234,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 				}
 				exts = append(exts, extension{key: k, value: json.RawMessage(ext)})
 			}
+			sort.Slice(exts, func(i, j int) bool { return exts[i].key < exts[j].key })
 			s.extensions = exts
 		}
 

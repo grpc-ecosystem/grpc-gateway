@@ -393,6 +393,7 @@ func TestApplyTemplateTopLevelOptions(t *testing.T) {
 	swagger := swagger_options.Swagger{
 		Extensions: map[string]*structpb.Value{
 			"x-foo": &structpb.Value{Kind: &structpb.Value_StringValue{StringValue: "bar"}},
+			"x-bar": &structpb.Value{Kind: &structpb.Value_ListValue{ListValue: &structpb.ListValue{Values: []*structpb.Value{{Kind: &structpb.Value_StringValue{StringValue: "baz"}}}}}},
 		},
 	}
 	err := proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), swagger_options.E_Openapiv2Swagger, &swagger)
@@ -407,7 +408,10 @@ func TestApplyTemplateTopLevelOptions(t *testing.T) {
 	if want, is, name := "2.0", result.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
-	if want, is, name := []extension{{key: "x-foo", value: json.RawMessage("\"bar\"")}}, result.extensions, "Extensions"; !reflect.DeepEqual(is, want) {
+	if want, is, name := []extension{
+		{key: "x-bar", value: json.RawMessage("[\n      \"baz\"\n    ]")},
+		{key: "x-foo", value: json.RawMessage("\"bar\"")},
+	}, result.extensions, "Extensions"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 }
