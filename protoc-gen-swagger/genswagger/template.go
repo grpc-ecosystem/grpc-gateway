@@ -14,6 +14,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
+	structpb "github.com/golang/protobuf/ptypes/struct"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
@@ -1164,6 +1165,13 @@ func applyTemplate(p param) (*swaggerObject, error) {
 						newSecDefValue.Scopes[scopeKey] = scopeDesc
 					}
 				}
+				if secDefValue.Extensions != nil {
+					exts, err := processExtensions(secDefValue.Extensions)
+					if err != nil {
+						return nil, err
+					}
+					newSecDefValue.extensions = exts
+				}
 				s.SecurityDefinitions[secDefKey] = newSecDefValue
 			}
 		}
@@ -1223,18 +1231,10 @@ func applyTemplate(p param) (*swaggerObject, error) {
 		}
 
 		if spb.Extensions != nil {
-			exts := []extension{}
-			for k, v := range spb.Extensions {
-				if !strings.HasPrefix(k, "x-") {
-					return nil, fmt.Errorf("Extension keys need to start with \"x-\": %q", k)
-				}
-				ext, err := (&jsonpb.Marshaler{Indent: "  "}).MarshalToString(v)
-				if err != nil {
-					return nil, err
-				}
-				exts = append(exts, extension{key: k, value: json.RawMessage(ext)})
+			exts, err := processExtensions(spb.Extensions)
+			if err != nil {
+				return nil, err
 			}
-			sort.Slice(exts, func(i, j int) bool { return exts[i].key < exts[j].key })
 			s.extensions = exts
 		}
 
@@ -1247,6 +1247,22 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	addCustomRefs(s.Definitions, p.reg, customRefs)
 
 	return &s, nil
+}
+
+func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error) {
+	exts := []extension{}
+	for k, v := range inputExts {
+		if !strings.HasPrefix(k, "x-") {
+			return nil, fmt.Errorf("Extension keys need to start with \"x-\": %q", k)
+		}
+		ext, err := (&jsonpb.Marshaler{Indent: "  "}).MarshalToString(v)
+		if err != nil {
+			return nil, err
+		}
+		exts = append(exts, extension{key: k, value: json.RawMessage(ext)})
+	}
+	sort.Slice(exts, func(i, j int) bool { return exts[i].key < exts[j].key })
+	return exts, nil
 }
 
 // updateSwaggerDataFromComments updates a Swagger object based on a comment

@@ -2283,7 +2283,12 @@
     "ApiKeyAuth": {
       "type": "apiKey",
       "name": "X-API-Key",
-      "in": "header"
+      "in": "header",
+      "x-amazon-apigateway-authorizer": {
+        "authorizerResultTtlInSeconds": 60,
+        "type": "token"
+      },
+      "x-amazon-apigateway-authtype": "oauth2"
     },
     "BasicAuth": {
       "type": "basic"

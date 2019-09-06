@@ -71,8 +71,17 @@ func fieldName(k string) string {
 	return strings.ReplaceAll(strings.Title(k), "-", "")
 }
 
-// encodeSwagger converts swagger file obj to plugin.CodeGeneratorResponse_File
-func encodeSwagger(file *wrapper) (*plugin.CodeGeneratorResponse_File, error) {
+func (so swaggerObject) MarshalJSON() ([]byte, error) {
+	type alias swaggerObject
+	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+func (so swaggerSecuritySchemeObject) MarshalJSON() ([]byte, error) {
+	type alias swaggerSecuritySchemeObject
+	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error) {
 	// To append arbitrary keys to the struct we'll render into json,
 	// we're creating another struct that embeds the original one, and
 	// its extra fields:
@@ -88,11 +97,11 @@ func encodeSwagger(file *wrapper) (*plugin.CodeGeneratorResponse_File, error) {
 	fields := []reflect.StructField{
 		reflect.StructField{ // embedded
 			Name:      "Embedded",
-			Type:      reflect.TypeOf(file.swagger),
+			Type:      reflect.TypeOf(so),
 			Anonymous: true,
 		},
 	}
-	for _, ext := range file.swagger.extensions {
+	for _, ext := range extensions {
 		fields = append(fields, reflect.StructField{
 			Name: fieldName(ext.key),
 			Type: reflect.TypeOf(ext.value),
@@ -102,15 +111,19 @@ func encodeSwagger(file *wrapper) (*plugin.CodeGeneratorResponse_File, error) {
 
 	t := reflect.StructOf(fields)
 	s := reflect.New(t).Elem()
-	s.Field(0).Set(reflect.ValueOf(file.swagger))
-	for _, ext := range file.swagger.extensions {
+	s.Field(0).Set(reflect.ValueOf(so))
+	for _, ext := range extensions {
 		s.FieldByName(fieldName(ext.key)).Set(reflect.ValueOf(ext.value))
 	}
+	return json.Marshal(s.Interface())
+}
 
+// encodeSwagger converts swagger file obj to plugin.CodeGeneratorResponse_File
+func encodeSwagger(file *wrapper) (*plugin.CodeGeneratorResponse_File, error) {
 	var formatted bytes.Buffer
 	enc := json.NewEncoder(&formatted)
 	enc.SetIndent("", "  ")
-	if err := enc.Encode(s.Interface()); err != nil {
+	if err := enc.Encode(*file.swagger); err != nil {
 		return nil, err
 	}
 	name := file.fileName

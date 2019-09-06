@@ -336,6 +336,7 @@ message SecurityScheme {
   //
   // Valid for oauth2.
   Scopes scopes = 8;
+  map<string, google.protobuf.Value> extensions = 9;
 }
 
 // `SecurityRequirement` is a representation of OpenAPI v2 specification's

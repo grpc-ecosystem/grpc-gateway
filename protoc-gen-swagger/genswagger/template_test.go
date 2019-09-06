@@ -372,7 +372,7 @@ func TestApplyTemplateSimple(t *testing.T) {
 	}
 }
 
-func TestApplyTemplateTopLevelOptions(t *testing.T) {
+func TestApplyTemplateExtensions(t *testing.T) {
 	file := descriptor.File{
 		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
 			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
@@ -393,7 +393,18 @@ func TestApplyTemplateTopLevelOptions(t *testing.T) {
 	swagger := swagger_options.Swagger{
 		Extensions: map[string]*structpb.Value{
 			"x-foo": &structpb.Value{Kind: &structpb.Value_StringValue{StringValue: "bar"}},
-			"x-bar": &structpb.Value{Kind: &structpb.Value_ListValue{ListValue: &structpb.ListValue{Values: []*structpb.Value{{Kind: &structpb.Value_StringValue{StringValue: "baz"}}}}}},
+			"x-bar": &structpb.Value{Kind: &structpb.Value_ListValue{ListValue: &structpb.ListValue{
+				Values: []*structpb.Value{{Kind: &structpb.Value_StringValue{StringValue: "baz"}}},
+			}}},
+		},
+		SecurityDefinitions: &swagger_options.SecurityDefinitions{
+			Security: map[string]*swagger_options.SecurityScheme{
+				"somescheme": &swagger_options.SecurityScheme{
+					Extensions: map[string]*structpb.Value{
+						"x-security-baz": &structpb.Value{Kind: &structpb.Value_BoolValue{BoolValue: true}},
+					},
+				},
+			},
 		},
 	}
 	err := proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), swagger_options.E_Openapiv2Swagger, &swagger)
@@ -412,6 +423,16 @@ func TestApplyTemplateTopLevelOptions(t *testing.T) {
 		{key: "x-bar", value: json.RawMessage("[\n      \"baz\"\n    ]")},
 		{key: "x-foo", value: json.RawMessage("\"bar\"")},
 	}, result.extensions, "Extensions"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+
+	var scheme swaggerSecuritySchemeObject
+	for _, v := range result.SecurityDefinitions {
+		scheme = v
+	}
+	if want, is, name := []extension{
+		{key: "x-security-baz", value: json.RawMessage("true")},
+	}, scheme.extensions, "SecurityScheme.Extensions"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 }

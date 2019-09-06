@@ -83,6 +83,8 @@ type swaggerSecuritySchemeObject struct {
 	AuthorizationURL string              `json:"authorizationUrl,omitempty"`
 	TokenURL         string              `json:"tokenUrl,omitempty"`
 	Scopes           swaggerScopesObject `json:"scopes,omitempty"`
+
+	extensions []extension
 }
 
 // http://swagger.io/specification/#scopesObject

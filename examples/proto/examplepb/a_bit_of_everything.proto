@@ -51,6 +51,31 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 				type: TYPE_API_KEY;
 				in: IN_HEADER;
 				name: "X-API-Key";
+				extensions: {
+					key: "x-amazon-apigateway-authtype";
+					value {
+						string_value: "oauth2";
+					}
+				}
+				extensions: {
+					key: "x-amazon-apigateway-authorizer";
+					value {
+						struct_value {
+							fields {
+								key: "type";
+								value {
+									string_value: "token";
+								}
+							}
+							fields {
+								key: "authorizerResultTtlInSeconds";
+								value {
+									number_value: 60;
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 		security: {
@@ -129,13 +154,13 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 		}
 	}
 	extensions: {
-		key: "x-grpc-gateway-foo"
+		key: "x-grpc-gateway-foo";
 		value {
-			string_value: "bar"
+			string_value: "bar";
 		}
 	}
 	extensions: {
-		key: "x-grpc-gateway-baz-list"
+		key: "x-grpc-gateway-baz-list";
 		value {
 			list_value: {
 				values: {
