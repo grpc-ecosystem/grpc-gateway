@@ -170,6 +170,8 @@ type swaggerResponsesObject map[string]swaggerResponseObject
 type swaggerResponseObject struct {
 	Description string              `json:"description"`
 	Schema      swaggerSchemaObject `json:"schema"`
+
+	extensions []extension
 }
 
 type keyVal struct {

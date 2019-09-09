@@ -956,10 +956,18 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					}
 					if opts.Responses != nil {
 						for name, resp := range opts.Responses {
-							operationObject.Responses[name] = swaggerResponseObject{
+							respObj := swaggerResponseObject{
 								Description: resp.Description,
 								Schema:      swaggerSchemaFromProtoSchema(resp.Schema, reg, customRefs),
 							}
+							if resp.Extensions != nil {
+								exts, err := processExtensions(resp.Extensions)
+								if err != nil {
+									return err
+								}
+								respObj.extensions = exts
+							}
+							operationObject.Responses[name] = respObj
 						}
 					}
 

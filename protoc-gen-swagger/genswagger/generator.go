@@ -91,6 +91,11 @@ func (so swaggerOperationObject) MarshalJSON() ([]byte, error) {
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
+func (so swaggerResponseObject) MarshalJSON() ([]byte, error) {
+	type alias swaggerResponseObject
+	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
 func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error) {
 	// To append arbitrary keys to the struct we'll render into json,
 	// we're creating another struct that embeds the original one, and

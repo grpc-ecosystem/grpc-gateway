@@ -456,6 +456,13 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	}
 
 	swaggerOperation := swagger_options.Operation{
+		Responses: map[string]*swagger_options.Response{
+			"successful": &swagger_options.Response{
+				Extensions: map[string]*structpb.Value{
+					"x-resp-id": &structpb.Value{Kind: &structpb.Value_StringValue{StringValue: "resp1000"}},
+				},
+			},
+		},
 		Extensions: map[string]*structpb.Value{
 			"x-op-foo": &structpb.Value{Kind: &structpb.Value_StringValue{StringValue: "baz"}},
 		},
@@ -495,12 +502,21 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	}
 
 	var operation *swaggerOperationObject
+	var response swaggerResponseObject
 	for _, v := range result.Paths {
 		operation = v.Get
+		for _, r :=  range v.Get.Responses {
+			response = r
+		}
 	}
 	if want, is, name := []extension{
 		{key: "x-op-foo", value: json.RawMessage("\"baz\"")},
 	}, operation.extensions, "operation.Extensions"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := []extension{
+		{key: "x-resp-id", value: json.RawMessage("\"resp1000\"")},
+	}, response.extensions, "response.Extensions"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 }

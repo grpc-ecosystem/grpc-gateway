@@ -86,6 +86,7 @@ message Response {
   reserved 3;
   // field 3 is reserved for 'example'.
   reserved 4;
+  map<string, google.protobuf.Value> extensions = 5;
 }
 
 // `Info` is a representation of OpenAPI v2 specification's Info object.

@@ -450,6 +450,12 @@ service ABitOfEverythingService {
 				key: "503";
 				value: {
 					description: "Returned when the resource is temporarily unavailable.";
+					extensions: {
+						key: "x-number";
+						value {
+							number_value: 100;
+						}
+					}
 				}
 			}
 			responses: {
