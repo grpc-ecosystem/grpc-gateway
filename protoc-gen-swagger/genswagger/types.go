@@ -119,6 +119,8 @@ type swaggerOperationObject struct {
 
 	Security     *[]swaggerSecurityRequirementObject `json:"security,omitempty"`
 	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
+
+	extensions []extension
 }
 
 type swaggerParametersObject []swaggerParameterObject

@@ -963,6 +963,14 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						}
 					}
 
+					if opts.Extensions != nil {
+						exts, err := processExtensions(opts.Extensions)
+						if err != nil {
+							return err
+						}
+						operationObject.extensions = exts
+					}
+
 					// TODO(ivucica): add remaining fields of operation object
 				}
 

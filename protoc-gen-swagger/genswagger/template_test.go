@@ -373,22 +373,60 @@ func TestApplyTemplateSimple(t *testing.T) {
 }
 
 func TestApplyTemplateExtensions(t *testing.T) {
+	msgdesc := &protodescriptor.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+	}
+	meth := &protodescriptor.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+		Options:    &protodescriptor.MethodOptions{},
+	}
+	svc := &protodescriptor.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*protodescriptor.MethodDescriptorProto{meth},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
 	file := descriptor.File{
 		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
 			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
 			Name:           proto.String("example.proto"),
 			Package:        proto.String("example"),
-			Dependency:     []string{},
-			MessageType:    []*protodescriptor.DescriptorProto{},
-			Service:        []*protodescriptor.ServiceDescriptorProto{},
+			Dependency:     []string{"a.example/b/c.proto", "a.example/d/e.proto"},
+			MessageType:    []*protodescriptor.DescriptorProto{msgdesc},
+			Service:        []*protodescriptor.ServiceDescriptorProto{svc},
 			Options:        &protodescriptor.FileOptions{},
 		},
 		GoPkg: descriptor.GoPackage{
 			Path: "example.com/path/to/example/example.pb",
 			Name: "example_pb",
 		},
-		Messages: []*descriptor.Message{},
-		Services: []*descriptor.Service{},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 	}
 	swagger := swagger_options.Swagger{
 		Info: &swagger_options.Info{
@@ -413,9 +451,17 @@ func TestApplyTemplateExtensions(t *testing.T) {
 			},
 		},
 	}
-	err := proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), swagger_options.E_Openapiv2Swagger, &swagger)
-	if err != nil {
-		t.Fatalf("proto.SetExtension failed: %v", err)
+	if err := proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), swagger_options.E_Openapiv2Swagger, &swagger); err != nil {
+		t.Fatalf("proto.SetExtension(FileDescriptorProto.Options) failed: %v", err)
+	}
+
+	swaggerOperation := swagger_options.Operation{
+		Extensions: map[string]*structpb.Value{
+			"x-op-foo": &structpb.Value{Kind: &structpb.Value_StringValue{StringValue: "baz"}},
+		},
+	}
+	if err := proto.SetExtension(proto.Message(meth.Options), swagger_options.E_Openapiv2Operation, &swaggerOperation); err != nil {
+		t.Fatalf("proto.SetExtension(MethodDescriptorProto.Options) failed: %v", err)
 	}
 	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: descriptor.NewRegistry()})
 	if err != nil {
@@ -445,6 +491,16 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	if want, is, name := []extension{
 		{key: "x-info-extension", value: json.RawMessage("\"bar\"")},
 	}, result.Info.extensions, "Info.Extensions"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+
+	var operation *swaggerOperationObject
+	for _, v := range result.Paths {
+		operation = v.Get
+	}
+	if want, is, name := []extension{
+		{key: "x-op-foo", value: json.RawMessage("\"baz\"")},
+	}, operation.extensions, "operation.Extensions"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 }

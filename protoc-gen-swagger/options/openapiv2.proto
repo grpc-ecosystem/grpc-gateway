@@ -68,6 +68,7 @@ message Operation {
   repeated string schemes = 10;
   bool deprecated = 11;
   repeated SecurityRequirement security = 12;
+  map<string, google.protobuf.Value> extensions = 13;
 }
 
 // `Response` is a representation of OpenAPI v2 specification's Response object.

@@ -392,6 +392,12 @@ service ABitOfEverythingService {
 					}
 				}
 			}
+			extensions: {
+				key: "x-irreversible";
+				value {
+					bool_value: true;
+				}
+			}
 		};
 	}
 	rpc GetQuery(ABitOfEverything) returns (google.protobuf.Empty) {
