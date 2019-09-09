@@ -25,6 +25,8 @@ type swaggerInfoObject struct {
 
 	Contact *swaggerContactObject `json:"contact,omitempty"`
 	License *swaggerLicenseObject `json:"license,omitempty"`
+
+	extensions []extension
 }
 
 // http://swagger.io/specification/#contactObject

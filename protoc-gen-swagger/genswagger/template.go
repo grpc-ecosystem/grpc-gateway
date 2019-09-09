@@ -1083,6 +1083,13 @@ func applyTemplate(p param) (*swaggerObject, error) {
 					s.Info.License.URL = spb.Info.License.Url
 				}
 			}
+			if spb.Info.Extensions != nil {
+				exts, err := processExtensions(spb.Info.Extensions)
+				if err != nil {
+					return nil, err
+				}
+				s.Info.extensions = exts
+			}
 		}
 		if spb.Host != "" {
 			s.Host = spb.Host

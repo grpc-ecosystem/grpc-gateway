@@ -391,6 +391,12 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		Services: []*descriptor.Service{},
 	}
 	swagger := swagger_options.Swagger{
+		Info: &swagger_options.Info{
+			Title: "test",
+			Extensions: map[string]*structpb.Value{
+				"x-info-extension": &structpb.Value{Kind: &structpb.Value_StringValue{StringValue: "bar"}},
+			},
+		},
 		Extensions: map[string]*structpb.Value{
 			"x-foo": &structpb.Value{Kind: &structpb.Value_StringValue{StringValue: "bar"}},
 			"x-bar": &structpb.Value{Kind: &structpb.Value_ListValue{ListValue: &structpb.ListValue{
@@ -433,6 +439,12 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	if want, is, name := []extension{
 		{key: "x-security-baz", value: json.RawMessage("true")},
 	}, scheme.extensions, "SecurityScheme.Extensions"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+
+	if want, is, name := []extension{
+		{key: "x-info-extension", value: json.RawMessage("\"bar\"")},
+	}, result.Info.extensions, "Info.Extensions"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 }

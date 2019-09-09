@@ -99,6 +99,7 @@ message Info {
   Contact contact = 4;
   License license = 5;
   string version = 6;
+  map<string, google.protobuf.Value> extensions = 7;
 }
 
 // `Contact` is a representation of OpenAPI v2 specification's Contact object.

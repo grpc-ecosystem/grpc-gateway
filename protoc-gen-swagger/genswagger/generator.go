@@ -76,6 +76,11 @@ func (so swaggerObject) MarshalJSON() ([]byte, error) {
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
+func (so swaggerInfoObject) MarshalJSON() ([]byte, error) {
+	type alias swaggerInfoObject
+	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
 func (so swaggerSecuritySchemeObject) MarshalJSON() ([]byte, error) {
 	type alias swaggerSecuritySchemeObject
 	return extensionMarshalJSON(alias(so), so.extensions)
