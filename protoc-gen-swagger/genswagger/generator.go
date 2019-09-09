@@ -71,6 +71,15 @@ func fieldName(k string) string {
 	return strings.ReplaceAll(strings.Title(k), "-", "")
 }
 
+// Q: What's up with the alias types here?
+// A: We don't want to completely override how these structs are marshaled into
+//    JSON, we only want to add fields (see below, extensionMarshalJSON).
+//    An infinite recursion would happen if we'd call json.Marshal on the struct
+//    that has swaggerObject as an embedded field. To avoid that, we'll create
+//    type aliases, and those don't have the custom MarshalJSON methods defined
+//    on them. See http://choly.ca/post/go-json-marshalling/ (or, if it ever
+//    goes away, use
+//    https://web.archive.org/web/20190806073003/http://choly.ca/post/go-json-marshalling/.
 func (so swaggerObject) MarshalJSON() ([]byte, error) {
 	type alias swaggerObject
 	return extensionMarshalJSON(alias(so), so.extensions)
