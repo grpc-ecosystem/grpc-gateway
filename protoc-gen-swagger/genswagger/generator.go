@@ -68,7 +68,7 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 }
 
 func fieldName(k string) string {
-	return strings.ReplaceAll(strings.Title(k), "-", "")
+	return strings.ReplaceAll(strings.Title(k), "-", "_")
 }
 
 // Q: What's up with the alias types here?
