@@ -102,9 +102,14 @@ You might not like [the default mapping rule](http://godoc.org/github.com/grpc-e
   ```
 
 ## Mapping from gRPC server metadata to HTTP response headers
-ditto. Use [`WithOutgoingHeaderMatcher`](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#WithOutgoingHeaderMatcher). See [gRPC metadata docs](https://github.com/grpc/grpc-go/blob/
-master/Documentation/grpc-metadata.md) for more info on sending / receiving gRPC metadata.
+ditto. Use [`WithOutgoingHeaderMatcher`]
+(http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#WithOutgoingHeaderMatcher).
+See [gRPC metadata docs]
+(https://github.com/grpc/grpc-go/blob/master/Documentation/grpc-metadata.md) for
+more info on sending / receiving gRPC metadata.
+
   e.g.
+
   ```go
   ...
   if appendCustomHeader {
