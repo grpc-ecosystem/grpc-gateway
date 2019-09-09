@@ -457,7 +457,7 @@ func TestApplyTemplateExtensions(t *testing.T) {
 
 	swaggerOperation := swagger_options.Operation{
 		Responses: map[string]*swagger_options.Response{
-			"successful": &swagger_options.Response{
+			"200": &swagger_options.Response{
 				Extensions: map[string]*structpb.Value{
 					"x-resp-id": &structpb.Value{Kind: &structpb.Value_StringValue{StringValue: "resp1000"}},
 				},
@@ -505,9 +505,7 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	var response swaggerResponseObject
 	for _, v := range result.Paths {
 		operation = v.Get
-		for _, r :=  range v.Get.Responses {
-			response = r
-		}
+		response = v.Get.Responses["200"]
 	}
 	if want, is, name := []extension{
 		{key: "x-op-foo", value: json.RawMessage("\"baz\"")},
