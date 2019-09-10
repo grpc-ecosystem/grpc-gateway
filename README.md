@@ -235,7 +235,7 @@ More examples are available under `examples` directory.
 To use the same port for custom HTTP handlers (e.g. serving `swagger.json`),
 gRPC-gateway, and a gRPC server, see
 [this example by CoreOS](https://github.com/philips/grpc-gateway-example/blob/master/cmd/serve.go)
-(and its accompanying [blog post](https://coreos.com/blog/gRPC-protobufs-swagger.html)).
+(and its accompanying [blog post](https://coreos.com/blog/grpc-protobufs-swagger.html)).
 
 ## Features
 
