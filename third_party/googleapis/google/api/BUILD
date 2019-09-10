@@ -14,7 +14,6 @@ proto_library(
     name = "http_proto",
     strip_import_prefix="/third_party/googleapis",
     srcs = ["http.proto"],
-    deps = [],
 )
 
 proto_library(
