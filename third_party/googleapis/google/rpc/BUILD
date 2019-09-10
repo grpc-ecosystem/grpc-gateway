@@ -3,9 +3,6 @@ proto_library(
     name = "code_proto",
     srcs = ["code.proto"],
     strip_import_prefix="/third_party/googleapis",
-    deps = [
-      
-    ],
 )
 
 proto_library(
