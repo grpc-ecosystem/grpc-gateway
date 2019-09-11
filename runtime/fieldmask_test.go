@@ -51,9 +51,9 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 		expectedErr error
 	}{
 		{name: "empty", expected: newFieldMask()},
-		{name: "simple", input: `{"foo":1, "bar":"baz"}`, expected: newFieldMask("Foo", "Bar")},
-		{name: "nested", input: `{"foo": {"bar":1, "baz": 2}, "qux": 3}`, expected: newFieldMask("Foo.Bar", "Foo.Baz", "Qux")},
-		{name: "canonical", input: `{"f": {"b": {"d": 1, "x": 2}, "c": 1}}`, expected: newFieldMask("F.B.D", "F.B.X", "F.C")},
+		{name: "simple", input: `{"foo":1, "bar":"baz"}`, expected: newFieldMask("foo", "bar")},
+		{name: "nested", input: `{"foo": {"bar":1, "baz": 2}, "qux": 3}`, expected: newFieldMask("foo.bar", "foo.baz", "qux")},
+		{name: "canonical", input: `{"f": {"b": {"d": 1, "x": 2}, "c": 1}}`, expected: newFieldMask("f.b.d", "f.b.x", "f.c")},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			actual, err := FieldMaskFromRequestBody(bytes.NewReader([]byte(tc.input)))
@@ -62,25 +62,6 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 			}
 			if err != tc.expectedErr {
 				t.Errorf("want %v; got %v", tc.expectedErr, err)
-			}
-		})
-	}
-}
-
-func TestCamelCaseFieldMask(t *testing.T) {
-	for _, tc := range []struct {
-		name     string
-		input    *field_mask.FieldMask
-		expected *field_mask.FieldMask
-	}{
-		{"nil", nil, nil},
-		{"empty", &field_mask.FieldMask{Paths: nil}, &field_mask.FieldMask{Paths: nil}},
-		{"main usage", newFieldMask("a", "a.b", "some_field.some_sub_field"), newFieldMask("A", "A.B", "SomeField.SomeSubField")},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			CamelCaseFieldMask(tc.input)
-			if expected, actual := tc.expected, tc.input; !fieldMasksEqual(expected, actual) {
-				t.Errorf("want %v; got %v", fieldMaskString(expected), fieldMaskString(actual))
 			}
 		})
 	}

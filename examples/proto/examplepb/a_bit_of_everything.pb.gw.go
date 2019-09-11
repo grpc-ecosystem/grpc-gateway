@@ -773,9 +773,7 @@ func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler r
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if protoReq.UpdateMask != nil && len(protoReq.UpdateMask.GetPaths()) > 0 {
-		runtime.CamelCaseFieldMask(protoReq.UpdateMask)
-	} else {
+	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader()); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		} else {
@@ -824,9 +822,7 @@ func local_request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marsh
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if protoReq.UpdateMask != nil && len(protoReq.UpdateMask.GetPaths()) > 0 {
-		runtime.CamelCaseFieldMask(protoReq.UpdateMask)
-	} else {
+	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader()); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		} else {
@@ -872,9 +868,6 @@ func request_ABitOfEverythingService_PatchWithFieldMaskInBody_0(ctx context.Cont
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if protoReq.UpdateMask != nil && len(protoReq.UpdateMask.GetPaths()) > 0 {
-		runtime.CamelCaseFieldMask(protoReq.UpdateMask)
-	}
 
 	var (
 		val string
@@ -909,9 +902,6 @@ func local_request_ABitOfEverythingService_PatchWithFieldMaskInBody_0(ctx contex
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if protoReq.UpdateMask != nil && len(protoReq.UpdateMask.GetPaths()) > 0 {
-		runtime.CamelCaseFieldMask(protoReq.UpdateMask)
 	}
 
 	var (

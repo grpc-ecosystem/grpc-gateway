@@ -314,16 +314,14 @@ var (
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	{{- if and $AllowPatchFeature (and (eq (.HTTPMethod) "PATCH") (.FieldMaskField))}}
-	if protoReq.{{.FieldMaskField}} != nil && len(protoReq.{{.FieldMaskField}}.GetPaths()) > 0 {
-		runtime.CamelCaseFieldMask(protoReq.{{.FieldMaskField}})
-	} {{if not (eq "*" .GetBodyFieldPath)}} else {
+	{{- if and $AllowPatchFeature (eq (.HTTPMethod) "PATCH") (.FieldMaskField) (not (eq "*" .GetBodyFieldPath)) }}
+	if protoReq.{{.FieldMaskField}} == nil || len(protoReq.{{.FieldMaskField}}.GetPaths()) == 0 {
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader()); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 			} else {
 				protoReq.{{.FieldMaskField}} = fieldMask
 			}
-	} {{end}}
+	}
 	{{end}}
 {{end}}
 {{if .PathParams}}
@@ -474,16 +472,14 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	{{- if and $AllowPatchFeature (and (eq (.HTTPMethod) "PATCH") (.FieldMaskField))}}
-	if protoReq.{{.FieldMaskField}} != nil && len(protoReq.{{.FieldMaskField}}.GetPaths()) > 0 {
-		runtime.CamelCaseFieldMask(protoReq.{{.FieldMaskField}})
-	} {{if not (eq "*" .GetBodyFieldPath)}} else {
+	{{- if and $AllowPatchFeature (eq (.HTTPMethod) "PATCH") (.FieldMaskField) (not (eq "*" .GetBodyFieldPath)) }}
+	if protoReq.{{.FieldMaskField}} == nil || len(protoReq.{{.FieldMaskField}}.GetPaths()) == 0 {
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader()); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 			} else {
 				protoReq.{{.FieldMaskField}} = fieldMask
-			}		
-	} {{end}}		
+			}
+	}
 	{{end}}
 {{end}}
 {{if .PathParams}}

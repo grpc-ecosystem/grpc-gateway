@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"strings"
 	"sync"
 
 	"github.com/golang/glog"
@@ -83,7 +82,7 @@ func (s *_ABitOfEverythingServer) BulkCreate(stream examples.StreamService_BulkC
 			return err
 		}
 		count++
-		glog.Error(msg)
+		glog.Info(msg)
 		if _, err = s.Create(ctx, msg); err != nil {
 			return err
 		}
@@ -187,18 +186,8 @@ func (s *_ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.Up
 }
 
 // PatchWithFieldMaskInBody differs from UpdateV2 only in that this method exposes the field mask in the request body,
-// so that clients can specify their mask explicitly
+// so that clients can specify their mask explicitly. The difference is entirely in the http interface.
 func (s *_ABitOfEverythingServer) PatchWithFieldMaskInBody(ctx context.Context, request *examples.UpdateV2Request) (*empty.Empty, error) {
-	// low-effort attempt to modify the field mask to only include paths for the ABE struct. Since this is only for the
-	// integration tests, this narrow implementaion is fine.
-	if request.UpdateMask != nil {
-		var shifted []string
-		for _, path := range request.UpdateMask.GetPaths() {
-			shifted = append(shifted, strings.TrimPrefix(path, "Abe."))
-		}
-		request.UpdateMask.Paths = shifted
-	}
-
 	return s.UpdateV2(ctx, request)
 }
 
