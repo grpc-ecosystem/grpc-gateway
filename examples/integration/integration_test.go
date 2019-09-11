@@ -1479,6 +1479,10 @@ func testResponseStrings(t *testing.T, port int) {
 		}
 	}()
 
+	if err := waitForGateway(ctx, 8081); err != nil {
+		t.Fatalf("waitForGateway(ctx, 8081) failed with %v; want success", err)
+	}
+
 	port = 8081
 
 	for i, spec := range []struct {
