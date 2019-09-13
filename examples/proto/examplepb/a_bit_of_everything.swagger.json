@@ -11,7 +11,8 @@
     "license": {
       "name": "BSD 3-Clause License",
       "url": "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt"
-    }
+    },
+    "x-something-something": "yadda"
   },
   "schemes": [
     "http",
@@ -101,7 +102,8 @@
           },
           "503": {
             "description": "Returned when the resource is temporarily unavailable.",
-            "schema": {}
+            "schema": {},
+            "x-number": 100
           }
         },
         "parameters": [
@@ -1133,7 +1135,8 @@
               "write"
             ]
           }
-        ]
+        ],
+        "x-irreversible": true
       },
       "put": {
         "operationId": "Update",
@@ -1540,7 +1543,8 @@
           },
           "503": {
             "description": "Returned when the resource is temporarily unavailable.",
-            "schema": {}
+            "schema": {},
+            "x-number": 100
           }
         },
         "parameters": [
@@ -1590,7 +1594,8 @@
           },
           "503": {
             "description": "Returned when the resource is temporarily unavailable.",
-            "schema": {}
+            "schema": {},
+            "x-number": 100
           }
         },
         "parameters": [
@@ -2283,7 +2288,12 @@
     "ApiKeyAuth": {
       "type": "apiKey",
       "name": "X-API-Key",
-      "in": "header"
+      "in": "header",
+      "x-amazon-apigateway-authorizer": {
+        "authorizerResultTtlInSeconds": 60,
+        "type": "token"
+      },
+      "x-amazon-apigateway-authtype": "oauth2"
     },
     "BasicAuth": {
       "type": "basic"
@@ -2316,5 +2326,10 @@
   "externalDocs": {
     "description": "More about gRPC-Gateway",
     "url": "https://github.com/grpc-ecosystem/grpc-gateway"
-  }
+  },
+  "x-grpc-gateway-baz-list": [
+    "one",
+    true
+  ],
+  "x-grpc-gateway-foo": "bar"
 }
