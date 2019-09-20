@@ -1,5 +1,38 @@
 # Change Log
 
+## [v1.11.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.11.2) (2019-09-20)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.11.1...v1.11.2)
+
+**Implemented enhancements:**
+
+- Support specifying servers in the swagger generator [\#891](https://github.com/grpc-ecosystem/grpc-gateway/issues/891)
+
+**Fixed bugs:**
+
+- Make protoc-gen-swagger build on 1.11 [\#1044](https://github.com/grpc-ecosystem/grpc-gateway/issues/1044)
+- jsonpb panics when using numbers for parsing timestamps [\#1025](https://github.com/grpc-ecosystem/grpc-gateway/issues/1025)
+
+**Closed issues:**
+
+- Interceptors not called when using new RegisterHandler function [\#1043](https://github.com/grpc-ecosystem/grpc-gateway/issues/1043)
+- How to use -grpc-gateway\_out sp that the result is in a specific folder? [\#1042](https://github.com/grpc-ecosystem/grpc-gateway/issues/1042)
+- Is there any way to let json int32 can not accept string in grpc-gateway? [\#1029](https://github.com/grpc-ecosystem/grpc-gateway/issues/1029)
+- Go integration tests are somewhat flaky [\#992](https://github.com/grpc-ecosystem/grpc-gateway/issues/992)
+
+**Merged pull requests:**
+
+- examples/integration: wait for secondary gateway [\#1039](https://github.com/grpc-ecosystem/grpc-gateway/pull/1039) ([srenatus](https://github.com/srenatus))
+- Update README.md [\#1038](https://github.com/grpc-ecosystem/grpc-gateway/pull/1038) ([piengeng](https://github.com/piengeng))
+- Configure stale\[bot\] [\#1036](https://github.com/grpc-ecosystem/grpc-gateway/pull/1036) ([achew22](https://github.com/achew22))
+- added additional info for custom http headers [\#1035](https://github.com/grpc-ecosystem/grpc-gateway/pull/1035) ([cemenson](https://github.com/cemenson))
+- protoc-gen-swagger: add support for arbitrary extensions [\#1033](https://github.com/grpc-ecosystem/grpc-gateway/pull/1033) ([srenatus](https://github.com/srenatus))
+- nitpick spacing in other proto files [\#1032](https://github.com/grpc-ecosystem/grpc-gateway/pull/1032) ([srenatus](https://github.com/srenatus))
+- nitpick a\_bit\_of\_everything.proto [\#1030](https://github.com/grpc-ecosystem/grpc-gateway/pull/1030) ([srenatus](https://github.com/srenatus))
+- runtime: stop using nil ponters with Unmarshal [\#1028](https://github.com/grpc-ecosystem/grpc-gateway/pull/1028) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Small performance fix [\#1027](https://github.com/grpc-ecosystem/grpc-gateway/pull/1027) ([freedemster](https://github.com/freedemster))
+- docs need type assertion on proto.Message [\#1026](https://github.com/grpc-ecosystem/grpc-gateway/pull/1026) ([zachgersh](https://github.com/zachgersh))
+- Update ISSUE\_TEMPLATE.md [\#1014](https://github.com/grpc-ecosystem/grpc-gateway/pull/1014) ([prologic](https://github.com/prologic))
+
 ## [v1.11.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.11.1) (2019-09-02)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.11.0...v1.11.1)
 
@@ -15,6 +48,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.11.1 [\#1024](https://github.com/grpc-ecosystem/grpc-gateway/pull/1024) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Fuzzit: use go-fuzz with go-modules support [\#1022](https://github.com/grpc-ecosystem/grpc-gateway/pull/1022) ([yevgenypats](https://github.com/yevgenypats))
 - invoke in process server need attach md to incoming context [\#1021](https://github.com/grpc-ecosystem/grpc-gateway/pull/1021) ([hb-chen](https://github.com/hb-chen))
 
