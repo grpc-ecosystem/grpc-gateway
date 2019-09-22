@@ -1557,6 +1557,14 @@ func TestRequestQueryParams(t *testing.T) {
 			wantContent: `{"single_nested":{"name":"foo"},"double_value":1234.56,"bool_value":true}`,
 		},
 		{
+			name:        "get nested enum url parameter",
+			httpMethod:  "GET",
+			contentType: "application/json",
+			// If nested_enum.OK were FALSE, the content of single_nested would be {} due to how 0 values are serialized
+			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/nested_enum/TRUE", port),
+			wantContent: `{"single_nested":{"ok":"TRUE"}}`,
+		},
+		{
 			name:           "post url query values",
 			httpMethod:     "POST",
 			contentType:    "application/json",
