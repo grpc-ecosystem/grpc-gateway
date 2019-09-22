@@ -506,6 +506,11 @@ service ABitOfEverythingService {
 			get: "/v1/example/a_bit_of_everything/params/get/{single_nested.name}"
 		};
 	}
+	rpc CheckNestedEnumGetQueryParams(ABitOfEverything) returns (ABitOfEverything) {
+		option (google.api.http) = {
+			get: "/v1/example/a_bit_of_everything/params/get/nested_enum/{single_nested.ok}"
+		};
+	}
 	rpc CheckPostQueryParams(ABitOfEverything) returns (ABitOfEverything) {
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything/params/post/{string_value}"
