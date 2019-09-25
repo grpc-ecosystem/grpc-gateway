@@ -1814,7 +1814,7 @@
     },
     "/v2a/example/a_bit_of_everything/{abe.uuid}": {
       "patch": {
-        "operationId": "PatchWithFieldMaskInBody",
+        "operationId": "UpdateV23",
         "responses": {
           "200": {
             "description": "A successful response.",
