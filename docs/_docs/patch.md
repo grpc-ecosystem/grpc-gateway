@@ -7,8 +7,8 @@ The HTTP PATCH method allows a resource to be partially updated.
 
 The idea, If a binding is mapped to patch and the request message has exactly one FieldMask message in it, additional code is rendered for the gateway handler that will populate the FieldMask based on the request body.
 This handles two scenarios:
-- The FieldMask is hidden from the REST request (as in the [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/proto/examplepb/a_bit_of_everything.proto#L286) example). In this case, the FieldMask is updated from the request body and set in the gRPC request message.
-- The FieldMask is exposed to the REST request (as in the [PatchWithFieldMaskInBody](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/proto/examplepb/a_bit_of_everything.proto#L295)  example). For this case, a check is made as to whether the FieldMask is nil/empty prior to populating with the request body.
+- The FieldMask is hidden from the REST request (as in the first additional binding in the [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/proto/examplepb/a_bit_of_everything.proto#L311) example). In this case, the FieldMask is updated from the request body and set in the gRPC request message.
+- The FieldMask is exposed to the REST request (as in the second additional binding in the [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/proto/examplepb/a_bit_of_everything.proto#L311) example). For this case, a check is made as to whether the FieldMask is nil/empty prior to populating with the request body.
 
 ## Example Usage
 1. Create PATCH request.
@@ -38,10 +38,10 @@ rpc UpdateV2(UpdateV2Request) returns (google.protobuf.Empty) {
 }
 ```
 
-If you want to use PATCH wtih fieldmask exposed to the REST request then include the entire request message.
+If you want to use PATCH with fieldmask exposed to the REST request then include the entire request message.
 
 ```golang
-rpc PatchWithFieldMaskInBody(UpdateV2Request) returns (google.protobuf.Empty) {
+rpc UpdateV2(UpdateV2Request) returns (google.protobuf.Empty) {
 	option (google.api.http) = {
 		patch: "/v2a/example/a_bit_of_everything/{abe.uuid}"
 		body: "*"

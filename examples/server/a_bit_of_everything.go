@@ -185,12 +185,6 @@ func (s *_ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.Up
 	return new(empty.Empty), nil
 }
 
-// PatchWithFieldMaskInBody differs from UpdateV2 only in that this method exposes the field mask in the request body,
-// so that clients can specify their mask explicitly. The difference is entirely in the http interface.
-func (s *_ABitOfEverythingServer) PatchWithFieldMaskInBody(ctx context.Context, request *examples.UpdateV2Request) (*empty.Empty, error) {
-	return s.UpdateV2(ctx, request)
-}
-
 func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessage) (*empty.Empty, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
