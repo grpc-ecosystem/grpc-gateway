@@ -25,6 +25,7 @@ func Run(ctx context.Context, network, address string) error {
 	s := grpc.NewServer()
 	examples.RegisterEchoServiceServer(s, newEchoServer())
 	examples.RegisterFlowCombinationServer(s, newFlowCombinationServer())
+	examples.RegisterNonStandardServiceServer(s, newNonStandardServer())
 
 	abe := newABitOfEverythingServer()
 	examples.RegisterABitOfEverythingServiceServer(s, abe)

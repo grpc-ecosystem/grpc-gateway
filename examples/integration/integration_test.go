@@ -1605,3 +1605,77 @@ func TestRequestQueryParams(t *testing.T) {
 		})
 	}
 }
+
+func TestNonStandardNames(t *testing.T) {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	go func() {
+		if err := runGateway(
+			ctx,
+			":8081",
+			runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName: true, EmitDefaults: true}),
+		); err != nil {
+			t.Errorf("runGateway() failed with %v; want success", err)
+			return
+		}
+	}()
+
+	if err := waitForGateway(ctx, 8081); err != nil {
+		t.Errorf("waitForGateway(ctx, 8081) failed with %v; want success", err)
+	}
+
+	for _, tc := range []struct {
+		name     string
+		port     int
+		method   string
+		jsonBody string
+	}{
+		{
+			"Test standard update method",
+			8081,
+			"update",
+			`{"id":"foo","Num":"1","line_num":"42","langIdent":"English","STATUS":"good","en_GB":"1","no":"yes","thing":{"subThing":{"sub_value":"hi"}}}`,
+		},
+		{
+			"Test update method using json_names in message",
+			8081,
+			"update_with_json_names",
+			// N.B. json_names have no effect if not using OrigName: false
+			`{"id":"foo","Num":"1","line_num":"42","langIdent":"English","STATUS":"good","en_GB":"1","no":"yes","thing":{"subThing":{"sub_value":"hi"}}}`,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			testNonStandardNames(t, tc.port, tc.method, tc.jsonBody)
+		})
+	}
+}
+
+func testNonStandardNames(t *testing.T, port int, method string, jsonBody string) {
+	req, err := http.NewRequest(
+		http.MethodPatch,
+		fmt.Sprintf("http://localhost:%d/v1/example/non_standard/%s", port, method),
+		strings.NewReader(jsonBody),
+	)
+	if err != nil {
+		t.Fatalf("http.NewRequest(PATCH) failed with %v; want success", err)
+	}
+	patchResp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatalf("failed to issue PATCH request: %v", err)
+	}
+
+	body, err := ioutil.ReadAll(patchResp.Body)
+	if err != nil {
+		t.Errorf("patchResp body couldn't be read: %v", err)
+	}
+
+	if got, want := patchResp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("patchResp.StatusCode= %d; want %d resp: %v", got, want, string(body))
+	}
+
+	if got, want := string(body), jsonBody; got != want {
+		t.Errorf("got %q; want %q", got, want)
+	}
+}
