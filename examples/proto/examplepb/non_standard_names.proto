@@ -7,12 +7,12 @@ import "google/protobuf/field_mask.proto";
 
 // NonStandardMessage has oddly named fields.
 message NonStandardMessage {
-	// Id represents the message identifier.
-	string id = 1;
-	int64 Num = 2;
+    // Id represents the message identifier.
+    string id = 1;
+    int64 Num = 2;
     int64 line_num = 3;
     string langIdent = 4;
-	string STATUS = 5;
+    string STATUS = 5;
     int64 en_GB = 6;
     string no = 7;
 
@@ -32,12 +32,12 @@ message NonStandardUpdateRequest {
 
 // NonStandardMessageWithJSONNames maps odd field names to odd JSON names for maximum confusion.
 message NonStandardMessageWithJSONNames {
-	// Id represents the message identifier.
-	string id = 1           [json_name="ID"];
-	int64 Num = 2           [json_name="Num"];
+    // Id represents the message identifier.
+    string id = 1           [json_name="ID"];
+    int64 Num = 2           [json_name="Num"];
     int64 line_num = 3      [json_name="LineNum"];
     string langIdent = 4    [json_name="langIdent"];
-	string STATUS = 5       [json_name="status"];
+    string STATUS = 5       [json_name="status"];
     int64 en_GB = 6         [json_name="En_GB"];
     string no = 7           [json_name="yes"];
 
@@ -59,17 +59,17 @@ message NonStandardWithJSONNamesUpdateRequest {
 service NonStandardService {
     // Apply field mask to empty NonStandardMessage and return result.
     rpc Update(NonStandardUpdateRequest) returns (NonStandardMessage) {
-		option (google.api.http) = {
+        option (google.api.http) = {
             patch: "/v1/example/non_standard/update"
             body: "body"
-		};
+        };
     }
 
-	// Apply field mask to empty NonStandardMessageWithJSONNames and return result.
-	rpc UpdateWithJSONNames(NonStandardWithJSONNamesUpdateRequest) returns (NonStandardMessageWithJSONNames) {
-		option (google.api.http) = {
+    // Apply field mask to empty NonStandardMessageWithJSONNames and return result.
+    rpc UpdateWithJSONNames(NonStandardWithJSONNamesUpdateRequest) returns (NonStandardMessageWithJSONNames) {
+        option (google.api.http) = {
             patch: "/v1/example/non_standard/update_with_json_names"
             body: "body"
-		};
-	}
+        };
+    }
 }
