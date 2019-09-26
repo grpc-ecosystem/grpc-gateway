@@ -307,6 +307,10 @@ func (s *_ABitOfEverythingServer) CheckGetQueryParams(ctx context.Context, msg *
 	return msg, nil
 }
 
+func (s *_ABitOfEverythingServer) CheckNestedEnumGetQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+	return msg, nil
+}
+
 func (s *_ABitOfEverythingServer) CheckPostQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	return msg, nil
 }

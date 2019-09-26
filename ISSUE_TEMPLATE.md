@@ -59,7 +59,7 @@ Your answer here.
 ```html
 <!-- Example answer
 Evil wizards are hoarding the bunnies and don't want to share. The wizards are casting 
-lettuce protection spells so the cattapult won't work.
+lettuce protection spells so the catapult won't work.
 -->
 ```
 

@@ -1479,6 +1479,10 @@ func testResponseStrings(t *testing.T, port int) {
 		}
 	}()
 
+	if err := waitForGateway(ctx, 8081); err != nil {
+		t.Fatalf("waitForGateway(ctx, 8081) failed with %v; want success", err)
+	}
+
 	port = 8081
 
 	for i, spec := range []struct {
@@ -1551,6 +1555,14 @@ func TestRequestQueryParams(t *testing.T) {
 			contentType: "application/json",
 			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v", port, 1234.56, true),
 			wantContent: `{"single_nested":{"name":"foo"},"double_value":1234.56,"bool_value":true}`,
+		},
+		{
+			name:        "get nested enum url parameter",
+			httpMethod:  "GET",
+			contentType: "application/json",
+			// If nested_enum.OK were FALSE, the content of single_nested would be {} due to how 0 values are serialized
+			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/nested_enum/TRUE", port),
+			wantContent: `{"single_nested":{"ok":"TRUE"}}`,
 		},
 		{
 			name:           "post url query values",

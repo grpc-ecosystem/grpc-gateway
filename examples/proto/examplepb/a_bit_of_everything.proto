@@ -25,6 +25,12 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 			name: "BSD 3-Clause License";
 			url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt";
 		};
+		extensions: {
+			key: "x-something-something";
+			value {
+				string_value: "yadda";
+			}
+		}
 	};
 	// Overwriting host entry breaks tests, so this is not done here.
 	external_docs: {
@@ -51,6 +57,31 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 				type: TYPE_API_KEY;
 				in: IN_HEADER;
 				name: "X-API-Key";
+				extensions: {
+					key: "x-amazon-apigateway-authtype";
+					value {
+						string_value: "oauth2";
+					}
+				}
+				extensions: {
+					key: "x-amazon-apigateway-authorizer";
+					value {
+						struct_value {
+							fields {
+								key: "type";
+								value {
+									string_value: "token";
+								}
+							}
+							fields {
+								key: "authorizerResultTtlInSeconds";
+								value {
+									number_value: 60;
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 		security: {
@@ -124,6 +155,25 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 			schema: {
 				json_schema: {
 					ref: ".grpc.gateway.examples.examplepb.NumericEnum";
+				}
+			}
+		}
+	}
+	extensions: {
+		key: "x-grpc-gateway-foo";
+		value {
+			string_value: "bar";
+		}
+	}
+	extensions: {
+		key: "x-grpc-gateway-baz-list";
+		value {
+			list_value: {
+				values: {
+					string_value: "one";
+				}
+				values: {
+					bool_value: true;
 				}
 			}
 		}
@@ -343,6 +393,12 @@ service ABitOfEverythingService {
 					}
 				}
 			}
+			extensions: {
+				key: "x-irreversible";
+				value {
+					bool_value: true;
+				}
+			}
 		};
 	}
 	rpc GetQuery(ABitOfEverything) returns (google.protobuf.Empty) {
@@ -395,6 +451,12 @@ service ABitOfEverythingService {
 				key: "503";
 				value: {
 					description: "Returned when the resource is temporarily unavailable.";
+					extensions: {
+						key: "x-number";
+						value {
+							number_value: 100;
+						}
+					}
 				}
 			}
 			responses: {
@@ -443,6 +505,11 @@ service ABitOfEverythingService {
 	rpc CheckGetQueryParams(ABitOfEverything) returns (ABitOfEverything) {
 		option (google.api.http) = {
 			get: "/v1/example/a_bit_of_everything/params/get/{single_nested.name}"
+		};
+	}
+	rpc CheckNestedEnumGetQueryParams(ABitOfEverything) returns (ABitOfEverything) {
+		option (google.api.http) = {
+			get: "/v1/example/a_bit_of_everything/params/get/nested_enum/{single_nested.ok}"
 		};
 	}
 	rpc CheckPostQueryParams(ABitOfEverything) returns (ABitOfEverything) {

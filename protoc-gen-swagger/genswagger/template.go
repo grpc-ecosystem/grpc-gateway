@@ -6,12 +6,15 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
 
 	"github.com/golang/glog"
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
+	structpb "github.com/golang/protobuf/ptypes/struct"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
@@ -953,11 +956,27 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					}
 					if opts.Responses != nil {
 						for name, resp := range opts.Responses {
-							operationObject.Responses[name] = swaggerResponseObject{
+							respObj := swaggerResponseObject{
 								Description: resp.Description,
 								Schema:      swaggerSchemaFromProtoSchema(resp.Schema, reg, customRefs),
 							}
+							if resp.Extensions != nil {
+								exts, err := processExtensions(resp.Extensions)
+								if err != nil {
+									return err
+								}
+								respObj.extensions = exts
+							}
+							operationObject.Responses[name] = respObj
 						}
+					}
+
+					if opts.Extensions != nil {
+						exts, err := processExtensions(opts.Extensions)
+						if err != nil {
+							return err
+						}
+						operationObject.extensions = exts
 					}
 
 					// TODO(ivucica): add remaining fields of operation object
@@ -1080,6 +1099,13 @@ func applyTemplate(p param) (*swaggerObject, error) {
 					s.Info.License.URL = spb.Info.License.Url
 				}
 			}
+			if spb.Info.Extensions != nil {
+				exts, err := processExtensions(spb.Info.Extensions)
+				if err != nil {
+					return nil, err
+				}
+				s.Info.extensions = exts
+			}
 		}
 		if spb.Host != "" {
 			s.Host = spb.Host
@@ -1162,6 +1188,13 @@ func applyTemplate(p param) (*swaggerObject, error) {
 						newSecDefValue.Scopes[scopeKey] = scopeDesc
 					}
 				}
+				if secDefValue.Extensions != nil {
+					exts, err := processExtensions(secDefValue.Extensions)
+					if err != nil {
+						return nil, err
+					}
+					newSecDefValue.extensions = exts
+				}
 				s.SecurityDefinitions[secDefKey] = newSecDefValue
 			}
 		}
@@ -1220,6 +1253,14 @@ func applyTemplate(p param) (*swaggerObject, error) {
 			}
 		}
 
+		if spb.Extensions != nil {
+			exts, err := processExtensions(spb.Extensions)
+			if err != nil {
+				return nil, err
+			}
+			s.extensions = exts
+		}
+
 		// Additional fields on the OpenAPI v2 spec's "Swagger" object
 		// should be added here, once supported in the proto.
 	}
@@ -1229,6 +1270,22 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	addCustomRefs(s.Definitions, p.reg, customRefs)
 
 	return &s, nil
+}
+
+func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error) {
+	exts := []extension{}
+	for k, v := range inputExts {
+		if !strings.HasPrefix(k, "x-") {
+			return nil, fmt.Errorf("Extension keys need to start with \"x-\": %q", k)
+		}
+		ext, err := (&jsonpb.Marshaler{Indent: "  "}).MarshalToString(v)
+		if err != nil {
+			return nil, err
+		}
+		exts = append(exts, extension{key: k, value: json.RawMessage(ext)})
+	}
+	sort.Slice(exts, func(i, j int) bool { return exts[i].key < exts[j].key })
+	return exts, nil
 }
 
 // updateSwaggerDataFromComments updates a Swagger object based on a comment
