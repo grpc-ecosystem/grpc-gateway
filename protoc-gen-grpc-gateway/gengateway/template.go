@@ -2,6 +2,7 @@ package gengateway
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"strings"
 	"text/template"
@@ -32,6 +33,14 @@ func (b binding) GetBodyFieldPath() string {
 		return b.Body.FieldPath.String()
 	}
 	return "*"
+}
+
+// GetBodyFieldPath returns the binding body's struct field name.
+func (b binding) GetBodyFieldStructName() (string, error) {
+	if b.Body != nil && len(b.Body.FieldPath) != 0 {
+		return generator2.CamelCase(b.Body.FieldPath.String()), nil
+	}
+	return "", errors.New("No body field found")
 }
 
 // HasQueryParam determines if the binding needs parameters in query string.
@@ -224,11 +233,13 @@ import (
 	{{range $i := .Imports}}{{if not $i.Standard}}{{$i | printf "%s\n"}}{{end}}{{end}}
 )
 
+// Suppress "imported and not used" errors
 var _ codes.Code
 var _ io.Reader
 var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
+var _ = descriptor.ForMessage
 `))
 
 	handlerTemplate = template.Must(template.New("handler").Parse(`
@@ -316,7 +327,8 @@ var (
 	}
 	{{- if and $AllowPatchFeature (eq (.HTTPMethod) "PATCH") (.FieldMaskField) (not (eq "*" .GetBodyFieldPath)) }}
 	if protoReq.{{.FieldMaskField}} == nil || len(protoReq.{{.FieldMaskField}}.GetPaths()) == 0 {
-			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader()); err != nil {
+			_, md := descriptor.ForMessage(protoReq.{{.GetBodyFieldStructName}})
+			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 			} else {
 				protoReq.{{.FieldMaskField}} = fieldMask
@@ -477,7 +489,8 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 	}
 	{{- if and $AllowPatchFeature (eq (.HTTPMethod) "PATCH") (.FieldMaskField) (not (eq "*" .GetBodyFieldPath)) }}
 	if protoReq.{{.FieldMaskField}} == nil || len(protoReq.{{.FieldMaskField}}.GetPaths()) == 0 {
-			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader()); err != nil {
+			_, md := descriptor.ForMessage(protoReq.{{.GetBodyFieldStructName}})
+			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 			} else {
 				protoReq.{{.FieldMaskField}} = fieldMask

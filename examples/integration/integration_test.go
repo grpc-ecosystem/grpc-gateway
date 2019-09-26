@@ -1643,9 +1643,22 @@ func TestNonStandardNames(t *testing.T) {
 			return
 		}
 	}()
+	go func() {
+		if err := runGateway(
+			ctx,
+			":8082",
+			runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName: false, EmitDefaults: true}),
+		); err != nil {
+			t.Errorf("runGateway() failed with %v; want success", err)
+			return
+		}
+	}()
 
 	if err := waitForGateway(ctx, 8081); err != nil {
 		t.Errorf("waitForGateway(ctx, 8081) failed with %v; want success", err)
+	}
+	if err := waitForGateway(ctx, 8082); err != nil {
+		t.Errorf("waitForGateway(ctx, 8082) failed with %v; want success", err)
 	}
 
 	for _, tc := range []struct {
@@ -1666,6 +1679,18 @@ func TestNonStandardNames(t *testing.T) {
 			"update_with_json_names",
 			// N.B. json_names have no effect if not using OrigName: false
 			`{"id":"foo","Num":"1","line_num":"42","langIdent":"English","STATUS":"good","en_GB":"1","no":"yes","thing":{"subThing":{"sub_value":"hi"}}}`,
+		},
+		{
+			"Test standard update method with OrigName: false marshaller option",
+			8082,
+			"update",
+			`{"id":"foo","Num":"1","lineNum":"42","langIdent":"English","STATUS":"good","enGB":"1","no":"yes","thing":{"subThing":{"subValue":"hi"}}}`,
+		},
+		{
+			"Test update method using json_names in message with OrigName: false marshaller option",
+			8082,
+			"update_with_json_names",
+			`{"ID":"foo","Num":"1","LineNum":"42","langIdent":"English","status":"good","En_GB":"1","yes":"no","Thingy":{"SubThing":{"sub_Value":"hi"}}}`,
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
