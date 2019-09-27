@@ -735,7 +735,7 @@ func TestABEPatchBody(t *testing.T) {
 			},
 		},
 		{
-			// N.B. This case passes the empty field mask to the UpdateV2 method so falls back to PUT semantics as per the implementeation
+			// N.B. This case passes the empty field mask to the UpdateV2 method so falls back to PUT semantics as per the implementation.
 			name: "with empty fieldmask",
 			originalValue: gw.ABitOfEverything{
 				Int32Value:   42,
@@ -752,7 +752,7 @@ func TestABEPatchBody(t *testing.T) {
 			},
 		},
 		{
-			// N.B. This case passes the nil field mask to the UpdateV2 method so falls back to PUT semantics as per the implementeation
+			// N.B. This case passes the nil field mask to the UpdateV2 method so falls back to PUT semantics as per the implementation.
 			name: "with nil fieldmask",
 			originalValue: gw.ABitOfEverything{
 				Int32Value:   42,
