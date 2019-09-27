@@ -66,3 +66,67 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 		})
 	}
 }
+
+// avoid compiler optimising benchmark away
+var result *field_mask.FieldMask
+
+func BenchmarkFieldMaskFromRequestBody(b *testing.B) {
+	input := `{` +
+		`"single_nested":				{"name": "bar",` +
+		`                           	 "amount": 10,` +
+		`                           	 "ok": "TRUE"},` +
+		`"uuid":						"6EC2446F-7E89-4127-B3E6-5C05E6BECBA7",` +
+		`"nested": 						[{"name": "bar",` +
+		`								  "amount": 10},` +
+		`								 {"name": "baz",` +
+		`								  "amount": 20}],` +
+		`"float_value":             	1.5,` +
+		`"double_value":            	2.5,` +
+		`"int64_value":             	4294967296,` +
+		`"uint64_value":            	9223372036854775807,` +
+		`"int32_value":             	-2147483648,` +
+		`"fixed64_value":           	9223372036854775807,` +
+		`"fixed32_value":           	4294967295,` +
+		`"bool_value":              	true,` +
+		`"string_value":            	"strprefix/foo",` +
+		`"bytes_value":					"132456",` +
+		`"uint32_value":            	4294967295,` +
+		`"enum_value":     		        "ONE",` +
+		`"path_enum_value":	    	    "DEF",` +
+		`"nested_path_enum_value":  	"JKL",` +
+		`"sfixed32_value":          	2147483647,` +
+		`"sfixed64_value":          	-4611686018427387904,` +
+		`"sint32_value":            	2147483647,` +
+		`"sint64_value":            	4611686018427387903,` +
+		`"repeated_string_value": 		["a", "b", "c"],` +
+		`"oneof_value":					{"oneof_string":"x"},` +
+		`"map_value": 					{"a": "ONE",` +
+		`								 "b": "ZERO"},` +
+		`"mapped_string_value": 		{"a": "x",` +
+		`								 "b": "y"},` +
+		`"mapped_nested_value": 		{"a": {"name": "x", "amount": 1},` +
+		`								 "b": {"name": "y", "amount": 2}},` +
+		`"nonConventionalNameValue":	"camelCase",` +
+		`"timestamp_value":				"2016-05-10T10:19:13.123Z",` +
+		`"repeated_enum_value":			["ONE", "ZERO"],` +
+		`"repeated_enum_annotation":	 ["ONE", "ZERO"],` +
+		`"enum_value_annotation": 		"ONE",` +
+		`"repeated_string_annotation":	["a", "b"],` +
+		`"repeated_nested_annotation": 	[{"name": "hoge",` +
+		`								  "amount": 10},` +
+		`								 {"name": "fuga",` +
+		`								  "amount": 20}],` +
+		`"nested_annotation": 			{"name": "hoge",` +
+		`								 "amount": 10},` +
+		`"int64_override_type":			12345` +
+		`}`
+	var r *field_mask.FieldMask
+	var err error
+	for i := 0; i < b.N; i++ {
+		r, err = FieldMaskFromRequestBody(bytes.NewReader([]byte(input)))
+	}
+	if err != nil {
+		b.Error(err)
+	}
+	result = r
+}
