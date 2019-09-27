@@ -5,7 +5,6 @@ import (
 	"io"
 	"strings"
 
-	"github.com/golang/protobuf/protoc-gen-go/generator"
 	"google.golang.org/genproto/protobuf/field_mask"
 )
 
@@ -29,7 +28,7 @@ func FieldMaskFromRequestBody(r io.Reader) (*field_mask.FieldMask, error) {
 		if m, ok := item.node.(map[string]interface{}); ok {
 			// if the item is an object, then enqueue all of its children
 			for k, v := range m {
-				queue = append(queue, fieldMaskPathItem{path: append(item.path, generator.CamelCase(k)), node: v})
+				queue = append(queue, fieldMaskPathItem{path: append(item.path, k), node: v})
 			}
 		} else if len(item.path) > 0 {
 			// otherwise, it's a leaf node so print its path
@@ -47,24 +46,4 @@ type fieldMaskPathItem struct {
 
 	// a generic decoded json object the current item to inspect for further path extraction
 	node interface{}
-}
-
-// CamelCaseFieldMask updates the given FieldMask by converting all of its paths to CamelCase, using the same heuristic
-// that's used for naming protobuf fields in Go.
-func CamelCaseFieldMask(mask *field_mask.FieldMask) {
-	if mask == nil || mask.Paths == nil {
-		return
-	}
-
-	var newPaths []string
-	for _, path := range mask.Paths {
-		lowerCasedParts := strings.Split(path, ".")
-		var camelCasedParts []string
-		for _, part := range lowerCasedParts {
-			camelCasedParts = append(camelCasedParts, generator.CamelCase(part))
-		}
-		newPaths = append(newPaths, strings.Join(camelCasedParts, "."))
-	}
-
-	mask.Paths = newPaths
 }

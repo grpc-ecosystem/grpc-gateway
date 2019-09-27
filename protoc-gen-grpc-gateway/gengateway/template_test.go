@@ -628,7 +628,10 @@ func TestAllowPatchFeature(t *testing.T) {
 						Bindings: []*descriptor.Binding{
 							{
 								HTTPMethod: "PATCH",
-								Body:       &descriptor.Body{FieldPath: nil},
+								Body: &descriptor.Body{FieldPath: descriptor.FieldPath{descriptor.FieldPathComponent{
+									Name:   "abe",
+									Target: msg.Fields[0],
+								}}},
 							},
 						},
 					},
@@ -636,7 +639,7 @@ func TestAllowPatchFeature(t *testing.T) {
 			},
 		},
 	}
-	want := "if protoReq.UpdateMask != nil && len(protoReq.UpdateMask.GetPaths()) > 0 {\n"
+	want := "if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {\n"
 	for _, allowPatchFeature := range []bool{true, false} {
 		got, err := applyTemplate(param{File: crossLinkFixture(&file), RegisterFuncSuffix: "Handler", AllowPatchFeature: allowPatchFeature}, descriptor.NewRegistry())
 		if err != nil {
