@@ -670,6 +670,10 @@ func testABELookup(t *testing.T, port int) {
 // Then, issue a PATCH request updating only the string_value
 // Then, GET the resource and verify that string_value is changed, but int32_value isn't
 func TestABEPatch(t *testing.T) {
+	testABEPatch(t)
+}
+
+func testABEPatch(t testing.TB) {
 	port := 8080
 
 	// create a record with a known string_value and int32_value
@@ -707,6 +711,7 @@ func TestABEPatch(t *testing.T) {
 }
 
 // TestABEPatchBody demonstrates the ability to specify an update mask within the request body.
+// This binding does not use an automatically generated update_mask.
 func TestABEPatchBody(t *testing.T) {
 	port := 8080
 
@@ -719,6 +724,7 @@ func TestABEPatchBody(t *testing.T) {
 		{
 			name: "with fieldmask provided",
 			originalValue: gw.ABitOfEverything{
+				Int32Value:   42,
 				StringValue:  "rabbit",
 				SingleNested: &gw.ABitOfEverything_Nested{Name: "some value that will get overwritten", Amount: 345},
 			},
@@ -726,11 +732,17 @@ func TestABEPatchBody(t *testing.T) {
 				StringValue:  "some value that won't get updated because it's not in the field mask",
 				SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
 			}, UpdateMask: &field_mask.FieldMask{Paths: []string{"single_nested"}}},
-			want: gw.ABitOfEverything{StringValue: "rabbit", SingleNested: &gw.ABitOfEverything_Nested{Amount: 456}},
+			want: gw.ABitOfEverything{
+				Int32Value:   42,
+				StringValue:  "rabbit",
+				SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
+			},
 		},
 		{
+			// N.B. This case passes the empty field mask to the UpdateV2 method so falls back to PUT semantics as per the implementeation
 			name: "with empty fieldmask",
 			originalValue: gw.ABitOfEverything{
+				Int32Value:   42,
 				StringValue:  "some value that will get overwritten",
 				SingleNested: &gw.ABitOfEverything_Nested{Name: "value that will get empty", Amount: 345},
 			},
@@ -744,8 +756,10 @@ func TestABEPatchBody(t *testing.T) {
 			},
 		},
 		{
+			// N.B. This case passes the nil field mask to the UpdateV2 method so falls back to PUT semantics as per the implementeation
 			name: "with nil fieldmask",
 			originalValue: gw.ABitOfEverything{
+				Int32Value:   42,
 				StringValue:  "some value that will get overwritten",
 				SingleNested: &gw.ABitOfEverything_Nested{Name: "value that will get empty", Amount: 123},
 			},
@@ -795,7 +809,7 @@ func TestABEPatchBody(t *testing.T) {
 
 // mustMarshal marshals the given object into a json string, calling t.Fatal if an error occurs. Useful in testing to
 // inline marshalling whenever you don't expect the marshalling to return an error
-func mustMarshal(t *testing.T, i interface{}) string {
+func mustMarshal(t testing.TB, i interface{}) string {
 	b, err := json.Marshal(i)
 	if err != nil {
 		t.Fatalf("failed to marshal %#v: %v", i, err)
@@ -805,7 +819,7 @@ func mustMarshal(t *testing.T, i interface{}) string {
 }
 
 // postABE conveniently creates a new ABE record for ease in testing
-func postABE(t *testing.T, port int, abe gw.ABitOfEverything) (uuid string) {
+func postABE(t testing.TB, port int, abe gw.ABitOfEverything) (uuid string) {
 	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	postResp, err := http.Post(apiURL, "application/json", strings.NewReader(mustMarshal(t, abe)))
 	if err != nil {
@@ -829,7 +843,7 @@ func postABE(t *testing.T, port int, abe gw.ABitOfEverything) (uuid string) {
 }
 
 // getABE conveniently fetches an ABE record for ease in testing
-func getABE(t *testing.T, port int, uuid string) gw.ABitOfEverything {
+func getABE(t testing.TB, port int, uuid string) gw.ABitOfEverything {
 	gURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%s", port, uuid)
 	getResp, err := http.Get(gURL)
 	if err != nil {
@@ -1689,5 +1703,13 @@ func testNonStandardNames(t *testing.T, port int, method string, jsonBody string
 
 	if got, want := string(body), jsonBody; got != want {
 		t.Errorf("got %q; want %q", got, want)
+	}
+}
+
+// This benchmark requires the number of iterations be fairly low i.e. `-benchtime 100x`
+// otherwise you'll start to see errors like: `dial tcp: lookup localhost: no such host`
+func BenchmarkPatchABE(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		testABEPatch(b)
 	}
 }

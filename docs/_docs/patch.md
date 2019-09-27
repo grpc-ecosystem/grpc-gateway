@@ -6,9 +6,11 @@ category: documentation
 The HTTP PATCH method allows a resource to be partially updated.
 
 The idea, If a binding is mapped to patch and the request message has exactly one FieldMask message in it, additional code is rendered for the gateway handler that will populate the FieldMask based on the request body.
-This handles two scenarios:
-- The FieldMask is hidden from the REST request (as in the first additional binding in the [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/proto/examplepb/a_bit_of_everything.proto#L311) example). In this case, the FieldMask is updated from the request body and set in the gRPC request message.
-- The FieldMask is exposed to the REST request (as in the second additional binding in the [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/proto/examplepb/a_bit_of_everything.proto#L311) example). For this case, a check is made as to whether the FieldMask is nil/empty prior to populating with the request body.
+There are two scenarios:
+- The FieldMask is hidden from the REST request as per the [Google API design guide](https://cloud.google.com/apis/design/standard_methods#update) (as in the first additional binding in the [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/proto/examplepb/a_bit_of_everything.proto#L366) example). In this case, the FieldMask is updated from the request body and set in the gRPC request message.
+- The FieldMask is exposed to the REST request (as in the second additional binding in the [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/proto/examplepb/a_bit_of_everything.proto#L370) example). For this case, the field mask is left untouched by the gateway.
+
+Currently this feature is not compatible with using the JSON marshaller option to use json names in the http request/response described [here](https://grpc-ecosystem.github.io/grpc-gateway/docs/customizingyourgateway.html#using-camelcase-for-json). If you want to use json names then you may with to disable this feature with the command line option `-allow_patch_feature=false`
 
 ## Example Usage
 1. Create PATCH request.
