@@ -7,6 +7,7 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude a_bit_of_everything.pb.gw.go
 # gazelle:exclude echo_service.pb.gw.go
 # gazelle:exclude flow_combination.pb.gw.go
+# gazelle:exclude non_standard_names.pb.gw.go
 # gazelle:exclude stream.pb.gw.go
 # gazelle:exclude wrappers.pb.gw.go
 # gazelle:exclude response_body_service.pb.gw.go
@@ -17,6 +18,7 @@ proto_library(
         "a_bit_of_everything.proto",
         "echo_service.proto",
         "flow_combination.proto",
+        "non_standard_names.proto",
         "response_body_service.proto",
         "stream.proto",
         "unannotated_echo_service.proto",

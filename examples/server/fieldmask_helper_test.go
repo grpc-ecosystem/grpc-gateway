@@ -17,9 +17,21 @@ func TestApplyFieldMask(t *testing.T) {
 	}{
 		{"nil fieldMask", &a{E: 64}, &a{E: 42}, nil, &a{E: 64}},
 		{"empty paths", &a{E: 63}, &a{E: 42}, &field_mask.FieldMask{}, &a{E: 63}},
-		{"simple path", &a{E: 23, F: "test"}, &a{B: &b{}, E: 42}, &field_mask.FieldMask{Paths: []string{"E"}}, &a{E: 42, F: "test"}},
-		{"nested", &a{B: &b{C: 85}}, &a{B: &b{C: 58, D: nil}}, &field_mask.FieldMask{Paths: []string{"B.C"}}, &a{B: &b{C: 58}}},
-		{"multiple paths", &a{B: &b{C: 40, D: []int{1, 2, 3}}, E: 34, F: "catapult"}, &a{B: &b{C: 56}, F: "lettuce"}, &field_mask.FieldMask{Paths: []string{"B.C", "F"}}, &a{B: &b{C: 56, D: []int{1, 2, 3}}, E: 34, F: "lettuce"}},
+		{"simple path",
+			&a{E: 23, Foo: "test"},
+			&a{BeefCake: &b{}, E: 42},
+			&field_mask.FieldMask{Paths: []string{"e"}},
+			&a{E: 42, Foo: "test"}},
+		{"nested",
+			&a{BeefCake: &b{CowCount: 85}},
+			&a{BeefCake: &b{CowCount: 58, Data: nil}},
+			&field_mask.FieldMask{Paths: []string{"beef_cake.cow_count"}},
+			&a{BeefCake: &b{CowCount: 58}}},
+		{"multiple paths",
+			&a{BeefCake: &b{CowCount: 40, Data: []int{1, 2, 3}}, E: 34, Foo: "catapult"},
+			&a{BeefCake: &b{CowCount: 56}, Foo: "lettuce"},
+			&field_mask.FieldMask{Paths: []string{"beef_cake.cow_count", "foo"}},
+			&a{BeefCake: &b{CowCount: 56, Data: []int{1, 2, 3}}, E: 34, Foo: "lettuce"}},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			applyFieldMask(test.patchee, test.patcher, test.fieldMask)
@@ -37,15 +49,15 @@ func TestGetValue(t *testing.T) {
 		path     string
 		expected interface{}
 	}{
-		{"empty", &a{E: 45, F: "test"}, "", &a{E: 45, F: "test"}},
+		{"empty", &a{E: 45, Foo: "test"}, "", &a{E: 45, Foo: "test"}},
 		{"pointer-simple", &a{E: 45}, "E", 45},
-		{"pointer-nested", &a{B: &b{C: 42}}, "B.C", 42},
-		{"pointer-complex type", &a{B: &b{D: []int{1, 2}}}, "B.D", []int{1, 2}},
-		{"pointer-invalid path", &a{F: "test"}, "X.Y", nil},
+		{"pointer-nested", &a{BeefCake: &b{CowCount: 42}}, "beef_cake.cow_count", 42},
+		{"pointer-complex type", &a{BeefCake: &b{Data: []int{1, 2}}}, "beef_cake.data", []int{1, 2}},
+		{"pointer-invalid path", &a{Foo: "test"}, "x.y", nil},
 		{"simple", a{E: 45}, "E", 45},
-		{"nested", a{B: &b{C: 42}}, "B.C", 42},
-		{"complex type", a{B: &b{D: []int{1, 2}}}, "B.D", []int{1, 2}},
-		{"invalid path", a{F: "test"}, "X.Y", nil},
+		{"nested", a{BeefCake: &b{CowCount: 42}}, "beef_cake.cow_count", 42},
+		{"complex type", a{BeefCake: &b{Data: []int{1, 2}}}, "beef_cake.data", []int{1, 2}},
+		{"invalid path", a{Foo: "test"}, "X.Y", nil},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			if actual := getField(test.input, test.path); actual.IsValid() {
@@ -67,9 +79,9 @@ func TestSetValue(t *testing.T) {
 		path     string
 		expected interface{}
 	}{
-		{"simple", &a{E: 45}, 34, "E", 34},
-		{"nested", &a{B: &b{C: 54}}, 43, "B.C", 43},
-		{"complex type", &a{B: &b{D: []int{1, 2}}}, []int{3, 4}, "B.D", []int{3, 4}},
+		{"simple", &a{E: 45}, 34, "e", 34},
+		{"nested", &a{BeefCake: &b{CowCount: 54}}, 43, "beef_cake.cow_count", 43},
+		{"complex type", &a{BeefCake: &b{Data: []int{1, 2}}}, []int{3, 4}, "beef_cake.data", []int{3, 4}},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			setValue(test.obj, reflect.ValueOf(test.newValue), test.path)
@@ -81,12 +93,12 @@ func TestSetValue(t *testing.T) {
 }
 
 type a struct {
-	B *b
-	E int
-	F string
+	BeefCake *b
+	E        int
+	Foo      string
 }
 
 type b struct {
-	C int
-	D []int
+	CowCount int
+	Data     []int
 }

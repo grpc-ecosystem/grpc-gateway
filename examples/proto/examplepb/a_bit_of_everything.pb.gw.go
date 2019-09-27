@@ -773,9 +773,7 @@ func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler r
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if protoReq.UpdateMask != nil && len(protoReq.UpdateMask.GetPaths()) > 0 {
-		runtime.CamelCaseFieldMask(protoReq.UpdateMask)
-	} else {
+	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader()); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		} else {
@@ -824,9 +822,7 @@ func local_request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marsh
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if protoReq.UpdateMask != nil && len(protoReq.UpdateMask.GetPaths()) > 0 {
-		runtime.CamelCaseFieldMask(protoReq.UpdateMask)
-	} else {
+	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader()); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		} else {
@@ -861,7 +857,7 @@ func local_request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marsh
 
 }
 
-func request_ABitOfEverythingService_PatchWithFieldMaskInBody_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateV2Request
 	var metadata runtime.ServerMetadata
 
@@ -871,9 +867,6 @@ func request_ABitOfEverythingService_PatchWithFieldMaskInBody_0(ctx context.Cont
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if protoReq.UpdateMask != nil && len(protoReq.UpdateMask.GetPaths()) > 0 {
-		runtime.CamelCaseFieldMask(protoReq.UpdateMask)
 	}
 
 	var (
@@ -894,12 +887,12 @@ func request_ABitOfEverythingService_PatchWithFieldMaskInBody_0(ctx context.Cont
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "abe.uuid", err)
 	}
 
-	msg, err := client.PatchWithFieldMaskInBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.UpdateV2(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_ABitOfEverythingService_PatchWithFieldMaskInBody_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateV2Request
 	var metadata runtime.ServerMetadata
 
@@ -909,9 +902,6 @@ func local_request_ABitOfEverythingService_PatchWithFieldMaskInBody_0(ctx contex
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-	if protoReq.UpdateMask != nil && len(protoReq.UpdateMask.GetPaths()) > 0 {
-		runtime.CamelCaseFieldMask(protoReq.UpdateMask)
 	}
 
 	var (
@@ -932,7 +922,7 @@ func local_request_ABitOfEverythingService_PatchWithFieldMaskInBody_0(ctx contex
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "abe.uuid", err)
 	}
 
-	msg, err := server.PatchWithFieldMaskInBody(ctx, &protoReq)
+	msg, err := server.UpdateV2(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -2201,7 +2191,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 
 	})
 
-	mux.Handle("PATCH", pattern_ABitOfEverythingService_PatchWithFieldMaskInBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_ABitOfEverythingService_UpdateV2_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -2210,14 +2200,14 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ABitOfEverythingService_PatchWithFieldMaskInBody_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ABitOfEverythingService_UpdateV2_2(rctx, inboundMarshaler, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_PatchWithFieldMaskInBody_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_UpdateV2_2(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -2690,7 +2680,7 @@ func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runt
 
 	})
 
-	mux.Handle("PATCH", pattern_ABitOfEverythingService_PatchWithFieldMaskInBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_ABitOfEverythingService_UpdateV2_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -2699,14 +2689,14 @@ func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runt
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ABitOfEverythingService_PatchWithFieldMaskInBody_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ABitOfEverythingService_UpdateV2_2(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ABitOfEverythingService_PatchWithFieldMaskInBody_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ABitOfEverythingService_UpdateV2_2(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -3006,7 +2996,7 @@ var (
 
 	pattern_ABitOfEverythingService_UpdateV2_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v2", "example", "a_bit_of_everything", "abe.uuid"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_ABitOfEverythingService_PatchWithFieldMaskInBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v2a", "example", "a_bit_of_everything", "abe.uuid"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_ABitOfEverythingService_UpdateV2_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v2a", "example", "a_bit_of_everything", "abe.uuid"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_ABitOfEverythingService_Delete_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "a_bit_of_everything", "uuid"}, "", runtime.AssumeColonVerbOpt(true)))
 
@@ -3050,7 +3040,7 @@ var (
 
 	forward_ABitOfEverythingService_UpdateV2_1 = runtime.ForwardResponseMessage
 
-	forward_ABitOfEverythingService_PatchWithFieldMaskInBody_0 = runtime.ForwardResponseMessage
+	forward_ABitOfEverythingService_UpdateV2_2 = runtime.ForwardResponseMessage
 
 	forward_ABitOfEverythingService_Delete_0 = runtime.ForwardResponseMessage
 
