@@ -70,7 +70,7 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 // avoid compiler optimising benchmark away
 var result *field_mask.FieldMask
 
-func BenchmarkFieldMaskFromRequestBody(b *testing.B) {
+func BenchmarkABEFieldMaskFromRequestBody(b *testing.B) {
 	input := `{` +
 		`"single_nested":				{"name": "bar",` +
 		`                           	 "amount": 10,` +
@@ -119,6 +119,25 @@ func BenchmarkFieldMaskFromRequestBody(b *testing.B) {
 		`"nested_annotation": 			{"name": "hoge",` +
 		`								 "amount": 10},` +
 		`"int64_override_type":			12345` +
+		`}`
+	var r *field_mask.FieldMask
+	var err error
+	for i := 0; i < b.N; i++ {
+		r, err = FieldMaskFromRequestBody(bytes.NewReader([]byte(input)))
+	}
+	if err != nil {
+		b.Error(err)
+	}
+	result = r
+}
+
+func BenchmarkNonStandardFieldMaskFromRequestBody(b *testing.B) {
+	input := `{` +
+		`"id":			"foo",` +
+		`"Num": 		2,` +
+		`"line_num": 	3,` +
+		`"langIdent":	"bar",` +
+		`"STATUS": 		"baz"` +
 		`}`
 	var r *field_mask.FieldMask
 	var err error
