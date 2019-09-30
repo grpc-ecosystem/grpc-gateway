@@ -51,6 +51,7 @@ go_proto_library(
         "//examples/proto/sub:go_default_library",
         "//examples/proto/sub2:go_default_library",
         "//protoc-gen-swagger/options:go_default_library",
+        "@com_github_golang_protobuf//descriptor:go_default_library_gen",  # keep
         "@go_googleapis//google/api:annotations_go_proto",
     ],
 )
