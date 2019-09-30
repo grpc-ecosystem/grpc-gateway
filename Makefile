@@ -195,7 +195,7 @@ changelog:
 				--compare-link \
 				--github-site=https://github.com \
 				--unreleased-label "**Next release**" \
-				--future-release=v1.11.2
+				--future-release=v1.11.3
 lint:
 	golint --set_exit_status ./runtime
 	golint --set_exit_status ./utilities/...
