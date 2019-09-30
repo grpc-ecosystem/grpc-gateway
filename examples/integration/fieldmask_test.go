@@ -1,10 +1,13 @@
-package runtime
+package integration_test
 
 import (
 	"bytes"
 	"fmt"
 	"testing"
 
+	"github.com/golang/protobuf/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/genproto/protobuf/field_mask"
 )
 
@@ -43,34 +46,42 @@ func fieldMaskString(fm *field_mask.FieldMask) string {
 	return fmt.Sprintf("%v", fm.GetPaths())
 }
 
-func TestFieldMaskFromRequestBody(t *testing.T) {
-	for _, tc := range []struct {
-		name        string
-		input       string
-		expected    *field_mask.FieldMask
-		expectedErr error
-	}{
-		{name: "empty", expected: newFieldMask()},
-		{name: "simple", input: `{"foo":1, "bar":"baz"}`, expected: newFieldMask("foo", "bar")},
-		{name: "nested", input: `{"foo": {"bar":1, "baz": 2}, "qux": 3}`, expected: newFieldMask("foo.bar", "foo.baz", "qux")},
-		{name: "canonical", input: `{"f": {"b": {"d": 1, "x": 2}, "c": 1}}`, expected: newFieldMask("f.b.d", "f.b.x", "f.c")},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			actual, err := FieldMaskFromRequestBody(bytes.NewReader([]byte(tc.input)), nil)
-			if !fieldMasksEqual(actual, tc.expected) {
-				t.Errorf("want %v; got %v", fieldMaskString(tc.expected), fieldMaskString(actual))
-			}
-			if err != tc.expectedErr {
-				t.Errorf("want %v; got %v", tc.expectedErr, err)
-			}
-		})
+// N.B. These tests are here rather than in the runtime package because they need
+// to import examplepb for the descriptor, which would result in a circular
+// dependency since examplepb imports runtime from the pb.gw.go files
+func TestFieldMaskFromRequestBodyWithDescriptor(t *testing.T) {
+	_, md := descriptor.ForMessage(new(examplepb.NonStandardMessage))
+	jsonInput := `{"id":"foo", "thing":{"subThing":{"sub_value":"bar"}}}`
+	expected := newFieldMask("id", "thing.subThing.sub_value")
+
+	actual, err := runtime.FieldMaskFromRequestBody(bytes.NewReader([]byte(jsonInput)), md)
+	if !fieldMasksEqual(actual, expected) {
+		t.Errorf("want %v; got %v", fieldMaskString(expected), fieldMaskString(actual))
+	}
+	if err != nil {
+		t.Errorf("err %v", err)
+	}
+}
+
+func TestFieldMaskFromRequestBodyWithJsonNames(t *testing.T) {
+	_, md := descriptor.ForMessage(new(examplepb.NonStandardMessageWithJSONNames))
+	jsonInput := `{"ID":"foo", "Thingy":{"SubThing":{"sub_Value":"bar"}}}`
+	expected := newFieldMask("id", "thing.subThing.sub_value")
+
+	actual, err := runtime.FieldMaskFromRequestBody(bytes.NewReader([]byte(jsonInput)), md)
+	if !fieldMasksEqual(actual, expected) {
+		t.Errorf("want %v; got %v", fieldMaskString(expected), fieldMaskString(actual))
+	}
+	if err != nil {
+		t.Errorf("err %v", err)
 	}
 }
 
 // avoid compiler optimising benchmark away
 var result *field_mask.FieldMask
 
-func BenchmarkABEFieldMaskFromRequestBody(b *testing.B) {
+func BenchmarkABEFieldMaskFromRequestBodyWithDescriptor(b *testing.B) {
+	_, md := descriptor.ForMessage(new(examplepb.ABitOfEverything))
 	input := `{` +
 		`"single_nested":				{"name": "bar",` +
 		`                           	 "amount": 10,` +
@@ -123,7 +134,7 @@ func BenchmarkABEFieldMaskFromRequestBody(b *testing.B) {
 	var r *field_mask.FieldMask
 	var err error
 	for i := 0; i < b.N; i++ {
-		r, err = FieldMaskFromRequestBody(bytes.NewReader([]byte(input)), nil)
+		r, err = runtime.FieldMaskFromRequestBody(bytes.NewReader([]byte(input)), md)
 	}
 	if err != nil {
 		b.Error(err)
@@ -131,7 +142,8 @@ func BenchmarkABEFieldMaskFromRequestBody(b *testing.B) {
 	result = r
 }
 
-func BenchmarkNonStandardFieldMaskFromRequestBody(b *testing.B) {
+func BenchmarkNonStandardFieldMaskFromRequestBodyWithDescriptor(b *testing.B) {
+	_, md := descriptor.ForMessage(new(examplepb.NonStandardMessage))
 	input := `{` +
 		`"id":			"foo",` +
 		`"Num": 		2,` +
@@ -142,7 +154,7 @@ func BenchmarkNonStandardFieldMaskFromRequestBody(b *testing.B) {
 	var r *field_mask.FieldMask
 	var err error
 	for i := 0; i < b.N; i++ {
-		r, err = FieldMaskFromRequestBody(bytes.NewReader([]byte(input)), nil)
+		r, err = runtime.FieldMaskFromRequestBody(bytes.NewReader([]byte(input)), md)
 	}
 	if err != nil {
 		b.Error(err)
