@@ -12,5 +12,4 @@ go_library(
         "unannotated_echo_service_api.go",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/clients/unannotatedecho",
-    deps = ["@in_gopkg_resty_v1//:go_default_library"],
 )
