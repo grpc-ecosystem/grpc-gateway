@@ -1,8 +1,10 @@
 package genswagger
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"reflect"
 	"regexp"
@@ -10,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"text/template"
 
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/jsonpb"
@@ -122,7 +125,7 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 	fieldType := field.GetTypeName()
 	if message.File != nil {
 		comments := fieldProtoComments(reg, message, field)
-		if err := updateSwaggerDataFromComments(&schema, comments, false); err != nil {
+		if err := updateSwaggerDataFromComments(reg, &schema, message, comments, false); err != nil {
 			return nil, err
 		}
 	}
@@ -285,7 +288,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			},
 		}
 		msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
-		if err := updateSwaggerDataFromComments(&schema, msgComments, false); err != nil {
+		if err := updateSwaggerDataFromComments(reg, &schema, msg, msgComments, false); err != nil {
 			panic(err)
 		}
 		opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
@@ -330,7 +333,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		for _, f := range msg.Fields {
 			fieldValue := schemaOfField(f, reg, customRefs)
 			comments := fieldProtoComments(reg, msg, f)
-			if err := updateSwaggerDataFromComments(&fieldValue, comments, false); err != nil {
+			if err := updateSwaggerDataFromComments(reg, &fieldValue, f, comments, false); err != nil {
 				panic(err)
 			}
 
@@ -535,7 +538,7 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 				Default: defaultValue,
 			},
 		}
-		if err := updateSwaggerDataFromComments(&enumSchemaObject, enumComments, false); err != nil {
+		if err := updateSwaggerDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
 			panic(err)
 		}
 
@@ -908,7 +911,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 
 				methComments := protoComments(reg, svc.File, nil, "Method", int32(svcIdx), methProtoPath, int32(methIdx))
-				if err := updateSwaggerDataFromComments(operationObject, methComments, false); err != nil {
+				if err := updateSwaggerDataFromComments(reg, operationObject, meth, methComments, false); err != nil {
 					panic(err)
 				}
 
@@ -1048,7 +1051,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	// File itself might have some comments and metadata.
 	packageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
 	packageComments := protoComments(p.reg, p.File, nil, "Package", packageProtoPath)
-	if err := updateSwaggerDataFromComments(&s, packageComments, true); err != nil {
+	if err := updateSwaggerDataFromComments(p.reg, &s, p, packageComments, true); err != nil {
 		panic(err)
 	}
 
@@ -1300,9 +1303,13 @@ func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error
 //
 // If there is no 'Summary', the same behavior will be attempted on 'Title',
 // but only if the last character is not a period.
-func updateSwaggerDataFromComments(swaggerObject interface{}, comment string, isPackageObject bool) error {
+func updateSwaggerDataFromComments(reg *descriptor.Registry, swaggerObject interface{}, data interface{}, comment string, isPackageObject bool) error {
 	if len(comment) == 0 {
 		return nil
+	}
+
+	if reg.GetUseGoTemplate() == true { // Checks whether the "use_go_templates" flag is set to true
+		comment = goTemplateComments(comment, data, reg)
 	}
 
 	// Figure out what to apply changes to.
@@ -1433,6 +1440,36 @@ func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []str
 		return comments
 	}
 	return ""
+}
+
+func goTemplateComments(comment string, data interface{}, reg *descriptor.Registry) string {
+	var temp bytes.Buffer
+	tpl, err := template.New("").Funcs(template.FuncMap{
+		// Allows importing documentation from a file
+		"import": func(name string) string {
+			file, err := ioutil.ReadFile(name)
+			if err != nil {
+				return err.Error()
+			}
+			return string(file)
+		},
+		// Grabs title and description from a field
+		"fieldcomments": func(msg *descriptor.Message, field *descriptor.Field) string {
+			return strings.Replace(fieldProtoComments(reg, msg, field), "\n", "<br>", -1)
+		},
+	}).Parse(comment)
+	if err != nil {
+		// If there is an error parsing the templating insert the error as string in the comment
+		// to make it easier to debug the template error
+		return err.Error()
+	}
+	err = tpl.Execute(&temp, data)
+	if err != nil {
+		// If there is an error executing the templating insert the error as string in the comment
+		// to make it easier to debug the error
+		return err.Error()
+	}
+	return temp.String()
 }
 
 var messageProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "MessageType")

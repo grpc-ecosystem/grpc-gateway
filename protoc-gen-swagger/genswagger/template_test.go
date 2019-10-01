@@ -1674,6 +1674,7 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 		comments              string
 		expectedError         error
 		expectedSwaggerObject interface{}
+		useGoTemplate         bool
 	}{
 		{
 			descr:                 "empty comments",
@@ -1769,12 +1770,47 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 			comments:              "Any comment",
 			expectedError:         errors.New("no description nor summary property"),
 		},
+		{
+			descr:         "without use_go_template",
+			swaggerObject: &swaggerSchemaObject{},
+			expectedSwaggerObject: &swaggerSchemaObject{
+				Title:       "First line",
+				Description: "{{import \"documentation.md\"}}",
+			},
+			comments:      "First line\n\n{{import \"documentation.md\"}}",
+			expectedError: nil,
+		},
+		{
+			descr:         "error with use_go_template",
+			swaggerObject: &swaggerSchemaObject{},
+			expectedSwaggerObject: &swaggerSchemaObject{
+				Title:       "First line",
+				Description: "open noneexistingfile.txt: no such file or directory",
+			},
+			comments:      "First line\n\n{{import \"noneexistingfile.txt\"}}",
+			expectedError: nil,
+			useGoTemplate: true,
+		},
+		{
+			descr:         "template with use_go_template",
+			swaggerObject: &swaggerSchemaObject{},
+			expectedSwaggerObject: &swaggerSchemaObject{
+				Title:       "Template",
+				Description: `Description "which means nothing"`,
+			},
+			comments:      "Template\n\nDescription {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
+			expectedError: nil,
+			useGoTemplate: true,
+		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.descr, func(t *testing.T) {
-			err := updateSwaggerDataFromComments(test.swaggerObject, test.comments, false)
-
+			reg := descriptor.NewRegistry()
+			if test.useGoTemplate {
+				reg.SetUseGoTemplate(true)
+			}
+			err := updateSwaggerDataFromComments(reg, test.swaggerObject, nil, test.comments, false)
 			if test.expectedError == nil {
 				if err != nil {
 					t.Errorf("unexpected error '%v'", err)
