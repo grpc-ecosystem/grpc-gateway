@@ -29,7 +29,7 @@ docker run -v $(pwd):/src/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env:
         make realclean && \
         make examples SWAGGER_CODEGEN="${SWAGGER_CODEGEN}"'
 docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
-    l.gcr.io/google/bazel -c 'bazel run :gazelle; bazel run :buildifier'
+    l.gcr.io/google/bazel -c 'bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories; bazel run :buildifier'
 ```
 
 If this has resulted in some file changes in the repo, please ensure you check those in with your merge request.

@@ -3,9 +3,11 @@
 
 package sub
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
+import (
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	math "math"
+)
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -16,7 +18,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type StringMessage struct {
 	Value                *string  `protobuf:"bytes,1,req,name=value" json:"value,omitempty"`
@@ -29,16 +31,17 @@ func (m *StringMessage) Reset()         { *m = StringMessage{} }
 func (m *StringMessage) String() string { return proto.CompactTextString(m) }
 func (*StringMessage) ProtoMessage()    {}
 func (*StringMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_message_6a35c3d524a65df7, []int{0}
+	return fileDescriptor_fcc527d41fdbced2, []int{0}
 }
+
 func (m *StringMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_StringMessage.Unmarshal(m, b)
 }
 func (m *StringMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_StringMessage.Marshal(b, m, deterministic)
 }
-func (dst *StringMessage) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StringMessage.Merge(dst, src)
+func (m *StringMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StringMessage.Merge(m, src)
 }
 func (m *StringMessage) XXX_Size() int {
 	return xxx_messageInfo_StringMessage.Size(m)
@@ -60,11 +63,9 @@ func init() {
 	proto.RegisterType((*StringMessage)(nil), "grpc.gateway.examples.sub.StringMessage")
 }
 
-func init() {
-	proto.RegisterFile("examples/proto/sub/message.proto", fileDescriptor_message_6a35c3d524a65df7)
-}
+func init() { proto.RegisterFile("examples/proto/sub/message.proto", fileDescriptor_fcc527d41fdbced2) }
 
-var fileDescriptor_message_6a35c3d524a65df7 = []byte{
+var fileDescriptor_fcc527d41fdbced2 = []byte{
 	// 114 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x48, 0xad, 0x48, 0xcc,
 	0x2d, 0xc8, 0x49, 0x2d, 0xd6, 0x2f, 0x28, 0xca, 0x2f, 0xc9, 0xd7, 0x2f, 0x2e, 0x4d, 0xd2, 0xcf,
