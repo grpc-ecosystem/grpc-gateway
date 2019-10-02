@@ -18,7 +18,7 @@ import (
 	"strings"
 	"net/url"
 	"io/ioutil"
-	"gopkg.in/resty.v1"
+	"github.com/go-resty/resty"
 )
 
 type APIClient struct {
