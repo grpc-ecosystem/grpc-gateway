@@ -45,7 +45,7 @@ func (m *NonStandardMessage) Reset()         { *m = NonStandardMessage{} }
 func (m *NonStandardMessage) String() string { return proto.CompactTextString(m) }
 func (*NonStandardMessage) ProtoMessage()    {}
 func (*NonStandardMessage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_non_standard_names_1ed497ab0876ca64, []int{0}
+	return fileDescriptor_non_standard_names_33e1f510ac1f389a, []int{0}
 }
 func (m *NonStandardMessage) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonStandardMessage.Unmarshal(m, b)
@@ -132,7 +132,7 @@ func (m *NonStandardMessage_Thing) Reset()         { *m = NonStandardMessage_Thi
 func (m *NonStandardMessage_Thing) String() string { return proto.CompactTextString(m) }
 func (*NonStandardMessage_Thing) ProtoMessage()    {}
 func (*NonStandardMessage_Thing) Descriptor() ([]byte, []int) {
-	return fileDescriptor_non_standard_names_1ed497ab0876ca64, []int{0, 0}
+	return fileDescriptor_non_standard_names_33e1f510ac1f389a, []int{0, 0}
 }
 func (m *NonStandardMessage_Thing) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonStandardMessage_Thing.Unmarshal(m, b)
@@ -170,7 +170,7 @@ func (m *NonStandardMessage_Thing_SubThing) Reset()         { *m = NonStandardMe
 func (m *NonStandardMessage_Thing_SubThing) String() string { return proto.CompactTextString(m) }
 func (*NonStandardMessage_Thing_SubThing) ProtoMessage()    {}
 func (*NonStandardMessage_Thing_SubThing) Descriptor() ([]byte, []int) {
-	return fileDescriptor_non_standard_names_1ed497ab0876ca64, []int{0, 0, 0}
+	return fileDescriptor_non_standard_names_33e1f510ac1f389a, []int{0, 0, 0}
 }
 func (m *NonStandardMessage_Thing_SubThing) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonStandardMessage_Thing_SubThing.Unmarshal(m, b)
@@ -209,7 +209,7 @@ func (m *NonStandardUpdateRequest) Reset()         { *m = NonStandardUpdateReque
 func (m *NonStandardUpdateRequest) String() string { return proto.CompactTextString(m) }
 func (*NonStandardUpdateRequest) ProtoMessage()    {}
 func (*NonStandardUpdateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_non_standard_names_1ed497ab0876ca64, []int{1}
+	return fileDescriptor_non_standard_names_33e1f510ac1f389a, []int{1}
 }
 func (m *NonStandardUpdateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonStandardUpdateRequest.Unmarshal(m, b)
@@ -263,7 +263,7 @@ func (m *NonStandardMessageWithJSONNames) Reset()         { *m = NonStandardMess
 func (m *NonStandardMessageWithJSONNames) String() string { return proto.CompactTextString(m) }
 func (*NonStandardMessageWithJSONNames) ProtoMessage()    {}
 func (*NonStandardMessageWithJSONNames) Descriptor() ([]byte, []int) {
-	return fileDescriptor_non_standard_names_1ed497ab0876ca64, []int{2}
+	return fileDescriptor_non_standard_names_33e1f510ac1f389a, []int{2}
 }
 func (m *NonStandardMessageWithJSONNames) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonStandardMessageWithJSONNames.Unmarshal(m, b)
@@ -350,7 +350,7 @@ func (m *NonStandardMessageWithJSONNames_Thing) Reset()         { *m = NonStanda
 func (m *NonStandardMessageWithJSONNames_Thing) String() string { return proto.CompactTextString(m) }
 func (*NonStandardMessageWithJSONNames_Thing) ProtoMessage()    {}
 func (*NonStandardMessageWithJSONNames_Thing) Descriptor() ([]byte, []int) {
-	return fileDescriptor_non_standard_names_1ed497ab0876ca64, []int{2, 0}
+	return fileDescriptor_non_standard_names_33e1f510ac1f389a, []int{2, 0}
 }
 func (m *NonStandardMessageWithJSONNames_Thing) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonStandardMessageWithJSONNames_Thing.Unmarshal(m, b)
@@ -392,7 +392,7 @@ func (m *NonStandardMessageWithJSONNames_Thing_SubThing) String() string {
 }
 func (*NonStandardMessageWithJSONNames_Thing_SubThing) ProtoMessage() {}
 func (*NonStandardMessageWithJSONNames_Thing_SubThing) Descriptor() ([]byte, []int) {
-	return fileDescriptor_non_standard_names_1ed497ab0876ca64, []int{2, 0, 0}
+	return fileDescriptor_non_standard_names_33e1f510ac1f389a, []int{2, 0, 0}
 }
 func (m *NonStandardMessageWithJSONNames_Thing_SubThing) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonStandardMessageWithJSONNames_Thing_SubThing.Unmarshal(m, b)
@@ -431,7 +431,7 @@ func (m *NonStandardWithJSONNamesUpdateRequest) Reset()         { *m = NonStanda
 func (m *NonStandardWithJSONNamesUpdateRequest) String() string { return proto.CompactTextString(m) }
 func (*NonStandardWithJSONNamesUpdateRequest) ProtoMessage()    {}
 func (*NonStandardWithJSONNamesUpdateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_non_standard_names_1ed497ab0876ca64, []int{3}
+	return fileDescriptor_non_standard_names_33e1f510ac1f389a, []int{3}
 }
 func (m *NonStandardWithJSONNamesUpdateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NonStandardWithJSONNamesUpdateRequest.Unmarshal(m, b)
@@ -586,10 +586,10 @@ var _NonStandardService_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("examples/proto/examplepb/non_standard_names.proto", fileDescriptor_non_standard_names_1ed497ab0876ca64)
+	proto.RegisterFile("examples/proto/examplepb/non_standard_names.proto", fileDescriptor_non_standard_names_33e1f510ac1f389a)
 }
 
-var fileDescriptor_non_standard_names_1ed497ab0876ca64 = []byte{
+var fileDescriptor_non_standard_names_33e1f510ac1f389a = []byte{
 	// 626 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x95, 0x41, 0x6f, 0xd3, 0x3c,
 	0x18, 0xc7, 0x95, 0x66, 0xed, 0x5a, 0x57, 0x7a, 0x5f, 0xe4, 0x21, 0x14, 0xc2, 0xa4, 0x56, 0x95,
