@@ -129,8 +129,7 @@ $(GO_PLUGIN):
 	go build -o $(GO_PLUGIN) $(GO_PLUGIN_PKG)
 
 $(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
-	go mod vendor
-	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I ./vendor/$(GO_PTYPES_ANY_PKG) -I. --go_out=$(PKGMAP),paths=source_relative:. $(RUNTIME_PROTO)
+	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP),paths=source_relative:. $(RUNTIME_PROTO)
 
 $(OPENAPIV2_GO): $(OPENAPIV2_PROTO) $(GO_PLUGIN)
 	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP),paths=source_relative:. $(OPENAPIV2_PROTO)
