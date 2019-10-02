@@ -1,15 +1,18 @@
 FROM golang:1.13.1
 
-## Warm apt cache
+# Warm apt cache
 RUN apt-get update
 
 # Install swagger-codegen
-ENV SWAGGER_CODEGEN_VERSION=2.2.2
+ENV SWAGGER_CODEGEN_VERSION=2.4.8
 RUN apt-get install -y openjdk-11-jre wget && \
     wget http://repo1.maven.org/maven2/io/swagger/swagger-codegen-cli/${SWAGGER_CODEGEN_VERSION}/swagger-codegen-cli-${SWAGGER_CODEGEN_VERSION}.jar \
     -O /usr/local/bin/swagger-codegen-cli.jar && \
     apt-get remove -y wget
-ENV SWAGGER_CODEGEN="java -jar /usr/local/bin/swagger-codegen-cli.jar"
+
+# Wrap the jar for swagger-codgen
+RUN echo '#!/bin/bash\n java -jar /usr/local/bin/swagger-codegen-cli.jar "$@"' > /usr/local/bin/swagger-codegen && \
+	chmod +x /usr/local/bin/swagger-codegen
 
 # Install protoc
 ENV PROTOC_VERSION=3.9.2
