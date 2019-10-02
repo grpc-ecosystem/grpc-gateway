@@ -296,7 +296,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			panic(err)
 		}
 		if opts != nil {
-			protoSchema := swaggerSchemaFromProtoSchema(opts, reg, customRefs)
+			protoSchema := swaggerSchemaFromProtoSchema(opts, reg, customRefs, msg)
 
 			// Warning: Make sure not to overwrite any fields already set on the schema type.
 			schema.ExternalDocs = protoSchema.ExternalDocs
@@ -464,7 +464,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 	}
 
 	if j, err := extractJSONSchemaFromFieldDescriptor(fd); err == nil {
-		updateSwaggerObjectFromJSONSchema(&ret, j)
+		updateSwaggerObjectFromJSONSchema(&ret, j, reg, f)
 	}
 
 	return ret
@@ -920,7 +920,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					if err != nil {
 						panic(err)
 					}
-					operationObject.ExternalDocs = protoExternalDocumentationToSwaggerExternalDocumentation(opts.ExternalDocs)
+					operationObject.ExternalDocs = protoExternalDocumentationToSwaggerExternalDocumentation(opts.ExternalDocs, reg, meth)
 					// TODO(ivucica): this would be better supported by looking whether the method is deprecated in the proto file
 					operationObject.Deprecated = opts.Deprecated
 
@@ -961,7 +961,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						for name, resp := range opts.Responses {
 							respObj := swaggerResponseObject{
 								Description: resp.Description,
-								Schema:      swaggerSchemaFromProtoSchema(resp.Schema, reg, customRefs),
+								Schema:      swaggerSchemaFromProtoSchema(resp.Schema, reg, customRefs, meth),
 							}
 							if resp.Extensions != nil {
 								exts, err := processExtensions(resp.Extensions)
@@ -1219,7 +1219,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 			}
 			s.Security = newSecurity
 		}
-		s.ExternalDocs = protoExternalDocumentationToSwaggerExternalDocumentation(spb.ExternalDocs)
+		s.ExternalDocs = protoExternalDocumentationToSwaggerExternalDocumentation(spb.ExternalDocs, p.reg, spb)
 		// Populate all Paths with Responses set at top level,
 		// preferring Responses already set over those at the top level.
 		if spb.Responses != nil {
@@ -1249,7 +1249,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 						}
 						respMap[k] = swaggerResponseObject{
 							Description: v.Description,
-							Schema:      swaggerSchemaFromProtoSchema(v.Schema, p.reg, customRefs),
+							Schema:      swaggerSchemaFromProtoSchema(v.Schema, p.reg, customRefs, nil),
 						}
 					}
 				}
@@ -1308,7 +1308,7 @@ func updateSwaggerDataFromComments(reg *descriptor.Registry, swaggerObject inter
 		return nil
 	}
 
-	if reg.GetUseGoTemplate() == true { // Checks whether the "use_go_templates" flag is set to true
+	if reg.GetUseGoTemplate() { // Checks whether the "use_go_templates" flag is set to true
 		comment = goTemplateComments(comment, data, reg)
 	}
 
@@ -1675,9 +1675,14 @@ func protoJSONSchemaToSwaggerSchemaCore(j *swagger_options.JSONSchema, reg *desc
 	return ret
 }
 
-func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_options.JSONSchema) {
+func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_options.JSONSchema, reg *descriptor.Registry, data interface{}) {
 	s.Title = j.GetTitle()
 	s.Description = j.GetDescription()
+	if reg.GetUseGoTemplate() {
+		s.Title = goTemplateComments(s.Title, data, reg)
+		s.Description = goTemplateComments(s.Description, data, reg)
+	}
+
 	s.ReadOnly = j.GetReadOnly()
 	s.MultipleOf = j.GetMultipleOf()
 	s.Maximum = j.GetMaximum()
@@ -1699,13 +1704,13 @@ func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_option
 	}
 }
 
-func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Registry, refs refMap) swaggerSchemaObject {
+func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Registry, refs refMap, data interface{}) swaggerSchemaObject {
 	ret := swaggerSchemaObject{
-		ExternalDocs: protoExternalDocumentationToSwaggerExternalDocumentation(s.GetExternalDocs()),
+		ExternalDocs: protoExternalDocumentationToSwaggerExternalDocumentation(s.GetExternalDocs(), reg, data),
 	}
 
 	ret.schemaCore = protoJSONSchemaToSwaggerSchemaCore(s.GetJsonSchema(), reg, refs)
-	updateSwaggerObjectFromJSONSchema(&ret, s.GetJsonSchema())
+	updateSwaggerObjectFromJSONSchema(&ret, s.GetJsonSchema(), reg, data)
 
 	if s != nil && s.Example != nil {
 		ret.Example = json.RawMessage(s.Example.Value)
@@ -1749,9 +1754,13 @@ func protoJSONSchemaTypeToFormat(in []swagger_options.JSONSchema_JSONSchemaSimpl
 	}
 }
 
-func protoExternalDocumentationToSwaggerExternalDocumentation(in *swagger_options.ExternalDocumentation) *swaggerExternalDocumentationObject {
+func protoExternalDocumentationToSwaggerExternalDocumentation(in *swagger_options.ExternalDocumentation, reg *descriptor.Registry, data interface{}) *swaggerExternalDocumentationObject {
 	if in == nil {
 		return nil
+	}
+
+	if reg.GetUseGoTemplate() {
+		in.Description = goTemplateComments(in.Description, data, reg)
 	}
 
 	return &swaggerExternalDocumentationObject{
