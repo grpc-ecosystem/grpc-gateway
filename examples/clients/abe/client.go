@@ -51,8 +51,6 @@ type APIClient struct {
 	CamelCaseServiceNameApi *CamelCaseServiceNameApiService
 
 	EchoRpcApi *EchoRpcApiService
-
-	EchoServiceApi *EchoServiceApiService
 }
 
 type service struct {
@@ -74,7 +72,6 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.ABitOfEverythingServiceApi = (*ABitOfEverythingServiceApiService)(&c.common)
 	c.CamelCaseServiceNameApi = (*CamelCaseServiceNameApiService)(&c.common)
 	c.EchoRpcApi = (*EchoRpcApiService)(&c.common)
-	c.EchoServiceApi = (*EchoServiceApiService)(&c.common)
 
 	return c
 }

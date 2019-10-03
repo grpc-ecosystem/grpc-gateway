@@ -23,6 +23,11 @@ func runServer(ctx context.Context, t *testing.T, port uint16) {
 }
 
 func TestWithProtoErrorHandler(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -114,6 +119,11 @@ func testABELookupNotFoundWithProtoError(t *testing.T, port uint16) {
 }
 
 func TestUnknownPathWithProtoError(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -160,6 +170,11 @@ func TestUnknownPathWithProtoError(t *testing.T) {
 }
 
 func TestMethodNotAllowedWithProtoError(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()

@@ -62,7 +62,6 @@ paths:
   /v1/example/a_bit_of_everything/echo/{value}:
     get:
       tags:
-      - "echo service"
       - "echo rpc"
       summary: "Summary: Echo rpc"
       description: "Description Echo"
@@ -1547,7 +1546,6 @@ paths:
   /v2/example/echo:
     get:
       tags:
-      - "echo service"
       - "echo rpc"
       summary: "Summary: Echo rpc"
       description: "Description Echo"
@@ -1586,7 +1584,6 @@ paths:
         url: "https://github.com/grpc-ecosystem/grpc-gateway"
     post:
       tags:
-      - "echo service"
       - "echo rpc"
       summary: "Summary: Echo rpc"
       description: "Description Echo"
