@@ -12,7 +12,7 @@ RUN wget http://repo1.maven.org/maven2/io/swagger/swagger-codegen-cli/${SWAGGER_
     -O /usr/local/bin/swagger-codegen-cli.jar
 
 # Wrap the jar for swagger-codgen
-RUN echo -e '#!/bin/bash\n java -jar /usr/local/bin/swagger-codegen-cli.jar "$@"' > /usr/local/bin/swagger-codegen && \
+RUN echo -e '#!/bin/bash\njava -jar /usr/local/bin/swagger-codegen-cli.jar "$@"' > /usr/local/bin/swagger-codegen && \
 	chmod +x /usr/local/bin/swagger-codegen
 
 # Install protoc
