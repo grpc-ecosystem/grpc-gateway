@@ -128,7 +128,7 @@ message JSONSchema {
 
 message Discriminator {
   string propertyName = 1;
-  mapping map<string, string> = 2;
+  map<string, string> mapping = 2;
   map<string, google.protobuf.Value> extensions = 3;
 }
 
@@ -200,5 +200,8 @@ message ExternalDocs {
 }
 
 message SecurityRequirement {
-  map<string, repeated string> requirement = 1;
+  message SecurityRequirementValue {
+    repeated string scope = 1;
+  }
+  map<string, SecurityRequirementValue> security_requirement = 1;
 }
