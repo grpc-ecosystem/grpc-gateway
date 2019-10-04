@@ -1308,7 +1308,8 @@ func updateSwaggerDataFromComments(reg *descriptor.Registry, swaggerObject inter
 		return nil
 	}
 
-	if reg.GetUseGoTemplate() { // Checks whether the "use_go_templates" flag is set to true
+	// Checks whether the "use_go_templates" flag is set to true
+	if reg.GetUseGoTemplate() {
 		comment = goTemplateComments(comment, data, reg)
 	}
 
@@ -1451,7 +1452,8 @@ func goTemplateComments(comment string, data interface{}, reg *descriptor.Regist
 			if err != nil {
 				return err.Error()
 			}
-			return string(file)
+			// Runs template over imported file
+			return goTemplateComments(string(file), data, reg)
 		},
 		// Grabs title and description from a field
 		"fieldcomments": func(msg *descriptor.Message, field *descriptor.Field) string {
