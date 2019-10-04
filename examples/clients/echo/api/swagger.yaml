@@ -1,0 +1,441 @@
+---
+swagger: "2.0"
+info:
+  description: "Echo Service API consists of a single service which returns\na message."
+  version: "version not set"
+  title: "Echo Service"
+schemes:
+- "http"
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /v1/example/echo/{id}:
+    post:
+      tags:
+      - "EchoService"
+      summary: "Echo method receives a simple message and returns it."
+      description: "The message posted as the id parameter will also be\nreturned."
+      operationId: "Echo"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id represents the message identifier."
+        required: true
+        type: "string"
+        x-exportParamName: "Id"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+  /v1/example/echo/{id}/{num}:
+    get:
+      tags:
+      - "EchoService"
+      summary: "Echo method receives a simple message and returns it."
+      description: "The message posted as the id parameter will also be\nreturned."
+      operationId: "Echo2"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id represents the message identifier."
+        required: true
+        type: "string"
+        x-exportParamName: "Id"
+      - name: "num"
+        in: "path"
+        required: true
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Num"
+      - name: "line_num"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "LineNum"
+        x-optionalDataType: "String"
+      - name: "lang"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      - name: "status.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "StatusProgress"
+        x-optionalDataType: "String"
+      - name: "status.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StatusNote"
+        x-optionalDataType: "String"
+      - name: "en"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "En"
+        x-optionalDataType: "String"
+      - name: "no.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "NoProgress"
+        x-optionalDataType: "String"
+      - name: "no.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NoNote"
+        x-optionalDataType: "String"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+  /v1/example/echo/{id}/{num}/{lang}:
+    get:
+      tags:
+      - "EchoService"
+      summary: "Echo method receives a simple message and returns it."
+      description: "The message posted as the id parameter will also be\nreturned."
+      operationId: "Echo3"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id represents the message identifier."
+        required: true
+        type: "string"
+        x-exportParamName: "Id"
+      - name: "num"
+        in: "path"
+        required: true
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Num"
+      - name: "lang"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Lang"
+      - name: "line_num"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "LineNum"
+        x-optionalDataType: "String"
+      - name: "status.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "StatusProgress"
+        x-optionalDataType: "String"
+      - name: "status.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StatusNote"
+        x-optionalDataType: "String"
+      - name: "en"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "En"
+        x-optionalDataType: "String"
+      - name: "no.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "NoProgress"
+        x-optionalDataType: "String"
+      - name: "no.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NoNote"
+        x-optionalDataType: "String"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+  /v1/example/echo1/{id}/{line_num}/{status.note}:
+    get:
+      tags:
+      - "EchoService"
+      summary: "Echo method receives a simple message and returns it."
+      description: "The message posted as the id parameter will also be\nreturned."
+      operationId: "Echo4"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id represents the message identifier."
+        required: true
+        type: "string"
+        x-exportParamName: "Id"
+      - name: "line_num"
+        in: "path"
+        required: true
+        type: "string"
+        format: "int64"
+        x-exportParamName: "LineNum"
+      - name: "status.note"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "StatusNote"
+      - name: "num"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Num"
+        x-optionalDataType: "String"
+      - name: "lang"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      - name: "status.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "StatusProgress"
+        x-optionalDataType: "String"
+      - name: "en"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "En"
+        x-optionalDataType: "String"
+      - name: "no.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "NoProgress"
+        x-optionalDataType: "String"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+  /v1/example/echo2/{no.note}:
+    get:
+      tags:
+      - "EchoService"
+      summary: "Echo method receives a simple message and returns it."
+      description: "The message posted as the id parameter will also be\nreturned."
+      operationId: "Echo5"
+      parameters:
+      - name: "no.note"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "NoNote"
+      - name: "id"
+        in: "query"
+        description: "Id represents the message identifier."
+        required: false
+        type: "string"
+        x-exportParamName: "Id"
+        x-optionalDataType: "String"
+      - name: "num"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Num"
+        x-optionalDataType: "String"
+      - name: "line_num"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "LineNum"
+        x-optionalDataType: "String"
+      - name: "lang"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      - name: "status.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "StatusProgress"
+        x-optionalDataType: "String"
+      - name: "en"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "En"
+        x-optionalDataType: "String"
+      - name: "no.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "NoProgress"
+        x-optionalDataType: "String"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+  /v1/example/echo_body:
+    post:
+      tags:
+      - "EchoService"
+      summary: "EchoBody method receives a simple message and returns it."
+      operationId: "EchoBody"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbSimpleMessage"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+  /v1/example/echo_delete:
+    delete:
+      tags:
+      - "EchoService"
+      summary: "EchoDelete method receives a simple message and returns it."
+      operationId: "EchoDelete"
+      parameters:
+      - name: "id"
+        in: "query"
+        description: "Id represents the message identifier."
+        required: false
+        type: "string"
+        x-exportParamName: "Id"
+        x-optionalDataType: "String"
+      - name: "num"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Num"
+        x-optionalDataType: "String"
+      - name: "line_num"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "LineNum"
+        x-optionalDataType: "String"
+      - name: "lang"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      - name: "status.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "StatusProgress"
+        x-optionalDataType: "String"
+      - name: "status.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StatusNote"
+        x-optionalDataType: "String"
+      - name: "en"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "En"
+        x-optionalDataType: "String"
+      - name: "no.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "NoProgress"
+        x-optionalDataType: "String"
+      - name: "no.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NoNote"
+        x-optionalDataType: "String"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+definitions:
+  examplepbEmbedded:
+    type: "object"
+    properties:
+      progress:
+        type: "string"
+        format: "int64"
+      note:
+        type: "string"
+    description: "Embedded represents a message embedded in SimpleMessage."
+    example:
+      note: "note"
+      progress: "progress"
+  examplepbSimpleMessage:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Id represents the message identifier."
+      num:
+        type: "string"
+        format: "int64"
+      line_num:
+        type: "string"
+        format: "int64"
+      lang:
+        type: "string"
+      status:
+        $ref: "#/definitions/examplepbEmbedded"
+      en:
+        type: "string"
+        format: "int64"
+      "no":
+        $ref: "#/definitions/examplepbEmbedded"
+    description: "SimpleMessage represents a simple message sent to the Echo service."
+    example:
+      "no":
+        note: "note"
+        progress: "progress"
+      line_num: "line_num"
+      num: "num"
+      en: "en"
+      id: "id"
+      lang: "lang"
+      status:
+        note: "note"
+        progress: "progress"

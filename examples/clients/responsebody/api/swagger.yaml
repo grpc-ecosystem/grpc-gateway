@@ -1,0 +1,110 @@
+---
+swagger: "2.0"
+info:
+  version: "version not set"
+  title: "examples/proto/examplepb/response_body_service.proto"
+schemes:
+- "http"
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /responsebodies/{data}:
+    get:
+      tags:
+      - "ResponseBodyService"
+      operationId: "ListResponseBodies"
+      parameters:
+      - name: "data"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Data"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/examplepbRepeatedResponseBodyOutResponse"
+  /responsebody/{data}:
+    get:
+      tags:
+      - "ResponseBodyService"
+      operationId: "GetResponseBody"
+      parameters:
+      - name: "data"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Data"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/examplepbResponseBodyOutResponse"
+  /responsestrings/{data}:
+    get:
+      tags:
+      - "ResponseBodyService"
+      operationId: "ListResponseStrings"
+      parameters:
+      - name: "data"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Data"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              type: "string"
+definitions:
+  ResponseResponseType:
+    type: "string"
+    title: "- UNKNOWN: UNKNOWN\n - A: A is 1\n - B: B is 2"
+    enum:
+    - "UNKNOWN"
+    - "A"
+    - "B"
+    default: "UNKNOWN"
+  examplepbRepeatedResponseBodyOut:
+    type: "object"
+    properties:
+      response:
+        type: "array"
+        items:
+          $ref: "#/definitions/examplepbRepeatedResponseBodyOutResponse"
+  examplepbRepeatedResponseBodyOutResponse:
+    type: "object"
+    properties:
+      data:
+        type: "string"
+      type:
+        $ref: "#/definitions/ResponseResponseType"
+    example:
+      data: "data"
+      type: {}
+  examplepbRepeatedResponseStrings:
+    type: "object"
+    properties:
+      values:
+        type: "array"
+        items:
+          type: "string"
+  examplepbResponseBodyOut:
+    type: "object"
+    properties:
+      response:
+        $ref: "#/definitions/examplepbResponseBodyOutResponse"
+  examplepbResponseBodyOutResponse:
+    type: "object"
+    properties:
+      data:
+        type: "string"
+    example:
+      data: "data"

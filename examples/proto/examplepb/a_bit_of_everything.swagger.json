@@ -115,7 +115,6 @@
           }
         ],
         "tags": [
-          "echo service",
           "echo rpc"
         ],
         "externalDocs": {
@@ -1865,7 +1864,6 @@
           }
         ],
         "tags": [
-          "echo service",
           "echo rpc"
         ],
         "externalDocs": {
@@ -1918,7 +1916,6 @@
           }
         ],
         "tags": [
-          "echo service",
           "echo rpc"
         ],
         "externalDocs": {

@@ -10,16 +10,15 @@ Method | HTTP request | Description
 
 
 # **GetResponseBody**
-> ExamplepbResponseBodyOutResponse GetResponseBody($data)
+> ExamplepbResponseBodyOutResponse GetResponseBody(ctx, data)
 
 
-
-
-### Parameters
+### Required Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **data** | **string**|  | 
+ **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+  **data** | **string**|  | 
 
 ### Return type
 
@@ -37,16 +36,15 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **ListResponseBodies**
-> []ExamplepbRepeatedResponseBodyOutResponse ListResponseBodies($data)
+> []ExamplepbRepeatedResponseBodyOutResponse ListResponseBodies(ctx, data)
 
 
-
-
-### Parameters
+### Required Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **data** | **string**|  | 
+ **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+  **data** | **string**|  | 
 
 ### Return type
 
@@ -64,16 +62,15 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **ListResponseStrings**
-> []string ListResponseStrings($data)
+> []string ListResponseStrings(ctx, data)
 
 
-
-
-### Parameters
+### Required Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **data** | **string**|  | 
+ **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+  **data** | **string**|  | 
 
 ### Return type
 

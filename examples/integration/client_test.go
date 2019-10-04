@@ -1,7 +1,7 @@
 package integration_test
 
 import (
-	"reflect"
+	"context"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/examples/clients/abe"
@@ -9,19 +9,19 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/examples/clients/unannotatedecho"
 )
 
-func TestClientIntegration(t *testing.T) {
-}
-
 func TestEchoClient(t *testing.T) {
 	if testing.Short() {
 		t.Skip()
 		return
 	}
 
-	cl := echo.NewEchoServiceApiWithBasePath("http://localhost:8080")
-	resp, _, err := cl.Echo("foo")
+	cfg := echo.NewConfiguration()
+	cfg.BasePath = "http://localhost:8080"
+
+	cl := echo.NewAPIClient(cfg)
+	resp, _, err := cl.EchoServiceApi.Echo(context.Background(), "foo")
 	if err != nil {
-		t.Errorf(`cl.Echo("foo") failed with %v; want success`, err)
+		t.Errorf(`cl.EchoServiceApi.Echo("foo") failed with %v; want success`, err)
 	}
 	if got, want := resp.Id, "foo"; got != want {
 		t.Errorf("resp.Id = %q; want %q", got, want)
@@ -34,9 +34,12 @@ func TestEchoBodyClient(t *testing.T) {
 		return
 	}
 
-	cl := echo.NewEchoServiceApiWithBasePath("http://localhost:8080")
+	cfg := echo.NewConfiguration()
+	cfg.BasePath = "http://localhost:8080"
+
+	cl := echo.NewAPIClient(cfg)
 	req := echo.ExamplepbSimpleMessage{Id: "foo"}
-	resp, _, err := cl.EchoBody(req)
+	resp, _, err := cl.EchoServiceApi.EchoBody(context.Background(), req)
 	if err != nil {
 		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)
 	}
@@ -51,12 +54,19 @@ func TestAbitOfEverythingClient(t *testing.T) {
 		return
 	}
 
-	cl := abe.NewABitOfEverythingServiceApiWithBasePath("http://localhost:8080")
+	cfg := abe.NewConfiguration()
+	cfg.BasePath = "http://localhost:8080"
+
+	cl := abe.NewAPIClient(cfg)
+
 	testABEClientCreate(t, cl)
-	testABEClientCreateBody(t, cl)
 }
 
-func testABEClientCreate(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
+func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
+	enumZero := abe.ZERO_ExamplepbNumericEnum
+	enumPath := abe.ABC_PathenumPathEnum
+	messagePath := abe.JKL_MessagePathEnumNestedPathEnum
+
 	want := &abe.ExamplepbABitOfEverything{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
@@ -73,12 +83,13 @@ func testABEClientCreate(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 		Sint32Value:              2147483647,
 		Sint64Value:              "4611686018427387903",
 		NonConventionalNameValue: "camelCase",
-		EnumValue:                abe.ExamplepbNumericEnum{},
-		PathEnumValue:            abe.PathenumPathEnum{},
-		NestedPathEnumValue:      abe.MessagePathEnumNestedPathEnum{},
-		EnumValueAnnotation:      abe.ExamplepbNumericEnum{},
+		EnumValue:                &enumZero,
+		PathEnumValue:            &enumPath,
+		NestedPathEnumValue:      &messagePath,
+		EnumValueAnnotation:      &enumZero,
 	}
-	resp, _, err := cl.Create(
+	resp, _, err := cl.ABitOfEverythingServiceApi.Create(
+		context.Background(),
 		want.FloatValue,
 		want.DoubleValue,
 		want.Int64Value,
@@ -106,70 +117,63 @@ func testABEClientCreate(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
 		t.Errorf("resp.Uuid is empty; want not empty")
 	}
 	resp.Uuid = ""
-	if got := resp; !reflect.DeepEqual(got, want) {
-		t.Errorf("resp = %#v; want %#v", got, want)
-	}
-}
 
-func testABEClientCreateBody(t *testing.T, cl *abe.ABitOfEverythingServiceApi) {
-	t.Log("TODO: support enum")
-	return
-
-	want := abe.ExamplepbABitOfEverything{
-		FloatValue:               1.5,
-		DoubleValue:              2.5,
-		Int64Value:               "4294967296",
-		Uint64Value:              "9223372036854775807",
-		Int32Value:               -2147483648,
-		Fixed64Value:             "9223372036854775807",
-		Fixed32Value:             4294967295,
-		BoolValue:                true,
-		StringValue:              "strprefix/foo",
-		Uint32Value:              4294967295,
-		Sfixed32Value:            2147483647,
-		Sfixed64Value:            "-4611686018427387904",
-		Sint32Value:              2147483647,
-		Sint64Value:              "4611686018427387903",
-		NonConventionalNameValue: "camelCase",
-		EnumValue:                abe.ExamplepbNumericEnum{},
-		PathEnumValue:            abe.PathenumPathEnum{},
-		NestedPathEnumValue:      abe.MessagePathEnumNestedPathEnum{},
-
-		Nested: []abe.ABitOfEverythingNested{
-			{
-				Name:   "bar",
-				Amount: 10,
-			},
-			{
-				Name:   "baz",
-				Amount: 20,
-			},
-		},
-		RepeatedStringValue: []string{"a", "b", "c"},
-		OneofString:         "x",
-		MapValue:            map[string]abe.ExamplepbNumericEnum{
-			// "a": abe.ExamplepbNumericEnum_ONE,
-			// "b": abe.ExamplepbNumericEnum_ZERO,
-		},
-		MappedStringValue: map[string]string{
-			"a": "x",
-			"b": "y",
-		},
-		MappedNestedValue: map[string]abe.ABitOfEverythingNested{
-			"a": {Name: "x", Amount: 1},
-			"b": {Name: "y", Amount: 2},
-		},
+	if resp.FloatValue != want.FloatValue {
+		t.Error("float")
 	}
-	resp, _, err := cl.CreateBody(want)
-	if err != nil {
-		t.Errorf("cl.CreateBody(%#v) failed with %v; want success", want, err)
+	if resp.DoubleValue != want.DoubleValue {
+		t.Error("double")
 	}
-	if resp.Uuid == "" {
-		t.Errorf("resp.Uuid is empty; want not empty")
+	if resp.Int64Value != want.Int64Value {
+		t.Error("double")
 	}
-	resp.Uuid = ""
-	if got := resp; !reflect.DeepEqual(got, want) {
-		t.Errorf("resp = %#v; want %#v", got, want)
+	if resp.Uint64Value != want.Uint64Value {
+		t.Error("double")
+	}
+	if resp.Int32Value != want.Int32Value {
+		t.Error("double")
+	}
+	if resp.Fixed32Value != want.Fixed32Value {
+		t.Error("bool")
+	}
+	if resp.Fixed64Value != want.Fixed64Value {
+		t.Error("bool")
+	}
+	if resp.BoolValue != want.BoolValue {
+		t.Error("bool")
+	}
+	if resp.StringValue != want.StringValue {
+		t.Error("bool")
+	}
+	if resp.Uint32Value != want.Uint32Value {
+		t.Error("bool")
+	}
+	if resp.Sfixed32Value != want.Sfixed32Value {
+		t.Error("bool")
+	}
+	if resp.Sfixed64Value != want.Sfixed64Value {
+		t.Error("bool")
+	}
+	if resp.Sint32Value != want.Sint32Value {
+		t.Error("bool")
+	}
+	if resp.Sint64Value != want.Sint64Value {
+		t.Error("enum")
+	}
+	if resp.NonConventionalNameValue != want.NonConventionalNameValue {
+		t.Error("enum")
+	}
+	if resp.EnumValue.String() != want.EnumValue.String() {
+		t.Error("enum")
+	}
+	if resp.PathEnumValue.String() != want.PathEnumValue.String() {
+		t.Error("path enum")
+	}
+	if resp.NestedPathEnumValue.String() != want.NestedPathEnumValue.String() {
+		t.Error("nested path enum")
+	}
+	if resp.NestedPathEnumValue.String() != want.NestedPathEnumValue.String() {
+		t.Error("nested path enum")
 	}
 }
 
@@ -179,8 +183,12 @@ func TestUnannotatedEchoClient(t *testing.T) {
 		return
 	}
 
-	cl := unannotatedecho.NewUnannotatedEchoServiceApiWithBasePath("http://localhost:8080")
-	resp, _, err := cl.Echo("foo")
+	cfg := unannotatedecho.NewConfiguration()
+	cfg.BasePath = "http://localhost:8080"
+
+	cl := unannotatedecho.NewAPIClient(cfg)
+
+	resp, _, err := cl.UnannotatedEchoServiceApi.Echo(context.Background(), "foo")
 	if err != nil {
 		t.Errorf(`cl.Echo("foo") failed with %v; want success`, err)
 	}
@@ -195,9 +203,13 @@ func TestUnannotatedEchoBodyClient(t *testing.T) {
 		return
 	}
 
-	cl := unannotatedecho.NewUnannotatedEchoServiceApiWithBasePath("http://localhost:8080")
+	cfg := unannotatedecho.NewConfiguration()
+	cfg.BasePath = "http://localhost:8080"
+
+	cl := unannotatedecho.NewAPIClient(cfg)
+
 	req := unannotatedecho.ExamplepbUnannotatedSimpleMessage{Id: "foo"}
-	resp, _, err := cl.EchoBody(req)
+	resp, _, err := cl.UnannotatedEchoServiceApi.EchoBody(context.Background(), req)
 	if err != nil {
 		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)
 	}

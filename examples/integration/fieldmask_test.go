@@ -50,6 +50,11 @@ func fieldMaskString(fm *field_mask.FieldMask) string {
 // to import examplepb for the descriptor, which would result in a circular
 // dependency since examplepb imports runtime from the pb.gw.go files
 func TestFieldMaskFromRequestBodyWithDescriptor(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	_, md := descriptor.ForMessage(new(examplepb.NonStandardMessage))
 	jsonInput := `{"id":"foo", "thing":{"subThing":{"sub_value":"bar"}}}`
 	expected := newFieldMask("id", "thing.subThing.sub_value")
@@ -64,6 +69,11 @@ func TestFieldMaskFromRequestBodyWithDescriptor(t *testing.T) {
 }
 
 func TestFieldMaskFromRequestBodyWithJsonNames(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	_, md := descriptor.ForMessage(new(examplepb.NonStandardMessageWithJSONNames))
 	jsonInput := `{"ID":"foo", "Thingy":{"SubThing":{"sub_Value":"bar"}}}`
 	expected := newFieldMask("id", "thing.subThing.sub_value")
@@ -81,6 +91,11 @@ func TestFieldMaskFromRequestBodyWithJsonNames(t *testing.T) {
 var result *field_mask.FieldMask
 
 func BenchmarkABEFieldMaskFromRequestBodyWithDescriptor(b *testing.B) {
+	if testing.Short() {
+		b.Skip()
+		return
+	}
+
 	_, md := descriptor.ForMessage(new(examplepb.ABitOfEverything))
 	input := `{` +
 		`"single_nested":				{"name": "bar",` +
@@ -143,6 +158,11 @@ func BenchmarkABEFieldMaskFromRequestBodyWithDescriptor(b *testing.B) {
 }
 
 func BenchmarkNonStandardFieldMaskFromRequestBodyWithDescriptor(b *testing.B) {
+	if testing.Short() {
+		b.Skip()
+		return
+	}
+
 	_, md := descriptor.ForMessage(new(examplepb.NonStandardMessage))
 	input := `{` +
 		`"id":			"foo",` +
