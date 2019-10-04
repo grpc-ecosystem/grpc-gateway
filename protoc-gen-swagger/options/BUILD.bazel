@@ -1,5 +1,4 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
-load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -13,8 +12,17 @@ filegroup(
 
 go_library(
     name = "go_default_library",
-    embed = [":options_go_proto"],
+    srcs = [
+        "annotations.pb.go",
+        "openapiv2.pb.go",
+    ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options",
+    deps = [
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@io_bazel_rules_go//proto/wkt:any_go_proto",
+        "@io_bazel_rules_go//proto/wkt:descriptor_go_proto",
+        "@io_bazel_rules_go//proto/wkt:struct_go_proto",
+    ],
 )
 
 proto_library(
@@ -22,17 +30,11 @@ proto_library(
     srcs = [
         "annotations.proto",
         "openapiv2.proto",
+        "openapiv3.proto",
     ],
     deps = [
         "@com_google_protobuf//:any_proto",
         "@com_google_protobuf//:descriptor_proto",
         "@com_google_protobuf//:struct_proto",
     ],
-)
-
-go_proto_library(
-    name = "options_go_proto",
-    compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options",
-    proto = ":options_proto",
 )

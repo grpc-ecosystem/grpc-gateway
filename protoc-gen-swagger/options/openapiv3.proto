@@ -1,0 +1,200 @@
+syntax = "proto3";
+
+package grpc.gateway.protoc_gen_openapi.options;
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options";
+
+import "google/protobuf/struct.proto";
+
+message OpenAPI {
+  string openapi = 1;
+  Info info = 2;
+  repeated Server servers = 3;
+  Components components = 4;
+  repeated map<string, repeated string> security = 5;
+  repeated Tag tags = 6;
+  map<string, google.protobuf.Value> extensions = 7;
+}
+
+message Operation {
+  repeated string tags = 1;
+  string summary = 2;
+  string description = 3;
+  ExternalDocs externalDocs = 4;
+  string operation_id = 5;
+  map<string, Response> responses = 6;
+  bool deprecated = 7;
+  repeated map<string, repeated string> security = 8;
+  repeated Server servers = 9;
+  map<string, google.protobuf.Value> extensions = 10;
+}
+
+message Info {
+  string title = 1;
+  string description = 2;
+  string terms_of_service = 3;
+  Contact contact = 4;
+  License license = 5;
+  string version = 6;
+  map<string, google.protobuf.Value> extensions = 7;
+}
+
+message Contact {
+  string name = 1;
+  string url = 2;
+  string email = 3;
+  map<string, google.protobuf.Value> extensions = 4;
+}
+
+message License {
+  string name = 1;
+  string url = 2;
+  map<string, google.protobuf.Value> extensions = 3;
+}
+
+message Servers {
+  string url = 1;
+  string description = 2;
+  map<string, google.protobuf.Value> extensions = 3;
+}
+
+message ServerVariable {
+  repeated string enum = 1;
+  string default = 2;
+  string description = 3;
+  map<string, google.protobuf.Value> extensions = 4;
+}
+
+message Components {
+  map<string Schema> schemas = 1;
+  map<string Response> responses = 2;
+  map<string SecurityScheme> securitySchemes = 3;
+  map<string, google.protobuf.Value> extensions = 4;
+}
+
+message Schema {
+  JSONSchema json_schema = 1;
+  bool nullable = 2;
+  Discriminator discriminator = 3;
+  bool read_only = 4;
+  bool writeOnly = 5;
+  ExternalDocs externalDocs = 6;
+  google.protobuf.Any example = 7;
+  bool deprecated = 8;
+  map<string, google.protobuf.Value> extensions = 9;
+}
+
+message JSONSchema {
+  // Ref is used to define an external reference to include in the message.
+  // This could be a fully qualified proto message reference, and that type must be imported
+  // into the protofile. If no message is identified, the Ref will be used verbatim in
+  // the output.
+  // For example:
+  //  `ref: ".google.protobuf.Timestamp"`.
+  string ref = 1;
+  string title = 2;
+  string description = 3;
+  string default = 4;
+  bool read_only = 5;
+  double multiple_of = 6;
+  double maximum = 7;
+  bool exclusive_maximum = 8;
+  double minimum = 9;
+  bool exclusive_minimum = 10;
+  uint64 max_length = 11;
+  uint64 min_length = 12;
+  string pattern = 13;
+  uint64 max_items = 14;
+  uint64 min_items = 15;
+  bool unique_items = 16;
+  uint64 max_properties = 17;
+  uint64 min_properties = 18;
+  repeated string required = 19;
+  repeated string array = 20;
+
+  enum JSONSchemaSimpleTypes {
+    UNKNOWN = 0;
+    ARRAY = 1;
+    BOOLEAN = 2;
+    INTEGER = 3;
+    NULL = 4;
+    NUMBER = 5;
+    OBJECT = 6;
+    STRING = 7;
+  }
+
+  repeated JSONSchemaSimpleTypes type = 21;
+}
+
+message Discriminator {
+  string propertyName = 1;
+  mapping map<string, string> 2;
+  map<string, google.protobuf.Value> extensions = 3;
+}
+
+message ExternalDocumentation {
+  string description = 1;
+  string url = 2;
+  map<string, google.protobuf.Value> extensions = 3;
+}
+
+message Response {
+  string description = 1;
+}
+
+message SecurityScheme {
+  enum Type {
+    INVALID = 0;
+    HTTP = 1;
+    API_KEY = 2;
+    OAUTH2 = 3;
+    OPENID_CONNECT = 4;
+  }
+
+  Type type = 1;
+  string description = 2;
+  string name = 3;
+
+  enum In {
+    INVALID = 0;
+    QUERY = 1;
+    HEADER = 2;
+    COOKIE = 3;
+  }
+
+  In in = 4;
+  string scheme = 5;
+  string bearerFormat = 6;
+  Flows flows = 7;
+  string openIdConnectUrl = 8;
+  map<string, google.protobuf.Value> extensions = 9;
+}
+
+message Flows {
+  message Flow {
+    string authorizationUrl = 1;
+    string tokenUrl = 2;
+    string refreshUrl = 3;
+    map <string, string> scopes = 4;
+    map<string, google.protobuf.Value> extensions = 5;
+  }
+
+  Flow implicit = 1;
+  Flow password = 2;
+  Flow clientCredentials = 3;
+  Flow authorizationCode = 4;
+  map<string, google.protobuf.Value> extensions = 5;
+}
+
+message Tag {
+  string name = 1;
+  string description = 2;
+  ExternalDocs externalDocs = 3;
+  map<string, google.protobuf.Value> extensions = 4;
+}
+
+message ExternalDocs {
+  string name = 1;
+  string url = 2;
+  map<string, google.protobuf.Value> extensions = 3;
+}
