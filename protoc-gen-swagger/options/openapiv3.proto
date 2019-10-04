@@ -11,7 +11,7 @@ message OpenAPI {
   Info info = 2;
   repeated Server servers = 3;
   Components components = 4;
-  repeated map<string, repeated string> security = 5;
+  repeated SecurityRequirement security = 5;
   repeated Tag tags = 6;
   map<string, google.protobuf.Value> extensions = 7;
 }
@@ -24,7 +24,7 @@ message Operation {
   string operation_id = 5;
   map<string, Response> responses = 6;
   bool deprecated = 7;
-  repeated map<string, repeated string> security = 8;
+  repeated SecurityRequirement security = 8;
   repeated Server servers = 9;
   map<string, google.protobuf.Value> extensions = 10;
 }
@@ -66,9 +66,9 @@ message ServerVariable {
 }
 
 message Components {
-  map<string Schema> schemas = 1;
-  map<string Response> responses = 2;
-  map<string SecurityScheme> securitySchemes = 3;
+  map<string, Schema> schemas = 1;
+  map<string, Response> responses = 2;
+  map<string, SecurityScheme> securitySchemes = 3;
   map<string, google.protobuf.Value> extensions = 4;
 }
 
@@ -128,7 +128,7 @@ message JSONSchema {
 
 message Discriminator {
   string propertyName = 1;
-  mapping map<string, string> 2;
+  mapping map<string, string> = 2;
   map<string, google.protobuf.Value> extensions = 3;
 }
 
@@ -197,4 +197,8 @@ message ExternalDocs {
   string name = 1;
   string url = 2;
   map<string, google.protobuf.Value> extensions = 3;
+}
+
+message SecurityRequirement {
+  map<string, repeated string> requirement = 1;
 }
