@@ -30,7 +30,7 @@ def _collect_includes(gen_dir, srcs):
 
     return includes
 
-def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, actions, protoc, protoc_gen_swagger, grpc_api_configuration, single_output):
+def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, actions, protoc, protoc_gen_swagger, grpc_api_configuration, single_output, use_go_templates):
     swagger_files = []
 
     inputs = direct_proto_srcs + transitive_proto_srcs
@@ -53,7 +53,6 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
             output_dir = "/".join([output_dir, direct_proto_srcs[0].owner.workspace_root])
 
         output_dir = "/".join([output_dir, direct_proto_srcs[0].dirname])
-
         options.append("allow_merge=true")
         options.append("merge_file_name=%s" % ctx.attr.name)
 
@@ -80,6 +79,8 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
             )
 
             output_dir = ctx.bin_dir.path
+            if use_go_templates:
+                options.append("use_go_templates=true")
             if proto.owner.workspace_root:
                 output_dir = "/".join([output_dir, proto.owner.workspace_root])
 
@@ -116,6 +117,7 @@ def _proto_gen_swagger_impl(ctx):
                 protoc_gen_swagger = ctx.executable._protoc_gen_swagger,
                 grpc_api_configuration = grpc_api_configuration,
                 single_output = ctx.attr.single_output,
+                use_go_templates = ctx.attr.use_go_templates,
             ),
         ),
     )]
@@ -149,6 +151,10 @@ protoc_gen_swagger = rule(
             executable = True,
             cfg = "host",
         ),
+        "use_go_templates": attr.bool(
+            default = False,
+            mandatory = False,
+        )
     },
     implementation = _proto_gen_swagger_impl,
 )
