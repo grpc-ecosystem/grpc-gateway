@@ -48,6 +48,11 @@ func TestEcho(t *testing.T) {
 }
 
 func TestForwardResponseOption(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -670,6 +675,11 @@ func testABELookup(t *testing.T, port int) {
 // Then, issue a PATCH request updating only the string_value
 // Then, GET the resource and verify that string_value is changed, but int32_value isn't
 func TestABEPatch(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	port := 8080
 
 	// create a record with a known string_value and int32_value
@@ -709,6 +719,11 @@ func TestABEPatch(t *testing.T) {
 // TestABEPatchBody demonstrates the ability to specify an update mask within the request body.
 // This binding does not use an automatically generated update_mask.
 func TestABEPatchBody(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	port := 8080
 
 	for _, tc := range []struct {
@@ -1264,6 +1279,11 @@ func testABERepeated(t *testing.T, port int) {
 }
 
 func TestTimeout(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	apiURL := "http://localhost:8080/v2/example/timeout"
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
@@ -1284,6 +1304,11 @@ func TestTimeout(t *testing.T) {
 }
 
 func TestErrorWithDetails(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	apiURL := "http://localhost:8080/v2/example/errorwithdetails"
 	resp, err := http.Get(apiURL)
 	if err != nil {
@@ -1344,6 +1369,11 @@ func TestErrorWithDetails(t *testing.T) {
 }
 
 func TestPostWithEmptyBody(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	apiURL := "http://localhost:8080/v2/example/postwithemptybody/name"
 	rep, err := http.Post(apiURL, "application/json", nil)
 
@@ -1360,6 +1390,11 @@ func TestPostWithEmptyBody(t *testing.T) {
 }
 
 func TestUnknownPath(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	apiURL := "http://localhost:8080"
 	resp, err := http.Post(apiURL, "application/json", strings.NewReader("{}"))
 	if err != nil {
@@ -1380,6 +1415,11 @@ func TestUnknownPath(t *testing.T) {
 }
 
 func TestMethodNotAllowed(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	apiURL := "http://localhost:8080/v1/example/echo/myid"
 	resp, err := http.Get(apiURL)
 	if err != nil {
@@ -1400,6 +1440,11 @@ func TestMethodNotAllowed(t *testing.T) {
 }
 
 func TestInvalidArgument(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	apiURL := "http://localhost:8080/v1/example/echo/myid/not_int64"
 	resp, err := http.Get(apiURL)
 	if err != nil {
@@ -1544,6 +1589,11 @@ func testResponseStrings(t *testing.T, port int) {
 }
 
 func TestRequestQueryParams(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	port := 8080
 
 	formValues := url.Values{}
@@ -1629,6 +1679,11 @@ func TestRequestQueryParams(t *testing.T) {
 }
 
 func TestNonStandardNames(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
