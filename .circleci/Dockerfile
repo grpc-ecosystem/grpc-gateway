@@ -1,6 +1,7 @@
 FROM golang:1.13.1
 
-# Warm apt cache
+# Warm apt cache and install dependencies
+# bzip2 is required by the node_tests (to extract its dependencies).
 RUN apt-get update && \
     apt-get install -y wget unzip \
     openjdk-11-jre \
@@ -30,6 +31,5 @@ RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/${NVM_VERSION}/in
 # Clean up
 RUN apt-get autoremove -y && \
     apt-get remove -y wget \
-    unzip \
-    bzip2 && \
+    unzip && \
     rm -rf /var/lib/apt/lists/*
