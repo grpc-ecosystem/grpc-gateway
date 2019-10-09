@@ -154,7 +154,7 @@ protoc_gen_swagger = rule(
         "use_go_templates": attr.bool(
             default = False,
             mandatory = False,
-        )
+        ),
     },
     implementation = _proto_gen_swagger_impl,
 )

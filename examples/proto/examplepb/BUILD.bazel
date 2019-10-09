@@ -88,5 +88,5 @@ protoc_gen_swagger(
 protoc_gen_swagger(
     name = "examplepb_protoc_gen_swagger_template",
     proto = ":examplepb_proto",
-    use_go_templates = True, # Turns on support for using Go templates in protofile comments. 
+    use_go_templates = True,  # Turns on support for using Go templates in protofile comments.
 )
