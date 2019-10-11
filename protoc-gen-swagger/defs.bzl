@@ -30,7 +30,7 @@ def _collect_includes(gen_dir, srcs):
 
     return includes
 
-def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, actions, protoc, protoc_gen_swagger, grpc_api_configuration, single_output, use_go_templates):
+def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, actions, protoc, protoc_gen_swagger, grpc_api_configuration, single_output):
     swagger_files = []
 
     inputs = direct_proto_srcs + transitive_proto_srcs
@@ -73,14 +73,15 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
         swagger_files.append(swagger_file)
     else:
         for proto in direct_proto_srcs:
+            if proto.basename == "use_go_template.proto":
+                options.append("use_go_templates=true")
+
             swagger_file = actions.declare_file(
                 "%s.swagger.json" % proto.basename[:-len(".proto")],
                 sibling = proto,
             )
 
             output_dir = ctx.bin_dir.path
-            if use_go_templates:
-                options.append("use_go_templates=true")
             if proto.owner.workspace_root:
                 output_dir = "/".join([output_dir, proto.owner.workspace_root])
 
@@ -97,7 +98,6 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
                 outputs = [swagger_file],
                 arguments = [args],
             )
-
             swagger_files.append(swagger_file)
 
     return swagger_files
@@ -117,7 +117,6 @@ def _proto_gen_swagger_impl(ctx):
                 protoc_gen_swagger = ctx.executable._protoc_gen_swagger,
                 grpc_api_configuration = grpc_api_configuration,
                 single_output = ctx.attr.single_output,
-                use_go_templates = ctx.attr.use_go_templates,
             ),
         ),
     )]
@@ -150,10 +149,6 @@ protoc_gen_swagger = rule(
             default = Label("//protoc-gen-swagger:protoc-gen-swagger"),
             executable = True,
             cfg = "host",
-        ),
-        "use_go_templates": attr.bool(
-            default = False,
-            mandatory = False,
         ),
     },
     implementation = _proto_gen_swagger_impl,

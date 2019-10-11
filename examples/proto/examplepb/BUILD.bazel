@@ -59,10 +59,7 @@ go_proto_library(
 
 go_library(
     name = "go_default_library",
-    srcs = [
-        "unannotated_echo_service.pb.gw.go",
-        "use_go_template.pb.gw.go",
-    ],
+    srcs = ["unannotated_echo_service.pb.gw.go"],
     embed = [":examplepb_go_proto"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb",
     deps = [
@@ -86,10 +83,4 @@ protoc_gen_swagger(
     name = "examplepb_protoc_gen_swagger_merged",
     proto = ":examplepb_proto",
     single_output = True,  # Outputs a single swagger.json file.
-)
-
-protoc_gen_swagger(
-    name = "examplepb_protoc_gen_swagger_template",
-    proto = ":examplepb_proto",
-    use_go_templates = True,  # Turns on support for using Go templates in protofile comments.
 )
