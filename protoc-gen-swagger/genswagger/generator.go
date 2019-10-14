@@ -67,10 +67,6 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 	return mergedTarget
 }
 
-func fieldName(k string) string {
-	return strings.ReplaceAll(strings.Title(k), "-", "_")
-}
-
 // Q: What's up with the alias types here?
 // A: We don't want to completely override how these structs are marshaled into
 //    JSON, we only want to add fields (see below, extensionMarshalJSON).
