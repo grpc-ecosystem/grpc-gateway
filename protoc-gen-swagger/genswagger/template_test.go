@@ -1674,6 +1674,7 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 		comments              string
 		expectedError         error
 		expectedSwaggerObject interface{}
+		useGoTemplate         bool
 	}{
 		{
 			descr:                 "empty comments",
@@ -1769,12 +1770,47 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 			comments:              "Any comment",
 			expectedError:         errors.New("no description nor summary property"),
 		},
+		{
+			descr:         "without use_go_template",
+			swaggerObject: &swaggerSchemaObject{},
+			expectedSwaggerObject: &swaggerSchemaObject{
+				Title:       "First line",
+				Description: "{{import \"documentation.md\"}}",
+			},
+			comments:      "First line\n\n{{import \"documentation.md\"}}",
+			expectedError: nil,
+		},
+		{
+			descr:         "error with use_go_template",
+			swaggerObject: &swaggerSchemaObject{},
+			expectedSwaggerObject: &swaggerSchemaObject{
+				Title:       "First line",
+				Description: "open noneexistingfile.txt: no such file or directory",
+			},
+			comments:      "First line\n\n{{import \"noneexistingfile.txt\"}}",
+			expectedError: nil,
+			useGoTemplate: true,
+		},
+		{
+			descr:         "template with use_go_template",
+			swaggerObject: &swaggerSchemaObject{},
+			expectedSwaggerObject: &swaggerSchemaObject{
+				Title:       "Template",
+				Description: `Description "which means nothing"`,
+			},
+			comments:      "Template\n\nDescription {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
+			expectedError: nil,
+			useGoTemplate: true,
+		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.descr, func(t *testing.T) {
-			err := updateSwaggerDataFromComments(test.swaggerObject, test.comments, false)
-
+			reg := descriptor.NewRegistry()
+			if test.useGoTemplate {
+				reg.SetUseGoTemplate(true)
+			}
+			err := updateSwaggerDataFromComments(reg, test.swaggerObject, nil, test.comments, false)
 			if test.expectedError == nil {
 				if err != nil {
 					t.Errorf("unexpected error '%v'", err)
@@ -1792,6 +1828,131 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 				if err.Error() != test.expectedError.Error() {
 					t.Errorf("expected error malformed, expected %q, got %q", test.expectedError.Error(), err.Error())
 				}
+			}
+		})
+	}
+}
+
+func TestMessageOptionsWithGoTemplate(t *testing.T) {
+	tests := []struct {
+		descr         string
+		msgDescs      []*protodescriptor.DescriptorProto
+		schema        map[string]swagger_options.Schema // per-message schema to add
+		defs          swaggerDefinitionsObject
+		useGoTemplate bool
+	}{
+		{
+			descr: "external docs option",
+			msgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{Name: proto.String("Message")},
+			},
+			schema: map[string]swagger_options.Schema{
+				"Message": swagger_options.Schema{
+					JsonSchema: &swagger_options.JSONSchema{
+						Title:       "{{.Name}}",
+						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
+					},
+					ExternalDocs: &swagger_options.ExternalDocumentation{
+						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
+					},
+				},
+			},
+			defs: map[string]swaggerSchemaObject{
+				"Message": swaggerSchemaObject{
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "Message",
+					Description: `Description "which means nothing"`,
+					ExternalDocs: &swaggerExternalDocumentationObject{
+						Description: `Description "which means nothing"`,
+					},
+				},
+			},
+			useGoTemplate: true,
+		},
+		{
+			descr: "external docs option",
+			msgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{Name: proto.String("Message")},
+			},
+			schema: map[string]swagger_options.Schema{
+				"Message": swagger_options.Schema{
+					JsonSchema: &swagger_options.JSONSchema{
+						Title:       "{{.Name}}",
+						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
+					},
+					ExternalDocs: &swagger_options.ExternalDocumentation{
+						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
+					},
+				},
+			},
+			defs: map[string]swaggerSchemaObject{
+				"Message": swaggerSchemaObject{
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "{{.Name}}",
+					Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
+					ExternalDocs: &swaggerExternalDocumentationObject{
+						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
+					},
+				},
+			},
+			useGoTemplate: false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.descr, func(t *testing.T) {
+
+			msgs := []*descriptor.Message{}
+			for _, msgdesc := range test.msgDescs {
+				msgdesc.Options = &protodescriptor.MessageOptions{}
+				msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+			}
+
+			reg := descriptor.NewRegistry()
+			reg.SetUseGoTemplate(test.useGoTemplate)
+			file := descriptor.File{
+				FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+					SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+					Name:           proto.String("example.proto"),
+					Package:        proto.String("example"),
+					Dependency:     []string{},
+					MessageType:    test.msgDescs,
+					EnumType:       []*protodescriptor.EnumDescriptorProto{},
+					Service:        []*protodescriptor.ServiceDescriptorProto{},
+				},
+				Messages: msgs,
+			}
+			reg.Load(&plugin.CodeGeneratorRequest{
+				ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto},
+			})
+
+			msgMap := map[string]*descriptor.Message{}
+			for _, d := range test.msgDescs {
+				name := d.GetName()
+				msg, err := reg.LookupMsg("example", name)
+				if err != nil {
+					t.Fatalf("lookup message %v: %v", name, err)
+				}
+				msgMap[msg.FQMN()] = msg
+
+				if schema, ok := test.schema[name]; ok {
+					err := proto.SetExtension(d.Options, swagger_options.E_Openapiv2Schema, &schema)
+					if err != nil {
+						t.Fatalf("SetExtension(%s, ...) returned error: %v", msg, err)
+					}
+				}
+			}
+
+			refs := make(refMap)
+			actual := make(swaggerDefinitionsObject)
+			renderMessagesAsDefinition(msgMap, actual, reg, refs)
+
+			if !reflect.DeepEqual(actual, test.defs) {
+				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
 			}
 		})
 	}

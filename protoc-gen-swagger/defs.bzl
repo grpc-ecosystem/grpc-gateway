@@ -53,7 +53,6 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
             output_dir = "/".join([output_dir, direct_proto_srcs[0].owner.workspace_root])
 
         output_dir = "/".join([output_dir, direct_proto_srcs[0].dirname])
-
         options.append("allow_merge=true")
         options.append("merge_file_name=%s" % ctx.attr.name)
 
@@ -74,6 +73,9 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
         swagger_files.append(swagger_file)
     else:
         for proto in direct_proto_srcs:
+            if proto.basename == "use_go_template.proto":
+                options.append("use_go_templates=true")
+
             swagger_file = actions.declare_file(
                 "%s.swagger.json" % proto.basename[:-len(".proto")],
                 sibling = proto,
@@ -96,7 +98,6 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
                 outputs = [swagger_file],
                 arguments = [args],
             )
-
             swagger_files.append(swagger_file)
 
     return swagger_files
