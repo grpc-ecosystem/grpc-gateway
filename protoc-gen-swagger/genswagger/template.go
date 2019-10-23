@@ -17,9 +17,9 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
-	structpb "github.com/golang/protobuf/ptypes/struct"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
+	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 )
@@ -273,7 +273,7 @@ func skipRenderingRef(refName string) bool {
 	return ok
 }
 
-func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry, customRefs refMap) {
+func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry, customRefs refMap) error {
 	for name, msg := range messages {
 		if skipRenderingRef(name) {
 			continue
@@ -348,8 +348,16 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			}
 			*schema.Properties = append(*schema.Properties, kv)
 		}
+		// It is possible for message schema names to collide due to the way namespacing
+		// for nested fields works currently. So here we check to see if the name is
+		// already defined and error if so.
+		swaggerName := fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)
+		if _, ok := d[swaggerName]; ok {
+			return fmt.Errorf("message schema name collision: %s would be defined twice due to message nesting", swaggerName)
+		}
 		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
 	}
+	return nil
 }
 
 func renderMessagesAsStreamDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
@@ -1044,7 +1052,13 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	ms := messageMap{}
 	e := enumMap{}
 	findServicesMessagesAndEnumerations(p.Services, p.reg, m, ms, e, requestResponseRefs)
-	renderMessagesAsDefinition(m, s.Definitions, p.reg, customRefs)
+
+	// Nested message names may collide
+	err := renderMessagesAsDefinition(m, s.Definitions, p.reg, customRefs)
+	if err != nil {
+		return nil, err
+	}
+
 	renderMessagesAsStreamDefinition(ms, s.StreamDefinitions, p.reg)
 	renderEnumerationsAsDefinition(e, s.Definitions, p.reg)
 
