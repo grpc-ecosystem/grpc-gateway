@@ -57,7 +57,7 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
         options.append("merge_file_name=%s" % ctx.attr.name)
 
         args = actions.args()
-        args.add("--plugin=%s" % protoc_gen_swagger.path)
+        args.add("--plugin=protoc-gen-swagger=%s" % protoc_gen_swagger.path)
         args.add("--swagger_out=%s:%s" % (",".join(options), output_dir))
         args.add_all(["-I%s" % include for include in includes])
         args.add_all([src.path for src in direct_proto_srcs])
@@ -86,7 +86,7 @@ def _run_proto_gen_swagger(ctx, direct_proto_srcs, transitive_proto_srcs, action
                 output_dir = "/".join([output_dir, proto.owner.workspace_root])
 
             args = actions.args()
-            args.add("--plugin=%s" % protoc_gen_swagger.path)
+            args.add("--plugin=protoc-gen-swagger=%s" % protoc_gen_swagger.path)
             args.add("--swagger_out=%s:%s" % (",".join(options), output_dir))
             args.add_all(["-I%s" % include for include in includes])
             args.add(proto.path)
