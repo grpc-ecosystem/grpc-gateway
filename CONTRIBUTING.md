@@ -27,7 +27,7 @@ Great, it should be as simple as thus (run from the root of the directory):
 docker run -v $(pwd):/src/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env:1.13 \
     /bin/bash -c 'cd /src/grpc-gateway && \
         make realclean && \
-        make examples SWAGGER_CODEGEN="${SWAGGER_CODEGEN}"'
+        make examples'
 docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
     l.gcr.io/google/bazel -c 'bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories; bazel run :buildifier'
 ```
