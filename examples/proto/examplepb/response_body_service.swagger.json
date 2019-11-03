@@ -4,10 +4,6 @@
     "title": "examples/proto/examplepb/response_body_service.proto",
     "version": "version not set"
   },
-  "schemes": [
-    "http",
-    "https"
-  ],
   "consumes": [
     "application/json"
   ],
