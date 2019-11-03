@@ -3,9 +3,6 @@ swagger: "2.0"
 info:
   version: "version not set"
   title: "examples/proto/examplepb/response_body_service.proto"
-schemes:
-- "http"
-- "https"
 consumes:
 - "application/json"
 produces:

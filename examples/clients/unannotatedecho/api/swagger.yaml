@@ -7,9 +7,6 @@ info:
     \ service which returns\na message."
   version: "version not set"
   title: "examples/proto/examplepb/unannotated_echo_service.proto"
-schemes:
-- "http"
-- "https"
 consumes:
 - "application/json"
 produces:

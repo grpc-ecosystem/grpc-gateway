@@ -59,7 +59,7 @@ type swaggerObject struct {
 	Info                swaggerInfoObject                   `json:"info"`
 	Host                string                              `json:"host,omitempty"`
 	BasePath            string                              `json:"basePath,omitempty"`
-	Schemes             []string                            `json:"schemes"`
+	Schemes             []string                            `json:"schemes,omitempty"`
 	Consumes            []string                            `json:"consumes"`
 	Produces            []string                            `json:"produces"`
 	Paths               swaggerPathsObject                  `json:"paths"`

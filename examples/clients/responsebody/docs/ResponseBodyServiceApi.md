@@ -1,6 +1,6 @@
 # \ResponseBodyServiceApi
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *https://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
