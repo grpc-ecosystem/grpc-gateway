@@ -5,10 +5,6 @@
     "description": "Echo Service API consists of a single service which returns\na message.",
     "version": "version not set"
   },
-  "schemes": [
-    "http",
-    "https"
-  ],
   "consumes": [
     "application/json"
   ],

@@ -5,10 +5,6 @@
     "description": "Unannotated Echo Service\nSimilar to echo_service.proto but without annotations. See\nunannotated_echo_service.yaml for the equivalent of the annotations in\ngRPC API configuration format.\n\nEcho Service API consists of a single service which returns\na message.",
     "version": "version not set"
   },
-  "schemes": [
-    "http",
-    "https"
-  ],
   "consumes": [
     "application/json"
   ],
