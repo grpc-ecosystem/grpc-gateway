@@ -140,10 +140,10 @@ protoc_gen_swagger = rule(
             default = False,
             mandatory = False,
         ),
-	"json_names_for_fields": attr.bool(
-	    default = False,
-	    mandatory = False,
-	 ),
+        "json_names_for_fields": attr.bool(
+            default = False,
+            mandatory = False,
+        ),
         "_protoc": attr.label(
             default = "@com_google_protobuf//:protoc",
             executable = True,
