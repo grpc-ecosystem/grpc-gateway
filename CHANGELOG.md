@@ -1,5 +1,17 @@
 # Change Log
 
+## [v1.12.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.12.1) (2019-11-06)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.12.0...v1.12.1)
+
+**Closed issues:**
+
+- Unable to create HTTP mapping with "/parent" [\#1079](https://github.com/grpc-ecosystem/grpc-gateway/issues/1079)
+
+**Merged pull requests:**
+
+- Revert "Fix templateToSwaggerPath generates invalid path" [\#1078](https://github.com/grpc-ecosystem/grpc-gateway/pull/1078) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Support json\_names\_for\_fields in starlark rule protoc\_gen\_swagger [\#1077](https://github.com/grpc-ecosystem/grpc-gateway/pull/1077) ([prestonvanloon](https://github.com/prestonvanloon))
+
 ## [v1.12.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.12.0) (2019-11-04)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.11.3...v1.12.0)
 
@@ -24,6 +36,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.12.0 [\#1076](https://github.com/grpc-ecosystem/grpc-gateway/pull/1076) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Support creating a Swagger def with no schemes [\#1075](https://github.com/grpc-ecosystem/grpc-gateway/pull/1075) ([ailurarctos](https://github.com/ailurarctos))
 - Update dockerfile and regenerate files [\#1074](https://github.com/grpc-ecosystem/grpc-gateway/pull/1074) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - annotations: Sort import order. [\#1072](https://github.com/grpc-ecosystem/grpc-gateway/pull/1072) ([someone1](https://github.com/someone1))
