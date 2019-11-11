@@ -5,7 +5,7 @@ order: 100
 ---
 
 # gRPC API Configuration
-In some sitations annotating the .proto file of a service is not an option. For example you might not have control over the .proto file or you might want to expose the same gRPC API multiple times in completely different ways.
+In some situations, annotating the .proto file of a service is not an option. For example you might not have control over the .proto file or you might want to expose the same gRPC API multiple times in completely different ways.
 
 Google Cloud Platform offers a way to do this for services hosted with them called ["gRPC API Configuration"](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config). It can be used to define the behavior of a gRPC API service without modifications to the service itself in the form of [YAML](https://en.wikipedia.org/wiki/YAML) configuration files.
 
