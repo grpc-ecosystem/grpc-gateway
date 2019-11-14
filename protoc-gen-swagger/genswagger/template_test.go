@@ -986,11 +986,11 @@ func TestApplyTemplateRequestWithUnusedReferences(t *testing.T) {
 	}
 }
 
-func generateFieldsForJsonReservedName() []*descriptor.Field {
+func generateFieldsForJSONReservedName() []*descriptor.Field {
 	fields := make([]*descriptor.Field, 0)
 	fieldName := string("json_name")
-	fieldJsonName := string("jsonNAME")
-	fieldDescriptor := protodescriptor.FieldDescriptorProto{Name: &fieldName, JsonName: &fieldJsonName}
+	fieldJSONName := string("jsonNAME")
+	fieldDescriptor := protodescriptor.FieldDescriptorProto{Name: &fieldName, JsonName: &fieldJSONName}
 	field := &descriptor.Field{FieldDescriptorProto: &fieldDescriptor}
 	return append(fields, field)
 }
@@ -1016,7 +1016,7 @@ func TestTemplateWithJsonCamelCase(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJsonReservedName())
+		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJSONReservedName())
 		if data.expected != actual {
 			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
@@ -1043,7 +1043,7 @@ func TestTemplateWithoutJsonCamelCase(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJsonReservedName())
+		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJSONReservedName())
 		if data.expected != actual {
 			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
@@ -1075,14 +1075,14 @@ func TestTemplateToSwaggerPath(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJsonReservedName())
+		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJSONReservedName())
 		if data.expected != actual {
 			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
 	}
 	reg.SetUseJSONNamesForFields(true)
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJsonReservedName())
+		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJSONReservedName())
 		if data.expected != actual {
 			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
@@ -1097,7 +1097,7 @@ func BenchmarkTemplateToSwaggerPath(b *testing.B) {
 		reg.SetUseJSONNamesForFields(false)
 
 		for i := 0; i < b.N; i++ {
-			_ = templateToSwaggerPath(input, reg, generateFieldsForJsonReservedName())
+			_ = templateToSwaggerPath(input, reg, generateFieldsForJSONReservedName())
 		}
 	})
 
@@ -1106,7 +1106,7 @@ func BenchmarkTemplateToSwaggerPath(b *testing.B) {
 		reg.SetUseJSONNamesForFields(true)
 
 		for i := 0; i < b.N; i++ {
-			_ = templateToSwaggerPath(input, reg, generateFieldsForJsonReservedName())
+			_ = templateToSwaggerPath(input, reg, generateFieldsForJSONReservedName())
 		}
 	})
 }
@@ -1182,14 +1182,14 @@ func TestFQMNtoSwaggerName(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJsonReservedName())
+		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJSONReservedName())
 		if data.expected != actual {
 			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
 	}
 	reg.SetUseJSONNamesForFields(true)
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJsonReservedName())
+		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJSONReservedName())
 		if data.expected != actual {
 			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}

@@ -651,15 +651,15 @@ func templateToSwaggerPath(path string, reg *descriptor.Registry, fields []*desc
 				len(jsonBuffer) > 1 {
 				jsonSnakeCaseName := string(jsonBuffer[1:])
 				jsonCamelCaseName := string(lowerCamelCase(jsonSnakeCaseName))
-				reservedJsonFeildName := ""
+				reservedJSONFeildName := ""
 				for _, oneField := range fields {
 					if oneField.GetName() == jsonSnakeCaseName {
-						reservedJsonFeildName = oneField.GetJsonName()
+						reservedJSONFeildName = oneField.GetJsonName()
 						break;
 					}
 				}
-				if reservedJsonFeildName != "" {
-					jsonCamelCaseName = reservedJsonFeildName
+				if reservedJSONFeildName != "" {
+					jsonCamelCaseName = reservedJSONFeildName
 				}
 				prev := string(buffer[:len(buffer)-len(jsonSnakeCaseName)-2])
 				buffer = strings.Join([]string{prev, "{", jsonCamelCaseName, "}"}, "")
