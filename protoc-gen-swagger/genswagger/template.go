@@ -650,13 +650,7 @@ func templateToSwaggerPath(path string, reg *descriptor.Registry, fields []*desc
 			if reg.GetUseJSONNamesForFields() &&
 				len(jsonBuffer) > 1 {
 				jsonSnakeCaseName := string(jsonBuffer[1:])
-				jsonCamelCaseName := string(lowerCamelCase(jsonSnakeCaseName))
-				for _, oneField := range fields {
-					if oneField.GetName() == jsonSnakeCaseName {
-						jsonCamelCaseName = oneField.GetJsonName()
-						break;
-					}
-				}
+				jsonCamelCaseName := string(lowerCamelCase(jsonSnakeCaseName, fields))
 				prev := string(buffer[:len(buffer)-len(jsonSnakeCaseName)-2])
 				buffer = strings.Join([]string{prev, "{", jsonCamelCaseName, "}"}, "")
 				jsonBuffer = ""
@@ -775,7 +769,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					}
 					parameterString := parameter.String()
 					if reg.GetUseJSONNamesForFields() {
-						parameterString = lowerCamelCase(parameterString)
+						parameterString = lowerCamelCase(parameterString, meth.RequestType.Fields)
 					}
 					parameters = append(parameters, swaggerParameterObject{
 						Name:        parameterString,
@@ -1808,8 +1802,13 @@ func addCustomRefs(d swaggerDefinitionsObject, reg *descriptor.Registry, refs re
 	addCustomRefs(d, reg, refs)
 }
 
-func lowerCamelCase(parameter string) string {
-	parameterString := gogen.CamelCase(parameter)
+func lowerCamelCase(fieldName string, fields []*descriptor.Field) string {
+	for _, oneField := range fields {
+		if oneField.GetName() == fieldName {
+			return oneField.GetJsonName()
+		}
+	}
+	parameterString := gogen.CamelCase(fieldName)
 	builder := &strings.Builder{}
 	builder.WriteString(strings.ToLower(string(parameterString[0])))
 	builder.WriteString(parameterString[1:])
