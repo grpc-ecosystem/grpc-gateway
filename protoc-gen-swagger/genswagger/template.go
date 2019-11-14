@@ -17,9 +17,9 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
-	structpb "github.com/golang/protobuf/ptypes/struct"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
+	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 )
@@ -621,7 +621,7 @@ func resolveFullyQualifiedNameToSwaggerNames(messages []string, useFQNForSwagger
 var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*).*}")
 
 // Swagger expects paths of the form /path/{string_value} but grpc-gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
-func templateToSwaggerPath(path string, reg *descriptor.Registry) string {
+func templateToSwaggerPath(path string, reg *descriptor.Registry, fields []*descriptor.Field) string {
 	// It seems like the right thing to do here is to just use
 	// strings.Split(path, "/") but that breaks badly when you hit a url like
 	// /{my_field=prefix/*}/ and end up with 2 sections representing my_field.
@@ -651,6 +651,16 @@ func templateToSwaggerPath(path string, reg *descriptor.Registry) string {
 				len(jsonBuffer) > 1 {
 				jsonSnakeCaseName := string(jsonBuffer[1:])
 				jsonCamelCaseName := string(lowerCamelCase(jsonSnakeCaseName))
+				reservedJsonFeildName := ""
+				for _, oneField := range fields {
+					if oneField.GetName() == jsonSnakeCaseName {
+						reservedJsonFeildName = oneField.GetJsonName()
+						break;
+					}
+				}
+				if reservedJsonFeildName != "" {
+					jsonCamelCaseName = reservedJsonFeildName
+				}
 				prev := string(buffer[:len(buffer)-len(jsonSnakeCaseName)-2])
 				buffer = strings.Join([]string{prev, "{", jsonCamelCaseName, "}"}, "")
 				jsonBuffer = ""
@@ -836,7 +846,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					parameters = append(parameters, queryParams...)
 				}
 
-				pathItemObject, ok := paths[templateToSwaggerPath(b.PathTmpl.Template, reg)]
+				pathItemObject, ok := paths[templateToSwaggerPath(b.PathTmpl.Template, reg, meth.RequestType.Fields)]
 				if !ok {
 					pathItemObject = swaggerPathItemObject{}
 				}
@@ -1002,7 +1012,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					pathItemObject.Patch = operationObject
 					break
 				}
-				paths[templateToSwaggerPath(b.PathTmpl.Template, reg)] = pathItemObject
+				paths[templateToSwaggerPath(b.PathTmpl.Template, reg, meth.RequestType.Fields)] = pathItemObject
 			}
 		}
 	}
