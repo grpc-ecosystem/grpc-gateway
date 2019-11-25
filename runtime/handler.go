@@ -61,7 +61,17 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			return
 		}
 
-		buf, err := marshaler.Marshal(streamChunk(ctx, resp, mux.streamErrorHandler))
+		chunk := streamChunk(ctx, resp, mux.streamErrorHandler)
+		if !wroteHeader {
+			// Check marshaler on run time in order to keep backwards compatability
+			// An interface param needs to be added to the ContentType() function on
+			// the Marshal interface to be able to remove this check
+			if httpBodyMarshaler, ok := marshaler.(*HTTPBodyMarshaler); ok {
+				w.Header().Set("Content-Type", httpBodyMarshaler.ContentTypeFromMessage(chunk))
+			}
+		}
+
+		buf, err := marshaler.Marshal(chunk)
 		if err != nil {
 			grpclog.Infof("Failed to marshal response chunk: %v", err)
 			handleForwardResponseStreamError(ctx, wroteHeader, marshaler, w, req, mux, err)
