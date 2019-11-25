@@ -31,7 +31,7 @@ func (h *HTTPBodyMarshaler) ContentType() string {
 // ContentTypeFromMessage in case v is a google.api.HttpBody message it returns
 // its specified content type otherwise fall back to the default Marshaler.
 func (h *HTTPBodyMarshaler) ContentTypeFromMessage(v interface{}) string {
-	if httpBody := tryHttpBody(v); httpBody != nil {
+	if httpBody := tryHTTPBody(v); httpBody != nil {
 		return httpBody.GetContentType()
 	}
 	return h.Marshaler.ContentType()
@@ -40,7 +40,7 @@ func (h *HTTPBodyMarshaler) ContentTypeFromMessage(v interface{}) string {
 // Marshal marshals "v" by returning the body bytes if v is a
 // google.api.HttpBody message, otherwise it falls back to the default Marshaler.
 func (h *HTTPBodyMarshaler) Marshal(v interface{}) ([]byte, error) {
-	if httpBody := tryHttpBody(v); httpBody != nil {
+	if httpBody := tryHTTPBody(v); httpBody != nil {
 		return httpBody.GetData(), nil
 	}
 	return h.Marshaler.Marshal(v)
@@ -51,7 +51,7 @@ func (h *HTTPBodyMarshaler) Delimiter() []byte {
 	return []byte("")
 }
 
-func tryHttpBody(v interface{}) *httpbody.HttpBody {
+func tryHTTPBody(v interface{}) *httpbody.HttpBody {
 	rv := reflect.ValueOf(v)
 	// The handler wraps streamed chunks in a map.
 	// If we're sending an HTTP body as a chunk, we need to unpack it.
