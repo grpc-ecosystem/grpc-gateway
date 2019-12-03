@@ -934,6 +934,9 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						operationObject.Tags = make([]string, len(opts.Tags))
 						copy(operationObject.Tags, opts.Tags)
 					}
+					if opts.OperationId != "" {
+						operationObject.OperationID = opts.OperationId
+					}
 					if opts.Security != nil {
 						newSecurity := []swaggerSecurityRequirementObject{}
 						if operationObject.Security != nil {
