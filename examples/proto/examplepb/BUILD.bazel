@@ -13,12 +13,20 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude wrappers.pb.gw.go
 # gazelle:exclude response_body_service.pb.gw.go
 
+genrule(
+    name = "generated_proto",
+    srcs = ["generated_input.proto"],
+    outs = ["generated_output.proto"],
+    cmd = "cp $< $@", # A simple copy simulates a generated proto file.
+)
+
 proto_library(
     name = "examplepb_proto",
     srcs = [
         "a_bit_of_everything.proto",
         "echo_service.proto",
         "flow_combination.proto",
+        "generated_output.proto",
         "non_standard_names.proto",
         "response_body_service.proto",
         "stream.proto",
