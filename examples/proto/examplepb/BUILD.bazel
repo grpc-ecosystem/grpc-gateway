@@ -4,20 +4,23 @@ load("@grpc_ecosystem_grpc_gateway//protoc-gen-swagger:defs.bzl", "protoc_gen_sw
 
 package(default_visibility = ["//visibility:public"])
 
+# TODO(yannic): Add examples/tests that use import_prefix/strip_import_prefix.
+
 # gazelle:exclude a_bit_of_everything.pb.gw.go
 # gazelle:exclude echo_service.pb.gw.go
 # gazelle:exclude flow_combination.pb.gw.go
+# gazelle:exclude generated_input.proto
 # gazelle:exclude non_standard_names.pb.gw.go
+# gazelle:exclude response_body_service.pb.gw.go
 # gazelle:exclude stream.pb.gw.go
 # gazelle:exclude use_go_template.pb.gw.go
 # gazelle:exclude wrappers.pb.gw.go
-# gazelle:exclude response_body_service.pb.gw.go
 
 genrule(
     name = "generated_proto",
     srcs = ["generated_input.proto"],
     outs = ["generated_output.proto"],
-    cmd = "cp $< $@", # A simple copy simulates a generated proto file.
+    cmd = "cp $< $@",  # A simple copy simulates a generated proto file.
 )
 
 proto_library(
