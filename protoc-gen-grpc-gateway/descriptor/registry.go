@@ -75,6 +75,9 @@ type Registry struct {
 	// useGoTemplate determines whether you want to use GO templates
 	// in your protofile comments
 	useGoTemplate bool
+
+	// omitPackageDoc, if false, causes a package comment to be included in the generated code.
+	omitPackageDoc bool
 }
 
 type repeatedFieldSeparator struct {
@@ -458,6 +461,16 @@ func (r *Registry) SetUseGoTemplate(use bool) {
 // GetUseGoTemplate returns useGoTemplate
 func (r *Registry) GetUseGoTemplate() bool {
 	return r.useGoTemplate
+}
+
+// SetOmitPackageDoc controls whether the generated code contains a package comment (if set to false, it will contain one)
+func (r *Registry) SetOmitPackageDoc(omit bool) {
+	r.omitPackageDoc = omit
+}
+
+// GetOmitPackageDoc returns whether a package comment will be omitted from the generated code
+func (r *Registry) GetOmitPackageDoc() bool {
+	return r.omitPackageDoc
 }
 
 // sanitizePackageName replaces unallowed character in package name
