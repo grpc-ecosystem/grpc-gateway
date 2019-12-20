@@ -4,6 +4,8 @@ Reads the the api spec in protobuf format and generate an open-api spec.
 Optionally applies settings from the grpc-service configuration.
 """
 
+load("@rules_proto//proto:defs.bzl", "ProtoInfo")
+
 # TODO(yannic): Replace with |proto_common.direct_source_infos| when
 # https://github.com/bazelbuild/rules_proto/pull/22 lands.
 def _direct_source_infos(proto_info, provided_sources = []):
