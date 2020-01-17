@@ -1,0 +1,13 @@
+syntax = 'proto3';
+
+//option go_package = "github.com/grpc-ecosystem/grpc-gateway/runtime";
+option go_package = "runtime_test";
+
+message TestFlattenedMap {
+    repeated FlattenedMap param = 1;
+}
+
+message FlattenedMap {
+    string key = 1;
+    string value = 2;
+}

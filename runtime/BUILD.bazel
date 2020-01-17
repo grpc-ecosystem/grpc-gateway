@@ -1,4 +1,5 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -62,7 +63,7 @@ go_test(
         "pattern_test.go",
         "query_test.go",
     ],
-    embed = [":go_default_library"],
+    embed = [":go_default_library", "options_go_proto"],
     deps = [
         "//examples/proto/examplepb:go_default_library",
         "//internal:go_default_library",
@@ -84,3 +85,19 @@ go_test(
         "@org_golang_google_grpc//status:go_default_library",
     ],
 )
+
+proto_library(
+    name = "query_test_proto",
+    srcs = [
+        "query_test.proto",
+    ],
+)
+
+
+go_proto_library(
+    name = "options_go_proto",
+    compilers = ["@io_bazel_rules_go//proto:go_grpc"],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/runtime",
+    proto = ":query_test_proto",
+)
+

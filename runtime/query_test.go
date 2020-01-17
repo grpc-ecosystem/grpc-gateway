@@ -148,6 +148,7 @@ func TestPopulateParameters(t *testing.T) {
 				"map_value13[2.5]":       {"value"},
 				"map_value14[key]":       {"true"},
 				"map_value15[true]":      {"value"},
+				"flattened_map[key]":     {"value1", "value2"},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &proto3Message{
@@ -196,6 +197,10 @@ func TestPopulateParameters(t *testing.T) {
 				MapValue13: map[float64]string{2.5: "value"},
 				MapValue14: map[string]bool{"key": true},
 				MapValue15: map[bool]string{true: "value"},
+				// RepeatedMap: []*FlattenedMapValue{
+				// 	{Key: "key", Value: "value1"},
+				// 	{Key: "key", Value: "value2"},
+				// },
 			},
 		},
 		{
@@ -540,6 +545,38 @@ func TestPopulateParametersWithFilters(t *testing.T) {
 	}
 }
 
+func TestPopulateQueryParametersForFlattenedMap(t *testing.T) {
+	for _, spec := range []struct {
+		want   proto.Message
+		values url.Values
+		filter *utilities.DoubleArray
+	}{
+		{
+			want: &TestFlattenedMap{
+				Param: []*FlattenedMap{
+					{Key: "key", Value: "value1"},
+					{Key: "key", Value: "value2"},
+				},
+			},
+			values: url.Values{
+				"param[key]": {"value1", "value2"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+		},
+	} {
+		msg := proto.Clone(spec.want)
+		msg.Reset()
+		err := runtime.PopulateQueryParameters(msg, spec.values, spec.filter)
+		if err != nil {
+			t.Errorf("runtime.PoplateQueryParameters(msg, %v, %v) failed with %v; want success", spec.values, spec.filter, err)
+			continue
+		}
+		if got, want := msg, spec.want; !proto.Equal(got, want) {
+			t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v = %v; want %v", spec.values, spec.filter, got, want)
+		}
+	}
+}
+
 func TestPopulateQueryParametersWithInvalidNestedParameters(t *testing.T) {
 	for _, spec := range []struct {
 		msg    proto.Message
@@ -682,6 +719,7 @@ type proto3Message struct {
 	MapValue13         map[float64]string       `protobuf:"bytes,39,opt,name=map_value13,json=mapValue13" json:"map_value13,omitempty"`
 	MapValue14         map[string]bool          `protobuf:"bytes,40,opt,name=map_value14,json=mapValue14" json:"map_value14,omitempty"`
 	MapValue15         map[bool]string          `protobuf:"bytes,41,opt,name=map_value15,json=mapValue15" json:"map_value15,omitempty"`
+	// RepeatedMap        []*FlattenedMapValue     `protobuf:"bytes,42,opt,name=repeated_map,json=repeated_map,proto3" json:"repeated_map,omitempty"`
 }
 
 func (m *proto3Message) Reset()         { *m = proto3Message{} }

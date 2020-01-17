@@ -173,12 +173,80 @@ func populateMapField(f reflect.Value, values []string, props *proto.Properties)
 	return nil
 }
 
+func populateFlattenedMap(f reflect.Value, values []string, props *proto.Properties) error {
+	elemType := f.Type().Elem()
+	if elemType.Kind() == reflect.Ptr {
+		elemType = elemType.Elem()
+	}
+
+	elemVal := reflect.New(elemType).Elem()
+
+	keyReflect, keyProp, err := fieldByProtoName(elemVal, "key")
+	if err != nil {
+		return err
+	}
+
+	valReflect, valProp, err := fieldByProtoName(elemVal, "value")
+	if err != nil {
+		return err
+	}
+
+	// we only support population if the message exactly matches the proto wire
+	// representation of a map
+	if keyReflect.Kind() == reflect.Invalid || valReflect.Kind() == reflect.Invalid {
+		return fmt.Errorf("unsupported field type %s", elemType)
+	}
+
+	keyConv, ok := convFromType[keyReflect.Kind()]
+	if !ok {
+		return fmt.Errorf("unsupported map field key type %s", keyReflect.Type())
+	}
+
+	valConv, ok := convFromType[valReflect.Kind()]
+	if !ok {
+		return fmt.Errorf("unsupported map field value type %s", valReflect.Type())
+	}
+
+	key := keyConv.Call([]reflect.Value{reflect.ValueOf(values[0])})
+	if err := key[1].Interface(); err != nil {
+		return err.(error)
+	}
+
+	f.Set(reflect.MakeSlice(f.Type(), len(values)-1, len(values)-1).Convert(f.Type()))
+	for i, v := range values[1:] {
+		val := valConv.Call([]reflect.Value{reflect.ValueOf(v)})
+		if err := val[1].Interface(); err != nil {
+			return err.(error)
+		}
+
+		elem := reflect.New(elemType)
+		elem.Elem().FieldByName(keyProp.Name).Set(key[0].Convert(keyReflect.Type()))
+		elem.Elem().FieldByName(valProp.Name).Set(val[0].Convert(valReflect.Type()))
+
+		if f.Type().Elem().Kind() != reflect.Ptr {
+			elem = reflect.Indirect(elem)
+		}
+
+		f.Index(i).Set(elem)
+	}
+
+	return nil
+}
+
 func populateRepeatedField(f reflect.Value, values []string, props *proto.Properties) error {
 	elemType := f.Type().Elem()
 
 	// is the destination field a slice of an enumeration type?
 	if enumValMap := proto.EnumValueMap(props.Enum); enumValMap != nil {
 		return populateFieldEnumRepeated(f, values, enumValMap)
+	}
+
+	// is the underlying type a struct and meets our initial criteria
+	// for attempting to populate as a map?
+	if (elemType.Kind() == reflect.Ptr &&
+		elemType.Elem().Kind() == reflect.Struct) ||
+		(elemType.Kind() == reflect.Struct) {
+		return populateFlattenedMap(f, values, props)
 	}
 
 	conv, ok := convFromType[elemType.Kind()]
@@ -193,6 +261,7 @@ func populateRepeatedField(f reflect.Value, values []string, props *proto.Proper
 		}
 		f.Index(i).Set(result[0].Convert(f.Index(i).Type()))
 	}
+
 	return nil
 }
 
