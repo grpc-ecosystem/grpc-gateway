@@ -213,6 +213,8 @@ func populateFlattenedMap(f reflect.Value, values []string, props *proto.Propert
 	}
 
 	f.Set(reflect.MakeSlice(f.Type(), len(values)-1, len(values)-1).Convert(f.Type()))
+	keyVal := key[0].Convert(keyReflect.Type())
+
 	for i, v := range values[1:] {
 		val := valConv.Call([]reflect.Value{reflect.ValueOf(v)})
 		if err := val[1].Interface(); err != nil {
@@ -220,7 +222,7 @@ func populateFlattenedMap(f reflect.Value, values []string, props *proto.Propert
 		}
 
 		elem := reflect.New(elemType)
-		elem.Elem().FieldByName(keyProp.Name).Set(key[0].Convert(keyReflect.Type()))
+		elem.Elem().FieldByName(keyProp.Name).Set(keyVal)
 		elem.Elem().FieldByName(valProp.Name).Set(val[0].Convert(valReflect.Type()))
 
 		if f.Type().Elem().Kind() != reflect.Ptr {
