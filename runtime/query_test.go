@@ -373,6 +373,15 @@ func TestPopulateParameters(t *testing.T) {
 		},
 		{
 			values: url.Values{
+				"oneofStringValue": {"foobar"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want: &proto3Message{
+				OneofValue: &proto3Message_OneofStringValue{"foobar"},
+			},
+		},
+		{
+			values: url.Values{
 				"oneof_bool_value": {"true"},
 			},
 			filter: utilities.NewDoubleArray(nil),
