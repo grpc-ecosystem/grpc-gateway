@@ -52,9 +52,6 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 			for k, v := range f.swagger.Definitions {
 				mergedTarget.swagger.Definitions[k] = v
 			}
-			for k, v := range f.swagger.StreamDefinitions {
-				mergedTarget.swagger.StreamDefinitions[k] = v
-			}
 			for k, v := range f.swagger.Paths {
 				mergedTarget.swagger.Paths[k] = v
 			}

@@ -892,15 +892,17 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 	if want, got, name := 3, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
 	}
-	// stream ExampleMessage must be present
-	if want, got, name := 1, len(result.StreamDefinitions), "len(StreamDefinitions)"; !reflect.DeepEqual(got, want) {
-		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
+	if _, ok := result.Paths["/v1/echo"].Post.Responses["200"]; !ok {
+		t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", file, `result.Paths["/v1/echo"].Post.Responses["200"]`)
 	} else {
-		streamExampleExampleMessage := result.StreamDefinitions["exampleExampleMessage"]
-		if want, got, name := "object", streamExampleExampleMessage.Type, `StreamDefinitions["exampleExampleMessage"].Type`; !reflect.DeepEqual(got, want) {
+		if want, got, name := "A successful response.(streaming responses)", result.Paths["/v1/echo"].Post.Responses["200"].Description, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 		}
-		if want, got, name := "Stream result of exampleExampleMessage", streamExampleExampleMessage.Title, `StreamDefinitions["exampleExampleMessage"].Title`; !reflect.DeepEqual(got, want) {
+		streamExampleExampleMessage := result.Paths["/v1/echo"].Post.Responses["200"].Schema
+		if want, got, name := "object", streamExampleExampleMessage.Type, `result.Paths["/v1/echo"].Post.Responses["200"].Schema.Type`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
+		}
+		if want, got, name := "Stream result of exampleExampleMessage", streamExampleExampleMessage.Title, `result.Paths["/v1/echo"].Post.Responses["200"].Schema.Title`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 		}
 		streamExampleExampleMessageProperties := *(streamExampleExampleMessage.Properties)
@@ -923,16 +925,6 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 			if want, got, name := "#/definitions/runtimeStreamError", err.Ref, `((*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Value.(swaggerSchemaObject)).Ref`; !reflect.DeepEqual(got, want) {
 				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 			}
-		}
-	}
-	if want, got, name := 1, len(result.Paths["/v1/echo"].Post.Responses), "len(Paths[/v1/echo].Post.Responses)"; !reflect.DeepEqual(got, want) {
-		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
-	} else {
-		if want, got, name := "A successful response.(streaming responses)", result.Paths["/v1/echo"].Post.Responses["200"].Description, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
-			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
-		}
-		if want, got, name := "#/x-stream-definitions/exampleExampleMessage", result.Paths["/v1/echo"].Post.Responses["200"].Schema.Ref, `result.Paths["/v1/echo"].Post.Responses["200"].Description`; !reflect.DeepEqual(got, want) {
-			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 		}
 	}
 
