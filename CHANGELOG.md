@@ -1,5 +1,44 @@
 # Change Log
 
+## [v1.12.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.12.2) (2020-01-22)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.12.1...v1.12.2)
+
+**Fixed bugs:**
+
+- Gateway does not parse oneof types correctly when using camelCase [\#1113](https://github.com/grpc-ecosystem/grpc-gateway/issues/1113)
+
+**Closed issues:**
+
+- all SubConns are in TransientFailure, latest connection error: connection error: desc = \"transport: Error while dialing dial tcp \[::1\]:50051: connect: connection refused\" [\#1111](https://github.com/grpc-ecosystem/grpc-gateway/issues/1111)
+- Streaming responses are put in `x-stream-definitions` rather than `/components/schema`, which tools do not support [\#1109](https://github.com/grpc-ecosystem/grpc-gateway/issues/1109)
+- Why is metadataAnnotators not \[\]func\(metadata.MD, \*http.Request\) [\#1107](https://github.com/grpc-ecosystem/grpc-gateway/issues/1107)
+- protoc\_gen\_swagger: Why `protobufListValue` type is represented as object? [\#1106](https://github.com/grpc-ecosystem/grpc-gateway/issues/1106)
+- The metadata of local\_request function's return is always nil [\#1105](https://github.com/grpc-ecosystem/grpc-gateway/issues/1105)
+- protoc-gen-swagger: support multiple files [\#1104](https://github.com/grpc-ecosystem/grpc-gateway/issues/1104)
+- grpc-gateway is incompatible with --incompatible\_load\_proto\_rules\_from\_bzl [\#1101](https://github.com/grpc-ecosystem/grpc-gateway/issues/1101)
+- Any example or doc of sending large data from Postman \(json\) to the server using client side streaming? [\#1100](https://github.com/grpc-ecosystem/grpc-gateway/issues/1100)
+- Why errors have both "error" and "message" field that contains same \(redundant\) data? [\#1098](https://github.com/grpc-ecosystem/grpc-gateway/issues/1098)
+- Generate java grpc gateway code. [\#1097](https://github.com/grpc-ecosystem/grpc-gateway/issues/1097)
+-  protoc-gen-swagger gen unsupport  http post  in query,  only support http get in query? [\#1096](https://github.com/grpc-ecosystem/grpc-gateway/issues/1096)
+- Cannot generate swagger with generated protobuf [\#1094](https://github.com/grpc-ecosystem/grpc-gateway/issues/1094)
+- genswagger fails on Ubuntu on Windows \(WSL\): value of type genswagger.alias is not assignable to type genswagger.alias [\#1092](https://github.com/grpc-ecosystem/grpc-gateway/issues/1092)
+- protoc-gen-swagger: should use json\_name values for generating properties in swagger doc [\#1090](https://github.com/grpc-ecosystem/grpc-gateway/issues/1090)
+- protoc-gen-swagger: json\_names\_for\_fields=true does not respect json\_name for path parameters [\#1084](https://github.com/grpc-ecosystem/grpc-gateway/issues/1084)
+- extract protoc-gen-swagger to separate repo [\#1083](https://github.com/grpc-ecosystem/grpc-gateway/issues/1083)
+-  How do I load balance call grpc service? [\#1081](https://github.com/grpc-ecosystem/grpc-gateway/issues/1081)
+
+**Merged pull requests:**
+
+- docs: require Jekyll Github Token to be set [\#1118](https://github.com/grpc-ecosystem/grpc-gateway/pull/1118) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- fix: protoc-gen-swagger: get wrong second services method comments [\#1116](https://github.com/grpc-ecosystem/grpc-gateway/pull/1116) ([chinaran](https://github.com/chinaran))
+- Bump rubyzip from 1.2.3 to 2.0.0 in /docs [\#1115](https://github.com/grpc-ecosystem/grpc-gateway/pull/1115) ([dependabot[bot]](https://github.com/apps/dependabot))
+- \#1113 Fix broken parsing of camelCase oneof [\#1114](https://github.com/grpc-ecosystem/grpc-gateway/pull/1114) ([seanlaff](https://github.com/seanlaff))
+- \#1109 Inline streamingDefinitions in generated swagger to better support codegen tools [\#1112](https://github.com/grpc-ecosystem/grpc-gateway/pull/1112) ([seanlaff](https://github.com/seanlaff))
+- Explicitly load rules\_proto rules [\#1102](https://github.com/grpc-ecosystem/grpc-gateway/pull/1102) ([achew22](https://github.com/achew22))
+- \[bazel\] Correctly handle proto files under \_virtual\_imports [\#1095](https://github.com/grpc-ecosystem/grpc-gateway/pull/1095) ([Yannic](https://github.com/Yannic))
+- Override operation\_id when available [\#1091](https://github.com/grpc-ecosystem/grpc-gateway/pull/1091) ([guilherme-santos](https://github.com/guilherme-santos))
+- Support reserved json name and add tests [\#1085](https://github.com/grpc-ecosystem/grpc-gateway/pull/1085) ([xin-au](https://github.com/xin-au))
+
 ## [v1.12.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.12.1) (2019-11-06)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.12.0...v1.12.1)
 
@@ -9,6 +48,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.12.1 [\#1080](https://github.com/grpc-ecosystem/grpc-gateway/pull/1080) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Revert "Fix templateToSwaggerPath generates invalid path" [\#1078](https://github.com/grpc-ecosystem/grpc-gateway/pull/1078) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Support json\_names\_for\_fields in starlark rule protoc\_gen\_swagger [\#1077](https://github.com/grpc-ecosystem/grpc-gateway/pull/1077) ([prestonvanloon](https://github.com/prestonvanloon))
 
@@ -724,7 +764,7 @@
 - Fixes file integrity errors on TravisCI [\#619](https://github.com/grpc-ecosystem/grpc-gateway/pull/619) ([yugui](https://github.com/yugui))
 - Reorganize examples [\#618](https://github.com/grpc-ecosystem/grpc-gateway/pull/618) ([yugui](https://github.com/yugui))
 - Update dependency declarations in the Makefile [\#617](https://github.com/grpc-ecosystem/grpc-gateway/pull/617) ([yugui](https://github.com/yugui))
-- Support delete method in swagger generator [\#616](https://github.com/grpc-ecosystem/grpc-gateway/pull/616) ([blackdahila](https://github.com/blackdahila))
+- Support delete method in swagger generator [\#616](https://github.com/grpc-ecosystem/grpc-gateway/pull/616) ([beerose](https://github.com/beerose))
 - feat\(bazel\): Add rule for generating .swagger.json files [\#613](https://github.com/grpc-ecosystem/grpc-gateway/pull/613) ([mrmeku](https://github.com/mrmeku))
 - Support UNIX domain socket in the example servers [\#609](https://github.com/grpc-ecosystem/grpc-gateway/pull/609) ([yugui](https://github.com/yugui))
 - misspelling [\#601](https://github.com/grpc-ecosystem/grpc-gateway/pull/601) ([chemidy](https://github.com/chemidy))
