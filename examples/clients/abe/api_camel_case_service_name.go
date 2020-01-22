@@ -26,8 +26,7 @@ var (
 type CamelCaseServiceNameApiService service
 
 /* 
-CamelCaseServiceNameApiService Create a new ABitOfEverything
-This API creates a new ABitOfEverything
+CamelCaseServiceNameApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 
 @return interface{}
