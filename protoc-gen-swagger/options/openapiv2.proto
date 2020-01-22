@@ -84,8 +84,9 @@ message Response {
   Schema schema = 2;
   // field 3 is reserved for 'headers'.
   reserved 3;
-  // field 3 is reserved for 'example'.
-  reserved 4;
+  // `Examples` gives per-mimetype response examples.
+  // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#example-object
+  map<string, string> examples = 4;
   map<string, google.protobuf.Value> extensions = 5;
 }
 

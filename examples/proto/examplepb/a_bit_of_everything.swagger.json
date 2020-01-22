@@ -81,6 +81,11 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
+            },
+            "examples": {
+              "application/json": {
+                "value": "the input value"
+              }
             }
           },
           "403": {
@@ -1830,6 +1835,11 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
+            },
+            "examples": {
+              "application/json": {
+                "value": "the input value"
+              }
             }
           },
           "403": {
@@ -1880,6 +1890,11 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/subStringMessage"
+            },
+            "examples": {
+              "application/json": {
+                "value": "the input value"
+              }
             }
           },
           "403": {

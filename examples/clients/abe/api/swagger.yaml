@@ -75,6 +75,9 @@ paths:
       responses:
         200:
           description: "A successful response."
+          examples:
+            application/json:
+              value: "the input value"
           schema:
             $ref: "#/definitions/subStringMessage"
         403:
@@ -1560,6 +1563,9 @@ paths:
       responses:
         200:
           description: "A successful response."
+          examples:
+            application/json:
+              value: "the input value"
           schema:
             $ref: "#/definitions/subStringMessage"
         403:
@@ -1598,6 +1604,9 @@ paths:
       responses:
         200:
           description: "A successful response."
+          examples:
+            application/json:
+              value: "the input value"
           schema:
             $ref: "#/definitions/subStringMessage"
         403:
@@ -2191,8 +2200,6 @@ definitions:
     properties:
       value:
         type: "string"
-    example:
-      value: "value"
 externalDocs:
   description: "More about gRPC-Gateway"
   url: "https://github.com/grpc-ecosystem/grpc-gateway"
