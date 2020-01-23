@@ -134,7 +134,7 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 	}
 
 	if timeout != 0 {
-		ctx, cancel := context.WithTimeout(ctx, timeout)
+		_, cancel := context.WithTimeout(ctx, timeout)
 		defer cancel()
 	}
 	if len(pairs) == 0 {
