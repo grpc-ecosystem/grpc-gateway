@@ -479,7 +479,6 @@ type Response struct {
 	// If `Schema` is not provided, it means there is no content to the response.
 	Schema *Schema `protobuf:"bytes,2,opt,name=schema,proto3" json:"schema,omitempty"`
 	// `Examples` gives per-mimetype response examples.
-	//
 	// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#example-object
 	Examples             map[string]string         `protobuf:"bytes,4,rep,name=examples,proto3" json:"examples,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	Extensions           map[string]*_struct.Value `protobuf:"bytes,5,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
