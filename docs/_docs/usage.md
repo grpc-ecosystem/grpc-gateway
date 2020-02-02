@@ -68,6 +68,10 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
     }
    ```
 
+   See [a_bit_of_everything.proto](examples/proto/examplepb/a_bit_of_everything.proto)
+   for examples of more annotations you can add to customize gateway behavior
+   and generated Swagger output.
+
    If you do not want to modify the proto file for use with grpc-gateway you can alternatively use an external [gRPC API Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file. [Check our documentation](grpcapiconfiguration.html) for more information.
 
 3. Generate gRPC stub
@@ -174,6 +178,16 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    ```
 
 ## Parameters and flags
+
+During code generation with `protoc`, flags to grpc-gateway tools must be passed
+through protoc using the `--<tool_suffix>_out=<flags>:<path>` pattern, for
+example:
+
+```sh
+--grpc-gateway_out=logtostderr=true,repeated_path_param_separator=ssv:.
+--swagger_out=logtostderr=true,repeated_path_param_separator=ssv:.
+```
+
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to Golang import path.
 They are compatible to [the parameters with same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
 
@@ -181,6 +195,15 @@ In addition we also support the `request_context` parameter in order to use the 
 This parameter can be useful to pass request scoped context between the gateway and the gRPC service.
 
 `protoc-gen-grpc-gateway` also supports some more command line flags to control logging. You can give these flags together with parameters above. Run `protoc-gen-grpc-gateway --help` for more details about the flags.
+
+Similarly, `protoc-gen-swagger` supports command-line flags to control Swagger
+output (for example, `json_names_for_fields` to output JSON names for fields
+instead of protobuf names). Run `protoc-gen-swagger --help` for more flag
+details. Further Swagger customization is possible by annotating your `.proto`
+files with options from
+[openapiv2.proto](protoc-gen-swagger/options/openapiv2.proto) - see
+[a_bit_of_everything.proto](examples/proto/examplepb/a_bit_of_everything.proto)
+for examples.
 
 # Mapping gRPC to HTTP
 
