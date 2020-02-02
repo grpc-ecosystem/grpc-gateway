@@ -201,7 +201,13 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 		return nil, fmt.Errorf("unknown message type %s", fieldType)
 	}
 	for _, nestedField := range msg.Fields {
-		p, err := queryParams(msg, nestedField, prefix+field.GetName()+".", reg, pathParams)
+		var fieldName string
+		if reg.GetUseJSONNamesForFields() {
+			fieldName = field.GetJsonName()
+		} else {
+			fieldName = field.GetName()
+		}
+		p, err := queryParams(msg, nestedField, prefix+fieldName+".", reg, pathParams)
 		if err != nil {
 			return nil, err
 		}
