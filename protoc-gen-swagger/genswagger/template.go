@@ -203,9 +203,9 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 	for _, nestedField := range msg.Fields {
 		var fieldName string
 		if reg.GetUseJSONNamesForFields() {
-			fieldName = prefix + field.GetJsonName()
+			fieldName = field.GetJsonName()
 		} else {
-			fieldName = prefix + field.GetName()
+			fieldName = field.GetName()
 		}
 		p, err := queryParams(msg, nestedField, prefix+fieldName+".", reg, pathParams)
 		if err != nil {
