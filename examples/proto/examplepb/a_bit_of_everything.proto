@@ -447,6 +447,15 @@ service ABitOfEverythingService {
 				description: "Find out more Echo";
 			}
 			responses: {
+				key: "200"
+				value: {
+					examples: {
+						key: "application/json"
+						value: '{"value": "the input value"}'
+					}
+				}
+			}
+			responses: {
 				key: "503";
 				value: {
 					description: "Returned when the resource is temporarily unavailable.";
