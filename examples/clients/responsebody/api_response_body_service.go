@@ -107,6 +107,17 @@ func (a *ResponseBodyServiceApiService) GetResponseBody(ctx context.Context, dat
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RuntimeError
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
@@ -195,6 +206,17 @@ func (a *ResponseBodyServiceApiService) ListResponseBodies(ctx context.Context, 
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RuntimeError
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
@@ -274,6 +296,17 @@ func (a *ResponseBodyServiceApiService) ListResponseStrings(ctx context.Context,
 		
 		if localVarHttpResponse.StatusCode == 200 {
 			var v []string
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RuntimeError
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()

@@ -109,6 +109,17 @@ func (a *EchoServiceApiService) Echo(ctx context.Context, id string) (ExamplepbS
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RuntimeError
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
@@ -231,6 +242,17 @@ func (a *EchoServiceApiService) Echo2(ctx context.Context, id string, num string
 		
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbSimpleMessage
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RuntimeError
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -368,6 +390,17 @@ func (a *EchoServiceApiService) Echo3(ctx context.Context, id string, num string
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RuntimeError
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
@@ -482,6 +515,17 @@ func (a *EchoServiceApiService) Echo4(ctx context.Context, id string, lineNum st
 		
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbSimpleMessage
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RuntimeError
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -620,6 +664,17 @@ func (a *EchoServiceApiService) Echo5(ctx context.Context, noNote string, localV
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RuntimeError
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
@@ -700,6 +755,17 @@ func (a *EchoServiceApiService) EchoBody(ctx context.Context, body ExamplepbSimp
 		
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbSimpleMessage
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RuntimeError
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -836,6 +902,17 @@ func (a *EchoServiceApiService) EchoDelete(ctx context.Context, localVarOptional
 		
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbSimpleMessage
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RuntimeError
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
