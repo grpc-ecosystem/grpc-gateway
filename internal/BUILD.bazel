@@ -6,7 +6,7 @@ package(default_visibility = ["//visibility:public"])
 
 proto_library(
     name = "internal_proto",
-    srcs = ["stream_chunk.proto"],
+    srcs = ["errors.proto"],
     deps = ["@com_google_protobuf//:any_proto"],
 )
 
