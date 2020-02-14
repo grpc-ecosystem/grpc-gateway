@@ -7,8 +7,8 @@ Here's the recommended process of contribution.
 2. `cd $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway`
 3. hack, hack, hack...
 4. Make sure that your change follows best practices in Go
-   * [Effective Go](https://golang.org/doc/effective_go.html)
-   * [Go Code Review Comments](https://golang.org/wiki/CodeReviewComments)
+   - [Effective Go](https://golang.org/doc/effective_go.html)
+   - [Go Code Review Comments](https://golang.org/wiki/CodeReviewComments)
 5. Make sure that `go test ./...` passes.
 6. Sign [a Contributor License Agreement](https://cla.developers.google.com/clas)
 7. Open a pull request in Github
@@ -17,6 +17,7 @@ When you work on a larger contribution, it is also recommended that you get in t
 with us through the issue tracker.
 
 ### Code reviews
+
 All submissions, including submissions by project members, require review.
 
 ### I want to regenerate the files after making changes!
@@ -30,6 +31,8 @@ docker run -v $(pwd):/src/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env:
         make examples'
 docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
     l.gcr.io/google/bazel -c 'bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories; bazel run :buildifier'
+docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
+    l.gcr.io/google/bazel -c 'bazel run :gazelle'
 ```
 
 If this has resulted in some file changes in the repo, please ensure you check those in with your merge request.
