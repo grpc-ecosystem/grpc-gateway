@@ -27,6 +27,7 @@ go_library(
         "@io_bazel_rules_go//proto/wkt:duration_go_proto",
         "@io_bazel_rules_go//proto/wkt:empty_go_proto",
         "@io_bazel_rules_go//proto/wkt:field_mask_go_proto",
+        "@io_bazel_rules_go//proto/wkt:wrappers_go_proto",
         "@org_golang_google_grpc//:go_default_library",
         "@org_golang_google_grpc//codes:go_default_library",
         "@org_golang_google_grpc//metadata:go_default_library",

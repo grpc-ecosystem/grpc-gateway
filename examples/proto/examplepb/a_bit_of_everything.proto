@@ -6,6 +6,7 @@ import "google/api/annotations.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
 import "examples/proto/pathenum/path_enum.proto";
 import "examples/proto/sub/message.proto";
 import "examples/proto/sub2/message.proto";
@@ -524,6 +525,14 @@ service ABitOfEverythingService {
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything/params/post/{string_value}"
 			body: "single_nested"
+		};
+	}
+	rpc OverwriteResponseContentType(google.protobuf.Empty) returns (google.protobuf.StringValue) {
+		option (google.api.http) = {
+			get: "/v2/example/overwriteresponsecontenttype"
+		};
+		option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
+			produces: "application/text"
 		};
 	}
 }
