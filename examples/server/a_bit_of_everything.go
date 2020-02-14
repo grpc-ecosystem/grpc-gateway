@@ -10,6 +10,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/duration"
 	"github.com/golang/protobuf/ptypes/empty"
+	"github.com/golang/protobuf/ptypes/wrappers"
 	examples "github.com/grpc-ecosystem/grpc-gateway/examples/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub2"
@@ -313,4 +314,8 @@ func (s *_ABitOfEverythingServer) CheckNestedEnumGetQueryParams(ctx context.Cont
 
 func (s *_ABitOfEverythingServer) CheckPostQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	return msg, nil
+}
+
+func (s *_ABitOfEverythingServer) OverwriteResponseContentType(ctx context.Context, msg *empty.Empty) (*wrappers.StringValue, error) {
+	return &wrappers.StringValue{}, nil
 }
