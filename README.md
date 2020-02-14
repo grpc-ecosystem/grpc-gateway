@@ -36,13 +36,31 @@ manager or by downloading one of the releases from the official repository:
 
 https://github.com/protocolbuffers/protobuf/releases
 
+The following instructions assume you are using
+[Go Modules](https://github.com/golang/go/wiki/Modules) for dependency
+management. Use a
+[tool dependency](https://github.com/golang/go/wiki/Modules#how-can-i-track-tool-dependencies-for-a-module)
+to track the versions of the following executable packages:
 
-Then use `go get -u` to download the following packages:
+```go
+// +build tools
+
+package tools
+
+import (
+    _ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway"
+    _ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger"
+    _ "github.com/golang/protobuf/protoc-gen-go"
+)
+```
+
+Run `go mod tidy` to resolve the versions. Install by running
 
 ```sh
-go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
-go get -u github.com/golang/protobuf/protoc-gen-go
+$ go install \
+    github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
+    github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
+    github.com/golang/protobuf/protoc-gen-go
 ```
 
 This will place three binaries in your `$GOBIN`;
