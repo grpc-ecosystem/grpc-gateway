@@ -1747,6 +1747,36 @@ paths:
           description: "An unexpected error response"
           schema:
             $ref: "#/definitions/runtimeError"
+  /v2/example/overwriteresponsecontenttype:
+    get:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "OverwriteResponseContentType"
+      produces:
+      - "application/text"
+      parameters: []
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            type: "string"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        default:
+          description: "An unexpected error response"
+          schema:
+            $ref: "#/definitions/runtimeError"
   /v2/example/postwithemptybody/{name}:
     post:
       tags:
