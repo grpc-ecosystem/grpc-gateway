@@ -33,7 +33,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = descriptor.ForMessage
 
-func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client StreamServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var metadata runtime.ServerMetadata
 	stream, err := client.BulkCreate(ctx)
 	if err != nil {
@@ -77,7 +77,7 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 
 }
 
-func request_StreamService_List_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_ListClient, runtime.ServerMetadata, error) {
+func request_StreamService_List_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_ListClient, runtime.ServerMetadata, error) {
 	var protoReq empty.Empty
 	var metadata runtime.ServerMetadata
 
@@ -94,7 +94,7 @@ func request_StreamService_List_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Marshaler, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_BulkEchoClient, runtime.ServerMetadata, error) {
+func request_StreamService_BulkEcho_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client StreamServiceClient, req *http.Request, pathParams map[string]string) (StreamService_BulkEchoClient, runtime.ServerMetadata, error) {
 	var metadata runtime.ServerMetadata
 	stream, err := client.BulkEcho(ctx)
 	if err != nil {
@@ -222,7 +222,8 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StreamService_BulkCreate_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_StreamService_BulkCreate_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -242,7 +243,8 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StreamService_List_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_StreamService_List_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -262,7 +264,8 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StreamService_BulkEcho_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_StreamService_BulkEcho_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

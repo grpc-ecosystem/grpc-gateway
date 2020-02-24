@@ -33,7 +33,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = descriptor.ForMessage
 
-func request_WrappersService_Create_0(ctx context.Context, marshaler runtime.Marshaler, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_WrappersService_Create_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Wrappers
 	var metadata runtime.ServerMetadata
 
@@ -50,7 +50,7 @@ func request_WrappersService_Create_0(ctx context.Context, marshaler runtime.Mar
 
 }
 
-func local_request_WrappersService_Create_0(ctx context.Context, marshaler runtime.Marshaler, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_WrappersService_Create_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Wrappers
 	var metadata runtime.ServerMetadata
 
@@ -67,7 +67,7 @@ func local_request_WrappersService_Create_0(ctx context.Context, marshaler runti
 
 }
 
-func request_WrappersService_CreateStringValue_0(ctx context.Context, marshaler runtime.Marshaler, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_WrappersService_CreateStringValue_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.StringValue
 	var metadata runtime.ServerMetadata
 
@@ -84,7 +84,7 @@ func request_WrappersService_CreateStringValue_0(ctx context.Context, marshaler 
 
 }
 
-func local_request_WrappersService_CreateStringValue_0(ctx context.Context, marshaler runtime.Marshaler, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_WrappersService_CreateStringValue_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.StringValue
 	var metadata runtime.ServerMetadata
 
@@ -101,7 +101,7 @@ func local_request_WrappersService_CreateStringValue_0(ctx context.Context, mars
 
 }
 
-func request_WrappersService_CreateInt32Value_0(ctx context.Context, marshaler runtime.Marshaler, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_WrappersService_CreateInt32Value_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.Int32Value
 	var metadata runtime.ServerMetadata
 
@@ -118,7 +118,7 @@ func request_WrappersService_CreateInt32Value_0(ctx context.Context, marshaler r
 
 }
 
-func local_request_WrappersService_CreateInt32Value_0(ctx context.Context, marshaler runtime.Marshaler, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_WrappersService_CreateInt32Value_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.Int32Value
 	var metadata runtime.ServerMetadata
 
@@ -135,7 +135,7 @@ func local_request_WrappersService_CreateInt32Value_0(ctx context.Context, marsh
 
 }
 
-func request_WrappersService_CreateInt64Value_0(ctx context.Context, marshaler runtime.Marshaler, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_WrappersService_CreateInt64Value_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.Int64Value
 	var metadata runtime.ServerMetadata
 
@@ -152,7 +152,7 @@ func request_WrappersService_CreateInt64Value_0(ctx context.Context, marshaler r
 
 }
 
-func local_request_WrappersService_CreateInt64Value_0(ctx context.Context, marshaler runtime.Marshaler, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_WrappersService_CreateInt64Value_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.Int64Value
 	var metadata runtime.ServerMetadata
 
@@ -169,7 +169,7 @@ func local_request_WrappersService_CreateInt64Value_0(ctx context.Context, marsh
 
 }
 
-func request_WrappersService_CreateFloatValue_0(ctx context.Context, marshaler runtime.Marshaler, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_WrappersService_CreateFloatValue_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.FloatValue
 	var metadata runtime.ServerMetadata
 
@@ -186,7 +186,7 @@ func request_WrappersService_CreateFloatValue_0(ctx context.Context, marshaler r
 
 }
 
-func local_request_WrappersService_CreateFloatValue_0(ctx context.Context, marshaler runtime.Marshaler, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_WrappersService_CreateFloatValue_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.FloatValue
 	var metadata runtime.ServerMetadata
 
@@ -203,7 +203,7 @@ func local_request_WrappersService_CreateFloatValue_0(ctx context.Context, marsh
 
 }
 
-func request_WrappersService_CreateDoubleValue_0(ctx context.Context, marshaler runtime.Marshaler, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_WrappersService_CreateDoubleValue_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.DoubleValue
 	var metadata runtime.ServerMetadata
 
@@ -220,7 +220,7 @@ func request_WrappersService_CreateDoubleValue_0(ctx context.Context, marshaler 
 
 }
 
-func local_request_WrappersService_CreateDoubleValue_0(ctx context.Context, marshaler runtime.Marshaler, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_WrappersService_CreateDoubleValue_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.DoubleValue
 	var metadata runtime.ServerMetadata
 
@@ -237,7 +237,7 @@ func local_request_WrappersService_CreateDoubleValue_0(ctx context.Context, mars
 
 }
 
-func request_WrappersService_CreateBoolValue_0(ctx context.Context, marshaler runtime.Marshaler, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_WrappersService_CreateBoolValue_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.BoolValue
 	var metadata runtime.ServerMetadata
 
@@ -254,7 +254,7 @@ func request_WrappersService_CreateBoolValue_0(ctx context.Context, marshaler ru
 
 }
 
-func local_request_WrappersService_CreateBoolValue_0(ctx context.Context, marshaler runtime.Marshaler, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_WrappersService_CreateBoolValue_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.BoolValue
 	var metadata runtime.ServerMetadata
 
@@ -271,7 +271,7 @@ func local_request_WrappersService_CreateBoolValue_0(ctx context.Context, marsha
 
 }
 
-func request_WrappersService_CreateUInt32Value_0(ctx context.Context, marshaler runtime.Marshaler, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_WrappersService_CreateUInt32Value_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.UInt32Value
 	var metadata runtime.ServerMetadata
 
@@ -288,7 +288,7 @@ func request_WrappersService_CreateUInt32Value_0(ctx context.Context, marshaler 
 
 }
 
-func local_request_WrappersService_CreateUInt32Value_0(ctx context.Context, marshaler runtime.Marshaler, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_WrappersService_CreateUInt32Value_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.UInt32Value
 	var metadata runtime.ServerMetadata
 
@@ -305,7 +305,7 @@ func local_request_WrappersService_CreateUInt32Value_0(ctx context.Context, mars
 
 }
 
-func request_WrappersService_CreateUInt64Value_0(ctx context.Context, marshaler runtime.Marshaler, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_WrappersService_CreateUInt64Value_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.UInt64Value
 	var metadata runtime.ServerMetadata
 
@@ -322,7 +322,7 @@ func request_WrappersService_CreateUInt64Value_0(ctx context.Context, marshaler 
 
 }
 
-func local_request_WrappersService_CreateUInt64Value_0(ctx context.Context, marshaler runtime.Marshaler, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_WrappersService_CreateUInt64Value_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.UInt64Value
 	var metadata runtime.ServerMetadata
 
@@ -339,7 +339,7 @@ func local_request_WrappersService_CreateUInt64Value_0(ctx context.Context, mars
 
 }
 
-func request_WrappersService_CreateBytesValue_0(ctx context.Context, marshaler runtime.Marshaler, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_WrappersService_CreateBytesValue_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.BytesValue
 	var metadata runtime.ServerMetadata
 
@@ -356,7 +356,7 @@ func request_WrappersService_CreateBytesValue_0(ctx context.Context, marshaler r
 
 }
 
-func local_request_WrappersService_CreateBytesValue_0(ctx context.Context, marshaler runtime.Marshaler, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_WrappersService_CreateBytesValue_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq wrappers.BytesValue
 	var metadata runtime.ServerMetadata
 
@@ -373,7 +373,7 @@ func local_request_WrappersService_CreateBytesValue_0(ctx context.Context, marsh
 
 }
 
-func request_WrappersService_CreateEmpty_0(ctx context.Context, marshaler runtime.Marshaler, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_WrappersService_CreateEmpty_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq empty.Empty
 	var metadata runtime.ServerMetadata
 
@@ -390,7 +390,7 @@ func request_WrappersService_CreateEmpty_0(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_WrappersService_CreateEmpty_0(ctx context.Context, marshaler runtime.Marshaler, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_WrappersService_CreateEmpty_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server WrappersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq empty.Empty
 	var metadata runtime.ServerMetadata
 
@@ -421,7 +421,8 @@ func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_WrappersService_Create_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_WrappersService_Create_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -441,7 +442,8 @@ func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_WrappersService_CreateStringValue_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_WrappersService_CreateStringValue_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -461,7 +463,8 @@ func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_WrappersService_CreateInt32Value_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_WrappersService_CreateInt32Value_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -481,7 +484,8 @@ func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_WrappersService_CreateInt64Value_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_WrappersService_CreateInt64Value_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -501,7 +505,8 @@ func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_WrappersService_CreateFloatValue_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_WrappersService_CreateFloatValue_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -521,7 +526,8 @@ func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_WrappersService_CreateDoubleValue_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_WrappersService_CreateDoubleValue_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -541,7 +547,8 @@ func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_WrappersService_CreateBoolValue_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_WrappersService_CreateBoolValue_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -561,7 +568,8 @@ func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_WrappersService_CreateUInt32Value_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_WrappersService_CreateUInt32Value_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -581,7 +589,8 @@ func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_WrappersService_CreateUInt64Value_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_WrappersService_CreateUInt64Value_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -601,7 +610,8 @@ func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_WrappersService_CreateBytesValue_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_WrappersService_CreateBytesValue_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -621,7 +631,8 @@ func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_WrappersService_CreateEmpty_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_WrappersService_CreateEmpty_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -682,7 +693,8 @@ func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_WrappersService_Create_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_WrappersService_Create_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -702,7 +714,8 @@ func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_WrappersService_CreateStringValue_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_WrappersService_CreateStringValue_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -722,7 +735,8 @@ func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_WrappersService_CreateInt32Value_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_WrappersService_CreateInt32Value_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -742,7 +756,8 @@ func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_WrappersService_CreateInt64Value_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_WrappersService_CreateInt64Value_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -762,7 +777,8 @@ func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_WrappersService_CreateFloatValue_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_WrappersService_CreateFloatValue_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -782,7 +798,8 @@ func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_WrappersService_CreateDoubleValue_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_WrappersService_CreateDoubleValue_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -802,7 +819,8 @@ func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_WrappersService_CreateBoolValue_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_WrappersService_CreateBoolValue_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -822,7 +840,8 @@ func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_WrappersService_CreateUInt32Value_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_WrappersService_CreateUInt32Value_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -842,7 +861,8 @@ func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_WrappersService_CreateUInt64Value_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_WrappersService_CreateUInt64Value_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -862,7 +882,8 @@ func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_WrappersService_CreateBytesValue_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_WrappersService_CreateBytesValue_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -882,7 +903,8 @@ func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_WrappersService_CreateEmpty_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_WrappersService_CreateEmpty_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

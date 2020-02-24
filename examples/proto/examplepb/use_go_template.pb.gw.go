@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = descriptor.ForMessage
 
-func request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshaler, client LoginServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client LoginServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LoginRequest
 	var metadata runtime.ServerMetadata
 
@@ -48,7 +48,7 @@ func request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func local_request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshaler, server LoginServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server LoginServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LoginRequest
 	var metadata runtime.ServerMetadata
 
@@ -65,7 +65,7 @@ func local_request_LoginService_Login_0(ctx context.Context, marshaler runtime.M
 
 }
 
-func request_LoginService_Logout_0(ctx context.Context, marshaler runtime.Marshaler, client LoginServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_LoginService_Logout_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client LoginServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LogoutRequest
 	var metadata runtime.ServerMetadata
 
@@ -82,7 +82,7 @@ func request_LoginService_Logout_0(ctx context.Context, marshaler runtime.Marsha
 
 }
 
-func local_request_LoginService_Logout_0(ctx context.Context, marshaler runtime.Marshaler, server LoginServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_LoginService_Logout_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server LoginServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LogoutRequest
 	var metadata runtime.ServerMetadata
 
@@ -113,7 +113,8 @@ func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_LoginService_Login_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_LoginService_Login_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -133,7 +134,8 @@ func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_LoginService_Logout_0(rctx, inboundMarshaler, server, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := local_request_LoginService_Logout_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -194,7 +196,8 @@ func RegisterLoginServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_LoginService_Login_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_LoginService_Login_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -214,7 +217,8 @@ func RegisterLoginServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_LoginService_Logout_0(rctx, inboundMarshaler, client, req, pathParams)
+		queryParser := mux.GetQueryParametersParser()
+		resp, md, err := request_LoginService_Logout_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

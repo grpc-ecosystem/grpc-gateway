@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 	"net/textproto"
 	"strings"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/grpc-ecosystem/grpc-gateway/utilities"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -38,6 +40,7 @@ type ServeMux struct {
 	protoErrorHandler         ProtoErrorHandlerFunc
 	disablePathLengthFallback bool
 	lastMatchWins             bool
+	queryParameterParser      QueryParameterParser
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -52,6 +55,19 @@ type ServeMuxOption func(*ServeMux)
 func WithForwardResponseOption(forwardResponseOption func(context.Context, http.ResponseWriter, proto.Message) error) ServeMuxOption {
 	return func(serveMux *ServeMux) {
 		serveMux.forwardResponseOptions = append(serveMux.forwardResponseOptions, forwardResponseOption)
+	}
+}
+
+// A QueryParameterParser populates message form HTTP query parameters values
+type QueryParameterParser func(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error
+
+// WithQueryParametersPopulator returns a ServeMuxOption representing new populator used to populate message from query parameters
+//
+// queryParametersPopulator is an option that will be called on the proto.Message
+// url.Values, and utilities.DoubleArray on incoming requests.
+func WithQueryParametersPopulator(queryParametersPopulator QueryParameterParser) ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		serveMux.queryParameterParser = queryParametersPopulator
 	}
 }
 
@@ -166,6 +182,10 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 			sterr := status.Error(codes.Unknown, "unexpected use of OtherErrorHandler")
 			serveMux.protoErrorHandler(ctx, serveMux, outboundMarshaler, w, r, sterr)
 		}
+	}
+
+	if serveMux.queryParameterParser == nil {
+		serveMux.queryParameterParser = PopulateQueryParameters
 	}
 
 	if serveMux.incomingHeaderMatcher == nil {
@@ -291,6 +311,11 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // GetForwardResponseOptions returns the ForwardResponseOptions associated with this ServeMux.
 func (s *ServeMux) GetForwardResponseOptions() []func(context.Context, http.ResponseWriter, proto.Message) error {
 	return s.forwardResponseOptions
+}
+
+// GetQueryParametersParser returns QueryParameterPopulator associated with this ServiceMux.
+func (s *ServeMux) GetQueryParametersParser() QueryParameterParser {
+	return s.queryParameterParser
 }
 
 func (s *ServeMux) isPathLengthFallback(r *http.Request) bool {
