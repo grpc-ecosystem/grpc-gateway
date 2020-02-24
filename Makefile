@@ -44,7 +44,7 @@ SWAGGER_PLUGIN_FLAGS?=
 GOOGLEAPIS_DIR=third_party/googleapis
 OUTPUT_DIR=_output
 
-RUNTIME_PROTO=internal/stream_chunk.proto
+RUNTIME_PROTO=internal/errors.proto
 RUNTIME_GO=$(RUNTIME_PROTO:.proto=.pb.go)
 
 OPENAPIV2_PROTO=protoc-gen-swagger/options/openapiv2.proto protoc-gen-swagger/options/annotations.proto
@@ -203,7 +203,7 @@ changelog:
 				--compare-link \
 				--github-site=https://github.com \
 				--unreleased-label "**Next release**" \
-				--future-release=v1.12.2
+				--future-release=v1.13.0
 lint:
 	golint --set_exit_status ./runtime
 	golint --set_exit_status ./utilities/...

@@ -882,6 +882,15 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							Description: desc,
 							Schema:      responseSchema,
 						},
+						// https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#responses-object
+						"default": swaggerResponseObject{
+							Description: "An unexpected error response",
+							Schema: swaggerSchemaObject{
+								schemaCore: schemaCore{
+									Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.Error", reg)),
+								},
+							},
+						},
 					},
 				}
 				if bIdx == 0 {
@@ -980,6 +989,11 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						operationObject.extensions = exts
 					}
 
+					if len(opts.Produces) > 0 {
+						operationObject.Produces = make([]string, len(opts.Produces))
+						copy(operationObject.Produces, opts.Produces)
+					}
+
 					// TODO(ivucica): add remaining fields of operation object
 				}
 
@@ -1034,14 +1048,24 @@ func applyTemplate(p param) (*swaggerObject, error) {
 		panic(err)
 	}
 
+	messages := messageMap{}
+	streamingMessages := messageMap{}
+	enums := enumMap{}
+
+	// Add the error type to the message map
+	runtimeError, err := p.reg.LookupMsg(".grpc.gateway.runtime", "Error")
+	if err == nil {
+		messages[fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.Error", p.reg)] = runtimeError
+	} else {
+		// just in case there is an error looking up runtimeError
+		glog.Error(err)
+	}
+
 	// Find all the service's messages and enumerations that are defined (recursively)
 	// and write request, response and other custom (but referenced) types out as definition objects.
-	m := messageMap{}
-	ms := messageMap{}
-	e := enumMap{}
-	findServicesMessagesAndEnumerations(p.Services, p.reg, m, ms, e, requestResponseRefs)
-	renderMessagesAsDefinition(m, s.Definitions, p.reg, customRefs)
-	renderEnumerationsAsDefinition(e, s.Definitions, p.reg)
+	findServicesMessagesAndEnumerations(p.Services, p.reg, messages, streamingMessages, enums, requestResponseRefs)
+	renderMessagesAsDefinition(messages, s.Definitions, p.reg, customRefs)
+	renderEnumerationsAsDefinition(enums, s.Definitions, p.reg)
 
 	// File itself might have some comments and metadata.
 	packageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
