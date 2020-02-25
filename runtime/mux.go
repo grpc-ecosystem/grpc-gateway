@@ -58,16 +58,16 @@ func WithForwardResponseOption(forwardResponseOption func(context.Context, http.
 	}
 }
 
-// A QueryParameterParser populates message form HTTP query parameters values
+// A QueryParameterParser populates the message from HTTP query parameter values
 type QueryParameterParser func(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error
 
-// WithQueryParametersPopulator returns a ServeMuxOption representing new populator used to populate message from query parameters
+// WithQueryParameterParser sets the query parameter parser, used to populate message from query parameters, on this ServeMux.
 //
 // queryParametersPopulator is an option that will be called on the proto.Message
 // url.Values, and utilities.DoubleArray on incoming requests.
-func WithQueryParametersPopulator(queryParametersPopulator QueryParameterParser) ServeMuxOption {
+func WithQueryParameterParser(queryParameterParser QueryParameterParser) ServeMuxOption {
 	return func(serveMux *ServeMux) {
-		serveMux.queryParameterParser = queryParametersPopulator
+		serveMux.queryParameterParser = queryParameterParser
 	}
 }
 
