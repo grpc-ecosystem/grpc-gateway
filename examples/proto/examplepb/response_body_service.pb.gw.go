@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = descriptor.ForMessage
 
-func request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -58,7 +58,7 @@ func request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshale
 
 }
 
-func local_request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -85,7 +85,7 @@ func local_request_ResponseBodyService_GetResponseBody_0(ctx context.Context, ma
 
 }
 
-func request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -112,7 +112,7 @@ func request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marsh
 
 }
 
-func local_request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -139,7 +139,7 @@ func local_request_ResponseBodyService_ListResponseBodies_0(ctx context.Context,
 
 }
 
-func request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -166,7 +166,7 @@ func request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, mars
 
 }
 
-func local_request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, marshaler runtime.Marshaler, parser runtime.QueryParameterParser, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -207,8 +207,7 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		queryParser := mux.GetQueryParametersParser()
-		resp, md, err := local_request_ResponseBodyService_GetResponseBody_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
+		resp, md, err := local_request_ResponseBodyService_GetResponseBody_0(rctx, inboundMarshaler, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -228,8 +227,7 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		queryParser := mux.GetQueryParametersParser()
-		resp, md, err := local_request_ResponseBodyService_ListResponseBodies_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
+		resp, md, err := local_request_ResponseBodyService_ListResponseBodies_0(rctx, inboundMarshaler, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -249,8 +247,7 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		queryParser := mux.GetQueryParametersParser()
-		resp, md, err := local_request_ResponseBodyService_ListResponseStrings_0(rctx, inboundMarshaler, queryParser, server, req, pathParams)
+		resp, md, err := local_request_ResponseBodyService_ListResponseStrings_0(rctx, inboundMarshaler, server, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -311,8 +308,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		queryParser := mux.GetQueryParametersParser()
-		resp, md, err := request_ResponseBodyService_GetResponseBody_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
+		resp, md, err := request_ResponseBodyService_GetResponseBody_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -332,8 +328,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		queryParser := mux.GetQueryParametersParser()
-		resp, md, err := request_ResponseBodyService_ListResponseBodies_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
+		resp, md, err := request_ResponseBodyService_ListResponseBodies_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -353,8 +348,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		queryParser := mux.GetQueryParametersParser()
-		resp, md, err := request_ResponseBodyService_ListResponseStrings_0(rctx, inboundMarshaler, queryParser, client, req, pathParams)
+		resp, md, err := request_ResponseBodyService_ListResponseStrings_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
