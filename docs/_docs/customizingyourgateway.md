@@ -87,9 +87,9 @@ You might not like [the default mapping rule](http://godoc.org/github.com/grpc-e
   ```go
   func CustomMatcher(key string) (string, bool) {
     switch key {
-    case "x-custom-header1":
+    case "X-Custom-Header1":
       return key, true
-    case "x-custom-header2":
+    case "X-Custom-Header2":
       return "custom-header2", true
     default:
       return key, false
