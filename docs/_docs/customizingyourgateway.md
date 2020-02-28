@@ -98,8 +98,39 @@ You might not like [the default mapping rule](http://godoc.org/github.com/grpc-e
   ...
 
   mux := runtime.NewServeMux(runtime.WithIncomingHeaderMatcher(CustomMatcher))
-
   ```
+To keep the [the default mapping rule](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#DefaultHeaderMatcher) alongside with your own rules write:
+
+```go
+func CustomMatcher(key string) (string, bool) {
+  switch key {
+  case "X-User-Id":
+      return key, true
+  default:
+      return runtime.DefaultHeaderMatcher(key)
+  }
+}
+```
+It will work with both:
+
+```bash
+curl --header "x-user-id: 100d9f38-2777-4ee2-ac3b-b3a108f81a30" ...
+```
+and:
+```bash
+curl --header "X-USER-ID: 100d9f38-2777-4ee2-ac3b-b3a108f81a30" ...
+```
+To access this header on gRPC server side use:
+```go
+...
+userID := ""
+if md, ok := metadata.FromIncomingContext(ctx); ok {
+    if uID, ok := md["x-user-id"]; ok {
+        userID = strings.Join(uID, ",")
+    }
+}
+...
+```
 
 ## Mapping from gRPC server metadata to HTTP response headers
 ditto. Use [`WithOutgoingHeaderMatcher`](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#WithOutgoingHeaderMatcher).
