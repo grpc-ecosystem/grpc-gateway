@@ -425,6 +425,14 @@ func (r *Registry) GetUseJSONNamesForFields() bool {
 	return r.useJSONNamesForFields
 }
 
+// FieldName returns the proto or JSON field name for the field, based on UseJSONNamesForFields.
+func (r *Registry) FieldName(f *Field) string {
+	if r.useJSONNamesForFields {
+		return f.GetJsonName()
+	}
+	return f.GetName()
+}
+
 // SetUseFQNForSwaggerName sets useFQNForSwaggerName
 func (r *Registry) SetUseFQNForSwaggerName(use bool) {
 	r.useFQNForSwaggerName = use

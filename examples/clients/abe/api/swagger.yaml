@@ -1276,7 +1276,7 @@ paths:
         name: "body"
         required: true
         schema:
-          $ref: "#/definitions/examplepbABitOfEverything"
+          $ref: "#/definitions/A bit of everything"
         x-exportParamName: "Body"
       responses:
         200:
@@ -1792,7 +1792,7 @@ paths:
         name: "body"
         required: true
         schema:
-          $ref: "#/definitions/examplepbBody"
+          type: "object"
         x-exportParamName: "Body"
       responses:
         200:
@@ -2388,6 +2388,139 @@ definitions:
     properties:
       value:
         type: "string"
+  A bit of everything:
+    type: "object"
+    required:
+    - "double_value"
+    - "int64_value"
+    properties:
+      single_nested:
+        $ref: "#/definitions/ABitOfEverythingNested"
+      nested:
+        type: "array"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      float_value:
+        type: "number"
+        format: "float"
+        description: "Float value field"
+        default: 0.2
+      double_value:
+        type: "number"
+        format: "double"
+      int64_value:
+        type: "string"
+        format: "int64"
+      uint64_value:
+        type: "string"
+        format: "uint64"
+      int32_value:
+        type: "integer"
+        format: "int32"
+      fixed64_value:
+        type: "string"
+        format: "uint64"
+      fixed32_value:
+        type: "integer"
+        format: "int64"
+      bool_value:
+        type: "boolean"
+        format: "boolean"
+      string_value:
+        type: "string"
+      bytes_value:
+        type: "string"
+        format: "byte"
+        pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+      uint32_value:
+        type: "integer"
+        format: "int64"
+      enum_value:
+        $ref: "#/definitions/examplepbNumericEnum"
+      path_enum_value:
+        $ref: "#/definitions/pathenumPathEnum"
+      nested_path_enum_value:
+        $ref: "#/definitions/MessagePathEnumNestedPathEnum"
+      sfixed32_value:
+        type: "integer"
+        format: "int32"
+      sfixed64_value:
+        type: "string"
+        format: "int64"
+      sint32_value:
+        type: "integer"
+        format: "int32"
+      sint64_value:
+        type: "string"
+        format: "int64"
+      repeated_string_value:
+        type: "array"
+        items:
+          type: "string"
+      oneof_empty:
+        type: "object"
+        properties: {}
+      oneof_string:
+        type: "string"
+      map_value:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/examplepbNumericEnum"
+      mapped_string_value:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      mapped_nested_value:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nonConventionalNameValue:
+        type: "string"
+      timestamp_value:
+        type: "string"
+        format: "date-time"
+      repeated_enum_value:
+        type: "array"
+        title: "repeated enum value. it is comma-separated in query"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      repeated_enum_annotation:
+        type: "array"
+        description: "Repeated numeric enum description."
+        title: "Repeated numeric enum title"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      enum_value_annotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
+        $ref: "#/definitions/examplepbNumericEnum"
+      repeated_string_annotation:
+        type: "array"
+        description: "Repeated string description."
+        title: "Repeated string title"
+        items:
+          type: "string"
+      repeated_nested_annotation:
+        type: "array"
+        description: "Repeated nested object description."
+        title: "Repeated nested object title"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nested_annotation:
+        description: "Nested object description."
+        title: "Nested object title"
+        $ref: "#/definitions/ABitOfEverythingNested"
+      int64_override_type:
+        type: "integer"
+        format: "int64"
+    externalDocs:
+      description: "Find out more about ABitOfEverything"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    title: "A bit of everything"
+    description: "Intentionaly complicated message type to cover many features of\
+      \ Protobuf."
+    example:
+      uuid: "0cf361e1-4b44-483d-a159-54dabdf7e814"
 externalDocs:
   description: "More about gRPC-Gateway"
   url: "https://github.com/grpc-ecosystem/grpc-gateway"

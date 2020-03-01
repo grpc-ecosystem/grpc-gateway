@@ -166,11 +166,7 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 			param.CollectionFormat = "multi"
 		}
 
-		if reg.GetUseJSONNamesForFields() {
-			param.Name = prefix + field.GetJsonName()
-		} else {
-			param.Name = prefix + field.GetName()
-		}
+		param.Name = prefix + reg.FieldName(field)
 
 		if isEnum {
 			enum, err := reg.LookupEnum("", fieldType)
@@ -201,12 +197,7 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 		return nil, fmt.Errorf("unknown message type %s", fieldType)
 	}
 	for _, nestedField := range msg.Fields {
-		var fieldName string
-		if reg.GetUseJSONNamesForFields() {
-			fieldName = field.GetJsonName()
-		} else {
-			fieldName = field.GetName()
-		}
+		fieldName := reg.FieldName(field)
 		p, err := queryParams(msg, nestedField, prefix+fieldName+".", reg, pathParams)
 		if err != nil {
 			return nil, err
@@ -288,74 +279,101 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			continue
 		}
-		schema := swaggerSchemaObject{
-			schemaCore: schemaCore{
-				Type: "object",
-			},
-		}
-		msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
-		if err := updateSwaggerDataFromComments(reg, &schema, msg, msgComments, false); err != nil {
-			panic(err)
-		}
-		opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
-		if err != nil {
-			panic(err)
-		}
-		if opts != nil {
-			protoSchema := swaggerSchemaFromProtoSchema(opts, reg, customRefs, msg)
-
-			// Warning: Make sure not to overwrite any fields already set on the schema type.
-			schema.ExternalDocs = protoSchema.ExternalDocs
-			schema.ReadOnly = protoSchema.ReadOnly
-			schema.MultipleOf = protoSchema.MultipleOf
-			schema.Maximum = protoSchema.Maximum
-			schema.ExclusiveMaximum = protoSchema.ExclusiveMaximum
-			schema.Minimum = protoSchema.Minimum
-			schema.ExclusiveMinimum = protoSchema.ExclusiveMinimum
-			schema.MaxLength = protoSchema.MaxLength
-			schema.MinLength = protoSchema.MinLength
-			schema.Pattern = protoSchema.Pattern
-			schema.Default = protoSchema.Default
-			schema.MaxItems = protoSchema.MaxItems
-			schema.MinItems = protoSchema.MinItems
-			schema.UniqueItems = protoSchema.UniqueItems
-			schema.MaxProperties = protoSchema.MaxProperties
-			schema.MinProperties = protoSchema.MinProperties
-			schema.Required = protoSchema.Required
-			if protoSchema.schemaCore.Type != "" || protoSchema.schemaCore.Ref != "" {
-				schema.schemaCore = protoSchema.schemaCore
-			}
-			if protoSchema.Title != "" {
-				schema.Title = protoSchema.Title
-			}
-			if protoSchema.Description != "" {
-				schema.Description = protoSchema.Description
-			}
-			if protoSchema.Example != nil {
-				schema.Example = protoSchema.Example
-			}
-		}
-
-		for _, f := range msg.Fields {
-			fieldValue := schemaOfField(f, reg, customRefs)
-			comments := fieldProtoComments(reg, msg, f)
-			if err := updateSwaggerDataFromComments(reg, &fieldValue, f, comments, false); err != nil {
-				panic(err)
-			}
-
-			kv := keyVal{Value: fieldValue}
-			if reg.GetUseJSONNamesForFields() {
-				kv.Key = f.GetJsonName()
-			} else {
-				kv.Key = f.GetName()
-			}
-			if schema.Properties == nil {
-				schema.Properties = &swaggerSchemaObjectProperties{}
-			}
-			*schema.Properties = append(*schema.Properties, kv)
-		}
-		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
+		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = renderMessageAsSchema(msg, reg, customRefs, nil)
 	}
+}
+
+func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) swaggerSchemaObject {
+	schema := swaggerSchemaObject{
+		schemaCore: schemaCore{
+			Type: "object",
+		},
+	}
+	msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
+	if err := updateSwaggerDataFromComments(reg, &schema, msg, msgComments, false); err != nil {
+		panic(err)
+	}
+	opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
+	if err != nil {
+		panic(err)
+	}
+	if opts != nil {
+		protoSchema := swaggerSchemaFromProtoSchema(opts, reg, customRefs, msg)
+
+		// Warning: Make sure not to overwrite any fields already set on the schema type.
+		schema.ExternalDocs = protoSchema.ExternalDocs
+		schema.ReadOnly = protoSchema.ReadOnly
+		schema.MultipleOf = protoSchema.MultipleOf
+		schema.Maximum = protoSchema.Maximum
+		schema.ExclusiveMaximum = protoSchema.ExclusiveMaximum
+		schema.Minimum = protoSchema.Minimum
+		schema.ExclusiveMinimum = protoSchema.ExclusiveMinimum
+		schema.MaxLength = protoSchema.MaxLength
+		schema.MinLength = protoSchema.MinLength
+		schema.Pattern = protoSchema.Pattern
+		schema.Default = protoSchema.Default
+		schema.MaxItems = protoSchema.MaxItems
+		schema.MinItems = protoSchema.MinItems
+		schema.UniqueItems = protoSchema.UniqueItems
+		schema.MaxProperties = protoSchema.MaxProperties
+		schema.MinProperties = protoSchema.MinProperties
+		schema.Required = protoSchema.Required
+		if protoSchema.schemaCore.Type != "" || protoSchema.schemaCore.Ref != "" {
+			schema.schemaCore = protoSchema.schemaCore
+		}
+		if protoSchema.Title != "" {
+			schema.Title = protoSchema.Title
+		}
+		if protoSchema.Description != "" {
+			schema.Description = protoSchema.Description
+		}
+		if protoSchema.Example != nil {
+			schema.Example = protoSchema.Example
+		}
+	}
+
+	// For field-list schema properties, filter out any excluded fields.
+	schema.Required = filterOutExcludedFields(schema.Required, excludeFields, reg)
+
+	for _, f := range msg.Fields {
+		if shouldExcludeField(reg.FieldName(f), excludeFields, reg) {
+			continue
+		}
+		fieldValue := schemaOfField(f, reg, customRefs)
+		comments := fieldProtoComments(reg, msg, f)
+		if err := updateSwaggerDataFromComments(reg, &fieldValue, f, comments, false); err != nil {
+			panic(err)
+		}
+
+		kv := keyVal{
+			Key:   reg.FieldName(f),
+			Value: fieldValue,
+		}
+		if schema.Properties == nil {
+			schema.Properties = &swaggerSchemaObjectProperties{}
+		}
+		*schema.Properties = append(*schema.Properties, kv)
+	}
+	return schema
+}
+
+func shouldExcludeField(name string, excluded []*descriptor.Field, reg *descriptor.Registry) bool {
+	for _, f := range excluded {
+		if name == reg.FieldName(f) {
+			return true
+		}
+	}
+	return false
+}
+
+func filterOutExcludedFields(fields []string, excluded []*descriptor.Field, reg *descriptor.Registry) []string {
+	var filtered []string
+	for _, f := range fields {
+		if !shouldExcludeField(f, excluded, reg) {
+			filtered = append(filtered, f)
+		}
+	}
+	return filtered
 }
 
 // schemaOfField returns a swagger Schema Object for a protobuf field.
@@ -762,13 +780,29 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					desc := ""
 
 					if len(b.Body.FieldPath) == 0 {
+						// In the proto file, we have body: "*"
 						schema = swaggerSchemaObject{
 							schemaCore: schemaCore{},
 						}
 
 						wknSchemaCore, isWkn := wktSchemas[meth.RequestType.FQMN()]
 						if !isWkn {
-							schema.Ref = fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg))
+							var bodyExcludedFields []*descriptor.Field
+							if len(b.PathParams) != 0 {
+								for _, p := range b.PathParams {
+									// We only support excluding top-level fields captured by path parameters.
+									if len(p.FieldPath) == 1 {
+										bodyExcludedFields = append(bodyExcludedFields, p.FieldPath[0].Target)
+									}
+								}
+							}
+							if len(bodyExcludedFields) != 0 {
+								// If we are excluding some fields, define a schema inline.
+								schema = renderMessageAsSchema(meth.RequestType, reg, customRefs, bodyExcludedFields)
+							} else {
+								// Otherwise, reference a named schema definition.
+								schema.Ref = fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg))
+							}
 						} else {
 							schema.schemaCore = wknSchemaCore
 
