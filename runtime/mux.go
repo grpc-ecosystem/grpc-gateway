@@ -111,11 +111,11 @@ func WithMetadata(annotator func(context.Context, *http.Request) metadata.MD) Se
 	}
 }
 
-// WithProtoErrorHandler returns a ServeMuxOption for passing metadata to a gRPC context.
+// WithProtoErrorHandler returns a ServeMuxOption for configuring a custom error handler.
 //
 // This can be used to handle an error as general proto message defined by gRPC.
-// The response including body and status is not backward compatible with the default error handler.
-// When this option is used, HTTPError and OtherErrorHandler are overwritten on initialization.
+// When this option is used, the mux uses the configured error handler instead of HTTPError and
+// OtherErrorHandler.
 func WithProtoErrorHandler(fn ProtoErrorHandlerFunc) ServeMuxOption {
 	return func(serveMux *ServeMux) {
 		serveMux.protoErrorHandler = fn
@@ -163,18 +163,6 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 
 	for _, opt := range opts {
 		opt(serveMux)
-	}
-
-	if serveMux.protoErrorHandler != nil {
-		HTTPError = serveMux.protoErrorHandler
-		// OtherErrorHandler is no longer used when protoErrorHandler is set.
-		// Overwritten by a special error handler to return Unknown.
-		OtherErrorHandler = func(w http.ResponseWriter, r *http.Request, _ string, _ int) {
-			ctx := context.Background()
-			_, outboundMarshaler := MarshalerForRequest(serveMux, r)
-			sterr := status.Error(codes.Unknown, "unexpected use of OtherErrorHandler")
-			serveMux.protoErrorHandler(ctx, serveMux, outboundMarshaler, w, r, sterr)
-		}
 	}
 
 	if serveMux.incomingHeaderMatcher == nil {
