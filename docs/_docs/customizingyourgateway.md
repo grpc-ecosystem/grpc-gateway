@@ -234,7 +234,24 @@ if err := pb.RegisterMyServiceHandlerFromEndpoint(ctx, mux, serviceEndpoint, opt
 ```
 
 ## Error handler
-http://mycodesmells.com/post/grpc-gateway-error-handler
+The gateway uses two different error handlers for non-streaming requests:
+
+ * `runtime.HTTPError` is called for errors from backend calls
+ * `runtime.OtherErrorHandler` is called for errors from parsing and routing client requests
+
+To override all error handling for a `*runtime.ServeMux`, use the
+`runtime.WithProtoErrorHandler` serve option.
+
+Alternatively, you can override the global default `HTTPError` handling by
+setting `runtime.GlobalHTTPErrorHandler` to a custom function, and override
+the global default `OtherErrorHandler` by setting `runtime.OtherErrorHandler`
+to a custom function.
+
+You should not set `runtime.HTTPError` directly, because that might break
+any `ServeMux` set up with the `WithProtoErrorHandler` option.
+
+See https://mycodesmells.com/post/grpc-gateway-error-handler for an example
+of writing a custom error handler function.
 
 ## Stream Error Handler
 The error handler described in the previous section applies only
