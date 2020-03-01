@@ -16,7 +16,7 @@ go_library(
         "model_runtime_error.go",
         "response.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/clients/responsebody",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/clients/responsebody",
     visibility = ["//visibility:public"],
     deps = ["@org_golang_x_oauth2//:go_default_library"],
 )

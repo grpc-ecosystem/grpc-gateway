@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/proto/examplepb/use_go_template.proto",
+    "title": "examples/internal/proto/examplepb/use_go_template.proto",
     "version": "version not set"
   },
   "consumes": [

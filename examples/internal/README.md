@@ -9,7 +9,7 @@ Follow the guides from this [README.md](./browser/README.md) to run the server a
 ```bash
 # Make sure you are in the correct directory: 
 # $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/examples
-$ cd examples/browser
+$ cd examples/internal/browser
 $ pwd
 
 # Install gulp

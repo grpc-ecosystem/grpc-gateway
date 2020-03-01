@@ -17,7 +17,7 @@ See the question above at first.
 Grpc-gateway is intended to cover 80% of use cases without forcing you to write comprehensive but complicated annotations. So grpc-gateway itself does not always cover all the use cases you have by design. In other words, grpc-gateway automates typical boring boilerplate mapping between gRPC and HTTP/1 communication, but it does not do arbitrarily complex custom mappings for you.
 
 On the other hand, you can still add whatever you want as a middleware which wraps [`runtime.ServeMux`](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#ServeMux).  Since `runtime.ServeMux` is just a standard [`http.Handler`](http://golang.org/pkg/http#Handler), you can easily write a custom wrapper of `runtime.ServeMux`, leveraged with existing third-party libraries in Go.
-e.g. https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/main.go
+e.g. https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/main.go
 
 ## My gRPC server is written in (Scala|C++|Ruby|Haskell|....). Is there a (Scala|C++|Ruby|Haskell|....) version of grpc-gateway?
 

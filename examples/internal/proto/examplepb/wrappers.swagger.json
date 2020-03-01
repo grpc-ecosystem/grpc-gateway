@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/proto/examplepb/wrappers.proto",
+    "title": "examples/internal/proto/examplepb/wrappers.proto",
     "version": "version not set"
   },
   "consumes": [

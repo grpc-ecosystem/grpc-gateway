@@ -11,12 +11,12 @@ proto_library(
 
 go_proto_library(
     name = "pathenum_go_proto",
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/proto/pathenum",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/pathenum",
     proto = ":pathenum_proto",
 )
 
 go_library(
     name = "go_default_library",
     embed = [":pathenum_go_proto"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/proto/pathenum",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/pathenum",
 )

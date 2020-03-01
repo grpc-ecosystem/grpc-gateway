@@ -10,15 +10,15 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/gateway"
-	server "github.com/grpc-ecosystem/grpc-gateway/examples/server"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/internal/gateway"
+	server "github.com/grpc-ecosystem/grpc-gateway/examples/internal/server"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
 var (
 	endpoint   = flag.String("endpoint", "localhost:9090", "endpoint of the gRPC service")
 	network    = flag.String("network", "tcp", `one of "tcp" or "unix". Must be consistent to -endpoint`)
-	swaggerDir = flag.String("swagger_dir", "examples/proto/examplepb", "path to the directory which contains swagger definitions")
+	swaggerDir = flag.String("swagger_dir", "examples/internal/proto/examplepb", "path to the directory which contains swagger definitions")
 )
 
 func runGateway(ctx context.Context, addr string, opts ...gwruntime.ServeMuxOption) error {

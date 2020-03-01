@@ -11,28 +11,28 @@ var shell = require('gulp-shell');
 var jasmineBrowser = require('gulp-jasmine-browser');
 var webpack = require('webpack-stream');
 
-gulp.task('bower', function(){
+gulp.task('bower', function () {
   return bower();
 });
 
 gulp.task('server', shell.task([
-  'go build -o bin/example-server github.com/grpc-ecosystem/grpc-gateway/examples/cmd/example-grpc-server',
+  'go build -o bin/example-server github.com/grpc-ecosystem/grpc-gateway/examples/internal/cmd/example-grpc-server',
 ]));
 
 gulp.task('gateway', shell.task([
-  'go build -o bin/example-gw github.com/grpc-ecosystem/grpc-gateway/examples/cmd/example-gateway-server',
+  'go build -o bin/example-gw github.com/grpc-ecosystem/grpc-gateway/examples/internal/cmd/example-gateway-server',
 ]));
 
-gulp.task('serve-server', ['server'], function(){
+gulp.task('serve-server', ['server'], function () {
   gprocess.start('server-server', 'bin/example-server', [
-      '--logtostderr',
+    '--logtostderr',
   ]);
   gulp.watch('bin/example-server', ['serve-server']);
 });
 
-gulp.task('serve-gateway', ['gateway', 'serve-server'], function(){
+gulp.task('serve-gateway', ['gateway', 'serve-server'], function () {
   gprocess.start('gateway-server', 'bin/example-gw', [
-      '--logtostderr', '--swagger_dir', path.join(__dirname, "../proto/examplepb"),
+    '--logtostderr', '--swagger_dir', path.join(__dirname, "../proto/examplepb"),
   ]);
   gulp.watch('bin/example-gw', ['serve-gateway']);
 });
@@ -40,9 +40,9 @@ gulp.task('serve-gateway', ['gateway', 'serve-server'], function(){
 gulp.task('backends', ['serve-gateway', 'serve-server']);
 
 var specFiles = ['*.spec.js'];
-gulp.task('test', ['backends'], function(done) {
+gulp.task('test', ['backends'], function (done) {
   return gulp.src(specFiles)
-    .pipe(webpack({output: {filename: 'spec.js'}}))
+    .pipe(webpack({ output: { filename: 'spec.js' } }))
     .pipe(jasmineBrowser.specRunner({
       console: true,
       sourceMappedStacktrace: true,
@@ -52,20 +52,20 @@ gulp.task('test', ['backends'], function(done) {
       catch: true,
       throwFailures: true,
     }))
-    .on('error', function(err) {
+    .on('error', function (err) {
       done(err);
       process.exit(1);
     })
     .pipe(exit());
 });
 
-gulp.task('serve', ['backends'], function(done) {
+gulp.task('serve', ['backends'], function (done) {
   var JasminePlugin = require('gulp-jasmine-browser/webpack/jasmine-plugin');
   var plugin = new JasminePlugin();
 
   return gulp.src(specFiles)
     .pipe(webpack({
-      output: {filename: 'spec.js'},
+      output: { filename: 'spec.js' },
       watch: true,
       plugins: [plugin],
     }))

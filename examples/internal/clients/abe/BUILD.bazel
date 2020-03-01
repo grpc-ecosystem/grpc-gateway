@@ -26,10 +26,10 @@ go_library(
         "model_sub_string_message.go",
         "response.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/clients/abe",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/clients/abe",
     deps = [
-        "//examples/proto/examplepb:go_default_library",
-        "//examples/proto/pathenum:go_default_library",
+        "//examples/internal/proto/examplepb:go_default_library",
+        "//examples/internal/proto/pathenum:go_default_library",
         "//runtime:go_default_library",
         "@com_github_antihax_optional//:go_default_library",
         "@org_golang_x_oauth2//:go_default_library",

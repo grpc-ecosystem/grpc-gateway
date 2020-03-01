@@ -68,7 +68,7 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
     }
    ```
 
-   See [a_bit_of_everything.proto](examples/proto/examplepb/a_bit_of_everything.proto)
+   See [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
    for examples of more annotations you can add to customize gateway behavior
    and generated Swagger output.
 
@@ -202,7 +202,7 @@ instead of protobuf names). Run `protoc-gen-swagger --help` for more flag
 details. Further Swagger customization is possible by annotating your `.proto`
 files with options from
 [openapiv2.proto](protoc-gen-swagger/options/openapiv2.proto) - see
-[a_bit_of_everything.proto](examples/proto/examplepb/a_bit_of_everything.proto)
+[a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
 for examples.
 
 # Mapping gRPC to HTTP

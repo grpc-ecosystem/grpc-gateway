@@ -2,7 +2,7 @@
 swagger: "2.0"
 info:
   version: "version not set"
-  title: "examples/proto/examplepb/response_body_service.proto"
+  title: "examples/internal/proto/examplepb/response_body_service.proto"
 consumes:
 - "application/json"
 produces:

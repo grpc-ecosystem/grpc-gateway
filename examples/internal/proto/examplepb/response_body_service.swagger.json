@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/proto/examplepb/response_body_service.proto",
+    "title": "examples/internal/proto/examplepb/response_body_service.proto",
     "version": "version not set"
   },
   "consumes": [

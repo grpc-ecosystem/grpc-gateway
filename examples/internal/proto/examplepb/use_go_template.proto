@@ -1,6 +1,6 @@
 syntax = "proto3";
 option go_package = "examplepb";
-package grpc.gateway.examples.examplepb;
+package grpc.gateway.examples.internal.examplepb;
 
 import "google/api/annotations.proto";
 

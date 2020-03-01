@@ -8,7 +8,7 @@ option go_package = "examplepb";
 //
 // Echo Service API consists of a single service which returns
 // a message.
-package grpc.gateway.examples.examplepb;
+package grpc.gateway.examples.internal.examplepb;
 
 // Do not need annotations.proto, can still use well known types as usual
 import "google/protobuf/duration.proto";

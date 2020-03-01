@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/proto/examplepb/stream.proto",
+    "title": "examples/internal/proto/examplepb/stream.proto",
     "version": "version not set"
   },
   "consumes": [
