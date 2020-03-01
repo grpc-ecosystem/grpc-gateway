@@ -165,18 +165,6 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 		opt(serveMux)
 	}
 
-	if serveMux.protoErrorHandler != nil {
-		HTTPError = serveMux.protoErrorHandler
-		// OtherErrorHandler is no longer used when protoErrorHandler is set.
-		// Overwritten by a special error handler to return Unknown.
-		OtherErrorHandler = func(w http.ResponseWriter, r *http.Request, _ string, _ int) {
-			ctx := context.Background()
-			_, outboundMarshaler := MarshalerForRequest(serveMux, r)
-			sterr := status.Error(codes.Unknown, "unexpected use of OtherErrorHandler")
-			serveMux.protoErrorHandler(ctx, serveMux, outboundMarshaler, w, r, sterr)
-		}
-	}
-
 	if serveMux.incomingHeaderMatcher == nil {
 		serveMux.incomingHeaderMatcher = DefaultHeaderMatcher
 	}
