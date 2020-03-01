@@ -5,7 +5,6 @@ package grpc.gateway.examples.examplepb;
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "examples/proto/examplepb/a_bit_of_everything.proto";
-import "examples/proto/sub/message.proto";
 
 // This file is run through a genrule.
 
