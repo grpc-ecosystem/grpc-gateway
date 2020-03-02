@@ -11,8 +11,8 @@ SWAGGER_PLUGIN=bin/protoc-gen-swagger
 SWAGGER_PLUGIN_SRC= utilities/doc.go \
 		    utilities/pattern.go \
 		    utilities/trie.go \
-		    protoc-gen-swagger/genswagger/generator.go \
-		    protoc-gen-swagger/genswagger/template.go \
+		    protoc-gen-swagger/internal/genswagger/generator.go \
+		    protoc-gen-swagger/internal/genswagger/template.go \
 		    protoc-gen-swagger/main.go
 SWAGGER_PLUGIN_PKG=./protoc-gen-swagger
 GATEWAY_PLUGIN=bin/protoc-gen-grpc-gateway
@@ -21,22 +21,22 @@ GATEWAY_PLUGIN_SRC= utilities/doc.go \
 		    utilities/pattern.go \
 		    utilities/trie.go \
 		    protoc-gen-grpc-gateway \
-		    protoc-gen-grpc-gateway/descriptor \
-		    protoc-gen-grpc-gateway/descriptor/registry.go \
-		    protoc-gen-grpc-gateway/descriptor/services.go \
-		    protoc-gen-grpc-gateway/descriptor/types.go \
-		    protoc-gen-grpc-gateway/descriptor/grpc_api_configuration.go \
-		    protoc-gen-grpc-gateway/descriptor/grpc_api_service.go \
-		    protoc-gen-grpc-gateway/generator \
-		    protoc-gen-grpc-gateway/generator/generator.go \
-		    protoc-gen-grpc-gateway/gengateway \
-		    protoc-gen-grpc-gateway/gengateway/doc.go \
-		    protoc-gen-grpc-gateway/gengateway/generator.go \
-		    protoc-gen-grpc-gateway/gengateway/template.go \
-		    protoc-gen-grpc-gateway/httprule \
-		    protoc-gen-grpc-gateway/httprule/compile.go \
-		    protoc-gen-grpc-gateway/httprule/parse.go \
-		    protoc-gen-grpc-gateway/httprule/types.go \
+		    internal/descriptor \
+		    internal/descriptor/registry.go \
+		    internal/descriptor/services.go \
+		    internal/descriptor/types.go \
+		    internal/descriptor/grpc_api_configuration.go \
+		    internal/descriptor/grpc_api_service.go \
+		    internal/generator \
+		    internal/generator/generator.go \
+		    protoc-gen-grpc-gateway/internal/gengateway \
+		    protoc-gen-grpc-gateway/internal/gengateway/doc.go \
+		    protoc-gen-grpc-gateway/internal/gengateway/generator.go \
+		    protoc-gen-grpc-gateway/internal/gengateway/template.go \
+		    internal/httprule \
+		    internal/httprule/compile.go \
+		    internal/httprule/parse.go \
+		    internal/httprule/types.go \
 		    protoc-gen-grpc-gateway/main.go
 GATEWAY_PLUGIN_FLAGS?=
 SWAGGER_PLUGIN_FLAGS?=
