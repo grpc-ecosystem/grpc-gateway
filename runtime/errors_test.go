@@ -23,26 +23,41 @@ func TestDefaultHTTPError(t *testing.T) {
 	)
 
 	for _, spec := range []struct {
-		err     error
-		status  int
-		msg     string
-		details string
+		err         error
+		status      int
+		msg         string
+		marshaler   runtime.Marshaler
+		contentType string
+		details     string
 	}{
 		{
-			err:    fmt.Errorf("example error"),
-			status: http.StatusInternalServerError,
-			msg:    "example error",
+			err:         fmt.Errorf("example error"),
+			status:      http.StatusInternalServerError,
+			marshaler:   &runtime.JSONPb{},
+			contentType: "application/json",
+			msg:         "example error",
 		},
 		{
-			err:    status.Error(codes.NotFound, "no such resource"),
-			status: http.StatusNotFound,
-			msg:    "no such resource",
+			err:         status.Error(codes.NotFound, "no such resource"),
+			status:      http.StatusNotFound,
+			marshaler:   &runtime.JSONPb{},
+			contentType: "application/json",
+			msg:         "no such resource",
 		},
 		{
-			err:     statusWithDetails.Err(),
-			status:  http.StatusBadRequest,
-			msg:     "failed precondition",
-			details: "type.googleapis.com/google.rpc.PreconditionFailure",
+			err:         statusWithDetails.Err(),
+			status:      http.StatusBadRequest,
+			marshaler:   &runtime.JSONPb{},
+			contentType: "application/json",
+			msg:         "failed precondition",
+			details:     "type.googleapis.com/google.rpc.PreconditionFailure",
+		},
+		{
+			err:         fmt.Errorf("example error"),
+			status:      http.StatusInternalServerError,
+			marshaler:   &CustomMarshaler{&runtime.JSONPb{}},
+			contentType: "Custom-Content-Type",
+			msg:         "example error",
 		},
 	} {
 		w := httptest.NewRecorder()

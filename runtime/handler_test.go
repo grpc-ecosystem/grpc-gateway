@@ -1,13 +1,12 @@
 package runtime_test
 
 import (
+	"context"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"context"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/internal"
@@ -134,11 +133,12 @@ type CustomMarshaler struct {
 	m *runtime.JSONPb
 }
 
-func (c *CustomMarshaler) Marshal(v interface{}) ([]byte, error)      { return c.m.Marshal(v) }
-func (c *CustomMarshaler) Unmarshal(data []byte, v interface{}) error { return c.m.Unmarshal(data, v) }
-func (c *CustomMarshaler) NewDecoder(r io.Reader) runtime.Decoder     { return c.m.NewDecoder(r) }
-func (c *CustomMarshaler) NewEncoder(w io.Writer) runtime.Encoder     { return c.m.NewEncoder(w) }
-func (c *CustomMarshaler) ContentType() string                        { return c.m.ContentType() }
+func (c *CustomMarshaler) Marshal(v interface{}) ([]byte, error)       { return c.m.Marshal(v) }
+func (c *CustomMarshaler) Unmarshal(data []byte, v interface{}) error  { return c.m.Unmarshal(data, v) }
+func (c *CustomMarshaler) NewDecoder(r io.Reader) runtime.Decoder      { return c.m.NewDecoder(r) }
+func (c *CustomMarshaler) NewEncoder(w io.Writer) runtime.Encoder      { return c.m.NewEncoder(w) }
+func (c *CustomMarshaler) ContentType() string                         { return c.m.ContentType() }
+func (c *CustomMarshaler) ContentTypeFromMessage(v interface{}) string { return "Custom-Content-Type" }
 
 func TestForwardResponseStreamCustomMarshaler(t *testing.T) {
 	type msg struct {
@@ -223,6 +223,59 @@ func TestForwardResponseStreamCustomMarshaler(t *testing.T) {
 
 			if string(body) != string(want) {
 				t.Errorf("ForwardResponseStream() = \"%s\" want \"%s\"", body, want)
+			}
+		})
+	}
+}
+
+func TestForwardResponseMessage(t *testing.T) {
+	msg := &pb.SimpleMessage{Id: "One"}
+	tests := []struct {
+		name        string
+		marshaler   runtime.Marshaler
+		contentType string
+	}{{
+		name:        "standard marshaler",
+		marshaler:   &runtime.JSONPb{},
+		contentType: "application/json",
+	}, {
+		name:        "httpbody marshaler",
+		marshaler:   &runtime.HTTPBodyMarshaler{&runtime.JSONPb{}},
+		contentType: "application/json",
+	}, {
+		name:        "custom marshaler",
+		marshaler:   &CustomMarshaler{&runtime.JSONPb{}},
+		contentType: "Custom-Content-Type",
+	}}
+
+	ctx := runtime.NewServerMetadataContext(context.Background(), runtime.ServerMetadata{})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest("GET", "http://example.com/foo", nil)
+			resp := httptest.NewRecorder()
+
+			runtime.ForwardResponseMessage(ctx, runtime.NewServeMux(), tt.marshaler, resp, req, msg)
+
+			w := resp.Result()
+			if w.StatusCode != http.StatusOK {
+				t.Errorf("StatusCode %d want %d", w.StatusCode, http.StatusOK)
+			}
+			if h := w.Header.Get("Content-Type"); h != tt.contentType {
+				t.Errorf("Content-Type %v want %v", h, tt.contentType)
+			}
+			body, err := ioutil.ReadAll(w.Body)
+			if err != nil {
+				t.Errorf("Failed to read response body with %v", err)
+			}
+			w.Body.Close()
+
+			want, err := tt.marshaler.Marshal(msg)
+			if err != nil {
+				t.Errorf("marshaler.Marshal() failed %v", err)
+			}
+
+			if string(body) != string(want) {
+				t.Errorf("ForwardResponseMessage() = \"%s\" want \"%s\"", body, want)
 			}
 		})
 	}
