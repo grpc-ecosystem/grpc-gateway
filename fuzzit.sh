@@ -9,9 +9,9 @@ cd go-fuzz
 go get ./...
 go build ./...
 
-#go get -v -u ./protoc-gen-grpc-gateway/httprule
+#go get -v -u ./internal/httprule
 cd /src/grpc-gateway
-go-fuzz-build -libfuzzer -o parse-http-rule.a ./protoc-gen-grpc-gateway/httprule
+go-fuzz-build -libfuzzer -o parse-http-rule.a ./internal/httprule
 clang-9 -fsanitize=fuzzer parse-http-rule.a -o parse-http-rule
 
 wget -q -O fuzzit https://github.com/fuzzitdev/fuzzit/releases/download/v2.4.29/fuzzit_Linux_x86_64

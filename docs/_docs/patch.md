@@ -7,8 +7,8 @@ The HTTP PATCH method allows a resource to be partially updated.
 
 The idea, If a binding is mapped to patch and the request message has exactly one FieldMask message in it, additional code is rendered for the gateway handler that will populate the FieldMask based on the request body.
 There are two scenarios:
-- The FieldMask is hidden from the REST request as per the [Google API design guide](https://cloud.google.com/apis/design/standard_methods#update) (as in the first additional binding in the [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/proto/examplepb/a_bit_of_everything.proto#L366) example). In this case, the FieldMask is updated from the request body and set in the gRPC request message.
-- The FieldMask is exposed to the REST request (as in the second additional binding in the [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/proto/examplepb/a_bit_of_everything.proto#L370) example). For this case, the field mask is left untouched by the gateway.
+- The FieldMask is hidden from the REST request as per the [Google API design guide](https://cloud.google.com/apis/design/standard_methods#update) (as in the first additional binding in the [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/a_bit_of_everything.proto#L366) example). In this case, the FieldMask is updated from the request body and set in the gRPC request message.
+- The FieldMask is exposed to the REST request (as in the second additional binding in the [UpdateV2](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/a_bit_of_everything.proto#L370) example). For this case, the field mask is left untouched by the gateway.
 
 ## Example Usage
 1. Create PATCH request.
