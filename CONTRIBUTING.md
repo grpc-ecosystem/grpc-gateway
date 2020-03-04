@@ -25,7 +25,7 @@ All submissions, including submissions by project members, require review.
 Great, it should be as simple as thus (run from the root of the directory):
 
 ```bash
-docker run -v $(pwd):/src/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env:1.13 \
+docker run -v $(pwd):/src/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env:1.14 \
     /bin/bash -c 'cd /src/grpc-gateway && \
         make realclean && \
         make examples'
