@@ -1,4 +1,4 @@
-FROM golang:1.13.4
+FROM golang:1.14.0
 
 # Warm apt cache and install dependencies
 # bzip2 is required by the node_tests (to extract its dependencies).
@@ -9,7 +9,7 @@ RUN apt-get update && \
 
 # Install swagger-codegen
 ENV SWAGGER_CODEGEN_VERSION=2.4.8
-RUN wget http://repo1.maven.org/maven2/io/swagger/swagger-codegen-cli/${SWAGGER_CODEGEN_VERSION}/swagger-codegen-cli-${SWAGGER_CODEGEN_VERSION}.jar \
+RUN wget https://repo1.maven.org/maven2/io/swagger/swagger-codegen-cli/${SWAGGER_CODEGEN_VERSION}/swagger-codegen-cli-${SWAGGER_CODEGEN_VERSION}.jar \
     -O /usr/local/bin/swagger-codegen-cli.jar
 
 # Wrap the jar for swagger-codgen
