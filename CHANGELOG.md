@@ -1,5 +1,14 @@
 # Change Log
 
+## [v1.14.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.1) (2020-03-05)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.0...v1.14.1)
+
+**Merged pull requests:**
+
+- Move generator and descriptor back to public API [\#1155](https://github.com/grpc-ecosystem/grpc-gateway/pull/1155) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Update build environment to 1.14 [\#1153](https://github.com/grpc-ecosystem/grpc-gateway/pull/1153) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Add gorelease CI step [\#1152](https://github.com/grpc-ecosystem/grpc-gateway/pull/1152) ([johanbrandhorst](https://github.com/johanbrandhorst))
+
 ## [v1.14.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.0) (2020-03-04)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.13.0...v1.14.0)
 
@@ -13,6 +22,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.14.0 [\#1151](https://github.com/grpc-ecosystem/grpc-gateway/pull/1151) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Use an interface for ContentTypeFromMessage [\#1150](https://github.com/grpc-ecosystem/grpc-gateway/pull/1150) ([wtlangford](https://github.com/wtlangford))
 - Minimize API surface in anticipation of gorelease [\#1146](https://github.com/grpc-ecosystem/grpc-gateway/pull/1146) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Fix \#1143: Support multiple error handlers. [\#1144](https://github.com/grpc-ecosystem/grpc-gateway/pull/1144) ([jgiles](https://github.com/jgiles))
