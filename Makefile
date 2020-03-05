@@ -21,14 +21,14 @@ GATEWAY_PLUGIN_SRC= utilities/doc.go \
 		    utilities/pattern.go \
 		    utilities/trie.go \
 		    protoc-gen-grpc-gateway \
-		    internal/descriptor \
-		    internal/descriptor/registry.go \
-		    internal/descriptor/services.go \
-		    internal/descriptor/types.go \
-		    internal/descriptor/grpc_api_configuration.go \
-		    internal/descriptor/grpc_api_service.go \
-		    internal/generator \
-		    internal/generator/generator.go \
+		    protoc-gen-grpc-gateway/descriptor \
+		    protoc-gen-grpc-gateway/descriptor/registry.go \
+		    protoc-gen-grpc-gateway/descriptor/services.go \
+		    protoc-gen-grpc-gateway/descriptor/types.go \
+		    protoc-gen-grpc-gateway/descriptor/grpc_api_configuration.go \
+		    protoc-gen-grpc-gateway/descriptor/grpc_api_service.go \
+		    protoc-gen-grpc-gateway/generator \
+		    protoc-gen-grpc-gateway/generator/generator.go \
 		    protoc-gen-grpc-gateway/internal/gengateway \
 		    protoc-gen-grpc-gateway/internal/gengateway/doc.go \
 		    protoc-gen-grpc-gateway/internal/gengateway/generator.go \
