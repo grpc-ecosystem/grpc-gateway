@@ -187,6 +187,35 @@ func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 	}
 }
 
+// Routes returns all defined routes defined on the ServeMux. The returned map
+// maps HTTP verbs to route paths, ie, the returned map will look something
+// like,
+//
+//  map[string][]string{
+//      "GET", []string{
+//          "/users",
+//          "/users{id=*}",
+//      },
+//      "POST": []string{
+//          "/users",
+//      }
+//  }
+func (s *ServeMux) Routes() map[string][]string {
+	routes := make(map[string][]string)
+
+	for method, handlers := range s.handlers {
+		for _, handler := range handlers {
+			if path, ok := routes[method]; !ok {
+				routes[method] = []string{handler.pat.String()}
+			} else {
+				path = append(path, handler.pat.String())
+			}
+		}
+	}
+
+	return routes
+}
+
 // ServeHTTP dispatches the request to the first handler whose pattern matches to r.Method and r.Path.
 func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
