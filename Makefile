@@ -11,8 +11,8 @@ SWAGGER_PLUGIN=bin/protoc-gen-swagger
 SWAGGER_PLUGIN_SRC= utilities/doc.go \
 		    utilities/pattern.go \
 		    utilities/trie.go \
-		    protoc-gen-swagger/internal/genswagger/generator.go \
-		    protoc-gen-swagger/internal/genswagger/template.go \
+		    protoc-gen-swagger/genswagger/generator.go \
+		    protoc-gen-swagger/genswagger/template.go \
 		    protoc-gen-swagger/main.go
 SWAGGER_PLUGIN_PKG=./protoc-gen-swagger
 GATEWAY_PLUGIN=bin/protoc-gen-grpc-gateway
