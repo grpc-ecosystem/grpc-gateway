@@ -518,14 +518,24 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 
 // Take in a FQMN or FQEN and return a swagger safe version of the FQMN
 func fullyQualifiedNameToSwaggerName(fqn string, reg *descriptor.Registry) string {
+	ret, _ := fullyQualifiedNameToSwaggerNameOk(fqn, reg)
+	return ret
+}
+
+// Take in a FQMN or FQEN and return a swagger safe version of the FQMN and
+// a boolean indicating if FQMN was properly resolved.
+// TODO utrack: bad name?
+func fullyQualifiedNameToSwaggerNameOk(fqn string, reg *descriptor.Registry) (string, bool) {
 	registriesSeenMutex.Lock()
 	defer registriesSeenMutex.Unlock()
 	if mapping, present := registriesSeen[reg]; present {
-		return mapping[fqn]
+		ret, ok := mapping[fqn]
+		return ret, ok
 	}
 	mapping := resolveFullyQualifiedNameToSwaggerNames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...), reg.GetUseFQNForSwaggerName())
 	registriesSeen[reg] = mapping
-	return mapping[fqn]
+	ret, ok := mapping[fqn]
+	return ret, ok
 }
 
 // registriesSeen is used to memoise calls to resolveFullyQualifiedNameToSwaggerNames so
@@ -849,7 +859,8 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					desc += "(streaming responses)"
 					responseSchema.Type = "object"
 					responseSchema.Title = fmt.Sprintf("Stream result of %s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg))
-					responseSchema.Properties = &swaggerSchemaObjectProperties{
+
+					props := swaggerSchemaObjectProperties{
 						keyVal{
 							Key: "result",
 							Value: swaggerSchemaObject{
@@ -858,14 +869,18 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 								},
 							},
 						},
-						keyVal{
+					}
+					streamErrDef, hasStreamError := fullyQualifiedNameToSwaggerNameOk(".grpc.gateway.runtime.StreamError", reg)
+					if hasStreamError {
+						props = append(props, keyVal{
 							Key: "error",
 							Value: swaggerSchemaObject{
 								schemaCore: schemaCore{
-									Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.StreamError", reg))},
+									Ref: fmt.Sprintf("#/definitions/%s", streamErrDef)},
 							},
-						},
+						})
 					}
+					responseSchema.Properties = &props
 					responseSchema.Ref = ""
 				}
 
@@ -885,14 +900,17 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					},
 				}
 				if !reg.GetDisableDefaultErrors() {
-					// https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#responses-object
-					operationObject.Responses["default"] = swaggerResponseObject{
-						Description: "An unexpected error response",
-						Schema: swaggerSchemaObject{
-							schemaCore: schemaCore{
-								Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.Error", reg)),
+					errDef, hasErrDef := fullyQualifiedNameToSwaggerNameOk(".grpc.gateway.runtime.Error", reg)
+					if hasErrDef {
+						// https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#responses-object
+						operationObject.Responses["default"] = swaggerResponseObject{
+							Description: "An unexpected error response",
+							Schema: swaggerSchemaObject{
+								schemaCore: schemaCore{
+									Ref: fmt.Sprintf("#/definitions/%s", errDef),
+								},
 							},
-						},
+						}
 					}
 				}
 				if bIdx == 0 {
