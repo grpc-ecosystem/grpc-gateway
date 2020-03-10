@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/golang/protobuf/proto"
@@ -2072,5 +2073,88 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
 			}
 		})
+	}
+}
+
+func TestTemplateWithoutErrorDefinition(t *testing.T) {
+	msgdesc := &protodescriptor.DescriptorProto{
+		Name:  proto.String("ExampleMessage"),
+		Field: []*protodescriptor.FieldDescriptorProto{},
+	}
+	meth := &protodescriptor.MethodDescriptorProto{
+		Name:       proto.String("Echo"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc := &protodescriptor.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*protodescriptor.MethodDescriptorProto{meth},
+	}
+
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*protodescriptor.DescriptorProto{msgdesc, msgdesc},
+			Service:        []*protodescriptor.ServiceDescriptorProto{svc},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo",
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	reg.Load(&plugin.CodeGeneratorRequest{ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto}})
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+
+	defRsp, ok := result.Paths["/v1/echo"].Post.Responses["default"]
+	if !ok {
+		return
+	}
+
+	ref := defRsp.Schema.schemaCore.Ref
+	// TODO utrack: is there a better way to find object by ref?
+	refName := strings.TrimPrefix(ref, "#/definitions/")
+	if refName == "" {
+		t.Fatal("created default Error response with empty reflink")
+	}
+
+	if _, ok := result.Definitions[refName]; !ok {
+		t.Errorf("default Error response with reflink '%v', but its definition was not found", refName)
 	}
 }
