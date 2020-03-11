@@ -37,6 +37,15 @@ func crossLinkFixture(f *descriptor.File) *descriptor.File {
 	return f
 }
 
+func reqFromFile(f *descriptor.File) *plugin.CodeGeneratorRequest {
+	return &plugin.CodeGeneratorRequest{
+		ProtoFile: []*protodescriptor.FileDescriptorProto{
+			f.FileDescriptorProto,
+		},
+		FileToGenerate: []string{f.GetName()},
+	}
+}
+
 func TestMessageToQueryParameters(t *testing.T) {
 	type test struct {
 		MsgDescs []*protodescriptor.DescriptorProto
@@ -381,7 +390,14 @@ func TestApplyTemplateSimple(t *testing.T) {
 			},
 		},
 	}
-	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: descriptor.NewRegistry()})
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
@@ -471,7 +487,15 @@ func TestApplyTemplateOverrideOperationID(t *testing.T) {
 			},
 		},
 	}
-	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: descriptor.NewRegistry()})
+
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
@@ -585,7 +609,14 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	if err := proto.SetExtension(proto.Message(meth.Options), swagger_options.E_Openapiv2Operation, &swaggerOperation); err != nil {
 		t.Fatalf("proto.SetExtension(MethodDescriptorProto.Options) failed: %v", err)
 	}
-	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: descriptor.NewRegistry()})
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
