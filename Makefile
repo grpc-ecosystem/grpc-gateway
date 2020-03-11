@@ -33,10 +33,10 @@ GATEWAY_PLUGIN_SRC= utilities/doc.go \
 		    protoc-gen-grpc-gateway/internal/gengateway/doc.go \
 		    protoc-gen-grpc-gateway/internal/gengateway/generator.go \
 		    protoc-gen-grpc-gateway/internal/gengateway/template.go \
-		    internal/httprule \
-		    internal/httprule/compile.go \
-		    internal/httprule/parse.go \
-		    internal/httprule/types.go \
+		    protoc-gen-grpc-gateway/httprule \
+		    protoc-gen-grpc-gateway/httprule/compile.go \
+		    protoc-gen-grpc-gateway/httprule/parse.go \
+		    protoc-gen-grpc-gateway/httprule/types.go \
 		    protoc-gen-grpc-gateway/main.go
 GATEWAY_PLUGIN_FLAGS?=
 SWAGGER_PLUGIN_FLAGS?=
