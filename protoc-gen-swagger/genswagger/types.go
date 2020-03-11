@@ -3,6 +3,7 @@ package genswagger
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 )
@@ -159,6 +160,15 @@ type schemaCore struct {
 	// start from 0 index it will be great. I don't think that is a good assumption.
 	Enum    []string `json:"enum,omitempty"`
 	Default string   `json:"default,omitempty"`
+}
+
+func (s *schemaCore) setRefFromFQN(ref string, reg *descriptor.Registry) error {
+	name, ok := fullyQualifiedNameToSwaggerName(ref, reg)
+	if !ok {
+		return fmt.Errorf("setRefFromFQN: can't resolve swagger name from '%v'", ref)
+	}
+	s.Ref = fmt.Sprintf("#/definitions/%s", name)
+	return nil
 }
 
 type swaggerItemsObject schemaCore
