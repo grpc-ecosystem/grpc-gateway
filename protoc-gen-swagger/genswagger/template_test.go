@@ -2148,7 +2148,6 @@ func TestTemplateWithoutErrorDefinition(t *testing.T) {
 	}
 
 	ref := defRsp.Schema.schemaCore.Ref
-	// TODO utrack: is there a better way to find object by ref?
 	refName := strings.TrimPrefix(ref, "#/definitions/")
 	if refName == "" {
 		t.Fatal("created default Error response with empty reflink")
