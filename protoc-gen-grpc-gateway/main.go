@@ -103,6 +103,11 @@ func main() {
 		emitError(err)
 		return
 	}
+	unboundHTTPRules := reg.UnboundExternalHTTPRules()
+	if len(unboundHTTPRules) != 0 {
+		emitError(fmt.Errorf("HTTP rules without a matching selector: %s", strings.Join(unboundHTTPRules, ", ")))
+		return
+	}
 
 	var targets []*descriptor.File
 	for _, target := range req.FileToGenerate {
