@@ -128,8 +128,7 @@ func (a *UnannotatedEchoServiceApiService) Echo(ctx context.Context, id string) 
 }
 
 /*
-UnannotatedEchoServiceApiService Echo method receives a simple message and returns it.
-The message posted as the id parameter will also be returned.
+UnannotatedEchoServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id represents the message identifier.
  * @param num
@@ -240,7 +239,7 @@ func (a *UnannotatedEchoServiceApiService) Echo2(ctx context.Context, id string,
 }
 
 /*
-UnannotatedEchoServiceApiService
+UnannotatedEchoServiceApiService EchoBody method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body
 
@@ -340,7 +339,7 @@ func (a *UnannotatedEchoServiceApiService) EchoBody(ctx context.Context, body Ex
 }
 
 /*
-UnannotatedEchoServiceApiService
+UnannotatedEchoServiceApiService EchoDelete method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *EchoDeleteOpts - Optional Parameters:
      * @param "Id" (optional.String) -  Id represents the message identifier.

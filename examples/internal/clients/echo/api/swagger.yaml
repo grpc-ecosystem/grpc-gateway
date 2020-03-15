@@ -36,8 +36,6 @@ paths:
     get:
       tags:
       - "EchoService"
-      summary: "Echo method receives a simple message and returns it."
-      description: "The message posted as the id parameter will also be\nreturned."
       operationId: "Echo2"
       parameters:
       - name: "id"
@@ -111,8 +109,6 @@ paths:
     get:
       tags:
       - "EchoService"
-      summary: "Echo method receives a simple message and returns it."
-      description: "The message posted as the id parameter will also be\nreturned."
       operationId: "Echo3"
       parameters:
       - name: "id"
@@ -185,8 +181,6 @@ paths:
     get:
       tags:
       - "EchoService"
-      summary: "Echo method receives a simple message and returns it."
-      description: "The message posted as the id parameter will also be\nreturned."
       operationId: "Echo4"
       parameters:
       - name: "id"
@@ -253,8 +247,6 @@ paths:
     get:
       tags:
       - "EchoService"
-      summary: "Echo method receives a simple message and returns it."
-      description: "The message posted as the id parameter will also be\nreturned."
       operationId: "Echo5"
       parameters:
       - name: "no.note"
@@ -323,6 +315,7 @@ paths:
     post:
       tags:
       - "EchoService"
+      summary: "EchoBody method receives a simple message and returns it."
       operationId: "EchoBody"
       parameters:
       - in: "body"
@@ -344,6 +337,7 @@ paths:
     delete:
       tags:
       - "EchoService"
+      summary: "EchoDelete method receives a simple message and returns it."
       operationId: "EchoDelete"
       parameters:
       - name: "id"

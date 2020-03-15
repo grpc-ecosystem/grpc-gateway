@@ -128,8 +128,7 @@ func (a *EchoServiceApiService) Echo(ctx context.Context, id string) (ExamplepbS
 }
 
 /*
-EchoServiceApiService Echo method receives a simple message and returns it.
-The message posted as the id parameter will also be returned.
+EchoServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id represents the message identifier.
  * @param num
@@ -270,8 +269,7 @@ func (a *EchoServiceApiService) Echo2(ctx context.Context, id string, num string
 }
 
 /*
-EchoServiceApiService Echo method receives a simple message and returns it.
-The message posted as the id parameter will also be returned.
+EchoServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id represents the message identifier.
  * @param num
@@ -409,8 +407,7 @@ func (a *EchoServiceApiService) Echo3(ctx context.Context, id string, num string
 }
 
 /*
-EchoServiceApiService Echo method receives a simple message and returns it.
-The message posted as the id parameter will also be returned.
+EchoServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id represents the message identifier.
  * @param lineNum
@@ -543,8 +540,7 @@ func (a *EchoServiceApiService) Echo4(ctx context.Context, id string, lineNum st
 }
 
 /*
-EchoServiceApiService Echo method receives a simple message and returns it.
-The message posted as the id parameter will also be returned.
+EchoServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param noNote
  * @param optional nil or *Echo5Opts - Optional Parameters:
@@ -683,7 +679,7 @@ func (a *EchoServiceApiService) Echo5(ctx context.Context, noNote string, localV
 }
 
 /*
-EchoServiceApiService
+EchoServiceApiService EchoBody method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body
 
@@ -783,7 +779,7 @@ func (a *EchoServiceApiService) EchoBody(ctx context.Context, body ExamplepbSimp
 }
 
 /*
-EchoServiceApiService
+EchoServiceApiService EchoDelete method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *EchoDeleteOpts - Optional Parameters:
      * @param "Id" (optional.String) -  Id represents the message identifier.
