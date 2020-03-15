@@ -268,6 +268,29 @@ func (r *Registry) AddExternalHTTPRule(qualifiedMethodName string, rule *annotat
 	r.externalHTTPRules[qualifiedMethodName] = append(r.externalHTTPRules[qualifiedMethodName], rule)
 }
 
+// UnboundExternalHTTPRules returns the list of External HTTPRules
+// which does not have a matching method in the registry
+func (r *Registry) UnboundExternalHTTPRules() []string {
+	allServiceMethods := make(map[string]struct{})
+	for _, f := range r.files {
+		for _, s := range f.GetService() {
+			svc := &Service{File: f, ServiceDescriptorProto: s}
+			for _, m := range s.GetMethod() {
+				method := &Method{Service: svc, MethodDescriptorProto: m}
+				allServiceMethods[method.FQMN()] = struct{}{}
+			}
+		}
+	}
+
+	var missingMethods []string
+	for httpRuleMethod := range r.externalHTTPRules {
+		if _, ok := allServiceMethods[httpRuleMethod]; !ok {
+			missingMethods = append(missingMethods, httpRuleMethod)
+		}
+	}
+	return missingMethods
+}
+
 // AddPkgMap adds a mapping from a .proto file to proto package name.
 func (r *Registry) AddPkgMap(file, protoPkg string) {
 	r.pkgMap[file] = protoPkg
