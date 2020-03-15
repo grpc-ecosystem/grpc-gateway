@@ -219,6 +219,65 @@ func TestExtractServicesSimple(t *testing.T) {
 	testExtractServices(t, []*descriptor.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
 }
 
+func TestExtractServicesWithoutAnnotation(t *testing.T) {
+	src := `
+		name: "path/to/example.proto",
+		package: "example"
+		message_type <
+			name: "StringMessage"
+			field <
+				name: "string"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+			>
+		>
+		service <
+			name: "ExampleService"
+			method <
+				name: "Echo"
+				input_type: "StringMessage"
+				output_type: "StringMessage"
+			>
+		>
+	`
+	var fd descriptor.FileDescriptorProto
+	if err := proto.UnmarshalText(src, &fd); err != nil {
+		t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
+	}
+	msg := &Message{
+		DescriptorProto: fd.MessageType[0],
+		Fields: []*Field{
+			{
+				FieldDescriptorProto: fd.MessageType[0].Field[0],
+			},
+		},
+	}
+	file := &File{
+		FileDescriptorProto: &fd,
+		GoPkg: GoPackage{
+			Path: "path/to/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*Message{msg},
+		Services: []*Service{
+			{
+				ServiceDescriptorProto: fd.Service[0],
+				Methods: []*Method{
+					{
+						MethodDescriptorProto: fd.Service[0].Method[0],
+						RequestType:           msg,
+						ResponseType:          msg,
+					},
+				},
+			},
+		},
+	}
+
+	crossLinkFixture(file)
+	testExtractServices(t, []*descriptor.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
+}
+
 func TestExtractServicesCrossPackage(t *testing.T) {
 	srcs := []string{
 		`
