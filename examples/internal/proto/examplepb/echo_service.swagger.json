@@ -379,7 +379,6 @@
     },
     "/v1/example/echo_body": {
       "post": {
-        "summary": "EchoBody method receives a simple message and returns it.",
         "operationId": "EchoBody",
         "responses": {
           "200": {
@@ -412,7 +411,6 @@
     },
     "/v1/example/echo_delete": {
       "delete": {
-        "summary": "EchoDelete method receives a simple message and returns it.",
         "operationId": "EchoDelete",
         "responses": {
           "200": {

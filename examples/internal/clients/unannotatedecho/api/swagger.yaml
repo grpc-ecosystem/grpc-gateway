@@ -74,7 +74,6 @@ paths:
     post:
       tags:
       - "UnannotatedEchoService"
-      summary: "EchoBody method receives a simple message and returns it."
       operationId: "EchoBody"
       parameters:
       - in: "body"
@@ -96,7 +95,6 @@ paths:
     delete:
       tags:
       - "UnannotatedEchoService"
-      summary: "EchoDelete method receives a simple message and returns it."
       operationId: "EchoDelete"
       parameters:
       - name: "id"

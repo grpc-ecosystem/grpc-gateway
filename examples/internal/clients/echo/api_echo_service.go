@@ -11,11 +11,12 @@ package echo
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
-	"fmt"
+
 	"github.com/antihax/optional"
 )
 
@@ -26,7 +27,7 @@ var (
 
 type EchoServiceApiService service
 
-/* 
+/*
 EchoServiceApiService Echo method receives a simple message and returns it.
 The message posted as the id parameter will also be returned.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -36,10 +37,10 @@ The message posted as the id parameter will also be returned.
 */
 func (a *EchoServiceApiService) Echo(ctx context.Context, id string) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Post")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbSimpleMessage
 	)
 
@@ -86,80 +87,80 @@ func (a *EchoServiceApiService) Echo(ctx context.Context, id string) (ExamplepbS
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbSimpleMessage
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RuntimeError
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 EchoServiceApiService Echo method receives a simple message and returns it.
 The message posted as the id parameter will also be returned.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id represents the message identifier.
  * @param num
  * @param optional nil or *Echo2Opts - Optional Parameters:
-     * @param "LineNum" (optional.String) - 
-     * @param "Lang" (optional.String) - 
-     * @param "StatusProgress" (optional.String) - 
-     * @param "StatusNote" (optional.String) - 
-     * @param "En" (optional.String) - 
-     * @param "NoProgress" (optional.String) - 
-     * @param "NoNote" (optional.String) - 
+     * @param "LineNum" (optional.String) -
+     * @param "Lang" (optional.String) -
+     * @param "StatusProgress" (optional.String) -
+     * @param "StatusNote" (optional.String) -
+     * @param "En" (optional.String) -
+     * @param "NoProgress" (optional.String) -
+     * @param "NoNote" (optional.String) -
 
 @return ExamplepbSimpleMessage
 */
 
-type Echo2Opts struct { 
-	LineNum optional.String
-	Lang optional.String
+type Echo2Opts struct {
+	LineNum        optional.String
+	Lang           optional.String
 	StatusProgress optional.String
-	StatusNote optional.String
-	En optional.String
-	NoProgress optional.String
-	NoNote optional.String
+	StatusNote     optional.String
+	En             optional.String
+	NoProgress     optional.String
+	NoNote         optional.String
 }
 
 func (a *EchoServiceApiService) Echo2(ctx context.Context, id string, num string, localVarOptionals *Echo2Opts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbSimpleMessage
 	)
 
@@ -228,47 +229,47 @@ func (a *EchoServiceApiService) Echo2(ctx context.Context, id string, num string
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbSimpleMessage
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RuntimeError
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 EchoServiceApiService Echo method receives a simple message and returns it.
 The message posted as the id parameter will also be returned.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -276,31 +277,31 @@ The message posted as the id parameter will also be returned.
  * @param num
  * @param lang
  * @param optional nil or *Echo3Opts - Optional Parameters:
-     * @param "LineNum" (optional.String) - 
-     * @param "StatusProgress" (optional.String) - 
-     * @param "StatusNote" (optional.String) - 
-     * @param "En" (optional.String) - 
-     * @param "NoProgress" (optional.String) - 
-     * @param "NoNote" (optional.String) - 
+     * @param "LineNum" (optional.String) -
+     * @param "StatusProgress" (optional.String) -
+     * @param "StatusNote" (optional.String) -
+     * @param "En" (optional.String) -
+     * @param "NoProgress" (optional.String) -
+     * @param "NoNote" (optional.String) -
 
 @return ExamplepbSimpleMessage
 */
 
-type Echo3Opts struct { 
-	LineNum optional.String
+type Echo3Opts struct {
+	LineNum        optional.String
 	StatusProgress optional.String
-	StatusNote optional.String
-	En optional.String
-	NoProgress optional.String
-	NoNote optional.String
+	StatusNote     optional.String
+	En             optional.String
+	NoProgress     optional.String
+	NoNote         optional.String
 }
 
 func (a *EchoServiceApiService) Echo3(ctx context.Context, id string, num string, lang string, localVarOptionals *Echo3Opts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbSimpleMessage
 	)
 
@@ -367,47 +368,47 @@ func (a *EchoServiceApiService) Echo3(ctx context.Context, id string, num string
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbSimpleMessage
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RuntimeError
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 EchoServiceApiService Echo method receives a simple message and returns it.
 The message posted as the id parameter will also be returned.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -415,29 +416,29 @@ The message posted as the id parameter will also be returned.
  * @param lineNum
  * @param statusNote
  * @param optional nil or *Echo4Opts - Optional Parameters:
-     * @param "Num" (optional.String) - 
-     * @param "Lang" (optional.String) - 
-     * @param "StatusProgress" (optional.String) - 
-     * @param "En" (optional.String) - 
-     * @param "NoProgress" (optional.String) - 
+     * @param "Num" (optional.String) -
+     * @param "Lang" (optional.String) -
+     * @param "StatusProgress" (optional.String) -
+     * @param "En" (optional.String) -
+     * @param "NoProgress" (optional.String) -
 
 @return ExamplepbSimpleMessage
 */
 
-type Echo4Opts struct { 
-	Num optional.String
-	Lang optional.String
+type Echo4Opts struct {
+	Num            optional.String
+	Lang           optional.String
 	StatusProgress optional.String
-	En optional.String
-	NoProgress optional.String
+	En             optional.String
+	NoProgress     optional.String
 }
 
 func (a *EchoServiceApiService) Echo4(ctx context.Context, id string, lineNum string, statusNote string, localVarOptionals *Echo4Opts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbSimpleMessage
 	)
 
@@ -501,79 +502,79 @@ func (a *EchoServiceApiService) Echo4(ctx context.Context, id string, lineNum st
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbSimpleMessage
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RuntimeError
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 EchoServiceApiService Echo method receives a simple message and returns it.
 The message posted as the id parameter will also be returned.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param noNote
  * @param optional nil or *Echo5Opts - Optional Parameters:
      * @param "Id" (optional.String) -  Id represents the message identifier.
-     * @param "Num" (optional.String) - 
-     * @param "LineNum" (optional.String) - 
-     * @param "Lang" (optional.String) - 
-     * @param "StatusProgress" (optional.String) - 
-     * @param "En" (optional.String) - 
-     * @param "NoProgress" (optional.String) - 
+     * @param "Num" (optional.String) -
+     * @param "LineNum" (optional.String) -
+     * @param "Lang" (optional.String) -
+     * @param "StatusProgress" (optional.String) -
+     * @param "En" (optional.String) -
+     * @param "NoProgress" (optional.String) -
 
 @return ExamplepbSimpleMessage
 */
 
-type Echo5Opts struct { 
-	Id optional.String
-	Num optional.String
-	LineNum optional.String
-	Lang optional.String
+type Echo5Opts struct {
+	Id             optional.String
+	Num            optional.String
+	LineNum        optional.String
+	Lang           optional.String
 	StatusProgress optional.String
-	En optional.String
-	NoProgress optional.String
+	En             optional.String
+	NoProgress     optional.String
 }
 
 func (a *EchoServiceApiService) Echo5(ctx context.Context, noNote string, localVarOptionals *Echo5Opts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbSimpleMessage
 	)
 
@@ -641,48 +642,48 @@ func (a *EchoServiceApiService) Echo5(ctx context.Context, noNote string, localV
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbSimpleMessage
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RuntimeError
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
-EchoServiceApiService EchoBody method receives a simple message and returns it.
+/*
+EchoServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body
 
@@ -690,10 +691,10 @@ EchoServiceApiService EchoBody method receives a simple message and returns it.
 */
 func (a *EchoServiceApiService) EchoBody(ctx context.Context, body ExamplepbSimpleMessage) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Post")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbSimpleMessage
 	)
 
@@ -741,81 +742,81 @@ func (a *EchoServiceApiService) EchoBody(ctx context.Context, body ExamplepbSimp
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbSimpleMessage
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RuntimeError
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
-EchoServiceApiService EchoDelete method receives a simple message and returns it.
+/*
+EchoServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *EchoDeleteOpts - Optional Parameters:
      * @param "Id" (optional.String) -  Id represents the message identifier.
-     * @param "Num" (optional.String) - 
-     * @param "LineNum" (optional.String) - 
-     * @param "Lang" (optional.String) - 
-     * @param "StatusProgress" (optional.String) - 
-     * @param "StatusNote" (optional.String) - 
-     * @param "En" (optional.String) - 
-     * @param "NoProgress" (optional.String) - 
-     * @param "NoNote" (optional.String) - 
+     * @param "Num" (optional.String) -
+     * @param "LineNum" (optional.String) -
+     * @param "Lang" (optional.String) -
+     * @param "StatusProgress" (optional.String) -
+     * @param "StatusNote" (optional.String) -
+     * @param "En" (optional.String) -
+     * @param "NoProgress" (optional.String) -
+     * @param "NoNote" (optional.String) -
 
 @return ExamplepbSimpleMessage
 */
 
-type EchoDeleteOpts struct { 
-	Id optional.String
-	Num optional.String
-	LineNum optional.String
-	Lang optional.String
+type EchoDeleteOpts struct {
+	Id             optional.String
+	Num            optional.String
+	LineNum        optional.String
+	Lang           optional.String
 	StatusProgress optional.String
-	StatusNote optional.String
-	En optional.String
-	NoProgress optional.String
-	NoNote optional.String
+	StatusNote     optional.String
+	En             optional.String
+	NoProgress     optional.String
+	NoNote         optional.String
 }
 
 func (a *EchoServiceApiService) EchoDelete(ctx context.Context, localVarOptionals *EchoDeleteOpts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Delete")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Delete")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbSimpleMessage
 	)
 
@@ -888,40 +889,40 @@ func (a *EchoServiceApiService) EchoDelete(ctx context.Context, localVarOptional
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbSimpleMessage
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RuntimeError
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 

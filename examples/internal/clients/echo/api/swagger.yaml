@@ -323,7 +323,6 @@ paths:
     post:
       tags:
       - "EchoService"
-      summary: "EchoBody method receives a simple message and returns it."
       operationId: "EchoBody"
       parameters:
       - in: "body"
@@ -345,7 +344,6 @@ paths:
     delete:
       tags:
       - "EchoService"
-      summary: "EchoDelete method receives a simple message and returns it."
       operationId: "EchoDelete"
       parameters:
       - name: "id"

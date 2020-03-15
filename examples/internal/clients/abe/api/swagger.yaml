@@ -1697,6 +1697,8 @@ paths:
     get:
       tags:
       - "camelCaseServiceName"
+      summary: "Create a new ABitOfEverything"
+      description: "This API creates a new ABitOfEverything"
       operationId: "Empty"
       parameters: []
       responses:
