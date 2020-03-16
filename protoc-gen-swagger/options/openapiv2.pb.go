@@ -5,11 +5,10 @@ package options
 
 import (
 	fmt "fmt"
-	math "math"
-
 	proto "github.com/golang/protobuf/proto"
 	any "github.com/golang/protobuf/ptypes/any"
 	_struct "github.com/golang/protobuf/ptypes/struct"
+	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

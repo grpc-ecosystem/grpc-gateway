@@ -12,5 +12,5 @@ package echo
 // Embedded represents a message embedded in SimpleMessage.
 type ExamplepbEmbedded struct {
 	Progress string `json:"progress,omitempty"`
-	Note     string `json:"note,omitempty"`
+	Note string `json:"note,omitempty"`
 }
