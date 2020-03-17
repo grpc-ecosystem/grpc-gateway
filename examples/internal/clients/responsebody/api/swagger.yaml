@@ -20,7 +20,7 @@ paths:
         type: "string"
         x-exportParamName: "Data"
       responses:
-        "200":
+        200:
           description: ""
           schema:
             type: "array"
@@ -42,7 +42,7 @@ paths:
         type: "string"
         x-exportParamName: "Data"
       responses:
-        "200":
+        200:
           description: ""
           schema:
             $ref: "#/definitions/examplepbResponseBodyOutResponse"
@@ -62,7 +62,7 @@ paths:
         type: "string"
         x-exportParamName: "Data"
       responses:
-        "200":
+        200:
           description: ""
           schema:
             type: "array"

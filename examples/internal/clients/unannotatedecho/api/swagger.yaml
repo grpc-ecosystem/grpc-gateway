@@ -27,7 +27,7 @@ paths:
         type: "string"
         x-exportParamName: "Id"
       responses:
-        "200":
+        200:
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
@@ -62,7 +62,7 @@ paths:
         x-exportParamName: "Duration"
         x-optionalDataType: "String"
       responses:
-        "200":
+        200:
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
@@ -84,7 +84,7 @@ paths:
           $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
         x-exportParamName: "Body"
       responses:
-        "200":
+        200:
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
@@ -120,7 +120,7 @@ paths:
         x-exportParamName: "Duration"
         x-optionalDataType: "String"
       responses:
-        "200":
+        200:
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
