@@ -42,20 +42,20 @@ paths:
           $ref: "#/definitions/examplepbABitOfEverything"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbABitOfEverything"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -77,27 +77,27 @@ paths:
         type: "string"
         x-exportParamName: "Value"
       responses:
-        200:
+        "200":
           description: "A successful response."
           examples:
             application/json:
               value: "the input value"
           schema:
             $ref: "#/definitions/subStringMessage"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "integer"
             format: "integer"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
-        503:
+        "503":
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
           x-number: 100
@@ -375,20 +375,20 @@ paths:
         x-exportParamName: "Int64OverrideType"
         x-optionalDataType: "Int64"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbABitOfEverything"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -670,20 +670,20 @@ paths:
         x-exportParamName: "Int64OverrideType"
         x-optionalDataType: "Int64"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbABitOfEverything"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -709,20 +709,20 @@ paths:
           $ref: "#/definitions/ABitOfEverythingNested"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbABitOfEverything"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1011,19 +1011,19 @@ paths:
         x-exportParamName: "Int64OverrideType"
         x-optionalDataType: "Int64"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema: {}
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1168,20 +1168,20 @@ paths:
         - "ONE"
         x-exportParamName: "EnumValueAnnotation"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbABitOfEverything"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1208,20 +1208,20 @@ paths:
           $ref: "#/definitions/examplepbABitOfEverything"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbABitOfEverything"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1241,20 +1241,20 @@ paths:
         type: "string"
         x-exportParamName: "Uuid"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbABitOfEverything"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1279,19 +1279,19 @@ paths:
           $ref: "#/definitions/examplepbABitOfEverything"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema: {}
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1310,19 +1310,19 @@ paths:
         type: "string"
         x-exportParamName: "Uuid"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema: {}
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1506,20 +1506,20 @@ paths:
         minItems: 1
         x-exportParamName: "PathRepeatedSint64Value"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbABitOfEverythingRepeated"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1545,19 +1545,19 @@ paths:
           $ref: "#/definitions/examplepbABitOfEverything"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema: {}
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1582,19 +1582,19 @@ paths:
           $ref: "#/definitions/examplepbABitOfEverything"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema: {}
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1617,27 +1617,27 @@ paths:
         x-exportParamName: "Value"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           examples:
             application/json:
               value: "the input value"
           schema:
             $ref: "#/definitions/subStringMessage"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "integer"
             format: "integer"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
-        503:
+        "503":
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
           x-number: 100
@@ -1662,27 +1662,27 @@ paths:
           type: "string"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           examples:
             application/json:
               value: "the input value"
           schema:
             $ref: "#/definitions/subStringMessage"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "integer"
             format: "integer"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
-        503:
+        "503":
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
           x-number: 100
@@ -1702,19 +1702,19 @@ paths:
       operationId: "Empty"
       parameters: []
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema: {}
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1729,19 +1729,19 @@ paths:
       operationId: "ErrorWithDetails"
       parameters: []
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema: {}
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1758,20 +1758,20 @@ paths:
       - "application/text"
       parameters: []
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             type: "string"
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1797,19 +1797,19 @@ paths:
           $ref: "#/definitions/examplepbBody"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema: {}
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1824,19 +1824,19 @@ paths:
       operationId: "Timeout"
       parameters: []
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema: {}
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1862,19 +1862,19 @@ paths:
           $ref: "#/definitions/examplepbBody"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema: {}
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -1900,19 +1900,19 @@ paths:
           $ref: "#/definitions/examplepbUpdateV2Request"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema: {}
-        403:
+        "403":
           description: "Returned when the user does not have permission to access\
             \ the resource."
           schema: {}
-        404:
+        "404":
           description: "Returned when the resource does not exist."
           schema:
             type: "string"
             format: "string"
-        418:
+        "418":
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
@@ -2370,7 +2370,7 @@ definitions:
       \ used in\npaths.\n\n## Field Mask Verification\n\nThe implementation of any\
       \ API method which has a FieldMask type field in the\nrequest should verify\
       \ the included field paths, and return an\n`INVALID_ARGUMENT` error if any path\
-      \ is duplicated or unmappable."
+      \ is unmappable."
   runtimeError:
     type: "object"
     properties:

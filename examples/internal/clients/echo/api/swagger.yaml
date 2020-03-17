@@ -24,7 +24,7 @@ paths:
         type: "string"
         x-exportParamName: "Id"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -99,7 +99,7 @@ paths:
         x-exportParamName: "NoNote"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -173,7 +173,7 @@ paths:
         x-exportParamName: "NoNote"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -241,7 +241,7 @@ paths:
         x-exportParamName: "NoProgress"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -311,7 +311,7 @@ paths:
         x-exportParamName: "NoProgress"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -333,7 +333,7 @@ paths:
           $ref: "#/definitions/examplepbSimpleMessage"
         x-exportParamName: "Body"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
@@ -409,7 +409,7 @@ paths:
         x-exportParamName: "NoNote"
         x-optionalDataType: "String"
       responses:
-        200:
+        "200":
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
