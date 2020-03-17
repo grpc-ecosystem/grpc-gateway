@@ -9,12 +9,11 @@
  */
 
 package abe
-
 // ExamplepbNumericEnum : NumericEnum is one or zero.   - ZERO: ZERO means 0  - ONE: ONE means 1
 type ExamplepbNumericEnum string
 
 // List of examplepbNumericEnum
 const (
 	ZERO_ExamplepbNumericEnum ExamplepbNumericEnum = "ZERO"
-	ONE_ExamplepbNumericEnum  ExamplepbNumericEnum = "ONE"
+	ONE_ExamplepbNumericEnum ExamplepbNumericEnum = "ONE"
 )

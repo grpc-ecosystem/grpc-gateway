@@ -12,7 +12,7 @@ package unannotatedecho
 // UnannotatedSimpleMessage represents a simple message sent to the unannotated Echo service.
 type ExamplepbUnannotatedSimpleMessage struct {
 	// Id represents the message identifier.
-	Id       string `json:"id,omitempty"`
-	Num      string `json:"num,omitempty"`
+	Id string `json:"id,omitempty"`
+	Num string `json:"num,omitempty"`
 	Duration string `json:"duration,omitempty"`
 }

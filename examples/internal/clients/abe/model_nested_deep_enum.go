@@ -9,12 +9,11 @@
  */
 
 package abe
-
 // NestedDeepEnum : DeepEnum is one or zero.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
 type NestedDeepEnum string
 
 // List of NestedDeepEnum
 const (
 	FALSE_NestedDeepEnum NestedDeepEnum = "FALSE"
-	TRUE_NestedDeepEnum  NestedDeepEnum = "TRUE"
+	TRUE_NestedDeepEnum NestedDeepEnum = "TRUE"
 )

@@ -14,6 +14,6 @@ type ResponseResponseType string
 // List of ResponseResponseType
 const (
 	UNKNOWN_ResponseResponseType ResponseResponseType = "UNKNOWN"
-	A_ResponseResponseType       ResponseResponseType = "A"
-	B_ResponseResponseType       ResponseResponseType = "B"
+	A_ResponseResponseType ResponseResponseType = "A"
+	B_ResponseResponseType ResponseResponseType = "B"
 )
