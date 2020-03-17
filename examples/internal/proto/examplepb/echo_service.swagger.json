@@ -47,6 +47,8 @@
     },
     "/v1/example/echo/{id}/{num}": {
       "get": {
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
         "operationId": "Echo2",
         "responses": {
           "200": {
@@ -131,6 +133,8 @@
     },
     "/v1/example/echo/{id}/{num}/{lang}": {
       "get": {
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
         "operationId": "Echo3",
         "responses": {
           "200": {
@@ -215,6 +219,8 @@
     },
     "/v1/example/echo1/{id}/{line_num}/{status.note}": {
       "get": {
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
         "operationId": "Echo4",
         "responses": {
           "200": {
@@ -293,6 +299,8 @@
     },
     "/v1/example/echo2/{no.note}": {
       "get": {
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
         "operationId": "Echo5",
         "responses": {
           "200": {
