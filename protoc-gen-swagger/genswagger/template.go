@@ -92,6 +92,13 @@ func listEnumNames(enum *descriptor.Enum) (names []string) {
 	return names
 }
 
+func listEnumNumbers(enum *descriptor.Enum) (numbers []string) {
+	for _, value := range enum.GetValue() {
+		numbers = append(numbers, strconv.Itoa(int(value.GetNumber())))
+	}
+	return
+}
+
 func getEnumDefault(enum *descriptor.Enum) string {
 	for _, value := range enum.GetValue() {
 		if value.GetNumber() == 0 {
@@ -178,14 +185,27 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 				return nil, fmt.Errorf("unknown enum type %s", fieldType)
 			}
 			if items != nil { // array
-				param.Items = &swaggerItemsObject{
-					Type: "string",
-					Enum: listEnumNames(enum),
+				if reg.GetEnumsAsInts() {
+					param.Items = &swaggerItemsObject{
+						Type: "integer",
+						Enum: listEnumNumbers(enum),
+					}
+				} else {
+					param.Items = &swaggerItemsObject{
+						Type: "string",
+						Enum: listEnumNames(enum),
+					}
 				}
 			} else {
-				param.Type = "string"
-				param.Enum = listEnumNames(enum)
-				param.Default = getEnumDefault(enum)
+				if reg.GetEnumsAsInts() {
+					param.Type = "integer"
+					param.Enum = listEnumNumbers(enum)
+					param.Default = "0"
+				} else {
+					param.Type = "string"
+					param.Enum = listEnumNames(enum)
+					param.Default = getEnumDefault(enum)
+				}
 			}
 			valueComments := enumValueProtoComments(reg, enum)
 			if valueComments != "" {
@@ -524,12 +544,24 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 		if valueComments != "" {
 			enumComments = strings.TrimLeft(enumComments+"\n\n "+valueComments, "\n")
 		}
-		enumSchemaObject := swaggerSchemaObject{
-			schemaCore: schemaCore{
-				Type:    "string",
-				Enum:    enumNames,
-				Default: defaultValue,
-			},
+		var enumSchemaObject swaggerSchemaObject
+		if reg.GetEnumsAsInts() {
+			enumSchemaObject = swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type:    "integer",
+					Format:  "int32",
+					Default: "0",
+					Enum:    listEnumNumbers(enum),
+				},
+			}
+		} else {
+			enumSchemaObject = swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type:    "string",
+					Enum:    enumNames,
+					Default: defaultValue,
+				},
+			}
 		}
 		if err := updateSwaggerDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
 			panic(err)
@@ -737,13 +769,19 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
 					case pbdescriptor.FieldDescriptorProto_TYPE_ENUM:
-						paramType = "string"
-						paramFormat = ""
 						enum, err := reg.LookupEnum("", parameter.Target.GetTypeName())
 						if err != nil {
 							return err
 						}
-						enumNames = listEnumNames(enum)
+						if reg.GetEnumsAsInts() {
+							paramType = "integer"
+							paramFormat = ""
+							enumNames = listEnumNumbers(enum)
+						} else {
+							paramType = "string"
+							paramFormat = ""
+							enumNames = listEnumNames(enum)
+						}
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default

@@ -29,6 +29,7 @@ var (
 	useFQNForSwaggerName       = flag.Bool("fqn_for_swagger_name", false, "if set, the object's swagger names will use the fully qualify name from the proto definition (ie my.package.MyMessage.MyInnerMessage")
 	useGoTemplate              = flag.Bool("use_go_templates", false, "if set, you can use Go templates in protofile comments")
 	disableDefaultErrors       = flag.Bool("disable_default_errors", false, "if set, disables generation of default errors. This is useful if you have defined custom error handling")
+	enumsAsInts                = flag.Bool("enums_as_ints", false, "whether to render enum values as integers, as opposed to string values")
 )
 
 // Variables set by goreleaser at build time
@@ -81,6 +82,7 @@ func main() {
 	reg.SetIncludePackageInTags(*includePackageInTags)
 	reg.SetUseFQNForSwaggerName(*useFQNForSwaggerName)
 	reg.SetUseGoTemplate(*useGoTemplate)
+	reg.SetEnumsAsInts(*enumsAsInts)
 	reg.SetDisableDefaultErrors(*disableDefaultErrors)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
