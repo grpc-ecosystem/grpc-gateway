@@ -69,6 +69,8 @@ jobs:
             startup --output_base $HOME/.cache/_grpc_gateway_bazel
             build --test_output errors
             build --features race
+            # Workaround https://github.com/bazelbuild/bazel/issues/3645
+            build --local_resources=3072,2.0,1.0
             EOF
       - run:
           name: Check that Bazel BUILD files are up-to-date
