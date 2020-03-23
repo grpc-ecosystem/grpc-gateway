@@ -75,6 +75,9 @@ type Registry struct {
 	// useGoTemplate determines whether you want to use GO templates
 	// in your protofile comments
 	useGoTemplate bool
+
+	// enumsAsInts render enum as integer, as opposed to string
+	enumsAsInts bool
 }
 
 type repeatedFieldSeparator struct {
@@ -458,6 +461,16 @@ func (r *Registry) SetUseGoTemplate(use bool) {
 // GetUseGoTemplate returns useGoTemplate
 func (r *Registry) GetUseGoTemplate() bool {
 	return r.useGoTemplate
+}
+
+// SetEnumsAsInts set enumsAsInts
+func (r *Registry) SetEnumsAsInts(enumsAsInts bool) {
+	r.enumsAsInts = enumsAsInts
+}
+
+// GetEnumsAsInts returns enumsAsInts
+func (r *Registry) GetEnumsAsInts() bool {
+	return r.enumsAsInts
 }
 
 // sanitizePackageName replaces unallowed character in package name
