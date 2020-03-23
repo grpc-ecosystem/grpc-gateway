@@ -64,7 +64,7 @@ func runServers(ctx context.Context) <-chan error {
 		}
 	}()
 	go func() {
-		if err := runGateway(ctx, ":8080"); err != nil {
+		if err := runGateway(ctx, ":8088"); err != nil {
 			ch <- fmt.Errorf("cannot run gateway service: %v", err)
 		}
 	}()
@@ -81,8 +81,8 @@ func TestMain(m *testing.M) {
 
 	ch := make(chan int, 1)
 	go func() {
-		if err := waitForGateway(ctx, 8080); err != nil {
-			glog.Errorf("waitForGateway(ctx, 8080) failed with %v; want success", err)
+		if err := waitForGateway(ctx, 8088); err != nil {
+			glog.Errorf("waitForGateway(ctx, 8088) failed with %v; want success", err)
 		}
 		ch <- m.Run()
 	}()
