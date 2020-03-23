@@ -7,7 +7,7 @@ go_library(
     srcs = ["main.go"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger",
     deps = [
-        "//codegenerator:go_default_library",
+        "//internal/codegenerator:go_default_library",
         "//protoc-gen-grpc-gateway/descriptor:go_default_library",
         "//protoc-gen-swagger/genswagger:go_default_library",
         "@com_github_golang_glog//:go_default_library",

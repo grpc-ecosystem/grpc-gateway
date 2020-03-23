@@ -90,4 +90,4 @@ This is how the swagger file would be rendered in [Postman](https://www.getpostm
 
 ![Screenshot swaggerfile in Postman](../_imgs/gotemplates/postman.png "Postman")
 
-For a more detailed example of a protofile that has Go templates enabled, [click here](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/proto/examplepb/use_go_template.proto "Example protofile with Go template").
+For a more detailed example of a protofile that has Go templates enabled, [click here](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/use_go_template.proto "Example protofile with Go template").

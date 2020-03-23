@@ -87,9 +87,9 @@ You might not like [the default mapping rule](http://godoc.org/github.com/grpc-e
   ```go
   func CustomMatcher(key string) (string, bool) {
     switch key {
-    case "x-custom-header1":
+    case "X-Custom-Header1":
       return key, true
-    case "x-custom-header2":
+    case "X-Custom-Header2":
       return "custom-header2", true
     default:
       return key, false
@@ -98,8 +98,39 @@ You might not like [the default mapping rule](http://godoc.org/github.com/grpc-e
   ...
 
   mux := runtime.NewServeMux(runtime.WithIncomingHeaderMatcher(CustomMatcher))
-
   ```
+To keep the [the default mapping rule](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#DefaultHeaderMatcher) alongside with your own rules write:
+
+```go
+func CustomMatcher(key string) (string, bool) {
+  switch key {
+  case "X-User-Id":
+      return key, true
+  default:
+      return runtime.DefaultHeaderMatcher(key)
+  }
+}
+```
+It will work with both:
+
+```bash
+curl --header "x-user-id: 100d9f38-2777-4ee2-ac3b-b3a108f81a30" ...
+```
+and:
+```bash
+curl --header "X-USER-ID: 100d9f38-2777-4ee2-ac3b-b3a108f81a30" ...
+```
+To access this header on gRPC server side use:
+```go
+...
+userID := ""
+if md, ok := metadata.FromIncomingContext(ctx); ok {
+    if uID, ok := md["x-user-id"]; ok {
+        userID = strings.Join(uID, ",")
+    }
+}
+...
+```
 
 ## Mapping from gRPC server metadata to HTTP response headers
 ditto. Use [`WithOutgoingHeaderMatcher`](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#WithOutgoingHeaderMatcher).
@@ -203,7 +234,24 @@ if err := pb.RegisterMyServiceHandlerFromEndpoint(ctx, mux, serviceEndpoint, opt
 ```
 
 ## Error handler
-http://mycodesmells.com/post/grpc-gateway-error-handler
+The gateway uses two different error handlers for non-streaming requests:
+
+ * `runtime.HTTPError` is called for errors from backend calls
+ * `runtime.OtherErrorHandler` is called for errors from parsing and routing client requests
+
+To override all error handling for a `*runtime.ServeMux`, use the
+`runtime.WithProtoErrorHandler` serve option.
+
+Alternatively, you can override the global default `HTTPError` handling by
+setting `runtime.GlobalHTTPErrorHandler` to a custom function, and override
+the global default `OtherErrorHandler` by setting `runtime.OtherErrorHandler`
+to a custom function.
+
+You should not set `runtime.HTTPError` directly, because that might break
+any `ServeMux` set up with the `WithProtoErrorHandler` option.
+
+See https://mycodesmells.com/post/grpc-gateway-error-handler for an example
+of writing a custom error handler function.
 
 ## Stream Error Handler
 The error handler described in the previous section applies only

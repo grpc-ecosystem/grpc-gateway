@@ -29,10 +29,10 @@ GATEWAY_PLUGIN_SRC= utilities/doc.go \
 		    protoc-gen-grpc-gateway/descriptor/grpc_api_service.go \
 		    protoc-gen-grpc-gateway/generator \
 		    protoc-gen-grpc-gateway/generator/generator.go \
-		    protoc-gen-grpc-gateway/gengateway \
-		    protoc-gen-grpc-gateway/gengateway/doc.go \
-		    protoc-gen-grpc-gateway/gengateway/generator.go \
-		    protoc-gen-grpc-gateway/gengateway/template.go \
+		    protoc-gen-grpc-gateway/internal/gengateway \
+		    protoc-gen-grpc-gateway/internal/gengateway/doc.go \
+		    protoc-gen-grpc-gateway/internal/gengateway/generator.go \
+		    protoc-gen-grpc-gateway/internal/gengateway/template.go \
 		    protoc-gen-grpc-gateway/httprule \
 		    protoc-gen-grpc-gateway/httprule/compile.go \
 		    protoc-gen-grpc-gateway/httprule/parse.go \
@@ -50,7 +50,7 @@ RUNTIME_GO=$(RUNTIME_PROTO:.proto=.pb.go)
 OPENAPIV2_PROTO=protoc-gen-swagger/options/openapiv2.proto protoc-gen-swagger/options/annotations.proto
 OPENAPIV2_GO=$(OPENAPIV2_PROTO:.proto=.pb.go)
 
-PKGMAP=Mgoogle/protobuf/field_mask.proto=google.golang.org/genproto/protobuf/field_mask,Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/proto/sub/message.proto=github.com/grpc-ecosystem/grpc-gateway/examples/proto/sub
+PKGMAP=Mgoogle/protobuf/field_mask.proto=google.golang.org/genproto/protobuf/field_mask,Mgoogle/protobuf/descriptor.proto=$(GO_PLUGIN_PKG)/descriptor,Mexamples/internal/proto/sub/message.proto=github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/sub
 ADDITIONAL_GW_FLAGS=
 ifneq "$(GATEWAY_PLUGIN_FLAGS)" ""
 	ADDITIONAL_GW_FLAGS=,$(GATEWAY_PLUGIN_FLAGS)
@@ -59,39 +59,42 @@ ADDITIONAL_SWG_FLAGS=
 ifneq "$(SWAGGER_PLUGIN_FLAGS)" ""
 	ADDITIONAL_SWG_FLAGS=,$(SWAGGER_PLUGIN_FLAGS)
 endif
-SWAGGER_EXAMPLES=examples/proto/examplepb/echo_service.proto \
-	 examples/proto/examplepb/a_bit_of_everything.proto \
-	 examples/proto/examplepb/wrappers.proto \
-	 examples/proto/examplepb/stream.proto \
-	 examples/proto/examplepb/unannotated_echo_service.proto \
-	 examples/proto/examplepb/use_go_template.proto \
-	 examples/proto/examplepb/response_body_service.proto
+SWAGGER_EXAMPLES=examples/internal/proto/examplepb/echo_service.proto \
+	 examples/internal/proto/examplepb/a_bit_of_everything.proto \
+	 examples/internal/proto/examplepb/wrappers.proto \
+	 examples/internal/proto/examplepb/stream.proto \
+	 examples/internal/proto/examplepb/unannotated_echo_service.proto \
+	 examples/internal/proto/examplepb/use_go_template.proto \
+	 examples/internal/proto/examplepb/response_body_service.proto
 
-EXAMPLES=examples/proto/examplepb/echo_service.proto \
-	 examples/proto/examplepb/a_bit_of_everything.proto \
-	 examples/proto/examplepb/stream.proto \
-	 examples/proto/examplepb/flow_combination.proto \
-	 examples/proto/examplepb/non_standard_names.proto \
-	 examples/proto/examplepb/wrappers.proto \
-	 examples/proto/examplepb/unannotated_echo_service.proto \
-	 examples/proto/examplepb/use_go_template.proto \
-	 examples/proto/examplepb/response_body_service.proto
+EXAMPLES=examples/internal/proto/examplepb/echo_service.proto \
+	 examples/internal/proto/examplepb/a_bit_of_everything.proto \
+	 examples/internal/proto/examplepb/stream.proto \
+	 examples/internal/proto/examplepb/flow_combination.proto \
+	 examples/internal/proto/examplepb/non_standard_names.proto \
+	 examples/internal/proto/examplepb/wrappers.proto \
+	 examples/internal/proto/examplepb/unannotated_echo_service.proto \
+	 examples/internal/proto/examplepb/use_go_template.proto \
+	 examples/internal/proto/examplepb/response_body_service.proto
 
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
 EXAMPLE_SWAGGERSRCS=$(SWAGGER_EXAMPLES:.proto=.swagger.json)
-EXAMPLE_DEPS=examples/proto/pathenum/path_enum.proto examples/proto/sub/message.proto examples/proto/sub2/message.proto
+EXAMPLE_DEPS=examples/internal/proto/pathenum/path_enum.proto examples/internal/proto/sub/message.proto examples/internal/proto/sub2/message.proto
 EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
 
-EXAMPLE_CLIENT_DIR=examples/clients
-ECHO_EXAMPLE_SPEC=examples/proto/examplepb/echo_service.swagger.json
+RUNTIME_TEST_PROTO=runtime/internal/examplepb/example.proto
+RUNTIME_TEST_SRCS=$(RUNTIME_TEST_PROTO:.proto=pb.go)
+
+EXAMPLE_CLIENT_DIR=examples/internal/clients
+ECHO_EXAMPLE_SPEC=examples/internal/proto/examplepb/echo_service.swagger.json
 ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/echo/client.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/response.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/configuration.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/api_echo_service.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/model_examplepb_simple_message.go \
 		  $(EXAMPLE_CLIENT_DIR)/echo/model_examplepb_embedded.go
-ABE_EXAMPLE_SPEC=examples/proto/examplepb/a_bit_of_everything.swagger.json
+ABE_EXAMPLE_SPEC=examples/internal/proto/examplepb/a_bit_of_everything.swagger.json
 ABE_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/abe/model_a_bit_of_everything_nested.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/api_a_bit_of_everything_service.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/client.go \
@@ -108,13 +111,13 @@ ABE_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/abe/model_a_bit_of_everything_nested.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/model_pathenum_path_enum.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/model_protobuf_field_mask.go \
 		 $(EXAMPLE_CLIENT_DIR)/abe/response.go
-UNANNOTATED_ECHO_EXAMPLE_SPEC=examples/proto/examplepb/unannotated_echo_service.swagger.json
+UNANNOTATED_ECHO_EXAMPLE_SPEC=examples/internal/proto/examplepb/unannotated_echo_service.swagger.json
 UNANNOTATED_ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/unannotatedecho/client.go \
 		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/response.go \
 		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/configuration.go \
 		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/model_examplepb_unannotated_simple_message.go \
 		 $(EXAMPLE_CLIENT_DIR)/unannotatedecho/api_unannotated_echo_service.go
-RESPONSE_BODY_EXAMPLE_SPEC=examples/proto/examplepb/response_body_service.swagger.json
+RESPONSE_BODY_EXAMPLE_SPEC=examples/internal/proto/examplepb/response_body_service.swagger.json
 RESPONSE_BODY_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/responsebody/client.go \
 		 $(EXAMPLE_CLIENT_DIR)/responsebody/response.go \
 		 $(EXAMPLE_CLIENT_DIR)/responsebody/configuration.go \
@@ -157,39 +160,43 @@ $(EXAMPLE_DEPSRCS): $(GO_PLUGIN) $(EXAMPLE_DEPS)
 	protoc -I $(PROTOC_INC_PATH) -I. --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc,paths=source_relative:$(OUTPUT_DIR) $(@:.pb.go=.proto)
 	cp $(OUTPUT_DIR)/$@ $@ || cp $(OUTPUT_DIR)/$@ $@
 
-$(EXAMPLE_GWSRCS): ADDITIONAL_GW_FLAGS:=$(ADDITIONAL_GW_FLAGS),grpc_api_configuration=examples/proto/examplepb/unannotated_echo_service.yaml
+$(RUNTIME_TEST_SRCS): $(GO_PLUGIN) $(RUNTIME_TEST_PROTO)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc,paths=source_relative:. $(RUNTIME_TEST_PROTO)
+
+$(EXAMPLE_GWSRCS): ADDITIONAL_GW_FLAGS:=$(ADDITIONAL_GW_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,$(PKGMAP)$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
 
-$(EXAMPLE_SWAGGERSRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/proto/examplepb/unannotated_echo_service.yaml
+$(EXAMPLE_SWAGGERSRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_SWAGGERSRCS): $(SWAGGER_PLUGIN) $(SWAGGER_EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(SWAGGER_PLUGIN) --swagger_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true,$(PKGMAP)$(ADDITIONAL_SWG_FLAGS):. $(SWAGGER_EXAMPLES)
 
 $(ECHO_EXAMPLE_SRCS): $(ECHO_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ECHO_EXAMPLE_SPEC) \
-	    -l go -o examples/clients/echo --additional-properties packageName=echo
+	    -l go -o examples/internal/clients/echo --additional-properties packageName=echo
 	@rm -f $(EXAMPLE_CLIENT_DIR)/echo/README.md \
 		$(EXAMPLE_CLIENT_DIR)/echo/git_push.sh
 $(ABE_EXAMPLE_SRCS): $(ABE_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ABE_EXAMPLE_SPEC) \
-	    -l go -o examples/clients/abe --additional-properties packageName=abe
+	    -l go -o examples/internal/clients/abe --additional-properties packageName=abe
 	@rm -f $(EXAMPLE_CLIENT_DIR)/abe/README.md \
 		$(EXAMPLE_CLIENT_DIR)/abe/git_push.sh
 $(UNANNOTATED_ECHO_EXAMPLE_SRCS): $(UNANNOTATED_ECHO_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(UNANNOTATED_ECHO_EXAMPLE_SPEC) \
-	    -l go -o examples/clients/unannotatedecho --additional-properties packageName=unannotatedecho
+	    -l go -o examples/internal/clients/unannotatedecho --additional-properties packageName=unannotatedecho
 	@rm -f $(EXAMPLE_CLIENT_DIR)/unannotatedecho/README.md \
 		$(EXAMPLE_CLIENT_DIR)/unannotatedecho/git_push.sh
 $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(RESPONSE_BODY_EXAMPLE_SPEC) \
-	    -l go -o examples/clients/responsebody --additional-properties packageName=responsebody
+	    -l go -o examples/internal/clients/responsebody --additional-properties packageName=responsebody
 	@rm -f $(EXAMPLE_CLIENT_DIR)/responsebody/README.md \
 		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh
 
 examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
-test: examples
+testproto: $(RUNTIME_TEST_SRCS)
+test: examples testproto
 	go test -short -race ./...
-	go test -race ./examples/integration -args -network=unix -endpoint=test.sock
+	go test -race ./examples/internal/integration -args -network=unix -endpoint=test.sock
 changelog:
 	docker run --rm \
 		--interactive \
@@ -203,7 +210,7 @@ changelog:
 				--compare-link \
 				--github-site=https://github.com \
 				--unreleased-label "**Next release**" \
-				--future-release=v1.13.0
+				--future-release=v1.14.3
 lint:
 	golint --set_exit_status ./runtime
 	golint --set_exit_status ./utilities/...
@@ -224,5 +231,6 @@ realclean: distclean
 	rm -f $(EXAMPLE_SWAGGERSRCS)
 	rm -f $(EXAMPLE_CLIENT_SRCS)
 	rm -f $(OPENAPIV2_GO)
+	rm -f $(RUNTIME_TEST_SRCS)
 
 .PHONY: generate examples test lint clean distclean realclean

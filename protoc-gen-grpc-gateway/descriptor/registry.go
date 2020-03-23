@@ -78,6 +78,10 @@ type Registry struct {
 
 	// enumsAsInts render enum as integer, as opposed to string
 	enumsAsInts bool
+
+	// disableDefaultErrors disables the generation of the default error types.
+	// This is useful for users who have defined custom error handling.
+	disableDefaultErrors bool
 }
 
 type repeatedFieldSeparator struct {
@@ -265,6 +269,29 @@ func (r *Registry) LookupExternalHTTPRules(qualifiedMethodName string) []*annota
 // AddExternalHTTPRule adds an external http rule for the given fully qualified service method name
 func (r *Registry) AddExternalHTTPRule(qualifiedMethodName string, rule *annotations.HttpRule) {
 	r.externalHTTPRules[qualifiedMethodName] = append(r.externalHTTPRules[qualifiedMethodName], rule)
+}
+
+// UnboundExternalHTTPRules returns the list of External HTTPRules
+// which does not have a matching method in the registry
+func (r *Registry) UnboundExternalHTTPRules() []string {
+	allServiceMethods := make(map[string]struct{})
+	for _, f := range r.files {
+		for _, s := range f.GetService() {
+			svc := &Service{File: f, ServiceDescriptorProto: s}
+			for _, m := range s.GetMethod() {
+				method := &Method{Service: svc, MethodDescriptorProto: m}
+				allServiceMethods[method.FQMN()] = struct{}{}
+			}
+		}
+	}
+
+	var missingMethods []string
+	for httpRuleMethod := range r.externalHTTPRules {
+		if _, ok := allServiceMethods[httpRuleMethod]; !ok {
+			missingMethods = append(missingMethods, httpRuleMethod)
+		}
+	}
+	return missingMethods
 }
 
 // AddPkgMap adds a mapping from a .proto file to proto package name.
@@ -471,6 +498,16 @@ func (r *Registry) SetEnumsAsInts(enumsAsInts bool) {
 // GetEnumsAsInts returns enumsAsInts
 func (r *Registry) GetEnumsAsInts() bool {
 	return r.enumsAsInts
+}
+
+// SetDisableDefaultErrors sets disableDefaultErrors
+func (r *Registry) SetDisableDefaultErrors(use bool) {
+	r.disableDefaultErrors = use
+}
+
+// GetDisableDefaultErrors returns disableDefaultErrors
+func (r *Registry) GetDisableDefaultErrors() bool {
+	return r.disableDefaultErrors
 }
 
 // sanitizePackageName replaces unallowed character in package name

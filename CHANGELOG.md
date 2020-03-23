@@ -1,5 +1,62 @@
 # Change Log
 
+## [v1.14.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.3) (2020-03-11)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.2...v1.14.3)
+
+**Merged pull requests:**
+
+- Move httprule back into the public API [\#1169](https://github.com/grpc-ecosystem/grpc-gateway/pull/1169) ([johanbrandhorst](https://github.com/johanbrandhorst))
+
+**Closed issues:**
+
+- Missing httprule breaks our module [\#1168](https://github.com/grpc-ecosystem/grpc-gateway/issues/1168)
+
+## [v1.14.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.2) (2020-03-09)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.1...v1.14.2)
+
+**Merged pull requests:**
+
+- Move genswagger to public API again [\#1163](https://github.com/grpc-ecosystem/grpc-gateway/pull/1163) ([johanbrandhorst](https://github.com/johanbrandhorst))
+
+**Closed issues:**
+
+- 1.14.x breaks clay [\#1161](https://github.com/grpc-ecosystem/grpc-gateway/issues/1161)
+
+## [v1.14.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.1) (2020-03-05)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.0...v1.14.1)
+
+**Merged pull requests:**
+
+- Generate changelog for 1.14.1 [\#1156](https://github.com/grpc-ecosystem/grpc-gateway/pull/1151) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Move generator and descriptor back to public API [\#1155](https://github.com/grpc-ecosystem/grpc-gateway/pull/1155) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Update build environment to 1.14 [\#1153](https://github.com/grpc-ecosystem/grpc-gateway/pull/1153) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Add gorelease CI step [\#1152](https://github.com/grpc-ecosystem/grpc-gateway/pull/1152) ([johanbrandhorst](https://github.com/johanbrandhorst))
+
+## [v1.14.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.0) (2020-03-04)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.13.0...v1.14.0)
+
+**Closed issues:**
+
+- Swagger Codegen With Multiple Additional Bindings is resulting in missing Documentation [\#1149](https://github.com/grpc-ecosystem/grpc-gateway/issues/1149)
+- google.api.http option not picked up/mapped correctly? [\#1148](https://github.com/grpc-ecosystem/grpc-gateway/issues/1148)
+- cannot use multiple different error handlers in one gateway binary [\#1143](https://github.com/grpc-ecosystem/grpc-gateway/issues/1143)
+- Is grpc-gateway a stateless application? [\#1139](https://github.com/grpc-ecosystem/grpc-gateway/issues/1139)
+- Support for custom query parameters parsers [\#1128](https://github.com/grpc-ecosystem/grpc-gateway/issues/1128)
+
+**Merged pull requests:**
+
+- Generate changelog for 1.14.0 [\#1151](https://github.com/grpc-ecosystem/grpc-gateway/pull/1151) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Use an interface for ContentTypeFromMessage [\#1150](https://github.com/grpc-ecosystem/grpc-gateway/pull/1150) ([wtlangford](https://github.com/wtlangford))
+- Minimize API surface in anticipation of gorelease [\#1146](https://github.com/grpc-ecosystem/grpc-gateway/pull/1146) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Fix \#1143: Support multiple error handlers. [\#1144](https://github.com/grpc-ecosystem/grpc-gateway/pull/1144) ([jgiles](https://github.com/jgiles))
+-  Fix customizing your gateway documentation CustomMatcher example [\#1142](https://github.com/grpc-ecosystem/grpc-gateway/pull/1142) ([wiliamsouza](https://github.com/wiliamsouza))
+- protoc-gen-swagger: add flag to disable default errors [\#1141](https://github.com/grpc-ecosystem/grpc-gateway/pull/1141) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Bump nokogiri from 1.10.4 to 1.10.8 in /docs [\#1140](https://github.com/grpc-ecosystem/grpc-gateway/pull/1140) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Configurable query parameters parser [\#1138](https://github.com/grpc-ecosystem/grpc-gateway/pull/1138) ([wp0pw](https://github.com/wp0pw))
+- Improve installation instructions [\#1132](https://github.com/grpc-ecosystem/grpc-gateway/pull/1132) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Add bazel gazelle to CONTRIBUTING [\#1131](https://github.com/grpc-ecosystem/grpc-gateway/pull/1131) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Configure response content type at the method level [\#1130](https://github.com/grpc-ecosystem/grpc-gateway/pull/1130) ([nboukeffa](https://github.com/nboukeffa))
+
 ## [v1.13.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.13.0) (2020-02-11)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.12.2...v1.13.0)
 
@@ -17,6 +74,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.13.0 [\#1129](https://github.com/grpc-ecosystem/grpc-gateway/pull/1129) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Fix \#1125: JSON-prefix nested-field params. [\#1126](https://github.com/grpc-ecosystem/grpc-gateway/pull/1126) ([jgiles](https://github.com/jgiles))
 - Fix \#1117: Support response examples. [\#1124](https://github.com/grpc-ecosystem/grpc-gateway/pull/1124) ([jgiles](https://github.com/jgiles))
 
@@ -157,7 +215,7 @@
 - nitpick spacing in other proto files [\#1032](https://github.com/grpc-ecosystem/grpc-gateway/pull/1032) ([srenatus](https://github.com/srenatus))
 - nitpick a\_bit\_of\_everything.proto [\#1030](https://github.com/grpc-ecosystem/grpc-gateway/pull/1030) ([srenatus](https://github.com/srenatus))
 - runtime: stop using nil ponters with Unmarshal [\#1028](https://github.com/grpc-ecosystem/grpc-gateway/pull/1028) ([johanbrandhorst](https://github.com/johanbrandhorst))
-- Small performance fix [\#1027](https://github.com/grpc-ecosystem/grpc-gateway/pull/1027) ([freedemster](https://github.com/freedemster))
+- Small performance fix [\#1027](https://github.com/grpc-ecosystem/grpc-gateway/pull/1027) ([dshemin](https://github.com/dshemin))
 - docs need type assertion on proto.Message [\#1026](https://github.com/grpc-ecosystem/grpc-gateway/pull/1026) ([zachgersh](https://github.com/zachgersh))
 - Update ISSUE\_TEMPLATE.md [\#1014](https://github.com/grpc-ecosystem/grpc-gateway/pull/1014) ([prologic](https://github.com/prologic))
 

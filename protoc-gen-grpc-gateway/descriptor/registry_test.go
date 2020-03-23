@@ -586,3 +586,43 @@ func TestLoadGoPackageInputPath(t *testing.T) {
 		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
 	}
 }
+
+func TestUnboundExternalHTTPRules(t *testing.T) {
+	reg := NewRegistry()
+	methodName := ".example.ExampleService.Echo"
+	reg.AddExternalHTTPRule(methodName, nil)
+	assertStringSlice(t, "unbound external HTTP rules", reg.UnboundExternalHTTPRules(), []string{methodName})
+	loadFile(t, reg, `
+		name: "path/to/example.proto",
+		package: "example"
+		message_type <
+			name: "StringMessage"
+			field <
+				name: "string"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+			>
+		>
+		service <
+			name: "ExampleService"
+			method <
+				name: "Echo"
+				input_type: "StringMessage"
+				output_type: "StringMessage"
+			>
+		>
+	`)
+	assertStringSlice(t, "unbound external HTTP rules", reg.UnboundExternalHTTPRules(), []string{})
+}
+
+func assertStringSlice(t *testing.T, message string, got, want []string) {
+	if len(got) != len(want) {
+		t.Errorf("%s = %#v len(%d); want %#v len(%d)", message, got, len(got), want, len(want))
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Errorf("%s[%d] = %#v; want %#v", message, i, got[i], want[i])
+		}
+	}
+}

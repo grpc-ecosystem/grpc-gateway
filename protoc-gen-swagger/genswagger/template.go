@@ -241,28 +241,40 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 	for _, svc := range s {
 		for _, meth := range svc.Methods {
 			// Request may be fully included in query
-			if _, ok := refs[fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg))]; ok {
-				if !skipRenderingRef(meth.RequestType.FQMN()) {
-					m[fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)] = meth.RequestType
+			{
+				swgReqName, ok := fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)
+				if !ok {
+					glog.Errorf("couldn't resolve swagger name for FQMN '%v'", meth.RequestType.FQMN())
+					continue
+				}
+				if _, ok := refs[fmt.Sprintf("#/definitions/%s", swgReqName)]; ok {
+					if !skipRenderingRef(meth.RequestType.FQMN()) {
+						m[swgReqName] = meth.RequestType
+					}
 				}
 			}
+
+			swgRspName, ok := fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)
+			if !ok && !skipRenderingRef(meth.ResponseType.FQMN()) {
+				glog.Errorf("couldn't resolve swagger name for FQMN '%v'", meth.ResponseType.FQMN())
+				continue
+			}
+
 			findNestedMessagesAndEnumerations(meth.RequestType, reg, m, e)
 
 			if !skipRenderingRef(meth.ResponseType.FQMN()) {
-				m[fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)] = meth.ResponseType
+				m[swgRspName] = meth.ResponseType
 				if meth.GetServerStreaming() {
-					runtimeStreamError := fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.StreamError", reg)
-					glog.V(1).Infof("StreamError FQMN: %s", runtimeStreamError)
-					streamError, err := reg.LookupMsg(".grpc.gateway.runtime", "StreamError")
-					if err == nil {
+					streamError, runtimeStreamError, err := lookupMsgAndSwaggerName(".grpc.gateway.runtime", "StreamError", reg)
+					if err != nil {
+						glog.Error(err)
+					} else {
 						glog.V(1).Infof("StreamError: %v", streamError)
+						glog.V(1).Infof("StreamError FQMN: %s", runtimeStreamError)
 						m[runtimeStreamError] = streamError
 						findNestedMessagesAndEnumerations(streamError, reg, m, e)
-					} else {
-						//just in case there is an error looking up StreamError
-						glog.Error(err)
 					}
-					ms[fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)] = meth.ResponseType
+					ms[swgRspName] = meth.ResponseType
 				}
 			}
 			findNestedMessagesAndEnumerations(meth.ResponseType, reg, m, e)
@@ -301,6 +313,10 @@ func skipRenderingRef(refName string) bool {
 
 func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry, customRefs refMap) {
 	for name, msg := range messages {
+		swgName, ok := fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)
+		if !ok {
+			panic(fmt.Sprintf("can't resolve swagger name from '%v'", msg.FQMN()))
+		}
 		if skipRenderingRef(name) {
 			continue
 		}
@@ -374,7 +390,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			}
 			*schema.Properties = append(*schema.Properties, kv)
 		}
-		d[fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)] = schema
+		d[swgName] = schema
 	}
 }
 
@@ -412,12 +428,15 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 				props = &swaggerSchemaObjectProperties{}
 			}
 		} else {
+			swgRef, ok := fullyQualifiedNameToSwaggerName(fd.GetTypeName(), reg)
+			if !ok {
+				panic(fmt.Sprintf("can't resolve swagger ref from typename '%v'", fd.GetTypeName()))
+			}
 			core = schemaCore{
-				Ref: "#/definitions/" + fullyQualifiedNameToSwaggerName(fd.GetTypeName(), reg),
+				Ref: "#/definitions/" + swgRef,
 			}
 			if refs != nil {
 				refs[fd.GetTypeName()] = struct{}{}
-
 			}
 		}
 	default:
@@ -512,6 +531,10 @@ func primitiveSchema(t pbdescriptor.FieldDescriptorProto_Type) (ftype, format st
 // renderEnumerationsAsDefinition inserts enums into the definitions object.
 func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
 	for _, enum := range enums {
+		swgName, ok := fullyQualifiedNameToSwaggerName(enum.FQEN(), reg)
+		if !ok {
+			panic(fmt.Sprintf("can't resolve swagger name from FQEN '%v'", enum.FQEN()))
+		}
 		enumComments := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index))
 
 		// it may be necessary to sort the result of the GetValue function.
@@ -544,20 +567,37 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 			panic(err)
 		}
 
-		d[fullyQualifiedNameToSwaggerName(enum.FQEN(), reg)] = enumSchemaObject
+		d[swgName] = enumSchemaObject
 	}
 }
 
-// Take in a FQMN or FQEN and return a swagger safe version of the FQMN
-func fullyQualifiedNameToSwaggerName(fqn string, reg *descriptor.Registry) string {
+// Take in a FQMN or FQEN and return a swagger safe version of the FQMN and
+// a boolean indicating if FQMN was properly resolved.
+func fullyQualifiedNameToSwaggerName(fqn string, reg *descriptor.Registry) (string, bool) {
 	registriesSeenMutex.Lock()
 	defer registriesSeenMutex.Unlock()
 	if mapping, present := registriesSeen[reg]; present {
-		return mapping[fqn]
+		ret, ok := mapping[fqn]
+		return ret, ok
 	}
 	mapping := resolveFullyQualifiedNameToSwaggerNames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...), reg.GetUseFQNForSwaggerName())
 	registriesSeen[reg] = mapping
-	return mapping[fqn]
+	ret, ok := mapping[fqn]
+	return ret, ok
+}
+
+// Lookup message type by location.name and return a swagger-safe version
+// of its FQMN.
+func lookupMsgAndSwaggerName(location, name string, reg *descriptor.Registry) (*descriptor.Message, string, error) {
+	msg, err := reg.LookupMsg(location, name)
+	if err != nil {
+		return nil, "", err
+	}
+	swgName, ok := fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)
+	if !ok {
+		return nil, "", fmt.Errorf("can't map swagger name from FQMN '%v'", msg.FQMN())
+	}
+	return msg, swgName, nil
 }
 
 // registriesSeen is used to memoise calls to resolveFullyQualifiedNameToSwaggerNames so
@@ -806,7 +846,10 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 
 						wknSchemaCore, isWkn := wktSchemas[meth.RequestType.FQMN()]
 						if !isWkn {
-							schema.Ref = fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg))
+							err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg)
+							if err != nil {
+								return err
+							}
 						} else {
 							schema.schemaCore = wknSchemaCore
 
@@ -864,7 +907,10 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					// well, without a definition
 					wknSchemaCore, isWkn := wktSchemas[meth.ResponseType.FQMN()]
 					if !isWkn {
-						responseSchema.Ref = fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg))
+						err := responseSchema.setRefFromFQN(meth.ResponseType.FQMN(), reg)
+						if err != nil {
+							return err
+						}
 					} else {
 						responseSchema.schemaCore = wknSchemaCore
 
@@ -886,8 +932,10 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				if meth.GetServerStreaming() {
 					desc += "(streaming responses)"
 					responseSchema.Type = "object"
-					responseSchema.Title = fmt.Sprintf("Stream result of %s", fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg))
-					responseSchema.Properties = &swaggerSchemaObjectProperties{
+					swgRef, _ := fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)
+					responseSchema.Title = "Stream result of " + swgRef
+
+					props := swaggerSchemaObjectProperties{
 						keyVal{
 							Key: "result",
 							Value: swaggerSchemaObject{
@@ -896,14 +944,18 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 								},
 							},
 						},
-						keyVal{
+					}
+					streamErrDef, hasStreamError := fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.StreamError", reg)
+					if hasStreamError {
+						props = append(props, keyVal{
 							Key: "error",
 							Value: swaggerSchemaObject{
 								schemaCore: schemaCore{
-									Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.StreamError", reg))},
+									Ref: fmt.Sprintf("#/definitions/%s", streamErrDef)},
 							},
-						},
+						})
 					}
+					responseSchema.Properties = &props
 					responseSchema.Ref = ""
 				}
 
@@ -920,16 +972,21 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							Description: desc,
 							Schema:      responseSchema,
 						},
+					},
+				}
+				if !reg.GetDisableDefaultErrors() {
+					errDef, hasErrDef := fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.Error", reg)
+					if hasErrDef {
 						// https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#responses-object
-						"default": swaggerResponseObject{
+						operationObject.Responses["default"] = swaggerResponseObject{
 							Description: "An unexpected error response",
 							Schema: swaggerSchemaObject{
 								schemaCore: schemaCore{
-									Ref: fmt.Sprintf("#/definitions/%s", fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.Error", reg)),
+									Ref: fmt.Sprintf("#/definitions/%s", errDef),
 								},
 							},
-						},
-					},
+						}
+					}
 				}
 				if bIdx == 0 {
 					operationObject.OperationID = fmt.Sprintf("%s", meth.GetName())
@@ -1090,13 +1147,15 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	streamingMessages := messageMap{}
 	enums := enumMap{}
 
-	// Add the error type to the message map
-	runtimeError, err := p.reg.LookupMsg(".grpc.gateway.runtime", "Error")
-	if err == nil {
-		messages[fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.Error", p.reg)] = runtimeError
-	} else {
-		// just in case there is an error looking up runtimeError
-		glog.Error(err)
+	if !p.reg.GetDisableDefaultErrors() {
+		// Add the error type to the message map
+		runtimeError, swgRef, err := lookupMsgAndSwaggerName(".grpc.gateway.runtime", "Error", p.reg)
+		if err == nil {
+			messages[swgRef] = runtimeError
+		} else {
+			// just in case there is an error looking up runtimeError
+			glog.Error(err)
+		}
 	}
 
 	// Find all the service's messages and enumerations that are defined (recursively)
@@ -1717,8 +1776,8 @@ func protoJSONSchemaToSwaggerSchemaCore(j *swagger_options.JSONSchema, reg *desc
 	ret := schemaCore{}
 
 	if j.GetRef() != "" {
-		swaggerName := fullyQualifiedNameToSwaggerName(j.GetRef(), reg)
-		if swaggerName != "" {
+		swaggerName, ok := fullyQualifiedNameToSwaggerName(j.GetRef(), reg)
+		if ok {
 			ret.Ref = "#/definitions/" + swaggerName
 			if refs != nil {
 				refs[j.GetRef()] = struct{}{}
@@ -1854,19 +1913,24 @@ func addCustomRefs(d swaggerDefinitionsObject, reg *descriptor.Registry, refs re
 	msgMap := make(messageMap)
 	enumMap := make(enumMap)
 	for ref := range refs {
-		if _, ok := d[fullyQualifiedNameToSwaggerName(ref, reg)]; ok {
+		swgName, swgOk := fullyQualifiedNameToSwaggerName(ref, reg)
+		if !swgOk {
+			glog.Errorf("can't resolve swagger name from CustomRef '%v'", ref)
+			continue
+		}
+		if _, ok := d[swgName]; ok {
 			// Skip already existing definitions
 			delete(refs, ref)
 			continue
 		}
 		msg, err := reg.LookupMsg("", ref)
 		if err == nil {
-			msgMap[fullyQualifiedNameToSwaggerName(ref, reg)] = msg
+			msgMap[swgName] = msg
 			continue
 		}
 		enum, err := reg.LookupEnum("", ref)
 		if err == nil {
-			enumMap[fullyQualifiedNameToSwaggerName(ref, reg)] = enum
+			enumMap[swgName] = enum
 			continue
 		}
 

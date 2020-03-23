@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/golang/protobuf/proto"
@@ -34,6 +35,15 @@ func crossLinkFixture(f *descriptor.File) *descriptor.File {
 		}
 	}
 	return f
+}
+
+func reqFromFile(f *descriptor.File) *plugin.CodeGeneratorRequest {
+	return &plugin.CodeGeneratorRequest{
+		ProtoFile: []*protodescriptor.FileDescriptorProto{
+			f.FileDescriptorProto,
+		},
+		FileToGenerate: []string{f.GetName()},
+	}
 }
 
 func TestMessageToQueryParameters(t *testing.T) {
@@ -380,7 +390,14 @@ func TestApplyTemplateSimple(t *testing.T) {
 			},
 		},
 	}
-	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: descriptor.NewRegistry()})
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
@@ -470,7 +487,15 @@ func TestApplyTemplateOverrideOperationID(t *testing.T) {
 			},
 		},
 	}
-	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: descriptor.NewRegistry()})
+
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
@@ -584,7 +609,14 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	if err := proto.SetExtension(proto.Message(meth.Options), swagger_options.E_Openapiv2Operation, &swaggerOperation); err != nil {
 		t.Fatalf("proto.SetExtension(MethodDescriptorProto.Options) failed: %v", err)
 	}
-	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: descriptor.NewRegistry()})
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 		return
@@ -2072,5 +2104,87 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
 			}
 		})
+	}
+}
+
+func TestTemplateWithoutErrorDefinition(t *testing.T) {
+	msgdesc := &protodescriptor.DescriptorProto{
+		Name:  proto.String("ExampleMessage"),
+		Field: []*protodescriptor.FieldDescriptorProto{},
+	}
+	meth := &protodescriptor.MethodDescriptorProto{
+		Name:       proto.String("Echo"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc := &protodescriptor.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*protodescriptor.MethodDescriptorProto{meth},
+	}
+
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*protodescriptor.DescriptorProto{msgdesc, msgdesc},
+			Service:        []*protodescriptor.ServiceDescriptorProto{svc},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo",
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	reg.Load(&plugin.CodeGeneratorRequest{ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto}})
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+
+	defRsp, ok := result.Paths["/v1/echo"].Post.Responses["default"]
+	if !ok {
+		return
+	}
+
+	ref := defRsp.Schema.schemaCore.Ref
+	refName := strings.TrimPrefix(ref, "#/definitions/")
+	if refName == "" {
+		t.Fatal("created default Error response with empty reflink")
+	}
+
+	if _, ok := result.Definitions[refName]; !ok {
+		t.Errorf("default Error response with reflink '%v', but its definition was not found", refName)
 	}
 }
