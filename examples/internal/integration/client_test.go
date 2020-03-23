@@ -16,7 +16,7 @@ func TestEchoClient(t *testing.T) {
 	}
 
 	cfg := echo.NewConfiguration()
-	cfg.BasePath = "http://localhost:8080"
+	cfg.BasePath = "http://localhost:8088"
 
 	cl := echo.NewAPIClient(cfg)
 	resp, _, err := cl.EchoServiceApi.Echo(context.Background(), "foo")
@@ -35,7 +35,7 @@ func TestEchoBodyClient(t *testing.T) {
 	}
 
 	cfg := echo.NewConfiguration()
-	cfg.BasePath = "http://localhost:8080"
+	cfg.BasePath = "http://localhost:8088"
 
 	cl := echo.NewAPIClient(cfg)
 	req := echo.ExamplepbSimpleMessage{Id: "foo"}
@@ -55,7 +55,7 @@ func TestAbitOfEverythingClient(t *testing.T) {
 	}
 
 	cfg := abe.NewConfiguration()
-	cfg.BasePath = "http://localhost:8080"
+	cfg.BasePath = "http://localhost:8088"
 
 	cl := abe.NewAPIClient(cfg)
 
@@ -184,7 +184,7 @@ func TestUnannotatedEchoClient(t *testing.T) {
 	}
 
 	cfg := unannotatedecho.NewConfiguration()
-	cfg.BasePath = "http://localhost:8080"
+	cfg.BasePath = "http://localhost:8088"
 
 	cl := unannotatedecho.NewAPIClient(cfg)
 
@@ -204,7 +204,7 @@ func TestUnannotatedEchoBodyClient(t *testing.T) {
 	}
 
 	cfg := unannotatedecho.NewConfiguration()
-	cfg.BasePath = "http://localhost:8080"
+	cfg.BasePath = "http://localhost:8088"
 
 	cl := unannotatedecho.NewAPIClient(cfg)
 

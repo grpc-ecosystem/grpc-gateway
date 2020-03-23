@@ -40,11 +40,11 @@ func TestEcho(t *testing.T) {
 		return
 	}
 
-	testEcho(t, 8080, "application/json")
-	testEchoOneof(t, 8080, "application/json")
-	testEchoOneof1(t, 8080, "application/json")
-	testEchoOneof2(t, 8080, "application/json")
-	testEchoBody(t, 8080)
+	testEcho(t, 8088, "application/json")
+	testEchoOneof(t, 8088, "application/json")
+	testEchoOneof1(t, 8088, "application/json")
+	testEchoOneof2(t, 8088, "application/json")
+	testEchoBody(t, 8088)
 }
 
 func TestForwardResponseOption(t *testing.T) {
@@ -266,17 +266,17 @@ func TestABE(t *testing.T) {
 		return
 	}
 
-	testABECreate(t, 8080)
-	testABECreateBody(t, 8080)
-	testABEBulkCreate(t, 8080)
-	testABEBulkCreateWithError(t, 8080)
-	testABELookup(t, 8080)
-	testABELookupNotFound(t, 8080)
-	testABEList(t, 8080)
-	testABEBulkEcho(t, 8080)
-	testABEBulkEchoZeroLength(t, 8080)
-	testAdditionalBindings(t, 8080)
-	testABERepeated(t, 8080)
+	testABECreate(t, 8088)
+	testABECreateBody(t, 8088)
+	testABEBulkCreate(t, 8088)
+	testABEBulkCreateWithError(t, 8088)
+	testABELookup(t, 8088)
+	testABELookupNotFound(t, 8088)
+	testABEList(t, 8088)
+	testABEBulkEcho(t, 8088)
+	testABEBulkEchoZeroLength(t, 8088)
+	testAdditionalBindings(t, 8088)
+	testABERepeated(t, 8088)
 }
 
 func testABECreate(t *testing.T, port int) {
@@ -680,7 +680,7 @@ func TestABEPatch(t *testing.T) {
 		return
 	}
 
-	port := 8080
+	port := 8088
 
 	// create a record with a known string_value and int32_value
 	uuid := postABE(t, port, gw.ABitOfEverything{StringValue: "strprefix/bar", Int32Value: 32})
@@ -724,7 +724,7 @@ func TestABEPatchBody(t *testing.T) {
 		return
 	}
 
-	port := 8080
+	port := 8088
 
 	for _, tc := range []struct {
 		name          string
@@ -1284,7 +1284,7 @@ func TestTimeout(t *testing.T) {
 		return
 	}
 
-	apiURL := "http://localhost:8080/v2/example/timeout"
+	apiURL := "http://localhost:8088/v2/example/timeout"
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
 		t.Errorf(`http.NewRequest("GET", %q, nil) failed with %v; want success`, apiURL, err)
@@ -1309,7 +1309,7 @@ func TestErrorWithDetails(t *testing.T) {
 		return
 	}
 
-	apiURL := "http://localhost:8080/v2/example/errorwithdetails"
+	apiURL := "http://localhost:8088/v2/example/errorwithdetails"
 	resp, err := http.Get(apiURL)
 	if err != nil {
 		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
@@ -1374,7 +1374,7 @@ func TestPostWithEmptyBody(t *testing.T) {
 		return
 	}
 
-	apiURL := "http://localhost:8080/v2/example/postwithemptybody/name"
+	apiURL := "http://localhost:8088/v2/example/postwithemptybody/name"
 	rep, err := http.Post(apiURL, "application/json", nil)
 
 	if err != nil {
@@ -1395,7 +1395,7 @@ func TestUnknownPath(t *testing.T) {
 		return
 	}
 
-	apiURL := "http://localhost:8080"
+	apiURL := "http://localhost:8088"
 	resp, err := http.Post(apiURL, "application/json", strings.NewReader("{}"))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
@@ -1420,7 +1420,7 @@ func TestMethodNotAllowed(t *testing.T) {
 		return
 	}
 
-	apiURL := "http://localhost:8080/v1/example/echo/myid"
+	apiURL := "http://localhost:8088/v1/example/echo/myid"
 	resp, err := http.Get(apiURL)
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
@@ -1445,7 +1445,7 @@ func TestInvalidArgument(t *testing.T) {
 		return
 	}
 
-	apiURL := "http://localhost:8080/v1/example/echo/myid/not_int64"
+	apiURL := "http://localhost:8088/v1/example/echo/myid/not_int64"
 	resp, err := http.Get(apiURL)
 	if err != nil {
 		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
@@ -1470,9 +1470,9 @@ func TestResponseBody(t *testing.T) {
 		return
 	}
 
-	testResponseBody(t, 8080)
-	testResponseBodies(t, 8080)
-	testResponseStrings(t, 8080)
+	testResponseBody(t, 8088)
+	testResponseBodies(t, 8088)
+	testResponseStrings(t, 8088)
 }
 
 func testResponseBody(t *testing.T, port int) {
@@ -1594,7 +1594,7 @@ func TestRequestQueryParams(t *testing.T) {
 		return
 	}
 
-	port := 8080
+	port := 8088
 
 	formValues := url.Values{}
 	formValues.Set("string_value", "hello-world")
