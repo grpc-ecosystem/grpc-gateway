@@ -1497,6 +1497,9 @@ func enumValueProtoComments(reg *descriptor.Registry, enum *descriptor.Enum) str
 	var comments []string
 	for idx, value := range enum.GetValue() {
 		name := value.GetName()
+		if reg.GetEnumsAsInts() {
+			name = strconv.Itoa(int(value.GetNumber()))
+		}
 		str := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index), protoPath, int32(idx))
 		if str != "" {
 			comments = append(comments, name+": "+str)
