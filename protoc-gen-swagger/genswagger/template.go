@@ -193,16 +193,14 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 					param.Items.Type = "integer"
 					param.Items.Enum = listEnumNumbers(enum)
 				}
-				}
 			} else {
+				param.Type = "string"
+				param.Enum = listEnumNames(enum)
+				param.Default = getEnumDefault(enum)
 				if reg.GetEnumsAsInts() {
 					param.Type = "integer"
 					param.Enum = listEnumNumbers(enum)
 					param.Default = "0"
-				} else {
-					param.Type = "string"
-					param.Enum = listEnumNames(enum)
-					param.Default = getEnumDefault(enum)
 				}
 			}
 			valueComments := enumValueProtoComments(reg, enum)
@@ -542,24 +540,18 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 		if valueComments != "" {
 			enumComments = strings.TrimLeft(enumComments+"\n\n "+valueComments, "\n")
 		}
-		var enumSchemaObject swaggerSchemaObject
+		enumSchemaObject := swaggerSchemaObject{
+			schemaCore: schemaCore{
+				Type:    "string",
+				Enum:    enumNames,
+				Default: defaultValue,
+			},
+		}
 		if reg.GetEnumsAsInts() {
-			enumSchemaObject = swaggerSchemaObject{
-				schemaCore: schemaCore{
-					Type:    "integer",
-					Format:  "int32",
-					Default: "0",
-					Enum:    listEnumNumbers(enum),
-				},
-			}
-		} else {
-			enumSchemaObject = swaggerSchemaObject{
-				schemaCore: schemaCore{
-					Type:    "string",
-					Enum:    enumNames,
-					Default: defaultValue,
-				},
-			}
+			enumSchemaObject.Type = "integer"
+			enumSchemaObject.Format = "int32"
+			enumSchemaObject.Default = "0"
+			enumSchemaObject.Enum = listEnumNumbers(enum)
 		}
 		if err := updateSwaggerDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
 			panic(err)
@@ -771,14 +763,13 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						if err != nil {
 							return err
 						}
+						paramType = "string"
+						paramFormat = ""
+						enumNames = listEnumNames(enum)
 						if reg.GetEnumsAsInts() {
 							paramType = "integer"
 							paramFormat = ""
 							enumNames = listEnumNumbers(enum)
-						} else {
-							paramType = "string"
-							paramFormat = ""
-							enumNames = listEnumNames(enum)
 						}
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
