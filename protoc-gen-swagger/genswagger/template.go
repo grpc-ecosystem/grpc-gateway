@@ -185,16 +185,14 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 				return nil, fmt.Errorf("unknown enum type %s", fieldType)
 			}
 			if items != nil { // array
+				param.Items = &swaggerItemsObject{
+					Type: "string",
+					Enum: listEnumNames(enum),
+				}
 				if reg.GetEnumsAsInts() {
-					param.Items = &swaggerItemsObject{
-						Type: "integer",
-						Enum: listEnumNumbers(enum),
-					}
-				} else {
-					param.Items = &swaggerItemsObject{
-						Type: "string",
-						Enum: listEnumNames(enum),
-					}
+					param.Items.Type = "integer"
+					param.Items.Enum = listEnumNumbers(enum)
+				}
 				}
 			} else {
 				if reg.GetEnumsAsInts() {
