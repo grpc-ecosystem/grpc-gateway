@@ -92,6 +92,13 @@ func listEnumNames(enum *descriptor.Enum) (names []string) {
 	return names
 }
 
+func listEnumNumbers(enum *descriptor.Enum) (numbers []string) {
+	for _, value := range enum.GetValue() {
+		numbers = append(numbers, strconv.Itoa(int(value.GetNumber())))
+	}
+	return
+}
+
 func getEnumDefault(enum *descriptor.Enum) string {
 	for _, value := range enum.GetValue() {
 		if value.GetNumber() == 0 {
@@ -182,10 +189,19 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 					Type: "string",
 					Enum: listEnumNames(enum),
 				}
+				if reg.GetEnumsAsInts() {
+					param.Items.Type = "integer"
+					param.Items.Enum = listEnumNumbers(enum)
+				}
 			} else {
 				param.Type = "string"
 				param.Enum = listEnumNames(enum)
 				param.Default = getEnumDefault(enum)
+				if reg.GetEnumsAsInts() {
+					param.Type = "integer"
+					param.Enum = listEnumNumbers(enum)
+					param.Default = "0"
+				}
 			}
 			valueComments := enumValueProtoComments(reg, enum)
 			if valueComments != "" {
@@ -531,6 +547,12 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 				Default: defaultValue,
 			},
 		}
+		if reg.GetEnumsAsInts() {
+			enumSchemaObject.Type = "integer"
+			enumSchemaObject.Format = "int32"
+			enumSchemaObject.Default = "0"
+			enumSchemaObject.Enum = listEnumNumbers(enum)
+		}
 		if err := updateSwaggerDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
 			panic(err)
 		}
@@ -737,13 +759,18 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
 					case pbdescriptor.FieldDescriptorProto_TYPE_ENUM:
-						paramType = "string"
-						paramFormat = ""
 						enum, err := reg.LookupEnum("", parameter.Target.GetTypeName())
 						if err != nil {
 							return err
 						}
+						paramType = "string"
+						paramFormat = ""
 						enumNames = listEnumNames(enum)
+						if reg.GetEnumsAsInts() {
+							paramType = "integer"
+							paramFormat = ""
+							enumNames = listEnumNumbers(enum)
+						}
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default
@@ -1470,6 +1497,9 @@ func enumValueProtoComments(reg *descriptor.Registry, enum *descriptor.Enum) str
 	var comments []string
 	for idx, value := range enum.GetValue() {
 		name := value.GetName()
+		if reg.GetEnumsAsInts() {
+			name = strconv.Itoa(int(value.GetNumber()))
+		}
 		str := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index), protoPath, int32(idx))
 		if str != "" {
 			comments = append(comments, name+": "+str)

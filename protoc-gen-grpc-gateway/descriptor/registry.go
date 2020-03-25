@@ -76,6 +76,9 @@ type Registry struct {
 	// in your protofile comments
 	useGoTemplate bool
 
+	// enumsAsInts render enum as integer, as opposed to string
+	enumsAsInts bool
+
 	// disableDefaultErrors disables the generation of the default error types.
 	// This is useful for users who have defined custom error handling.
 	disableDefaultErrors bool
@@ -485,6 +488,16 @@ func (r *Registry) SetUseGoTemplate(use bool) {
 // GetUseGoTemplate returns useGoTemplate
 func (r *Registry) GetUseGoTemplate() bool {
 	return r.useGoTemplate
+}
+
+// SetEnumsAsInts set enumsAsInts
+func (r *Registry) SetEnumsAsInts(enumsAsInts bool) {
+	r.enumsAsInts = enumsAsInts
+}
+
+// GetEnumsAsInts returns enumsAsInts
+func (r *Registry) GetEnumsAsInts() bool {
+	return r.enumsAsInts
 }
 
 // SetDisableDefaultErrors sets disableDefaultErrors
