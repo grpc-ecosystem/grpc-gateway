@@ -276,7 +276,11 @@ func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx cont
 		}
 		if err != nil {
 			grpclog.Infof("Failed to decode request: %v", err)
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			st, ok := status.FromError(err)
+			if !ok {
+				st = status.New(codes.InvalidArgument, err.Error())
+			}
+			return nil, metadata, st.Err()
 		}
 		if err = stream.Send(&protoReq); err != nil {
 			if err == io.EOF {
@@ -323,13 +327,21 @@ var (
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	{{- if and $AllowPatchFeature (eq (.HTTPMethod) "PATCH") (.FieldMaskField) (not (eq "*" .GetBodyFieldPath)) }}
 	if protoReq.{{.FieldMaskField}} == nil || len(protoReq.{{.FieldMaskField}}.GetPaths()) == 0 {
 			_, md := descriptor.ForMessage(protoReq.{{.GetBodyFieldStructName}})
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
-				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+				st, ok := status.FromError(err)
+				if !ok {
+					st = status.New(codes.InvalidArgument, err.Error())
+				}
+				return nil, metadata, st.Err()
 			} else {
 				protoReq.{{.FieldMaskField}} = fieldMask
 			}
@@ -382,10 +394,18 @@ var (
 {{end}}
 {{if .HasQueryParam}}
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 {{end}}
 {{if .Method.GetServerStreaming}}
@@ -485,13 +505,21 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	{{- if and $AllowPatchFeature (eq (.HTTPMethod) "PATCH") (.FieldMaskField) (not (eq "*" .GetBodyFieldPath)) }}
 	if protoReq.{{.FieldMaskField}} == nil || len(protoReq.{{.FieldMaskField}}.GetPaths()) == 0 {
 			_, md := descriptor.ForMessage(protoReq.{{.GetBodyFieldStructName}})
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
-				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+				st, ok := status.FromError(err)
+				if !ok {
+					st = status.New(codes.InvalidArgument, err.Error())
+				}
+				return nil, metadata, st.Err()
 			} else {
 				protoReq.{{.FieldMaskField}} = fieldMask
 			}
@@ -544,7 +572,11 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 {{end}}
 {{if .HasQueryParam}}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 {{end}}
 {{if .Method.GetServerStreaming}}
