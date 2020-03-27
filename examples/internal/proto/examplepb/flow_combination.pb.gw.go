@@ -82,7 +82,11 @@ func request_FlowCombination_StreamEmptyRpc_0(ctx context.Context, marshaler run
 		}
 		if err != nil {
 			grpclog.Infof("Failed to decode request: %v", err)
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			st, ok := status.FromError(err)
+			if !ok {
+				st = status.New(codes.InvalidArgument, err.Error())
+			}
+			return nil, metadata, st.Err()
 		}
 		if err = stream.Send(&protoReq); err != nil {
 			if err == io.EOF {
@@ -171,7 +175,11 @@ func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -188,7 +196,11 @@ func local_request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.RpcBodyRpc(ctx, &protoReq)
@@ -303,10 +315,18 @@ func request_FlowCombination_RpcBodyRpc_2(ctx context.Context, marshaler runtime
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyRpc_2); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -319,7 +339,11 @@ func local_request_FlowCombination_RpcBodyRpc_2(ctx context.Context, marshaler r
 	var metadata runtime.ServerMetadata
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyRpc_2); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.RpcBodyRpc(ctx, &protoReq)
@@ -336,7 +360,11 @@ func request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -382,7 +410,11 @@ func local_request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -432,14 +464,26 @@ func request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyRpc_4); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -456,11 +500,19 @@ func local_request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyRpc_4); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.RpcBodyRpc(ctx, &protoReq)
@@ -481,7 +533,11 @@ func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -503,10 +559,18 @@ func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler runtime
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyRpc_5); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -523,7 +587,11 @@ func local_request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -545,7 +613,11 @@ func local_request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler r
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyRpc_5); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.RpcBodyRpc(ctx, &protoReq)
@@ -580,10 +652,18 @@ func request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler runtime
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyRpc_6); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.RpcBodyRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -614,7 +694,11 @@ func local_request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler r
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcBodyRpc_6); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.RpcBodyRpc(ctx, &protoReq)
@@ -649,10 +733,18 @@ func request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, marsh
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathSingleNestedRpc_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.RpcPathSingleNestedRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -683,7 +775,11 @@ func local_request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context,
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathSingleNestedRpc_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.RpcPathSingleNestedRpc(ctx, &protoReq)
@@ -704,7 +800,11 @@ func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -737,10 +837,18 @@ func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler r
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedRpc_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.RpcPathNestedRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -757,7 +865,11 @@ func local_request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -790,7 +902,11 @@ func local_request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marsh
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedRpc_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.RpcPathNestedRpc(ctx, &protoReq)
@@ -825,10 +941,18 @@ func request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marshaler r
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedRpc_1); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.RpcPathNestedRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -859,7 +983,11 @@ func local_request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marsh
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedRpc_1); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.RpcPathNestedRpc(ctx, &protoReq)
@@ -880,7 +1008,11 @@ func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -902,10 +1034,18 @@ func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marshaler r
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedRpc_2); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.RpcPathNestedRpc(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -922,7 +1062,11 @@ func local_request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -944,7 +1088,11 @@ func local_request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marsh
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_FlowCombination_RpcPathNestedRpc_2); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.RpcPathNestedRpc(ctx, &protoReq)
@@ -961,7 +1109,11 @@ func request_FlowCombination_RpcBodyStream_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
@@ -1043,10 +1195,18 @@ func request_FlowCombination_RpcBodyStream_2(ctx context.Context, marshaler runt
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyStream_2); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
@@ -1071,7 +1231,11 @@ func request_FlowCombination_RpcBodyStream_3(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -1129,14 +1293,26 @@ func request_FlowCombination_RpcBodyStream_4(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyStream_4); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
@@ -1165,7 +1341,11 @@ func request_FlowCombination_RpcBodyStream_5(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -1187,10 +1367,18 @@ func request_FlowCombination_RpcBodyStream_5(ctx context.Context, marshaler runt
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyStream_5); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
@@ -1233,10 +1421,18 @@ func request_FlowCombination_RpcBodyStream_6(ctx context.Context, marshaler runt
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcBodyStream_6); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	stream, err := client.RpcBodyStream(ctx, &protoReq)
@@ -1279,10 +1475,18 @@ func request_FlowCombination_RpcPathSingleNestedStream_0(ctx context.Context, ma
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathSingleNestedStream_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	stream, err := client.RpcPathSingleNestedStream(ctx, &protoReq)
@@ -1311,7 +1515,11 @@ func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -1344,10 +1552,18 @@ func request_FlowCombination_RpcPathNestedStream_0(ctx context.Context, marshale
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedStream_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	stream, err := client.RpcPathNestedStream(ctx, &protoReq)
@@ -1390,10 +1606,18 @@ func request_FlowCombination_RpcPathNestedStream_1(ctx context.Context, marshale
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedStream_1); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	stream, err := client.RpcPathNestedStream(ctx, &protoReq)
@@ -1422,7 +1646,11 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.C); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -1444,10 +1672,18 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshale
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_FlowCombination_RpcPathNestedStream_2); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	stream, err := client.RpcPathNestedStream(ctx, &protoReq)

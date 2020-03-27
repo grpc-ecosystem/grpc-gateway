@@ -44,22 +44,38 @@ func request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		_, md := descriptor.ForMessage(protoReq.Body)
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			st, ok := status.FromError(err)
+			if !ok {
+				st = status.New(codes.InvalidArgument, err.Error())
+			}
+			return nil, metadata, st.Err()
 		} else {
 			protoReq.UpdateMask = fieldMask
 		}
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NonStandardService_Update_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.Update(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -76,19 +92,31 @@ func local_request_NonStandardService_Update_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		_, md := descriptor.ForMessage(protoReq.Body)
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			st, ok := status.FromError(err)
+			if !ok {
+				st = status.New(codes.InvalidArgument, err.Error())
+			}
+			return nil, metadata, st.Err()
 		} else {
 			protoReq.UpdateMask = fieldMask
 		}
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_NonStandardService_Update_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.Update(ctx, &protoReq)
@@ -109,22 +137,38 @@ func request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		_, md := descriptor.ForMessage(protoReq.Body)
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			st, ok := status.FromError(err)
+			if !ok {
+				st = status.New(codes.InvalidArgument, err.Error())
+			}
+			return nil, metadata, st.Err()
 		} else {
 			protoReq.UpdateMask = fieldMask
 		}
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NonStandardService_UpdateWithJSONNames_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.UpdateWithJSONNames(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -141,19 +185,31 @@ func local_request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context,
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Body); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		_, md := descriptor.ForMessage(protoReq.Body)
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			st, ok := status.FromError(err)
+			if !ok {
+				st = status.New(codes.InvalidArgument, err.Error())
+			}
+			return nil, metadata, st.Err()
 		} else {
 			protoReq.UpdateMask = fieldMask
 		}
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_NonStandardService_UpdateWithJSONNames_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.UpdateWithJSONNames(ctx, &protoReq)

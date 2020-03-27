@@ -58,10 +58,18 @@ func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtim
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_UnannotatedEchoService_Echo_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.Echo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -92,7 +100,11 @@ func local_request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler 
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_UnannotatedEchoService_Echo_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.Echo(ctx, &protoReq)
@@ -138,10 +150,18 @@ func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtim
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_UnannotatedEchoService_Echo_1); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.Echo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -183,7 +203,11 @@ func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler 
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_UnannotatedEchoService_Echo_1); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.Echo(ctx, &protoReq)
@@ -200,7 +224,11 @@ func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.EchoBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -217,7 +245,11 @@ func local_request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.EchoBody(ctx, &protoReq)
@@ -234,10 +266,18 @@ func request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler 
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_UnannotatedEchoService_EchoDelete_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.EchoDelete(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -250,7 +290,11 @@ func local_request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, mars
 	var metadata runtime.ServerMetadata
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_UnannotatedEchoService_EchoDelete_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.EchoDelete(ctx, &protoReq)

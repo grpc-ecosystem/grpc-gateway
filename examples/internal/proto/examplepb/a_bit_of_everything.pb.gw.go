@@ -269,10 +269,18 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	protoReq.EnumValueAnnotation = NumericEnum(e)
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_Create_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.Create(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -510,7 +518,11 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	protoReq.EnumValueAnnotation = NumericEnum(e)
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_Create_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.Create(ctx, &protoReq)
@@ -527,7 +539,11 @@ func request_ABitOfEverythingService_CreateBody_0(ctx context.Context, marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.CreateBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -544,7 +560,11 @@ func local_request_ABitOfEverythingService_CreateBody_0(ctx context.Context, mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.CreateBody(ctx, &protoReq)
@@ -615,7 +635,11 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler run
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -650,7 +674,11 @@ func local_request_ABitOfEverythingService_Update_0(ctx context.Context, marshal
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -689,7 +717,11 @@ func request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -711,10 +743,18 @@ func request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marshaler r
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_UpdateV2_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.UpdateV2(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -731,7 +771,11 @@ func local_request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -753,7 +797,11 @@ func local_request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marsh
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_UpdateV2_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.UpdateV2(ctx, &protoReq)
@@ -774,12 +822,20 @@ func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		_, md := descriptor.ForMessage(protoReq.Abe)
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			st, ok := status.FromError(err)
+			if !ok {
+				st = status.New(codes.InvalidArgument, err.Error())
+			}
+			return nil, metadata, st.Err()
 		} else {
 			protoReq.UpdateMask = fieldMask
 		}
@@ -804,10 +860,18 @@ func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler r
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_UpdateV2_1); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.UpdateV2(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -824,12 +888,20 @@ func local_request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Abe); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if protoReq.UpdateMask == nil || len(protoReq.UpdateMask.GetPaths()) == 0 {
 		_, md := descriptor.ForMessage(protoReq.Abe)
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			st, ok := status.FromError(err)
+			if !ok {
+				st = status.New(codes.InvalidArgument, err.Error())
+			}
+			return nil, metadata, st.Err()
 		} else {
 			protoReq.UpdateMask = fieldMask
 		}
@@ -854,7 +926,11 @@ func local_request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marsh
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_UpdateV2_1); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.UpdateV2(ctx, &protoReq)
@@ -871,7 +947,11 @@ func request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -906,7 +986,11 @@ func local_request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -1013,10 +1097,18 @@ func request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marshaler r
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_GetQuery_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.GetQuery(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1047,7 +1139,11 @@ func local_request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marsh
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_GetQuery_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.GetQuery(ctx, &protoReq)
@@ -1516,7 +1612,11 @@ func request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Value); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.Echo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1533,7 +1633,11 @@ func local_request_ABitOfEverythingService_Echo_1(ctx context.Context, marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Value); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.Echo(ctx, &protoReq)
@@ -1550,10 +1654,18 @@ func request_ABitOfEverythingService_Echo_2(ctx context.Context, marshaler runti
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_Echo_2); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.Echo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1566,7 +1678,11 @@ func local_request_ABitOfEverythingService_Echo_2(ctx context.Context, marshaler
 	var metadata runtime.ServerMetadata
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_Echo_2); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.Echo(ctx, &protoReq)
@@ -1583,7 +1699,11 @@ func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshal
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -1618,7 +1738,11 @@ func local_request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, m
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -1689,7 +1813,11 @@ func request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Context, m
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Data); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -1724,7 +1852,11 @@ func local_request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Cont
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Data); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -1759,7 +1891,11 @@ func request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Context, ma
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -1794,7 +1930,11 @@ func local_request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Conte
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -1847,10 +1987,18 @@ func request_ABitOfEverythingService_CheckGetQueryParams_0(ctx context.Context, 
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_CheckGetQueryParams_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.CheckGetQueryParams(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1881,7 +2029,11 @@ func local_request_ABitOfEverythingService_CheckGetQueryParams_0(ctx context.Con
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_CheckGetQueryParams_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.CheckGetQueryParams(ctx, &protoReq)
@@ -1921,10 +2073,18 @@ func request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx context
 	protoReq.SingleNested.Ok = ABitOfEverything_Nested_DeepEnum(e)
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.CheckNestedEnumGetQueryParams(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -1960,7 +2120,11 @@ func local_request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx c
 	protoReq.SingleNested.Ok = ABitOfEverything_Nested_DeepEnum(e)
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.CheckNestedEnumGetQueryParams(ctx, &protoReq)
@@ -1981,7 +2145,11 @@ func request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Context,
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.SingleNested); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -2003,10 +2171,18 @@ func request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Context,
 	}
 
 	if err := req.ParseForm(); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_ABitOfEverythingService_CheckPostQueryParams_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.CheckPostQueryParams(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -2023,7 +2199,11 @@ func local_request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Co
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.SingleNested); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	var (
@@ -2045,7 +2225,11 @@ func local_request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Co
 	}
 
 	if err := runtime.PopulateQueryParameters(&protoReq, req.URL.Query(), filter_ABitOfEverythingService_CheckPostQueryParams_0); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.CheckPostQueryParams(ctx, &protoReq)

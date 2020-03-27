@@ -40,7 +40,11 @@ func request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshal
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.Login(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -57,7 +61,11 @@ func local_request_LoginService_Login_0(ctx context.Context, marshaler runtime.M
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.Login(ctx, &protoReq)
@@ -74,7 +82,11 @@ func request_LoginService_Logout_0(ctx context.Context, marshaler runtime.Marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := client.Logout(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -91,7 +103,11 @@ func local_request_LoginService_Logout_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		st, ok := status.FromError(err)
+		if !ok {
+			st = status.New(codes.InvalidArgument, err.Error())
+		}
+		return nil, metadata, st.Err()
 	}
 
 	msg, err := server.Logout(ctx, &protoReq)

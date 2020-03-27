@@ -49,7 +49,11 @@ func request_StreamService_BulkCreate_0(ctx context.Context, marshaler runtime.M
 		}
 		if err != nil {
 			grpclog.Infof("Failed to decode request: %v", err)
-			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+			st, ok := status.FromError(err)
+			if !ok {
+				st = status.New(codes.InvalidArgument, err.Error())
+			}
+			return nil, metadata, st.Err()
 		}
 		if err = stream.Send(&protoReq); err != nil {
 			if err == io.EOF {
