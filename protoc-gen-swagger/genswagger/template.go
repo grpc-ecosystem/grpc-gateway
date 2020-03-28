@@ -653,7 +653,7 @@ func resolveFullyQualifiedNameToSwaggerNames(messages []string, useFQNForSwagger
 var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*).*}")
 
 // Swagger expects paths of the form /path/{string_value} but grpc-gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
-func templateToSwaggerPath(path string, reg *descriptor.Registry, fields []*descriptor.Field) string {
+func templateToSwaggerPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) string {
 	// It seems like the right thing to do here is to just use
 	// strings.Split(path, "/") but that breaks badly when you hit a url like
 	// /{my_field=prefix/*}/ and end up with 2 sections representing my_field.
@@ -682,7 +682,7 @@ func templateToSwaggerPath(path string, reg *descriptor.Registry, fields []*desc
 			if reg.GetUseJSONNamesForFields() &&
 				len(jsonBuffer) > 1 {
 				jsonSnakeCaseName := string(jsonBuffer[1:])
-				jsonCamelCaseName := string(lowerCamelCase(jsonSnakeCaseName, fields))
+				jsonCamelCaseName := string(lowerCamelCase(jsonSnakeCaseName, fields, msgs))
 				prev := string(buffer[:len(buffer)-len(jsonSnakeCaseName)-2])
 				buffer = strings.Join([]string{prev, "{", jsonCamelCaseName, "}"}, "")
 				jsonBuffer = ""
@@ -731,7 +731,7 @@ func isResourceName(prefix string) bool {
 	return field == "parent" || field == "name"
 }
 
-func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap) error {
+func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	for svcIdx, svc := range services {
 		for methIdx, meth := range svc.Methods {
@@ -806,7 +806,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					}
 					parameterString := parameter.String()
 					if reg.GetUseJSONNamesForFields() {
-						parameterString = lowerCamelCase(parameterString, meth.RequestType.Fields)
+						parameterString = lowerCamelCase(parameterString, meth.RequestType.Fields, msgs)
 					}
 					parameters = append(parameters, swaggerParameterObject{
 						Name:        parameterString,
@@ -876,7 +876,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					parameters = append(parameters, queryParams...)
 				}
 
-				pathItemObject, ok := paths[templateToSwaggerPath(b.PathTmpl.Template, reg, meth.RequestType.Fields)]
+				pathItemObject, ok := paths[templateToSwaggerPath(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)]
 				if !ok {
 					pathItemObject = swaggerPathItemObject{}
 				}
@@ -1098,7 +1098,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					pathItemObject.Patch = operationObject
 					break
 				}
-				paths[templateToSwaggerPath(b.PathTmpl.Template, reg, meth.RequestType.Fields)] = pathItemObject
+				paths[templateToSwaggerPath(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)] = pathItemObject
 			}
 		}
 	}
@@ -1128,7 +1128,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	// and create entries for all of them.
 	// Also adds custom user specified references to second map.
 	requestResponseRefs, customRefs := refMap{}, refMap{}
-	if err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs); err != nil {
+	if err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
 		panic(err)
 	}
 
@@ -1935,10 +1935,17 @@ func addCustomRefs(d swaggerDefinitionsObject, reg *descriptor.Registry, refs re
 	addCustomRefs(d, reg, refs)
 }
 
-func lowerCamelCase(fieldName string, fields []*descriptor.Field) string {
+func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descriptor.Message) string {
 	for _, oneField := range fields {
 		if oneField.GetName() == fieldName {
 			return oneField.GetJsonName()
+		}
+	}
+	for _, msg := range msgs {
+		for _, oneField := range msg.GetField()  {
+			if oneField.GetName() == fieldName {
+				return oneField.GetJsonName()
+			}
 		}
 	}
 	parameterString := gogen.CamelCase(fieldName)
