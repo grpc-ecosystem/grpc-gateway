@@ -1315,21 +1315,34 @@ func generateFieldsForJSONReservedName() []*descriptor.Field {
 }
 
 func generateMsgsForJSONReservedName() []*descriptor.Message {
-	fields := make([]*descriptor.Field, 0)
-	fieldName := string("json_second_name")
-	fieldJSONName := string("jsonSECONDNAME")
-	fieldDescriptor := protodescriptor.FieldDescriptorProto{Name: &fieldName, JsonName: &fieldJSONName}
-	fields = append(fields, &descriptor.Field{FieldDescriptorProto: &fieldDescriptor})
-	msgs := make([]*descriptor.Message, 0)
-	//fmt.Printf("d12345: %v\n", &descriptor.Message{File: &descriptor.File{}, Fields: fields, Outers: make([]string, 0), Index: 0, DescriptorProto: &descriptor.DescriptorProto{}})
-	//fmt.Printf("#fields: %v\n", fields)
-	msgs = append(msgs, &descriptor.Message{Fields: fields})
-	//fmt.Printf("###msgs: %v\n", msgs)
-	return msgs
-}
-
-func TestOne(t *testing.T) {
-	generateMsgsForJSONReservedName()
+	result := make([]*descriptor.Message, 0)
+	//The first message, its field is field_abc and its type is NewType
+	//NewType field_abc
+	fieldName := "field_abc"
+	fieldJSONName := "fieldAbc"
+	messageName1 := "message1"
+	messageType := "pkg.a.NewType"
+	pfd := protodescriptor.FieldDescriptorProto{Name: &fieldName, JsonName: &fieldJSONName, TypeName: &messageType}
+	result = append(result,
+		&descriptor.Message{
+		DescriptorProto: &protodescriptor.DescriptorProto{
+			Name: &messageName1, Field: []*protodescriptor.FieldDescriptorProto{&pfd},
+		},
+	})
+	//The second message, its name is NewName, its type is NewType
+	//message NewType {
+	//    string field_newName [json_name = RESERVEDJSONNAME]
+	//}
+	messageName := "NewType"
+	field := "field_newName"
+	fieldJSONName2 := "RESERVEDJSONNAME"
+	pfd2 := protodescriptor.FieldDescriptorProto{Name: &field, JsonName: &fieldJSONName2,}
+	result = append(result, &descriptor.Message{
+		DescriptorProto: &protodescriptor.DescriptorProto{
+			Name: &messageName, Field: []*protodescriptor.FieldDescriptorProto{&pfd2},
+		},
+	})
+	return result
 }
 
 func TestTemplateWithJsonCamelCase(t *testing.T) {
@@ -1349,6 +1362,7 @@ func TestTemplateWithJsonCamelCase(t *testing.T) {
 		{"test/{a_a}", "test/{aA}"},
 		{"test/{ab_c}", "test/{abC}"},
 		{"test/{json_name}", "test/{jsonNAME}"},
+		{"test/{field_abc.field_newName}", "test/{fieldAbc.RESERVEDJSONNAME}"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
@@ -1376,6 +1390,7 @@ func TestTemplateWithoutJsonCamelCase(t *testing.T) {
 		{"test/{ab}", "test/{ab}"},
 		{"test/{a_a}", "test/{a_a}"},
 		{"test/{json_name}", "test/{json_name}"},
+		{"test/{field_abc.field_newName}", "test/{field_abc.field_newName}"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
