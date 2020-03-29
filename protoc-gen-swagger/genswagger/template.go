@@ -1956,7 +1956,7 @@ func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descri
 		prefix := strings.Join(fieldNames[:len(fieldNames) - 1], ".")
 		reservedJSONName := getReservedJSONName(fieldName, messageNameToFieldsToJSONName,fieldNameToType)
 		if reservedJSONName != ""{
-			return  prefix + "." + getReservedJSONName(fieldName, messageNameToFieldsToJSONName,fieldNameToType)
+			return  prefix + "." + reservedJSONName
 		}
 	}
 	parameterString := gogen.CamelCase(fieldName)
