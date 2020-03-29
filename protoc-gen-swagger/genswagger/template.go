@@ -1941,11 +1941,22 @@ func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descri
 			return oneField.GetJsonName()
 		}
 	}
+	messageNameToFieldsToJsonName := make(map[string]map[string]string, 0)
+	fieldNameToType := make(map[string]string, 0)
 	for _, msg := range msgs {
+		fieldNameToJsonName := make(map[string]string, 0)
 		for _, oneField := range msg.GetField()  {
-			if oneField.GetName() == fieldName {
-				return oneField.GetJsonName()
-			}
+			fieldNameToJsonName[oneField.GetName()] = oneField.GetJsonName()
+			fieldNameToType[oneField.GetName()] = oneField.GetTypeName()
+		}
+		messageNameToFieldsToJsonName[msg.GetName()] = fieldNameToJsonName
+	}
+	if strings.Contains(fieldName, ".") {
+		fieldNames := strings.Split(fieldName, ".")
+		prefix := strings.Join(fieldNames[:len(fieldNames) - 1], ".")
+		reservedJsonName := getReservedJsonName(fieldName, messageNameToFieldsToJsonName,fieldNameToType)
+		if reservedJsonName != ""{
+			return  prefix + "." + getReservedJsonName(fieldName, messageNameToFieldsToJsonName,fieldNameToType)
 		}
 	}
 	parameterString := gogen.CamelCase(fieldName)
@@ -1954,3 +1965,17 @@ func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descri
 	builder.WriteString(parameterString[1:])
 	return builder.String()
 }
+
+func getReservedJsonName(fieldName string, messageNameToFieldsToJsonName map[string]map[string]string, fieldNameToType map[string]string) string {
+	if len(strings.Split(fieldName, ".")) == 2 {
+		fieldNames := strings.Split(fieldName, ".")
+		firstVariable := fieldNames[0]
+		firstType := fieldNameToType[firstVariable]
+		firstTypeShortNames := strings.Split(firstType, ".")
+		firstTypeShortName := firstTypeShortNames[len(firstTypeShortNames) - 1]
+		return messageNameToFieldsToJsonName[firstTypeShortName][fieldNames[1]]
+	}
+	fieldNames := strings.Split(fieldName, ".")
+	return getReservedJsonName(strings.Join(fieldNames[1:], "."), messageNameToFieldsToJsonName, fieldNameToType)
+}
+

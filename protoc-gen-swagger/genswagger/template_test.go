@@ -1321,7 +1321,10 @@ func generateMsgsForJSONReservedName() []*descriptor.Message {
 	fieldDescriptor := protodescriptor.FieldDescriptorProto{Name: &fieldName, JsonName: &fieldJSONName}
 	fields = append(fields, &descriptor.Field{FieldDescriptorProto: &fieldDescriptor})
 	msgs := make([]*descriptor.Message, 0)
+	//fmt.Printf("d12345: %v\n", &descriptor.Message{File: &descriptor.File{}, Fields: fields, Outers: make([]string, 0), Index: 0, DescriptorProto: &descriptor.DescriptorProto{}})
+	//fmt.Printf("#fields: %v\n", fields)
 	msgs = append(msgs, &descriptor.Message{Fields: fields})
+	//fmt.Printf("###msgs: %v\n", msgs)
 	return msgs
 }
 
@@ -1346,7 +1349,6 @@ func TestTemplateWithJsonCamelCase(t *testing.T) {
 		{"test/{a_a}", "test/{aA}"},
 		{"test/{ab_c}", "test/{abC}"},
 		{"test/{json_name}", "test/{jsonNAME}"},
-		{"test/{json_second_name}", "test/{jsonSECONDNAME}"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
@@ -1374,7 +1376,6 @@ func TestTemplateWithoutJsonCamelCase(t *testing.T) {
 		{"test/{ab}", "test/{ab}"},
 		{"test/{a_a}", "test/{a_a}"},
 		{"test/{json_name}", "test/{json_name}"},
-		{"test/{json_second_name}", "test/{json_second_name}"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
@@ -2384,5 +2385,95 @@ func TestTemplateWithoutErrorDefinition(t *testing.T) {
 
 	if _, ok := result.Definitions[refName]; !ok {
 		t.Errorf("default Error response with reflink '%v', but its definition was not found", refName)
+	}
+}
+
+func Test_getReservedJsonName(t *testing.T) {
+	type args struct {
+		fieldName                     string
+		messageNameToFieldsToJsonName map[string]map[string]string
+		fieldNameToType               map[string]string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		// TODO: Add test cases.
+		{
+			"test case 1: single dot use case",
+			args{
+				fieldName:                     "abc.a_1",
+				messageNameToFieldsToJsonName: map[string]map[string]string{
+					"Msg": {
+						"a_1": "a1JSONNAME",
+						"b_1": "b1JSONNAME",
+					},
+				},
+				fieldNameToType:               map[string]string{
+					"abc": "pkg1.test.Msg",
+					"bcd": "pkg1.test.Msg",
+				},
+			},
+			"a1JSONNAME",
+		},
+		{
+			"test case 1: single dot use case",
+			args{
+				fieldName:                     "abc.d_1",
+				messageNameToFieldsToJsonName: map[string]map[string]string{
+					"Msg": {
+						"a_1": "a1JSONNAME",
+						"b_1": "b1JSONNAME",
+					},
+				},
+				fieldNameToType:               map[string]string{
+					"abc": "pkg1.test.Msg",
+					"bcd": "pkg1.test.Msg",
+				},
+			},
+			"",
+		},
+		{
+			"test case 2: double dot use case",
+			args{
+				fieldName:                     "pkg.abc.a_1",
+				messageNameToFieldsToJsonName: map[string]map[string]string{
+					"Msg": {
+						"a_1": "a1JSONNAME",
+						"b_1": "b1JSONNAME",
+					},
+				},
+				fieldNameToType:               map[string]string{
+					"abc": "pkg1.test.Msg",
+					"bcd": "pkg1.test.Msg",
+				},
+			},
+			"a1JSONNAME",
+		},
+		{
+			"test case 3: double dot use case with a not existed field",
+			args{
+				fieldName:                     "pkg.abc.c_1",
+				messageNameToFieldsToJsonName: map[string]map[string]string{
+					"Msg": {
+						"a_1": "a1JSONNAME",
+						"b_1": "b1JSONNAME",
+					},
+				},
+				fieldNameToType:               map[string]string{
+					"abc": "pkg1.test.Msg",
+					"bcd": "pkg1.test.Msg",
+				},
+			},
+			"",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getReservedJsonName(tt.args.fieldName, tt.args.messageNameToFieldsToJsonName, tt.args.fieldNameToType); got != tt.want {
+				t.Errorf("getReservedJsonName() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
