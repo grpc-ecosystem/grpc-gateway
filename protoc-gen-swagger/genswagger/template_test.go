@@ -2391,7 +2391,7 @@ func TestTemplateWithoutErrorDefinition(t *testing.T) {
 func Test_getReservedJsonName(t *testing.T) {
 	type args struct {
 		fieldName                     string
-		messageNameToFieldsToJsonName map[string]map[string]string
+		messageNameToFieldsToJSONName map[string]map[string]string
 		fieldNameToType               map[string]string
 	}
 	tests := []struct {
@@ -2403,14 +2403,14 @@ func Test_getReservedJsonName(t *testing.T) {
 		{
 			"test case 1: single dot use case",
 			args{
-				fieldName:                     "abc.a_1",
-				messageNameToFieldsToJsonName: map[string]map[string]string{
+				fieldName: "abc.a_1",
+				messageNameToFieldsToJSONName: map[string]map[string]string{
 					"Msg": {
 						"a_1": "a1JSONNAME",
 						"b_1": "b1JSONNAME",
 					},
 				},
-				fieldNameToType:               map[string]string{
+				fieldNameToType: map[string]string{
 					"abc": "pkg1.test.Msg",
 					"bcd": "pkg1.test.Msg",
 				},
@@ -2420,14 +2420,14 @@ func Test_getReservedJsonName(t *testing.T) {
 		{
 			"test case 1: single dot use case",
 			args{
-				fieldName:                     "abc.d_1",
-				messageNameToFieldsToJsonName: map[string]map[string]string{
+				fieldName: "abc.d_1",
+				messageNameToFieldsToJSONName: map[string]map[string]string{
 					"Msg": {
 						"a_1": "a1JSONNAME",
 						"b_1": "b1JSONNAME",
 					},
 				},
-				fieldNameToType:               map[string]string{
+				fieldNameToType: map[string]string{
 					"abc": "pkg1.test.Msg",
 					"bcd": "pkg1.test.Msg",
 				},
@@ -2437,14 +2437,14 @@ func Test_getReservedJsonName(t *testing.T) {
 		{
 			"test case 2: double dot use case",
 			args{
-				fieldName:                     "pkg.abc.a_1",
-				messageNameToFieldsToJsonName: map[string]map[string]string{
+				fieldName: "pkg.abc.a_1",
+				messageNameToFieldsToJSONName: map[string]map[string]string{
 					"Msg": {
 						"a_1": "a1JSONNAME",
 						"b_1": "b1JSONNAME",
 					},
 				},
-				fieldNameToType:               map[string]string{
+				fieldNameToType: map[string]string{
 					"abc": "pkg1.test.Msg",
 					"bcd": "pkg1.test.Msg",
 				},
@@ -2454,14 +2454,14 @@ func Test_getReservedJsonName(t *testing.T) {
 		{
 			"test case 3: double dot use case with a not existed field",
 			args{
-				fieldName:                     "pkg.abc.c_1",
-				messageNameToFieldsToJsonName: map[string]map[string]string{
+				fieldName: "pkg.abc.c_1",
+				messageNameToFieldsToJSONName: map[string]map[string]string{
 					"Msg": {
 						"a_1": "a1JSONNAME",
 						"b_1": "b1JSONNAME",
 					},
 				},
-				fieldNameToType:               map[string]string{
+				fieldNameToType: map[string]string{
 					"abc": "pkg1.test.Msg",
 					"bcd": "pkg1.test.Msg",
 				},
@@ -2471,7 +2471,7 @@ func Test_getReservedJsonName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := getReservedJSONName(tt.args.fieldName, tt.args.messageNameToFieldsToJsonName, tt.args.fieldNameToType); got != tt.want {
+			if got := getReservedJSONName(tt.args.fieldName, tt.args.messageNameToFieldsToJSONName, tt.args.fieldNameToType); got != tt.want {
 				t.Errorf("getReservedJSONName() = %v, want %v", got, tt.want)
 			}
 		})
