@@ -2418,7 +2418,7 @@ func Test_getReservedJsonName(t *testing.T) {
 			"a1JSONNAME",
 		},
 		{
-			"test case 1: single dot use case",
+			"test case 2: single dot use case with no existing field",
 			args{
 				fieldName: "abc.d_1",
 				messageNameToFieldsToJSONName: map[string]map[string]string{
@@ -2435,7 +2435,7 @@ func Test_getReservedJsonName(t *testing.T) {
 			"",
 		},
 		{
-			"test case 2: double dot use case",
+			"test case 3: double dot use case",
 			args{
 				fieldName: "pkg.abc.a_1",
 				messageNameToFieldsToJSONName: map[string]map[string]string{
@@ -2452,7 +2452,7 @@ func Test_getReservedJsonName(t *testing.T) {
 			"a1JSONNAME",
 		},
 		{
-			"test case 3: double dot use case with a not existed field",
+			"test case 4: double dot use case with a not existed field",
 			args{
 				fieldName: "pkg.abc.c_1",
 				messageNameToFieldsToJSONName: map[string]map[string]string{
