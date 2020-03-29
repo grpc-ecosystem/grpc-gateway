@@ -1941,22 +1941,22 @@ func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descri
 			return oneField.GetJsonName()
 		}
 	}
-	messageNameToFieldsToJsonName := make(map[string]map[string]string, 0)
+	messageNameToFieldsToJSONName := make(map[string]map[string]string, 0)
 	fieldNameToType := make(map[string]string, 0)
 	for _, msg := range msgs {
-		fieldNameToJsonName := make(map[string]string, 0)
+		fieldNameToJSONName := make(map[string]string, 0)
 		for _, oneField := range msg.GetField()  {
-			fieldNameToJsonName[oneField.GetName()] = oneField.GetJsonName()
+			fieldNameToJSONName[oneField.GetName()] = oneField.GetJsonName()
 			fieldNameToType[oneField.GetName()] = oneField.GetTypeName()
 		}
-		messageNameToFieldsToJsonName[msg.GetName()] = fieldNameToJsonName
+		messageNameToFieldsToJSONName[msg.GetName()] = fieldNameToJSONName
 	}
 	if strings.Contains(fieldName, ".") {
 		fieldNames := strings.Split(fieldName, ".")
 		prefix := strings.Join(fieldNames[:len(fieldNames) - 1], ".")
-		reservedJsonName := getReservedJsonName(fieldName, messageNameToFieldsToJsonName,fieldNameToType)
-		if reservedJsonName != ""{
-			return  prefix + "." + getReservedJsonName(fieldName, messageNameToFieldsToJsonName,fieldNameToType)
+		reservedJSONName := getReservedJSONName(fieldName, messageNameToFieldsToJSONName,fieldNameToType)
+		if reservedJSONName != ""{
+			return  prefix + "." + getReservedJSONName(fieldName, messageNameToFieldsToJSONName,fieldNameToType)
 		}
 	}
 	parameterString := gogen.CamelCase(fieldName)
@@ -1966,16 +1966,16 @@ func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descri
 	return builder.String()
 }
 
-func getReservedJsonName(fieldName string, messageNameToFieldsToJsonName map[string]map[string]string, fieldNameToType map[string]string) string {
+func getReservedJSONName(fieldName string, messageNameToFieldsToJSONName map[string]map[string]string, fieldNameToType map[string]string) string {
 	if len(strings.Split(fieldName, ".")) == 2 {
 		fieldNames := strings.Split(fieldName, ".")
 		firstVariable := fieldNames[0]
 		firstType := fieldNameToType[firstVariable]
 		firstTypeShortNames := strings.Split(firstType, ".")
 		firstTypeShortName := firstTypeShortNames[len(firstTypeShortNames) - 1]
-		return messageNameToFieldsToJsonName[firstTypeShortName][fieldNames[1]]
+		return messageNameToFieldsToJSONName[firstTypeShortName][fieldNames[1]]
 	}
 	fieldNames := strings.Split(fieldName, ".")
-	return getReservedJsonName(strings.Join(fieldNames[1:], "."), messageNameToFieldsToJsonName, fieldNameToType)
+	return getReservedJSONName(strings.Join(fieldNames[1:], "."), messageNameToFieldsToJSONName, fieldNameToType)
 }
 
