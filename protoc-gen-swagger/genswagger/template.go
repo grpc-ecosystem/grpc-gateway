@@ -1954,8 +1954,8 @@ func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descri
 	if strings.Contains(fieldName, ".") {
 		fieldNames := strings.Split(fieldName, ".")
 		fieldNamesWithCamelCase := make([]string, 0)
-		for _, oneField := range fieldNames[:len(fieldNames) - 1] {
-			fieldNamesWithCamelCase = append(fieldNamesWithCamelCase, doCamelCase(string(oneField)))
+		for i := 0; i < len(fieldNames) - 1; i++ {
+			fieldNamesWithCamelCase = append(fieldNamesWithCamelCase, doCamelCase(string(fieldNames[i])))
 		}
 		prefix := strings.Join(fieldNamesWithCamelCase, ".")
 		reservedJSONName := getReservedJSONName(fieldName, messageNameToFieldsToJSONName,fieldNameToType)
