@@ -1329,7 +1329,7 @@ func generateMsgsForJSONReservedName() []*descriptor.Message {
 			Name: &messageName1, Field: []*protodescriptor.FieldDescriptorProto{&pfd},
 		},
 	})
-	//The second message, its name is NewName, its type is NewType
+	//The second message, its name is NewName, its type is string
 	//message NewType {
 	//    string field_newName [json_name = RESERVEDJSONNAME]
 	//}
