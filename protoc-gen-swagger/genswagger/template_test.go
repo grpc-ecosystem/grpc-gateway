@@ -2414,7 +2414,6 @@ func Test_getReservedJsonName(t *testing.T) {
 		args args
 		want string
 	}{
-		// TODO: Add test cases.
 		{
 			"test case 1: single dot use case",
 			args{
