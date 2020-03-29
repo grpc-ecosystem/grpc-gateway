@@ -1317,7 +1317,7 @@ func generateFieldsForJSONReservedName() []*descriptor.Field {
 func generateMsgsForJSONReservedName() []*descriptor.Message {
 	result := make([]*descriptor.Message, 0)
 	// The first message, its field is field_abc and its type is NewType
-	//NewType field_abc
+	// NewType field_abc
 	fieldName := "field_abc"
 	fieldJSONName := "fieldAbc"
 	messageName1 := "message1"
@@ -1329,10 +1329,10 @@ func generateMsgsForJSONReservedName() []*descriptor.Message {
 			Name: &messageName1, Field: []*protodescriptor.FieldDescriptorProto{&pfd},
 		},
 	})
-	//The second message, its name is NewName, its type is string
-	//message NewType {
+	// The second message, its name is NewName, its type is string
+	// message NewType {
 	//    string field_newName [json_name = RESERVEDJSONNAME]
-	//}
+	// }
 	messageName := "NewType"
 	field := "field_newName"
 	fieldJSONName2 := "RESERVEDJSONNAME"
