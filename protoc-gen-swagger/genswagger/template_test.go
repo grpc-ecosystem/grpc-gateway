@@ -606,6 +606,118 @@ func TestApplyTemplateSimple(t *testing.T) {
 	}
 }
 
+func TestApplyTemplateMultiService(t *testing.T) {
+	msgdesc := &protodescriptor.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+	}
+	meth := &protodescriptor.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+
+	// Create two services that have the same method name. We will test that the
+	// operation IDs are different
+	svc := &protodescriptor.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*protodescriptor.MethodDescriptorProto{meth},
+	}
+	svc2 := &protodescriptor.ServiceDescriptorProto{
+		Name:   proto.String("OtherService"),
+		Method: []*protodescriptor.MethodDescriptorProto{meth},
+	}
+
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			Dependency:     []string{"a.example/b/c.proto", "a.example/d/e.proto"},
+			MessageType:    []*protodescriptor.DescriptorProto{msgdesc},
+			Service:        []*protodescriptor.ServiceDescriptorProto{svc},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo",
+								},
+							},
+						},
+					},
+				},
+			},
+			{
+				ServiceDescriptorProto: svc2,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/ping",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+
+	// Check that the two services have unique operation IDs even though they
+	// have the same method name.
+	if want, is := "ExampleService_Example", result.Paths["/v1/echo"].Get.OperationID; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).Paths[0].Get.OperationID = %s want to be %s", file, is, want)
+	}
+	if want, is := "OtherService_Example", result.Paths["/v1/ping"].Get.OperationID; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).Paths[0].Get.OperationID = %s want to be %s", file, is, want)
+	}
+
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", fmt.Sprint(result))
+	}
+}
+
 func TestApplyTemplateOverrideOperationID(t *testing.T) {
 	msgdesc := &protodescriptor.DescriptorProto{
 		Name: proto.String("ExampleMessage"),
@@ -1325,10 +1437,10 @@ func generateMsgsForJSONReservedName() []*descriptor.Message {
 	pfd := protodescriptor.FieldDescriptorProto{Name: &fieldName, JsonName: &fieldJSONName, TypeName: &messageType}
 	result = append(result,
 		&descriptor.Message{
-		DescriptorProto: &protodescriptor.DescriptorProto{
-			Name: &messageName1, Field: []*protodescriptor.FieldDescriptorProto{&pfd},
-		},
-	})
+			DescriptorProto: &protodescriptor.DescriptorProto{
+				Name: &messageName1, Field: []*protodescriptor.FieldDescriptorProto{&pfd},
+			},
+		})
 	// The second message, its name is NewName, its type is string
 	// message NewType {
 	//    string field_newName [json_name = RESERVEDJSONNAME]
@@ -1336,7 +1448,7 @@ func generateMsgsForJSONReservedName() []*descriptor.Message {
 	messageName := "NewType"
 	field := "field_newName"
 	fieldJSONName2 := "RESERVEDJSONNAME"
-	pfd2 := protodescriptor.FieldDescriptorProto{Name: &field, JsonName: &fieldJSONName2,}
+	pfd2 := protodescriptor.FieldDescriptorProto{Name: &field, JsonName: &fieldJSONName2}
 	result = append(result, &descriptor.Message{
 		DescriptorProto: &protodescriptor.DescriptorProto{
 			Name: &messageName, Field: []*protodescriptor.FieldDescriptorProto{&pfd2},
