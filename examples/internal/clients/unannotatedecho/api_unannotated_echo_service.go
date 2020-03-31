@@ -34,7 +34,7 @@ The message posted as the id parameter will also be returned.
 
 @return ExamplepbUnannotatedSimpleMessage
 */
-func (a *UnannotatedEchoServiceApiService) Echo(ctx context.Context, id string) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
+func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho(ctx context.Context, id string) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -132,17 +132,17 @@ The message posted as the id parameter will also be returned.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id represents the message identifier.
  * @param num
- * @param optional nil or *Echo2Opts - Optional Parameters:
+ * @param optional nil or *UnannotatedEchoServiceEcho2Opts - Optional Parameters:
      * @param "Duration" (optional.String) - 
 
 @return ExamplepbUnannotatedSimpleMessage
 */
 
-type Echo2Opts struct { 
+type UnannotatedEchoServiceEcho2Opts struct { 
 	Duration optional.String
 }
 
-func (a *UnannotatedEchoServiceApiService) Echo2(ctx context.Context, id string, num string, localVarOptionals *Echo2Opts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
+func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx context.Context, id string, num string, localVarOptionals *UnannotatedEchoServiceEcho2Opts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -245,7 +245,7 @@ UnannotatedEchoServiceApiService EchoBody method receives a simple message and r
 
 @return ExamplepbUnannotatedSimpleMessage
 */
-func (a *UnannotatedEchoServiceApiService) EchoBody(ctx context.Context, body ExamplepbUnannotatedSimpleMessage) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
+func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx context.Context, body ExamplepbUnannotatedSimpleMessage) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -341,7 +341,7 @@ func (a *UnannotatedEchoServiceApiService) EchoBody(ctx context.Context, body Ex
 /* 
 UnannotatedEchoServiceApiService EchoDelete method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param optional nil or *EchoDeleteOpts - Optional Parameters:
+ * @param optional nil or *UnannotatedEchoServiceEchoDeleteOpts - Optional Parameters:
      * @param "Id" (optional.String) -  Id represents the message identifier.
      * @param "Num" (optional.String) - 
      * @param "Duration" (optional.String) - 
@@ -349,13 +349,13 @@ UnannotatedEchoServiceApiService EchoDelete method receives a simple message and
 @return ExamplepbUnannotatedSimpleMessage
 */
 
-type EchoDeleteOpts struct { 
+type UnannotatedEchoServiceEchoDeleteOpts struct { 
 	Id optional.String
 	Num optional.String
 	Duration optional.String
 }
 
-func (a *UnannotatedEchoServiceApiService) EchoDelete(ctx context.Context, localVarOptionals *EchoDeleteOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
+func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx context.Context, localVarOptionals *UnannotatedEchoServiceEchoDeleteOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Delete")
 		localVarPostBody   interface{}

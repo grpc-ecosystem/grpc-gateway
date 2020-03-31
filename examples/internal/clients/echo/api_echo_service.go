@@ -34,7 +34,7 @@ The message posted as the id parameter will also be returned.
 
 @return ExamplepbSimpleMessage
 */
-func (a *EchoServiceApiService) Echo(ctx context.Context, id string) (ExamplepbSimpleMessage, *http.Response, error) {
+func (a *EchoServiceApiService) EchoServiceEcho(ctx context.Context, id string) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -132,7 +132,7 @@ The message posted as the id parameter will also be returned.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id represents the message identifier.
  * @param num
- * @param optional nil or *Echo2Opts - Optional Parameters:
+ * @param optional nil or *EchoServiceEcho2Opts - Optional Parameters:
      * @param "LineNum" (optional.String) - 
      * @param "Lang" (optional.String) - 
      * @param "StatusProgress" (optional.String) - 
@@ -144,7 +144,7 @@ The message posted as the id parameter will also be returned.
 @return ExamplepbSimpleMessage
 */
 
-type Echo2Opts struct { 
+type EchoServiceEcho2Opts struct { 
 	LineNum optional.String
 	Lang optional.String
 	StatusProgress optional.String
@@ -154,7 +154,7 @@ type Echo2Opts struct {
 	NoNote optional.String
 }
 
-func (a *EchoServiceApiService) Echo2(ctx context.Context, id string, num string, localVarOptionals *Echo2Opts) (ExamplepbSimpleMessage, *http.Response, error) {
+func (a *EchoServiceApiService) EchoServiceEcho2(ctx context.Context, id string, num string, localVarOptionals *EchoServiceEcho2Opts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -275,7 +275,7 @@ The message posted as the id parameter will also be returned.
  * @param id Id represents the message identifier.
  * @param num
  * @param lang
- * @param optional nil or *Echo3Opts - Optional Parameters:
+ * @param optional nil or *EchoServiceEcho3Opts - Optional Parameters:
      * @param "LineNum" (optional.String) - 
      * @param "StatusProgress" (optional.String) - 
      * @param "StatusNote" (optional.String) - 
@@ -286,7 +286,7 @@ The message posted as the id parameter will also be returned.
 @return ExamplepbSimpleMessage
 */
 
-type Echo3Opts struct { 
+type EchoServiceEcho3Opts struct { 
 	LineNum optional.String
 	StatusProgress optional.String
 	StatusNote optional.String
@@ -295,7 +295,7 @@ type Echo3Opts struct {
 	NoNote optional.String
 }
 
-func (a *EchoServiceApiService) Echo3(ctx context.Context, id string, num string, lang string, localVarOptionals *Echo3Opts) (ExamplepbSimpleMessage, *http.Response, error) {
+func (a *EchoServiceApiService) EchoServiceEcho3(ctx context.Context, id string, num string, lang string, localVarOptionals *EchoServiceEcho3Opts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -414,7 +414,7 @@ The message posted as the id parameter will also be returned.
  * @param id Id represents the message identifier.
  * @param lineNum
  * @param statusNote
- * @param optional nil or *Echo4Opts - Optional Parameters:
+ * @param optional nil or *EchoServiceEcho4Opts - Optional Parameters:
      * @param "Num" (optional.String) - 
      * @param "Lang" (optional.String) - 
      * @param "StatusProgress" (optional.String) - 
@@ -424,7 +424,7 @@ The message posted as the id parameter will also be returned.
 @return ExamplepbSimpleMessage
 */
 
-type Echo4Opts struct { 
+type EchoServiceEcho4Opts struct { 
 	Num optional.String
 	Lang optional.String
 	StatusProgress optional.String
@@ -432,7 +432,7 @@ type Echo4Opts struct {
 	NoProgress optional.String
 }
 
-func (a *EchoServiceApiService) Echo4(ctx context.Context, id string, lineNum string, statusNote string, localVarOptionals *Echo4Opts) (ExamplepbSimpleMessage, *http.Response, error) {
+func (a *EchoServiceApiService) EchoServiceEcho4(ctx context.Context, id string, lineNum string, statusNote string, localVarOptionals *EchoServiceEcho4Opts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -546,7 +546,7 @@ EchoServiceApiService Echo method receives a simple message and returns it.
 The message posted as the id parameter will also be returned.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param noNote
- * @param optional nil or *Echo5Opts - Optional Parameters:
+ * @param optional nil or *EchoServiceEcho5Opts - Optional Parameters:
      * @param "Id" (optional.String) -  Id represents the message identifier.
      * @param "Num" (optional.String) - 
      * @param "LineNum" (optional.String) - 
@@ -558,7 +558,7 @@ The message posted as the id parameter will also be returned.
 @return ExamplepbSimpleMessage
 */
 
-type Echo5Opts struct { 
+type EchoServiceEcho5Opts struct { 
 	Id optional.String
 	Num optional.String
 	LineNum optional.String
@@ -568,7 +568,7 @@ type Echo5Opts struct {
 	NoProgress optional.String
 }
 
-func (a *EchoServiceApiService) Echo5(ctx context.Context, noNote string, localVarOptionals *Echo5Opts) (ExamplepbSimpleMessage, *http.Response, error) {
+func (a *EchoServiceApiService) EchoServiceEcho5(ctx context.Context, noNote string, localVarOptionals *EchoServiceEcho5Opts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -688,7 +688,7 @@ EchoServiceApiService EchoBody method receives a simple message and returns it.
 
 @return ExamplepbSimpleMessage
 */
-func (a *EchoServiceApiService) EchoBody(ctx context.Context, body ExamplepbSimpleMessage) (ExamplepbSimpleMessage, *http.Response, error) {
+func (a *EchoServiceApiService) EchoServiceEchoBody(ctx context.Context, body ExamplepbSimpleMessage) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -784,7 +784,7 @@ func (a *EchoServiceApiService) EchoBody(ctx context.Context, body ExamplepbSimp
 /* 
 EchoServiceApiService EchoDelete method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param optional nil or *EchoDeleteOpts - Optional Parameters:
+ * @param optional nil or *EchoServiceEchoDeleteOpts - Optional Parameters:
      * @param "Id" (optional.String) -  Id represents the message identifier.
      * @param "Num" (optional.String) - 
      * @param "LineNum" (optional.String) - 
@@ -798,7 +798,7 @@ EchoServiceApiService EchoDelete method receives a simple message and returns it
 @return ExamplepbSimpleMessage
 */
 
-type EchoDeleteOpts struct { 
+type EchoServiceEchoDeleteOpts struct { 
 	Id optional.String
 	Num optional.String
 	LineNum optional.String
@@ -810,7 +810,7 @@ type EchoDeleteOpts struct {
 	NoNote optional.String
 }
 
-func (a *EchoServiceApiService) EchoDelete(ctx context.Context, localVarOptionals *EchoDeleteOpts) (ExamplepbSimpleMessage, *http.Response, error) {
+func (a *EchoServiceApiService) EchoServiceEchoDelete(ctx context.Context, localVarOptionals *EchoServiceEchoDeleteOpts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Delete")
 		localVarPostBody   interface{}

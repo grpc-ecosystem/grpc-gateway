@@ -16,7 +16,7 @@
       "post": {
         "summary": "Echo method receives a simple message and returns it.",
         "description": "The message posted as the id parameter will also be\nreturned.",
-        "operationId": "Echo",
+        "operationId": "UnannotatedEchoService_Echo",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -49,7 +49,7 @@
       "get": {
         "summary": "Echo method receives a simple message and returns it.",
         "description": "The message posted as the id parameter will also be\nreturned.",
-        "operationId": "Echo2",
+        "operationId": "UnannotatedEchoService_Echo2",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -94,7 +94,7 @@
     "/v1/example/echo_body": {
       "post": {
         "summary": "EchoBody method receives a simple message and returns it.",
-        "operationId": "EchoBody",
+        "operationId": "UnannotatedEchoService_EchoBody",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -127,7 +127,7 @@
     "/v1/example/echo_delete": {
       "delete": {
         "summary": "EchoDelete method receives a simple message and returns it.",
-        "operationId": "EchoDelete",
+        "operationId": "UnannotatedEchoService_EchoDelete",
         "responses": {
           "200": {
             "description": "A successful response.",

@@ -13,7 +13,7 @@
   "paths": {
     "/v1/example/wrappers": {
       "post": {
-        "operationId": "Create",
+        "operationId": "WrappersService_Create",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -45,7 +45,7 @@
     },
     "/v1/testBool": {
       "post": {
-        "operationId": "CreateBoolValue",
+        "operationId": "WrappersService_CreateBoolValue",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -79,7 +79,7 @@
     },
     "/v1/testBytes": {
       "post": {
-        "operationId": "CreateBytesValue",
+        "operationId": "WrappersService_CreateBytesValue",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -113,7 +113,7 @@
     },
     "/v1/testDouble": {
       "post": {
-        "operationId": "CreateDoubleValue",
+        "operationId": "WrappersService_CreateDoubleValue",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -147,7 +147,7 @@
     },
     "/v1/testEmpty": {
       "post": {
-        "operationId": "CreateEmpty",
+        "operationId": "WrappersService_CreateEmpty",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -179,7 +179,7 @@
     },
     "/v1/testFloat": {
       "post": {
-        "operationId": "CreateFloatValue",
+        "operationId": "WrappersService_CreateFloatValue",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -213,7 +213,7 @@
     },
     "/v1/testInt32": {
       "post": {
-        "operationId": "CreateInt32Value",
+        "operationId": "WrappersService_CreateInt32Value",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -247,7 +247,7 @@
     },
     "/v1/testInt64": {
       "post": {
-        "operationId": "CreateInt64Value",
+        "operationId": "WrappersService_CreateInt64Value",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -281,7 +281,7 @@
     },
     "/v1/testString": {
       "post": {
-        "operationId": "CreateStringValue",
+        "operationId": "WrappersService_CreateStringValue",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -313,7 +313,7 @@
     },
     "/v1/testUint32": {
       "post": {
-        "operationId": "CreateUInt32Value",
+        "operationId": "WrappersService_CreateUInt32Value",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -347,7 +347,7 @@
     },
     "/v1/testUint64": {
       "post": {
-        "operationId": "CreateUInt64Value",
+        "operationId": "WrappersService_CreateUInt64Value",
         "responses": {
           "200": {
             "description": "A successful response.",

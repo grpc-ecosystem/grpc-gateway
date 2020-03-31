@@ -13,7 +13,7 @@
   "paths": {
     "/responsebodies/{data}": {
       "get": {
-        "operationId": "ListResponseBodies",
+        "operationId": "ResponseBodyService_ListResponseBodies",
         "responses": {
           "200": {
             "description": "",
@@ -46,7 +46,7 @@
     },
     "/responsebody/{data}": {
       "get": {
-        "operationId": "GetResponseBody",
+        "operationId": "ResponseBodyService_GetResponseBody",
         "responses": {
           "200": {
             "description": "",
@@ -76,7 +76,7 @@
     },
     "/responsestrings/{data}": {
       "get": {
-        "operationId": "ListResponseStrings",
+        "operationId": "ResponseBodyService_ListResponseStrings",
         "responses": {
           "200": {
             "description": "",
