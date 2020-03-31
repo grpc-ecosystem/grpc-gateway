@@ -19,7 +19,7 @@ func TestEchoClient(t *testing.T) {
 	cfg.BasePath = "http://localhost:8088"
 
 	cl := echo.NewAPIClient(cfg)
-	resp, _, err := cl.EchoServiceApi.Echo(context.Background(), "foo")
+	resp, _, err := cl.EchoServiceApi.EchoServiceEcho(context.Background(), "foo")
 	if err != nil {
 		t.Errorf(`cl.EchoServiceApi.Echo("foo") failed with %v; want success`, err)
 	}
@@ -39,7 +39,7 @@ func TestEchoBodyClient(t *testing.T) {
 
 	cl := echo.NewAPIClient(cfg)
 	req := echo.ExamplepbSimpleMessage{Id: "foo"}
-	resp, _, err := cl.EchoServiceApi.EchoBody(context.Background(), req)
+	resp, _, err := cl.EchoServiceApi.EchoServiceEchoBody(context.Background(), req)
 	if err != nil {
 		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)
 	}
@@ -88,7 +88,7 @@ func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
 		NestedPathEnumValue:      &messagePath,
 		EnumValueAnnotation:      &enumZero,
 	}
-	resp, _, err := cl.ABitOfEverythingServiceApi.Create(
+	resp, _, err := cl.ABitOfEverythingServiceApi.ABitOfEverythingServiceCreate(
 		context.Background(),
 		want.FloatValue,
 		want.DoubleValue,
@@ -188,7 +188,7 @@ func TestUnannotatedEchoClient(t *testing.T) {
 
 	cl := unannotatedecho.NewAPIClient(cfg)
 
-	resp, _, err := cl.UnannotatedEchoServiceApi.Echo(context.Background(), "foo")
+	resp, _, err := cl.UnannotatedEchoServiceApi.UnannotatedEchoServiceEcho(context.Background(), "foo")
 	if err != nil {
 		t.Errorf(`cl.Echo("foo") failed with %v; want success`, err)
 	}
@@ -209,7 +209,7 @@ func TestUnannotatedEchoBodyClient(t *testing.T) {
 	cl := unannotatedecho.NewAPIClient(cfg)
 
 	req := unannotatedecho.ExamplepbUnannotatedSimpleMessage{Id: "foo"}
-	resp, _, err := cl.UnannotatedEchoServiceApi.EchoBody(context.Background(), req)
+	resp, _, err := cl.UnannotatedEchoServiceApi.UnannotatedEchoServiceEchoBody(context.Background(), req)
 	if err != nil {
 		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)
 	}

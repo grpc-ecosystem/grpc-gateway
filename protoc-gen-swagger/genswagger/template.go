@@ -978,10 +978,10 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					}
 				}
 				if bIdx == 0 {
-					operationObject.OperationID = fmt.Sprintf("%s", meth.GetName())
+					operationObject.OperationID = fmt.Sprintf("%s_%s", svc.GetName(), meth.GetName())
 				} else {
 					// OperationID must be unique in an OpenAPI v2 definition.
-					operationObject.OperationID = fmt.Sprintf("%s%d", meth.GetName(), bIdx+1)
+					operationObject.OperationID = fmt.Sprintf("%s_%s%d", svc.GetName(), meth.GetName(), bIdx+1)
 				}
 
 				// Fill reference map with referenced request messages
@@ -1945,7 +1945,7 @@ func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descri
 	fieldNameToType := make(map[string]string, 0)
 	for _, msg := range msgs {
 		fieldNameToJSONName := make(map[string]string, 0)
-		for _, oneField := range msg.GetField()  {
+		for _, oneField := range msg.GetField() {
 			fieldNameToJSONName[oneField.GetName()] = oneField.GetJsonName()
 			fieldNameToType[oneField.GetName()] = oneField.GetTypeName()
 		}
@@ -1954,11 +1954,11 @@ func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descri
 	if strings.Contains(fieldName, ".") {
 		fieldNames := strings.Split(fieldName, ".")
 		fieldNamesWithCamelCase := make([]string, 0)
-		for i := 0; i < len(fieldNames) - 1; i++ {
+		for i := 0; i < len(fieldNames)-1; i++ {
 			fieldNamesWithCamelCase = append(fieldNamesWithCamelCase, doCamelCase(string(fieldNames[i])))
 		}
 		prefix := strings.Join(fieldNamesWithCamelCase, ".")
-		reservedJSONName := getReservedJSONName(fieldName, messageNameToFieldsToJSONName,fieldNameToType)
+		reservedJSONName := getReservedJSONName(fieldName, messageNameToFieldsToJSONName, fieldNameToType)
 		if reservedJSONName != "" {
 			return prefix + "." + reservedJSONName
 		}
@@ -1980,10 +1980,9 @@ func getReservedJSONName(fieldName string, messageNameToFieldsToJSONName map[str
 		firstVariable := fieldNames[0]
 		firstType := fieldNameToType[firstVariable]
 		firstTypeShortNames := strings.Split(firstType, ".")
-		firstTypeShortName := firstTypeShortNames[len(firstTypeShortNames) - 1]
+		firstTypeShortName := firstTypeShortNames[len(firstTypeShortNames)-1]
 		return messageNameToFieldsToJSONName[firstTypeShortName][fieldNames[1]]
 	}
 	fieldNames := strings.Split(fieldName, ".")
 	return getReservedJSONName(strings.Join(fieldNames[1:], "."), messageNameToFieldsToJSONName, fieldNameToType)
 }
-

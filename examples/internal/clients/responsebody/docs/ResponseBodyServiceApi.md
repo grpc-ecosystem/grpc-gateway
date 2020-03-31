@@ -4,13 +4,13 @@ All URIs are relative to *https://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetResponseBody**](ResponseBodyServiceApi.md#GetResponseBody) | **Get** /responsebody/{data} | 
-[**ListResponseBodies**](ResponseBodyServiceApi.md#ListResponseBodies) | **Get** /responsebodies/{data} | 
-[**ListResponseStrings**](ResponseBodyServiceApi.md#ListResponseStrings) | **Get** /responsestrings/{data} | 
+[**ResponseBodyServiceGetResponseBody**](ResponseBodyServiceApi.md#ResponseBodyServiceGetResponseBody) | **Get** /responsebody/{data} | 
+[**ResponseBodyServiceListResponseBodies**](ResponseBodyServiceApi.md#ResponseBodyServiceListResponseBodies) | **Get** /responsebodies/{data} | 
+[**ResponseBodyServiceListResponseStrings**](ResponseBodyServiceApi.md#ResponseBodyServiceListResponseStrings) | **Get** /responsestrings/{data} | 
 
 
-# **GetResponseBody**
-> ExamplepbResponseBodyOutResponse GetResponseBody(ctx, data)
+# **ResponseBodyServiceGetResponseBody**
+> ExamplepbResponseBodyOutResponse ResponseBodyServiceGetResponseBody(ctx, data)
 
 
 ### Required Parameters
@@ -35,8 +35,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **ListResponseBodies**
-> []ExamplepbRepeatedResponseBodyOutResponse ListResponseBodies(ctx, data)
+# **ResponseBodyServiceListResponseBodies**
+> []ExamplepbRepeatedResponseBodyOutResponse ResponseBodyServiceListResponseBodies(ctx, data)
 
 
 ### Required Parameters
@@ -61,8 +61,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **ListResponseStrings**
-> []string ListResponseStrings(ctx, data)
+# **ResponseBodyServiceListResponseStrings**
+> []string ResponseBodyServiceListResponseStrings(ctx, data)
 
 
 ### Required Parameters

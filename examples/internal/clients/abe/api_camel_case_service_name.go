@@ -31,7 +31,7 @@ CamelCaseServiceNameApiService
 
 @return interface{}
 */
-func (a *CamelCaseServiceNameApiService) Empty(ctx context.Context) (interface{}, *http.Response, error) {
+func (a *CamelCaseServiceNameApiService) CamelCaseServiceNameEmpty(ctx context.Context) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}

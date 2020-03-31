@@ -15,7 +15,7 @@ paths:
       - "EchoService"
       summary: "Echo method receives a simple message and returns it."
       description: "The message posted as the id parameter will also be\nreturned."
-      operationId: "Echo"
+      operationId: "EchoService_Echo"
       parameters:
       - name: "id"
         in: "path"
@@ -38,7 +38,7 @@ paths:
       - "EchoService"
       summary: "Echo method receives a simple message and returns it."
       description: "The message posted as the id parameter will also be\nreturned."
-      operationId: "Echo2"
+      operationId: "EchoService_Echo2"
       parameters:
       - name: "id"
         in: "path"
@@ -113,7 +113,7 @@ paths:
       - "EchoService"
       summary: "Echo method receives a simple message and returns it."
       description: "The message posted as the id parameter will also be\nreturned."
-      operationId: "Echo3"
+      operationId: "EchoService_Echo3"
       parameters:
       - name: "id"
         in: "path"
@@ -187,7 +187,7 @@ paths:
       - "EchoService"
       summary: "Echo method receives a simple message and returns it."
       description: "The message posted as the id parameter will also be\nreturned."
-      operationId: "Echo4"
+      operationId: "EchoService_Echo4"
       parameters:
       - name: "id"
         in: "path"
@@ -255,7 +255,7 @@ paths:
       - "EchoService"
       summary: "Echo method receives a simple message and returns it."
       description: "The message posted as the id parameter will also be\nreturned."
-      operationId: "Echo5"
+      operationId: "EchoService_Echo5"
       parameters:
       - name: "no.note"
         in: "path"
@@ -324,7 +324,7 @@ paths:
       tags:
       - "EchoService"
       summary: "EchoBody method receives a simple message and returns it."
-      operationId: "EchoBody"
+      operationId: "EchoService_EchoBody"
       parameters:
       - in: "body"
         name: "body"
@@ -346,7 +346,7 @@ paths:
       tags:
       - "EchoService"
       summary: "EchoDelete method receives a simple message and returns it."
-      operationId: "EchoDelete"
+      operationId: "EchoService_EchoDelete"
       parameters:
       - name: "id"
         in: "query"
