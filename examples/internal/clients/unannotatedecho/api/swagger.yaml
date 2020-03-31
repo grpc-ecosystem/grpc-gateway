@@ -18,7 +18,7 @@ paths:
       - "UnannotatedEchoService"
       summary: "Echo method receives a simple message and returns it."
       description: "The message posted as the id parameter will also be\nreturned."
-      operationId: "Echo"
+      operationId: "UnannotatedEchoService_Echo"
       parameters:
       - name: "id"
         in: "path"
@@ -41,7 +41,7 @@ paths:
       - "UnannotatedEchoService"
       summary: "Echo method receives a simple message and returns it."
       description: "The message posted as the id parameter will also be\nreturned."
-      operationId: "Echo2"
+      operationId: "UnannotatedEchoService_Echo2"
       parameters:
       - name: "id"
         in: "path"
@@ -75,7 +75,7 @@ paths:
       tags:
       - "UnannotatedEchoService"
       summary: "EchoBody method receives a simple message and returns it."
-      operationId: "EchoBody"
+      operationId: "UnannotatedEchoService_EchoBody"
       parameters:
       - in: "body"
         name: "body"
@@ -97,7 +97,7 @@ paths:
       tags:
       - "UnannotatedEchoService"
       summary: "EchoDelete method receives a simple message and returns it."
-      operationId: "EchoDelete"
+      operationId: "UnannotatedEchoService_EchoDelete"
       parameters:
       - name: "id"
         in: "query"

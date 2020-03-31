@@ -32,7 +32,7 @@ ResponseBodyServiceApiService
 
 @return ExamplepbResponseBodyOutResponse
 */
-func (a *ResponseBodyServiceApiService) GetResponseBody(ctx context.Context, data string) (ExamplepbResponseBodyOutResponse, *http.Response, error) {
+func (a *ResponseBodyServiceApiService) ResponseBodyServiceGetResponseBody(ctx context.Context, data string) (ExamplepbResponseBodyOutResponse, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -131,7 +131,7 @@ ResponseBodyServiceApiService
 
 @return []ExamplepbRepeatedResponseBodyOutResponse
 */
-func (a *ResponseBodyServiceApiService) ListResponseBodies(ctx context.Context, data string) ([]ExamplepbRepeatedResponseBodyOutResponse, *http.Response, error) {
+func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseBodies(ctx context.Context, data string) ([]ExamplepbRepeatedResponseBodyOutResponse, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -230,7 +230,7 @@ ResponseBodyServiceApiService
 
 @return []string
 */
-func (a *ResponseBodyServiceApiService) ListResponseStrings(ctx context.Context, data string) ([]string, *http.Response, error) {
+func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseStrings(ctx context.Context, data string) ([]string, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}

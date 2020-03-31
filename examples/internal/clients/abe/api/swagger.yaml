@@ -33,7 +33,7 @@ paths:
     post:
       tags:
       - "ABitOfEverythingService"
-      operationId: "CreateBody"
+      operationId: "ABitOfEverythingService_CreateBody"
       parameters:
       - in: "body"
         name: "body"
@@ -69,7 +69,7 @@ paths:
       - "echo rpc"
       summary: "Summary: Echo rpc"
       description: "Description Echo"
-      operationId: "Echo"
+      operationId: "ABitOfEverythingService_Echo"
       parameters:
       - name: "value"
         in: "path"
@@ -112,7 +112,7 @@ paths:
     get:
       tags:
       - "ABitOfEverythingService"
-      operationId: "CheckNestedEnumGetQueryParams"
+      operationId: "ABitOfEverythingService_CheckNestedEnumGetQueryParams"
       parameters:
       - name: "single_nested.ok"
         in: "path"
@@ -400,7 +400,7 @@ paths:
     get:
       tags:
       - "ABitOfEverythingService"
-      operationId: "CheckGetQueryParams"
+      operationId: "ABitOfEverythingService_CheckGetQueryParams"
       parameters:
       - name: "single_nested.name"
         in: "path"
@@ -695,7 +695,7 @@ paths:
     post:
       tags:
       - "ABitOfEverythingService"
-      operationId: "CheckPostQueryParams"
+      operationId: "ABitOfEverythingService_CheckPostQueryParams"
       parameters:
       - name: "string_value"
         in: "path"
@@ -734,7 +734,7 @@ paths:
     get:
       tags:
       - "ABitOfEverythingService"
-      operationId: "GetQuery"
+      operationId: "ABitOfEverythingService_GetQuery"
       parameters:
       - name: "uuid"
         in: "path"
@@ -1042,7 +1042,7 @@ paths:
       - "ABitOfEverythingService"
       summary: "Create a new ABitOfEverything"
       description: "This API creates a new ABitOfEverything"
-      operationId: "Create"
+      operationId: "ABitOfEverythingService_Create"
       parameters:
       - name: "float_value"
         in: "path"
@@ -1193,7 +1193,7 @@ paths:
     post:
       tags:
       - "ABitOfEverythingService"
-      operationId: "DeepPathEcho"
+      operationId: "ABitOfEverythingService_DeepPathEcho"
       parameters:
       - name: "single_nested.name"
         in: "path"
@@ -1233,7 +1233,7 @@ paths:
     get:
       tags:
       - "ABitOfEverythingService"
-      operationId: "Lookup"
+      operationId: "ABitOfEverythingService_Lookup"
       parameters:
       - name: "uuid"
         in: "path"
@@ -1265,7 +1265,7 @@ paths:
     put:
       tags:
       - "ABitOfEverythingService"
-      operationId: "Update"
+      operationId: "ABitOfEverythingService_Update"
       parameters:
       - name: "uuid"
         in: "path"
@@ -1302,7 +1302,7 @@ paths:
     delete:
       tags:
       - "ABitOfEverythingService"
-      operationId: "Delete"
+      operationId: "ABitOfEverythingService_Delete"
       parameters:
       - name: "uuid"
         in: "path"
@@ -1340,7 +1340,7 @@ paths:
   : get:
       tags:
       - "ABitOfEverythingService"
-      operationId: "GetRepeatedQuery"
+      operationId: "ABitOfEverythingService_GetRepeatedQuery"
       parameters:
       - name: "path_repeated_float_value"
         in: "path"
@@ -1531,7 +1531,7 @@ paths:
     put:
       tags:
       - "ABitOfEverythingService"
-      operationId: "UpdateV2"
+      operationId: "ABitOfEverythingService_UpdateV2"
       parameters:
       - name: "abe.uuid"
         in: "path"
@@ -1568,7 +1568,7 @@ paths:
     patch:
       tags:
       - "ABitOfEverythingService"
-      operationId: "UpdateV22"
+      operationId: "ABitOfEverythingService_UpdateV22"
       parameters:
       - name: "abe.uuid"
         in: "path"
@@ -1608,7 +1608,7 @@ paths:
       - "echo rpc"
       summary: "Summary: Echo rpc"
       description: "Description Echo"
-      operationId: "Echo3"
+      operationId: "ABitOfEverythingService_Echo3"
       parameters:
       - name: "value"
         in: "query"
@@ -1653,7 +1653,7 @@ paths:
       - "echo rpc"
       summary: "Summary: Echo rpc"
       description: "Description Echo"
-      operationId: "Echo2"
+      operationId: "ABitOfEverythingService_Echo2"
       parameters:
       - in: "body"
         name: "body"
@@ -1697,7 +1697,7 @@ paths:
     get:
       tags:
       - "camelCaseServiceName"
-      operationId: "Empty"
+      operationId: "camelCaseServiceName_Empty"
       parameters: []
       responses:
         200:
@@ -1724,7 +1724,7 @@ paths:
     get:
       tags:
       - "ABitOfEverythingService"
-      operationId: "ErrorWithDetails"
+      operationId: "ABitOfEverythingService_ErrorWithDetails"
       parameters: []
       responses:
         200:
@@ -1751,7 +1751,7 @@ paths:
     get:
       tags:
       - "ABitOfEverythingService"
-      operationId: "OverwriteResponseContentType"
+      operationId: "ABitOfEverythingService_OverwriteResponseContentType"
       produces:
       - "application/text"
       parameters: []
@@ -1781,7 +1781,7 @@ paths:
     post:
       tags:
       - "ABitOfEverythingService"
-      operationId: "PostWithEmptyBody"
+      operationId: "ABitOfEverythingService_PostWithEmptyBody"
       parameters:
       - name: "name"
         in: "path"
@@ -1819,7 +1819,7 @@ paths:
     get:
       tags:
       - "ABitOfEverythingService"
-      operationId: "Timeout"
+      operationId: "ABitOfEverythingService_Timeout"
       parameters: []
       responses:
         200:
@@ -1846,7 +1846,7 @@ paths:
     post:
       tags:
       - "ABitOfEverythingService"
-      operationId: "GetMessageWithBody"
+      operationId: "ABitOfEverythingService_GetMessageWithBody"
       parameters:
       - name: "id"
         in: "path"
@@ -1884,7 +1884,7 @@ paths:
     patch:
       tags:
       - "ABitOfEverythingService"
-      operationId: "UpdateV23"
+      operationId: "ABitOfEverythingService_UpdateV23"
       parameters:
       - name: "abe.uuid"
         in: "path"

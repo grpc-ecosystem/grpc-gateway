@@ -35,7 +35,7 @@ Description Echo
 
 @return SubStringMessage
 */
-func (a *EchoRpcApiService) Echo(ctx context.Context, value string) (SubStringMessage, *http.Response, error) {
+func (a *EchoRpcApiService) ABitOfEverythingServiceEcho(ctx context.Context, value string) (SubStringMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -192,7 +192,7 @@ Description Echo
 
 @return SubStringMessage
 */
-func (a *EchoRpcApiService) Echo2(ctx context.Context, body string) (SubStringMessage, *http.Response, error) {
+func (a *EchoRpcApiService) ABitOfEverythingServiceEcho2(ctx context.Context, body string) (SubStringMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -346,17 +346,17 @@ func (a *EchoRpcApiService) Echo2(ctx context.Context, body string) (SubStringMe
 EchoRpcApiService Summary: Echo rpc
 Description Echo
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param optional nil or *Echo3Opts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingServiceEcho3Opts - Optional Parameters:
      * @param "Value" (optional.String) - 
 
 @return SubStringMessage
 */
 
-type Echo3Opts struct { 
+type ABitOfEverythingServiceEcho3Opts struct { 
 	Value optional.String
 }
 
-func (a *EchoRpcApiService) Echo3(ctx context.Context, localVarOptionals *Echo3Opts) (SubStringMessage, *http.Response, error) {
+func (a *EchoRpcApiService) ABitOfEverythingServiceEcho3(ctx context.Context, localVarOptionals *ABitOfEverythingServiceEcho3Opts) (SubStringMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}

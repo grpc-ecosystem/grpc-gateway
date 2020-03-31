@@ -30,7 +30,7 @@
   "paths": {
     "/v1/example/a_bit_of_everything": {
       "post": {
-        "operationId": "CreateBody",
+        "operationId": "ABitOfEverythingService_CreateBody",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -81,7 +81,7 @@
       "get": {
         "summary": "Summary: Echo rpc",
         "description": "Description Echo",
-        "operationId": "Echo",
+        "operationId": "ABitOfEverythingService_Echo",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -142,7 +142,7 @@
     },
     "/v1/example/a_bit_of_everything/params/get/nested_enum/{single_nested.ok}": {
       "get": {
-        "operationId": "CheckNestedEnumGetQueryParams",
+        "operationId": "ABitOfEverythingService_CheckNestedEnumGetQueryParams",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -457,7 +457,7 @@
     },
     "/v1/example/a_bit_of_everything/params/get/{single_nested.name}": {
       "get": {
-        "operationId": "CheckGetQueryParams",
+        "operationId": "ABitOfEverythingService_CheckGetQueryParams",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -778,7 +778,7 @@
     },
     "/v1/example/a_bit_of_everything/params/post/{string_value}": {
       "post": {
-        "operationId": "CheckPostQueryParams",
+        "operationId": "ABitOfEverythingService_CheckPostQueryParams",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -833,7 +833,7 @@
     },
     "/v1/example/a_bit_of_everything/query/{uuid}": {
       "get": {
-        "operationId": "GetQuery",
+        "operationId": "ABitOfEverythingService_GetQuery",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -1169,7 +1169,7 @@
       "post": {
         "summary": "Create a new ABitOfEverything",
         "description": "This API creates a new ABitOfEverything",
-        "operationId": "Create",
+        "operationId": "ABitOfEverythingService_Create",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -1356,7 +1356,7 @@
     },
     "/v1/example/a_bit_of_everything/{single_nested.name}": {
       "post": {
-        "operationId": "DeepPathEcho",
+        "operationId": "ABitOfEverythingService_DeepPathEcho",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -1412,7 +1412,7 @@
     },
     "/v1/example/a_bit_of_everything/{uuid}": {
       "get": {
-        "operationId": "Lookup",
+        "operationId": "ABitOfEverythingService_Lookup",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -1457,7 +1457,7 @@
         ]
       },
       "delete": {
-        "operationId": "Delete",
+        "operationId": "ABitOfEverythingService_Delete",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -1512,7 +1512,7 @@
         "x-irreversible": true
       },
       "put": {
-        "operationId": "Update",
+        "operationId": "ABitOfEverythingService_Update",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -1567,7 +1567,7 @@
     },
     "/v1/example/a_bit_of_everything_repeated/{path_repeated_float_value}/{path_repeated_double_value}/{path_repeated_int64_value}/{path_repeated_uint64_value}/{path_repeated_int32_value}/{path_repeated_fixed64_value}/{path_repeated_fixed32_value}/{path_repeated_bool_value}/{path_repeated_string_value}/{path_repeated_bytes_value}/{path_repeated_uint32_value}/{path_repeated_enum_value}/{path_repeated_sfixed32_value}/{path_repeated_sfixed64_value}/{path_repeated_sint32_value}/{path_repeated_sint64_value}": {
       "get": {
-        "operationId": "GetRepeatedQuery",
+        "operationId": "ABitOfEverythingService_GetRepeatedQuery",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -1803,7 +1803,7 @@
     },
     "/v2/example/a_bit_of_everything/{abe.uuid}": {
       "put": {
-        "operationId": "UpdateV2",
+        "operationId": "ABitOfEverythingService_UpdateV2",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -1856,7 +1856,7 @@
         ]
       },
       "patch": {
-        "operationId": "UpdateV22",
+        "operationId": "ABitOfEverythingService_UpdateV22",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -1913,7 +1913,7 @@
       "get": {
         "summary": "Summary: Echo rpc",
         "description": "Description Echo",
-        "operationId": "Echo3",
+        "operationId": "ABitOfEverythingService_Echo3",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -1974,7 +1974,7 @@
       "post": {
         "summary": "Summary: Echo rpc",
         "description": "Description Echo",
-        "operationId": "Echo2",
+        "operationId": "ABitOfEverythingService_Echo2",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -2037,7 +2037,7 @@
     },
     "/v2/example/empty": {
       "get": {
-        "operationId": "Empty",
+        "operationId": "camelCaseServiceName_Empty",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -2076,7 +2076,7 @@
     },
     "/v2/example/errorwithdetails": {
       "get": {
-        "operationId": "ErrorWithDetails",
+        "operationId": "ABitOfEverythingService_ErrorWithDetails",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -2115,7 +2115,7 @@
     },
     "/v2/example/overwriteresponsecontenttype": {
       "get": {
-        "operationId": "OverwriteResponseContentType",
+        "operationId": "ABitOfEverythingService_OverwriteResponseContentType",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -2157,7 +2157,7 @@
     },
     "/v2/example/postwithemptybody/{name}": {
       "post": {
-        "operationId": "PostWithEmptyBody",
+        "operationId": "ABitOfEverythingService_PostWithEmptyBody",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -2212,7 +2212,7 @@
     },
     "/v2/example/timeout": {
       "get": {
-        "operationId": "Timeout",
+        "operationId": "ABitOfEverythingService_Timeout",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -2251,7 +2251,7 @@
     },
     "/v2/example/withbody/{id}": {
       "post": {
-        "operationId": "GetMessageWithBody",
+        "operationId": "ABitOfEverythingService_GetMessageWithBody",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -2306,7 +2306,7 @@
     },
     "/v2a/example/a_bit_of_everything/{abe.uuid}": {
       "patch": {
-        "operationId": "UpdateV23",
+        "operationId": "ABitOfEverythingService_UpdateV23",
         "responses": {
           "200": {
             "description": "A successful response.",

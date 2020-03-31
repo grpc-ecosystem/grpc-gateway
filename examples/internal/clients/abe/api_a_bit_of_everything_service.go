@@ -32,7 +32,7 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedName name is nested field.
  * @param floatValue Float value field
- * @param optional nil or *CheckGetQueryParamsOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingServiceCheckGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Uuid" (optional.String) - 
@@ -68,7 +68,7 @@ ABitOfEverythingServiceApiService
 @return ExamplepbABitOfEverything
 */
 
-type CheckGetQueryParamsOpts struct { 
+type ABitOfEverythingServiceCheckGetQueryParamsOpts struct { 
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
 	Uuid optional.String
@@ -102,7 +102,7 @@ type CheckGetQueryParamsOpts struct {
 	Int64OverrideType optional.Int64
 }
 
-func (a *ABitOfEverythingServiceApiService) CheckGetQueryParams(ctx context.Context, singleNestedName string, floatValue float32, localVarOptionals *CheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, floatValue float32, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -339,7 +339,7 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedOk DeepEnum description.
  * @param floatValue Float value field
- * @param optional nil or *CheckNestedEnumGetQueryParamsOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "Uuid" (optional.String) - 
@@ -375,7 +375,7 @@ ABitOfEverythingServiceApiService
 @return ExamplepbABitOfEverything
 */
 
-type CheckNestedEnumGetQueryParamsOpts struct { 
+type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct { 
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	Uuid optional.String
@@ -409,7 +409,7 @@ type CheckNestedEnumGetQueryParamsOpts struct {
 	Int64OverrideType optional.Int64
 }
 
-func (a *ABitOfEverythingServiceApiService) CheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, floatValue float32, localVarOptionals *CheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, floatValue float32, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -649,7 +649,7 @@ ABitOfEverythingServiceApiService
 
 @return ExamplepbABitOfEverything
 */
-func (a *ABitOfEverythingServiceApiService) CheckPostQueryParams(ctx context.Context, stringValue string, body ABitOfEverythingNested) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, body ABitOfEverythingNested) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -815,7 +815,7 @@ This API creates a new ABitOfEverything
 
 @return ExamplepbABitOfEverything
 */
-func (a *ABitOfEverythingServiceApiService) Create(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -978,7 +978,7 @@ ABitOfEverythingServiceApiService
 
 @return ExamplepbABitOfEverything
 */
-func (a *ABitOfEverythingServiceApiService) CreateBody(ctx context.Context, body ExamplepbABitOfEverything) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ctx context.Context, body ExamplepbABitOfEverything) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1125,7 +1125,7 @@ ABitOfEverythingServiceApiService
 
 @return ExamplepbABitOfEverything
 */
-func (a *ABitOfEverythingServiceApiService) DeepPathEcho(ctx context.Context, singleNestedName string, body ExamplepbABitOfEverything) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(ctx context.Context, singleNestedName string, body ExamplepbABitOfEverything) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1272,7 +1272,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) Delete(ctx context.Context, uuid string) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDelete(ctx context.Context, uuid string) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Delete")
 		localVarPostBody   interface{}
@@ -1416,7 +1416,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ErrorWithDetails(ctx context.Context) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceErrorWithDetails(ctx context.Context) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -1561,7 +1561,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) GetMessageWithBody(ctx context.Context, id string, body ExamplepbBody) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWithBody(ctx context.Context, id string, body ExamplepbBody) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1706,7 +1706,7 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuid
  * @param floatValue Float value field
- * @param optional nil or *GetQueryOpts - Optional Parameters:
+ * @param optional nil or *ABitOfEverythingServiceGetQueryOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
@@ -1743,7 +1743,7 @@ ABitOfEverythingServiceApiService
 @return interface{}
 */
 
-type GetQueryOpts struct { 
+type ABitOfEverythingServiceGetQueryOpts struct { 
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
@@ -1778,7 +1778,7 @@ type GetQueryOpts struct {
 	Int64OverrideType optional.Int64
 }
 
-func (a *ABitOfEverythingServiceApiService) GetQuery(ctx context.Context, uuid string, floatValue float32, localVarOptionals *GetQueryOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuid string, floatValue float32, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -2022,7 +2022,7 @@ ABitOfEverythingServiceApiService
 
 @return ExamplepbABitOfEverythingRepeated
 */
-func (a *ABitOfEverythingServiceApiService) GetRepeatedQuery(ctx context.Context, pathRepeatedFloatValue []float32, pathRepeatedDoubleValue []float64, pathRepeatedInt64Value []string, pathRepeatedUint64Value []string, pathRepeatedInt32Value []int32, pathRepeatedFixed64Value []string, pathRepeatedFixed32Value []int64, pathRepeatedBoolValue []bool, pathRepeatedStringValue []string, pathRepeatedBytesValue []string, pathRepeatedUint32Value []int64, pathRepeatedEnumValue []string, pathRepeatedSfixed32Value []int32, pathRepeatedSfixed64Value []string, pathRepeatedSint32Value []int32, pathRepeatedSint64Value []string) (ExamplepbABitOfEverythingRepeated, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetRepeatedQuery(ctx context.Context, pathRepeatedFloatValue []float32, pathRepeatedDoubleValue []float64, pathRepeatedInt64Value []string, pathRepeatedUint64Value []string, pathRepeatedInt32Value []int32, pathRepeatedFixed64Value []string, pathRepeatedFixed32Value []int64, pathRepeatedBoolValue []bool, pathRepeatedStringValue []string, pathRepeatedBytesValue []string, pathRepeatedUint32Value []int64, pathRepeatedEnumValue []string, pathRepeatedSfixed32Value []int32, pathRepeatedSfixed64Value []string, pathRepeatedSint32Value []int32, pathRepeatedSint64Value []string) (ExamplepbABitOfEverythingRepeated, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -2230,7 +2230,7 @@ ABitOfEverythingServiceApiService
 
 @return ExamplepbABitOfEverything
 */
-func (a *ABitOfEverythingServiceApiService) Lookup(ctx context.Context, uuid string) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceLookup(ctx context.Context, uuid string) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -2374,7 +2374,7 @@ ABitOfEverythingServiceApiService
 
 @return string
 */
-func (a *ABitOfEverythingServiceApiService) OverwriteResponseContentType(ctx context.Context) (string, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceOverwriteResponseContentType(ctx context.Context) (string, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -2519,7 +2519,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) PostWithEmptyBody(ctx context.Context, name string, body ExamplepbBody) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmptyBody(ctx context.Context, name string, body ExamplepbBody) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -2665,7 +2665,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) Timeout(ctx context.Context) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceTimeout(ctx context.Context) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -2810,7 +2810,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) Update(ctx context.Context, uuid string, body ExamplepbABitOfEverything) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx context.Context, uuid string, body ExamplepbABitOfEverything) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -2958,7 +2958,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) UpdateV2(ctx context.Context, abeUuid string, body ExamplepbABitOfEverything) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, abeUuid string, body ExamplepbABitOfEverything) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -3106,7 +3106,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) UpdateV22(ctx context.Context, abeUuid string, body ExamplepbABitOfEverything) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, abeUuid string, body ExamplepbABitOfEverything) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -3254,7 +3254,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) UpdateV23(ctx context.Context, abeUuid string, body ExamplepbUpdateV2Request) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx context.Context, abeUuid string, body ExamplepbUpdateV2Request) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}

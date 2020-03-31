@@ -12,7 +12,7 @@ paths:
     get:
       tags:
       - "ResponseBodyService"
-      operationId: "ListResponseBodies"
+      operationId: "ResponseBodyService_ListResponseBodies"
       parameters:
       - name: "data"
         in: "path"
@@ -34,7 +34,7 @@ paths:
     get:
       tags:
       - "ResponseBodyService"
-      operationId: "GetResponseBody"
+      operationId: "ResponseBodyService_GetResponseBody"
       parameters:
       - name: "data"
         in: "path"
@@ -54,7 +54,7 @@ paths:
     get:
       tags:
       - "ResponseBodyService"
-      operationId: "ListResponseStrings"
+      operationId: "ResponseBodyService_ListResponseStrings"
       parameters:
       - name: "data"
         in: "path"
