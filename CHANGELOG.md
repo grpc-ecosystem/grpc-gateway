@@ -1,33 +1,66 @@
 # Change Log
 
-## [v1.14.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.3) (2020-03-11)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.2...v1.14.3)
+## [v1.14.4-rc.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.4-rc.1) (2020-04-01)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.3...v1.14.4-rc.1)
+
+**Implemented enhancements:**
+
+- proto-gen-\* --version [\#649](https://github.com/grpc-ecosystem/grpc-gateway/issues/649)
+
+**Closed issues:**
+
+- protoc-gen-swagger: json\_names\_for\_fields=true does not respect json\_name for \*nested\* path parameters [\#1187](https://github.com/grpc-ecosystem/grpc-gateway/issues/1187)
+- protoc-gen-grpc-gateway-ts plugin for generating Typescript types [\#1182](https://github.com/grpc-ecosystem/grpc-gateway/issues/1182)
+- protoc-gen-swagger: support outputting enum parameters as integers [\#1177](https://github.com/grpc-ecosystem/grpc-gateway/issues/1177)
+- protoc-gen-grpc-gateway should warn or fail if a selector does not exist [\#1175](https://github.com/grpc-ecosystem/grpc-gateway/issues/1175)
+- Enum string values not supported by grpc gateway [\#1171](https://github.com/grpc-ecosystem/grpc-gateway/issues/1171)
+- Swagger definition is broken if there's no default error response set [\#1162](https://github.com/grpc-ecosystem/grpc-gateway/issues/1162)
+- Using golang/protobuf v1.4.0-rc.3 locks up generators [\#1158](https://github.com/grpc-ecosystem/grpc-gateway/issues/1158)
 
 **Merged pull requests:**
 
-- Move httprule back into the public API [\#1169](https://github.com/grpc-ecosystem/grpc-gateway/pull/1169) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Generate Swagger with Unique Operation IDs [\#1193](https://github.com/grpc-ecosystem/grpc-gateway/pull/1193) ([dadgar](https://github.com/dadgar))
+- Xin/support deep levels reserved json name [\#1191](https://github.com/grpc-ecosystem/grpc-gateway/pull/1191) ([xin-au](https://github.com/xin-au))
+- feat: add enumAsInts flag [\#1186](https://github.com/grpc-ecosystem/grpc-gateway/pull/1186) ([rowe0x](https://github.com/rowe0x))
+- Use 8088 instead of 8080 in integration test. [\#1184](https://github.com/grpc-ecosystem/grpc-gateway/pull/1184) ([drigz](https://github.com/drigz))
+- Limit Bazel memory usage in CI. [\#1183](https://github.com/grpc-ecosystem/grpc-gateway/pull/1183) ([drigz](https://github.com/drigz))
+- fix version spelling [\#1181](https://github.com/grpc-ecosystem/grpc-gateway/pull/1181) ([seriousben](https://github.com/seriousben))
+- Emit error on HTTP rules without a matching selector and log warning on unbound methods [\#1178](https://github.com/grpc-ecosystem/grpc-gateway/pull/1178) ([andrascz](https://github.com/andrascz))
+- genswagger: don't emit default response if there's no Error definition [\#1166](https://github.com/grpc-ecosystem/grpc-gateway/pull/1166) ([utrack](https://github.com/utrack))
+
+## [v1.14.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.3) (2020-03-11)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.2...v1.14.3)
 
 **Closed issues:**
 
 - Missing httprule breaks our module [\#1168](https://github.com/grpc-ecosystem/grpc-gateway/issues/1168)
 
-## [v1.14.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.2) (2020-03-09)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.1...v1.14.2)
-
 **Merged pull requests:**
 
-- Move genswagger to public API again [\#1163](https://github.com/grpc-ecosystem/grpc-gateway/pull/1163) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Generate changelog for 1.14.3 [\#1170](https://github.com/grpc-ecosystem/grpc-gateway/pull/1170) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Move httprule back into the public API [\#1169](https://github.com/grpc-ecosystem/grpc-gateway/pull/1169) ([johanbrandhorst](https://github.com/johanbrandhorst))
+
+## [v1.14.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.2) (2020-03-09)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.1...v1.14.2)
 
 **Closed issues:**
 
 - 1.14.x breaks clay [\#1161](https://github.com/grpc-ecosystem/grpc-gateway/issues/1161)
+- Enum string values not supported by grpc gateway [\#1159](https://github.com/grpc-ecosystem/grpc-gateway/issues/1159)
+- Path parameters visible in the body of the request [\#1157](https://github.com/grpc-ecosystem/grpc-gateway/issues/1157)
+- 1.14.0 breaks existing pipelines [\#1154](https://github.com/grpc-ecosystem/grpc-gateway/issues/1154)
+
+**Merged pull requests:**
+
+- Generate changelog for 1.14.2 [\#1164](https://github.com/grpc-ecosystem/grpc-gateway/pull/1164) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Move genswagger to public API again [\#1163](https://github.com/grpc-ecosystem/grpc-gateway/pull/1163) ([johanbrandhorst](https://github.com/johanbrandhorst))
 
 ## [v1.14.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.1) (2020-03-05)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.0...v1.14.1)
 
 **Merged pull requests:**
 
-- Generate changelog for 1.14.1 [\#1156](https://github.com/grpc-ecosystem/grpc-gateway/pull/1151) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Generate changelog for 1.14.1 [\#1156](https://github.com/grpc-ecosystem/grpc-gateway/pull/1156) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Move generator and descriptor back to public API [\#1155](https://github.com/grpc-ecosystem/grpc-gateway/pull/1155) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Update build environment to 1.14 [\#1153](https://github.com/grpc-ecosystem/grpc-gateway/pull/1153) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Add gorelease CI step [\#1152](https://github.com/grpc-ecosystem/grpc-gateway/pull/1152) ([johanbrandhorst](https://github.com/johanbrandhorst))
