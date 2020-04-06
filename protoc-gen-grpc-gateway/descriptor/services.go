@@ -118,7 +118,7 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 		tmpl := parsed.Compile()
 
 		if md.GetClientStreaming() && len(tmpl.Fields) > 0 {
-			return nil, fmt.Errorf("cannot use path parameter in client streaming")
+			glog.Warningf("cannot use path parameter in client streaming in method: %s.%s", svc.GetName(), md.GetName())
 		}
 
 		b := &Binding{
