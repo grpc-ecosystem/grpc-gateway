@@ -61,7 +61,17 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			return
 		}
 
-		buf, err := marshaler.Marshal(streamChunk(ctx, resp, mux.streamErrorHandler))
+		var buf []byte
+		switch {
+		case resp == nil:
+			buf, err = marshaler.Marshal(errorChunk(streamError(ctx, mux.streamErrorHandler, errEmptyResponse)))
+		default:
+			if rb, ok := resp.(responseBody); ok {
+				buf, err = marshaler.Marshal(rb.XXX_ResponseBody())
+			} else {
+				buf, err = marshaler.Marshal(map[string]proto.Message{"result": resp})
+			}
+		}
 		if err != nil {
 			grpclog.Infof("Failed to marshal response chunk: %v", err)
 			handleForwardResponseStreamError(ctx, wroteHeader, marshaler, w, req, mux, err)
