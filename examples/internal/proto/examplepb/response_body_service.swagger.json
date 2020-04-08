@@ -13,22 +13,15 @@
   "paths": {
     "/responsebodies/{data}": {
       "get": {
-        "operationId": "ResponseBodyService_ListResponseBodiesStream",
+        "operationId": "ResponseBodyService_ListResponseBodies",
         "responses": {
           "200": {
-            "description": "(streaming responses)",
+            "description": "",
             "schema": {
-              "type": "object",
+              "type": "array",
               "items": {
                 "$ref": "#/definitions/examplepbRepeatedResponseBodyOutResponse"
-              },
-              "properties": {
-                "result": {},
-                "error": {
-                  "$ref": "#/definitions/runtimeStreamError"
-                }
-              },
-              "title": "Stream result of examplepbRepeatedResponseBodyOut"
+              }
             }
           },
           "default": {
@@ -51,7 +44,7 @@
         ]
       }
     },
-    "/responsebody/{data}": {
+    "/responsebody/stream/{data}": {
       "get": {
         "operationId": "ResponseBodyService_GetResponseBodyStream",
         "responses": {
@@ -90,24 +83,47 @@
         ]
       }
     },
-    "/responsestrings/{data}": {
+    "/responsebody/{data}": {
       "get": {
-        "operationId": "ResponseBodyService_ListResponseStringsStream",
+        "operationId": "ResponseBodyService_GetResponseBody",
         "responses": {
           "200": {
-            "description": "(streaming responses)",
+            "description": "",
             "schema": {
-              "type": "object",
+              "$ref": "#/definitions/examplepbResponseBodyOutResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "data",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ResponseBodyService"
+        ]
+      }
+    },
+    "/responsestrings/{data}": {
+      "get": {
+        "operationId": "ResponseBodyService_ListResponseStrings",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
               "items": {
                 "type": "string"
-              },
-              "properties": {
-                "result": {},
-                "error": {
-                  "$ref": "#/definitions/runtimeStreamError"
-                }
-              },
-              "title": "Stream result of examplepbRepeatedResponseStrings"
+              }
             }
           },
           "default": {

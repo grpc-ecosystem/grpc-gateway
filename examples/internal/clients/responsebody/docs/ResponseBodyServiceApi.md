@@ -4,10 +4,37 @@ All URIs are relative to *https://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**ResponseBodyServiceGetResponseBodyStream**](ResponseBodyServiceApi.md#ResponseBodyServiceGetResponseBodyStream) | **Get** /responsebody/{data} | 
-[**ResponseBodyServiceListResponseBodiesStream**](ResponseBodyServiceApi.md#ResponseBodyServiceListResponseBodiesStream) | **Get** /responsebodies/{data} | 
-[**ResponseBodyServiceListResponseStringsStream**](ResponseBodyServiceApi.md#ResponseBodyServiceListResponseStringsStream) | **Get** /responsestrings/{data} | 
+[**ResponseBodyServiceGetResponseBody**](ResponseBodyServiceApi.md#ResponseBodyServiceGetResponseBody) | **Get** /responsebody/{data} | 
+[**ResponseBodyServiceGetResponseBodyStream**](ResponseBodyServiceApi.md#ResponseBodyServiceGetResponseBodyStream) | **Get** /responsebody/stream/{data} | 
+[**ResponseBodyServiceListResponseBodies**](ResponseBodyServiceApi.md#ResponseBodyServiceListResponseBodies) | **Get** /responsebodies/{data} | 
+[**ResponseBodyServiceListResponseStrings**](ResponseBodyServiceApi.md#ResponseBodyServiceListResponseStrings) | **Get** /responsestrings/{data} | 
 
+
+# **ResponseBodyServiceGetResponseBody**
+> ExamplepbResponseBodyOutResponse ResponseBodyServiceGetResponseBody(ctx, data)
+
+
+### Required Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+  **data** | **string**|  | 
+
+### Return type
+
+[**ExamplepbResponseBodyOutResponse**](examplepbResponseBodyOutResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **ResponseBodyServiceGetResponseBodyStream**
 > StreamResultOfExamplepbResponseBodyOut ResponseBodyServiceGetResponseBodyStream(ctx, data)
@@ -35,8 +62,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **ResponseBodyServiceListResponseBodiesStream**
-> StreamResultOfExamplepbRepeatedResponseBodyOut ResponseBodyServiceListResponseBodiesStream(ctx, data)
+# **ResponseBodyServiceListResponseBodies**
+> []ExamplepbRepeatedResponseBodyOutResponse ResponseBodyServiceListResponseBodies(ctx, data)
 
 
 ### Required Parameters
@@ -48,7 +75,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**StreamResultOfExamplepbRepeatedResponseBodyOut**](Stream result of examplepbRepeatedResponseBodyOut.md)
+[**[]ExamplepbRepeatedResponseBodyOutResponse**](examplepbRepeatedResponseBodyOutResponse.md)
 
 ### Authorization
 
@@ -61,8 +88,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **ResponseBodyServiceListResponseStringsStream**
-> StreamResultOfExamplepbRepeatedResponseBodyOut ResponseBodyServiceListResponseStringsStream(ctx, data)
+# **ResponseBodyServiceListResponseStrings**
+> []string ResponseBodyServiceListResponseStrings(ctx, data)
 
 
 ### Required Parameters
@@ -74,7 +101,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**StreamResultOfExamplepbRepeatedResponseBodyOut**](Stream result of examplepbRepeatedResponseBodyOut.md)
+**[]string**
 
 ### Authorization
 

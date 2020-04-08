@@ -12,7 +12,7 @@ paths:
     get:
       tags:
       - "ResponseBodyService"
-      operationId: "ResponseBodyService_ListResponseBodiesStream"
+      operationId: "ResponseBodyService_ListResponseBodies"
       parameters:
       - name: "data"
         in: "path"
@@ -21,19 +21,16 @@ paths:
         x-exportParamName: "Data"
       responses:
         200:
-          description: "(streaming responses)"
+          description: ""
           schema:
-            type: "object"
-            properties:
-              result: {}
-              error:
-                $ref: "#/definitions/runtimeStreamError"
-            title: "Stream result of examplepbRepeatedResponseBodyOut"
+            type: "array"
+            items:
+              $ref: "#/definitions/examplepbRepeatedResponseBodyOutResponse"
         default:
           description: "An unexpected error response"
           schema:
             $ref: "#/definitions/runtimeError"
-  /responsebody/{data}:
+  /responsebody/stream/{data}:
     get:
       tags:
       - "ResponseBodyService"
@@ -59,11 +56,11 @@ paths:
           description: "An unexpected error response"
           schema:
             $ref: "#/definitions/runtimeError"
-  /responsestrings/{data}:
+  /responsebody/{data}:
     get:
       tags:
       - "ResponseBodyService"
-      operationId: "ResponseBodyService_ListResponseStringsStream"
+      operationId: "ResponseBodyService_GetResponseBody"
       parameters:
       - name: "data"
         in: "path"
@@ -72,14 +69,31 @@ paths:
         x-exportParamName: "Data"
       responses:
         200:
-          description: "(streaming responses)"
+          description: ""
           schema:
-            type: "object"
-            properties:
-              result: {}
-              error:
-                $ref: "#/definitions/runtimeStreamError"
-            title: "Stream result of examplepbRepeatedResponseStrings"
+            $ref: "#/definitions/examplepbResponseBodyOutResponse"
+        default:
+          description: "An unexpected error response"
+          schema:
+            $ref: "#/definitions/runtimeError"
+  /responsestrings/{data}:
+    get:
+      tags:
+      - "ResponseBodyService"
+      operationId: "ResponseBodyService_ListResponseStrings"
+      parameters:
+      - name: "data"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "Data"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              type: "string"
         default:
           description: "An unexpected error response"
           schema:
@@ -107,6 +121,9 @@ definitions:
         type: "string"
       type:
         $ref: "#/definitions/ResponseResponseType"
+    example:
+      data: "data"
+      type: {}
   examplepbRepeatedResponseStrings:
     type: "object"
     properties:
@@ -228,23 +245,6 @@ definitions:
         type_url: "type_url"
       message: "message"
       grpc_code: 0
-  Stream result of examplepbRepeatedResponseBodyOut:
-    properties:
-      result: {}
-      error:
-        $ref: "#/definitions/runtimeStreamError"
-    example:
-      result: ""
-      error:
-        http_code: 6
-        http_status: "http_status"
-        details:
-        - value: "value"
-          type_url: "type_url"
-        - value: "value"
-          type_url: "type_url"
-        message: "message"
-        grpc_code: 0
   Stream result of examplepbResponseBodyOut:
     properties:
       result:

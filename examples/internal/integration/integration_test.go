@@ -1476,26 +1476,46 @@ func TestResponseBody(t *testing.T) {
 }
 
 func testResponseBody(t *testing.T, port int) {
-	apiURL := fmt.Sprintf("http://localhost:%d/responsebody/foo", port)
-	resp, err := http.Get(apiURL)
-	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
-		return
-	}
-	defer resp.Body.Close()
-	buf, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
-		return
-	}
+	tests := []struct {
+		name         string
+		url          string
+		wantStatus   int
+		wantResponse string
+	}{{
+		name:         "unary case",
+		url:          "http://localhost:%d/responsebody/foo",
+		wantStatus:   http.StatusOK,
+		wantResponse: `{"data":"foo"}`,
+	}, {
+		name:         "stream case",
+		url:          "http://localhost:%d/responsebody/stream/foo",
+		wantStatus:   http.StatusOK,
+		wantResponse: `{"data":"foo"}`,
+	}}
 
-	if got, want := resp.StatusCode, http.StatusOK; got != want {
-		t.Errorf("resp.StatusCode = %d; want %d", got, want)
-		t.Logf("%s", buf)
-	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiURL := fmt.Sprintf("http://localhost:%d/responsebody/foo", port)
+			resp, err := http.Get(apiURL)
+			if err != nil {
+				t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+			}
 
-	if got, want := string(buf), `{"data":"foo"}`; got != want {
-		t.Errorf("response = %q; want %q", got, want)
+			defer resp.Body.Close()
+			buf, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Fatalf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+			}
+
+			if got, want := resp.StatusCode, tt.wantStatus; got != want {
+				t.Errorf("resp.StatusCode = %d; want %d", got, want)
+				t.Logf("%s", buf)
+			}
+
+			if got, want := string(buf), tt.wantResponse; got != want {
+				t.Errorf("response = %q; want %q", got, want)
+			}
+		})
 	}
 }
 
@@ -1526,19 +1546,19 @@ func testResponseBodies(t *testing.T, port int) {
 func testResponseStrings(t *testing.T, port int) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	port = 8087
 	// Run Secondary server with different marshalling
 	ch := make(chan error)
 	go func() {
-		if err := runGateway(ctx, ":8081", runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{EnumsAsInts: false, EmitDefaults: true})); err != nil {
+		if err := runGateway(ctx, fmt.Sprintf(":%d", port), runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{EnumsAsInts: false, EmitDefaults: true})); err != nil {
 			ch <- fmt.Errorf("cannot run gateway service: %v", err)
 		}
 	}()
 
-	if err := waitForGateway(ctx, 8081); err != nil {
+	if err := waitForGateway(ctx, uint16(port)); err != nil {
 		t.Fatalf("waitForGateway(ctx, 8081) failed with %v; want success", err)
 	}
-
-	port = 8081
 
 	for i, spec := range []struct {
 		endpoint     string
