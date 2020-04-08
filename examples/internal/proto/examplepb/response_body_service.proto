@@ -55,4 +55,23 @@ service ResponseBodyService {
 			response_body : "values"
 		};
 	}
+
+	rpc GetResponseBodyStream(ResponseBodyIn) returns (stream ResponseBodyOut) {
+		option (google.api.http) = {
+			get : "/responsebody/{data}"
+			response_body : "response"
+		};
+	}
+	rpc ListResponseBodiesStream(ResponseBodyIn) returns (stream RepeatedResponseBodyOut) {
+		option (google.api.http) = {
+			get : "/responsebodies/{data}"
+			response_body : "response"
+		};
+	}
+	rpc ListResponseStringsStream(ResponseBodyIn) returns (stream RepeatedResponseStrings) {
+		option (google.api.http) = {
+			get : "/responsestrings/{data}"
+			response_body : "values"
+		};
+	}
 }

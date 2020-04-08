@@ -12,7 +12,7 @@ paths:
     get:
       tags:
       - "ResponseBodyService"
-      operationId: "ResponseBodyService_ListResponseBodies"
+      operationId: "ResponseBodyService_ListResponseBodiesStream"
       parameters:
       - name: "data"
         in: "path"
@@ -21,11 +21,14 @@ paths:
         x-exportParamName: "Data"
       responses:
         200:
-          description: ""
+          description: "(streaming responses)"
           schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/examplepbRepeatedResponseBodyOutResponse"
+            type: "object"
+            properties:
+              result: {}
+              error:
+                $ref: "#/definitions/runtimeStreamError"
+            title: "Stream result of examplepbRepeatedResponseBodyOut"
         default:
           description: "An unexpected error response"
           schema:
@@ -34,7 +37,7 @@ paths:
     get:
       tags:
       - "ResponseBodyService"
-      operationId: "ResponseBodyService_GetResponseBody"
+      operationId: "ResponseBodyService_GetResponseBodyStream"
       parameters:
       - name: "data"
         in: "path"
@@ -43,9 +46,15 @@ paths:
         x-exportParamName: "Data"
       responses:
         200:
-          description: ""
+          description: "(streaming responses)"
           schema:
-            $ref: "#/definitions/examplepbResponseBodyOutResponse"
+            type: "object"
+            properties:
+              result:
+                $ref: "#/definitions/examplepbResponseBodyOutResponse"
+              error:
+                $ref: "#/definitions/runtimeStreamError"
+            title: "Stream result of examplepbResponseBodyOut"
         default:
           description: "An unexpected error response"
           schema:
@@ -54,7 +63,7 @@ paths:
     get:
       tags:
       - "ResponseBodyService"
-      operationId: "ResponseBodyService_ListResponseStrings"
+      operationId: "ResponseBodyService_ListResponseStringsStream"
       parameters:
       - name: "data"
         in: "path"
@@ -63,11 +72,14 @@ paths:
         x-exportParamName: "Data"
       responses:
         200:
-          description: ""
+          description: "(streaming responses)"
           schema:
-            type: "array"
-            items:
-              type: "string"
+            type: "object"
+            properties:
+              result: {}
+              error:
+                $ref: "#/definitions/runtimeStreamError"
+            title: "Stream result of examplepbRepeatedResponseStrings"
         default:
           description: "An unexpected error response"
           schema:
@@ -95,9 +107,6 @@ definitions:
         type: "string"
       type:
         $ref: "#/definitions/ResponseResponseType"
-    example:
-      data: "data"
-      type: {}
   examplepbRepeatedResponseStrings:
     type: "object"
     properties:
@@ -175,6 +184,9 @@ definitions:
       \ custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\
       \n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n\
       \      \"value\": \"1.212s\"\n    }"
+    example:
+      value: "value"
+      type_url: "type_url"
   runtimeError:
     type: "object"
     properties:
@@ -189,3 +201,66 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/protobufAny"
+  runtimeStreamError:
+    type: "object"
+    properties:
+      grpc_code:
+        type: "integer"
+        format: "int32"
+      http_code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
+      http_status:
+        type: "string"
+      details:
+        type: "array"
+        items:
+          $ref: "#/definitions/protobufAny"
+    example:
+      http_code: 6
+      http_status: "http_status"
+      details:
+      - value: "value"
+        type_url: "type_url"
+      - value: "value"
+        type_url: "type_url"
+      message: "message"
+      grpc_code: 0
+  Stream result of examplepbRepeatedResponseBodyOut:
+    properties:
+      result: {}
+      error:
+        $ref: "#/definitions/runtimeStreamError"
+    example:
+      result: ""
+      error:
+        http_code: 6
+        http_status: "http_status"
+        details:
+        - value: "value"
+          type_url: "type_url"
+        - value: "value"
+          type_url: "type_url"
+        message: "message"
+        grpc_code: 0
+  Stream result of examplepbResponseBodyOut:
+    properties:
+      result:
+        $ref: "#/definitions/examplepbResponseBodyOutResponse"
+      error:
+        $ref: "#/definitions/runtimeStreamError"
+    example:
+      result:
+        data: "data"
+      error:
+        http_code: 6
+        http_status: "http_status"
+        details:
+        - value: "value"
+          type_url: "type_url"
+        - value: "value"
+          type_url: "type_url"
+        message: "message"
+        grpc_code: 0

@@ -13,15 +13,22 @@
   "paths": {
     "/responsebodies/{data}": {
       "get": {
-        "operationId": "ResponseBodyService_ListResponseBodies",
+        "operationId": "ResponseBodyService_ListResponseBodiesStream",
         "responses": {
           "200": {
-            "description": "",
+            "description": "(streaming responses)",
             "schema": {
-              "type": "array",
+              "type": "object",
               "items": {
                 "$ref": "#/definitions/examplepbRepeatedResponseBodyOutResponse"
-              }
+              },
+              "properties": {
+                "result": {},
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of examplepbRepeatedResponseBodyOut"
             }
           },
           "default": {
@@ -46,12 +53,21 @@
     },
     "/responsebody/{data}": {
       "get": {
-        "operationId": "ResponseBodyService_GetResponseBody",
+        "operationId": "ResponseBodyService_GetResponseBodyStream",
         "responses": {
           "200": {
-            "description": "",
+            "description": "(streaming responses)",
             "schema": {
-              "$ref": "#/definitions/examplepbResponseBodyOutResponse"
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/examplepbResponseBodyOutResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of examplepbResponseBodyOut"
             }
           },
           "default": {
@@ -76,15 +92,22 @@
     },
     "/responsestrings/{data}": {
       "get": {
-        "operationId": "ResponseBodyService_ListResponseStrings",
+        "operationId": "ResponseBodyService_ListResponseStringsStream",
         "responses": {
           "200": {
-            "description": "",
+            "description": "(streaming responses)",
             "schema": {
-              "type": "array",
+              "type": "object",
               "items": {
                 "type": "string"
-              }
+              },
+              "properties": {
+                "result": {},
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of examplepbRepeatedResponseStrings"
             }
           },
           "default": {
@@ -194,6 +217,31 @@
           "format": "int32"
         },
         "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "runtimeStreamError": {
+      "type": "object",
+      "properties": {
+        "grpc_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "http_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "http_status": {
           "type": "string"
         },
         "details": {

@@ -193,6 +193,111 @@ func local_request_ResponseBodyService_ListResponseStrings_0(ctx context.Context
 
 }
 
+func request_ResponseBodyService_GetResponseBodyStream_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (ResponseBodyService_GetResponseBodyStreamClient, runtime.ServerMetadata, error) {
+	var protoReq ResponseBodyIn
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["data"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "data")
+	}
+
+	protoReq.Data, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
+	}
+
+	stream, err := client.GetResponseBodyStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
+}
+
+func request_ResponseBodyService_ListResponseBodiesStream_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (ResponseBodyService_ListResponseBodiesStreamClient, runtime.ServerMetadata, error) {
+	var protoReq ResponseBodyIn
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["data"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "data")
+	}
+
+	protoReq.Data, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
+	}
+
+	stream, err := client.ListResponseBodiesStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
+}
+
+func request_ResponseBodyService_ListResponseStringsStream_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (ResponseBodyService_ListResponseStringsStreamClient, runtime.ServerMetadata, error) {
+	var protoReq ResponseBodyIn
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["data"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "data")
+	}
+
+	protoReq.Data, err = runtime.String(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
+	}
+
+	stream, err := client.ListResponseStringsStream(ctx, &protoReq)
+	if err != nil {
+		return nil, metadata, err
+	}
+	header, err := stream.Header()
+	if err != nil {
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+
+}
+
 // RegisterResponseBodyServiceHandlerServer registers the http handlers for service ResponseBodyService to "mux".
 // UnaryRPC     :call ResponseBodyServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -256,6 +361,27 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 
 		forward_ResponseBodyService_ListResponseStrings_0(ctx, mux, outboundMarshaler, w, req, response_ResponseBodyService_ListResponseStrings_0{resp}, mux.GetForwardResponseOptions()...)
 
+	})
+
+	mux.Handle("GET", pattern_ResponseBodyService_GetResponseBodyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+		return
+	})
+
+	mux.Handle("GET", pattern_ResponseBodyService_ListResponseBodiesStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+		return
+	})
+
+	mux.Handle("GET", pattern_ResponseBodyService_ListResponseStringsStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+		return
 	})
 
 	return nil
@@ -359,6 +485,75 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 
 	})
 
+	mux.Handle("GET", pattern_ResponseBodyService_GetResponseBodyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ResponseBodyService_GetResponseBodyStream_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ResponseBodyService_GetResponseBodyStream_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) {
+			res, err := resp.Recv()
+			return response_ResponseBodyService_GetResponseBodyStream_0{res}, err
+		}, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ResponseBodyService_ListResponseBodiesStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ResponseBodyService_ListResponseBodiesStream_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ResponseBodyService_ListResponseBodiesStream_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) {
+			res, err := resp.Recv()
+			return response_ResponseBodyService_ListResponseBodiesStream_0{res}, err
+		}, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ResponseBodyService_ListResponseStringsStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ResponseBodyService_ListResponseStringsStream_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ResponseBodyService_ListResponseStringsStream_0(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) {
+			res, err := resp.Recv()
+			return response_ResponseBodyService_ListResponseStringsStream_0{res}, err
+		}, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -389,12 +584,45 @@ func (m response_ResponseBodyService_ListResponseStrings_0) XXX_ResponseBody() i
 	return response.Values
 }
 
+type response_ResponseBodyService_GetResponseBodyStream_0 struct {
+	proto.Message
+}
+
+func (m response_ResponseBodyService_GetResponseBodyStream_0) XXX_ResponseBody() interface{} {
+	response := m.Message.(*ResponseBodyOut)
+	return response.Response
+}
+
+type response_ResponseBodyService_ListResponseBodiesStream_0 struct {
+	proto.Message
+}
+
+func (m response_ResponseBodyService_ListResponseBodiesStream_0) XXX_ResponseBody() interface{} {
+	response := m.Message.(*RepeatedResponseBodyOut)
+	return response.Response
+}
+
+type response_ResponseBodyService_ListResponseStringsStream_0 struct {
+	proto.Message
+}
+
+func (m response_ResponseBodyService_ListResponseStringsStream_0) XXX_ResponseBody() interface{} {
+	response := m.Message.(*RepeatedResponseStrings)
+	return response.Values
+}
+
 var (
 	pattern_ResponseBodyService_GetResponseBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsebody", "data"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_ResponseBodyService_ListResponseBodies_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsebodies", "data"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_ResponseBodyService_ListResponseStrings_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsestrings", "data"}, "", runtime.AssumeColonVerbOpt(true)))
+
+	pattern_ResponseBodyService_GetResponseBodyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsebody", "data"}, "", runtime.AssumeColonVerbOpt(true)))
+
+	pattern_ResponseBodyService_ListResponseBodiesStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsebodies", "data"}, "", runtime.AssumeColonVerbOpt(true)))
+
+	pattern_ResponseBodyService_ListResponseStringsStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsestrings", "data"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
@@ -403,4 +631,10 @@ var (
 	forward_ResponseBodyService_ListResponseBodies_0 = runtime.ForwardResponseMessage
 
 	forward_ResponseBodyService_ListResponseStrings_0 = runtime.ForwardResponseMessage
+
+	forward_ResponseBodyService_GetResponseBodyStream_0 = runtime.ForwardResponseStream
+
+	forward_ResponseBodyService_ListResponseBodiesStream_0 = runtime.ForwardResponseStream
+
+	forward_ResponseBodyService_ListResponseStringsStream_0 = runtime.ForwardResponseStream
 )

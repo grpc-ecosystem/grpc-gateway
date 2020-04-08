@@ -30,15 +30,15 @@ ResponseBodyServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param data
 
-@return ExamplepbResponseBodyOutResponse
+@return StreamResultOfExamplepbResponseBodyOut
 */
-func (a *ResponseBodyServiceApiService) ResponseBodyServiceGetResponseBody(ctx context.Context, data string) (ExamplepbResponseBodyOutResponse, *http.Response, error) {
+func (a *ResponseBodyServiceApiService) ResponseBodyServiceGetResponseBodyStream(ctx context.Context, data string) (StreamResultOfExamplepbResponseBodyOut, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
 		localVarFileName   string
 		localVarFileBytes  []byte
-		localVarReturnValue ExamplepbResponseBodyOutResponse
+		localVarReturnValue StreamResultOfExamplepbResponseBodyOut
 	)
 
 	// create path and map variables
@@ -97,7 +97,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceGetResponseBody(ctx c
 		}
 		
 		if localVarHttpResponse.StatusCode == 200 {
-			var v ExamplepbResponseBodyOutResponse
+			var v StreamResultOfExamplepbResponseBodyOut
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -129,15 +129,15 @@ ResponseBodyServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param data
 
-@return []ExamplepbRepeatedResponseBodyOutResponse
+@return StreamResultOfExamplepbRepeatedResponseBodyOut
 */
-func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseBodies(ctx context.Context, data string) ([]ExamplepbRepeatedResponseBodyOutResponse, *http.Response, error) {
+func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseBodiesStream(ctx context.Context, data string) (StreamResultOfExamplepbRepeatedResponseBodyOut, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
 		localVarFileName   string
 		localVarFileBytes  []byte
-		localVarReturnValue []ExamplepbRepeatedResponseBodyOutResponse
+		localVarReturnValue StreamResultOfExamplepbRepeatedResponseBodyOut
 	)
 
 	// create path and map variables
@@ -196,7 +196,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseBodies(ct
 		}
 		
 		if localVarHttpResponse.StatusCode == 200 {
-			var v []ExamplepbRepeatedResponseBodyOutResponse
+			var v StreamResultOfExamplepbRepeatedResponseBodyOut
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -228,15 +228,15 @@ ResponseBodyServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param data
 
-@return []string
+@return StreamResultOfExamplepbRepeatedResponseBodyOut
 */
-func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseStrings(ctx context.Context, data string) ([]string, *http.Response, error) {
+func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseStringsStream(ctx context.Context, data string) (StreamResultOfExamplepbRepeatedResponseBodyOut, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
 		localVarFileName   string
 		localVarFileBytes  []byte
-		localVarReturnValue []string
+		localVarReturnValue StreamResultOfExamplepbRepeatedResponseBodyOut
 	)
 
 	// create path and map variables
@@ -295,7 +295,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseStrings(c
 		}
 		
 		if localVarHttpResponse.StatusCode == 200 {
-			var v []string
+			var v StreamResultOfExamplepbRepeatedResponseBodyOut
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
