@@ -76,6 +76,12 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "Value"
+      - name: "name"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Name"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -1616,6 +1622,12 @@ paths:
         type: "string"
         x-exportParamName: "Value"
         x-optionalDataType: "String"
+      - name: "name"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Name"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -2387,6 +2399,8 @@ definitions:
     type: "object"
     properties:
       value:
+        type: "string"
+      name:
         type: "string"
 externalDocs:
   description: "More about gRPC-Gateway"

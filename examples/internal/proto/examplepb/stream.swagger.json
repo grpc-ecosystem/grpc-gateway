@@ -75,7 +75,7 @@
         ]
       }
     },
-    "/v1/example/a_bit_of_everything/echo": {
+    "/v1/example/a_bit_of_everything/echo/{name}": {
       "post": {
         "operationId": "StreamService_BulkEcho",
         "responses": {
@@ -102,6 +102,12 @@
           }
         },
         "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "body",
             "description": " (streaming inputs)",
@@ -427,6 +433,9 @@
       "type": "object",
       "properties": {
         "value": {
+          "type": "string"
+        },
+        "name": {
           "type": "string"
         }
       }

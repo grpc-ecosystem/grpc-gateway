@@ -129,6 +129,12 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -1961,6 +1967,12 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -2808,6 +2820,9 @@
       "type": "object",
       "properties": {
         "value": {
+          "type": "string"
+        },
+        "name": {
           "type": "string"
         }
       }

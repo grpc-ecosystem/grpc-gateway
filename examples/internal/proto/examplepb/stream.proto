@@ -22,7 +22,7 @@ service StreamService {
 	}
 	rpc BulkEcho(stream grpc.gateway.examples.internal.sub.StringMessage) returns (stream grpc.gateway.examples.internal.sub.StringMessage) {
 		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/echo"
+			post: "/v1/example/a_bit_of_everything/echo/{name}"
 			body: "*"
 		};
 	}

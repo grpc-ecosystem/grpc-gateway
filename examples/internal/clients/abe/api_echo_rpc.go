@@ -32,10 +32,17 @@ EchoRpcApiService Summary: Echo rpc
 Description Echo
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param value
+ * @param optional nil or *ABitOfEverythingServiceEchoOpts - Optional Parameters:
+     * @param "Name" (optional.String) - 
 
 @return SubStringMessage
 */
-func (a *EchoRpcApiService) ABitOfEverythingServiceEcho(ctx context.Context, value string) (SubStringMessage, *http.Response, error) {
+
+type ABitOfEverythingServiceEchoOpts struct { 
+	Name optional.String
+}
+
+func (a *EchoRpcApiService) ABitOfEverythingServiceEcho(ctx context.Context, value string, localVarOptionals *ABitOfEverythingServiceEchoOpts) (SubStringMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -52,6 +59,9 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho(ctx context.Context, val
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if localVarOptionals != nil && localVarOptionals.Name.IsSet() {
+		localVarQueryParams.Add("name", parameterToString(localVarOptionals.Name.Value(), ""))
+	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -348,12 +358,14 @@ Description Echo
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *ABitOfEverythingServiceEcho3Opts - Optional Parameters:
      * @param "Value" (optional.String) - 
+     * @param "Name" (optional.String) - 
 
 @return SubStringMessage
 */
 
 type ABitOfEverythingServiceEcho3Opts struct { 
 	Value optional.String
+	Name optional.String
 }
 
 func (a *EchoRpcApiService) ABitOfEverythingServiceEcho3(ctx context.Context, localVarOptionals *ABitOfEverythingServiceEcho3Opts) (SubStringMessage, *http.Response, error) {
@@ -374,6 +386,9 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho3(ctx context.Context, lo
 
 	if localVarOptionals != nil && localVarOptionals.Value.IsSet() {
 		localVarQueryParams.Add("value", parameterToString(localVarOptionals.Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Name.IsSet() {
+		localVarQueryParams.Add("name", parameterToString(localVarOptionals.Name.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
