@@ -42,3 +42,11 @@ func (s *responseBodyServer) ListResponseStrings(ctx context.Context, req *examp
 		Values: []string{"hello", req.Data},
 	}, nil
 }
+
+func (s *responseBodyServer) GetResponseBodyStream(req *examples.ResponseBodyIn, stream examples.ResponseBodyService_GetResponseBodyStreamServer) error {
+	return stream.Send(&examples.ResponseBodyOut{
+		Response: &examples.ResponseBodyOut_Response{
+			Data: req.Data,
+		},
+	})
+}
