@@ -70,7 +70,8 @@ jobs:
             build --test_output errors
             build --features race
             # Workaround https://github.com/bazelbuild/bazel/issues/3645
-            build --local_resources=3072,2.0,1.0
+            # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
+            build --local_ram_resources=HOST_RAM*.5
             EOF
       - run:
           name: Check that Bazel BUILD files are up-to-date
