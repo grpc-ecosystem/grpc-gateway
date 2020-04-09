@@ -231,6 +231,15 @@ annotation to your .proto file
      path/to/your_service.proto
    ```
 
+## Video intro
+
+This GopherCon UK 2019 presentation from our maintainer
+[@JohanBrandhorst](https://github.com/johanbrandhorst) provides a good intro to
+using the grpc-gateway. It uses the following boilerplate repo as a base:
+https://github.com/johanbrandhorst/grpc-gateway-boilerplate.
+
+[![gRPC-Gateway presentation](https://img.youtube.com/vi/Pq1paKC-fXk/0.jpg)](https://www.youtube.com/watch?v=Pq1paKC-fXk)
+
 ## Parameters and flags
 
 During code generation with `protoc`, flags to grpc-gateway tools must be passed
