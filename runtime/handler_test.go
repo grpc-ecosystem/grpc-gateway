@@ -17,15 +17,26 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+type fakeReponseBodyWrapper struct {
+	proto.Message
+}
+
+// XXX_ResponseBody returns id of SimpleMessage
+func (r fakeReponseBodyWrapper) XXX_ResponseBody() interface{} {
+	resp := r.Message.(*pb.SimpleMessage)
+	return resp.Id
+}
+
 func TestForwardResponseStream(t *testing.T) {
 	type msg struct {
 		pb  proto.Message
 		err error
 	}
 	tests := []struct {
-		name       string
-		msgs       []msg
-		statusCode int
+		name         string
+		msgs         []msg
+		statusCode   int
+		responseBody bool
 	}{{
 		name: "encoding",
 		msgs: []msg{
@@ -47,6 +58,22 @@ func TestForwardResponseStream(t *testing.T) {
 			{nil, grpc.Errorf(codes.OutOfRange, "400")},
 		},
 		statusCode: http.StatusOK,
+	}, {
+		name: "response body stream case",
+		msgs: []msg{
+			{fakeReponseBodyWrapper{&pb.SimpleMessage{Id: "One"}}, nil},
+			{fakeReponseBodyWrapper{&pb.SimpleMessage{Id: "Two"}}, nil},
+		},
+		responseBody: true,
+		statusCode:   http.StatusOK,
+	}, {
+		name: "response body stream error case",
+		msgs: []msg{
+			{fakeReponseBodyWrapper{&pb.SimpleMessage{Id: "One"}}, nil},
+			{nil, grpc.Errorf(codes.OutOfRange, "400")},
+		},
+		responseBody: true,
+		statusCode:   http.StatusOK,
 	}}
 
 	newTestRecv := func(t *testing.T, msgs []msg) func() (proto.Message, error) {
@@ -113,7 +140,21 @@ func TestForwardResponseStream(t *testing.T) {
 
 					return
 				}
-				b, err := marshaler.Marshal(map[string]proto.Message{"result": msg.pb})
+
+				var b []byte
+
+				if tt.responseBody {
+					// responseBody interface is in runtime package and test is in runtime_test package. hence can't use responseBody direclty
+					// So type casting to fakeReponseBodyWrapper struct to verify the data.
+					rb, ok := msg.pb.(fakeReponseBodyWrapper)
+					if !ok {
+						t.Errorf("stream responseBody failed %v", err)
+					}
+					b, err = marshaler.Marshal(rb.XXX_ResponseBody())
+				} else {
+					b, err = marshaler.Marshal(map[string]proto.Message{"result": msg.pb})
+				}
+
 				if err != nil {
 					t.Errorf("marshaler.Marshal() failed %v", err)
 				}

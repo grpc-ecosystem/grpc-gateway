@@ -55,4 +55,11 @@ service ResponseBodyService {
 			response_body : "values"
 		};
 	}
+
+	rpc GetResponseBodyStream(ResponseBodyIn) returns (stream ResponseBodyOut) {
+		option (google.api.http) = {
+			get : "/responsebody/stream/{data}"
+			response_body : "response"
+		};
+	}
 }
