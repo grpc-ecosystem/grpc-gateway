@@ -731,7 +731,7 @@ func isResourceName(prefix string) bool {
 	return field == "parent" || field == "name"
 }
 
-func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap) error {
+func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	for svcIdx, svc := range services {
 		for methIdx, meth := range svc.Methods {
@@ -806,7 +806,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					}
 					parameterString := parameter.String()
 					if reg.GetUseJSONNamesForFields() {
-						parameterString = lowerCamelCase(parameterString)
+						parameterString = lowerCamelCase(parameterString, meth.RequestType.Fields, msgs)
 					}
 					parameters = append(parameters, swaggerParameterObject{
 						Name:        parameterString,
