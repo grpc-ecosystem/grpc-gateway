@@ -1557,7 +1557,7 @@ func testResponseStrings(t *testing.T, port int) {
 	}()
 
 	if err := waitForGateway(ctx, uint16(port)); err != nil {
-		t.Fatalf("waitForGateway(ctx, 8081) failed with %v; want success", err)
+		t.Fatalf("waitForGateway(ctx, %d) failed with %v; want success", port, err)
 	}
 
 	for i, spec := range []struct {
