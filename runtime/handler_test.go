@@ -144,15 +144,16 @@ func TestForwardResponseStream(t *testing.T) {
 				var b []byte
 
 				if tt.responseBody {
-					// responseBody interface is in runtime package and test is in runtime_test package. hence can't use responseBody direclty
+					// responseBody interface is in runtime package and test is in runtime_test package. hence can't use responseBody directly
 					// So type casting to fakeReponseBodyWrapper struct to verify the data.
 					rb, ok := msg.pb.(fakeReponseBodyWrapper)
 					if !ok {
 						t.Errorf("stream responseBody failed %v", err)
 					}
-					b, err = marshaler.Marshal(rb.XXX_ResponseBody())
+
+					b, err = marshaler.Marshal(map[string]interface{}{"result": rb.XXX_ResponseBody()})
 				} else {
-					b, err = marshaler.Marshal(map[string]proto.Message{"result": msg.pb})
+					b, err = marshaler.Marshal(map[string]interface{}{"result": msg.pb})
 				}
 
 				if err != nil {

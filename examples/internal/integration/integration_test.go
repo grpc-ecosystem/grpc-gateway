@@ -1,6 +1,7 @@
 package integration_test
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/base64"
@@ -1477,25 +1478,20 @@ func TestResponseBody(t *testing.T) {
 
 func testResponseBody(t *testing.T, port int) {
 	tests := []struct {
-		name         string
-		url          string
-		wantStatus   int
-		wantResponse string
+		name       string
+		url        string
+		wantStatus int
+		wantBody   string
 	}{{
-		name:         "unary case",
-		url:          "http://localhost:%d/responsebody/foo",
-		wantStatus:   http.StatusOK,
-		wantResponse: `{"data":"foo"}`,
-	}, {
-		name:         "stream case",
-		url:          "http://localhost:%d/responsebody/stream/foo",
-		wantStatus:   http.StatusOK,
-		wantResponse: `{"data":"foo"}`,
+		name:       "unary case",
+		url:        "http://localhost:%d/responsebody/foo",
+		wantStatus: http.StatusOK,
+		wantBody:   `{"data":"foo"}`,
 	}}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			apiURL := fmt.Sprintf("http://localhost:%d/responsebody/foo", port)
+			apiURL := fmt.Sprintf(tt.url, port)
 			resp, err := http.Get(apiURL)
 			if err != nil {
 				t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
@@ -1512,10 +1508,65 @@ func testResponseBody(t *testing.T, port int) {
 				t.Logf("%s", buf)
 			}
 
-			if got, want := string(buf), tt.wantResponse; got != want {
+			if got, want := string(buf), tt.wantBody; got != want {
 				t.Errorf("response = %q; want %q", got, want)
 			}
 		})
+	}
+}
+
+func TestResponseBodyStream(t *testing.T) {
+	tests := []struct {
+		name       string
+		url        string
+		wantStatus int
+		wantBody   []string
+	}{{
+		name:       "stream case",
+		url:        "http://localhost:%d/responsebody/stream/foo",
+		wantStatus: http.StatusOK,
+		wantBody:   []string{`{"result":{"data":"first foo"}}`, `{"result":{"data":"second foo"}}`},
+	}}
+
+	port := 8088
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiURL := fmt.Sprintf(tt.url, port)
+			resp, err := http.Get(apiURL)
+			if err != nil {
+				t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+			}
+
+			defer resp.Body.Close()
+			body, err := readAll(resp.Body)
+			if err != nil {
+				t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
+			}
+
+			if got, want := resp.StatusCode, tt.wantStatus; got != want {
+				t.Errorf("resp.StatusCode = %d; want %d", got, want)
+			}
+
+			if !reflect.DeepEqual(tt.wantBody, body) {
+				t.Errorf("response = %v; want %v", body, tt.wantBody)
+			}
+		})
+	}
+}
+
+func readAll(body io.ReadCloser) ([]string, error) {
+	var b []string
+	reader := bufio.NewReader(body)
+	for {
+		l, err := reader.ReadBytes('\n')
+		switch {
+		case err == io.EOF:
+			return b, nil
+		case err != nil:
+			return nil, err
+		}
+
+		b = append(b, string(bytes.TrimSpace(l)))
 	}
 }
 

@@ -66,11 +66,12 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 		case resp == nil:
 			buf, err = marshaler.Marshal(errorChunk(streamError(ctx, mux.streamErrorHandler, errEmptyResponse)))
 		default:
+			result := map[string]interface{}{"result": resp}
 			if rb, ok := resp.(responseBody); ok {
-				buf, err = marshaler.Marshal(rb.XXX_ResponseBody())
-			} else {
-				buf, err = marshaler.Marshal(map[string]proto.Message{"result": resp})
+				result["result"] = rb.XXX_ResponseBody()
 			}
+
+			buf, err = marshaler.Marshal(result)
 		}
 
 		if err != nil {
