@@ -97,7 +97,7 @@ jobs:
             cd $(mktemp -d) &&
             go mod init tmp &&
             go get golang.org/x/exp/cmd/gorelease@latest
-      - run: gorelease
+      - run: gorelease -base=v2.0.0-alpha.2
   release:
     docker:
       - image: jfbrandhorst/grpc-gateway-build-env:1.14
