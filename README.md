@@ -125,35 +125,29 @@ annotation to your .proto file
 
 3. Generate gRPC stub
 
-   The following generates gRPC code for Golang based on `path/to/your_service.proto`:
-   ```sh
-   protoc -I/usr/local/include -I. \
-     -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-     --go_out=plugins=grpc:. \
-     path/to/your_service.proto
-   ```
+  You will need to provide the required third party protobuf files to the `protoc` compiler.
+  They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
+  them into your `protoc` generation file structure. If you've structured your protofiles according
+  to something like [the Buf style guide](https://buf.build/docs/style-guide#files-and-packages),
+  you could copy the files into a top-level `./google` folder.
+  
+  Here is an example of what a `protoc` command might look like:
 
-   It will generate a stub file `path/to/your_service.pb.go`.
+  ```sh
+  protoc -I. --go_out=plugins=grpc,paths=source_relative:./gen/go/ your/service/v1/your_service.proto
+  ```
+
+  It will generate a stub file with path `./gen/go/your/service/v1/your_service.pb.go`.
 
 4. Implement your service in gRPC as usual
 
    1. (Optional) Generate gRPC stub in the [other programming languages](https://grpc.io/docs/).
 
-     For example, the following generates gRPC code for Ruby based on `path/to/your_service.proto`:
+     For example, the following generates gRPC code for Ruby based on `your/service/v1/your_service.proto`:
      ```sh
-     protoc -I/usr/local/include -I. \
-       -I$GOPATH/src \
-       -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-       --ruby_out=. \
-       path/to/your_service.proto
+     protoc -I. --ruby_out=./gen/ruby your/service/v1/your_service.proto
 
-     protoc -I/usr/local/include -I. \
-       -I$GOPATH/src \
-       -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-       --plugin=protoc-gen-grpc=grpc_ruby_plugin \
-       --grpc-ruby_out=. \
-       path/to/your_service.proto
+     protoc -I. --grpc-ruby_out=./gen/ruby your/service/v1/your_service.proto
      ```
    2. Add the googleapis-common-protos gem (or your language equivalent) as a dependency to your project.
    3. Implement your gRPC service stubs
@@ -161,14 +155,11 @@ annotation to your .proto file
 5. Generate reverse-proxy using `protoc-gen-grpc-gateway`
 
    ```sh
-   protoc -I/usr/local/include -I. \
-     -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-     --grpc-gateway_out=logtostderr=true:. \
-     path/to/your_service.proto
+   protoc -I. --grpc-gateway_out=logtostderr=true,paths=source_relative:./gen/go \
+     your/service/v1/your_service.proto
    ```
 
-   It will generate a reverse proxy `path/to/your_service.pb.gw.go`.
+   It will generate a reverse proxy `gen/go/your/service/v1/your_service.pb.gw.go`.
 
 6. Write an entrypoint for the HTTP reverse-proxy server
 
@@ -176,7 +167,7 @@ annotation to your .proto file
    package main
  
    import (
-     "context"  // Use "golang.org/x/net/context" for Golang version <= 1.6
+     "context"
      "flag"
      "net/http"
  
@@ -184,7 +175,7 @@ annotation to your .proto file
      "github.com/grpc-ecosystem/grpc-gateway/runtime"
      "google.golang.org/grpc"
  
-     gw "path/to/your_service_package"  // Update
+     gw "github.com/yourorg/yourrepo/proto/gen/go/your/service/v1/your_service"  // Update
    )
  
    var (
@@ -224,11 +215,7 @@ annotation to your .proto file
 7. (Optional) Generate swagger definitions using `protoc-gen-swagger`
 
    ```sh
-   protoc -I/usr/local/include -I. \
-     -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-     --swagger_out=logtostderr=true:. \
-     path/to/your_service.proto
+   protoc -I. --swagger_out=logtostderr=true:./gen/swagger your/service/v1/your_service.proto
    ```
 
 ## Video intro
@@ -253,8 +240,7 @@ example:
 
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to
 Golang import paths. They are compatible to
-[the parameters with same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters)
-(except `source_relative`).
+[the parameters with same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
 
 In addition we also support the `request_context` parameter in order to use the
 `http.Request`'s Context (only for Go 1.7 and above). This parameter can be
