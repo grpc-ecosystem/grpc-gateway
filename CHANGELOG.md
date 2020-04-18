@@ -1,5 +1,26 @@
 # Change Log
 
+## [v1.14.4](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.4) (2020-04-18)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.4-rc.1...v1.14.4)
+
+**Closed issues:**
+
+- custom unmarshal response error [\#1211](https://github.com/grpc-ecosystem/grpc-gateway/issues/1211)
+- api annotation placeholder character case [\#1207](https://github.com/grpc-ecosystem/grpc-gateway/issues/1207)
+- response\_body of http rule is ignored in case of server streaming [\#1202](https://github.com/grpc-ecosystem/grpc-gateway/issues/1202)
+- Go gRPC Gateway - Type of one field in JSON is not same as in proto [\#1201](https://github.com/grpc-ecosystem/grpc-gateway/issues/1201)
+- 1.14 breaks protoc-gen-go-json [\#1199](https://github.com/grpc-ecosystem/grpc-gateway/issues/1199)
+- Use different field name in gateway [\#1197](https://github.com/grpc-ecosystem/grpc-gateway/issues/1197)
+- No longer generate register...Server function in pb.gw.go? [\#1195](https://github.com/grpc-ecosystem/grpc-gateway/issues/1195)
+- Support for source\_relative argument [\#1180](https://github.com/grpc-ecosystem/grpc-gateway/issues/1180)
+
+**Merged pull requests:**
+
+- Add option to disable new operationID generation [\#1216](https://github.com/grpc-ecosystem/grpc-gateway/pull/1216) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- http rule's response\_body support to stream rpc [\#1208](https://github.com/grpc-ecosystem/grpc-gateway/pull/1208) ([adasari](https://github.com/adasari))
+- Add GopherCon UK link to README [\#1204](https://github.com/grpc-ecosystem/grpc-gateway/pull/1204) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Move codegenerator back to public namespace [\#1200](https://github.com/grpc-ecosystem/grpc-gateway/pull/1200) ([johanbrandhorst](https://github.com/johanbrandhorst))
+
 ## [v1.14.4-rc.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.4-rc.1) (2020-04-01)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.3...v1.14.4-rc.1)
 
@@ -19,6 +40,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for 1.14.4-rc.1 [\#1194](https://github.com/grpc-ecosystem/grpc-gateway/pull/1194) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Generate Swagger with Unique Operation IDs [\#1193](https://github.com/grpc-ecosystem/grpc-gateway/pull/1193) ([dadgar](https://github.com/dadgar))
 - Xin/support deep levels reserved json name [\#1191](https://github.com/grpc-ecosystem/grpc-gateway/pull/1191) ([xin-au](https://github.com/xin-au))
 - feat: add enumAsInts flag [\#1186](https://github.com/grpc-ecosystem/grpc-gateway/pull/1186) ([rowe0x](https://github.com/rowe0x))
