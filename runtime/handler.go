@@ -9,7 +9,7 @@ import (
 	"net/textproto"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/grpc-ecosystem/grpc-gateway/internal"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal"
 	"google.golang.org/grpc/grpclog"
 )
 

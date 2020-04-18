@@ -26,7 +26,7 @@ go_library(
         "model_sub_string_message.go",
         "response.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/clients/abe",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe",
     deps = [
         "//examples/internal/proto/examplepb:go_default_library",
         "//examples/internal/proto/pathenum:go_default_library",

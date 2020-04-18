@@ -17,7 +17,7 @@ proto_library(
 
 go_proto_library(
     name = "examplepb_go_proto",
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb",
     proto = ":examplepb_proto",
     deps = [
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",  # keep
@@ -27,5 +27,5 @@ go_proto_library(
 go_library(
     name = "go_default_library",
     embed = [":examplepb_go_proto"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb",
 )
