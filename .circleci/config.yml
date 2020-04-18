@@ -38,6 +38,7 @@ jobs:
       - checkout
       - run: make realclean
       - run: make examples
+      - run: make testproto
       - run: go mod tidy
       - run: git diff --exit-code
   lint:

@@ -14,8 +14,10 @@ import (
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
+	"google.golang.org/protobuf/testing/protocmp"
 )
 
 func TestJSONPbMarshal(t *testing.T) {
@@ -101,27 +103,29 @@ func TestJSONPbMarshal(t *testing.T) {
 			},
 		},
 	} {
-		m := runtime.JSONPb{
-			EnumsAsInts:  spec.enumsAsInts,
-			EmitDefaults: spec.emitDefaults,
-			Indent:       spec.indent,
-			OrigName:     spec.origName,
-		}
-		buf, err := m.Marshal(&msg)
-		if err != nil {
-			t.Errorf("m.Marshal(%v) failed with %v; want success; spec=%v", &msg, err, spec)
-		}
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			m := runtime.JSONPb{
+				EnumsAsInts:  spec.enumsAsInts,
+				EmitDefaults: spec.emitDefaults,
+				Indent:       spec.indent,
+				OrigName:     spec.origName,
+			}
+			buf, err := m.Marshal(&msg)
+			if err != nil {
+				t.Errorf("m.Marshal(%v) failed with %v; want success; spec=%v", &msg, err, spec)
+			}
 
-		var got examplepb.ABitOfEverything
-		if err := jsonpb.UnmarshalString(string(buf), &got); err != nil {
-			t.Errorf("jsonpb.UnmarshalString(%q, &got) failed with %v; want success; spec=%v", string(buf), err, spec)
-		}
-		if want := msg; !reflect.DeepEqual(got, want) {
-			t.Errorf("case %d: got = %v; want %v; spec=%v", i, &got, &want, spec)
-		}
-		if spec.verifier != nil {
-			spec.verifier(string(buf))
-		}
+			var got examplepb.ABitOfEverything
+			if err := jsonpb.UnmarshalString(string(buf), &got); err != nil {
+				t.Errorf("jsonpb.UnmarshalString(%q, &got) failed with %v; want success; spec=%v", string(buf), err, spec)
+			}
+			if diff := cmp.Diff(&got, &msg, protocmp.Transform()); diff != "" {
+				t.Errorf("case %d: spec=%v; %s", i, spec, diff)
+			}
+			if spec.verifier != nil {
+				spec.verifier(string(buf))
+			}
+		})
 	}
 }
 
@@ -217,8 +221,8 @@ func TestJSONPbUnmarshal(t *testing.T) {
 			},
 		}
 
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("case %d: got = %v; want = %v", i, &got, &want)
+		if diff := cmp.Diff(&got, &want, protocmp.Transform()); diff != "" {
+			t.Errorf("case %d: %s", i, diff)
 		}
 	}
 }
@@ -234,8 +238,8 @@ func TestJSONPbUnmarshalFields(t *testing.T) {
 		if err := m.Unmarshal([]byte(fixt.json), dest.Interface()); err != nil {
 			t.Errorf("m.Unmarshal(%q, %T) failed with %v; want success", fixt.json, dest.Interface(), err)
 		}
-		if got, want := dest.Elem().Interface(), fixt.data; !reflect.DeepEqual(got, want) {
-			t.Errorf("dest = %#v; want %#v; input = %v", got, want, fixt.json)
+		if diff := cmp.Diff(dest.Elem().Interface(), fixt.data, protocmp.Transform()); diff != "" {
+			t.Errorf("dest = %#v; want %#v; input = %v", dest.Elem().Interface(), fixt.data, fixt.json)
 		}
 	}
 }
@@ -342,8 +346,8 @@ func TestJSONPbEncoder(t *testing.T) {
 		if err := jsonpb.UnmarshalString(buf.String(), &got); err != nil {
 			t.Errorf("jsonpb.UnmarshalString(%q, &got) failed with %v; want success; spec=%v", buf.String(), err, spec)
 		}
-		if want := msg; !reflect.DeepEqual(got, want) {
-			t.Errorf("case %d: got = %v; want %v; spec=%v", i, &got, &want, spec)
+		if diff := cmp.Diff(&got, &msg, protocmp.Transform()); diff != "" {
+			t.Errorf("case %d: %s", i, diff)
 		}
 		if spec.verifier != nil {
 			spec.verifier(buf.String())
@@ -444,8 +448,8 @@ func TestJSONPbDecoder(t *testing.T) {
 				"b": examplepb.NumericEnum_ZERO,
 			},
 		}
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("got = %v; want = %v; data = %v", &got, &want, data)
+		if diff := cmp.Diff(&got, &want, protocmp.Transform()); diff != "" {
+			t.Errorf("data %q: %s", data, diff)
 		}
 	}
 }
