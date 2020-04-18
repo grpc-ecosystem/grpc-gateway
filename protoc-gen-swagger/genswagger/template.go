@@ -977,11 +977,13 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						}
 					}
 				}
-				if bIdx == 0 {
-					operationObject.OperationID = fmt.Sprintf("%s_%s", svc.GetName(), meth.GetName())
-				} else {
+				operationObject.OperationID = fmt.Sprintf("%s_%s", svc.GetName(), meth.GetName())
+				if reg.GetSimpleOperationIDs() {
+					operationObject.OperationID = fmt.Sprintf("%s", meth.GetName())
+				}
+				if bIdx != 0 {
 					// OperationID must be unique in an OpenAPI v2 definition.
-					operationObject.OperationID = fmt.Sprintf("%s_%s%d", svc.GetName(), meth.GetName(), bIdx+1)
+					operationObject.OperationID += strconv.Itoa(bIdx + 1)
 				}
 
 				// Fill reference map with referenced request messages

@@ -82,6 +82,10 @@ type Registry struct {
 	// disableDefaultErrors disables the generation of the default error types.
 	// This is useful for users who have defined custom error handling.
 	disableDefaultErrors bool
+
+	// simpleOperationIDs removes the service prefix from the generated
+	// operationIDs. This risks generating duplicate operationIDs.
+	simpleOperationIDs bool
 }
 
 type repeatedFieldSeparator struct {
@@ -508,6 +512,16 @@ func (r *Registry) SetDisableDefaultErrors(use bool) {
 // GetDisableDefaultErrors returns disableDefaultErrors
 func (r *Registry) GetDisableDefaultErrors() bool {
 	return r.disableDefaultErrors
+}
+
+// SetSimpleOperationIDs sets simpleOperationIDs
+func (r *Registry) SetSimpleOperationIDs(use bool) {
+	r.simpleOperationIDs = use
+}
+
+// GetSimpleOperationIDs returns simpleOperationIDs
+func (r *Registry) GetSimpleOperationIDs() bool {
+	return r.simpleOperationIDs
 }
 
 // sanitizePackageName replaces unallowed character in package name
