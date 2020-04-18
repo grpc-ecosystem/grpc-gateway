@@ -23,9 +23,11 @@ go_test(
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",
         "@com_github_golang_protobuf//jsonpb:go_default_library_gen",
         "@com_github_golang_protobuf//proto:go_default_library",
+        "@com_github_google_go_cmp//cmp:go_default_library",
         "@go_googleapis//google/rpc:status_go_proto",
         "@io_bazel_rules_go//proto/wkt:empty_go_proto",
         "@io_bazel_rules_go//proto/wkt:field_mask_go_proto",
         "@org_golang_google_grpc//codes:go_default_library",
+        "@org_golang_google_protobuf//testing/protocmp:go_default_library",
     ],
 )
