@@ -10,7 +10,9 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/codegenerator"
+	"google.golang.org/protobuf/testing/protocmp"
 )
 
 var parseReqTests = []struct {
@@ -46,8 +48,8 @@ func TestParseRequest(t *testing.T) {
 			if !reflect.DeepEqual(err, tt.err) {
 				t.Errorf("got %v, want %v", err, tt.err)
 			}
-			if err == nil && !reflect.DeepEqual(*out, *tt.out) {
-				t.Errorf("got %v, want %v", *out, *tt.out)
+			if diff := cmp.Diff(out, tt.out, protocmp.Transform()); diff != "" {
+				t.Errorf(diff)
 			}
 		})
 	}

@@ -21,12 +21,14 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
+	"github.com/google/go-cmp/cmp"
 	gw "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/protobuf/testing/protocmp"
 )
 
 type errorBody struct {
@@ -242,8 +244,8 @@ func testEchoBody(t *testing.T, port int) {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
-	if got, want := received, sent; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg.Id = %q; want %q", got, want)
+	if diff := cmp.Diff(received, sent, protocmp.Transform()); diff != "" {
+		t.Errorf(diff)
 	}
 
 	if got, want := resp.Header.Get("Grpc-Metadata-Foo"), "foo1"; got != want {
@@ -330,8 +332,8 @@ func testABECreate(t *testing.T, port int) {
 		t.Error("msg.Uuid is empty; want not empty")
 	}
 	msg.Uuid = ""
-	if got := msg; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg= %v; want %v", &got, &want)
+	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
+		t.Errorf(diff)
 	}
 }
 
@@ -439,8 +441,8 @@ func testABECreateBody(t *testing.T, port int) {
 		t.Error("msg.Uuid is empty; want not empty")
 	}
 	msg.Uuid = ""
-	if got := msg; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg= %v; want %v", &got, &want)
+	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
+		t.Errorf(diff)
 	}
 }
 
@@ -662,8 +664,8 @@ func testABELookup(t *testing.T, port int) {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
-	if got := msg; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg= %v; want %v", &got, &want)
+	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
+		t.Errorf(diff)
 	}
 
 	if got, want := resp.Header.Get("Grpc-Metadata-Uuid"), want.Uuid; got != want {
@@ -812,8 +814,8 @@ func TestABEPatchBody(t *testing.T) {
 
 			want, got := tc.want, getABE(t, port, uuid)
 			got.Uuid = "" // empty out uuid so we don't need to worry about it in comparisons
-			if !reflect.DeepEqual(want, got) {
-				t.Errorf("want %v\ngot %v", want, got)
+			if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
+				t.Errorf(diff)
 			}
 		})
 	}
@@ -1052,8 +1054,8 @@ func testABEBulkEcho(t *testing.T, port int) {
 	}()
 
 	wg.Wait()
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got = %v; want %v", got, want)
+	if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
+		t.Errorf(diff)
 	}
 }
 
@@ -1274,8 +1276,8 @@ func testABERepeated(t *testing.T, port int) {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
-	if got := msg; !reflect.DeepEqual(got, want) {
-		t.Errorf("msg= %v; want %v", &got, &want)
+	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
+		t.Errorf(diff)
 	}
 }
 

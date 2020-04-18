@@ -88,8 +88,10 @@ EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
 HELLOWORLD_SVCSRCS=$(HELLOWORLD:.proto=.pb.go)
 HELLOWORLD_GWSRCS=$(HELLOWORLD:.proto=.pb.gw.go)
 
-RUNTIME_TEST_PROTO=runtime/internal/examplepb/example.proto
-RUNTIME_TEST_SRCS=$(RUNTIME_TEST_PROTO:.proto=pb.go)
+RUNTIME_TEST_PROTO=runtime/internal/examplepb/example.proto \
+	runtime/internal/examplepb/proto2.proto \
+	runtime/internal/examplepb/proto3.proto
+RUNTIME_TEST_SRCS=$(RUNTIME_TEST_PROTO:.proto=.pb.go)
 
 EXAMPLE_CLIENT_DIR=examples/internal/clients
 ECHO_EXAMPLE_SPEC=examples/internal/proto/examplepb/echo_service.swagger.json
