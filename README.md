@@ -1,6 +1,6 @@
 # grpc-gateway
 
-[![release](https://img.shields.io/github/release/grpc-ecosystem/grpc-gateway.svg?style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/releases) [![CircleCI](https://img.shields.io/circleci/project/github/grpc-ecosystem/grpc-gateway/v2.svg?style=flat-square)](https://circleci.com/gh/grpc-ecosystem/grpc-gateway) [![fuzzit](https://app.fuzzit.dev/badge?org_id=grpc-gateway)](https://app.fuzzit.dev/orgs/grpc-gateway/dashboard) [![coverage](https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway/v2.svg?style=flat-square)](https://codecov.io/gh/grpc-ecosystem/grpc-gateway) [![license](https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway.svg?style=flat-square)](LICENSE.txt)
+[![release](https://img.shields.io/github/v/release/grpc-ecosystem/grpc-gateway?include_prereleases&sort=semver&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/releases) [![CircleCI](https://img.shields.io/circleci/project/github/grpc-ecosystem/grpc-gateway/v2.svg?style=flat-square)](https://circleci.com/gh/grpc-ecosystem/grpc-gateway/tree/v2) [![fuzzit](https://app.fuzzit.dev/badge?org_id=grpc-gateway)](https://app.fuzzit.dev/orgs/grpc-gateway/dashboard) [![coverage](https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway/v2.svg?style=flat-square)](https://codecov.io/gh/grpc-ecosystem/grpc-gateway) [![license](https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway.svg?style=flat-square)](LICENSE.txt)
 
 The grpc-gateway is a plugin of the Google protocol buffers compiler
 [protoc](https://github.com/protocolbuffers/protobuf).
@@ -174,7 +174,7 @@ annotation to your .proto file
      "github.com/golang/glog"
      "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
      "google.golang.org/grpc"
- 
+
      gw "github.com/yourorg/yourrepo/proto/gen/go/your/service/v1/your_service"  // Update
    )
  
