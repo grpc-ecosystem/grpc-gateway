@@ -12,12 +12,12 @@ proto_library(
 
 go_proto_library(
     name = "internal_go_proto",
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/internal",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal",
     proto = ":internal_proto",
 )
 
 go_library(
     name = "go_default_library",
     embed = [":internal_go_proto"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/internal",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal",
 )

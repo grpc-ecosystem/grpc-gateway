@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/golang/protobuf/ptypes/any"
-	"github.com/grpc-ecosystem/grpc-gateway/internal"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"

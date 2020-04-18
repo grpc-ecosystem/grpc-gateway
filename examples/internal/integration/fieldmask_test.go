@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/examplepb"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/genproto/protobuf/field_mask"
 )
 
