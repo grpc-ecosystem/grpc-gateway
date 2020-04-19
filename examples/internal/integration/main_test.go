@@ -57,7 +57,7 @@ func waitForGateway(ctx context.Context, port uint16) error {
 }
 
 func runServers(ctx context.Context) <-chan error {
-	ch := make(chan error, 2)
+	ch := make(chan error, 3)
 	go func() {
 		if err := server.Run(ctx, *network, *endpoint); err != nil {
 			ch <- fmt.Errorf("cannot run grpc service: %v", err)
@@ -66,6 +66,11 @@ func runServers(ctx context.Context) <-chan error {
 	go func() {
 		if err := runGateway(ctx, ":8088"); err != nil {
 			ch <- fmt.Errorf("cannot run gateway service: %v", err)
+		}
+	}()
+	go func() {
+		if err := server.RunInProcessGateway(ctx, ":8089"); err != nil {
+			ch <- fmt.Errorf("cannot run in process gateway service: %v", err)
 		}
 	}()
 	return ch
