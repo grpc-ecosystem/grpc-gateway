@@ -11,8 +11,8 @@ order: 101
 
 You might want to serialize request/response messages in MessagePack instead of JSON, for example.
 
-1. Write a custom implementation of [`Marshaler`](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#Marshaler)
-2. Register your marshaler with [`WithMarshalerOption`](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#WithMarshalerOption)
+1. Write a custom implementation of [`Marshaler`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#Marshaler)
+2. Register your marshaler with [`WithMarshalerOption`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithMarshalerOption)
    e.g.
    ```go
    var m your.MsgPackMarshaler
@@ -78,10 +78,10 @@ Note that this will conflict with any methods having input messages with fields 
 also, this example code does not remove the query parameter `pretty` from further processing.
 
 ## Mapping from HTTP request headers to gRPC client metadata
-You might not like [the default mapping rule](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#DefaultHeaderMatcher) and might want to pass through all the HTTP headers, for example.
+You might not like [the default mapping rule](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#DefaultHeaderMatcher) and might want to pass through all the HTTP headers, for example.
 
-1. Write a [`HeaderMatcherFunc`](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#HeaderMatcherFunc).
-2. Register the function with [`WithIncomingHeaderMatcher`](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#WithIncomingHeaderMatcher)
+1. Write a [`HeaderMatcherFunc`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#HeaderMatcherFunc).
+2. Register the function with [`WithIncomingHeaderMatcher`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithIncomingHeaderMatcher)
 
   e.g.
   ```go
@@ -99,7 +99,7 @@ You might not like [the default mapping rule](http://godoc.org/github.com/grpc-e
 
   mux := runtime.NewServeMux(runtime.WithIncomingHeaderMatcher(CustomMatcher))
   ```
-To keep the [the default mapping rule](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#DefaultHeaderMatcher) alongside with your own rules write:
+To keep the [the default mapping rule](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#DefaultHeaderMatcher) alongside with your own rules write:
 
 ```go
 func CustomMatcher(key string) (string, bool) {
@@ -133,7 +133,7 @@ if md, ok := metadata.FromIncomingContext(ctx); ok {
 ```
 
 ## Mapping from gRPC server metadata to HTTP response headers
-ditto. Use [`WithOutgoingHeaderMatcher`](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#WithOutgoingHeaderMatcher).
+ditto. Use [`WithOutgoingHeaderMatcher`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithOutgoingHeaderMatcher).
 See [gRPC metadata docs](https://github.com/grpc/grpc-go/blob/master/Documentation/grpc-metadata.md)
 for more info on sending / receiving gRPC metadata.
 
@@ -166,7 +166,7 @@ Or you might want to mutate the response messages to be returned.
    	return nil
    }
    ```
-2. Register the filter with [`WithForwardResponseOption`](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#WithForwardResponseOption)
+2. Register the filter with [`WithForwardResponseOption`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithForwardResponseOption)
    
    e.g.
    ```go
@@ -323,7 +323,7 @@ the source error has no gRPC attributes).
 ## Replace a response forwarder per method
 You might want to keep the behavior of the current marshaler but change only a message forwarding of a certain API method.
 
-1. write a custom forwarder which is compatible to [`ForwardResponseMessage`](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#ForwardResponseMessage) or [`ForwardResponseStream`](http://godoc.org/github.com/grpc-ecosystem/grpc-gateway/runtime#ForwardResponseStream).
+1. write a custom forwarder which is compatible to [`ForwardResponseMessage`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#ForwardResponseMessage) or [`ForwardResponseStream`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#ForwardResponseStream).
 2. replace the default forwarder of the method with your one.
 
    e.g. add `forwarder_overwrite.go` into the go package of the generated code,

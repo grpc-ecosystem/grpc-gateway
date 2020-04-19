@@ -314,7 +314,7 @@ header.
 * HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata
 (prefixed with `grpcgateway-`).
 * While configurable, the default {un,}marshaling uses
-[jsonpb](https://godoc.org/github.com/golang/protobuf/jsonpb) with
+[jsonpb](https://pkg.go.dev/github.com/golang/protobuf/jsonpb) with
 `OrigName: true`.
 
 # Contribution
