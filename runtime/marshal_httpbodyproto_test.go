@@ -2,6 +2,7 @@ package runtime_test
 
 import (
 	"bytes"
+	"context"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -38,7 +39,7 @@ func TestHTTPBodyMarshal(t *testing.T) {
 	message := &httpbody.HttpBody{
 		Data: expected,
 	}
-	res, err := m.Marshal(message)
+	res, err := m.Marshal(context.Background(), message)
 	if err != nil {
 		t.Errorf("m.Marshal(%#v) failed with %v; want success", message, err)
 	}

@@ -353,7 +353,7 @@ func TestMuxServeHTTP(t *testing.T) {
 				mux.Handle(p.method, pat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 					if r.URL.Path == "/unimplemented" {
 						// simulate method returning "unimplemented" error
-						_, m := runtime.MarshalerForRequest(mux, r)
+						m := runtime.MarshalerForRequest(mux, r)
 						runtime.HTTPError(r.Context(), mux, m, w, r, status.Error(codes.Unimplemented, http.StatusText(http.StatusNotImplemented)))
 						w.WriteHeader(http.StatusNotImplemented)
 						return

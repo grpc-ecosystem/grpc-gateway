@@ -31,6 +31,7 @@ type ServeMux struct {
 	handlers                  map[string][]handler
 	forwardResponseOptions    []func(context.Context, http.ResponseWriter, proto.Message) error
 	marshalers                marshalerRegistry
+	unmarshalers              unmarshalerRegistry
 	incomingHeaderMatcher     HeaderMatcherFunc
 	outgoingHeaderMatcher     HeaderMatcherFunc
 	metadataAnnotators        []func(context.Context, *http.Request) metadata.MD
@@ -158,6 +159,7 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 		handlers:               make(map[string][]handler),
 		forwardResponseOptions: make([]func(context.Context, http.ResponseWriter, proto.Message) error, 0),
 		marshalers:             makeMarshalerMIMERegistry(),
+		unmarshalers:           makeUnmarshalerMIMERegistry(),
 		streamErrorHandler:     DefaultHTTPStreamErrorHandler,
 	}
 
@@ -194,7 +196,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	if !strings.HasPrefix(path, "/") {
 		if s.protoErrorHandler != nil {
-			_, outboundMarshaler := MarshalerForRequest(s, r)
+			outboundMarshaler := MarshalerForRequest(s, r)
 			sterr := status.Error(codes.InvalidArgument, http.StatusText(http.StatusBadRequest))
 			s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
 		} else {
@@ -208,7 +210,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var verb string
 	if idx := strings.LastIndex(components[l-1], ":"); idx == 0 {
 		if s.protoErrorHandler != nil {
-			_, outboundMarshaler := MarshalerForRequest(s, r)
+			outboundMarshaler := MarshalerForRequest(s, r)
 			s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, ErrUnknownURI)
 		} else {
 			OtherErrorHandler(w, r, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -223,7 +225,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		r.Method = strings.ToUpper(override)
 		if err := r.ParseForm(); err != nil {
 			if s.protoErrorHandler != nil {
-				_, outboundMarshaler := MarshalerForRequest(s, r)
+				outboundMarshaler := MarshalerForRequest(s, r)
 				sterr := status.Error(codes.InvalidArgument, err.Error())
 				s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
 			} else {
@@ -256,7 +258,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			if s.isPathLengthFallback(r) {
 				if err := r.ParseForm(); err != nil {
 					if s.protoErrorHandler != nil {
-						_, outboundMarshaler := MarshalerForRequest(s, r)
+						outboundMarshaler := MarshalerForRequest(s, r)
 						sterr := status.Error(codes.InvalidArgument, err.Error())
 						s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
 					} else {
@@ -268,7 +270,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			if s.protoErrorHandler != nil {
-				_, outboundMarshaler := MarshalerForRequest(s, r)
+				outboundMarshaler := MarshalerForRequest(s, r)
 				s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, ErrUnknownURI)
 			} else {
 				OtherErrorHandler(w, r, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
@@ -278,7 +280,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if s.protoErrorHandler != nil {
-		_, outboundMarshaler := MarshalerForRequest(s, r)
+		outboundMarshaler := MarshalerForRequest(s, r)
 		s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, ErrUnknownURI)
 	} else {
 		OtherErrorHandler(w, r, http.StatusText(http.StatusNotFound), http.StatusNotFound)

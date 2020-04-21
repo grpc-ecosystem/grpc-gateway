@@ -2,6 +2,7 @@ package runtime_test
 
 import (
 	"bytes"
+	"context"
 	"reflect"
 	"strconv"
 	"strings"
@@ -107,7 +108,7 @@ func TestJSONPbMarshal(t *testing.T) {
 			Indent:       spec.indent,
 			OrigName:     spec.origName,
 		}
-		buf, err := m.Marshal(&msg)
+		buf, err := m.Marshal(context.Background(), &msg)
 		if err != nil {
 			t.Errorf("m.Marshal(%v) failed with %v; want success; spec=%v", &msg, err, spec)
 		}
@@ -129,7 +130,7 @@ func TestJSONPbMarshalFields(t *testing.T) {
 	var m runtime.JSONPb
 	m.EnumsAsInts = true // builtin fixtures include an enum, expected to be marshaled as int
 	for _, spec := range builtinFieldFixtures {
-		buf, err := m.Marshal(spec.data)
+		buf, err := m.Marshal(context.Background(), spec.data)
 		if err != nil {
 			t.Errorf("m.Marshal(%#v) failed with %v; want success", spec.data, err)
 		}
@@ -139,7 +140,7 @@ func TestJSONPbMarshalFields(t *testing.T) {
 	}
 
 	m.EnumsAsInts = false
-	buf, err := m.Marshal(examplepb.NumericEnum_ONE)
+	buf, err := m.Marshal(context.Background(), examplepb.NumericEnum_ONE)
 	if err != nil {
 		t.Errorf("m.Marshal(%#v) failed with %v; want success", examplepb.NumericEnum_ONE, err)
 	}
@@ -194,7 +195,7 @@ func TestJSONPbUnmarshal(t *testing.T) {
 			}
 		}`,
 	} {
-		if err := m.Unmarshal([]byte(data), &got); err != nil {
+		if err := m.Unmarshal(context.Background(), []byte(data), &got); err != nil {
 			t.Errorf("case %d: m.Unmarshal(%q, &got) failed with %v; want success", i, data, err)
 		}
 
@@ -231,7 +232,7 @@ func TestJSONPbUnmarshalFields(t *testing.T) {
 		}
 
 		dest := reflect.New(reflect.TypeOf(fixt.data))
-		if err := m.Unmarshal([]byte(fixt.json), dest.Interface()); err != nil {
+		if err := m.Unmarshal(context.Background(), []byte(fixt.json), dest.Interface()); err != nil {
 			t.Errorf("m.Unmarshal(%q, %T) failed with %v; want success", fixt.json, dest.Interface(), err)
 		}
 		if got, want := dest.Elem().Interface(), fixt.data; !reflect.DeepEqual(got, want) {
@@ -333,7 +334,7 @@ func TestJSONPbEncoder(t *testing.T) {
 		}
 
 		var buf bytes.Buffer
-		enc := m.NewEncoder(&buf)
+		enc := m.NewEncoder(context.Background(), &buf)
 		if err := enc.Encode(&msg); err != nil {
 			t.Errorf("enc.Encode(%v) failed with %v; want success; spec=%v", &msg, err, spec)
 		}
@@ -355,7 +356,7 @@ func TestJSONPbEncoderFields(t *testing.T) {
 	var m runtime.JSONPb
 	for _, fixt := range fieldFixtures {
 		var buf bytes.Buffer
-		enc := m.NewEncoder(&buf)
+		enc := m.NewEncoder(context.Background(), &buf)
 		if err := enc.Encode(fixt.data); err != nil {
 			t.Errorf("enc.Encode(%#v) failed with %v; want success", fixt.data, err)
 		}
@@ -365,7 +366,7 @@ func TestJSONPbEncoderFields(t *testing.T) {
 	}
 
 	m.EnumsAsInts = true
-	buf, err := m.Marshal(examplepb.NumericEnum_ONE)
+	buf, err := m.Marshal(context.Background(), examplepb.NumericEnum_ONE)
 	if err != nil {
 		t.Errorf("m.Marshal(%#v) failed with %v; want success", examplepb.NumericEnum_ONE, err)
 	}
@@ -421,7 +422,7 @@ func TestJSONPbDecoder(t *testing.T) {
 		}`,
 	} {
 		r := strings.NewReader(data)
-		dec := m.NewDecoder(r)
+		dec := m.NewDecoder(context.Background(), r)
 		if err := dec.Decode(&got); err != nil {
 			t.Errorf("m.Unmarshal(&got) failed with %v; want success; data=%q", err, data)
 		}
@@ -458,7 +459,7 @@ func TestJSONPbDecoderFields(t *testing.T) {
 		}
 
 		dest := reflect.New(reflect.TypeOf(fixt.data))
-		dec := m.NewDecoder(strings.NewReader(fixt.json))
+		dec := m.NewDecoder(context.Background(), strings.NewReader(fixt.json))
 		if err := dec.Decode(dest.Interface()); err != nil {
 			t.Errorf("dec.Decode(%T) failed with %v; want success; input = %q", dest.Interface(), err, fixt.json)
 		}
@@ -481,7 +482,7 @@ func TestJSONPbDecoderUnknownField(t *testing.T) {
 	runtime.DisallowUnknownFields()
 
 	r := strings.NewReader(data)
-	dec := m.NewDecoder(r)
+	dec := m.NewDecoder(context.Background(), r)
 	if err := dec.Decode(&got); err == nil {
 		t.Errorf("m.Unmarshal(&got) not failed; want `unknown field` error; data=%q", data)
 	}
@@ -797,7 +798,7 @@ func TestJSONPbMarshalResponseBodies(t *testing.T) {
 				EmitDefaults: spec.emitDefaults,
 			}
 			val := spec.input
-			buf, err := m.Marshal(val)
+			buf, err := m.Marshal(context.Background(), val)
 			if err != nil {
 				t.Errorf("m.Marshal(%v) failed with %v; want success; spec=%v", val, err, spec)
 			}

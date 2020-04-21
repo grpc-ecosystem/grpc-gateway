@@ -1,6 +1,8 @@
 package runtime
 
 import (
+	"context"
+
 	"google.golang.org/genproto/googleapis/api/httpbody"
 )
 
@@ -35,9 +37,9 @@ func (h *HTTPBodyMarshaler) ContentTypeFromMessage(v interface{}) string {
 
 // Marshal marshals "v" by returning the body bytes if v is a
 // google.api.HttpBody message, otherwise it falls back to the default Marshaler.
-func (h *HTTPBodyMarshaler) Marshal(v interface{}) ([]byte, error) {
+func (h *HTTPBodyMarshaler) Marshal(ctx context.Context, v interface{}) ([]byte, error) {
 	if httpBody, ok := v.(*httpbody.HttpBody); ok {
 		return httpBody.Data, nil
 	}
-	return h.Marshaler.Marshal(v)
+	return h.Marshaler.Marshal(ctx, v)
 }

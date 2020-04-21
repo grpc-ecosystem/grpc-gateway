@@ -1,6 +1,7 @@
 package runtime_test
 
 import (
+	"context"
 	"errors"
 	"io"
 	"net/http"
@@ -19,7 +20,8 @@ func TestMarshalerForRequest(t *testing.T) {
 
 	mux := runtime.NewServeMux()
 
-	in, out := runtime.MarshalerForRequest(mux, r)
+	out := runtime.MarshalerForRequest(mux, r)
+	in := runtime.UnmarshalerForRequest(mux, r)
 	if _, ok := in.(*runtime.JSONPb); !ok {
 		t.Errorf("in = %#v; want a runtime.JSONPb", in)
 	}
@@ -29,23 +31,27 @@ func TestMarshalerForRequest(t *testing.T) {
 
 	var marshalers [3]dummyMarshaler
 	specs := []struct {
-		opt runtime.ServeMuxOption
+		optIn  runtime.ServeMuxOption
+		optOut runtime.ServeMuxOption
 
-		wantIn  runtime.Marshaler
+		wantIn  runtime.Unmarshaler
 		wantOut runtime.Marshaler
 	}{
 		{
-			opt:     runtime.WithMarshalerOption(runtime.MIMEWildcard, &marshalers[0]),
+			optIn:   runtime.WithMarshalerOption(runtime.MIMEWildcard, &marshalers[0]),
+			optOut:  runtime.WithUnmarshalerOption(runtime.MIMEWildcard, &marshalers[0]),
 			wantIn:  &marshalers[0],
 			wantOut: &marshalers[0],
 		},
 		{
-			opt:     runtime.WithMarshalerOption("application/x-in", &marshalers[1]),
+			optIn:   runtime.WithMarshalerOption("application/x-in", &marshalers[1]),
+			optOut:  runtime.WithUnmarshalerOption("application/x-in", &marshalers[1]),
 			wantIn:  &marshalers[1],
 			wantOut: &marshalers[0],
 		},
 		{
-			opt:     runtime.WithMarshalerOption("application/x-out", &marshalers[2]),
+			optIn:   runtime.WithMarshalerOption("application/x-out", &marshalers[2]),
+			optOut:  runtime.WithUnmarshalerOption("application/x-out", &marshalers[2]),
 			wantIn:  &marshalers[1],
 			wantOut: &marshalers[2],
 		},
@@ -53,11 +59,12 @@ func TestMarshalerForRequest(t *testing.T) {
 	for i, spec := range specs {
 		var opts []runtime.ServeMuxOption
 		for _, s := range specs[:i+1] {
-			opts = append(opts, s.opt)
+			opts = append(opts, s.optIn, s.optOut)
 		}
 		mux = runtime.NewServeMux(opts...)
 
-		in, out = runtime.MarshalerForRequest(mux, r)
+		out = runtime.MarshalerForRequest(mux, r)
+		in = runtime.UnmarshalerForRequest(mux, r)
 		if got, want := in, spec.wantIn; got != want {
 			t.Errorf("in = %#v; want %#v", got, want)
 		}
@@ -67,7 +74,8 @@ func TestMarshalerForRequest(t *testing.T) {
 	}
 
 	r.Header.Set("Content-Type", "application/x-another")
-	in, out = runtime.MarshalerForRequest(mux, r)
+	out = runtime.MarshalerForRequest(mux, r)
+	in = runtime.UnmarshalerForRequest(mux, r)
 	if got, want := in, &marshalers[1]; got != want {
 		t.Errorf("in = %#v; want %#v", got, want)
 	}
@@ -79,18 +87,18 @@ func TestMarshalerForRequest(t *testing.T) {
 type dummyMarshaler struct{}
 
 func (dummyMarshaler) ContentType() string { return "" }
-func (dummyMarshaler) Marshal(interface{}) ([]byte, error) {
+func (dummyMarshaler) Marshal(context.Context, interface{}) ([]byte, error) {
 	return nil, errors.New("not implemented")
 }
 
-func (dummyMarshaler) Unmarshal([]byte, interface{}) error {
+func (dummyMarshaler) Unmarshal(context.Context, []byte, interface{}) error {
 	return errors.New("not implemented")
 }
 
-func (dummyMarshaler) NewDecoder(r io.Reader) runtime.Decoder {
+func (dummyMarshaler) NewDecoder(ctx context.Context, r io.Reader) runtime.Decoder {
 	return dummyDecoder{}
 }
-func (dummyMarshaler) NewEncoder(w io.Writer) runtime.Encoder {
+func (dummyMarshaler) NewEncoder(ctx context.Context, w io.Writer) runtime.Encoder {
 	return dummyEncoder{}
 }
 

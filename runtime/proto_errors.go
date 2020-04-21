@@ -53,7 +53,7 @@ func DefaultHTTPProtoErrorHandler(ctx context.Context, mux *ServeMux, marshaler 
 	}
 	w.Header().Set("Content-Type", contentType)
 
-	buf, merr := marshaler.Marshal(s.Proto())
+	buf, merr := marshaler.Marshal(ctx, s.Proto())
 	if merr != nil {
 		grpclog.Infof("Failed to marshal error message %q: %v", s.Proto(), merr)
 		w.WriteHeader(http.StatusInternalServerError)

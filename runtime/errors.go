@@ -136,7 +136,7 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 		Details: s.Proto().GetDetails(),
 	}
 
-	buf, merr := marshaler.Marshal(body)
+	buf, merr := marshaler.Marshal(ctx, body)
 	if merr != nil {
 		grpclog.Infof("Failed to marshal error message %q: %v", body, merr)
 		w.WriteHeader(http.StatusInternalServerError)

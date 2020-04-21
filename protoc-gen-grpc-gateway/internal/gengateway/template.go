@@ -322,7 +322,7 @@ var (
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
+	if err := marshaler.NewDecoder(ctx, newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- if and $AllowPatchFeature (eq (.HTTPMethod) "PATCH") (.FieldMaskField) (not (eq "*" .GetBodyFieldPath)) }}
@@ -484,7 +484,7 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
+	if err := marshaler.NewDecoder(ctx, newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- if and $AllowPatchFeature (eq (.HTTPMethod) "PATCH") (.FieldMaskField) (not (eq "*" .GetBodyFieldPath)) }}
@@ -570,7 +570,7 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context,
 	{{if or $m.GetClientStreaming $m.GetServerStreaming}}
 	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
-		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 		return
 	})
@@ -582,7 +582,8 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context,
 		ctx, cancel := context.WithCancel(ctx)
 	{{- end }}
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req);
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req);
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -657,7 +658,8 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context,
 		ctx, cancel := context.WithCancel(ctx)
 	{{- end }}
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req);
+inboundMarshaler := runtime.UnmarshalerForRequest(mux, req);
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

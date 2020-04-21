@@ -64,14 +64,14 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 		var buf []byte
 		switch {
 		case resp == nil:
-			buf, err = marshaler.Marshal(errorChunk(streamError(ctx, mux.streamErrorHandler, errEmptyResponse)))
+			buf, err = marshaler.Marshal(ctx, errorChunk(streamError(ctx, mux.streamErrorHandler, errEmptyResponse)))
 		default:
 			result := map[string]interface{}{"result": resp}
 			if rb, ok := resp.(responseBody); ok {
 				result["result"] = rb.XXX_ResponseBody()
 			}
 
-			buf, err = marshaler.Marshal(result)
+			buf, err = marshaler.Marshal(ctx, result)
 		}
 
 		if err != nil {
@@ -150,9 +150,9 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 	var buf []byte
 	var err error
 	if rb, ok := resp.(responseBody); ok {
-		buf, err = marshaler.Marshal(rb.XXX_ResponseBody())
+		buf, err = marshaler.Marshal(ctx, rb.XXX_ResponseBody())
 	} else {
-		buf, err = marshaler.Marshal(resp)
+		buf, err = marshaler.Marshal(ctx, resp)
 	}
 	if err != nil {
 		grpclog.Infof("Marshal error: %v", err)
@@ -185,7 +185,7 @@ func handleForwardResponseStreamError(ctx context.Context, wroteHeader bool, mar
 	if !wroteHeader {
 		w.WriteHeader(int(serr.HttpCode))
 	}
-	buf, merr := marshaler.Marshal(errorChunk(serr))
+	buf, merr := marshaler.Marshal(ctx, errorChunk(serr))
 	if merr != nil {
 		grpclog.Infof("Failed to marshal an error: %v", merr)
 		return
