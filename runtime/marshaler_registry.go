@@ -16,13 +16,13 @@ var (
 	defaultMarshaler = &JSONPb{OrigName: true}
 )
 
-// MarshalerForRequest returns the outbound marshalers for this request.
+// MarshalerForRequest returns the outbound marshaler for this request.
 // It checks the registry on the ServeMux for the MIME type set by the Accept header.
 // If it isn't set (or the request Accept is empty), it checks for the Content-Type header.
-// If it isn't set (or the request Content-Type is empty), it checks for "*".
-// If there are multiple Content-Type headers set, choose the first one that it can
+// If there are multiple headers set, choose the first one that it can
 // exactly match in the registry.
-// Otherwise, it follows the above logic for "*"/OutboundMarshaler.
+// If both headers aren't set (or both headers are empty), or no set values exactly
+// match the values in the registry, it checks for "*".
 func MarshalerForRequest(mux *ServeMux, r *http.Request) (outbound Marshaler) {
 	for _, acceptVal := range r.Header[acceptHeader] {
 		if m, ok := mux.marshalers.mimeMap[acceptVal]; ok {
@@ -48,10 +48,10 @@ func MarshalerForRequest(mux *ServeMux, r *http.Request) (outbound Marshaler) {
 
 // UnmarshalerForRequest returns the inbound marshaler for this request.
 // It checks the registry on the ServeMux for the MIME type set by the Content-Type header.
-// If it isn't set (or the request Content-Type is empty), checks for "*".
 // If there are multiple Content-Type headers set, choose the first one that it can
 // exactly match in the registry.
-// Otherwise, it follows the above logic for "*"/InboundMarshaler/OutboundMarshaler.
+// If it isn't set (or the request Content-Type is empty),  or no set values exactly
+// match the values in the registry, it checks for "*".
 func UnmarshalerForRequest(mux *ServeMux, r *http.Request) (inbound Unmarshaler) {
 	for _, contentTypeVal := range r.Header[contentTypeHeader] {
 		if m, ok := mux.unmarshalers.mimeMap[contentTypeVal]; ok {
