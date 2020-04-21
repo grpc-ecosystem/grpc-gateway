@@ -1660,12 +1660,18 @@ func testResponseStrings(t *testing.T, port int) {
 }
 
 func TestRequestQueryParams(t *testing.T) {
+	testRequestQueryParams(t, 8088)
+}
+
+func TestRequestQueryParamsInProcessGateway(t *testing.T) {
+	testRequestQueryParams(t, 8089)
+}
+
+func testRequestQueryParams(t *testing.T, port int) {
 	if testing.Short() {
 		t.Skip()
 		return
 	}
-
-	port := 8088
 
 	formValues := url.Values{}
 	formValues.Set("string_value", "hello-world")
