@@ -19,7 +19,7 @@ var (
 // MarshalerForRequest returns the outbound marshalers for this request.
 // It checks the registry on the ServeMux for the MIME type set by the Accept header.
 // If it isn't set (or the request Accept is empty), it checks for the Content-Type header.
-// If it isn't set (or the request Content-Type is empty), checks for "*".
+// If it isn't set (or the request Content-Type is empty), it checks for "*".
 // If there are multiple Content-Type headers set, choose the first one that it can
 // exactly match in the registry.
 // Otherwise, it follows the above logic for "*"/OutboundMarshaler.
@@ -46,7 +46,7 @@ func MarshalerForRequest(mux *ServeMux, r *http.Request) (outbound Marshaler) {
 	return outbound
 }
 
-// UnmarshalerForRequest returns the inbound marshalers for this request.
+// UnmarshalerForRequest returns the inbound marshaler for this request.
 // It checks the registry on the ServeMux for the MIME type set by the Content-Type header.
 // If it isn't set (or the request Content-Type is empty), checks for "*".
 // If there are multiple Content-Type headers set, choose the first one that it can

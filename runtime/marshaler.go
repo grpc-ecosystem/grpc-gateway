@@ -5,9 +5,9 @@ import (
 	"io"
 )
 
-// Marshaler defines a outbound conversion between byte sequence and gRPC payloads / fields.
+// Marshaler defines an outbound conversion between a gRPC payload and a byte sequence.
 type Marshaler interface {
-	// Marshal marshals "v" into byte sequence.
+	// Marshal marshals "v" into a byte sequence.
 	Marshal(ctx context.Context, v interface{}) ([]byte, error)
 	// NewEncoder returns an Encoder which writes bytes sequence into "w".
 	NewEncoder(ctx context.Context, w io.Writer) Encoder
@@ -15,7 +15,7 @@ type Marshaler interface {
 	ContentType() string
 }
 
-// Unmarshaler defines a imbound conversion between byte sequence and gRPC payloads / fields.
+// Unmarshaler defines an inbound conversion between a byte sequence and a gRPC payload.
 type Unmarshaler interface {
 	// Unmarshal unmarshals "data" into "v".
 	// "v" must be a pointer value.
