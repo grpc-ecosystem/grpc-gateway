@@ -35,7 +35,7 @@ var (
 	filter_UnannotatedEchoService_Echo_0 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UnannotatedEchoService_Echo_0(ctx context.Context, unmarshaler runtime.Unmarshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -69,7 +69,7 @@ func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UnannotatedEchoService_Echo_0(ctx context.Context, unmarshaler runtime.Unmarshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -107,7 +107,7 @@ var (
 	filter_UnannotatedEchoService_Echo_1 = &utilities.DoubleArray{Encoding: map[string]int{"id": 0, "num": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
 )
 
-func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UnannotatedEchoService_Echo_1(ctx context.Context, unmarshaler runtime.Unmarshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -152,7 +152,7 @@ func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, unmarshaler runtime.Unmarshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -197,7 +197,7 @@ func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler 
 
 }
 
-func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, unmarshaler runtime.Unmarshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -205,7 +205,7 @@ func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler ru
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := unmarshaler.NewDecoder(ctx, newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -214,7 +214,7 @@ func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler ru
 
 }
 
-func local_request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UnannotatedEchoService_EchoBody_0(ctx context.Context, unmarshaler runtime.Unmarshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -222,7 +222,7 @@ func local_request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marsha
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := unmarshaler.NewDecoder(ctx, newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -235,7 +235,7 @@ var (
 	filter_UnannotatedEchoService_EchoDelete_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, unmarshaler runtime.Unmarshaler, client UnannotatedEchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -251,7 +251,7 @@ func request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler 
 
 }
 
-func local_request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, unmarshaler runtime.Unmarshaler, server UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -275,7 +275,8 @@ func RegisterUnannotatedEchoServiceHandlerServer(ctx context.Context, mux *runti
 	mux.Handle("POST", pattern_UnannotatedEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -295,7 +296,8 @@ func RegisterUnannotatedEchoServiceHandlerServer(ctx context.Context, mux *runti
 	mux.Handle("GET", pattern_UnannotatedEchoService_Echo_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -315,7 +317,8 @@ func RegisterUnannotatedEchoServiceHandlerServer(ctx context.Context, mux *runti
 	mux.Handle("POST", pattern_UnannotatedEchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -335,7 +338,8 @@ func RegisterUnannotatedEchoServiceHandlerServer(ctx context.Context, mux *runti
 	mux.Handle("DELETE", pattern_UnannotatedEchoService_EchoDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -396,7 +400,8 @@ func RegisterUnannotatedEchoServiceHandlerClient(ctx context.Context, mux *runti
 	mux.Handle("POST", pattern_UnannotatedEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -416,7 +421,8 @@ func RegisterUnannotatedEchoServiceHandlerClient(ctx context.Context, mux *runti
 	mux.Handle("GET", pattern_UnannotatedEchoService_Echo_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -436,7 +442,8 @@ func RegisterUnannotatedEchoServiceHandlerClient(ctx context.Context, mux *runti
 	mux.Handle("POST", pattern_UnannotatedEchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -456,7 +463,8 @@ func RegisterUnannotatedEchoServiceHandlerClient(ctx context.Context, mux *runti
 	mux.Handle("DELETE", pattern_UnannotatedEchoService_EchoDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
