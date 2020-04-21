@@ -50,7 +50,7 @@ func MarshalerForRequest(mux *ServeMux, r *http.Request) (outbound Marshaler) {
 // It checks the registry on the ServeMux for the MIME type set by the Content-Type header.
 // If there are multiple Content-Type headers set, choose the first one that it can
 // exactly match in the registry.
-// If it isn't set (or the request Content-Type is empty),  or no set values exactly
+// If it is not set (or the request Content-Type is empty), or no set values exactly
 // match the values in the registry, it checks for "*".
 func UnmarshalerForRequest(mux *ServeMux, r *http.Request) (inbound Unmarshaler) {
 	for _, contentTypeVal := range r.Header[contentTypeHeader] {
