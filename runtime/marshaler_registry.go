@@ -21,7 +21,7 @@ var (
 // If it isn't set (or the request Accept is empty), it checks for the Content-Type header.
 // If there are multiple headers set, choose the first one that it can
 // exactly match in the registry.
-// If both headers aren't set (or both headers are empty), or no set values exactly
+// If neither header is set (or both headers are empty), or no set values exactly
 // match the values in the registry, it checks for "*".
 func MarshalerForRequest(mux *ServeMux, r *http.Request) (outbound Marshaler) {
 	for _, acceptVal := range r.Header[acceptHeader] {
