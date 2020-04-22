@@ -297,7 +297,6 @@ func (s *ServeMux) isPathLengthFallback(r *http.Request) bool {
 }
 
 type handler struct {
-	pat           Pattern
-	h             HandlerFunc
-	rpcMethodName string
+	pat Pattern
+	h   HandlerFunc
 }
