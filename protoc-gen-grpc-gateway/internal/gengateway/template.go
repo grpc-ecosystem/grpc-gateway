@@ -568,14 +568,14 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context,
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
 	{{if or $m.GetClientStreaming $m.GetServerStreaming}}
-	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, "/{{$svc.File.GetName}}.{{$svc.GetName}}/{{$m.GetName}}", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 		return
 	})
 	{{else}}
-	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 	{{- if $UseRequestContext }}
 		ctx, cancel := context.WithCancel(req.Context())
 	{{- else -}}
@@ -650,7 +650,7 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}(ctx context.Context, mux *
 func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context, mux *runtime.ServeMux, client {{$svc.GetName}}Client) error {
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
-	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 	{{- if $UseRequestContext }}
 		ctx, cancel := context.WithCancel(req.Context())
 	{{- else -}}

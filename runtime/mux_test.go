@@ -16,10 +16,11 @@ import (
 
 func TestMuxServeHTTP(t *testing.T) {
 	type stubPattern struct {
-		method string
-		ops    []int
-		pool   []string
-		verb   string
+		method    string
+		rpcMethod string
+		ops       []int
+		pool      []string
+		verb      string
 	}
 	for _, spec := range []struct {
 		patterns    []stubPattern
@@ -45,9 +46,10 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern1/test1",
 				},
 			},
 			reqMethod:   "GET",
@@ -58,9 +60,10 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern2/test1",
 				},
 			},
 			reqMethod:  "GET",
@@ -70,13 +73,15 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern3/test1",
 				},
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpPush), 0},
+					method:    "GET",
+					ops:       []int{int(utilities.OpPush), 0},
+					rpcMethod: "/mux_test.stubPattern3/test2",
 				},
 			},
 			reqMethod:   "GET",
@@ -87,14 +92,16 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern4/test1",
 				},
 				{
-					method: "POST",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "POST",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern4/test2",
 				},
 			},
 			reqMethod:   "POST",
@@ -105,9 +112,10 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern5/test1",
 				},
 			},
 			reqMethod:  "DELETE",
@@ -117,9 +125,10 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern6/test1",
 				},
 			},
 			reqMethod: "POST",
@@ -133,9 +142,10 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern7/test1",
 				},
 			},
 			reqMethod: "POST",
@@ -150,14 +160,16 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern8/test1",
 				},
 				{
-					method: "POST",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "POST",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern8/test2",
 				},
 			},
 			reqMethod: "POST",
@@ -172,14 +184,16 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern9/test1",
 				},
 				{
-					method: "POST",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "POST",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern9/test2",
 				},
 			},
 			reqMethod: "POST",
@@ -194,9 +208,10 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					rpcMethod: "/mux_test.stubPattern10/test1",
 				},
 			},
 			reqMethod: "POST",
@@ -209,10 +224,11 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "POST",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
-					verb:   "bar",
+					method:    "POST",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"foo"},
+					verb:      "bar",
+					rpcMethod: "/mux_test.stubPattern11/test1",
 				},
 			},
 			reqMethod: "POST",
@@ -226,15 +242,17 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
-					pool:   []string{"foo", "id"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
+					pool:      []string{"foo", "id"},
+					rpcMethod: "/mux_test.stubPattern12/test1",
 				},
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
-					pool:   []string{"foo", "id"},
-					verb:   "verb",
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
+					pool:      []string{"foo", "id"},
+					verb:      "verb",
+					rpcMethod: "/mux_test.stubPattern12/test1",
 				},
 			},
 			reqMethod: "GET",
@@ -250,9 +268,10 @@ func TestMuxServeHTTP(t *testing.T) {
 			// (with custom handler looking for ErrUnknownURI)
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"unimplemented"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"unimplemented"},
+					rpcMethod: "/mux_test.stubPattern13/test1",
 				},
 			},
 			reqMethod:   "GET",
@@ -266,9 +285,10 @@ func TestMuxServeHTTP(t *testing.T) {
 			// even when using custom error handler
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"unimplemented"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0},
+					pool:      []string{"unimplemented"},
+					rpcMethod: "/mux_test.stubPattern14/test1",
 				},
 			},
 			reqMethod:   "GET",
@@ -280,9 +300,10 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
-					pool:   []string{"foo", "id"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
+					pool:      []string{"foo", "id"},
+					rpcMethod: "/mux_test.stubPattern15/test1",
 				},
 			},
 			patternOpts: []runtime.PatternOpt{runtime.AssumeColonVerbOpt(false)},
@@ -297,9 +318,10 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
-					pool:   []string{"foo", "id"},
+					method:    "GET",
+					ops:       []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
+					pool:      []string{"foo", "id"},
+					rpcMethod: "/mux_test.stubPattern16/test1",
 				},
 			},
 			patternOpts: []runtime.PatternOpt{runtime.AssumeColonVerbOpt(false)},
@@ -314,15 +336,17 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
-					method: "POST",
-					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
-					pool:   []string{"foo", "id"},
+					method:    "POST",
+					ops:       []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
+					pool:      []string{"foo", "id"},
+					rpcMethod: "/mux_test.stubPattern17/test1",
 				},
 				{
-					method: "POST",
-					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
-					pool:   []string{"foo", "id"},
-					verb:   "verb",
+					method:    "POST",
+					ops:       []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
+					pool:      []string{"foo", "id"},
+					verb:      "verb",
+					rpcMethod: "/mux_test.stubPattern18/test1",
 				},
 			},
 			patternOpts: []runtime.PatternOpt{runtime.AssumeColonVerbOpt(false)},
@@ -350,7 +374,12 @@ func TestMuxServeHTTP(t *testing.T) {
 				if err != nil {
 					t.Fatalf("runtime.NewPattern(1, %#v, %#v, %q) failed with %v; want success", p.ops, p.pool, p.verb, err)
 				}
-				mux.Handle(p.method, pat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+				mux.Handle(p.method, pat, p.rpcMethod, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+					if m, ok := runtime.RPCMethod(r.Context()); !ok {
+						t.Fatalf("runtime.RPCMethod(r.Context()) failed with no value; want %s", p.rpcMethod)
+					} else if m != p.rpcMethod {
+						t.Fatalf("runtime.RPCMethod(r.Context()) failed with %s; want %s", m, p.rpcMethod)
+					}
 					if r.URL.Path == "/unimplemented" {
 						// simulate method returning "unimplemented" error
 						_, m := runtime.MarshalerForRequest(mux, r)
