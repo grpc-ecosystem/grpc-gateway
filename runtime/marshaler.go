@@ -9,7 +9,7 @@ import (
 type Marshaler interface {
 	// Marshal marshals "v" into a byte sequence.
 	Marshal(ctx context.Context, v interface{}) ([]byte, error)
-	// NewEncoder returns an Encoder which writes bytes sequence into "w".
+	// NewEncoder returns an Encoder which writes byte sequences into "w".
 	NewEncoder(ctx context.Context, w io.Writer) Encoder
 	// ContentType returns the Content-Type which this marshaler is responsible for.
 	ContentType() string
@@ -20,7 +20,7 @@ type Unmarshaler interface {
 	// Unmarshal unmarshals "data" into "v".
 	// "v" must be a pointer value.
 	Unmarshal(ctx context.Context, data []byte, v interface{}) error
-	// NewDecoder returns a Decoder which reads byte sequence from "r".
+	// NewDecoder returns a Decoder which reads byte sequences from "r".
 	NewDecoder(ctx context.Context, r io.Reader) Decoder
 	// ContentType returns the Content-Type which this marshaler is responsible for.
 	ContentType() string
