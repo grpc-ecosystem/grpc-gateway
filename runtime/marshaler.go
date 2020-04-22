@@ -22,8 +22,6 @@ type Unmarshaler interface {
 	Unmarshal(ctx context.Context, data []byte, v interface{}) error
 	// NewDecoder returns a Decoder which reads byte sequences from "r".
 	NewDecoder(ctx context.Context, r io.Reader) Decoder
-	// ContentType returns the Content-Type which this marshaler is responsible for.
-	ContentType() string
 }
 
 // Marshalers that implement contentTypeMarshaler will have their ContentTypeFromMessage method called
