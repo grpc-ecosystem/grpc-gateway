@@ -346,7 +346,7 @@ func TestMuxServeHTTP(t *testing.T) {
 					ops:       []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
 					pool:      []string{"foo", "id"},
 					verb:      "verb",
-					rpcMethod: "/mux_test.stubPattern18/test1",
+					rpcMethod: "/mux_test.stubPattern17/test2",
 				},
 			},
 			patternOpts: []runtime.PatternOpt{runtime.AssumeColonVerbOpt(false)},
