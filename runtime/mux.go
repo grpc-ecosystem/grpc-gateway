@@ -40,8 +40,6 @@ type ServeMux struct {
 	lastMatchWins             bool
 }
 
-type rpcMethodKey struct{}
-
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
 type ServeMuxOption func(*ServeMux)
 

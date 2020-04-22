@@ -41,6 +41,8 @@ var (
 	DefaultContextTimeout = 0 * time.Second
 )
 
+type rpcMethodKey struct{}
+
 func decodeBinHeader(v string) ([]byte, error) {
 	if len(v)%4 == 0 {
 		// Input was padded, or padding was not necessary.
