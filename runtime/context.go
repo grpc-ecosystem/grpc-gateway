@@ -56,8 +56,8 @@ At a minimum, the RemoteAddr is included in the fashion of "X-Forwarded-For",
 except that the forwarded destination is not another HTTP service but rather
 a gRPC service.
 */
-func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (context.Context, error) {
-	ctx, md, err := annotateContext(ctx, mux, req)
+func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string) (context.Context, error) {
+	ctx, md, err := annotateContext(ctx, mux, req, rpcMethodName)
 	if err != nil {
 		return nil, err
 	}
@@ -70,8 +70,8 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 
 // AnnotateIncomingContext adds context information such as metadata from the request.
 // Attach metadata as incoming context.
-func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Request) (context.Context, error) {
-	ctx, md, err := annotateContext(ctx, mux, req)
+func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string) (context.Context, error) {
+	ctx, md, err := annotateContext(ctx, mux, req, rpcMethodName)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,8 @@ func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Reque
 	return metadata.NewIncomingContext(ctx, md), nil
 }
 
-func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (context.Context, metadata.MD, error) {
+func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string) (context.Context, metadata.MD, error) {
+	ctx = withRPCMethod(ctx, rpcMethodName)
 	var pairs []string
 	timeout := DefaultContextTimeout
 	if tm := req.Header.Get(metadataGrpcTimeout); tm != "" {
@@ -233,4 +234,22 @@ func isPermanentHTTPHeader(hdr string) bool {
 		return true
 	}
 	return false
+}
+
+// RPCMethod returns the method string for the server context. The returned
+// string is in the format of "/package.service/method".
+func RPCMethod(ctx context.Context) (string, bool) {
+	m := ctx.Value(rpcMethodKey{})
+	if m == nil {
+		return "", false
+	}
+	ms, ok := m.(string)
+	if !ok {
+		return "", false
+	}
+	return ms, true
+}
+
+func withRPCMethod(ctx context.Context, rpcMethodName string) context.Context {
+	return context.WithValue(ctx, rpcMethodKey{}, rpcMethodName)
 }

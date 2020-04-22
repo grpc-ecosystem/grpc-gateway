@@ -172,11 +172,11 @@ func local_request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context,
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 func RegisterNonStandardServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server NonStandardServiceServer) error {
 
-	mux.Handle("PATCH", pattern_NonStandardService_Update_0, "/grpc.gateway.examples.internal.examplepb.NonStandardService/Update", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_NonStandardService_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.NonStandardService/Update")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -192,11 +192,11 @@ func RegisterNonStandardServiceHandlerServer(ctx context.Context, mux *runtime.S
 
 	})
 
-	mux.Handle("PATCH", pattern_NonStandardService_UpdateWithJSONNames_0, "/grpc.gateway.examples.internal.examplepb.NonStandardService/UpdateWithJSONNames", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_NonStandardService_UpdateWithJSONNames_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.NonStandardService/UpdateWithJSONNames")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -253,11 +253,11 @@ func RegisterNonStandardServiceHandler(ctx context.Context, mux *runtime.ServeMu
 // "NonStandardServiceClient" to call the correct interceptors.
 func RegisterNonStandardServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client NonStandardServiceClient) error {
 
-	mux.Handle("PATCH", pattern_NonStandardService_Update_0, "/grpc.gateway.examples.internal.examplepb.NonStandardService/Update", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_NonStandardService_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.NonStandardService/Update")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -273,11 +273,11 @@ func RegisterNonStandardServiceHandlerClient(ctx context.Context, mux *runtime.S
 
 	})
 
-	mux.Handle("PATCH", pattern_NonStandardService_UpdateWithJSONNames_0, "/grpc.gateway.examples.internal.examplepb.NonStandardService/UpdateWithJSONNames", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_NonStandardService_UpdateWithJSONNames_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.NonStandardService/UpdateWithJSONNames")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

@@ -272,11 +272,11 @@ func local_request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, mars
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 func RegisterUnannotatedEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server UnannotatedEchoServiceServer) error {
 
-	mux.Handle("POST", pattern_UnannotatedEchoService_Echo_0, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/Echo", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UnannotatedEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/Echo")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -292,11 +292,11 @@ func RegisterUnannotatedEchoServiceHandlerServer(ctx context.Context, mux *runti
 
 	})
 
-	mux.Handle("GET", pattern_UnannotatedEchoService_Echo_1, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/Echo", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_UnannotatedEchoService_Echo_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/Echo")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -312,11 +312,11 @@ func RegisterUnannotatedEchoServiceHandlerServer(ctx context.Context, mux *runti
 
 	})
 
-	mux.Handle("POST", pattern_UnannotatedEchoService_EchoBody_0, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/EchoBody", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UnannotatedEchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/EchoBody")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -332,11 +332,11 @@ func RegisterUnannotatedEchoServiceHandlerServer(ctx context.Context, mux *runti
 
 	})
 
-	mux.Handle("DELETE", pattern_UnannotatedEchoService_EchoDelete_0, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/EchoDelete", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_UnannotatedEchoService_EchoDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/EchoDelete")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -393,11 +393,11 @@ func RegisterUnannotatedEchoServiceHandler(ctx context.Context, mux *runtime.Ser
 // "UnannotatedEchoServiceClient" to call the correct interceptors.
 func RegisterUnannotatedEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client UnannotatedEchoServiceClient) error {
 
-	mux.Handle("POST", pattern_UnannotatedEchoService_Echo_0, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/Echo", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UnannotatedEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/Echo")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -413,11 +413,11 @@ func RegisterUnannotatedEchoServiceHandlerClient(ctx context.Context, mux *runti
 
 	})
 
-	mux.Handle("GET", pattern_UnannotatedEchoService_Echo_1, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/Echo", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_UnannotatedEchoService_Echo_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/Echo")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -433,11 +433,11 @@ func RegisterUnannotatedEchoServiceHandlerClient(ctx context.Context, mux *runti
 
 	})
 
-	mux.Handle("POST", pattern_UnannotatedEchoService_EchoBody_0, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/EchoBody", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UnannotatedEchoService_EchoBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/EchoBody")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -453,11 +453,11 @@ func RegisterUnannotatedEchoServiceHandlerClient(ctx context.Context, mux *runti
 
 	})
 
-	mux.Handle("DELETE", pattern_UnannotatedEchoService_EchoDelete_0, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/EchoDelete", func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_UnannotatedEchoService_EchoDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.UnannotatedEchoService/EchoDelete")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

@@ -374,12 +374,7 @@ func TestMuxServeHTTP(t *testing.T) {
 				if err != nil {
 					t.Fatalf("runtime.NewPattern(1, %#v, %#v, %q) failed with %v; want success", p.ops, p.pool, p.verb, err)
 				}
-				mux.Handle(p.method, pat, p.rpcMethod, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-					if m, ok := runtime.RPCMethod(r.Context()); !ok {
-						t.Fatalf("runtime.RPCMethod(r.Context()) failed with no value; want %s", p.rpcMethod)
-					} else if m != p.rpcMethod {
-						t.Fatalf("runtime.RPCMethod(r.Context()) failed with %s; want %s", m, p.rpcMethod)
-					}
+				mux.Handle(p.method, pat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 					if r.URL.Path == "/unimplemented" {
 						// simulate method returning "unimplemented" error
 						_, m := runtime.MarshalerForRequest(mux, r)
