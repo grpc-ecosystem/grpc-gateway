@@ -35,7 +35,7 @@ var (
 	filter_Greeter_SayHello_0 = &utilities.DoubleArray{Encoding: map[string]int{"name": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_Greeter_SayHello_0(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Greeter_SayHello_0(ctx context.Context, unmarshaler runtime.Unmarshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -69,7 +69,7 @@ func request_Greeter_SayHello_0(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_0(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_0(ctx context.Context, unmarshaler runtime.Unmarshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -107,7 +107,7 @@ var (
 	filter_Greeter_SayHello_1 = &utilities.DoubleArray{Encoding: map[string]int{"strVal": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_Greeter_SayHello_1(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Greeter_SayHello_1(ctx context.Context, unmarshaler runtime.Unmarshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -141,7 +141,7 @@ func request_Greeter_SayHello_1(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_1(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_1(ctx context.Context, unmarshaler runtime.Unmarshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -179,7 +179,7 @@ var (
 	filter_Greeter_SayHello_2 = &utilities.DoubleArray{Encoding: map[string]int{"floatVal": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_Greeter_SayHello_2(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Greeter_SayHello_2(ctx context.Context, unmarshaler runtime.Unmarshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -213,7 +213,7 @@ func request_Greeter_SayHello_2(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_2(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_2(ctx context.Context, unmarshaler runtime.Unmarshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -251,7 +251,7 @@ var (
 	filter_Greeter_SayHello_3 = &utilities.DoubleArray{Encoding: map[string]int{"doubleVal": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_Greeter_SayHello_3(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Greeter_SayHello_3(ctx context.Context, unmarshaler runtime.Unmarshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -285,7 +285,7 @@ func request_Greeter_SayHello_3(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_3(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_3(ctx context.Context, unmarshaler runtime.Unmarshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -323,7 +323,7 @@ var (
 	filter_Greeter_SayHello_4 = &utilities.DoubleArray{Encoding: map[string]int{"boolVal": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_Greeter_SayHello_4(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Greeter_SayHello_4(ctx context.Context, unmarshaler runtime.Unmarshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -357,7 +357,7 @@ func request_Greeter_SayHello_4(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_4(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_4(ctx context.Context, unmarshaler runtime.Unmarshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -395,7 +395,7 @@ var (
 	filter_Greeter_SayHello_5 = &utilities.DoubleArray{Encoding: map[string]int{"bytesVal": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_Greeter_SayHello_5(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Greeter_SayHello_5(ctx context.Context, unmarshaler runtime.Unmarshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -429,7 +429,7 @@ func request_Greeter_SayHello_5(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_5(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_5(ctx context.Context, unmarshaler runtime.Unmarshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -467,7 +467,7 @@ var (
 	filter_Greeter_SayHello_6 = &utilities.DoubleArray{Encoding: map[string]int{"int32Val": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_Greeter_SayHello_6(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Greeter_SayHello_6(ctx context.Context, unmarshaler runtime.Unmarshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -501,7 +501,7 @@ func request_Greeter_SayHello_6(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_6(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_6(ctx context.Context, unmarshaler runtime.Unmarshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -539,7 +539,7 @@ var (
 	filter_Greeter_SayHello_7 = &utilities.DoubleArray{Encoding: map[string]int{"uint32Val": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_Greeter_SayHello_7(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Greeter_SayHello_7(ctx context.Context, unmarshaler runtime.Unmarshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -573,7 +573,7 @@ func request_Greeter_SayHello_7(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_7(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_7(ctx context.Context, unmarshaler runtime.Unmarshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -611,7 +611,7 @@ var (
 	filter_Greeter_SayHello_8 = &utilities.DoubleArray{Encoding: map[string]int{"int64Val": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_Greeter_SayHello_8(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Greeter_SayHello_8(ctx context.Context, unmarshaler runtime.Unmarshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -645,7 +645,7 @@ func request_Greeter_SayHello_8(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_8(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_8(ctx context.Context, unmarshaler runtime.Unmarshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -683,7 +683,7 @@ var (
 	filter_Greeter_SayHello_9 = &utilities.DoubleArray{Encoding: map[string]int{"uint64Val": 0}, Base: []int{1, 1, 0}, Check: []int{0, 1, 2}}
 )
 
-func request_Greeter_SayHello_9(ctx context.Context, marshaler runtime.Marshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Greeter_SayHello_9(ctx context.Context, unmarshaler runtime.Unmarshaler, client GreeterClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -717,7 +717,7 @@ func request_Greeter_SayHello_9(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_9(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_9(ctx context.Context, unmarshaler runtime.Unmarshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -759,7 +759,8 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 	mux.Handle("GET", pattern_Greeter_SayHello_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -779,7 +780,8 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 	mux.Handle("GET", pattern_Greeter_SayHello_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -799,7 +801,8 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 	mux.Handle("GET", pattern_Greeter_SayHello_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -819,7 +822,8 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 	mux.Handle("GET", pattern_Greeter_SayHello_3, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -839,7 +843,8 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 	mux.Handle("GET", pattern_Greeter_SayHello_4, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -859,7 +864,8 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 	mux.Handle("GET", pattern_Greeter_SayHello_5, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -879,7 +885,8 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 	mux.Handle("GET", pattern_Greeter_SayHello_6, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -899,7 +906,8 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 	mux.Handle("GET", pattern_Greeter_SayHello_7, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -919,7 +927,8 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 	mux.Handle("GET", pattern_Greeter_SayHello_8, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -939,7 +948,8 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 	mux.Handle("GET", pattern_Greeter_SayHello_9, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1000,7 +1010,8 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 	mux.Handle("GET", pattern_Greeter_SayHello_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1020,7 +1031,8 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 	mux.Handle("GET", pattern_Greeter_SayHello_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1040,7 +1052,8 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 	mux.Handle("GET", pattern_Greeter_SayHello_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1060,7 +1073,8 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 	mux.Handle("GET", pattern_Greeter_SayHello_3, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1080,7 +1094,8 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 	mux.Handle("GET", pattern_Greeter_SayHello_4, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1100,7 +1115,8 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 	mux.Handle("GET", pattern_Greeter_SayHello_5, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1120,7 +1136,8 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 	mux.Handle("GET", pattern_Greeter_SayHello_6, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1140,7 +1157,8 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 	mux.Handle("GET", pattern_Greeter_SayHello_7, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1160,7 +1178,8 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 	mux.Handle("GET", pattern_Greeter_SayHello_8, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1180,7 +1199,8 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 	mux.Handle("GET", pattern_Greeter_SayHello_9, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		inboundMarshaler := runtime.UnmarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateContext(ctx, mux, req)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
