@@ -7,9 +7,23 @@ order: 101
 # Customizing your gateway
 
 ## Message serialization
+### Custom deserializer
+
+You might want to deserialize request messages in MessagePack instead of JSON, for example.
+
+1. Write a custom implementation of [`Unmarshaler`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#Unmarshaler)
+2. Register your marshaler with [`WithUnmarshalerOption`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithUnmarshalerOption)
+   e.g.
+   ```go
+   var m your.MsgPackMarshaler
+   mux := runtime.NewServeMux(runtime.WithUnmarshalerOption("application/x-msgpack", m))
+   ```
+
+You can see [the default implementation for JSON](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/marshal_jsonpb.go) for reference.
+
 ### Custom serializer
 
-You might want to serialize request/response messages in MessagePack instead of JSON, for example.
+You might want to serialize response messages in MessagePack instead of JSON, for example.
 
 1. Write a custom implementation of [`Marshaler`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#Marshaler)
 2. Register your marshaler with [`WithMarshalerOption`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithMarshalerOption)
@@ -23,10 +37,13 @@ You can see [the default implementation for JSON](https://github.com/grpc-ecosys
 
 ### Using camelCase for JSON
 
-The protocol buffer compiler generates camelCase JSON tags that can be used with jsonpb package. By default jsonpb Marshaller uses `OrigName: true` which uses the exact case used in the proto files. To use camelCase for the JSON representation,
-   ```go
-   mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName:false}))
-   ```
+The protocol buffer compiler generates camelCase JSON tags that can be used with jsonpb package. By default jsonpb Marshaler and Unmarshaler use `OrigName: true` which uses the exact case used in the proto files. To use camelCase for the JSON representation,
+  ```go
+  mux := runtime.NewServeMux(
+     runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName:false}),
+     runtime.WithUnmarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName:false}),
+  )
+  ```
 
 ### Pretty-print JSON responses when queried with ?pretty
 
