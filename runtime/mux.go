@@ -40,6 +40,8 @@ type ServeMux struct {
 	lastMatchWins             bool
 }
 
+type rpcMethodKey struct{}
+
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
 type ServeMuxOption func(*ServeMux)
 
@@ -179,11 +181,11 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 }
 
 // Handle associates "h" to the pair of HTTP method and path pattern.
-func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
+func (s *ServeMux) Handle(meth string, pat Pattern, rpcMethodName string, h HandlerFunc) {
 	if s.lastMatchWins {
-		s.handlers[meth] = append([]handler{handler{pat: pat, h: h}}, s.handlers[meth]...)
+		s.handlers[meth] = append([]handler{{pat: pat, h: h, rpcMethodName: rpcMethodName}}, s.handlers[meth]...)
 	} else {
-		s.handlers[meth] = append(s.handlers[meth], handler{pat: pat, h: h})
+		s.handlers[meth] = append(s.handlers[meth], handler{pat: pat, h: h, rpcMethodName: rpcMethodName})
 	}
 }
 
@@ -237,7 +239,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			continue
 		}
-		h.h(w, r, pathParams)
+		h.h(w, withRPCMethod(r, h.rpcMethodName), pathParams)
 		return
 	}
 
@@ -264,7 +266,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					}
 					return
 				}
-				h.h(w, r, pathParams)
+				h.h(w, withRPCMethod(r, h.rpcMethodName), pathParams)
 				return
 			}
 			if s.protoErrorHandler != nil {
@@ -295,6 +297,25 @@ func (s *ServeMux) isPathLengthFallback(r *http.Request) bool {
 }
 
 type handler struct {
-	pat Pattern
-	h   HandlerFunc
+	pat           Pattern
+	h             HandlerFunc
+	rpcMethodName string
+}
+
+// RPCMethod returns the method string for the server context. The returned
+// string is in the format of "/package.service/method".
+func RPCMethod(ctx context.Context) (string, bool) {
+	m := ctx.Value(rpcMethodKey{})
+	if m == nil {
+		return "", false
+	}
+	ms, ok := m.(string)
+	if !ok {
+		return "", false
+	}
+	return ms, true
+}
+
+func withRPCMethod(r *http.Request, rpcMethodName string) *http.Request {
+	return r.WithContext(context.WithValue(r.Context(), rpcMethodKey{}, rpcMethodName))
 }
