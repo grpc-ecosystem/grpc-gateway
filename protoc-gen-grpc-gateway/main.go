@@ -34,7 +34,7 @@ var (
 	repeatedPathParamSeparator = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`.")
 	allowPatchFeature          = flag.Bool("allow_patch_feature", true, "determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).")
 	allowColonFinalSegments    = flag.Bool("allow_colon_final_segments", false, "determines whether colons are permitted in the final segment of a path")
-	standalone                 = flag.Bool("standalone", false, "generates standalone gateway package, which imports target service")
+	standalone                 = flag.Bool("standalone", false, "generates a standalone gateway package, which imports the target service package")
 	versionFlag                = flag.Bool("version", false, "print the current version")
 )
 
@@ -91,6 +91,7 @@ func main() {
 		}
 	}
 
+	reg.SetStandalone(*standalone)
 	reg.SetPrefix(*importPrefix)
 	reg.SetImportPath(*importPath)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
@@ -104,6 +105,7 @@ func main() {
 		emitError(err)
 		return
 	}
+
 	unboundHTTPRules := reg.UnboundExternalHTTPRules()
 	if len(unboundHTTPRules) != 0 {
 		emitError(fmt.Errorf("HTTP rules without a matching selector: %s", strings.Join(unboundHTTPRules, ", ")))

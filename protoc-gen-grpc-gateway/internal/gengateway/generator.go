@@ -155,7 +155,6 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 		UseRequestContext:  g.useRequestContext,
 		RegisterFuncSuffix: g.registerFuncSuffix,
 		AllowPatchFeature:  g.allowPatchFeature,
-		Standalone:         g.standalone,
 	}
 	return applyTemplate(params, g.reg)
 }

@@ -242,6 +242,8 @@ type Field struct {
 	// FieldMessage is the message type of the field.
 	FieldMessage *Message
 	*descriptor.FieldDescriptorProto
+
+	ForcePrefixedName bool
 }
 
 // Parameter is a parameter provided in http requests
@@ -342,6 +344,10 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 			msg := c.Target.Message
 			oneOfName := gogen.CamelCase(msg.GetOneofDecl()[*index].GetName())
 			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
+
+			if c.Target.ForcePrefixedName {
+				oneofFieldName = msg.File.Pkg() + "." + oneofFieldName
+			}
 
 			components = components + "." + oneOfName
 			s := `if %s == nil {

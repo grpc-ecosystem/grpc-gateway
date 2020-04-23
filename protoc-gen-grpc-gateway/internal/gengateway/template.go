@@ -19,7 +19,6 @@ type param struct {
 	UseRequestContext  bool
 	RegisterFuncSuffix string
 	AllowPatchFeature  bool
-	Standalone         bool
 }
 
 type binding struct {
@@ -158,7 +157,6 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 
 	for _, msg := range p.Messages {
 		msgName := generator2.CamelCase(*msg.Name)
-		msg.ForcePrefixedName = p.Standalone
 		msg.Name = &msgName
 	}
 
@@ -166,7 +164,6 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 		var methodWithBindingsSeen bool
 		svcName := generator2.CamelCase(*svc.Name)
 		svc.Name = &svcName
-		svc.ForcePrefixedName = p.Standalone
 
 		for _, meth := range svc.Methods {
 			glog.V(2).Infof("Processing %s.%s", svc.GetName(), meth.GetName())
@@ -259,7 +256,7 @@ var _ = descriptor.ForMessage
 
 	_ = template.Must(handlerTemplate.New("request-func-signature").Parse(strings.Replace(`
 {{if .Method.GetServerStreaming}}
-func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.InstanceName}}Client, req *http.Request, pathParams map[string]string) ({{.Method.Service.GetName}}_{{.Method.GetName}}Client, runtime.ServerMetadata, error)
+func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.InstanceName}}Client, req *http.Request, pathParams map[string]string) ({{.Method.Service.InstanceName}}_{{.Method.GetName}}Client, runtime.ServerMetadata, error)
 {{else}}
 func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.InstanceName}}Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error)
 {{end}}`, "\n", "", -1)))
