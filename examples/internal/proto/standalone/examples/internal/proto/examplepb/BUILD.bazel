@@ -1,0 +1,34 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "a_bit_of_everything.pb.gw.go",
+        "echo_service.pb.gw.go",
+        "flow_combination.pb.gw.go",
+        "non_standard_names.pb.gw.go",
+        "response_body_service.pb.gw.go",
+        "stream.pb.gw.go",
+        "unannotated_echo_service.pb.gw.go",
+        "use_go_template.pb.gw.go",
+        "wrappers.pb.gw.go",
+    ],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/standalone/examples/internal/proto/examplepb",
+    visibility = ["//examples:__subpackages__"],
+    deps = [
+        "//examples/internal/proto/examplepb:go_default_library",
+        "//examples/internal/proto/pathenum:go_default_library",
+        "//examples/internal/proto/sub:go_default_library",
+        "//examples/internal/proto/sub2:go_default_library",
+        "//runtime:go_default_library",
+        "//utilities:go_default_library",
+        "@com_github_golang_protobuf//descriptor:go_default_library_gen",
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@io_bazel_rules_go//proto/wkt:empty_go_proto",
+        "@io_bazel_rules_go//proto/wkt:wrappers_go_proto",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//codes:go_default_library",
+        "@org_golang_google_grpc//grpclog:go_default_library",
+        "@org_golang_google_grpc//status:go_default_library",
+    ],
+)
