@@ -16,3 +16,7 @@ require (
 	google.golang.org/protobuf v1.21.0
 	gopkg.in/yaml.v2 v2.2.3 // indirect
 )
+
+replace (
+	github.com/grpc-ecosystem/grpc-gateway => github.com/ssetin/grpc-gateway v1.14.5-0.20200423094201-29bee48031b7
+)
