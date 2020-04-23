@@ -33,10 +33,12 @@ type generator struct {
 	registerFuncSuffix string
 	pathType           pathType
 	allowPatchFeature  bool
+	standalone         bool
 }
 
 // New returns a new generator which generates grpc gateway files.
-func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, pathTypeString string, allowPatchFeature bool) gen.Generator {
+func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, pathTypeString string,
+	allowPatchFeature, standalone bool) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
 		"context",
@@ -85,6 +87,7 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, p
 		registerFuncSuffix: registerFuncSuffix,
 		pathType:           pathType,
 		allowPatchFeature:  allowPatchFeature,
+		standalone:         standalone,
 	}
 }
 
@@ -128,6 +131,12 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 		pkgSeen[pkg.Path] = true
 		imports = append(imports, pkg)
 	}
+
+	if g.standalone {
+		file.GoPkg.Alias = "ext" + strings.Title(file.GoPkg.Name)
+		imports = append(imports, file.GoPkg)
+	}
+
 	for _, svc := range file.Services {
 		for _, m := range svc.Methods {
 			imports = append(imports, g.addEnumPathParamImports(file, m, pkgSeen)...)
@@ -146,6 +155,7 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 		UseRequestContext:  g.useRequestContext,
 		RegisterFuncSuffix: g.registerFuncSuffix,
 		AllowPatchFeature:  g.allowPatchFeature,
+		Standalone:         g.standalone,
 	}
 	return applyTemplate(params, g.reg)
 }
