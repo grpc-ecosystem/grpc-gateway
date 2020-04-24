@@ -37,8 +37,8 @@ func TestWithProtoErrorHandler(t *testing.T) {
 	if err := waitForGateway(ctx, 8082); err != nil {
 		t.Errorf("waitForGateway(ctx, 8082) failed with %v; want success", err)
 	}
-	testEcho(t, port, "application/json")
-	testEchoBody(t, port)
+	testEcho(t, port, "v1", "application/json")
+	testEchoBody(t, port, "v1")
 }
 
 func TestABEWithProtoErrorHandler(t *testing.T) {

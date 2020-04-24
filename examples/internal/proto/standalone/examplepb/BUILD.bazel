@@ -2,8 +2,8 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "go_default_library",
-    srcs = ["echo_service.pb.gw.go"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/standalone/examples/internal/proto/examplepb",
+    srcs = ["unannotated_echo_service.pb.gw.go"],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/standalone/examplepb",
     visibility = ["//examples:__subpackages__"],
     deps = [
         "//examples/internal/proto/examplepb:go_default_library",
