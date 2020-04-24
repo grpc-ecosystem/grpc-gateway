@@ -13,7 +13,7 @@ go_library(
         "use_go_template.pb.gw.go",
         "wrappers.pb.gw.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/standalone/examples/internal/proto/examplepb",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/standalone/examples/internal/proto/examplepb",
     visibility = ["//examples:__subpackages__"],
     deps = [
         "//examples/internal/proto/examplepb:go_default_library",
