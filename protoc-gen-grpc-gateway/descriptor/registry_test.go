@@ -550,6 +550,25 @@ func TestLoadOverridedPackageName(t *testing.T) {
 	}
 }
 
+func TestLoadWithStandalone(t *testing.T) {
+	reg := NewRegistry()
+	reg.SetStandalone(true)
+	loadFile(t, reg, `
+		name: 'example.proto'
+		package: 'example'
+		options < go_package: 'example.com/xyz;pb' >
+	`)
+	file := reg.files["example.proto"]
+	if file == nil {
+		t.Errorf("reg.files[%q] = nil; want non-nil", "example.proto")
+		return
+	}
+	wantPkg := GoPackage{Path: "example.com/xyz", Name: "pb", Alias: "extPb"}
+	if got, want := file.GoPkg, wantPkg; got != want {
+		t.Errorf("file.GoPkg = %#v; want %#v", got, want)
+	}
+}
+
 func TestLoadSetInputPath(t *testing.T) {
 	reg := NewRegistry()
 	reg.SetImportPath("foo/examplepb")

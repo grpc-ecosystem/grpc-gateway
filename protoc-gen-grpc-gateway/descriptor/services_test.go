@@ -144,6 +144,9 @@ func crossLinkFixture(f *File) *File {
 			}
 		}
 	}
+	for _, e := range f.Enums {
+		e.File = f
+	}
 	return f
 }
 

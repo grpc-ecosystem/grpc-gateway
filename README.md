@@ -160,6 +160,22 @@ annotation to your .proto file
    ```
 
    It will generate a reverse proxy `gen/go/your/service/v1/your_service.pb.gw.go`.
+   
+   OR generate a standalone reverse-proxy if needed.
+
+   Suppose you have a generated gRPC stub package, and you want to deploy several
+   API gateways using client-specific
+   [YAML annotations](https://grpc-ecosystem.github.io/grpc-gateway/docs/grpcapiconfiguration.html).
+   You can generate a grpc-gateway which imports the stub as an external 
+   package, so you don't have to regenerate it several times.
+   To set the import path of the stub package, set its full path in the `go_package`.
+   
+   ```sh
+   protoc -I. --grpc-gateway_out=logtostderr=true,grpc_api_configuration=apiOne.yaml,paths=source_relative,standalone=true:./gen/go/client_one \
+     your/service/v1/your_service.proto
+
+   protoc -I. --grpc-gateway_out=logtostderr=true,grpc_api_configuration=apiTwo.yaml,paths=source_relative,standalone=true:./gen/go/client_two \
+     your/service/v1/your_service.proto
 
 6. Write an entrypoint for the HTTP reverse-proxy server
 
