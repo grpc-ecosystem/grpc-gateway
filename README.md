@@ -113,6 +113,12 @@ annotation to your .proto file
     }
    ```
 
+   >You will need to provide the required third party protobuf files to the `protoc` compiler.
+   >They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
+   >them into your `protoc` generation file structure. If you've structured your protofiles according
+   >to something like [the Buf style guide](https://buf.build/docs/style-guide#files-and-packages),
+   >you could copy the files into a top-level `./google` folder.
+
    See [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
    for examples of more annotations you can add to customize gateway behavior
    and generated Swagger output.
@@ -124,12 +130,6 @@ annotation to your .proto file
    for more information.
 
 3. Generate gRPC stub
-
-  You will need to provide the required third party protobuf files to the `protoc` compiler.
-  They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
-  them into your `protoc` generation file structure. If you've structured your protofiles according
-  to something like [the Buf style guide](https://buf.build/docs/style-guide#files-and-packages),
-  you could copy the files into a top-level `./google` folder.
   
   Here is an example of what a `protoc` command might look like:
 
