@@ -175,10 +175,10 @@ $(RUNTIME_TEST_SRCS): $(GO_PLUGIN) $(RUNTIME_TEST_PROTO)
 $(EXAMPLE_GWSRCS): ADDITIONAL_GW_FLAGS:=$(ADDITIONAL_GW_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_GWSRCS): ADDITIONAL_SA_FLAGS:=,standalone=true,grpc_api_configuration=examples/internal/proto/examplepb/standalone_echo_service.yaml
 $(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_SA_FLAGS):. $(STANDALONE_EXAMPLES)
+	mv examples/internal/proto/examplepb/unannotated_echo_service.pb.gw.go examples/internal/proto/standalone/
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative,$(PKGMAP)$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_SA_FLAGS):examples/internal/proto/standalone $(STANDALONE_EXAMPLES)
-	cp -r examples/internal/proto/standalone/examples/internal/proto/examplepb examples/internal/proto/standalone
-	rm -rf examples/internal/proto/standalone/examples
+
 
 $(EXAMPLE_SWAGGERSRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_SWAGGERSRCS): $(SWAGGER_PLUGIN) $(SWAGGER_EXAMPLES)

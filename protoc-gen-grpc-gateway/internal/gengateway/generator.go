@@ -133,7 +133,6 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 	}
 
 	if g.standalone {
-		file.GoPkg.Alias = "ext" + strings.Title(file.GoPkg.Name)
 		imports = append(imports, file.GoPkg)
 	}
 

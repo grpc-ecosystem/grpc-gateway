@@ -147,6 +147,10 @@ func (r *Registry) loadFile(file *descriptor.FileDescriptorProto) {
 		Path: r.goPackagePath(file),
 		Name: r.defaultGoPackageName(file),
 	}
+	if r.standalone {
+		pkg.Alias = "ext" + strings.Title(pkg.Name)
+	}
+
 	if err := r.ReserveGoPackageAlias(pkg.Name, pkg.Path); err != nil {
 		for i := 0; ; i++ {
 			alias := fmt.Sprintf("%s_%d", pkg.Name, i)

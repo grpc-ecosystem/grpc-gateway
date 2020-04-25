@@ -204,3 +204,66 @@ func TestFieldPath(t *testing.T) {
 		t.Errorf("fpEmpty.AssignableExpr(%q) = %q; want %q", "resp", got, want)
 	}
 }
+
+func TestGoType(t *testing.T) {
+	src := `
+		name: 'example.proto'
+		package: 'example'
+		message_type <
+			name: 'Message'
+			field <
+				name: 'field'
+				type: TYPE_STRING
+				number: 1
+			>
+		>,
+		enum_type <
+			name: 'EnumName'
+		>,
+	`
+
+	var fd descriptor.FileDescriptorProto
+	if err := proto.UnmarshalText(src, &fd); err != nil {
+		t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
+	}
+
+	msg := &Message{
+		DescriptorProto: fd.MessageType[0],
+		Fields: []*Field{
+			{FieldDescriptorProto: fd.MessageType[0].Field[0]},
+		},
+	}
+	enum := &Enum{
+		EnumDescriptorProto: fd.EnumType[0],
+	}
+	file := &File{
+		FileDescriptorProto: &fd,
+		GoPkg:               GoPackage{Path: "example", Name: "example"},
+		Messages:            []*Message{msg},
+		Enums:               []*Enum{enum},
+	}
+	crossLinkFixture(file)
+
+	if got, want := msg.GoType("example"), "Message"; got != want {
+		t.Errorf("msg.GoType() = %q; want %q", got, want)
+	}
+	if got, want := msg.GoType("extPackage"), "example.Message"; got != want {
+		t.Errorf("msg.GoType() = %q; want %q", got, want)
+	}
+	msg.ForcePrefixedName = true
+	if got, want := msg.GoType("example"), "example.Message"; got != want {
+		t.Errorf("msg.GoType() = %q; want %q", got, want)
+	}
+
+	if got, want := enum.GoType("example"), "EnumName"; got != want {
+		t.Errorf("enum.GoType() = %q; want %q", got, want)
+	}
+	if got, want := enum.GoType("extPackage"), "example.EnumName"; got != want {
+		t.Errorf("enum.GoType() = %q; want %q", got, want)
+	}
+	enum.ForcePrefixedName = true
+	if got, want := enum.GoType("example"), "example.EnumName"; got != want {
+		t.Errorf("enum.GoType() = %q; want %q", got, want)
+	}
+
+}

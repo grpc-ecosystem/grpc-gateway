@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
-	standalone "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/standalone/examplepb"
+	standalone "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/standalone"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )
