@@ -32,7 +32,7 @@ import (
 )
 
 type errorBody struct {
-	Error   string        `json:"error"`
+	Message string        `json:"message"`
 	Code    int           `json:"code"`
 	Details []interface{} `json:"details"`
 }
@@ -918,8 +918,8 @@ func testABELookupNotFound(t *testing.T, port int) {
 		return
 	}
 
-	if got, want := msg.Error, "not found"; got != want {
-		t.Errorf("msg.Error = %s; want %s", got, want)
+	if got, want := msg.Message, "not found"; got != want {
+		t.Errorf("msg.Message = %s; want %s", got, want)
 		return
 	}
 
@@ -1341,8 +1341,8 @@ func TestErrorWithDetails(t *testing.T) {
 	if got, want := msg.Code, int(codes.Unknown); got != want {
 		t.Errorf("msg.Code = %d; want %d", got, want)
 	}
-	if got, want := msg.Error, "with details"; got != want {
-		t.Errorf("msg.Error = %s; want %s", got, want)
+	if got, want := msg.Message, "with details"; got != want {
+		t.Errorf("msg.Message = %s; want %s", got, want)
 	}
 	if got, want := len(msg.Details), 1; got != want {
 		t.Fatalf("len(msg.Details) = %q; want %q", got, want)

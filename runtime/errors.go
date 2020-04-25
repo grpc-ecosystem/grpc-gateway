@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
@@ -116,6 +115,7 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 	if !ok {
 		s = status.New(codes.Unknown, err.Error())
 	}
+	pb := s.Proto()
 
 	w.Header().Del("Trailer")
 
@@ -124,21 +124,13 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 	// An interface param needs to be added to the ContentType() function on
 	// the Marshal interface to be able to remove this check
 	if typeMarshaler, ok := marshaler.(contentTypeMarshaler); ok {
-		pb := s.Proto()
 		contentType = typeMarshaler.ContentTypeFromMessage(pb)
 	}
 	w.Header().Set("Content-Type", contentType)
 
-	body := &internal.Error{
-		Error:   s.Message(),
-		Message: s.Message(),
-		Code:    int32(s.Code()),
-		Details: s.Proto().GetDetails(),
-	}
-
-	buf, merr := marshaler.Marshal(body)
+	buf, merr := marshaler.Marshal(pb)
 	if merr != nil {
-		grpclog.Infof("Failed to marshal error message %q: %v", body, merr)
+		grpclog.Infof("Failed to marshal error message %q: %v", s, merr)
 		w.WriteHeader(http.StatusInternalServerError)
 		if _, err := io.WriteString(w, fallback); err != nil {
 			grpclog.Infof("Failed to write response: %v", err)
