@@ -84,6 +84,52 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "line_num",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "status.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -162,6 +208,52 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "line_num",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "status.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -171,6 +263,19 @@
     }
   },
   "definitions": {
+    "examplepbUnannotatedEmbedded": {
+      "type": "object",
+      "properties": {
+        "progress": {
+          "type": "string",
+          "format": "int64"
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "description": "Embedded represents a message embedded in SimpleMessage."
+    },
     "examplepbUnannotatedSimpleMessage": {
       "type": "object",
       "properties": {
@@ -184,6 +289,23 @@
         },
         "duration": {
           "type": "string"
+        },
+        "line_num": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lang": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/examplepbUnannotatedEmbedded"
+        },
+        "en": {
+          "type": "string",
+          "format": "int64"
+        },
+        "no": {
+          "$ref": "#/definitions/examplepbUnannotatedEmbedded"
         }
       },
       "description": "UnannotatedSimpleMessage represents a simple message sent to the unannotated Echo service."

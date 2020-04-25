@@ -22,7 +22,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/google/go-cmp/cmp"
-	gw "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -43,11 +43,15 @@ func TestEcho(t *testing.T) {
 		return
 	}
 
-	testEcho(t, 8088, "application/json")
-	testEchoOneof(t, 8088, "application/json")
-	testEchoOneof1(t, 8088, "application/json")
-	testEchoOneof2(t, 8088, "application/json")
-	testEchoBody(t, 8088)
+	for _, apiPrefix := range []string{"v1", "v2"} {
+		t.Run(apiPrefix, func(t *testing.T) {
+			testEcho(t, 8088, apiPrefix, "application/json")
+			testEchoOneof(t, 8088, apiPrefix, "application/json")
+			testEchoOneof1(t, 8088, apiPrefix, "application/json")
+			testEchoOneof2(t, 8088, apiPrefix, "application/json")
+			testEchoBody(t, 8088, apiPrefix)
+		})
+	}
 }
 
 func TestForwardResponseOption(t *testing.T) {
@@ -78,11 +82,11 @@ func TestForwardResponseOption(t *testing.T) {
 	if err := waitForGateway(ctx, 8081); err != nil {
 		t.Errorf("waitForGateway(ctx, 8081) failed with %v; want success", err)
 	}
-	testEcho(t, 8081, "application/vnd.docker.plugins.v1.1+json")
+	testEcho(t, 8081, "v1", "application/vnd.docker.plugins.v1.1+json")
 }
 
-func testEcho(t *testing.T, port int, contentType string) {
-	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo/myid", port)
+func testEcho(t *testing.T, port int, apiPrefix string, contentType string) {
+	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo/myid", port, apiPrefix)
 	resp, err := http.Post(apiURL, "application/json", strings.NewReader("{}"))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
@@ -100,7 +104,7 @@ func testEcho(t *testing.T, port int, contentType string) {
 		t.Logf("%s", buf)
 	}
 
-	var msg gw.SimpleMessage
+	var msg examplepb.SimpleMessage
 	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
@@ -114,8 +118,8 @@ func testEcho(t *testing.T, port int, contentType string) {
 	}
 }
 
-func testEchoOneof(t *testing.T, port int, contentType string) {
-	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo/myid/10/golang", port)
+func testEchoOneof(t *testing.T, port int, apiPrefix string, contentType string) {
+	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo/myid/10/golang", port, apiPrefix)
 	resp, err := http.Get(apiURL)
 	if err != nil {
 		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
@@ -133,7 +137,7 @@ func testEchoOneof(t *testing.T, port int, contentType string) {
 		t.Logf("%s", buf)
 	}
 
-	var msg gw.SimpleMessage
+	var msg examplepb.SimpleMessage
 	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
@@ -147,8 +151,8 @@ func testEchoOneof(t *testing.T, port int, contentType string) {
 	}
 }
 
-func testEchoOneof1(t *testing.T, port int, contentType string) {
-	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo1/myid/10/golang", port)
+func testEchoOneof1(t *testing.T, port int, apiPrefix string, contentType string) {
+	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo1/myid/10/golang", port, apiPrefix)
 	resp, err := http.Get(apiURL)
 	if err != nil {
 		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
@@ -166,7 +170,7 @@ func testEchoOneof1(t *testing.T, port int, contentType string) {
 		t.Logf("%s", buf)
 	}
 
-	var msg gw.SimpleMessage
+	var msg examplepb.SimpleMessage
 	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
@@ -180,8 +184,8 @@ func testEchoOneof1(t *testing.T, port int, contentType string) {
 	}
 }
 
-func testEchoOneof2(t *testing.T, port int, contentType string) {
-	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo2/golang", port)
+func testEchoOneof2(t *testing.T, port int, apiPrefix string, contentType string) {
+	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo2/golang", port, apiPrefix)
 	resp, err := http.Get(apiURL)
 	if err != nil {
 		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
@@ -199,7 +203,7 @@ func testEchoOneof2(t *testing.T, port int, contentType string) {
 		t.Logf("%s", buf)
 	}
 
-	var msg gw.SimpleMessage
+	var msg examplepb.SimpleMessage
 	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
@@ -213,15 +217,15 @@ func testEchoOneof2(t *testing.T, port int, contentType string) {
 	}
 }
 
-func testEchoBody(t *testing.T, port int) {
-	sent := gw.SimpleMessage{Id: "example"}
+func testEchoBody(t *testing.T, port int, apiPrefix string) {
+	sent := examplepb.SimpleMessage{Id: "example"}
 	var m jsonpb.Marshaler
 	payload, err := m.MarshalToString(&sent)
 	if err != nil {
 		t.Fatalf("m.MarshalToString(%#v) failed with %v; want success", payload, err)
 	}
 
-	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo_body", port)
+	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo_body", port, apiPrefix)
 	resp, err := http.Post(apiURL, "", strings.NewReader(payload))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
@@ -239,7 +243,7 @@ func testEchoBody(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var received gw.SimpleMessage
+	var received examplepb.SimpleMessage
 	if err := jsonpb.UnmarshalString(string(buf), &received); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
@@ -283,7 +287,7 @@ func TestABE(t *testing.T) {
 }
 
 func testABECreate(t *testing.T, port int) {
-	want := gw.ABitOfEverything{
+	want := examplepb.ABitOfEverything{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
 		Int64Value:               4294967296,
@@ -299,10 +303,10 @@ func testABECreate(t *testing.T, port int) {
 		Sint32Value:              2147483647,
 		Sint64Value:              4611686018427387903,
 		NonConventionalNameValue: "camelCase",
-		EnumValue:                gw.NumericEnum_ZERO,
+		EnumValue:                examplepb.NumericEnum_ZERO,
 		PathEnumValue:            pathenum.PathEnum_DEF,
 		NestedPathEnumValue:      pathenum.MessagePathEnum_JKL,
-		EnumValueAnnotation:      gw.NumericEnum_ONE,
+		EnumValueAnnotation:      examplepb.NumericEnum_ONE,
 	}
 	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%f/%f/%d/separator/%d/%d/%d/%d/%v/%s/%d/%d/%d/%d/%d/%s/%s/%s/%s/%s", port, want.FloatValue, want.DoubleValue, want.Int64Value, want.Uint64Value, want.Int32Value, want.Fixed64Value, want.Fixed32Value, want.BoolValue, want.StringValue, want.Uint32Value, want.Sfixed32Value, want.Sfixed64Value, want.Sint32Value, want.Sint64Value, want.NonConventionalNameValue, want.EnumValue, want.PathEnumValue, want.NestedPathEnumValue, want.EnumValueAnnotation)
 
@@ -323,7 +327,7 @@ func testABECreate(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg gw.ABitOfEverything
+	var msg examplepb.ABitOfEverything
 	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
@@ -338,7 +342,7 @@ func testABECreate(t *testing.T, port int) {
 }
 
 func testABECreateBody(t *testing.T, port int) {
-	want := gw.ABitOfEverything{
+	want := examplepb.ABitOfEverything{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
 		Int64Value:               4294967296,
@@ -354,11 +358,11 @@ func testABECreateBody(t *testing.T, port int) {
 		Sint32Value:              2147483647,
 		Sint64Value:              4611686018427387903,
 		NonConventionalNameValue: "camelCase",
-		EnumValue:                gw.NumericEnum_ONE,
+		EnumValue:                examplepb.NumericEnum_ONE,
 		PathEnumValue:            pathenum.PathEnum_ABC,
 		NestedPathEnumValue:      pathenum.MessagePathEnum_GHI,
 
-		Nested: []*gw.ABitOfEverything_Nested{
+		Nested: []*examplepb.ABitOfEverything_Nested{
 			{
 				Name:   "bar",
 				Amount: 10,
@@ -369,31 +373,31 @@ func testABECreateBody(t *testing.T, port int) {
 			},
 		},
 		RepeatedStringValue: []string{"a", "b", "c"},
-		OneofValue: &gw.ABitOfEverything_OneofString{
+		OneofValue: &examplepb.ABitOfEverything_OneofString{
 			OneofString: "x",
 		},
-		MapValue: map[string]gw.NumericEnum{
-			"a": gw.NumericEnum_ONE,
-			"b": gw.NumericEnum_ZERO,
+		MapValue: map[string]examplepb.NumericEnum{
+			"a": examplepb.NumericEnum_ONE,
+			"b": examplepb.NumericEnum_ZERO,
 		},
 		MappedStringValue: map[string]string{
 			"a": "x",
 			"b": "y",
 		},
-		MappedNestedValue: map[string]*gw.ABitOfEverything_Nested{
+		MappedNestedValue: map[string]*examplepb.ABitOfEverything_Nested{
 			"a": {Name: "x", Amount: 1},
 			"b": {Name: "y", Amount: 2},
 		},
-		RepeatedEnumAnnotation: []gw.NumericEnum{
-			gw.NumericEnum_ONE,
-			gw.NumericEnum_ZERO,
+		RepeatedEnumAnnotation: []examplepb.NumericEnum{
+			examplepb.NumericEnum_ONE,
+			examplepb.NumericEnum_ZERO,
 		},
-		EnumValueAnnotation: gw.NumericEnum_ONE,
+		EnumValueAnnotation: examplepb.NumericEnum_ONE,
 		RepeatedStringAnnotation: []string{
 			"a",
 			"b",
 		},
-		RepeatedNestedAnnotation: []*gw.ABitOfEverything_Nested{
+		RepeatedNestedAnnotation: []*examplepb.ABitOfEverything_Nested{
 			{
 				Name:   "hoge",
 				Amount: 10,
@@ -403,7 +407,7 @@ func testABECreateBody(t *testing.T, port int) {
 				Amount: 20,
 			},
 		},
-		NestedAnnotation: &gw.ABitOfEverything_Nested{
+		NestedAnnotation: &examplepb.ABitOfEverything_Nested{
 			Name:   "hoge",
 			Amount: 10,
 		},
@@ -432,7 +436,7 @@ func testABECreateBody(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg gw.ABitOfEverything
+	var msg examplepb.ABitOfEverything
 	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
@@ -458,7 +462,7 @@ func testABEBulkCreate(t *testing.T, port int) {
 		for _, val := range []string{
 			"foo", "bar", "baz", "qux", "quux",
 		} {
-			want := gw.ABitOfEverything{
+			want := examplepb.ABitOfEverything{
 				FloatValue:               1.5,
 				DoubleValue:              2.5,
 				Int64Value:               4294967296,
@@ -474,11 +478,11 @@ func testABEBulkCreate(t *testing.T, port int) {
 				Sint32Value:              2147483647,
 				Sint64Value:              4611686018427387903,
 				NonConventionalNameValue: "camelCase",
-				EnumValue:                gw.NumericEnum_ONE,
+				EnumValue:                examplepb.NumericEnum_ONE,
 				PathEnumValue:            pathenum.PathEnum_ABC,
 				NestedPathEnumValue:      pathenum.MessagePathEnum_GHI,
 
-				Nested: []*gw.ABitOfEverything_Nested{
+				Nested: []*examplepb.ABitOfEverything_Nested{
 					{
 						Name:   "hoge",
 						Amount: 10,
@@ -488,16 +492,16 @@ func testABEBulkCreate(t *testing.T, port int) {
 						Amount: 20,
 					},
 				},
-				RepeatedEnumAnnotation: []gw.NumericEnum{
-					gw.NumericEnum_ONE,
-					gw.NumericEnum_ZERO,
+				RepeatedEnumAnnotation: []examplepb.NumericEnum{
+					examplepb.NumericEnum_ONE,
+					examplepb.NumericEnum_ZERO,
 				},
-				EnumValueAnnotation: gw.NumericEnum_ONE,
+				EnumValueAnnotation: examplepb.NumericEnum_ONE,
 				RepeatedStringAnnotation: []string{
 					"a",
 					"b",
 				},
-				RepeatedNestedAnnotation: []*gw.ABitOfEverything_Nested{
+				RepeatedNestedAnnotation: []*examplepb.ABitOfEverything_Nested{
 					{
 						Name:   "hoge",
 						Amount: 10,
@@ -507,7 +511,7 @@ func testABEBulkCreate(t *testing.T, port int) {
 						Amount: 20,
 					},
 				},
-				NestedAnnotation: &gw.ABitOfEverything_Nested{
+				NestedAnnotation: &examplepb.ABitOfEverything_Nested{
 					Name:   "hoge",
 					Amount: 10,
 				},
@@ -573,7 +577,7 @@ func testABEBulkCreateWithError(t *testing.T, port int) {
 		} {
 			time.Sleep(1 * time.Millisecond)
 
-			want := gw.ABitOfEverything{
+			want := examplepb.ABitOfEverything{
 				StringValue: fmt.Sprintf("strprefix/%s", val),
 			}
 			var m jsonpb.Marshaler
@@ -639,7 +643,7 @@ func testABELookup(t *testing.T, port int) {
 		return
 	}
 
-	var want gw.ABitOfEverything
+	var want examplepb.ABitOfEverything
 	if err := jsonpb.UnmarshalString(string(buf), &want); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &want) failed with %v; want success", buf, err)
 		return
@@ -659,7 +663,7 @@ func testABELookup(t *testing.T, port int) {
 		return
 	}
 
-	var msg gw.ABitOfEverything
+	var msg examplepb.ABitOfEverything
 	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return
@@ -686,7 +690,7 @@ func TestABEPatch(t *testing.T) {
 	port := 8088
 
 	// create a record with a known string_value and int32_value
-	uuid := postABE(t, port, gw.ABitOfEverything{StringValue: "strprefix/bar", Int32Value: 32})
+	uuid := postABE(t, port, examplepb.ABitOfEverything{StringValue: "strprefix/bar", Int32Value: 32})
 
 	// issue PATCH request, only updating string_value
 	req, err := http.NewRequest(
@@ -731,59 +735,59 @@ func TestABEPatchBody(t *testing.T) {
 
 	for _, tc := range []struct {
 		name          string
-		originalValue gw.ABitOfEverything
-		input         gw.UpdateV2Request
-		want          gw.ABitOfEverything
+		originalValue examplepb.ABitOfEverything
+		input         examplepb.UpdateV2Request
+		want          examplepb.ABitOfEverything
 	}{
 		{
 			name: "with fieldmask provided",
-			originalValue: gw.ABitOfEverything{
+			originalValue: examplepb.ABitOfEverything{
 				Int32Value:   42,
 				StringValue:  "rabbit",
-				SingleNested: &gw.ABitOfEverything_Nested{Name: "some value that will get overwritten", Amount: 345},
+				SingleNested: &examplepb.ABitOfEverything_Nested{Name: "some value that will get overwritten", Amount: 345},
 			},
-			input: gw.UpdateV2Request{Abe: &gw.ABitOfEverything{
+			input: examplepb.UpdateV2Request{Abe: &examplepb.ABitOfEverything{
 				StringValue:  "some value that won't get updated because it's not in the field mask",
-				SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
+				SingleNested: &examplepb.ABitOfEverything_Nested{Amount: 456},
 			}, UpdateMask: &field_mask.FieldMask{Paths: []string{"single_nested"}}},
-			want: gw.ABitOfEverything{
+			want: examplepb.ABitOfEverything{
 				Int32Value:   42,
 				StringValue:  "rabbit",
-				SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
+				SingleNested: &examplepb.ABitOfEverything_Nested{Amount: 456},
 			},
 		},
 		{
 			// N.B. This case passes the empty field mask to the UpdateV2 method so falls back to PUT semantics as per the implementation.
 			name: "with empty fieldmask",
-			originalValue: gw.ABitOfEverything{
+			originalValue: examplepb.ABitOfEverything{
 				Int32Value:   42,
 				StringValue:  "some value that will get overwritten",
-				SingleNested: &gw.ABitOfEverything_Nested{Name: "value that will get empty", Amount: 345},
+				SingleNested: &examplepb.ABitOfEverything_Nested{Name: "value that will get empty", Amount: 345},
 			},
-			input: gw.UpdateV2Request{Abe: &gw.ABitOfEverything{
+			input: examplepb.UpdateV2Request{Abe: &examplepb.ABitOfEverything{
 				StringValue:  "some updated value because the fieldMask is nil",
-				SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
+				SingleNested: &examplepb.ABitOfEverything_Nested{Amount: 456},
 			}, UpdateMask: &field_mask.FieldMask{}},
-			want: gw.ABitOfEverything{
+			want: examplepb.ABitOfEverything{
 				StringValue:  "some updated value because the fieldMask is nil",
-				SingleNested: &gw.ABitOfEverything_Nested{Amount: 456},
+				SingleNested: &examplepb.ABitOfEverything_Nested{Amount: 456},
 			},
 		},
 		{
 			// N.B. This case passes the nil field mask to the UpdateV2 method so falls back to PUT semantics as per the implementation.
 			name: "with nil fieldmask",
-			originalValue: gw.ABitOfEverything{
+			originalValue: examplepb.ABitOfEverything{
 				Int32Value:   42,
 				StringValue:  "some value that will get overwritten",
-				SingleNested: &gw.ABitOfEverything_Nested{Name: "value that will get empty", Amount: 123},
+				SingleNested: &examplepb.ABitOfEverything_Nested{Name: "value that will get empty", Amount: 123},
 			},
-			input: gw.UpdateV2Request{Abe: &gw.ABitOfEverything{
+			input: examplepb.UpdateV2Request{Abe: &examplepb.ABitOfEverything{
 				StringValue:  "some updated value because the fieldMask is nil",
-				SingleNested: &gw.ABitOfEverything_Nested{Amount: 657},
+				SingleNested: &examplepb.ABitOfEverything_Nested{Amount: 657},
 			}, UpdateMask: nil},
-			want: gw.ABitOfEverything{
+			want: examplepb.ABitOfEverything{
 				StringValue:  "some updated value because the fieldMask is nil",
-				SingleNested: &gw.ABitOfEverything_Nested{Amount: 657},
+				SingleNested: &examplepb.ABitOfEverything_Nested{Amount: 657},
 			},
 		},
 	} {
@@ -833,7 +837,7 @@ func mustMarshal(t *testing.T, i interface{}) string {
 }
 
 // postABE conveniently creates a new ABE record for ease in testing
-func postABE(t *testing.T, port int, abe gw.ABitOfEverything) (uuid string) {
+func postABE(t *testing.T, port int, abe examplepb.ABitOfEverything) (uuid string) {
 	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	postResp, err := http.Post(apiURL, "application/json", strings.NewReader(mustMarshal(t, abe)))
 	if err != nil {
@@ -857,7 +861,7 @@ func postABE(t *testing.T, port int, abe gw.ABitOfEverything) (uuid string) {
 }
 
 // getABE conveniently fetches an ABE record for ease in testing
-func getABE(t *testing.T, port int, uuid string) gw.ABitOfEverything {
+func getABE(t *testing.T, port int, uuid string) examplepb.ABitOfEverything {
 	gURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%s", port, uuid)
 	getResp, err := http.Get(gURL)
 	if err != nil {
@@ -868,7 +872,7 @@ func getABE(t *testing.T, port int, uuid string) gw.ABitOfEverything {
 	if got, want := getResp.StatusCode, http.StatusOK; got != want {
 		t.Fatalf("getResp.StatusCode= %d, want %d. resp: %v", got, want, getResp)
 	}
-	var getRespBody gw.ABitOfEverything
+	var getRespBody examplepb.ABitOfEverything
 	body, err := ioutil.ReadAll(getResp.Body)
 	if err != nil {
 		t.Fatalf("getResp body couldn't be read: %v", err)
@@ -957,7 +961,7 @@ func testABEList(t *testing.T, port int) {
 			t.Errorf("item.Error = %#v; want empty; i = %d", item.Error, i)
 			continue
 		}
-		var msg gw.ABitOfEverything
+		var msg examplepb.ABitOfEverything
 		if err := jsonpb.UnmarshalString(string(item.Result), &msg); err != nil {
 			t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", item.Result, err)
 		}
@@ -1186,7 +1190,7 @@ func testABERepeated(t *testing.T, port int) {
 		}
 		return strings.Join(s, ",")
 	}
-	want := gw.ABitOfEverythingRepeated{
+	want := examplepb.ABitOfEverythingRepeated{
 		PathRepeatedFloatValue: []float32{
 			1.5,
 			-1.5,
@@ -1231,9 +1235,9 @@ func testABERepeated(t *testing.T, port int) {
 			0,
 			4294967295,
 		},
-		PathRepeatedEnumValue: []gw.NumericEnum{
-			gw.NumericEnum_ZERO,
-			gw.NumericEnum_ONE,
+		PathRepeatedEnumValue: []examplepb.NumericEnum{
+			examplepb.NumericEnum_ZERO,
+			examplepb.NumericEnum_ONE,
 		},
 		PathRepeatedSfixed32Value: []int32{
 			2147483647,
@@ -1271,7 +1275,7 @@ func testABERepeated(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg gw.ABitOfEverythingRepeated
+	var msg examplepb.ABitOfEverythingRepeated
 	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
 		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
 		return

@@ -51,6 +51,15 @@ type File struct {
 	Services []*Service
 }
 
+// Pkg returns package name or alias if it's present
+func (f *File) Pkg() string {
+	pkg := f.GoPkg.Name
+	if alias := f.GoPkg.Alias; alias != "" {
+		pkg = alias
+	}
+	return pkg
+}
+
 // proto2 determines if the syntax of the file is proto2.
 func (f *File) proto2() bool {
 	return f.Syntax == nil || f.GetSyntax() == "proto2"
@@ -67,6 +76,8 @@ type Message struct {
 
 	// Index is proto path index of this message in File.
 	Index int
+
+	ForcePrefixedName bool
 }
 
 // FQMN returns a fully qualified message name of this message.
@@ -89,14 +100,10 @@ func (m *Message) GoType(currentPackage string) string {
 	components = append(components, m.GetName())
 
 	name := strings.Join(components, "_")
-	if m.File.GoPkg.Path == currentPackage {
+	if !m.ForcePrefixedName && m.File.GoPkg.Path == currentPackage {
 		return name
 	}
-	pkg := m.File.GoPkg.Name
-	if alias := m.File.GoPkg.Alias; alias != "" {
-		pkg = alias
-	}
-	return fmt.Sprintf("%s.%s", pkg, name)
+	return fmt.Sprintf("%s.%s", m.File.Pkg(), name)
 }
 
 // Enum describes a protocol buffer enum types
@@ -108,6 +115,8 @@ type Enum struct {
 	*descriptor.EnumDescriptorProto
 
 	Index int
+
+	ForcePrefixedName bool
 }
 
 // FQEN returns a fully qualified enum name of this enum.
@@ -130,14 +139,10 @@ func (e *Enum) GoType(currentPackage string) string {
 	components = append(components, e.GetName())
 
 	name := strings.Join(components, "_")
-	if e.File.GoPkg.Path == currentPackage {
+	if !e.ForcePrefixedName && e.File.GoPkg.Path == currentPackage {
 		return name
 	}
-	pkg := e.File.GoPkg.Name
-	if alias := e.File.GoPkg.Alias; alias != "" {
-		pkg = alias
-	}
-	return fmt.Sprintf("%s.%s", pkg, name)
+	return fmt.Sprintf("%s.%s", e.File.Pkg(), name)
 }
 
 // Service wraps descriptor.ServiceDescriptorProto for richer features.
@@ -147,6 +152,8 @@ type Service struct {
 	*descriptor.ServiceDescriptorProto
 	// Methods is the list of methods defined in this service.
 	Methods []*Method
+
+	ForcePrefixedName bool
 }
 
 // FQSN returns the fully qualified service name of this service.
@@ -157,6 +164,23 @@ func (s *Service) FQSN() string {
 	}
 	components = append(components, s.GetName())
 	return strings.Join(components, ".")
+}
+
+// InstanceName returns object name of the service with package prefix if needed
+func (s *Service) InstanceName() string {
+	if !s.ForcePrefixedName {
+		return s.GetName()
+	}
+	return fmt.Sprintf("%s.%s", s.File.Pkg(), s.GetName())
+}
+
+// ClientConstructorName returns name of the Client constructor with package prefix if needed
+func (s *Service) ClientConstructorName() string {
+	constructor := "New" + s.GetName() + "Client"
+	if !s.ForcePrefixedName {
+		return constructor
+	}
+	return fmt.Sprintf("%s.%s", s.File.Pkg(), constructor)
 }
 
 // Method wraps descriptor.MethodDescriptorProto for richer features.
@@ -218,6 +242,8 @@ type Field struct {
 	// FieldMessage is the message type of the field.
 	FieldMessage *Message
 	*descriptor.FieldDescriptorProto
+
+	ForcePrefixedName bool
 }
 
 // Parameter is a parameter provided in http requests
@@ -318,6 +344,10 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 			msg := c.Target.Message
 			oneOfName := gogen.CamelCase(msg.GetOneofDecl()[*index].GetName())
 			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
+
+			if c.Target.ForcePrefixedName {
+				oneofFieldName = msg.File.Pkg() + "." + oneofFieldName
+			}
 
 			components = components + "." + oneOfName
 			s := `if %s == nil {

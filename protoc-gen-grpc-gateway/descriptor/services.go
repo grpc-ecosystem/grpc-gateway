@@ -22,6 +22,7 @@ func (r *Registry) loadServices(file *File) error {
 		svc := &Service{
 			File:                   file,
 			ServiceDescriptorProto: sd,
+			ForcePrefixedName:      r.standalone,
 		}
 		for _, md := range sd.GetMethod() {
 			glog.V(2).Infof("Processing %s.%s", sd.GetName(), md.GetName())

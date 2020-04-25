@@ -134,12 +134,26 @@ The message posted as the id parameter will also be returned.
  * @param num
  * @param optional nil or *UnannotatedEchoServiceEcho2Opts - Optional Parameters:
      * @param "Duration" (optional.String) - 
+     * @param "LineNum" (optional.String) - 
+     * @param "Lang" (optional.String) - 
+     * @param "StatusProgress" (optional.String) - 
+     * @param "StatusNote" (optional.String) - 
+     * @param "En" (optional.String) - 
+     * @param "NoProgress" (optional.String) - 
+     * @param "NoNote" (optional.String) - 
 
 @return ExamplepbUnannotatedSimpleMessage
 */
 
 type UnannotatedEchoServiceEcho2Opts struct { 
 	Duration optional.String
+	LineNum optional.String
+	Lang optional.String
+	StatusProgress optional.String
+	StatusNote optional.String
+	En optional.String
+	NoProgress optional.String
+	NoNote optional.String
 }
 
 func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx context.Context, id string, num string, localVarOptionals *UnannotatedEchoServiceEcho2Opts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
@@ -162,6 +176,27 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx conte
 
 	if localVarOptionals != nil && localVarOptionals.Duration.IsSet() {
 		localVarQueryParams.Add("duration", parameterToString(localVarOptionals.Duration.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.LineNum.IsSet() {
+		localVarQueryParams.Add("line_num", parameterToString(localVarOptionals.LineNum.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Lang.IsSet() {
+		localVarQueryParams.Add("lang", parameterToString(localVarOptionals.Lang.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.StatusProgress.IsSet() {
+		localVarQueryParams.Add("status.progress", parameterToString(localVarOptionals.StatusProgress.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.StatusNote.IsSet() {
+		localVarQueryParams.Add("status.note", parameterToString(localVarOptionals.StatusNote.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.En.IsSet() {
+		localVarQueryParams.Add("en", parameterToString(localVarOptionals.En.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NoProgress.IsSet() {
+		localVarQueryParams.Add("no.progress", parameterToString(localVarOptionals.NoProgress.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NoNote.IsSet() {
+		localVarQueryParams.Add("no.note", parameterToString(localVarOptionals.NoNote.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json"}
@@ -345,6 +380,13 @@ UnannotatedEchoServiceApiService EchoDelete method receives a simple message and
      * @param "Id" (optional.String) -  Id represents the message identifier.
      * @param "Num" (optional.String) - 
      * @param "Duration" (optional.String) - 
+     * @param "LineNum" (optional.String) - 
+     * @param "Lang" (optional.String) - 
+     * @param "StatusProgress" (optional.String) - 
+     * @param "StatusNote" (optional.String) - 
+     * @param "En" (optional.String) - 
+     * @param "NoProgress" (optional.String) - 
+     * @param "NoNote" (optional.String) - 
 
 @return ExamplepbUnannotatedSimpleMessage
 */
@@ -353,6 +395,13 @@ type UnannotatedEchoServiceEchoDeleteOpts struct {
 	Id optional.String
 	Num optional.String
 	Duration optional.String
+	LineNum optional.String
+	Lang optional.String
+	StatusProgress optional.String
+	StatusNote optional.String
+	En optional.String
+	NoProgress optional.String
+	NoNote optional.String
 }
 
 func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx context.Context, localVarOptionals *UnannotatedEchoServiceEchoDeleteOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
@@ -379,6 +428,27 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx 
 	}
 	if localVarOptionals != nil && localVarOptionals.Duration.IsSet() {
 		localVarQueryParams.Add("duration", parameterToString(localVarOptionals.Duration.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.LineNum.IsSet() {
+		localVarQueryParams.Add("line_num", parameterToString(localVarOptionals.LineNum.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Lang.IsSet() {
+		localVarQueryParams.Add("lang", parameterToString(localVarOptionals.Lang.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.StatusProgress.IsSet() {
+		localVarQueryParams.Add("status.progress", parameterToString(localVarOptionals.StatusProgress.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.StatusNote.IsSet() {
+		localVarQueryParams.Add("status.note", parameterToString(localVarOptionals.StatusNote.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.En.IsSet() {
+		localVarQueryParams.Add("en", parameterToString(localVarOptionals.En.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NoProgress.IsSet() {
+		localVarQueryParams.Add("no.progress", parameterToString(localVarOptionals.NoProgress.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NoNote.IsSet() {
+		localVarQueryParams.Add("no.note", parameterToString(localVarOptionals.NoNote.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json"}

@@ -86,6 +86,8 @@ type Registry struct {
 	// simpleOperationIDs removes the service prefix from the generated
 	// operationIDs. This risks generating duplicate operationIDs.
 	simpleOperationIDs bool
+
+	standalone bool
 }
 
 type repeatedFieldSeparator struct {
@@ -145,6 +147,10 @@ func (r *Registry) loadFile(file *descriptor.FileDescriptorProto) {
 		Path: r.goPackagePath(file),
 		Name: r.defaultGoPackageName(file),
 	}
+	if r.standalone {
+		pkg.Alias = "ext" + strings.Title(pkg.Name)
+	}
+
 	if err := r.ReserveGoPackageAlias(pkg.Name, pkg.Path); err != nil {
 		for i := 0; ; i++ {
 			alias := fmt.Sprintf("%s_%d", pkg.Name, i)
@@ -167,15 +173,17 @@ func (r *Registry) loadFile(file *descriptor.FileDescriptorProto) {
 func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descriptor.DescriptorProto) {
 	for i, md := range msgs {
 		m := &Message{
-			File:            file,
-			Outers:          outerPath,
-			DescriptorProto: md,
-			Index:           i,
+			File:              file,
+			Outers:            outerPath,
+			DescriptorProto:   md,
+			Index:             i,
+			ForcePrefixedName: r.standalone,
 		}
 		for _, fd := range md.GetField() {
 			m.Fields = append(m.Fields, &Field{
 				Message:              m,
 				FieldDescriptorProto: fd,
+				ForcePrefixedName:    r.standalone,
 			})
 		}
 		file.Messages = append(file.Messages, m)
@@ -197,6 +205,7 @@ func (r *Registry) registerEnum(file *File, outerPath []string, enums []*descrip
 			Outers:              outerPath,
 			EnumDescriptorProto: ed,
 			Index:               i,
+			ForcePrefixedName:   r.standalone,
 		}
 		file.Enums = append(file.Enums, e)
 		r.enums[e.FQEN()] = e
@@ -306,6 +315,11 @@ func (r *Registry) AddPkgMap(file, protoPkg string) {
 // SetPrefix registers the prefix to be added to go package paths generated from proto package names.
 func (r *Registry) SetPrefix(prefix string) {
 	r.prefix = prefix
+}
+
+// SetStandalone registers standalone flag to control package prefix
+func (r *Registry) SetStandalone(standalone bool) {
+	r.standalone = standalone
 }
 
 // SetImportPath registers the importPath which is used as the package if no
