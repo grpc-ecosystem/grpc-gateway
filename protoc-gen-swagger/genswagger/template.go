@@ -963,7 +963,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					},
 				}
 				if !reg.GetDisableDefaultErrors() {
-					errDef, hasErrDef := fullyQualifiedNameToSwaggerName("google.rpc.Status", reg)
+					errDef, hasErrDef := fullyQualifiedNameToSwaggerName(".google.rpc.Status", reg)
 					if hasErrDef {
 						// https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#responses-object
 						operationObject.Responses["default"] = swaggerResponseObject{

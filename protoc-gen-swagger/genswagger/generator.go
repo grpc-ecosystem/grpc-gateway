@@ -218,10 +218,10 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 	return files, nil
 }
 
-//AddStreamError Adds grpc.gateway.runtime.StreamError and google.protobuf.Any to registry for stream responses
-// TODO: mention status, fix comment ^^
-func AddStreamError(reg *descriptor.Registry) error {
-	//load internal protos
+// AddErrorDefs Adds grpc.gateway.runtime.StreamError, google.rpc.Status, and google.protobuf.Any
+// to registry (used for error-related API responses)
+func AddErrorDefs(reg *descriptor.Registry) error {
+	// load internal protos
 	any := fileDescriptorProtoForMessage(&any.Any{})
 	status := fileDescriptorProtoForMessage(&spb.Status{})
 	streamError := fileDescriptorProtoForMessage(&internal.StreamError{})
