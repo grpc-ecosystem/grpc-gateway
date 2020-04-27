@@ -62,7 +62,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/a_bit_of_everything/echo/{value}:
     get:
       tags:
@@ -104,7 +104,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
       externalDocs:
         description: "Find out more Echo"
         url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -395,7 +395,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/a_bit_of_everything/params/get/{single_nested.name}:
     get:
       tags:
@@ -690,7 +690,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/a_bit_of_everything/params/post/{string_value}:
     post:
       tags:
@@ -729,7 +729,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/a_bit_of_everything/query/{uuid}:
     get:
       tags:
@@ -1030,7 +1030,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
       security: []
       externalDocs:
         description: "Find out more about GetQuery"
@@ -1188,7 +1188,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/a_bit_of_everything/{single_nested.name}:
     post:
       tags:
@@ -1228,7 +1228,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/a_bit_of_everything/{uuid}:
     get:
       tags:
@@ -1261,7 +1261,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
     put:
       tags:
       - "ABitOfEverythingService"
@@ -1298,7 +1298,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
     delete:
       tags:
       - "ABitOfEverythingService"
@@ -1329,7 +1329,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
       security:
       - ApiKeyAuth: []
         OAuth2:
@@ -1526,7 +1526,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v2/example/a_bit_of_everything/{abe.uuid}:
     put:
       tags:
@@ -1564,7 +1564,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
     patch:
       tags:
       - "ABitOfEverythingService"
@@ -1601,7 +1601,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v2/example/echo:
     get:
       tags:
@@ -1644,7 +1644,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
       externalDocs:
         description: "Find out more Echo"
         url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -1689,7 +1689,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
       externalDocs:
         description: "Find out more Echo"
         url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -1719,7 +1719,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v2/example/errorwithdetails:
     get:
       tags:
@@ -1746,7 +1746,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v2/example/overwriteresponsecontenttype:
     get:
       tags:
@@ -1776,7 +1776,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v2/example/postwithemptybody/{name}:
     post:
       tags:
@@ -1814,7 +1814,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v2/example/timeout:
     get:
       tags:
@@ -1841,7 +1841,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v2/example/withbody/{id}:
     post:
       tags:
@@ -1879,7 +1879,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v2a/example/a_bit_of_everything/{abe.uuid}:
     patch:
       tags:
@@ -1917,7 +1917,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
 securityDefinitions:
   ApiKeyAuth:
     type: "apiKey"
@@ -2369,11 +2369,9 @@ definitions:
       \ API method which has a FieldMask type field in the\nrequest should verify\
       \ the included field paths, and return an\n`INVALID_ARGUMENT` error if any path\
       \ is duplicated or unmappable."
-  runtimeError:
+  rpcStatus:
     type: "object"
     properties:
-      error:
-        type: "string"
       code:
         type: "integer"
         format: "int32"

@@ -29,7 +29,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /responsebody/stream/{data}:
     get:
       tags:
@@ -55,7 +55,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /responsebody/{data}:
     get:
       tags:
@@ -75,7 +75,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /responsestrings/{data}:
     get:
       tags:
@@ -97,7 +97,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
 definitions:
   ResponseResponseType:
     type: "string"
@@ -204,11 +204,9 @@ definitions:
     example:
       value: "value"
       type_url: "type_url"
-  runtimeError:
+  rpcStatus:
     type: "object"
     properties:
-      error:
-        type: "string"
       code:
         type: "integer"
         format: "int32"
