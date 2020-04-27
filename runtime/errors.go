@@ -107,14 +107,11 @@ func MuxOrGlobalHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshale
 // If otherwise, it replies with http.StatusInternalServerError.
 //
 // The response body returned by this function is a JSON object,
-// which contains a member whose key is "error" and whose value is err.Error().
+// which contains a member whose key is "message" and whose value is err.Error().
 func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, _ *http.Request, err error) {
 	const fallback = `{"error": "failed to marshal error message"}`
 
-	s, ok := status.FromError(err)
-	if !ok {
-		s = status.New(codes.Unknown, err.Error())
-	}
+	s := status.Convert(err)
 	pb := s.Proto()
 
 	w.Header().Del("Trailer")
