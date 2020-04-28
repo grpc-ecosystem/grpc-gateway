@@ -2,14 +2,20 @@ version: 2
 jobs:
   build:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: $GITHUB_USER
+          password: $GITHUB_TOKEN
     working_directory: /src/grpc-gateway
     steps:
       - checkout
       - run: go build ./...
   test:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: $GITHUB_USER
+          password: $GITHUB_TOKEN
     working_directory: /src/grpc-gateway
     environment:
       GLOG_logtostderr: '1'
@@ -19,7 +25,10 @@ jobs:
       - run: bash <(curl -s https://codecov.io/bash)
   node_test:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: $GITHUB_USER
+          password: $GITHUB_TOKEN
     working_directory: /src/grpc-gateway
     steps:
       - checkout
@@ -32,7 +41,10 @@ jobs:
           ./node_modules/.bin/gulp
   generate:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: $GITHUB_USER
+          password: $GITHUB_TOKEN
     working_directory: /src/grpc-gateway
     steps:
       - checkout
@@ -43,7 +55,10 @@ jobs:
       - run: git diff --exit-code
   lint:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: $GITHUB_USER
+          password: $GITHUB_TOKEN
     working_directory: /src/grpc-gateway
     steps:
       - checkout
@@ -88,7 +103,10 @@ jobs:
           when: always
   gorelease:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: $GITHUB_USER
+          password: $GITHUB_TOKEN
     working_directory: /src/grpc-gateway
     steps:
       - checkout
@@ -101,7 +119,10 @@ jobs:
       - run: gorelease -base=v2.0.0-alpha.2
   release:
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: $GITHUB_USER
+          password: $GITHUB_TOKEN
     working_directory: /src/grpc-gateway
     steps:
       - checkout
