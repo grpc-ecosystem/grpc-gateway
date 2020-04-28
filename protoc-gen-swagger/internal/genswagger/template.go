@@ -19,7 +19,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	structpb "github.com/golang/protobuf/ptypes/struct"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-swagger/options"
 )
 

@@ -8,8 +8,8 @@ go_library(
     srcs = ["main.go"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway",
     deps = [
-        "//codegenerator:go_default_library",
-        "//protoc-gen-grpc-gateway/descriptor:go_default_library",
+        "//internal/codegenerator:go_default_library",
+        "//internal/descriptor:go_default_library",
         "//protoc-gen-grpc-gateway/internal/gengateway:go_default_library",
         "@com_github_golang_glog//:go_default_library",
         "@com_github_golang_protobuf//proto:go_default_library",
@@ -33,8 +33,8 @@ go_proto_compiler(
     suffix = ".pb.gw.go",
     visibility = ["//visibility:public"],
     deps = [
+        "//internal/utilities:go_default_library",
         "//runtime:go_default_library",
-        "//utilities:go_default_library",
         "@com_github_golang_protobuf//proto:go_default_library",
         "@org_golang_google_grpc//:go_default_library",
         "@org_golang_google_grpc//codes:go_default_library",

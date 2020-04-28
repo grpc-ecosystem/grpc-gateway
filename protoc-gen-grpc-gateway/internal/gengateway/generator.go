@@ -11,8 +11,8 @@ import (
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway/descriptor"
-	gen "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway/generator"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
 )
 
 var (
@@ -45,7 +45,7 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, p
 		"io",
 		"net/http",
 		"github.com/grpc-ecosystem/grpc-gateway/v2/runtime",
-		"github.com/grpc-ecosystem/grpc-gateway/v2/utilities",
+		"github.com/grpc-ecosystem/grpc-gateway/v2/internal/utilities",
 		"github.com/golang/protobuf/descriptor",
 		"github.com/golang/protobuf/proto",
 		"google.golang.org/grpc",

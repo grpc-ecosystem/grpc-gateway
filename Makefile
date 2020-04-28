@@ -8,36 +8,36 @@ GO_PROTOBUF_REPO=github.com/golang/protobuf
 GO_PLUGIN_PKG=$(GO_PROTOBUF_REPO)/protoc-gen-go
 GO_PTYPES_ANY_PKG=$(GO_PROTOBUF_REPO)/ptypes/any
 SWAGGER_PLUGIN=bin/protoc-gen-swagger
-SWAGGER_PLUGIN_SRC= utilities/doc.go \
-		    utilities/pattern.go \
-		    utilities/trie.go \
-		    protoc-gen-swagger/genswagger/generator.go \
-		    protoc-gen-swagger/genswagger/template.go \
-		    protoc-gen-swagger/main.go
+SWAGGER_PLUGIN_SRC= ./internal/utilities/doc.go \
+			./internal/utilities/pattern.go \
+			./internal/utilities/trie.go \
+			protoc-gen-swagger/internal/genswagger/generator.go \
+			protoc-gen-swagger/internal/genswagger/template.go \
+			protoc-gen-swagger/main.go
 SWAGGER_PLUGIN_PKG=./protoc-gen-swagger
 GATEWAY_PLUGIN=bin/protoc-gen-grpc-gateway
 GATEWAY_PLUGIN_PKG=./protoc-gen-grpc-gateway
-GATEWAY_PLUGIN_SRC= utilities/doc.go \
-		    utilities/pattern.go \
-		    utilities/trie.go \
-		    protoc-gen-grpc-gateway \
-		    protoc-gen-grpc-gateway/descriptor \
-		    protoc-gen-grpc-gateway/descriptor/registry.go \
-		    protoc-gen-grpc-gateway/descriptor/services.go \
-		    protoc-gen-grpc-gateway/descriptor/types.go \
-		    protoc-gen-grpc-gateway/descriptor/grpc_api_configuration.go \
-		    protoc-gen-grpc-gateway/descriptor/grpc_api_service.go \
-		    protoc-gen-grpc-gateway/generator \
-		    protoc-gen-grpc-gateway/generator/generator.go \
-		    protoc-gen-grpc-gateway/internal/gengateway \
-		    protoc-gen-grpc-gateway/internal/gengateway/doc.go \
-		    protoc-gen-grpc-gateway/internal/gengateway/generator.go \
-		    protoc-gen-grpc-gateway/internal/gengateway/template.go \
-		    protoc-gen-grpc-gateway/httprule \
-		    protoc-gen-grpc-gateway/httprule/compile.go \
-		    protoc-gen-grpc-gateway/httprule/parse.go \
-		    protoc-gen-grpc-gateway/httprule/types.go \
-		    protoc-gen-grpc-gateway/main.go
+GATEWAY_PLUGIN_SRC= ./internal/utilities/doc.go \
+			./internal/utilities/pattern.go \
+			./internal/utilities/trie.go \
+			./internal/descriptor \
+			./internal/descriptor/registry.go \
+			./internal/descriptor/services.go \
+			./internal/descriptor/types.go \
+			./internal/descriptor/grpc_api_configuration.go \
+			./internal/descriptor/grpc_api_service.go \
+			./internal/generator \
+			./internal/generator/generator.go \
+			protoc-gen-grpc-gateway \
+			protoc-gen-grpc-gateway/internal/gengateway \
+			protoc-gen-grpc-gateway/internal/gengateway/doc.go \
+			protoc-gen-grpc-gateway/internal/gengateway/generator.go \
+			protoc-gen-grpc-gateway/internal/gengateway/template.go \
+			internal/httprule \
+			internal/httprule/compile.go \
+			internal/httprule/parse.go \
+			internal/httprule/types.go \
+			protoc-gen-grpc-gateway/main.go
 GATEWAY_PLUGIN_FLAGS?=
 SWAGGER_PLUGIN_FLAGS?=
 
@@ -194,22 +194,22 @@ $(HELLOWORLD_GWSRCS): $(GATEWAY_PLUGIN) $(HELLOWORLD)
 
 $(ECHO_EXAMPLE_SRCS): $(ECHO_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ECHO_EXAMPLE_SPEC) \
-	    -l go -o examples/internal/clients/echo --additional-properties packageName=echo
+		-l go -o examples/internal/clients/echo --additional-properties packageName=echo
 	@rm -f $(EXAMPLE_CLIENT_DIR)/echo/README.md \
 		$(EXAMPLE_CLIENT_DIR)/echo/git_push.sh
 $(ABE_EXAMPLE_SRCS): $(ABE_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ABE_EXAMPLE_SPEC) \
-	    -l go -o examples/internal/clients/abe --additional-properties packageName=abe
+		-l go -o examples/internal/clients/abe --additional-properties packageName=abe
 	@rm -f $(EXAMPLE_CLIENT_DIR)/abe/README.md \
 		$(EXAMPLE_CLIENT_DIR)/abe/git_push.sh
 $(UNANNOTATED_ECHO_EXAMPLE_SRCS): $(UNANNOTATED_ECHO_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(UNANNOTATED_ECHO_EXAMPLE_SPEC) \
-	    -l go -o examples/internal/clients/unannotatedecho --additional-properties packageName=unannotatedecho
+		-l go -o examples/internal/clients/unannotatedecho --additional-properties packageName=unannotatedecho
 	@rm -f $(EXAMPLE_CLIENT_DIR)/unannotatedecho/README.md \
 		$(EXAMPLE_CLIENT_DIR)/unannotatedecho/git_push.sh
 $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(RESPONSE_BODY_EXAMPLE_SPEC) \
-	    -l go -o examples/internal/clients/responsebody --additional-properties packageName=responsebody
+		-l go -o examples/internal/clients/responsebody --additional-properties packageName=responsebody
 	@rm -f $(EXAMPLE_CLIENT_DIR)/responsebody/README.md \
 		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh
 
@@ -234,11 +234,11 @@ changelog:
 				--future-release=v1.14.4
 lint:
 	golint --set_exit_status ./runtime
-	golint --set_exit_status ./utilities/...
+	golint --set_exit_status ././internal/utilities/...
 	golint --set_exit_status ./protoc-gen-grpc-gateway/...
 	golint --set_exit_status ./protoc-gen-swagger/...
 	go vet ./runtime || true
-	go vet ./utilities/...
+	go vet ././internal/utilities/...
 	go vet ./protoc-gen-grpc-gateway/...
 	go vet ./protoc-gen-swagger/...
 
