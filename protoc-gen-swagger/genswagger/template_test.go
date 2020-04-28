@@ -572,6 +572,10 @@ func TestApplyTemplateSimple(t *testing.T) {
 		},
 	}
 	reg := descriptor.NewRegistry()
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
 	fileCL := crossLinkFixture(&file)
 	err := reg.Load(reqFromFile(fileCL))
 	if err != nil {
@@ -690,6 +694,10 @@ func TestApplyTemplateMultiService(t *testing.T) {
 		},
 	}
 	reg := descriptor.NewRegistry()
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
 	fileCL := crossLinkFixture(&file)
 	err := reg.Load(reqFromFile(fileCL))
 	if err != nil {
@@ -782,6 +790,10 @@ func TestApplyTemplateOverrideOperationID(t *testing.T) {
 	}
 
 	reg := descriptor.NewRegistry()
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
 	fileCL := crossLinkFixture(&file)
 	err := reg.Load(reqFromFile(fileCL))
 	if err != nil {
@@ -903,6 +915,10 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		t.Fatalf("proto.SetExtension(MethodDescriptorProto.Options) failed: %v", err)
 	}
 	reg := descriptor.NewRegistry()
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
 	fileCL := crossLinkFixture(&file)
 	err := reg.Load(reqFromFile(fileCL))
 	if err != nil {
@@ -1084,6 +1100,10 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		},
 	}
 	reg := descriptor.NewRegistry()
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
 	reg.Load(&plugin.CodeGeneratorRequest{ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto}})
 	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
 	if err != nil {
@@ -1238,8 +1258,8 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		},
 	}
 	reg := descriptor.NewRegistry()
-	if err := AddStreamError(reg); err != nil {
-		t.Errorf("AddStreamError(%#v) failed with %v; want success", reg, err)
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
 		return
 	}
 	reg.Load(&plugin.CodeGeneratorRequest{ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto}})
@@ -1398,6 +1418,10 @@ func TestApplyTemplateRequestWithUnusedReferences(t *testing.T) {
 	}
 
 	reg := descriptor.NewRegistry()
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
 	reg.Load(&plugin.CodeGeneratorRequest{ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto}})
 	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
 	if err != nil {
@@ -1405,8 +1429,8 @@ func TestApplyTemplateRequestWithUnusedReferences(t *testing.T) {
 		return
 	}
 
-	// Only EmptyMessage must be present, not ExampleMessage
-	if want, got, name := 1, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
+	// Only EmptyMessage must be present, not ExampleMessage (plus error status)
+	if want, got, name := 3, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
 	}
 

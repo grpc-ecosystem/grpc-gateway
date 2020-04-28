@@ -22,7 +22,7 @@ go_library(
         "model_pathenum_path_enum.go",
         "model_protobuf_any.go",
         "model_protobuf_field_mask.go",
-        "model_runtime_error.go",
+        "model_rpc_status.go",
         "model_sub_string_message.go",
         "response.go",
     ],

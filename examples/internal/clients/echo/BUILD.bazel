@@ -11,7 +11,7 @@ go_library(
         "model_examplepb_embedded.go",
         "model_examplepb_simple_message.go",
         "model_protobuf_any.go",
-        "model_runtime_error.go",
+        "model_rpc_status.go",
         "response.go",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/echo",

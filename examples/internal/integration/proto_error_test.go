@@ -10,7 +10,9 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/jsonpb"
+	"github.com/golang/protobuf/ptypes"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/codes"
 )
@@ -62,6 +64,7 @@ func TestABEWithProtoErrorHandler(t *testing.T) {
 	testABEBulkCreate(t, port)
 	testABELookup(t, port)
 	testABELookupNotFoundWithProtoError(t, port)
+	testABELookupNotFoundWithProtoErrorIncludingDetails(t, port)
 	testABEList(t, port)
 	testABEBulkEcho(t, port)
 	testABEBulkEchoZeroLength(t, port)
@@ -115,6 +118,62 @@ func testABELookupNotFoundWithProtoError(t *testing.T, port uint16) {
 	}
 	if got, want := resp.Trailer.Get("Grpc-Trailer-Bar"), "bar2"; got != want {
 		t.Errorf("Grpc-Trailer-Bar was %q, wanted %q", got, want)
+	}
+}
+
+func testABELookupNotFoundWithProtoErrorIncludingDetails(t *testing.T, port uint16) {
+	uuid := "errorwithdetails"
+	url := fmt.Sprintf("http://localhost:%d/v2/example/%s", port, uuid)
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", url, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusInternalServerError; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+		return
+	}
+
+	var msg spb.Status
+	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
+		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+		return
+	}
+
+	if got, want := msg.Code, int32(codes.Unknown); got != want {
+		t.Errorf("msg.Code = %d; want %d", got, want)
+		return
+	}
+
+	if got, want := msg.Message, "with details"; got != want {
+		t.Errorf("msg.Message = %s; want %s", got, want)
+		return
+	}
+
+	details := msg.Details
+	if got, want := len(details), 1; got != want {
+		t.Fatalf("got %q details, wanted %q", got, want)
+	}
+
+	detail := errdetails.DebugInfo{}
+	if got, want := ptypes.UnmarshalAny(msg.Details[0], &detail), error(nil); got != want {
+		t.Errorf("unmarshaling any: got %q, wanted %q", got, want)
+	}
+
+	if got, want := len(detail.StackEntries), 1; got != want {
+		t.Fatalf("got %d stack entries, expected %d", got, want)
+	}
+	if got, want := detail.StackEntries[0], "foo:1"; got != want {
+		t.Errorf("StackEntries[0]: got %q; want %q", got, want)
 	}
 }
 
