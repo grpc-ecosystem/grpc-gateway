@@ -25,7 +25,7 @@ All submissions, including submissions by project members, require review.
 Great, it should be as simple as thus (run from the root of the directory):
 
 ```bash
-docker run -v $(pwd):/src/grpc-gateway --rm jfbrandhorst/grpc-gateway-build-env:1.14 \
+docker run -v $(pwd):/src/grpc-gateway --rm docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14 \
     /bin/bash -c 'cd /src/grpc-gateway && \
         make realclean && \
         make examples && \
@@ -35,6 +35,9 @@ docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --r
 docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
     l.gcr.io/google/bazel -c 'bazel run :gazelle'
 ```
+
+You may need to authenticate with github to pull `docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env`.
+You can do this by following the steps on the [Github Package docs](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-docker-for-use-with-github-packages#authenticating-to-github-packages).
 
 If this has resulted in some file changes in the repo, please ensure you check those in with your merge request.
 
