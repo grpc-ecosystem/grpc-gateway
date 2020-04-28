@@ -11,7 +11,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/google/go-cmp/cmp"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/codegenerator"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"google.golang.org/protobuf/testing/protocmp"
 )
 

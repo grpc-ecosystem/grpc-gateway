@@ -7,8 +7,8 @@ go_library(
     visibility = ["//examples:__subpackages__"],
     deps = [
         "//examples/internal/proto/examplepb:go_default_library",
+        "//internal/utilities:go_default_library",
         "//runtime:go_default_library",
-        "//utilities:go_default_library",
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",
         "@com_github_golang_protobuf//proto:go_default_library",
         "@org_golang_google_grpc//:go_default_library",
