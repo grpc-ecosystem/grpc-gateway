@@ -26,16 +26,11 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/protobuf/testing/protocmp"
 )
-
-type errorBody struct {
-	Message string        `json:"message"`
-	Code    int           `json:"code"`
-	Details []interface{} `json:"details"`
-}
 
 func TestEcho(t *testing.T) {
 	if testing.Short() {
@@ -616,7 +611,7 @@ func testABEBulkCreateWithError(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg errorBody
+	var msg spb.Status
 	if err := json.Unmarshal(buf, &msg); err != nil {
 		t.Fatalf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 	}
@@ -907,13 +902,13 @@ func testABELookupNotFound(t *testing.T, port int) {
 		return
 	}
 
-	var msg errorBody
+	var msg spb.Status
 	if err := json.Unmarshal(buf, &msg); err != nil {
 		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 
-	if got, want := msg.Code, int(codes.NotFound); got != want {
+	if got, want := msg.Code, int32(codes.NotFound); got != want {
 		t.Errorf("msg.Code = %d; want %d", got, want)
 		return
 	}
@@ -1307,71 +1302,6 @@ func TestTimeout(t *testing.T) {
 
 	if got, want := resp.StatusCode, http.StatusGatewayTimeout; got != want {
 		t.Errorf("resp.StatusCode = %d; want %d", got, want)
-	}
-}
-
-func TestErrorWithDetails(t *testing.T) {
-	if testing.Short() {
-		t.Skip()
-		return
-	}
-
-	apiURL := "http://localhost:8088/v2/example/errorwithdetails"
-	resp, err := http.Get(apiURL)
-	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
-		return
-	}
-	defer resp.Body.Close()
-
-	buf, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Fatalf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
-	}
-
-	if got, want := resp.StatusCode, http.StatusInternalServerError; got != want {
-		t.Errorf("resp.StatusCode = %d; want %d", got, want)
-	}
-
-	var msg errorBody
-	if err := json.Unmarshal(buf, &msg); err != nil {
-		t.Fatalf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
-	}
-
-	if got, want := msg.Code, int(codes.Unknown); got != want {
-		t.Errorf("msg.Code = %d; want %d", got, want)
-	}
-	if got, want := msg.Message, "with details"; got != want {
-		t.Errorf("msg.Message = %s; want %s", got, want)
-	}
-	if got, want := len(msg.Details), 1; got != want {
-		t.Fatalf("len(msg.Details) = %q; want %q", got, want)
-	}
-
-	details, ok := msg.Details[0].(map[string]interface{})
-	if got, want := ok, true; got != want {
-		t.Fatalf("msg.Details[0] got type: %T, want %T", msg.Details[0], map[string]interface{}{})
-	}
-	typ, ok := details["@type"].(string)
-	if got, want := ok, true; got != want {
-		t.Fatalf("msg.Details[0][\"@type\"] got type: %T, want %T", typ, "")
-	}
-	if got, want := details["@type"], "type.googleapis.com/google.rpc.DebugInfo"; got != want {
-		t.Errorf("msg.Details[\"@type\"] = %q; want %q", got, want)
-	}
-	if got, want := details["detail"], "error debug details"; got != want {
-		t.Errorf("msg.Details[\"detail\"] = %q; want %q", got, want)
-	}
-	entries, ok := details["stack_entries"].([]interface{})
-	if got, want := ok, true; got != want {
-		t.Fatalf("msg.Details[0][\"stack_entries\"] got type: %T, want %T", entries, []string{})
-	}
-	entry, ok := entries[0].(string)
-	if got, want := ok, true; got != want {
-		t.Fatalf("msg.Details[0][\"stack_entries\"][0] got type: %T, want %T", entry, "")
-	}
-	if got, want := entries[0], "foo:1"; got != want {
-		t.Errorf("msg.Details[\"stack_entries\"][0] = %q; want %q", got, want)
 	}
 }
 
