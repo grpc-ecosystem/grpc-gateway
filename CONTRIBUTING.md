@@ -31,9 +31,10 @@ docker run -v $(pwd):/src/grpc-gateway --rm docker.pkg.github.com/grpc-ecosystem
         make examples && \
         make testproto'
 docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
-    l.gcr.io/google/bazel -c 'bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories; bazel run :buildifier'
-docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
-    l.gcr.io/google/bazel -c 'bazel run :gazelle'
+    l.gcr.io/google/bazel -c '\
+        bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories && \
+        bazel run :gazelle && \
+        bazel run :buildifier'
 ```
 
 You may need to authenticate with github to pull `docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env`.
