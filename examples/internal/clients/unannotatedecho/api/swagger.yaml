@@ -34,7 +34,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/echo/{id}/{num}:
     get:
       tags:
@@ -115,7 +115,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/echo_body:
     post:
       tags:
@@ -137,7 +137,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/echo_delete:
     delete:
       tags:
@@ -219,7 +219,7 @@ paths:
         default:
           description: "An unexpected error response"
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
 definitions:
   examplepbUnannotatedEmbedded:
     type: "object"
@@ -329,11 +329,9 @@ definitions:
       \ custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\
       \n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n\
       \      \"value\": \"1.212s\"\n    }"
-  runtimeError:
+  rpcStatus:
     type: "object"
     properties:
-      error:
-        type: "string"
       code:
         type: "integer"
         format: "int32"

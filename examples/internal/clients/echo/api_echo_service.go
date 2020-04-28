@@ -110,7 +110,7 @@ func (a *EchoServiceApiService) EchoServiceEcho(ctx context.Context, id string) 
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -252,7 +252,7 @@ func (a *EchoServiceApiService) EchoServiceEcho2(ctx context.Context, id string,
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -391,7 +391,7 @@ func (a *EchoServiceApiService) EchoServiceEcho3(ctx context.Context, id string,
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -525,7 +525,7 @@ func (a *EchoServiceApiService) EchoServiceEcho4(ctx context.Context, id string,
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -665,7 +665,7 @@ func (a *EchoServiceApiService) EchoServiceEcho5(ctx context.Context, noNote str
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -765,7 +765,7 @@ func (a *EchoServiceApiService) EchoServiceEchoBody(ctx context.Context, body Ex
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -912,7 +912,7 @@ func (a *EchoServiceApiService) EchoServiceEchoDelete(ctx context.Context, local
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()

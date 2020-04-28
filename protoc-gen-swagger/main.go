@@ -103,7 +103,7 @@ func main() {
 
 	g := genswagger.New(reg)
 
-	if err := genswagger.AddStreamError(reg); err != nil {
+	if err := genswagger.AddErrorDefs(reg); err != nil {
 		emitError(err)
 		return
 	}

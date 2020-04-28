@@ -963,7 +963,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					},
 				}
 				if !reg.GetDisableDefaultErrors() {
-					errDef, hasErrDef := fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.Error", reg)
+					errDef, hasErrDef := fullyQualifiedNameToSwaggerName(".google.rpc.Status", reg)
 					if hasErrDef {
 						// https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#responses-object
 						operationObject.Responses["default"] = swaggerResponseObject{
@@ -1139,7 +1139,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 
 	if !p.reg.GetDisableDefaultErrors() {
 		// Add the error type to the message map
-		runtimeError, swgRef, err := lookupMsgAndSwaggerName(".grpc.gateway.runtime", "Error", p.reg)
+		runtimeError, swgRef, err := lookupMsgAndSwaggerName("google.rpc", "Status", p.reg)
 		if err == nil {
 			messages[swgRef] = runtimeError
 		} else {

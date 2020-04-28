@@ -110,7 +110,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho(ctx contex
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -257,7 +257,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx conte
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -357,7 +357,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx co
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -509,7 +509,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx 
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()

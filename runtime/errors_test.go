@@ -77,9 +77,6 @@ func TestDefaultHTTPError(t *testing.T) {
 			continue
 		}
 
-		if got, want := body["error"].(string), spec.msg; !strings.Contains(got, want) {
-			t.Errorf(`body["error"] = %q; want %q; on spec.err=%v`, got, want, spec.err)
-		}
 		if got, want := body["message"].(string), spec.msg; !strings.Contains(got, want) {
 			t.Errorf(`body["message"] = %q; want %q; on spec.err=%v`, got, want, spec.err)
 		}
