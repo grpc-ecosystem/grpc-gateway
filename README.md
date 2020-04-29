@@ -13,6 +13,14 @@ This helps you provide your APIs in both gRPC and RESTful style at the same time
 
 ![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&amp;h=370)
 
+## Testimonials
+
+ > We use the gRPC-Gateway to serve millions of API requests per day,
+   and have been since 2018, and through all of that,
+   we have never had any issues with it.
+>
+> _- William Mill, [Ad Hoc](http://adhocteam.us/)_
+
 ## Check out our [documentation](https://grpc-ecosystem.github.io/grpc-gateway/)!
 
 ## Background
