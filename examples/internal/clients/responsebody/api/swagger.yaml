@@ -50,7 +50,7 @@ paths:
               result:
                 $ref: "#/definitions/examplepbResponseBodyOutResponse"
               error:
-                $ref: "#/definitions/runtimeStreamError"
+                $ref: "#/definitions/rpcStatus"
             title: "Stream result of examplepbResponseBodyOut"
         default:
           description: "An unexpected error response"
@@ -216,49 +216,28 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/protobufAny"
-  runtimeStreamError:
-    type: "object"
-    properties:
-      grpc_code:
-        type: "integer"
-        format: "int32"
-      http_code:
-        type: "integer"
-        format: "int32"
-      message:
-        type: "string"
-      http_status:
-        type: "string"
-      details:
-        type: "array"
-        items:
-          $ref: "#/definitions/protobufAny"
     example:
-      http_code: 6
-      http_status: "http_status"
+      code: 0
       details:
       - value: "value"
         type_url: "type_url"
       - value: "value"
         type_url: "type_url"
       message: "message"
-      grpc_code: 0
   Stream result of examplepbResponseBodyOut:
     properties:
       result:
         $ref: "#/definitions/examplepbResponseBodyOutResponse"
       error:
-        $ref: "#/definitions/runtimeStreamError"
+        $ref: "#/definitions/rpcStatus"
     example:
       result:
         data: "data"
       error:
-        http_code: 6
-        http_status: "http_status"
+        code: 0
         details:
         - value: "value"
           type_url: "type_url"
         - value: "value"
           type_url: "type_url"
         message: "message"
-        grpc_code: 0
