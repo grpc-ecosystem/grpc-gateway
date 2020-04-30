@@ -260,18 +260,6 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 
 			if !skipRenderingRef(meth.ResponseType.FQMN()) {
 				m[swgRspName] = meth.ResponseType
-				if meth.GetServerStreaming() {
-					streamError, runtimeStreamError, err := lookupMsgAndSwaggerName(".grpc.gateway.runtime", "StreamError", reg)
-					if err != nil {
-						glog.Error(err)
-					} else {
-						glog.V(1).Infof("StreamError: %v", streamError)
-						glog.V(1).Infof("StreamError FQMN: %s", runtimeStreamError)
-						m[runtimeStreamError] = streamError
-						findNestedMessagesAndEnumerations(streamError, reg, m, e)
-					}
-					ms[swgRspName] = meth.ResponseType
-				}
 			}
 			findNestedMessagesAndEnumerations(meth.ResponseType, reg, m, e)
 		}
@@ -934,13 +922,13 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							},
 						},
 					}
-					streamErrDef, hasStreamError := fullyQualifiedNameToSwaggerName(".grpc.gateway.runtime.StreamError", reg)
-					if hasStreamError {
+					statusDef, hasStatus := fullyQualifiedNameToSwaggerName(".google.rpc.Status", reg)
+					if hasStatus {
 						props = append(props, keyVal{
 							Key: "error",
 							Value: swaggerSchemaObject{
 								schemaCore: schemaCore{
-									Ref: fmt.Sprintf("#/definitions/%s", streamErrDef)},
+									Ref: fmt.Sprintf("#/definitions/%s", statusDef)},
 							},
 						})
 					}

@@ -14,7 +14,6 @@ go_library(
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-swagger/internal/genswagger",
     deps = [
-        "//internal:go_default_library",
         "//internal/casing:go_default_library",
         "//internal/descriptor:go_default_library",
         "//internal/generator:go_default_library",

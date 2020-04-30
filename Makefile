@@ -44,9 +44,6 @@ SWAGGER_PLUGIN_FLAGS?=
 GOOGLEAPIS_DIR=third_party/googleapis
 OUTPUT_DIR=_output
 
-RUNTIME_PROTO=internal/errors.proto
-RUNTIME_GO=$(RUNTIME_PROTO:.proto=.pb.go)
-
 OPENAPIV2_PROTO=protoc-gen-swagger/options/openapiv2.proto protoc-gen-swagger/options/annotations.proto
 OPENAPIV2_GO=$(OPENAPIV2_PROTO:.proto=.pb.go)
 
@@ -143,20 +140,15 @@ SWAGGER_CODEGEN=swagger-codegen
 
 PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
 
-generate: $(RUNTIME_GO)
-
 .SUFFIXES: .go .proto
 
 $(GO_PLUGIN):
 	go build -o $(GO_PLUGIN) $(GO_PLUGIN_PKG)
 
-$(RUNTIME_GO): $(RUNTIME_PROTO) $(GO_PLUGIN)
-	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP),paths=source_relative:. $(RUNTIME_PROTO)
-
 $(OPENAPIV2_GO): $(OPENAPIV2_PROTO) $(GO_PLUGIN)
 	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=$(PKGMAP),paths=source_relative:. $(OPENAPIV2_PROTO)
 
-$(GATEWAY_PLUGIN): $(RUNTIME_GO) $(GATEWAY_PLUGIN_SRC)
+$(GATEWAY_PLUGIN): $(GATEWAY_PLUGIN_SRC)
 	go build -o $@ $(GATEWAY_PLUGIN_PKG)
 
 $(SWAGGER_PLUGIN): $(SWAGGER_PLUGIN_SRC) $(OPENAPIV2_GO)
@@ -234,11 +226,11 @@ changelog:
 				--future-release=v1.14.4
 lint:
 	golint --set_exit_status ./runtime
-	golint --set_exit_status ././internal/utilities/...
+	golint --set_exit_status ./internal/utilities/...
 	golint --set_exit_status ./protoc-gen-grpc-gateway/...
 	golint --set_exit_status ./protoc-gen-swagger/...
 	go vet ./runtime || true
-	go vet ././internal/utilities/...
+	go vet ./internal/utilities/...
 	go vet ./protoc-gen-grpc-gateway/...
 	go vet ./protoc-gen-swagger/...
 

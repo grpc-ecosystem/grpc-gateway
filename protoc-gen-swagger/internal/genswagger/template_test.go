@@ -1270,7 +1270,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 	}
 
 	// Only ExampleMessage must be present, not NestedMessage
-	if want, got, name := 4, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
+	if want, got, name := 3, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
 		t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
 	}
 	if _, ok := result.Paths["/v1/echo"].Post.Responses["200"]; !ok {
@@ -1303,7 +1303,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 			}
 			err := errorProperty.Value.(swaggerSchemaObject)
-			if want, got, name := "#/definitions/runtimeStreamError", err.Ref, `((*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Value.(swaggerSchemaObject)).Ref`; !reflect.DeepEqual(got, want) {
+			if want, got, name := "#/definitions/rpcStatus", err.Ref, `((*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Value.(swaggerSchemaObject)).Ref`; !reflect.DeepEqual(got, want) {
 				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 			}
 		}

@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	pb "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
 	"google.golang.org/grpc"
@@ -119,16 +118,9 @@ func TestForwardResponseStream(t *testing.T) {
 						// Skip non-stream errors
 						t.Skip("checking error encodings")
 					}
-					st, _ := status.FromError(msg.err)
-					httpCode := runtime.HTTPStatusFromCode(st.Code())
+					st := status.Convert(msg.err)
 					b, err := marshaler.Marshal(map[string]proto.Message{
-						"error": &internal.StreamError{
-							GrpcCode:   int32(st.Code()),
-							HttpCode:   int32(httpCode),
-							Message:    st.Message(),
-							HttpStatus: http.StatusText(httpCode),
-							Details:    st.Proto().GetDetails(),
-						},
+						"error": st.Proto(),
 					})
 					if err != nil {
 						t.Errorf("marshaler.Marshal() failed %v", err)
