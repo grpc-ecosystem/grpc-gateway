@@ -11,5 +11,5 @@ package responsebody
 
 type StreamResultOfExamplepbResponseBodyOut struct {
 	Result *ExamplepbResponseBodyOutResponse `json:"result,omitempty"`
-	Error_ *RuntimeStreamError `json:"error,omitempty"`
+	Error_ *RpcStatus `json:"error,omitempty"`
 }
