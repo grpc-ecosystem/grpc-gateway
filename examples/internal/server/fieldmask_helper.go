@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/golang/protobuf/protoc-gen-go/generator"
+	"github.com/grpc-ecosystem/grpc-gateway/internal/casing"
 	"google.golang.org/genproto/protobuf/field_mask"
 )
 
@@ -40,7 +40,7 @@ func getField(obj interface{}, path string) (val reflect.Value) {
 		if v.Kind() == reflect.Ptr {
 			v = reflect.Indirect(v)
 		}
-		v = v.FieldByName(generator.CamelCase(s))
+		v = v.FieldByName(casing.Camel(s))
 	}
 
 	return v

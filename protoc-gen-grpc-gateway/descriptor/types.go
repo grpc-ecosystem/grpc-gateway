@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
-	gogen "github.com/golang/protobuf/protoc-gen-go/generator"
+	"github.com/grpc-ecosystem/grpc-gateway/internal/casing"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
 )
 
@@ -316,7 +316,7 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 		if c.Target.OneofIndex != nil {
 			index := c.Target.OneofIndex
 			msg := c.Target.Message
-			oneOfName := gogen.CamelCase(msg.GetOneofDecl()[*index].GetName())
+			oneOfName := casing.Camel(msg.GetOneofDecl()[*index].GetName())
 			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
 
 			components = components + "." + oneOfName
@@ -352,15 +352,15 @@ type FieldPathComponent struct {
 
 // AssignableExpr returns an assignable expression in go for this field.
 func (c FieldPathComponent) AssignableExpr() string {
-	return gogen.CamelCase(c.Name)
+	return casing.Camel(c.Name)
 }
 
 // ValueExpr returns an expression in go for this field.
 func (c FieldPathComponent) ValueExpr() string {
 	if c.Target.Message.File.proto2() {
-		return fmt.Sprintf("Get%s()", gogen.CamelCase(c.Name))
+		return fmt.Sprintf("Get%s()", casing.Camel(c.Name))
 	}
-	return gogen.CamelCase(c.Name)
+	return casing.Camel(c.Name)
 }
 
 var (
