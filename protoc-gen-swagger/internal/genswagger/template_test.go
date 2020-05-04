@@ -407,9 +407,9 @@ func TestMessageToQueryParameters(t *testing.T) {
 	}
 }
 
-// TestMessagetoQueryParametersRecursive, is a check that circular references between messages
-//  is handled gracefully. The goal is to insure that atemps to add messages with circular
-//  references to query-parameters returns a error message.
+// TestMessagetoQueryParametersRecursive, is a check that cyclical references between messages
+//  are handled gracefully. The goal is to insure that attempts to add messages with cyclical
+//  references to query-parameters returns an error message.
 func TestMessageToQueryParametersRecursive(t *testing.T) {
 	type test struct {
 		MsgDescs []*protodescriptor.DescriptorProto
@@ -418,7 +418,7 @@ func TestMessageToQueryParametersRecursive(t *testing.T) {
 
 	tests := []test{
                 // First test:
-                // Here we test that a message that references it self through a field will return a error.
+                // Here we test that a message that references it self through a field will return an error.
                 // Example proto:
                 // message DirectRecursiveMessage {
                 //      DirectRecursiveMessage nested = 1;
@@ -441,7 +441,7 @@ func TestMessageToQueryParametersRecursive(t *testing.T) {
 			Message: "DirectRecursiveMessage",
 		},
                 // Second test:
-                // Here we test that a circle through multiple messages also is detected and that a error is returned.
+                // Here we test that a circle through multiple messages also is detected and that an error is returned.
                 // Sample:
                 // message Root { NodeMessage nested = 1; }
                 // message NodeMessage { CircleMessage nested = 1; }
