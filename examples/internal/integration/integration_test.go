@@ -278,6 +278,7 @@ func TestABE(t *testing.T) {
 	testABEBulkEchoZeroLength(t, 8088)
 	testAdditionalBindings(t, 8088)
 	testABERepeated(t, 8088)
+	testABEDownload(t, 8088)
 }
 
 func testABECreate(t *testing.T, port int) {
@@ -977,6 +978,27 @@ func testABEList(t *testing.T, port int) {
 	if count <= 0 {
 		t.Errorf("count == %d; want > 0", count)
 	}
+}
+
+func testABEDownload(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/download", port)
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	body, err := readAll(resp.Body)
+	if err != nil {
+		t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
+	}
+
+	want := []string{"Hello 1", "Hello 2"}
+	if !reflect.DeepEqual(body, want) {
+		t.Errorf("testABEDownload failed: got %v, want %v", body, want)
+	}
+
 }
 
 func testABEBulkEcho(t *testing.T, port int) {

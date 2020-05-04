@@ -16,6 +16,7 @@ import (
 func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.ServeMuxOption) (http.Handler, error) {
 
 	mux := gwruntime.NewServeMux(opts...)
+	gwruntime.SetHTTPBodyMarshaler(mux)
 
 	for _, f := range []func(context.Context, *gwruntime.ServeMux, *grpc.ClientConn) error{
 		examplepb.RegisterEchoServiceHandler,

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"sync"
+	"time"
 
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
@@ -15,6 +16,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/sub2"
 	"github.com/rogpeppe/fastuuid"
+	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -153,6 +155,26 @@ func (s *_ABitOfEverythingServer) List(_ *empty.Empty, stream examples.StreamSer
 			return status.Errorf(codes.InvalidArgument, "error metadata: %v", v)
 		}
 	}
+	return nil
+}
+
+func (s *_ABitOfEverythingServer) Download(_ *empty.Empty, stream examples.StreamService_DownloadServer) error {
+	msgs := []*httpbody.HttpBody{{
+		ContentType: "text/html",
+		Data:        []byte("Hello 1"),
+	}, {
+		ContentType: "text/html",
+		Data:        []byte("Hello 2"),
+	}}
+
+	for _, msg := range msgs {
+		if err := stream.Send(msg); err != nil {
+			return err
+		}
+
+		time.Sleep(5 * time.Millisecond)
+	}
+
 	return nil
 }
 
