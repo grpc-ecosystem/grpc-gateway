@@ -441,11 +441,11 @@ func TestMessageToQueryParametersRecursive(t *testing.T) {
 			Message: "DirectRecursiveMessage",
 		},
                 // Second test:
-                // Here we test that a circle through multiple messages also is detected and that an error is returned.
+                // Here we test that a cycle through multiple messages is detected and that an error is returned.
                 // Sample:
                 // message Root { NodeMessage nested = 1; }
-                // message NodeMessage { CircleMessage nested = 1; }
-                // message CircleMessage { Root nested = 1; }
+                // message NodeMessage { CycleMessage nested = 1; }
+                // message CycleMessage { Root nested = 1; }
 		{
 			MsgDescs: []*protodescriptor.DescriptorProto{
 				&protodescriptor.DescriptorProto{
@@ -467,13 +467,13 @@ func TestMessageToQueryParametersRecursive(t *testing.T) {
                                                         Name:     proto.String("nested"),
                                                         Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
                                                         Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-                                                        TypeName: proto.String(".example.CircleMessage"),
+                                                        TypeName: proto.String(".example.CycleMessage"),
                                                         Number:   proto.Int32(1),
 						},
 					},
 				},
 				&protodescriptor.DescriptorProto{
-					Name: proto.String("CircleMessage"),
+					Name: proto.String("CycleMessage"),
 					Field: []*protodescriptor.FieldDescriptorProto{
                                                 {
                                                         Name:     proto.String("nested"),
