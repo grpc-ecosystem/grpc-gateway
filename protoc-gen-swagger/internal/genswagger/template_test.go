@@ -407,6 +407,124 @@ func TestMessageToQueryParameters(t *testing.T) {
 	}
 }
 
+// TestMessagetoQueryParametersRecursive, is a check that circular references between messages
+//  is handled gracefully. The goal is to insure that atemps to add messages with circular
+//  references to query-parameters returns a error message.
+func TestMessageToQueryParametersRecursive(t *testing.T) {
+	type test struct {
+		MsgDescs []*protodescriptor.DescriptorProto
+		Message  string
+	}
+
+	tests := []test{
+                // First test:
+                // Here we test that a message that references it self through a field will return a error.
+                // Example proto:
+                // message DirectRecursiveMessage {
+                //      DirectRecursiveMessage nested = 1;
+                // }
+		{
+			MsgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{
+					Name: proto.String("DirectRecursiveMessage"),
+					Field: []*protodescriptor.FieldDescriptorProto{
+                                                {
+                                                        Name:     proto.String("nested"),
+                                                        Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+                                                        Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+                                                        TypeName: proto.String(".example.DirectRecursiveMessage"),
+                                                        Number:   proto.Int32(1),
+						},
+					},
+				},
+			},
+			Message: "DirectRecursiveMessage",
+		},
+                // Second test:
+                // Here we test that a circle through multiple messages also is detected and that a error is returned.
+                // Sample:
+                // message Root { NodeMessage nested = 1; }
+                // message NodeMessage { CircleMessage nested = 1; }
+                // message CircleMessage { Root nested = 1; }
+		{
+			MsgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{
+					Name: proto.String("RootMessage"),
+					Field: []*protodescriptor.FieldDescriptorProto{
+                                                {
+                                                        Name:     proto.String("nested"),
+                                                        Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+                                                        Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+                                                        TypeName: proto.String(".example.NodeMessage"),
+                                                        Number:   proto.Int32(1),
+						},
+					},
+				},
+				&protodescriptor.DescriptorProto{
+					Name: proto.String("NodeMessage"),
+					Field: []*protodescriptor.FieldDescriptorProto{
+                                                {
+                                                        Name:     proto.String("nested"),
+                                                        Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+                                                        Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+                                                        TypeName: proto.String(".example.CircleMessage"),
+                                                        Number:   proto.Int32(1),
+						},
+					},
+				},
+				&protodescriptor.DescriptorProto{
+					Name: proto.String("CircleMessage"),
+					Field: []*protodescriptor.FieldDescriptorProto{
+                                                {
+                                                        Name:     proto.String("nested"),
+                                                        Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+                                                        Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+                                                        TypeName: proto.String(".example.RootMessage"),
+                                                        Number:   proto.Int32(1),
+						},
+					},
+				},
+			},
+			Message: "RootMessage",
+		},
+	}
+
+	for _, test := range tests {
+		reg := descriptor.NewRegistry()
+		msgs := []*descriptor.Message{}
+		for _, msgdesc := range test.MsgDescs {
+			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+		}
+		file := descriptor.File{
+			FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+				SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType:    test.MsgDescs,
+				Service:        []*protodescriptor.ServiceDescriptorProto{},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: msgs,
+		}
+		reg.Load(&plugin.CodeGeneratorRequest{
+			ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto},
+		})
+
+		message, err := reg.LookupMsg("", ".example."+test.Message)
+		if err != nil {
+			t.Fatalf("failed to lookup message: %s", err)
+		}
+		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		if err == nil {
+			t.Fatalf("It should not be allowed to have recursive query parameters")
+		}
+	}
+}
+
 func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 	type test struct {
 		MsgDescs []*protodescriptor.DescriptorProto
