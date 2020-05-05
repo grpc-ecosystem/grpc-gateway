@@ -78,8 +78,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:Bz1qTn2YRWV+9OKJtxHJiQKCiXIdf+kwuKXdt9cBxyU=",
-        version = "v0.0.0-20200507105951-43844f6eee31",
+        sum = "h1:fiNLklpBwWK1mth30Hlwk+fcdBmIALlgF5iy77O37Ig=",
+        version = "v0.0.0-20200513103714-09dca8ec2884",
     )
     go_repository(
         name = "org_golang_google_grpc",
