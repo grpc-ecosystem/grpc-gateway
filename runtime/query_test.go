@@ -3,12 +3,10 @@ package runtime_test
 import (
 	"errors"
 	"net/url"
-	"reflect"
 	"strconv"
 	"testing"
 	"time"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/google/go-cmp/cmp"
@@ -16,6 +14,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
 	"google.golang.org/genproto/protobuf/field_mask"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
 )
 
@@ -116,6 +115,7 @@ func TestPopulateParameters(t *testing.T) {
 				"string_value":           {"str"},
 				"bytes_value":            {"Ynl0ZXM="},
 				"repeated_value":         {"a", "b", "c"},
+				"repeated_message":       {"1", "2", "3"},
 				"enum_value":             {"1"},
 				"repeated_enum":          {"1", "2", "0"},
 				"timestamp_value":        {timeStr},
@@ -149,6 +149,7 @@ func TestPopulateParameters(t *testing.T) {
 				"map_value13[2.5]":       {"value"},
 				"map_value14[key]":       {"true"},
 				"map_value15[true]":      {"value"},
+				"map_value16[key]":       {"2"},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &examplepb.Proto3Message{
@@ -162,6 +163,7 @@ func TestPopulateParameters(t *testing.T) {
 				StringValue:        "str",
 				BytesValue:         []byte("bytes"),
 				RepeatedValue:      []string{"a", "b", "c"},
+				RepeatedMessage:    []*wrappers.UInt64Value{{Value: 1}, {Value: 2}, {Value: 3}},
 				EnumValue:          examplepb.EnumValue_Y,
 				RepeatedEnum:       []examplepb.EnumValue{examplepb.EnumValue_Y, examplepb.EnumValue_Z, examplepb.EnumValue_X},
 				TimestampValue:     timePb,
@@ -195,6 +197,7 @@ func TestPopulateParameters(t *testing.T) {
 				MapValue12: map[string]float64{"key": 2.5},
 				MapValue14: map[string]bool{"key": true},
 				MapValue15: map[bool]string{true: "value"},
+				MapValue16: map[string]*wrappers.UInt64Value{"key": {Value: 2}},
 			},
 		},
 		{
@@ -342,15 +345,6 @@ func TestPopulateParameters(t *testing.T) {
 		},
 		{
 			values: url.Values{
-				"uint64_value": {"1", "2", "3", "4", "5"},
-			},
-			filter: utilities.NewDoubleArray(nil),
-			want: &examplepb.Proto3Message{
-				Uint64Value: 1,
-			},
-		},
-		{
-			values: url.Values{
 				"oneof_string_value": {"foobar"},
 			},
 			filter: utilities.NewDoubleArray(nil),
@@ -390,16 +384,33 @@ func TestPopulateParameters(t *testing.T) {
 			},
 			filter:  utilities.NewDoubleArray(nil),
 			want:    &examplepb.Proto3Message{},
-			wanterr: errors.New("field already set for oneof_value oneof"),
+			wanterr: errors.New("field already set for oneof \"oneof_value\""),
+		},
+		{
+			// Error when there are too many values
+			values: url.Values{
+				"uint64_value": {"1", "2"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New("too many values for field \"uint64_value\": 1, 2"),
+		},
+		{
+			// Error when dereferencing a list of messages
+			values: url.Values{
+				"repeated_message.value": {"1"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New("invalid path: \"repeated_message\" is not a message"),
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			msg := proto.Clone(spec.want)
-			msg.Reset()
+			msg := spec.want.ProtoReflect().New().Interface()
 			err := runtime.PopulateQueryParameters(msg, spec.values, spec.filter)
 			if spec.wanterr != nil {
-				if !reflect.DeepEqual(err, spec.wanterr) {
-					t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v) failed with %v; want error %v", spec.values, spec.filter, err, spec.wanterr)
+				if err == nil || err.Error() != spec.wanterr.Error() {
+					t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v) failed with %q; want error %q", spec.values, spec.filter, err, spec.wanterr)
 				}
 				return
 			}
@@ -412,51 +423,6 @@ func TestPopulateParameters(t *testing.T) {
 				t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v): %s", spec.values, spec.filter, diff)
 			}
 		})
-	}
-}
-
-func TestPopulateParametersWithNativeTypes(t *testing.T) {
-	timeT := time.Date(2016, time.December, 15, 12, 23, 32, 49, time.UTC)
-	timeStr := timeT.Format(time.RFC3339Nano)
-
-	durationT := 13 * time.Hour
-	durationStr := durationT.String()
-
-	for _, spec := range []struct {
-		values url.Values
-		want   *nativeProto3Message
-	}{
-		{
-			values: url.Values{
-				"native_timestamp_value": {timeStr},
-				"native_duration_value":  {durationStr},
-			},
-			want: &nativeProto3Message{
-				NativeTimeValue:     &timeT,
-				NativeDurationValue: &durationT,
-			},
-		},
-		{
-			values: url.Values{
-				"nativeTimestampValue": {timeStr},
-				"nativeDurationValue":  {durationStr},
-			},
-			want: &nativeProto3Message{
-				NativeTimeValue:     &timeT,
-				NativeDurationValue: &durationT,
-			},
-		},
-	} {
-		msg := new(nativeProto3Message)
-		err := runtime.PopulateQueryParameters(msg, spec.values, utilities.NewDoubleArray(nil))
-
-		if err != nil {
-			t.Errorf("runtime.PopulateQueryParameters(msg, %v, utilities.NewDoubleArray(nil)) failed with %v; want success", spec.values, err)
-			continue
-		}
-		if got, want := msg, spec.want; !proto.Equal(got, want) {
-			t.Errorf("runtime.PopulateQueryParameters(msg, %v, utilities.NewDoubleArray(nil)) = %v; want %v", spec.values, got, want)
-		}
 	}
 }
 
@@ -531,8 +497,7 @@ func TestPopulateParametersWithFilters(t *testing.T) {
 			},
 		},
 	} {
-		msg := proto.Clone(spec.want)
-		msg.Reset()
+		msg := spec.want.ProtoReflect().New().Interface()
 		err := runtime.PopulateQueryParameters(msg, spec.values, spec.filter)
 		if err != nil {
 			t.Errorf("runtime.PoplateQueryParameters(msg, %v, %v) failed with %v; want success", spec.values, spec.filter, err)
@@ -635,19 +600,10 @@ func TestPopulateQueryParametersWithInvalidNestedParameters(t *testing.T) {
 			filter: utilities.NewDoubleArray(nil),
 		},
 	} {
-		spec.msg.Reset()
+		spec.msg = spec.msg.ProtoReflect().New().Interface()
 		err := runtime.PopulateQueryParameters(spec.msg, spec.values, spec.filter)
 		if err == nil {
 			t.Errorf("runtime.PopulateQueryParameters(msg, %v, %v) did not fail; want error", spec.values, spec.filter)
 		}
 	}
 }
-
-type nativeProto3Message struct {
-	NativeTimeValue     *time.Time     `protobuf:"bytes,1,opt,name=native_timestamp_value,json=nativeTimestampValue" json:"native_timestamp_value,omitempty"`
-	NativeDurationValue *time.Duration `protobuf:"bytes,2,opt,name=native_duration_value,json=nativeDurationValue" json:"native_duration_value,omitempty"`
-}
-
-func (m *nativeProto3Message) Reset()         { *m = nativeProto3Message{} }
-func (m *nativeProto3Message) String() string { return proto.CompactTextString(m) }
-func (*nativeProto3Message) ProtoMessage()    {}

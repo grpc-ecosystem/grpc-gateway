@@ -10,6 +10,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
 message Proto3Message {
+  // Next number: 46
   Proto3Message nested = 41;
   float float_value = 42;
   double double_value = 43;
@@ -21,6 +22,7 @@ message Proto3Message {
   string string_value = 8;
   bytes bytes_value = 9;
   repeated string repeated_value = 10;
+  repeated google.protobuf.UInt64Value repeated_message = 44;
   EnumValue enum_value = 11;
   repeated EnumValue repeated_enum = 12;
   google.protobuf.Timestamp timestamp_value = 13;
@@ -52,6 +54,7 @@ message Proto3Message {
   map<string, double> map_value12 = 37;
   map<string, bool> map_value14 = 39;
   map<bool, string> map_value15 = 40;
+  map<string, google.protobuf.UInt64Value> map_value16 = 45;
 }
 
 enum EnumValue {
