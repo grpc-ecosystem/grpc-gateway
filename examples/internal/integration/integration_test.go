@@ -59,10 +59,11 @@ func TestForwardResponseOption(t *testing.T) {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
+	port := 7079
 	go func() {
 		if err := runGateway(
 			ctx,
-			":8081",
+			fmt.Sprintf(":%d", port),
 			runtime.WithForwardResponseOption(
 				func(_ context.Context, w http.ResponseWriter, _ proto.Message) error {
 					w.Header().Set("Content-Type", "application/vnd.docker.plugins.v1.1+json")
@@ -74,10 +75,10 @@ func TestForwardResponseOption(t *testing.T) {
 			return
 		}
 	}()
-	if err := waitForGateway(ctx, 8081); err != nil {
+	if err := waitForGateway(ctx, uint16(port)); err != nil {
 		t.Errorf("waitForGateway(ctx, 8081) failed with %v; want success", err)
 	}
-	testEcho(t, 8081, "v1", "application/vnd.docker.plugins.v1.1+json")
+	testEcho(t, port, "v1", "application/vnd.docker.plugins.v1.1+json")
 }
 
 func testEcho(t *testing.T, port int, apiPrefix string, contentType string) {
@@ -275,6 +276,7 @@ func TestABE(t *testing.T) {
 	testABELookup(t, 8088)
 	testABELookupNotFound(t, 8088)
 	testABEList(t, 8088)
+	testABEDownload(t, 8088)
 	testABEBulkEcho(t, 8088)
 	testABEBulkEchoZeroLength(t, 8088)
 	testAdditionalBindings(t, 8088)
@@ -978,6 +980,27 @@ func testABEList(t *testing.T, port int) {
 	if count <= 0 {
 		t.Errorf("count == %d; want > 0", count)
 	}
+}
+
+func testABEDownload(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/download", port)
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	body, err := readAll(resp.Body)
+	if err != nil {
+		t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
+	}
+
+	want := []string{"Hello 1", "Hello 2"}
+	if !reflect.DeepEqual(body, want) {
+		t.Errorf("testABEDownload failed: got %v, want %v", body, want)
+	}
+
 }
 
 func testABEBulkEcho(t *testing.T, port int) {

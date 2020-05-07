@@ -8,6 +8,7 @@ import (
 	"net/textproto"
 
 	"github.com/golang/protobuf/proto"
+	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
@@ -64,12 +65,17 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 		case resp == nil:
 			buf, err = marshaler.Marshal(errorChunk(status.New(codes.Internal, "empty response")))
 		default:
-			result := map[string]interface{}{"result": resp}
-			if rb, ok := resp.(responseBody); ok {
-				result["result"] = rb.XXX_ResponseBody()
+			if httpBody, ok := resp.(*httpbody.HttpBody); ok {
+				buf = httpBody.GetData()
+			} else {
+				result := map[string]interface{}{"result": resp}
+				if rb, ok := resp.(responseBody); ok {
+					result["result"] = rb.XXX_ResponseBody()
+				}
+
+				buf, err = marshaler.Marshal(result)
 			}
 
-			buf, err = marshaler.Marshal(result)
 		}
 
 		if err != nil {
