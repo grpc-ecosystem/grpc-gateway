@@ -1,6 +1,7 @@
 package integration_test
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"encoding/base64"
@@ -1476,26 +1477,96 @@ func TestResponseBody(t *testing.T) {
 }
 
 func testResponseBody(t *testing.T, port int) {
-	apiURL := fmt.Sprintf("http://localhost:%d/responsebody/foo", port)
-	resp, err := http.Get(apiURL)
-	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
-		return
-	}
-	defer resp.Body.Close()
-	buf, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
-		return
-	}
+	tests := []struct {
+		name       string
+		url        string
+		wantStatus int
+		wantBody   string
+	}{{
+		name:       "unary case",
+		url:        "http://localhost:%d/responsebody/foo",
+		wantStatus: http.StatusOK,
+		wantBody:   `{"data":"foo"}`,
+	}}
 
-	if got, want := resp.StatusCode, http.StatusOK; got != want {
-		t.Errorf("resp.StatusCode = %d; want %d", got, want)
-		t.Logf("%s", buf)
-	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiURL := fmt.Sprintf(tt.url, port)
+			resp, err := http.Get(apiURL)
+			if err != nil {
+				t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+			}
 
-	if got, want := string(buf), `{"data":"foo"}`; got != want {
-		t.Errorf("response = %q; want %q", got, want)
+			defer resp.Body.Close()
+			buf, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				t.Fatalf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+			}
+
+			if got, want := resp.StatusCode, tt.wantStatus; got != want {
+				t.Errorf("resp.StatusCode = %d; want %d", got, want)
+				t.Logf("%s", buf)
+			}
+
+			if got, want := string(buf), tt.wantBody; got != want {
+				t.Errorf("response = %q; want %q", got, want)
+			}
+		})
+	}
+}
+
+func TestResponseBodyStream(t *testing.T) {
+	tests := []struct {
+		name       string
+		url        string
+		wantStatus int
+		wantBody   []string
+	}{{
+		name:       "stream case",
+		url:        "http://localhost:%d/responsebody/stream/foo",
+		wantStatus: http.StatusOK,
+		wantBody:   []string{`{"result":{"data":"first foo"}}`, `{"result":{"data":"second foo"}}`},
+	}}
+
+	port := 8088
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiURL := fmt.Sprintf(tt.url, port)
+			resp, err := http.Get(apiURL)
+			if err != nil {
+				t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+			}
+
+			defer resp.Body.Close()
+			body, err := readAll(resp.Body)
+			if err != nil {
+				t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
+			}
+
+			if got, want := resp.StatusCode, tt.wantStatus; got != want {
+				t.Errorf("resp.StatusCode = %d; want %d", got, want)
+			}
+
+			if !reflect.DeepEqual(tt.wantBody, body) {
+				t.Errorf("response = %v; want %v", body, tt.wantBody)
+			}
+		})
+	}
+}
+
+func readAll(body io.ReadCloser) ([]string, error) {
+	var b []string
+	reader := bufio.NewReader(body)
+	for {
+		l, err := reader.ReadBytes('\n')
+		switch {
+		case err == io.EOF:
+			return b, nil
+		case err != nil:
+			return nil, err
+		}
+
+		b = append(b, string(bytes.TrimSpace(l)))
 	}
 }
 
@@ -1526,19 +1597,19 @@ func testResponseBodies(t *testing.T, port int) {
 func testResponseStrings(t *testing.T, port int) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	port = 8087
 	// Run Secondary server with different marshalling
 	ch := make(chan error)
 	go func() {
-		if err := runGateway(ctx, ":8081", runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{EnumsAsInts: false, EmitDefaults: true})); err != nil {
+		if err := runGateway(ctx, fmt.Sprintf(":%d", port), runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{EnumsAsInts: false, EmitDefaults: true})); err != nil {
 			ch <- fmt.Errorf("cannot run gateway service: %v", err)
 		}
 	}()
 
-	if err := waitForGateway(ctx, 8081); err != nil {
-		t.Fatalf("waitForGateway(ctx, 8081) failed with %v; want success", err)
+	if err := waitForGateway(ctx, uint16(port)); err != nil {
+		t.Fatalf("waitForGateway(ctx, %d) failed with %v; want success", port, err)
 	}
-
-	port = 8081
 
 	for i, spec := range []struct {
 		endpoint     string
@@ -1589,12 +1660,18 @@ func testResponseStrings(t *testing.T, port int) {
 }
 
 func TestRequestQueryParams(t *testing.T) {
+	testRequestQueryParams(t, 8088)
+}
+
+func TestRequestQueryParamsInProcessGateway(t *testing.T) {
+	testRequestQueryParams(t, 8089)
+}
+
+func testRequestQueryParams(t *testing.T, port int) {
 	if testing.Short() {
 		t.Skip()
 		return
 	}
-
-	port := 8088
 
 	formValues := url.Values{}
 	formValues.Set("string_value", "hello-world")

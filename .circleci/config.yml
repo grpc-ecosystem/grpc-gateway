@@ -1,25 +1,45 @@
 version: 2
 jobs:
   build:
+    environment:
+    ## Split key to avoid github revoking it
+      password0: '99544cdcb19ad4e3fd64'
+      password1: '3ec86b2e5a431be2d72c'
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: gateway-ci-user
+          password: ${password0}${password1}
     working_directory: /src/grpc-gateway
     steps:
       - checkout
       - run: go build ./...
   test:
-    docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
-    working_directory: /src/grpc-gateway
     environment:
+    ## Split key to avoid github revoking it
+      password0: '99544cdcb19ad4e3fd64'
+      password1: '3ec86b2e5a431be2d72c'
       GLOG_logtostderr: '1'
+    docker:
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: gateway-ci-user
+          password: ${password0}${password1}
+    working_directory: /src/grpc-gateway
     steps:
       - checkout
       - run: go test -race -coverprofile=coverage.txt ./...
       - run: bash <(curl -s https://codecov.io/bash)
   node_test:
+    environment:
+    ## Split key to avoid github revoking it
+      password0: '99544cdcb19ad4e3fd64'
+      password1: '3ec86b2e5a431be2d72c'
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: gateway-ci-user
+          password: ${password0}${password1}
     working_directory: /src/grpc-gateway
     steps:
       - checkout
@@ -31,18 +51,33 @@ jobs:
           npm install &&
           ./node_modules/.bin/gulp
   generate:
+    environment:
+    ## Split key to avoid github revoking it
+      password0: '99544cdcb19ad4e3fd64'
+      password1: '3ec86b2e5a431be2d72c'
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: gateway-ci-user
+          password: ${password0}${password1}
     working_directory: /src/grpc-gateway
     steps:
       - checkout
       - run: make realclean
       - run: make examples
+      - run: make testproto
       - run: go mod tidy
       - run: git diff --exit-code
   lint:
+    environment:
+    ## Split key to avoid github revoking it
+      password0: '99544cdcb19ad4e3fd64'
+      password1: '3ec86b2e5a431be2d72c'
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: gateway-ci-user
+          password: ${password0}${password1}
     working_directory: /src/grpc-gateway
     steps:
       - checkout
@@ -70,7 +105,8 @@ jobs:
             build --test_output errors
             build --features race
             # Workaround https://github.com/bazelbuild/bazel/issues/3645
-            build --local_resources=3072,2.0,1.0
+            # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
+            build --local_ram_resources=HOST_RAM*.5
             EOF
       - run:
           name: Check that Bazel BUILD files are up-to-date
@@ -85,8 +121,15 @@ jobs:
             (echo "ERROR: Bazel files not formatted, please run \`bazel run :buildifier\`" >&2; exit 1)'
           when: always
   gorelease:
+    environment:
+    ## Split key to avoid github revoking it
+      password0: '99544cdcb19ad4e3fd64'
+      password1: '3ec86b2e5a431be2d72c'
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: gateway-ci-user
+          password: ${password0}${password1}
     working_directory: /src/grpc-gateway
     steps:
       - checkout
@@ -98,8 +141,15 @@ jobs:
             go get golang.org/x/exp/cmd/gorelease@latest
       - run: gorelease
   release:
+    environment:
+    ## Split key to avoid github revoking it
+      password0: '99544cdcb19ad4e3fd64'
+      password1: '3ec86b2e5a431be2d72c'
     docker:
-      - image: jfbrandhorst/grpc-gateway-build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+        auth:
+          username: gateway-ci-user
+          password: ${password0}${password1}
     working_directory: /src/grpc-gateway
     steps:
       - checkout

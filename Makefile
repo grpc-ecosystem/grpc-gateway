@@ -77,14 +77,19 @@ EXAMPLES=examples/internal/proto/examplepb/echo_service.proto \
 	 examples/internal/proto/examplepb/use_go_template.proto \
 	 examples/internal/proto/examplepb/response_body_service.proto
 
+HELLOWORLD=examples/internal/helloworld/helloworld.proto
+
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
 EXAMPLE_SWAGGERSRCS=$(SWAGGER_EXAMPLES:.proto=.swagger.json)
 EXAMPLE_DEPS=examples/internal/proto/pathenum/path_enum.proto examples/internal/proto/sub/message.proto examples/internal/proto/sub2/message.proto
 EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
 
+HELLOWORLD_SVCSRCS=$(HELLOWORLD:.proto=.pb.go)
+HELLOWORLD_GWSRCS=$(HELLOWORLD:.proto=.pb.gw.go)
+
 RUNTIME_TEST_PROTO=runtime/internal/examplepb/example.proto
-RUNTIME_TEST_SRCS=$(RUNTIME_TEST_PROTO:.proto=pb.go)
+RUNTIME_TEST_SRCS=$(RUNTIME_TEST_PROTO:.proto=.pb.go)
 
 EXAMPLE_CLIENT_DIR=examples/internal/clients
 ECHO_EXAMPLE_SPEC=examples/internal/proto/examplepb/echo_service.swagger.json
@@ -171,6 +176,14 @@ $(EXAMPLE_SWAGGERSRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_c
 $(EXAMPLE_SWAGGERSRCS): $(SWAGGER_PLUGIN) $(SWAGGER_EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(SWAGGER_PLUGIN) --swagger_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true,$(PKGMAP)$(ADDITIONAL_SWG_FLAGS):. $(SWAGGER_EXAMPLES)
 
+$(HELLOWORLD_SVCSRCS): $(GO_PLUGIN) $(HELLOWORLD)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc,paths=source_relative:. $(HELLOWORLD)
+
+$(HELLOWORLD_GWSRCS):
+$(HELLOWORLD_GWSRCS): $(GATEWAY_PLUGIN) $(HELLOWORLD)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,$(PKGMAP)$(ADDITIONAL_GW_FLAGS):. $(HELLOWORLD)
+
+
 $(ECHO_EXAMPLE_SRCS): $(ECHO_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ECHO_EXAMPLE_SPEC) \
 	    -l go -o examples/internal/clients/echo --additional-properties packageName=echo
@@ -192,7 +205,7 @@ $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 	@rm -f $(EXAMPLE_CLIENT_DIR)/responsebody/README.md \
 		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh
 
-examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS)
+examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS) $(HELLOWORLD_SVCSRCS) $(HELLOWORLD_GWSRCS)
 testproto: $(RUNTIME_TEST_SRCS)
 test: examples testproto
 	go test -short -race ./...
@@ -210,7 +223,7 @@ changelog:
 				--compare-link \
 				--github-site=https://github.com \
 				--unreleased-label "**Next release**" \
-				--future-release=v1.14.4-rc.1
+				--future-release=v1.14.4
 lint:
 	golint --set_exit_status ./runtime
 	golint --set_exit_status ./utilities/...
@@ -230,6 +243,8 @@ realclean: distclean
 	rm -f $(EXAMPLE_GWSRCS)
 	rm -f $(EXAMPLE_SWAGGERSRCS)
 	rm -f $(EXAMPLE_CLIENT_SRCS)
+	rm -f $(HELLOWORLD_SVCSRCS)
+	rm -f $(HELLOWORLD_GWSRCS)
 	rm -f $(OPENAPIV2_GO)
 	rm -f $(RUNTIME_TEST_SRCS)
 

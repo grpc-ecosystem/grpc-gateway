@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 
 	examples "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/examplepb"
 )
@@ -41,4 +42,20 @@ func (s *responseBodyServer) ListResponseStrings(ctx context.Context, req *examp
 	return &examples.RepeatedResponseStrings{
 		Values: []string{"hello", req.Data},
 	}, nil
+}
+
+func (s *responseBodyServer) GetResponseBodyStream(req *examples.ResponseBodyIn, stream examples.ResponseBodyService_GetResponseBodyStreamServer) error {
+	if err := stream.Send(&examples.ResponseBodyOut{
+		Response: &examples.ResponseBodyOut_Response{
+			Data: fmt.Sprintf("first %s", req.Data),
+		},
+	}); err != nil {
+		return err
+	}
+
+	return stream.Send(&examples.ResponseBodyOut{
+		Response: &examples.ResponseBodyOut_Response{
+			Data: fmt.Sprintf("second %s", req.Data),
+		},
+	})
 }

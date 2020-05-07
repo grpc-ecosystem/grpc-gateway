@@ -13,6 +13,14 @@ This helps you provide your APIs in both gRPC and RESTful style at the same time
 
 ![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&amp;h=370)
 
+## Testimonials
+
+ > We use the gRPC-Gateway to serve millions of API requests per day,
+   and have been since 2018, and through all of that,
+   we have never had any issues with it.
+>
+> _- William Mill, [Ad Hoc](http://adhocteam.us/)_
+
 ## Check out our [documentation](https://grpc-ecosystem.github.io/grpc-gateway/)!
 
 ## Background
@@ -113,6 +121,12 @@ annotation to your .proto file
     }
    ```
 
+   >You will need to provide the required third party protobuf files to the `protoc` compiler.
+   >They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
+   >them into your `protoc` generation file structure. If you've structured your protofiles according
+   >to something like [the Buf style guide](https://buf.build/docs/style-guide#files-and-packages),
+   >you could copy the files into a top-level `./google` folder.
+
    See [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
    for examples of more annotations you can add to customize gateway behavior
    and generated Swagger output.
@@ -124,36 +138,24 @@ annotation to your .proto file
    for more information.
 
 3. Generate gRPC stub
+  
+  Here is an example of what a `protoc` command might look like:
 
-   The following generates gRPC code for Golang based on `path/to/your_service.proto`:
-   ```sh
-   protoc -I/usr/local/include -I. \
-     -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-     --go_out=plugins=grpc:. \
-     path/to/your_service.proto
-   ```
+  ```sh
+  protoc -I. --go_out=plugins=grpc,paths=source_relative:./gen/go/ your/service/v1/your_service.proto
+  ```
 
-   It will generate a stub file `path/to/your_service.pb.go`.
+  It will generate a stub file with path `./gen/go/your/service/v1/your_service.pb.go`.
 
 4. Implement your service in gRPC as usual
 
    1. (Optional) Generate gRPC stub in the [other programming languages](https://grpc.io/docs/).
 
-     For example, the following generates gRPC code for Ruby based on `path/to/your_service.proto`:
+     For example, the following generates gRPC code for Ruby based on `your/service/v1/your_service.proto`:
      ```sh
-     protoc -I/usr/local/include -I. \
-       -I$GOPATH/src \
-       -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-       --ruby_out=. \
-       path/to/your_service.proto
+     protoc -I. --ruby_out=./gen/ruby your/service/v1/your_service.proto
 
-     protoc -I/usr/local/include -I. \
-       -I$GOPATH/src \
-       -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-       --plugin=protoc-gen-grpc=grpc_ruby_plugin \
-       --grpc-ruby_out=. \
-       path/to/your_service.proto
+     protoc -I. --grpc-ruby_out=./gen/ruby your/service/v1/your_service.proto
      ```
    2. Add the googleapis-common-protos gem (or your language equivalent) as a dependency to your project.
    3. Implement your gRPC service stubs
@@ -161,14 +163,11 @@ annotation to your .proto file
 5. Generate reverse-proxy using `protoc-gen-grpc-gateway`
 
    ```sh
-   protoc -I/usr/local/include -I. \
-     -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-     --grpc-gateway_out=logtostderr=true:. \
-     path/to/your_service.proto
+   protoc -I. --grpc-gateway_out=logtostderr=true,paths=source_relative:./gen/go \
+     your/service/v1/your_service.proto
    ```
 
-   It will generate a reverse proxy `path/to/your_service.pb.gw.go`.
+   It will generate a reverse proxy `gen/go/your/service/v1/your_service.pb.gw.go`.
 
 6. Write an entrypoint for the HTTP reverse-proxy server
 
@@ -176,7 +175,7 @@ annotation to your .proto file
    package main
  
    import (
-     "context"  // Use "golang.org/x/net/context" for Golang version <= 1.6
+     "context"
      "flag"
      "net/http"
  
@@ -184,7 +183,7 @@ annotation to your .proto file
      "github.com/grpc-ecosystem/grpc-gateway/runtime"
      "google.golang.org/grpc"
  
-     gw "path/to/your_service_package"  // Update
+     gw "github.com/yourorg/yourrepo/proto/gen/go/your/service/v1/your_service"  // Update
    )
  
    var (
@@ -224,12 +223,17 @@ annotation to your .proto file
 7. (Optional) Generate swagger definitions using `protoc-gen-swagger`
 
    ```sh
-   protoc -I/usr/local/include -I. \
-     -I$GOPATH/src \
-     -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-     --swagger_out=logtostderr=true:. \
-     path/to/your_service.proto
+   protoc -I. --swagger_out=logtostderr=true:./gen/swagger your/service/v1/your_service.proto
    ```
+
+## Video intro
+
+This GopherCon UK 2019 presentation from our maintainer
+[@JohanBrandhorst](https://github.com/johanbrandhorst) provides a good intro to
+using the grpc-gateway. It uses the following boilerplate repo as a base:
+https://github.com/johanbrandhorst/grpc-gateway-boilerplate.
+
+[![gRPC-Gateway presentation](https://img.youtube.com/vi/Pq1paKC-fXk/0.jpg)](https://www.youtube.com/watch?v=Pq1paKC-fXk)
 
 ## Parameters and flags
 
@@ -244,8 +248,7 @@ example:
 
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to
 Golang import paths. They are compatible to
-[the parameters with same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters)
-(except `source_relative`).
+[the parameters with same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
 
 In addition we also support the `request_context` parameter in order to use the
 `http.Request`'s Context (only for Go 1.7 and above). This parameter can be
@@ -319,7 +322,7 @@ header.
 * HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata
 (prefixed with `grpcgateway-`).
 * While configurable, the default {un,}marshaling uses
-[jsonpb](https://godoc.org/github.com/golang/protobuf/jsonpb) with
+[jsonpb](https://pkg.go.dev/github.com/golang/protobuf/jsonpb) with
 `OrigName: true`.
 
 # Contribution
