@@ -89,7 +89,8 @@ HELLOWORLD_GWSRCS=$(HELLOWORLD:.proto=.pb.gw.go)
 
 RUNTIME_TEST_PROTO=runtime/internal/examplepb/example.proto \
 	runtime/internal/examplepb/proto2.proto \
-	runtime/internal/examplepb/proto3.proto
+	runtime/internal/examplepb/proto3.proto \
+	runtime/internal/examplepb/non_standard_names.proto
 RUNTIME_TEST_SRCS=$(RUNTIME_TEST_PROTO:.proto=.pb.go)
 
 EXAMPLE_CLIENT_DIR=examples/internal/clients

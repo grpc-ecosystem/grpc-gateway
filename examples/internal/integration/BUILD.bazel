@@ -4,7 +4,6 @@ go_test(
     name = "go_default_test",
     srcs = [
         "client_test.go",
-        "fieldmask_test.go",
         "integration_test.go",
         "main_test.go",
     ],
@@ -19,7 +18,6 @@ go_test(
         "//examples/internal/server:go_default_library",
         "//runtime:go_default_library",
         "@com_github_golang_glog//:go_default_library",
-        "@com_github_golang_protobuf//descriptor:go_default_library_gen",
         "@com_github_golang_protobuf//jsonpb:go_default_library_gen",
         "@com_github_golang_protobuf//proto:go_default_library",
         "@com_github_google_go_cmp//cmp:go_default_library",
