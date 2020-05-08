@@ -241,7 +241,6 @@ var _ io.Reader
 var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
-var _ = descriptor.ForMessage
 `))
 
 	handlerTemplate = template.Must(template.New("handler").Parse(`
@@ -329,8 +328,7 @@ var (
 	}
 	{{- if and $AllowPatchFeature (eq (.HTTPMethod) "PATCH") (.FieldMaskField) (not (eq "*" .GetBodyFieldPath)) }}
 	if protoReq.{{.FieldMaskField}} == nil || len(protoReq.{{.FieldMaskField}}.GetPaths()) == 0 {
-			_, md := descriptor.ForMessage(protoReq.{{.GetBodyFieldStructName}})
-			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
+			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.{{.GetBodyFieldStructName}}); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 			} else {
 				protoReq.{{.FieldMaskField}} = fieldMask
@@ -491,8 +489,7 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 	}
 	{{- if and $AllowPatchFeature (eq (.HTTPMethod) "PATCH") (.FieldMaskField) (not (eq "*" .GetBodyFieldPath)) }}
 	if protoReq.{{.FieldMaskField}} == nil || len(protoReq.{{.FieldMaskField}}.GetPaths()) == 0 {
-			_, md := descriptor.ForMessage(protoReq.{{.GetBodyFieldStructName}})
-			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
+			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), protoReq.{{.GetBodyFieldStructName}}); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 			} else {
 				protoReq.{{.FieldMaskField}} = fieldMask

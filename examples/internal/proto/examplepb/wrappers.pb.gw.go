@@ -13,7 +13,6 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/golang/protobuf/ptypes/wrappers"
@@ -31,7 +30,6 @@ var _ io.Reader
 var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
-var _ = descriptor.ForMessage
 
 func request_WrappersService_Create_0(ctx context.Context, marshaler runtime.Marshaler, client WrappersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq Wrappers

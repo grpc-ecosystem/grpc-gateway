@@ -13,7 +13,6 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/utilities"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -29,7 +28,6 @@ var _ io.Reader
 var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
-var _ = descriptor.ForMessage
 
 func request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshaler, client LoginServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LoginRequest

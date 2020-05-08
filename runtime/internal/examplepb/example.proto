@@ -6,6 +6,7 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
 
 // SimpleMessage represents a simple message sent to the Echo service.
 message SimpleMessage { string id = 1; }
@@ -100,4 +101,9 @@ message RepeatedResponseBodyOut {
     ResponseType type = 3;
   }
   repeated Response response = 2;
+}
+
+message UpdateMessage {
+  google.protobuf.FieldMask update_mask = 1;
+  ABitOfEverything a_bit_of_everything = 2;
 }

@@ -56,8 +56,8 @@ proto_library(
 go_proto_library(
     name = "examplepb_go_proto",
     compilers = [
-        "@io_bazel_rules_go//proto:go_grpc",
         "//protoc-gen-grpc-gateway:go_gen_grpc_gateway",  # keep
+        "@io_bazel_rules_go//proto:go_grpc",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
     proto = ":examplepb_proto",
@@ -80,7 +80,6 @@ go_library(
     deps = [
         "//internal/utilities:go_default_library",
         "//runtime:go_default_library",
-        "@com_github_golang_protobuf//descriptor:go_default_library_gen",
         "@com_github_golang_protobuf//proto:go_default_library",
         "@org_golang_google_grpc//:go_default_library",
         "@org_golang_google_grpc//codes:go_default_library",
