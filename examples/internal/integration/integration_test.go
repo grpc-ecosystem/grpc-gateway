@@ -76,7 +76,7 @@ func TestForwardResponseOption(t *testing.T) {
 		}
 	}()
 	if err := waitForGateway(ctx, uint16(port)); err != nil {
-		t.Errorf("waitForGateway(ctx, 8081) failed with %v; want success", err)
+		t.Errorf("waitForGateway(ctx, %d) failed with %v; want success", port, err)
 	}
 	testEcho(t, port, "v1", "application/vnd.docker.plugins.v1.1+json")
 }
