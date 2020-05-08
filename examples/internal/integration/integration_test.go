@@ -991,6 +991,11 @@ func testABEDownload(t *testing.T, port int) {
 	}
 	defer resp.Body.Close()
 
+	wantHeader := "text/html"
+	if value := resp.Header.Get("Content-Type"); value != wantHeader {
+		t.Fatalf("testABEDownload() Content-Type failed: got %s, want %s", value, wantHeader)
+	}
+
 	body, err := readAll(resp.Body)
 	if err != nil {
 		t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
@@ -998,9 +1003,8 @@ func testABEDownload(t *testing.T, port int) {
 
 	want := []string{"Hello 1", "Hello 2"}
 	if !reflect.DeepEqual(body, want) {
-		t.Errorf("testABEDownload failed: got %v, want %v", body, want)
+		t.Errorf("testABEDownload() failed: got %v, want %v", body, want)
 	}
-
 }
 
 func testABEBulkEcho(t *testing.T, port int) {
