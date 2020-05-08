@@ -535,11 +535,11 @@ var fileDescriptor_a1fc3d96d9306f6b = []byte{
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
-var _ grpc.ClientConn
+var _ grpc.ClientConnInterface
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
+const _ = grpc.SupportPackageIsVersion6
 
 // NonStandardServiceClient is the client API for NonStandardService service.
 //
@@ -552,10 +552,10 @@ type NonStandardServiceClient interface {
 }
 
 type nonStandardServiceClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewNonStandardServiceClient(cc *grpc.ClientConn) NonStandardServiceClient {
+func NewNonStandardServiceClient(cc grpc.ClientConnInterface) NonStandardServiceClient {
 	return &nonStandardServiceClient{cc}
 }
 

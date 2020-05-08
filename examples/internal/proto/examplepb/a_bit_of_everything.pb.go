@@ -1054,11 +1054,11 @@ var fileDescriptor_e6ccf6cab3ab66ab = []byte{
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
-var _ grpc.ClientConn
+var _ grpc.ClientConnInterface
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
+const _ = grpc.SupportPackageIsVersion6
 
 // ABitOfEverythingServiceClient is the client API for ABitOfEverythingService service.
 //
@@ -1096,10 +1096,10 @@ type ABitOfEverythingServiceClient interface {
 }
 
 type aBitOfEverythingServiceClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewABitOfEverythingServiceClient(cc *grpc.ClientConn) ABitOfEverythingServiceClient {
+func NewABitOfEverythingServiceClient(cc grpc.ClientConnInterface) ABitOfEverythingServiceClient {
 	return &aBitOfEverythingServiceClient{cc}
 }
 
@@ -1808,10 +1808,10 @@ type CamelCaseServiceNameClient interface {
 }
 
 type camelCaseServiceNameClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewCamelCaseServiceNameClient(cc *grpc.ClientConn) CamelCaseServiceNameClient {
+func NewCamelCaseServiceNameClient(cc grpc.ClientConnInterface) CamelCaseServiceNameClient {
 	return &camelCaseServiceNameClient{cc}
 }
 
@@ -1880,10 +1880,10 @@ type AnotherServiceWithNoBindingsClient interface {
 }
 
 type anotherServiceWithNoBindingsClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewAnotherServiceWithNoBindingsClient(cc *grpc.ClientConn) AnotherServiceWithNoBindingsClient {
+func NewAnotherServiceWithNoBindingsClient(cc grpc.ClientConnInterface) AnotherServiceWithNoBindingsClient {
 	return &anotherServiceWithNoBindingsClient{cc}
 }
 
