@@ -49,6 +49,7 @@ proto_library(
         "@com_google_protobuf//:timestamp_proto",
         "@com_google_protobuf//:wrappers_proto",
         "@go_googleapis//google/api:annotations_proto",
+        "@go_googleapis//google/api:httpbody_proto",
     ],
 )
 
@@ -67,6 +68,7 @@ go_proto_library(
         "//protoc-gen-swagger/options:go_default_library",
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",  # keep
         "@go_googleapis//google/api:annotations_go_proto",
+        "@go_googleapis//google/api:httpbody_go_proto",
     ],
 )
 

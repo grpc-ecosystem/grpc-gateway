@@ -3,6 +3,7 @@ option go_package = "examplepb";
 package grpc.gateway.examples.internal.examplepb;
 
 import "google/api/annotations.proto";
+import "google/api/httpbody.proto";
 import "google/protobuf/empty.proto";
 import "examples/internal/proto/examplepb/a_bit_of_everything.proto";
 import "examples/internal/proto/sub/message.proto";
@@ -24,6 +25,12 @@ service StreamService {
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything/echo"
 			body: "*"
+		};
+	}
+
+	rpc Download(google.protobuf.Empty) returns (stream google.api.HttpBody) {
+		option (google.api.http) = {
+		  get : "/v1/example/download"
 		};
 	}
 }
