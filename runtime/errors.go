@@ -10,6 +10,12 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// ErrorHandlerFunc is the signature used to configure error handling.
+type ErrorHandlerFunc func(context.Context, *ServeMux, Marshaler, http.ResponseWriter, *http.Request, error)
+
+// StreamErrorHandlerFunc is the signature used to configure stream error handling.
+type StreamErrorHandlerFunc func(context.Context, error) *status.Status
+
 // HTTPStatusFromCode converts a gRPC error code into the corresponding HTTP response status.
 // See: https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
 func HTTPStatusFromCode(code codes.Code) int {
@@ -55,61 +61,19 @@ func HTTPStatusFromCode(code codes.Code) int {
 	return http.StatusInternalServerError
 }
 
-var (
-	// HTTPError replies to the request with an error.
-	//
-	// HTTPError is called:
-	//  - From generated per-endpoint gateway handler code, when calling the backend results in an error.
-	//  - From gateway runtime code, when forwarding the response message results in an error.
-	//
-	// The default value for HTTPError calls the custom error handler configured on the ServeMux via the
-	// WithProtoErrorHandler serve option if that option was used, calling GlobalHTTPErrorHandler otherwise.
-	//
-	// To customize the error handling of a particular ServeMux instance, use the WithProtoErrorHandler
-	// serve option.
-	//
-	// To customize the error format for all ServeMux instances not using the WithProtoErrorHandler serve
-	// option, set GlobalHTTPErrorHandler to a custom function.
-	//
-	// Setting this variable directly to customize error format is deprecated.
-	HTTPError = MuxOrGlobalHTTPError
-
-	// GlobalHTTPErrorHandler is the HTTPError handler for all ServeMux instances not using the
-	// WithProtoErrorHandler serve option.
-	//
-	// You can set a custom function to this variable to customize error format.
-	GlobalHTTPErrorHandler = DefaultHTTPError
-
-	// OtherErrorHandler handles gateway errors from parsing and routing client requests for all
-	// ServeMux instances not using the WithProtoErrorHandler serve option.
-	//
-	// It returns the following error codes: StatusMethodNotAllowed StatusNotFound StatusBadRequest
-	//
-	// To customize parsing and routing error handling of a particular ServeMux instance, use the
-	// WithProtoErrorHandler serve option.
-	//
-	// To customize parsing and routing error handling of all ServeMux instances not using the
-	// WithProtoErrorHandler serve option, set a custom function to this variable.
-	OtherErrorHandler = DefaultOtherErrorHandler
-)
-
-// MuxOrGlobalHTTPError uses the mux-configured error handler, falling back to GlobalErrorHandler.
-func MuxOrGlobalHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, r *http.Request, err error) {
-	if mux.protoErrorHandler != nil {
-		mux.protoErrorHandler(ctx, mux, marshaler, w, r, err)
-	} else {
-		GlobalHTTPErrorHandler(ctx, mux, marshaler, w, r, err)
-	}
+// HTTPError uses the mux-configured error handler.
+func HTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, r *http.Request, err error) {
+	mux.errorHandler(ctx, mux, marshaler, w, r, err)
 }
 
-// DefaultHTTPError is the default implementation of HTTPError.
-// If "err" is an error from gRPC system, the function replies with the status code mapped by HTTPStatusFromCode.
+// defaultHTTPErrorHandler is the default error handler.
+// If "err" is a gRPC Status, the function replies with the status code mapped by HTTPStatusFromCode.
 // If otherwise, it replies with http.StatusInternalServerError.
 //
-// The response body returned by this function is a JSON object,
-// which contains a member whose key is "message" and whose value is err.Error().
-func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, _ *http.Request, err error) {
-	const fallback = `{"error": "failed to marshal error message"}`
+// The response body written by this function is a Status message marshaled by the Marshaler.
+func defaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, _ *http.Request, err error) {
+	// return Internal when Marshal failed
+	const fallback = `{"code": 13, "message": "failed to marshal error message"}`
 
 	s := status.Convert(err)
 	pb := s.Proto()
@@ -117,7 +81,7 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 	w.Header().Del("Trailer")
 
 	contentType := marshaler.ContentType()
-	// Check marshaler on run time in order to keep backwards compatability
+	// Check marshaler at runtime in order to keep backwards compatibility.
 	// An interface param needs to be added to the ContentType() function on
 	// the Marshal interface to be able to remove this check
 	if typeMarshaler, ok := marshaler.(contentTypeMarshaler); ok {
@@ -151,8 +115,6 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 	handleForwardResponseTrailer(w, md)
 }
 
-// DefaultOtherErrorHandler is the default implementation of OtherErrorHandler.
-// It simply writes a string representation of the given error into "w".
-func DefaultOtherErrorHandler(w http.ResponseWriter, _ *http.Request, msg string, code int) {
-	http.Error(w, msg, code)
+func defaultStreamErrorHandler(_ context.Context, err error) *status.Status {
+	return status.Convert(err)
 }

@@ -234,24 +234,14 @@ if err := pb.RegisterMyServiceHandlerFromEndpoint(ctx, mux, serviceEndpoint, opt
 ```
 
 ## Error handler
-The gateway uses two different error handlers for non-streaming requests:
-
- * `runtime.HTTPError` is called for errors from backend calls
- * `runtime.OtherErrorHandler` is called for errors from parsing and routing client requests
-
-To override all error handling for a `*runtime.ServeMux`, use the
-`runtime.WithProtoErrorHandler` serve option.
-
-Alternatively, you can override the global default `HTTPError` handling by
-setting `runtime.GlobalHTTPErrorHandler` to a custom function, and override
-the global default `OtherErrorHandler` by setting `runtime.OtherErrorHandler`
-to a custom function.
-
-You should not set `runtime.HTTPError` directly, because that might break
-any `ServeMux` set up with the `WithProtoErrorHandler` option.
+To override error handling for a `*runtime.ServeMux`, use the
+`runtime.WithErrorHandler` option. This will configure all unary error
+responses to pass through this error handler.
 
 See https://mycodesmells.com/post/grpc-gateway-error-handler for an example
-of writing a custom error handler function.
+of writing a custom error handler function. Note that this post targets
+the v1 release of the gateway, and you no longer assign to `HTTPError` to
+configure an error handler.
 
 ## Stream Error Handler
 The error handler described in the previous section applies only
@@ -285,40 +275,33 @@ Here's an example custom handler:
 // handleStreamError overrides default behavior for computing an error
 // message for a server stream.
 //
-// It uses a default "502 Bad Gateway" HTTP code; only emits "safe"
-// messages; and does not set gRPC code or details fields (so they will
+// It uses a default "502 Bad Gateway" HTTP code, only emits "safe"
+// messages and does not set the details field (so it will
 // be omitted from the resulting JSON object that is sent to client).
-func handleStreamError(ctx context.Context, err error) *runtime.StreamError {
-	code := http.StatusBadGateway
+func handleStreamError(ctx context.Context, err error) *status.Status {
+	code := codes.Internal
 	msg := "unexpected error"
 	if s, ok := status.FromError(err); ok {
-		code = runtime.HTTPStatusFromCode(s.Code())
-		// default message, based on the name of the gRPC code
-		msg = code.String()
+		code = s.Code()
+		// default message, based on the gRPC status
+		msg = s.Message()
 		// see if error details include "safe" message to send
 		// to external callers
-		for _, msg := s.Details() {
+		for _, msg := range s.Details() {
 			if safe, ok := msg.(*SafeMessage); ok {
 				msg = safe.Text
 				break
 			}
 		}
 	}
-	return &runtime.StreamError{
-	    HttpCode:   int32(code),
-	    HttpStatus: http.StatusText(code),
-	    Message:    msg,
-	}
+	return status.Errorf(code, msg)
 }
 ```
 
 If no custom handler is provided, the default stream error handler
 will include any gRPC error attributes (code, message, detail messages),
 if the error being reported includes them. If the error does not have
-these attributes, a gRPC code of `Unknown` (2) is reported. The default
-handler will also include an HTTP code and status, which is derived
-from the gRPC code (or set to `"500 Internal Server Error"` when
-the source error has no gRPC attributes).
+these attributes, a gRPC code of `Unknown` (2) is reported.
 
 ## Replace a response forwarder per method
 You might want to keep the behavior of the current marshaler but change only a message forwarding of a certain API method.
