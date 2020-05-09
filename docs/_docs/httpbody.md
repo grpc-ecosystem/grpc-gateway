@@ -25,7 +25,13 @@ service HttpBodyExampleService {
 		option (google.api.http) = {
 			get: "/helloworld"
 		};
-	}	
+	}
+
+	rpc Download(google.protobuf.Empty) returns (stream google.api.HttpBody) {
+		option (google.api.http) = {
+			get: "/download"
+		};
+	}
 
 }
 ```
@@ -39,6 +45,24 @@ func (*HttpBodyExampleService) Helloworld(ctx context.Context, in *empty.Empty) 
 		ContentType: "text/html",
 		Data:        []byte("Hello World"),
 	}, nil
+}
+
+func (HttpBodyExampleService) Download(_ *empty.Empty, stream HttpBodyExampleService_DownloadServer) error {
+	msgs := []*httpbody.HttpBody{{
+		ContentType: "text/html",
+		Data:        []byte("Hello 1"),
+	}, {
+		ContentType: "text/html",
+		Data:        []byte("Hello 2"),
+	}}
+
+	for _, msg := range msgs {
+		if err := stream.Send(msg); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 ```
