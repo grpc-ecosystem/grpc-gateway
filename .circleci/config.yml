@@ -110,7 +110,8 @@ jobs:
             build --features race
             # Workaround https://github.com/bazelbuild/bazel/issues/3645
             # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
-            build --local_ram_resources=HOST_RAM*.5
+            build --local_ram_resources=3072
+            build --local_cpu_resources=1
             EOF
       - run:
           name: Check that Bazel BUILD files are up-to-date
