@@ -20,7 +20,6 @@ go_library(
         "mux.go",
         "pattern.go",
         "proto2_convert.go",
-        "proto_errors.go",
         "query.go",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime",

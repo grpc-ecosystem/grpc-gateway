@@ -1250,8 +1250,8 @@ func testABERepeated(t *testing.T, port int) {
 			"bar",
 		},
 		PathRepeatedBytesValue: [][]byte{
-			[]byte{0x00},
-			[]byte{0xFF},
+			{0x00},
+			{0xFF},
 		},
 		PathRepeatedUint32Value: []uint32{
 			0,
@@ -1378,7 +1378,7 @@ func TestUnknownPath(t *testing.T) {
 	}
 }
 
-func TestMethodNotAllowed(t *testing.T) {
+func TestNotImplemented(t *testing.T) {
 	if testing.Short() {
 		t.Skip()
 		return
@@ -1397,7 +1397,7 @@ func TestMethodNotAllowed(t *testing.T) {
 		return
 	}
 
-	if got, want := resp.StatusCode, http.StatusMethodNotAllowed; got != want {
+	if got, want := resp.StatusCode, http.StatusNotImplemented; got != want {
 		t.Errorf("resp.StatusCode = %d; want %d", got, want)
 		t.Logf("%s", buf)
 	}

@@ -186,7 +186,7 @@ func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, re
 }
 
 func handleForwardResponseStreamError(ctx context.Context, wroteHeader bool, marshaler Marshaler, w http.ResponseWriter, req *http.Request, mux *ServeMux, err error) {
-	st := status.Convert(err)
+	st := mux.streamErrorHandler(ctx, err)
 	if !wroteHeader {
 		w.WriteHeader(HTTPStatusFromCode(st.Code()))
 	}
