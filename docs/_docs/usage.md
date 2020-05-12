@@ -5,7 +5,7 @@ category: documentation
 # How do I use this?
 
 ## Installation
-First you need to install ProtocolBuffers 3.0.0-beta-3 or later.
+First, you need to install ProtocolBuffers 3.0.0-beta-3 or later.
 
 ```sh
 mkdir tmp
@@ -118,11 +118,11 @@ Make sure that your `$GOPATH/bin` is in your `$PATH`.
    
    It will generate a reverse proxy `path/to/your_service.pb.gw.go`.
 
-   Note: After generating the code for each of the stubs, in order to build the code, you will want to run ```go get .``` from the directory containing the stubs.
+   Note: After generating the code for each of the stubs, to build the code, you will want to run ```go get .``` from the directory containing the stubs.
 
-6. Write an entrypoint
+6. Write an entry point
    
-   Now you need to write an entrypoint of the proxy server.
+   Now you need to write an entry point of the proxy server.
    ```go
    package main
 
@@ -189,12 +189,12 @@ example:
 ```
 
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to Golang import path.
-They are compatible to [the parameters with same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
+They are compatible with [the parameters with the same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
 
-In addition we also support the `request_context` parameter in order to use the `http.Request`'s Context (only for Go 1.7 and above).
-This parameter can be useful to pass request scoped context between the gateway and the gRPC service.
+Besides we also support the `request_context` parameter to use the `http.Request`'s Context (only for Go 1.7 and above).
+This parameter can be useful to pass the request-scoped context between the gateway and the gRPC service.
 
-`protoc-gen-grpc-gateway` also supports some more command line flags to control logging. You can give these flags together with parameters above. Run `protoc-gen-grpc-gateway --help` for more details about the flags.
+`protoc-gen-grpc-gateway` also supports some more command line flags to control logging. You can give these flags together with the parameters above. Run `protoc-gen-grpc-gateway --help` for more details about the flags.
 
 Similarly, `protoc-gen-swagger` supports command-line flags to control Swagger
 output (for example, `json_names_for_fields` to output JSON names for fields
@@ -209,7 +209,7 @@ for examples.
 
 * [How gRPC error codes map to HTTP status codes in the response](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/errors.go#L15)
 * HTTP request source IP is added as `X-Forwarded-For` gRPC request header
-* HTTP request host is added as `X-Forwarded-Host` gRPC request header
+* HTTP request-host is added as `X-Forwarded-Host` gRPC request header
 * HTTP `Authorization` header is added as `authorization` gRPC request header
 * Remaining Permanent HTTP header keys (as specified by the IANA [here](http://www.iana.org/assignments/message-headers/message-headers.xhtml) are prefixed with `grpcgateway-` and added with their values to gRPC request header
 * HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata (after removing prefix 'Grpc-Metadata-')
