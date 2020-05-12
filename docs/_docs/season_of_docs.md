@@ -12,13 +12,12 @@ We're excited to see what contributions this will bring to our documentation.
 ## Project details
 
   - Organization name: **gRPC-Gateway**
-  - Organization description: The gRPC-Gateway brings the power and safety
-    of designing APIs with Protobuf and gRPC to the JSON/HTTP API world. It has several
+  - Organization description: The gRPC-Gateway brings the power and safety of designing APIs with Protobuf and gRPC to the JSON/HTTP API world. It has several
     common use cases:
     - When a user wants to migrate an API to gRPC, but needs to expose a JSON/HTTP API
       to old users.
     - When a user wants to expose an existing gRPC API to a JSON/HTTP API audience.
-    - When quickly iterating on an JSON/HTTP API design.
+    - When quickly iterating on a JSON/HTTP API design.
   - Website: https://grpc-ecosystem.github.io/grpc-gateway
   - Repo: https://github.com/grpc-ecosystem/grpc-gateway
   - Project administrators and mentors:
@@ -74,7 +73,7 @@ The ones mentioned in the project details are the primary use cases we advertise
   - When a user wants to expose an existing gRPC API to a JSON/HTTP API audience.
   - When quickly iterating on an JSON/HTTP API design.
 
-It could be a single or several blog posts on our docs site, or another site, like medium.
+It could be a single or several blog posts on our docs site, or another site, like Medium.
 
 ### Improve the "customize your gateway" section of the docs
 
@@ -86,7 +85,7 @@ a bit better. Maybe it could be rewritten as a FAQ that details solutions to com
 Material:
   - [The customize your gateway page](https://grpc-ecosystem.github.io/grpc-gateway/docs/customizingyourgateway.html)
 
-### Improve the contributors guide
+### Improve the contributor's guide
 
 This is currently split between
 [CONTRIBUTING.md]
@@ -107,8 +106,8 @@ This should include:
   - A list of all the breaking changes and their consequences for the user.
   - For each breaking change, a guide to how their systems may need to be changed.
 
-Currently the scope of the v2 release is not entirely known, as it is still in progress, but we will
-endavour not to make too many breaking changes as that will discourage users from upgrading.
+Currently, the scope of the v2 release is not entirely known, as it is still in progress, but we will
+endeavour not to make too many breaking changes as that will discourage users from upgrading.
 
 Material:
   - [v2 Tracking issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/1223)
