@@ -1,0 +1,12 @@
+{
+    "extends": [
+        "config:base"
+    ],
+    "baseBranches": [
+        "master",
+        "v2"
+    ],
+    "postUpdateOptions": [
+        "gomodTidy"
+    ]
+}
