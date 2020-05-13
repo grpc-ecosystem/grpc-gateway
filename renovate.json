@@ -5,5 +5,8 @@
     "baseBranches": [
         "master",
         "v2"
+    ],
+    "postUpdateOptions": [
+        "gomodTidy"
     ]
 }
