@@ -182,7 +182,7 @@ $(HELLOWORLD_SVCSRCS): $(GO_PLUGIN) $(HELLOWORLD)
 
 $(HELLOWORLD_GWSRCS):
 $(HELLOWORLD_GWSRCS): $(GATEWAY_PLUGIN) $(HELLOWORLD)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,$(PKGMAP)$(ADDITIONAL_GW_FLAGS):. $(HELLOWORLD)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative,$(PKGMAP)$(ADDITIONAL_GW_FLAGS):. $(HELLOWORLD)
 
 
 $(ECHO_EXAMPLE_SRCS): $(ECHO_EXAMPLE_SPEC)

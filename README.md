@@ -85,15 +85,16 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
    `your_service.proto`:
    ```protobuf
-   syntax = "proto3";
-   package example;
-   message StringMessage {
-     string value = 1;
-   }
+    syntax = "proto3";
+    package your.service.v1;
+    option go_package = "github.com/yourorg/yourprotos/gen/go/your/service/v1";
+    message StringMessage {
+      string value = 1;
+    }
 
-   service YourService {
-     rpc Echo(StringMessage) returns (StringMessage) {}
-   }
+    service YourService {
+      rpc Echo(StringMessage) returns (StringMessage) {}
+    }
    ```
 
 2. Add a [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46)
@@ -102,7 +103,8 @@ annotation to your .proto file
    `your_service.proto`:
    ```diff
     syntax = "proto3";
-    package example;
+    package your.service.v1;
+    option go_package = "github.com/yourorg/yourprotos/gen/go/your/service/v1";
    +
    +import "google/api/annotations.proto";
    +
