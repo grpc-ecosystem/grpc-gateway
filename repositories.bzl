@@ -40,8 +40,8 @@ def go_repositories():
     go_repository(
         name = "com_github_golang_protobuf",
         importpath = "github.com/golang/protobuf",
-        sum = "h1:ZFgWrT+bLgsYPirOnRfKLYJLvssAegOj/hgyMFdJZe0=",
-        version = "v1.4.1",
+        sum = "h1:+Z5KGCizgyZCbGh1KZqA0fcLLkwbsjIzS4aV2v7wJX0=",
+        version = "v1.4.2",
     )
 
     go_repository(
@@ -78,8 +78,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:fiNLklpBwWK1mth30Hlwk+fcdBmIALlgF5iy77O37Ig=",
-        version = "v0.0.0-20200513103714-09dca8ec2884",
+        sum = "h1:RwW6+LxyOQJ7oeoZ76GIJlwt/O0J5cN2fk+q/jK27kQ=",
+        version = "v0.0.0-20200514193133-8feb7f20f2a2",
     )
     go_repository(
         name = "org_golang_google_grpc",
@@ -181,8 +181,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_protobuf",
         importpath = "google.golang.org/protobuf",
-        sum = "h1:cJv5/xdbk1NnMPR1VP9+HU6gupuG9MLBoH1r6RHZ2MY=",
-        version = "v1.22.0",
+        sum = "h1:4MY060fB1DLGMB/7MBTLnwQUY6+F09GEiz6SsrNqyzM=",
+        version = "v1.23.0",
     )
     go_repository(
         name = "org_golang_x_xerrors",

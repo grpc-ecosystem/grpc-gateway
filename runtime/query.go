@@ -10,7 +10,6 @@ import (
 	"strings"
 	"time"
 
-	legacyproto "github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/utilities"
@@ -325,8 +324,7 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		for _, v := range strings.Split(value, ",") {
 			fm.Paths = append(fm.Paths, v)
 		}
-		// Necessary until FieldMask is regenerated with v2
-		msg = legacyproto.MessageV2(fm)
+		msg = fm
 	default:
 		return protoreflect.Value{}, fmt.Errorf("unsupported message type: %q", string(msgDescriptor.FullName()))
 	}
