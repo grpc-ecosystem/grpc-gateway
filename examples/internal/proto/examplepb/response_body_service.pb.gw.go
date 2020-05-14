@@ -235,7 +235,7 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ResponseBodyService/GetResponseBody")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBody")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -255,7 +255,7 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ResponseBodyService/ListResponseBodies")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/ListResponseBodies")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -275,7 +275,7 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ResponseBodyService/ListResponseStrings")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/ListResponseStrings")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -343,7 +343,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ResponseBodyService/GetResponseBody")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBody")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -363,7 +363,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ResponseBodyService/ListResponseBodies")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/ListResponseBodies")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -383,7 +383,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ResponseBodyService/ListResponseStrings")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/ListResponseStrings")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -403,7 +403,7 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ResponseBodyService/GetResponseBodyStream")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBodyStream")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
