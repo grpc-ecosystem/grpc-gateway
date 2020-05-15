@@ -15,7 +15,7 @@ func TestLoadGrpcAPIServiceFromYAMLEmpty(t *testing.T) {
 		t.Fatal("No service returned")
 	}
 
-	if service.HTTP != nil {
+	if service.Http != nil {
 		t.Fatal("HTTP not empty")
 	}
 }
@@ -47,15 +47,15 @@ http:
 		t.Fatal(err)
 	}
 
-	if service.HTTP == nil {
+	if service.Http == nil {
 		t.Fatal("HTTP is empty")
 	}
 
-	if len(service.HTTP.GetRules()) != 1 {
-		t.Fatalf("Have %v rules instead of one. Got: %v", len(service.HTTP.GetRules()), service.HTTP.GetRules())
+	if len(service.Http.GetRules()) != 1 {
+		t.Fatalf("Have %v rules instead of one. Got: %v", len(service.Http.GetRules()), service.Http.GetRules())
 	}
 
-	rule := service.HTTP.GetRules()[0]
+	rule := service.Http.GetRules()[0]
 	if rule.GetSelector() != "grpctest.YourService.Echo" {
 		t.Errorf("Rule has unexpected selector '%v'", rule.GetSelector())
 	}
@@ -117,15 +117,15 @@ http:
 		t.Fatal("No service returned")
 	}
 
-	if service.HTTP == nil {
+	if service.Http == nil {
 		t.Fatal("HTTP is empty")
 	}
 
-	if len(service.HTTP.GetRules()) != 2 {
-		t.Fatalf("%v service(s) returned when two were expected. Got: %v", len(service.HTTP.GetRules()), service.HTTP)
+	if len(service.Http.GetRules()) != 2 {
+		t.Fatalf("%v service(s) returned when two were expected. Got: %v", len(service.Http.GetRules()), service.Http)
 	}
 
-	first := service.HTTP.GetRules()[0]
+	first := service.Http.GetRules()[0]
 	if first.GetSelector() != "first.selector" {
 		t.Errorf("first.selector has unexpected selector '%v'", first.GetSelector())
 	}
@@ -151,7 +151,7 @@ http:
 		t.Errorf("first.selector additional binding 3 has unexpected patch '%v'", first.GetAdditionalBindings()[0].GetPost())
 	}
 
-	second := service.HTTP.GetRules()[1]
+	second := service.Http.GetRules()[1]
 	if second.GetSelector() != "some.other.service" {
 		t.Errorf("some.other.service has unexpected selector '%v'", second.GetSelector())
 	}

@@ -6,7 +6,6 @@ go_library(
     name = "go_default_library",
     srcs = [
         "grpc_api_configuration.go",
-        "grpc_api_service.go",
         "registry.go",
         "services.go",
         "types.go",
@@ -14,6 +13,7 @@ go_library(
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor",
     deps = [
         "//internal/casing:go_default_library",
+        "//internal/descriptor/apiconfig:go_default_library",
         "//internal/httprule:go_default_library",
         "@com_github_ghodss_yaml//:go_default_library",
         "@com_github_golang_glog//:go_default_library",

@@ -25,7 +25,6 @@ GATEWAY_PLUGIN_SRC= ./internal/utilities/doc.go \
 			./internal/descriptor/services.go \
 			./internal/descriptor/types.go \
 			./internal/descriptor/grpc_api_configuration.go \
-			./internal/descriptor/grpc_api_service.go \
 			./internal/generator \
 			./internal/generator/generator.go \
 			protoc-gen-grpc-gateway \
@@ -92,6 +91,9 @@ RUNTIME_TEST_PROTO=runtime/internal/examplepb/example.proto \
 	runtime/internal/examplepb/proto3.proto \
 	runtime/internal/examplepb/non_standard_names.proto
 RUNTIME_TEST_SRCS=$(RUNTIME_TEST_PROTO:.proto=.pb.go)
+
+APICONFIG_PROTO=internal/descriptor/apiconfig/apiconfig.proto
+APICONFIG_SRCS=$(APICONFIG_PROTO:.proto=.pb.go)
 
 EXAMPLE_CLIENT_DIR=examples/internal/clients
 ECHO_EXAMPLE_SPEC=examples/internal/proto/examplepb/echo_service.swagger.json
@@ -165,6 +167,9 @@ $(EXAMPLE_DEPSRCS): $(GO_PLUGIN) $(EXAMPLE_DEPS)
 $(RUNTIME_TEST_SRCS): $(GO_PLUGIN) $(RUNTIME_TEST_PROTO)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc,paths=source_relative:. $(RUNTIME_TEST_PROTO)
 
+$(APICONFIG_SRCS): $(GO_PLUGIN) $(APICONFIG_PROTO)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),paths=source_relative:. $(APICONFIG_PROTO)
+
 $(EXAMPLE_GWSRCS): ADDITIONAL_GW_FLAGS:=$(ADDITIONAL_GW_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_GWSRCS): ADDITIONAL_SA_FLAGS:=,standalone=true,grpc_api_configuration=examples/internal/proto/examplepb/standalone_echo_service.yaml
 $(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
@@ -207,7 +212,7 @@ $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh
 
 examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS) $(HELLOWORLD_SVCSRCS) $(HELLOWORLD_GWSRCS)
-testproto: $(RUNTIME_TEST_SRCS)
+testproto: $(RUNTIME_TEST_SRCS) $(APICONFIG_SRCS)
 test: examples testproto
 	go test -short -race ./...
 	go test -race ./examples/internal/integration -args -network=unix -endpoint=test.sock
