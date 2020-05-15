@@ -77,6 +77,50 @@ your HTTP endpoints, the response will be pretty-printed.
 Note that this will conflict with any methods having input messages with fields named `pretty`;
 also, this example code does not remove the query parameter `pretty` from further processing.
 
+## Customize unmarshaling per Content-Type
+
+Having different unmarshaling options per Content-Type is possible by wrapping the decoder and
+and passing that to `runtime.WithMarshalerOption`, but not entirely obvious:
+
+```go
+type m struct {
+	*runtime.JSONPb
+	unmarshaler *jsonpb.Unmarshaler
+}
+
+type decoderWrapper struct {
+	*json.Decoder
+	*jsonpb.Unmarshaler
+}
+
+func (n *m) NewDecoder(r io.Reader) runtime.Decoder {
+	d := json.NewDecoder(r)
+	return &decoderWrapper{Decoder: d, Unmarshaler: n.unmarshaler}
+}
+
+func (d *decoderWrapper) Decode(v interface{}) error {
+	p, ok := v.(proto.Message)
+	if !ok { // if it's not decoding into a proto.Message, there's no notion of unknown fields
+		return d.Decoder.Decode(v)
+	}
+	return d.UnmarshalNext(d.Decoder, p) // uses m's jsonpb.Unmarshaler configuration
+}
+```
+
+This scaffolding allows us to pass a custom unmarshal options. In this example, we configure the
+unmarshaler to disallow unknown fields. For demonstration purposes, we'll also change some of the
+default marshaler options:
+
+```go
+mux := runtime.NewServeMux(
+  runtime.WithMarshalerOption("application/json+strict",
+      &m{
+        JSONPb: &runtime.JSONPb{EmitDefaults: true},
+        unmarshaler: &jsonpb.Unmarshaler{AllowUnknownFields: false}, // explicit "false", &jsonpb.Unmarshaler{} would have the same effect
+      }),
+)
+```
+
 ## Mapping from HTTP request headers to gRPC client metadata
 You might not like [the default mapping rule](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#DefaultHeaderMatcher) and might want to pass through all the HTTP headers, for example.
 
@@ -149,7 +193,7 @@ for more info on sending / receiving gRPC metadata.
   ```
 
 ## Mutate response messages or set response headers
-You might want to return a subset of response fields as HTTP response headers; 
+You might want to return a subset of response fields as HTTP response headers;
 You might want to simply set an application-specific token in a header.
 Or you might want to mutate the response messages to be returned.
 
@@ -167,7 +211,7 @@ Or you might want to mutate the response messages to be returned.
    }
    ```
 2. Register the filter with [`WithForwardResponseOption`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithForwardResponseOption)
-   
+
    e.g.
    ```go
    mux := runtime.NewServeMux(runtime.WithForwardResponseOption(myFilter))
@@ -329,7 +373,7 @@ You might want to keep the behavior of the current marshaler but change only a m
    e.g. add `forwarder_overwrite.go` into the go package of the generated code,
    ```go
    package generated
-   
+
    import (
    	"net/http"
 
@@ -345,7 +389,7 @@ You might want to keep the behavior of the current marshaler but change only a m
    	}
    	runtime.ForwardResponseMessage(ctx, mux, marshaler, w, req, resp, opts...)
    }
-   
+
    func init() {
    	forward_MyService_Checkout_0 = forwardCheckoutResp
    }
