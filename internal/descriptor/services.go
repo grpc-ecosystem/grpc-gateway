@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	"github.com/golang/protobuf/proto"
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	options "google.golang.org/genproto/googleapis/api/annotations"
+	"google.golang.org/protobuf/proto"
+	descriptor "google.golang.org/protobuf/types/descriptorpb"
 )
 
 // loadServices registers services and their methods from "targetFile" to "r".
@@ -191,10 +191,7 @@ func extractAPIOptions(meth *descriptor.MethodDescriptorProto) (*options.HttpRul
 	if !proto.HasExtension(meth.Options, options.E_Http) {
 		return nil, nil
 	}
-	ext, err := proto.GetExtension(meth.Options, options.E_Http)
-	if err != nil {
-		return nil, err
-	}
+	ext := proto.GetExtension(meth.Options, options.E_Http)
 	opts, ok := ext.(*options.HttpRule)
 	if !ok {
 		return nil, fmt.Errorf("extension is %T; want an HttpRule", ext)

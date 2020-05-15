@@ -1,41 +1,41 @@
 package descriptor
 
 import (
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"strings"
 
 	"github.com/ghodss/yaml"
-	"github.com/golang/protobuf/jsonpb"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
-func loadGrpcAPIServiceFromYAML(yamlFileContents []byte, yamlSourceLogName string) (*GrpcAPIService, error) {
+func loadGrpcAPIServiceFromYAML(yamlFileContents []byte, yamlSourceLogName string) (*apiconfig.GrpcAPIService, error) {
 	jsonContents, err := yaml.YAMLToJSON(yamlFileContents)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to convert gRPC API Configuration from YAML in '%v' to JSON: %v", yamlSourceLogName, err)
 	}
 
-	// As our GrpcAPIService is incomplete accept unkown fields.
-	unmarshaler := jsonpb.Unmarshaler{
-		AllowUnknownFields: true,
+	// As our GrpcAPIService is incomplete, accept unknown fields.
+	unmarshaler := protojson.UnmarshalOptions{
+		DiscardUnknown: true,
 	}
 
-	serviceConfiguration := GrpcAPIService{}
-	if err := unmarshaler.Unmarshal(bytes.NewReader(jsonContents), &serviceConfiguration); err != nil {
+	serviceConfiguration := apiconfig.GrpcAPIService{}
+	if err := unmarshaler.Unmarshal(jsonContents, &serviceConfiguration); err != nil {
 		return nil, fmt.Errorf("Failed to parse gRPC API Configuration from YAML in '%v': %v", yamlSourceLogName, err)
 	}
 
 	return &serviceConfiguration, nil
 }
 
-func registerHTTPRulesFromGrpcAPIService(registry *Registry, service *GrpcAPIService, sourceLogName string) error {
-	if service.HTTP == nil {
+func registerHTTPRulesFromGrpcAPIService(registry *Registry, service *apiconfig.GrpcAPIService, sourceLogName string) error {
+	if service.Http == nil {
 		// Nothing to do
 		return nil
 	}
 
-	for _, rule := range service.HTTP.GetRules() {
+	for _, rule := range service.Http.GetRules() {
 		selector := "." + strings.Trim(rule.GetSelector(), " ")
 		if strings.ContainsAny(selector, "*, ") {
 			return fmt.Errorf("Selector '%v' in %v must specify a single service method without wildcards", rule.GetSelector(), sourceLogName)

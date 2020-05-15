@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
+	descriptor "google.golang.org/protobuf/types/descriptorpb"
 )
 
 // IsWellKnownType returns true if the provided fully qualified type name is considered 'well-known'.
