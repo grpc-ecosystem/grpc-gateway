@@ -78,8 +78,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:Bz1qTn2YRWV+9OKJtxHJiQKCiXIdf+kwuKXdt9cBxyU=",
-        version = "v0.0.0-20200507105951-43844f6eee31",
+        sum = "h1:fiNLklpBwWK1mth30Hlwk+fcdBmIALlgF5iy77O37Ig=",
+        version = "v0.0.0-20200513103714-09dca8ec2884",
     )
     go_repository(
         name = "org_golang_google_grpc",
@@ -151,8 +151,8 @@ def go_repositories():
     go_repository(
         name = "com_github_antihax_optional",
         importpath = "github.com/antihax/optional",
-        sum = "h1:uZuxRZCz65cG1o6K/xUqImNcYKtmk9ylqaH0itMSvzA=",
-        version = "v0.0.0-20180407024304-ca021399b1a6",
+        sum = "h1:xK2lYat7ZLaVVcIuj82J8kIro4V6kDe0AUDFboUCwcg=",
+        version = "v1.0.0",
     )
     go_repository(
         name = "com_github_census_instrumentation_opencensus_proto",
