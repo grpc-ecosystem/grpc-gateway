@@ -80,7 +80,7 @@ also, this example code does not remove the query parameter `pretty` from furthe
 ## Customize unmarshaling per Content-Type
 
 Having different unmarshaling options per Content-Type is possible by wrapping the decoder and
-and passing that to `runtime.WithMarshalerOption`, but not entirely obvious:
+and passing that to `runtime.WithMarshalerOption`:
 
 ```go
 type m struct {
