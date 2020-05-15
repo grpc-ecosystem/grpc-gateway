@@ -31,5 +31,9 @@
             ],
             "groupName": "golang/protobuf"
         }
+    ],
+    "ignoreDeps": [
+        "jekyll-redirect-from",
+        "jekyll-sitemap"
     ]
 }
