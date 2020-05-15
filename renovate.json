@@ -8,5 +8,34 @@
     ],
     "postUpdateOptions": [
         "gomodTidy"
+    ],
+    "packageRules": [
+        {
+            "baseBranchList": [
+                "master"
+            ],
+            "packageNames": [
+                "github.com/golang/protobuf",
+                "google.golang.org/genproto",
+                "io_bazel_rules_go"
+            ],
+            "enabled": false
+        },
+        {
+            "baseBranchList": [
+                "v2"
+            ],
+            "packageNames": [
+                "github.com/golang/protobuf",
+                "google.golang.org/protobuf"
+            ],
+            "groupName": "golang/protobuf"
+        },
+        {
+            "packagePatterns": [
+                "jekyll-.*"
+            ],
+            "enabled": false
+        }
     ]
 }
