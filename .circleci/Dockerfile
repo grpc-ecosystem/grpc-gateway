@@ -17,7 +17,7 @@ RUN echo -e '#!/bin/bash\njava -jar /usr/local/bin/swagger-codegen-cli.jar "$@"'
 	chmod +x /usr/local/bin/swagger-codegen
 
 # Install protoc
-ENV PROTOC_VERSION=3.10.1
+ENV PROTOC_VERSION=3.12.0
 RUN wget https://github.com/google/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip \
     -O /protoc-${PROTOC_VERSION}-linux-x86_64.zip && \
     unzip /protoc-${PROTOC_VERSION}-linux-x86_64.zip -d /usr/local/ && \
