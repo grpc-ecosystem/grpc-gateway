@@ -1,14 +1,13 @@
 package descriptor
 
 import (
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"strings"
 
 	"github.com/ghodss/yaml"
-	"github.com/golang/protobuf/jsonpb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func loadGrpcAPIServiceFromYAML(yamlFileContents []byte, yamlSourceLogName string) (*apiconfig.GrpcAPIService, error) {
@@ -17,13 +16,13 @@ func loadGrpcAPIServiceFromYAML(yamlFileContents []byte, yamlSourceLogName strin
 		return nil, fmt.Errorf("Failed to convert gRPC API Configuration from YAML in '%v' to JSON: %v", yamlSourceLogName, err)
 	}
 
-	// As our GrpcAPIService is incomplete accept unkown fields.
-	unmarshaler := jsonpb.Unmarshaler{
-		AllowUnknownFields: true,
+	// As our GrpcAPIService is incomplete, accept unknown fields.
+	unmarshaler := protojson.UnmarshalOptions{
+		DiscardUnknown: true,
 	}
 
 	serviceConfiguration := apiconfig.GrpcAPIService{}
-	if err := unmarshaler.Unmarshal(bytes.NewReader(jsonContents), &serviceConfiguration); err != nil {
+	if err := unmarshaler.Unmarshal(jsonContents, &serviceConfiguration); err != nil {
 		return nil, fmt.Errorf("Failed to parse gRPC API Configuration from YAML in '%v': %v", yamlSourceLogName, err)
 	}
 

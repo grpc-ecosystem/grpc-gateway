@@ -69,6 +69,7 @@ go_proto_library(
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",  # keep
         "@go_googleapis//google/api:annotations_go_proto",
         "@go_googleapis//google/api:httpbody_go_proto",
+        "@org_golang_google_protobuf//proto:go_default_library",  # keep
     ],
 )
 
@@ -80,11 +81,11 @@ go_library(
     deps = [
         "//internal/utilities:go_default_library",
         "//runtime:go_default_library",
-        "@com_github_golang_protobuf//proto:go_default_library",
         "@org_golang_google_grpc//:go_default_library",
         "@org_golang_google_grpc//codes:go_default_library",
         "@org_golang_google_grpc//grpclog:go_default_library",
         "@org_golang_google_grpc//status:go_default_library",
+        "@org_golang_google_protobuf//proto:go_default_library",
     ],
 )
 

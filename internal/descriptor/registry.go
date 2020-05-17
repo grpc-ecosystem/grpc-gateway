@@ -7,12 +7,12 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"google.golang.org/genproto/googleapis/api/annotations"
 )
 
-// Registry is a registry of information extracted from plugin.CodeGeneratorRequest.
+// Registry is a registry of information extracted from pluginpb.CodeGeneratorRequest.
 type Registry struct {
 	// msgs is a mapping from fully-qualified message name to descriptor
 	msgs map[string]*Message
@@ -112,7 +112,7 @@ func NewRegistry() *Registry {
 }
 
 // Load loads definitions of services, methods, messages, enumerations and fields from "req".
-func (r *Registry) Load(req *plugin.CodeGeneratorRequest) error {
+func (r *Registry) Load(req *pluginpb.CodeGeneratorRequest) error {
 	for _, file := range req.GetProtoFile() {
 		r.loadFile(file)
 	}
@@ -142,7 +142,7 @@ func (r *Registry) Load(req *plugin.CodeGeneratorRequest) error {
 // loadFile loads messages, enumerations and fields from "file".
 // It does not loads services and methods in "file".  You need to call
 // loadServices after loadFiles is called for all files to load services and methods.
-func (r *Registry) loadFile(file *descriptor.FileDescriptorProto) {
+func (r *Registry) loadFile(file *descriptorpb.FileDescriptorProto) {
 	pkg := GoPackage{
 		Path: r.goPackagePath(file),
 		Name: r.defaultGoPackageName(file),
@@ -170,7 +170,7 @@ func (r *Registry) loadFile(file *descriptor.FileDescriptorProto) {
 	r.registerEnum(f, nil, file.GetEnumType())
 }
 
-func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descriptor.DescriptorProto) {
+func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descriptorpb.DescriptorProto) {
 	for i, md := range msgs {
 		m := &Message{
 			File:              file,
@@ -198,7 +198,7 @@ func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descripto
 	}
 }
 
-func (r *Registry) registerEnum(file *File, outerPath []string, enums []*descriptor.EnumDescriptorProto) {
+func (r *Registry) registerEnum(file *File, outerPath []string, enums []*descriptorpb.EnumDescriptorProto) {
 	for i, ed := range enums {
 		e := &Enum{
 			File:                file,
@@ -347,7 +347,7 @@ func (r *Registry) ReserveGoPackageAlias(alias, pkgpath string) error {
 // goPackagePath returns the go package path which go files generated from "f" should have.
 // It respects the mapping registered by AddPkgMap if exists. Or use go_package as import path
 // if it includes a slash,  Otherwide, it generates a path from the file name of "f".
-func (r *Registry) goPackagePath(f *descriptor.FileDescriptorProto) string {
+func (r *Registry) goPackagePath(f *descriptorpb.FileDescriptorProto) string {
 	name := f.GetName()
 	if pkg, ok := r.pkgMap[name]; ok {
 		return path.Join(r.prefix, pkg)
@@ -548,7 +548,7 @@ func sanitizePackageName(pkgName string) string {
 
 // defaultGoPackageName returns the default go package name to be used for go files generated from "f".
 // You might need to use an unique alias for the package when you import it.  Use ReserveGoPackageAlias to get a unique alias.
-func (r *Registry) defaultGoPackageName(f *descriptor.FileDescriptorProto) string {
+func (r *Registry) defaultGoPackageName(f *descriptorpb.FileDescriptorProto) string {
 	name := r.packageIdentityName(f)
 	return sanitizePackageName(name)
 }
@@ -556,7 +556,7 @@ func (r *Registry) defaultGoPackageName(f *descriptor.FileDescriptorProto) strin
 // packageIdentityName returns the identity of packages.
 // protoc-gen-grpc-gateway rejects CodeGenerationRequests which contains more than one packages
 // as protoc-gen-go does.
-func (r *Registry) packageIdentityName(f *descriptor.FileDescriptorProto) string {
+func (r *Registry) packageIdentityName(f *descriptorpb.FileDescriptorProto) string {
 	if f.Options != nil && f.Options.GoPackage != nil {
 		gopkg := f.Options.GetGoPackage()
 		idx := strings.LastIndex(gopkg, "/")

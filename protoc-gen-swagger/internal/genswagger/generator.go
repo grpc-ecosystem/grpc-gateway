@@ -10,15 +10,15 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	pbdescriptor "github.com/golang/protobuf/descriptor"
-	"github.com/golang/protobuf/proto"
-	protocdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/golang/protobuf/ptypes/any"
+	legacydescriptor "github.com/golang/protobuf/descriptor"
+	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
+	anypb "github.com/golang/protobuf/ptypes/any"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-swagger/options"
-	spb "google.golang.org/genproto/googleapis/rpc/status"
+	statuspb "google.golang.org/genproto/googleapis/rpc/status"
+	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -112,7 +112,7 @@ func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error
 	// and thus render into what we want -- the JSON of swaggerCore with the
 	// extensions appended.
 	fields := []reflect.StructField{
-		reflect.StructField{ // embedded
+		{ // embedded
 			Name:      "Embedded",
 			Type:      reflect.TypeOf(so),
 			Anonymous: true,
@@ -135,8 +135,8 @@ func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error
 	return json.Marshal(s.Interface())
 }
 
-// encodeSwagger converts swagger file obj to plugin.CodeGeneratorResponse_File
-func encodeSwagger(file *wrapper) (*plugin.CodeGeneratorResponse_File, error) {
+// encodeSwagger converts swagger file obj to pluginpb.CodeGeneratorResponse_File
+func encodeSwagger(file *wrapper) (*pluginpb.CodeGeneratorResponse_File, error) {
 	var formatted bytes.Buffer
 	enc := json.NewEncoder(&formatted)
 	enc.SetIndent("", "  ")
@@ -147,14 +147,14 @@ func encodeSwagger(file *wrapper) (*plugin.CodeGeneratorResponse_File, error) {
 	ext := filepath.Ext(name)
 	base := strings.TrimSuffix(name, ext)
 	output := fmt.Sprintf("%s.swagger.json", base)
-	return &plugin.CodeGeneratorResponse_File{
+	return &pluginpb.CodeGeneratorResponse_File{
 		Name:    proto.String(output),
 		Content: proto.String(formatted.String()),
 	}, nil
 }
 
-func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGeneratorResponse_File, error) {
-	var files []*plugin.CodeGeneratorResponse_File
+func (g *generator) Generate(targets []*descriptor.File) ([]*pluginpb.CodeGeneratorResponse_File, error) {
+	var files []*pluginpb.CodeGeneratorResponse_File
 	if g.reg.IsAllowMerge() {
 		var mergedTarget *descriptor.File
 		// try to find proto leader
@@ -221,18 +221,17 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 // to registry (used for error-related API responses)
 func AddErrorDefs(reg *descriptor.Registry) error {
 	// load internal protos
-	any := fileDescriptorProtoForMessage(&any.Any{})
-	status := fileDescriptorProtoForMessage(&spb.Status{})
-	return reg.Load(&plugin.CodeGeneratorRequest{
-		ProtoFile: []*protocdescriptor.FileDescriptorProto{
+	any, _ := legacydescriptor.ForMessage(&anypb.Any{})
+	any.SourceCodeInfo = new(descriptorpb.SourceCodeInfo)
+	status, _ := legacydescriptor.ForMessage(&statuspb.Status{})
+	status.SourceCodeInfo = new(descriptorpb.SourceCodeInfo)
+	// TODO(johanbrandhorst): Use new conversion later when possible
+	// any := protodesc.ToFileDescriptorProto((&anypb.Any{}).ProtoReflect().Descriptor().ParentFile())
+	// status := protodesc.ToFileDescriptorProto((&statuspb.Status{}).ProtoReflect().Descriptor().ParentFile())
+	return reg.Load(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{
 			any,
 			status,
 		},
 	})
-}
-
-func fileDescriptorProtoForMessage(msg pbdescriptor.Message) *protocdescriptor.FileDescriptorProto {
-	fdp, _ := pbdescriptor.ForMessage(msg)
-	fdp.SourceCodeInfo = &protocdescriptor.SourceCodeInfo{}
-	return fdp
 }

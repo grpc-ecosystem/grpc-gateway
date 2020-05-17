@@ -3,14 +3,14 @@ package descriptor
 import (
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"google.golang.org/protobuf/encoding/prototext"
 )
 
-func loadFile(t *testing.T, reg *Registry, src string) *descriptor.FileDescriptorProto {
-	var file descriptor.FileDescriptorProto
-	if err := proto.UnmarshalText(src, &file); err != nil {
+func loadFile(t *testing.T, reg *Registry, src string) *descriptorpb.FileDescriptorProto {
+	var file descriptorpb.FileDescriptorProto
+	if err := prototext.Unmarshal([]byte(src), &file); err != nil {
 		t.Fatalf("proto.UnmarshalText(%s, &file) failed with %v; want success", src, err)
 	}
 	reg.loadFile(&file)
@@ -18,8 +18,8 @@ func loadFile(t *testing.T, reg *Registry, src string) *descriptor.FileDescripto
 }
 
 func load(t *testing.T, reg *Registry, src string) error {
-	var req plugin.CodeGeneratorRequest
-	if err := proto.UnmarshalText(src, &req); err != nil {
+	var req pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(src), &req); err != nil {
 		t.Fatalf("proto.UnmarshalText(%s, &file) failed with %v; want success", src, err)
 	}
 	return reg.Load(&req)

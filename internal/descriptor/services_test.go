@@ -4,9 +4,10 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
+	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/proto"
 )
 
 func compilePath(t *testing.T, path string) httprule.Template {
@@ -17,7 +18,7 @@ func compilePath(t *testing.T, path string) httprule.Template {
 	return parsed.Compile()
 }
 
-func testExtractServices(t *testing.T, input []*descriptor.FileDescriptorProto, target string, wantSvcs []*Service) {
+func testExtractServices(t *testing.T, input []*descriptorpb.FileDescriptorProto, target string, wantSvcs []*Service) {
 	reg := NewRegistry()
 	for _, file := range input {
 		reg.loadFile(file)
@@ -178,8 +179,8 @@ func TestExtractServicesSimple(t *testing.T) {
 			>
 		>
 	`
-	var fd descriptor.FileDescriptorProto
-	if err := proto.UnmarshalText(src, &fd); err != nil {
+	var fd descriptorpb.FileDescriptorProto
+	if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 		t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 	}
 	msg := &Message{
@@ -219,7 +220,7 @@ func TestExtractServicesSimple(t *testing.T) {
 	}
 
 	crossLinkFixture(file)
-	testExtractServices(t, []*descriptor.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
+	testExtractServices(t, []*descriptorpb.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
 }
 
 func TestExtractServicesWithoutAnnotation(t *testing.T) {
@@ -244,8 +245,8 @@ func TestExtractServicesWithoutAnnotation(t *testing.T) {
 			>
 		>
 	`
-	var fd descriptor.FileDescriptorProto
-	if err := proto.UnmarshalText(src, &fd); err != nil {
+	var fd descriptorpb.FileDescriptorProto
+	if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 		t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 	}
 	msg := &Message{
@@ -278,7 +279,7 @@ func TestExtractServicesWithoutAnnotation(t *testing.T) {
 	}
 
 	crossLinkFixture(file)
-	testExtractServices(t, []*descriptor.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
+	testExtractServices(t, []*descriptorpb.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
 }
 
 func TestExtractServicesCrossPackage(t *testing.T) {
@@ -323,10 +324,10 @@ func TestExtractServicesCrossPackage(t *testing.T) {
 			>
 		`,
 	}
-	var fds []*descriptor.FileDescriptorProto
+	var fds []*descriptorpb.FileDescriptorProto
 	for _, src := range srcs {
-		var fd descriptor.FileDescriptorProto
-		if err := proto.UnmarshalText(src, &fd); err != nil {
+		var fd descriptorpb.FileDescriptorProto
+		if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 			t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 		}
 		fds = append(fds, &fd)
@@ -429,8 +430,8 @@ func TestExtractServicesWithBodyPath(t *testing.T) {
 			>
 		>
 	`
-	var fd descriptor.FileDescriptorProto
-	if err := proto.UnmarshalText(src, &fd); err != nil {
+	var fd descriptorpb.FileDescriptorProto
+	if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 		t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 	}
 	msg := &Message{
@@ -477,7 +478,7 @@ func TestExtractServicesWithBodyPath(t *testing.T) {
 	}
 
 	crossLinkFixture(file)
-	testExtractServices(t, []*descriptor.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
+	testExtractServices(t, []*descriptorpb.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
 }
 
 func TestExtractServicesWithPathParam(t *testing.T) {
@@ -507,8 +508,8 @@ func TestExtractServicesWithPathParam(t *testing.T) {
 			>
 		>
 	`
-	var fd descriptor.FileDescriptorProto
-	if err := proto.UnmarshalText(src, &fd); err != nil {
+	var fd descriptorpb.FileDescriptorProto
+	if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 		t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 	}
 	msg := &Message{
@@ -558,7 +559,7 @@ func TestExtractServicesWithPathParam(t *testing.T) {
 	}
 
 	crossLinkFixture(file)
-	testExtractServices(t, []*descriptor.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
+	testExtractServices(t, []*descriptorpb.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
 }
 
 func TestExtractServicesWithAdditionalBinding(t *testing.T) {
@@ -596,8 +597,8 @@ func TestExtractServicesWithAdditionalBinding(t *testing.T) {
 			>
 		>
 	`
-	var fd descriptor.FileDescriptorProto
-	if err := proto.UnmarshalText(src, &fd); err != nil {
+	var fd descriptorpb.FileDescriptorProto
+	if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 		t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 	}
 	msg := &Message{
@@ -668,7 +669,7 @@ func TestExtractServicesWithAdditionalBinding(t *testing.T) {
 	}
 
 	crossLinkFixture(file)
-	testExtractServices(t, []*descriptor.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
+	testExtractServices(t, []*descriptorpb.FileDescriptorProto{&fd}, "path/to/example.proto", file.Services)
 }
 
 func TestExtractServicesWithError(t *testing.T) {
@@ -967,10 +968,10 @@ func TestExtractServicesWithError(t *testing.T) {
 	} {
 		reg := NewRegistry()
 
-		var fds []*descriptor.FileDescriptorProto
+		var fds []*descriptorpb.FileDescriptorProto
 		for _, src := range spec.srcs {
-			var fd descriptor.FileDescriptorProto
-			if err := proto.UnmarshalText(src, &fd); err != nil {
+			var fd descriptorpb.FileDescriptorProto
+			if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 				t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 			}
 			reg.loadFile(&fd)
@@ -1149,8 +1150,8 @@ func TestResolveFieldPath(t *testing.T) {
 			wantErr: true,
 		},
 	} {
-		var file descriptor.FileDescriptorProto
-		if err := proto.UnmarshalText(spec.src, &file); err != nil {
+		var file descriptorpb.FileDescriptorProto
+		if err := prototext.Unmarshal([]byte(spec.src), &file); err != nil {
 			t.Fatalf("proto.Unmarshal(%s) failed with %v; want success", spec.src, err)
 		}
 		reg := NewRegistry()
@@ -1251,10 +1252,10 @@ func TestExtractServicesWithDeleteBody(t *testing.T) {
 		reg := NewRegistry()
 		reg.SetAllowDeleteBody(spec.allowDeleteBody)
 
-		var fds []*descriptor.FileDescriptorProto
+		var fds []*descriptorpb.FileDescriptorProto
 		for _, src := range spec.srcs {
-			var fd descriptor.FileDescriptorProto
-			if err := proto.UnmarshalText(src, &fd); err != nil {
+			var fd descriptorpb.FileDescriptorProto
+			if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 				t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 			}
 			reg.loadFile(&fd)

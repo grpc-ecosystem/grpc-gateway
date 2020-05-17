@@ -23,7 +23,6 @@ go_library(
         "//internal/casing:go_default_library",
         "//runtime:go_default_library",
         "@com_github_golang_glog//:go_default_library",
-        "@com_github_golang_protobuf//proto:go_default_library",
         "@com_github_rogpeppe_fastuuid//:go_default_library",
         "@go_googleapis//google/api:httpbody_go_proto",
         "@go_googleapis//google/rpc:errdetails_go_proto",

@@ -7,11 +7,11 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	"github.com/golang/protobuf/proto"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-swagger/internal/genswagger"
+	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -131,15 +131,15 @@ func main() {
 	emitFiles(out)
 }
 
-func emitFiles(out []*plugin.CodeGeneratorResponse_File) {
-	emitResp(&plugin.CodeGeneratorResponse{File: out})
+func emitFiles(out []*pluginpb.CodeGeneratorResponse_File) {
+	emitResp(&pluginpb.CodeGeneratorResponse{File: out})
 }
 
 func emitError(err error) {
-	emitResp(&plugin.CodeGeneratorResponse{Error: proto.String(err.Error())})
+	emitResp(&pluginpb.CodeGeneratorResponse{Error: proto.String(err.Error())})
 }
 
-func emitResp(resp *plugin.CodeGeneratorResponse) {
+func emitResp(resp *pluginpb.CodeGeneratorResponse) {
 	buf, err := proto.Marshal(resp)
 	if err != nil {
 		glog.Fatal(err)
