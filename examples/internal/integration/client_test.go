@@ -111,7 +111,7 @@ func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
 		want.EnumValueAnnotation.String(),
 	)
 	if err != nil {
-		t.Errorf("cl.Create(%#v) failed with %v; want success", want, err)
+		t.Fatalf("cl.Create(%#v) failed with %v; want success", want, err)
 	}
 	if resp.Uuid == "" {
 		t.Errorf("resp.Uuid is empty; want not empty")

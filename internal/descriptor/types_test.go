@@ -3,8 +3,8 @@ package descriptor
 import (
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"google.golang.org/protobuf/encoding/prototext"
 )
 
 func TestGoPackageStandard(t *testing.T) {
@@ -21,7 +21,7 @@ func TestGoPackageStandard(t *testing.T) {
 			want: true,
 		},
 		{
-			pkg:  GoPackage{Path: "github.com/golang/protobuf/jsonpb", Name: "jsonpb"},
+			pkg:  GoPackage{Path: "google.golang.org/protobuf/encoding/protojson", Name: "jsonpb"},
 			want: false,
 		},
 		{
@@ -57,8 +57,8 @@ func TestGoPackageString(t *testing.T) {
 			want: `"encoding/json"`,
 		},
 		{
-			pkg:  GoPackage{Path: "github.com/golang/protobuf/jsonpb", Name: "jsonpb"},
-			want: `"github.com/golang/protobuf/jsonpb"`,
+			pkg:  GoPackage{Path: "google.golang.org/protobuf/encoding/protojson", Name: "jsonpb"},
+			want: `"google.golang.org/protobuf/encoding/protojson"`,
 		},
 		{
 			pkg:  GoPackage{Path: "golang.org/x/net/context", Name: "context"},
@@ -80,7 +80,7 @@ func TestGoPackageString(t *testing.T) {
 }
 
 func TestFieldPath(t *testing.T) {
-	var fds []*descriptor.FileDescriptorProto
+	var fds []*descriptorpb.FileDescriptorProto
 	for _, src := range []string{
 		`
 		name: 'example.proto'
@@ -124,8 +124,8 @@ func TestFieldPath(t *testing.T) {
 		syntax: "proto2"
 		`,
 	} {
-		var fd descriptor.FileDescriptorProto
-		if err := proto.UnmarshalText(src, &fd); err != nil {
+		var fd descriptorpb.FileDescriptorProto
+		if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 			t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 		}
 		fds = append(fds, &fd)
@@ -222,8 +222,8 @@ func TestGoType(t *testing.T) {
 		>,
 	`
 
-	var fd descriptor.FileDescriptorProto
-	if err := proto.UnmarshalText(src, &fd); err != nil {
+	var fd descriptorpb.FileDescriptorProto
+	if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 		t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 	}
 

@@ -7,13 +7,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/empty"
+	emptypb "github.com/golang/protobuf/ptypes/empty"
 	structpb "github.com/golang/protobuf/ptypes/struct"
-	"github.com/golang/protobuf/ptypes/timestamp"
-	"github.com/golang/protobuf/ptypes/wrappers"
+	timestamppb "github.com/golang/protobuf/ptypes/timestamp"
+	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestJSONBuiltinMarshal(t *testing.T) {
@@ -210,7 +210,7 @@ var (
 		{data: true, json: "true"},
 		{data: proto.Bool(true), json: "true"},
 		{data: (*string)(nil), json: "null"},
-		{data: new(empty.Empty), json: "{}"},
+		{data: new(emptypb.Empty), json: "{}"},
 		{data: examplepb.NumericEnum_ONE, json: "1"},
 		{data: nil, json: "null"},
 		{data: (*string)(nil), json: "null"},
@@ -238,14 +238,14 @@ var (
 			json: `"abc"`,
 		},
 		{
-			data: &timestamp.Timestamp{
+			data: &timestamppb.Timestamp{
 				Seconds: 1462875553,
 				Nanos:   123000000,
 			},
 			json: `"2016-05-10T10:19:13.123Z"`,
 		},
 		{
-			data: &wrappers.Int32Value{Value: 123},
+			data: &wrapperspb.Int32Value{Value: 123},
 			json: "123",
 		},
 		{

@@ -8,23 +8,23 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
 )
 
 var parseReqTests = []struct {
 	name string
 	in   io.Reader
-	out  *plugin.CodeGeneratorRequest
+	out  *pluginpb.CodeGeneratorRequest
 	err  error
 }{
 	{
 		"Empty input should produce empty output",
-		mustGetReader(&plugin.CodeGeneratorRequest{}),
-		&plugin.CodeGeneratorRequest{},
+		mustGetReader(&pluginpb.CodeGeneratorRequest{}),
+		&pluginpb.CodeGeneratorRequest{},
 		nil,
 	},
 	{

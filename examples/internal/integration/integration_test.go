@@ -18,19 +18,21 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/empty"
+	emptypb "github.com/golang/protobuf/ptypes/empty"
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	spb "google.golang.org/genproto/googleapis/rpc/status"
-	"google.golang.org/genproto/protobuf/field_mask"
+	statuspb "google.golang.org/genproto/googleapis/rpc/status"
+	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
 )
+
+var marshaler = &runtime.JSONPb{}
 
 func TestEcho(t *testing.T) {
 	if testing.Short() {
@@ -101,8 +103,8 @@ func testEcho(t *testing.T, port int, apiPrefix string, contentType string) {
 	}
 
 	var msg examplepb.SimpleMessage
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+	if err := marshaler.Unmarshal(buf, &msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if got, want := msg.Id, "myid"; got != want {
@@ -134,8 +136,8 @@ func testEchoOneof(t *testing.T, port int, apiPrefix string, contentType string)
 	}
 
 	var msg examplepb.SimpleMessage
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+	if err := marshaler.Unmarshal(buf, &msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if got, want := msg.GetLang(), "golang"; got != want {
@@ -167,8 +169,8 @@ func testEchoOneof1(t *testing.T, port int, apiPrefix string, contentType string
 	}
 
 	var msg examplepb.SimpleMessage
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+	if err := marshaler.Unmarshal(buf, &msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if got, want := msg.GetStatus().GetNote(), "golang"; got != want {
@@ -200,8 +202,8 @@ func testEchoOneof2(t *testing.T, port int, apiPrefix string, contentType string
 	}
 
 	var msg examplepb.SimpleMessage
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+	if err := marshaler.Unmarshal(buf, &msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if got, want := msg.GetNo().GetNote(), "golang"; got != want {
@@ -215,14 +217,13 @@ func testEchoOneof2(t *testing.T, port int, apiPrefix string, contentType string
 
 func testEchoBody(t *testing.T, port int, apiPrefix string) {
 	sent := examplepb.SimpleMessage{Id: "example"}
-	var m jsonpb.Marshaler
-	payload, err := m.MarshalToString(&sent)
+	payload, err := marshaler.Marshal(&sent)
 	if err != nil {
-		t.Fatalf("m.MarshalToString(%#v) failed with %v; want success", payload, err)
+		t.Fatalf("marshaler.Marshal(%#v) failed with %v; want success", payload, err)
 	}
 
 	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo_body", port, apiPrefix)
-	resp, err := http.Post(apiURL, "", strings.NewReader(payload))
+	resp, err := http.Post(apiURL, "", bytes.NewReader(payload))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
@@ -240,8 +241,8 @@ func testEchoBody(t *testing.T, port int, apiPrefix string) {
 	}
 
 	var received examplepb.SimpleMessage
-	if err := jsonpb.UnmarshalString(string(buf), &received); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+	if err := marshaler.Unmarshal(buf, &received); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if diff := cmp.Diff(received, sent, protocmp.Transform()); diff != "" {
@@ -325,8 +326,8 @@ func testABECreate(t *testing.T, port int) {
 	}
 
 	var msg examplepb.ABitOfEverything
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+	if err := marshaler.Unmarshal(buf, &msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if msg.Uuid == "" {
@@ -410,13 +411,12 @@ func testABECreateBody(t *testing.T, port int) {
 		},
 	}
 	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
-	var m jsonpb.Marshaler
-	payload, err := m.MarshalToString(&want)
+	payload, err := marshaler.Marshal(&want)
 	if err != nil {
-		t.Fatalf("m.MarshalToString(%#v) failed with %v; want success", want, err)
+		t.Fatalf("marshaler.Marshal(%#v) failed with %v; want success", want, err)
 	}
 
-	resp, err := http.Post(apiURL, "application/json", strings.NewReader(payload))
+	resp, err := http.Post(apiURL, "application/json", bytes.NewReader(payload))
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
@@ -434,8 +434,8 @@ func testABECreateBody(t *testing.T, port int) {
 	}
 
 	var msg examplepb.ABitOfEverything
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+	if err := marshaler.Unmarshal(buf, &msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if msg.Uuid == "" {
@@ -513,9 +513,12 @@ func testABEBulkCreate(t *testing.T, port int) {
 					Amount: 10,
 				},
 			}
-			var m jsonpb.Marshaler
-			if err := m.Marshal(w, &want); err != nil {
-				t.Fatalf("m.Marshal(%#v, w) failed with %v; want success", want, err)
+			out, err := marshaler.Marshal(&want)
+			if err != nil {
+				t.Fatalf("marshaler.Marshal(%#v, w) failed with %v; want success", want, err)
+			}
+			if _, err := w.Write(out); err != nil {
+				t.Fatalf("w.Write() failed with %v; want success", err)
 			}
 			if _, err := io.WriteString(w, "\n"); err != nil {
 				t.Errorf("w.Write(%q) failed with %v; want success", "\n", err)
@@ -542,9 +545,9 @@ func testABEBulkCreate(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg empty.Empty
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+	var msg emptypb.Empty
+	if err := marshaler.Unmarshal(buf, &msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 
@@ -574,12 +577,17 @@ func testABEBulkCreateWithError(t *testing.T, port int) {
 		} {
 			time.Sleep(1 * time.Millisecond)
 
-			want := examplepb.ABitOfEverything{
+			want := &examplepb.ABitOfEverything{
 				StringValue: fmt.Sprintf("strprefix/%s", val),
 			}
-			var m jsonpb.Marshaler
-			if err := m.Marshal(w, &want); err != nil {
-				t.Fatalf("m.Marshal(%#v, w) failed with %v; want success", want, err)
+			out, err := marshaler.Marshal(want)
+			if err != nil {
+				t.Errorf("marshaler.Marshal(%#v, w) failed with %v; want success", want, err)
+				return
+			}
+			if _, err := w.Write(out); err != nil {
+				t.Errorf("w.Write() failed with %v; want success", err)
+				return
 			}
 			if _, err := io.WriteString(w, "\n"); err != nil {
 				t.Errorf("w.Write(%q) failed with %v; want success", "\n", err)
@@ -613,9 +621,9 @@ func testABEBulkCreateWithError(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg spb.Status
-	if err := json.Unmarshal(buf, &msg); err != nil {
-		t.Fatalf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	var msg statuspb.Status
+	if err := marshaler.Unmarshal(buf, &msg); err != nil {
+		t.Fatalf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 	}
 }
 
@@ -641,8 +649,8 @@ func testABELookup(t *testing.T, port int) {
 	}
 
 	var want examplepb.ABitOfEverything
-	if err := jsonpb.UnmarshalString(string(buf), &want); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &want) failed with %v; want success", buf, err)
+	if err := marshaler.Unmarshal(buf, &want); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, &want) failed with %v; want success", buf, err)
 		return
 	}
 
@@ -661,8 +669,8 @@ func testABELookup(t *testing.T, port int) {
 	}
 
 	var msg examplepb.ABitOfEverything
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+	if err := marshaler.Unmarshal(buf, &msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
@@ -687,7 +695,7 @@ func TestABEPatch(t *testing.T) {
 	port := 8088
 
 	// create a record with a known string_value and int32_value
-	uuid := postABE(t, port, examplepb.ABitOfEverything{StringValue: "strprefix/bar", Int32Value: 32})
+	uuid := postABE(t, port, &examplepb.ABitOfEverything{StringValue: "strprefix/bar", Int32Value: 32})
 
 	// issue PATCH request, only updating string_value
 	req, err := http.NewRequest(
@@ -711,11 +719,11 @@ func TestABEPatch(t *testing.T) {
 	}
 
 	// issue GET request, verifying that string_value is changed and int32_value is not
-	getRespBody := getABE(t, port, uuid)
-	if got, want := getRespBody.StringValue, "strprefix/foo"; got != want {
+	getRestatuspbody := getABE(t, port, uuid)
+	if got, want := getRestatuspbody.StringValue, "strprefix/foo"; got != want {
 		t.Errorf("string_value= %q; want %q", got, want)
 	}
-	if got, want := getRespBody.Int32Value, int32(32); got != want {
+	if got, want := getRestatuspbody.Int32Value, int32(32); got != want {
 		t.Errorf("int_32_value= %d; want %d", got, want)
 	}
 }
@@ -732,59 +740,89 @@ func TestABEPatchBody(t *testing.T) {
 
 	for _, tc := range []struct {
 		name          string
-		originalValue examplepb.ABitOfEverything
-		input         examplepb.UpdateV2Request
-		want          examplepb.ABitOfEverything
+		originalValue *examplepb.ABitOfEverything
+		input         *examplepb.UpdateV2Request
+		want          *examplepb.ABitOfEverything
 	}{
 		{
 			name: "with fieldmask provided",
-			originalValue: examplepb.ABitOfEverything{
-				Int32Value:   42,
-				StringValue:  "rabbit",
-				SingleNested: &examplepb.ABitOfEverything_Nested{Name: "some value that will get overwritten", Amount: 345},
+			originalValue: &examplepb.ABitOfEverything{
+				Int32Value:  42,
+				StringValue: "rabbit",
+				SingleNested: &examplepb.ABitOfEverything_Nested{
+					Name:   "some value that will get overwritten",
+					Amount: 345,
+				},
 			},
-			input: examplepb.UpdateV2Request{Abe: &examplepb.ABitOfEverything{
-				StringValue:  "some value that won't get updated because it's not in the field mask",
-				SingleNested: &examplepb.ABitOfEverything_Nested{Amount: 456},
-			}, UpdateMask: &field_mask.FieldMask{Paths: []string{"single_nested"}}},
-			want: examplepb.ABitOfEverything{
-				Int32Value:   42,
-				StringValue:  "rabbit",
-				SingleNested: &examplepb.ABitOfEverything_Nested{Amount: 456},
+			input: &examplepb.UpdateV2Request{
+				Abe: &examplepb.ABitOfEverything{
+					StringValue: "some value that won't get updated because it's not in the field mask",
+					SingleNested: &examplepb.ABitOfEverything_Nested{
+						Amount: 456,
+					},
+				},
+				UpdateMask: &fieldmaskpb.FieldMask{Paths: []string{"single_nested"}},
+			},
+			want: &examplepb.ABitOfEverything{
+				Int32Value:  42,
+				StringValue: "rabbit",
+				SingleNested: &examplepb.ABitOfEverything_Nested{
+					Amount: 456,
+				},
 			},
 		},
 		{
 			// N.B. This case passes the empty field mask to the UpdateV2 method so falls back to PUT semantics as per the implementation.
 			name: "with empty fieldmask",
-			originalValue: examplepb.ABitOfEverything{
-				Int32Value:   42,
-				StringValue:  "some value that will get overwritten",
-				SingleNested: &examplepb.ABitOfEverything_Nested{Name: "value that will get empty", Amount: 345},
+			originalValue: &examplepb.ABitOfEverything{
+				Int32Value:  42,
+				StringValue: "some value that will get overwritten",
+				SingleNested: &examplepb.ABitOfEverything_Nested{
+					Name:   "value that will get empty",
+					Amount: 345,
+				},
 			},
-			input: examplepb.UpdateV2Request{Abe: &examplepb.ABitOfEverything{
-				StringValue:  "some updated value because the fieldMask is nil",
-				SingleNested: &examplepb.ABitOfEverything_Nested{Amount: 456},
-			}, UpdateMask: &field_mask.FieldMask{}},
-			want: examplepb.ABitOfEverything{
-				StringValue:  "some updated value because the fieldMask is nil",
-				SingleNested: &examplepb.ABitOfEverything_Nested{Amount: 456},
+			input: &examplepb.UpdateV2Request{
+				Abe: &examplepb.ABitOfEverything{
+					StringValue: "some updated value because the fieldMask is nil",
+					SingleNested: &examplepb.ABitOfEverything_Nested{
+						Amount: 456,
+					},
+				},
+				UpdateMask: &fieldmaskpb.FieldMask{},
+			},
+			want: &examplepb.ABitOfEverything{
+				StringValue: "some updated value because the fieldMask is nil",
+				SingleNested: &examplepb.ABitOfEverything_Nested{
+					Amount: 456,
+				},
 			},
 		},
 		{
 			// N.B. This case passes the nil field mask to the UpdateV2 method so falls back to PUT semantics as per the implementation.
 			name: "with nil fieldmask",
-			originalValue: examplepb.ABitOfEverything{
-				Int32Value:   42,
-				StringValue:  "some value that will get overwritten",
-				SingleNested: &examplepb.ABitOfEverything_Nested{Name: "value that will get empty", Amount: 123},
+			originalValue: &examplepb.ABitOfEverything{
+				Int32Value:  42,
+				StringValue: "some value that will get overwritten",
+				SingleNested: &examplepb.ABitOfEverything_Nested{
+					Name:   "value that will get empty",
+					Amount: 123,
+				},
 			},
-			input: examplepb.UpdateV2Request{Abe: &examplepb.ABitOfEverything{
-				StringValue:  "some updated value because the fieldMask is nil",
-				SingleNested: &examplepb.ABitOfEverything_Nested{Amount: 657},
-			}, UpdateMask: nil},
-			want: examplepb.ABitOfEverything{
-				StringValue:  "some updated value because the fieldMask is nil",
-				SingleNested: &examplepb.ABitOfEverything_Nested{Amount: 657},
+			input: &examplepb.UpdateV2Request{
+				Abe: &examplepb.ABitOfEverything{
+					StringValue: "some updated value because the fieldMask is nil",
+					SingleNested: &examplepb.ABitOfEverything_Nested{
+						Amount: 657,
+					},
+				},
+				UpdateMask: nil,
+			},
+			want: &examplepb.ABitOfEverything{
+				StringValue: "some updated value because the fieldMask is nil",
+				SingleNested: &examplepb.ABitOfEverything_Nested{
+					Amount: 657,
+				},
 			},
 		},
 	} {
@@ -825,7 +863,7 @@ func TestABEPatchBody(t *testing.T) {
 // mustMarshal marshals the given object into a json string, calling t.Fatal if an error occurs. Useful in testing to
 // inline marshalling whenever you don't expect the marshalling to return an error
 func mustMarshal(t *testing.T, i interface{}) string {
-	b, err := json.Marshal(i)
+	b, err := marshaler.Marshal(i)
 	if err != nil {
 		t.Fatalf("failed to marshal %#v: %v", i, err)
 	}
@@ -834,7 +872,7 @@ func mustMarshal(t *testing.T, i interface{}) string {
 }
 
 // postABE conveniently creates a new ABE record for ease in testing
-func postABE(t *testing.T, port int, abe examplepb.ABitOfEverything) (uuid string) {
+func postABE(t *testing.T, port int, abe *examplepb.ABitOfEverything) (uuid string) {
 	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	postResp, err := http.Post(apiURL, "application/json", strings.NewReader(mustMarshal(t, abe)))
 	if err != nil {
@@ -848,7 +886,7 @@ func postABE(t *testing.T, port int, abe examplepb.ABitOfEverything) (uuid strin
 	var f struct {
 		UUID string `json:"uuid"`
 	}
-	if err := json.Unmarshal(body, &f); err != nil {
+	if err := marshaler.Unmarshal(body, &f); err != nil {
 		t.Fatalf("postResp body couldn't be unmarshalled: %v. body: %s", err, string(body))
 	}
 	if f.UUID == "" {
@@ -858,7 +896,7 @@ func postABE(t *testing.T, port int, abe examplepb.ABitOfEverything) (uuid strin
 }
 
 // getABE conveniently fetches an ABE record for ease in testing
-func getABE(t *testing.T, port int, uuid string) examplepb.ABitOfEverything {
+func getABE(t *testing.T, port int, uuid string) *examplepb.ABitOfEverything {
 	gURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/%s", port, uuid)
 	getResp, err := http.Get(gURL)
 	if err != nil {
@@ -869,16 +907,16 @@ func getABE(t *testing.T, port int, uuid string) examplepb.ABitOfEverything {
 	if got, want := getResp.StatusCode, http.StatusOK; got != want {
 		t.Fatalf("getResp.StatusCode= %d, want %d. resp: %v", got, want, getResp)
 	}
-	var getRespBody examplepb.ABitOfEverything
+	var getRestatuspbody examplepb.ABitOfEverything
 	body, err := ioutil.ReadAll(getResp.Body)
 	if err != nil {
 		t.Fatalf("getResp body couldn't be read: %v", err)
 	}
-	if err := json.Unmarshal(body, &getRespBody); err != nil {
+	if err := marshaler.Unmarshal(body, &getRestatuspbody); err != nil {
 		t.Fatalf("getResp body couldn't be unmarshalled: %v body: %s", err, string(body))
 	}
 
-	return getRespBody
+	return &getRestatuspbody
 }
 
 func testABELookupNotFound(t *testing.T, port int) {
@@ -904,9 +942,9 @@ func testABELookupNotFound(t *testing.T, port int) {
 		return
 	}
 
-	var msg spb.Status
-	if err := json.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("json.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	var msg statuspb.Status
+	if err := marshaler.Unmarshal(buf, &msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 
@@ -940,7 +978,7 @@ func testABEList(t *testing.T, port int) {
 	}
 	defer resp.Body.Close()
 
-	dec := json.NewDecoder(resp.Body)
+	dec := marshaler.NewDecoder(resp.Body)
 	var i int
 	for i = 0; ; i++ {
 		var item struct {
@@ -959,8 +997,8 @@ func testABEList(t *testing.T, port int) {
 			continue
 		}
 		var msg examplepb.ABitOfEverything
-		if err := jsonpb.UnmarshalString(string(item.Result), &msg); err != nil {
-			t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", item.Result, err)
+		if err := marshaler.Unmarshal(item.Result, &msg); err != nil {
+			t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", item.Result, err)
 		}
 	}
 	if i <= 0 {
@@ -1015,16 +1053,16 @@ func testABEBulkEcho(t *testing.T, port int) {
 	go func() {
 		defer wg.Done()
 		defer reqw.Close()
-		var m jsonpb.Marshaler
 		for i := 0; i < 1000; i++ {
-			msg := sub.StringMessage{Value: proto.String(fmt.Sprintf("message %d", i))}
-			buf, err := m.MarshalToString(&msg)
+			s := fmt.Sprintf("message %d", i)
+			msg := sub.StringMessage{Value: &s}
+			buf, err := marshaler.Marshal(&msg)
 			if err != nil {
-				t.Errorf("m.Marshal(%v) failed with %v; want success", &msg, err)
+				t.Errorf("marshaler.Marshal(%v) failed with %v; want success", &msg, err)
 				return
 			}
-			if _, err := fmt.Fprintln(reqw, buf); err != nil {
-				t.Errorf("fmt.Fprintln(reqw, %q) failed with %v; want success", buf, err)
+			if _, err = reqw.Write(buf); err != nil {
+				t.Errorf("reqw.Write(%q) failed with %v; want success", string(buf), err)
 				return
 			}
 			want = append(want, &msg)
@@ -1054,7 +1092,7 @@ func testABEBulkEcho(t *testing.T, port int) {
 	go func() {
 		defer wg.Done()
 
-		dec := json.NewDecoder(resp.Body)
+		dec := marshaler.NewDecoder(resp.Body)
 		for i := 0; ; i++ {
 			var item struct {
 				Result json.RawMessage        `json:"result"`
@@ -1072,8 +1110,8 @@ func testABEBulkEcho(t *testing.T, port int) {
 				continue
 			}
 			var msg sub.StringMessage
-			if err := jsonpb.UnmarshalString(string(item.Result), &msg); err != nil {
-				t.Errorf("jsonpb.UnmarshalString(%q, &msg) failed with %v; want success", item.Result, err)
+			if err := marshaler.Unmarshal(item.Result, &msg); err != nil {
+				t.Errorf("marshaler.Unmarshal(%q, &msg) failed with %v; want success", item.Result, err)
 			}
 			got = append(got, &msg)
 		}
@@ -1104,7 +1142,7 @@ func testABEBulkEchoZeroLength(t *testing.T, port int) {
 		t.Errorf("resp.StatusCode = %d; want %d", got, want)
 	}
 
-	dec := json.NewDecoder(resp.Body)
+	dec := marshaler.NewDecoder(resp.Body)
 	var item struct {
 		Result json.RawMessage        `json:"result"`
 		Error  map[string]interface{} `json:"error"`
@@ -1178,8 +1216,8 @@ func testAdditionalBindings(t *testing.T, port int) {
 		}
 
 		var msg sub.StringMessage
-		if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-			t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success; %d", buf, err, i)
+		if err := marshaler.Unmarshal(buf, &msg); err != nil {
+			t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success; %d", buf, err, i)
 			return
 		}
 		if got, want := msg.GetValue(), "hello"; got != want {
@@ -1298,8 +1336,8 @@ func testABERepeated(t *testing.T, port int) {
 	}
 
 	var msg examplepb.ABitOfEverythingRepeated
-	if err := jsonpb.UnmarshalString(string(buf), &msg); err != nil {
-		t.Errorf("jsonpb.UnmarshalString(%s, &msg) failed with %v; want success", buf, err)
+	if err := marshaler.Unmarshal(buf, &msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
 	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
@@ -1552,8 +1590,19 @@ func testResponseBodies(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	if got, want := string(buf), `[{"data":"foo"}]`; got != want {
-		t.Errorf("response = %q; want %q", got, want)
+	var got []*examplepb.ResponseBodyOut_Response
+	err = marshaler.Unmarshal(buf, &got)
+	if err != nil {
+		t.Errorf("marshaler.Unmarshal failed with %v; want success", err)
+		return
+	}
+	want := []*examplepb.ResponseBodyOut_Response{
+		{
+			Data: "foo",
+		},
+	}
+	if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
+		t.Errorf(diff)
 	}
 }
 
@@ -1565,7 +1614,11 @@ func testResponseStrings(t *testing.T, port int) {
 	// Run Secondary server with different marshalling
 	ch := make(chan error)
 	go func() {
-		if err := runGateway(ctx, fmt.Sprintf(":%d", port), runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{EnumsAsInts: false, EmitDefaults: true})); err != nil {
+		err := runGateway(
+			ctx,
+			fmt.Sprintf(":%d", port),
+		)
+		if err != nil {
 			ch <- fmt.Errorf("cannot run gateway service: %v", err)
 		}
 	}()
@@ -1574,51 +1627,102 @@ func testResponseStrings(t *testing.T, port int) {
 		t.Fatalf("waitForGateway(ctx, %d) failed with %v; want success", port, err)
 	}
 
-	for i, spec := range []struct {
-		endpoint     string
-		expectedCode int
-		expectedBody string
-	}{
-		{
-			endpoint:     fmt.Sprintf("http://localhost:%d/responsestrings/foo", port),
-			expectedCode: http.StatusOK,
-			expectedBody: `["hello","foo"]`,
-		},
-		{
-			endpoint:     fmt.Sprintf("http://localhost:%d/responsestrings/empty", port),
-			expectedCode: http.StatusOK,
-			expectedBody: `[]`,
-		},
-		{
-			endpoint:     fmt.Sprintf("http://localhost:%d/responsebodies/foo", port),
-			expectedCode: http.StatusOK,
-			expectedBody: `[{"data":"foo","type":"UNKNOWN"}]`,
-		},
-	} {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			apiURL := spec.endpoint
-			resp, err := http.Get(apiURL)
-			if err != nil {
-				t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
-				return
-			}
-			defer resp.Body.Close()
-			buf, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
-				return
-			}
+	t.Run("Response strings", func(t *testing.T) {
+		apiURL := fmt.Sprintf("http://localhost:%d/responsestrings/foo", port)
+		resp, err := http.Get(apiURL)
+		if err != nil {
+			t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
+			return
+		}
+		defer resp.Body.Close()
+		buf, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+			return
+		}
 
-			if got, want := resp.StatusCode, spec.expectedCode; got != want {
-				t.Errorf("resp.StatusCode = %d; want %d", got, want)
-				t.Logf("%s", buf)
-			}
+		if got, want := resp.StatusCode, http.StatusOK; got != want {
+			t.Errorf("resp.StatusCode = %d; want %d", got, want)
+			t.Logf("%s", buf)
+		}
 
-			if got, want := string(buf), spec.expectedBody; got != want {
-				t.Errorf("response = %q; want %q", got, want)
-			}
-		})
-	}
+		var got []string
+		err = marshaler.Unmarshal(buf, &got)
+		if err != nil {
+			t.Errorf("marshaler.Unmarshal failed with %v; want success", err)
+			return
+		}
+		want := []string{"hello", "foo"}
+		if diff := cmp.Diff(got, want); diff != "" {
+			t.Errorf(diff)
+		}
+	})
+
+	t.Run("Empty response strings", func(t *testing.T) {
+		apiURL := fmt.Sprintf("http://localhost:%d/responsestrings/empty", port)
+		resp, err := http.Get(apiURL)
+		if err != nil {
+			t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
+			return
+		}
+		defer resp.Body.Close()
+		buf, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+			return
+		}
+
+		if got, want := resp.StatusCode, http.StatusOK; got != want {
+			t.Errorf("resp.StatusCode = %d; want %d", got, want)
+			t.Logf("%s", buf)
+		}
+
+		var got []string
+		err = marshaler.Unmarshal(buf, &got)
+		if err != nil {
+			t.Errorf("marshaler.Unmarshal failed with %v; want success", err)
+			return
+		}
+		var want []string
+		if diff := cmp.Diff(got, want); diff != "" {
+			t.Errorf(diff)
+		}
+	})
+
+	t.Run("Response bodies", func(t *testing.T) {
+		apiURL := fmt.Sprintf("http://localhost:%d/responsebodies/foo", port)
+		resp, err := http.Get(apiURL)
+		if err != nil {
+			t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
+			return
+		}
+		defer resp.Body.Close()
+		buf, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+			return
+		}
+
+		if got, want := resp.StatusCode, http.StatusOK; got != want {
+			t.Errorf("resp.StatusCode = %d; want %d", got, want)
+			t.Logf("%s", buf)
+		}
+
+		var got []*examplepb.ResponseBodyOut_Response
+		err = marshaler.Unmarshal(buf, &got)
+		if err != nil {
+			t.Errorf("marshaler.Unmarshal failed with %v; want success", err)
+			return
+		}
+		want := []*examplepb.ResponseBodyOut_Response{
+			{
+				Data: "foo",
+			},
+		}
+		if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
+			t.Errorf(diff)
+		}
+	})
 
 }
 
@@ -1646,7 +1750,7 @@ func testRequestQueryParams(t *testing.T, port int) {
 		httpMethod     string
 		contentType    string
 		apiURL         string
-		wantContent    string
+		wantContent    *examplepb.ABitOfEverything
 		requestContent io.Reader
 	}{
 		{
@@ -1654,30 +1758,56 @@ func testRequestQueryParams(t *testing.T, port int) {
 			httpMethod:  "GET",
 			contentType: "application/json",
 			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v", port, 1234.56, true),
-			wantContent: `{"single_nested":{"name":"foo"},"double_value":1234.56,"bool_value":true}`,
+			wantContent: &examplepb.ABitOfEverything{
+				SingleNested: &examplepb.ABitOfEverything_Nested{
+					Name: "foo",
+				},
+				DoubleValue: 1234.56,
+				BoolValue:   true,
+			},
 		},
 		{
 			name:        "get nested enum url parameter",
 			httpMethod:  "GET",
 			contentType: "application/json",
 			// If nested_enum.OK were FALSE, the content of single_nested would be {} due to how 0 values are serialized
-			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/nested_enum/TRUE", port),
-			wantContent: `{"single_nested":{"ok":"TRUE"}}`,
+			apiURL: fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/nested_enum/TRUE", port),
+			wantContent: &examplepb.ABitOfEverything{
+				SingleNested: &examplepb.ABitOfEverything_Nested{
+					Ok: examplepb.ABitOfEverything_Nested_TRUE,
+				},
+			},
 		},
 		{
-			name:           "post url query values",
-			httpMethod:     "POST",
-			contentType:    "application/json",
-			apiURL:         fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/post/hello-world?double_value=%v&bool_value=%v", port, 1234.56, true),
-			wantContent:    `{"single_nested":{"name":"foo","amount":100},"double_value":1234.56,"bool_value":true,"string_value":"hello-world"}`,
+			name:        "post url query values",
+			httpMethod:  "POST",
+			contentType: "application/json",
+			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/post/hello-world?double_value=%v&bool_value=%v", port, 1234.56, true),
+			wantContent: &examplepb.ABitOfEverything{
+				SingleNested: &examplepb.ABitOfEverything_Nested{
+					Name:   "foo",
+					Amount: 100,
+				},
+				DoubleValue: 1234.56,
+				BoolValue:   true,
+				StringValue: "hello-world",
+			},
 			requestContent: strings.NewReader(`{"name":"foo","amount":100}`),
 		},
 		{
-			name:           "post form and url query values",
-			httpMethod:     "POST",
-			contentType:    "application/x-www-form-urlencoded",
-			apiURL:         fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v", port, 1234.56, true),
-			wantContent:    `{"single_nested":{"name":"foo"},"double_value":1234.56,"bool_value":true,"string_value":"hello-world","repeated_string_value":["demo1","demo2"]}`,
+			name:        "post form and url query values",
+			httpMethod:  "POST",
+			contentType: "application/x-www-form-urlencoded",
+			apiURL:      fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/params/get/foo?double_value=%v&bool_value=%v", port, 1234.56, true),
+			wantContent: &examplepb.ABitOfEverything{
+				SingleNested: &examplepb.ABitOfEverything_Nested{
+					Name: "foo",
+				},
+				DoubleValue:         1234.56,
+				BoolValue:           true,
+				StringValue:         "hello-world",
+				RepeatedStringValue: []string{"demo1", "demo2"},
+			},
 			requestContent: strings.NewReader(formValues.Encode()),
 		},
 	}
@@ -1710,9 +1840,14 @@ func testRequestQueryParams(t *testing.T, port int) {
 				t.Logf("%s", buf)
 			}
 
-			gotContent := string(buf)
-			if gotContent != tc.wantContent {
-				t.Errorf("http.method (%q) http.url (%q) response = %q; want %q", tc.httpMethod, tc.apiURL, gotContent, tc.wantContent)
+			var got examplepb.ABitOfEverything
+			err = marshaler.Unmarshal(buf, &got)
+			if err != nil {
+				t.Errorf("marshaler.Unmarshal(buf, got) failed with %v; want success", err)
+				return
+			}
+			if diff := cmp.Diff(got, tc.wantContent, protocmp.Transform()); diff != "" {
+				t.Errorf("http.method (%q) http.url (%q)\n%s", tc.httpMethod, tc.apiURL, diff)
 			}
 		})
 	}
@@ -1729,21 +1864,29 @@ func TestNonStandardNames(t *testing.T) {
 	defer cancel()
 
 	go func() {
-		if err := runGateway(
+		marshaler := &runtime.JSONPb{
+			MarshalOptions: protojson.MarshalOptions{
+				UseEnumNumbers:  false,
+				EmitUnpopulated: true,
+				UseProtoNames:   true,
+			},
+		}
+		err := runGateway(
 			ctx,
 			":8081",
-			runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName: true, EmitDefaults: true}),
-		); err != nil {
+			runtime.WithMarshalerOption(runtime.MIMEWildcard, marshaler),
+		)
+		if err != nil {
 			t.Errorf("runGateway() failed with %v; want success", err)
 			return
 		}
 	}()
 	go func() {
-		if err := runGateway(
+		err := runGateway(
 			ctx,
 			":8082",
-			runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName: false, EmitDefaults: true}),
-		); err != nil {
+		)
+		if err != nil {
 			t.Errorf("runGateway() failed with %v; want success", err)
 			return
 		}
@@ -1772,20 +1915,20 @@ func TestNonStandardNames(t *testing.T) {
 			"Test update method using json_names in message",
 			8081,
 			"update_with_json_names",
-			// N.B. json_names have no effect if not using OrigName: false
+			// N.B. json_names have no effect if not using UseProtoNames: false
 			`{"id":"foo","Num":"1","line_num":"42","langIdent":"English","STATUS":"good","en_GB":"1","no":"yes","thing":{"subThing":{"sub_value":"hi"}}}`,
 		},
 		{
-			"Test standard update method with OrigName: false marshaller option",
+			"Test standard update method with UseProtoNames: false marshaller option",
 			8082,
 			"update",
 			`{"id":"foo","Num":"1","lineNum":"42","langIdent":"English","STATUS":"good","enGB":"1","no":"yes","thing":{"subThing":{"subValue":"hi"}}}`,
 		},
 		{
-			"Test update method using json_names in message with OrigName: false marshaller option",
+			"Test update method using json_names in message with UseProtoNames: false marshaller option",
 			8082,
 			"update_with_json_names",
-			`{"ID":"foo","Num":"1","LineNum":"42","langIdent":"English","status":"good","En_GB":"1","yes":"no","Thingy":{"SubThing":{"sub_Value":"hi"}}}`,
+			`{"ID":"foo","Num":"1","LineNum":"42","langIdent":"English","status":"good","En_GB":"1","yes":"yes","Thingy":{"SubThing":{"sub_Value":"hi"}}}`,
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -1817,7 +1960,26 @@ func testNonStandardNames(t *testing.T, port int, method string, jsonBody string
 		t.Errorf("patchResp.StatusCode= %d; want %d resp: %v", got, want, string(body))
 	}
 
-	if got, want := string(body), jsonBody; got != want {
-		t.Errorf("got %q; want %q", got, want)
+	var got examplepb.NonStandardMessage
+	err = marshaler.Unmarshal(body, &got)
+	if err != nil {
+		t.Errorf("marshler.Unmarshal failed: %v", err)
+	}
+	want := &examplepb.NonStandardMessage{
+		Id:        "foo",
+		Num:       1,
+		LineNum:   42,
+		LangIdent: "English",
+		STATUS:    "good",
+		En_GB:     1,
+		No:        "yes",
+		Thing: &examplepb.NonStandardMessage_Thing{
+			SubThing: &examplepb.NonStandardMessage_Thing_SubThing{
+				SubValue: "hi",
+			},
+		},
+	}
+	if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
+		t.Errorf(diff)
 	}
 }

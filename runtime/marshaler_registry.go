@@ -3,6 +3,8 @@ package runtime
 import (
 	"errors"
 	"net/http"
+
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 // MIMEWildcard is the fallback MIME type used for requests which do not match
@@ -13,7 +15,14 @@ var (
 	acceptHeader      = http.CanonicalHeaderKey("Accept")
 	contentTypeHeader = http.CanonicalHeaderKey("Content-Type")
 
-	defaultMarshaler = &JSONPb{OrigName: true}
+	defaultMarshaler = &JSONPb{
+		MarshalOptions: protojson.MarshalOptions{
+			// TODO(johanbrandhorst): Change this to true before v2
+			EmitUnpopulated: false,
+			// TODO(johanbrandhorst): Change this to false before v2
+			UseProtoNames: true,
+		},
+	}
 )
 
 // MarshalerForRequest returns the inbound/outbound marshalers for this request.
