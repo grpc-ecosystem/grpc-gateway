@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/wrappers"
+	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/utilities"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -163,21 +163,21 @@ func TestPopulateParameters(t *testing.T) {
 				StringValue:        "str",
 				BytesValue:         []byte("bytes"),
 				RepeatedValue:      []string{"a", "b", "c"},
-				RepeatedMessage:    []*wrappers.UInt64Value{{Value: 1}, {Value: 2}, {Value: 3}},
+				RepeatedMessage:    []*wrapperspb.UInt64Value{{Value: 1}, {Value: 2}, {Value: 3}},
 				EnumValue:          examplepb.EnumValue_Y,
 				RepeatedEnum:       []examplepb.EnumValue{examplepb.EnumValue_Y, examplepb.EnumValue_Z, examplepb.EnumValue_X},
 				TimestampValue:     timePb,
 				DurationValue:      durationPb,
 				FieldmaskValue:     fieldmaskPb,
-				WrapperFloatValue:  &wrappers.FloatValue{Value: 1.5},
-				WrapperDoubleValue: &wrappers.DoubleValue{Value: 2.5},
-				WrapperInt64Value:  &wrappers.Int64Value{Value: -1},
-				WrapperInt32Value:  &wrappers.Int32Value{Value: -2},
-				WrapperUInt64Value: &wrappers.UInt64Value{Value: 3},
-				WrapperUInt32Value: &wrappers.UInt32Value{Value: 4},
-				WrapperBoolValue:   &wrappers.BoolValue{Value: true},
-				WrapperStringValue: &wrappers.StringValue{Value: "str"},
-				WrapperBytesValue:  &wrappers.BytesValue{Value: []byte("bytes")},
+				WrapperFloatValue:  &wrapperspb.FloatValue{Value: 1.5},
+				WrapperDoubleValue: &wrapperspb.DoubleValue{Value: 2.5},
+				WrapperInt64Value:  &wrapperspb.Int64Value{Value: -1},
+				WrapperInt32Value:  &wrapperspb.Int32Value{Value: -2},
+				WrapperUInt64Value: &wrapperspb.UInt64Value{Value: 3},
+				WrapperUInt32Value: &wrapperspb.UInt32Value{Value: 4},
+				WrapperBoolValue:   &wrapperspb.BoolValue{Value: true},
+				WrapperStringValue: &wrapperspb.StringValue{Value: "str"},
+				WrapperBytesValue:  &wrapperspb.BytesValue{Value: []byte("bytes")},
 				MapValue: map[string]string{
 					"key":         "value",
 					"second":      "bar",
@@ -197,7 +197,7 @@ func TestPopulateParameters(t *testing.T) {
 				MapValue12: map[string]float64{"key": 2.5},
 				MapValue14: map[string]bool{"key": true},
 				MapValue15: map[bool]string{true: "value"},
-				MapValue16: map[string]*wrappers.UInt64Value{"key": {Value: 2}},
+				MapValue16: map[string]*wrapperspb.UInt64Value{"key": {Value: 2}},
 			},
 		},
 		{
@@ -244,15 +244,15 @@ func TestPopulateParameters(t *testing.T) {
 				TimestampValue:     timePb,
 				DurationValue:      durationPb,
 				FieldmaskValue:     fieldmaskPb,
-				WrapperFloatValue:  &wrappers.FloatValue{Value: 1.5},
-				WrapperDoubleValue: &wrappers.DoubleValue{Value: 2.5},
-				WrapperInt64Value:  &wrappers.Int64Value{Value: -1},
-				WrapperInt32Value:  &wrappers.Int32Value{Value: -2},
-				WrapperUInt64Value: &wrappers.UInt64Value{Value: 3},
-				WrapperUInt32Value: &wrappers.UInt32Value{Value: 4},
-				WrapperBoolValue:   &wrappers.BoolValue{Value: true},
-				WrapperStringValue: &wrappers.StringValue{Value: "str"},
-				WrapperBytesValue:  &wrappers.BytesValue{Value: []byte("bytes")},
+				WrapperFloatValue:  &wrapperspb.FloatValue{Value: 1.5},
+				WrapperDoubleValue: &wrapperspb.DoubleValue{Value: 2.5},
+				WrapperInt64Value:  &wrapperspb.Int64Value{Value: -1},
+				WrapperInt32Value:  &wrapperspb.Int32Value{Value: -2},
+				WrapperUInt64Value: &wrapperspb.UInt64Value{Value: 3},
+				WrapperUInt32Value: &wrapperspb.UInt32Value{Value: 4},
+				WrapperBoolValue:   &wrapperspb.BoolValue{Value: true},
+				WrapperStringValue: &wrapperspb.StringValue{Value: "str"},
+				WrapperBytesValue:  &wrapperspb.BytesValue{Value: []byte("bytes")},
 			},
 		},
 		{

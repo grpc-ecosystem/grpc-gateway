@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	"github.com/golang/protobuf/proto"
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	options "google.golang.org/genproto/googleapis/api/annotations"
+	"google.golang.org/protobuf/proto"
 )
 
 // loadServices registers services and their methods from "targetFile" to "r".
@@ -54,7 +54,7 @@ func (r *Registry) loadServices(file *File) error {
 	return nil
 }
 
-func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto, optsList []*options.HttpRule) (*Method, error) {
+func (r *Registry) newMethod(svc *Service, md *descriptorpb.MethodDescriptorProto, optsList []*options.HttpRule) (*Method, error) {
 	requestType, err := r.LookupMsg(svc.File.GetPackage(), md.GetInputType())
 	if err != nil {
 		return nil, err
@@ -184,17 +184,14 @@ func (r *Registry) newMethod(svc *Service, md *descriptor.MethodDescriptorProto,
 	return meth, nil
 }
 
-func extractAPIOptions(meth *descriptor.MethodDescriptorProto) (*options.HttpRule, error) {
+func extractAPIOptions(meth *descriptorpb.MethodDescriptorProto) (*options.HttpRule, error) {
 	if meth.Options == nil {
 		return nil, nil
 	}
 	if !proto.HasExtension(meth.Options, options.E_Http) {
 		return nil, nil
 	}
-	ext, err := proto.GetExtension(meth.Options, options.E_Http)
-	if err != nil {
-		return nil, err
-	}
+	ext := proto.GetExtension(meth.Options, options.E_Http)
 	opts, ok := ext.(*options.HttpRule)
 	if !ok {
 		return nil, fmt.Errorf("extension is %T; want an HttpRule", ext)
@@ -214,7 +211,7 @@ func (r *Registry) newParam(meth *Method, path string) (Parameter, error) {
 	}
 	target := fields[l-1].Target
 	switch target.GetType() {
-	case descriptor.FieldDescriptorProto_TYPE_MESSAGE, descriptor.FieldDescriptorProto_TYPE_GROUP:
+	case descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, descriptorpb.FieldDescriptorProto_TYPE_GROUP:
 		glog.V(2).Infoln("found aggregate type:", target, target.TypeName)
 		if IsWellKnownType(*target.TypeName) {
 			glog.V(2).Infoln("found well known aggregate type:", target)
@@ -280,7 +277,7 @@ func (r *Registry) resolveFieldPath(msg *Message, path string, isPathParam bool)
 		if i > 0 {
 			f := result[i-1].Target
 			switch f.GetType() {
-			case descriptor.FieldDescriptorProto_TYPE_MESSAGE, descriptor.FieldDescriptorProto_TYPE_GROUP:
+			case descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, descriptorpb.FieldDescriptorProto_TYPE_GROUP:
 				var err error
 				msg, err = r.LookupMsg(msg.FQMN(), f.GetTypeName())
 				if err != nil {
@@ -296,7 +293,7 @@ func (r *Registry) resolveFieldPath(msg *Message, path string, isPathParam bool)
 		if f == nil {
 			return nil, fmt.Errorf("no field %q found in %s", path, root.GetName())
 		}
-		if !(isPathParam || r.allowRepeatedFieldsInBody) && f.GetLabel() == descriptor.FieldDescriptorProto_LABEL_REPEATED {
+		if !(isPathParam || r.allowRepeatedFieldsInBody) && f.GetLabel() == descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
 			return nil, fmt.Errorf("repeated field not allowed in field path: %s in %s", f.GetName(), path)
 		}
 		result = append(result, FieldPathComponent{Name: c, Target: f})

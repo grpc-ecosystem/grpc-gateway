@@ -7,16 +7,16 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/duration"
-	"github.com/golang/protobuf/ptypes/empty"
+	durationpb "github.com/golang/protobuf/ptypes/duration"
+	emptypb "github.com/golang/protobuf/ptypes/empty"
 	structpb "github.com/golang/protobuf/ptypes/struct"
-	"github.com/golang/protobuf/ptypes/timestamp"
-	"github.com/golang/protobuf/ptypes/wrappers"
+	timestamppb "github.com/golang/protobuf/ptypes/timestamp"
+	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
 )
 
@@ -27,7 +27,7 @@ func TestJSONPbMarshal(t *testing.T) {
 		MappedStringValue:   map[string]string{},
 		MappedNestedValue:   map[string]*examplepb.ABitOfEverything_Nested{},
 		RepeatedEnumValue:   []examplepb.NumericEnum{},
-		TimestampValue:      &timestamp.Timestamp{},
+		TimestampValue:      &timestamppb.Timestamp{},
 		Uuid:                "6EC2446F-7E89-4127-B3E6-5C05E6BECBA7",
 		Nested: []*examplepb.ABitOfEverything_Nested{
 			{
@@ -52,16 +52,13 @@ func TestJSONPbMarshal(t *testing.T) {
 	}
 
 	for i, spec := range []struct {
-		enumsAsInts, emitDefaults bool
-		indent                    string
-		origName                  bool
-		verifier                  func(json string)
+		useEnumNumbers, emitUnpopulated bool
+		indent                          string
+		useProtoNames                   bool
+		verifier                        func(json string)
 	}{
 		{
 			verifier: func(json string) {
-				if strings.ContainsAny(json, " \t\r\n") {
-					t.Errorf("strings.ContainsAny(%q, %q) = true; want false", json, " \t\r\n")
-				}
 				if !strings.Contains(json, "ONE") {
 					t.Errorf(`strings.Contains(%q, "ONE") = false; want true`, json)
 				}
@@ -71,7 +68,7 @@ func TestJSONPbMarshal(t *testing.T) {
 			},
 		},
 		{
-			enumsAsInts: true,
+			useEnumNumbers: true,
 			verifier: func(json string) {
 				if strings.Contains(json, "ONE") {
 					t.Errorf(`strings.Contains(%q, "ONE") = true; want false`, json)
@@ -79,7 +76,7 @@ func TestJSONPbMarshal(t *testing.T) {
 			},
 		},
 		{
-			emitDefaults: true,
+			emitUnpopulated: true,
 			verifier: func(json string) {
 				if want := `"sfixed32Value"`; !strings.Contains(json, want) {
 					t.Errorf(`strings.Contains(%q, %q) = false; want true`, json, want)
@@ -95,7 +92,7 @@ func TestJSONPbMarshal(t *testing.T) {
 			},
 		},
 		{
-			origName: true,
+			useProtoNames: true,
 			verifier: func(json string) {
 				if want := "uint64_value"; !strings.Contains(json, want) {
 					t.Errorf(`strings.Contains(%q, %q) = false; want true`, json, want)
@@ -105,10 +102,12 @@ func TestJSONPbMarshal(t *testing.T) {
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			m := runtime.JSONPb{
-				EnumsAsInts:  spec.enumsAsInts,
-				EmitDefaults: spec.emitDefaults,
-				Indent:       spec.indent,
-				OrigName:     spec.origName,
+				MarshalOptions: protojson.MarshalOptions{
+					EmitUnpopulated: spec.emitUnpopulated,
+					Indent:          spec.indent,
+					UseProtoNames:   spec.useProtoNames,
+					UseEnumNumbers:  spec.useEnumNumbers,
+				},
 			}
 			buf, err := m.Marshal(&msg)
 			if err != nil {
@@ -116,7 +115,8 @@ func TestJSONPbMarshal(t *testing.T) {
 			}
 
 			var got examplepb.ABitOfEverything
-			if err := jsonpb.UnmarshalString(string(buf), &got); err != nil {
+			unmarshaler := &protojson.UnmarshalOptions{}
+			if err = unmarshaler.Unmarshal(buf, &got); err != nil {
 				t.Errorf("jsonpb.UnmarshalString(%q, &got) failed with %v; want success; spec=%v", string(buf), err, spec)
 			}
 			if diff := cmp.Diff(&got, &msg, protocmp.Transform()); diff != "" {
@@ -131,7 +131,7 @@ func TestJSONPbMarshal(t *testing.T) {
 
 func TestJSONPbMarshalFields(t *testing.T) {
 	var m runtime.JSONPb
-	m.EnumsAsInts = true // builtin fixtures include an enum, expected to be marshaled as int
+	m.UseEnumNumbers = true // builtin fixtures include an enum, expected to be marshaled as int
 	for _, spec := range builtinFieldFixtures {
 		buf, err := m.Marshal(spec.data)
 		if err != nil {
@@ -142,7 +142,7 @@ func TestJSONPbMarshalFields(t *testing.T) {
 		}
 	}
 
-	m.EnumsAsInts = false
+	m.UseEnumNumbers = false
 	buf, err := m.Marshal(examplepb.NumericEnum_ONE)
 	if err != nil {
 		t.Errorf("m.Marshal(%#v) failed with %v; want success", examplepb.NumericEnum_ONE, err)
@@ -251,7 +251,7 @@ func TestJSONPbEncoder(t *testing.T) {
 		MappedStringValue:   map[string]string{},
 		MappedNestedValue:   map[string]*examplepb.ABitOfEverything_Nested{},
 		RepeatedEnumValue:   []examplepb.NumericEnum{},
-		TimestampValue:      &timestamp.Timestamp{},
+		TimestampValue:      &timestamppb.Timestamp{},
 		Uuid:                "6EC2446F-7E89-4127-B3E6-5C05E6BECBA7",
 		Nested: []*examplepb.ABitOfEverything_Nested{
 			{
@@ -275,19 +275,13 @@ func TestJSONPbEncoder(t *testing.T) {
 	}
 
 	for i, spec := range []struct {
-		enumsAsInts, emitDefaults bool
-		indent                    string
-		origName                  bool
-		verifier                  func(json string)
+		useEnumNumbers, emitUnpopulated bool
+		indent                          string
+		useProtoNames                   bool
+		verifier                        func(json string)
 	}{
 		{
 			verifier: func(json string) {
-				// remove trailing delimiter before verifying
-				json = strings.TrimSuffix(json, "\n")
-
-				if strings.ContainsAny(json, " \t\r\n") {
-					t.Errorf("strings.ContainsAny(%q, %q) = true; want false", json, " \t\r\n")
-				}
 				if !strings.Contains(json, "ONE") {
 					t.Errorf(`strings.Contains(%q, "ONE") = false; want true`, json)
 				}
@@ -297,7 +291,7 @@ func TestJSONPbEncoder(t *testing.T) {
 			},
 		},
 		{
-			enumsAsInts: true,
+			useEnumNumbers: true,
 			verifier: func(json string) {
 				if strings.Contains(json, "ONE") {
 					t.Errorf(`strings.Contains(%q, "ONE") = true; want false`, json)
@@ -305,7 +299,7 @@ func TestJSONPbEncoder(t *testing.T) {
 			},
 		},
 		{
-			emitDefaults: true,
+			emitUnpopulated: true,
 			verifier: func(json string) {
 				if want := `"sfixed32Value"`; !strings.Contains(json, want) {
 					t.Errorf(`strings.Contains(%q, %q) = false; want true`, json, want)
@@ -321,7 +315,7 @@ func TestJSONPbEncoder(t *testing.T) {
 			},
 		},
 		{
-			origName: true,
+			useProtoNames: true,
 			verifier: func(json string) {
 				if want := "uint64_value"; !strings.Contains(json, want) {
 					t.Errorf(`strings.Contains(%q, %q) = false; want true`, json, want)
@@ -330,10 +324,12 @@ func TestJSONPbEncoder(t *testing.T) {
 		},
 	} {
 		m := runtime.JSONPb{
-			EnumsAsInts:  spec.enumsAsInts,
-			EmitDefaults: spec.emitDefaults,
-			Indent:       spec.indent,
-			OrigName:     spec.origName,
+			MarshalOptions: protojson.MarshalOptions{
+				EmitUnpopulated: spec.emitUnpopulated,
+				Indent:          spec.indent,
+				UseProtoNames:   spec.useProtoNames,
+				UseEnumNumbers:  spec.useEnumNumbers,
+			},
 		}
 
 		var buf bytes.Buffer
@@ -343,7 +339,8 @@ func TestJSONPbEncoder(t *testing.T) {
 		}
 
 		var got examplepb.ABitOfEverything
-		if err := jsonpb.UnmarshalString(buf.String(), &got); err != nil {
+		unmarshaler := &protojson.UnmarshalOptions{}
+		if err := unmarshaler.Unmarshal(buf.Bytes(), &got); err != nil {
 			t.Errorf("jsonpb.UnmarshalString(%q, &got) failed with %v; want success; spec=%v", buf.String(), err, spec)
 		}
 		if diff := cmp.Diff(&got, &msg, protocmp.Transform()); diff != "" {
@@ -368,7 +365,7 @@ func TestJSONPbEncoderFields(t *testing.T) {
 		}
 	}
 
-	m.EnumsAsInts = true
+	m.UseEnumNumbers = true
 	buf, err := m.Marshal(examplepb.NumericEnum_ONE)
 	if err != nil {
 		t.Errorf("m.Marshal(%#v) failed with %v; want success", examplepb.NumericEnum_ONE, err)
@@ -552,26 +549,23 @@ var (
 			json: `{"true":{"id":"foo"}}`,
 		},
 		{
-			data: &duration.Duration{
+			data: &durationpb.Duration{
 				Seconds: 123,
 				Nanos:   456000000,
 			},
 			json: `"123.456s"`,
 		},
 		{
-			data: &timestamp.Timestamp{
+			data: &timestamppb.Timestamp{
 				Seconds: 1462875553,
 				Nanos:   123000000,
 			},
 			json: `"2016-05-10T10:19:13.123Z"`,
 		},
 		{
-			data: new(empty.Empty),
+			data: new(emptypb.Empty),
 			json: "{}",
 		},
-
-		// TODO(yugui) Enable unmarshaling of the following examples
-		// once jsonpb supports them.
 		{
 			data: &structpb.Value{
 				Kind: new(structpb.Value_NullValue),
@@ -621,31 +615,31 @@ var (
 		},
 
 		{
-			data: &wrappers.BoolValue{Value: true},
+			data: &wrapperspb.BoolValue{Value: true},
 			json: "true",
 		},
 		{
-			data: &wrappers.DoubleValue{Value: 123.456},
+			data: &wrapperspb.DoubleValue{Value: 123.456},
 			json: "123.456",
 		},
 		{
-			data: &wrappers.FloatValue{Value: 123.456},
+			data: &wrapperspb.FloatValue{Value: 123.456},
 			json: "123.456",
 		},
 		{
-			data: &wrappers.Int32Value{Value: -123},
+			data: &wrapperspb.Int32Value{Value: -123},
 			json: "-123",
 		},
 		{
-			data: &wrappers.Int64Value{Value: -123},
+			data: &wrapperspb.Int64Value{Value: -123},
 			json: `"-123"`,
 		},
 		{
-			data: &wrappers.UInt32Value{Value: 123},
+			data: &wrapperspb.UInt32Value{Value: 123},
 			json: "123",
 		},
 		{
-			data: &wrappers.UInt64Value{Value: 123},
+			data: &wrapperspb.UInt64Value{Value: 123},
 			json: `"123"`,
 		},
 		// TODO(yugui) Add other well-known types once jsonpb supports them
@@ -653,144 +647,210 @@ var (
 )
 
 func TestJSONPbMarshalResponseBodies(t *testing.T) {
+	marshaler := &runtime.JSONPb{}
 	for i, spec := range []struct {
-		input        interface{}
-		emitDefaults bool
-		verifier     func(json string)
+		input           interface{}
+		emitUnpopulated bool
+		verifier        func(*testing.T, interface{}, []byte)
 	}{
 		{
 			input: &examplepb.ResponseBodyOut{
 				Response: &examplepb.ResponseBodyOut_Response{Data: "abcdef"},
 			},
-			verifier: func(json string) {
-				expected := `{"response":{"data":"abcdef"}}`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			verifier: func(t *testing.T, input interface{}, json []byte) {
+				var out examplepb.ResponseBodyOut
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff(input, &out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
 		{
-			emitDefaults: true,
-			input:        &examplepb.ResponseBodyOut{},
-			verifier: func(json string) {
-				expected := `{"response":null}`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			emitUnpopulated: true,
+			input:           &examplepb.ResponseBodyOut{},
+			verifier: func(t *testing.T, input interface{}, json []byte) {
+				var out examplepb.ResponseBodyOut
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff(input, &out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
 		{
 			input: &examplepb.RepeatedResponseBodyOut_Response{},
-			verifier: func(json string) {
-				expected := `{}`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			verifier: func(t *testing.T, input interface{}, json []byte) {
+				var out examplepb.RepeatedResponseBodyOut_Response
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff(input, &out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
 		{
-			emitDefaults: true,
-			input:        &examplepb.RepeatedResponseBodyOut_Response{},
-			verifier: func(json string) {
-				expected := `{"data":"","type":"UNKNOWN"}`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			emitUnpopulated: true,
+			input:           &examplepb.RepeatedResponseBodyOut_Response{},
+			verifier: func(t *testing.T, input interface{}, json []byte) {
+				var out examplepb.RepeatedResponseBodyOut_Response
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff(input, &out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
 		{
 			input: ([]*examplepb.RepeatedResponseBodyOut_Response)(nil),
-			verifier: func(json string) {
-				expected := `null`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			verifier: func(t *testing.T, input interface{}, json []byte) {
+				var out []*examplepb.RepeatedResponseBodyOut_Response
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff(input, out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
 		{
-			emitDefaults: true,
-			input:        ([]*examplepb.RepeatedResponseBodyOut_Response)(nil),
-			verifier: func(json string) {
-				expected := `[]`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			emitUnpopulated: true,
+			input:           ([]*examplepb.RepeatedResponseBodyOut_Response)(nil),
+			verifier: func(t *testing.T, _ interface{}, json []byte) {
+				var out []*examplepb.RepeatedResponseBodyOut_Response
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff([]*examplepb.RepeatedResponseBodyOut_Response{}, out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
 		{
 			input: []*examplepb.RepeatedResponseBodyOut_Response{},
-			verifier: func(json string) {
-				expected := `[]`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			verifier: func(t *testing.T, input interface{}, json []byte) {
+				var out []*examplepb.RepeatedResponseBodyOut_Response
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff(input, out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
 		{
 			input: []string{"something"},
-			verifier: func(json string) {
-				expected := `["something"]`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			verifier: func(t *testing.T, input interface{}, json []byte) {
+				var out []string
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff(input, out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
 		{
 			input: []string{},
-			verifier: func(json string) {
-				expected := `[]`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			verifier: func(t *testing.T, input interface{}, json []byte) {
+				var out []string
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff(input, out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
 		{
 			input: ([]string)(nil),
-			verifier: func(json string) {
-				expected := `null`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			verifier: func(t *testing.T, input interface{}, json []byte) {
+				var out []string
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff(input, out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
 		{
-			emitDefaults: true,
-			input:        ([]string)(nil),
-			verifier: func(json string) {
-				expected := `[]`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			emitUnpopulated: true,
+			input:           ([]string)(nil),
+			verifier: func(t *testing.T, _ interface{}, json []byte) {
+				var out []string
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff([]string{}, out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
 		{
 			input: []*examplepb.RepeatedResponseBodyOut_Response{
-				&examplepb.RepeatedResponseBodyOut_Response{},
-				&examplepb.RepeatedResponseBodyOut_Response{
+				{},
+				{
 					Data: "abc",
 					Type: examplepb.RepeatedResponseBodyOut_Response_A,
 				},
 			},
-			verifier: func(json string) {
-				expected := `[{},{"data":"abc","type":"A"}]`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			verifier: func(t *testing.T, input interface{}, json []byte) {
+				var out []*examplepb.RepeatedResponseBodyOut_Response
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff(input, out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
 		{
-			emitDefaults: true,
+			emitUnpopulated: true,
 			input: []*examplepb.RepeatedResponseBodyOut_Response{
-				&examplepb.RepeatedResponseBodyOut_Response{},
-				&examplepb.RepeatedResponseBodyOut_Response{
+				{},
+				{
 					Data: "abc",
 					Type: examplepb.RepeatedResponseBodyOut_Response_B,
 				},
 			},
-			verifier: func(json string) {
-				expected := `[{"data":"","type":"UNKNOWN"},{"data":"abc","type":"B"}]`
-				if json != expected {
-					t.Errorf("json not equal (%q, %q)", json, expected)
+			verifier: func(t *testing.T, input interface{}, json []byte) {
+				var out []*examplepb.RepeatedResponseBodyOut_Response
+				err := marshaler.Unmarshal(json, &out)
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				diff := cmp.Diff(input, out, protocmp.Transform())
+				if diff != "" {
+					t.Errorf("json not equal:\n%s", diff)
 				}
 			},
 		},
@@ -798,7 +858,9 @@ func TestJSONPbMarshalResponseBodies(t *testing.T) {
 
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			m := runtime.JSONPb{
-				EmitDefaults: spec.emitDefaults,
+				MarshalOptions: protojson.MarshalOptions{
+					EmitUnpopulated: spec.emitUnpopulated,
+				},
 			}
 			val := spec.input
 			buf, err := m.Marshal(val)
@@ -806,7 +868,7 @@ func TestJSONPbMarshalResponseBodies(t *testing.T) {
 				t.Errorf("m.Marshal(%v) failed with %v; want success; spec=%v", val, err, spec)
 			}
 			if spec.verifier != nil {
-				spec.verifier(string(buf))
+				spec.verifier(t, spec.input, buf)
 			}
 		})
 	}

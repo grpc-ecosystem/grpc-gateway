@@ -4,10 +4,10 @@ import (
 	"google.golang.org/genproto/googleapis/api/httpbody"
 )
 
-// SetHTTPBodyMarshaler overwrite the default marshaler with the HTTPBodyMarshaler
+// SetHTTPBodyMarshaler overwrites the default marshaler with the HTTPBodyMarshaler
 func SetHTTPBodyMarshaler(serveMux *ServeMux) {
 	serveMux.marshalers.mimeMap[MIMEWildcard] = &HTTPBodyMarshaler{
-		Marshaler: &JSONPb{OrigName: true},
+		Marshaler: defaultMarshaler,
 	}
 }
 

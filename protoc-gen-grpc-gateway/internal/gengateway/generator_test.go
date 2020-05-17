@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	protodescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"google.golang.org/protobuf/proto"
 )
 
 func newExampleFileDescriptor() *descriptor.File {
@@ -20,7 +20,7 @@ func newExampleFileDescriptor() *descriptor.File {
 }
 
 func newExampleFileDescriptorWithGoPkg(gp *descriptor.GoPackage) *descriptor.File {
-	msgdesc := &protodescriptor.DescriptorProto{
+	msgdesc := &descriptorpb.DescriptorProto{
 		Name: proto.String("ExampleMessage"),
 	}
 	msg := &descriptor.Message{
@@ -31,31 +31,31 @@ func newExampleFileDescriptorWithGoPkg(gp *descriptor.GoPackage) *descriptor.Fil
 		File: &descriptor.File{
 			GoPkg: descriptor.GoPackage{
 				Path: "github.com/golang/protobuf/ptypes/empty",
-				Name: "empty",
+				Name: "emptypb",
 			},
 		},
 	}
-	meth := &protodescriptor.MethodDescriptorProto{
+	meth := &descriptorpb.MethodDescriptorProto{
 		Name:       proto.String("Example"),
 		InputType:  proto.String("ExampleMessage"),
 		OutputType: proto.String("ExampleMessage"),
 	}
-	meth1 := &protodescriptor.MethodDescriptorProto{
+	meth1 := &descriptorpb.MethodDescriptorProto{
 		Name:       proto.String("ExampleWithoutBindings"),
 		InputType:  proto.String("empty.Empty"),
 		OutputType: proto.String("empty.Empty"),
 	}
-	svc := &protodescriptor.ServiceDescriptorProto{
+	svc := &descriptorpb.ServiceDescriptorProto{
 		Name:   proto.String("ExampleService"),
-		Method: []*protodescriptor.MethodDescriptorProto{meth, meth1},
+		Method: []*descriptorpb.MethodDescriptorProto{meth, meth1},
 	}
 	return &descriptor.File{
-		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
 			Name:        proto.String("example.proto"),
 			Package:     proto.String("example"),
 			Dependency:  []string{"a.example/b/c.proto", "a.example/d/e.proto"},
-			MessageType: []*protodescriptor.DescriptorProto{msgdesc},
-			Service:     []*protodescriptor.ServiceDescriptorProto{svc},
+			MessageType: []*descriptorpb.DescriptorProto{msgdesc},
+			Service:     []*descriptorpb.ServiceDescriptorProto{svc},
 		},
 		GoPkg:    *gp,
 		Messages: []*descriptor.Message{msg},

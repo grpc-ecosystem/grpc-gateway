@@ -15,72 +15,72 @@ import (
 	"text/template"
 
 	"github.com/golang/glog"
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
-	pbdescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	swagger_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-swagger/options"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
 var wktSchemas = map[string]schemaCore{
-	".google.protobuf.Timestamp": schemaCore{
+	".google.protobuf.Timestamp": {
 		Type:   "string",
 		Format: "date-time",
 	},
-	".google.protobuf.Duration": schemaCore{
+	".google.protobuf.Duration": {
 		Type: "string",
 	},
-	".google.protobuf.StringValue": schemaCore{
+	".google.protobuf.StringValue": {
 		Type: "string",
 	},
-	".google.protobuf.BytesValue": schemaCore{
+	".google.protobuf.BytesValue": {
 		Type:   "string",
 		Format: "byte",
 	},
-	".google.protobuf.Int32Value": schemaCore{
+	".google.protobuf.Int32Value": {
 		Type:   "integer",
 		Format: "int32",
 	},
-	".google.protobuf.UInt32Value": schemaCore{
+	".google.protobuf.UInt32Value": {
 		Type:   "integer",
 		Format: "int64",
 	},
-	".google.protobuf.Int64Value": schemaCore{
+	".google.protobuf.Int64Value": {
 		Type:   "string",
 		Format: "int64",
 	},
-	".google.protobuf.UInt64Value": schemaCore{
+	".google.protobuf.UInt64Value": {
 		Type:   "string",
 		Format: "uint64",
 	},
-	".google.protobuf.FloatValue": schemaCore{
+	".google.protobuf.FloatValue": {
 		Type:   "number",
 		Format: "float",
 	},
-	".google.protobuf.DoubleValue": schemaCore{
+	".google.protobuf.DoubleValue": {
 		Type:   "number",
 		Format: "double",
 	},
-	".google.protobuf.BoolValue": schemaCore{
+	".google.protobuf.BoolValue": {
 		Type:   "boolean",
 		Format: "boolean",
 	},
-	".google.protobuf.Empty": schemaCore{},
-	".google.protobuf.Struct": schemaCore{
+	".google.protobuf.Empty": {},
+	".google.protobuf.Struct": {
 		Type: "object",
 	},
-	".google.protobuf.Value": schemaCore{
+	".google.protobuf.Value": {
 		Type: "object",
 	},
-	".google.protobuf.ListValue": schemaCore{
+	".google.protobuf.ListValue": {
 		Type: "array",
 		Items: (*swaggerItemsObject)(&schemaCore{
 			Type: "object",
 		}),
 	},
-	".google.protobuf.NullValue": schemaCore{
+	".google.protobuf.NullValue": {
 		Type: "string",
 	},
 }
@@ -122,7 +122,7 @@ func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Regis
 
 // queryParams converts a field to a list of swagger query parameters recursively through the use of nestedQueryParams.
 func queryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter) (params []swaggerParameterObject, err error) {
-    return nestedQueryParams(message, field, prefix, reg, pathParams, map[string]bool{})
+	return nestedQueryParams(message, field, prefix, reg, pathParams, map[string]bool{})
 }
 
 // nestedQueryParams converts a field to a list of swagger query parameters recursively.
@@ -147,7 +147,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		}
 	}
 
-	isEnum := field.GetType() == pbdescriptor.FieldDescriptorProto_TYPE_ENUM
+	isEnum := field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_ENUM
 	items := schema.Items
 	if schema.Type != "" || isEnum {
 		if schema.Type == "object" {
@@ -226,13 +226,13 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 	if err != nil {
 		return nil, fmt.Errorf("unknown message type %s", fieldType)
 	}
-        // Check for cyclical message reference:
-        isCycle := touched[*msg.Name]
-        if isCycle {
-            return nil, fmt.Errorf("Recursive types are not allowed for query parameters, cycle found on %q", fieldType)
-        }
-        // Update map with the massage name so a cycle further down the recursive path can be detected. 
-        touched[*msg.Name] = true
+	// Check for cyclical message reference:
+	isCycle := touched[*msg.Name]
+	if isCycle {
+		return nil, fmt.Errorf("Recursive types are not allowed for query parameters, cycle found on %q", fieldType)
+	}
+	// Update map with the massage name so a cycle further down the recursive path can be detected.
+	touched[*msg.Name] = true
 
 	for _, nestedField := range msg.Fields {
 		var fieldName string
@@ -415,14 +415,14 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 			aggregate = object
 		}
 	}
-	if fd.GetLabel() == pbdescriptor.FieldDescriptorProto_LABEL_REPEATED {
+	if fd.GetLabel() == descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
 		aggregate = array
 	}
 
 	var props *swaggerSchemaObjectProperties
 
 	switch ft := fd.GetType(); ft {
-	case pbdescriptor.FieldDescriptorProto_TYPE_ENUM, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE, pbdescriptor.FieldDescriptorProto_TYPE_GROUP:
+	case descriptorpb.FieldDescriptorProto_TYPE_ENUM, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, descriptorpb.FieldDescriptorProto_TYPE_GROUP:
 		if wktSchema, ok := wktSchemas[fd.GetTypeName()]; ok {
 			core = wktSchema
 
@@ -484,46 +484,46 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 // primitiveSchema returns a pair of "Type" and "Format" in JSON Schema for
 // the given primitive field type.
 // The last return parameter is true iff the field type is actually primitive.
-func primitiveSchema(t pbdescriptor.FieldDescriptorProto_Type) (ftype, format string, ok bool) {
+func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format string, ok bool) {
 	switch t {
-	case pbdescriptor.FieldDescriptorProto_TYPE_DOUBLE:
+	case descriptorpb.FieldDescriptorProto_TYPE_DOUBLE:
 		return "number", "double", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_FLOAT:
+	case descriptorpb.FieldDescriptorProto_TYPE_FLOAT:
 		return "number", "float", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_INT64:
+	case descriptorpb.FieldDescriptorProto_TYPE_INT64:
 		return "string", "int64", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_UINT64:
+	case descriptorpb.FieldDescriptorProto_TYPE_UINT64:
 		// 64bit integer types are marshaled as string in the default JSONPb marshaler.
 		// TODO(yugui) Add an option to declare 64bit integers as int64.
 		//
 		// NOTE: uint64 is not a predefined format of integer type in Swagger spec.
 		// So we cannot expect that uint64 is commonly supported by swagger processor.
 		return "string", "uint64", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_INT32:
+	case descriptorpb.FieldDescriptorProto_TYPE_INT32:
 		return "integer", "int32", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_FIXED64:
+	case descriptorpb.FieldDescriptorProto_TYPE_FIXED64:
 		// Ditto.
 		return "string", "uint64", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_FIXED32:
+	case descriptorpb.FieldDescriptorProto_TYPE_FIXED32:
 		// Ditto.
 		return "integer", "int64", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_BOOL:
+	case descriptorpb.FieldDescriptorProto_TYPE_BOOL:
 		return "boolean", "boolean", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_STRING:
+	case descriptorpb.FieldDescriptorProto_TYPE_STRING:
 		// NOTE: in swagger specifition, format should be empty on string type
 		return "string", "", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_BYTES:
+	case descriptorpb.FieldDescriptorProto_TYPE_BYTES:
 		return "string", "byte", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_UINT32:
+	case descriptorpb.FieldDescriptorProto_TYPE_UINT32:
 		// Ditto.
 		return "integer", "int64", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_SFIXED32:
+	case descriptorpb.FieldDescriptorProto_TYPE_SFIXED32:
 		return "integer", "int32", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_SFIXED64:
+	case descriptorpb.FieldDescriptorProto_TYPE_SFIXED64:
 		return "string", "int64", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_SINT32:
+	case descriptorpb.FieldDescriptorProto_TYPE_SINT32:
 		return "integer", "int32", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_SINT64:
+	case descriptorpb.FieldDescriptorProto_TYPE_SINT64:
 		return "string", "int64", true
 	default:
 		return "", "", false
@@ -751,7 +751,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					var items *swaggerItemsObject
 					var minItems *int
 					switch pt := parameter.Target.GetType(); pt {
-					case pbdescriptor.FieldDescriptorProto_TYPE_GROUP, pbdescriptor.FieldDescriptorProto_TYPE_MESSAGE:
+					case descriptorpb.FieldDescriptorProto_TYPE_GROUP, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE:
 						if descriptor.IsWellKnownType(parameter.Target.GetTypeName()) {
 							if parameter.IsRepeated() {
 								return fmt.Errorf("only primitive and enum types are allowed in repeated path parameters")
@@ -764,7 +764,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						} else {
 							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
-					case pbdescriptor.FieldDescriptorProto_TYPE_ENUM:
+					case descriptorpb.FieldDescriptorProto_TYPE_ENUM:
 						enum, err := reg.LookupEnum("", parameter.Target.GetTypeName())
 						if err != nil {
 							return err
@@ -887,7 +887,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					pathItemObject = swaggerPathItemObject{}
 				}
 
-				methProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method")
+				methProtoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.ServiceDescriptorProto)(nil)), "Method")
 				desc := "A successful response."
 				var responseSchema swaggerSchemaObject
 
@@ -1162,7 +1162,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	renderEnumerationsAsDefinition(enums, s.Definitions, p.reg)
 
 	// File itself might have some comments and metadata.
-	packageProtoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
+	packageProtoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Package")
 	packageComments := protoComments(p.reg, p.File, nil, "Package", packageProtoPath)
 	if err := updateSwaggerDataFromComments(p.reg, &s, p, packageComments, true); err != nil {
 		panic(err)
@@ -1395,7 +1395,7 @@ func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error
 		if !strings.HasPrefix(k, "x-") {
 			return nil, fmt.Errorf("Extension keys need to start with \"x-\": %q", k)
 		}
-		ext, err := (&jsonpb.Marshaler{Indent: "  "}).MarshalToString(v)
+		ext, err := (&protojson.MarshalOptions{Indent: "  "}).Marshal(v)
 		if err != nil {
 			return nil, err
 		}
@@ -1491,7 +1491,7 @@ func updateSwaggerDataFromComments(reg *descriptor.Registry, swaggerObject inter
 }
 
 func fieldProtoComments(reg *descriptor.Registry, msg *descriptor.Message, field *descriptor.Field) string {
-	protoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "Field")
+	protoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.DescriptorProto)(nil)), "Field")
 	for i, f := range msg.Fields {
 		if f == field {
 			return protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index), protoPath, int32(i))
@@ -1501,7 +1501,7 @@ func fieldProtoComments(reg *descriptor.Registry, msg *descriptor.Message, field
 }
 
 func enumValueProtoComments(reg *descriptor.Registry, enum *descriptor.Enum) string {
-	protoPath := protoPathIndex(reflect.TypeOf((*pbdescriptor.EnumDescriptorProto)(nil)), "Value")
+	protoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.EnumDescriptorProto)(nil)), "Value")
 	var comments []string
 	for idx, value := range enum.GetValue() {
 		name := value.GetName()
@@ -1591,11 +1591,11 @@ func goTemplateComments(comment string, data interface{}, reg *descriptor.Regist
 	return temp.String()
 }
 
-var messageProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "MessageType")
-var nestedProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil)), "NestedType")
-var packageProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Package")
-var serviceProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil)), "Service")
-var methodProtoPath = protoPathIndex(reflect.TypeOf((*pbdescriptor.ServiceDescriptorProto)(nil)), "Method")
+var messageProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "MessageType")
+var nestedProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.DescriptorProto)(nil)), "NestedType")
+var packageProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Package")
+var serviceProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Service")
+var methodProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.ServiceDescriptorProto)(nil)), "Method")
 
 func isProtoPathMatches(paths []int32, outerPaths []int32, typeName string, typeIndex int32, fieldPaths []int32) bool {
 	if typeName == "Package" && typeIndex == packageProtoPath {
@@ -1617,7 +1617,7 @@ func isProtoPathMatches(paths []int32, outerPaths []int32, typeName string, type
 		}
 		paths = paths[2:]
 	} else {
-		typeNameDescriptor := reflect.TypeOf((*pbdescriptor.FileDescriptorProto)(nil))
+		typeNameDescriptor := reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil))
 
 		if len(outerPaths) > 0 {
 			if paths[0] != messageProtoPath || paths[1] != outerPaths[0] {
@@ -1636,7 +1636,7 @@ func isProtoPathMatches(paths []int32, outerPaths []int32, typeName string, type
 			if typeName == "MessageType" {
 				typeName = "NestedType"
 			}
-			typeNameDescriptor = reflect.TypeOf((*pbdescriptor.DescriptorProto)(nil))
+			typeNameDescriptor = reflect.TypeOf((*descriptorpb.DescriptorProto)(nil))
 		}
 
 		if paths[0] != protoPathIndex(typeNameDescriptor, typeName) || paths[1] != typeIndex {
@@ -1696,17 +1696,14 @@ func protoPathIndex(descriptorType reflect.Type, what string) int32 {
 
 // extractOperationOptionFromMethodDescriptor extracts the message of type
 // swagger_options.Operation from a given proto method's descriptor.
-func extractOperationOptionFromMethodDescriptor(meth *pbdescriptor.MethodDescriptorProto) (*swagger_options.Operation, error) {
+func extractOperationOptionFromMethodDescriptor(meth *descriptorpb.MethodDescriptorProto) (*swagger_options.Operation, error) {
 	if meth.Options == nil {
 		return nil, nil
 	}
 	if !proto.HasExtension(meth.Options, swagger_options.E_Openapiv2Operation) {
 		return nil, nil
 	}
-	ext, err := proto.GetExtension(meth.Options, swagger_options.E_Openapiv2Operation)
-	if err != nil {
-		return nil, err
-	}
+	ext := proto.GetExtension(meth.Options, swagger_options.E_Openapiv2Operation)
 	opts, ok := ext.(*swagger_options.Operation)
 	if !ok {
 		return nil, fmt.Errorf("extension is %T; want an Operation", ext)
@@ -1716,17 +1713,14 @@ func extractOperationOptionFromMethodDescriptor(meth *pbdescriptor.MethodDescrip
 
 // extractSchemaOptionFromMessageDescriptor extracts the message of type
 // swagger_options.Schema from a given proto message's descriptor.
-func extractSchemaOptionFromMessageDescriptor(msg *pbdescriptor.DescriptorProto) (*swagger_options.Schema, error) {
+func extractSchemaOptionFromMessageDescriptor(msg *descriptorpb.DescriptorProto) (*swagger_options.Schema, error) {
 	if msg.Options == nil {
 		return nil, nil
 	}
 	if !proto.HasExtension(msg.Options, swagger_options.E_Openapiv2Schema) {
 		return nil, nil
 	}
-	ext, err := proto.GetExtension(msg.Options, swagger_options.E_Openapiv2Schema)
-	if err != nil {
-		return nil, err
-	}
+	ext := proto.GetExtension(msg.Options, swagger_options.E_Openapiv2Schema)
 	opts, ok := ext.(*swagger_options.Schema)
 	if !ok {
 		return nil, fmt.Errorf("extension is %T; want a Schema", ext)
@@ -1736,17 +1730,14 @@ func extractSchemaOptionFromMessageDescriptor(msg *pbdescriptor.DescriptorProto)
 
 // extractSwaggerOptionFromFileDescriptor extracts the message of type
 // swagger_options.Swagger from a given proto method's descriptor.
-func extractSwaggerOptionFromFileDescriptor(file *pbdescriptor.FileDescriptorProto) (*swagger_options.Swagger, error) {
+func extractSwaggerOptionFromFileDescriptor(file *descriptorpb.FileDescriptorProto) (*swagger_options.Swagger, error) {
 	if file.Options == nil {
 		return nil, nil
 	}
 	if !proto.HasExtension(file.Options, swagger_options.E_Openapiv2Swagger) {
 		return nil, nil
 	}
-	ext, err := proto.GetExtension(file.Options, swagger_options.E_Openapiv2Swagger)
-	if err != nil {
-		return nil, err
-	}
+	ext := proto.GetExtension(file.Options, swagger_options.E_Openapiv2Swagger)
 	opts, ok := ext.(*swagger_options.Swagger)
 	if !ok {
 		return nil, fmt.Errorf("extension is %T; want a Swagger object", ext)
@@ -1754,17 +1745,14 @@ func extractSwaggerOptionFromFileDescriptor(file *pbdescriptor.FileDescriptorPro
 	return opts, nil
 }
 
-func extractJSONSchemaFromFieldDescriptor(fd *pbdescriptor.FieldDescriptorProto) (*swagger_options.JSONSchema, error) {
+func extractJSONSchemaFromFieldDescriptor(fd *descriptorpb.FieldDescriptorProto) (*swagger_options.JSONSchema, error) {
 	if fd.Options == nil {
 		return nil, nil
 	}
 	if !proto.HasExtension(fd.Options, swagger_options.E_Openapiv2Field) {
 		return nil, nil
 	}
-	ext, err := proto.GetExtension(fd.Options, swagger_options.E_Openapiv2Field)
-	if err != nil {
-		return nil, err
-	}
+	ext := proto.GetExtension(fd.Options, swagger_options.E_Openapiv2Field)
 	opts, ok := ext.(*swagger_options.JSONSchema)
 	if !ok {
 		return nil, fmt.Errorf("extension is %T; want a JSONSchema object", ext)

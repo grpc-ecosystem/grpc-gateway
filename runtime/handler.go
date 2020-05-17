@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"net/textproto"
 
-	"github.com/golang/protobuf/proto"
 	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 )
 
 // ForwardResponseStream forwards the stream from gRPC server to REST client.
@@ -61,22 +61,20 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 		}
 
 		var buf []byte
+		httpBody, isHTTPBody := resp.(*httpbody.HttpBody)
 		switch {
 		case resp == nil:
 			buf, err = marshaler.Marshal(errorChunk(status.New(codes.Internal, "empty response")))
+		case isHTTPBody:
+			buf = httpBody.GetData()
+			w.Header().Set("Content-Type", httpBody.GetContentType())
 		default:
-			if httpBody, ok := resp.(*httpbody.HttpBody); ok {
-				buf = httpBody.GetData()
-				w.Header().Set("Content-Type", httpBody.GetContentType())
-			} else {
-				result := map[string]interface{}{"result": resp}
-				if rb, ok := resp.(responseBody); ok {
-					result["result"] = rb.XXX_ResponseBody()
-				}
-
-				buf, err = marshaler.Marshal(result)
+			result := map[string]interface{}{"result": resp}
+			if rb, ok := resp.(responseBody); ok {
+				result["result"] = rb.XXX_ResponseBody()
 			}
 
+			buf, err = marshaler.Marshal(result)
 		}
 
 		if err != nil {

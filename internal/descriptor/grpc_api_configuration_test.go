@@ -5,21 +5,6 @@ import (
 	"testing"
 )
 
-func TestLoadGrpcAPIServiceFromYAMLEmpty(t *testing.T) {
-	service, err := loadGrpcAPIServiceFromYAML([]byte(``), "empty")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if service == nil {
-		t.Fatal("No service returned")
-	}
-
-	if service.Http != nil {
-		t.Fatal("HTTP not empty")
-	}
-}
-
 func TestLoadGrpcAPIServiceFromYAMLInvalidType(t *testing.T) {
 	// Ideally this would fail but for now this test documents that it doesn't
 	service, err := loadGrpcAPIServiceFromYAML([]byte(`type: not.the.right.type`), "invalidtype")

@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/wrappers"
+	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/utilities"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/grpclog"
@@ -274,51 +274,51 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
-		msg = &wrappers.DoubleValue{Value: v}
+		msg = &wrapperspb.DoubleValue{Value: v}
 	case "google.protobuf.FloatValue":
 		v, err := strconv.ParseFloat(value, 32)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
-		msg = &wrappers.FloatValue{Value: float32(v)}
+		msg = &wrapperspb.FloatValue{Value: float32(v)}
 	case "google.protobuf.Int64Value":
 		v, err := strconv.ParseInt(value, 10, 64)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
-		msg = &wrappers.Int64Value{Value: v}
+		msg = &wrapperspb.Int64Value{Value: v}
 	case "google.protobuf.Int32Value":
 		v, err := strconv.ParseInt(value, 10, 32)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
-		msg = &wrappers.Int32Value{Value: int32(v)}
+		msg = &wrapperspb.Int32Value{Value: int32(v)}
 	case "google.protobuf.UInt64Value":
 		v, err := strconv.ParseUint(value, 10, 64)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
-		msg = &wrappers.UInt64Value{Value: v}
+		msg = &wrapperspb.UInt64Value{Value: v}
 	case "google.protobuf.UInt32Value":
 		v, err := strconv.ParseUint(value, 10, 32)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
-		msg = &wrappers.UInt32Value{Value: uint32(v)}
+		msg = &wrapperspb.UInt32Value{Value: uint32(v)}
 	case "google.protobuf.BoolValue":
 		v, err := strconv.ParseBool(value)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
-		msg = &wrappers.BoolValue{Value: v}
+		msg = &wrapperspb.BoolValue{Value: v}
 	case "google.protobuf.StringValue":
-		msg = &wrappers.StringValue{Value: value}
+		msg = &wrapperspb.StringValue{Value: value}
 	case "google.protobuf.BytesValue":
 		v, err := base64.StdEncoding.DecodeString(value)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
-		msg = &wrappers.BytesValue{Value: v}
+		msg = &wrapperspb.BytesValue{Value: v}
 	case "google.protobuf.FieldMask":
 		fm := &field_mask.FieldMask{}
 		for _, v := range strings.Split(value, ",") {

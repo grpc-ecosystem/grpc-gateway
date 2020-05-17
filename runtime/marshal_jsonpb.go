@@ -7,17 +7,20 @@ import (
 	"io"
 	"reflect"
 
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
 // JSONPb is a Marshaler which marshals/unmarshals into/from JSON
-// with the "github.com/golang/protobuf/jsonpb".
-// It supports fully functionality of protobuf unlike JSONBuiltin.
+// with the "google.golang.org/protobuf/encoding/protojson" marshaler.
+// It supports the full functionality of protobuf unlike JSONBuiltin.
 //
 // The NewDecoder method returns a DecoderWrapper, so the underlying
 // *json.Decoder methods can be used.
-type JSONPb jsonpb.Marshaler
+type JSONPb struct {
+	protojson.MarshalOptions
+	protojson.UnmarshalOptions
+}
 
 // ContentType always returns "application/json".
 func (*JSONPb) ContentType() string {
@@ -47,7 +50,13 @@ func (j *JSONPb) marshalTo(w io.Writer, v interface{}) error {
 		_, err = w.Write(buf)
 		return err
 	}
-	return (*jsonpb.Marshaler)(j).Marshal(w, p)
+	b, err := j.MarshalOptions.Marshal(p)
+	if err != nil {
+		return err
+	}
+
+	_, err = w.Write(b)
+	return err
 }
 
 var (
@@ -74,7 +83,7 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 
 	if rv.Kind() == reflect.Slice {
 		if rv.IsNil() {
-			if j.EmitDefaults {
+			if j.EmitUnpopulated {
 				return []byte("[]"), nil
 			}
 			return []byte("null"), nil
@@ -93,7 +102,7 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 						return nil, err
 					}
 				}
-				if err = (*jsonpb.Marshaler)(j).Marshal(&buf, rv.Index(i).Interface().(proto.Message)); err != nil {
+				if err = j.marshalTo(&buf, rv.Index(i).Interface().(proto.Message)); err != nil {
 					return nil, err
 				}
 			}
@@ -120,7 +129,7 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 		}
 		return json.Marshal(m)
 	}
-	if enum, ok := rv.Interface().(protoEnum); ok && !j.EnumsAsInts {
+	if enum, ok := rv.Interface().(protoEnum); ok && !j.UseEnumNumbers {
 		return json.Marshal(enum.String())
 	}
 	return json.Marshal(rv.Interface())
@@ -172,8 +181,18 @@ func decodeJSONPb(d *json.Decoder, v interface{}) error {
 	if !ok {
 		return decodeNonProtoField(d, v)
 	}
-	unmarshaler := &jsonpb.Unmarshaler{AllowUnknownFields: allowUnknownFields}
-	return unmarshaler.UnmarshalNext(d, p)
+
+	// Decode into bytes for marshalling
+	var b json.RawMessage
+	err := d.Decode(&b)
+	if err != nil {
+		return err
+	}
+
+	unmarshaler := &protojson.UnmarshalOptions{
+		DiscardUnknown: allowUnknownFields,
+	}
+	return unmarshaler.Unmarshal([]byte(b), p)
 }
 
 func decodeNonProtoField(d *json.Decoder, v interface{}) error {
@@ -186,8 +205,17 @@ func decodeNonProtoField(d *json.Decoder, v interface{}) error {
 			rv.Set(reflect.New(rv.Type().Elem()))
 		}
 		if rv.Type().ConvertibleTo(typeProtoMessage) {
-			unmarshaler := &jsonpb.Unmarshaler{AllowUnknownFields: allowUnknownFields}
-			return unmarshaler.UnmarshalNext(d, rv.Interface().(proto.Message))
+			// Decode into bytes for marshalling
+			var b json.RawMessage
+			err := d.Decode(&b)
+			if err != nil {
+				return err
+			}
+
+			unmarshaler := &protojson.UnmarshalOptions{
+				DiscardUnknown: allowUnknownFields,
+			}
+			return unmarshaler.Unmarshal([]byte(b), rv.Interface().(proto.Message))
 		}
 		rv = rv.Elem()
 	}
@@ -215,6 +243,23 @@ func decodeNonProtoField(d *json.Decoder, v interface{}) error {
 				return err
 			}
 			rv.SetMapIndex(bk, bv.Elem())
+		}
+		return nil
+	}
+	if rv.Kind() == reflect.Slice {
+		var sl []json.RawMessage
+		if err := d.Decode(&sl); err != nil {
+			return err
+		}
+		if sl != nil {
+			rv.Set(reflect.MakeSlice(rv.Type(), 0, 0))
+		}
+		for _, item := range sl {
+			bv := reflect.New(rv.Type().Elem())
+			if err := unmarshalJSONPb([]byte(item), bv.Interface()); err != nil {
+				return err
+			}
+			rv.Set(reflect.Append(rv, bv.Elem()))
 		}
 		return nil
 	}
