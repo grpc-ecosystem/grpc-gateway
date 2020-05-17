@@ -2368,7 +2368,7 @@ definitions:
       \ used in\npaths.\n\n## Field Mask Verification\n\nThe implementation of any\
       \ API method which has a FieldMask type field in the\nrequest should verify\
       \ the included field paths, and return an\n`INVALID_ARGUMENT` error if any path\
-      \ is duplicated or unmappable."
+      \ is unmappable."
   rpcStatus:
     type: "object"
     properties:
