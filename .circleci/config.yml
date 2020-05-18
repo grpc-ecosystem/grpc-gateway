@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     environment:
-    ## Split key to avoid github revoking it
+    ## Split key to avoid github from revoking it
       password0: '99544cdcb19ad4e3fd64'
       password1: '3ec86b2e5a431be2d72c'
     docker:
@@ -16,7 +16,7 @@ jobs:
       - run: go build ./...
   test:
     environment:
-    ## Split key to avoid github revoking it
+    ## Split key to avoid github from revoking it
       password0: '99544cdcb19ad4e3fd64'
       password1: '3ec86b2e5a431be2d72c'
       GLOG_logtostderr: '1'
@@ -32,7 +32,7 @@ jobs:
       - run: bash <(curl -s https://codecov.io/bash)
   node_test:
     environment:
-    ## Split key to avoid github revoking it
+    ## Split key to avoid github from revoking it
       password0: '99544cdcb19ad4e3fd64'
       password1: '3ec86b2e5a431be2d72c'
     docker:
@@ -52,7 +52,7 @@ jobs:
           ./node_modules/.bin/gulp
   generate:
     environment:
-    ## Split key to avoid github revoking it
+    ## Split key to avoid github from revoking it
       password0: '99544cdcb19ad4e3fd64'
       password1: '3ec86b2e5a431be2d72c'
     docker:
@@ -70,7 +70,7 @@ jobs:
       - run: git diff --exit-code
   lint:
     environment:
-    ## Split key to avoid github revoking it
+    ## Split key to avoid github from revoking it
       password0: '99544cdcb19ad4e3fd64'
       password1: '3ec86b2e5a431be2d72c'
     docker:
@@ -131,7 +131,7 @@ jobs:
             - /root/.cache/_grpc_gateway_bazel
   gorelease:
     environment:
-    ## Split key to avoid github revoking it
+    ## Split key to avoid github from revoking it
       password0: '99544cdcb19ad4e3fd64'
       password1: '3ec86b2e5a431be2d72c'
     docker:
@@ -151,7 +151,7 @@ jobs:
       - run: gorelease
   release:
     environment:
-    ## Split key to avoid github revoking it
+    ## Split key to avoid github from revoking it
       password0: '99544cdcb19ad4e3fd64'
       password1: '3ec86b2e5a431be2d72c'
     docker:
