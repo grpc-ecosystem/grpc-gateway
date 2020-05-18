@@ -22,7 +22,7 @@ All submissions, including submissions by project members, require review.
 
 ### I want to regenerate the files after making changes!
 
-Great, it should be as simple as thus (run from the root of the directory):
+Great, it should be as simple as this (run from the root of the directory):
 
 ```bash
 docker run -v $(pwd):/src/grpc-gateway --rm docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14 \
