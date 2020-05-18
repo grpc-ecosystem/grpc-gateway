@@ -5,7 +5,7 @@
 The grpc-gateway is a plugin of the Google protocol buffers compiler
 [protoc](https://github.com/protocolbuffers/protobuf).
 It reads protobuf service definitions and generates a reverse-proxy server which
-'translates a RESTful HTTP API into gRPC. This server is generated according to the
+translates a RESTful HTTP API into gRPC. This server is generated according to the
 [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46)
 annotations in your service definitions.
 
@@ -28,7 +28,7 @@ gRPC is great -- it generates API clients and server stubs in many programming
 languages, it is fast, easy-to-use, bandwidth-efficient and its design is
 combat-proven by Google. However, you might still want to provide a traditional
 RESTful JSON API as well. Reasons can range from maintaining
-backwards-compatibility, supporting languages or clients not well supported by
+backward-compatibility, supporting languages or clients that are not well supported by
 gRPC, to simply maintaining the aesthetics and tooling involved with a RESTful
 JSON architecture.
 
@@ -123,7 +123,7 @@ annotation to your .proto file
 
    >You will need to provide the required third party protobuf files to the `protoc` compiler.
    >They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
-   >them into your `protoc` generation file structure. If you've structured your protofiles according
+   >them into your `protoc` generation file structure. If you've structured your proto files according
    >to something like [the Buf style guide](https://buf.build/docs/style-guide#files-and-packages),
    >you could copy the files into a top-level `./google` folder.
 
@@ -247,12 +247,12 @@ example:
 ```
 
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to
-Golang import paths. They are compatible to
-[the parameters with same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
+Golang import paths. They are compatible with
+[the parameters with the same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
 
 In addition we also support the `request_context` parameter in order to use the
 `http.Request`'s Context (only for Go 1.7 and above). This parameter can be
-useful to pass request scoped context between the gateway and the gRPC service.
+useful to pass the request-scoped context between the gateway and the gRPC service.
 
 `protoc-gen-grpc-gateway` also supports some more command line flags to control
 logging. You can give these flags together with parameters above. Run
@@ -286,10 +286,10 @@ gRPC-gateway, and a gRPC server, see
 ### Supported
 
 * Generating JSON API handlers.
-* Method parameters in request body.
-* Method parameters in request path.
+* Method parameters in the request body.
+* Method parameters in the request path.
 * Method parameters in query string.
-* Enum fields in path parameter (including repeated enum fields).
+* Enum fields in the path parameter (including repeated enum fields).
 * Mapping streaming APIs to newline-delimited JSON streams.
 * Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata (prefixed with `grpcgateway-`)
 * Optionally emitting API definitions for
