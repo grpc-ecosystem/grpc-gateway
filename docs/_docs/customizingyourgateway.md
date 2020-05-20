@@ -40,17 +40,17 @@ For example:
 
 ```go
 mux := runtime.NewServeMux(
-    runtime.WithMarshalerOption("application/json+pretty", &runtime.JSONPb{Indent: "  "}),
+	runtime.WithMarshalerOption("application/json+pretty", &runtime.JSONPb{Indent: "  "}),
 )
 prettier := func(h http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        // checking Values as map[string][]string also catches ?pretty and ?pretty=
-        // r.URL.Query().Get("pretty") would not.
-        if _, ok := r.URL.Query()["pretty"]; ok {
-            r.Header.Set("Accept", "application/json+pretty")
-        }
-        h.ServeHTTP(w, r)
-    })
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// checking Values as map[string][]string also catches ?pretty and ?pretty=
+		// r.URL.Query().Get("pretty") would not.
+		if _, ok := r.URL.Query()["pretty"]; ok {
+			r.Header.Set("Accept", "application/json+pretty")
+		}
+		h.ServeHTTP(w, r)
+	})
 }
 http.ListenAndServe(":8080", prettier(mux))
 ```
@@ -59,15 +59,15 @@ Note that  `runtime.JSONPb{Indent: "  "}` will do the trick for pretty-printing:
 `jsonpb.Marshaler`:
 ```go
 type Marshaler struct {
-    // ...
+	// ...
 
-    // A string to indent each level by. The presence of this field will
-    // also cause a space to appear between the field separator and
-    // value, and for newlines to appear between fields and array
-    // elements.
-    Indent string
+	// A string to indent each level by. The presence of this field will
+	// also cause a space to appear between the field separator and
+	// value, and for newlines to appear between fields and array
+	// elements.
+	Indent string
 
-    // ...
+	// ...
 }
 ```
 
@@ -79,31 +79,30 @@ also, this example code does not remove the query parameter `pretty` from furthe
 
 ## Customize unmarshaling per Content-Type
 
-Having different unmarshaling options per Content-Type is possible by wrapping the decoder and
-passing that to `runtime.WithMarshalerOption`:
+Having different unmarshaling options per Content-Type is possible by wrapping the decoder and passing that to `runtime.WithMarshalerOption`:
 
 ```go
 type m struct {
-    *runtime.JSONPb
-    unmarshaler *jsonpb.Unmarshaler
+	*runtime.JSONPb
+	unmarshaler *jsonpb.Unmarshaler
 }
 
 type decoderWrapper struct {
-    *json.Decoder
-    *jsonpb.Unmarshaler
+	*json.Decoder
+	*jsonpb.Unmarshaler
 }
 
 func (n *m) NewDecoder(r io.Reader) runtime.Decoder {
-    d := json.NewDecoder(r)
-    return &decoderWrapper{Decoder: d, Unmarshaler: n.unmarshaler}
+	d := json.NewDecoder(r)
+	return &decoderWrapper{Decoder: d, Unmarshaler: n.unmarshaler}
 }
 
 func (d *decoderWrapper) Decode(v interface{}) error {
-    p, ok := v.(proto.Message)
-    if !ok { // if it's not decoding into a proto.Message, there's no notion of unknown fields
-        return d.Decoder.Decode(v)
-    }
-    return d.UnmarshalNext(d.Decoder, p) // uses m's jsonpb.Unmarshaler configuration
+	p, ok := v.(proto.Message)
+	if !ok { // if it's not decoding into a proto.Message, there's no notion of unknown fields
+		return d.Decoder.Decode(v)
+	}
+	return d.UnmarshalNext(d.Decoder, p) // uses m's jsonpb.Unmarshaler configuration
 }
 ```
 
@@ -187,8 +186,8 @@ for more info on sending / receiving gRPC metadata.
   ...
   if appendCustomHeader {
     grpc.SendHeader(ctx, metadata.New(map[string]string{
-            "x-custom-header1": "value",
-        }))
+			"x-custom-header1": "value",
+		}))
   }
   ```
 
@@ -202,12 +201,12 @@ Or you might want to mutate the response messages to be returned.
    func myFilter(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
         t, ok := resp.(*externalpb.Tokenizer)
 
-    if ok {
-      w.Header().Set("X-My-Tracking-Token", t.Token)
-      t.Token = ""
-    }
+	if ok {
+	  w.Header().Set("X-My-Tracking-Token", t.Token)
+	  t.Token = ""
+	}
 
-       return nil
+   	return nil
    }
    ```
 2. Register the filter with [`WithForwardResponseOption`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithForwardResponseOption)
@@ -273,7 +272,7 @@ opts := []grpc.DialOption{
   ),
 }
 if err := pb.RegisterMyServiceHandlerFromEndpoint(ctx, mux, serviceEndpoint, opts); err != nil {
-    log.Fatalf("could not register HTTP service: %v", err)
+	log.Fatalf("could not register HTTP service: %v", err)
 }
 ```
 
@@ -313,7 +312,7 @@ streams, you must install a _different_ error handler:
 
 ```go
 mux := runtime.NewServeMux(
-    runtime.WithStreamErrorHandler(handleStreamError))
+	runtime.WithStreamErrorHandler(handleStreamError))
 ```
 
 The signature of the handler is much more rigid because we need
@@ -333,26 +332,26 @@ Here's an example custom handler:
 // messages; and does not set gRPC code or details fields (so they will
 // be omitted from the resulting JSON object that is sent to client).
 func handleStreamError(ctx context.Context, err error) *runtime.StreamError {
-    code := http.StatusBadGateway
-    msg := "unexpected error"
-    if s, ok := status.FromError(err); ok {
-        code = runtime.HTTPStatusFromCode(s.Code())
-        // default message, based on the name of the gRPC code
-        msg = code.String()
-        // see if error details include "safe" message to send
-        // to external callers
-        for _, msg := s.Details() {
-            if safe, ok := msg.(*SafeMessage); ok {
-                msg = safe.Text
-                break
-            }
-        }
-    }
-    return &runtime.StreamError{
-        HttpCode:   int32(code),
-        HttpStatus: http.StatusText(code),
-        Message:    msg,
-    }
+	code := http.StatusBadGateway
+	msg := "unexpected error"
+	if s, ok := status.FromError(err); ok {
+		code = runtime.HTTPStatusFromCode(s.Code())
+		// default message, based on the name of the gRPC code
+		msg = code.String()
+		// see if error details include "safe" message to send
+		// to external callers
+		for _, msg := s.Details() {
+			if safe, ok := msg.(*SafeMessage); ok {
+				msg = safe.Text
+				break
+			}
+		}
+	}
+	return &runtime.StreamError{
+	    HttpCode:   int32(code),
+	    HttpStatus: http.StatusText(code),
+	    Message:    msg,
+	}
 }
 ```
 
@@ -375,22 +374,22 @@ You might want to keep the behavior of the current marshaler but change only a m
    package generated
 
    import (
-       "net/http"
+   	"net/http"
 
-       "github.com/grpc-ecosystem/grpc-gateway/runtime"
-       "github.com/golang/protobuf/proto"
-       "golang.org/x/net/context"
+   	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+   	"github.com/golang/protobuf/proto"
+   	"golang.org/x/net/context"
    )
 
    func forwardCheckoutResp(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, req *http.Request, resp proto.Message, opts ...func(context.Context, http.ResponseWriter, proto.Message) error) {
-       if someCondition(resp) {
-           http.Error(w, "not enough credit", http. StatusPaymentRequired)
-           return
-       }
-       runtime.ForwardResponseMessage(ctx, mux, marshaler, w, req, resp, opts...)
+   	if someCondition(resp) {
+   		http.Error(w, "not enough credit", http. StatusPaymentRequired)
+   		return
+   	}
+   	runtime.ForwardResponseMessage(ctx, mux, marshaler, w, req, resp, opts...)
    }
 
    func init() {
-       forward_MyService_Checkout_0 = forwardCheckoutResp
+   	forward_MyService_Checkout_0 = forwardCheckoutResp
    }
    ```
