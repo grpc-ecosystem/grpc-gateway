@@ -63,7 +63,7 @@ type Marshaler struct {
 
 	// A string to indent each level by. The presence of this field will
 	// also cause a space to appear between the field separator and
-	// value, and for newlines to be appear between fields and array
+	// value, and for newlines to appear between fields and array
 	// elements.
 	Indent string
 
@@ -79,8 +79,7 @@ also, this example code does not remove the query parameter `pretty` from furthe
 
 ## Customize unmarshaling per Content-Type
 
-Having different unmarshaling options per Content-Type is possible by wrapping the decoder and
-and passing that to `runtime.WithMarshalerOption`:
+Having different unmarshaling options per Content-Type is possible by wrapping the decoder and passing that to `runtime.WithMarshalerOption`:
 
 ```go
 type m struct {
@@ -303,7 +302,7 @@ to RPC methods that have a unary response.
 
 When the method has a streaming response, grpc-gateway handles
 that by emitting a newline-separated stream of "chunks". Each
-chunk is an envelope that can container either a response message
+chunk is an envelope that can contain either a response message
 or an error. Only the last chunk will include an error, and only
 when the RPC handler ends abnormally (i.e. with an error code).
 
@@ -317,7 +316,7 @@ mux := runtime.NewServeMux(
 ```
 
 The signature of the handler is much more rigid because we need
-to know the structure of the error payload in order to properly
+to know the structure of the error payload to properly
 encode the "chunk" schema into a Swagger/OpenAPI spec.
 
 So the function must return a `*runtime.StreamError`. The handler
