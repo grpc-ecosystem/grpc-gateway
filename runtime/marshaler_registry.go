@@ -19,8 +19,6 @@ var (
 		MarshalOptions: protojson.MarshalOptions{
 			// TODO(johanbrandhorst): Change this to true before v2
 			EmitUnpopulated: false,
-			// TODO(johanbrandhorst): Change this to false before v2
-			UseProtoNames: true,
 		},
 	}
 )

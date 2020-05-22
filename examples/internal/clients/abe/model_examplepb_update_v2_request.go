@@ -12,5 +12,5 @@ package abe
 
 type ExamplepbUpdateV2Request struct {
 	Abe *ExamplepbABitOfEverything `json:"abe,omitempty"`
-	UpdateMask *ProtobufFieldMask `json:"update_mask,omitempty"`
+	UpdateMask *ProtobufFieldMask `json:"updateMask,omitempty"`
 }

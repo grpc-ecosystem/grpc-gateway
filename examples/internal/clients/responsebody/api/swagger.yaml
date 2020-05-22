@@ -146,7 +146,7 @@ definitions:
   protobufAny:
     type: "object"
     properties:
-      type_url:
+      typeUrl:
         type: "string"
         description: "A URL/resource name that uniquely identifies the type of the\
           \ serialized\nprotocol buffer message. This string must contain at least\n\
@@ -202,8 +202,8 @@ definitions:
       \n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n\
       \      \"value\": \"1.212s\"\n    }"
     example:
+      typeUrl: "typeUrl"
       value: "value"
-      type_url: "type_url"
   rpcStatus:
     type: "object"
     properties:
@@ -219,10 +219,10 @@ definitions:
     example:
       code: 0
       details:
-      - value: "value"
-        type_url: "type_url"
-      - value: "value"
-        type_url: "type_url"
+      - typeUrl: "typeUrl"
+        value: "value"
+      - typeUrl: "typeUrl"
+        value: "value"
       message: "message"
   Stream result of examplepbResponseBodyOut:
     properties:
@@ -236,8 +236,8 @@ definitions:
       error:
         code: 0
         details:
-        - value: "value"
-          type_url: "type_url"
-        - value: "value"
-          type_url: "type_url"
+        - typeUrl: "typeUrl"
+          value: "value"
+        - typeUrl: "typeUrl"
+          value: "value"
         message: "message"
