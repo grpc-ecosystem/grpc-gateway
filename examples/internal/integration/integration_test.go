@@ -1904,40 +1904,149 @@ func TestNonStandardNames(t *testing.T) {
 		port     int
 		method   string
 		jsonBody string
+		want     proto.Message
 	}{
 		{
 			"Test standard update method",
 			8081,
 			"update",
-			`{"id":"foo","Num":"1","line_num":"42","langIdent":"English","STATUS":"good","en_GB":"1","no":"yes","thing":{"subThing":{"sub_value":"hi"}}}`,
+			`{
+				"id": "foo",
+				"Num": "1",
+				"line_num": "42",
+				"langIdent": "English",
+				"STATUS": "good",
+				"en_GB": "1",
+				"no": "yes",
+				"thing": {
+					"subThing": {
+						"sub_value": "hi"
+					}
+				}
+			}`,
+			&examplepb.NonStandardMessage{
+				Id:        "foo",
+				Num:       1,
+				LineNum:   42,
+				LangIdent: "English",
+				STATUS:    "good",
+				En_GB:     1,
+				No:        "yes",
+				Thing: &examplepb.NonStandardMessage_Thing{
+					SubThing: &examplepb.NonStandardMessage_Thing_SubThing{
+						SubValue: "hi",
+					},
+				},
+			},
 		},
 		{
 			"Test update method using json_names in message",
 			8081,
 			"update_with_json_names",
 			// N.B. json_names have no effect if not using UseProtoNames: false
-			`{"id":"foo","Num":"1","line_num":"42","langIdent":"English","STATUS":"good","en_GB":"1","no":"yes","thing":{"subThing":{"sub_value":"hi"}}}`,
+			`{
+				"id": "foo",
+				"Num": "1",
+				"line_num": "42",
+				"langIdent": "English",
+				"STATUS": "good",
+				"en_GB": "1",
+				"no": "yes",
+				"thing": {
+					"subThing": {
+						"sub_value": "hi"
+					}
+				}
+			}`,
+			&examplepb.NonStandardMessageWithJSONNames{
+				Id:        "foo",
+				Num:       1,
+				LineNum:   42,
+				LangIdent: "English",
+				STATUS:    "good",
+				En_GB:     1,
+				No:        "yes",
+				Thing: &examplepb.NonStandardMessageWithJSONNames_Thing{
+					SubThing: &examplepb.NonStandardMessageWithJSONNames_Thing_SubThing{
+						SubValue: "hi",
+					},
+				},
+			},
 		},
 		{
 			"Test standard update method with UseProtoNames: false marshaller option",
 			8082,
 			"update",
-			`{"id":"foo","Num":"1","lineNum":"42","langIdent":"English","STATUS":"good","enGB":"1","no":"yes","thing":{"subThing":{"subValue":"hi"}}}`,
+			`{
+				"id": "foo",
+				"Num": "1",
+				"lineNum": "42",
+				"langIdent": "English",
+				"STATUS": "good",
+				"enGB": "1",
+				"no": "yes",
+				"thing": {
+					"subThing": {
+						"subValue": "hi"
+					}
+				}
+			}`,
+			&examplepb.NonStandardMessage{
+				Id:        "foo",
+				Num:       1,
+				LineNum:   42,
+				LangIdent: "English",
+				STATUS:    "good",
+				En_GB:     1,
+				No:        "yes",
+				Thing: &examplepb.NonStandardMessage_Thing{
+					SubThing: &examplepb.NonStandardMessage_Thing_SubThing{
+						SubValue: "hi",
+					},
+				},
+			},
 		},
 		{
 			"Test update method using json_names in message with UseProtoNames: false marshaller option",
 			8082,
 			"update_with_json_names",
-			`{"ID":"foo","Num":"1","LineNum":"42","langIdent":"English","status":"good","En_GB":"1","yes":"yes","Thingy":{"SubThing":{"sub_Value":"hi"}}}`,
+			`{
+				"ID": "foo",
+				"Num": "1",
+				"LineNum": "42",
+				"langIdent": "English",
+				"status": "good",
+				"En_GB": "1",
+				"yes": "yes",
+				"Thingy": {
+					"SubThing": {
+						"sub_Value": "hi"
+					}
+				}
+			}`,
+			&examplepb.NonStandardMessageWithJSONNames{
+				Id:        "foo",
+				Num:       1,
+				LineNum:   42,
+				LangIdent: "English",
+				STATUS:    "good",
+				En_GB:     1,
+				No:        "yes",
+				Thing: &examplepb.NonStandardMessageWithJSONNames_Thing{
+					SubThing: &examplepb.NonStandardMessageWithJSONNames_Thing_SubThing{
+						SubValue: "hi",
+					},
+				},
+			},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			testNonStandardNames(t, tc.port, tc.method, tc.jsonBody)
+			testNonStandardNames(t, tc.port, tc.method, tc.jsonBody, tc.want)
 		})
 	}
 }
 
-func testNonStandardNames(t *testing.T, port int, method string, jsonBody string) {
+func testNonStandardNames(t *testing.T, port int, method string, jsonBody string, want proto.Message) {
 	req, err := http.NewRequest(
 		http.MethodPatch,
 		fmt.Sprintf("http://localhost:%d/v1/example/non_standard/%s", port, method),
@@ -1956,28 +2065,16 @@ func testNonStandardNames(t *testing.T, port int, method string, jsonBody string
 		t.Errorf("patchResp body couldn't be read: %v", err)
 	}
 
+	t.Log(string(body))
+
 	if got, want := patchResp.StatusCode, http.StatusOK; got != want {
 		t.Errorf("patchResp.StatusCode= %d; want %d resp: %v", got, want, string(body))
 	}
 
-	var got examplepb.NonStandardMessage
-	err = marshaler.Unmarshal(body, &got)
+	got := want.ProtoReflect().New().Interface()
+	err = marshaler.Unmarshal(body, got)
 	if err != nil {
-		t.Errorf("marshler.Unmarshal failed: %v", err)
-	}
-	want := &examplepb.NonStandardMessage{
-		Id:        "foo",
-		Num:       1,
-		LineNum:   42,
-		LangIdent: "English",
-		STATUS:    "good",
-		En_GB:     1,
-		No:        "yes",
-		Thing: &examplepb.NonStandardMessage_Thing{
-			SubThing: &examplepb.NonStandardMessage_Thing_SubThing{
-				SubValue: "hi",
-			},
-		},
+		t.Fatalf("marshaler.Unmarshal failed: %v", err)
 	}
 	if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
 		t.Errorf(diff)

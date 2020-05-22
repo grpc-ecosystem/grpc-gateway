@@ -112,106 +112,106 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/params/get/{single_nested.name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"single_nested.name"+"}", fmt.Sprintf("%v", singleNestedName), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/params/get/{singleNested.name}"
+	localVarPath = strings.Replace(localVarPath, "{"+"singleNested.name"+"}", fmt.Sprintf("%v", singleNestedName), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
 	if localVarOptionals != nil && localVarOptionals.SingleNestedAmount.IsSet() {
-		localVarQueryParams.Add("single_nested.amount", parameterToString(localVarOptionals.SingleNestedAmount.Value(), ""))
+		localVarQueryParams.Add("singleNested.amount", parameterToString(localVarOptionals.SingleNestedAmount.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.SingleNestedOk.IsSet() {
-		localVarQueryParams.Add("single_nested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
+		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Uuid.IsSet() {
 		localVarQueryParams.Add("uuid", parameterToString(localVarOptionals.Uuid.Value(), ""))
 	}
-	localVarQueryParams.Add("float_value", parameterToString(floatValue, ""))
+	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
 	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("double_value", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
+		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64_value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
+		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
-		localVarQueryParams.Add("uint64_value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
+		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Int32Value.IsSet() {
-		localVarQueryParams.Add("int32_value", parameterToString(localVarOptionals.Int32Value.Value(), ""))
+		localVarQueryParams.Add("int32Value", parameterToString(localVarOptionals.Int32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Fixed64Value.IsSet() {
-		localVarQueryParams.Add("fixed64_value", parameterToString(localVarOptionals.Fixed64Value.Value(), ""))
+		localVarQueryParams.Add("fixed64Value", parameterToString(localVarOptionals.Fixed64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Fixed32Value.IsSet() {
-		localVarQueryParams.Add("fixed32_value", parameterToString(localVarOptionals.Fixed32Value.Value(), ""))
+		localVarQueryParams.Add("fixed32Value", parameterToString(localVarOptionals.Fixed32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.BoolValue.IsSet() {
-		localVarQueryParams.Add("bool_value", parameterToString(localVarOptionals.BoolValue.Value(), ""))
+		localVarQueryParams.Add("boolValue", parameterToString(localVarOptionals.BoolValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.StringValue.IsSet() {
-		localVarQueryParams.Add("string_value", parameterToString(localVarOptionals.StringValue.Value(), ""))
+		localVarQueryParams.Add("stringValue", parameterToString(localVarOptionals.StringValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.BytesValue.IsSet() {
-		localVarQueryParams.Add("bytes_value", parameterToString(localVarOptionals.BytesValue.Value(), ""))
+		localVarQueryParams.Add("bytesValue", parameterToString(localVarOptionals.BytesValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Uint32Value.IsSet() {
-		localVarQueryParams.Add("uint32_value", parameterToString(localVarOptionals.Uint32Value.Value(), ""))
+		localVarQueryParams.Add("uint32Value", parameterToString(localVarOptionals.Uint32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.EnumValue.IsSet() {
-		localVarQueryParams.Add("enum_value", parameterToString(localVarOptionals.EnumValue.Value(), ""))
+		localVarQueryParams.Add("enumValue", parameterToString(localVarOptionals.EnumValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.PathEnumValue.IsSet() {
-		localVarQueryParams.Add("path_enum_value", parameterToString(localVarOptionals.PathEnumValue.Value(), ""))
+		localVarQueryParams.Add("pathEnumValue", parameterToString(localVarOptionals.PathEnumValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NestedPathEnumValue.IsSet() {
-		localVarQueryParams.Add("nested_path_enum_value", parameterToString(localVarOptionals.NestedPathEnumValue.Value(), ""))
+		localVarQueryParams.Add("nestedPathEnumValue", parameterToString(localVarOptionals.NestedPathEnumValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Sfixed32Value.IsSet() {
-		localVarQueryParams.Add("sfixed32_value", parameterToString(localVarOptionals.Sfixed32Value.Value(), ""))
+		localVarQueryParams.Add("sfixed32Value", parameterToString(localVarOptionals.Sfixed32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Sfixed64Value.IsSet() {
-		localVarQueryParams.Add("sfixed64_value", parameterToString(localVarOptionals.Sfixed64Value.Value(), ""))
+		localVarQueryParams.Add("sfixed64Value", parameterToString(localVarOptionals.Sfixed64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Sint32Value.IsSet() {
-		localVarQueryParams.Add("sint32_value", parameterToString(localVarOptionals.Sint32Value.Value(), ""))
+		localVarQueryParams.Add("sint32Value", parameterToString(localVarOptionals.Sint32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Sint64Value.IsSet() {
-		localVarQueryParams.Add("sint64_value", parameterToString(localVarOptionals.Sint64Value.Value(), ""))
+		localVarQueryParams.Add("sint64Value", parameterToString(localVarOptionals.Sint64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
-		localVarQueryParams.Add("repeated_string_value", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
+		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
 	}
 	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
-		localVarQueryParams.Add("oneof_string", parameterToString(localVarOptionals.OneofString.Value(), ""))
+		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
 		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.TimestampValue.IsSet() {
-		localVarQueryParams.Add("timestamp_value", parameterToString(localVarOptionals.TimestampValue.Value(), ""))
+		localVarQueryParams.Add("timestampValue", parameterToString(localVarOptionals.TimestampValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.RepeatedEnumValue.IsSet() {
-		localVarQueryParams.Add("repeated_enum_value", parameterToString(localVarOptionals.RepeatedEnumValue.Value(), "multi"))
+		localVarQueryParams.Add("repeatedEnumValue", parameterToString(localVarOptionals.RepeatedEnumValue.Value(), "multi"))
 	}
 	if localVarOptionals != nil && localVarOptionals.RepeatedEnumAnnotation.IsSet() {
-		localVarQueryParams.Add("repeated_enum_annotation", parameterToString(localVarOptionals.RepeatedEnumAnnotation.Value(), "multi"))
+		localVarQueryParams.Add("repeatedEnumAnnotation", parameterToString(localVarOptionals.RepeatedEnumAnnotation.Value(), "multi"))
 	}
 	if localVarOptionals != nil && localVarOptionals.EnumValueAnnotation.IsSet() {
-		localVarQueryParams.Add("enum_value_annotation", parameterToString(localVarOptionals.EnumValueAnnotation.Value(), ""))
+		localVarQueryParams.Add("enumValueAnnotation", parameterToString(localVarOptionals.EnumValueAnnotation.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringAnnotation.IsSet() {
-		localVarQueryParams.Add("repeated_string_annotation", parameterToString(localVarOptionals.RepeatedStringAnnotation.Value(), "multi"))
+		localVarQueryParams.Add("repeatedStringAnnotation", parameterToString(localVarOptionals.RepeatedStringAnnotation.Value(), "multi"))
 	}
 	if localVarOptionals != nil && localVarOptionals.NestedAnnotationAmount.IsSet() {
-		localVarQueryParams.Add("nested_annotation.amount", parameterToString(localVarOptionals.NestedAnnotationAmount.Value(), ""))
+		localVarQueryParams.Add("nestedAnnotation.amount", parameterToString(localVarOptionals.NestedAnnotationAmount.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NestedAnnotationOk.IsSet() {
-		localVarQueryParams.Add("nested_annotation.ok", parameterToString(localVarOptionals.NestedAnnotationOk.Value(), ""))
+		localVarQueryParams.Add("nestedAnnotation.ok", parameterToString(localVarOptionals.NestedAnnotationOk.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Int64OverrideType.IsSet() {
-		localVarQueryParams.Add("int64_override_type", parameterToString(localVarOptionals.Int64OverrideType.Value(), ""))
+		localVarQueryParams.Add("int64OverrideType", parameterToString(localVarOptionals.Int64OverrideType.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -419,106 +419,106 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/params/get/nested_enum/{single_nested.ok}"
-	localVarPath = strings.Replace(localVarPath, "{"+"single_nested.ok"+"}", fmt.Sprintf("%v", singleNestedOk), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/params/get/nested_enum/{singleNested.ok}"
+	localVarPath = strings.Replace(localVarPath, "{"+"singleNested.ok"+"}", fmt.Sprintf("%v", singleNestedOk), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
 	if localVarOptionals != nil && localVarOptionals.SingleNestedName.IsSet() {
-		localVarQueryParams.Add("single_nested.name", parameterToString(localVarOptionals.SingleNestedName.Value(), ""))
+		localVarQueryParams.Add("singleNested.name", parameterToString(localVarOptionals.SingleNestedName.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.SingleNestedAmount.IsSet() {
-		localVarQueryParams.Add("single_nested.amount", parameterToString(localVarOptionals.SingleNestedAmount.Value(), ""))
+		localVarQueryParams.Add("singleNested.amount", parameterToString(localVarOptionals.SingleNestedAmount.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Uuid.IsSet() {
 		localVarQueryParams.Add("uuid", parameterToString(localVarOptionals.Uuid.Value(), ""))
 	}
-	localVarQueryParams.Add("float_value", parameterToString(floatValue, ""))
+	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
 	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("double_value", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
+		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64_value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
+		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
-		localVarQueryParams.Add("uint64_value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
+		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Int32Value.IsSet() {
-		localVarQueryParams.Add("int32_value", parameterToString(localVarOptionals.Int32Value.Value(), ""))
+		localVarQueryParams.Add("int32Value", parameterToString(localVarOptionals.Int32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Fixed64Value.IsSet() {
-		localVarQueryParams.Add("fixed64_value", parameterToString(localVarOptionals.Fixed64Value.Value(), ""))
+		localVarQueryParams.Add("fixed64Value", parameterToString(localVarOptionals.Fixed64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Fixed32Value.IsSet() {
-		localVarQueryParams.Add("fixed32_value", parameterToString(localVarOptionals.Fixed32Value.Value(), ""))
+		localVarQueryParams.Add("fixed32Value", parameterToString(localVarOptionals.Fixed32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.BoolValue.IsSet() {
-		localVarQueryParams.Add("bool_value", parameterToString(localVarOptionals.BoolValue.Value(), ""))
+		localVarQueryParams.Add("boolValue", parameterToString(localVarOptionals.BoolValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.StringValue.IsSet() {
-		localVarQueryParams.Add("string_value", parameterToString(localVarOptionals.StringValue.Value(), ""))
+		localVarQueryParams.Add("stringValue", parameterToString(localVarOptionals.StringValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.BytesValue.IsSet() {
-		localVarQueryParams.Add("bytes_value", parameterToString(localVarOptionals.BytesValue.Value(), ""))
+		localVarQueryParams.Add("bytesValue", parameterToString(localVarOptionals.BytesValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Uint32Value.IsSet() {
-		localVarQueryParams.Add("uint32_value", parameterToString(localVarOptionals.Uint32Value.Value(), ""))
+		localVarQueryParams.Add("uint32Value", parameterToString(localVarOptionals.Uint32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.EnumValue.IsSet() {
-		localVarQueryParams.Add("enum_value", parameterToString(localVarOptionals.EnumValue.Value(), ""))
+		localVarQueryParams.Add("enumValue", parameterToString(localVarOptionals.EnumValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.PathEnumValue.IsSet() {
-		localVarQueryParams.Add("path_enum_value", parameterToString(localVarOptionals.PathEnumValue.Value(), ""))
+		localVarQueryParams.Add("pathEnumValue", parameterToString(localVarOptionals.PathEnumValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NestedPathEnumValue.IsSet() {
-		localVarQueryParams.Add("nested_path_enum_value", parameterToString(localVarOptionals.NestedPathEnumValue.Value(), ""))
+		localVarQueryParams.Add("nestedPathEnumValue", parameterToString(localVarOptionals.NestedPathEnumValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Sfixed32Value.IsSet() {
-		localVarQueryParams.Add("sfixed32_value", parameterToString(localVarOptionals.Sfixed32Value.Value(), ""))
+		localVarQueryParams.Add("sfixed32Value", parameterToString(localVarOptionals.Sfixed32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Sfixed64Value.IsSet() {
-		localVarQueryParams.Add("sfixed64_value", parameterToString(localVarOptionals.Sfixed64Value.Value(), ""))
+		localVarQueryParams.Add("sfixed64Value", parameterToString(localVarOptionals.Sfixed64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Sint32Value.IsSet() {
-		localVarQueryParams.Add("sint32_value", parameterToString(localVarOptionals.Sint32Value.Value(), ""))
+		localVarQueryParams.Add("sint32Value", parameterToString(localVarOptionals.Sint32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Sint64Value.IsSet() {
-		localVarQueryParams.Add("sint64_value", parameterToString(localVarOptionals.Sint64Value.Value(), ""))
+		localVarQueryParams.Add("sint64Value", parameterToString(localVarOptionals.Sint64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
-		localVarQueryParams.Add("repeated_string_value", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
+		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
 	}
 	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
-		localVarQueryParams.Add("oneof_string", parameterToString(localVarOptionals.OneofString.Value(), ""))
+		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
 		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.TimestampValue.IsSet() {
-		localVarQueryParams.Add("timestamp_value", parameterToString(localVarOptionals.TimestampValue.Value(), ""))
+		localVarQueryParams.Add("timestampValue", parameterToString(localVarOptionals.TimestampValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.RepeatedEnumValue.IsSet() {
-		localVarQueryParams.Add("repeated_enum_value", parameterToString(localVarOptionals.RepeatedEnumValue.Value(), "multi"))
+		localVarQueryParams.Add("repeatedEnumValue", parameterToString(localVarOptionals.RepeatedEnumValue.Value(), "multi"))
 	}
 	if localVarOptionals != nil && localVarOptionals.RepeatedEnumAnnotation.IsSet() {
-		localVarQueryParams.Add("repeated_enum_annotation", parameterToString(localVarOptionals.RepeatedEnumAnnotation.Value(), "multi"))
+		localVarQueryParams.Add("repeatedEnumAnnotation", parameterToString(localVarOptionals.RepeatedEnumAnnotation.Value(), "multi"))
 	}
 	if localVarOptionals != nil && localVarOptionals.EnumValueAnnotation.IsSet() {
-		localVarQueryParams.Add("enum_value_annotation", parameterToString(localVarOptionals.EnumValueAnnotation.Value(), ""))
+		localVarQueryParams.Add("enumValueAnnotation", parameterToString(localVarOptionals.EnumValueAnnotation.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringAnnotation.IsSet() {
-		localVarQueryParams.Add("repeated_string_annotation", parameterToString(localVarOptionals.RepeatedStringAnnotation.Value(), "multi"))
+		localVarQueryParams.Add("repeatedStringAnnotation", parameterToString(localVarOptionals.RepeatedStringAnnotation.Value(), "multi"))
 	}
 	if localVarOptionals != nil && localVarOptionals.NestedAnnotationName.IsSet() {
-		localVarQueryParams.Add("nested_annotation.name", parameterToString(localVarOptionals.NestedAnnotationName.Value(), ""))
+		localVarQueryParams.Add("nestedAnnotation.name", parameterToString(localVarOptionals.NestedAnnotationName.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NestedAnnotationAmount.IsSet() {
-		localVarQueryParams.Add("nested_annotation.amount", parameterToString(localVarOptionals.NestedAnnotationAmount.Value(), ""))
+		localVarQueryParams.Add("nestedAnnotation.amount", parameterToString(localVarOptionals.NestedAnnotationAmount.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Int64OverrideType.IsSet() {
-		localVarQueryParams.Add("int64_override_type", parameterToString(localVarOptionals.Int64OverrideType.Value(), ""))
+		localVarQueryParams.Add("int64OverrideType", parameterToString(localVarOptionals.Int64OverrideType.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -659,8 +659,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/params/post/{string_value}"
-	localVarPath = strings.Replace(localVarPath, "{"+"string_value"+"}", fmt.Sprintf("%v", stringValue), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/params/post/{stringValue}"
+	localVarPath = strings.Replace(localVarPath, "{"+"stringValue"+"}", fmt.Sprintf("%v", stringValue), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -825,26 +825,26 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}/{enum_value_annotation}"
-	localVarPath = strings.Replace(localVarPath, "{"+"float_value"+"}", fmt.Sprintf("%v", floatValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"double_value"+"}", fmt.Sprintf("%v", doubleValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"int64_value"+"}", fmt.Sprintf("%v", int64Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"uint64_value"+"}", fmt.Sprintf("%v", uint64Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"int32_value"+"}", fmt.Sprintf("%v", int32Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"fixed64_value"+"}", fmt.Sprintf("%v", fixed64Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"fixed32_value"+"}", fmt.Sprintf("%v", fixed32Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"bool_value"+"}", fmt.Sprintf("%v", boolValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"string_value"+"}", fmt.Sprintf("%v", stringValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"uint32_value"+"}", fmt.Sprintf("%v", uint32Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"sfixed32_value"+"}", fmt.Sprintf("%v", sfixed32Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"sfixed64_value"+"}", fmt.Sprintf("%v", sfixed64Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"sint32_value"+"}", fmt.Sprintf("%v", sint32Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"sint64_value"+"}", fmt.Sprintf("%v", sint64Value), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{floatValue}/{doubleValue}/{int64Value}/separator/{uint64Value}/{int32Value}/{fixed64Value}/{fixed32Value}/{boolValue}/{stringValue}/{uint32Value}/{sfixed32Value}/{sfixed64Value}/{sint32Value}/{sint64Value}/{nonConventionalNameValue}/{enumValue}/{pathEnumValue}/{nestedPathEnumValue}/{enumValueAnnotation}"
+	localVarPath = strings.Replace(localVarPath, "{"+"floatValue"+"}", fmt.Sprintf("%v", floatValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"doubleValue"+"}", fmt.Sprintf("%v", doubleValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"int64Value"+"}", fmt.Sprintf("%v", int64Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"uint64Value"+"}", fmt.Sprintf("%v", uint64Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"int32Value"+"}", fmt.Sprintf("%v", int32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"fixed64Value"+"}", fmt.Sprintf("%v", fixed64Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"fixed32Value"+"}", fmt.Sprintf("%v", fixed32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"boolValue"+"}", fmt.Sprintf("%v", boolValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"stringValue"+"}", fmt.Sprintf("%v", stringValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"uint32Value"+"}", fmt.Sprintf("%v", uint32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"sfixed32Value"+"}", fmt.Sprintf("%v", sfixed32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"sfixed64Value"+"}", fmt.Sprintf("%v", sfixed64Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"sint32Value"+"}", fmt.Sprintf("%v", sint32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"sint64Value"+"}", fmt.Sprintf("%v", sint64Value), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"nonConventionalNameValue"+"}", fmt.Sprintf("%v", nonConventionalNameValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"enum_value"+"}", fmt.Sprintf("%v", enumValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_enum_value"+"}", fmt.Sprintf("%v", pathEnumValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"nested_path_enum_value"+"}", fmt.Sprintf("%v", nestedPathEnumValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"enum_value_annotation"+"}", fmt.Sprintf("%v", enumValueAnnotation), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"enumValue"+"}", fmt.Sprintf("%v", enumValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathEnumValue"+"}", fmt.Sprintf("%v", pathEnumValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"nestedPathEnumValue"+"}", fmt.Sprintf("%v", nestedPathEnumValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"enumValueAnnotation"+"}", fmt.Sprintf("%v", enumValueAnnotation), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1135,8 +1135,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{single_nested.name}"
-	localVarPath = strings.Replace(localVarPath, "{"+"single_nested.name"+"}", fmt.Sprintf("%v", singleNestedName), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{singleNested.name}"
+	localVarPath = strings.Replace(localVarPath, "{"+"singleNested.name"+"}", fmt.Sprintf("%v", singleNestedName), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1796,101 +1796,101 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	localVarFormParams := url.Values{}
 
 	if localVarOptionals != nil && localVarOptionals.SingleNestedName.IsSet() {
-		localVarQueryParams.Add("single_nested.name", parameterToString(localVarOptionals.SingleNestedName.Value(), ""))
+		localVarQueryParams.Add("singleNested.name", parameterToString(localVarOptionals.SingleNestedName.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.SingleNestedAmount.IsSet() {
-		localVarQueryParams.Add("single_nested.amount", parameterToString(localVarOptionals.SingleNestedAmount.Value(), ""))
+		localVarQueryParams.Add("singleNested.amount", parameterToString(localVarOptionals.SingleNestedAmount.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.SingleNestedOk.IsSet() {
-		localVarQueryParams.Add("single_nested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
+		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
 	}
-	localVarQueryParams.Add("float_value", parameterToString(floatValue, ""))
+	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
 	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("double_value", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
+		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64_value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
+		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
-		localVarQueryParams.Add("uint64_value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
+		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Int32Value.IsSet() {
-		localVarQueryParams.Add("int32_value", parameterToString(localVarOptionals.Int32Value.Value(), ""))
+		localVarQueryParams.Add("int32Value", parameterToString(localVarOptionals.Int32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Fixed64Value.IsSet() {
-		localVarQueryParams.Add("fixed64_value", parameterToString(localVarOptionals.Fixed64Value.Value(), ""))
+		localVarQueryParams.Add("fixed64Value", parameterToString(localVarOptionals.Fixed64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Fixed32Value.IsSet() {
-		localVarQueryParams.Add("fixed32_value", parameterToString(localVarOptionals.Fixed32Value.Value(), ""))
+		localVarQueryParams.Add("fixed32Value", parameterToString(localVarOptionals.Fixed32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.BoolValue.IsSet() {
-		localVarQueryParams.Add("bool_value", parameterToString(localVarOptionals.BoolValue.Value(), ""))
+		localVarQueryParams.Add("boolValue", parameterToString(localVarOptionals.BoolValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.StringValue.IsSet() {
-		localVarQueryParams.Add("string_value", parameterToString(localVarOptionals.StringValue.Value(), ""))
+		localVarQueryParams.Add("stringValue", parameterToString(localVarOptionals.StringValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.BytesValue.IsSet() {
-		localVarQueryParams.Add("bytes_value", parameterToString(localVarOptionals.BytesValue.Value(), ""))
+		localVarQueryParams.Add("bytesValue", parameterToString(localVarOptionals.BytesValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Uint32Value.IsSet() {
-		localVarQueryParams.Add("uint32_value", parameterToString(localVarOptionals.Uint32Value.Value(), ""))
+		localVarQueryParams.Add("uint32Value", parameterToString(localVarOptionals.Uint32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.EnumValue.IsSet() {
-		localVarQueryParams.Add("enum_value", parameterToString(localVarOptionals.EnumValue.Value(), ""))
+		localVarQueryParams.Add("enumValue", parameterToString(localVarOptionals.EnumValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.PathEnumValue.IsSet() {
-		localVarQueryParams.Add("path_enum_value", parameterToString(localVarOptionals.PathEnumValue.Value(), ""))
+		localVarQueryParams.Add("pathEnumValue", parameterToString(localVarOptionals.PathEnumValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NestedPathEnumValue.IsSet() {
-		localVarQueryParams.Add("nested_path_enum_value", parameterToString(localVarOptionals.NestedPathEnumValue.Value(), ""))
+		localVarQueryParams.Add("nestedPathEnumValue", parameterToString(localVarOptionals.NestedPathEnumValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Sfixed32Value.IsSet() {
-		localVarQueryParams.Add("sfixed32_value", parameterToString(localVarOptionals.Sfixed32Value.Value(), ""))
+		localVarQueryParams.Add("sfixed32Value", parameterToString(localVarOptionals.Sfixed32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Sfixed64Value.IsSet() {
-		localVarQueryParams.Add("sfixed64_value", parameterToString(localVarOptionals.Sfixed64Value.Value(), ""))
+		localVarQueryParams.Add("sfixed64Value", parameterToString(localVarOptionals.Sfixed64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Sint32Value.IsSet() {
-		localVarQueryParams.Add("sint32_value", parameterToString(localVarOptionals.Sint32Value.Value(), ""))
+		localVarQueryParams.Add("sint32Value", parameterToString(localVarOptionals.Sint32Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Sint64Value.IsSet() {
-		localVarQueryParams.Add("sint64_value", parameterToString(localVarOptionals.Sint64Value.Value(), ""))
+		localVarQueryParams.Add("sint64Value", parameterToString(localVarOptionals.Sint64Value.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
-		localVarQueryParams.Add("repeated_string_value", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
+		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
 	}
 	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
-		localVarQueryParams.Add("oneof_string", parameterToString(localVarOptionals.OneofString.Value(), ""))
+		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
 		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.TimestampValue.IsSet() {
-		localVarQueryParams.Add("timestamp_value", parameterToString(localVarOptionals.TimestampValue.Value(), ""))
+		localVarQueryParams.Add("timestampValue", parameterToString(localVarOptionals.TimestampValue.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.RepeatedEnumValue.IsSet() {
-		localVarQueryParams.Add("repeated_enum_value", parameterToString(localVarOptionals.RepeatedEnumValue.Value(), "multi"))
+		localVarQueryParams.Add("repeatedEnumValue", parameterToString(localVarOptionals.RepeatedEnumValue.Value(), "multi"))
 	}
 	if localVarOptionals != nil && localVarOptionals.RepeatedEnumAnnotation.IsSet() {
-		localVarQueryParams.Add("repeated_enum_annotation", parameterToString(localVarOptionals.RepeatedEnumAnnotation.Value(), "multi"))
+		localVarQueryParams.Add("repeatedEnumAnnotation", parameterToString(localVarOptionals.RepeatedEnumAnnotation.Value(), "multi"))
 	}
 	if localVarOptionals != nil && localVarOptionals.EnumValueAnnotation.IsSet() {
-		localVarQueryParams.Add("enum_value_annotation", parameterToString(localVarOptionals.EnumValueAnnotation.Value(), ""))
+		localVarQueryParams.Add("enumValueAnnotation", parameterToString(localVarOptionals.EnumValueAnnotation.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.RepeatedStringAnnotation.IsSet() {
-		localVarQueryParams.Add("repeated_string_annotation", parameterToString(localVarOptionals.RepeatedStringAnnotation.Value(), "multi"))
+		localVarQueryParams.Add("repeatedStringAnnotation", parameterToString(localVarOptionals.RepeatedStringAnnotation.Value(), "multi"))
 	}
 	if localVarOptionals != nil && localVarOptionals.NestedAnnotationName.IsSet() {
-		localVarQueryParams.Add("nested_annotation.name", parameterToString(localVarOptionals.NestedAnnotationName.Value(), ""))
+		localVarQueryParams.Add("nestedAnnotation.name", parameterToString(localVarOptionals.NestedAnnotationName.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NestedAnnotationAmount.IsSet() {
-		localVarQueryParams.Add("nested_annotation.amount", parameterToString(localVarOptionals.NestedAnnotationAmount.Value(), ""))
+		localVarQueryParams.Add("nestedAnnotation.amount", parameterToString(localVarOptionals.NestedAnnotationAmount.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.NestedAnnotationOk.IsSet() {
-		localVarQueryParams.Add("nested_annotation.ok", parameterToString(localVarOptionals.NestedAnnotationOk.Value(), ""))
+		localVarQueryParams.Add("nestedAnnotation.ok", parameterToString(localVarOptionals.NestedAnnotationOk.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Int64OverrideType.IsSet() {
-		localVarQueryParams.Add("int64_override_type", parameterToString(localVarOptionals.Int64OverrideType.Value(), ""))
+		localVarQueryParams.Add("int64OverrideType", parameterToString(localVarOptionals.Int64OverrideType.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -2032,23 +2032,23 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetRepeatedQu
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything_repeated/{path_repeated_float_value}/{path_repeated_double_value}/{path_repeated_int64_value}/{path_repeated_uint64_value}/{path_repeated_int32_value}/{path_repeated_fixed64_value}/{path_repeated_fixed32_value}/{path_repeated_bool_value}/{path_repeated_string_value}/{path_repeated_bytes_value}/{path_repeated_uint32_value}/{path_repeated_enum_value}/{path_repeated_sfixed32_value}/{path_repeated_sfixed64_value}/{path_repeated_sint32_value}/{path_repeated_sint64_value}"
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_float_value"+"}", fmt.Sprintf("%v", pathRepeatedFloatValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_double_value"+"}", fmt.Sprintf("%v", pathRepeatedDoubleValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_int64_value"+"}", fmt.Sprintf("%v", pathRepeatedInt64Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_uint64_value"+"}", fmt.Sprintf("%v", pathRepeatedUint64Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_int32_value"+"}", fmt.Sprintf("%v", pathRepeatedInt32Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_fixed64_value"+"}", fmt.Sprintf("%v", pathRepeatedFixed64Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_fixed32_value"+"}", fmt.Sprintf("%v", pathRepeatedFixed32Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_bool_value"+"}", fmt.Sprintf("%v", pathRepeatedBoolValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_string_value"+"}", fmt.Sprintf("%v", pathRepeatedStringValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_bytes_value"+"}", fmt.Sprintf("%v", pathRepeatedBytesValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_uint32_value"+"}", fmt.Sprintf("%v", pathRepeatedUint32Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_enum_value"+"}", fmt.Sprintf("%v", pathRepeatedEnumValue), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_sfixed32_value"+"}", fmt.Sprintf("%v", pathRepeatedSfixed32Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_sfixed64_value"+"}", fmt.Sprintf("%v", pathRepeatedSfixed64Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_sint32_value"+"}", fmt.Sprintf("%v", pathRepeatedSint32Value), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"path_repeated_sint64_value"+"}", fmt.Sprintf("%v", pathRepeatedSint64Value), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything_repeated/{pathRepeatedFloatValue}/{pathRepeatedDoubleValue}/{pathRepeatedInt64Value}/{pathRepeatedUint64Value}/{pathRepeatedInt32Value}/{pathRepeatedFixed64Value}/{pathRepeatedFixed32Value}/{pathRepeatedBoolValue}/{pathRepeatedStringValue}/{pathRepeatedBytesValue}/{pathRepeatedUint32Value}/{pathRepeatedEnumValue}/{pathRepeatedSfixed32Value}/{pathRepeatedSfixed64Value}/{pathRepeatedSint32Value}/{pathRepeatedSint64Value}"
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedFloatValue"+"}", fmt.Sprintf("%v", pathRepeatedFloatValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedDoubleValue"+"}", fmt.Sprintf("%v", pathRepeatedDoubleValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedInt64Value"+"}", fmt.Sprintf("%v", pathRepeatedInt64Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedUint64Value"+"}", fmt.Sprintf("%v", pathRepeatedUint64Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedInt32Value"+"}", fmt.Sprintf("%v", pathRepeatedInt32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedFixed64Value"+"}", fmt.Sprintf("%v", pathRepeatedFixed64Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedFixed32Value"+"}", fmt.Sprintf("%v", pathRepeatedFixed32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedBoolValue"+"}", fmt.Sprintf("%v", pathRepeatedBoolValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedStringValue"+"}", fmt.Sprintf("%v", pathRepeatedStringValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedBytesValue"+"}", fmt.Sprintf("%v", pathRepeatedBytesValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedUint32Value"+"}", fmt.Sprintf("%v", pathRepeatedUint32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedEnumValue"+"}", fmt.Sprintf("%v", pathRepeatedEnumValue), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedSfixed32Value"+"}", fmt.Sprintf("%v", pathRepeatedSfixed32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedSfixed64Value"+"}", fmt.Sprintf("%v", pathRepeatedSfixed64Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedSint32Value"+"}", fmt.Sprintf("%v", pathRepeatedSint32Value), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"pathRepeatedSint64Value"+"}", fmt.Sprintf("%v", pathRepeatedSint64Value), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

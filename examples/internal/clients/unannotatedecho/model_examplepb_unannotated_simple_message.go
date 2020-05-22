@@ -15,7 +15,7 @@ type ExamplepbUnannotatedSimpleMessage struct {
 	Id string `json:"id,omitempty"`
 	Num string `json:"num,omitempty"`
 	Duration string `json:"duration,omitempty"`
-	LineNum string `json:"line_num,omitempty"`
+	LineNum string `json:"lineNum,omitempty"`
 	Lang string `json:"lang,omitempty"`
 	Status *ExamplepbUnannotatedEmbedded `json:"status,omitempty"`
 	En string `json:"en,omitempty"`
