@@ -17,8 +17,7 @@ var (
 
 	defaultMarshaler = &JSONPb{
 		MarshalOptions: protojson.MarshalOptions{
-			// TODO(johanbrandhorst): Change this to true before v2
-			EmitUnpopulated: false,
+			EmitUnpopulated: true,
 		},
 	}
 )
