@@ -173,7 +173,7 @@ func (a *EchoServiceApiService) EchoServiceEcho2(ctx context.Context, id string,
 	localVarFormParams := url.Values{}
 
 	if localVarOptionals != nil && localVarOptionals.LineNum.IsSet() {
-		localVarQueryParams.Add("line_num", parameterToString(localVarOptionals.LineNum.Value(), ""))
+		localVarQueryParams.Add("lineNum", parameterToString(localVarOptionals.LineNum.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Lang.IsSet() {
 		localVarQueryParams.Add("lang", parameterToString(localVarOptionals.Lang.Value(), ""))
@@ -315,7 +315,7 @@ func (a *EchoServiceApiService) EchoServiceEcho3(ctx context.Context, id string,
 	localVarFormParams := url.Values{}
 
 	if localVarOptionals != nil && localVarOptionals.LineNum.IsSet() {
-		localVarQueryParams.Add("line_num", parameterToString(localVarOptionals.LineNum.Value(), ""))
+		localVarQueryParams.Add("lineNum", parameterToString(localVarOptionals.LineNum.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.StatusProgress.IsSet() {
 		localVarQueryParams.Add("status.progress", parameterToString(localVarOptionals.StatusProgress.Value(), ""))
@@ -442,9 +442,9 @@ func (a *EchoServiceApiService) EchoServiceEcho4(ctx context.Context, id string,
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/echo1/{id}/{line_num}/{status.note}"
+	localVarPath := a.client.cfg.BasePath + "/v1/example/echo1/{id}/{lineNum}/{status.note}"
 	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"line_num"+"}", fmt.Sprintf("%v", lineNum), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"lineNum"+"}", fmt.Sprintf("%v", lineNum), -1)
 	localVarPath = strings.Replace(localVarPath, "{"+"status.note"+"}", fmt.Sprintf("%v", statusNote), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -592,7 +592,7 @@ func (a *EchoServiceApiService) EchoServiceEcho5(ctx context.Context, noNote str
 		localVarQueryParams.Add("num", parameterToString(localVarOptionals.Num.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.LineNum.IsSet() {
-		localVarQueryParams.Add("line_num", parameterToString(localVarOptionals.LineNum.Value(), ""))
+		localVarQueryParams.Add("lineNum", parameterToString(localVarOptionals.LineNum.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Lang.IsSet() {
 		localVarQueryParams.Add("lang", parameterToString(localVarOptionals.Lang.Value(), ""))
@@ -833,7 +833,7 @@ func (a *EchoServiceApiService) EchoServiceEchoDelete(ctx context.Context, local
 		localVarQueryParams.Add("num", parameterToString(localVarOptionals.Num.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.LineNum.IsSet() {
-		localVarQueryParams.Add("line_num", parameterToString(localVarOptionals.LineNum.Value(), ""))
+		localVarQueryParams.Add("lineNum", parameterToString(localVarOptionals.LineNum.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Lang.IsSet() {
 		localVarQueryParams.Add("lang", parameterToString(localVarOptionals.Lang.Value(), ""))

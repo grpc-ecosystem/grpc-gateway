@@ -191,7 +191,7 @@
     "apiHttpBody": {
       "type": "object",
       "properties": {
-        "content_type": {
+        "contentType": {
           "type": "string",
           "description": "The HTTP Content-Type header value specifying the content type of the body."
         },
@@ -216,7 +216,7 @@
         "uuid": "0cf361e1-4b44-483d-a159-54dabdf7e814"
       },
       "properties": {
-        "single_nested": {
+        "singleNested": {
           "$ref": "#/definitions/ABitOfEverythingNested"
         },
         "uuid": {
@@ -230,7 +230,7 @@
             "$ref": "#/definitions/ABitOfEverythingNested"
           }
         },
-        "float_value": {
+        "floatValue": {
           "type": "number",
           "format": "float",
           "default": "0.2",
@@ -239,95 +239,95 @@
             "float_value"
           ]
         },
-        "double_value": {
+        "doubleValue": {
           "type": "number",
           "format": "double"
         },
-        "int64_value": {
+        "int64Value": {
           "type": "string",
           "format": "int64"
         },
-        "uint64_value": {
+        "uint64Value": {
           "type": "string",
           "format": "uint64"
         },
-        "int32_value": {
+        "int32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "fixed64_value": {
+        "fixed64Value": {
           "type": "string",
           "format": "uint64"
         },
-        "fixed32_value": {
+        "fixed32Value": {
           "type": "integer",
           "format": "int64"
         },
-        "bool_value": {
+        "boolValue": {
           "type": "boolean",
           "format": "boolean"
         },
-        "string_value": {
+        "stringValue": {
           "type": "string"
         },
-        "bytes_value": {
+        "bytesValue": {
           "type": "string",
           "format": "byte"
         },
-        "uint32_value": {
+        "uint32Value": {
           "type": "integer",
           "format": "int64"
         },
-        "enum_value": {
+        "enumValue": {
           "$ref": "#/definitions/examplepbNumericEnum"
         },
-        "path_enum_value": {
+        "pathEnumValue": {
           "$ref": "#/definitions/pathenumPathEnum"
         },
-        "nested_path_enum_value": {
+        "nestedPathEnumValue": {
           "$ref": "#/definitions/MessagePathEnumNestedPathEnum"
         },
-        "sfixed32_value": {
+        "sfixed32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "sfixed64_value": {
+        "sfixed64Value": {
           "type": "string",
           "format": "int64"
         },
-        "sint32_value": {
+        "sint32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "sint64_value": {
+        "sint64Value": {
           "type": "string",
           "format": "int64"
         },
-        "repeated_string_value": {
+        "repeatedStringValue": {
           "type": "array",
           "items": {
             "type": "string"
           }
         },
-        "oneof_empty": {
+        "oneofEmpty": {
           "properties": {}
         },
-        "oneof_string": {
+        "oneofString": {
           "type": "string"
         },
-        "map_value": {
+        "mapValue": {
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/examplepbNumericEnum"
           }
         },
-        "mapped_string_value": {
+        "mappedStringValue": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
           }
         },
-        "mapped_nested_value": {
+        "mappedNestedValue": {
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/ABitOfEverythingNested"
@@ -336,18 +336,18 @@
         "nonConventionalNameValue": {
           "type": "string"
         },
-        "timestamp_value": {
+        "timestampValue": {
           "type": "string",
           "format": "date-time"
         },
-        "repeated_enum_value": {
+        "repeatedEnumValue": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/examplepbNumericEnum"
           },
           "title": "repeated enum value. it is comma-separated in query"
         },
-        "repeated_enum_annotation": {
+        "repeatedEnumAnnotation": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/examplepbNumericEnum"
@@ -355,12 +355,12 @@
           "description": "Repeated numeric enum description.",
           "title": "Repeated numeric enum title"
         },
-        "enum_value_annotation": {
+        "enumValueAnnotation": {
           "$ref": "#/definitions/examplepbNumericEnum",
           "description": "Numeric enum description.",
           "title": "Numeric enum title"
         },
-        "repeated_string_annotation": {
+        "repeatedStringAnnotation": {
           "type": "array",
           "items": {
             "type": "string"
@@ -368,7 +368,7 @@
           "description": "Repeated string description.",
           "title": "Repeated string title"
         },
-        "repeated_nested_annotation": {
+        "repeatedNestedAnnotation": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/ABitOfEverythingNested"
@@ -376,12 +376,12 @@
           "description": "Repeated nested object description.",
           "title": "Repeated nested object title"
         },
-        "nested_annotation": {
+        "nestedAnnotation": {
           "$ref": "#/definitions/ABitOfEverythingNested",
           "description": "Nested object description.",
           "title": "Nested object title"
         },
-        "int64_override_type": {
+        "int64OverrideType": {
           "type": "integer",
           "format": "int64"
         }
@@ -418,7 +418,7 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "type_url": {
+        "typeUrl": {
           "type": "string",
           "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
         },

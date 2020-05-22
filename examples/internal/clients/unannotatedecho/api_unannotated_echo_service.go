@@ -178,7 +178,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx conte
 		localVarQueryParams.Add("duration", parameterToString(localVarOptionals.Duration.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.LineNum.IsSet() {
-		localVarQueryParams.Add("line_num", parameterToString(localVarOptionals.LineNum.Value(), ""))
+		localVarQueryParams.Add("lineNum", parameterToString(localVarOptionals.LineNum.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Lang.IsSet() {
 		localVarQueryParams.Add("lang", parameterToString(localVarOptionals.Lang.Value(), ""))
@@ -430,7 +430,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx 
 		localVarQueryParams.Add("duration", parameterToString(localVarOptionals.Duration.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.LineNum.IsSet() {
-		localVarQueryParams.Add("line_num", parameterToString(localVarOptionals.LineNum.Value(), ""))
+		localVarQueryParams.Add("lineNum", parameterToString(localVarOptionals.LineNum.Value(), ""))
 	}
 	if localVarOptionals != nil && localVarOptionals.Lang.IsSet() {
 		localVarQueryParams.Add("lang", parameterToString(localVarOptionals.Lang.Value(), ""))

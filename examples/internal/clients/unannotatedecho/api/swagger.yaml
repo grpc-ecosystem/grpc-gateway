@@ -61,7 +61,7 @@ paths:
         type: "string"
         x-exportParamName: "Duration"
         x-optionalDataType: "String"
-      - name: "line_num"
+      - name: "lineNum"
         in: "query"
         required: false
         type: "string"
@@ -165,7 +165,7 @@ paths:
         type: "string"
         x-exportParamName: "Duration"
         x-optionalDataType: "String"
-      - name: "line_num"
+      - name: "lineNum"
         in: "query"
         required: false
         type: "string"
@@ -244,7 +244,7 @@ definitions:
         format: "int64"
       duration:
         type: "string"
-      line_num:
+      lineNum:
         type: "string"
         format: "int64"
       lang:
@@ -263,8 +263,8 @@ definitions:
       "no":
         note: "note"
         progress: "progress"
-      line_num: "line_num"
       num: "num"
+      lineNum: "lineNum"
       en: "en"
       id: "id"
       lang: "lang"
@@ -274,7 +274,7 @@ definitions:
   protobufAny:
     type: "object"
     properties:
-      type_url:
+      typeUrl:
         type: "string"
         description: "A URL/resource name that uniquely identifies the type of the\
           \ serialized\nprotocol buffer message. This string must contain at least\n\
