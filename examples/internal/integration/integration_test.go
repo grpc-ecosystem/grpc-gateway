@@ -1683,7 +1683,7 @@ func testResponseStrings(t *testing.T, port int) {
 			t.Errorf("marshaler.Unmarshal failed with %v; want success", err)
 			return
 		}
-		var want []string
+		want := []string{}
 		if diff := cmp.Diff(got, want); diff != "" {
 			t.Errorf(diff)
 		}
