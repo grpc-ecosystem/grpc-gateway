@@ -240,7 +240,7 @@ func request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler
 	if protoReq.Code == nil {
 		protoReq.Code = &SimpleMessage_Lang{}
 	} else if _, ok := protoReq.Code.(*SimpleMessage_Lang); !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_Lang, but: %t\n", protoReq.Code)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_Lang, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*SimpleMessage_Lang).Lang, err = runtime.String(val)
 
@@ -301,7 +301,7 @@ func local_request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Mar
 	if protoReq.Code == nil {
 		protoReq.Code = &SimpleMessage_Lang{}
 	} else if _, ok := protoReq.Code.(*SimpleMessage_Lang); !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_Lang, but: %t\n", protoReq.Code)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_Lang, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*SimpleMessage_Lang).Lang, err = runtime.String(val)
 
@@ -355,7 +355,7 @@ func request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler
 	if protoReq.Code == nil {
 		protoReq.Code = &SimpleMessage_LineNum{}
 	} else if _, ok := protoReq.Code.(*SimpleMessage_LineNum); !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_LineNum, but: %t\n", protoReq.Code)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_LineNum, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*SimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
 
@@ -416,7 +416,7 @@ func local_request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Mar
 	if protoReq.Code == nil {
 		protoReq.Code = &SimpleMessage_LineNum{}
 	} else if _, ok := protoReq.Code.(*SimpleMessage_LineNum); !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_LineNum, but: %t\n", protoReq.Code)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_LineNum, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*SimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
 
