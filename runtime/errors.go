@@ -80,13 +80,7 @@ func defaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marsh
 
 	w.Header().Del("Trailer")
 
-	contentType := marshaler.ContentType()
-	// Check marshaler at runtime in order to keep backwards compatibility.
-	// An interface param needs to be added to the ContentType() function on
-	// the Marshal interface to be able to remove this check
-	if typeMarshaler, ok := marshaler.(contentTypeMarshaler); ok {
-		contentType = typeMarshaler.ContentTypeFromMessage(pb)
-	}
+	contentType := marshaler.ContentType(pb)
 	w.Header().Set("Content-Type", contentType)
 
 	buf, merr := marshaler.Marshal(pb)
