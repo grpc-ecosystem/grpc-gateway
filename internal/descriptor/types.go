@@ -353,7 +353,7 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 			s := `if %s == nil {
 				%s =&%s{}
 			} else if _, ok := %s.(*%s); !ok {
-				return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *%s, but: %%t\n",%s)
+				return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *%s, but: %%t\n",%s)
 			}`
 
 			preparations = append(preparations, fmt.Sprintf(s, components, components, oneofFieldName, components, oneofFieldName, oneofFieldName, components))
