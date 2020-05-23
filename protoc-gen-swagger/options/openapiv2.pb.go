@@ -146,7 +146,7 @@ func (JSONSchema_JSONSchemaSimpleTypes) EnumDescriptor() ([]byte, []int) {
 	return file_protoc_gen_swagger_options_openapiv2_proto_rawDescGZIP(), []int{8, 0}
 }
 
-// Required. The type of the security scheme. Valid values are "basic",
+// The type of the security scheme. Valid values are "basic",
 // "apiKey" or "oauth2".
 type SecurityScheme_Type int32
 
@@ -200,7 +200,7 @@ func (SecurityScheme_Type) EnumDescriptor() ([]byte, []int) {
 	return file_protoc_gen_swagger_options_openapiv2_proto_rawDescGZIP(), []int{11, 0}
 }
 
-// Required. The location of the API key. Valid values are "query" or "header".
+// The location of the API key. Valid values are "query" or "header".
 type SecurityScheme_In int32
 
 const (
@@ -250,7 +250,7 @@ func (SecurityScheme_In) EnumDescriptor() ([]byte, []int) {
 	return file_protoc_gen_swagger_options_openapiv2_proto_rawDescGZIP(), []int{11, 1}
 }
 
-// Required. The flow used by the OAuth2 security scheme. Valid values are
+// The flow used by the OAuth2 security scheme. Valid values are
 // "implicit", "password", "application" or "accessCode".
 type SecurityScheme_Flow int32
 
@@ -311,30 +311,58 @@ func (SecurityScheme_Flow) EnumDescriptor() ([]byte, []int) {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#swaggerObject
 //
-// TODO(ivucica): document fields
 type Swagger struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// Specifies the Swagger Specification version being used. It can be
+	// used by the Swagger UI and other clients to interpret the API listing. The
+	// value MUST be "2.0".
 	Swagger string `protobuf:"bytes,1,opt,name=swagger,proto3" json:"swagger,omitempty"`
-	Info    *Info  `protobuf:"bytes,2,opt,name=info,proto3" json:"info,omitempty"`
-	Host    string `protobuf:"bytes,3,opt,name=host,proto3" json:"host,omitempty"`
-	// `base_path` is the common prefix path used on all API endpoints (ie. /api, /v1, etc.). By adding this,
-	// it allows you to remove this portion from the path endpoints in your Swagger file making them easier
-	// to read. Note that using `base_path` does not change the endpoint paths that are generated in the resulting
-	// Swagger file. If you wish to use `base_path` with relatively generated Swagger paths, the
-	// `base_path` prefix must be manually removed from your `google.api.http` paths and your code changed to
+	// Provides metadata about the API. The metadata can be used by the
+	// clients if needed.
+	Info *Info `protobuf:"bytes,2,opt,name=info,proto3" json:"info,omitempty"`
+	// The host (name or ip) serving the API. This MUST be the host only and does
+	// not include the scheme nor sub-paths. It MAY include a port. If the host is
+	// not included, the host serving the documentation is to be used (including
+	// the port). The host does not support path templating.
+	Host string `protobuf:"bytes,3,opt,name=host,proto3" json:"host,omitempty"`
+	// The base path on which the API is served, which is relative to the host. If
+	// it is not included, the API is served directly under the host. The value
+	// MUST start with a leading slash (/). The basePath does not support path
+	// templating.
+	// Note that using `base_path` does not change the endpoint paths that are
+	// generated in the resulting Swagger file. If you wish to use `base_path`
+	// with relatively generated Swagger paths, the `base_path` prefix must be
+	// manually removed from your `google.api.http` paths and your code changed to
 	// serve the API from the `base_path`.
-	BasePath            string                    `protobuf:"bytes,4,opt,name=base_path,json=basePath,proto3" json:"base_path,omitempty"`
-	Schemes             []Swagger_SwaggerScheme   `protobuf:"varint,5,rep,packed,name=schemes,proto3,enum=grpc.gateway.protoc_gen_swagger.options.Swagger_SwaggerScheme" json:"schemes,omitempty"`
-	Consumes            []string                  `protobuf:"bytes,6,rep,name=consumes,proto3" json:"consumes,omitempty"`
-	Produces            []string                  `protobuf:"bytes,7,rep,name=produces,proto3" json:"produces,omitempty"`
-	Responses           map[string]*Response      `protobuf:"bytes,10,rep,name=responses,proto3" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	SecurityDefinitions *SecurityDefinitions      `protobuf:"bytes,11,opt,name=security_definitions,json=securityDefinitions,proto3" json:"security_definitions,omitempty"`
-	Security            []*SecurityRequirement    `protobuf:"bytes,12,rep,name=security,proto3" json:"security,omitempty"`
-	ExternalDocs        *ExternalDocumentation    `protobuf:"bytes,14,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
-	Extensions          map[string]*_struct.Value `protobuf:"bytes,15,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	BasePath string `protobuf:"bytes,4,opt,name=base_path,json=basePath,proto3" json:"base_path,omitempty"`
+	// The transfer protocol of the API. Values MUST be from the list: "http",
+	// "https", "ws", "wss". If the schemes is not included, the default scheme to
+	// be used is the one used to access the Swagger definition itself.
+	Schemes []Swagger_SwaggerScheme `protobuf:"varint,5,rep,packed,name=schemes,proto3,enum=grpc.gateway.protoc_gen_swagger.options.Swagger_SwaggerScheme" json:"schemes,omitempty"`
+	// A list of MIME types the APIs can consume. This is global to all APIs but
+	// can be overridden on specific API calls. Value MUST be as described under
+	// Mime Types.
+	Consumes []string `protobuf:"bytes,6,rep,name=consumes,proto3" json:"consumes,omitempty"`
+	// A list of MIME types the APIs can produce. This is global to all APIs but
+	// can be overridden on specific API calls. Value MUST be as described under
+	// Mime Types.
+	Produces []string `protobuf:"bytes,7,rep,name=produces,proto3" json:"produces,omitempty"`
+	// An object to hold responses that can be used across operations. This
+	// property does not define global responses for all operations.
+	Responses map[string]*Response `protobuf:"bytes,10,rep,name=responses,proto3" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Security scheme definitions that can be used across the specification.
+	SecurityDefinitions *SecurityDefinitions `protobuf:"bytes,11,opt,name=security_definitions,json=securityDefinitions,proto3" json:"security_definitions,omitempty"`
+	// A declaration of which security schemes are applied for the API as a whole.
+	// The list of values describes alternative security schemes that can be used
+	// (that is, there is a logical OR between the security requirements).
+	// Individual operations can override this definition.
+	Security []*SecurityRequirement `protobuf:"bytes,12,rep,name=security,proto3" json:"security,omitempty"`
+	// Additional external documentation.
+	ExternalDocs *ExternalDocumentation    `protobuf:"bytes,14,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
+	Extensions   map[string]*_struct.Value `protobuf:"bytes,15,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *Swagger) Reset() {
@@ -457,24 +485,52 @@ func (x *Swagger) GetExtensions() map[string]*_struct.Value {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#operationObject
 //
-// TODO(ivucica): document fields
 type Operation struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Tags         []string                  `protobuf:"bytes,1,rep,name=tags,proto3" json:"tags,omitempty"`
-	Summary      string                    `protobuf:"bytes,2,opt,name=summary,proto3" json:"summary,omitempty"`
-	Description  string                    `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	ExternalDocs *ExternalDocumentation    `protobuf:"bytes,4,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
-	OperationId  string                    `protobuf:"bytes,5,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
-	Consumes     []string                  `protobuf:"bytes,6,rep,name=consumes,proto3" json:"consumes,omitempty"`
-	Produces     []string                  `protobuf:"bytes,7,rep,name=produces,proto3" json:"produces,omitempty"`
-	Responses    map[string]*Response      `protobuf:"bytes,9,rep,name=responses,proto3" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Schemes      []string                  `protobuf:"bytes,10,rep,name=schemes,proto3" json:"schemes,omitempty"`
-	Deprecated   bool                      `protobuf:"varint,11,opt,name=deprecated,proto3" json:"deprecated,omitempty"`
-	Security     []*SecurityRequirement    `protobuf:"bytes,12,rep,name=security,proto3" json:"security,omitempty"`
-	Extensions   map[string]*_struct.Value `protobuf:"bytes,13,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// A list of tags for API documentation control. Tags can be used for logical
+	// grouping of operations by resources or any other qualifier.
+	Tags []string `protobuf:"bytes,1,rep,name=tags,proto3" json:"tags,omitempty"`
+	// A short summary of what the operation does. For maximum readability in the
+	// swagger-ui, this field SHOULD be less than 120 characters.
+	Summary string `protobuf:"bytes,2,opt,name=summary,proto3" json:"summary,omitempty"`
+	// A verbose explanation of the operation behavior. GFM syntax can be used for
+	// rich text representation.
+	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	// Additional external documentation for this operation.
+	ExternalDocs *ExternalDocumentation `protobuf:"bytes,4,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
+	// Unique string used to identify the operation. The id MUST be unique among
+	// all operations described in the API. Tools and libraries MAY use the
+	// operationId to uniquely identify an operation, therefore, it is recommended
+	// to follow common programming naming conventions.
+	OperationId string `protobuf:"bytes,5,opt,name=operation_id,json=operationId,proto3" json:"operation_id,omitempty"`
+	// A list of MIME types the operation can consume. This overrides the consumes
+	// definition at the Swagger Object. An empty value MAY be used to clear the
+	// global definition. Value MUST be as described under Mime Types.
+	Consumes []string `protobuf:"bytes,6,rep,name=consumes,proto3" json:"consumes,omitempty"`
+	// A list of MIME types the operation can produce. This overrides the produces
+	// definition at the Swagger Object. An empty value MAY be used to clear the
+	// global definition. Value MUST be as described under Mime Types.
+	Produces []string `protobuf:"bytes,7,rep,name=produces,proto3" json:"produces,omitempty"`
+	// The list of possible responses as they are returned from executing this
+	// operation.
+	Responses map[string]*Response `protobuf:"bytes,9,rep,name=responses,proto3" json:"responses,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// The transfer protocol for the operation. Values MUST be from the list:
+	// "http", "https", "ws", "wss". The value overrides the Swagger Object
+	// schemes definition.
+	Schemes []string `protobuf:"bytes,10,rep,name=schemes,proto3" json:"schemes,omitempty"`
+	// Declares this operation to be deprecated. Usage of the declared operation
+	// should be refrained. Default value is false.
+	Deprecated bool `protobuf:"varint,11,opt,name=deprecated,proto3" json:"deprecated,omitempty"`
+	// A declaration of which security schemes are applied for this operation. The
+	// list of values describes alternative security schemes that can be used
+	// (that is, there is a logical OR between the security requirements). This
+	// definition overrides any declared top-level security. To remove a top-level
+	// security declaration, an empty array can be used.
+	Security   []*SecurityRequirement    `protobuf:"bytes,12,rep,name=security,proto3" json:"security,omitempty"`
+	Extensions map[string]*_struct.Value `protobuf:"bytes,13,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *Operation) Reset() {
@@ -678,19 +734,26 @@ func (x *Response) GetExtensions() map[string]*_struct.Value {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#infoObject
 //
-// TODO(ivucica): document fields
 type Info struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Title          string                    `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	Description    string                    `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	TermsOfService string                    `protobuf:"bytes,3,opt,name=terms_of_service,json=termsOfService,proto3" json:"terms_of_service,omitempty"`
-	Contact        *Contact                  `protobuf:"bytes,4,opt,name=contact,proto3" json:"contact,omitempty"`
-	License        *License                  `protobuf:"bytes,5,opt,name=license,proto3" json:"license,omitempty"`
-	Version        string                    `protobuf:"bytes,6,opt,name=version,proto3" json:"version,omitempty"`
-	Extensions     map[string]*_struct.Value `protobuf:"bytes,7,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// The title of the application.
+	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	// A short description of the application. GFM syntax can be used for rich
+	// text representation.
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	// The Terms of Service for the API.
+	TermsOfService string `protobuf:"bytes,3,opt,name=terms_of_service,json=termsOfService,proto3" json:"terms_of_service,omitempty"`
+	// The contact information for the exposed API.
+	Contact *Contact `protobuf:"bytes,4,opt,name=contact,proto3" json:"contact,omitempty"`
+	// The license information for the exposed API.
+	License *License `protobuf:"bytes,5,opt,name=license,proto3" json:"license,omitempty"`
+	// Provides the version of the application API (not to be confused
+	// with the specification version).
+	Version    string                    `protobuf:"bytes,6,opt,name=version,proto3" json:"version,omitempty"`
+	Extensions map[string]*_struct.Value `protobuf:"bytes,7,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *Info) Reset() {
@@ -778,14 +841,18 @@ func (x *Info) GetExtensions() map[string]*_struct.Value {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#contactObject
 //
-// TODO(ivucica): document fields
 type Contact struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name  string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Url   string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	// The identifying name of the contact person/organization.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The URL pointing to the contact information. MUST be in the format of a
+	// URL.
+	Url string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	// The email address of the contact person/organization. MUST be in the format
+	// of an email address.
 	Email string `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
 }
 
@@ -851,9 +918,9 @@ type License struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Required. The license name used for the API.
+	// The license name used for the API.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// A URL to the license used for the API.
+	// A URL to the license used for the API. MUST be in the format of a URL.
 	Url string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
 }
 
@@ -908,14 +975,17 @@ func (x *License) GetUrl() string {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#externalDocumentationObject
 //
-// TODO(ivucica): document fields
 type ExternalDocumentation struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// A short description of the target documentation. GFM syntax can be used for
+	// rich text representation.
 	Description string `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
-	Url         string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+	// The URL for the target documentation. Value MUST be in the format
+	// of a URL.
+	Url string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
 }
 
 func (x *ExternalDocumentation) Reset() {
@@ -968,17 +1038,28 @@ func (x *ExternalDocumentation) GetUrl() string {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#schemaObject
 //
-// TODO(ivucica): document fields
 type Schema struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	JsonSchema    *JSONSchema            `protobuf:"bytes,1,opt,name=json_schema,json=jsonSchema,proto3" json:"json_schema,omitempty"`
-	Discriminator string                 `protobuf:"bytes,2,opt,name=discriminator,proto3" json:"discriminator,omitempty"`
-	ReadOnly      bool                   `protobuf:"varint,3,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
-	ExternalDocs  *ExternalDocumentation `protobuf:"bytes,5,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
-	Example       *any.Any               `protobuf:"bytes,6,opt,name=example,proto3" json:"example,omitempty"`
+	JsonSchema *JSONSchema `protobuf:"bytes,1,opt,name=json_schema,json=jsonSchema,proto3" json:"json_schema,omitempty"`
+	// Adds support for polymorphism. The discriminator is the schema property
+	// name that is used to differentiate between other schema that inherit this
+	// schema. The property name used MUST be defined at this schema and it MUST
+	// be in the required property list. When used, the value MUST be the name of
+	// this schema or any schema that inherits it.
+	Discriminator string `protobuf:"bytes,2,opt,name=discriminator,proto3" json:"discriminator,omitempty"`
+	// Relevant only for Schema "properties" definitions. Declares the property as
+	// "read only". This means that it MAY be sent as part of a response but MUST
+	// NOT be sent as part of the request. Properties marked as readOnly being
+	// true SHOULD NOT be in the required list of the defined schema. Default
+	// value is false.
+	ReadOnly bool `protobuf:"varint,3,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
+	// Additional external documentation for this schema.
+	ExternalDocs *ExternalDocumentation `protobuf:"bytes,5,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
+	// A free-form property to include an example of an instance for this schema.
+	Example *any.Any `protobuf:"bytes,6,opt,name=example,proto3" json:"example,omitempty"`
 }
 
 func (x *Schema) Reset() {
@@ -1065,19 +1146,25 @@ type JSONSchema struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Ref is used to define an external reference to include in the message.
-	// This could be a fully qualified proto message reference, and that type must be imported
-	// into the protofile. If no message is identified, the Ref will be used verbatim in
-	// the output.
+	// This could be a fully qualified proto message reference, and that type must
+	// be imported into the protofile. If no message is identified, the Ref will
+	// be used verbatim in the output.
 	// For example:
 	//  `ref: ".google.protobuf.Timestamp"`.
-	Ref              string   `protobuf:"bytes,3,opt,name=ref,proto3" json:"ref,omitempty"`
-	Title            string   `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
-	Description      string   `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
-	Default          string   `protobuf:"bytes,7,opt,name=default,proto3" json:"default,omitempty"`
-	ReadOnly         bool     `protobuf:"varint,8,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
-	MultipleOf       float64  `protobuf:"fixed64,10,opt,name=multiple_of,json=multipleOf,proto3" json:"multiple_of,omitempty"`
-	Maximum          float64  `protobuf:"fixed64,11,opt,name=maximum,proto3" json:"maximum,omitempty"`
-	ExclusiveMaximum bool     `protobuf:"varint,12,opt,name=exclusive_maximum,json=exclusiveMaximum,proto3" json:"exclusive_maximum,omitempty"`
+	Ref string `protobuf:"bytes,3,opt,name=ref,proto3" json:"ref,omitempty"`
+	// The title of the schema.
+	Title string `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
+	// A short description of the schema.
+	Description string  `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
+	Default     string  `protobuf:"bytes,7,opt,name=default,proto3" json:"default,omitempty"`
+	ReadOnly    bool    `protobuf:"varint,8,opt,name=read_only,json=readOnly,proto3" json:"read_only,omitempty"`
+	MultipleOf  float64 `protobuf:"fixed64,10,opt,name=multiple_of,json=multipleOf,proto3" json:"multiple_of,omitempty"`
+	// Maximum represents an inclusive upper limit for a numeric instance. The
+	// value of MUST be a number,
+	Maximum          float64 `protobuf:"fixed64,11,opt,name=maximum,proto3" json:"maximum,omitempty"`
+	ExclusiveMaximum bool    `protobuf:"varint,12,opt,name=exclusive_maximum,json=exclusiveMaximum,proto3" json:"exclusive_maximum,omitempty"`
+	// minimum represents an inclusive lower limit for a numeric instance. The
+	// value of MUST be a number,
 	Minimum          float64  `protobuf:"fixed64,13,opt,name=minimum,proto3" json:"minimum,omitempty"`
 	ExclusiveMinimum bool     `protobuf:"varint,14,opt,name=exclusive_minimum,json=exclusiveMinimum,proto3" json:"exclusive_minimum,omitempty"`
 	MaxLength        uint64   `protobuf:"varint,15,opt,name=max_length,json=maxLength,proto3" json:"max_length,omitempty"`
@@ -1277,15 +1364,15 @@ func (x *JSONSchema) GetType() []JSONSchema_JSONSchemaSimpleTypes {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#tagObject
 //
-// TODO(ivucica): document fields
 type Tag struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// TODO(ivucica): Description should be extracted from comments on the proto
-	// service object.
-	Description  string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	// A short description for the tag. GFM syntax can be used for rich text
+	// representation.
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	// Additional external documentation for this tag.
 	ExternalDocs *ExternalDocumentation `protobuf:"bytes,3,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
 }
 
@@ -1348,7 +1435,8 @@ type SecurityDefinitions struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// A single security scheme definition, mapping a "name" to the scheme it defines.
+	// A single security scheme definition, mapping a "name" to the scheme it
+	// defines.
 	Security map[string]*SecurityScheme `protobuf:"bytes,1,rep,name=security,proto3" json:"security,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
@@ -1405,36 +1493,31 @@ type SecurityScheme struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Required. The type of the security scheme. Valid values are "basic",
+	// The type of the security scheme. Valid values are "basic",
 	// "apiKey" or "oauth2".
 	Type SecurityScheme_Type `protobuf:"varint,1,opt,name=type,proto3,enum=grpc.gateway.protoc_gen_swagger.options.SecurityScheme_Type" json:"type,omitempty"`
 	// A short description for security scheme.
 	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	// Required. The name of the header or query parameter to be used.
-	//
+	// The name of the header or query parameter to be used.
 	// Valid for apiKey.
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	// Required. The location of the API key. Valid values are "query" or "header".
-	//
+	// The location of the API key. Valid values are "query" or
+	// "header".
 	// Valid for apiKey.
 	In SecurityScheme_In `protobuf:"varint,4,opt,name=in,proto3,enum=grpc.gateway.protoc_gen_swagger.options.SecurityScheme_In" json:"in,omitempty"`
-	// Required. The flow used by the OAuth2 security scheme. Valid values are
+	// The flow used by the OAuth2 security scheme. Valid values are
 	// "implicit", "password", "application" or "accessCode".
-	//
 	// Valid for oauth2.
 	Flow SecurityScheme_Flow `protobuf:"varint,5,opt,name=flow,proto3,enum=grpc.gateway.protoc_gen_swagger.options.SecurityScheme_Flow" json:"flow,omitempty"`
-	// Required. The authorization URL to be used for this flow. This SHOULD be in
+	// The authorization URL to be used for this flow. This SHOULD be in
 	// the form of a URL.
-	//
 	// Valid for oauth2/implicit and oauth2/accessCode.
 	AuthorizationUrl string `protobuf:"bytes,6,opt,name=authorization_url,json=authorizationUrl,proto3" json:"authorization_url,omitempty"`
-	// Required. The token URL to be used for this flow. This SHOULD be in the
+	// The token URL to be used for this flow. This SHOULD be in the
 	// form of a URL.
-	//
 	// Valid for oauth2/password, oauth2/application and oauth2/accessCode.
 	TokenUrl string `protobuf:"bytes,7,opt,name=token_url,json=tokenUrl,proto3" json:"token_url,omitempty"`
-	// Required. The available scopes for the OAuth2 security scheme.
-	//
+	// The available scopes for the OAuth2 security scheme.
 	// Valid for oauth2.
 	Scopes     *Scopes                   `protobuf:"bytes,8,opt,name=scopes,proto3" json:"scopes,omitempty"`
 	Extensions map[string]*_struct.Value `protobuf:"bytes,9,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
