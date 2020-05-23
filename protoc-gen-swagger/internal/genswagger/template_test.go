@@ -2451,14 +2451,14 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 					t.Errorf("unexpected error '%v'", err)
 				}
 				if !reflect.DeepEqual(test.swaggerObject, test.expectedSwaggerObject) {
-					t.Errorf("swaggerObject was not updated corretly, expected '%+v', got '%+v'", test.expectedSwaggerObject, test.swaggerObject)
+					t.Errorf("swaggerObject was not updated correctly, expected '%+v', got '%+v'", test.expectedSwaggerObject, test.swaggerObject)
 				}
 			} else {
 				if err == nil {
 					t.Error("expected update error not returned")
 				}
 				if !reflect.DeepEqual(test.swaggerObject, test.expectedSwaggerObject) {
-					t.Errorf("swaggerObject was not updated corretly, expected '%+v', got '%+v'", test.expectedSwaggerObject, test.swaggerObject)
+					t.Errorf("swaggerObject was not updated correctly, expected '%+v', got '%+v'", test.expectedSwaggerObject, test.swaggerObject)
 				}
 				if err.Error() != test.expectedError.Error() {
 					t.Errorf("expected error malformed, expected %q, got %q", test.expectedError.Error(), err.Error())
