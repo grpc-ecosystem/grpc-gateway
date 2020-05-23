@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/golang/glog"
 	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 )
 
@@ -16,6 +17,7 @@ func newResponseBodyServer() examples.ResponseBodyServiceServer {
 }
 
 func (s *responseBodyServer) GetResponseBody(ctx context.Context, req *examples.ResponseBodyIn) (*examples.ResponseBodyOut, error) {
+	glog.Info(req)
 	return &examples.ResponseBodyOut{
 		Response: &examples.ResponseBodyOut_Response{
 			Data: req.Data,
@@ -24,9 +26,10 @@ func (s *responseBodyServer) GetResponseBody(ctx context.Context, req *examples.
 }
 
 func (s *responseBodyServer) ListResponseBodies(ctx context.Context, req *examples.ResponseBodyIn) (*examples.RepeatedResponseBodyOut, error) {
+	glog.Info(req)
 	return &examples.RepeatedResponseBodyOut{
 		Response: []*examples.RepeatedResponseBodyOut_Response{
-			&examples.RepeatedResponseBodyOut_Response{
+			{
 				Data: req.Data,
 			},
 		},
@@ -34,6 +37,7 @@ func (s *responseBodyServer) ListResponseBodies(ctx context.Context, req *exampl
 }
 
 func (s *responseBodyServer) ListResponseStrings(ctx context.Context, req *examples.ResponseBodyIn) (*examples.RepeatedResponseStrings, error) {
+	glog.Info(req)
 	if req.Data == "empty" {
 		return &examples.RepeatedResponseStrings{
 			Values: []string{},
@@ -45,6 +49,7 @@ func (s *responseBodyServer) ListResponseStrings(ctx context.Context, req *examp
 }
 
 func (s *responseBodyServer) GetResponseBodyStream(req *examples.ResponseBodyIn, stream examples.ResponseBodyService_GetResponseBodyStreamServer) error {
+	glog.Info(req)
 	if err := stream.Send(&examples.ResponseBodyOut{
 		Response: &examples.ResponseBodyOut_Response{
 			Data: fmt.Sprintf("first %s", req.Data),

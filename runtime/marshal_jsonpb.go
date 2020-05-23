@@ -137,25 +137,29 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 
 // Unmarshal unmarshals JSON "data" into "v"
 func (j *JSONPb) Unmarshal(data []byte, v interface{}) error {
-	return unmarshalJSONPb(data, v)
+	return unmarshalJSONPb(data, j.UnmarshalOptions, v)
 }
 
 // NewDecoder returns a Decoder which reads JSON stream from "r".
 func (j *JSONPb) NewDecoder(r io.Reader) Decoder {
 	d := json.NewDecoder(r)
-	return DecoderWrapper{Decoder: d}
+	return DecoderWrapper{
+		Decoder:          d,
+		UnmarshalOptions: j.UnmarshalOptions,
+	}
 }
 
 // DecoderWrapper is a wrapper around a *json.Decoder that adds
 // support for protos to the Decode method.
 type DecoderWrapper struct {
 	*json.Decoder
+	protojson.UnmarshalOptions
 }
 
 // Decode wraps the embedded decoder's Decode method to support
 // protos using a jsonpb.Unmarshaler.
 func (d DecoderWrapper) Decode(v interface{}) error {
-	return decodeJSONPb(d.Decoder, v)
+	return decodeJSONPb(d.Decoder, d.UnmarshalOptions, v)
 }
 
 // NewEncoder returns an Encoder which writes JSON stream into "w".
@@ -171,15 +175,15 @@ func (j *JSONPb) NewEncoder(w io.Writer) Encoder {
 	})
 }
 
-func unmarshalJSONPb(data []byte, v interface{}) error {
+func unmarshalJSONPb(data []byte, unmarshaler protojson.UnmarshalOptions, v interface{}) error {
 	d := json.NewDecoder(bytes.NewReader(data))
-	return decodeJSONPb(d, v)
+	return decodeJSONPb(d, unmarshaler, v)
 }
 
-func decodeJSONPb(d *json.Decoder, v interface{}) error {
+func decodeJSONPb(d *json.Decoder, unmarshaler protojson.UnmarshalOptions, v interface{}) error {
 	p, ok := v.(proto.Message)
 	if !ok {
-		return decodeNonProtoField(d, v)
+		return decodeNonProtoField(d, unmarshaler, v)
 	}
 
 	// Decode into bytes for marshalling
@@ -189,13 +193,10 @@ func decodeJSONPb(d *json.Decoder, v interface{}) error {
 		return err
 	}
 
-	unmarshaler := &protojson.UnmarshalOptions{
-		DiscardUnknown: allowUnknownFields,
-	}
 	return unmarshaler.Unmarshal([]byte(b), p)
 }
 
-func decodeNonProtoField(d *json.Decoder, v interface{}) error {
+func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions, v interface{}) error {
 	rv := reflect.ValueOf(v)
 	if rv.Kind() != reflect.Ptr {
 		return fmt.Errorf("%T is not a pointer", v)
@@ -212,9 +213,6 @@ func decodeNonProtoField(d *json.Decoder, v interface{}) error {
 				return err
 			}
 
-			unmarshaler := &protojson.UnmarshalOptions{
-				DiscardUnknown: allowUnknownFields,
-			}
 			return unmarshaler.Unmarshal([]byte(b), rv.Interface().(proto.Message))
 		}
 		rv = rv.Elem()
@@ -239,7 +237,7 @@ func decodeNonProtoField(d *json.Decoder, v interface{}) error {
 			}
 			bk := result[0]
 			bv := reflect.New(rv.Type().Elem())
-			if err := unmarshalJSONPb([]byte(*v), bv.Interface()); err != nil {
+			if err := unmarshalJSONPb([]byte(*v), unmarshaler, bv.Interface()); err != nil {
 				return err
 			}
 			rv.SetMapIndex(bk, bv.Elem())
@@ -256,7 +254,7 @@ func decodeNonProtoField(d *json.Decoder, v interface{}) error {
 		}
 		for _, item := range sl {
 			bv := reflect.New(rv.Type().Elem())
-			if err := unmarshalJSONPb([]byte(item), bv.Interface()); err != nil {
+			if err := unmarshalJSONPb([]byte(item), unmarshaler, bv.Interface()); err != nil {
 				return err
 			}
 			rv.Set(reflect.Append(rv, bv.Elem()))
@@ -292,18 +290,6 @@ var typeProtoMessage = reflect.TypeOf((*proto.Message)(nil)).Elem()
 // Delimiter for newline encoded JSON streams.
 func (j *JSONPb) Delimiter() []byte {
 	return []byte("\n")
-}
-
-// allowUnknownFields helps not to return an error when the destination
-// is a struct and the input contains object keys which do not match any
-// non-ignored, exported fields in the destination.
-var allowUnknownFields = true
-
-// DisallowUnknownFields enables option in decoder (unmarshaller) to
-// return an error when it finds an unknown field. This function must be
-// called before using the JSON marshaller.
-func DisallowUnknownFields() {
-	allowUnknownFields = false
 }
 
 var (
