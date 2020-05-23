@@ -68,10 +68,6 @@ type Registry struct {
 	// all the elements of the FQN without any separator
 	useFQNForSwaggerName bool
 
-	// allowColonFinalSegments determines whether colons are permitted
-	// in the final segment of a path.
-	allowColonFinalSegments bool
-
 	// useGoTemplate determines whether you want to use GO templates
 	// in your protofile comments
 	useGoTemplate bool
@@ -476,16 +472,6 @@ func (r *Registry) GetUseJSONNamesForFields() bool {
 // SetUseFQNForSwaggerName sets useFQNForSwaggerName
 func (r *Registry) SetUseFQNForSwaggerName(use bool) {
 	r.useFQNForSwaggerName = use
-}
-
-// GetAllowColonFinalSegments returns allowColonFinalSegments
-func (r *Registry) GetAllowColonFinalSegments() bool {
-	return r.allowColonFinalSegments
-}
-
-// SetAllowColonFinalSegments sets allowColonFinalSegments
-func (r *Registry) SetAllowColonFinalSegments(use bool) {
-	r.allowColonFinalSegments = use
 }
 
 // GetUseFQNForSwaggerName returns useFQNForSwaggerName

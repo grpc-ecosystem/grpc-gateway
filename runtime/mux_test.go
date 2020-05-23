@@ -20,8 +20,7 @@ func TestMuxServeHTTP(t *testing.T) {
 		verb   string
 	}
 	for i, spec := range []struct {
-		patterns    []stubPattern
-		patternOpts []runtime.PatternOpt
+		patterns []stubPattern
 
 		reqMethod string
 		reqPath   string
@@ -31,7 +30,6 @@ func TestMuxServeHTTP(t *testing.T) {
 		respContent string
 
 		disablePathLengthFallback bool
-		muxOpts                   []runtime.ServeMuxOption
 	}{
 		{
 			patterns:   nil,
@@ -68,12 +66,12 @@ func TestMuxServeHTTP(t *testing.T) {
 			patterns: []stubPattern{
 				{
 					method: "GET",
-					ops:    []int{int(utilities.OpLitPush), 0},
-					pool:   []string{"foo"},
+					ops:    []int{int(utilities.OpPush), 0},
 				},
 				{
 					method: "GET",
-					ops:    []int{int(utilities.OpPush), 0},
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
 				},
 			},
 			reqMethod:   "GET",
@@ -249,9 +247,8 @@ func TestMuxServeHTTP(t *testing.T) {
 					pool:   []string{"foo", "id"},
 				},
 			},
-			patternOpts: []runtime.PatternOpt{runtime.AssumeColonVerbOpt(false)},
-			reqMethod:   "GET",
-			reqPath:     "/foo/bar",
+			reqMethod: "GET",
+			reqPath:   "/foo/bar",
 			headers: map[string]string{
 				"Content-Type": "application/json",
 			},
@@ -266,9 +263,8 @@ func TestMuxServeHTTP(t *testing.T) {
 					pool:   []string{"foo", "id"},
 				},
 			},
-			patternOpts: []runtime.PatternOpt{runtime.AssumeColonVerbOpt(false)},
-			reqMethod:   "GET",
-			reqPath:     "/foo/bar:123",
+			reqMethod: "GET",
+			reqPath:   "/foo/bar:123",
 			headers: map[string]string{
 				"Content-Type": "application/json",
 			},
@@ -289,26 +285,24 @@ func TestMuxServeHTTP(t *testing.T) {
 					verb:   "verb",
 				},
 			},
-			patternOpts: []runtime.PatternOpt{runtime.AssumeColonVerbOpt(false)},
-			reqMethod:   "POST",
-			reqPath:     "/foo/bar:verb",
+			reqMethod: "POST",
+			reqPath:   "/foo/bar:verb",
 			headers: map[string]string{
 				"Content-Type": "application/json",
 			},
 			respStatus:  http.StatusOK,
 			respContent: "POST /foo/{id=*}:verb",
-			muxOpts:     []runtime.ServeMuxOption{runtime.WithLastMatchWins()},
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			opts := spec.muxOpts
+			var opts []runtime.ServeMuxOption
 			if spec.disablePathLengthFallback {
 				opts = append(opts, runtime.WithDisablePathLengthFallback())
 			}
 			mux := runtime.NewServeMux(opts...)
 			for _, p := range spec.patterns {
 				func(p stubPattern) {
-					pat, err := runtime.NewPattern(1, p.ops, p.pool, p.verb, spec.patternOpts...)
+					pat, err := runtime.NewPattern(1, p.ops, p.pool, p.verb)
 					if err != nil {
 						t.Fatalf("runtime.NewPattern(1, %#v, %#v, %q) failed with %v; want success", p.ops, p.pool, p.verb, err)
 					}
