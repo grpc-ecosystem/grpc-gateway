@@ -486,7 +486,7 @@ service ABitOfEverythingService {
 	}
 	rpc DeepPathEcho(ABitOfEverything) returns (ABitOfEverything) {
 		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/{single_nested.name}"
+			post: "/v1/example/deep_path/{single_nested.name}"
 			body: "*"
 		};
 	}

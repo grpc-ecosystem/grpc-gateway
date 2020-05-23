@@ -1053,7 +1053,7 @@ func testABEBulkEcho(t *testing.T, port int) {
 	go func() {
 		defer wg.Done()
 		defer reqw.Close()
-		for i := 0; i < 1000; i++ {
+		for i := 0; i < 10; i++ {
 			s := fmt.Sprintf("message %d", i)
 			msg := sub.StringMessage{Value: &s}
 			buf, err := marshaler.Marshal(&msg)

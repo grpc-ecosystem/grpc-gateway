@@ -1135,7 +1135,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{singleNested.name}"
+	localVarPath := a.client.cfg.BasePath + "/v1/example/deep_path/{singleNested.name}"
 	localVarPath = strings.Replace(localVarPath, "{"+"singleNested.name"+"}", fmt.Sprintf("%v", singleNestedName), -1)
 
 	localVarHeaderParams := make(map[string]string)

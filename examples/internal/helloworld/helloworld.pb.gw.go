@@ -1199,25 +1199,25 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 }
 
 var (
-	pattern_Greeter_SayHello_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"say", "name"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Greeter_SayHello_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"say", "name"}, ""))
 
-	pattern_Greeter_SayHello_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "strval", "strVal"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Greeter_SayHello_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "strval", "strVal"}, ""))
 
-	pattern_Greeter_SayHello_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "floatval", "floatVal"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Greeter_SayHello_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "floatval", "floatVal"}, ""))
 
-	pattern_Greeter_SayHello_3 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "doubleval", "doubleVal"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Greeter_SayHello_3 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "doubleval", "doubleVal"}, ""))
 
-	pattern_Greeter_SayHello_4 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "boolval", "boolVal"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Greeter_SayHello_4 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "boolval", "boolVal"}, ""))
 
-	pattern_Greeter_SayHello_5 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "bytesval", "bytesVal"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Greeter_SayHello_5 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "bytesval", "bytesVal"}, ""))
 
-	pattern_Greeter_SayHello_6 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "int32val", "int32Val"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Greeter_SayHello_6 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "int32val", "int32Val"}, ""))
 
-	pattern_Greeter_SayHello_7 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "uint32val", "uint32Val"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Greeter_SayHello_7 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "uint32val", "uint32Val"}, ""))
 
-	pattern_Greeter_SayHello_8 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "int64val", "int64Val"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Greeter_SayHello_8 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "int64val", "int64Val"}, ""))
 
-	pattern_Greeter_SayHello_9 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "uint64val", "uint64Val"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Greeter_SayHello_9 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"say", "uint64val", "uint64Val"}, ""))
 )
 
 var (

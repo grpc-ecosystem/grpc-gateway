@@ -227,9 +227,9 @@ func RegisterLoginServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 }
 
 var (
-	pattern_LoginService_Login_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "login"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_LoginService_Login_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "login"}, ""))
 
-	pattern_LoginService_Logout_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "logout"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_LoginService_Logout_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "logout"}, ""))
 )
 
 var (
