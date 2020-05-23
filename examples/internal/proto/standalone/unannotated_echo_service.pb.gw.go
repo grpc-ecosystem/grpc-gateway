@@ -241,7 +241,7 @@ func request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler runtim
 	if protoReq.Code == nil {
 		protoReq.Code = &extExamplepb.UnannotatedSimpleMessage_Lang{}
 	} else if _, ok := protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_Lang); !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_Lang, but: %t\n", protoReq.Code)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_Lang, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_Lang).Lang, err = runtime.String(val)
 
@@ -302,7 +302,7 @@ func local_request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler 
 	if protoReq.Code == nil {
 		protoReq.Code = &extExamplepb.UnannotatedSimpleMessage_Lang{}
 	} else if _, ok := protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_Lang); !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_Lang, but: %t\n", protoReq.Code)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_Lang, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_Lang).Lang, err = runtime.String(val)
 
@@ -356,7 +356,7 @@ func request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler runtim
 	if protoReq.Code == nil {
 		protoReq.Code = &extExamplepb.UnannotatedSimpleMessage_LineNum{}
 	} else if _, ok := protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_LineNum); !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_LineNum, but: %t\n", protoReq.Code)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_LineNum, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
 
@@ -417,7 +417,7 @@ func local_request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler 
 	if protoReq.Code == nil {
 		protoReq.Code = &extExamplepb.UnannotatedSimpleMessage_LineNum{}
 	} else if _, ok := protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_LineNum); !ok {
-		return nil, metadata, grpc.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_LineNum, but: %t\n", protoReq.Code)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_LineNum, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
 
