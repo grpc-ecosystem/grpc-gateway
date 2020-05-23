@@ -20,11 +20,11 @@ func TestMarshalerForRequest(t *testing.T) {
 	mux := runtime.NewServeMux()
 
 	in, out := runtime.MarshalerForRequest(mux, r)
-	if _, ok := in.(*runtime.JSONPb); !ok {
-		t.Errorf("in = %#v; want a runtime.JSONPb", in)
+	if _, ok := in.(*runtime.HTTPBodyMarshaler); !ok {
+		t.Errorf("in = %#v; want a runtime.HTTPBodyMarshaler", in)
 	}
-	if _, ok := out.(*runtime.JSONPb); !ok {
-		t.Errorf("out = %#v; want a runtime.JSONPb", in)
+	if _, ok := out.(*runtime.HTTPBodyMarshaler); !ok {
+		t.Errorf("out = %#v; want a runtime.HTTPBodyMarshaler", in)
 	}
 
 	var marshalers [3]dummyMarshaler
@@ -78,7 +78,7 @@ func TestMarshalerForRequest(t *testing.T) {
 
 type dummyMarshaler struct{}
 
-func (dummyMarshaler) ContentType() string { return "" }
+func (dummyMarshaler) ContentType(_ interface{}) string { return "" }
 func (dummyMarshaler) Marshal(interface{}) ([]byte, error) {
 	return nil, errors.New("not implemented")
 }

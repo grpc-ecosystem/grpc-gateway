@@ -32,7 +32,6 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 	handleForwardResponseServerMetadata(w, mux, md)
 
 	w.Header().Set("Transfer-Encoding", "chunked")
-	w.Header().Set("Content-Type", marshaler.ContentType())
 	if err := handleForwardResponseOptions(ctx, w, nil, opts); err != nil {
 		HTTPError(ctx, mux, marshaler, w, req, err)
 		return
@@ -60,6 +59,10 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			return
 		}
 
+		if !wroteHeader {
+			w.Header().Set("Content-Type", marshaler.ContentType(resp))
+		}
+
 		var buf []byte
 		httpBody, isHTTPBody := resp.(*httpbody.HttpBody)
 		switch {
@@ -67,7 +70,6 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 			buf, err = marshaler.Marshal(errorChunk(status.New(codes.Internal, "empty response")))
 		case isHTTPBody:
 			buf = httpBody.GetData()
-			w.Header().Set("Content-Type", httpBody.GetContentType())
 		default:
 			result := map[string]interface{}{"result": resp}
 			if rb, ok := resp.(responseBody); ok {
@@ -137,13 +139,7 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 	handleForwardResponseServerMetadata(w, mux, md)
 	handleForwardResponseTrailerHeader(w, md)
 
-	contentType := marshaler.ContentType()
-	// Check marshaler on run time in order to keep backwards compatibility
-	// An interface param needs to be added to the ContentType() function on
-	// the Marshal interface to be able to remove this check
-	if typeMarshaler, ok := marshaler.(contentTypeMarshaler); ok {
-		contentType = typeMarshaler.ContentTypeFromMessage(resp)
-	}
+	contentType := marshaler.ContentType(resp)
 	w.Header().Set("Content-Type", contentType)
 
 	if err := handleForwardResponseOptions(ctx, w, resp, opts); err != nil {

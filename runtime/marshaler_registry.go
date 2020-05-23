@@ -15,9 +15,11 @@ var (
 	acceptHeader      = http.CanonicalHeaderKey("Accept")
 	contentTypeHeader = http.CanonicalHeaderKey("Content-Type")
 
-	defaultMarshaler = &JSONPb{
-		MarshalOptions: protojson.MarshalOptions{
-			EmitUnpopulated: true,
+	defaultMarshaler = &HTTPBodyMarshaler{
+		Marshaler: &JSONPb{
+			MarshalOptions: protojson.MarshalOptions{
+				EmitUnpopulated: true,
+			},
 		},
 	}
 )
