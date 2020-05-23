@@ -12,7 +12,6 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/internal"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	pb "github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -49,13 +48,13 @@ func TestForwardResponseStream(t *testing.T) {
 		statusCode: http.StatusOK,
 	}, {
 		name:       "error",
-		msgs:       []msg{{nil, grpc.Errorf(codes.OutOfRange, "400")}},
+		msgs:       []msg{{nil, status.Errorf(codes.OutOfRange, "400")}},
 		statusCode: http.StatusBadRequest,
 	}, {
 		name: "stream_error",
 		msgs: []msg{
 			{&pb.SimpleMessage{Id: "One"}, nil},
-			{nil, grpc.Errorf(codes.OutOfRange, "400")},
+			{nil, status.Errorf(codes.OutOfRange, "400")},
 		},
 		statusCode: http.StatusOK,
 	}, {
@@ -70,7 +69,7 @@ func TestForwardResponseStream(t *testing.T) {
 		name: "response body stream error case",
 		msgs: []msg{
 			{fakeReponseBodyWrapper{&pb.SimpleMessage{Id: "One"}}, nil},
-			{nil, grpc.Errorf(codes.OutOfRange, "400")},
+			{nil, status.Errorf(codes.OutOfRange, "400")},
 		},
 		responseBody: true,
 		statusCode:   http.StatusOK,
@@ -203,13 +202,13 @@ func TestForwardResponseStreamCustomMarshaler(t *testing.T) {
 		statusCode: http.StatusOK,
 	}, {
 		name:       "error",
-		msgs:       []msg{{nil, grpc.Errorf(codes.OutOfRange, "400")}},
+		msgs:       []msg{{nil, status.Errorf(codes.OutOfRange, "400")}},
 		statusCode: http.StatusBadRequest,
 	}, {
 		name: "stream_error",
 		msgs: []msg{
 			{&pb.SimpleMessage{Id: "One"}, nil},
-			{nil, grpc.Errorf(codes.OutOfRange, "400")},
+			{nil, status.Errorf(codes.OutOfRange, "400")},
 		},
 		statusCode: http.StatusOK,
 	}}
