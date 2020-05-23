@@ -471,15 +471,17 @@ func TestJSONPbDecoderFields(t *testing.T) {
 
 func TestJSONPbDecoderUnknownField(t *testing.T) {
 	var (
-		m   runtime.JSONPb
+		m = runtime.JSONPb{
+			UnmarshalOptions: protojson.UnmarshalOptions{
+				DiscardUnknown: false,
+			},
+		}
 		got examplepb.ABitOfEverything
 	)
 	data := `{
 		"uuid": "6EC2446F-7E89-4127-B3E6-5C05E6BECBA7",
 		"unknownField": "111"
 	}`
-
-	runtime.DisallowUnknownFields()
 
 	r := strings.NewReader(data)
 	dec := m.NewDecoder(r)

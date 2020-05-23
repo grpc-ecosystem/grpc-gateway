@@ -20,6 +20,9 @@ var (
 			MarshalOptions: protojson.MarshalOptions{
 				EmitUnpopulated: true,
 			},
+			UnmarshalOptions: protojson.UnmarshalOptions{
+				DiscardUnknown: true,
+			},
 		},
 	}
 )

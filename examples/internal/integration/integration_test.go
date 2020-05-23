@@ -102,7 +102,7 @@ func testEcho(t *testing.T, port int, apiPrefix string, contentType string) {
 		t.Logf("%s", buf)
 	}
 
-	var msg examplepb.SimpleMessage
+	var msg examplepb.UnannotatedSimpleMessage
 	if err := marshaler.Unmarshal(buf, &msg); err != nil {
 		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
@@ -135,7 +135,7 @@ func testEchoOneof(t *testing.T, port int, apiPrefix string, contentType string)
 		t.Logf("%s", buf)
 	}
 
-	var msg examplepb.SimpleMessage
+	var msg examplepb.UnannotatedSimpleMessage
 	if err := marshaler.Unmarshal(buf, &msg); err != nil {
 		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
@@ -168,7 +168,7 @@ func testEchoOneof1(t *testing.T, port int, apiPrefix string, contentType string
 		t.Logf("%s", buf)
 	}
 
-	var msg examplepb.SimpleMessage
+	var msg examplepb.UnannotatedSimpleMessage
 	if err := marshaler.Unmarshal(buf, &msg); err != nil {
 		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
@@ -201,7 +201,7 @@ func testEchoOneof2(t *testing.T, port int, apiPrefix string, contentType string
 		t.Logf("%s", buf)
 	}
 
-	var msg examplepb.SimpleMessage
+	var msg examplepb.UnannotatedSimpleMessage
 	if err := marshaler.Unmarshal(buf, &msg); err != nil {
 		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
@@ -216,7 +216,7 @@ func testEchoOneof2(t *testing.T, port int, apiPrefix string, contentType string
 }
 
 func testEchoBody(t *testing.T, port int, apiPrefix string) {
-	sent := examplepb.SimpleMessage{Id: "example"}
+	sent := examplepb.UnannotatedSimpleMessage{Id: "example"}
 	payload, err := marshaler.Marshal(&sent)
 	if err != nil {
 		t.Fatalf("marshaler.Marshal(%#v) failed with %v; want success", payload, err)
@@ -240,12 +240,12 @@ func testEchoBody(t *testing.T, port int, apiPrefix string) {
 		t.Logf("%s", buf)
 	}
 
-	var received examplepb.SimpleMessage
+	var received examplepb.UnannotatedSimpleMessage
 	if err := marshaler.Unmarshal(buf, &received); err != nil {
 		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
-	if diff := cmp.Diff(received, sent, protocmp.Transform()); diff != "" {
+	if diff := cmp.Diff(&received, &sent, protocmp.Transform()); diff != "" {
 		t.Errorf(diff)
 	}
 
@@ -334,7 +334,7 @@ func testABECreate(t *testing.T, port int) {
 		t.Error("msg.Uuid is empty; want not empty")
 	}
 	msg.Uuid = ""
-	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
+	if diff := cmp.Diff(&msg, &want, protocmp.Transform()); diff != "" {
 		t.Errorf(diff)
 	}
 }
@@ -442,7 +442,7 @@ func testABECreateBody(t *testing.T, port int) {
 		t.Error("msg.Uuid is empty; want not empty")
 	}
 	msg.Uuid = ""
-	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
+	if diff := cmp.Diff(&msg, &want, protocmp.Transform()); diff != "" {
 		t.Errorf(diff)
 	}
 }
@@ -673,7 +673,7 @@ func testABELookup(t *testing.T, port int) {
 		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
-	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
+	if diff := cmp.Diff(&msg, &want, protocmp.Transform()); diff != "" {
 		t.Errorf(diff)
 	}
 
@@ -1340,7 +1340,7 @@ func testABERepeated(t *testing.T, port int) {
 		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
 		return
 	}
-	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
+	if diff := cmp.Diff(&msg, &want, protocmp.Transform()); diff != "" {
 		t.Errorf(diff)
 	}
 }
@@ -1590,15 +1590,16 @@ func testResponseBodies(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var got []*examplepb.ResponseBodyOut_Response
+	var got []*examplepb.RepeatedResponseBodyOut_Response
 	err = marshaler.Unmarshal(buf, &got)
 	if err != nil {
 		t.Errorf("marshaler.Unmarshal failed with %v; want success", err)
 		return
 	}
-	want := []*examplepb.ResponseBodyOut_Response{
+	want := []*examplepb.RepeatedResponseBodyOut_Response{
 		{
 			Data: "foo",
+			Type: examplepb.RepeatedResponseBodyOut_Response_UNKNOWN,
 		},
 	}
 	if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
@@ -1708,15 +1709,16 @@ func testResponseStrings(t *testing.T, port int) {
 			t.Logf("%s", buf)
 		}
 
-		var got []*examplepb.ResponseBodyOut_Response
+		var got []*examplepb.RepeatedResponseBodyOut_Response
 		err = marshaler.Unmarshal(buf, &got)
 		if err != nil {
 			t.Errorf("marshaler.Unmarshal failed with %v; want success", err)
 			return
 		}
-		want := []*examplepb.ResponseBodyOut_Response{
+		want := []*examplepb.RepeatedResponseBodyOut_Response{
 			{
 				Data: "foo",
+				Type: examplepb.RepeatedResponseBodyOut_Response_UNKNOWN,
 			},
 		}
 		if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
