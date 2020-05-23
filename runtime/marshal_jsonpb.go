@@ -23,7 +23,7 @@ type JSONPb struct {
 }
 
 // ContentType always returns "application/json".
-func (*JSONPb) ContentType() string {
+func (*JSONPb) ContentType(_ interface{}) string {
 	return "application/json"
 }
 
@@ -65,8 +65,8 @@ var (
 )
 
 // marshalNonProto marshals a non-message field of a protobuf message.
-// This function does not correctly marshals arbitrary data structure into JSON,
-// but it is only capable of marshaling non-message field values of protobuf,
+// This function does not correctly marshal arbitrary data structures into JSON,
+// it is only capable of marshaling non-message field values of protobuf,
 // i.e. primitive types, enums; pointers to primitives or enums; maps from
 // integer/string types to primitives/enums/pointers to messages.
 func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {

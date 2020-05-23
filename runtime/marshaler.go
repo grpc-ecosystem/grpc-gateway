@@ -16,14 +16,9 @@ type Marshaler interface {
 	// NewEncoder returns an Encoder which writes bytes sequence into "w".
 	NewEncoder(w io.Writer) Encoder
 	// ContentType returns the Content-Type which this marshaler is responsible for.
-	ContentType() string
-}
-
-// Marshalers that implement contentTypeMarshaler will have their ContentTypeFromMessage method called
-// to set the Content-Type header on the response
-type contentTypeMarshaler interface {
-	// ContentTypeFromMessage returns the Content-Type this marshaler produces from the provided message
-	ContentTypeFromMessage(v interface{}) string
+	// The parameter describes the type which is being marshalled, which can sometimes
+	// affect the content type returned.
+	ContentType(v interface{}) string
 }
 
 // Decoder decodes a byte sequence
