@@ -39,6 +39,8 @@ To change the swagger generator behaviour to match, set `json_names_for_fields=f
 --swagger_out=json_names_for_fields=false:./gen/swagger path/to/my/proto/v1/myproto.proto
 ```
 
+If using the Bazel rule, set `json_names_for_fields=False`.
+
 ## We now emit default vaules for all fields
 
 See [the original issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/233)
