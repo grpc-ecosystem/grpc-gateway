@@ -1,17 +1,24 @@
-| Title                                  | Category      |
-| -------------------------------------- | ------------- |
-| Use go templates in protofile comments | Documentation |
+---
+category: documentation
+name: Use go templates in protofile comments
+---
 
 # Use go templates in protofile comments
 
-Use [Go templates](https://golang.org/pkg/text/template/ "Package template") in your protofile comments to allow more advanced documentation such as:  
+Use [Go templates](https://golang.org/pkg/text/template/)
+in your protofile comments to allow more advanced documentation such
+as:  
 * Documentation about fields in the proto objects.  
-* Import the content of external files (such as [Markdown](https://en.wikipedia.org/wiki/Markdown "Markdown Github")). 
+* Import the content of external files (such as
+    [Markdown](https://en.wikipedia.org/wiki/Markdown)).
 
 ## How to use it
 
-By default this function is turned off, so if you want to use it you have to set the `use_go_templates` flag to true inside of the `swagger_out` flag.
-```bash
+By default this function is turned off, so if you want to use it you
+have to set the `use_go_templates` flag to true inside of the
+`swagger_out` flag.
+
+```shell
 --swagger_out=use_go_templates=true:.
 ```
 
@@ -19,15 +26,12 @@ By default this function is turned off, so if you want to use it you have to set
 
 Example of a bash script with the `use_go_templates` flag set to true:
 
-```bash
-protoc -I/usr/local/include -I. \
-  -I$GOPATH/src \
-  -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-  -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway \
-  --go_out=plugins=grpc:. \
-  --grpc-gateway_out=logtostderr=true:. \
-  --swagger_out=logtostderr=true,use_go_templates=true:. \
-  *.proto 
+```shell
+$ protoc -I. \
+    --go_out=plugins=grpc:. \
+    --grpc-gateway_out=logtostderr=true:. \
+    --swagger_out=logtostderr=true,use_go_templates=true:. \
+    path/to/my/proto/v1/myproto.proto 
 ```
 
 ### Example proto file
@@ -80,14 +84,15 @@ The content of `tables.md`:
 
 ### SwaggerUI
 
-This is how the swagger file would be rendered in [SwaggerUI](https://swagger.io/tools/swagger-ui/ "SwaggerUI site")
+This is how the swagger file would be rendered in [SwaggerUI](https://swagger.io/tools/swagger-ui/)
 
-![Screenshot swaggerfile in SwaggerUI](../_imgs/gotemplates/swaggerui.png "SwaggerUI")
+![Screenshot swaggerfile in SwaggerUI](../_imgs/gotemplates/swaggerui.png)
 
 ### Postman
 
-This is how the swagger file would be rendered in [Postman](https://www.getpostman.com/ "Postman site")
+This is how the swagger file would be rendered in [Postman](https://www.getpostman.com/)
 
-![Screenshot swaggerfile in Postman](../_imgs/gotemplates/postman.png "Postman")
+![Screenshot swaggerfile in Postman](../_imgs/gotemplates/postman.png)
 
-For a more detailed example of a protofile that has Go templates enabled, [click here](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/use_go_template.proto "Example protofile with Go template").
+For a more detailed example of a protofile that has Go templates enabled,
+[see the examples](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/use_go_template.proto).

@@ -1,5 +1,6 @@
 ---
 category: documentation
+name: 2020 Season of Docs
 ---
 
 # 2020 Season of Docs
