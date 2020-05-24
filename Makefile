@@ -7,14 +7,14 @@ GO_PLUGIN=bin/protoc-gen-go
 GO_PROTOBUF_REPO=github.com/golang/protobuf
 GO_PLUGIN_PKG=$(GO_PROTOBUF_REPO)/protoc-gen-go
 GO_PTYPES_ANY_PKG=$(GO_PROTOBUF_REPO)/ptypes/any
-SWAGGER_PLUGIN=bin/protoc-gen-swagger
-SWAGGER_PLUGIN_SRC= ./internal/utilities/doc.go \
+OPENAPI_PLUGIN=bin/protoc-gen-openapiv2
+OPENAPI_PLUGIN_SRC= ./internal/utilities/doc.go \
 			./internal/utilities/pattern.go \
 			./internal/utilities/trie.go \
-			protoc-gen-swagger/internal/genswagger/generator.go \
-			protoc-gen-swagger/internal/genswagger/template.go \
-			protoc-gen-swagger/main.go
-SWAGGER_PLUGIN_PKG=./protoc-gen-swagger
+			protoc-gen-openapiv2/internal/genopenapi/generator.go \
+			protoc-gen-openapiv2/internal/genopenapi/template.go \
+			protoc-gen-openapiv2/main.go
+OPENAPI_PLUGIN_PKG=./protoc-gen-openapiv2
 GATEWAY_PLUGIN=bin/protoc-gen-grpc-gateway
 GATEWAY_PLUGIN_PKG=./protoc-gen-grpc-gateway
 GATEWAY_PLUGIN_SRC= ./internal/utilities/doc.go \
@@ -38,12 +38,12 @@ GATEWAY_PLUGIN_SRC= ./internal/utilities/doc.go \
 			internal/httprule/types.go \
 			protoc-gen-grpc-gateway/main.go
 GATEWAY_PLUGIN_FLAGS?=
-SWAGGER_PLUGIN_FLAGS?=
+OPENAPI_PLUGIN_FLAGS?=
 
 GOOGLEAPIS_DIR=third_party/googleapis
 OUTPUT_DIR=_output
 
-OPENAPIV2_PROTO=protoc-gen-swagger/options/openapiv2.proto protoc-gen-swagger/options/annotations.proto
+OPENAPIV2_PROTO=protoc-gen-openapiv2/options/openapiv2.proto protoc-gen-openapiv2/options/annotations.proto
 OPENAPIV2_GO=$(OPENAPIV2_PROTO:.proto=.pb.go)
 
 ADDITIONAL_GW_FLAGS=
@@ -51,10 +51,10 @@ ifneq "$(GATEWAY_PLUGIN_FLAGS)" ""
 	ADDITIONAL_GW_FLAGS=,$(GATEWAY_PLUGIN_FLAGS)
 endif
 ADDITIONAL_SWG_FLAGS=
-ifneq "$(SWAGGER_PLUGIN_FLAGS)" ""
-	ADDITIONAL_SWG_FLAGS=,$(SWAGGER_PLUGIN_FLAGS)
+ifneq "$(OPENAPI_PLUGIN_FLAGS)" ""
+	ADDITIONAL_SWG_FLAGS=,$(OPENAPI_PLUGIN_FLAGS)
 endif
-SWAGGER_EXAMPLES=examples/internal/proto/examplepb/echo_service.proto \
+OPENAPI_EXAMPLES=examples/internal/proto/examplepb/echo_service.proto \
 	 examples/internal/proto/examplepb/a_bit_of_everything.proto \
 	 examples/internal/proto/examplepb/wrappers.proto \
 	 examples/internal/proto/examplepb/stream.proto \
@@ -78,7 +78,7 @@ HELLOWORLD=examples/internal/helloworld/helloworld.proto
 
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
-EXAMPLE_SWAGGERSRCS=$(SWAGGER_EXAMPLES:.proto=.swagger.json)
+EXAMPLE_OPENAPISRCS=$(OPENAPI_EXAMPLES:.proto=.swagger.json)
 EXAMPLE_DEPS=examples/internal/proto/pathenum/path_enum.proto examples/internal/proto/sub/message.proto examples/internal/proto/sub2/message.proto
 EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
 
@@ -153,8 +153,8 @@ $(OPENAPIV2_GO): $(OPENAPIV2_PROTO) $(GO_PLUGIN)
 $(GATEWAY_PLUGIN): $(GATEWAY_PLUGIN_SRC)
 	go build -o $@ $(GATEWAY_PLUGIN_PKG)
 
-$(SWAGGER_PLUGIN): $(SWAGGER_PLUGIN_SRC) $(OPENAPIV2_GO)
-	go build -o $@ $(SWAGGER_PLUGIN_PKG)
+$(OPENAPI_PLUGIN): $(OPENAPI_PLUGIN_SRC) $(OPENAPIV2_GO)
+	go build -o $@ $(OPENAPI_PLUGIN_PKG)
 
 $(EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=plugins=grpc,paths=source_relative:. $(EXAMPLES)
@@ -177,9 +177,9 @@ $(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
 
 
-$(EXAMPLE_SWAGGERSRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml
-$(EXAMPLE_SWAGGERSRCS): $(SWAGGER_PLUGIN) $(SWAGGER_EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(SWAGGER_PLUGIN) --swagger_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true$(ADDITIONAL_SWG_FLAGS):. $(SWAGGER_EXAMPLES)
+$(EXAMPLE_OPENAPISRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml
+$(EXAMPLE_OPENAPISRCS): $(OPENAPI_PLUGIN) $(OPENAPI_EXAMPLES)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true$(ADDITIONAL_SWG_FLAGS):. $(OPENAPI_EXAMPLES)
 
 $(HELLOWORLD_SVCSRCS): $(GO_PLUGIN) $(HELLOWORLD)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=plugins=grpc,paths=source_relative:. $(HELLOWORLD)
@@ -210,7 +210,7 @@ $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 	@rm -f $(EXAMPLE_CLIENT_DIR)/responsebody/README.md \
 		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh
 
-examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_CLIENT_SRCS) $(HELLOWORLD_SVCSRCS) $(HELLOWORLD_GWSRCS)
+examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_OPENAPISRCS) $(EXAMPLE_CLIENT_SRCS) $(HELLOWORLD_SVCSRCS) $(HELLOWORLD_GWSRCS)
 testproto: $(RUNTIME_TEST_SRCS) $(APICONFIG_SRCS)
 test: examples testproto
 	go test -short -race ./...
@@ -233,20 +233,20 @@ lint:
 	golint --set_exit_status ./runtime
 	golint --set_exit_status ./internal/utilities/...
 	golint --set_exit_status ./protoc-gen-grpc-gateway/...
-	golint --set_exit_status ./protoc-gen-swagger/...
+	golint --set_exit_status ./protoc-gen-openapiv2/...
 	go vet ./runtime || true
 	go vet ./internal/utilities/...
 	go vet ./protoc-gen-grpc-gateway/...
-	go vet ./protoc-gen-swagger/...
+	go vet ./protoc-gen-openapiv2/...
 
 clean:
-	rm -f $(GATEWAY_PLUGIN) $(SWAGGER_PLUGIN)
+	rm -f $(GATEWAY_PLUGIN) $(OPENAPI_PLUGIN)
 distclean: clean
 	rm -f $(GO_PLUGIN)
 realclean: distclean
 	rm -f $(EXAMPLE_SVCSRCS) $(EXAMPLE_DEPSRCS)
 	rm -f $(EXAMPLE_GWSRCS)
-	rm -f $(EXAMPLE_SWAGGERSRCS)
+	rm -f $(EXAMPLE_OPENAPISRCS)
 	rm -f $(EXAMPLE_CLIENT_SRCS)
 	rm -f $(HELLOWORLD_SVCSRCS)
 	rm -f $(HELLOWORLD_GWSRCS)

@@ -13,9 +13,9 @@ import "examples/internal/proto/pathenum/path_enum.proto";
 import "examples/internal/proto/sub/message.proto";
 import "examples/internal/proto/sub2/message.proto";
 import "google/protobuf/timestamp.proto";
-import "protoc-gen-swagger/options/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
 
-option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 	info: {
 		title: "A Bit of Everything";
 		version: "1.0";
@@ -186,7 +186,7 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 
 // Intentionally complicated message type to cover many features of Protobuf.
 message ABitOfEverything {
-	option (grpc.gateway.protoc_gen_swagger.options.openapiv2_schema) = {
+	option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
 		json_schema: {
 			title: "A bit of everything"
 			description: "Intentionaly complicated message type to cover many features of Protobuf."
@@ -201,7 +201,7 @@ message ABitOfEverything {
 
 	// Nested is nested type.
 	message Nested {
-		option (grpc.gateway.protoc_gen_swagger.options.openapiv2_schema) = {
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
 			example: { value: '{ "ok": "TRUE" }' }
 		};
 		// name is nested field.
@@ -216,13 +216,13 @@ message ABitOfEverything {
 		}
 
 		// DeepEnum comment.
-		DeepEnum ok = 3 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {description: "DeepEnum description."}];
+		DeepEnum ok = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "DeepEnum description."}];
 	}
 	Nested single_nested = 25;
 
-	string uuid = 1 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}", min_length: 1}];
+	string uuid = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}", min_length: 1}];
 	repeated Nested nested = 2;
-	float float_value = 3 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {description: "Float value field", default: "0.2", required: ['float_value']}];
+	float float_value = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Float value field", default: "0.2", required: ['float_value']}];
 	double double_value = 4;
 	int64 int64_value = 5;
 	uint64 uint64_value = 6;
@@ -258,26 +258,26 @@ message ABitOfEverything {
 	repeated NumericEnum repeated_enum_value = 28;
 
 	// repeated numeric enum comment (This comment is overridden by the field annotation)
-	repeated NumericEnum repeated_enum_annotation = 32 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {title: "Repeated numeric enum title", description: "Repeated numeric enum description."}];
+	repeated NumericEnum repeated_enum_annotation = 32 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {title: "Repeated numeric enum title", description: "Repeated numeric enum description."}];
 
 	// numeric enum comment (This comment is overridden by the field annotation)
-	NumericEnum enum_value_annotation = 33 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {title: "Numeric enum title", description: "Numeric enum description."}];
+	NumericEnum enum_value_annotation = 33 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {title: "Numeric enum title", description: "Numeric enum description."}];
 
 	// repeated string comment (This comment is overridden by the field annotation)
-	repeated string repeated_string_annotation = 34 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {title: "Repeated string title", description: "Repeated string description."}];
+	repeated string repeated_string_annotation = 34 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {title: "Repeated string title", description: "Repeated string description."}];
 
 	// repeated nested object comment (This comment is overridden by the field annotation)
-	repeated Nested repeated_nested_annotation = 35 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {title: "Repeated nested object title", description: "Repeated nested object description."}];
+	repeated Nested repeated_nested_annotation = 35 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {title: "Repeated nested object title", description: "Repeated nested object description."}];
 
 	// nested object comments (This comment is overridden by the field annotation)
-	Nested nested_annotation = 36 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {title: "Nested object title", description: "Nested object description."}];
+	Nested nested_annotation = 36 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {title: "Nested object title", description: "Nested object description."}];
 
-	int64 int64_override_type = 37 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {type: INTEGER}];
+	int64 int64_override_type = 37 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {type: INTEGER}];
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality
 message ABitOfEverythingRepeated {
-	option (grpc.gateway.protoc_gen_swagger.options.openapiv2_schema) = {
+	option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
 		example: { value: '{ "path_repeated_bool_value": [true, true, false, true], "path_repeated_int32_value": [1, 2, 3] }' }
 	};
 
@@ -328,7 +328,7 @@ message UpdateV2Request {
 // proto messages and URL templates are still processed correctly.
 service ABitOfEverythingService {
 
-	option (grpc.gateway.protoc_gen_swagger.options.openapiv2_tag) = {
+	option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
 		description: "ABitOfEverythingService description -- which should not be used in place of the documentation comment!"
 		external_docs: {
 			url: "https://github.com/grpc-ecosystem/grpc-gateway";
@@ -382,7 +382,7 @@ service ABitOfEverythingService {
 		option (google.api.http) = {
 			delete: "/v1/example/a_bit_of_everything/{uuid}"
 		};
-		option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
 			security: {
 				security_requirement: {
 					key: "ApiKeyAuth";
@@ -408,7 +408,7 @@ service ABitOfEverythingService {
 		option (google.api.http) = {
 			get: "/v1/example/a_bit_of_everything/query/{uuid}"
 		};
-		option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
 			deprecated: true // For testing purposes.
 			external_docs: {
 				url: "https://github.com/grpc-ecosystem/grpc-gateway";
@@ -441,7 +441,7 @@ service ABitOfEverythingService {
 				get: "/v2/example/echo"
 			}
 		};
-		option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
 			description: "Description Echo";
 			summary: "Summary: Echo rpc";
 			tags: "echo rpc";
@@ -533,7 +533,7 @@ service ABitOfEverythingService {
 		option (google.api.http) = {
 			get: "/v2/example/overwriteresponsecontenttype"
 		};
-		option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
 			produces: "application/text"
 		};
 	}

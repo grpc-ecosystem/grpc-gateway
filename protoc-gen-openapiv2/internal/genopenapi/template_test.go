@@ -1,4 +1,4 @@
-package genswagger
+package genopenapi
 
 import (
 	"encoding/json"
@@ -15,7 +15,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
-	swagger_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-swagger/options"
+	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/protobuf/proto"
 )
@@ -54,7 +54,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 	type test struct {
 		MsgDescs []*descriptorpb.DescriptorProto
 		Message  string
-		Params   []swaggerParameterObject
+		Params   []openapiParameterObject
 	}
 
 	tests := []test{
@@ -83,7 +83,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 				},
 			},
 			Message: "ExampleMessage",
-			Params: []swaggerParameterObject{
+			Params: []openapiParameterObject{
 				{
 					Name:     "a",
 					In:       "query",
@@ -162,7 +162,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 				},
 			},
 			Message: "ExampleMessage",
-			Params: []swaggerParameterObject{
+			Params: []openapiParameterObject{
 				{
 					Name:     "nested.a",
 					In:       "query",
@@ -235,7 +235,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 	type test struct {
 		MsgDescs []*descriptorpb.DescriptorProto
 		Message  string
-		Params   []swaggerParameterObject
+		Params   []openapiParameterObject
 	}
 
 	tests := []test{
@@ -264,7 +264,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 				},
 			},
 			Message: "ExampleMessage",
-			Params: []swaggerParameterObject{
+			Params: []openapiParameterObject{
 				{
 					Name:     "a",
 					In:       "query",
@@ -343,7 +343,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 				},
 			},
 			Message: "ExampleMessage",
-			Params: []swaggerParameterObject{
+			Params: []openapiParameterObject{
 				{
 					Name:     "nested.a",
 					In:       "query",
@@ -533,7 +533,7 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 	type test struct {
 		MsgDescs []*descriptorpb.DescriptorProto
 		Message  string
-		Params   []swaggerParameterObject
+		Params   []openapiParameterObject
 	}
 
 	tests := []test{
@@ -552,7 +552,7 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 				},
 			},
 			Message: "ExampleMessage",
-			Params: []swaggerParameterObject{
+			Params: []openapiParameterObject{
 				{
 					Name:     "testFieldA",
 					In:       "query",
@@ -588,7 +588,7 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 				},
 			},
 			Message: "ExampleMessage",
-			Params: []swaggerParameterObject{
+			Params: []openapiParameterObject{
 				{
 					Name:     "subMessage.testFieldA",
 					In:       "query",
@@ -858,10 +858,10 @@ func TestApplyTemplateOverrideOperationID(t *testing.T) {
 		OutputType: proto.String("ExampleMessage"),
 		Options:    &descriptorpb.MethodOptions{},
 	}
-	swaggerOperation := swagger_options.Operation{
+	openapiOperation := openapi_options.Operation{
 		OperationId: "MyExample",
 	}
-	proto.SetExtension(proto.Message(meth.Options), swagger_options.E_Openapiv2Operation, &swaggerOperation)
+	proto.SetExtension(proto.Message(meth.Options), openapi_options.E_Openapiv2Operation, &openapiOperation)
 	svc := &descriptorpb.ServiceDescriptorProto{
 		Name:   proto.String("ExampleService"),
 		Method: []*descriptorpb.MethodDescriptorProto{meth},
@@ -991,8 +991,8 @@ func TestApplyTemplateExtensions(t *testing.T) {
 			},
 		},
 	}
-	swagger := swagger_options.Swagger{
-		Info: &swagger_options.Info{
+	swagger := openapi_options.Swagger{
+		Info: &openapi_options.Info{
 			Title: "test",
 			Extensions: map[string]*structpb.Value{
 				"x-info-extension": {Kind: &structpb.Value_StringValue{StringValue: "bar"}},
@@ -1004,8 +1004,8 @@ func TestApplyTemplateExtensions(t *testing.T) {
 				Values: []*structpb.Value{{Kind: &structpb.Value_StringValue{StringValue: "baz"}}},
 			}}},
 		},
-		SecurityDefinitions: &swagger_options.SecurityDefinitions{
-			Security: map[string]*swagger_options.SecurityScheme{
+		SecurityDefinitions: &openapi_options.SecurityDefinitions{
+			Security: map[string]*openapi_options.SecurityScheme{
 				"somescheme": {
 					Extensions: map[string]*structpb.Value{
 						"x-security-baz": {Kind: &structpb.Value_BoolValue{BoolValue: true}},
@@ -1014,9 +1014,9 @@ func TestApplyTemplateExtensions(t *testing.T) {
 			},
 		},
 	}
-	proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), swagger_options.E_Openapiv2Swagger, &swagger)
-	swaggerOperation := swagger_options.Operation{
-		Responses: map[string]*swagger_options.Response{
+	proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), openapi_options.E_Openapiv2Swagger, &swagger)
+	openapiOperation := openapi_options.Operation{
+		Responses: map[string]*openapi_options.Response{
 			"200": {
 				Extensions: map[string]*structpb.Value{
 					"x-resp-id": {Kind: &structpb.Value_StringValue{StringValue: "resp1000"}},
@@ -1027,7 +1027,7 @@ func TestApplyTemplateExtensions(t *testing.T) {
 			"x-op-foo": {Kind: &structpb.Value_StringValue{StringValue: "baz"}},
 		},
 	}
-	proto.SetExtension(proto.Message(meth.Options), swagger_options.E_Openapiv2Operation, &swaggerOperation)
+	proto.SetExtension(proto.Message(meth.Options), openapi_options.E_Openapiv2Operation, &openapiOperation)
 	reg := descriptor.NewRegistry()
 	if err := AddErrorDefs(reg); err != nil {
 		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
@@ -1079,7 +1079,7 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		}
 	}
 
-	var scheme swaggerSecuritySchemeObject
+	var scheme openapiSecuritySchemeObject
 	for _, v := range result.SecurityDefinitions {
 		scheme = v
 	}
@@ -1095,8 +1095,8 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 
-	var operation *swaggerOperationObject
-	var response swaggerResponseObject
+	var operation *openapiOperationObject
+	var response openapiResponseObject
 	for _, v := range result.Paths {
 		operation = v.Get
 		response = v.Get.Responses["200"]
@@ -1433,16 +1433,16 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 			if want, got, name := "result", resultProperty.Key, `(*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Key`; !reflect.DeepEqual(got, want) {
 				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 			}
-			result := resultProperty.Value.(swaggerSchemaObject)
-			if want, got, name := "#/definitions/exampleExampleMessage", result.Ref, `((*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Value.(swaggerSchemaObject)).Ref`; !reflect.DeepEqual(got, want) {
+			result := resultProperty.Value.(openapiSchemaObject)
+			if want, got, name := "#/definitions/exampleExampleMessage", result.Ref, `((*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Value.(openapiSchemaObject)).Ref`; !reflect.DeepEqual(got, want) {
 				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 			}
 			errorProperty := streamExampleExampleMessageProperties[1]
 			if want, got, name := "error", errorProperty.Key, `(*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Key`; !reflect.DeepEqual(got, want) {
 				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 			}
-			err := errorProperty.Value.(swaggerSchemaObject)
-			if want, got, name := "#/definitions/rpcStatus", err.Ref, `((*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Value.(swaggerSchemaObject)).Ref`; !reflect.DeepEqual(got, want) {
+			err := errorProperty.Value.(openapiSchemaObject)
+			if want, got, name := "#/definitions/rpcStatus", err.Ref, `((*(StreamDefinitions["exampleExampleMessage"].Properties))[0].Value.(openapiSchemaObject)).Ref`; !reflect.DeepEqual(got, want) {
 				t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, got, want)
 			}
 		}
@@ -1642,9 +1642,9 @@ func TestTemplateWithJsonCamelCase(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
 		if data.expected != actual {
-			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
 	}
 }
@@ -1670,14 +1670,14 @@ func TestTemplateWithoutJsonCamelCase(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
 		if data.expected != actual {
-			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
 	}
 }
 
-func TestTemplateToSwaggerPath(t *testing.T) {
+func TestTemplateToOpenAPIPath(t *testing.T) {
 	var tests = []struct {
 		input    string
 		expected string
@@ -1702,21 +1702,21 @@ func TestTemplateToSwaggerPath(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
 		if data.expected != actual {
-			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
 	}
 	reg.SetUseJSONNamesForFields(true)
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
 		if data.expected != actual {
-			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
 	}
 }
 
-func BenchmarkTemplateToSwaggerPath(b *testing.B) {
+func BenchmarkTemplateToOpenAPIPath(b *testing.B) {
 	const input = "/{user.name=prefix1/*/prefix2/*}:customMethod"
 
 	b.Run("with JSON names", func(b *testing.B) {
@@ -1724,7 +1724,7 @@ func BenchmarkTemplateToSwaggerPath(b *testing.B) {
 		reg.SetUseJSONNamesForFields(false)
 
 		for i := 0; i < b.N; i++ {
-			_ = templateToSwaggerPath(input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+			_ = templateToOpenAPIPath(input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
 		}
 	})
 
@@ -1733,17 +1733,17 @@ func BenchmarkTemplateToSwaggerPath(b *testing.B) {
 		reg.SetUseJSONNamesForFields(true)
 
 		for i := 0; i < b.N; i++ {
-			_ = templateToSwaggerPath(input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+			_ = templateToOpenAPIPath(input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
 		}
 	})
 }
 
-func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
+func TestResolveFullyQualifiedNameToOpenAPIName(t *testing.T) {
 	var tests = []struct {
 		input                string
 		output               string
 		listOfFQMNs          []string
-		useFQNForSwaggerName bool
+		useFQNForOpenAPIName bool
 	}{
 		{
 			".a.b.C",
@@ -1785,16 +1785,16 @@ func TestResolveFullyQualifiedNameToSwaggerName(t *testing.T) {
 	}
 
 	for _, data := range tests {
-		names := resolveFullyQualifiedNameToSwaggerNames(data.listOfFQMNs, data.useFQNForSwaggerName)
+		names := resolveFullyQualifiedNameToOpenAPINames(data.listOfFQMNs, data.useFQNForOpenAPIName)
 		output := names[data.input]
 		if output != data.output {
-			t.Errorf("Expected fullyQualifiedNameToSwaggerName(%v) to be %s but got %s",
+			t.Errorf("Expected fullyQualifiedNameToOpenAPIName(%v) to be %s but got %s",
 				data.input, data.output, output)
 		}
 	}
 }
 
-func TestFQMNtoSwaggerName(t *testing.T) {
+func TestFQMNtoOpenAPIName(t *testing.T) {
 	var tests = []struct {
 		input    string
 		expected string
@@ -1809,16 +1809,16 @@ func TestFQMNtoSwaggerName(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
 		if data.expected != actual {
-			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
 	}
 	reg.SetUseJSONNamesForFields(true)
 	for _, data := range tests {
-		actual := templateToSwaggerPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
 		if data.expected != actual {
-			t.Errorf("Expected templateToSwaggerPath(%v) = %v, actual: %v", data.input, data.expected, actual)
+			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
 	}
 }
@@ -1854,7 +1854,7 @@ func TestSchemaOfField(t *testing.T) {
 			refs: make(refMap),
 			expected: schemaCore{
 				Type: "array",
-				Items: &swaggerItemsObject{
+				Items: &openapiItemsObject{
 					Type: "string",
 				},
 			},
@@ -1884,7 +1884,7 @@ func TestSchemaOfField(t *testing.T) {
 			refs: make(refMap),
 			expected: schemaCore{
 				Type: "array",
-				Items: &swaggerItemsObject{
+				Items: &openapiItemsObject{
 					Type: "string",
 				},
 			},
@@ -2038,7 +2038,7 @@ func TestSchemaOfField(t *testing.T) {
 			refs: make(refMap),
 			expected: schemaCore{
 				Type: "array",
-				Items: (*swaggerItemsObject)(&schemaCore{
+				Items: (*openapiItemsObject)(&schemaCore{
 					Type: "object",
 				}),
 			},
@@ -2103,7 +2103,7 @@ func TestSchemaOfField(t *testing.T) {
 	for _, test := range tests {
 		refs := make(refMap)
 		actual := schemaOfField(test.field, reg, refs)
-		expectedSchemaObject := swaggerSchemaObject{schemaCore: test.expected}
+		expectedSchemaObject := openapiSchemaObject{schemaCore: test.expected}
 		if e, a := expectedSchemaObject, actual; !reflect.DeepEqual(a, e) {
 			t.Errorf("Expected schemaOfField(%v) = %v, actual: %v", test.field, e, a)
 		}
@@ -2118,16 +2118,16 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 	tests := []struct {
 		descr    string
 		msgDescs []*descriptorpb.DescriptorProto
-		schema   map[string]swagger_options.Schema // per-message schema to add
-		defs     swaggerDefinitionsObject
+		schema   map[string]openapi_options.Schema // per-message schema to add
+		defs     openapiDefinitionsObject
 	}{
 		{
-			descr: "no swagger options",
+			descr: "no OpenAPI options",
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]swagger_options.Schema{},
-			defs: map[string]swaggerSchemaObject{
+			schema: map[string]openapi_options.Schema{},
+			defs: map[string]openapiSchemaObject{
 				"Message": {schemaCore: schemaCore{Type: "object"}},
 			},
 		},
@@ -2136,7 +2136,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]swagger_options.Schema{
+			schema: map[string]openapi_options.Schema{
 				"Message": {
 					Example: &anypb.Any{
 						TypeUrl: "this_isnt_used",
@@ -2144,7 +2144,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					},
 				},
 			},
-			defs: map[string]swaggerSchemaObject{
+			defs: map[string]openapiSchemaObject{
 				"Message": {schemaCore: schemaCore{
 					Type:    "object",
 					Example: json.RawMessage(`{"foo":"bar"}`),
@@ -2156,14 +2156,14 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]swagger_options.Schema{
+			schema: map[string]openapi_options.Schema{
 				"Message": {
 					Example: &anypb.Any{
 						Value: []byte(`XXXX anything goes XXXX`),
 					},
 				},
 			},
-			defs: map[string]swaggerSchemaObject{
+			defs: map[string]openapiSchemaObject{
 				"Message": {schemaCore: schemaCore{
 					Type:    "object",
 					Example: json.RawMessage(`XXXX anything goes XXXX`),
@@ -2175,20 +2175,20 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]swagger_options.Schema{
+			schema: map[string]openapi_options.Schema{
 				"Message": {
-					ExternalDocs: &swagger_options.ExternalDocumentation{
+					ExternalDocs: &openapi_options.ExternalDocumentation{
 						Description: "glorious docs",
 						Url:         "https://nada",
 					},
 				},
 			},
-			defs: map[string]swaggerSchemaObject{
+			defs: map[string]openapiSchemaObject{
 				"Message": {
 					schemaCore: schemaCore{
 						Type: "object",
 					},
-					ExternalDocs: &swaggerExternalDocumentationObject{
+					ExternalDocs: &openapiExternalDocumentationObject{
 						Description: "glorious docs",
 						URL:         "https://nada",
 					},
@@ -2200,9 +2200,9 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]swagger_options.Schema{
+			schema: map[string]openapi_options.Schema{
 				"Message": {
-					JsonSchema: &swagger_options.JSONSchema{
+					JsonSchema: &openapi_options.JSONSchema{
 						Title:            "title",
 						Description:      "desc",
 						MultipleOf:       100,
@@ -2223,7 +2223,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					},
 				},
 			},
-			defs: map[string]swaggerSchemaObject{
+			defs: map[string]openapiSchemaObject{
 				"Message": {
 					schemaCore: schemaCore{
 						Type: "object",
@@ -2286,12 +2286,12 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 				msgMap[msg.FQMN()] = msg
 
 				if schema, ok := test.schema[name]; ok {
-					proto.SetExtension(d.Options, swagger_options.E_Openapiv2Schema, &schema)
+					proto.SetExtension(d.Options, openapi_options.E_Openapiv2Schema, &schema)
 				}
 			}
 
 			refs := make(refMap)
-			actual := make(swaggerDefinitionsObject)
+			actual := make(openapiDefinitionsObject)
 			renderMessagesAsDefinition(msgMap, actual, reg, refs)
 
 			if !reflect.DeepEqual(actual, test.defs) {
@@ -2301,27 +2301,27 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 	}
 }
 
-func TestUpdateSwaggerDataFromComments(t *testing.T) {
+func TestUpdateOpenAPIDataFromComments(t *testing.T) {
 
 	tests := []struct {
 		descr                 string
-		swaggerObject         interface{}
+		openapiSwaggerObject  interface{}
 		comments              string
 		expectedError         error
-		expectedSwaggerObject interface{}
+		expectedOpenAPIObject interface{}
 		useGoTemplate         bool
 	}{
 		{
 			descr:                 "empty comments",
-			swaggerObject:         nil,
-			expectedSwaggerObject: nil,
+			openapiSwaggerObject:  nil,
+			expectedOpenAPIObject: nil,
 			comments:              "",
 			expectedError:         nil,
 		},
 		{
-			descr:         "set field to read only",
-			swaggerObject: &swaggerSchemaObject{},
-			expectedSwaggerObject: &swaggerSchemaObject{
+			descr:                "set field to read only",
+			openapiSwaggerObject: &openapiSchemaObject{},
+			expectedOpenAPIObject: &openapiSchemaObject{
 				ReadOnly:    true,
 				Description: "... Output only. ...",
 			},
@@ -2329,18 +2329,18 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 			expectedError: nil,
 		},
 		{
-			descr:         "set title",
-			swaggerObject: &swaggerSchemaObject{},
-			expectedSwaggerObject: &swaggerSchemaObject{
+			descr:                "set title",
+			openapiSwaggerObject: &openapiSchemaObject{},
+			expectedOpenAPIObject: &openapiSchemaObject{
 				Title: "Comment with no trailing dot",
 			},
 			comments:      "Comment with no trailing dot",
 			expectedError: nil,
 		},
 		{
-			descr:         "set description",
-			swaggerObject: &swaggerSchemaObject{},
-			expectedSwaggerObject: &swaggerSchemaObject{
+			descr:                "set description",
+			openapiSwaggerObject: &openapiSchemaObject{},
+			expectedOpenAPIObject: &openapiSchemaObject{
 				Description: "Comment with trailing dot.",
 			},
 			comments:      "Comment with trailing dot.",
@@ -2348,11 +2348,11 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 		},
 		{
 			descr: "use info object",
-			swaggerObject: &swaggerObject{
-				Info: swaggerInfoObject{},
+			openapiSwaggerObject: &openapiSwaggerObject{
+				Info: openapiInfoObject{},
 			},
-			expectedSwaggerObject: &swaggerObject{
-				Info: swaggerInfoObject{
+			expectedOpenAPIObject: &openapiSwaggerObject{
+				Info: openapiInfoObject{
 					Description: "Comment with trailing dot.",
 				},
 			},
@@ -2360,9 +2360,9 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 			expectedError: nil,
 		},
 		{
-			descr:         "multi line comment with title",
-			swaggerObject: &swaggerSchemaObject{},
-			expectedSwaggerObject: &swaggerSchemaObject{
+			descr:                "multi line comment with title",
+			openapiSwaggerObject: &openapiSchemaObject{},
+			expectedOpenAPIObject: &openapiSchemaObject{
 				Title:       "First line",
 				Description: "Second line",
 			},
@@ -2370,18 +2370,18 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 			expectedError: nil,
 		},
 		{
-			descr:         "multi line comment no title",
-			swaggerObject: &swaggerSchemaObject{},
-			expectedSwaggerObject: &swaggerSchemaObject{
+			descr:                "multi line comment no title",
+			openapiSwaggerObject: &openapiSchemaObject{},
+			expectedOpenAPIObject: &openapiSchemaObject{
 				Description: "First line.\n\nSecond line",
 			},
 			comments:      "First line.\n\nSecond line",
 			expectedError: nil,
 		},
 		{
-			descr:         "multi line comment with summary with dot",
-			swaggerObject: &swaggerOperationObject{},
-			expectedSwaggerObject: &swaggerOperationObject{
+			descr:                "multi line comment with summary with dot",
+			openapiSwaggerObject: &openapiOperationObject{},
+			expectedOpenAPIObject: &openapiOperationObject{
 				Summary:     "First line.",
 				Description: "Second line",
 			},
@@ -2389,9 +2389,9 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 			expectedError: nil,
 		},
 		{
-			descr:         "multi line comment with summary no dot",
-			swaggerObject: &swaggerOperationObject{},
-			expectedSwaggerObject: &swaggerOperationObject{
+			descr:                "multi line comment with summary no dot",
+			openapiSwaggerObject: &openapiOperationObject{},
+			expectedOpenAPIObject: &openapiOperationObject{
 				Summary:     "First line",
 				Description: "Second line",
 			},
@@ -2400,15 +2400,15 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 		},
 		{
 			descr:                 "multi line comment with summary no dot",
-			swaggerObject:         &schemaCore{},
-			expectedSwaggerObject: &schemaCore{},
+			openapiSwaggerObject:  &schemaCore{},
+			expectedOpenAPIObject: &schemaCore{},
 			comments:              "Any comment",
 			expectedError:         errors.New("no description nor summary property"),
 		},
 		{
-			descr:         "without use_go_template",
-			swaggerObject: &swaggerSchemaObject{},
-			expectedSwaggerObject: &swaggerSchemaObject{
+			descr:                "without use_go_template",
+			openapiSwaggerObject: &openapiSchemaObject{},
+			expectedOpenAPIObject: &openapiSchemaObject{
 				Title:       "First line",
 				Description: "{{import \"documentation.md\"}}",
 			},
@@ -2416,9 +2416,9 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 			expectedError: nil,
 		},
 		{
-			descr:         "error with use_go_template",
-			swaggerObject: &swaggerSchemaObject{},
-			expectedSwaggerObject: &swaggerSchemaObject{
+			descr:                "error with use_go_template",
+			openapiSwaggerObject: &openapiSchemaObject{},
+			expectedOpenAPIObject: &openapiSchemaObject{
 				Title:       "First line",
 				Description: "open noneexistingfile.txt: no such file or directory",
 			},
@@ -2427,9 +2427,9 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 			useGoTemplate: true,
 		},
 		{
-			descr:         "template with use_go_template",
-			swaggerObject: &swaggerSchemaObject{},
-			expectedSwaggerObject: &swaggerSchemaObject{
+			descr:                "template with use_go_template",
+			openapiSwaggerObject: &openapiSchemaObject{},
+			expectedOpenAPIObject: &openapiSchemaObject{
 				Title:       "Template",
 				Description: `Description "which means nothing"`,
 			},
@@ -2445,20 +2445,20 @@ func TestUpdateSwaggerDataFromComments(t *testing.T) {
 			if test.useGoTemplate {
 				reg.SetUseGoTemplate(true)
 			}
-			err := updateSwaggerDataFromComments(reg, test.swaggerObject, nil, test.comments, false)
+			err := updateOpenAPIDataFromComments(reg, test.openapiSwaggerObject, nil, test.comments, false)
 			if test.expectedError == nil {
 				if err != nil {
 					t.Errorf("unexpected error '%v'", err)
 				}
-				if !reflect.DeepEqual(test.swaggerObject, test.expectedSwaggerObject) {
-					t.Errorf("swaggerObject was not updated correctly, expected '%+v', got '%+v'", test.expectedSwaggerObject, test.swaggerObject)
+				if !reflect.DeepEqual(test.openapiSwaggerObject, test.expectedOpenAPIObject) {
+					t.Errorf("openapiSwaggerObject was not updated correctly, expected '%+v', got '%+v'", test.expectedOpenAPIObject, test.openapiSwaggerObject)
 				}
 			} else {
 				if err == nil {
 					t.Error("expected update error not returned")
 				}
-				if !reflect.DeepEqual(test.swaggerObject, test.expectedSwaggerObject) {
-					t.Errorf("swaggerObject was not updated correctly, expected '%+v', got '%+v'", test.expectedSwaggerObject, test.swaggerObject)
+				if !reflect.DeepEqual(test.openapiSwaggerObject, test.expectedOpenAPIObject) {
+					t.Errorf("openapiSwaggerObject was not updated correctly, expected '%+v', got '%+v'", test.expectedOpenAPIObject, test.openapiSwaggerObject)
 				}
 				if err.Error() != test.expectedError.Error() {
 					t.Errorf("expected error malformed, expected %q, got %q", test.expectedError.Error(), err.Error())
@@ -2472,8 +2472,8 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 	tests := []struct {
 		descr         string
 		msgDescs      []*descriptorpb.DescriptorProto
-		schema        map[string]swagger_options.Schema // per-message schema to add
-		defs          swaggerDefinitionsObject
+		schema        map[string]openapi_options.Schema // per-message schema to add
+		defs          openapiDefinitionsObject
 		useGoTemplate bool
 	}{
 		{
@@ -2481,25 +2481,25 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]swagger_options.Schema{
+			schema: map[string]openapi_options.Schema{
 				"Message": {
-					JsonSchema: &swagger_options.JSONSchema{
+					JsonSchema: &openapi_options.JSONSchema{
 						Title:       "{{.Name}}",
 						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
 					},
-					ExternalDocs: &swagger_options.ExternalDocumentation{
+					ExternalDocs: &openapi_options.ExternalDocumentation{
 						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
 					},
 				},
 			},
-			defs: map[string]swaggerSchemaObject{
+			defs: map[string]openapiSchemaObject{
 				"Message": {
 					schemaCore: schemaCore{
 						Type: "object",
 					},
 					Title:       "Message",
 					Description: `Description "which means nothing"`,
-					ExternalDocs: &swaggerExternalDocumentationObject{
+					ExternalDocs: &openapiExternalDocumentationObject{
 						Description: `Description "which means nothing"`,
 					},
 				},
@@ -2511,25 +2511,25 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]swagger_options.Schema{
+			schema: map[string]openapi_options.Schema{
 				"Message": {
-					JsonSchema: &swagger_options.JSONSchema{
+					JsonSchema: &openapi_options.JSONSchema{
 						Title:       "{{.Name}}",
 						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
 					},
-					ExternalDocs: &swagger_options.ExternalDocumentation{
+					ExternalDocs: &openapi_options.ExternalDocumentation{
 						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
 					},
 				},
 			},
-			defs: map[string]swaggerSchemaObject{
+			defs: map[string]openapiSchemaObject{
 				"Message": {
 					schemaCore: schemaCore{
 						Type: "object",
 					},
 					Title:       "{{.Name}}",
 					Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
-					ExternalDocs: &swaggerExternalDocumentationObject{
+					ExternalDocs: &openapiExternalDocumentationObject{
 						Description: "Description {{with \"which means nothing\"}}{{printf \"%q\" .}}{{end}}",
 					},
 				},
@@ -2575,12 +2575,12 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 				msgMap[msg.FQMN()] = msg
 
 				if schema, ok := test.schema[name]; ok {
-					proto.SetExtension(d.Options, swagger_options.E_Openapiv2Schema, &schema)
+					proto.SetExtension(d.Options, openapi_options.E_Openapiv2Schema, &schema)
 				}
 			}
 
 			refs := make(refMap)
-			actual := make(swaggerDefinitionsObject)
+			actual := make(openapiDefinitionsObject)
 			renderMessagesAsDefinition(msgMap, actual, reg, refs)
 
 			if !reflect.DeepEqual(actual, test.defs) {

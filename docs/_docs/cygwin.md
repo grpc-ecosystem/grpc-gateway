@@ -34,7 +34,7 @@ From an elevated cmd.exe prompt set the GOPATH variable in windows and add the `
 Then `go get -u -v` the following packages:
 
     go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-    go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+    go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-openapiv2
     go get -u -v github.com/golang/protobuf/protoc-gen-go
 
 This will probably fail with similar output.
@@ -62,7 +62,7 @@ Adjust steps 3, 5 and 7 like this. protoc expects native windows paths.
 
     protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --go_out=plugins=grpc:. ./path/to/your_service.proto
     protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --grpc-gateway_out=logtostderr=true:. ./path/to/your_service.proto
-    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --swagger_out=logtostderr=true:. ./path/to/your_service.proto
+    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --openapiv2_out=logtostderr=true:. ./path/to/your_service.proto
 
 Then `cd` into the directory where your entry-point `main.go` file is located and run
 

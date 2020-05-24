@@ -1,6 +1,6 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
-package(default_visibility = ["//protoc-gen-swagger:__subpackages__"])
+package(default_visibility = ["//protoc-gen-openapiv2:__subpackages__"])
 
 go_library(
     name = "go_default_library",
@@ -12,12 +12,12 @@ go_library(
         "template.go",
         "types.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-swagger/internal/genswagger",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi",
     deps = [
         "//internal/casing:go_default_library",
         "//internal/descriptor:go_default_library",
         "//internal/generator:go_default_library",
-        "//protoc-gen-swagger/options:go_default_library",
+        "//protoc-gen-openapiv2/options:go_default_library",
         "@com_github_golang_glog//:go_default_library",
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",
         "@go_googleapis//google/rpc:status_go_proto",
@@ -38,7 +38,7 @@ go_test(
     deps = [
         "//internal/descriptor:go_default_library",
         "//internal/httprule:go_default_library",
-        "//protoc-gen-swagger/options:go_default_library",
+        "//protoc-gen-openapiv2/options:go_default_library",
         "//runtime:go_default_library",
         "@com_github_google_go_cmp//cmp:go_default_library",
         "@io_bazel_rules_go//proto/wkt:any_go_proto",

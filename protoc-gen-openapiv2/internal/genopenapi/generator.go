@@ -1,4 +1,4 @@
-package genswagger
+package genopenapi
 
 import (
 	"bytes"
@@ -16,7 +16,7 @@ import (
 	anypb "github.com/golang/protobuf/ptypes/any"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
-	swagger_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-swagger/options"
+	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/protobuf/proto"
 )
@@ -31,7 +31,7 @@ type generator struct {
 
 type wrapper struct {
 	fileName string
-	swagger  *swaggerObject
+	swagger  *openapiSwaggerObject
 }
 
 // New returns a new generator which generates grpc gateway files.
@@ -39,7 +39,7 @@ func New(reg *descriptor.Registry) gen.Generator {
 	return &generator{reg: reg}
 }
 
-// Merge a lot of swagger file (wrapper) to single one swagger file
+// Merge a lot of OpenAPI file (wrapper) to single one OpenAPI file
 func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 	var mergedTarget *wrapper
 	for _, f := range targets {
@@ -73,28 +73,28 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 //    on them. See http://choly.ca/post/go-json-marshalling/ (or, if it ever
 //    goes away, use
 //    https://web.archive.org/web/20190806073003/http://choly.ca/post/go-json-marshalling/.
-func (so swaggerObject) MarshalJSON() ([]byte, error) {
-	type alias swaggerObject
+func (so openapiSwaggerObject) MarshalJSON() ([]byte, error) {
+	type alias openapiSwaggerObject
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
-func (so swaggerInfoObject) MarshalJSON() ([]byte, error) {
-	type alias swaggerInfoObject
+func (so openapiInfoObject) MarshalJSON() ([]byte, error) {
+	type alias openapiInfoObject
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
-func (so swaggerSecuritySchemeObject) MarshalJSON() ([]byte, error) {
-	type alias swaggerSecuritySchemeObject
+func (so openapiSecuritySchemeObject) MarshalJSON() ([]byte, error) {
+	type alias openapiSecuritySchemeObject
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
-func (so swaggerOperationObject) MarshalJSON() ([]byte, error) {
-	type alias swaggerOperationObject
+func (so openapiOperationObject) MarshalJSON() ([]byte, error) {
+	type alias openapiOperationObject
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
-func (so swaggerResponseObject) MarshalJSON() ([]byte, error) {
-	type alias swaggerResponseObject
+func (so openapiResponseObject) MarshalJSON() ([]byte, error) {
+	type alias openapiResponseObject
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
@@ -105,11 +105,11 @@ func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error
 	//
 	// The struct will look like
 	// struct {
-	//   *swaggerCore
+	//   *openapiCore
 	//   XGrpcGatewayFoo json.RawMessage `json:"x-grpc-gateway-foo"`
 	//   XGrpcGatewayBar json.RawMessage `json:"x-grpc-gateway-bar"`
 	// }
-	// and thus render into what we want -- the JSON of swaggerCore with the
+	// and thus render into what we want -- the JSON of openapiCore with the
 	// extensions appended.
 	fields := []reflect.StructField{
 		{ // embedded
@@ -135,8 +135,8 @@ func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error
 	return json.Marshal(s.Interface())
 }
 
-// encodeSwagger converts swagger file obj to pluginpb.CodeGeneratorResponse_File
-func encodeSwagger(file *wrapper) (*pluginpb.CodeGeneratorResponse_File, error) {
+// encodeOpenAPI converts OpenAPI file obj to pluginpb.CodeGeneratorResponse_File
+func encodeOpenAPI(file *wrapper) (*pluginpb.CodeGeneratorResponse_File, error) {
 	var formatted bytes.Buffer
 	enc := json.NewEncoder(&formatted)
 	enc.SetIndent("", "  ")
@@ -159,7 +159,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*pluginpb.CodeGenera
 		var mergedTarget *descriptor.File
 		// try to find proto leader
 		for _, f := range targets {
-			if proto.HasExtension(f.Options, swagger_options.E_Openapiv2Swagger) {
+			if proto.HasExtension(f.Options, openapi_options.E_Openapiv2Swagger) {
 				mergedTarget = f
 				break
 			}
@@ -179,7 +179,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*pluginpb.CodeGenera
 		targets = append(targets, mergedTarget)
 	}
 
-	var swaggers []*wrapper
+	var openapis []*wrapper
 	for _, file := range targets {
 		glog.V(1).Infof("Processing %s", file.GetName())
 		swagger, err := applyTemplate(param{File: file, reg: g.reg})
@@ -190,28 +190,28 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*pluginpb.CodeGenera
 		if err != nil {
 			return nil, err
 		}
-		swaggers = append(swaggers, &wrapper{
+		openapis = append(openapis, &wrapper{
 			fileName: file.GetName(),
 			swagger:  swagger,
 		})
 	}
 
 	if g.reg.IsAllowMerge() {
-		targetSwagger := mergeTargetFile(swaggers, g.reg.GetMergeFileName())
-		f, err := encodeSwagger(targetSwagger)
+		targetOpenAPI := mergeTargetFile(openapis, g.reg.GetMergeFileName())
+		f, err := encodeOpenAPI(targetOpenAPI)
 		if err != nil {
-			return nil, fmt.Errorf("failed to encode swagger for %s: %s", g.reg.GetMergeFileName(), err)
+			return nil, fmt.Errorf("failed to encode OpenAPI for %s: %s", g.reg.GetMergeFileName(), err)
 		}
 		files = append(files, f)
-		glog.V(1).Infof("New swagger file will emit")
+		glog.V(1).Infof("New OpenAPI file will emit")
 	} else {
-		for _, file := range swaggers {
-			f, err := encodeSwagger(file)
+		for _, file := range openapis {
+			f, err := encodeOpenAPI(file)
 			if err != nil {
-				return nil, fmt.Errorf("failed to encode swagger for %s: %s", file.fileName, err)
+				return nil, fmt.Errorf("failed to encode OpenAPI for %s: %s", file.fileName, err)
 			}
 			files = append(files, f)
-			glog.V(1).Infof("New swagger file will emit")
+			glog.V(1).Infof("New OpenAPI file will emit")
 		}
 	}
 	return files, nil

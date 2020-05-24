@@ -14,7 +14,6 @@ go_library(
         "model_protobuf_any.go",
         "model_response_response_type.go",
         "model_rpc_status.go",
-        "model_runtime_stream_error.go",
         "model_stream_result_of_examplepb_response_body_out.go",
         "response.go",
     ],

@@ -41,10 +41,10 @@ type Registry struct {
 	// externalHttpRules is a mapping from fully qualified service method names to additional HttpRules applicable besides the ones found in annotations.
 	externalHTTPRules map[string][]*annotations.HttpRule
 
-	// allowMerge generation one swagger file out of multiple protos
+	// allowMerge generation one OpenAPI file out of multiple protos
 	allowMerge bool
 
-	// mergeFileName target swagger file name after merge
+	// mergeFileName target OpenAPI file name after merge
 	mergeFileName string
 
 	// allowRepeatedFieldsInBody permits repeated field in body field path of `google.api.http` annotation option
@@ -57,16 +57,16 @@ type Registry struct {
 	// repeatedPathParamSeparator specifies how path parameter repeated fields are separated
 	repeatedPathParamSeparator repeatedFieldSeparator
 
-	// useJSONNamesForFields if true json tag name is used for generating fields in swagger definitions,
-	// otherwise the original proto name is used. It's helpful for synchronizing the swagger definition
+	// useJSONNamesForFields if true json tag name is used for generating fields in OpenAPI definitions,
+	// otherwise the original proto name is used. It's helpful for synchronizing the OpenAPI definition
 	// with grpc-gateway response, if it uses json tags for marshaling.
 	useJSONNamesForFields bool
 
-	// useFQNForSwaggerName if true swagger names will use the full qualified name (FQN) from proto definition,
-	// and generate a dot-separated swagger name concatenating all elements from the proto FQN.
+	// useFQNForOpenAPIName if true OpenAPI names will use the full qualified name (FQN) from proto definition,
+	// and generate a dot-separated OpenAPI name concatenating all elements from the proto FQN.
 	// If false, the default behavior is to concat the last 2 elements of the FQN if they are unique, otherwise concat
 	// all the elements of the FQN without any separator
-	useFQNForSwaggerName bool
+	useFQNForOpenAPIName bool
 
 	// useGoTemplate determines whether you want to use GO templates
 	// in your protofile comments
@@ -385,17 +385,17 @@ func (r *Registry) SetAllowDeleteBody(allow bool) {
 	r.allowDeleteBody = allow
 }
 
-// SetAllowMerge controls whether generation one swagger file out of multiple protos
+// SetAllowMerge controls whether generation one OpenAPI file out of multiple protos
 func (r *Registry) SetAllowMerge(allow bool) {
 	r.allowMerge = allow
 }
 
-// IsAllowMerge whether generation one swagger file out of multiple protos
+// IsAllowMerge whether generation one OpenAPI file out of multiple protos
 func (r *Registry) IsAllowMerge() bool {
 	return r.allowMerge
 }
 
-// SetMergeFileName controls the target swagger file name out of multiple protos
+// SetMergeFileName controls the target OpenAPI file name out of multiple protos
 func (r *Registry) SetMergeFileName(mergeFileName string) {
 	r.mergeFileName = mergeFileName
 }
@@ -469,17 +469,17 @@ func (r *Registry) GetUseJSONNamesForFields() bool {
 	return r.useJSONNamesForFields
 }
 
-// SetUseFQNForSwaggerName sets useFQNForSwaggerName
-func (r *Registry) SetUseFQNForSwaggerName(use bool) {
-	r.useFQNForSwaggerName = use
+// SetUseFQNForOpenAPIName sets useFQNForOpenAPIName
+func (r *Registry) SetUseFQNForOpenAPIName(use bool) {
+	r.useFQNForOpenAPIName = use
 }
 
-// GetUseFQNForSwaggerName returns useFQNForSwaggerName
-func (r *Registry) GetUseFQNForSwaggerName() bool {
-	return r.useFQNForSwaggerName
+// GetUseFQNForOpenAPIName returns useFQNForOpenAPIName
+func (r *Registry) GetUseFQNForOpenAPIName() bool {
+	return r.useFQNForOpenAPIName
 }
 
-// GetMergeFileName return the target merge swagger file name
+// GetMergeFileName return the target merge OpenAPI file name
 func (r *Registry) GetMergeFileName() string {
 	return r.mergeFileName
 }

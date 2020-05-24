@@ -1,4 +1,4 @@
-package genswagger
+package genopenapi
 
 import (
 	"bytes"
@@ -19,7 +19,7 @@ import (
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	swagger_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-swagger/options"
+	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
@@ -76,7 +76,7 @@ var wktSchemas = map[string]schemaCore{
 	},
 	".google.protobuf.ListValue": {
 		Type: "array",
-		Items: (*swaggerItemsObject)(&schemaCore{
+		Items: (*openapiItemsObject)(&schemaCore{
 			Type: "object",
 		}),
 	},
@@ -108,8 +108,8 @@ func getEnumDefault(enum *descriptor.Enum) string {
 	return ""
 }
 
-// messageToQueryParameters converts a message to a list of swagger query parameters.
-func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter) (params []swaggerParameterObject, err error) {
+// messageToQueryParameters converts a message to a list of OpenAPI query parameters.
+func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter) (params []openapiParameterObject, err error) {
 	for _, field := range message.Fields {
 		p, err := queryParams(message, field, "", reg, pathParams)
 		if err != nil {
@@ -120,18 +120,18 @@ func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Regis
 	return params, nil
 }
 
-// queryParams converts a field to a list of swagger query parameters recursively through the use of nestedQueryParams.
-func queryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter) (params []swaggerParameterObject, err error) {
+// queryParams converts a field to a list of OpenAPI query parameters recursively through the use of nestedQueryParams.
+func queryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter) (params []openapiParameterObject, err error) {
 	return nestedQueryParams(message, field, prefix, reg, pathParams, map[string]bool{})
 }
 
-// nestedQueryParams converts a field to a list of swagger query parameters recursively.
+// nestedQueryParams converts a field to a list of OpenAPI query parameters recursively.
 // This function is a helper function for queryParams, that keeps track of cyclical message references
 //  through the use of
 //      touched map[string]bool
 // If a cycle is discovered, an error is returned, as cyclical data structures aren't allowed
 //  in query parameters.
-func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, touched map[string]bool) (params []swaggerParameterObject, err error) {
+func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, touched map[string]bool) (params []openapiParameterObject, err error) {
 	// make sure the parameter is not already listed as a path parameter
 	for _, pathParam := range pathParams {
 		if pathParam.Target == field {
@@ -142,7 +142,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 	fieldType := field.GetTypeName()
 	if message.File != nil {
 		comments := fieldProtoComments(reg, message, field)
-		if err := updateSwaggerDataFromComments(reg, &schema, message, comments, false); err != nil {
+		if err := updateOpenAPIDataFromComments(reg, &schema, message, comments, false); err != nil {
 			return nil, err
 		}
 	}
@@ -170,7 +170,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			}
 		}
 
-		param := swaggerParameterObject{
+		param := openapiParameterObject{
 			Description: desc,
 			In:          "query",
 			Default:     schema.Default,
@@ -195,7 +195,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 				return nil, fmt.Errorf("unknown enum type %s", fieldType)
 			}
 			if items != nil { // array
-				param.Items = &swaggerItemsObject{
+				param.Items = &openapiItemsObject{
 					Type: "string",
 					Enum: listEnumNames(enum),
 				}
@@ -218,7 +218,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 				param.Description = strings.TrimLeft(param.Description+"\n\n "+valueComments, "\n")
 			}
 		}
-		return []swaggerParameterObject{param}, nil
+		return []openapiParameterObject{param}, nil
 	}
 
 	// nested type, recurse
@@ -256,9 +256,9 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 		for _, meth := range svc.Methods {
 			// Request may be fully included in query
 			{
-				swgReqName, ok := fullyQualifiedNameToSwaggerName(meth.RequestType.FQMN(), reg)
+				swgReqName, ok := fullyQualifiedNameToOpenAPIName(meth.RequestType.FQMN(), reg)
 				if !ok {
-					glog.Errorf("couldn't resolve swagger name for FQMN '%v'", meth.RequestType.FQMN())
+					glog.Errorf("couldn't resolve OpenAPI name for FQMN '%v'", meth.RequestType.FQMN())
 					continue
 				}
 				if _, ok := refs[fmt.Sprintf("#/definitions/%s", swgReqName)]; ok {
@@ -268,9 +268,9 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 				}
 			}
 
-			swgRspName, ok := fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)
+			swgRspName, ok := fullyQualifiedNameToOpenAPIName(meth.ResponseType.FQMN(), reg)
 			if !ok && !skipRenderingRef(meth.ResponseType.FQMN()) {
-				glog.Errorf("couldn't resolve swagger name for FQMN '%v'", meth.ResponseType.FQMN())
+				glog.Errorf("couldn't resolve OpenAPI name for FQMN '%v'", meth.ResponseType.FQMN())
 				continue
 			}
 
@@ -313,11 +313,11 @@ func skipRenderingRef(refName string) bool {
 	return ok
 }
 
-func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject, reg *descriptor.Registry, customRefs refMap) {
+func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject, reg *descriptor.Registry, customRefs refMap) {
 	for name, msg := range messages {
-		swgName, ok := fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)
+		swgName, ok := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
 		if !ok {
-			panic(fmt.Sprintf("can't resolve swagger name from '%v'", msg.FQMN()))
+			panic(fmt.Sprintf("can't resolve OpenAPI name from '%v'", msg.FQMN()))
 		}
 		if skipRenderingRef(name) {
 			continue
@@ -326,13 +326,13 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			continue
 		}
-		schema := swaggerSchemaObject{
+		schema := openapiSchemaObject{
 			schemaCore: schemaCore{
 				Type: "object",
 			},
 		}
 		msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
-		if err := updateSwaggerDataFromComments(reg, &schema, msg, msgComments, false); err != nil {
+		if err := updateOpenAPIDataFromComments(reg, &schema, msg, msgComments, false); err != nil {
 			panic(err)
 		}
 		opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
@@ -340,7 +340,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 			panic(err)
 		}
 		if opts != nil {
-			protoSchema := swaggerSchemaFromProtoSchema(opts, reg, customRefs, msg)
+			protoSchema := openapiSchemaFromProtoSchema(opts, reg, customRefs, msg)
 
 			// Warning: Make sure not to overwrite any fields already set on the schema type.
 			schema.ExternalDocs = protoSchema.ExternalDocs
@@ -377,7 +377,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 		for _, f := range msg.Fields {
 			fieldValue := schemaOfField(f, reg, customRefs)
 			comments := fieldProtoComments(reg, msg, f)
-			if err := updateSwaggerDataFromComments(reg, &fieldValue, f, comments, false); err != nil {
+			if err := updateOpenAPIDataFromComments(reg, &fieldValue, f, comments, false); err != nil {
 				panic(err)
 			}
 
@@ -388,7 +388,7 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 				kv.Key = f.GetName()
 			}
 			if schema.Properties == nil {
-				schema.Properties = &swaggerSchemaObjectProperties{}
+				schema.Properties = &openapiSchemaObjectProperties{}
 			}
 			*schema.Properties = append(*schema.Properties, kv)
 		}
@@ -396,8 +396,8 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 	}
 }
 
-// schemaOfField returns a swagger Schema Object for a protobuf field.
-func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) swaggerSchemaObject {
+// schemaOfField returns a OpenAPI Schema Object for a protobuf field.
+func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) openapiSchemaObject {
 	const (
 		singular = 0
 		array    = 1
@@ -419,7 +419,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 		aggregate = array
 	}
 
-	var props *swaggerSchemaObjectProperties
+	var props *openapiSchemaObjectProperties
 
 	switch ft := fd.GetType(); ft {
 	case descriptorpb.FieldDescriptorProto_TYPE_ENUM, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, descriptorpb.FieldDescriptorProto_TYPE_GROUP:
@@ -427,12 +427,12 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 			core = wktSchema
 
 			if fd.GetTypeName() == ".google.protobuf.Empty" {
-				props = &swaggerSchemaObjectProperties{}
+				props = &openapiSchemaObjectProperties{}
 			}
 		} else {
-			swgRef, ok := fullyQualifiedNameToSwaggerName(fd.GetTypeName(), reg)
+			swgRef, ok := fullyQualifiedNameToOpenAPIName(fd.GetTypeName(), reg)
 			if !ok {
-				panic(fmt.Sprintf("can't resolve swagger ref from typename '%v'", fd.GetTypeName()))
+				panic(fmt.Sprintf("can't resolve OpenAPI ref from typename '%v'", fd.GetTypeName()))
 			}
 			core = schemaCore{
 				Ref: "#/definitions/" + swgRef,
@@ -450,32 +450,32 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 		}
 	}
 
-	ret := swaggerSchemaObject{}
+	ret := openapiSchemaObject{}
 
 	switch aggregate {
 	case array:
-		ret = swaggerSchemaObject{
+		ret = openapiSchemaObject{
 			schemaCore: schemaCore{
 				Type:  "array",
-				Items: (*swaggerItemsObject)(&core),
+				Items: (*openapiItemsObject)(&core),
 			},
 		}
 	case object:
-		ret = swaggerSchemaObject{
+		ret = openapiSchemaObject{
 			schemaCore: schemaCore{
 				Type: "object",
 			},
-			AdditionalProperties: &swaggerSchemaObject{Properties: props, schemaCore: core},
+			AdditionalProperties: &openapiSchemaObject{Properties: props, schemaCore: core},
 		}
 	default:
-		ret = swaggerSchemaObject{
+		ret = openapiSchemaObject{
 			schemaCore: core,
 			Properties: props,
 		}
 	}
 
 	if j, err := extractJSONSchemaFromFieldDescriptor(fd); err == nil {
-		updateSwaggerObjectFromJSONSchema(&ret, j, reg, f)
+		updateswaggerObjectFromJSONSchema(&ret, j, reg, f)
 	}
 
 	return ret
@@ -496,8 +496,8 @@ func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format st
 		// 64bit integer types are marshaled as string in the default JSONPb marshaler.
 		// TODO(yugui) Add an option to declare 64bit integers as int64.
 		//
-		// NOTE: uint64 is not a predefined format of integer type in Swagger spec.
-		// So we cannot expect that uint64 is commonly supported by swagger processor.
+		// NOTE: uint64 is not a predefined format of integer type in OpenAPI spec.
+		// So we cannot expect that uint64 is commonly supported by OpenAPI processor.
 		return "string", "uint64", true
 	case descriptorpb.FieldDescriptorProto_TYPE_INT32:
 		return "integer", "int32", true
@@ -510,7 +510,7 @@ func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format st
 	case descriptorpb.FieldDescriptorProto_TYPE_BOOL:
 		return "boolean", "boolean", true
 	case descriptorpb.FieldDescriptorProto_TYPE_STRING:
-		// NOTE: in swagger specifition, format should be empty on string type
+		// NOTE: in OpenAPI specifition, format should be empty on string type
 		return "string", "", true
 	case descriptorpb.FieldDescriptorProto_TYPE_BYTES:
 		return "string", "byte", true
@@ -531,11 +531,11 @@ func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format st
 }
 
 // renderEnumerationsAsDefinition inserts enums into the definitions object.
-func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, reg *descriptor.Registry) {
+func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, reg *descriptor.Registry) {
 	for _, enum := range enums {
-		swgName, ok := fullyQualifiedNameToSwaggerName(enum.FQEN(), reg)
+		swgName, ok := fullyQualifiedNameToOpenAPIName(enum.FQEN(), reg)
 		if !ok {
-			panic(fmt.Sprintf("can't resolve swagger name from FQEN '%v'", enum.FQEN()))
+			panic(fmt.Sprintf("can't resolve OpenAPI name from FQEN '%v'", enum.FQEN()))
 		}
 		enumComments := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index))
 
@@ -546,7 +546,7 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 		if valueComments != "" {
 			enumComments = strings.TrimLeft(enumComments+"\n\n "+valueComments, "\n")
 		}
-		enumSchemaObject := swaggerSchemaObject{
+		enumSchemaObject := openapiSchemaObject{
 			schemaCore: schemaCore{
 				Type:    "string",
 				Enum:    enumNames,
@@ -559,7 +559,7 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 			enumSchemaObject.Default = "0"
 			enumSchemaObject.Enum = listEnumNumbers(enum)
 		}
-		if err := updateSwaggerDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
+		if err := updateOpenAPIDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
 			panic(err)
 		}
 
@@ -567,36 +567,36 @@ func renderEnumerationsAsDefinition(enums enumMap, d swaggerDefinitionsObject, r
 	}
 }
 
-// Take in a FQMN or FQEN and return a swagger safe version of the FQMN and
+// Take in a FQMN or FQEN and return a OpenAPI safe version of the FQMN and
 // a boolean indicating if FQMN was properly resolved.
-func fullyQualifiedNameToSwaggerName(fqn string, reg *descriptor.Registry) (string, bool) {
+func fullyQualifiedNameToOpenAPIName(fqn string, reg *descriptor.Registry) (string, bool) {
 	registriesSeenMutex.Lock()
 	defer registriesSeenMutex.Unlock()
 	if mapping, present := registriesSeen[reg]; present {
 		ret, ok := mapping[fqn]
 		return ret, ok
 	}
-	mapping := resolveFullyQualifiedNameToSwaggerNames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...), reg.GetUseFQNForSwaggerName())
+	mapping := resolveFullyQualifiedNameToOpenAPINames(append(reg.GetAllFQMNs(), reg.GetAllFQENs()...), reg.GetUseFQNForOpenAPIName())
 	registriesSeen[reg] = mapping
 	ret, ok := mapping[fqn]
 	return ret, ok
 }
 
-// Lookup message type by location.name and return a swagger-safe version
+// Lookup message type by location.name and return a openapiv2-safe version
 // of its FQMN.
-func lookupMsgAndSwaggerName(location, name string, reg *descriptor.Registry) (*descriptor.Message, string, error) {
+func lookupMsgAndOpenAPIName(location, name string, reg *descriptor.Registry) (*descriptor.Message, string, error) {
 	msg, err := reg.LookupMsg(location, name)
 	if err != nil {
 		return nil, "", err
 	}
-	swgName, ok := fullyQualifiedNameToSwaggerName(msg.FQMN(), reg)
+	swgName, ok := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
 	if !ok {
-		return nil, "", fmt.Errorf("can't map swagger name from FQMN '%v'", msg.FQMN())
+		return nil, "", fmt.Errorf("can't map OpenAPI name from FQMN '%v'", msg.FQMN())
 	}
 	return msg, swgName, nil
 }
 
-// registriesSeen is used to memoise calls to resolveFullyQualifiedNameToSwaggerNames so
+// registriesSeen is used to memoise calls to resolveFullyQualifiedNameToOpenAPINames so
 // we don't repeat it unnecessarily, since it can take some time.
 var registriesSeen = map[*descriptor.Registry]map[string]string{}
 var registriesSeenMutex sync.Mutex
@@ -608,7 +608,7 @@ var registriesSeenMutex sync.Mutex
 // This likely could be made better. This will always generate the same names
 // but may not always produce optimal names. This is a reasonably close
 // approximation of what they should look like in most cases.
-func resolveFullyQualifiedNameToSwaggerNames(messages []string, useFQNForSwaggerName bool) map[string]string {
+func resolveFullyQualifiedNameToOpenAPINames(messages []string, useFQNForOpenAPIName bool) map[string]string {
 	packagesByDepth := make(map[int][][]string)
 	uniqueNames := make(map[string]string)
 
@@ -637,7 +637,7 @@ func resolveFullyQualifiedNameToSwaggerNames(messages []string, useFQNForSwagger
 	}
 
 	for _, p := range messages {
-		if useFQNForSwaggerName {
+		if useFQNForOpenAPIName {
 			// strip leading dot from proto fqn
 			uniqueNames[p] = p[1:]
 		} else {
@@ -658,8 +658,8 @@ func resolveFullyQualifiedNameToSwaggerNames(messages []string, useFQNForSwagger
 
 var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*).*}")
 
-// Swagger expects paths of the form /path/{string_value} but grpc-gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
-func templateToSwaggerPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) string {
+// OpenAPI expects paths of the form /path/{string_value} but grpc-gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
+func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) string {
 	// It seems like the right thing to do here is to just use
 	// strings.Split(path, "/") but that breaks badly when you hit a url like
 	// /{my_field=prefix/*}/ and end up with 2 sections representing my_field.
@@ -737,18 +737,18 @@ func isResourceName(prefix string) bool {
 	return field == "parent" || field == "name"
 }
 
-func renderServices(services []*descriptor.Service, paths swaggerPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
+func renderServices(services []*descriptor.Service, paths openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	for svcIdx, svc := range services {
 		for methIdx, meth := range svc.Methods {
 			for bIdx, b := range meth.Bindings {
-				// Iterate over all the swagger parameters
-				parameters := swaggerParametersObject{}
+				// Iterate over all the OpenAPI parameters
+				parameters := openapiParametersObject{}
 				for _, parameter := range b.PathParams {
 
 					var paramType, paramFormat, desc, collectionFormat, defaultValue string
 					var enumNames []string
-					var items *swaggerItemsObject
+					var items *openapiItemsObject
 					var minItems *int
 					switch pt := parameter.Target.GetType(); pt {
 					case descriptorpb.FieldDescriptorProto_TYPE_GROUP, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE:
@@ -799,7 +799,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							core.Enum = enumNames
 							enumNames = s
 						}
-						items = (*swaggerItemsObject)(&core)
+						items = (*openapiItemsObject)(&core)
 						paramType = "array"
 						paramFormat = ""
 						collectionFormat = reg.GetRepeatedPathParamSeparatorName()
@@ -814,7 +814,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					if reg.GetUseJSONNamesForFields() {
 						parameterString = lowerCamelCase(parameterString, meth.RequestType.Fields, msgs)
 					}
-					parameters = append(parameters, swaggerParameterObject{
+					parameters = append(parameters, openapiParameterObject{
 						Name:        parameterString,
 						Description: desc,
 						In:          "path",
@@ -831,11 +831,11 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 				// Now check if there is a body parameter
 				if b.Body != nil {
-					var schema swaggerSchemaObject
+					var schema openapiSchemaObject
 					desc := ""
 
 					if len(b.Body.FieldPath) == 0 {
-						schema = swaggerSchemaObject{
+						schema = openapiSchemaObject{
 							schemaCore: schemaCore{},
 						}
 
@@ -850,7 +850,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 
 							// Special workaround for Empty: it's well-known type but wknSchemas only returns schema.schemaCore; but we need to set schema.Properties which is a level higher.
 							if meth.RequestType.FQMN() == ".google.protobuf.Empty" {
-								schema.Properties = &swaggerSchemaObjectProperties{}
+								schema.Properties = &openapiSchemaObjectProperties{}
 							}
 						}
 					} else {
@@ -866,7 +866,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					if meth.GetClientStreaming() {
 						desc += " (streaming inputs)"
 					}
-					parameters = append(parameters, swaggerParameterObject{
+					parameters = append(parameters, openapiParameterObject{
 						Name:        "body",
 						Description: desc,
 						In:          "body",
@@ -882,17 +882,17 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					parameters = append(parameters, queryParams...)
 				}
 
-				pathItemObject, ok := paths[templateToSwaggerPath(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)]
+				pathItemObject, ok := paths[templateToOpenAPIPath(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)]
 				if !ok {
-					pathItemObject = swaggerPathItemObject{}
+					pathItemObject = openapiPathItemObject{}
 				}
 
 				methProtoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.ServiceDescriptorProto)(nil)), "Method")
 				desc := "A successful response."
-				var responseSchema swaggerSchemaObject
+				var responseSchema openapiSchemaObject
 
 				if b.ResponseBody == nil || len(b.ResponseBody.FieldPath) == 0 {
-					responseSchema = swaggerSchemaObject{
+					responseSchema = openapiSchemaObject{
 						schemaCore: schemaCore{},
 					}
 
@@ -911,7 +911,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 
 						// Special workaround for Empty: it's well-known type but wknSchemas only returns schema.schemaCore; but we need to set schema.Properties which is a level higher.
 						if meth.ResponseType.FQMN() == ".google.protobuf.Empty" {
-							responseSchema.Properties = &swaggerSchemaObjectProperties{}
+							responseSchema.Properties = &openapiSchemaObjectProperties{}
 						}
 					}
 				} else {
@@ -927,24 +927,24 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				if meth.GetServerStreaming() {
 					desc += "(streaming responses)"
 					responseSchema.Type = "object"
-					swgRef, _ := fullyQualifiedNameToSwaggerName(meth.ResponseType.FQMN(), reg)
+					swgRef, _ := fullyQualifiedNameToOpenAPIName(meth.ResponseType.FQMN(), reg)
 					responseSchema.Title = "Stream result of " + swgRef
 
-					props := swaggerSchemaObjectProperties{
+					props := openapiSchemaObjectProperties{
 						keyVal{
 							Key: "result",
-							Value: swaggerSchemaObject{
+							Value: openapiSchemaObject{
 								schemaCore: schemaCore{
 									Ref: responseSchema.Ref,
 								},
 							},
 						},
 					}
-					statusDef, hasStatus := fullyQualifiedNameToSwaggerName(".google.rpc.Status", reg)
+					statusDef, hasStatus := fullyQualifiedNameToOpenAPIName(".google.rpc.Status", reg)
 					if hasStatus {
 						props = append(props, keyVal{
 							Key: "error",
-							Value: swaggerSchemaObject{
+							Value: openapiSchemaObject{
 								schemaCore: schemaCore{
 									Ref: fmt.Sprintf("#/definitions/%s", statusDef)},
 							},
@@ -959,23 +959,23 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					tag = pkg + "." + tag
 				}
 
-				operationObject := &swaggerOperationObject{
+				operationObject := &openapiOperationObject{
 					Tags:       []string{tag},
 					Parameters: parameters,
-					Responses: swaggerResponsesObject{
-						"200": swaggerResponseObject{
+					Responses: openapiResponsesObject{
+						"200": openapiResponseObject{
 							Description: desc,
 							Schema:      responseSchema,
 						},
 					},
 				}
 				if !reg.GetDisableDefaultErrors() {
-					errDef, hasErrDef := fullyQualifiedNameToSwaggerName(".google.rpc.Status", reg)
+					errDef, hasErrDef := fullyQualifiedNameToOpenAPIName(".google.rpc.Status", reg)
 					if hasErrDef {
 						// https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#responses-object
-						operationObject.Responses["default"] = swaggerResponseObject{
+						operationObject.Responses["default"] = openapiResponseObject{
 							Description: "An unexpected error response",
-							Schema: swaggerSchemaObject{
+							Schema: openapiSchemaObject{
 								schemaCore: schemaCore{
 									Ref: fmt.Sprintf("#/definitions/%s", errDef),
 								},
@@ -1000,7 +1000,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				}
 
 				methComments := protoComments(reg, svc.File, nil, "Service", int32(svcIdx), methProtoPath, int32(methIdx))
-				if err := updateSwaggerDataFromComments(reg, operationObject, meth, methComments, false); err != nil {
+				if err := updateOpenAPIDataFromComments(reg, operationObject, meth, methComments, false); err != nil {
 					panic(err)
 				}
 
@@ -1009,7 +1009,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					if err != nil {
 						panic(err)
 					}
-					operationObject.ExternalDocs = protoExternalDocumentationToSwaggerExternalDocumentation(opts.ExternalDocs, reg, meth)
+					operationObject.ExternalDocs = protoExternalDocumentationToOpenAPIExternalDocumentation(opts.ExternalDocs, reg, meth)
 					// TODO(ivucica): this would be better supported by looking whether the method is deprecated in the proto file
 					operationObject.Deprecated = opts.Deprecated
 
@@ -1027,12 +1027,12 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						operationObject.OperationID = opts.OperationId
 					}
 					if opts.Security != nil {
-						newSecurity := []swaggerSecurityRequirementObject{}
+						newSecurity := []openapiSecurityRequirementObject{}
 						if operationObject.Security != nil {
 							newSecurity = *operationObject.Security
 						}
 						for _, secReq := range opts.Security {
-							newSecReq := swaggerSecurityRequirementObject{}
+							newSecReq := openapiSecurityRequirementObject{}
 							for secReqKey, secReqValue := range secReq.SecurityRequirement {
 								if secReqValue == nil {
 									continue
@@ -1057,10 +1057,10 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 								respObj.Description = resp.Description
 							}
 							if resp.Schema != nil {
-								respObj.Schema = swaggerSchemaFromProtoSchema(resp.Schema, reg, customRefs, meth)
+								respObj.Schema = openapiSchemaFromProtoSchema(resp.Schema, reg, customRefs, meth)
 							}
 							if resp.Examples != nil {
-								respObj.Examples = swaggerExamplesFromProtoExamples(resp.Examples)
+								respObj.Examples = openapiExamplesFromProtoExamples(resp.Examples)
 							}
 							if resp.Extensions != nil {
 								exts, err := processExtensions(resp.Extensions)
@@ -1106,7 +1106,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					pathItemObject.Patch = operationObject
 					break
 				}
-				paths[templateToSwaggerPath(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)] = pathItemObject
+				paths[templateToOpenAPIPath(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)] = pathItemObject
 			}
 		}
 	}
@@ -1116,17 +1116,17 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 }
 
 // This function is called with a param which contains the entire definition of a method.
-func applyTemplate(p param) (*swaggerObject, error) {
+func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	// Create the basic template object. This is the object that everything is
 	// defined off of.
-	s := swaggerObject{
-		// Swagger 2.0 is the version of this document
+	s := openapiSwaggerObject{
+		// OpenAPI 2.0 is the version of this document
 		Swagger:     "2.0",
 		Consumes:    []string{"application/json"},
 		Produces:    []string{"application/json"},
-		Paths:       make(swaggerPathsObject),
-		Definitions: make(swaggerDefinitionsObject),
-		Info: swaggerInfoObject{
+		Paths:       make(openapiPathsObject),
+		Definitions: make(openapiDefinitionsObject),
+		Info: openapiInfoObject{
 			Title:   *p.File.Name,
 			Version: "version not set",
 		},
@@ -1146,7 +1146,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 
 	if !p.reg.GetDisableDefaultErrors() {
 		// Add the error type to the message map
-		runtimeError, swgRef, err := lookupMsgAndSwaggerName("google.rpc", "Status", p.reg)
+		runtimeError, swgRef, err := lookupMsgAndOpenAPIName("google.rpc", "Status", p.reg)
 		if err == nil {
 			messages[swgRef] = runtimeError
 		} else {
@@ -1164,12 +1164,12 @@ func applyTemplate(p param) (*swaggerObject, error) {
 	// File itself might have some comments and metadata.
 	packageProtoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Package")
 	packageComments := protoComments(p.reg, p.File, nil, "Package", packageProtoPath)
-	if err := updateSwaggerDataFromComments(p.reg, &s, p, packageComments, true); err != nil {
+	if err := updateOpenAPIDataFromComments(p.reg, &s, p, packageComments, true); err != nil {
 		panic(err)
 	}
 
-	// There may be additional options in the swagger option in the proto.
-	spb, err := extractSwaggerOptionFromFileDescriptor(p.FileDescriptorProto)
+	// There may be additional options in the OpenAPI option in the proto.
+	spb, err := extractOpenAPIOptionFromFileDescriptor(p.FileDescriptorProto)
 	if err != nil {
 		panic(err)
 	}
@@ -1192,7 +1192,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 			}
 			if spb.Info.Contact != nil {
 				if s.Info.Contact == nil {
-					s.Info.Contact = &swaggerContactObject{}
+					s.Info.Contact = &openapiContactObject{}
 				}
 				if spb.Info.Contact.Name != "" {
 					s.Info.Contact.Name = spb.Info.Contact.Name
@@ -1206,7 +1206,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 			}
 			if spb.Info.License != nil {
 				if s.Info.License == nil {
-					s.Info.License = &swaggerLicenseObject{}
+					s.Info.License = &openapiLicenseObject{}
 				}
 				if spb.Info.License.Name != "" {
 					s.Info.License.Name = spb.Info.License.Name
@@ -1245,22 +1245,22 @@ func applyTemplate(p param) (*swaggerObject, error) {
 		}
 		if spb.SecurityDefinitions != nil && spb.SecurityDefinitions.Security != nil {
 			if s.SecurityDefinitions == nil {
-				s.SecurityDefinitions = swaggerSecurityDefinitionsObject{}
+				s.SecurityDefinitions = openapiSecurityDefinitionsObject{}
 			}
 			for secDefKey, secDefValue := range spb.SecurityDefinitions.Security {
-				var newSecDefValue swaggerSecuritySchemeObject
+				var newSecDefValue openapiSecuritySchemeObject
 				if oldSecDefValue, ok := s.SecurityDefinitions[secDefKey]; !ok {
-					newSecDefValue = swaggerSecuritySchemeObject{}
+					newSecDefValue = openapiSecuritySchemeObject{}
 				} else {
 					newSecDefValue = oldSecDefValue
 				}
-				if secDefValue.Type != swagger_options.SecurityScheme_TYPE_INVALID {
+				if secDefValue.Type != openapi_options.SecurityScheme_TYPE_INVALID {
 					switch secDefValue.Type {
-					case swagger_options.SecurityScheme_TYPE_BASIC:
+					case openapi_options.SecurityScheme_TYPE_BASIC:
 						newSecDefValue.Type = "basic"
-					case swagger_options.SecurityScheme_TYPE_API_KEY:
+					case openapi_options.SecurityScheme_TYPE_API_KEY:
 						newSecDefValue.Type = "apiKey"
-					case swagger_options.SecurityScheme_TYPE_OAUTH2:
+					case openapi_options.SecurityScheme_TYPE_OAUTH2:
 						newSecDefValue.Type = "oauth2"
 					}
 				}
@@ -1270,23 +1270,23 @@ func applyTemplate(p param) (*swaggerObject, error) {
 				if secDefValue.Name != "" {
 					newSecDefValue.Name = secDefValue.Name
 				}
-				if secDefValue.In != swagger_options.SecurityScheme_IN_INVALID {
+				if secDefValue.In != openapi_options.SecurityScheme_IN_INVALID {
 					switch secDefValue.In {
-					case swagger_options.SecurityScheme_IN_QUERY:
+					case openapi_options.SecurityScheme_IN_QUERY:
 						newSecDefValue.In = "query"
-					case swagger_options.SecurityScheme_IN_HEADER:
+					case openapi_options.SecurityScheme_IN_HEADER:
 						newSecDefValue.In = "header"
 					}
 				}
-				if secDefValue.Flow != swagger_options.SecurityScheme_FLOW_INVALID {
+				if secDefValue.Flow != openapi_options.SecurityScheme_FLOW_INVALID {
 					switch secDefValue.Flow {
-					case swagger_options.SecurityScheme_FLOW_IMPLICIT:
+					case openapi_options.SecurityScheme_FLOW_IMPLICIT:
 						newSecDefValue.Flow = "implicit"
-					case swagger_options.SecurityScheme_FLOW_PASSWORD:
+					case openapi_options.SecurityScheme_FLOW_PASSWORD:
 						newSecDefValue.Flow = "password"
-					case swagger_options.SecurityScheme_FLOW_APPLICATION:
+					case openapi_options.SecurityScheme_FLOW_APPLICATION:
 						newSecDefValue.Flow = "application"
-					case swagger_options.SecurityScheme_FLOW_ACCESS_CODE:
+					case openapi_options.SecurityScheme_FLOW_ACCESS_CODE:
 						newSecDefValue.Flow = "accessCode"
 					}
 				}
@@ -1298,7 +1298,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 				}
 				if secDefValue.Scopes != nil {
 					if newSecDefValue.Scopes == nil {
-						newSecDefValue.Scopes = swaggerScopesObject{}
+						newSecDefValue.Scopes = openapiScopesObject{}
 					}
 					for scopeKey, scopeDesc := range secDefValue.Scopes.Scope {
 						newSecDefValue.Scopes[scopeKey] = scopeDesc
@@ -1315,14 +1315,14 @@ func applyTemplate(p param) (*swaggerObject, error) {
 			}
 		}
 		if spb.Security != nil {
-			newSecurity := []swaggerSecurityRequirementObject{}
+			newSecurity := []openapiSecurityRequirementObject{}
 			if s.Security == nil {
-				newSecurity = []swaggerSecurityRequirementObject{}
+				newSecurity = []openapiSecurityRequirementObject{}
 			} else {
 				newSecurity = s.Security
 			}
 			for _, secReq := range spb.Security {
-				newSecReq := swaggerSecurityRequirementObject{}
+				newSecReq := openapiSecurityRequirementObject{}
 				for secReqKey, secReqValue := range secReq.SecurityRequirement {
 					newSecReqValue := make([]string, len(secReqValue.Scope))
 					copy(newSecReqValue, secReqValue.Scope)
@@ -1332,12 +1332,12 @@ func applyTemplate(p param) (*swaggerObject, error) {
 			}
 			s.Security = newSecurity
 		}
-		s.ExternalDocs = protoExternalDocumentationToSwaggerExternalDocumentation(spb.ExternalDocs, p.reg, spb)
+		s.ExternalDocs = protoExternalDocumentationToOpenAPIExternalDocumentation(spb.ExternalDocs, p.reg, spb)
 		// Populate all Paths with Responses set at top level,
 		// preferring Responses already set over those at the top level.
 		if spb.Responses != nil {
 			for _, verbs := range s.Paths {
-				var maps []swaggerResponsesObject
+				var maps []openapiResponsesObject
 				if verbs.Delete != nil {
 					maps = append(maps, verbs.Delete.Responses)
 				}
@@ -1360,10 +1360,10 @@ func applyTemplate(p param) (*swaggerObject, error) {
 							// Don't overwrite already existing Responses
 							continue
 						}
-						respMap[k] = swaggerResponseObject{
+						respMap[k] = openapiResponseObject{
 							Description: v.Description,
-							Schema:      swaggerSchemaFromProtoSchema(v.Schema, p.reg, customRefs, nil),
-							Examples:    swaggerExamplesFromProtoExamples(v.Examples),
+							Schema:      openapiSchemaFromProtoSchema(v.Schema, p.reg, customRefs, nil),
+							Examples:    openapiExamplesFromProtoExamples(v.Examples),
 						}
 					}
 				}
@@ -1378,7 +1378,7 @@ func applyTemplate(p param) (*swaggerObject, error) {
 			s.extensions = exts
 		}
 
-		// Additional fields on the OpenAPI v2 spec's "Swagger" object
+		// Additional fields on the OpenAPI v2 spec's "OpenAPI" object
 		// should be added here, once supported in the proto.
 	}
 
@@ -1405,7 +1405,7 @@ func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error
 	return exts, nil
 }
 
-// updateSwaggerDataFromComments updates a Swagger object based on a comment
+// updateOpenAPIDataFromComments updates a OpenAPI object based on a comment
 // from the proto file.
 //
 // First paragraph of a comment is used for summary. Remaining paragraphs of
@@ -1417,7 +1417,7 @@ func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error
 //
 // If there is no 'Summary', the same behavior will be attempted on 'Title',
 // but only if the last character is not a period.
-func updateSwaggerDataFromComments(reg *descriptor.Registry, swaggerObject interface{}, data interface{}, comment string, isPackageObject bool) error {
+func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject interface{}, data interface{}, comment string, isPackageObject bool) error {
 	if len(comment) == 0 {
 		return nil
 	}
@@ -1479,7 +1479,7 @@ func updateSwaggerDataFromComments(reg *descriptor.Registry, swaggerObject inter
 	}
 
 	// There was no summary field on the swaggerObject. Try to apply the
-	// whole comment into description if the swagger object description is empty.
+	// whole comment into description if the OpenAPI object description is empty.
 	if descriptionValue.CanSet() {
 		if descriptionValue.Len() == 0 || isPackageObject {
 			descriptionValue.Set(reflect.ValueOf(strings.Join(paragraphs, "\n\n")))
@@ -1695,16 +1695,16 @@ func protoPathIndex(descriptorType reflect.Type, what string) int32 {
 }
 
 // extractOperationOptionFromMethodDescriptor extracts the message of type
-// swagger_options.Operation from a given proto method's descriptor.
-func extractOperationOptionFromMethodDescriptor(meth *descriptorpb.MethodDescriptorProto) (*swagger_options.Operation, error) {
+// openapi_options.Operation from a given proto method's descriptor.
+func extractOperationOptionFromMethodDescriptor(meth *descriptorpb.MethodDescriptorProto) (*openapi_options.Operation, error) {
 	if meth.Options == nil {
 		return nil, nil
 	}
-	if !proto.HasExtension(meth.Options, swagger_options.E_Openapiv2Operation) {
+	if !proto.HasExtension(meth.Options, openapi_options.E_Openapiv2Operation) {
 		return nil, nil
 	}
-	ext := proto.GetExtension(meth.Options, swagger_options.E_Openapiv2Operation)
-	opts, ok := ext.(*swagger_options.Operation)
+	ext := proto.GetExtension(meth.Options, openapi_options.E_Openapiv2Operation)
+	opts, ok := ext.(*openapi_options.Operation)
 	if !ok {
 		return nil, fmt.Errorf("extension is %T; want an Operation", ext)
 	}
@@ -1712,61 +1712,61 @@ func extractOperationOptionFromMethodDescriptor(meth *descriptorpb.MethodDescrip
 }
 
 // extractSchemaOptionFromMessageDescriptor extracts the message of type
-// swagger_options.Schema from a given proto message's descriptor.
-func extractSchemaOptionFromMessageDescriptor(msg *descriptorpb.DescriptorProto) (*swagger_options.Schema, error) {
+// openapi_options.Schema from a given proto message's descriptor.
+func extractSchemaOptionFromMessageDescriptor(msg *descriptorpb.DescriptorProto) (*openapi_options.Schema, error) {
 	if msg.Options == nil {
 		return nil, nil
 	}
-	if !proto.HasExtension(msg.Options, swagger_options.E_Openapiv2Schema) {
+	if !proto.HasExtension(msg.Options, openapi_options.E_Openapiv2Schema) {
 		return nil, nil
 	}
-	ext := proto.GetExtension(msg.Options, swagger_options.E_Openapiv2Schema)
-	opts, ok := ext.(*swagger_options.Schema)
+	ext := proto.GetExtension(msg.Options, openapi_options.E_Openapiv2Schema)
+	opts, ok := ext.(*openapi_options.Schema)
 	if !ok {
 		return nil, fmt.Errorf("extension is %T; want a Schema", ext)
 	}
 	return opts, nil
 }
 
-// extractSwaggerOptionFromFileDescriptor extracts the message of type
-// swagger_options.Swagger from a given proto method's descriptor.
-func extractSwaggerOptionFromFileDescriptor(file *descriptorpb.FileDescriptorProto) (*swagger_options.Swagger, error) {
+// extractOpenAPIOptionFromFileDescriptor extracts the message of type
+// openapi_options.OpenAPI from a given proto method's descriptor.
+func extractOpenAPIOptionFromFileDescriptor(file *descriptorpb.FileDescriptorProto) (*openapi_options.Swagger, error) {
 	if file.Options == nil {
 		return nil, nil
 	}
-	if !proto.HasExtension(file.Options, swagger_options.E_Openapiv2Swagger) {
+	if !proto.HasExtension(file.Options, openapi_options.E_Openapiv2Swagger) {
 		return nil, nil
 	}
-	ext := proto.GetExtension(file.Options, swagger_options.E_Openapiv2Swagger)
-	opts, ok := ext.(*swagger_options.Swagger)
+	ext := proto.GetExtension(file.Options, openapi_options.E_Openapiv2Swagger)
+	opts, ok := ext.(*openapi_options.Swagger)
 	if !ok {
-		return nil, fmt.Errorf("extension is %T; want a Swagger object", ext)
+		return nil, fmt.Errorf("extension is %T; want a OpenAPI object", ext)
 	}
 	return opts, nil
 }
 
-func extractJSONSchemaFromFieldDescriptor(fd *descriptorpb.FieldDescriptorProto) (*swagger_options.JSONSchema, error) {
+func extractJSONSchemaFromFieldDescriptor(fd *descriptorpb.FieldDescriptorProto) (*openapi_options.JSONSchema, error) {
 	if fd.Options == nil {
 		return nil, nil
 	}
-	if !proto.HasExtension(fd.Options, swagger_options.E_Openapiv2Field) {
+	if !proto.HasExtension(fd.Options, openapi_options.E_Openapiv2Field) {
 		return nil, nil
 	}
-	ext := proto.GetExtension(fd.Options, swagger_options.E_Openapiv2Field)
-	opts, ok := ext.(*swagger_options.JSONSchema)
+	ext := proto.GetExtension(fd.Options, openapi_options.E_Openapiv2Field)
+	opts, ok := ext.(*openapi_options.JSONSchema)
 	if !ok {
 		return nil, fmt.Errorf("extension is %T; want a JSONSchema object", ext)
 	}
 	return opts, nil
 }
 
-func protoJSONSchemaToSwaggerSchemaCore(j *swagger_options.JSONSchema, reg *descriptor.Registry, refs refMap) schemaCore {
+func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.JSONSchema, reg *descriptor.Registry, refs refMap) schemaCore {
 	ret := schemaCore{}
 
 	if j.GetRef() != "" {
-		swaggerName, ok := fullyQualifiedNameToSwaggerName(j.GetRef(), reg)
+		openapiName, ok := fullyQualifiedNameToOpenAPIName(j.GetRef(), reg)
 		if ok {
-			ret.Ref = "#/definitions/" + swaggerName
+			ret.Ref = "#/definitions/" + openapiName
 			if refs != nil {
 				refs[j.GetRef()] = struct{}{}
 			}
@@ -1782,7 +1782,7 @@ func protoJSONSchemaToSwaggerSchemaCore(j *swagger_options.JSONSchema, reg *desc
 	return ret
 }
 
-func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_options.JSONSchema, reg *descriptor.Registry, data interface{}) {
+func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_options.JSONSchema, reg *descriptor.Registry, data interface{}) {
 	s.Title = j.GetTitle()
 	s.Description = j.GetDescription()
 	if reg.GetUseGoTemplate() {
@@ -1811,13 +1811,13 @@ func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_option
 	}
 }
 
-func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Registry, refs refMap, data interface{}) swaggerSchemaObject {
-	ret := swaggerSchemaObject{
-		ExternalDocs: protoExternalDocumentationToSwaggerExternalDocumentation(s.GetExternalDocs(), reg, data),
+func openapiSchemaFromProtoSchema(s *openapi_options.Schema, reg *descriptor.Registry, refs refMap, data interface{}) openapiSchemaObject {
+	ret := openapiSchemaObject{
+		ExternalDocs: protoExternalDocumentationToOpenAPIExternalDocumentation(s.GetExternalDocs(), reg, data),
 	}
 
-	ret.schemaCore = protoJSONSchemaToSwaggerSchemaCore(s.GetJsonSchema(), reg, refs)
-	updateSwaggerObjectFromJSONSchema(&ret, s.GetJsonSchema(), reg, data)
+	ret.schemaCore = protoJSONSchemaToOpenAPISchemaCore(s.GetJsonSchema(), reg, refs)
+	updateswaggerObjectFromJSONSchema(&ret, s.GetJsonSchema(), reg, data)
 
 	if s != nil && s.Example != nil {
 		ret.Example = json.RawMessage(s.Example.Value)
@@ -1826,7 +1826,7 @@ func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Reg
 	return ret
 }
 
-func swaggerExamplesFromProtoExamples(in map[string]string) map[string]interface{} {
+func openapiExamplesFromProtoExamples(in map[string]string) map[string]interface{} {
 	if len(in) == 0 {
 		return nil
 	}
@@ -1844,7 +1844,7 @@ func swaggerExamplesFromProtoExamples(in map[string]string) map[string]interface
 	return out
 }
 
-func protoJSONSchemaTypeToFormat(in []swagger_options.JSONSchema_JSONSchemaSimpleTypes) (string, string) {
+func protoJSONSchemaTypeToFormat(in []openapi_options.JSONSchema_JSONSchemaSimpleTypes) (string, string) {
 	if len(in) == 0 {
 		return "", ""
 	}
@@ -1858,20 +1858,20 @@ func protoJSONSchemaTypeToFormat(in []swagger_options.JSONSchema_JSONSchemaSimpl
 	// https://swagger.io/specification/#itemsObject
 	// https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.5.2
 	switch in[0] {
-	case swagger_options.JSONSchema_UNKNOWN, swagger_options.JSONSchema_NULL:
+	case openapi_options.JSONSchema_UNKNOWN, openapi_options.JSONSchema_NULL:
 		return "", ""
-	case swagger_options.JSONSchema_OBJECT:
+	case openapi_options.JSONSchema_OBJECT:
 		return "object", ""
-	case swagger_options.JSONSchema_ARRAY:
+	case openapi_options.JSONSchema_ARRAY:
 		return "array", ""
-	case swagger_options.JSONSchema_BOOLEAN:
+	case openapi_options.JSONSchema_BOOLEAN:
 		return "boolean", "boolean"
-	case swagger_options.JSONSchema_INTEGER:
+	case openapi_options.JSONSchema_INTEGER:
 		return "integer", "int32"
-	case swagger_options.JSONSchema_NUMBER:
+	case openapi_options.JSONSchema_NUMBER:
 		return "number", "double"
-	case swagger_options.JSONSchema_STRING:
-		// NOTE: in swagger specifition, format should be empty on string type
+	case openapi_options.JSONSchema_STRING:
+		// NOTE: in OpenAPI specifition, format should be empty on string type
 		return "string", ""
 	default:
 		// Maybe panic?
@@ -1879,7 +1879,7 @@ func protoJSONSchemaTypeToFormat(in []swagger_options.JSONSchema_JSONSchemaSimpl
 	}
 }
 
-func protoExternalDocumentationToSwaggerExternalDocumentation(in *swagger_options.ExternalDocumentation, reg *descriptor.Registry, data interface{}) *swaggerExternalDocumentationObject {
+func protoExternalDocumentationToOpenAPIExternalDocumentation(in *openapi_options.ExternalDocumentation, reg *descriptor.Registry, data interface{}) *openapiExternalDocumentationObject {
 	if in == nil {
 		return nil
 	}
@@ -1888,22 +1888,22 @@ func protoExternalDocumentationToSwaggerExternalDocumentation(in *swagger_option
 		in.Description = goTemplateComments(in.Description, data, reg)
 	}
 
-	return &swaggerExternalDocumentationObject{
+	return &openapiExternalDocumentationObject{
 		Description: in.Description,
 		URL:         in.Url,
 	}
 }
 
-func addCustomRefs(d swaggerDefinitionsObject, reg *descriptor.Registry, refs refMap) {
+func addCustomRefs(d openapiDefinitionsObject, reg *descriptor.Registry, refs refMap) {
 	if len(refs) == 0 {
 		return
 	}
 	msgMap := make(messageMap)
 	enumMap := make(enumMap)
 	for ref := range refs {
-		swgName, swgOk := fullyQualifiedNameToSwaggerName(ref, reg)
+		swgName, swgOk := fullyQualifiedNameToOpenAPIName(ref, reg)
 		if !swgOk {
-			glog.Errorf("can't resolve swagger name from CustomRef '%v'", ref)
+			glog.Errorf("can't resolve OpenAPI name from CustomRef '%v'", ref)
 			continue
 		}
 		if _, ok := d[swgName]; ok {

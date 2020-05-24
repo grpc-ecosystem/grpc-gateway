@@ -279,7 +279,7 @@ mux := runtime.NewServeMux(
 
 The signature of the handler is much more rigid because we need
 to know the structure of the error payload to properly
-encode the "chunk" schema into a Swagger/OpenAPI spec.
+encode the "chunk" schema into an OpenAPI spec.
 
 So the function must return a `*runtime.StreamError`. The handler
 can choose to omit some fields and can filter/transform the original
