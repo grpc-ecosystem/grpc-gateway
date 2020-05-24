@@ -1,4 +1,4 @@
-package genswagger
+package genopenapi
 
 import (
 	"bytes"
@@ -18,33 +18,33 @@ type binding struct {
 }
 
 // http://swagger.io/specification/#infoObject
-type swaggerInfoObject struct {
+type openapiInfoObject struct {
 	Title          string `json:"title"`
 	Description    string `json:"description,omitempty"`
 	TermsOfService string `json:"termsOfService,omitempty"`
 	Version        string `json:"version"`
 
-	Contact *swaggerContactObject `json:"contact,omitempty"`
-	License *swaggerLicenseObject `json:"license,omitempty"`
+	Contact *openapiContactObject `json:"contact,omitempty"`
+	License *openapiLicenseObject `json:"license,omitempty"`
 
 	extensions []extension
 }
 
 // http://swagger.io/specification/#contactObject
-type swaggerContactObject struct {
+type openapiContactObject struct {
 	Name  string `json:"name,omitempty"`
 	URL   string `json:"url,omitempty"`
 	Email string `json:"email,omitempty"`
 }
 
 // http://swagger.io/specification/#licenseObject
-type swaggerLicenseObject struct {
+type openapiLicenseObject struct {
 	Name string `json:"name,omitempty"`
 	URL  string `json:"url,omitempty"`
 }
 
 // http://swagger.io/specification/#externalDocumentationObject
-type swaggerExternalDocumentationObject struct {
+type openapiExternalDocumentationObject struct {
 	Description string `json:"description,omitempty"`
 	URL         string `json:"url,omitempty"`
 }
@@ -55,28 +55,28 @@ type extension struct {
 }
 
 // http://swagger.io/specification/#swaggerObject
-type swaggerObject struct {
+type openapiSwaggerObject struct {
 	Swagger             string                              `json:"swagger"`
-	Info                swaggerInfoObject                   `json:"info"`
+	Info                openapiInfoObject                   `json:"info"`
 	Host                string                              `json:"host,omitempty"`
 	BasePath            string                              `json:"basePath,omitempty"`
 	Schemes             []string                            `json:"schemes,omitempty"`
 	Consumes            []string                            `json:"consumes"`
 	Produces            []string                            `json:"produces"`
-	Paths               swaggerPathsObject                  `json:"paths"`
-	Definitions         swaggerDefinitionsObject            `json:"definitions"`
-	SecurityDefinitions swaggerSecurityDefinitionsObject    `json:"securityDefinitions,omitempty"`
-	Security            []swaggerSecurityRequirementObject  `json:"security,omitempty"`
-	ExternalDocs        *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
+	Paths               openapiPathsObject                  `json:"paths"`
+	Definitions         openapiDefinitionsObject            `json:"definitions"`
+	SecurityDefinitions openapiSecurityDefinitionsObject    `json:"securityDefinitions,omitempty"`
+	Security            []openapiSecurityRequirementObject  `json:"security,omitempty"`
+	ExternalDocs        *openapiExternalDocumentationObject `json:"externalDocs,omitempty"`
 
 	extensions []extension
 }
 
 // http://swagger.io/specification/#securityDefinitionsObject
-type swaggerSecurityDefinitionsObject map[string]swaggerSecuritySchemeObject
+type openapiSecurityDefinitionsObject map[string]openapiSecuritySchemeObject
 
 // http://swagger.io/specification/#securitySchemeObject
-type swaggerSecuritySchemeObject struct {
+type openapiSecuritySchemeObject struct {
 	Type             string              `json:"type"`
 	Description      string              `json:"description,omitempty"`
 	Name             string              `json:"name,omitempty"`
@@ -84,57 +84,57 @@ type swaggerSecuritySchemeObject struct {
 	Flow             string              `json:"flow,omitempty"`
 	AuthorizationURL string              `json:"authorizationUrl,omitempty"`
 	TokenURL         string              `json:"tokenUrl,omitempty"`
-	Scopes           swaggerScopesObject `json:"scopes,omitempty"`
+	Scopes           openapiScopesObject `json:"scopes,omitempty"`
 
 	extensions []extension
 }
 
 // http://swagger.io/specification/#scopesObject
-type swaggerScopesObject map[string]string
+type openapiScopesObject map[string]string
 
 // http://swagger.io/specification/#securityRequirementObject
-type swaggerSecurityRequirementObject map[string][]string
+type openapiSecurityRequirementObject map[string][]string
 
 // http://swagger.io/specification/#pathsObject
-type swaggerPathsObject map[string]swaggerPathItemObject
+type openapiPathsObject map[string]openapiPathItemObject
 
 // http://swagger.io/specification/#pathItemObject
-type swaggerPathItemObject struct {
-	Get    *swaggerOperationObject `json:"get,omitempty"`
-	Delete *swaggerOperationObject `json:"delete,omitempty"`
-	Post   *swaggerOperationObject `json:"post,omitempty"`
-	Put    *swaggerOperationObject `json:"put,omitempty"`
-	Patch  *swaggerOperationObject `json:"patch,omitempty"`
+type openapiPathItemObject struct {
+	Get    *openapiOperationObject `json:"get,omitempty"`
+	Delete *openapiOperationObject `json:"delete,omitempty"`
+	Post   *openapiOperationObject `json:"post,omitempty"`
+	Put    *openapiOperationObject `json:"put,omitempty"`
+	Patch  *openapiOperationObject `json:"patch,omitempty"`
 }
 
 // http://swagger.io/specification/#operationObject
-type swaggerOperationObject struct {
+type openapiOperationObject struct {
 	Summary     string                  `json:"summary,omitempty"`
 	Description string                  `json:"description,omitempty"`
 	OperationID string                  `json:"operationId"`
-	Responses   swaggerResponsesObject  `json:"responses"`
-	Parameters  swaggerParametersObject `json:"parameters,omitempty"`
+	Responses   openapiResponsesObject  `json:"responses"`
+	Parameters  openapiParametersObject `json:"parameters,omitempty"`
 	Tags        []string                `json:"tags,omitempty"`
 	Deprecated  bool                    `json:"deprecated,omitempty"`
 	Produces    []string                `json:"produces,omitempty"`
 
-	Security     *[]swaggerSecurityRequirementObject `json:"security,omitempty"`
-	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
+	Security     *[]openapiSecurityRequirementObject `json:"security,omitempty"`
+	ExternalDocs *openapiExternalDocumentationObject `json:"externalDocs,omitempty"`
 
 	extensions []extension
 }
 
-type swaggerParametersObject []swaggerParameterObject
+type openapiParametersObject []openapiParameterObject
 
 // http://swagger.io/specification/#parameterObject
-type swaggerParameterObject struct {
+type openapiParameterObject struct {
 	Name             string              `json:"name"`
 	Description      string              `json:"description,omitempty"`
 	In               string              `json:"in,omitempty"`
 	Required         bool                `json:"required"`
 	Type             string              `json:"type,omitempty"`
 	Format           string              `json:"format,omitempty"`
-	Items            *swaggerItemsObject `json:"items,omitempty"`
+	Items            *openapiItemsObject `json:"items,omitempty"`
 	Enum             []string            `json:"enum,omitempty"`
 	CollectionFormat string              `json:"collectionFormat,omitempty"`
 	Default          string              `json:"default,omitempty"`
@@ -142,7 +142,7 @@ type swaggerParameterObject struct {
 
 	// Or you can explicitly refer to another type. If this is defined all
 	// other fields should be empty
-	Schema *swaggerSchemaObject `json:"schema,omitempty"`
+	Schema *openapiSchemaObject `json:"schema,omitempty"`
 }
 
 // core part of schema, which is common to itemsObject and schemaObject.
@@ -153,7 +153,7 @@ type schemaCore struct {
 	Ref     string          `json:"$ref,omitempty"`
 	Example json.RawMessage `json:"example,omitempty"`
 
-	Items *swaggerItemsObject `json:"items,omitempty"`
+	Items *openapiItemsObject `json:"items,omitempty"`
 
 	// If the item is an enumeration include a list of all the *NAMES* of the
 	// enum values.  I'm not sure how well this will work but assuming all enums
@@ -163,23 +163,23 @@ type schemaCore struct {
 }
 
 func (s *schemaCore) setRefFromFQN(ref string, reg *descriptor.Registry) error {
-	name, ok := fullyQualifiedNameToSwaggerName(ref, reg)
+	name, ok := fullyQualifiedNameToOpenAPIName(ref, reg)
 	if !ok {
-		return fmt.Errorf("setRefFromFQN: can't resolve swagger name from '%v'", ref)
+		return fmt.Errorf("setRefFromFQN: can't resolve OpenAPI name from '%v'", ref)
 	}
 	s.Ref = fmt.Sprintf("#/definitions/%s", name)
 	return nil
 }
 
-type swaggerItemsObject schemaCore
+type openapiItemsObject schemaCore
 
 // http://swagger.io/specification/#responsesObject
-type swaggerResponsesObject map[string]swaggerResponseObject
+type openapiResponsesObject map[string]openapiResponseObject
 
 // http://swagger.io/specification/#responseObject
-type swaggerResponseObject struct {
+type openapiResponseObject struct {
 	Description string                 `json:"description"`
-	Schema      swaggerSchemaObject    `json:"schema"`
+	Schema      openapiSchemaObject    `json:"schema"`
 	Examples    map[string]interface{} `json:"examples,omitempty"`
 
 	extensions []extension
@@ -190,9 +190,9 @@ type keyVal struct {
 	Value interface{}
 }
 
-type swaggerSchemaObjectProperties []keyVal
+type openapiSchemaObjectProperties []keyVal
 
-func (op swaggerSchemaObjectProperties) MarshalJSON() ([]byte, error) {
+func (op openapiSchemaObjectProperties) MarshalJSON() ([]byte, error) {
 	var buf bytes.Buffer
 	buf.WriteString("{")
 	for i, kv := range op {
@@ -217,16 +217,16 @@ func (op swaggerSchemaObjectProperties) MarshalJSON() ([]byte, error) {
 }
 
 // http://swagger.io/specification/#schemaObject
-type swaggerSchemaObject struct {
+type openapiSchemaObject struct {
 	schemaCore
 	// Properties can be recursively defined
-	Properties           *swaggerSchemaObjectProperties `json:"properties,omitempty"`
-	AdditionalProperties *swaggerSchemaObject           `json:"additionalProperties,omitempty"`
+	Properties           *openapiSchemaObjectProperties `json:"properties,omitempty"`
+	AdditionalProperties *openapiSchemaObject           `json:"additionalProperties,omitempty"`
 
 	Description string `json:"description,omitempty"`
 	Title       string `json:"title,omitempty"`
 
-	ExternalDocs *swaggerExternalDocumentationObject `json:"externalDocs,omitempty"`
+	ExternalDocs *openapiExternalDocumentationObject `json:"externalDocs,omitempty"`
 
 	ReadOnly         bool     `json:"readOnly,omitempty"`
 	MultipleOf       float64  `json:"multipleOf,omitempty"`
@@ -246,12 +246,12 @@ type swaggerSchemaObject struct {
 }
 
 // http://swagger.io/specification/#referenceObject
-type swaggerReferenceObject struct {
+type openapiReferenceObject struct {
 	Ref string `json:"$ref"`
 }
 
 // http://swagger.io/specification/#definitionsObject
-type swaggerDefinitionsObject map[string]swaggerSchemaObject
+type openapiDefinitionsObject map[string]openapiSchemaObject
 
 // Internal type mapping from FQMN to descriptor.Message. Used as a set by the
 // findServiceMessages function.

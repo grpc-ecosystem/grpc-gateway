@@ -21,7 +21,7 @@ func TestParseReqParam(t *testing.T) {
 		fileV                      string
 		importPathV                string
 		mergeFileNameV             string
-		useFQNForSwaggerNameV      bool
+		useFQNForOpenAPINameV      bool
 	}{
 		{
 			// this one must be first - with no leading clearFlags call it
@@ -103,16 +103,16 @@ func TestParseReqParam(t *testing.T) {
 		{
 			name:             "Test 10",
 			expected:         map[string]string{},
-			request:          "fqn_for_swagger_name=3",
-			expectedError:    errors.New(`Cannot set flag fqn_for_swagger_name=3: parse error`),
-			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false, useFQNForSwaggerNameV: false,
+			request:          "fqn_for_openapi_name=3",
+			expectedError:    errors.New(`Cannot set flag fqn_for_openapi_name=3: parse error`),
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false, useFQNForOpenAPINameV: false,
 			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
 		},
 		{
 			name:             "Test 11",
 			expected:         map[string]string{},
-			request:          "fqn_for_swagger_name=true",
-			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false, useFQNForSwaggerNameV: true,
+			request:          "fqn_for_openapi_name=true",
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false, useFQNForOpenAPINameV: true,
 			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
 		},
 	}
@@ -140,7 +140,7 @@ func TestParseReqParam(t *testing.T) {
 					tt.Errorf("expected error malformed, expected %q, got %q", tc.expectedError.Error(), err.Error())
 				}
 			}
-			checkFlags(tc.allowDeleteBodyV, tc.allowMergeV, tc.allowRepeatedFieldsInBodyV, tc.includePackageInTagsV, tc.useFQNForSwaggerNameV, tc.fileV, tc.importPathV, tc.mergeFileNameV, tt, i)
+			checkFlags(tc.allowDeleteBodyV, tc.allowMergeV, tc.allowRepeatedFieldsInBodyV, tc.includePackageInTagsV, tc.useFQNForOpenAPINameV, tc.fileV, tc.importPathV, tc.mergeFileNameV, tt, i)
 
 			clearFlags()
 		})
@@ -148,7 +148,7 @@ func TestParseReqParam(t *testing.T) {
 
 }
 
-func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV, includePackageInTagsV bool, useFQNForSwaggerNameV bool, fileV, importPathV, mergeFileNameV string, t *testing.T, tid int) {
+func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV, includePackageInTagsV bool, useFQNForOpenAPINameV bool, fileV, importPathV, mergeFileNameV string, t *testing.T, tid int) {
 	if *importPrefix != importPathV {
 		t.Errorf("Test %v: import_prefix misparsed, expected '%v', got '%v'", tid, importPathV, *importPrefix)
 	}
@@ -170,8 +170,8 @@ func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV, includePa
 	if *includePackageInTags != includePackageInTagsV {
 		t.Errorf("Test %v: include_package_in_tags misparsed, expected '%v', got '%v'", tid, includePackageInTagsV, *includePackageInTags)
 	}
-	if *useFQNForSwaggerName != useFQNForSwaggerNameV {
-		t.Errorf("Test %v: fqn_for_swagger_name misparsed, expected '%v', got '%v'", tid, useFQNForSwaggerNameV, *useFQNForSwaggerName)
+	if *useFQNForOpenAPIName != useFQNForOpenAPINameV {
+		t.Errorf("Test %v: fqn_for_openapi_name misparsed, expected '%v', got '%v'", tid, useFQNForOpenAPINameV, *useFQNForOpenAPIName)
 	}
 }
 

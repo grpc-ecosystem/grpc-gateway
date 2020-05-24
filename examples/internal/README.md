@@ -26,7 +26,7 @@ Then you can use curl or a browser to test:
 
 ```bash
 # List all apis
-$ curl http://localhost:8080/swagger/echo_service.swagger.json
+$ curl http://localhost:8080/openapiv2/echo_service.swagger.json
 
 # Visit the apis
 $ curl -XPOST http://localhost:8080/v1/example/echo/foo

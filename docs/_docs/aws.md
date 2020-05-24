@@ -4,7 +4,7 @@ category: documentation
 
 # AWS
 
-## Import swagger documentation into AWS API Gateway
+## Import OpenAPI documentation into AWS API Gateway
 The AWS API gateway service allows importing of an OpenAPI specification to create a REST API. The process is very straightforward and can be found [here](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-import-api.html).
 Here are some tips to consider when importing the documentation:
 

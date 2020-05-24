@@ -7,7 +7,7 @@ describe('EchoService', function() {
 
   beforeEach(function(done) {
     new SwaggerClient({
-      url: "http://localhost:8080/swagger/echo_service.swagger.json",
+      url: "http://localhost:8080/openapiv2/echo_service.swagger.json",
       usePromise: true,
     }).then(function(c) {
       client = c;

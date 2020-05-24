@@ -10,9 +10,9 @@ builds:
       - windows
     goarch:
       - amd64
-  - main: ./protoc-gen-swagger/main.go
-    id: protoc-gen-swagger
-    binary: protoc-gen-swagger
+  - main: ./protoc-gen-openapiv2/main.go
+    id: protoc-gen-openapiv2
+    binary: protoc-gen-openapiv2
     env:
       - CGO_ENABLED=0
     goos:
