@@ -66,8 +66,8 @@ def _run_proto_gen_swagger(
         extra_inputs.append(grpc_api_configuration)
         args.add("--swagger_opt", "grpc_api_configuration=%s" % grpc_api_configuration.path)
 
-    if json_names_for_fields:
-        args.add("--swagger_opt", "json_names_for_fields=true")
+    if not json_names_for_fields:
+        args.add("--swagger_opt", "json_names_for_fields=false")
 
     proto_file_infos = _direct_source_infos(proto_info)
 
@@ -173,7 +173,7 @@ protoc_gen_swagger = rule(
             mandatory = False,
         ),
         "json_names_for_fields": attr.bool(
-            default = False,
+            default = True,
             mandatory = False,
         ),
         "_protoc": attr.label(
