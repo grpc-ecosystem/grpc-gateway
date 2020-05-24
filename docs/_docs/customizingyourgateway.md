@@ -23,11 +23,21 @@ You might want to serialize request/response messages in MessagePack instead of 
 
 You can see [the default implementation for JSON](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/marshal_jsonpb.go) for reference.
 
-### Using camelCase for JSON
+### Using proto names in JSON
 
-The protocol buffer compiler generates camelCase JSON tags that can be used with jsonpb package. By default jsonpb Marshaller uses `OrigName: true` which uses the exact case used in the proto files. To use camelCase for the JSON representation,
+The protocol buffer compiler generates camelCase JSON tags that are used by default.
+If you want to use the exact case used in the proto files, set `UseProtoNames: true`:
 ```go
-mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName:false}))
+mux := runtime.NewServeMux(
+	runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
+		MarshalOptions: protojson.MarshalOptions{
+			UseProtoNames: true,
+		},
+		UnmarshalOptions: protojson.UnmarshalOptions{
+			DiscardUnknown: true,
+		},
+	}),
+)
 ```
 
 ### Pretty-print JSON responses when queried with ?pretty
@@ -42,7 +52,15 @@ For example:
 
 ```go
 mux := runtime.NewServeMux(
-	runtime.WithMarshalerOption("application/json+pretty", &runtime.JSONPb{Indent: "  "}),
+	runtime.WithMarshalerOption("application/json+pretty", &runtime.JSONPb{
+		MarshalOptions: protojson.MarshalOptions{
+			Indent: "  ",
+			Multiline: true, // Optional, implied by presence of "Indent".
+		},
+		UnmarshalOptions: protojson.UnmarshalOptions{
+			DiscardUnknown: true,
+		},
+	}),
 )
 prettier := func(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -57,22 +75,6 @@ prettier := func(h http.Handler) http.Handler {
 http.ListenAndServe(":8080", prettier(mux))
 ```
 
-Note that  `runtime.JSONPb{Indent: "  "}` will do the trick for pretty-printing: it wraps
-`jsonpb.Marshaler`:
-```go
-type Marshaler struct {
-	// ...
-
-	// A string to indent each level by. The presence of this field will
-	// also cause a space to appear between the field separator and
-	// value, and for newlines to appear between fields and array
-	// elements.
-	Indent string
-
-	// ...
-}
-```
-
 Now, either when passing the header `Accept: application/json+pretty` or appending `?pretty` to
 your HTTP endpoints, the response will be pretty-printed.
 
@@ -81,42 +83,15 @@ also, this example code does not remove the query parameter `pretty` from furthe
 
 ## Customize unmarshaling per Content-Type
 
-Having different unmarshaling options per Content-Type is possible by wrapping the decoder and passing that to `runtime.WithMarshalerOption`:
-
-```go
-type m struct {
-	*runtime.JSONPb
-	unmarshaler *jsonpb.Unmarshaler
-}
-
-type decoderWrapper struct {
-	*json.Decoder
-	*jsonpb.Unmarshaler
-}
-
-func (n *m) NewDecoder(r io.Reader) runtime.Decoder {
-	d := json.NewDecoder(r)
-	return &decoderWrapper{Decoder: d, Unmarshaler: n.unmarshaler}
-}
-
-func (d *decoderWrapper) Decode(v interface{}) error {
-	p, ok := v.(proto.Message)
-	if !ok { // if it's not decoding into a proto.Message, there's no notion of unknown fields
-		return d.Decoder.Decode(v)
-	}
-	return d.UnmarshalNext(d.Decoder, p) // uses m's jsonpb.Unmarshaler configuration
-}
-```
-
-This scaffolding allows us to pass a custom unmarshal options. In this example, we configure the
-unmarshaler to disallow unknown fields. For demonstration purposes, we'll also change some of the
-default marshaler options:
+Having different unmarshaling options per Content-Type is as easy as
+configuring a custom marshaler:
 
 ```go
 mux := runtime.NewServeMux(
-	runtime.WithMarshalerOption("application/json+strict", &m{
-		JSONPb: &runtime.JSONPb{EmitDefaults: true},
-		unmarshaler: &jsonpb.Unmarshaler{AllowUnknownFields: false}, // explicit "false", &jsonpb.Unmarshaler{} would have the same effect
+	runtime.WithMarshalerOption("application/json+strict", &runtime.JSONPb{
+		UnmarshalOptions: &protojson.UnmarshalOptions{
+			DiscardUnknown: false, // explicit "false", &protojson.UnmarshalOptions{} would have the same effect
+		},
 	}),
 )
 ```

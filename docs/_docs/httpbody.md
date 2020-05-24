@@ -6,13 +6,7 @@ category: documentation
 The [HTTP Body](https://github.com/googleapis/googleapis/blob/master/google/api/httpbody.proto) messages allows a response message to be specified with custom data content and a custom content type header. The values included in the HTTPBody response will be used verbatim in the returned message from the gateway. Make sure you format your response carefully!
 
 ## Example Usage
-1. Create a mux and configure it to use the `HTTPBodyMarshaler`. 
-
-```protobuf
-	mux := runtime.NewServeMux()
-	runtime.SetHTTPBodyMarshaler(mux)
-```
-2. Define your service in gRPC with an httpbody response message
+1. Define your service in gRPC with an httpbody response message
 
 ```protobuf
 import "google/api/httpbody.proto";
