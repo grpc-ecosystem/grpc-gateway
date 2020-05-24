@@ -16,8 +16,8 @@ The following is equivalent to the basic [usage example](usage.html) but without
 
 1. Define your service in gRPC as usual
    
-   your_service.proto:
-   ```protobuf
+    your_service.proto:
+    ```protobuf
     syntax = "proto3";
     package your.service.v1;
     option go_package = "github.com/yourorg/yourprotos/gen/go/your/service/v1";
@@ -28,9 +28,10 @@ The following is equivalent to the basic [usage example](usage.html) but without
     service YourService {
       rpc Echo(StringMessage) returns (StringMessage) {}
     }
-   ```
+    ```
 
-2. Instead of annotating the .proto file in this step leave it untouched and create a `your_service.yaml` with the following content:
+2. Instead of annotating the .proto file in this step leave it untouched
+   and create a `your_service.yaml` with the following content:
     ```yaml
     type: google.api.Service
     config_version: 3
@@ -53,12 +54,13 @@ The following is equivalent to the basic [usage example](usage.html) but without
 
 4. Implement your service in gRPC as usual
 
-5. Generate the reverse-proxy. Here we have to pass the path to the `your_service.yaml` in addition to the .proto file:
+5. Generate the reverse-proxy. Here we have to pass the path to
+    the `your_service.yaml` in addition to the .proto file:
 
-   ```sh
-   protoc -I. --grpc-gateway_out=logtostderr=true,paths=source_relative,grpc_api_configuration=path/to/your_service.yaml:./gen/go \
-     your/service/v1/your_service.proto
-   ```
+    ```sh
+    protoc -I. --grpc-gateway_out=logtostderr=true,paths=source_relative,grpc_api_configuration=path/to/your_service.yaml:./gen/go \
+      your/service/v1/your_service.proto
+    ```
    
    This will generate a reverse proxy `gen/go/your/service/v1/your_service.pb.gw.go` that is identical to the one produced for the annotated proto.
 
