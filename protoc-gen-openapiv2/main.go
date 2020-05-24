@@ -10,7 +10,7 @@ import (
 	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-swagger/internal/genswagger"
+	genopenapi "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -19,14 +19,14 @@ var (
 	file                       = flag.String("file", "-", "where to load data from")
 	allowDeleteBody            = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
 	grpcAPIConfiguration       = flag.String("grpc_api_configuration", "", "path to gRPC API Configuration in YAML format")
-	allowMerge                 = flag.Bool("allow_merge", false, "if set, generation one swagger file out of multiple protos")
-	mergeFileName              = flag.String("merge_file_name", "apidocs", "target swagger file name prefix after merge")
-	useJSONNamesForFields      = flag.Bool("json_names_for_fields", true, "if disabled, the original proto name will be used for generating swagger definitions")
+	allowMerge                 = flag.Bool("allow_merge", false, "if set, generation one OpenAPI file out of multiple protos")
+	mergeFileName              = flag.String("merge_file_name", "apidocs", "target OpenAPI file name prefix after merge")
+	useJSONNamesForFields      = flag.Bool("json_names_for_fields", true, "if disabled, the original proto name will be used for generating OpenAPI definitions")
 	repeatedPathParamSeparator = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`.")
 	versionFlag                = flag.Bool("version", false, "print the current version")
 	allowRepeatedFieldsInBody  = flag.Bool("allow_repeated_fields_in_body", false, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option")
 	includePackageInTags       = flag.Bool("include_package_in_tags", false, "if unset, the gRPC service name is added to the `Tags` field of each operation. if set and the `package` directive is shown in the proto file, the package name will be prepended to the service name")
-	useFQNForSwaggerName       = flag.Bool("fqn_for_swagger_name", false, "if set, the object's swagger names will use the fully qualify name from the proto definition (ie my.package.MyMessage.MyInnerMessage")
+	useFQNForOpenAPIName       = flag.Bool("fqn_for_openapi_name", false, "if set, the object's OpenAPI names will use the fully qualify name from the proto definition (ie my.package.MyMessage.MyInnerMessage")
 	useGoTemplate              = flag.Bool("use_go_templates", false, "if set, you can use Go templates in protofile comments")
 	disableDefaultErrors       = flag.Bool("disable_default_errors", false, "if set, disables generation of default errors. This is useful if you have defined custom error handling")
 	enumsAsInts                = flag.Bool("enums_as_ints", false, "whether to render enum values as integers, as opposed to string values")
@@ -81,7 +81,7 @@ func main() {
 	reg.SetUseJSONNamesForFields(*useJSONNamesForFields)
 	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
 	reg.SetIncludePackageInTags(*includePackageInTags)
-	reg.SetUseFQNForSwaggerName(*useFQNForSwaggerName)
+	reg.SetUseFQNForOpenAPIName(*useFQNForOpenAPIName)
 	reg.SetUseGoTemplate(*useGoTemplate)
 	reg.SetEnumsAsInts(*enumsAsInts)
 	reg.SetDisableDefaultErrors(*disableDefaultErrors)
@@ -101,9 +101,9 @@ func main() {
 		}
 	}
 
-	g := genswagger.New(reg)
+	g := genopenapi.New(reg)
 
-	if err := genswagger.AddErrorDefs(reg); err != nil {
+	if err := genopenapi.AddErrorDefs(reg); err != nil {
 		emitError(err)
 		return
 	}

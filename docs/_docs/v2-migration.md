@@ -11,6 +11,31 @@ information on all changes that were made specifically to v2.
 
 The following behavioural defaults have been changed:
 
+## protoc-gen-swagger has been renamed protoc-gen-openapiv2
+
+See
+[the original issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/675)
+for more information. Apart from the new name, the only real
+difference to users will be a slightly different proto annotation:
+
+```protobuf
+import "protoc-gen-openapiv2/options/annotations.proto";
+```
+instead of
+```protobuf
+import "protoc-gen-swagger/options/annotations.proto";
+```
+and
+```protobuf
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+```
+instead of
+```protobuf
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+```
+
+The bazel rule has been renamed `protoc_gen_openapiv2`.
+
 ## We now use the camelCase JSON names by default
 See
 [the original issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/375)
@@ -33,10 +58,10 @@ mux := runtime.NewServeMux(
 )
 ```
 
-To change the swagger generator behaviour to match, set `json_names_for_fields=false` when generating:
+To change the OpenAPI generator behaviour to match, set `json_names_for_fields=false` when generating:
 
 ```shell
---swagger_out=json_names_for_fields=false:./gen/swagger path/to/my/proto/v1/myproto.proto
+--openapiv2_out=json_names_for_fields=false:./gen/openapiv2 path/to/my/proto/v1/myproto.proto
 ```
 
 If using the Bazel rule, set `json_names_for_fields=False`.

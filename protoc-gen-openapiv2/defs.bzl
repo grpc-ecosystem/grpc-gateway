@@ -44,30 +44,30 @@ def _direct_source_infos(proto_info, provided_sources = []):
 
     return infos
 
-def _run_proto_gen_swagger(
+def _run_proto_gen_openapi(
         actions,
         proto_info,
         target_name,
         transitive_proto_srcs,
         protoc,
-        protoc_gen_swagger,
+        protoc_gen_openapiv2,
         grpc_api_configuration,
         single_output,
         json_names_for_fields):
     args = actions.args()
 
-    args.add("--plugin", "protoc-gen-swagger=%s" % protoc_gen_swagger.path)
+    args.add("--plugin", "protoc-gen-openapiv2=%s" % protoc_gen_openapiv2.path)
 
-    args.add("--swagger_opt", "logtostderr=true")
-    args.add("--swagger_opt", "allow_repeated_fields_in_body=true")
+    args.add("--openapiv2_opt", "logtostderr=true")
+    args.add("--openapiv2_opt", "allow_repeated_fields_in_body=true")
 
     extra_inputs = []
     if grpc_api_configuration:
         extra_inputs.append(grpc_api_configuration)
-        args.add("--swagger_opt", "grpc_api_configuration=%s" % grpc_api_configuration.path)
+        args.add("--openapiv2_opt", "grpc_api_configuration=%s" % grpc_api_configuration.path)
 
     if not json_names_for_fields:
-        args.add("--swagger_opt", "json_names_for_fields=false")
+        args.add("--openapiv2_opt", "json_names_for_fields=false")
 
     proto_file_infos = _direct_source_infos(proto_info)
 
@@ -76,30 +76,30 @@ def _run_proto_gen_swagger(
     args.add_all(proto_info.transitive_proto_path, format_each = "--proto_path=%s")
 
     if single_output:
-        args.add("--swagger_opt", "allow_merge=true")
-        args.add("--swagger_opt", "merge_file_name=%s" % target_name)
+        args.add("--openapiv2_opt", "allow_merge=true")
+        args.add("--openapiv2_opt", "merge_file_name=%s" % target_name)
 
-        swagger_file = actions.declare_file("%s.swagger.json" % target_name)
-        args.add("--swagger_out", swagger_file.dirname)
+        openapi_file = actions.declare_file("%s.swagger.json" % target_name)
+        args.add("--openapiv2_out", openapi_file.dirname)
 
         args.add_all([f.import_path for f in proto_file_infos])
 
         actions.run(
             executable = protoc,
-            tools = [protoc_gen_swagger],
+            tools = [protoc_gen_openapiv2],
             inputs = depset(
                 direct = extra_inputs,
                 transitive = [transitive_proto_srcs],
             ),
-            outputs = [swagger_file],
+            outputs = [openapi_file],
             arguments = [args],
         )
 
-        return [swagger_file]
+        return [openapi_file]
 
     # TODO(yannic): We may be able to generate all files in a single action,
     # but that will change at least the semantics of `use_go_template.proto`.
-    swagger_files = []
+    openapi_files = []
     for proto_file_info in proto_file_infos:
         # TODO(yannic): This probably doesn't work as expected: we only add this
         # option after we have seen it, so `.proto` sources that happen to be
@@ -107,40 +107,40 @@ def _run_proto_gen_swagger(
         # compiled without this option, and all sources that get compiled after
         # `use_go_template.proto` will have this option on.
         if proto_file_info.file.basename == "use_go_template.proto":
-            args.add("--swagger_opt", "use_go_templates=true")
+            args.add("--openapiv2_opt", "use_go_templates=true")
 
         file_name = "%s.swagger.json" % proto_file_info.import_path[:-len(".proto")]
-        swagger_file = actions.declare_file(
+        openapi_file = actions.declare_file(
             "_virtual_imports/%s/%s" % (target_name, file_name),
         )
 
         file_args = actions.args()
 
         offset = len(file_name) + 1  # + '/'.
-        file_args.add("--swagger_out", swagger_file.path[:-offset])
+        file_args.add("--openapiv2_out", openapi_file.path[:-offset])
 
         file_args.add(proto_file_info.import_path)
 
         actions.run(
             executable = protoc,
-            tools = [protoc_gen_swagger],
+            tools = [protoc_gen_openapiv2],
             inputs = depset(
                 direct = extra_inputs,
                 transitive = [transitive_proto_srcs],
             ),
-            outputs = [swagger_file],
+            outputs = [openapi_file],
             arguments = [args, file_args],
         )
-        swagger_files.append(swagger_file)
+        openapi_files.append(openapi_file)
 
-    return swagger_files
+    return openapi_files
 
-def _proto_gen_swagger_impl(ctx):
+def _proto_gen_openapi_impl(ctx):
     proto = ctx.attr.proto[ProtoInfo]
     return [
         DefaultInfo(
             files = depset(
-                _run_proto_gen_swagger(
+                _run_proto_gen_openapi(
                     actions = ctx.actions,
                     proto_info = proto,
                     target_name = ctx.attr.name,
@@ -149,7 +149,7 @@ def _proto_gen_swagger_impl(ctx):
                         transitive = [proto.transitive_sources],
                     ),
                     protoc = ctx.executable._protoc,
-                    protoc_gen_swagger = ctx.executable._protoc_gen_swagger,
+                    protoc_gen_openapiv2 = ctx.executable._protoc_gen_openapi,
                     grpc_api_configuration = ctx.file.grpc_api_configuration,
                     single_output = ctx.attr.single_output,
                     json_names_for_fields = ctx.attr.json_names_for_fields,
@@ -158,7 +158,7 @@ def _proto_gen_swagger_impl(ctx):
         ),
     ]
 
-protoc_gen_swagger = rule(
+protoc_gen_openapiv2 = rule(
     attrs = {
         "proto": attr.label(
             mandatory = True,
@@ -185,11 +185,11 @@ protoc_gen_swagger = rule(
             default = "@com_google_protobuf//:well_known_protos",
             allow_files = True,
         ),
-        "_protoc_gen_swagger": attr.label(
-            default = Label("//protoc-gen-swagger:protoc-gen-swagger"),
+        "_protoc_gen_openapi": attr.label(
+            default = Label("//protoc-gen-openapiv2:protoc-gen-openapiv2"),
             executable = True,
             cfg = "host",
         ),
     },
-    implementation = _proto_gen_swagger_impl,
+    implementation = _proto_gen_openapi_impl,
 )

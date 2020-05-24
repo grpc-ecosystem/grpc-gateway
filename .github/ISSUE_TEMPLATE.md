@@ -6,11 +6,11 @@
   ```sh
   go get -u github.com/grpc-ecosystem/grpc-gateway
   ```
-- [ ] Delete the `protoc-gen-grpc-gateway` and `protoc-gen-swagger` binary from your `PATH`,
+- [ ] Delete the `protoc-gen-grpc-gateway` and `protoc-gen-openapiv2` binary from your `PATH`,
   and reinstall the latest versions:
   ```sh
   go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-  go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+  go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-openapiv2
   ```
   
 ## I still have a problem!

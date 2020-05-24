@@ -57,7 +57,7 @@ package tools
 
 import (
     _ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway"
-    _ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-swagger"
+    _ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2"
     _ "github.com/golang/protobuf/protoc-gen-go"
 )
 ```
@@ -67,14 +67,14 @@ Run `go mod tidy` to resolve the versions. Install by running
 ```sh
 $ go install \
     github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
-    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-swagger \
+    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
     github.com/golang/protobuf/protoc-gen-go
 ```
 
 This will place three binaries in your `$GOBIN`;
 
 * `protoc-gen-grpc-gateway`
-* `protoc-gen-swagger`
+* `protoc-gen-openapiv2`
 * `protoc-gen-go`
 
 Make sure that your `$GOBIN` is in your `$PATH`.
@@ -130,7 +130,7 @@ annotation to your .proto file
 
    See [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
    for examples of more annotations you can add to customize gateway behavior
-   and generated Swagger output.
+   and generated OpenAPI output.
 
    If you do not want to modify the proto file for use with grpc-gateway you can
    alternatively use an external
@@ -243,10 +243,10 @@ annotation to your .proto file
    }
    ```
 
-7. (Optional) Generate swagger definitions using `protoc-gen-swagger`
+7. (Optional) Generate OpenAPI definitions using `protoc-gen-openapiv2`
 
    ```sh
-   protoc -I. --swagger_out=logtostderr=true:./gen/swagger your/service/v1/your_service.proto
+   protoc -I. --openapiv2_out=logtostderr=true:./gen/openapiv2 your/service/v1/your_service.proto
    ```
 
 ## Video intro
@@ -266,7 +266,7 @@ example:
 
 ```sh
 --grpc-gateway_out=logtostderr=true,repeated_path_param_separator=ssv:.
---swagger_out=logtostderr=true,repeated_path_param_separator=ssv:.
+--openapiv2_out=logtostderr=true,repeated_path_param_separator=ssv:.
 ```
 
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to
@@ -281,12 +281,12 @@ useful to pass the request-scoped context between the gateway and the gRPC servi
 logging. You can give these flags together with parameters above. Run
 `protoc-gen-grpc-gateway --help` for more details about the flags.
 
-Similarly, `protoc-gen-swagger` supports command-line flags to control Swagger
+Similarly, `protoc-gen-openapiv2` supports command-line flags to control OpenAPI
 output (for example, `json_names_for_fields` to output JSON names for fields
-instead of protobuf names). Run `protoc-gen-swagger --help` for more flag
-details. Further Swagger customization is possible by annotating your `.proto`
+instead of protobuf names). Run `protoc-gen-openapiv2 --help` for more flag
+details. Further OpenAPI customization is possible by annotating your `.proto`
 files with options from
-[openapiv2.proto](protoc-gen-swagger/options/openapiv2.proto) - see
+[openapiv2.proto](protoc-gen-openapiv2/options/openapiv2.proto) - see
 [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
 for examples.
 

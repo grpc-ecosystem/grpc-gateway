@@ -47,7 +47,7 @@ func WithForwardResponseOption(forwardResponseOption func(context.Context, http.
 }
 
 // SetQueryParameterParser sets the query parameter parser, used to populate message from query parameters.
-// Configuring this will mean the generated swagger output is no longer correct, and it should be
+// Configuring this will mean the generated OpenAPI output is no longer correct, and it should be
 // done with careful consideration.
 func SetQueryParameterParser(queryParameterParser QueryParameterParser) ServeMuxOption {
 	return func(serveMux *ServeMux) {
