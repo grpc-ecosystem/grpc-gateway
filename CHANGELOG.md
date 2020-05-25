@@ -1,7 +1,14 @@
 # Change Log
 
-## [v2.0.0-beta1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.0-beta1) (2020-05-25)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.5...v2.0.0-beta1)
+## [v2.0.0-beta.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.0-beta.2) (2020-05-25)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0-beta.1...v2.0.0-beta.2)
+
+**Merged pull requests:**
+
+- utilities: move package to public API [\#1395](https://github.com/grpc-ecosystem/grpc-gateway/pull/1395) ([johanbrandhorst](https://github.com/johanbrandhorst))
+
+## [v2.0.0-beta.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.0-beta.1) (2020-05-25)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0-alpha.2...v2.0.0-beta.1)
 
 **Implemented enhancements:**
 
@@ -15,11 +22,13 @@
 
 - Merging swagger specs \(for multiple protos belonging to same package\) fails to emit summary for some RPCs [\#1387](https://github.com/grpc-ecosystem/grpc-gateway/issues/1387)
 - Remove result/error envelope in streaming RPC response [\#1254](https://github.com/grpc-ecosystem/grpc-gateway/issues/1254)
+- cleanup: rename 'swagger' references to 'openapi' [\#675](https://github.com/grpc-ecosystem/grpc-gateway/issues/675)
 - Swagger: JSON definitions aren't CamelCased [\#375](https://github.com/grpc-ecosystem/grpc-gateway/issues/375)
 - Support emitting default values in JSON [\#233](https://github.com/grpc-ecosystem/grpc-gateway/issues/233)
 
 **Merged pull requests:**
 
+- Generate changelog for v2.0.0-beta1 [\#1393](https://github.com/grpc-ecosystem/grpc-gateway/pull/1393) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Rename protoc-gen-swagger to protoc-gen-openapi [\#1390](https://github.com/grpc-ecosystem/grpc-gateway/pull/1390) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Update docs for v2 [\#1388](https://github.com/grpc-ecosystem/grpc-gateway/pull/1388) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - runtime: remove DisallowUnknownFields\(\) [\#1386](https://github.com/grpc-ecosystem/grpc-gateway/pull/1386) ([johanbrandhorst](https://github.com/johanbrandhorst))
@@ -652,7 +661,7 @@
 - deprecate 1.6 and embrace \(\*http.Request\).Context by default [\#313](https://github.com/grpc-ecosystem/grpc-gateway/issues/313)
 
 ## [v1.3.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.1) (2017-12-23)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3...v1.3.1)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3.0...v1.3.1)
 
 **Implemented enhancements:**
 
@@ -695,11 +704,11 @@
 - Support combination of query params and body for POSTs with body: "\*" [\#234](https://github.com/grpc-ecosystem/grpc-gateway/issues/234)
 - Interceptor [\#221](https://github.com/grpc-ecosystem/grpc-gateway/issues/221)
 
-## [v1.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3) (2017-11-03)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3.0...v1.3)
-
 ## [v1.3.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3.0) (2017-11-03)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.2.2...v1.3.0)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.3...v1.3.0)
+
+## [v1.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.3) (2017-11-03)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.2.2...v1.3)
 
 **Closed issues:**
 
