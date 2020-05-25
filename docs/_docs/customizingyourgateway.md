@@ -189,30 +189,74 @@ if appendCustomHeader {
 ```
 
 ## Mutate response messages or set response headers
+### Set HTTP headers
 You might want to return a subset of response fields as HTTP response headers;
 You might want to simply set an application-specific token in a header.
 Or you might want to mutate the response messages to be returned.
 
 1. Write a filter function.
 
-	```go
-	func myFilter(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
-		t, ok := resp.(*externalpb.Tokenizer)
-		if ok {
-			w.Header().Set("X-My-Tracking-Token", t.Token)
-			t.Token = ""
-		}
-		return nil
+```go
+func myFilter(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
+	t, ok := resp.(*externalpb.Tokenizer)
+	if ok {
+		w.Header().Set("X-My-Tracking-Token", t.Token)
+		t.Token = ""
 	}
-	```
+	return nil
+}
+```
 2. Register the filter with [`WithForwardResponseOption`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithForwardResponseOption)
 
-	e.g.
-	```go
-	mux := runtime.NewServeMux(
-		runtime.WithForwardResponseOption(myFilter),
-	)
-	```
+e.g.
+```go
+mux := runtime.NewServeMux(
+	runtime.WithForwardResponseOption(myFilter),
+)
+```
+### Controlling HTTP response status codes
+To have the most control over the HTTP response status codes, you can use custom metadata.
+
+While handling the rpc, set the intended status code:
+
+```go
+grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "401"))
+```
+
+Now, before sending the HTTP response, we need to check for this metadata pair and explicitly set the status code for the response if found. 
+To do so, create a function and hook it into the grpc-gateway as a Forward Response Option.
+
+The function looks like this:
+```go
+func httpResponseModifier(ctx context.Context, w http.ResponseWriter, p proto.Message) error {
+	md, ok := runtime.ServerMetadataFromContext(ctx)
+	if !ok {
+		return nil
+	}
+
+	// set http status code
+	if vals := md.HeaderMD.Get("x-http-code"); len(vals) > 0 {
+		code, err := strconv.Atoi(vals[0])
+		if err != nil {
+			return err
+		}
+		w.WriteHeader(code)
+	// delete the headers to not expose any grpc-metadata in http response
+		delete(md.HeaderMD, "x-http-code")
+		delete(w.Header(), "Grpc-Metadata-X-Http-Code")
+	}
+
+	return nil
+}
+```
+
+And it gets hooked into the grpc-gateway with:
+
+```go
+gwMux := runtime.NewServeMux(
+	runtime.WithForwardResponseOption(httpResponseModifier),
+)
+```
 
 ## OpenTracing Support
 
