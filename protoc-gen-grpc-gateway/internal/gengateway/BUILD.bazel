@@ -14,7 +14,7 @@ go_library(
         "//internal/casing:go_default_library",
         "//internal/descriptor:go_default_library",
         "//internal/generator:go_default_library",
-        "//internal/utilities:go_default_library",
+        "//utilities:go_default_library",
         "@com_github_golang_glog//:go_default_library",
         "@io_bazel_rules_go//proto/wkt:compiler_plugin_go_proto",
         "@org_golang_google_protobuf//proto:go_default_library",
