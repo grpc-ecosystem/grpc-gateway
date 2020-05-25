@@ -45,7 +45,7 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, p
 		"io",
 		"net/http",
 		"github.com/grpc-ecosystem/grpc-gateway/v2/runtime",
-		"github.com/grpc-ecosystem/grpc-gateway/v2/internal/utilities",
+		"github.com/grpc-ecosystem/grpc-gateway/v2/utilities",
 		"google.golang.org/protobuf/proto",
 		"google.golang.org/grpc",
 		"google.golang.org/grpc/codes",
