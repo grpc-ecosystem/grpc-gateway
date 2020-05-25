@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/utilities"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 )
 
 func TestMuxServeHTTP(t *testing.T) {

@@ -8,18 +8,18 @@ GO_PROTOBUF_REPO=github.com/golang/protobuf
 GO_PLUGIN_PKG=$(GO_PROTOBUF_REPO)/protoc-gen-go
 GO_PTYPES_ANY_PKG=$(GO_PROTOBUF_REPO)/ptypes/any
 OPENAPI_PLUGIN=bin/protoc-gen-openapiv2
-OPENAPI_PLUGIN_SRC= ./internal/utilities/doc.go \
-			./internal/utilities/pattern.go \
-			./internal/utilities/trie.go \
+OPENAPI_PLUGIN_SRC= ./utilities/doc.go \
+			./utilities/pattern.go \
+			./utilities/trie.go \
 			protoc-gen-openapiv2/internal/genopenapi/generator.go \
 			protoc-gen-openapiv2/internal/genopenapi/template.go \
 			protoc-gen-openapiv2/main.go
 OPENAPI_PLUGIN_PKG=./protoc-gen-openapiv2
 GATEWAY_PLUGIN=bin/protoc-gen-grpc-gateway
 GATEWAY_PLUGIN_PKG=./protoc-gen-grpc-gateway
-GATEWAY_PLUGIN_SRC= ./internal/utilities/doc.go \
-			./internal/utilities/pattern.go \
-			./internal/utilities/trie.go \
+GATEWAY_PLUGIN_SRC= ./utilities/doc.go \
+			./utilities/pattern.go \
+			./utilities/trie.go \
 			./internal/descriptor \
 			./internal/descriptor/registry.go \
 			./internal/descriptor/services.go \
@@ -232,11 +232,11 @@ changelog:
 				--future-release=v2.0.0-beta1
 lint:
 	golint --set_exit_status ./runtime
-	golint --set_exit_status ./internal/utilities/...
+	golint --set_exit_status ./utilities/...
 	golint --set_exit_status ./protoc-gen-grpc-gateway/...
 	golint --set_exit_status ./protoc-gen-openapiv2/...
 	go vet ./runtime || true
-	go vet ./internal/utilities/...
+	go vet ./utilities/...
 	go vet ./protoc-gen-grpc-gateway/...
 	go vet ./protoc-gen-openapiv2/...
 
