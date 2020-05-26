@@ -594,6 +594,7 @@ func local_request_EchoService_EchoDelete_0(ctx context.Context, marshaler runti
 // RegisterEchoServiceHandlerServer registers the http handlers for service EchoService to "mux".
 // UnaryRPC     :call EchoServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
+// Deprecated   :consider using RegisterEchoServiceHandlerFromEndpoint instead. This will not provide grpc.ServerTransportStream https://github.com/grpc-ecosystem/grpc-gateway/issues/1398. This implementation will be missing certain features to behave like a standard stanalone grpc.Server.
 func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server EchoServiceServer) error {
 
 	mux.Handle("POST", pattern_EchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {

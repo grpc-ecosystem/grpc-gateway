@@ -231,6 +231,7 @@ func request_ResponseBodyService_GetResponseBodyStream_0(ctx context.Context, ma
 // RegisterResponseBodyServiceHandlerServer registers the http handlers for service ResponseBodyService to "mux".
 // UnaryRPC     :call ResponseBodyServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
+// Deprecated   :consider using RegisterResponseBodyServiceHandlerFromEndpoint instead. This will not provide grpc.ServerTransportStream https://github.com/grpc-ecosystem/grpc-gateway/issues/1398. This implementation will be missing certain features to behave like a standard stanalone grpc.Server.
 func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ResponseBodyServiceServer) error {
 
 	mux.Handle("GET", pattern_ResponseBodyService_GetResponseBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
