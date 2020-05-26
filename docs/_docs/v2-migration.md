@@ -47,12 +47,15 @@ If you want to revert to the old behaviour, configure a custom marshaler with
 `UseProtoNames: true`:
 ```go
 mux := runtime.NewServeMux(
-	runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
-		MarshalOptions: protojson.MarshalOptions{
-			UseProtoNames: true,
-		},
-		UnmarshalOptions: protojson.UnmarshalOptions{
-			DiscardUnknown: true,
+	runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
+		Marshaler: &runtime.JSONPb{
+			MarshalOptions: protojson.MarshalOptions{
+				UseProtoNames:   true,
+				EmitUnpopulated: true,
+			},
+			UnmarshalOptions: protojson.UnmarshalOptions{
+				DiscardUnknown: true,
+			},
 		},
 	}),
 )
@@ -75,12 +78,14 @@ If you want to revert to the old behaviour, configure a custom marshaler with
 `EmitUnpopulated: false`:
 ```go
 mux := runtime.NewServeMux(
-	runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
-		MarshalOptions: protojson.MarshalOptions{
-			EmitUnpopulated: false,
-		},
-		UnmarshalOptions: protojson.UnmarshalOptions{
-			DiscardUnknown: true,
+	runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
+		Marshaler: &runtime.JSONPb{
+			MarshalOptions: protojson.MarshalOptions{
+				EmitUnpopulated: false,
+			},
+			UnmarshalOptions: protojson.UnmarshalOptions{
+				DiscardUnknown: true,
+			},
 		},
 	}),
 )
@@ -90,7 +95,8 @@ mux := runtime.NewServeMux(
 
 The `runtime.SetHTTPBodyMarshaler` function has disappeared, and is now
 enabled by default. If you for some reason don't want `HttpBody` messages to be
-respected, you can disable it by overwriting the default marshaler:
+respected, you can disable it by overwriting the default marshaler with one which
+does not wrap `runtime.JSONPb` in `runtime.HTTPBodyMarshaler`:
 
 ```go
 mux := runtime.NewServeMux(
@@ -112,12 +118,14 @@ to disallow unknown fields, configure a custom marshaler:
 
 ```go
 mux := runtime.NewServeMux(
-	runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
-		MarshalOptions: protojson.MarshalOptions{
-			EmitUnpopulated: true,
-		},
-		UnmarshalOptions: protojson.UnmarshalOptions{
-			DiscardUnknown: false,
+	runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
+		Marshaler: &runtime.JSONPb{
+			MarshalOptions: protojson.MarshalOptions{
+				EmitUnpopulated: true,
+			},
+			UnmarshalOptions: protojson.UnmarshalOptions{
+				DiscardUnknown: false,
+			},
 		},
 	}),
 )
