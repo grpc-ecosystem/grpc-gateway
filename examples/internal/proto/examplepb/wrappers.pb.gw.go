@@ -410,7 +410,7 @@ func local_request_WrappersService_CreateEmpty_0(ctx context.Context, marshaler 
 // RegisterWrappersServiceHandlerServer registers the http handlers for service WrappersService to "mux".
 // UnaryRPC     :call WrappersServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Deprecated   :consider use RegisterWrappersServiceHandlerFromEndpoint instead. This will not provide grpc.ServerTransportStream https://github.com/grpc-ecosystem/grpc-gateway/issues/1398. This implementation will be missing certain features to behave like a standard stanalone grpc.Server.
+// Deprecated   :consider using RegisterWrappersServiceHandlerFromEndpoint instead. This will not provide grpc.ServerTransportStream https://github.com/grpc-ecosystem/grpc-gateway/issues/1398. This implementation will be missing certain features to behave like a standard stanalone grpc.Server.
 func RegisterWrappersServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server WrappersServiceServer) error {
 
 	mux.Handle("POST", pattern_WrappersService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
