@@ -218,7 +218,7 @@ type Swagger struct {
 	// it is not included, the API is served directly under the host. The value
 	// MUST start with a leading slash (/). The basePath does not support path
 	// templating.
-	// Note that using this registration option will cause many gRPC library features (such as grpc.SendHeader, etc) to stop working. Consider using `base_path` does not change the endpoint paths that are
+	// Note that using `base_path` does not change the endpoint paths that are
 	// generated in the resulting Swagger file. If you wish to use `base_path`
 	// with relatively generated Swagger paths, the `base_path` prefix must be
 	// manually removed from your `google.api.http` paths and your code changed to
