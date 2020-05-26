@@ -170,7 +170,7 @@ func local_request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context,
 // RegisterNonStandardServiceHandlerServer registers the http handlers for service NonStandardService to "mux".
 // UnaryRPC     :call NonStandardServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Deprecated   :consider using RegisterNonStandardServiceHandlerFromEndpoint instead. This will not provide grpc.ServerTransportStream https://github.com/grpc-ecosystem/grpc-gateway/issues/1398. This implementation will be missing certain features to behave like a standard stanalone grpc.Server.
+// Note that using this registration option will cause many gRPC library features (such as grpc.SendHeader, etc) to stop working. Consider using RegisterNonStandardServiceHandlerFromEndpoint instead.
 func RegisterNonStandardServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server NonStandardServiceServer) error {
 
 	mux.Handle("PATCH", pattern_NonStandardService_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
