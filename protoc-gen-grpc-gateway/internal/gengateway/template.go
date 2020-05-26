@@ -564,7 +564,7 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 // Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server registers the http handlers for service {{$svc.GetName}} to "mux".
 // UnaryRPC     :call {{$svc.GetName}}Server directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Deprecated   :use with caution. This will not provide grpc.ServerTransportStream https://github.com/grpc-ecosystem/grpc-gateway/issues/1398. This implementation will be missing certain features to behave like a standard stanalone grpc.Server.
+// Deprecated   :consider use {{$.RegisterFuncSuffix}}FromEndpoint instead. This will not provide grpc.ServerTransportStream https://github.com/grpc-ecosystem/grpc-gateway/issues/1398. This implementation will be missing certain features to behave like a standard stanalone grpc.Server.
 func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context, mux *runtime.ServeMux, server {{$svc.GetName}}Server) error {
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
