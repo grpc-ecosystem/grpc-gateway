@@ -126,20 +126,23 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 
 func (g *generator) getFilePath(file *descriptor.File) (string, error) {
 	name := file.GetName()
-	if g.modulePath != "" {
-		if g.pathType != pathTypeImport {
-			return "", errors.New("cannot use module= with paths=source_relative")
-		}
+	switch {
+	case g.modulePath != "" && g.pathType != pathTypeImport:
+		return "", errors.New("cannot use module= with paths=")
+
+	case g.modulePath != "":
 		trimPath, pkgPath := g.modulePath+"/", file.GoPkg.Path+"/"
 		if !strings.HasPrefix(pkgPath, trimPath) {
 			return "", fmt.Errorf("%v: file go path does not match module prefix: %v", file.GoPkg.Path, trimPath)
 		}
-		name = filepath.Join(strings.TrimPrefix(pkgPath, trimPath), filepath.Base(name))
-	} else if g.pathType == pathTypeImport && file.GoPkg.Path != "" {
-		// Only respect the path value if module is not supplied
-		name = fmt.Sprintf("%s/%s", file.GoPkg.Path, filepath.Base(name))
+		return filepath.Join(strings.TrimPrefix(pkgPath, trimPath), filepath.Base(name)), nil
+
+	case g.pathType == pathTypeImport && file.GoPkg.Path != "":
+		return fmt.Sprintf("%s/%s", file.GoPkg.Path, filepath.Base(name)), nil
+
+	default:
+		return name, nil
 	}
-	return name, nil
 }
 
 func (g *generator) generate(file *descriptor.File) (string, error) {

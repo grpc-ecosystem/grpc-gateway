@@ -186,7 +186,7 @@ func TestGenerateOutputPath(t *testing.T) {
 			),
 			modulePath:    "example.com/path/root",
 			pathType:      pathTypeSourceRelative, // Not allowed
-			expectedError: errors.New("cannot use module= with paths=source_relative"),
+			expectedError: errors.New("cannot use module= with paths="),
 		},
 		{
 			file: newExampleFileDescriptorWithGoPkg(
