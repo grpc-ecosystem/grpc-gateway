@@ -197,8 +197,8 @@ jobs:
       - run:
           name: Configure git
           command: |
-            git config user.name "${CIRCLE_USERNAME}"
-            git config user.email "${CIRCLE_USERNAME}@users.noreply.github.com"
+            git config user.name "Renovate Bot"
+            git config user.email "bot@renovateapp.com"
             git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/grpc-ecosystem/grpc-gateway.git
       - run:
           name: Git amend and push changes
@@ -206,7 +206,7 @@ jobs:
             git add .
             if output=$(git status --porcelain) && [ ! -z "$output" ]; then
               git commit --amend --no-edit
-              git push --force-with-lease
+              git push --force-with-lease origin ${CIRCLE_BRANCH}
             fi
 workflows:
   version: 2
