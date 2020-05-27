@@ -1,6 +1,7 @@
 package gengateway
 
 import (
+	"errors"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -100,9 +101,11 @@ func TestGenerateServiceWithoutBindings(t *testing.T) {
 
 func TestGenerateOutputPath(t *testing.T) {
 	cases := []struct {
-		file     *descriptor.File
-		pathType pathType
-		expected string
+		file          *descriptor.File
+		pathType      pathType
+		modulePath    string
+		expected      string
+		expectedError error
 	}{
 		{
 			file: newExampleFileDescriptorWithGoPkg(
@@ -142,13 +145,79 @@ func TestGenerateOutputPath(t *testing.T) {
 			pathType: pathTypeSourceRelative,
 			expected: ".",
 		},
+		{
+			file: newExampleFileDescriptorWithGoPkg(
+				&descriptor.GoPackage{
+					Path: "example.com/path/root",
+					Name: "example_pb",
+				},
+			),
+			modulePath: "example.com/path/root",
+			expected:   ".",
+		},
+		{
+			file: newExampleFileDescriptorWithGoPkg(
+				&descriptor.GoPackage{
+					Path: "example.com/path/to/example",
+					Name: "example_pb",
+				},
+			),
+			modulePath: "example.com/path/to",
+			expected:   "example",
+		},
+		{
+			file: newExampleFileDescriptorWithGoPkg(
+				&descriptor.GoPackage{
+					Path: "example.com/path/to/example/with/many/nested/paths",
+					Name: "example_pb",
+				},
+			),
+			modulePath: "example.com/path/to",
+			expected:   "example/with/many/nested/paths",
+		},
+
+		// Error cases
+		{
+			file: newExampleFileDescriptorWithGoPkg(
+				&descriptor.GoPackage{
+					Path: "example.com/path/root",
+					Name: "example_pb",
+				},
+			),
+			modulePath:    "example.com/path/root",
+			pathType:      pathTypeSourceRelative, // Not allowed
+			expectedError: errors.New("cannot use module= with paths="),
+		},
+		{
+			file: newExampleFileDescriptorWithGoPkg(
+				&descriptor.GoPackage{
+					Path: "example.com/path/rootextra",
+					Name: "example_pb",
+				},
+			),
+			modulePath:    "example.com/path/root",
+			expectedError: errors.New("example.com/path/rootextra: file go path does not match module prefix: example.com/path/root/"),
+		},
 	}
 
 	for _, c := range cases {
-		g := &generator{pathType: c.pathType}
+		g := &generator{
+			pathType:   c.pathType,
+			modulePath: c.modulePath,
+		}
 
 		file := c.file
 		gots, err := g.Generate([]*descriptor.File{crossLinkFixture(file)})
+
+		// If we expect an error response, check it matches what we want
+		if c.expectedError != nil {
+			if err == nil || err.Error() != c.expectedError.Error() {
+				t.Errorf("Generate(%#v) failed with %v; wants error of: %v", file, err, c.expectedError)
+			}
+			return
+		}
+
+		// Handle case where we don't expect an error
 		if err != nil {
 			t.Errorf("Generate(%#v) failed with %v; wants success", file, err)
 			return
