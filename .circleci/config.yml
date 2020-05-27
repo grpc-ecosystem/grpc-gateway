@@ -1,4 +1,38 @@
-version: 2
+version: 2.1
+
+commands:
+  configure_bazel:
+    description: Create Bazel config file (.bazelrc)
+    steps:
+      - run: |
+          cat > .bazelrc \<< EOF
+          startup --output_base /root/.cache/_grpc_gateway_bazel
+          build --test_output errors
+          build --features race
+          # Workaround https://github.com/bazelbuild/bazel/issues/3645
+          # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
+          build --local_ram_resources=4096 # Circle Docker runners have 4G of memory
+          build --local_cpu_resources=2    # Circle Docker runners have 2 vCPU
+          EOF
+  generate:
+    steps:
+      - run: make realclean
+      - run: make examples
+      - run: make testproto
+      - run: go mod tidy
+  renovate_git_amend_push:
+    description: Git amend and push changes
+    steps:
+      - run: |
+          git add .
+          if output=$(git status --porcelain) && [ ! -z "$output" ]; then
+            git config user.name "Renovate Bot"
+            git config user.email "bot@renovateapp.com"
+            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/grpc-ecosystem/grpc-gateway.git
+            git commit --amend --no-edit
+            git push --force-with-lease origin ${CIRCLE_BRANCH}
+          fi
+
 jobs:
   build:
     environment:
@@ -63,10 +97,7 @@ jobs:
     working_directory: /src/grpc-gateway
     steps:
       - checkout
-      - run: make realclean
-      - run: make examples
-      - run: make testproto
-      - run: go mod tidy
+      - generate
       - run: git diff --exit-code
   lint:
     environment:
@@ -101,18 +132,7 @@ jobs:
           keys:
             - v2-bazel-cache-{{ checksum "repositories.bzl" }}
             - v2-bazel-cache-
-      - run:
-          name: Create Bazel config file (.bazelrc)
-          command: |
-            cat > .bazelrc << EOF
-            startup --output_base /root/.cache/_grpc_gateway_bazel
-            build --test_output errors
-            build --features race
-            # Workaround https://github.com/bazelbuild/bazel/issues/3645
-            # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
-            build --local_ram_resources=4096 # Circle Docker runners have 4G of memory
-            build --local_cpu_resources=2    # Circle Docker runners have 2 vCPU
-            EOF
+      - configure_bazel
       - run:
           name: Check that Bazel BUILD files are up-to-date
           command: |
@@ -180,34 +200,12 @@ jobs:
           keys:
             - v2-bazel-cache-{{ checksum "repositories.bzl" }}
             - v2-bazel-cache-
-      - run:
-          name: Create Bazel config file (.bazelrc)
-          command: |
-            cat > .bazelrc << EOF
-            startup --output_base /root/.cache/_grpc_gateway_bazel
-            # Workaround https://github.com/bazelbuild/bazel/issues/3645
-            # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
-            build --local_ram_resources=4096 # Circle Docker runners have 4G of memory
-            build --local_cpu_resources=2    # Circle Docker runners have 2 vCPU
-            EOF
+      - configure_bazel
       - run:
           name: Update repositories.bzl
           command: |
             bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories
-      - run:
-          name: Configure git
-          command: |
-            git config user.name "Renovate Bot"
-            git config user.email "bot@renovateapp.com"
-            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/grpc-ecosystem/grpc-gateway.git
-      - run:
-          name: Git amend and push changes
-          command: |
-            git add .
-            if output=$(git status --porcelain) && [ ! -z "$output" ]; then
-              git commit --amend --no-edit
-              git push --force-with-lease origin ${CIRCLE_BRANCH}
-            fi
+      - renovate_git_amend_push
 workflows:
   version: 2
   all:
