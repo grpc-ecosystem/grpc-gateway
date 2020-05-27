@@ -189,7 +189,7 @@ workflows:
       - update-repositoriesbzl:
           filters:
             branches:
-              only: /renovate\/.+/
+              only: /renovate\/v2-.+/
             tags:
               ignore: /.*/
       - regenerate:
@@ -199,7 +199,7 @@ workflows:
             - update-repositoriesbzl
           filters:
             branches:
-              only: /renovate\/.+/
+              only: /renovate\/v2-.+/
             tags:
               ignore: /.*/
 
