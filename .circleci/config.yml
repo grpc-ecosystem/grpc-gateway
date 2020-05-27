@@ -79,12 +79,27 @@ jobs:
       - generate
       - run: git diff --exit-code
   lint:
-    executor: build-env
+    docker:
+      - image: golang:1.14
     working_directory: /src/grpc-gateway
     steps:
       - checkout
-      - run: go get golang.org/x/lint/golint
-      - run: make lint
+      - restore_cache:
+          keys:
+            - v1-staticcheck-cache-{{ checksum "go.sum" }}
+            - v1-staticcheck-cache-
+      - run:
+          name: Install staticcheck outside local module
+          command: |
+            cd $(mktemp -d) &&
+            go mod init tmp &&
+            go get honnef.co/go/tools/cmd/staticcheck
+      - run: staticcheck ./...
+      - save_cache:
+          key: v1-staticcheck-cache-{{ checksum "go.sum" }}
+          paths:
+            - /root/.cache/go-build
+            - /root/.cache/staticcheck
   fuzzit:
     docker:
       - image: fuzzitdev/fuzzit:golang1.12-stretch-llvm9

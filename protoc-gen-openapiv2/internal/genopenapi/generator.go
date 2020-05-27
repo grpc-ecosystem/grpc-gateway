@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	legacydescriptor "github.com/golang/protobuf/descriptor"
 	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 	anypb "github.com/golang/protobuf/ptypes/any"
@@ -19,6 +18,9 @@ import (
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/protobuf/proto"
+
+	//lint:ignore SA1019 known issue, will be replaced when possible
+	legacydescriptor "github.com/golang/protobuf/descriptor"
 )
 
 var (
@@ -221,9 +223,9 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*pluginpb.CodeGenera
 // to registry (used for error-related API responses)
 func AddErrorDefs(reg *descriptor.Registry) error {
 	// load internal protos
-	any, _ := legacydescriptor.ForMessage(&anypb.Any{})
+	any, _ := legacydescriptor.MessageDescriptorProto(&anypb.Any{})
 	any.SourceCodeInfo = new(descriptorpb.SourceCodeInfo)
-	status, _ := legacydescriptor.ForMessage(&statuspb.Status{})
+	status, _ := legacydescriptor.MessageDescriptorProto(&statuspb.Status{})
 	status.SourceCodeInfo = new(descriptorpb.SourceCodeInfo)
 	// TODO(johanbrandhorst): Use new conversion later when possible
 	// any := protodesc.ToFileDescriptorProto((&anypb.Any{}).ProtoReflect().Descriptor().ParentFile())

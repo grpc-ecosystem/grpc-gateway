@@ -266,12 +266,12 @@ func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions
 		if err := d.Decode(&repr); err != nil {
 			return err
 		}
-		switch repr.(type) {
+		switch v := repr.(type) {
 		case string:
 			// TODO(yugui) Should use proto.StructProperties?
 			return fmt.Errorf("unmarshaling of symbolic enum %q not supported: %T", repr, rv.Interface())
 		case float64:
-			rv.Set(reflect.ValueOf(int32(repr.(float64))).Convert(rv.Type()))
+			rv.Set(reflect.ValueOf(int32(v)).Convert(rv.Type()))
 			return nil
 		default:
 			return fmt.Errorf("cannot assign %#v into Go type %T", repr, rv.Interface())

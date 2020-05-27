@@ -515,10 +515,12 @@ func testABEBulkCreate(t *testing.T, port int) {
 			}
 			out, err := marshaler.Marshal(&want)
 			if err != nil {
-				t.Fatalf("marshaler.Marshal(%#v, w) failed with %v; want success", want, err)
+				t.Errorf("marshaler.Marshal(%#v, w) failed with %v; want success", want, err)
+				return
 			}
 			if _, err := w.Write(out); err != nil {
-				t.Fatalf("w.Write() failed with %v; want success", err)
+				t.Errorf("w.Write() failed with %v; want success", err)
+				return
 			}
 			if _, err := io.WriteString(w, "\n"); err != nil {
 				t.Errorf("w.Write(%q) failed with %v; want success", "\n", err)

@@ -20,7 +20,7 @@ import (
 	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
-var valuesKeyRegexp = regexp.MustCompile("^(.*)\\[(.*)\\]$")
+var valuesKeyRegexp = regexp.MustCompile(`^(.*)\[(.*)\]$`)
 
 var currentQueryParser QueryParameterParser = &defaultQueryParser{}
 
@@ -321,9 +321,7 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		msg = &wrapperspb.BytesValue{Value: v}
 	case "google.protobuf.FieldMask":
 		fm := &field_mask.FieldMask{}
-		for _, v := range strings.Split(value, ",") {
-			fm.Paths = append(fm.Paths, v)
-		}
+		fm.Paths = append(fm.Paths, strings.Split(value, ",")...)
 		msg = fm
 	default:
 		return protoreflect.Value{}, fmt.Errorf("unsupported message type: %q", string(msgDescriptor.FullName()))

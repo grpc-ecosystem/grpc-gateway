@@ -166,8 +166,8 @@ func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 	if !ok {
 		t.Errorf("annotated.Deadline() = _, false; want _, true")
 	}
-	if got, want := deadline.Sub(time.Now()), runtime.DefaultContextTimeout; got-want > acceptableError || got-want < -acceptableError {
-		t.Errorf("deadline.Sub(time.Now()) = %v; want %v; with error %v", got, want, acceptableError)
+	if got, want := time.Until(deadline), runtime.DefaultContextTimeout; got-want > acceptableError || got-want < -acceptableError {
+		t.Errorf("time.Until(deadline) = %v; want %v; with error %v", got, want, acceptableError)
 	}
 
 	for _, spec := range []struct {
@@ -209,8 +209,8 @@ func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 		if !ok {
 			t.Errorf("annotated.Deadline() = _, false; want _, true; timeout = %q", spec.timeout)
 		}
-		if got, want := deadline.Sub(time.Now()), spec.want; got-want > acceptableError || got-want < -acceptableError {
-			t.Errorf("deadline.Sub(time.Now()) = %v; want %v; with error %v; timeout= %q", got, want, acceptableError, spec.timeout)
+		if got, want := time.Until(deadline), spec.want; got-want > acceptableError || got-want < -acceptableError {
+			t.Errorf("time.Until(deadline) = %v; want %v; with error %v; timeout= %q", got, want, acceptableError, spec.timeout)
 		}
 		if m, ok := runtime.RPCMethod(annotated); !ok {
 			t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
@@ -403,8 +403,8 @@ func TestAnnotateIncomingContext_SupportsTimeouts(t *testing.T) {
 	if !ok {
 		t.Errorf("annotated.Deadline() = _, false; want _, true")
 	}
-	if got, want := deadline.Sub(time.Now()), runtime.DefaultContextTimeout; got-want > acceptableError || got-want < -acceptableError {
-		t.Errorf("deadline.Sub(time.Now()) = %v; want %v; with error %v", got, want, acceptableError)
+	if got, want := time.Until(deadline), runtime.DefaultContextTimeout; got-want > acceptableError || got-want < -acceptableError {
+		t.Errorf("time.Until(deadline) = %v; want %v; with error %v", got, want, acceptableError)
 	}
 
 	for _, spec := range []struct {
@@ -446,8 +446,8 @@ func TestAnnotateIncomingContext_SupportsTimeouts(t *testing.T) {
 		if !ok {
 			t.Errorf("annotated.Deadline() = _, false; want _, true; timeout = %q", spec.timeout)
 		}
-		if got, want := deadline.Sub(time.Now()), spec.want; got-want > acceptableError || got-want < -acceptableError {
-			t.Errorf("deadline.Sub(time.Now()) = %v; want %v; with error %v; timeout= %q", got, want, acceptableError, spec.timeout)
+		if got, want := time.Until(deadline), spec.want; got-want > acceptableError || got-want < -acceptableError {
+			t.Errorf("time.Until(deadline) = %v; want %v; with error %v; timeout= %q", got, want, acceptableError, spec.timeout)
 		}
 		if m, ok := runtime.RPCMethod(annotated); !ok {
 			t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)

@@ -50,7 +50,6 @@ func request_EchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -84,7 +83,6 @@ func local_request_EchoService_Echo_0(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -122,7 +120,6 @@ func request_EchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -133,7 +130,6 @@ func request_EchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.Num, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "num", err)
 	}
@@ -167,7 +163,6 @@ func local_request_EchoService_Echo_1(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -178,7 +173,6 @@ func local_request_EchoService_Echo_1(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.Num, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "num", err)
 	}
@@ -216,7 +210,6 @@ func request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -227,7 +220,6 @@ func request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.Num, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "num", err)
 	}
@@ -243,7 +235,6 @@ func request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_Lang, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*SimpleMessage_Lang).Lang, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "lang", err)
 	}
@@ -277,7 +268,6 @@ func local_request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -288,7 +278,6 @@ func local_request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.Num, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "num", err)
 	}
@@ -304,7 +293,6 @@ func local_request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_Lang, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*SimpleMessage_Lang).Lang, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "lang", err)
 	}
@@ -342,7 +330,6 @@ func request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -358,7 +345,6 @@ func request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_LineNum, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*SimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "line_num", err)
 	}
@@ -369,7 +355,6 @@ func request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "status.note", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "status.note", err)
 	}
@@ -403,7 +388,6 @@ func local_request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -419,7 +403,6 @@ func local_request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_LineNum, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*SimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "line_num", err)
 	}
@@ -430,7 +413,6 @@ func local_request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Mar
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "status.note", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "status.note", err)
 	}
@@ -468,7 +450,6 @@ func request_EchoService_Echo_4(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "no.note", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "no.note", err)
 	}
@@ -502,7 +483,6 @@ func local_request_EchoService_Echo_4(ctx context.Context, marshaler runtime.Mar
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "no.note", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "no.note", err)
 	}

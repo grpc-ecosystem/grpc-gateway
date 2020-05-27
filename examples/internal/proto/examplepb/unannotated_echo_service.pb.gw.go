@@ -50,7 +50,6 @@ func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtim
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -84,7 +83,6 @@ func local_request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler 
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -122,7 +120,6 @@ func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtim
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -133,7 +130,6 @@ func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtim
 	}
 
 	protoReq.Num, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "num", err)
 	}
@@ -167,7 +163,6 @@ func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler 
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -178,7 +173,6 @@ func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler 
 	}
 
 	protoReq.Num, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "num", err)
 	}
