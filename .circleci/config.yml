@@ -1,20 +1,40 @@
-version: 2
-jobs:
-  build:
-    environment:
-    ## Split key to avoid github from revoking it
-      password0: '99544cdcb19ad4e3fd64'
-      password1: '3ec86b2e5a431be2d72c'
-    docker:
-      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
-        auth:
-          username: gateway-ci-user
-          password: ${password0}${password1}
-    working_directory: /src/grpc-gateway
+version: 2.1
+
+commands:
+  configure_bazel:
+    description: Create Bazel config file (.bazelrc)
     steps:
-      - checkout
-      - run: go build ./...
-  test:
+      - run: |
+          cat > .bazelrc \<< EOF
+          startup --output_base /root/.cache/_grpc_gateway_bazel
+          build --test_output errors
+          build --features race
+          # Workaround https://github.com/bazelbuild/bazel/issues/3645
+          # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
+          build --local_ram_resources=4096 # Circle Docker runners have 4G of memory
+          build --local_cpu_resources=2    # Circle Docker runners have 2 vCPU
+          EOF
+  generate:
+    steps:
+      - run: make realclean
+      - run: make examples
+      - run: make testproto
+      - run: go mod tidy
+  renovate_git_amend_push:
+    description: Git amend and push changes
+    steps:
+      - run: |
+          git add .
+          if output=$(git status --porcelain) && [ ! -z "$output" ]; then
+            git config user.name "Renovate Bot"
+            git config user.email "bot@renovateapp.com"
+            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/grpc-ecosystem/grpc-gateway.git
+            git commit --amend --no-edit
+            git push --force-with-lease origin ${CIRCLE_BRANCH}
+          fi
+
+executors:
+  build-env:
     environment:
     ## Split key to avoid github from revoking it
       password0: '99544cdcb19ad4e3fd64'
@@ -25,21 +45,23 @@ jobs:
         auth:
           username: gateway-ci-user
           password: ${password0}${password1}
+
+jobs:
+  build:
+    executor: build-env
+    working_directory: /src/grpc-gateway
+    steps:
+      - checkout
+      - run: go build ./...
+  test:
+    executor: build-env
     working_directory: /src/grpc-gateway
     steps:
       - checkout
       - run: go test -race -coverprofile=coverage.txt ./...
       - run: bash <(curl -s https://codecov.io/bash)
   node_test:
-    environment:
-    ## Split key to avoid github from revoking it
-      password0: '99544cdcb19ad4e3fd64'
-      password1: '3ec86b2e5a431be2d72c'
-    docker:
-      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
-        auth:
-          username: gateway-ci-user
-          password: ${password0}${password1}
+    executor: build-env
     working_directory: /src/grpc-gateway
     steps:
       - checkout
@@ -51,33 +73,14 @@ jobs:
           npm install &&
           ./node_modules/.bin/gulp
   generate:
-    environment:
-    ## Split key to avoid github from revoking it
-      password0: '99544cdcb19ad4e3fd64'
-      password1: '3ec86b2e5a431be2d72c'
-    docker:
-      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
-        auth:
-          username: gateway-ci-user
-          password: ${password0}${password1}
+    executor: build-env
     working_directory: /src/grpc-gateway
     steps:
       - checkout
-      - run: make realclean
-      - run: make examples
-      - run: make testproto
-      - run: go mod tidy
+      - generate
       - run: git diff --exit-code
   lint:
-    environment:
-    ## Split key to avoid github from revoking it
-      password0: '99544cdcb19ad4e3fd64'
-      password1: '3ec86b2e5a431be2d72c'
-    docker:
-      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
-        auth:
-          username: gateway-ci-user
-          password: ${password0}${password1}
+    executor: build-env
     working_directory: /src/grpc-gateway
     steps:
       - checkout
@@ -101,18 +104,7 @@ jobs:
           keys:
             - v2-bazel-cache-{{ checksum "repositories.bzl" }}
             - v2-bazel-cache-
-      - run:
-          name: Create Bazel config file (.bazelrc)
-          command: |
-            cat > .bazelrc << EOF
-            startup --output_base /root/.cache/_grpc_gateway_bazel
-            build --test_output errors
-            build --features race
-            # Workaround https://github.com/bazelbuild/bazel/issues/3645
-            # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
-            build --local_ram_resources=3072
-            build --local_cpu_resources=1
-            EOF
+      - configure_bazel
       - run:
           name: Check that Bazel BUILD files are up-to-date
           command: 'bazel run //:gazelle -- --mode=diff ||
@@ -130,15 +122,7 @@ jobs:
           paths:
             - /root/.cache/_grpc_gateway_bazel
   gorelease:
-    environment:
-    ## Split key to avoid github from revoking it
-      password0: '99544cdcb19ad4e3fd64'
-      password1: '3ec86b2e5a431be2d72c'
-    docker:
-      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
-        auth:
-          username: gateway-ci-user
-          password: ${password0}${password1}
+    executor: build-env
     working_directory: /src/grpc-gateway
     steps:
       - checkout
@@ -150,20 +134,35 @@ jobs:
             go get golang.org/x/exp/cmd/gorelease@latest
       - run: gorelease
   release:
-    environment:
-    ## Split key to avoid github from revoking it
-      password0: '99544cdcb19ad4e3fd64'
-      password1: '3ec86b2e5a431be2d72c'
-    docker:
-      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
-        auth:
-          username: gateway-ci-user
-          password: ${password0}${password1}
+    executor: build-env
     working_directory: /src/grpc-gateway
     steps:
       - checkout
       - run: go mod vendor
       - run: curl -sL https://git.io/goreleaser | bash
+  update-repositoriesbzl:
+    docker:
+      - image: l.gcr.io/google/bazel:latest
+    working_directory: /src/grpc-gateway
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v2-bazel-cache-{{ checksum "repositories.bzl" }}
+            - v2-bazel-cache-
+      - configure_bazel
+      - run:
+          name: Update repositories.bzl
+          command: |
+            bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories
+      - renovate_git_amend_push
+  regenerate:
+    executor: build-env
+    working_directory: /src/grpc-gateway
+    steps:
+      - checkout
+      - generate
+      - renovate_git_amend_push
 workflows:
   version: 2
   all:
@@ -182,3 +181,20 @@ workflows:
               ignore: /.*/
             tags:
               only: /v[0-9]+(\.[0-9]+)*(-.*)*/
+      - update-repositoriesbzl:
+          filters:
+            branches:
+              only: /renovate\/.+/
+            tags:
+              ignore: /.*/
+      - regenerate:
+          requires:
+            # Run after update-repositoriesbzl to avoid
+            # git conflicts
+            - update-repositoriesbzl
+          filters:
+            branches:
+              only: /renovate\/master-.+/
+            tags:
+              ignore: /.*/
+
