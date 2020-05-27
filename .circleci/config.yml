@@ -39,6 +39,7 @@ executors:
     ## Split key to avoid github revoking it
       password0: '99544cdcb19ad4e3fd64'
       password1: '3ec86b2e5a431be2d72c'
+      GLOG_logtostderr: '1'
     docker:
       - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
         auth:
