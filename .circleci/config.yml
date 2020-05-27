@@ -170,6 +170,44 @@ jobs:
       - checkout
       - run: go mod vendor
       - run: curl -sL https://git.io/goreleaser | bash
+  update-repositoriesbzl:
+    docker:
+      - image: l.gcr.io/google/bazel:latest
+    working_directory: /src/grpc-gateway
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v2-bazel-cache-{{ checksum "repositories.bzl" }}
+            - v2-bazel-cache-
+      - run:
+          name: Create Bazel config file (.bazelrc)
+          command: |
+            cat > .bazelrc << EOF
+            startup --output_base /root/.cache/_grpc_gateway_bazel
+            # Workaround https://github.com/bazelbuild/bazel/issues/3645
+            # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
+            build --local_ram_resources=4096 # Circle Docker runners have 4G of memory
+            build --local_cpu_resources=2    # Circle Docker runners have 2 vCPU
+            EOF
+      - run:
+          name: Update repositories.bzl
+          command: |
+            bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories
+      - run:
+          name: Configure git
+          command: |
+            git config user.name "${CIRCLE_USERNAME}"
+            git config user.email "${CIRCLE_USERNAME}@users.noreply.github.com"
+            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/grpc-ecosystem/grpc-gateway.git
+      - run:
+          name: Git amend and push changes
+          command: |
+            git add .
+            if output=$(git status --porcelain) && [ ! -z "$output" ]; then
+              git commit --amend --no-edit
+              git push --force-with-lease
+            fi
 workflows:
   version: 2
   all:
@@ -188,3 +226,10 @@ workflows:
               ignore: /.*/
             tags:
               only: /v[0-9]+(\.[0-9]+)*(-.*)*/
+      - update-repositoriesbzl:
+          filters:
+            branches:
+              only: /renovate\/.+/
+            tags:
+              ignore: /.*/
+
