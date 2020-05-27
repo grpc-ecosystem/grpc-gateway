@@ -102,9 +102,9 @@ func testEcho(t *testing.T, port int, apiPrefix string, contentType string) {
 		t.Logf("%s", buf)
 	}
 
-	var msg examplepb.UnannotatedSimpleMessage
-	if err := marshaler.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	msg := new(examplepb.UnannotatedSimpleMessage)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
 		return
 	}
 	if got, want := msg.Id, "myid"; got != want {
@@ -135,9 +135,9 @@ func testEchoOneof(t *testing.T, port int, apiPrefix string, contentType string)
 		t.Logf("%s", buf)
 	}
 
-	var msg examplepb.UnannotatedSimpleMessage
-	if err := marshaler.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	msg := new(examplepb.UnannotatedSimpleMessage)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
 		return
 	}
 	if got, want := msg.GetLang(), "golang"; got != want {
@@ -168,9 +168,9 @@ func testEchoOneof1(t *testing.T, port int, apiPrefix string, contentType string
 		t.Logf("%s", buf)
 	}
 
-	var msg examplepb.UnannotatedSimpleMessage
-	if err := marshaler.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	msg := new(examplepb.UnannotatedSimpleMessage)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
 		return
 	}
 	if got, want := msg.GetStatus().GetNote(), "golang"; got != want {
@@ -201,9 +201,9 @@ func testEchoOneof2(t *testing.T, port int, apiPrefix string, contentType string
 		t.Logf("%s", buf)
 	}
 
-	var msg examplepb.UnannotatedSimpleMessage
-	if err := marshaler.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	msg := new(examplepb.UnannotatedSimpleMessage)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
 		return
 	}
 	if got, want := msg.GetNo().GetNote(), "golang"; got != want {
@@ -242,7 +242,7 @@ func testEchoBody(t *testing.T, port int, apiPrefix string) {
 
 	var received examplepb.UnannotatedSimpleMessage
 	if err := marshaler.Unmarshal(buf, &received); err != nil {
-		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
 		return
 	}
 	if diff := cmp.Diff(&received, &sent, protocmp.Transform()); diff != "" {
@@ -285,7 +285,7 @@ func TestABE(t *testing.T) {
 }
 
 func testABECreate(t *testing.T, port int) {
-	want := examplepb.ABitOfEverything{
+	want := &examplepb.ABitOfEverything{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
 		Int64Value:               4294967296,
@@ -325,22 +325,22 @@ func testABECreate(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg examplepb.ABitOfEverything
-	if err := marshaler.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	msg := new(examplepb.ABitOfEverything)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
 		return
 	}
 	if msg.Uuid == "" {
 		t.Error("msg.Uuid is empty; want not empty")
 	}
 	msg.Uuid = ""
-	if diff := cmp.Diff(&msg, &want, protocmp.Transform()); diff != "" {
+	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
 		t.Errorf(diff)
 	}
 }
 
 func testABECreateBody(t *testing.T, port int) {
-	want := examplepb.ABitOfEverything{
+	want := &examplepb.ABitOfEverything{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
 		Int64Value:               4294967296,
@@ -411,7 +411,7 @@ func testABECreateBody(t *testing.T, port int) {
 		},
 	}
 	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
-	payload, err := marshaler.Marshal(&want)
+	payload, err := marshaler.Marshal(want)
 	if err != nil {
 		t.Fatalf("marshaler.Marshal(%#v) failed with %v; want success", want, err)
 	}
@@ -433,16 +433,16 @@ func testABECreateBody(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg examplepb.ABitOfEverything
-	if err := marshaler.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	msg := new(examplepb.ABitOfEverything)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
 		return
 	}
 	if msg.Uuid == "" {
 		t.Error("msg.Uuid is empty; want not empty")
 	}
 	msg.Uuid = ""
-	if diff := cmp.Diff(&msg, &want, protocmp.Transform()); diff != "" {
+	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
 		t.Errorf(diff)
 	}
 }
@@ -459,7 +459,7 @@ func testABEBulkCreate(t *testing.T, port int) {
 		for _, val := range []string{
 			"foo", "bar", "baz", "qux", "quux",
 		} {
-			want := examplepb.ABitOfEverything{
+			want := &examplepb.ABitOfEverything{
 				FloatValue:               1.5,
 				DoubleValue:              2.5,
 				Int64Value:               4294967296,
@@ -513,7 +513,7 @@ func testABEBulkCreate(t *testing.T, port int) {
 					Amount: 10,
 				},
 			}
-			out, err := marshaler.Marshal(&want)
+			out, err := marshaler.Marshal(want)
 			if err != nil {
 				t.Errorf("marshaler.Marshal(%#v, w) failed with %v; want success", want, err)
 				return
@@ -547,9 +547,9 @@ func testABEBulkCreate(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg emptypb.Empty
-	if err := marshaler.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	msg := new(emptypb.Empty)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
 		return
 	}
 
@@ -623,9 +623,9 @@ func testABEBulkCreateWithError(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg statuspb.Status
-	if err := marshaler.Unmarshal(buf, &msg); err != nil {
-		t.Fatalf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	msg := new(statuspb.Status)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Fatalf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
 	}
 }
 
@@ -650,9 +650,9 @@ func testABELookup(t *testing.T, port int) {
 		return
 	}
 
-	var want examplepb.ABitOfEverything
-	if err := marshaler.Unmarshal(buf, &want); err != nil {
-		t.Errorf("marshaler.Unmarshal(%s, &want) failed with %v; want success", buf, err)
+	want := new(examplepb.ABitOfEverything)
+	if err := marshaler.Unmarshal(buf, want); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, want) failed with %v; want success", buf, err)
 		return
 	}
 
@@ -670,12 +670,12 @@ func testABELookup(t *testing.T, port int) {
 		return
 	}
 
-	var msg examplepb.ABitOfEverything
-	if err := marshaler.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	msg := new(examplepb.ABitOfEverything)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
 		return
 	}
-	if diff := cmp.Diff(&msg, &want, protocmp.Transform()); diff != "" {
+	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
 		t.Errorf(diff)
 	}
 
@@ -944,9 +944,9 @@ func testABELookupNotFound(t *testing.T, port int) {
 		return
 	}
 
-	var msg statuspb.Status
-	if err := marshaler.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	msg := new(statuspb.Status)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
 		return
 	}
 
@@ -998,9 +998,9 @@ func testABEList(t *testing.T, port int) {
 			t.Errorf("item.Error = %#v; want empty; i = %d", item.Error, i)
 			continue
 		}
-		var msg examplepb.ABitOfEverything
-		if err := marshaler.Unmarshal(item.Result, &msg); err != nil {
-			t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", item.Result, err)
+		msg := new(examplepb.ABitOfEverything)
+		if err := marshaler.Unmarshal(item.Result, msg); err != nil {
+			t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", item.Result, err)
 		}
 	}
 	if i <= 0 {
@@ -1057,17 +1057,17 @@ func testABEBulkEcho(t *testing.T, port int) {
 		defer reqw.Close()
 		for i := 0; i < 10; i++ {
 			s := fmt.Sprintf("message %d", i)
-			msg := sub.StringMessage{Value: &s}
-			buf, err := marshaler.Marshal(&msg)
+			msg := &sub.StringMessage{Value: &s}
+			buf, err := marshaler.Marshal(msg)
 			if err != nil {
-				t.Errorf("marshaler.Marshal(%v) failed with %v; want success", &msg, err)
+				t.Errorf("marshaler.Marshal(%v) failed with %v; want success", msg, err)
 				return
 			}
 			if _, err = reqw.Write(buf); err != nil {
 				t.Errorf("reqw.Write(%q) failed with %v; want success", string(buf), err)
 				return
 			}
-			want = append(want, &msg)
+			want = append(want, msg)
 		}
 	}()
 
@@ -1111,11 +1111,11 @@ func testABEBulkEcho(t *testing.T, port int) {
 				t.Errorf("item.Error = %#v; want empty; i = %d", item.Error, i)
 				continue
 			}
-			var msg sub.StringMessage
-			if err := marshaler.Unmarshal(item.Result, &msg); err != nil {
-				t.Errorf("marshaler.Unmarshal(%q, &msg) failed with %v; want success", item.Result, err)
+			msg := new(sub.StringMessage)
+			if err := marshaler.Unmarshal(item.Result, msg); err != nil {
+				t.Errorf("marshaler.Unmarshal(%q, msg) failed with %v; want success", item.Result, err)
 			}
-			got = append(got, &msg)
+			got = append(got, msg)
 		}
 	}()
 
@@ -1217,9 +1217,9 @@ func testAdditionalBindings(t *testing.T, port int) {
 			t.Logf("%s", buf)
 		}
 
-		var msg sub.StringMessage
-		if err := marshaler.Unmarshal(buf, &msg); err != nil {
-			t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success; %d", buf, err, i)
+		msg := new(sub.StringMessage)
+		if err := marshaler.Unmarshal(buf, msg); err != nil {
+			t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success; %d", buf, err, i)
 			return
 		}
 		if got, want := msg.GetValue(), "hello"; got != want {
@@ -1252,7 +1252,7 @@ func testABERepeated(t *testing.T, port int) {
 		}
 		return strings.Join(s, ",")
 	}
-	want := examplepb.ABitOfEverythingRepeated{
+	want := &examplepb.ABitOfEverythingRepeated{
 		PathRepeatedFloatValue: []float32{
 			1.5,
 			-1.5,
@@ -1337,12 +1337,12 @@ func testABERepeated(t *testing.T, port int) {
 		t.Logf("%s", buf)
 	}
 
-	var msg examplepb.ABitOfEverythingRepeated
-	if err := marshaler.Unmarshal(buf, &msg); err != nil {
-		t.Errorf("marshaler.Unmarshal(%s, &msg) failed with %v; want success", buf, err)
+	msg := new(examplepb.ABitOfEverythingRepeated)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
 		return
 	}
-	if diff := cmp.Diff(&msg, &want, protocmp.Transform()); diff != "" {
+	if diff := cmp.Diff(msg, want, protocmp.Transform()); diff != "" {
 		t.Errorf(diff)
 	}
 }
@@ -1844,7 +1844,7 @@ func testRequestQueryParams(t *testing.T, port int) {
 				t.Logf("%s", buf)
 			}
 
-			var got examplepb.ABitOfEverything
+			got := new(examplepb.ABitOfEverything)
 			err = marshaler.Unmarshal(buf, &got)
 			if err != nil {
 				t.Errorf("marshaler.Unmarshal(buf, got) failed with %v; want success", err)
