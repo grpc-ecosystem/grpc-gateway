@@ -11,28 +11,30 @@ import (
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	timestamppb "github.com/golang/protobuf/ptypes/timestamp"
 	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/testing/protocmp"
 )
 
 func TestJSONBuiltinMarshal(t *testing.T) {
 	var m runtime.JSONBuiltin
-	msg := examplepb.SimpleMessage{
+	msg := &examplepb.SimpleMessage{
 		Id: "foo",
 	}
 
-	buf, err := m.Marshal(&msg)
+	buf, err := m.Marshal(msg)
 	if err != nil {
-		t.Errorf("m.Marshal(%v) failed with %v; want success", &msg, err)
+		t.Errorf("m.Marshal(%v) failed with %v; want success", msg, err)
 	}
 
-	var got examplepb.SimpleMessage
-	if err := json.Unmarshal(buf, &got); err != nil {
-		t.Errorf("json.Unmarshal(%q, &got) failed with %v; want success", buf, err)
+	got := new(examplepb.SimpleMessage)
+	if err := json.Unmarshal(buf, got); err != nil {
+		t.Errorf("json.Unmarshal(%q, got) failed with %v; want success", buf, err)
 	}
-	if want := msg; !reflect.DeepEqual(got, want) {
-		t.Errorf("got = %v; want %v", &got, &want)
+	if diff := cmp.Diff(got, msg, protocmp.Transform()); diff != "" {
+		t.Error(diff)
 	}
 }
 
@@ -65,19 +67,19 @@ func TestJSONBuiltinMarshalFieldKnownErrors(t *testing.T) {
 func TestJSONBuiltinsnmarshal(t *testing.T) {
 	var (
 		m   runtime.JSONBuiltin
-		got examplepb.SimpleMessage
+		got = new(examplepb.SimpleMessage)
 
 		data = []byte(`{"id": "foo"}`)
 	)
-	if err := m.Unmarshal(data, &got); err != nil {
-		t.Errorf("m.Unmarshal(%q, &got) failed with %v; want success", data, err)
+	if err := m.Unmarshal(data, got); err != nil {
+		t.Errorf("m.Unmarshal(%q, got) failed with %v; want success", data, err)
 	}
 
-	want := examplepb.SimpleMessage{
+	want := &examplepb.SimpleMessage{
 		Id: "foo",
 	}
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got = %v; want = %v", &got, &want)
+	if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
+		t.Errorf(diff)
 	}
 }
 
@@ -89,8 +91,9 @@ func TestJSONBuiltinUnmarshalField(t *testing.T) {
 			t.Errorf("m.Unmarshal(%q, dest) failed with %v; want success", fixt.json, err)
 		}
 
-		if got, want := dest.Elem().Interface(), fixt.data; !reflect.DeepEqual(got, want) {
-			t.Errorf("got = %#v; want = %#v; input = %q", got, want, fixt.json)
+		got, want := dest.Elem().Interface(), fixt.data
+		if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
+			t.Error(diff)
 		}
 	}
 }
@@ -115,22 +118,22 @@ func TestJSONBuiltinUnmarshalFieldKnownErrors(t *testing.T) {
 
 func TestJSONBuiltinEncoder(t *testing.T) {
 	var m runtime.JSONBuiltin
-	msg := examplepb.SimpleMessage{
+	msg := &examplepb.SimpleMessage{
 		Id: "foo",
 	}
 
 	var buf bytes.Buffer
 	enc := m.NewEncoder(&buf)
-	if err := enc.Encode(&msg); err != nil {
-		t.Errorf("enc.Encode(%v) failed with %v; want success", &msg, err)
+	if err := enc.Encode(msg); err != nil {
+		t.Errorf("enc.Encode(%v) failed with %v; want success", msg, err)
 	}
 
-	var got examplepb.SimpleMessage
-	if err := json.Unmarshal(buf.Bytes(), &got); err != nil {
-		t.Errorf("json.Unmarshal(%q, &got) failed with %v; want success", buf.String(), err)
+	got := new(examplepb.SimpleMessage)
+	if err := json.Unmarshal(buf.Bytes(), got); err != nil {
+		t.Errorf("json.Unmarshal(%q, got) failed with %v; want success", buf.String(), err)
 	}
-	if want := msg; !reflect.DeepEqual(got, want) {
-		t.Errorf("got = %v; want %v", &got, &want)
+	if diff := cmp.Diff(got, msg, protocmp.Transform()); diff != "" {
+		t.Error(diff)
 	}
 }
 
@@ -152,21 +155,21 @@ func TestJSONBuiltinEncoderFields(t *testing.T) {
 func TestJSONBuiltinDecoder(t *testing.T) {
 	var (
 		m   runtime.JSONBuiltin
-		got examplepb.SimpleMessage
+		got = new(examplepb.SimpleMessage)
 
 		data = `{"id": "foo"}`
 	)
 	r := strings.NewReader(data)
 	dec := m.NewDecoder(r)
-	if err := dec.Decode(&got); err != nil {
-		t.Errorf("m.Unmarshal(&got) failed with %v; want success", err)
+	if err := dec.Decode(got); err != nil {
+		t.Errorf("m.Unmarshal(got) failed with %v; want success", err)
 	}
 
-	want := examplepb.SimpleMessage{
+	want := &examplepb.SimpleMessage{
 		Id: "foo",
 	}
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got = %v; want = %v", &got, &want)
+	if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
+		t.Errorf("got = %v; want = %v", got, want)
 	}
 }
 
@@ -180,8 +183,9 @@ func TestJSONBuiltinDecoderFields(t *testing.T) {
 			t.Errorf("dec.Decode(dest) failed with %v; want success; data = %q", err, fixt.json)
 		}
 
-		if got, want := dest.Elem().Interface(), fixt.data; !reflect.DeepEqual(got, want) {
-			t.Errorf("got = %v; want = %v; input = %q", got, want, fixt.json)
+		got, want := dest.Elem().Interface(), fixt.data
+		if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
+			t.Error(diff)
 		}
 	}
 }
