@@ -36,13 +36,10 @@ func runGateway(ctx context.Context, addr string, opts ...gwruntime.ServeMuxOpti
 func waitForGateway(ctx context.Context, port uint16) error {
 	ch := time.After(10 * time.Second)
 
-	var err error
 	for {
-		if r, err := http.Get(fmt.Sprintf("http://localhost:%d/healthz", port)); err == nil {
-			if r.StatusCode == http.StatusOK {
-				return nil
-			}
-			err = fmt.Errorf("server localhost:%d returned an unexpected status %d", port, r.StatusCode)
+		r, err := http.Get(fmt.Sprintf("http://localhost:%d/healthz", port))
+		if err == nil && r.StatusCode == http.StatusOK {
+			return nil
 		}
 
 		glog.Infof("Waiting for localhost:%d to get ready", port)

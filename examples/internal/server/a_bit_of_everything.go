@@ -297,10 +297,8 @@ func (s *_ABitOfEverythingServer) NoBindings(ctx context.Context, msg *durationp
 }
 
 func (s *_ABitOfEverythingServer) Timeout(ctx context.Context, msg *emptypb.Empty) (*emptypb.Empty, error) {
-	select {
-	case <-ctx.Done():
-		return nil, ctx.Err()
-	}
+	<-ctx.Done()
+	return nil, ctx.Err()
 }
 
 func (s *_ABitOfEverythingServer) ErrorWithDetails(ctx context.Context, msg *emptypb.Empty) (*emptypb.Empty, error) {

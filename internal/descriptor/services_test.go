@@ -968,14 +968,12 @@ func TestExtractServicesWithError(t *testing.T) {
 	} {
 		reg := NewRegistry()
 
-		var fds []*descriptorpb.FileDescriptorProto
 		for _, src := range spec.srcs {
 			var fd descriptorpb.FileDescriptorProto
 			if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 				t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 			}
 			reg.loadFile(&fd)
-			fds = append(fds, &fd)
 		}
 		err := reg.loadServices(reg.files[spec.target])
 		if err == nil {
@@ -1252,14 +1250,12 @@ func TestExtractServicesWithDeleteBody(t *testing.T) {
 		reg := NewRegistry()
 		reg.SetAllowDeleteBody(spec.allowDeleteBody)
 
-		var fds []*descriptorpb.FileDescriptorProto
 		for _, src := range spec.srcs {
 			var fd descriptorpb.FileDescriptorProto
 			if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 				t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 			}
 			reg.loadFile(&fd)
-			fds = append(fds, &fd)
 		}
 		err := reg.loadServices(reg.files[spec.target])
 		if spec.expectErr && err == nil {

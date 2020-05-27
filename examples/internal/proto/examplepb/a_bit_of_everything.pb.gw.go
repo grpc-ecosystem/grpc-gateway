@@ -55,7 +55,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.FloatValue, err = runtime.Float32(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "float_value", err)
 	}
@@ -66,7 +65,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.DoubleValue, err = runtime.Float64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "double_value", err)
 	}
@@ -77,7 +75,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Int64Value, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "int64_value", err)
 	}
@@ -88,7 +85,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Uint64Value, err = runtime.Uint64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uint64_value", err)
 	}
@@ -99,7 +95,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Int32Value, err = runtime.Int32(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "int32_value", err)
 	}
@@ -110,7 +105,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Fixed64Value, err = runtime.Uint64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "fixed64_value", err)
 	}
@@ -121,7 +115,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Fixed32Value, err = runtime.Uint32(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "fixed32_value", err)
 	}
@@ -132,7 +125,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.BoolValue, err = runtime.Bool(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bool_value", err)
 	}
@@ -143,7 +135,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.StringValue, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "string_value", err)
 	}
@@ -154,7 +145,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Uint32Value, err = runtime.Uint32(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uint32_value", err)
 	}
@@ -165,7 +155,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Sfixed32Value, err = runtime.Int32(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sfixed32_value", err)
 	}
@@ -176,7 +165,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Sfixed64Value, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sfixed64_value", err)
 	}
@@ -187,7 +175,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Sint32Value, err = runtime.Int32(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sint32_value", err)
 	}
@@ -198,7 +185,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Sint64Value, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sint64_value", err)
 	}
@@ -209,7 +195,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.NonConventionalNameValue, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nonConventionalNameValue", err)
 	}
@@ -220,7 +205,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	e, err = runtime.Enum(val, NumericEnum_value)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "enum_value", err)
 	}
@@ -233,7 +217,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	e, err = runtime.Enum(val, pathenum.PathEnum_value)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_enum_value", err)
 	}
@@ -246,7 +229,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	e, err = runtime.Enum(val, pathenum.MessagePathEnum_NestedPathEnum_value)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nested_path_enum_value", err)
 	}
@@ -259,7 +241,6 @@ func request_ABitOfEverythingService_Create_0(ctx context.Context, marshaler run
 	}
 
 	e, err = runtime.Enum(val, NumericEnum_value)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "enum_value_annotation", err)
 	}
@@ -296,7 +277,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.FloatValue, err = runtime.Float32(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "float_value", err)
 	}
@@ -307,7 +287,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.DoubleValue, err = runtime.Float64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "double_value", err)
 	}
@@ -318,7 +297,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.Int64Value, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "int64_value", err)
 	}
@@ -329,7 +307,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.Uint64Value, err = runtime.Uint64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uint64_value", err)
 	}
@@ -340,7 +317,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.Int32Value, err = runtime.Int32(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "int32_value", err)
 	}
@@ -351,7 +327,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.Fixed64Value, err = runtime.Uint64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "fixed64_value", err)
 	}
@@ -362,7 +337,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.Fixed32Value, err = runtime.Uint32(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "fixed32_value", err)
 	}
@@ -373,7 +347,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.BoolValue, err = runtime.Bool(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bool_value", err)
 	}
@@ -384,7 +357,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.StringValue, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "string_value", err)
 	}
@@ -395,7 +367,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.Uint32Value, err = runtime.Uint32(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uint32_value", err)
 	}
@@ -406,7 +377,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.Sfixed32Value, err = runtime.Int32(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sfixed32_value", err)
 	}
@@ -417,7 +387,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.Sfixed64Value, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sfixed64_value", err)
 	}
@@ -428,7 +397,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.Sint32Value, err = runtime.Int32(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sint32_value", err)
 	}
@@ -439,7 +407,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.Sint64Value, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "sint64_value", err)
 	}
@@ -450,7 +417,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	protoReq.NonConventionalNameValue, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nonConventionalNameValue", err)
 	}
@@ -461,7 +427,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	e, err = runtime.Enum(val, NumericEnum_value)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "enum_value", err)
 	}
@@ -474,7 +439,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	e, err = runtime.Enum(val, pathenum.PathEnum_value)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_enum_value", err)
 	}
@@ -487,7 +451,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	e, err = runtime.Enum(val, pathenum.MessagePathEnum_NestedPathEnum_value)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "nested_path_enum_value", err)
 	}
@@ -500,7 +463,6 @@ func local_request_ABitOfEverythingService_Create_0(ctx context.Context, marshal
 	}
 
 	e, err = runtime.Enum(val, NumericEnum_value)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "enum_value_annotation", err)
 	}
@@ -570,7 +532,6 @@ func request_ABitOfEverythingService_Lookup_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Uuid, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
@@ -597,7 +558,6 @@ func local_request_ABitOfEverythingService_Lookup_0(ctx context.Context, marshal
 	}
 
 	protoReq.Uuid, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
@@ -632,7 +592,6 @@ func request_ABitOfEverythingService_Update_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Uuid, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
@@ -667,7 +626,6 @@ func local_request_ABitOfEverythingService_Update_0(ctx context.Context, marshal
 	}
 
 	protoReq.Uuid, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
@@ -706,7 +664,6 @@ func request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marshaler r
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "abe.uuid", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "abe.uuid", err)
 	}
@@ -748,7 +705,6 @@ func local_request_ABitOfEverythingService_UpdateV2_0(ctx context.Context, marsh
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "abe.uuid", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "abe.uuid", err)
 	}
@@ -801,7 +757,6 @@ func request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marshaler r
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "abe.uuid", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "abe.uuid", err)
 	}
@@ -850,7 +805,6 @@ func local_request_ABitOfEverythingService_UpdateV2_1(ctx context.Context, marsh
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "abe.uuid", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "abe.uuid", err)
 	}
@@ -892,7 +846,6 @@ func request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marshaler r
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "abe.uuid", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "abe.uuid", err)
 	}
@@ -927,7 +880,6 @@ func local_request_ABitOfEverythingService_UpdateV2_2(ctx context.Context, marsh
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "abe.uuid", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "abe.uuid", err)
 	}
@@ -954,7 +906,6 @@ func request_ABitOfEverythingService_Delete_0(ctx context.Context, marshaler run
 	}
 
 	protoReq.Uuid, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
@@ -981,7 +932,6 @@ func local_request_ABitOfEverythingService_Delete_0(ctx context.Context, marshal
 	}
 
 	protoReq.Uuid, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
@@ -1012,7 +962,6 @@ func request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marshaler r
 	}
 
 	protoReq.Uuid, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
@@ -1046,7 +995,6 @@ func local_request_ABitOfEverythingService_GetQuery_0(ctx context.Context, marsh
 	}
 
 	protoReq.Uuid, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uuid", err)
 	}
@@ -1081,7 +1029,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedFloatValue, err = runtime.Float32Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_float_value", err)
 	}
@@ -1092,7 +1039,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedDoubleValue, err = runtime.Float64Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_double_value", err)
 	}
@@ -1103,7 +1049,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedInt64Value, err = runtime.Int64Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_int64_value", err)
 	}
@@ -1114,7 +1059,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedUint64Value, err = runtime.Uint64Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_uint64_value", err)
 	}
@@ -1125,7 +1069,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedInt32Value, err = runtime.Int32Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_int32_value", err)
 	}
@@ -1136,7 +1079,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedFixed64Value, err = runtime.Uint64Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_fixed64_value", err)
 	}
@@ -1147,7 +1089,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedFixed32Value, err = runtime.Uint32Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_fixed32_value", err)
 	}
@@ -1158,7 +1099,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedBoolValue, err = runtime.BoolSlice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_bool_value", err)
 	}
@@ -1169,7 +1109,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedStringValue, err = runtime.StringSlice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_string_value", err)
 	}
@@ -1180,7 +1119,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedBytesValue, err = runtime.BytesSlice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_bytes_value", err)
 	}
@@ -1191,7 +1129,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedUint32Value, err = runtime.Uint32Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_uint32_value", err)
 	}
@@ -1202,7 +1139,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	es, err = runtime.EnumSlice(val, ",", NumericEnum_value)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_enum_value", err)
 	}
@@ -1219,7 +1155,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedSfixed32Value, err = runtime.Int32Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_sfixed32_value", err)
 	}
@@ -1230,7 +1165,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedSfixed64Value, err = runtime.Int64Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_sfixed64_value", err)
 	}
@@ -1241,7 +1175,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedSint32Value, err = runtime.Int32Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_sint32_value", err)
 	}
@@ -1252,7 +1185,6 @@ func request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Context, mar
 	}
 
 	protoReq.PathRepeatedSint64Value, err = runtime.Int64Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_sint64_value", err)
 	}
@@ -1280,7 +1212,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedFloatValue, err = runtime.Float32Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_float_value", err)
 	}
@@ -1291,7 +1222,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedDoubleValue, err = runtime.Float64Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_double_value", err)
 	}
@@ -1302,7 +1232,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedInt64Value, err = runtime.Int64Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_int64_value", err)
 	}
@@ -1313,7 +1242,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedUint64Value, err = runtime.Uint64Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_uint64_value", err)
 	}
@@ -1324,7 +1252,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedInt32Value, err = runtime.Int32Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_int32_value", err)
 	}
@@ -1335,7 +1262,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedFixed64Value, err = runtime.Uint64Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_fixed64_value", err)
 	}
@@ -1346,7 +1272,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedFixed32Value, err = runtime.Uint32Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_fixed32_value", err)
 	}
@@ -1357,7 +1282,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedBoolValue, err = runtime.BoolSlice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_bool_value", err)
 	}
@@ -1368,7 +1292,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedStringValue, err = runtime.StringSlice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_string_value", err)
 	}
@@ -1379,7 +1302,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedBytesValue, err = runtime.BytesSlice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_bytes_value", err)
 	}
@@ -1390,7 +1312,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedUint32Value, err = runtime.Uint32Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_uint32_value", err)
 	}
@@ -1401,7 +1322,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	es, err = runtime.EnumSlice(val, ",", NumericEnum_value)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_enum_value", err)
 	}
@@ -1418,7 +1338,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedSfixed32Value, err = runtime.Int32Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_sfixed32_value", err)
 	}
@@ -1429,7 +1348,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedSfixed64Value, err = runtime.Int64Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_sfixed64_value", err)
 	}
@@ -1440,7 +1358,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedSint32Value, err = runtime.Int32Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_sint32_value", err)
 	}
@@ -1451,7 +1368,6 @@ func local_request_ABitOfEverythingService_GetRepeatedQuery_0(ctx context.Contex
 	}
 
 	protoReq.PathRepeatedSint64Value, err = runtime.Int64Slice(val, ",")
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "path_repeated_sint64_value", err)
 	}
@@ -1478,7 +1394,6 @@ func request_ABitOfEverythingService_Echo_0(ctx context.Context, marshaler runti
 	}
 
 	protoReq.Value, err = runtime.StringP(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "value", err)
 	}
@@ -1505,7 +1420,6 @@ func local_request_ABitOfEverythingService_Echo_0(ctx context.Context, marshaler
 	}
 
 	protoReq.Value, err = runtime.StringP(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "value", err)
 	}
@@ -1610,7 +1524,6 @@ func request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, marshal
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "single_nested.name", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "single_nested.name", err)
 	}
@@ -1645,7 +1558,6 @@ func local_request_ABitOfEverythingService_DeepPathEcho_0(ctx context.Context, m
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "single_nested.name", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "single_nested.name", err)
 	}
@@ -1716,7 +1628,6 @@ func request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Context, m
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -1751,7 +1662,6 @@ func local_request_ABitOfEverythingService_GetMessageWithBody_0(ctx context.Cont
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -1786,7 +1696,6 @@ func request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Context, ma
 	}
 
 	protoReq.Name, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
 	}
@@ -1821,7 +1730,6 @@ func local_request_ABitOfEverythingService_PostWithEmptyBody_0(ctx context.Conte
 	}
 
 	protoReq.Name, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
 	}
@@ -1852,7 +1760,6 @@ func request_ABitOfEverythingService_CheckGetQueryParams_0(ctx context.Context, 
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "single_nested.name", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "single_nested.name", err)
 	}
@@ -1886,7 +1793,6 @@ func local_request_ABitOfEverythingService_CheckGetQueryParams_0(ctx context.Con
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "single_nested.name", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "single_nested.name", err)
 	}
@@ -1925,11 +1831,13 @@ func request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx context
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "single_nested.ok", val)
-
-	e, err = runtime.Enum(val, ABitOfEverything_Nested_DeepEnum_value)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "single_nested.ok", err)
+	}
+
+	e, err = runtime.Enum(val, ABitOfEverything_Nested_DeepEnum_value)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "single_nested.ok", err)
 	}
 
 	protoReq.SingleNested.Ok = ABitOfEverything_Nested_DeepEnum(e)
@@ -1964,11 +1872,13 @@ func local_request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(ctx c
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "single_nested.ok", val)
-
-	e, err = runtime.Enum(val, ABitOfEverything_Nested_DeepEnum_value)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "single_nested.ok", err)
+	}
+
+	e, err = runtime.Enum(val, ABitOfEverything_Nested_DeepEnum_value)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "single_nested.ok", err)
 	}
 
 	protoReq.SingleNested.Ok = ABitOfEverything_Nested_DeepEnum(e)
@@ -2014,7 +1924,6 @@ func request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Context,
 	}
 
 	protoReq.StringValue, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "string_value", err)
 	}
@@ -2056,7 +1965,6 @@ func local_request_ABitOfEverythingService_CheckPostQueryParams_0(ctx context.Co
 	}
 
 	protoReq.StringValue, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "string_value", err)
 	}

@@ -229,7 +229,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 	// Check for cyclical message reference:
 	isCycle := touched[*msg.Name]
 	if isCycle {
-		return nil, fmt.Errorf("Recursive types are not allowed for query parameters, cycle found on %q", fieldType)
+		return nil, fmt.Errorf("recursive types are not allowed for query parameters, cycle found on %q", fieldType)
 	}
 	// Update map with the massage name so a cycle further down the recursive path can be detected.
 	touched[*msg.Name] = true
@@ -677,7 +677,6 @@ func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*desc
 			buffer += string(char)
 			jsonBuffer = ""
 			jsonBuffer += string(char)
-			break
 		case '}':
 			if depth == 0 {
 				panic("Encountered } without matching { before it.")
@@ -706,7 +705,6 @@ func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*desc
 		default:
 			buffer += string(char)
 			jsonBuffer += string(char)
-			break
 		}
 	}
 
@@ -985,7 +983,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 				}
 				operationObject.OperationID = fmt.Sprintf("%s_%s", svc.GetName(), meth.GetName())
 				if reg.GetSimpleOperationIDs() {
-					operationObject.OperationID = fmt.Sprintf("%s", meth.GetName())
+					operationObject.OperationID = meth.GetName()
 				}
 				if bIdx != 0 {
 					// OperationID must be unique in an OpenAPI v2 definition.
@@ -1092,19 +1090,14 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 				switch b.HTTPMethod {
 				case "DELETE":
 					pathItemObject.Delete = operationObject
-					break
 				case "GET":
 					pathItemObject.Get = operationObject
-					break
 				case "POST":
 					pathItemObject.Post = operationObject
-					break
 				case "PUT":
 					pathItemObject.Put = operationObject
-					break
 				case "PATCH":
 					pathItemObject.Patch = operationObject
-					break
 				}
 				paths[templateToOpenAPIPath(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)] = pathItemObject
 			}
@@ -1315,10 +1308,8 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 			}
 		}
 		if spb.Security != nil {
-			newSecurity := []openapiSecurityRequirementObject{}
-			if s.Security == nil {
-				newSecurity = []openapiSecurityRequirementObject{}
-			} else {
+			var newSecurity []openapiSecurityRequirementObject
+			if s.Security != nil {
 				newSecurity = s.Security
 			}
 			for _, secReq := range spb.Security {
@@ -1393,7 +1384,7 @@ func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error
 	exts := []extension{}
 	for k, v := range inputExts {
 		if !strings.HasPrefix(k, "x-") {
-			return nil, fmt.Errorf("Extension keys need to start with \"x-\": %q", k)
+			return nil, fmt.Errorf("extension keys need to start with \"x-\": %q", k)
 		}
 		ext, err := (&protojson.MarshalOptions{Indent: "  "}).Marshal(v)
 		if err != nil {
@@ -1466,7 +1457,7 @@ func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject inter
 			}
 			if len(description) > 0 {
 				if !descriptionValue.CanSet() {
-					return fmt.Errorf("Encountered object type with a summary, but no description")
+					return fmt.Errorf("encountered object type with a summary, but no description")
 				}
 				// overrides the schema value only if it's empty
 				// keep the comment precedence when updating the package definition
@@ -1937,10 +1928,10 @@ func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descri
 			return oneField.GetJsonName()
 		}
 	}
-	messageNameToFieldsToJSONName := make(map[string]map[string]string, 0)
-	fieldNameToType := make(map[string]string, 0)
+	messageNameToFieldsToJSONName := make(map[string]map[string]string)
+	fieldNameToType := make(map[string]string)
 	for _, msg := range msgs {
-		fieldNameToJSONName := make(map[string]string, 0)
+		fieldNameToJSONName := make(map[string]string)
 		for _, oneField := range msg.GetField() {
 			fieldNameToJSONName[oneField.GetName()] = oneField.GetJsonName()
 			fieldNameToType[oneField.GetName()] = oneField.GetTypeName()

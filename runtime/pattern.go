@@ -95,7 +95,7 @@ func NewPattern(version int, ops []int, pool []string, verb string) (Pattern, er
 			}
 			stack -= op.operand
 			if stack < 0 {
-				grpclog.Print("stack underflow")
+				grpclog.Info("stack underflow")
 				return Pattern{}, ErrInvalidPattern
 			}
 			stack++

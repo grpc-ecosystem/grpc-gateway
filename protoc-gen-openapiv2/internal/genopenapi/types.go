@@ -13,10 +13,6 @@ type param struct {
 	reg *descriptor.Registry
 }
 
-type binding struct {
-	*descriptor.Binding
-}
-
 // http://swagger.io/specification/#infoObject
 type openapiInfoObject struct {
 	Title          string `json:"title"`
@@ -243,11 +239,6 @@ type openapiSchemaObject struct {
 	MaxProperties    uint64   `json:"maxProperties,omitempty"`
 	MinProperties    uint64   `json:"minProperties,omitempty"`
 	Required         []string `json:"required,omitempty"`
-}
-
-// http://swagger.io/specification/#referenceObject
-type openapiReferenceObject struct {
-	Ref string `json:"$ref"`
 }
 
 // http://swagger.io/specification/#definitionsObject
