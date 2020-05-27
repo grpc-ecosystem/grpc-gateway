@@ -161,6 +161,13 @@ jobs:
           command: |
             bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories
       - renovate_git_amend_push
+  regenerate:
+    executor: build-env
+    working_directory: /src/grpc-gateway
+    steps:
+      - checkout
+      - generate
+      - renovate_git_amend_push
 workflows:
   version: 2
   all:
@@ -180,6 +187,16 @@ workflows:
             tags:
               only: /v[0-9]+(\.[0-9]+)*(-.*)*/
       - update-repositoriesbzl:
+          filters:
+            branches:
+              only: /renovate\/.+/
+            tags:
+              ignore: /.*/
+      - regenerate:
+          requires:
+            # Run after update-repositoriesbzl to avoid
+            # git conflicts
+            - update-repositoriesbzl
           filters:
             branches:
               only: /renovate\/.+/
