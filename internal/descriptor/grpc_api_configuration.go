@@ -13,7 +13,7 @@ import (
 func loadGrpcAPIServiceFromYAML(yamlFileContents []byte, yamlSourceLogName string) (*apiconfig.GrpcAPIService, error) {
 	jsonContents, err := yaml.YAMLToJSON(yamlFileContents)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to convert gRPC API Configuration from YAML in '%v' to JSON: %v", yamlSourceLogName, err)
+		return nil, fmt.Errorf("failed to convert gRPC API Configuration from YAML in '%v' to JSON: %v", yamlSourceLogName, err)
 	}
 
 	// As our GrpcAPIService is incomplete, accept unknown fields.
@@ -23,7 +23,7 @@ func loadGrpcAPIServiceFromYAML(yamlFileContents []byte, yamlSourceLogName strin
 
 	serviceConfiguration := apiconfig.GrpcAPIService{}
 	if err := unmarshaler.Unmarshal(jsonContents, &serviceConfiguration); err != nil {
-		return nil, fmt.Errorf("Failed to parse gRPC API Configuration from YAML in '%v': %v", yamlSourceLogName, err)
+		return nil, fmt.Errorf("failed to parse gRPC API Configuration from YAML in '%v': %v", yamlSourceLogName, err)
 	}
 
 	return &serviceConfiguration, nil
@@ -38,7 +38,7 @@ func registerHTTPRulesFromGrpcAPIService(registry *Registry, service *apiconfig.
 	for _, rule := range service.Http.GetRules() {
 		selector := "." + strings.Trim(rule.GetSelector(), " ")
 		if strings.ContainsAny(selector, "*, ") {
-			return fmt.Errorf("Selector '%v' in %v must specify a single service method without wildcards", rule.GetSelector(), sourceLogName)
+			return fmt.Errorf("selector '%v' in %v must specify a single service method without wildcards", rule.GetSelector(), sourceLogName)
 		}
 
 		registry.AddExternalHTTPRule(selector, rule)
@@ -59,7 +59,7 @@ func registerHTTPRulesFromGrpcAPIService(registry *Registry, service *apiconfig.
 func (r *Registry) LoadGrpcAPIServiceFromYAML(yamlFile string) error {
 	yamlFileContents, err := ioutil.ReadFile(yamlFile)
 	if err != nil {
-		return fmt.Errorf("Failed to read gRPC API Configuration description from '%v': %v", yamlFile, err)
+		return fmt.Errorf("failed to read gRPC API Configuration description from '%v': %v", yamlFile, err)
 	}
 
 	service, err := loadGrpcAPIServiceFromYAML(yamlFileContents, yamlFile)

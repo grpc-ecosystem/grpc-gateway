@@ -50,7 +50,6 @@ func request_Greeter_SayHello_0(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.Name, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
 	}
@@ -84,7 +83,6 @@ func local_request_Greeter_SayHello_0(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.Name, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "name", err)
 	}
@@ -122,7 +120,6 @@ func request_Greeter_SayHello_1(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.StrVal, err = runtime.StringValue(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "strVal", err)
 	}
@@ -156,7 +153,6 @@ func local_request_Greeter_SayHello_1(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.StrVal, err = runtime.StringValue(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "strVal", err)
 	}
@@ -194,7 +190,6 @@ func request_Greeter_SayHello_2(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.FloatVal, err = runtime.FloatValue(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "floatVal", err)
 	}
@@ -228,7 +223,6 @@ func local_request_Greeter_SayHello_2(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.FloatVal, err = runtime.FloatValue(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "floatVal", err)
 	}
@@ -266,7 +260,6 @@ func request_Greeter_SayHello_3(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.DoubleVal, err = runtime.DoubleValue(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "doubleVal", err)
 	}
@@ -300,7 +293,6 @@ func local_request_Greeter_SayHello_3(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.DoubleVal, err = runtime.DoubleValue(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "doubleVal", err)
 	}
@@ -338,7 +330,6 @@ func request_Greeter_SayHello_4(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.BoolVal, err = runtime.BoolValue(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "boolVal", err)
 	}
@@ -372,7 +363,6 @@ func local_request_Greeter_SayHello_4(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.BoolVal, err = runtime.BoolValue(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "boolVal", err)
 	}
@@ -410,7 +400,6 @@ func request_Greeter_SayHello_5(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.BytesVal, err = runtime.BytesValue(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bytesVal", err)
 	}
@@ -444,7 +433,6 @@ func local_request_Greeter_SayHello_5(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.BytesVal, err = runtime.BytesValue(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "bytesVal", err)
 	}
@@ -482,7 +470,6 @@ func request_Greeter_SayHello_6(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.Int32Val, err = runtime.Int32Value(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "int32Val", err)
 	}
@@ -516,7 +503,6 @@ func local_request_Greeter_SayHello_6(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.Int32Val, err = runtime.Int32Value(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "int32Val", err)
 	}
@@ -554,7 +540,6 @@ func request_Greeter_SayHello_7(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.Uint32Val, err = runtime.UInt32Value(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uint32Val", err)
 	}
@@ -588,7 +573,6 @@ func local_request_Greeter_SayHello_7(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.Uint32Val, err = runtime.UInt32Value(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uint32Val", err)
 	}
@@ -626,7 +610,6 @@ func request_Greeter_SayHello_8(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.Int64Val, err = runtime.Int64Value(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "int64Val", err)
 	}
@@ -660,7 +643,6 @@ func local_request_Greeter_SayHello_8(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.Int64Val, err = runtime.Int64Value(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "int64Val", err)
 	}
@@ -698,7 +680,6 @@ func request_Greeter_SayHello_9(ctx context.Context, marshaler runtime.Marshaler
 	}
 
 	protoReq.Uint64Val, err = runtime.UInt64Value(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uint64Val", err)
 	}
@@ -732,7 +713,6 @@ func local_request_Greeter_SayHello_9(ctx context.Context, marshaler runtime.Mar
 	}
 
 	protoReq.Uint64Val, err = runtime.UInt64Value(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "uint64Val", err)
 	}

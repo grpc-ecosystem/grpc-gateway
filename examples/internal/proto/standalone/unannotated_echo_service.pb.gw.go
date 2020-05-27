@@ -51,7 +51,6 @@ func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtim
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -85,7 +84,6 @@ func local_request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler 
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -123,7 +121,6 @@ func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtim
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -134,7 +131,6 @@ func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtim
 	}
 
 	protoReq.Num, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "num", err)
 	}
@@ -168,7 +164,6 @@ func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler 
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -179,7 +174,6 @@ func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler 
 	}
 
 	protoReq.Num, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "num", err)
 	}
@@ -217,7 +211,6 @@ func request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler runtim
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -228,7 +221,6 @@ func request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler runtim
 	}
 
 	protoReq.Num, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "num", err)
 	}
@@ -244,7 +236,6 @@ func request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler runtim
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_Lang, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_Lang).Lang, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "lang", err)
 	}
@@ -278,7 +269,6 @@ func local_request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler 
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -289,7 +279,6 @@ func local_request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler 
 	}
 
 	protoReq.Num, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "num", err)
 	}
@@ -305,7 +294,6 @@ func local_request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_Lang, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_Lang).Lang, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "lang", err)
 	}
@@ -343,7 +331,6 @@ func request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler runtim
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -359,7 +346,6 @@ func request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler runtim
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_LineNum, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "line_num", err)
 	}
@@ -370,7 +356,6 @@ func request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler runtim
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "status.note", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "status.note", err)
 	}
@@ -404,7 +389,6 @@ func local_request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler 
 	}
 
 	protoReq.Id, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
@@ -420,7 +404,6 @@ func local_request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_LineNum, but: %t\n", protoReq.Code)
 	}
 	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "line_num", err)
 	}
@@ -431,7 +414,6 @@ func local_request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler 
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "status.note", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "status.note", err)
 	}
@@ -469,7 +451,6 @@ func request_UnannotatedEchoService_Echo_4(ctx context.Context, marshaler runtim
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "no.note", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "no.note", err)
 	}
@@ -503,7 +484,6 @@ func local_request_UnannotatedEchoService_Echo_4(ctx context.Context, marshaler 
 	}
 
 	err = runtime.PopulateFieldFromPath(&protoReq, "no.note", val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "no.note", err)
 	}

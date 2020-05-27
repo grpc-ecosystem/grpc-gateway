@@ -46,7 +46,6 @@ func request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshale
 	}
 
 	protoReq.Data, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
 	}
@@ -73,7 +72,6 @@ func local_request_ResponseBodyService_GetResponseBody_0(ctx context.Context, ma
 	}
 
 	protoReq.Data, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
 	}
@@ -100,7 +98,6 @@ func request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marsh
 	}
 
 	protoReq.Data, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
 	}
@@ -127,7 +124,6 @@ func local_request_ResponseBodyService_ListResponseBodies_0(ctx context.Context,
 	}
 
 	protoReq.Data, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
 	}
@@ -154,7 +150,6 @@ func request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, mars
 	}
 
 	protoReq.Data, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
 	}
@@ -181,7 +176,6 @@ func local_request_ResponseBodyService_ListResponseStrings_0(ctx context.Context
 	}
 
 	protoReq.Data, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
 	}
@@ -208,7 +202,6 @@ func request_ResponseBodyService_GetResponseBodyStream_0(ctx context.Context, ma
 	}
 
 	protoReq.Data, err = runtime.String(val)
-
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "data", err)
 	}

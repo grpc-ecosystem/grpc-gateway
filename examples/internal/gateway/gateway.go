@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	standalone "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/standalone"
@@ -54,8 +53,8 @@ func dialTCP(ctx context.Context, addr string) (*grpc.ClientConn, error) {
 // dialUnix creates a client connection via a unix domain socket.
 // "addr" must be a valid path to the socket.
 func dialUnix(ctx context.Context, addr string) (*grpc.ClientConn, error) {
-	d := func(addr string, timeout time.Duration) (net.Conn, error) {
-		return net.DialTimeout("unix", addr, timeout)
+	d := func(ctx context.Context, addr string) (net.Conn, error) {
+		return (&net.Dialer{}).DialContext(ctx, "unix", addr)
 	}
-	return grpc.DialContext(ctx, addr, grpc.WithInsecure(), grpc.WithDialer(d))
+	return grpc.DialContext(ctx, addr, grpc.WithInsecure(), grpc.WithContextDialer(d))
 }

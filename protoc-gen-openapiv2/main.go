@@ -162,34 +162,34 @@ func parseReqParam(param string, f *flag.FlagSet, pkgMap map[string]string) erro
 			if spec[0] == "allow_delete_body" {
 				err := f.Set(spec[0], "true")
 				if err != nil {
-					return fmt.Errorf("Cannot set flag %s: %v", p, err)
+					return fmt.Errorf("cannot set flag %s: %v", p, err)
 				}
 				continue
 			}
 			if spec[0] == "allow_merge" {
 				err := f.Set(spec[0], "true")
 				if err != nil {
-					return fmt.Errorf("Cannot set flag %s: %v", p, err)
+					return fmt.Errorf("cannot set flag %s: %v", p, err)
 				}
 				continue
 			}
 			if spec[0] == "allow_repeated_fields_in_body" {
 				err := f.Set(spec[0], "true")
 				if err != nil {
-					return fmt.Errorf("Cannot set flag %s: %v", p, err)
+					return fmt.Errorf("cannot set flag %s: %v", p, err)
 				}
 				continue
 			}
 			if spec[0] == "include_package_in_tags" {
 				err := f.Set(spec[0], "true")
 				if err != nil {
-					return fmt.Errorf("Cannot set flag %s: %v", p, err)
+					return fmt.Errorf("cannot set flag %s: %v", p, err)
 				}
 				continue
 			}
 			err := f.Set(spec[0], "")
 			if err != nil {
-				return fmt.Errorf("Cannot set flag %s: %v", p, err)
+				return fmt.Errorf("cannot set flag %s: %v", p, err)
 			}
 			continue
 		}
@@ -199,7 +199,7 @@ func parseReqParam(param string, f *flag.FlagSet, pkgMap map[string]string) erro
 			continue
 		}
 		if err := f.Set(name, value); err != nil {
-			return fmt.Errorf("Cannot set flag %s: %v", p, err)
+			return fmt.Errorf("cannot set flag %s: %v", p, err)
 		}
 	}
 	return nil
