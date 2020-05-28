@@ -28,6 +28,8 @@ import (
 var uuidgen = fastuuid.MustNewGenerator()
 
 type _ABitOfEverythingServer struct {
+	examples.UnimplementedABitOfEverythingServiceServer
+	examples.UnimplementedStreamServiceServer
 	v map[string]*examples.ABitOfEverything
 	m sync.Mutex
 }

@@ -11,7 +11,9 @@ import (
 
 // Implements of UnannotatedEchoServiceServer
 
-type unannotatedEchoServer struct{}
+type unannotatedEchoServer struct {
+	examples.UnimplementedUnannotatedEchoServiceServer
+}
 
 func newUnannotatedEchoServer() examples.UnannotatedEchoServiceServer {
 	return new(unannotatedEchoServer)
