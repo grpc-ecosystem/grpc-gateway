@@ -11,6 +11,7 @@ proto_library(
 
 go_proto_library(
     name = "sub2_go_proto",
+    compilers = ["//:go_apiv2"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2",
     proto = ":sub2_proto",
 )

@@ -16,6 +16,7 @@ proto_library(
 
 go_proto_library(
     name = "apiconfig_go_proto",
+    compilers = ["//:go_apiv2"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig",
     proto = ":apiconfig_proto",
     deps = ["@go_googleapis//google/api:annotations_go_proto"],

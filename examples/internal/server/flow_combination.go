@@ -7,7 +7,9 @@ import (
 	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 )
 
-type flowCombinationServer struct{}
+type flowCombinationServer struct {
+	examples.UnimplementedFlowCombinationServer
+}
 
 func newFlowCombinationServer() examples.FlowCombinationServer {
 	return &flowCombinationServer{}
