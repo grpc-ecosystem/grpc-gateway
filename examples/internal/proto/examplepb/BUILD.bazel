@@ -8,14 +8,25 @@ package(default_visibility = ["//visibility:public"])
 # TODO(yannic): Add examples/tests that use import_prefix/strip_import_prefix.
 
 # gazelle:exclude a_bit_of_everything.pb.gw.go
+# gazelle:exclude a_bit_of_everything_grpc.pb.go
 # gazelle:exclude echo_service.pb.gw.go
+# gazelle:exclude echo_service_grpc.pb.go
 # gazelle:exclude flow_combination.pb.gw.go
+# gazelle:exclude flow_combination_grpc.pb.go
 # gazelle:exclude generated_input.proto
 # gazelle:exclude non_standard_names.pb.gw.go
+# gazelle:exclude non_standard_names_grpc.pb.go
 # gazelle:exclude response_body_service.pb.gw.go
+# gazelle:exclude response_body_service_grpc.pb.go
 # gazelle:exclude stream.pb.gw.go
+# gazelle:exclude stream_grpc.pb.go
 # gazelle:exclude use_go_template.pb.gw.go
+# gazelle:exclude use_go_template_grpc.pb.go
 # gazelle:exclude wrappers.pb.gw.go
+# gazelle:exclude wrappers_grpc.pb.go
+# gazelle:exclude unannotated_echo_service.pb.gw.go
+# gazelle:exclude unannotated_echo_service_grpc.pb.go
+# gazelle:go_grpc_compilers //:go_apiv2, //:go_grpc, //protoc-gen-grpc-gateway:go_gen_grpc_gateway
 
 genrule(
     name = "generated_proto",
@@ -56,8 +67,9 @@ proto_library(
 go_proto_library(
     name = "examplepb_go_proto",
     compilers = [
-        "//protoc-gen-grpc-gateway:go_gen_grpc_gateway",  # keep
-        "@io_bazel_rules_go//proto:go_grpc",
+        "//:go_apiv2",
+        "//:go_grpc",
+        "//protoc-gen-grpc-gateway:go_gen_grpc_gateway",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
     proto = ":examplepb_proto",
@@ -75,18 +87,8 @@ go_proto_library(
 
 go_library(
     name = "go_default_library",
-    srcs = ["unannotated_echo_service.pb.gw.go"],
     embed = [":examplepb_go_proto"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
-    deps = [
-        "//runtime:go_default_library",
-        "//utilities:go_default_library",
-        "@org_golang_google_grpc//:go_default_library",
-        "@org_golang_google_grpc//codes:go_default_library",
-        "@org_golang_google_grpc//grpclog:go_default_library",
-        "@org_golang_google_grpc//status:go_default_library",
-        "@org_golang_google_protobuf//proto:go_default_library",
-    ],
 )
 
 protoc_gen_openapiv2(

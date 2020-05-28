@@ -196,3 +196,9 @@ def go_repositories():
         sum = "h1:WBZRG4aNOuI15bLRrCgN8fCq8E5Xuty6jGbmSNEvSsU=",
         version = "v0.0.0-20191209042840-269d4d468f6f",
     )
+    go_repository(
+        name = "org_golang_google_grpc_cmd_protoc_gen_go_grpc",
+        importpath = "google.golang.org/grpc/cmd/protoc-gen-go-grpc",
+        sum = "h1:KNluVV5ay+orsSPJ6XTpwJQ8qBhrBkOTmtBFGeDlBcY=",
+        version = "v0.0.0-20200527211525-6c9e30c09db2",
+    )

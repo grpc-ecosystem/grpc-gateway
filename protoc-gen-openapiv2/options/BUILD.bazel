@@ -33,6 +33,7 @@ proto_library(
 
 go_proto_library(
     name = "options_go_proto",
+    compilers = ["//:go_apiv2"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options",
     proto = ":options_proto",
 )

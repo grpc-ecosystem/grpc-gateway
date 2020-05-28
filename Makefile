@@ -4,9 +4,9 @@
 # grpc-gateway itself.
 
 GO_PLUGIN=bin/protoc-gen-go
-GO_PROTOBUF_REPO=github.com/golang/protobuf
-GO_PLUGIN_PKG=$(GO_PROTOBUF_REPO)/protoc-gen-go
-GO_PTYPES_ANY_PKG=$(GO_PROTOBUF_REPO)/ptypes/any
+GO_PLUGIN_PKG=google.golang.org/protobuf/cmd/protoc-gen-go
+GO_GRPC_PLUGIN=bin/protoc-gen-go-grpc
+GO_GRPC_PLUGIN_PKG=google.golang.org/grpc/cmd/protoc-gen-go-grpc
 OPENAPI_PLUGIN=bin/protoc-gen-openapiv2
 OPENAPI_PLUGIN_SRC= ./utilities/doc.go \
 			./utilities/pattern.go \
@@ -147,6 +147,9 @@ PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
 $(GO_PLUGIN):
 	go build -o $(GO_PLUGIN) $(GO_PLUGIN_PKG)
 
+$(GO_GRPC_PLUGIN):
+	go build -o $(GO_GRPC_PLUGIN) $(GO_GRPC_PLUGIN_PKG)
+
 $(OPENAPIV2_GO): $(OPENAPIV2_PROTO) $(GO_PLUGIN)
 	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=paths=source_relative:. $(OPENAPIV2_PROTO)
 
@@ -156,15 +159,15 @@ $(GATEWAY_PLUGIN): $(GATEWAY_PLUGIN_SRC)
 $(OPENAPI_PLUGIN): $(OPENAPI_PLUGIN_SRC) $(OPENAPIV2_GO)
 	go build -o $@ $(OPENAPI_PLUGIN_PKG)
 
-$(EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=plugins=grpc,paths=source_relative:. $(EXAMPLES)
-$(EXAMPLE_DEPSRCS): $(GO_PLUGIN) $(EXAMPLE_DEPS)
+$(EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(EXAMPLES)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. $(EXAMPLES)
+$(EXAMPLE_DEPSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(EXAMPLE_DEPS)
 	mkdir -p $(OUTPUT_DIR)
-	protoc -I $(PROTOC_INC_PATH) -I. --plugin=$(GO_PLUGIN) --go_out=plugins=grpc,paths=source_relative:$(OUTPUT_DIR) $(@:.pb.go=.proto)
+	protoc -I $(PROTOC_INC_PATH) -I. --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:$(OUTPUT_DIR) --go-grpc_out=paths=source_relative:$(OUTPUT_DIR) $(@:.pb.go=.proto)
 	cp $(OUTPUT_DIR)/$@ $@ || cp $(OUTPUT_DIR)/$@ $@
 
-$(RUNTIME_TEST_SRCS): $(GO_PLUGIN) $(RUNTIME_TEST_PROTO)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=plugins=grpc,paths=source_relative:. $(RUNTIME_TEST_PROTO)
+$(RUNTIME_TEST_SRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(RUNTIME_TEST_PROTO)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. $(RUNTIME_TEST_PROTO)
 
 $(APICONFIG_SRCS): $(GO_PLUGIN) $(APICONFIG_PROTO)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=paths=source_relative:. $(APICONFIG_PROTO)
@@ -181,8 +184,8 @@ $(EXAMPLE_OPENAPISRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_c
 $(EXAMPLE_OPENAPISRCS): $(OPENAPI_PLUGIN) $(OPENAPI_EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true$(ADDITIONAL_SWG_FLAGS):. $(OPENAPI_EXAMPLES)
 
-$(HELLOWORLD_SVCSRCS): $(GO_PLUGIN) $(HELLOWORLD)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=plugins=grpc,paths=source_relative:. $(HELLOWORLD)
+$(HELLOWORLD_SVCSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(HELLOWORLD)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. $(HELLOWORLD)
 
 $(HELLOWORLD_GWSRCS):
 $(HELLOWORLD_GWSRCS): $(GATEWAY_PLUGIN) $(HELLOWORLD)

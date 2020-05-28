@@ -10,7 +10,9 @@ import (
 
 // Implements of ResponseBodyServiceServer
 
-type responseBodyServer struct{}
+type responseBodyServer struct {
+	examples.UnimplementedResponseBodyServiceServer
+}
 
 func newResponseBodyServer() examples.ResponseBodyServiceServer {
 	return new(responseBodyServer)
