@@ -201,6 +201,28 @@ func (SecurityScheme_Flow) EnumDescriptor() ([]byte, []int) {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#swaggerObject
 //
+// Example:
+//
+//  option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+//    info: {
+//      title: "Echo API";
+//      version: "1.0";
+//      description: ";
+//      contact: {
+//        name: "gRPC-Gateway project";
+//        url: "https://github.com/grpc-ecosystem/grpc-gateway";
+//        email: "none@example.com";
+//      };
+//      license: {
+//        name: "BSD 3-Clause License";
+//        url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt";
+//      };
+//    };
+//    schemes: HTTPS;
+//    consumes: "application/json";
+//    produces: "application/json";
+//  };
+//
 type Swagger struct {
 	// Specifies the Swagger Specification version being used. It can be
 	// used by the Swagger UI and other clients to interpret the API listing. The
@@ -367,6 +389,27 @@ func (m *Swagger) GetExtensions() map[string]*_struct.Value {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#operationObject
 //
+// Example:
+//
+//  service EchoService {
+//    rpc Echo(SimpleMessage) returns (SimpleMessage) {
+//      option (google.api.http) = {
+//        get: "/v1/example/echo/{id}"
+//      };
+//
+//      option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
+//        summary: "Get a message.";
+//        operation_id: "getMessage";
+//        tags: "echo";
+//        responses: {
+//          key: "200"
+//            value: {
+//            description: "OK";
+//          }
+//        }
+//      };
+//    }
+//  }
 type Operation struct {
 	// A list of tags for API documentation control. Tags can be used for logical
 	// grouping of operations by resources or any other qualifier.
@@ -600,6 +643,26 @@ func (m *Response) GetExtensions() map[string]*_struct.Value {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#infoObject
 //
+// Example:
+//
+//  option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+//    info: {
+//      title: "Echo API";
+//      version: "1.0";
+//      description: ";
+//      contact: {
+//        name: "gRPC-Gateway project";
+//        url: "https://github.com/grpc-ecosystem/grpc-gateway";
+//        email: "none@example.com";
+//      };
+//      license: {
+//        name: "BSD 3-Clause License";
+//        url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt";
+//      };
+//    };
+//    ...
+//  };
+//
 type Info struct {
 	// The title of the application.
 	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
@@ -699,6 +762,21 @@ func (m *Info) GetExtensions() map[string]*_struct.Value {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#contactObject
 //
+// Example:
+//
+//  option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+//    info: {
+//      ...
+//      contact: {
+//        name: "gRPC-Gateway project";
+//        url: "https://github.com/grpc-ecosystem/grpc-gateway";
+//        email: "none@example.com";
+//      };
+//      ...
+//    };
+//    ...
+//  };
+//
 type Contact struct {
 	// The identifying name of the contact person/organization.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -763,6 +841,20 @@ func (m *Contact) GetEmail() string {
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#licenseObject
 //
+// Example:
+//
+//  option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+//    info: {
+//      ...
+//      license: {
+//        name: "BSD 3-Clause License";
+//        url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt";
+//      };
+//      ...
+//    };
+//    ...
+//  };
+//
 type License struct {
 	// The license name used for the API.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -816,6 +908,17 @@ func (m *License) GetUrl() string {
 // ExternalDocumentation object.
 //
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#externalDocumentationObject
+//
+// Example:
+//
+//  option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+//    ...
+//    external_docs: {
+//      description: "More about gRPC-Gateway";
+//      url: "https://github.com/grpc-ecosystem/grpc-gateway";
+//    }
+//    ...
+//  };
 //
 type ExternalDocumentation struct {
 	// A short description of the target documentation. GFM syntax can be used for
@@ -965,7 +1068,24 @@ func (m *Schema) GetExample() *any.Any {
 // See also: https://cswr.github.io/JsonSchema/spec/basic_types/,
 // https://github.com/json-schema-org/json-schema-spec/blob/master/schema.json
 //
-// TODO(ivucica): document fields
+// Example:
+//
+//  message SimpleMessage {
+//    option (grpc.gateway.protoc_gen_swagger.options.openapiv2_schema) = {
+//      json_schema: {
+//        title: "SimpleMessage"
+//        description: "A simple message."
+//        required: ["id"]
+//      }
+//    };
+//
+//    // Id represents the message identifier.
+//    string id = 1; [
+//        (grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {
+//          {description: "The unique identifier of the simple message."
+//        }];
+//  }
+//
 type JSONSchema struct {
 	// Ref is used to define an external reference to include in the message.
 	// This could be a fully qualified proto message reference, and that type must
