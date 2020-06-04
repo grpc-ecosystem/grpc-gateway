@@ -230,7 +230,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 	// Check for cyclical message reference:
 	isCycle := touchedIn[*msg.Name]
 	if isCycle {
-		return nil, fmt.Errorf("Recursive types are not allowed for query parameters, cycle found on %q", fieldType)
+		return nil, fmt.Errorf("recursive types are not allowed for query parameters, cycle found on %q", fieldType)
 	}
 
 	// Construct a new map with the message name so a cycle further down the recursive path can be detected.
