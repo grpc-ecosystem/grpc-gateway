@@ -407,6 +407,119 @@ func TestMessageToQueryParameters(t *testing.T) {
 	}
 }
 
+// TestMessagetoQueryParametersNoRecursive, is a check that cyclical references between messages
+//  are not falsely detected given previous known edge-cases.
+func TestMessageToQueryParametersNoRecursive(t *testing.T) {
+	type test struct {
+		MsgDescs []*protodescriptor.DescriptorProto
+		Message  string
+	}
+
+	tests := []test{
+		// First test:
+		// Here is a message that has two of another message adjacent to one another in a nested message.
+		// There is no loop but this was previouly falsely flagged as a cycle.
+		// Example proto:
+		// message NonRecursiveMessage {
+		//      string field = 1;
+		// }
+		// message BaseMessage {
+		//      NonRecursiveMessage first = 1;
+		//      NonRecursiveMessage second = 2;
+		// }
+		// message QueryMessage {
+		//      BaseMessage first = 1;
+		//      string second = 2;
+		// }
+		{
+			MsgDescs: []*protodescriptor.DescriptorProto{
+				&protodescriptor.DescriptorProto{
+					Name: proto.String("QueryMessage"),
+					Field: []*protodescriptor.FieldDescriptorProto{
+						{
+							Name:     proto.String("first"),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.BaseMessage"),
+							Number:   proto.Int32(1),
+						},
+						{
+							Name:   proto.String("second"),
+							Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(2),
+						},
+					},
+				},
+				&protodescriptor.DescriptorProto{
+					Name: proto.String("BaseMessage"),
+					Field: []*protodescriptor.FieldDescriptorProto{
+						{
+							Name:     proto.String("first"),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.NonRecursiveMessage"),
+							Number:   proto.Int32(1),
+						},
+						{
+							Name:     proto.String("second"),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.NonRecursiveMessage"),
+							Number:   proto.Int32(2),
+						},
+					},
+				},
+				// Note there is no recursive nature to this message
+				&protodescriptor.DescriptorProto{
+					Name: proto.String("NonRecursiveMessage"),
+					Field: []*protodescriptor.FieldDescriptorProto{
+						{
+							Name: proto.String("field"),
+							//Label:  protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+							Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+						},
+					},
+				},
+			},
+			Message: "QueryMessage",
+		},
+	}
+
+	for _, test := range tests {
+		reg := descriptor.NewRegistry()
+		msgs := []*descriptor.Message{}
+		for _, msgdesc := range test.MsgDescs {
+			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+		}
+		file := descriptor.File{
+			FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+				SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType:    test.MsgDescs,
+				Service:        []*protodescriptor.ServiceDescriptorProto{},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: msgs,
+		}
+		reg.Load(&plugin.CodeGeneratorRequest{
+			ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto},
+		})
+
+		message, err := reg.LookupMsg("", ".example."+test.Message)
+		if err != nil {
+			t.Fatalf("failed to lookup message: %s", err)
+		}
+
+		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		if err != nil {
+			t.Fatalf("No recursion error should be thrown: %s", err)
+		}
+	}
+}
+
 // TestMessagetoQueryParametersRecursive, is a check that cyclical references between messages
 //  are handled gracefully. The goal is to insure that attempts to add messages with cyclical
 //  references to query-parameters returns an error message.
