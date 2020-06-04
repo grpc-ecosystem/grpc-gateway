@@ -131,7 +131,7 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 //      touched map[string]bool
 // If a cycle is discovered, an error is returned, as cyclical data structures aren't allowed
 //  in query parameters.
-func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, touched map[string]bool) (params []openapiParameterObject, err error) {
+func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, touchedIn map[string]bool) (params []openapiParameterObject, err error) {
 	// make sure the parameter is not already listed as a path parameter
 	for _, pathParam := range pathParams {
 		if pathParam.Target == field {
@@ -226,13 +226,21 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 	if err != nil {
 		return nil, fmt.Errorf("unknown message type %s", fieldType)
 	}
+
 	// Check for cyclical message reference:
-	isCycle := touched[*msg.Name]
+	isCycle := touchedIn[*msg.Name]
 	if isCycle {
 		return nil, fmt.Errorf("recursive types are not allowed for query parameters, cycle found on %q", fieldType)
 	}
-	// Update map with the massage name so a cycle further down the recursive path can be detected.
-	touched[*msg.Name] = true
+
+	// Construct a new map with the message name so a cycle further down the recursive path can be detected.
+	// Do not keep anything in the original touched reference and do not pass that reference along.  This will
+	// prevent clobbering adjacent records while recursing.
+	touchedOut := make(map[string]bool)
+	for k, v := range touchedIn {
+		touchedOut[k] = v
+	}
+	touchedOut[*msg.Name] = true
 
 	for _, nestedField := range msg.Fields {
 		var fieldName string
@@ -241,7 +249,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		} else {
 			fieldName = field.GetName()
 		}
-		p, err := nestedQueryParams(msg, nestedField, prefix+fieldName+".", reg, pathParams, touched)
+		p, err := nestedQueryParams(msg, nestedField, prefix+fieldName+".", reg, pathParams, touchedOut)
 		if err != nil {
 			return nil, err
 		}
