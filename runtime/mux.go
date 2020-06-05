@@ -165,7 +165,8 @@ func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 	s.handlers[meth] = append([]handler{{pat: pat, h: h}}, s.handlers[meth]...)
 }
 
-// HandlePath Handle path pattern form outside
+
+// HandlePath allows users to configure custom path handlers.
 // refer : ../docs/_docs/inject_router.md
 func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) error {
 	compiler, err := httprule.Parse(pathPattern)
