@@ -6,8 +6,10 @@ import (
 	"net/http"
 	"net/textproto"
 	"strings"
-
+	
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
@@ -162,6 +164,17 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 // Handle associates "h" to the pair of HTTP method and path pattern.
 func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 	s.handlers[meth] = append([]handler{{pat: pat, h: h}}, s.handlers[meth]...)
+}
+
+// HandlePath Handle path pattern form outside
+func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) {
+	compiler, err := httprule.Parse(pathPattern)
+	if err != nil {
+		grpclog.Fatalf("Parse path to compiler failed: %v", err)
+	}
+	tp := compiler.Compile()
+	pattern := MustPattern(NewPattern(tp.Version, tp.OpCodes, tp.Pool, tp.Verb))
+	s.Handle(meth, pattern, h)
 }
 
 // ServeHTTP dispatches the request to the first handler whose pattern matches to r.Method and r.Path.
