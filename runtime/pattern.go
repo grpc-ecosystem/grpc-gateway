@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway/httprule"
 	"google.golang.org/grpc/grpclog"
 )
 
@@ -155,6 +156,16 @@ func MustPattern(p Pattern, err error) Pattern {
 		grpclog.Fatalf("Pattern initialization failed: %v", err)
 	}
 	return p
+}
+
+// NewPatternFromString compile path to Pattern
+func NewPatternFromString(src string) (Pattern, error) {
+	compiler, err := httprule.Parse(src)
+	if err != nil {
+		return Pattern{}, err
+	}
+	tp := compiler.Compile()
+	return NewPattern(tp.Version, tp.OpCodes, tp.Pool, tp.Verb)
 }
 
 // Match examines components if it matches to the Pattern.
