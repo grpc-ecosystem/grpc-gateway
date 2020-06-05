@@ -9,7 +9,6 @@ import (
 	
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
@@ -167,6 +166,7 @@ func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 }
 
 // HandlePath Handle path pattern form outside
+// refer : ../docs/_docs/inject_router.md
 func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) error {
 	compiler, err := httprule.Parse(pathPattern)
 	if err != nil {
@@ -178,6 +178,7 @@ func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) er
 		return fmt.Errorf("creating new pattern: %w", err)
 	}
 	s.Handle(meth, pattern, h)
+	return nil
 }
 
 // ServeHTTP dispatches the request to the first handler whose pattern matches to r.Method and r.Path.
