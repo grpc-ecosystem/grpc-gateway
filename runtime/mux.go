@@ -167,13 +167,16 @@ func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 }
 
 // HandlePath Handle path pattern form outside
-func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) {
+func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) error {
 	compiler, err := httprule.Parse(pathPattern)
 	if err != nil {
-		grpclog.Fatalf("Parse path to compiler failed: %v", err)
+		return fmt.Errorf("parsing path pattern: %w", err)
 	}
 	tp := compiler.Compile()
-	pattern := MustPattern(NewPattern(tp.Version, tp.OpCodes, tp.Pool, tp.Verb))
+	pattern, err := NewPattern(tp.Version, tp.OpCodes, tp.Pool, tp.Verb)
+	if err != nil {
+		return fmt.Errorf("creating new pattern: %w", err)
+	}
 	s.Handle(meth, pattern, h)
 }
 
