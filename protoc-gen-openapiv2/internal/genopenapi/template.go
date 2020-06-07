@@ -745,7 +745,13 @@ func isResourceName(prefix string) bool {
 
 func renderServices(services []*descriptor.Service, paths openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
+	svcBaseIdx := 0
+	var lastFile *descriptor.File = nil
 	for svcIdx, svc := range services {
+		if svc.File != lastFile {
+			lastFile = svc.File
+			svcBaseIdx = svcIdx
+		}
 		for methIdx, meth := range svc.Methods {
 			for bIdx, b := range meth.Bindings {
 				// Iterate over all the OpenAPI parameters
@@ -1005,7 +1011,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					}
 				}
 
-				methComments := protoComments(reg, svc.File, nil, "Service", int32(svcIdx), methProtoPath, int32(methIdx))
+				methComments := protoComments(reg, svc.File, nil, "Service", int32(svcIdx-svcBaseIdx), methProtoPath, int32(methIdx))
 				if err := updateOpenAPIDataFromComments(reg, operationObject, meth, methComments, false); err != nil {
 					panic(err)
 				}
