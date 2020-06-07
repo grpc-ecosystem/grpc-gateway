@@ -34,6 +34,8 @@ proto_library(
         "non_standard_names.proto",
         "response_body_service.proto",
         "stream.proto",
+        "swagger_merge_a.proto",
+        "swagger_merge_b.proto",
         "unannotated_echo_service.proto",
         "use_go_template.proto",
         "wrappers.proto",
