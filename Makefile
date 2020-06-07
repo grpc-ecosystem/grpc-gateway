@@ -61,6 +61,8 @@ OPENAPI_EXAMPLES=examples/internal/proto/examplepb/echo_service.proto \
 	 examples/internal/proto/examplepb/unannotated_echo_service.proto \
 	 examples/internal/proto/examplepb/use_go_template.proto \
 	 examples/internal/proto/examplepb/response_body_service.proto
+OPENAPIMERGE_EXAMPLES=examples/internal/proto/examplepb/openapi_merge_a.proto \
+	 examples/internal/proto/examplepb/openapi_merge_b.proto
 
 EXAMPLES=examples/internal/proto/examplepb/echo_service.proto \
 	 examples/internal/proto/examplepb/a_bit_of_everything.proto \
@@ -79,6 +81,7 @@ HELLOWORLD=examples/internal/helloworld/helloworld.proto
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
 EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
 EXAMPLE_OPENAPISRCS=$(OPENAPI_EXAMPLES:.proto=.swagger.json)
+EXAMPLE_OPENAPIMERGESRCS=examples/internal/proto/examplepb/openapi_merge.swagger.json
 EXAMPLE_DEPS=examples/internal/proto/pathenum/path_enum.proto examples/internal/proto/sub/message.proto examples/internal/proto/sub2/message.proto
 EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
 
@@ -184,6 +187,9 @@ $(EXAMPLE_OPENAPISRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_c
 $(EXAMPLE_OPENAPISRCS): $(OPENAPI_PLUGIN) $(OPENAPI_EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true$(ADDITIONAL_SWG_FLAGS):. $(OPENAPI_EXAMPLES)
 
+$(EXAMPLE_OPENAPIMERGESRCS): $(OPENAPI_PLUGIN) $(OPENAPIMERGE_EXAMPLES)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true,allow_merge=true,merge_file_name=$(EXAMPLE_OPENAPIMERGESRCS:.swagger.json=):. $(OPENAPIMERGE_EXAMPLES)
+
 $(HELLOWORLD_SVCSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(HELLOWORLD)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. $(HELLOWORLD)
 
@@ -213,7 +219,7 @@ $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 	@rm -f $(EXAMPLE_CLIENT_DIR)/responsebody/README.md \
 		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh
 
-examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_OPENAPISRCS) $(EXAMPLE_CLIENT_SRCS) $(HELLOWORLD_SVCSRCS) $(HELLOWORLD_GWSRCS)
+examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_OPENAPISRCS) $(EXAMPLE_OPENAPIMERGESRCS) $(EXAMPLE_CLIENT_SRCS) $(HELLOWORLD_SVCSRCS) $(HELLOWORLD_GWSRCS)
 testproto: $(RUNTIME_TEST_SRCS) $(APICONFIG_SRCS)
 test: examples testproto
 	go test -short -race ./...
