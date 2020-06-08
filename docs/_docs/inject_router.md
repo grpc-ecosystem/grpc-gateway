@@ -25,7 +25,7 @@ import (
 func main() {
 	ctx := context.TODO()
 	mux := runtime.NewServeMux()
-	// Register proto's GET /say/{name} url
+	// Register generated routes to mux
 	_ = pb.RegisterGreeterHandlerServer(ctx, mux, &GreeterServer{})
 	// Register custom route for  GET /hello/{name}
 	_ = mux.HandlePath("GET", "/hello/{name}", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
