@@ -7,8 +7,6 @@ title: Adding custom routes to the mux
 
 The gRPC-gateway allows you to add custom routes to the serve mux, for example if you want to support a use case that isn't supported by the grpc-gateway, like file uploads.
 
-It may become a good alternative to `gorilla/mux` or other golang router matcher.
-
 ## Example
 
 ```go
@@ -47,5 +45,3 @@ func (h *GreeterServer) SayHello(ctx context.Context, req *pb.HelloRequest) (*pb
 	}, nil
 }
 ```
-
-> Note: You may need change the `pb "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/helloworld"` to your code
