@@ -1,5 +1,6 @@
 ---
 category: documentation
+title: Adding custom routes to the mux
 ---
 
 # How do I use this?
