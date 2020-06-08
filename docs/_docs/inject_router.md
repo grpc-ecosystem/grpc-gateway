@@ -5,7 +5,7 @@ title: Adding custom routes to the mux
 
 # Adding custom routes to the mux
 
-The grpc gateway v2 allows you inject custom router in grpc gateway.
+The gRPC-gateway allows you to add custom routes to the serve mux, for example if you want to support a use case that isn't supported by the grpc-gateway, like file uploads.
 
 It may become a good alternative to `gorilla/mux` or other golang router matcher.
 
