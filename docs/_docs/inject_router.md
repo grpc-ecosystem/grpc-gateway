@@ -24,11 +24,17 @@ func main() {
 	ctx := context.TODO()
 	mux := runtime.NewServeMux()
 	// Register generated routes to mux
-	_ = pb.RegisterGreeterHandlerServer(ctx, mux, &GreeterServer{})
+	err := pb.RegisterGreeterHandlerServer(ctx, mux, &GreeterServer{})
+	if err != nil {
+		panic(err)
+	}
 	// Register custom route for  GET /hello/{name}
-	_ = mux.HandlePath("GET", "/hello/{name}", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	err = mux.HandlePath("GET", "/hello/{name}", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 		w.Write([]byte("hello " + pathParams["name"]))
 	})
+	if err != nil {
+		panic(err)
+	}
 	http.ListenAndServe(":8080", mux)
 }
 
