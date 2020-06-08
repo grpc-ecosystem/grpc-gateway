@@ -31,7 +31,7 @@ func main() {
 	_ = mux.HandlePath("GET", "/hello/{name}", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
 		w.Write([]byte("hello " + pathParams["name"]))
 	})
-	panic(http.ListenAndServe(":8080", mux))
+	http.ListenAndServe(":8080", mux)
 }
 
 
