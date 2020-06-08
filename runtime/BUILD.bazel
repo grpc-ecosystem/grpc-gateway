@@ -24,6 +24,7 @@ go_library(
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime",
     deps = [
+        "//internal/httprule:go_default_library",
         "//utilities:go_default_library",
         "@com_github_golang_protobuf//ptypes:go_default_library_gen",
         "@go_googleapis//google/api:httpbody_go_proto",
