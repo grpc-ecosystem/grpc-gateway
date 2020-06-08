@@ -3,7 +3,7 @@ category: documentation
 title: Adding custom routes to the mux
 ---
 
-# How do I use this?
+# Adding custom routes to the mux
 
 The grpc gateway v2 allows you inject custom router in grpc gateway.
 
