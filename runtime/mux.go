@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"net/textproto"
 	"strings"
-
+	
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -162,6 +163,22 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 // Handle associates "h" to the pair of HTTP method and path pattern.
 func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 	s.handlers[meth] = append([]handler{{pat: pat, h: h}}, s.handlers[meth]...)
+}
+
+// HandlePath allows users to configure custom path handlers.
+// refer: https://grpc-ecosystem.github.io/grpc-gateway/docs/inject_router.html
+func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) error {
+	compiler, err := httprule.Parse(pathPattern)
+	if err != nil {
+		return fmt.Errorf("parsing path pattern: %w", err)
+	}
+	tp := compiler.Compile()
+	pattern, err := NewPattern(tp.Version, tp.OpCodes, tp.Pool, tp.Verb)
+	if err != nil {
+		return fmt.Errorf("creating new pattern: %w", err)
+	}
+	s.Handle(meth, pattern, h)
+	return nil
 }
 
 // ServeHTTP dispatches the request to the first handler whose pattern matches to r.Method and r.Path.
