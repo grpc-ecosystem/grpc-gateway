@@ -374,3 +374,55 @@ func TestDefaultHeaderMatcher(t *testing.T) {
 		})
 	}
 }
+
+
+
+var defaultRouteMatcherTests = []struct {
+	name   string
+	method string
+	path   string
+	valid  bool
+}{
+	{
+		"Simple Endpoint",
+		"GET",
+		"/v1/{bucket}/do:action",
+		true,
+	},
+	{
+		"Complex Endpoint",
+		"POST",
+		"/v1/b/{bucket_name=buckets/*}/o/{name}",
+		true,
+	},
+	{
+		"Wildcard Endpoint",
+		"GET",
+		"/v1/endpoint/*",
+		true,
+	},
+	{
+		"Invalid Endpoint",
+		"POST",
+		"v1/b/:name/do",
+		false,
+	},
+}
+
+func TestServeMux_HandlePath(t *testing.T) {
+	mux := runtime.NewServeMux()
+	testFn := func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+	}
+	for _, tt := range defaultRouteMatcherTests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := mux.HandlePath(tt.method, tt.path, testFn)
+			if tt.valid && err != nil {
+				t.Errorf("The route %v with method %v and path %v invalid, got %v", tt.name, tt.method, tt.path, err)
+			}
+			if !tt.valid && err == nil {
+				t.Errorf("The route %v with method %v and path %v should be invalid", tt.name, tt.method, tt.path)
+			}
+		})
+	}
+
+}
