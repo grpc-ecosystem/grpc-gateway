@@ -12,7 +12,7 @@ require (
 	golang.org/x/net v0.0.0-20191002035440-2ec189313ef0 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sys v0.0.0-20191001151750-bb3f8db39f24 // indirect
-	google.golang.org/genproto v0.0.0-20200610104632-a5b850bcf112
+	google.golang.org/genproto v0.0.0-20200610212329-df9b449b0ff2
 	google.golang.org/grpc v1.29.1
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v0.0.0-20200527211525-6c9e30c09db2
 	google.golang.org/protobuf v1.24.0
