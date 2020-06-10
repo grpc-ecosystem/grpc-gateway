@@ -504,50 +504,32 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 // primitiveSchema returns a pair of "Type" and "Format" in JSON Schema for
 // the given primitive field type.
 // The last return parameter is true iff the field type is actually primitive.
+type schema struct {
+	ftype  string
+	format string
+}
+
+var primitiveSchemaMap = map[pbdescriptor.FieldDescriptorProto_Type]schema{
+	pbdescriptor.FieldDescriptorProto_TYPE_DOUBLE:   {"number", "double"},
+	pbdescriptor.FieldDescriptorProto_TYPE_FLOAT:    {"number", "float"},
+	pbdescriptor.FieldDescriptorProto_TYPE_INT64:    {"string", "int64"},
+	pbdescriptor.FieldDescriptorProto_TYPE_UINT64:   {"string", "uint64"},
+	pbdescriptor.FieldDescriptorProto_TYPE_INT32:    {"integer", "int32"},
+	pbdescriptor.FieldDescriptorProto_TYPE_FIXED64:  {"string", "uint64"},
+	pbdescriptor.FieldDescriptorProto_TYPE_FIXED32:  {"integer", "int64"},
+	pbdescriptor.FieldDescriptorProto_TYPE_BOOL:     {"boolean", "boolean"},
+	pbdescriptor.FieldDescriptorProto_TYPE_STRING:   {"string", ""},
+	pbdescriptor.FieldDescriptorProto_TYPE_BYTES:    {"string", "byte"},
+	pbdescriptor.FieldDescriptorProto_TYPE_UINT32:   {"integer", "int64"},
+	pbdescriptor.FieldDescriptorProto_TYPE_SFIXED32: {"integer", "int32"},
+	pbdescriptor.FieldDescriptorProto_TYPE_SFIXED64: {"string", "int64"},
+	pbdescriptor.FieldDescriptorProto_TYPE_SINT32:   {"integer", "int32"},
+	pbdescriptor.FieldDescriptorProto_TYPE_SINT64:   {"string", "int64"},
+}
+
 func primitiveSchema(t pbdescriptor.FieldDescriptorProto_Type) (ftype, format string, ok bool) {
-	switch t {
-	case pbdescriptor.FieldDescriptorProto_TYPE_DOUBLE:
-		return "number", "double", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_FLOAT:
-		return "number", "float", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_INT64:
-		return "string", "int64", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_UINT64:
-		// 64bit integer types are marshaled as string in the default JSONPb marshaler.
-		// TODO(yugui) Add an option to declare 64bit integers as int64.
-		//
-		// NOTE: uint64 is not a predefined format of integer type in Swagger spec.
-		// So we cannot expect that uint64 is commonly supported by swagger processor.
-		return "string", "uint64", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_INT32:
-		return "integer", "int32", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_FIXED64:
-		// Ditto.
-		return "string", "uint64", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_FIXED32:
-		// Ditto.
-		return "integer", "int64", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_BOOL:
-		return "boolean", "boolean", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_STRING:
-		// NOTE: in swagger specifition, format should be empty on string type
-		return "string", "", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_BYTES:
-		return "string", "byte", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_UINT32:
-		// Ditto.
-		return "integer", "int64", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_SFIXED32:
-		return "integer", "int32", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_SFIXED64:
-		return "string", "int64", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_SINT32:
-		return "integer", "int32", true
-	case pbdescriptor.FieldDescriptorProto_TYPE_SINT64:
-		return "string", "int64", true
-	default:
-		return "", "", false
-	}
+	schema, ok := primitiveSchemaMap[t]
+	return schema.ftype, schema.format, ok
 }
 
 // renderEnumerationsAsDefinition inserts enums into the definitions object.
