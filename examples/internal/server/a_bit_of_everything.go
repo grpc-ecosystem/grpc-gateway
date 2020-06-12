@@ -12,6 +12,7 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	examples "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/pathenum"
 	"github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/sub2"
 	"github.com/rogpeppe/fastuuid"
@@ -318,4 +319,12 @@ func (s *_ABitOfEverythingServer) CheckPostQueryParams(ctx context.Context, msg 
 
 func (s *_ABitOfEverythingServer) OverwriteResponseContentType(ctx context.Context, msg *empty.Empty) (*wrappers.StringValue, error) {
 	return &wrappers.StringValue{}, nil
+}
+
+func (s *_ABitOfEverythingServer) CheckExternalPathEnum(ctx context.Context, msg *pathenum.MessageWithPathEnum) (*empty.Empty, error) {
+	return &empty.Empty{}, nil
+}
+
+func (s *_ABitOfEverythingServer) CheckExternalNestedPathEnum(ctx context.Context, msg *pathenum.MessageWithNestedPathEnum) (*empty.Empty, error) {
+	return &empty.Empty{}, nil
 }
