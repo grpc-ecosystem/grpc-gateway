@@ -17,6 +17,7 @@ go_library(
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/server",
     deps = [
         "//examples/internal/proto/examplepb:go_default_library",
+        "//examples/internal/proto/pathenum:go_default_library",
         "//examples/internal/proto/sub:go_default_library",
         "//examples/internal/proto/sub2:go_default_library",
         "//internal/casing:go_default_library",

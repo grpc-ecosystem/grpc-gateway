@@ -535,6 +535,16 @@ service ABitOfEverythingService {
 			produces: "application/text"
 		};
 	}
+	rpc CheckExternalPathEnum(pathenum.MessageWithPathEnum) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			get: "/v2/{value}:check"
+		};
+	}
+	rpc CheckExternalNestedPathEnum(pathenum.MessageWithNestedPathEnum) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			get: "/v2/{value}:check"
+		};
+	}
 }
 
 // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
