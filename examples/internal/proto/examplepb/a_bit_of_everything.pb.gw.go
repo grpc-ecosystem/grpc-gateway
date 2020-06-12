@@ -2095,6 +2095,126 @@ func local_request_ABitOfEverythingService_OverwriteResponseContentType_0(ctx co
 
 }
 
+func request_ABitOfEverythingService_CheckExternalPathEnum_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq pathenum.MessageWithPathEnum
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		e   int32
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "value")
+	}
+
+	e, err = runtime.Enum(val, pathenum.PathEnum_value)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "value", err)
+	}
+
+	protoReq.Value = pathenum.PathEnum(e)
+
+	msg, err := client.CheckExternalPathEnum(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ABitOfEverythingService_CheckExternalPathEnum_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq pathenum.MessageWithPathEnum
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		e   int32
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "value")
+	}
+
+	e, err = runtime.Enum(val, pathenum.PathEnum_value)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "value", err)
+	}
+
+	protoReq.Value = pathenum.PathEnum(e)
+
+	msg, err := server.CheckExternalPathEnum(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_ABitOfEverythingService_CheckExternalNestedPathEnum_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq pathenum.MessageWithNestedPathEnum
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		e   int32
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "value")
+	}
+
+	e, err = runtime.Enum(val, pathenum.MessagePathEnum_NestedPathEnum_value)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "value", err)
+	}
+
+	protoReq.Value = pathenum.MessagePathEnum_NestedPathEnum(e)
+
+	msg, err := client.CheckExternalNestedPathEnum(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ABitOfEverythingService_CheckExternalNestedPathEnum_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq pathenum.MessageWithNestedPathEnum
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		e   int32
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["value"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "value")
+	}
+
+	e, err = runtime.Enum(val, pathenum.MessagePathEnum_NestedPathEnum_value)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "value", err)
+	}
+
+	protoReq.Value = pathenum.MessagePathEnum_NestedPathEnum(e)
+
+	msg, err := server.CheckExternalNestedPathEnum(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_CamelCaseServiceName_Empty_0(ctx context.Context, marshaler runtime.Marshaler, client CamelCaseServiceNameClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq empty.Empty
 	var metadata runtime.ServerMetadata
@@ -2555,6 +2675,46 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 		}
 
 		forward_ABitOfEverythingService_OverwriteResponseContentType_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ABitOfEverythingService_CheckExternalPathEnum_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ABitOfEverythingService_CheckExternalPathEnum_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ABitOfEverythingService_CheckExternalPathEnum_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ABitOfEverythingService_CheckExternalNestedPathEnum_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ABitOfEverythingService_CheckExternalNestedPathEnum_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ABitOfEverythingService_CheckExternalNestedPathEnum_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -3067,6 +3227,46 @@ func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runt
 
 	})
 
+	mux.Handle("GET", pattern_ABitOfEverythingService_CheckExternalPathEnum_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ABitOfEverythingService_CheckExternalPathEnum_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ABitOfEverythingService_CheckExternalPathEnum_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ABitOfEverythingService_CheckExternalNestedPathEnum_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ABitOfEverythingService_CheckExternalNestedPathEnum_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ABitOfEverythingService_CheckExternalNestedPathEnum_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -3114,6 +3314,10 @@ var (
 	pattern_ABitOfEverythingService_CheckPostQueryParams_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"v1", "example", "a_bit_of_everything", "params", "post", "string_value"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_ABitOfEverythingService_OverwriteResponseContentType_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v2", "example", "overwriteresponsecontenttype"}, "", runtime.AssumeColonVerbOpt(true)))
+
+	pattern_ABitOfEverythingService_CheckExternalPathEnum_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"v2", "value"}, "check", runtime.AssumeColonVerbOpt(true)))
+
+	pattern_ABitOfEverythingService_CheckExternalNestedPathEnum_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"v2", "value"}, "check", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
@@ -3160,6 +3364,10 @@ var (
 	forward_ABitOfEverythingService_CheckPostQueryParams_0 = runtime.ForwardResponseMessage
 
 	forward_ABitOfEverythingService_OverwriteResponseContentType_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_CheckExternalPathEnum_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_CheckExternalNestedPathEnum_0 = runtime.ForwardResponseMessage
 )
 
 // RegisterCamelCaseServiceNameHandlerFromEndpoint is same as RegisterCamelCaseServiceNameHandler but

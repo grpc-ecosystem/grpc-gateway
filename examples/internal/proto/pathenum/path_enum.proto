@@ -13,3 +13,11 @@ message MessagePathEnum {
 		JKL = 1;
 	}
 }
+
+message MessageWithPathEnum {
+	PathEnum value = 1;
+}
+
+message MessageWithNestedPathEnum {
+	MessagePathEnum.NestedPathEnum value = 1;
+}
