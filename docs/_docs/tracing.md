@@ -98,7 +98,7 @@ openCensusHandler := &ochttp.Handler{
 4. No global configuration means we have to use the [per span sampler](https://opencensus.io/tracing/sampling/#per-span-sampler)
 
 
-##### A method we __want__ to trace
+##### A method we want to trace
 ```go
 func (s *service) Name(ctx context.Context, req *pb.Request) (*pb.Response, error) {
     // Here we add the span ourselves.
@@ -110,7 +110,7 @@ func (s *service) Name(ctx context.Context, req *pb.Request) (*pb.Response, erro
 }
 ```
 
-##### A method we __do not__ wish to trace
+##### A method we do not wish to trace
 ```go
 func (s *service) Check(ctx context.Context, in *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
     // Note no span here.
