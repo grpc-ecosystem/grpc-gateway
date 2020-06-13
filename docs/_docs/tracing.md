@@ -12,7 +12,7 @@ This example uses the AWS-Xray exporter with a global trace setting. Note that A
 
 1. Add the following imports
 
-```
+```go
 xray "contrib.go.opencensus.io/exporter/aws"
 "go.opencensus.io/plugin/ocgrpc"
 "go.opencensus.io/plugin/ochttp"
@@ -21,7 +21,7 @@ xray "contrib.go.opencensus.io/exporter/aws"
 
 2. Register the AWS X-ray exporter for the GRPC server
 
-```
+```go
 xrayExporter, err := xray.NewExporter(
     xray.WithVersion("latest"),
     // Add your AWS region.
@@ -39,7 +39,7 @@ trace.RegisterExporter(xrayExporter)
 
 3. Add a global tracing configuration
 
-```
+```go
 // Always trace in this example.
 // In production this can be set to a trace.ProbabilitySampler.
 trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
@@ -47,7 +47,7 @@ trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
 
 4. Add `ocgrpc.ClientHandler` for tracing the grpc client calls
 
-```
+```go
 // Example using DialContext
 conn, err := grpc.DialContext(
     // Other options goes here.
@@ -57,7 +57,7 @@ conn, err := grpc.DialContext(
 ```
 
 5. Wrap the gateway mux with the OpenCensus HTTP handler
-```
+```go
 gwmux := runtime.NewServeMux()
 
 openCensusHandler := &ochttp.Handler{
@@ -79,7 +79,7 @@ In this example we have added the [GRPC Health Checking Protocol](https://github
 
 2. Since we are not using a global configuration we can decide what paths we want to trace
 
-```
+```go
 gwmux := runtime.NewServeMux()
 
 openCensusHandler := &ochttp.Handler{
@@ -99,7 +99,7 @@ openCensusHandler := &ochttp.Handler{
 
 
 ##### A method we __want__ to trace
-```
+```go
 func (s *service) Name(ctx context.Context, req *pb.Request) (*pb.Response, error) {
     // Here we add the span ourselves.
     ctx, span := trace.StartSpan(ctx, "name.to.use.in.trace", trace.
@@ -111,9 +111,67 @@ func (s *service) Name(ctx context.Context, req *pb.Request) (*pb.Response, erro
 ```
 
 ##### A method we __do not__ wish to trace
-```
+```go
 func (s *service) Check(ctx context.Context, in *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
     // Note no span here.
     return &health.HealthCheckResponse{Status: health.HealthCheckResponse_SERVING}, nil
+}
+```
+
+## OpenTracing Support
+
+If your project uses [OpenTracing](https://github.com/opentracing/opentracing-go) and you'd like spans to propagate through the gateway, you can add some middleware which parses the incoming HTTP headers to create a new span correctly.
+
+```go
+import (
+	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
+)
+
+var grpcGatewayTag = opentracing.Tag{Key: string(ext.Component), Value: "grpc-gateway"}
+
+func tracingWrapper(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		parentSpanContext, err := opentracing.GlobalTracer().Extract(
+			opentracing.HTTPHeaders,
+			opentracing.HTTPHeadersCarrier(r.Header))
+		if err == nil || err == opentracing.ErrSpanContextNotFound {
+			serverSpan := opentracing.GlobalTracer().StartSpan(
+				"ServeHTTP",
+				// this is magical, it attaches the new span to the parent parentSpanContext, and creates an unparented one if empty.
+				ext.RPCServerOption(parentSpanContext),
+				grpcGatewayTag,
+			)
+			r = r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
+			defer serverSpan.Finish()
+		}
+		h.ServeHTTP(w, r)
+	})
+}
+
+// Then just wrap the mux returned by runtime.NewServeMux() like this
+if err := http.ListenAndServe(":8080", tracingWrapper(mux)); err != nil {
+	log.Fatalf("failed to start gateway server on 8080: %v", err)
+}
+```
+
+Finally, don't forget to add a tracing interceptor when registering
+the services. E.g.
+
+```go
+import (
+	"google.golang.org/grpc"
+	"github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+)
+
+opts := []grpc.DialOption{
+	grpc.WithUnaryInterceptor(
+		grpc_opentracing.UnaryClientInterceptor(
+			grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
+		),
+	),
+}
+if err := pb.RegisterMyServiceHandlerFromEndpoint(ctx, mux, serviceEndpoint, opts); err != nil {
+	log.Fatalf("could not register HTTP service: %v", err)
 }
 ```
