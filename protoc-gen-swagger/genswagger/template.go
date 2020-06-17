@@ -65,7 +65,6 @@ var wktSchemas = map[string]schemaCore{
 	},
 	".google.protobuf.BoolValue": schemaCore{
 		Type:   "boolean",
-		Format: "boolean",
 	},
 	".google.protobuf.Empty": schemaCore{},
 	".google.protobuf.Struct": schemaCore{
