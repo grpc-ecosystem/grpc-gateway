@@ -2111,7 +2111,6 @@ func TestSchemaOfField(t *testing.T) {
 			refs: make(refMap),
 			expected: schemaCore{
 				Type:   "boolean",
-				Format: "boolean",
 			},
 		},
 		{

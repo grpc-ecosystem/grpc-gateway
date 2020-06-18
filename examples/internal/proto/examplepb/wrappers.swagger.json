@@ -50,8 +50,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "boolean",
-              "format": "boolean"
+              "type": "boolean"
             }
           },
           "default": {
@@ -67,8 +66,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "boolean",
-              "format": "boolean"
+              "type": "boolean"
             }
           }
         ],
@@ -404,8 +402,7 @@
           "format": "double"
         },
         "boolValue": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "uint32Value": {
           "type": "integer",
