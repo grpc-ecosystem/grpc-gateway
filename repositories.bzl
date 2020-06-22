@@ -84,8 +84,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_grpc",
         importpath = "google.golang.org/grpc",
-        sum = "h1:EC2SB8S04d2r73uptxphDSUG+kTKVgjRPF+N3xpxRB4=",
-        version = "v1.29.1",
+        sum = "h1:M5a8xTlYTxwMn5ZFkwhRabsygDY5G8TYLyQDBxJNAxE=",
+        version = "v1.30.0",
     )
     go_repository(
         name = "org_golang_x_lint",
@@ -133,8 +133,8 @@ def go_repositories():
     go_repository(
         name = "com_github_google_go_cmp",
         importpath = "github.com/google/go-cmp",
-        sum = "h1:+dTQ8DZQJz0Mb/HjFlkptS1FeQ4cWSnN941F8aEG4SQ=",
-        version = "v0.2.0",
+        sum = "h1:xsAVV57WRhGj6kEIi8ReJzQlHHqcBYCElAvkovg3B/4=",
+        version = "v0.4.0",
     )
     go_repository(
         name = "org_golang_x_crypto",
@@ -183,4 +183,10 @@ def go_repositories():
         importpath = "github.com/cncf/udpa/go",
         sum = "h1:WBZRG4aNOuI15bLRrCgN8fCq8E5Xuty6jGbmSNEvSsU=",
         version = "v0.0.0-20191209042840-269d4d468f6f",
+    )
+    go_repository(
+        name = "org_golang_x_xerrors",
+        importpath = "golang.org/x/xerrors",
+        sum = "h1:E7g+9GITq07hpfrRu66IVDexMakfv52eLZ2CXBWiKr4=",
+        version = "v0.0.0-20191204190536-9bdfabe68543",
     )
