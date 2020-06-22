@@ -160,6 +160,11 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		return
 	}
 
+	var callback = req.URL.Query().Get("callback")
+	if callback != "" {
+		buf = []byte(fmt.Sprintf("%s(%s)", callback, string(buf)))
+	}
+
 	if _, err = w.Write(buf); err != nil {
 		grpclog.Infof("Failed to write response: %v", err)
 	}
