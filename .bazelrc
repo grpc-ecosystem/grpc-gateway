@@ -1,7 +1,0 @@
-startup --output_base /root/.cache/_grpc_gateway_bazel
-build --test_output errors
-build --features race
-# Workaround https://github.com/bazelbuild/bazel/issues/3645
-# See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
-build --local_ram_resources=4096 # Circle Docker runners have 4G of memory
-build --local_cpu_resources=2    # Circle Docker runners have 2 vCPU
