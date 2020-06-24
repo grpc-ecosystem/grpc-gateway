@@ -11,7 +11,7 @@ Here's the recommended process of contribution.
    - [Go Code Review Comments](https://golang.org/wiki/CodeReviewComments)
 1. Make sure that `go test ./...` passes.
 1. Sign [a Contributor License Agreement](https://cla.developers.google.com/clas)
-1. Open a pull request in Github
+1. Open a pull request in GitHub
 
 When you work on a larger contribution, it is also recommended that you get in touch
 with us through the issue tracker.
@@ -20,9 +20,9 @@ with us through the issue tracker.
 
 All submissions, including submissions by project members, require review.
 
-### I want to regenerate the files after making changes!
+### I want to regenerate the files after making changes
 
-Great, it should be as simple as thus (run from the root of the directory):
+Great! It should be as simple as this (run from the root of the directory):
 
 ```bash
 docker run -v $(pwd):/src/grpc-gateway --rm docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14 \
@@ -37,8 +37,8 @@ docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --r
         bazel run :buildifier'
 ```
 
-You may need to authenticate with github to pull `docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env`.
-You can do this by following the steps on the [Github Package docs](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-docker-for-use-with-github-packages#authenticating-to-github-packages).
+You may need to authenticate with GitHub to pull `docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env`.
+You can do this by following the steps on the [GitHub Package docs](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-docker-for-use-with-github-packages#authenticating-to-github-packages).
 
 If this has resulted in some file changes in the repo, please ensure you check those in with your merge request.
 
@@ -50,7 +50,7 @@ To make a release, follow these steps:
     recommend whether the new release should be a patch or minor release.
     See [CircleCI](https://app.circleci.com/pipelines/github/grpc-ecosystem/grpc-gateway/126/workflows/255a8a04-de9c-46a9-a66b-f107d2b39439/jobs/6428)
     for an example.
-1. Generate a Github token with `repo` access.
+1. Generate a GitHub token with `repo` access.
 1. Create a new branch and edit the Makefile `changelog` job, settings
     the `future-release=` variable to the name of the version you plan to release
 1. Run `CHANGELOG_GITHUB_TOKEN=<yourtoken> make changelog`
@@ -62,5 +62,5 @@ To make a release, follow these steps:
       UI](https://github.com/grpc-ecosystem/grpc-gateway/releases/new).
    1. If you create a release using the web UI you can publish it as a draft and have it
       reviewed by another maintainer.
-1. (Optional) Delete your Github token again.
+1. (Optional) Delete your GitHub token again.
 1. (Required) Sit back and pat yourself on the back for a job well done :clap:.
