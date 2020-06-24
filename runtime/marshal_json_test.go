@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	emptypb "github.com/golang/protobuf/ptypes/empty"
-	structpb "github.com/golang/protobuf/ptypes/struct"
 	timestamppb "github.com/golang/protobuf/ptypes/timestamp"
 	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/google/go-cmp/cmp"
@@ -251,14 +250,6 @@ var (
 		{
 			data: &wrapperspb.Int32Value{Value: 123},
 			json: "123",
-		},
-		{
-			data: &structpb.Value{
-				Kind: &structpb.Value_StringValue{
-					StringValue: "abc",
-				},
-			},
-			json: `"abc"`,
 		},
 	}
 )
