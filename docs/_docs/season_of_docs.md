@@ -89,13 +89,13 @@ Material:
 ### Improve the contributor's guide
 
 This is currently split between
-[CONTRIBUTING.md]
-and the [issue template](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/ISSUE_TEMPLATE.md).
+[CONTRIBUTING.md](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md)
+and the [issue templates](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/.github/ISSUE_TEMPLATE).
 Both of these are a little ad-hoc and could do with a fresh pair of eyes.
 
 Material:
-  - [Current CONTRIBUTING.md](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/CHANGELOG.md)
-  - [Current issue template](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/ISSUE_TEMPLATE.md)
+  - [Current CONTRIBUTING.md](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md)
+  - [Current issue templates](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/.github/ISSUE_TEMPLATE)
 
 ### Write a v2.0.0 migration guide
 
