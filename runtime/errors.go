@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"net/http"
+	"strings"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -71,7 +72,7 @@ func HTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.R
 // If otherwise, it replies with http.StatusInternalServerError.
 //
 // The response body written by this function is a Status message marshaled by the Marshaler.
-func DefaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, _ *http.Request, err error) {
+func DefaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, r *http.Request, err error) {
 	// return Internal when Marshal failed
 	const fallback = `{"code": 13, "message": "failed to marshal error message"}`
 
@@ -79,6 +80,7 @@ func DefaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marsh
 	pb := s.Proto()
 
 	w.Header().Del("Trailer")
+	w.Header().Del("Transfer-Encoding")
 
 	contentType := marshaler.ContentType(pb)
 	w.Header().Set("Content-Type", contentType)
@@ -99,14 +101,24 @@ func DefaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marsh
 	}
 
 	handleForwardResponseServerMetadata(w, mux, md)
-	handleForwardResponseTrailerHeader(w, md)
+
+	var wantsTrailers bool
+
+	if te := r.Header.Get("TE"); strings.Contains(strings.ToLower(te), "trailers") {
+		wantsTrailers = true
+		handleForwardResponseTrailerHeader(w, md)
+		w.Header().Set("Transfer-Encoding", "chunked")
+	}
+
 	st := HTTPStatusFromCode(s.Code())
 	w.WriteHeader(st)
 	if _, err := w.Write(buf); err != nil {
 		grpclog.Infof("Failed to write response: %v", err)
 	}
 
-	handleForwardResponseTrailer(w, md)
+	if wantsTrailers {
+		handleForwardResponseTrailer(w, md)
+	}
 }
 
 func DefaultStreamErrorHandler(_ context.Context, err error) *status.Status {
