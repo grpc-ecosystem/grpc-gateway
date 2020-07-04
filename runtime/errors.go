@@ -155,6 +155,11 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 
 	handleForwardResponseServerMetadata(w, mux, md)
 
+	//RFC 7230 https://tools.ietf.org/html/rfc7230#section-4.1.2
+	//Unless the request includes a TE header field indicating "trailers"
+	//is acceptable, as described in Section 4.3, a server SHOULD NOT
+	//generate trailer fields that it believes are necessary for the user
+	//agent to receive.
 	var wantsTrailers bool
 
 	if te := r.Header.Get("TE"); strings.Contains(strings.ToLower(te), "trailers") {
