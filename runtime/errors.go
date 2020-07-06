@@ -66,12 +66,12 @@ func HTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.R
 	mux.errorHandler(ctx, mux, marshaler, w, r, err)
 }
 
-// defaultHTTPErrorHandler is the default error handler.
+// DefaultHTTPErrorHandler is the default error handler.
 // If "err" is a gRPC Status, the function replies with the status code mapped by HTTPStatusFromCode.
 // If otherwise, it replies with http.StatusInternalServerError.
 //
 // The response body written by this function is a Status message marshaled by the Marshaler.
-func defaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, _ *http.Request, err error) {
+func DefaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, _ *http.Request, err error) {
 	// return Internal when Marshal failed
 	const fallback = `{"code": 13, "message": "failed to marshal error message"}`
 
@@ -109,6 +109,6 @@ func defaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marsh
 	handleForwardResponseTrailer(w, md)
 }
 
-func defaultStreamErrorHandler(_ context.Context, err error) *status.Status {
+func DefaultStreamErrorHandler(_ context.Context, err error) *status.Status {
 	return status.Convert(err)
 }
