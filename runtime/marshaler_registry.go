@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"errors"
+	"mime"
 	"net/http"
 )
 
@@ -31,7 +32,11 @@ func MarshalerForRequest(mux *ServeMux, r *http.Request) (inbound Marshaler, out
 	}
 
 	for _, contentTypeVal := range r.Header[contentTypeHeader] {
-		if m, ok := mux.marshalers.mimeMap[contentTypeVal]; ok {
+		contentType, _, err := mime.ParseMediaType(contentTypeVal)
+		if err != nil {
+			continue
+		}
+		if m, ok := mux.marshalers.mimeMap[contentType]; ok {
 			inbound = m
 			break
 		}
