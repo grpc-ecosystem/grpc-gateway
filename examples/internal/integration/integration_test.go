@@ -275,7 +275,8 @@ func TestABE(t *testing.T) {
 	testABEBulkCreate(t, 8088)
 	testABEBulkCreateWithError(t, 8088)
 	testABELookup(t, 8088)
-	testABELookupNotFound(t, 8088)
+	testABELookupNotFound(t, 8088, true)
+	testABELookupNotFound(t, 8088, false)
 	testABEList(t, 8088)
 	testABEDownload(t, 8088)
 	testABEBulkEcho(t, 8088)
@@ -921,13 +922,25 @@ func getABE(t *testing.T, port int, uuid string) *examplepb.ABitOfEverything {
 	return &getRestatuspbody
 }
 
-func testABELookupNotFound(t *testing.T, port int) {
+func testABELookupNotFound(t *testing.T, port int, useTrailers bool) {
 	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	uuid := "not_exist"
 	apiURL = fmt.Sprintf("%s/%s", apiURL, uuid)
-	resp, err := http.Get(apiURL)
+
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
-		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	if useTrailers {
+		req.Header.Set("TE", "trailers")
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("client.Do(%v) failed with %v; want success", req, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -963,11 +976,22 @@ func testABELookupNotFound(t *testing.T, port int) {
 	if got, want := resp.Header.Get("Grpc-Metadata-Uuid"), uuid; got != want {
 		t.Errorf("Grpc-Metadata-Uuid was %s, wanted %s", got, want)
 	}
-	if got, want := resp.Trailer.Get("Grpc-Trailer-Foo"), "foo2"; got != want {
-		t.Errorf("Grpc-Trailer-Foo was %q, wanted %q", got, want)
+
+	var trailers = map[bool]map[string]string{
+		true: {
+			"Grpc-Trailer-Foo": "foo2",
+			"Grpc-Trailer-Bar": "bar2",
+		},
+		false: {
+			"Grpc-Trailer-Foo": "",
+			"Grpc-Trailer-Bar": "",
+		},
 	}
-	if got, want := resp.Trailer.Get("Grpc-Trailer-Bar"), "bar2"; got != want {
-		t.Errorf("Grpc-Trailer-Bar was %q, wanted %q", got, want)
+
+	for trailer, want := range trailers[useTrailers] {
+		if got := resp.Trailer.Get(trailer); got != want {
+			t.Errorf("%s was %q, wanted %q", trailer, got, want)
+		}
 	}
 }
 
