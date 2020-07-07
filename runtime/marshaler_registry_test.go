@@ -2,6 +2,7 @@ package runtime_test
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"testing"
@@ -27,23 +28,27 @@ func TestMarshalerForRequest(t *testing.T) {
 		t.Errorf("out = %#v; want a runtime.HTTPBodyMarshaler", in)
 	}
 
-	var marshalers [3]dummyMarshaler
+	marshalers := []dummyMarshaler{0, 1, 2}
 	specs := []struct {
 		opt runtime.ServeMuxOption
 
 		wantIn  runtime.Marshaler
 		wantOut runtime.Marshaler
 	}{
+		// The option with wildcard overwrites the default configuration
 		{
 			opt:     runtime.WithMarshalerOption(runtime.MIMEWildcard, &marshalers[0]),
 			wantIn:  &marshalers[0],
 			wantOut: &marshalers[0],
 		},
+		// You can specify a marshaler for a specific MIME type.
+		// The output marshaler follows the input one unless specified.
 		{
 			opt:     runtime.WithMarshalerOption("application/x-in", &marshalers[1]),
 			wantIn:  &marshalers[1],
-			wantOut: &marshalers[0],
+			wantOut: &marshalers[1],
 		},
+		// You can also separately specify an output marshaler
 		{
 			opt:     runtime.WithMarshalerOption("application/x-out", &marshalers[2]),
 			wantIn:  &marshalers[1],
@@ -67,8 +72,9 @@ func TestMarshalerForRequest(t *testing.T) {
 	}
 
 	r.Header.Set("Content-Type", "application/x-another")
+	r.Header.Set("Accept", "application/x-another")
 	in, out = runtime.MarshalerForRequest(mux, r)
-	if got, want := in, &marshalers[1]; got != want {
+	if got, want := in, &marshalers[0]; got != want {
 		t.Errorf("in = %#v; want %#v", got, want)
 	}
 	if got, want := out, &marshalers[0]; got != want {
@@ -76,7 +82,7 @@ func TestMarshalerForRequest(t *testing.T) {
 	}
 }
 
-type dummyMarshaler struct{}
+type dummyMarshaler int
 
 func (dummyMarshaler) ContentType(_ interface{}) string { return "" }
 func (dummyMarshaler) Marshal(interface{}) ([]byte, error) {
@@ -92,6 +98,10 @@ func (dummyMarshaler) NewDecoder(r io.Reader) runtime.Decoder {
 }
 func (dummyMarshaler) NewEncoder(w io.Writer) runtime.Encoder {
 	return dummyEncoder{}
+}
+
+func (m dummyMarshaler) GoString() string {
+	return fmt.Sprintf("dummyMarshaler(%d)", m)
 }
 
 type dummyDecoder struct{}
