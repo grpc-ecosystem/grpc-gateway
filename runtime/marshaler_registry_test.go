@@ -15,11 +15,11 @@ func TestMarshalerForRequest(t *testing.T) {
 	if err != nil {
 		t.Fatalf(`http.NewRequest("GET", "http://example.com", nil) failed with %v; want success`, err)
 	}
-	r.Header.Set("Accept", "application/x-out")
-	r.Header.Set("Content-Type", "application/x-in")
 
 	mux := runtime.NewServeMux()
 
+	r.Header.Set("Accept", "application/x-out")
+	r.Header.Set("Content-Type", "application/x-in")
 	in, out := runtime.MarshalerForRequest(mux, r)
 	if _, ok := in.(*runtime.JSONPb); !ok {
 		t.Errorf("in = %#v; want a runtime.JSONPb", in)
@@ -69,6 +69,15 @@ func TestMarshalerForRequest(t *testing.T) {
 		if got, want := out, spec.wantOut; got != want {
 			t.Errorf("out = %#v; want %#v", got, want)
 		}
+	}
+
+	r.Header.Set("Content-Type", "application/x-in; charset=UTF-8")
+	in, out = runtime.MarshalerForRequest(mux, r)
+	if got, want := in, &marshalers[1]; got != want {
+		t.Errorf("in = %#v; want %#v", got, want)
+	}
+	if got, want := out, &marshalers[2]; got != want {
+		t.Errorf("out = %#v; want %#v", got, want)
 	}
 
 	r.Header.Set("Content-Type", "application/x-another")
