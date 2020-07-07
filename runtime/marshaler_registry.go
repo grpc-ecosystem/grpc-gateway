@@ -2,8 +2,10 @@ package runtime
 
 import (
 	"errors"
+	"mime"
 	"net/http"
 
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -42,7 +44,12 @@ func MarshalerForRequest(mux *ServeMux, r *http.Request) (inbound Marshaler, out
 	}
 
 	for _, contentTypeVal := range r.Header[contentTypeHeader] {
-		if m, ok := mux.marshalers.mimeMap[contentTypeVal]; ok {
+		contentType, _, err := mime.ParseMediaType(contentTypeVal)
+		if err != nil {
+			grpclog.Infof("Failed to parse Content-Type %s: %v", contentTypeVal, err)
+			continue
+		}
+		if m, ok := mux.marshalers.mimeMap[contentType]; ok {
 			inbound = m
 			break
 		}
