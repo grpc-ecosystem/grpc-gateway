@@ -213,7 +213,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
@@ -393,7 +393,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
@@ -513,7 +513,7 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
 
-		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
 		if err != nil {
 			t.Fatalf("No recursion error should be thrown: %s", err)
 		}
@@ -530,70 +530,70 @@ func TestMessageToQueryParametersRecursive(t *testing.T) {
 	}
 
 	tests := []test{
-                // First test:
-                // Here we test that a message that references it self through a field will return an error.
-                // Example proto:
-                // message DirectRecursiveMessage {
-                //      DirectRecursiveMessage nested = 1;
-                // }
+		// First test:
+		// Here we test that a message that references it self through a field will return an error.
+		// Example proto:
+		// message DirectRecursiveMessage {
+		//      DirectRecursiveMessage nested = 1;
+		// }
 		{
 			MsgDescs: []*protodescriptor.DescriptorProto{
 				&protodescriptor.DescriptorProto{
 					Name: proto.String("DirectRecursiveMessage"),
 					Field: []*protodescriptor.FieldDescriptorProto{
-                                                {
-                                                        Name:     proto.String("nested"),
-                                                        Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-                                                        Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-                                                        TypeName: proto.String(".example.DirectRecursiveMessage"),
-                                                        Number:   proto.Int32(1),
+						{
+							Name:     proto.String("nested"),
+							Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.DirectRecursiveMessage"),
+							Number:   proto.Int32(1),
 						},
 					},
 				},
 			},
 			Message: "DirectRecursiveMessage",
 		},
-                // Second test:
-                // Here we test that a cycle through multiple messages is detected and that an error is returned.
-                // Sample:
-                // message Root { NodeMessage nested = 1; }
-                // message NodeMessage { CycleMessage nested = 1; }
-                // message CycleMessage { Root nested = 1; }
+		// Second test:
+		// Here we test that a cycle through multiple messages is detected and that an error is returned.
+		// Sample:
+		// message Root { NodeMessage nested = 1; }
+		// message NodeMessage { CycleMessage nested = 1; }
+		// message CycleMessage { Root nested = 1; }
 		{
 			MsgDescs: []*protodescriptor.DescriptorProto{
 				&protodescriptor.DescriptorProto{
 					Name: proto.String("RootMessage"),
 					Field: []*protodescriptor.FieldDescriptorProto{
-                                                {
-                                                        Name:     proto.String("nested"),
-                                                        Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-                                                        Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-                                                        TypeName: proto.String(".example.NodeMessage"),
-                                                        Number:   proto.Int32(1),
+						{
+							Name:     proto.String("nested"),
+							Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.NodeMessage"),
+							Number:   proto.Int32(1),
 						},
 					},
 				},
 				&protodescriptor.DescriptorProto{
 					Name: proto.String("NodeMessage"),
 					Field: []*protodescriptor.FieldDescriptorProto{
-                                                {
-                                                        Name:     proto.String("nested"),
-                                                        Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-                                                        Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-                                                        TypeName: proto.String(".example.CycleMessage"),
-                                                        Number:   proto.Int32(1),
+						{
+							Name:     proto.String("nested"),
+							Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.CycleMessage"),
+							Number:   proto.Int32(1),
 						},
 					},
 				},
 				&protodescriptor.DescriptorProto{
 					Name: proto.String("CycleMessage"),
 					Field: []*protodescriptor.FieldDescriptorProto{
-                                                {
-                                                        Name:     proto.String("nested"),
-                                                        Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-                                                        Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-                                                        TypeName: proto.String(".example.RootMessage"),
-                                                        Number:   proto.Int32(1),
+						{
+							Name:     proto.String("nested"),
+							Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+							Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.RootMessage"),
+							Number:   proto.Int32(1),
 						},
 					},
 				},
@@ -631,7 +631,7 @@ func TestMessageToQueryParametersRecursive(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
 		if err == nil {
 			t.Fatalf("It should not be allowed to have recursive query parameters")
 		}
@@ -738,7 +738,7 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
@@ -1648,6 +1648,177 @@ func TestApplyTemplateRequestWithUnusedReferences(t *testing.T) {
 	}
 }
 
+func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
+	bookDesc := &protodescriptor.DescriptorProto{
+		Name: proto.String("Book"),
+		Field: []*protodescriptor.FieldDescriptorProto{
+			{
+				Name:   proto.String("name"),
+				Label:  protodescriptor.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+			{
+				Name:   proto.String("id"),
+				Label:  protodescriptor.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(2),
+			},
+		},
+	}
+	createDesc := &protodescriptor.DescriptorProto{
+		Name: proto.String("CreateBookRequest"),
+		Field: []*protodescriptor.FieldDescriptorProto{
+			{
+				Name:   proto.String("parent"),
+				Label:  protodescriptor.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+			{
+				Name:     proto.String("book"),
+				Label:    protodescriptor.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:     protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+				TypeName: proto.String("Book"),
+				Number:   proto.Int32(2),
+			},
+			{
+				Name:   proto.String("book_id"),
+				Label:  protodescriptor.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(3),
+			},
+		},
+	}
+	meth := &protodescriptor.MethodDescriptorProto{
+		Name:       proto.String("CreateBook"),
+		InputType:  proto.String("CreateBookRequest"),
+		OutputType: proto.String("Book"),
+	}
+	svc := &protodescriptor.ServiceDescriptorProto{
+		Name:   proto.String("BookService"),
+		Method: []*protodescriptor.MethodDescriptorProto{meth},
+	}
+
+	bookMsg := &descriptor.Message{
+		DescriptorProto: bookDesc,
+	}
+	createMsg := &descriptor.Message{
+		DescriptorProto: createDesc,
+	}
+
+	parentField := &descriptor.Field{
+		Message:              createMsg,
+		FieldDescriptorProto: createMsg.GetField()[0],
+	}
+	bookField := &descriptor.Field{
+		Message:              createMsg,
+		FieldMessage:         bookMsg,
+		FieldDescriptorProto: createMsg.GetField()[1],
+	}
+	bookIDField := &descriptor.Field{
+		Message:              createMsg,
+		FieldDescriptorProto: createMsg.GetField()[2],
+	}
+
+	createMsg.Fields = []*descriptor.Field{parentField, bookField, bookIDField}
+
+	file := descriptor.File{
+		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+			Name:           proto.String("book.proto"),
+			MessageType:    []*protodescriptor.DescriptorProto{bookDesc, createDesc},
+			Service:        []*protodescriptor.ServiceDescriptorProto{svc},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/book.pb",
+			Name: "book_pb",
+		},
+		Messages: []*descriptor.Message{bookMsg, createMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           createMsg,
+						ResponseType:          bookMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{parent=publishers/*}/books",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+											{
+												Name:   "parent",
+												Target: parentField,
+											},
+										}),
+										Target: parentField,
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+										{
+											Name:   "book",
+											Target: bookField,
+										},
+									}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	reg.Load(&plugin.CodeGeneratorRequest{ProtoFile: []*protodescriptor.FileDescriptorProto{file.FileDescriptorProto}})
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+
+	if _, ok := result.Paths["/v1/{parent=publishers/*}/books"].Post.Responses["200"]; !ok {
+		t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", file, `result.Paths["/v1/{parent=publishers/*}/books"].Post.Responses["200"]`)
+	} else {
+		if want, got, name := 3, len(result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters), `len(result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters)`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
+		}
+
+		type param struct {
+			Name     string
+			In       string
+			Required bool
+		}
+
+		p0 := result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[0]
+		if want, got, name := (param{"parent", "path", true}), (param{p0.Name, p0.In, p0.Required}), `result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[0]`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, got, want)
+		}
+		p1 := result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[1]
+		if want, got, name := (param{"body", "body", true}), (param{p1.Name, p1.In, p1.Required}), `result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[1]`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, got, want)
+		}
+		p2 := result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[2]
+		if want, got, name := (param{"book_id", "query", false}), (param{p2.Name, p2.In, p2.Required}), `result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[1]`; !reflect.DeepEqual(got, want) {
+			t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, got, want)
+		}
+	}
+
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", fmt.Sprint(result))
+	}
+}
+
 func generateFieldsForJSONReservedName() []*descriptor.Field {
 	fields := make([]*descriptor.Field, 0)
 	fieldName := string("json_name")
@@ -2065,7 +2236,7 @@ func TestSchemaOfField(t *testing.T) {
 			},
 			refs: make(refMap),
 			expected: schemaCore{
-				Type:   "boolean",
+				Type: "boolean",
 			},
 		},
 		{
