@@ -17,6 +17,9 @@ type ErrorHandlerFunc func(context.Context, *ServeMux, Marshaler, http.ResponseW
 // StreamErrorHandlerFunc is the signature used to configure stream error handling.
 type StreamErrorHandlerFunc func(context.Context, error) *status.Status
 
+// RoutingErrorHandlerFunc is the signature used to configure error handling for routing errors.
+type RoutingErrorHandlerFunc func(context.Context, *ServeMux, Marshaler, http.ResponseWriter, *http.Request, int)
+
 // HTTPStatusFromCode converts a gRPC error code into the corresponding HTTP response status.
 // See: https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
 func HTTPStatusFromCode(code codes.Code) int {
@@ -128,4 +131,23 @@ func DefaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marsh
 
 func DefaultStreamErrorHandler(_ context.Context, err error) *status.Status {
 	return status.Convert(err)
+}
+
+// DefaultRoutingErrorHandler is our default handler for routing errors.
+// By default http error codes mapped on the following error codes:
+//   NotFound -> grpc.NotFound
+//   StatusBadRequest -> grpc.InvalidArgument
+//   MethodNotAllowed -> grpc.Unimplemented
+//   Other -> grpc.Internal, method is not expecting to be called for anything else
+func DefaultRoutingErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, r *http.Request, httpStatus int) {
+	sterr := status.Error(codes.Internal, "Unexpected routing error")
+	switch httpStatus {
+	case http.StatusBadRequest:
+		sterr = status.Error(codes.InvalidArgument, http.StatusText(httpStatus))
+	case http.StatusMethodNotAllowed:
+		sterr = status.Error(codes.Unimplemented, http.StatusText(httpStatus))
+	case http.StatusNotFound:
+		sterr = status.Error(codes.NotFound, http.StatusText(httpStatus))
+	}
+	mux.errorHandler(ctx, mux, marshaler, w, r, sterr)
 }

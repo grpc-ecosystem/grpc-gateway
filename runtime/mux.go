@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"net/textproto"
 	"strings"
-	
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -29,6 +29,7 @@ type ServeMux struct {
 	metadataAnnotators        []func(context.Context, *http.Request) metadata.MD
 	errorHandler              ErrorHandlerFunc
 	streamErrorHandler        StreamErrorHandlerFunc
+	routingErrorHandler       RoutingErrorHandlerFunc
 	disablePathLengthFallback bool
 }
 
@@ -126,6 +127,16 @@ func WithStreamErrorHandler(fn StreamErrorHandlerFunc) ServeMuxOption {
 	}
 }
 
+// WithRoutingErrorHandler returns a ServeMuxOption for configuring a custom error handler to  handle http routing errors.
+//
+// Method called for errors which can happen before gRPC route selected or executed.
+// The following error codes: StatusMethodNotAllowed StatusNotFound StatusBadRequest
+func WithRoutingErrorHandler(fn RoutingErrorHandlerFunc) ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		serveMux.routingErrorHandler = fn
+	}
+}
+
 // WithDisablePathLengthFallback returns a ServeMuxOption for disable path length fallback.
 func WithDisablePathLengthFallback() ServeMuxOption {
 	return func(serveMux *ServeMux) {
@@ -141,6 +152,7 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 		marshalers:             makeMarshalerMIMERegistry(),
 		errorHandler:           DefaultHTTPErrorHandler,
 		streamErrorHandler:     DefaultStreamErrorHandler,
+		routingErrorHandler:    DefaultRoutingErrorHandler,
 	}
 
 	for _, opt := range opts {
@@ -188,8 +200,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	if !strings.HasPrefix(path, "/") {
 		_, outboundMarshaler := MarshalerForRequest(s, r)
-		sterr := status.Error(codes.InvalidArgument, http.StatusText(http.StatusBadRequest))
-		s.errorHandler(ctx, s, outboundMarshaler, w, r, sterr)
+		s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusBadRequest)
 		return
 	}
 
@@ -199,8 +210,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	idx := strings.LastIndex(components[l-1], ":")
 	if idx == 0 {
 		_, outboundMarshaler := MarshalerForRequest(s, r)
-		sterr := status.Error(codes.NotFound, http.StatusText(http.StatusNotFound))
-		s.errorHandler(ctx, s, outboundMarshaler, w, r, sterr)
+		s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusNotFound)
 		return
 	}
 	if idx > 0 {
@@ -249,16 +259,13 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			_, outboundMarshaler := MarshalerForRequest(s, r)
-			// codes.Unimplemented is the closes we have to MethodNotAllowed
-			sterr := status.Error(codes.Unimplemented, http.StatusText(http.StatusNotImplemented))
-			s.errorHandler(ctx, s, outboundMarshaler, w, r, sterr)
+			s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusMethodNotAllowed)
 			return
 		}
 	}
 
 	_, outboundMarshaler := MarshalerForRequest(s, r)
-	sterr := status.Error(codes.NotFound, http.StatusText(http.StatusNotFound))
-	s.errorHandler(ctx, s, outboundMarshaler, w, r, sterr)
+	s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusNotFound)
 }
 
 // GetForwardResponseOptions returns the ForwardResponseOptions associated with this ServeMux.
