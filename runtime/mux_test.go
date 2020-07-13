@@ -293,6 +293,21 @@ func TestMuxServeHTTP(t *testing.T) {
 			respStatus:  http.StatusOK,
 			respContent: "POST /foo/{id=*}:verb",
 		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0},
+					pool:   []string{"foo"},
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "foo",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus: http.StatusBadRequest,
+		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			var opts []runtime.ServeMuxOption
@@ -374,8 +389,6 @@ func TestDefaultHeaderMatcher(t *testing.T) {
 		})
 	}
 }
-
-
 
 var defaultRouteMatcherTests = []struct {
 	name   string

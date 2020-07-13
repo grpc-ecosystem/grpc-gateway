@@ -303,3 +303,17 @@ If no custom handler is provided, the default stream error handler
 will include any gRPC error attributes (code, message, detail messages),
 if the error being reported includes them. If the error does not have
 these attributes, a gRPC code of `Unknown` (2) is reported.
+
+## Routing Error handler
+To override the error behavior when `*runtime.ServeMux` was not 
+able to serve the request due to routing issues, use the `runtime.WithRoutingErrorHandler` option. 
+
+This will configure all HTTP routing errors to pass through this error handler.
+Default behavior is to map HTTP error codes to gRPC errors.
+
+HTTP statuses and their mappings to gRPC statuses: 
+* HTTP `404 Not Found` -> gRPC `5 NOT_FOUND`
+* HTTP `405 Method Not Allowed` -> gRPC `12 UNIMPLEMENTED`
+* HTTP `400 Bad Request` -> gRPC `3 INVALID_ARGUMENT`
+
+This method is not used outside of the initial routing.
