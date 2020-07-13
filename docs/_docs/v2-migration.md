@@ -148,3 +148,5 @@ services.
 `runtime.WithProtoErrorHandler` are all gone. Error handling is rewritten around the
 use of gRPCs Status types. If you wish to configure how the gateway handles errors,
 please use `runtime.WithErrorHandler` and `runtime.WithStreamErrorHandler`.
+To handle routing errors (similar to the removed `runtime.OtherErrorHandler`) please use 
+`runtime.WithRoutingErrorHandler`.
