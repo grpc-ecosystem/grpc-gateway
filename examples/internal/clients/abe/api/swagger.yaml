@@ -1527,6 +1527,49 @@ paths:
           description: "An unexpected error response"
           schema:
             $ref: "#/definitions/rpcStatus"
+  /v1/{parent=publishers/*}/books:
+    post:
+      tags:
+      - "ABitOfEverythingService"
+      summary: "Create a book."
+      operationId: "ABitOfEverythingService_CreateBook"
+      parameters:
+      - name: "parent"
+        in: "path"
+        description: "The publisher in which to create the book.\n\nFormat: `publishers/{publisher}`\n\
+          \nExample: `publishers/1257894000000000000`"
+        required: true
+        type: "string"
+        x-exportParamName: "Parent"
+      - in: "body"
+        name: "body"
+        description: "The book to create."
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbBook"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbBook"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        default:
+          description: "An unexpected error response"
+          schema:
+            $ref: "#/definitions/rpcStatus"
   /v2/example/a_bit_of_everything/{abe.uuid}:
     put:
       tags:
@@ -2203,6 +2246,28 @@ definitions:
     properties:
       name:
         type: "string"
+  examplepbBook:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\
+          \nExample: `publishers/1257894000000000000/books/my-book`"
+      id:
+        type: "string"
+        description: "Output only. The book's ID."
+        readOnly: true
+      createTime:
+        type: "string"
+        format: "date-time"
+        description: "Output only. Creation time of the book."
+        readOnly: true
+    description: "An example resource type from AIP-123 used to test the behavior\
+      \ described in\nthe CreateBookRequest message.\n\nSee: https://google.aip.dev/123"
+    example:
+      createTime: "2000-01-23T04:56:07.000+00:00"
+      name: "name"
+      id: "id"
   examplepbNumericEnum:
     type: "string"
     description: "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE\
