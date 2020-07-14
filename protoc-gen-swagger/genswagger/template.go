@@ -64,7 +64,7 @@ var wktSchemas = map[string]schemaCore{
 		Format: "double",
 	},
 	".google.protobuf.BoolValue": schemaCore{
-		Type:   "boolean",
+		Type: "boolean",
 	},
 	".google.protobuf.Empty": schemaCore{},
 	".google.protobuf.Struct": schemaCore{
@@ -268,7 +268,7 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 					glog.Errorf("couldn't resolve swagger name for FQMN '%v'", meth.RequestType.FQMN())
 					continue
 				}
-				if _, ok := refs[fmt.Sprintf("#/definitions/%s", swgReqName)]; ok {
+				if _, ok := refs[fmt.Sprintf("#/definitions/%s", swgReqName)]; ok || reg.GetRenderAllRequestBodies() {
 					if !skipRenderingRef(meth.RequestType.FQMN()) {
 						m[swgReqName] = meth.RequestType
 					}
