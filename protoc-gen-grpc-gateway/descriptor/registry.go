@@ -86,6 +86,10 @@ type Registry struct {
 	// simpleOperationIDs removes the service prefix from the generated
 	// operationIDs. This risks generating duplicate operationIDs.
 	simpleOperationIDs bool
+
+	// renderAllRequestBodies forces swagger definitions to be generated for all gRPC service request types,
+	// even those that are not referenced by HTTP configuration
+	renderAllRequestBodies bool
 }
 
 type repeatedFieldSeparator struct {
@@ -522,6 +526,16 @@ func (r *Registry) SetSimpleOperationIDs(use bool) {
 // GetSimpleOperationIDs returns simpleOperationIDs
 func (r *Registry) GetSimpleOperationIDs() bool {
 	return r.simpleOperationIDs
+}
+
+// SetRenderAllRequestBodies sets renderAllRequestBodies
+func (r *Registry) SetRenderAllRequestBodies(use bool) {
+	r.renderAllRequestBodies = use
+}
+
+// GetRenderAllRequestBodies returns renderAllRequestBodies
+func (r *Registry) GetRenderAllRequestBodies() bool {
+	return r.renderAllRequestBodies
 }
 
 // sanitizePackageName replaces unallowed character in package name
