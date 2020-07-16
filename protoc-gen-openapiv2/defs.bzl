@@ -53,7 +53,8 @@ def _run_proto_gen_openapi(
         protoc_gen_openapiv2,
         grpc_api_configuration,
         single_output,
-        json_names_for_fields):
+        json_names_for_fields,
+        fqn_for_swagger_name):
     args = actions.args()
 
     args.add("--plugin", "protoc-gen-openapiv2=%s" % protoc_gen_openapiv2.path)
@@ -68,6 +69,9 @@ def _run_proto_gen_openapi(
 
     if not json_names_for_fields:
         args.add("--openapiv2_opt", "json_names_for_fields=false")
+
+    if fqn_for_swagger_name:
+        args.add("--swagger_opt", "fqn_for_swagger_name=true")
 
     proto_file_infos = _direct_source_infos(proto_info)
 
@@ -153,6 +157,7 @@ def _proto_gen_openapi_impl(ctx):
                     grpc_api_configuration = ctx.file.grpc_api_configuration,
                     single_output = ctx.attr.single_output,
                     json_names_for_fields = ctx.attr.json_names_for_fields,
+                    fqn_for_swagger_name = ctx.attr.fqn_for_swagger_name,
                 ),
             ),
         ),
@@ -174,6 +179,10 @@ protoc_gen_openapiv2 = rule(
         ),
         "json_names_for_fields": attr.bool(
             default = True,
+            mandatory = False,
+        ),
+        "fqn_for_swagger_name": attr.bool(
+            default = False,
             mandatory = False,
         ),
         "_protoc": attr.label(
