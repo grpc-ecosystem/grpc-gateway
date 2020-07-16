@@ -217,7 +217,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
@@ -397,7 +397,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
@@ -517,7 +517,7 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
 
-		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
 		if err != nil {
 			t.Fatalf("No recursion error should be thrown: %s", err)
 		}
@@ -635,7 +635,7 @@ func TestMessageToQueryParametersRecursive(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
 		if err == nil {
 			t.Fatalf("It should not be allowed to have recursive query parameters")
 		}
@@ -742,7 +742,7 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{})
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
@@ -2110,7 +2110,7 @@ func TestSchemaOfField(t *testing.T) {
 			},
 			refs: make(refMap),
 			expected: schemaCore{
-				Type:   "boolean",
+				Type: "boolean",
 			},
 		},
 		{
