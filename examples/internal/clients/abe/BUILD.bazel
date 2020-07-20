@@ -15,6 +15,7 @@ go_library(
         "model_examplepb_a_bit_of_everything.go",
         "model_examplepb_a_bit_of_everything_repeated.go",
         "model_examplepb_body.go",
+        "model_examplepb_book.go",
         "model_examplepb_numeric_enum.go",
         "model_examplepb_update_v2_request.go",
         "model_message_path_enum_nested_path_enum.go",
