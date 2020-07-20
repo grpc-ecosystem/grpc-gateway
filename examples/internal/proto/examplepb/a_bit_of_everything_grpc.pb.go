@@ -27,6 +27,8 @@ type ABitOfEverythingServiceClient interface {
 	// This API creates a new ABitOfEverything
 	Create(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	CreateBody(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
+	// Create a book.
+	CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*Book, error)
 	Lookup(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	Update(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*empty.Empty, error)
 	UpdateV2(ctx context.Context, in *UpdateV2Request, opts ...grpc.CallOption) (*empty.Empty, error)
@@ -73,6 +75,15 @@ func (c *aBitOfEverythingServiceClient) Create(ctx context.Context, in *ABitOfEv
 func (c *aBitOfEverythingServiceClient) CreateBody(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
 	out := new(ABitOfEverything)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CreateBody", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*Book, error) {
+	out := new(Book)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CreateBook", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -239,6 +250,8 @@ type ABitOfEverythingServiceServer interface {
 	// This API creates a new ABitOfEverything
 	Create(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	CreateBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
+	// Create a book.
+	CreateBook(context.Context, *CreateBookRequest) (*Book, error)
 	Lookup(context.Context, *sub2.IdMessage) (*ABitOfEverything, error)
 	Update(context.Context, *ABitOfEverything) (*empty.Empty, error)
 	UpdateV2(context.Context, *UpdateV2Request) (*empty.Empty, error)
@@ -274,6 +287,9 @@ func (*UnimplementedABitOfEverythingServiceServer) Create(context.Context, *ABit
 }
 func (*UnimplementedABitOfEverythingServiceServer) CreateBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBody not implemented")
+}
+func (*UnimplementedABitOfEverythingServiceServer) CreateBook(context.Context, *CreateBookRequest) (*Book, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateBook not implemented")
 }
 func (*UnimplementedABitOfEverythingServiceServer) Lookup(context.Context, *sub2.IdMessage) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Lookup not implemented")
@@ -363,6 +379,24 @@ func _ABitOfEverythingService_CreateBody_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ABitOfEverythingServiceServer).CreateBody(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_CreateBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateBookRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).CreateBook(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CreateBook",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).CreateBook(ctx, req.(*CreateBookRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -684,6 +718,10 @@ var _ABitOfEverythingService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateBody",
 			Handler:    _ABitOfEverythingService_CreateBody_Handler,
+		},
+		{
+			MethodName: "CreateBook",
+			Handler:    _ABitOfEverythingService_CreateBook_Handler,
 		},
 		{
 			MethodName: "Lookup",
