@@ -322,6 +322,47 @@ message UpdateV2Request {
 	google.protobuf.FieldMask update_mask = 2;
 }
 
+// An example resource type from AIP-123 used to test the behavior described in
+// the CreateBookRequest message.
+//
+// See: https://google.aip.dev/123
+message Book {
+	// The resource name of the book.
+	//
+	// Format: `publishers/{publisher}/books/{book}`
+	//
+	// Example: `publishers/1257894000000000000/books/my-book`
+	string name = 1;
+
+	// Output only. The book's ID.
+	string id = 2;
+
+	// Output only. Creation time of the book.
+	google.protobuf.Timestamp create_time = 3;
+}
+
+// A standard Create message from AIP-133 with a user-specified ID.
+// The user-specified ID (the `book_id` field in this example) must become a
+// query parameter in the OpenAPI spec.
+//
+// See: https://google.aip.dev/133#user-specified-ids
+message CreateBookRequest {
+	// The publisher in which to create the book.
+	//
+	// Format: `publishers/{publisher}`
+	//
+	// Example: `publishers/1257894000000000000`
+	string parent = 1;
+
+	// The book to create.
+	Book book = 2;
+
+	// The ID to use for the book.
+	//
+	// This must start with an alphanumeric character.
+	string book_id = 3;
+}
+
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
 service ABitOfEverythingService {
@@ -346,6 +387,13 @@ service ABitOfEverythingService {
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything"
 			body: "*"
+		};
+	}
+	// Create a book.
+	rpc CreateBook(CreateBookRequest) returns (Book) {
+		option (google.api.http) = {
+			post: "/v1/{parent=publishers/*}/books"
+			body: "book"
 		};
 	}
 	rpc Lookup(sub2.IdMessage) returns (ABitOfEverything) {

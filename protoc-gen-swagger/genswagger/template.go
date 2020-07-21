@@ -64,7 +64,7 @@ var wktSchemas = map[string]schemaCore{
 		Format: "double",
 	},
 	".google.protobuf.BoolValue": schemaCore{
-		Type:   "boolean",
+		Type: "boolean",
 	},
 	".google.protobuf.Empty": schemaCore{},
 	".google.protobuf.Struct": schemaCore{
@@ -108,9 +108,9 @@ func getEnumDefault(enum *descriptor.Enum) string {
 }
 
 // messageToQueryParameters converts a message to a list of swagger query parameters.
-func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter) (params []swaggerParameterObject, err error) {
+func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body) (params []swaggerParameterObject, err error) {
 	for _, field := range message.Fields {
-		p, err := queryParams(message, field, "", reg, pathParams)
+		p, err := queryParams(message, field, "", reg, pathParams, body)
 		if err != nil {
 			return nil, err
 		}
@@ -120,8 +120,8 @@ func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Regis
 }
 
 // queryParams converts a field to a list of swagger query parameters recursively through the use of nestedQueryParams.
-func queryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter) (params []swaggerParameterObject, err error) {
-	return nestedQueryParams(message, field, prefix, reg, pathParams, map[string]bool{})
+func queryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body) (params []swaggerParameterObject, err error) {
+	return nestedQueryParams(message, field, prefix, reg, pathParams, body, map[string]bool{})
 }
 
 // nestedQueryParams converts a field to a list of swagger query parameters recursively.
@@ -130,11 +130,22 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 //      touched map[string]bool
 // If a cycle is discovered, an error is returned, as cyclical data structures aren't allowed
 //  in query parameters.
-func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, touchedIn map[string]bool) (params []swaggerParameterObject, err error) {
+func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body, touchedIn map[string]bool) (params []swaggerParameterObject, err error) {
 	// make sure the parameter is not already listed as a path parameter
 	for _, pathParam := range pathParams {
 		if pathParam.Target == field {
 			return nil, nil
+		}
+	}
+	// make sure the parameter is not already listed as a body parameter
+	if body != nil {
+		if body.FieldPath == nil {
+			return nil, nil
+		}
+		for _, fieldPath := range body.FieldPath {
+			if fieldPath.Target == field {
+				return nil, nil
+			}
 		}
 	}
 	schema := schemaOfField(field, reg, nil)
@@ -248,7 +259,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		} else {
 			fieldName = field.GetName()
 		}
-		p, err := nestedQueryParams(msg, nestedField, prefix+fieldName+".", reg, pathParams, touchedOut)
+		p, err := nestedQueryParams(msg, nestedField, prefix+fieldName+".", reg, pathParams, body, touchedOut)
 		if err != nil {
 			return nil, err
 		}
@@ -898,9 +909,15 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						Required:    true,
 						Schema:      &schema,
 					})
+					// add the parameters to the query string
+					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
+					if err != nil {
+						return err
+					}
+					parameters = append(parameters, queryParams...)
 				} else if b.HTTPMethod == "GET" || b.HTTPMethod == "DELETE" {
 					// add the parameters to the query string
-					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams)
+					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
 					if err != nil {
 						return err
 					}
