@@ -450,6 +450,9 @@ message JSONSchema {
   // OpenAPI v2:
   // anyOf, oneOf, not
   reserved 43 to 45;
+
+  // if set, the field will be excluded from swagger output
+  bool private = 46;
 }
 
 // `Tag` is a representation of OpenAPI v2 specification's Tag object.

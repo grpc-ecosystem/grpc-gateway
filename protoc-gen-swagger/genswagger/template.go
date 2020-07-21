@@ -406,6 +406,11 @@ func renderMessagesAsDefinition(messages messageMap, d swaggerDefinitionsObject,
 
 		for _, f := range msg.Fields {
 			fieldValue := schemaOfField(f, reg, customRefs)
+
+			if fieldValue.Private {
+				continue
+			}
+
 			comments := fieldProtoComments(reg, msg, f)
 			if err := updateSwaggerDataFromComments(reg, &fieldValue, f, comments, false); err != nil {
 				panic(err)
@@ -1860,6 +1865,7 @@ func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_option
 	s.MaxProperties = j.GetMaxProperties()
 	s.MinProperties = j.GetMinProperties()
 	s.Required = j.GetRequired()
+	s.Private = j.GetPrivate()
 	if overrideType := j.GetType(); len(overrideType) > 0 {
 		s.Type = strings.ToLower(overrideType[0].String())
 	}
