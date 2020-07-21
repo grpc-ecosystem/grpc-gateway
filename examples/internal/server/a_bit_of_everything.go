@@ -65,6 +65,10 @@ func (s *_ABitOfEverythingServer) CreateBody(ctx context.Context, msg *examples.
 	return s.Create(ctx, msg)
 }
 
+func (s *_ABitOfEverythingServer) CreateBook(ctx context.Context, req *examples.CreateBookRequest) (*examples.Book, error) {
+	return &examples.Book{}, nil
+}
+
 func (s *_ABitOfEverythingServer) BulkCreate(stream examples.StreamService_BulkCreateServer) error {
 	ctx := stream.Context()
 

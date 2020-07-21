@@ -824,6 +824,261 @@
             "schema": {
               "$ref": "#/definitions/ABitOfEverythingNested"
             }
+          },
+          {
+            "name": "uuid",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "float_value",
+            "description": "Float value field",
+            "in": "query",
+            "required": true,
+            "type": "number",
+            "format": "float",
+            "default": "0.2"
+          },
+          {
+            "name": "double_value",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "int64_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "uint64_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "int32_value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "fixed64_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "fixed32_value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "bool_value",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "format": "boolean"
+          },
+          {
+            "name": "bytes_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          },
+          {
+            "name": "uint32_value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "enum_value",
+            "description": " - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ZERO",
+              "ONE"
+            ],
+            "default": "ZERO"
+          },
+          {
+            "name": "path_enum_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ABC",
+              "DEF"
+            ],
+            "default": "ABC"
+          },
+          {
+            "name": "nested_path_enum_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "GHI",
+              "JKL"
+            ],
+            "default": "GHI"
+          },
+          {
+            "name": "sfixed32_value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "sfixed64_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "sint32_value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "sint64_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "repeated_string_value",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "oneof_string",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nonConventionalNameValue",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "timestamp_value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "repeated_enum_value",
+            "description": "repeated enum value. it is comma-separated in query.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ZERO",
+                "ONE"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "repeated_enum_annotation",
+            "description": "Repeated numeric enum title. Repeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ZERO",
+                "ONE"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "enum_value_annotation",
+            "description": "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ZERO",
+              "ONE"
+            ],
+            "default": "ZERO"
+          },
+          {
+            "name": "repeated_string_annotation",
+            "description": "Repeated string title. Repeated string description.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "nested_annotation.name",
+            "description": "name is nested field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nested_annotation.amount",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "nested_annotation.ok",
+            "description": "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "FALSE",
+              "TRUE"
+            ],
+            "default": "FALSE"
+          },
+          {
+            "name": "int64_override_type",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
           }
         ],
         "tags": [
@@ -1801,6 +2056,71 @@
         ]
       }
     },
+    "/v1/{parent=publishers/*}/books": {
+      "post": {
+        "summary": "Create a book.",
+        "operationId": "ABitOfEverythingService_CreateBook",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbBook"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "parent",
+            "description": "The publisher in which to create the book.\n\nFormat: `publishers/{publisher}`\n\nExample: `publishers/1257894000000000000`",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": "The book to create.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbBook"
+            }
+          },
+          {
+            "name": "book_id",
+            "description": "The ID to use for the book.\n\nThis must start with an alphanumeric character.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v2/example/a_bit_of_everything/{abe.uuid}": {
       "put": {
         "operationId": "ABitOfEverythingService_UpdateV2",
@@ -1849,6 +2169,17 @@
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
+          },
+          {
+            "name": "update_mask.paths",
+            "description": "The set of field mask paths.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -1902,6 +2233,17 @@
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
+          },
+          {
+            "name": "update_mask.paths",
+            "description": "The set of field mask paths.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -2775,6 +3117,27 @@
           "type": "string"
         }
       }
+    },
+    "examplepbBook": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\nExample: `publishers/1257894000000000000/books/my-book`"
+        },
+        "id": {
+          "type": "string",
+          "description": "Output only. The book's ID.",
+          "readOnly": true
+        },
+        "create_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Output only. Creation time of the book.",
+          "readOnly": true
+        }
+      },
+      "description": "An example resource type from AIP-123 used to test the behavior described in\nthe CreateBookRequest message.\n\nSee: https://google.aip.dev/123"
     },
     "examplepbNumericEnum": {
       "type": "string",
