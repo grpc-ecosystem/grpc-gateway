@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 )
@@ -128,8 +127,6 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 			} else {
 				pairs = append(pairs, strings.ToLower(xForwardedFor), fmt.Sprintf("%s, %s", fwd, remoteIP))
 			}
-		} else {
-			grpclog.Infof("invalid remote addr: %s", addr)
 		}
 	}
 
