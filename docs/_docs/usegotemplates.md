@@ -92,7 +92,7 @@ This is how the OpenAPI file would be rendered in [Swagger UI](https://swagger.i
 
 This is how the OpenAPI file would be rendered in [Postman](https://www.getpostman.com/)
 
-![Screenshot Open APIfile in Postman](https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/docs/_imgs/gotemplates/postman.png)
+![Screenshot OpenAPI file in Postman](https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/docs/_imgs/gotemplates/postman.png)
 
 For a more detailed example of a protofile that has Go templates enabled,
 [see the examples](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/use_go_template.proto).
