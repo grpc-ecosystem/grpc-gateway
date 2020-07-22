@@ -86,13 +86,13 @@ The content of `tables.md`:
 
 This is how the swagger file would be rendered in [SwaggerUI](https://swagger.io/tools/swagger-ui/)
 
-![Screenshot swaggerfile in SwaggerUI](../_imgs/gotemplates/swaggerui.png)
+![Screenshot swaggerfile in SwaggerUI](https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/docs/_imgs/gotemplates/swaggerui.png)
 
 ### Postman
 
 This is how the swagger file would be rendered in [Postman](https://www.getpostman.com/)
 
-![Screenshot swaggerfile in Postman](../_imgs/gotemplates/postman.png)
+![Screenshot swaggerfile in Postman](https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/docs/_imgs/gotemplates/postman.png)
 
 For a more detailed example of a protofile that has Go templates enabled,
 [see the examples](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/use_go_template.proto).
