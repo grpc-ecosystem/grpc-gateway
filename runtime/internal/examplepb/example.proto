@@ -107,3 +107,30 @@ message UpdateMessage {
   google.protobuf.FieldMask update_mask = 1;
   ABitOfEverything a_bit_of_everything = 2;
 }
+
+message NestedOuter {
+  NestedOne one = 1;
+};
+
+message NestedOne {
+  NestedTwo two = 1;
+};
+
+message NestedTwo {
+  NestedThree three = 1;
+};
+
+message NestedThree {
+  bool a = 1;
+  bool b = 2;
+};
+
+
+message UpdateNestedRequest {
+  NestedOuter nested = 1;
+  google.protobuf.FieldMask update_mask = 2;
+};
+
+service NestedService {
+  rpc Update(UpdateNestedRequest) returns(NestedOuter);
+};
