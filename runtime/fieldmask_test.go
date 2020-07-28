@@ -62,6 +62,12 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 			expected: newFieldMask("mapped_string_value"),
 		},
 		{
+			name:     "deeply-nested",
+			msg:      &examplepb.NestedOuter{},
+			input:    `{"one":{"two":{"three":{"a":true, "b":false}}}}`,
+			expected: newFieldMask("one.two.three.a", "one.two.three.b"),
+		},
+		{
 			name: "complex",
 			input: `
 			{

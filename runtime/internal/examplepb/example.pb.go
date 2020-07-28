@@ -720,6 +720,257 @@ func (x *UpdateMessage) GetABitOfEverything() *ABitOfEverything {
 	return nil
 }
 
+type NestedOuter struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	One *NestedOne `protobuf:"bytes,1,opt,name=one,proto3" json:"one,omitempty"`
+}
+
+func (x *NestedOuter) Reset() {
+	*x = NestedOuter{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_runtime_internal_examplepb_example_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NestedOuter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NestedOuter) ProtoMessage() {}
+
+func (x *NestedOuter) ProtoReflect() protoreflect.Message {
+	mi := &file_runtime_internal_examplepb_example_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NestedOuter.ProtoReflect.Descriptor instead.
+func (*NestedOuter) Descriptor() ([]byte, []int) {
+	return file_runtime_internal_examplepb_example_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *NestedOuter) GetOne() *NestedOne {
+	if x != nil {
+		return x.One
+	}
+	return nil
+}
+
+type NestedOne struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Two *NestedTwo `protobuf:"bytes,1,opt,name=two,proto3" json:"two,omitempty"`
+}
+
+func (x *NestedOne) Reset() {
+	*x = NestedOne{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_runtime_internal_examplepb_example_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NestedOne) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NestedOne) ProtoMessage() {}
+
+func (x *NestedOne) ProtoReflect() protoreflect.Message {
+	mi := &file_runtime_internal_examplepb_example_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NestedOne.ProtoReflect.Descriptor instead.
+func (*NestedOne) Descriptor() ([]byte, []int) {
+	return file_runtime_internal_examplepb_example_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *NestedOne) GetTwo() *NestedTwo {
+	if x != nil {
+		return x.Two
+	}
+	return nil
+}
+
+type NestedTwo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Three *NestedThree `protobuf:"bytes,1,opt,name=three,proto3" json:"three,omitempty"`
+}
+
+func (x *NestedTwo) Reset() {
+	*x = NestedTwo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_runtime_internal_examplepb_example_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NestedTwo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NestedTwo) ProtoMessage() {}
+
+func (x *NestedTwo) ProtoReflect() protoreflect.Message {
+	mi := &file_runtime_internal_examplepb_example_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NestedTwo.ProtoReflect.Descriptor instead.
+func (*NestedTwo) Descriptor() ([]byte, []int) {
+	return file_runtime_internal_examplepb_example_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *NestedTwo) GetThree() *NestedThree {
+	if x != nil {
+		return x.Three
+	}
+	return nil
+}
+
+type NestedThree struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	A bool `protobuf:"varint,1,opt,name=a,proto3" json:"a,omitempty"`
+	B bool `protobuf:"varint,2,opt,name=b,proto3" json:"b,omitempty"`
+}
+
+func (x *NestedThree) Reset() {
+	*x = NestedThree{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_runtime_internal_examplepb_example_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *NestedThree) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NestedThree) ProtoMessage() {}
+
+func (x *NestedThree) ProtoReflect() protoreflect.Message {
+	mi := &file_runtime_internal_examplepb_example_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NestedThree.ProtoReflect.Descriptor instead.
+func (*NestedThree) Descriptor() ([]byte, []int) {
+	return file_runtime_internal_examplepb_example_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *NestedThree) GetA() bool {
+	if x != nil {
+		return x.A
+	}
+	return false
+}
+
+func (x *NestedThree) GetB() bool {
+	if x != nil {
+		return x.B
+	}
+	return false
+}
+
+type UpdateNestedRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Nested     *NestedOuter          `protobuf:"bytes,1,opt,name=nested,proto3" json:"nested,omitempty"`
+	UpdateMask *field_mask.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
+}
+
+func (x *UpdateNestedRequest) Reset() {
+	*x = UpdateNestedRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_runtime_internal_examplepb_example_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateNestedRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateNestedRequest) ProtoMessage() {}
+
+func (x *UpdateNestedRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_runtime_internal_examplepb_example_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateNestedRequest.ProtoReflect.Descriptor instead.
+func (*UpdateNestedRequest) Descriptor() ([]byte, []int) {
+	return file_runtime_internal_examplepb_example_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *UpdateNestedRequest) GetNested() *NestedOuter {
+	if x != nil {
+		return x.Nested
+	}
+	return nil
+}
+
+func (x *UpdateNestedRequest) GetUpdateMask() *field_mask.FieldMask {
+	if x != nil {
+		return x.UpdateMask
+	}
+	return nil
+}
+
 // Nested is nested type.
 type ABitOfEverything_Nested struct {
 	state         protoimpl.MessageState
@@ -736,7 +987,7 @@ type ABitOfEverything_Nested struct {
 func (x *ABitOfEverything_Nested) Reset() {
 	*x = ABitOfEverything_Nested{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_runtime_internal_examplepb_example_proto_msgTypes[5]
+		mi := &file_runtime_internal_examplepb_example_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -749,7 +1000,7 @@ func (x *ABitOfEverything_Nested) String() string {
 func (*ABitOfEverything_Nested) ProtoMessage() {}
 
 func (x *ABitOfEverything_Nested) ProtoReflect() protoreflect.Message {
-	mi := &file_runtime_internal_examplepb_example_proto_msgTypes[5]
+	mi := &file_runtime_internal_examplepb_example_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -797,7 +1048,7 @@ type ResponseBodyOut_Response struct {
 func (x *ResponseBodyOut_Response) Reset() {
 	*x = ResponseBodyOut_Response{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_runtime_internal_examplepb_example_proto_msgTypes[9]
+		mi := &file_runtime_internal_examplepb_example_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -810,7 +1061,7 @@ func (x *ResponseBodyOut_Response) String() string {
 func (*ResponseBodyOut_Response) ProtoMessage() {}
 
 func (x *ResponseBodyOut_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_runtime_internal_examplepb_example_proto_msgTypes[9]
+	mi := &file_runtime_internal_examplepb_example_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -845,7 +1096,7 @@ type RepeatedResponseBodyOut_Response struct {
 func (x *RepeatedResponseBodyOut_Response) Reset() {
 	*x = RepeatedResponseBodyOut_Response{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_runtime_internal_examplepb_example_proto_msgTypes[10]
+		mi := &file_runtime_internal_examplepb_example_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -858,7 +1109,7 @@ func (x *RepeatedResponseBodyOut_Response) String() string {
 func (*RepeatedResponseBodyOut_Response) ProtoMessage() {}
 
 func (x *RepeatedResponseBodyOut_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_runtime_internal_examplepb_example_proto_msgTypes[10]
+	mi := &file_runtime_internal_examplepb_example_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1111,14 +1362,43 @@ var file_runtime_internal_examplepb_example_proto_rawDesc = []byte{
 	0x69, 0x6d, 0x65, 0x2e, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2e, 0x65, 0x78, 0x61,
 	0x6d, 0x70, 0x6c, 0x65, 0x70, 0x62, 0x2e, 0x41, 0x42, 0x69, 0x74, 0x4f, 0x66, 0x45, 0x76, 0x65,
 	0x72, 0x79, 0x74, 0x68, 0x69, 0x6e, 0x67, 0x52, 0x10, 0x61, 0x42, 0x69, 0x74, 0x4f, 0x66, 0x45,
-	0x76, 0x65, 0x72, 0x79, 0x74, 0x68, 0x69, 0x6e, 0x67, 0x2a, 0x20, 0x0a, 0x0b, 0x4e, 0x75, 0x6d,
-	0x65, 0x72, 0x69, 0x63, 0x45, 0x6e, 0x75, 0x6d, 0x12, 0x08, 0x0a, 0x04, 0x5a, 0x45, 0x52, 0x4f,
-	0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x4f, 0x4e, 0x45, 0x10, 0x01, 0x42, 0x46, 0x5a, 0x44, 0x67,
-	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2d, 0x65,
-	0x63, 0x6f, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2d, 0x67, 0x61,
-	0x74, 0x65, 0x77, 0x61, 0x79, 0x2f, 0x76, 0x32, 0x2f, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65,
-	0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c,
-	0x65, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x76, 0x65, 0x72, 0x79, 0x74, 0x68, 0x69, 0x6e, 0x67, 0x22, 0x53, 0x0a, 0x0b, 0x4e, 0x65, 0x73,
+	0x74, 0x65, 0x64, 0x4f, 0x75, 0x74, 0x65, 0x72, 0x12, 0x44, 0x0a, 0x03, 0x6f, 0x6e, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x32, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e, 0x67, 0x61, 0x74,
+	0x65, 0x77, 0x61, 0x79, 0x2e, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e, 0x69, 0x6e, 0x74,
+	0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2e, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x70, 0x62, 0x2e,
+	0x4e, 0x65, 0x73, 0x74, 0x65, 0x64, 0x4f, 0x6e, 0x65, 0x52, 0x03, 0x6f, 0x6e, 0x65, 0x22, 0x51,
+	0x0a, 0x09, 0x4e, 0x65, 0x73, 0x74, 0x65, 0x64, 0x4f, 0x6e, 0x65, 0x12, 0x44, 0x0a, 0x03, 0x74,
+	0x77, 0x6f, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x32, 0x2e, 0x67, 0x72, 0x70, 0x63, 0x2e,
+	0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2e, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2e,
+	0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2e, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65,
+	0x70, 0x62, 0x2e, 0x4e, 0x65, 0x73, 0x74, 0x65, 0x64, 0x54, 0x77, 0x6f, 0x52, 0x03, 0x74, 0x77,
+	0x6f, 0x22, 0x57, 0x0a, 0x09, 0x4e, 0x65, 0x73, 0x74, 0x65, 0x64, 0x54, 0x77, 0x6f, 0x12, 0x4a,
+	0x0a, 0x05, 0x74, 0x68, 0x72, 0x65, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x34, 0x2e,
+	0x67, 0x72, 0x70, 0x63, 0x2e, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2e, 0x72, 0x75, 0x6e,
+	0x74, 0x69, 0x6d, 0x65, 0x2e, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2e, 0x65, 0x78,
+	0x61, 0x6d, 0x70, 0x6c, 0x65, 0x70, 0x62, 0x2e, 0x4e, 0x65, 0x73, 0x74, 0x65, 0x64, 0x54, 0x68,
+	0x72, 0x65, 0x65, 0x52, 0x05, 0x74, 0x68, 0x72, 0x65, 0x65, 0x22, 0x29, 0x0a, 0x0b, 0x4e, 0x65,
+	0x73, 0x74, 0x65, 0x64, 0x54, 0x68, 0x72, 0x65, 0x65, 0x12, 0x0c, 0x0a, 0x01, 0x61, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x01, 0x61, 0x12, 0x0c, 0x0a, 0x01, 0x62, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x01, 0x62, 0x22, 0xa0, 0x01, 0x0a, 0x13, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x4e, 0x65, 0x73, 0x74, 0x65, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x4c, 0x0a,
+	0x06, 0x6e, 0x65, 0x73, 0x74, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x34, 0x2e,
+	0x67, 0x72, 0x70, 0x63, 0x2e, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2e, 0x72, 0x75, 0x6e,
+	0x74, 0x69, 0x6d, 0x65, 0x2e, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2e, 0x65, 0x78,
+	0x61, 0x6d, 0x70, 0x6c, 0x65, 0x70, 0x62, 0x2e, 0x4e, 0x65, 0x73, 0x74, 0x65, 0x64, 0x4f, 0x75,
+	0x74, 0x65, 0x72, 0x52, 0x06, 0x6e, 0x65, 0x73, 0x74, 0x65, 0x64, 0x12, 0x3b, 0x0a, 0x0b, 0x75,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x5f, 0x6d, 0x61, 0x73, 0x6b, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x4d, 0x61, 0x73, 0x6b, 0x52, 0x0a, 0x75, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x4d, 0x61, 0x73, 0x6b, 0x2a, 0x20, 0x0a, 0x0b, 0x4e, 0x75, 0x6d, 0x65,
+	0x72, 0x69, 0x63, 0x45, 0x6e, 0x75, 0x6d, 0x12, 0x08, 0x0a, 0x04, 0x5a, 0x45, 0x52, 0x4f, 0x10,
+	0x00, 0x12, 0x07, 0x0a, 0x03, 0x4f, 0x4e, 0x45, 0x10, 0x01, 0x42, 0x46, 0x5a, 0x44, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2d, 0x65, 0x63,
+	0x6f, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2d, 0x67, 0x61, 0x74,
+	0x65, 0x77, 0x61, 0x79, 0x2f, 0x76, 0x32, 0x2f, 0x72, 0x75, 0x6e, 0x74, 0x69, 0x6d, 0x65, 0x2f,
+	0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65,
+	0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1134,7 +1414,7 @@ func file_runtime_internal_examplepb_example_proto_rawDescGZIP() []byte {
 }
 
 var file_runtime_internal_examplepb_example_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_runtime_internal_examplepb_example_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_runtime_internal_examplepb_example_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_runtime_internal_examplepb_example_proto_goTypes = []interface{}{
 	(NumericEnum)(0),                                   // 0: grpc.gateway.runtime.internal.examplepb.NumericEnum
 	(ABitOfEverything_Nested_DeepEnum)(0),              // 1: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested.DeepEnum
@@ -1144,43 +1424,53 @@ var file_runtime_internal_examplepb_example_proto_goTypes = []interface{}{
 	(*ResponseBodyOut)(nil),                            // 5: grpc.gateway.runtime.internal.examplepb.ResponseBodyOut
 	(*RepeatedResponseBodyOut)(nil),                    // 6: grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut
 	(*UpdateMessage)(nil),                              // 7: grpc.gateway.runtime.internal.examplepb.UpdateMessage
-	(*ABitOfEverything_Nested)(nil),                    // 8: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested
-	nil,                                                // 9: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MapValueEntry
-	nil,                                                // 10: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MappedStringValueEntry
-	nil,                                                // 11: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MappedNestedValueEntry
-	(*ResponseBodyOut_Response)(nil),                   // 12: grpc.gateway.runtime.internal.examplepb.ResponseBodyOut.Response
-	(*RepeatedResponseBodyOut_Response)(nil),           // 13: grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.Response
-	(*empty.Empty)(nil),                                // 14: google.protobuf.Empty
-	(*timestamp.Timestamp)(nil),                        // 15: google.protobuf.Timestamp
-	(*field_mask.FieldMask)(nil),                       // 16: google.protobuf.FieldMask
+	(*NestedOuter)(nil),                                // 8: grpc.gateway.runtime.internal.examplepb.NestedOuter
+	(*NestedOne)(nil),                                  // 9: grpc.gateway.runtime.internal.examplepb.NestedOne
+	(*NestedTwo)(nil),                                  // 10: grpc.gateway.runtime.internal.examplepb.NestedTwo
+	(*NestedThree)(nil),                                // 11: grpc.gateway.runtime.internal.examplepb.NestedThree
+	(*UpdateNestedRequest)(nil),                        // 12: grpc.gateway.runtime.internal.examplepb.UpdateNestedRequest
+	(*ABitOfEverything_Nested)(nil),                    // 13: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested
+	nil,                                                // 14: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MapValueEntry
+	nil,                                                // 15: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MappedStringValueEntry
+	nil,                                                // 16: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MappedNestedValueEntry
+	(*ResponseBodyOut_Response)(nil),                   // 17: grpc.gateway.runtime.internal.examplepb.ResponseBodyOut.Response
+	(*RepeatedResponseBodyOut_Response)(nil),           // 18: grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.Response
+	(*empty.Empty)(nil),                                // 19: google.protobuf.Empty
+	(*timestamp.Timestamp)(nil),                        // 20: google.protobuf.Timestamp
+	(*field_mask.FieldMask)(nil),                       // 21: google.protobuf.FieldMask
 }
 var file_runtime_internal_examplepb_example_proto_depIdxs = []int32{
-	8,  // 0: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.single_nested:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested
-	8,  // 1: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.nested:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested
+	13, // 0: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.single_nested:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested
+	13, // 1: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.nested:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested
 	0,  // 2: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.enum_value:type_name -> grpc.gateway.runtime.internal.examplepb.NumericEnum
-	14, // 3: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.oneof_empty:type_name -> google.protobuf.Empty
-	9,  // 4: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.map_value:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MapValueEntry
-	10, // 5: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.mapped_string_value:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MappedStringValueEntry
-	11, // 6: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.mapped_nested_value:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MappedNestedValueEntry
-	15, // 7: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.timestamp_value:type_name -> google.protobuf.Timestamp
+	19, // 3: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.oneof_empty:type_name -> google.protobuf.Empty
+	14, // 4: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.map_value:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MapValueEntry
+	15, // 5: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.mapped_string_value:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MappedStringValueEntry
+	16, // 6: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.mapped_nested_value:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MappedNestedValueEntry
+	20, // 7: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.timestamp_value:type_name -> google.protobuf.Timestamp
 	0,  // 8: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.repeated_enum_value:type_name -> grpc.gateway.runtime.internal.examplepb.NumericEnum
 	0,  // 9: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.repeated_enum_annotation:type_name -> grpc.gateway.runtime.internal.examplepb.NumericEnum
 	0,  // 10: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.enum_value_annotation:type_name -> grpc.gateway.runtime.internal.examplepb.NumericEnum
-	8,  // 11: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.repeated_nested_annotation:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested
-	8,  // 12: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.nested_annotation:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested
-	12, // 13: grpc.gateway.runtime.internal.examplepb.ResponseBodyOut.response:type_name -> grpc.gateway.runtime.internal.examplepb.ResponseBodyOut.Response
-	13, // 14: grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.response:type_name -> grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.Response
-	16, // 15: grpc.gateway.runtime.internal.examplepb.UpdateMessage.update_mask:type_name -> google.protobuf.FieldMask
+	13, // 11: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.repeated_nested_annotation:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested
+	13, // 12: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.nested_annotation:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested
+	17, // 13: grpc.gateway.runtime.internal.examplepb.ResponseBodyOut.response:type_name -> grpc.gateway.runtime.internal.examplepb.ResponseBodyOut.Response
+	18, // 14: grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.response:type_name -> grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.Response
+	21, // 15: grpc.gateway.runtime.internal.examplepb.UpdateMessage.update_mask:type_name -> google.protobuf.FieldMask
 	4,  // 16: grpc.gateway.runtime.internal.examplepb.UpdateMessage.a_bit_of_everything:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything
-	1,  // 17: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested.ok:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested.DeepEnum
-	0,  // 18: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MapValueEntry.value:type_name -> grpc.gateway.runtime.internal.examplepb.NumericEnum
-	8,  // 19: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MappedNestedValueEntry.value:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested
-	2,  // 20: grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.Response.type:type_name -> grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.Response.ResponseType
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	9,  // 17: grpc.gateway.runtime.internal.examplepb.NestedOuter.one:type_name -> grpc.gateway.runtime.internal.examplepb.NestedOne
+	10, // 18: grpc.gateway.runtime.internal.examplepb.NestedOne.two:type_name -> grpc.gateway.runtime.internal.examplepb.NestedTwo
+	11, // 19: grpc.gateway.runtime.internal.examplepb.NestedTwo.three:type_name -> grpc.gateway.runtime.internal.examplepb.NestedThree
+	8,  // 20: grpc.gateway.runtime.internal.examplepb.UpdateNestedRequest.nested:type_name -> grpc.gateway.runtime.internal.examplepb.NestedOuter
+	21, // 21: grpc.gateway.runtime.internal.examplepb.UpdateNestedRequest.update_mask:type_name -> google.protobuf.FieldMask
+	1,  // 22: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested.ok:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested.DeepEnum
+	0,  // 23: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MapValueEntry.value:type_name -> grpc.gateway.runtime.internal.examplepb.NumericEnum
+	13, // 24: grpc.gateway.runtime.internal.examplepb.ABitOfEverything.MappedNestedValueEntry.value:type_name -> grpc.gateway.runtime.internal.examplepb.ABitOfEverything.Nested
+	2,  // 25: grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.Response.type:type_name -> grpc.gateway.runtime.internal.examplepb.RepeatedResponseBodyOut.Response.ResponseType
+	26, // [26:26] is the sub-list for method output_type
+	26, // [26:26] is the sub-list for method input_type
+	26, // [26:26] is the sub-list for extension type_name
+	26, // [26:26] is the sub-list for extension extendee
+	0,  // [0:26] is the sub-list for field type_name
 }
 
 func init() { file_runtime_internal_examplepb_example_proto_init() }
@@ -1250,7 +1540,43 @@ func file_runtime_internal_examplepb_example_proto_init() {
 			}
 		}
 		file_runtime_internal_examplepb_example_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ABitOfEverything_Nested); i {
+			switch v := v.(*NestedOuter); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_runtime_internal_examplepb_example_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NestedOne); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_runtime_internal_examplepb_example_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NestedTwo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_runtime_internal_examplepb_example_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*NestedThree); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1262,7 +1588,7 @@ func file_runtime_internal_examplepb_example_proto_init() {
 			}
 		}
 		file_runtime_internal_examplepb_example_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ResponseBodyOut_Response); i {
+			switch v := v.(*UpdateNestedRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1274,6 +1600,30 @@ func file_runtime_internal_examplepb_example_proto_init() {
 			}
 		}
 		file_runtime_internal_examplepb_example_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ABitOfEverything_Nested); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_runtime_internal_examplepb_example_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ResponseBodyOut_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_runtime_internal_examplepb_example_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RepeatedResponseBodyOut_Response); i {
 			case 0:
 				return &v.state
@@ -1296,7 +1646,7 @@ func file_runtime_internal_examplepb_example_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_runtime_internal_examplepb_example_proto_rawDesc,
 			NumEnums:      3,
-			NumMessages:   11,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
