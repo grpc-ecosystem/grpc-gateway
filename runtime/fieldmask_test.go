@@ -54,6 +54,7 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 		{name: "simple", input: `{"foo":1, "bar":"baz"}`, expected: newFieldMask("foo", "bar")},
 		{name: "nested", input: `{"foo": {"bar":1, "baz": 2}, "qux": 3}`, expected: newFieldMask("foo.bar", "foo.baz", "qux")},
 		{name: "canonical", input: `{"f": {"b": {"d": 1, "x": 2}, "c": 1}}`, expected: newFieldMask("f.b.d", "f.b.x", "f.c")},
+		{name: "deeply-nested", input: `{"foo": {"bar": {"baz": {"a": 1, "b": 2}}}}`, expected: newFieldMask("foo.bar.baz.a", "foo.bar.baz.b")},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			actual, err := FieldMaskFromRequestBody(bytes.NewReader([]byte(tc.input)), nil)
