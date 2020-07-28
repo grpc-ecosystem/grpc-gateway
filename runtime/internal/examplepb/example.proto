@@ -130,7 +130,3 @@ message UpdateNestedRequest {
   NestedOuter nested = 1;
   google.protobuf.FieldMask update_mask = 2;
 };
-
-service NestedService {
-  rpc Update(UpdateNestedRequest) returns(NestedOuter);
-};
