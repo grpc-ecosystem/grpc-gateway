@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"strings"
 
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
@@ -53,9 +52,14 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 					return nil, fmt.Errorf("could not find field %q in %q", k, item.msg.Descriptor().FullName())
 				}
 				child := fieldMaskPathItem{
-					path: append(item.path, string(fd.FullName().Name())),
 					node: v,
 				}
+				if item.path == "" {
+					child.path = string(fd.FullName().Name())
+				} else {
+					child.path = item.path + "." + string(fd.FullName().Name())
+				}
+
 				switch {
 				case fd.IsList(), fd.IsMap():
 					if repeatedChild != nil {
@@ -75,14 +79,14 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 			}
 		case len(item.path) > 0:
 			// otherwise, it's a leaf node so print its path
-			fm.Paths = append(fm.Paths, strings.Join(item.path, "."))
+			fm.Paths = append(fm.Paths, item.path)
 		}
 	}
 
 	// Add any repeated fields last, as per
 	// https://github.com/protocolbuffers/protobuf/blob/6b0ff74ecf63e26c7315f6745de36aff66deb59d/src/google/protobuf/field_mask.proto#L85-L86
 	if repeatedChild != nil {
-		fm.Paths = append(fm.Paths, strings.Join(repeatedChild.path, "."))
+		fm.Paths = append(fm.Paths, repeatedChild.path)
 	}
 
 	return fm, nil
@@ -90,8 +94,8 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 
 // fieldMaskPathItem stores a in-progress deconstruction of a path for a fieldmask
 type fieldMaskPathItem struct {
-	// the list of prior fields leading up to node
-	path []string
+	// the list of prior fields leading up to node connected by dots
+	path string
 
 	// a generic decoded json object the current item to inspect for further path extraction
 	node interface{}
