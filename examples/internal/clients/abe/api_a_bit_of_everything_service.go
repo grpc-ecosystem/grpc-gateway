@@ -3266,13 +3266,13 @@ ABitOfEverythingServiceApiService
  * @param abeUuid
  * @param body
  * @param optional nil or *ABitOfEverythingServiceUpdateV2Opts - Optional Parameters:
-     * @param "UpdateMaskPaths" (optional.Interface of []string) -  The set of field mask paths.
+     * @param "UpdateMask" (optional.Interface of []string) -  The paths to update.
 
 @return interface{}
 */
 
 type ABitOfEverythingServiceUpdateV2Opts struct { 
-	UpdateMaskPaths optional.Interface
+	UpdateMask optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, abeUuid string, body ExamplepbABitOfEverything, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
@@ -3292,8 +3292,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if localVarOptionals != nil && localVarOptionals.UpdateMaskPaths.IsSet() {
-		localVarQueryParams.Add("updateMask.paths", parameterToString(localVarOptionals.UpdateMaskPaths.Value(), "multi"))
+	if localVarOptionals != nil && localVarOptionals.UpdateMask.IsSet() {
+		localVarQueryParams.Add("updateMask", parameterToString(localVarOptionals.UpdateMask.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -3424,13 +3424,13 @@ ABitOfEverythingServiceApiService
  * @param abeUuid
  * @param body
  * @param optional nil or *ABitOfEverythingServiceUpdateV22Opts - Optional Parameters:
-     * @param "UpdateMaskPaths" (optional.Interface of []string) -  The set of field mask paths.
+     * @param "UpdateMask" (optional.Interface of []string) -  The paths to update.
 
 @return interface{}
 */
 
 type ABitOfEverythingServiceUpdateV22Opts struct { 
-	UpdateMaskPaths optional.Interface
+	UpdateMask optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, abeUuid string, body ExamplepbABitOfEverything, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
@@ -3450,8 +3450,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if localVarOptionals != nil && localVarOptionals.UpdateMaskPaths.IsSet() {
-		localVarQueryParams.Add("updateMask.paths", parameterToString(localVarOptionals.UpdateMaskPaths.Value(), "multi"))
+	if localVarOptionals != nil && localVarOptionals.UpdateMask.IsSet() {
+		localVarQueryParams.Add("updateMask", parameterToString(localVarOptionals.UpdateMask.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}

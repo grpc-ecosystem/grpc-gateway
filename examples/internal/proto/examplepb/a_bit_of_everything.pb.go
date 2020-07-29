@@ -769,7 +769,8 @@ type UpdateV2Request struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Abe        *ABitOfEverything     `protobuf:"bytes,1,opt,name=abe,proto3" json:"abe,omitempty"`
+	Abe *ABitOfEverything `protobuf:"bytes,1,opt,name=abe,proto3" json:"abe,omitempty"`
+	// The paths to update.
 	UpdateMask *field_mask.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
 }
 
