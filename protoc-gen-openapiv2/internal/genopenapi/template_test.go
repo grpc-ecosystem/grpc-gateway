@@ -752,6 +752,123 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 	}
 }
 
+func TestMessageToQueryParametersWellKnownTypes(t *testing.T) {
+	type test struct {
+		MsgDescs []*descriptorpb.DescriptorProto
+		Message  string
+		Params   []openapiParameterObject
+	}
+
+	tests := []test{
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:     proto.String("a_field_mask"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".google.protobuf.FieldMask"),
+							Number:   proto.Int32(1),
+						},
+						{
+							Name:     proto.String("a_timestamp"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".google.protobuf.Timestamp"),
+							Number:   proto.Int32(2),
+						},
+					},
+				},
+				{
+					Name: proto.String("FieldMask"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:   proto.String("paths"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Label:  descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+							Number: proto.Int32(1),
+						},
+					},
+				},
+				{
+					Name: proto.String("Timestamp"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:   proto.String("seconds"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_INT64.Enum(),
+							Number: proto.Int32(1),
+						},
+						{
+							Name:   proto.String("nanos"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_INT32.Enum(),
+							Number: proto.Int32(2),
+						},
+					},
+				},
+			},
+			Message: "ExampleMessage",
+			Params: []openapiParameterObject{
+				{
+					Name:     "a_field_mask",
+					In:       "query",
+					Required: false,
+					Type:     "array",
+					Items: &openapiItemsObject{
+						Type: "string",
+					},
+					CollectionFormat: "multi",
+				},
+				{
+					Name:     "a_timestamp",
+					In:       "query",
+					Required: false,
+					Type:     "string",
+					Format:   "date-time",
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		reg := descriptor.NewRegistry()
+		reg.SetEnumsAsInts(true)
+		msgs := []*descriptor.Message{}
+		for _, msgdesc := range test.MsgDescs {
+			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+		}
+		file := descriptor.File{
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType:    test.MsgDescs,
+				Service:        []*descriptorpb.ServiceDescriptorProto{},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: msgs,
+		}
+		reg.Load(&pluginpb.CodeGeneratorRequest{
+			ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+		})
+
+		message, err := reg.LookupMsg("", ".example."+test.Message)
+		if err != nil {
+			t.Fatalf("failed to lookup message: %s", err)
+		}
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
+		if err != nil {
+			t.Fatalf("failed to convert message to query parameters: %s", err)
+		}
+		if !reflect.DeepEqual(params, test.Params) {
+			t.Errorf("expected %v, got %v", test.Params, params)
+		}
+	}
+}
+
 func TestApplyTemplateSimple(t *testing.T) {
 	msgdesc := &descriptorpb.DescriptorProto{
 		Name: proto.String("ExampleMessage"),
@@ -2145,6 +2262,49 @@ func TestSchemaOfField(t *testing.T) {
 				Items: &openapiItemsObject{
 					Type: "string",
 				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.FieldMask"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type: "array",
+				Items: &openapiItemsObject{
+					Type: "string",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.Timestamp"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type:   "string",
+				Format: "date-time",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.Duration"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: schemaCore{
+				Type: "string",
 			},
 		},
 		{

@@ -25,6 +25,12 @@ import (
 )
 
 var wktSchemas = map[string]schemaCore{
+	".google.protobuf.FieldMask": {
+		Type: "array",
+		Items: (*openapiItemsObject)(&schemaCore{
+			Type: "string",
+		}),
+	},
 	".google.protobuf.Timestamp": {
 		Type:   "string",
 		Format: "date-time",
