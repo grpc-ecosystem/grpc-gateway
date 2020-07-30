@@ -24,7 +24,16 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+// wktSchemas are the schemas of well-known-types.
+// The schemas must match with the behavior of the JSON unmarshaler in
+// https://github.com/protocolbuffers/protobuf-go/blob/v1.25.0/encoding/protojson/well_known_types.go
 var wktSchemas = map[string]schemaCore{
+	".google.protobuf.FieldMask": {
+		Type: "array",
+		Items: (*openapiItemsObject)(&schemaCore{
+			Type: "string",
+		}),
+	},
 	".google.protobuf.Timestamp": {
 		Type:   "string",
 		Format: "date-time",
