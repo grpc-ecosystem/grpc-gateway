@@ -4,11 +4,9 @@ Reads the the api spec in protobuf format and generate an open-api spec.
 Optionally applies settings from the grpc-service configuration.
 """
 
-load("@rules_proto//proto:defs.bzl", "ProtoInfo")
-
 # TODO(yannic): Replace with |proto_common.direct_source_infos| when
 # https://github.com/bazelbuild/rules_proto/pull/22 lands.
-def _direct_source_infos(proto_info, provided_sources = []):
+def _source_infos(proto_info, direct_only, provided_sources = []):
     """Returns sequence of `ProtoFileInfo` for `proto_info`'s direct sources.
 
     Files that are both in `proto_info`'s direct sources and in
@@ -25,14 +23,24 @@ def _direct_source_infos(proto_info, provided_sources = []):
         `proto_info`'s direct sources.
     """
 
+    sources = proto_info.direct_sources if direct_only \
+        else proto_info.transitive_sources.to_list()
+    filtered_sources = []
+    for src in sources:
+        # ugly workaround to make sure that external protobufs (like google's
+        # well-known-protos) don't duplicate at runtime
+        if not 'external' in src.path:
+            filtered_sources.append(src)
+
+
     source_root = proto_info.proto_source_root
     if "." == source_root:
-        return [struct(file = src, import_path = src.path) for src in proto_info.direct_sources]
+        return [struct(file = src, import_path = src.path) for src in filtered_sources]
 
     offset = len(source_root) + 1  # + '/'.
 
     infos = []
-    for src in proto_info.direct_sources:
+    for src in filtered_sources:
         # TODO(yannic): Remove this hack when we drop support for Bazel < 1.0.
         local_offset = offset
         if src.root.path and not source_root.startswith(src.root.path):
@@ -54,13 +62,15 @@ def _run_proto_gen_swagger(
         grpc_api_configuration,
         single_output,
         json_names_for_fields,
-        fqn_for_swagger_name):
+        fqn_for_swagger_name,
+        direct_only):
     args = actions.args()
 
     args.add("--plugin", "protoc-gen-swagger=%s" % protoc_gen_swagger.path)
 
     args.add("--swagger_opt", "logtostderr=true")
     args.add("--swagger_opt", "allow_repeated_fields_in_body=true")
+    args.add("--swagger_opt", "disable_default_errors=true")
 
     extra_inputs = []
     if grpc_api_configuration:
@@ -73,7 +83,7 @@ def _run_proto_gen_swagger(
     if fqn_for_swagger_name:
         args.add("--swagger_opt", "fqn_for_swagger_name=true")
 
-    proto_file_infos = _direct_source_infos(proto_info)
+    proto_file_infos = _source_infos(proto_info, direct_only)
 
     # TODO(yannic): Use |proto_info.transitive_descriptor_sets| when
     # https://github.com/bazelbuild/bazel/issues/9337 is fixed.
@@ -158,6 +168,7 @@ def _proto_gen_swagger_impl(ctx):
                     single_output = ctx.attr.single_output,
                     json_names_for_fields = ctx.attr.json_names_for_fields,
                     fqn_for_swagger_name = ctx.attr.fqn_for_swagger_name,
+                    direct_only = ctx.attr.direct_only,
                 ),
             ),
         ),
@@ -175,6 +186,10 @@ protoc_gen_swagger = rule(
         ),
         "single_output": attr.bool(
             default = False,
+            mandatory = False,
+        ),
+        "direct_only": attr.bool(
+            default = True,
             mandatory = False,
         ),
         "json_names_for_fields": attr.bool(
