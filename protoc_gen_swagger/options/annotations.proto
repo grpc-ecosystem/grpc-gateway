@@ -5,7 +5,7 @@ package grpc.gateway.protoc_gen_swagger.options;
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options";
 
 import "google/protobuf/descriptor.proto";
-import "protoc-gen-swagger/options/openapiv2.proto";
+import "protoc_gen_swagger/options/openapiv2.proto";
 
 extend google.protobuf.FileOptions {
   // ID assigned by protobuf-global-extension-registry@google.com for grpc-gateway project.
