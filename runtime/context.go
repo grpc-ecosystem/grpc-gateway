@@ -93,8 +93,8 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request) (con
 	}
 
 	for key, vals := range req.Header {
+		key = textproto.CanonicalMIMEHeaderKey(key)
 		for _, val := range vals {
-			key = textproto.CanonicalMIMEHeaderKey(key)
 			// For backwards-compatibility, pass through 'authorization' header with no prefix.
 			if key == "Authorization" {
 				pairs = append(pairs, "authorization", val)
