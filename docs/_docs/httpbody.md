@@ -3,9 +3,11 @@ category: documentation
 ---
 
 # HttpBody messages
+
 The [HTTP Body](https://github.com/googleapis/googleapis/blob/master/google/api/httpbody.proto) messages allows a response message to be specified with custom data content and a custom content type header. The values included in the HTTPBody response will be used verbatim in the returned message from the gateway. Make sure you format your response carefully!
 
 ## Example Usage
+
 1. Define your service in gRPC with an httpbody response message
 
 ```protobuf
@@ -26,6 +28,7 @@ service HttpBodyExampleService {
 	}
 }
 ```
+
 3. Generate gRPC and reverse-proxy stubs and implement your service.
 
 ## Example service implementation
@@ -39,13 +42,16 @@ func (*HttpBodyExampleService) Helloworld(ctx context.Context, in *empty.Empty) 
 }
 
 func (HttpBodyExampleService) Download(_ *empty.Empty, stream HttpBodyExampleService_DownloadServer) error {
-	msgs := []*httpbody.HttpBody{{
-		ContentType: "text/html",
-		Data:        []byte("Hello 1"),
-	}, {
-		ContentType: "text/html",
-		Data:        []byte("Hello 2"),
-	}}
+	msgs := []*httpbody.HttpBody{
+		{
+			ContentType: "text/html",
+			Data:        []byte("Hello 1"),
+		},
+		{
+			ContentType: "text/html",
+			Data:        []byte("Hello 2"),
+		},
+	}
 
 	for _, msg := range msgs {
 		if err := stream.Send(msg); err != nil {
