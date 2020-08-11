@@ -2,7 +2,7 @@
 
 set -e
 
-JEKYLL_VERSION=3.5
+JEKYLL_VERSION=4
 BUNDLE_DIR="/tmp/grpc-gateway-bundle"
 
 if [ ! -d "${BUNDLE_DIR}" ]; then
