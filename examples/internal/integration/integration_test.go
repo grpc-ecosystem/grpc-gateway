@@ -60,13 +60,16 @@ func TestEchoPatch(t *testing.T) {
 
 	sent := examplepb.DynamicMessage{
 		StructField: &structpb.Struct{Fields: map[string]*structpb.Value{
-			"struct_key": structpb.NewStructValue(&structpb.Struct{Fields: map[string]*structpb.Value{
-				"layered_struct_key": structpb.NewStringValue("struct_val"),
-			}}),
+		"struct_key": {Kind: &structpb.Value_StructValue{
+			StructValue: &structpb.Struct{Fields: map[string]*structpb.Value{
+				"layered_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "struct_val"}},
+			}},
+		}}}},
+		ValueField: &structpb.Value{Kind: &structpb.Value_StructValue{StructValue:
+			&structpb.Struct{Fields: map[string]*structpb.Value{
+				"value_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "value_struct_val"},
+			}}},
 		}},
-		ValueField: structpb.NewStructValue(&structpb.Struct{Fields: map[string]*structpb.Value{
-			"value_struct_key": structpb.NewStringValue("value_struct_val"),
-		}}),
 	}
 	payload, err := protojson.MarshalOptions{UseProtoNames: true}.Marshal(&sent)
 	if err != nil {
