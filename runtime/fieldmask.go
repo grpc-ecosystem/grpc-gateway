@@ -8,7 +8,6 @@ import (
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/types/known/structpb"
 )
 
 func getFieldByName(fields protoreflect.FieldDescriptors, name string) protoreflect.FieldDescriptor {
@@ -106,8 +105,7 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 }
 
 func isDynamicProtoMessage(md protoreflect.MessageDescriptor) bool {
-	return md != nil && (md.FullName() == (&structpb.Struct{}).ProtoReflect().Descriptor().FullName() ||
-		md.FullName() == (&structpb.Value{}).ProtoReflect().Descriptor().FullName())
+	return md != nil && (md.FullName() == "google.protobuf.Struct" || md.FullName() == "google.protobuf.Value")
 }
 
 // buildPathsBlindly does not attempt to match proto field names to the

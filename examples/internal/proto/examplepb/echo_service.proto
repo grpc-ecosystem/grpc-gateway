@@ -87,7 +87,7 @@ service EchoService {
 	rpc EchoPatch(DynamicMessageUpdate) returns (DynamicMessageUpdate) {
 		option (google.api.http) = {
 			patch: "/v1/example/echo_patch"
-      body: "body"
+			body: "body"
 		};
 	}
 }
