@@ -106,7 +106,7 @@ func TestEchoPatch(t *testing.T) {
 	}
 	if diff := cmp.Diff(received.UpdateMask, fieldmaskpb.FieldMask{Paths: []string{
 		"struct_field.struct_key.layered_struct_key", "value_field.value_struct_key",
-	}}, protocmp.Transform()); diff != "" {
+	}}, protocmp.Transform(), protocmp.SortRepeatedFields(received.UpdateMask, "paths")); diff != "" {
 		t.Errorf(diff)
 	}
 }

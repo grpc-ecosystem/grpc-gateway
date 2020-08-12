@@ -12,5 +12,5 @@ package echo
 // DynamicMessage represents a message which can have its structure built dynamically using Struct and Values.
 type ExamplepbDynamicMessage struct {
 	StructField *interface{} `json:"structField,omitempty"`
-	ValueField  *interface{} `json:"valueField,omitempty"`
+	ValueField *interface{} `json:"valueField,omitempty"`
 }

@@ -10,6 +10,6 @@
 package echo
 
 type ExamplepbDynamicMessageUpdate struct {
-	Body       *ExamplepbDynamicMessage `json:"body,omitempty"`
-	UpdateMask []string                 `json:"updateMask,omitempty"`
+	Body *ExamplepbDynamicMessage `json:"body,omitempty"`
+	UpdateMask []string `json:"updateMask,omitempty"`
 }
