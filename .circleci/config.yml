@@ -81,7 +81,7 @@ jobs:
       - run: git diff --exit-code
   lint:
     docker:
-      - image: golang:1.14
+      - image: golang:1.15
     working_directory: /src/grpc-gateway
     steps:
       - checkout
