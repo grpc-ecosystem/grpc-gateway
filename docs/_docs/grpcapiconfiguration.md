@@ -64,4 +64,11 @@ The following is equivalent to the basic [usage example](usage.html) but without
    
    This will generate a reverse proxy `gen/go/your/service/v1/your_service.pb.gw.go` that is identical to the one produced for the annotated proto.
 
+6. Generate the optional your_service.swagger.json
+
+    ```sh
+    protoc -I. --swagger_out=logtostderr=true,paths=source_relative,grpc_api_configuration=path/to/your_service.yaml:./gen/go \
+      your/service/v1/your_service.proto
+    ```
+    
 All other steps work as before. If you want you can remove the googleapis include path in step 3 and 4 as the unannotated proto no longer requires them.
