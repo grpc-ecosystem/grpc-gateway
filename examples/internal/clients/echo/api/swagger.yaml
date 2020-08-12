@@ -417,7 +417,67 @@ paths:
           description: "An unexpected error response"
           schema:
             $ref: "#/definitions/rpcStatus"
+  /v1/example/echo_patch:
+    patch:
+      tags:
+      - "EchoService"
+      summary: "EchoPatch method receives a NonStandardUpdateRequest and returns it."
+      operationId: "EchoService_EchoPatch"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbDynamicMessage"
+        x-exportParamName: "Body"
+      - name: "updateMask"
+        in: "query"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "UpdateMask"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbDynamicMessageUpdate"
+        default:
+          description: "An unexpected error response"
+          schema:
+            $ref: "#/definitions/rpcStatus"
 definitions:
+  examplepbDynamicMessage:
+    type: "object"
+    properties:
+      structField:
+        type: "object"
+        properties: {}
+      valueField:
+        type: "object"
+        properties: {}
+    description: "DynamicMessage represents a message which can have its structure\n\
+      built dynamically using Struct and Values."
+    example:
+      structField: "{}"
+      valueField: "{}"
+  examplepbDynamicMessageUpdate:
+    type: "object"
+    properties:
+      body:
+        $ref: "#/definitions/examplepbDynamicMessage"
+      updateMask:
+        type: "array"
+        items:
+          type: "string"
+    example:
+      body:
+        structField: "{}"
+        valueField: "{}"
+      updateMask:
+      - "updateMask"
+      - "updateMask"
   examplepbEmbedded:
     type: "object"
     properties:
@@ -522,6 +582,14 @@ definitions:
       \ custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\
       \n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n\
       \      \"value\": \"1.212s\"\n    }"
+  protobufNullValue:
+    type: "string"
+    description: "`NullValue` is a singleton enumeration to represent the null value\
+      \ for the\n`Value` type union.\n\n The JSON representation for `NullValue` is\
+      \ JSON `null`.\n\n - NULL_VALUE: Null value."
+    enum:
+    - "NULL_VALUE"
+    default: "NULL_VALUE"
   rpcStatus:
     type: "object"
     properties:
