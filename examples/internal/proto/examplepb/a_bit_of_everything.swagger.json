@@ -261,8 +261,7 @@
             "name": "boolValue",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "stringValue",
@@ -577,8 +576,7 @@
             "name": "boolValue",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "stringValue",
@@ -886,8 +884,7 @@
             "name": "boolValue",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "bytesValue",
@@ -1208,8 +1205,7 @@
             "name": "boolValue",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "stringValue",
@@ -1512,8 +1508,7 @@
             "name": "boolValue",
             "in": "path",
             "required": true,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "stringValue",
@@ -1890,8 +1885,7 @@
             "required": true,
             "type": "array",
             "items": {
-              "type": "boolean",
-              "format": "boolean"
+              "type": "boolean"
             },
             "collectionFormat": "csv",
             "minItems": 1
@@ -2795,8 +2789,7 @@
           "format": "int64"
         },
         "boolValue": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "stringValue": {
           "type": "string"
@@ -2998,8 +2991,7 @@
         "pathRepeatedBoolValue": {
           "type": "array",
           "items": {
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           }
         },
         "pathRepeatedStringValue": {
