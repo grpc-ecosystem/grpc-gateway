@@ -41,3 +41,8 @@ func (s *echoServer) EchoDelete(ctx context.Context, msg *examples.SimpleMessage
 	glog.Info(msg)
 	return msg, nil
 }
+
+func (s *echoServer) EchoPatch(ctx context.Context, msg *examples.DynamicMessageUpdate) (*examples.DynamicMessageUpdate, error) {
+	glog.Info(msg)
+	return msg, nil
+}

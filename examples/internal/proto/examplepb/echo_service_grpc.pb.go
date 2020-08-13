@@ -26,6 +26,8 @@ type EchoServiceClient interface {
 	EchoBody(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
 	// EchoDelete method receives a simple message and returns it.
 	EchoDelete(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
+	// EchoPatch method receives a NonStandardUpdateRequest and returns it.
+	EchoPatch(ctx context.Context, in *DynamicMessageUpdate, opts ...grpc.CallOption) (*DynamicMessageUpdate, error)
 }
 
 type echoServiceClient struct {
@@ -63,6 +65,15 @@ func (c *echoServiceClient) EchoDelete(ctx context.Context, in *SimpleMessage, o
 	return out, nil
 }
 
+func (c *echoServiceClient) EchoPatch(ctx context.Context, in *DynamicMessageUpdate, opts ...grpc.CallOption) (*DynamicMessageUpdate, error) {
+	out := new(DynamicMessageUpdate)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoPatch", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EchoServiceServer is the server API for EchoService service.
 type EchoServiceServer interface {
 	// Echo method receives a simple message and returns it.
@@ -74,6 +85,8 @@ type EchoServiceServer interface {
 	EchoBody(context.Context, *SimpleMessage) (*SimpleMessage, error)
 	// EchoDelete method receives a simple message and returns it.
 	EchoDelete(context.Context, *SimpleMessage) (*SimpleMessage, error)
+	// EchoPatch method receives a NonStandardUpdateRequest and returns it.
+	EchoPatch(context.Context, *DynamicMessageUpdate) (*DynamicMessageUpdate, error)
 }
 
 // UnimplementedEchoServiceServer can be embedded to have forward compatible implementations.
@@ -88,6 +101,9 @@ func (*UnimplementedEchoServiceServer) EchoBody(context.Context, *SimpleMessage)
 }
 func (*UnimplementedEchoServiceServer) EchoDelete(context.Context, *SimpleMessage) (*SimpleMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoDelete not implemented")
+}
+func (*UnimplementedEchoServiceServer) EchoPatch(context.Context, *DynamicMessageUpdate) (*DynamicMessageUpdate, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EchoPatch not implemented")
 }
 
 func RegisterEchoServiceServer(s *grpc.Server, srv EchoServiceServer) {
@@ -148,6 +164,24 @@ func _EchoService_EchoDelete_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EchoService_EchoPatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DynamicMessageUpdate)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EchoServiceServer).EchoPatch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoPatch",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EchoServiceServer).EchoPatch(ctx, req.(*DynamicMessageUpdate))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _EchoService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.EchoService",
 	HandlerType: (*EchoServiceServer)(nil),
@@ -163,6 +197,10 @@ var _EchoService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EchoDelete",
 			Handler:    _EchoService_EchoDelete_Handler,
+		},
+		{
+			MethodName: "EchoPatch",
+			Handler:    _EchoService_EchoPatch_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

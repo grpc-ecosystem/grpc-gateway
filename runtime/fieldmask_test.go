@@ -55,6 +55,18 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 			expected: newFieldMask("single_nested.name", "single_nested.amount", "uuid"),
 		},
 		{
+			name:     "struct",
+			msg:      &examplepb.NonStandardMessage{},
+			input:    `{"struct_field": {"name":{"first": "bob"}, "amount": 2}}`,
+			expected: newFieldMask("struct_field.name.first", "struct_field.amount"),
+		},
+		{
+			name:     "value",
+			msg:      &examplepb.NonStandardMessage{},
+			input:    `{"value_field": {"name":{"first": "bob"}, "amount": 2}}`,
+			expected: newFieldMask("value_field.name.first", "value_field.amount"),
+		},
+		{
 			name: "map",
 
 			msg:      &examplepb.ABitOfEverything{},
