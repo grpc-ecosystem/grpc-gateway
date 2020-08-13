@@ -30,6 +30,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 var marshaler = &runtime.JSONPb{}
@@ -48,6 +49,68 @@ func TestEcho(t *testing.T) {
 			testEchoOneof2(t, 8088, apiPrefix, "application/json")
 			testEchoBody(t, 8088, apiPrefix)
 		})
+	}
+}
+
+func TestEchoPatch(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	sent := examplepb.DynamicMessage{
+		StructField: &structpb.Struct{Fields: map[string]*structpb.Value{
+		"struct_key": {Kind: &structpb.Value_StructValue{
+			StructValue: &structpb.Struct{Fields: map[string]*structpb.Value{
+				"layered_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "struct_val"}},
+			}},
+		}}}},
+		ValueField: &structpb.Value{Kind: &structpb.Value_StructValue{StructValue:
+			&structpb.Struct{Fields: map[string]*structpb.Value{
+				"value_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "value_struct_val"},
+			}}},
+		}},
+	}
+	payload, err := protojson.MarshalOptions{UseProtoNames: true}.Marshal(&sent)
+	if err != nil {
+		t.Fatalf("marshaler.Marshal(%#v) failed with %v; want success", payload, err)
+	}
+
+	apiURL := "http://localhost:8088/v1/example/echo_patch"
+	req, err := http.NewRequest("PATCH", apiURL, bytes.NewReader(payload))
+	if err != nil {
+		t.Errorf("http.NewRequest(PATCH, %q) failed with %v; want success", apiURL, err)
+		return
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.Post(%#v) failed with %v; want success", req, err)
+		return
+	}
+	defer resp.Body.Close()
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	var received examplepb.DynamicMessageUpdate
+	if err := marshaler.Unmarshal(buf, &received); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
+		return
+	}
+	if diff := cmp.Diff(received.Body, sent, protocmp.Transform()); diff != "" {
+		t.Errorf(diff)
+	}
+	if diff := cmp.Diff(received.UpdateMask, fieldmaskpb.FieldMask{Paths: []string{
+		"struct_field.struct_key.layered_struct_key", "value_field.value_struct_key",
+	}}, protocmp.Transform(), protocmp.SortRepeatedFields(received.UpdateMask, "paths")); diff != "" {
+		t.Errorf(diff)
 	}
 }
 

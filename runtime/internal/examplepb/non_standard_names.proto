@@ -4,6 +4,7 @@ package grpc.gateway.runtime.internal.examplepb;
 
 import "google/api/annotations.proto";
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/struct.proto";
 
 // NonStandardMessage has oddly named fields.
 message NonStandardMessage {
@@ -23,6 +24,8 @@ message NonStandardMessage {
         SubThing subThing = 1;
     }
     Thing thing = 8;
+    google.protobuf.Struct struct_field = 9;
+    google.protobuf.Value value_field = 10;
 }
 
 message NonStandardUpdateRequest {
@@ -48,6 +51,8 @@ message NonStandardMessageWithJSONNames {
         SubThing subThing = 1   [json_name="SubThing"];
     }
     Thing thing = 8         [json_name="Thingy"];
+    google.protobuf.Struct struct_field = 9 [json_name="StructField"];
+    google.protobuf.Value value_field = 10 [json_name="ValueField"];
 }
 
 message NonStandardWithJSONNamesUpdateRequest {

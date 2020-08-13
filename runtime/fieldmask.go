@@ -51,6 +51,18 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 				if fd == nil {
 					return nil, fmt.Errorf("could not find field %q in %q", k, item.msg.Descriptor().FullName())
 				}
+
+				if isDynamicProtoMessage(fd.Message()) {
+					for _, p := range buildPathsBlindly(k, v) {
+						newPath := p
+						if item.path != "" {
+							newPath = item.path + "." + newPath
+						}
+						queue = append(queue, fieldMaskPathItem{path: newPath})
+					}
+					continue
+				}
+
 				child := fieldMaskPathItem{
 					node: v,
 				}
@@ -90,6 +102,46 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 	}
 
 	return fm, nil
+}
+
+func isDynamicProtoMessage(md protoreflect.MessageDescriptor) bool {
+	return md != nil && (md.FullName() == "google.protobuf.Struct" || md.FullName() == "google.protobuf.Value")
+}
+
+// buildPathsBlindly does not attempt to match proto field names to the
+// json value keys.  Instead it relies completely on the structure of
+// the unmarshalled json contained within in.
+// Returns a slice containing all subpaths with the root at the
+// passed in name and json value.
+func buildPathsBlindly(name string, in interface{}) []string {
+	m, ok := in.(map[string]interface{})
+	if !ok {
+		return []string{name}
+	}
+
+	var paths []string
+	queue := []fieldMaskPathItem{{path: name, node: m}}
+	for len(queue) > 0 {
+		cur := queue[0]
+		queue = queue[1:]
+
+		m, ok := cur.node.(map[string]interface{})
+		if !ok {
+			// This should never happen since we should always check that we only add
+			// nodes of type map[string]interface{} to the queue.
+			continue
+		}
+		for k, v := range m {
+			if mi, ok := v.(map[string]interface{}); ok {
+				queue = append(queue, fieldMaskPathItem{path: cur.path + "." + k, node: mi})
+			} else {
+				// This is not a struct, so there are no more levels to descend.
+				curPath := cur.path + "." + k
+				paths = append(paths, curPath)
+			}
+		}
+	}
+	return paths
 }
 
 // fieldMaskPathItem stores a in-progress deconstruction of a path for a fieldmask
