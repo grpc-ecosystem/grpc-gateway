@@ -211,8 +211,7 @@
           "format": "int64"
         },
         "bool_value": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "string_value": {
           "type": "string"

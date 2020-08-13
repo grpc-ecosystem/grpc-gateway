@@ -538,9 +538,10 @@ func primitiveSchema(t pbdescriptor.FieldDescriptorProto_Type) (ftype, format st
 		// Ditto.
 		return "integer", "int64", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_BOOL:
-		return "boolean", "boolean", true
+		// NOTE: in swagger specification, format should be empty on boolean type
+		return "boolean", "", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_STRING:
-		// NOTE: in swagger specifition, format should be empty on string type
+		// NOTE: in swagger specification, format should be empty on string type
 		return "string", "", true
 	case pbdescriptor.FieldDescriptorProto_TYPE_BYTES:
 		return "string", "byte", true
@@ -1919,13 +1920,14 @@ func protoJSONSchemaTypeToFormat(in []swagger_options.JSONSchema_JSONSchemaSimpl
 	case swagger_options.JSONSchema_ARRAY:
 		return "array", ""
 	case swagger_options.JSONSchema_BOOLEAN:
-		return "boolean", "boolean"
+		// NOTE: in swagger specification, format should be empty on boolean type
+		return "boolean", ""
 	case swagger_options.JSONSchema_INTEGER:
 		return "integer", "int32"
 	case swagger_options.JSONSchema_NUMBER:
 		return "number", "double"
 	case swagger_options.JSONSchema_STRING:
-		// NOTE: in swagger specifition, format should be empty on string type
+		// NOTE: in swagger specification, format should be empty on string type
 		return "string", ""
 	default:
 		// Maybe panic?

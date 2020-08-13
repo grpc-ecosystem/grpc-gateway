@@ -89,7 +89,6 @@
         },
         "access": {
           "type": "boolean",
-          "format": "boolean",
           "title": "Whether you have access or not"
         }
       }
