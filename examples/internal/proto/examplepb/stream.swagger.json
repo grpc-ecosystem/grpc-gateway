@@ -264,8 +264,7 @@
           "format": "int64"
         },
         "boolValue": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "stringValue": {
           "type": "string"
