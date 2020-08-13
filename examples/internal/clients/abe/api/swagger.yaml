@@ -197,7 +197,6 @@ paths:
         in: "query"
         required: false
         type: "boolean"
-        format: "boolean"
         x-exportParamName: "BoolValue"
         x-optionalDataType: "Bool"
       - name: "string_value"
@@ -487,7 +486,6 @@ paths:
         in: "query"
         required: false
         type: "boolean"
-        format: "boolean"
         x-exportParamName: "BoolValue"
         x-optionalDataType: "Bool"
       - name: "string_value"
@@ -768,7 +766,6 @@ paths:
         in: "query"
         required: false
         type: "boolean"
-        format: "boolean"
         x-exportParamName: "BoolValue"
         x-optionalDataType: "Bool"
       - name: "bytes_value"
@@ -1064,7 +1061,6 @@ paths:
         in: "query"
         required: false
         type: "boolean"
-        format: "boolean"
         x-exportParamName: "BoolValue"
         x-optionalDataType: "Bool"
       - name: "string_value"
@@ -1335,7 +1331,6 @@ paths:
         in: "path"
         required: true
         type: "boolean"
-        format: "boolean"
         x-exportParamName: "BoolValue"
       - name: "string_value"
         in: "path"
@@ -1662,7 +1657,6 @@ paths:
         type: "array"
         items:
           type: "boolean"
-          format: "boolean"
         collectionFormat: "csv"
         minItems: 1
         x-exportParamName: "PathRepeatedBoolValue"
@@ -2357,7 +2351,6 @@ definitions:
         format: "int64"
       bool_value:
         type: "boolean"
-        format: "boolean"
       string_value:
         type: "string"
       bytes_value:
@@ -2496,7 +2489,6 @@ definitions:
         type: "array"
         items:
           type: "boolean"
-          format: "boolean"
       path_repeated_string_value:
         type: "array"
         items:
