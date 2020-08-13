@@ -535,9 +535,10 @@ func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format st
 		// Ditto.
 		return "integer", "int64", true
 	case descriptorpb.FieldDescriptorProto_TYPE_BOOL:
-		return "boolean", "boolean", true
+		// NOTE: in OpenAPI specification, format should be empty on boolean type
+		return "boolean", "", true
 	case descriptorpb.FieldDescriptorProto_TYPE_STRING:
-		// NOTE: in OpenAPI specifition, format should be empty on string type
+		// NOTE: in OpenAPI specification, format should be empty on string type
 		return "string", "", true
 	case descriptorpb.FieldDescriptorProto_TYPE_BYTES:
 		return "string", "byte", true
@@ -1895,13 +1896,14 @@ func protoJSONSchemaTypeToFormat(in []openapi_options.JSONSchema_JSONSchemaSimpl
 	case openapi_options.JSONSchema_ARRAY:
 		return "array", ""
 	case openapi_options.JSONSchema_BOOLEAN:
-		return "boolean", "boolean"
+		// NOTE: in OpenAPI specification, format should be empty on boolean type
+		return "boolean", ""
 	case openapi_options.JSONSchema_INTEGER:
 		return "integer", "int32"
 	case openapi_options.JSONSchema_NUMBER:
 		return "number", "double"
 	case openapi_options.JSONSchema_STRING:
-		// NOTE: in OpenAPI specifition, format should be empty on string type
+		// NOTE: in OpenAPI specification, format should be empty on string type
 		return "string", ""
 	default:
 		// Maybe panic?
