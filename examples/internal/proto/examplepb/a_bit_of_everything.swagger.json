@@ -261,8 +261,7 @@
             "name": "bool_value",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "string_value",
@@ -577,8 +576,7 @@
             "name": "bool_value",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "string_value",
@@ -886,8 +884,7 @@
             "name": "bool_value",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "bytes_value",
@@ -1208,8 +1205,7 @@
             "name": "bool_value",
             "in": "query",
             "required": false,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "string_value",
@@ -1512,8 +1508,7 @@
             "name": "bool_value",
             "in": "path",
             "required": true,
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           },
           {
             "name": "string_value",
@@ -1946,8 +1941,7 @@
             "required": true,
             "type": "array",
             "items": {
-              "type": "boolean",
-              "format": "boolean"
+              "type": "boolean"
             },
             "collectionFormat": "csv",
             "minItems": 1
@@ -2846,8 +2840,7 @@
           "format": "int64"
         },
         "bool_value": {
-          "type": "boolean",
-          "format": "boolean"
+          "type": "boolean"
         },
         "string_value": {
           "type": "string"
@@ -3049,8 +3042,7 @@
         "path_repeated_bool_value": {
           "type": "array",
           "items": {
-            "type": "boolean",
-            "format": "boolean"
+            "type": "boolean"
           }
         },
         "path_repeated_string_value": {
