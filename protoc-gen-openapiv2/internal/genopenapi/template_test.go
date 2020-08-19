@@ -2232,8 +2232,14 @@ func TestSchemaOfField(t *testing.T) {
 	type test struct {
 		field    *descriptor.Field
 		refs     refMap
-		expected schemaCore
+		expected openapiSchemaObject
 	}
+
+	var fieldOptions = new(descriptorpb.FieldOptions)
+	proto.SetExtension(fieldOptions, openapi_options.E_Openapiv2Field, &openapi_options.JSONSchema{
+		Title:       "field title",
+		Description: "field description",
+	})
 
 	tests := []test{
 		{
@@ -2244,8 +2250,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "string",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
 			},
 		},
 		{
@@ -2257,10 +2265,12 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "array",
-				Items: &openapiItemsObject{
-					Type: "string",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: &openapiItemsObject{
+						Type: "string",
+					},
 				},
 			},
 		},
@@ -2273,10 +2283,12 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "array",
-				Items: &openapiItemsObject{
-					Type: "string",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: &openapiItemsObject{
+						Type: "string",
+					},
 				},
 			},
 		},
@@ -2289,9 +2301,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "string",
-				Format: "date-time",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "date-time",
+				},
 			},
 		},
 		{
@@ -2303,8 +2317,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "string",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
 			},
 		},
 		{
@@ -2316,8 +2332,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "string",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
 			},
 		},
 		{
@@ -2330,10 +2348,12 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "array",
-				Items: &openapiItemsObject{
-					Type: "string",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: &openapiItemsObject{
+						Type: "string",
+					},
 				},
 			},
 		},
@@ -2346,9 +2366,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "string",
-				Format: "byte",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "byte",
+				},
 			},
 		},
 		{
@@ -2360,9 +2382,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "integer",
-				Format: "int32",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "integer",
+					Format: "int32",
+				},
 			},
 		},
 		{
@@ -2374,9 +2398,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "integer",
-				Format: "int64",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "integer",
+					Format: "int64",
+				},
 			},
 		},
 		{
@@ -2388,9 +2414,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "string",
-				Format: "int64",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "int64",
+				},
 			},
 		},
 		{
@@ -2402,9 +2430,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "string",
-				Format: "uint64",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "uint64",
+				},
 			},
 		},
 		{
@@ -2416,9 +2446,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "number",
-				Format: "float",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "number",
+					Format: "float",
+				},
 			},
 		},
 		{
@@ -2430,9 +2462,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "number",
-				Format: "double",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "number",
+					Format: "double",
+				},
 			},
 		},
 		{
@@ -2444,8 +2478,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "boolean",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "boolean",
+				},
 			},
 		},
 		{
@@ -2457,8 +2493,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "object",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "object",
+				},
 			},
 		},
 		{
@@ -2470,8 +2508,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "object",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "object",
+				},
 			},
 		},
 		{
@@ -2483,11 +2523,13 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "array",
-				Items: (*openapiItemsObject)(&schemaCore{
-					Type: "object",
-				}),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: (*openapiItemsObject)(&schemaCore{
+						Type: "object",
+					}),
+				},
 			},
 		},
 		{
@@ -2499,8 +2541,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "string",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
 			},
 		},
 		{
@@ -2512,8 +2556,89 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: refMap{".example.Message": struct{}{}},
-			expected: schemaCore{
-				Ref: "#/definitions/exampleMessage",
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Ref: "#/definitions/exampleMessage",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("map_field"),
+					Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					TypeName: proto.String(".example.Message.MapFieldEntry"),
+					Options:  fieldOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "object",
+				},
+				AdditionalProperties: &openapiSchemaObject{
+					schemaCore: schemaCore{Type: "string"},
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:    proto.String("array_field"),
+					Label:   descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+					Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+					Options: fieldOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:  "array",
+					Items: (*openapiItemsObject)(&schemaCore{Type: "string"}),
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:    proto.String("primitive_field"),
+					Label:   descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:    descriptorpb.FieldDescriptorProto_TYPE_INT32.Enum(),
+					Options: fieldOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "integer",
+					Format: "int32",
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("message_field"),
+					Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					TypeName: proto.String(".example.Empty"),
+					Options:  fieldOptions,
+				},
+			},
+			refs: refMap{".example.Empty": struct{}{}},
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Ref: "#/definitions/exampleEmpty",
+				},
+				Title:       "field title",
+				Description: "field description",
 			},
 		},
 	}
@@ -2535,6 +2660,23 @@ func TestSchemaOfField(t *testing.T) {
 								Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
 							},
 						},
+						NestedType: []*descriptorpb.DescriptorProto{
+							{
+								Name:    proto.String("MapFieldEntry"),
+								Options: &descriptorpb.MessageOptions{MapEntry: proto.Bool(true)},
+								Field: []*descriptorpb.FieldDescriptorProto{
+									{},
+									{
+										Name:  proto.String("value"),
+										Label: descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+										Type:  descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+									},
+								},
+							},
+						},
+					},
+					{
+						Name: proto.String("Empty"),
 					},
 				},
 				EnumType: []*descriptorpb.EnumDescriptorProto{
@@ -2550,7 +2692,7 @@ func TestSchemaOfField(t *testing.T) {
 	for _, test := range tests {
 		refs := make(refMap)
 		actual := schemaOfField(test.field, reg, refs)
-		expectedSchemaObject := openapiSchemaObject{schemaCore: test.expected}
+		expectedSchemaObject := test.expected
 		if e, a := expectedSchemaObject, actual; !reflect.DeepEqual(a, e) {
 			t.Errorf("Expected schemaOfField(%v) = %v, actual: %v", test.field, e, a)
 		}
