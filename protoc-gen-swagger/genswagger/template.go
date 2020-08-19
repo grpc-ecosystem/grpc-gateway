@@ -504,7 +504,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) s
 		}
 	}
 
-	if j, err := extractJSONSchemaFromFieldDescriptor(fd); err == nil {
+	if j, err := extractJSONSchemaFromFieldDescriptor(f.FieldDescriptorProto); err == nil {
 		updateSwaggerObjectFromJSONSchema(&ret, j, reg, f)
 	}
 

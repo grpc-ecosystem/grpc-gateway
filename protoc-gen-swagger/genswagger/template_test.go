@@ -2066,7 +2066,16 @@ func TestSchemaOfField(t *testing.T) {
 	type test struct {
 		field    *descriptor.Field
 		refs     refMap
-		expected schemaCore
+		expected swaggerSchemaObject
+	}
+
+	var fieldOptions = new(protodescriptor.FieldOptions)
+	err := proto.SetExtension(fieldOptions, swagger_options.E_Openapiv2Field, &swagger_options.JSONSchema{
+		Title:       "field title",
+		Description: "field description",
+	})
+	if err != nil {
+		t.Errorf("proto.SetExtension() failed with %v; want success", err)
 	}
 
 	tests := []test{
@@ -2078,8 +2087,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "string",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
 			},
 		},
 		{
@@ -2091,10 +2102,12 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "array",
-				Items: &swaggerItemsObject{
-					Type: "string",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: &swaggerItemsObject{
+						Type: "string",
+					},
 				},
 			},
 		},
@@ -2107,8 +2120,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "string",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
 			},
 		},
 		{
@@ -2121,10 +2136,12 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "array",
-				Items: &swaggerItemsObject{
-					Type: "string",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: &swaggerItemsObject{
+						Type: "string",
+					},
 				},
 			},
 		},
@@ -2137,9 +2154,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "string",
-				Format: "byte",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "byte",
+				},
 			},
 		},
 		{
@@ -2151,9 +2170,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "integer",
-				Format: "int32",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "integer",
+					Format: "int32",
+				},
 			},
 		},
 		{
@@ -2165,9 +2186,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "integer",
-				Format: "int64",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "integer",
+					Format: "int64",
+				},
 			},
 		},
 		{
@@ -2179,9 +2202,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "string",
-				Format: "int64",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "int64",
+				},
 			},
 		},
 		{
@@ -2193,9 +2218,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "string",
-				Format: "uint64",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "uint64",
+				},
 			},
 		},
 		{
@@ -2207,9 +2234,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "number",
-				Format: "float",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "number",
+					Format: "float",
+				},
 			},
 		},
 		{
@@ -2221,9 +2250,11 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type:   "number",
-				Format: "double",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "number",
+					Format: "double",
+				},
 			},
 		},
 		{
@@ -2235,8 +2266,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "boolean",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type: "boolean",
+				},
 			},
 		},
 		{
@@ -2248,8 +2281,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "object",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type: "object",
+				},
 			},
 		},
 		{
@@ -2261,8 +2296,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "object",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type: "object",
+				},
 			},
 		},
 		{
@@ -2274,11 +2311,13 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "array",
-				Items: (*swaggerItemsObject)(&schemaCore{
-					Type: "object",
-				}),
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: (*swaggerItemsObject)(&schemaCore{
+						Type: "object",
+					}),
+				},
 			},
 		},
 		{
@@ -2290,8 +2329,10 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: make(refMap),
-			expected: schemaCore{
-				Type: "string",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
 			},
 		},
 		{
@@ -2303,8 +2344,89 @@ func TestSchemaOfField(t *testing.T) {
 				},
 			},
 			refs: refMap{".example.Message": struct{}{}},
-			expected: schemaCore{
-				Ref: "#/definitions/exampleMessage",
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Ref: "#/definitions/exampleMessage",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("map_field"),
+					Label:    protodescriptor.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					TypeName: proto.String(".example.Message.MapFieldEntry"),
+					Options:  fieldOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type: "object",
+				},
+				AdditionalProperties: &swaggerSchemaObject{
+					schemaCore: schemaCore{Type: "string"},
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:    proto.String("array_field"),
+					Label:   protodescriptor.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+					Type:    protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+					Options: fieldOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type:  "array",
+					Items: (*swaggerItemsObject)(&schemaCore{Type: "string"}),
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:    proto.String("primitive_field"),
+					Label:   protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:    protodescriptor.FieldDescriptorProto_TYPE_INT32.Enum(),
+					Options: fieldOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "integer",
+					Format: "int32",
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &protodescriptor.FieldDescriptorProto{
+					Name:     proto.String("message_field"),
+					Label:    protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:     protodescriptor.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					TypeName: proto.String(".example.Empty"),
+					Options:  fieldOptions,
+				},
+			},
+			refs: refMap{".example.Empty": struct{}{}},
+			expected: swaggerSchemaObject{
+				schemaCore: schemaCore{
+					Ref: "#/definitions/exampleEmpty",
+				},
+				Title:       "field title",
+				Description: "field description",
 			},
 		},
 	}
@@ -2326,6 +2448,23 @@ func TestSchemaOfField(t *testing.T) {
 								Type: protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
 							},
 						},
+						NestedType: []*protodescriptor.DescriptorProto{
+							{
+								Name:    proto.String("MapFieldEntry"),
+								Options: &protodescriptor.MessageOptions{MapEntry: proto.Bool(true)},
+								Field: []*protodescriptor.FieldDescriptorProto{
+									{},
+									{
+										Name:  proto.String("value"),
+										Label: protodescriptor.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+										Type:  protodescriptor.FieldDescriptorProto_TYPE_STRING.Enum(),
+									},
+								},
+							},
+						},
+					},
+					{
+						Name: proto.String("Empty"),
 					},
 				},
 				EnumType: []*protodescriptor.EnumDescriptorProto{
@@ -2341,7 +2480,7 @@ func TestSchemaOfField(t *testing.T) {
 	for _, test := range tests {
 		refs := make(refMap)
 		actual := schemaOfField(test.field, reg, refs)
-		expectedSchemaObject := swaggerSchemaObject{schemaCore: test.expected}
+		expectedSchemaObject := test.expected
 		if e, a := expectedSchemaObject, actual; !reflect.DeepEqual(a, e) {
 			t.Errorf("Expected schemaOfField(%v) = %v, actual: %v", test.field, e, a)
 		}
