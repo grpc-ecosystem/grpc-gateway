@@ -86,6 +86,10 @@ type Registry struct {
 	// simpleOperationIDs removes the service prefix from the generated
 	// operationIDs. This risks generating duplicate operationIDs.
 	simpleOperationIDs bool
+
+	// warnOnUnboundMethods causes the registry to emit warning logs if an RPC method
+	// has no HttpRule annotation.
+	warnOnUnboundMethods bool
 }
 
 type repeatedFieldSeparator struct {
@@ -522,6 +526,11 @@ func (r *Registry) SetSimpleOperationIDs(use bool) {
 // GetSimpleOperationIDs returns simpleOperationIDs
 func (r *Registry) GetSimpleOperationIDs() bool {
 	return r.simpleOperationIDs
+}
+
+// SetWarnOnUnboundMethods sets warnOnUnboundMethods
+func (r *Registry) SetWarnOnUnboundMethods(warn bool) {
+	r.warnOnUnboundMethods = warn
 }
 
 // sanitizePackageName replaces unallowed character in package name
