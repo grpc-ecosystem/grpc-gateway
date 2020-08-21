@@ -36,7 +36,11 @@ func (r *Registry) loadServices(file *File) error {
 				optsList = append(optsList, opts)
 			}
 			if len(optsList) == 0 {
-				glog.Warningf("No HttpRule found for method: %s.%s", svc.GetName(), md.GetName())
+				logFn := glog.V(1).Infof
+				if  r.warnOnUnboundMethods {
+					logFn = glog.Warningf
+				}
+				logFn("No HttpRule found for method: %s.%s", svc.GetName(), md.GetName())
 			}
 			meth, err := r.newMethod(svc, md, optsList)
 			if err != nil {
