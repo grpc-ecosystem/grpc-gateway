@@ -36,6 +36,7 @@ var (
 	allowPatchFeature          = flag.Bool("allow_patch_feature", true, "determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).")
 	allowColonFinalSegments    = flag.Bool("allow_colon_final_segments", false, "determines whether colons are permitted in the final segment of a path")
 	versionFlag                = flag.Bool("version", false, "print the current version")
+	warnOnUnboundMethods       = flag.Bool("warn_on_unbound_methods", false, "emit a warning message if an RPC method has no HttpRule annotation")
 )
 
 // Variables set by goreleaser at build time
@@ -96,6 +97,7 @@ func main() {
 	reg.SetAllowDeleteBody(*allowDeleteBody)
 	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
 	reg.SetAllowColonFinalSegments(*allowColonFinalSegments)
+	reg.SetWarnOnUnboundMethods(*warnOnUnboundMethods)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
 		return
