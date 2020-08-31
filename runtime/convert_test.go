@@ -1,9 +1,6 @@
 package runtime_test
 
 import (
-	"encoding/json"
-	"fmt"
-	"reflect"
 	"testing"
 
 	"github.com/golang/protobuf/proto"
@@ -17,7 +14,7 @@ func TestConvertTimestamp(t *testing.T) {
 		name    string
 		input   string
 		output  *timestamp.Timestamp
-		wanterr error
+		wanterr bool
 	}{
 		{
 			name:  "a valid RFC3339 timestamp",
@@ -26,46 +23,37 @@ func TestConvertTimestamp(t *testing.T) {
 				Seconds: 1462875553,
 				Nanos:   123000000,
 			},
-			wanterr: nil,
+			wanterr: false,
 		},
 		{
 			name:    "invalid timestamp",
 			input:   `"05-10-2016T10:19:13.123Z"`,
 			output:  nil,
-			wanterr: fmt.Errorf(`bad Timestamp: parsing time "05-10-2016T10:19:13.123Z" as "2006-01-02T15:04:05.999999999Z07:00": cannot parse "0-2016T10:19:13.123Z" as "2006"`),
+			wanterr: true,
 		},
 		{
-			name:   "JSON number",
-			input:  "123",
-			output: nil,
-			wanterr: &json.UnmarshalTypeError{
-				Value:  "number",
-				Type:   reflect.TypeOf("123"),
-				Offset: 3,
-			},
+			name:    "JSON number",
+			input:   "123",
+			output:  nil,
+			wanterr: true,
 		},
 		{
-			name:   "JSON bool",
-			input:  "true",
-			output: nil,
-			wanterr: &json.UnmarshalTypeError{
-				Value:  "bool",
-				Type:   reflect.TypeOf("123"),
-				Offset: 4,
-			},
+			name:    "JSON bool",
+			input:   "true",
+			output:  nil,
+			wanterr: true,
 		},
 	}
 
 	for _, spec := range specs {
 		t.Run(spec.name, func(t *testing.T) {
 			ts, err := runtime.Timestamp(spec.input)
-			if spec.wanterr != nil {
-				if !reflect.DeepEqual(err, spec.wanterr) {
-					t.Errorf("got unexpected error\n%#v\nexpected\n%#v", err, spec.wanterr)
-				}
-				return
-			}
-			if !proto.Equal(ts, spec.output) {
+			switch {
+			case err != nil && !spec.wanterr:
+				t.Errorf("got unexpected error\n%#v", err)
+			case err == nil && spec.wanterr:
+				t.Errorf("did not error when expecte")
+			case !proto.Equal(ts, spec.output):
 				t.Errorf(
 					"when testing %s; got\n%#v\nexpected\n%#v",
 					spec.name,
@@ -82,7 +70,7 @@ func TestConvertDuration(t *testing.T) {
 		name    string
 		input   string
 		output  *duration.Duration
-		wanterr error
+		wanterr bool
 	}{
 		{
 			name:  "a valid duration",
@@ -91,46 +79,37 @@ func TestConvertDuration(t *testing.T) {
 				Seconds: 123,
 				Nanos:   456000000,
 			},
-			wanterr: nil,
+			wanterr: false,
 		},
 		{
 			name:    "invalid duration",
 			input:   `"123years"`,
 			output:  nil,
-			wanterr: fmt.Errorf(`bad Duration: time: unknown unit years in duration 123years`),
+			wanterr: true,
 		},
 		{
-			name:   "JSON number",
-			input:  "123",
-			output: nil,
-			wanterr: &json.UnmarshalTypeError{
-				Value:  "number",
-				Type:   reflect.TypeOf("123"),
-				Offset: 3,
-			},
+			name:    "JSON number",
+			input:   "123",
+			output:  nil,
+			wanterr: true,
 		},
 		{
-			name:   "JSON bool",
-			input:  "true",
-			output: nil,
-			wanterr: &json.UnmarshalTypeError{
-				Value:  "bool",
-				Type:   reflect.TypeOf("123"),
-				Offset: 4,
-			},
+			name:    "JSON bool",
+			input:   "true",
+			output:  nil,
+			wanterr: true,
 		},
 	}
 
 	for _, spec := range specs {
 		t.Run(spec.name, func(t *testing.T) {
 			ts, err := runtime.Duration(spec.input)
-			if spec.wanterr != nil {
-				if !reflect.DeepEqual(err, spec.wanterr) {
-					t.Errorf("got unexpected error\n%#v\nexpected\n%#v", err, spec.wanterr)
-				}
-				return
-			}
-			if !proto.Equal(ts, spec.output) {
+			switch {
+			case err != nil && !spec.wanterr:
+				t.Errorf("got unexpected error\n%#v", err)
+			case err == nil && spec.wanterr:
+				t.Errorf("did not error when expecte")
+			case !proto.Equal(ts, spec.output):
 				t.Errorf(
 					"when testing %s; got\n%#v\nexpected\n%#v",
 					spec.name,
