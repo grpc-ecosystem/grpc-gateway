@@ -34,7 +34,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "$ref": "#/definitions/examplepbLoginRequest"
             }
@@ -68,7 +68,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "$ref": "#/definitions/examplepbLogoutRequest"
             }

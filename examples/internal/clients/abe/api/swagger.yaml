@@ -37,7 +37,7 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        required: true
+        required: false
         schema:
           $ref: "#/definitions/examplepbABitOfEverything"
         x-exportParamName: "Body"
@@ -702,7 +702,7 @@ paths:
         x-exportParamName: "StringValue"
       - in: "body"
         name: "body"
-        required: true
+        required: false
         schema:
           $ref: "#/definitions/ABitOfEverythingNested"
         x-exportParamName: "Body"
@@ -1441,7 +1441,7 @@ paths:
         x-exportParamName: "SingleNestedName"
       - in: "body"
         name: "body"
-        required: true
+        required: false
         schema:
           $ref: "#/definitions/examplepbABitOfEverything"
         x-exportParamName: "Body"
@@ -1512,7 +1512,7 @@ paths:
         x-exportParamName: "Uuid"
       - in: "body"
         name: "body"
-        required: true
+        required: false
         schema:
           $ref: "#/definitions/examplepbABitOfEverything"
         x-exportParamName: "Body"
@@ -1781,7 +1781,7 @@ paths:
       - in: "body"
         name: "body"
         description: "The book to create."
-        required: true
+        required: false
         schema:
           $ref: "#/definitions/examplepbBook"
         x-exportParamName: "Body"
@@ -1828,7 +1828,7 @@ paths:
         x-exportParamName: "AbeUuid"
       - in: "body"
         name: "body"
-        required: true
+        required: false
         schema:
           $ref: "#/definitions/examplepbABitOfEverything"
         x-exportParamName: "Body"
@@ -1874,7 +1874,7 @@ paths:
         x-exportParamName: "AbeUuid"
       - in: "body"
         name: "body"
-        required: true
+        required: false
         schema:
           $ref: "#/definitions/examplepbABitOfEverything"
         x-exportParamName: "Body"
@@ -1963,10 +1963,11 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        required: true
+        required: false
         schema:
           type: "string"
         x-exportParamName: "Body"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -2096,7 +2097,7 @@ paths:
         x-exportParamName: "Name"
       - in: "body"
         name: "body"
-        required: true
+        required: false
         schema:
           $ref: "#/definitions/examplepbBody"
         x-exportParamName: "Body"
@@ -2161,7 +2162,7 @@ paths:
         x-exportParamName: "Id"
       - in: "body"
         name: "body"
-        required: true
+        required: false
         schema:
           $ref: "#/definitions/examplepbBody"
         x-exportParamName: "Body"
@@ -2234,7 +2235,7 @@ paths:
         x-exportParamName: "AbeUuid"
       - in: "body"
         name: "body"
-        required: true
+        required: false
         schema:
           $ref: "#/definitions/examplepbUpdateV2Request"
         x-exportParamName: "Body"

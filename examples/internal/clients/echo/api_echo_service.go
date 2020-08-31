@@ -684,11 +684,17 @@ func (a *EchoServiceApiService) EchoServiceEcho5(ctx context.Context, noNote str
 /* 
 EchoServiceApiService EchoBody method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param optional nil or *EchoServiceEchoBodyOpts - Optional Parameters:
+     * @param "Body" (optional.Interface of ExamplepbSimpleMessage) - 
 
 @return ExamplepbSimpleMessage
 */
-func (a *EchoServiceApiService) EchoServiceEchoBody(ctx context.Context, body ExamplepbSimpleMessage) (ExamplepbSimpleMessage, *http.Response, error) {
+
+type EchoServiceEchoBodyOpts struct { 
+	Body optional.Interface
+}
+
+func (a *EchoServiceApiService) EchoServiceEchoBody(ctx context.Context, localVarOptionals *EchoServiceEchoBodyOpts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -722,7 +728,14 @@ func (a *EchoServiceApiService) EchoServiceEchoBody(ctx context.Context, body Ex
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	if localVarOptionals != nil && localVarOptionals.Body.IsSet() {
+		
+		localVarOptionalBody, localVarOptionalBodyok := localVarOptionals.Body.Value().(ExamplepbSimpleMessage)
+		if !localVarOptionalBodyok {
+				return localVarReturnValue, nil, reportError("body should be ExamplepbSimpleMessage")
+		}
+		localVarPostBody = &localVarOptionalBody
+	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err

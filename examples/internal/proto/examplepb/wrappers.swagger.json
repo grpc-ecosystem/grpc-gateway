@@ -32,7 +32,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "$ref": "#/definitions/examplepbWrappers"
             }
@@ -64,7 +64,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "boolean"
             }
@@ -97,7 +97,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string",
               "format": "byte"
@@ -131,7 +131,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "number",
               "format": "double"
@@ -164,7 +164,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "properties": {}
             }
@@ -197,7 +197,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "number",
               "format": "float"
@@ -231,7 +231,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "integer",
               "format": "int32"
@@ -265,7 +265,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string",
               "format": "int64"
@@ -298,7 +298,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -331,7 +331,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "integer",
               "format": "int64"
@@ -365,7 +365,7 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string",
               "format": "uint64"

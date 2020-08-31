@@ -790,9 +790,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param stringValue
- * @param body
  * @param floatValue Float value field
  * @param optional nil or *ABitOfEverythingServiceCheckPostQueryParamsOpts - Optional Parameters:
+     * @param "Body" (optional.Interface of ABitOfEverythingNested) - 
      * @param "Uuid" (optional.String) - 
      * @param "DoubleValue" (optional.Float64) - 
      * @param "Int64Value" (optional.String) - 
@@ -827,6 +827,7 @@ ABitOfEverythingServiceApiService
 */
 
 type ABitOfEverythingServiceCheckPostQueryParamsOpts struct { 
+	Body optional.Interface
 	Uuid optional.String
 	DoubleValue optional.Float64
 	Int64Value optional.String
@@ -858,7 +859,7 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	Int64OverrideType optional.Int64
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, body ABitOfEverythingNested, floatValue float32, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, floatValue float32, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -981,7 +982,14 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	if localVarOptionals != nil && localVarOptionals.Body.IsSet() {
+		
+		localVarOptionalBody, localVarOptionalBodyok := localVarOptionals.Body.Value().(ABitOfEverythingNested)
+		if !localVarOptionalBodyok {
+				return localVarReturnValue, nil, reportError("body should be ABitOfEverythingNested")
+		}
+		localVarPostBody = &localVarOptionalBody
+	}
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -1271,11 +1279,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param optional nil or *ABitOfEverythingServiceCreateBodyOpts - Optional Parameters:
+     * @param "Body" (optional.Interface of ExamplepbABitOfEverything) - 
 
 @return ExamplepbABitOfEverything
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ctx context.Context, body ExamplepbABitOfEverything) (ExamplepbABitOfEverything, *http.Response, error) {
+
+type ABitOfEverythingServiceCreateBodyOpts struct { 
+	Body optional.Interface
+}
+
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ctx context.Context, localVarOptionals *ABitOfEverythingServiceCreateBodyOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1309,7 +1323,14 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ct
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	if localVarOptionals != nil && localVarOptionals.Body.IsSet() {
+		
+		localVarOptionalBody, localVarOptionalBodyok := localVarOptionals.Body.Value().(ExamplepbABitOfEverything)
+		if !localVarOptionalBodyok {
+				return localVarReturnValue, nil, reportError("body should be ExamplepbABitOfEverything")
+		}
+		localVarPostBody = &localVarOptionalBody
+	}
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -1418,18 +1439,19 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ct
 ABitOfEverythingServiceApiService Create a book.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param parent The publisher in which to create the book.  Format: &#x60;publishers/{publisher}&#x60;  Example: &#x60;publishers/1257894000000000000&#x60;
- * @param body The book to create.
  * @param optional nil or *ABitOfEverythingServiceCreateBookOpts - Optional Parameters:
+     * @param "Body" (optional.Interface of ExamplepbBook) -  The book to create.
      * @param "BookId" (optional.String) -  The ID to use for the book.  This must start with an alphanumeric character.
 
 @return ExamplepbBook
 */
 
 type ABitOfEverythingServiceCreateBookOpts struct { 
+	Body optional.Interface
 	BookId optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ctx context.Context, parent string, body ExamplepbBook, localVarOptionals *ABitOfEverythingServiceCreateBookOpts) (ExamplepbBook, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ctx context.Context, parent string, localVarOptionals *ABitOfEverythingServiceCreateBookOpts) (ExamplepbBook, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1467,7 +1489,14 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ct
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	if localVarOptionals != nil && localVarOptionals.Body.IsSet() {
+		
+		localVarOptionalBody, localVarOptionalBodyok := localVarOptionals.Body.Value().(ExamplepbBook)
+		if !localVarOptionalBodyok {
+				return localVarReturnValue, nil, reportError("body should be ExamplepbBook")
+		}
+		localVarPostBody = &localVarOptionalBody
+	}
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -1576,11 +1605,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ct
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedName name is nested field.
- * @param body
+ * @param optional nil or *ABitOfEverythingServiceDeepPathEchoOpts - Optional Parameters:
+     * @param "Body" (optional.Interface of ExamplepbABitOfEverything) - 
 
 @return ExamplepbABitOfEverything
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(ctx context.Context, singleNestedName string, body ExamplepbABitOfEverything) (ExamplepbABitOfEverything, *http.Response, error) {
+
+type ABitOfEverythingServiceDeepPathEchoOpts struct { 
+	Body optional.Interface
+}
+
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(ctx context.Context, singleNestedName string, localVarOptionals *ABitOfEverythingServiceDeepPathEchoOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1615,7 +1650,14 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	if localVarOptionals != nil && localVarOptionals.Body.IsSet() {
+		
+		localVarOptionalBody, localVarOptionalBodyok := localVarOptionals.Body.Value().(ExamplepbABitOfEverything)
+		if !localVarOptionalBodyok {
+				return localVarReturnValue, nil, reportError("body should be ExamplepbABitOfEverything")
+		}
+		localVarPostBody = &localVarOptionalBody
+	}
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -2012,11 +2054,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceErrorWithDeta
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id
- * @param body
+ * @param optional nil or *ABitOfEverythingServiceGetMessageWithBodyOpts - Optional Parameters:
+     * @param "Body" (optional.Interface of ExamplepbBody) - 
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWithBody(ctx context.Context, id string, body ExamplepbBody) (interface{}, *http.Response, error) {
+
+type ABitOfEverythingServiceGetMessageWithBodyOpts struct { 
+	Body optional.Interface
+}
+
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWithBody(ctx context.Context, id string, localVarOptionals *ABitOfEverythingServiceGetMessageWithBodyOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -2051,7 +2099,14 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWit
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	if localVarOptionals != nil && localVarOptionals.Body.IsSet() {
+		
+		localVarOptionalBody, localVarOptionalBodyok := localVarOptionals.Body.Value().(ExamplepbBody)
+		if !localVarOptionalBodyok {
+				return localVarReturnValue, nil, reportError("body should be ExamplepbBody")
+		}
+		localVarPostBody = &localVarOptionalBody
+	}
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -2970,11 +3025,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceOverwriteResp
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param name
- * @param body
+ * @param optional nil or *ABitOfEverythingServicePostWithEmptyBodyOpts - Optional Parameters:
+     * @param "Body" (optional.Interface of ExamplepbBody) - 
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmptyBody(ctx context.Context, name string, body ExamplepbBody) (interface{}, *http.Response, error) {
+
+type ABitOfEverythingServicePostWithEmptyBodyOpts struct { 
+	Body optional.Interface
+}
+
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmptyBody(ctx context.Context, name string, localVarOptionals *ABitOfEverythingServicePostWithEmptyBodyOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -3009,7 +3070,14 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmpty
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	if localVarOptionals != nil && localVarOptionals.Body.IsSet() {
+		
+		localVarOptionalBody, localVarOptionalBodyok := localVarOptionals.Body.Value().(ExamplepbBody)
+		if !localVarOptionalBodyok {
+				return localVarReturnValue, nil, reportError("body should be ExamplepbBody")
+		}
+		localVarPostBody = &localVarOptionalBody
+	}
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -3261,11 +3329,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceTimeout(ctx c
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuid
- * @param body
+ * @param optional nil or *ABitOfEverythingServiceUpdateOpts - Optional Parameters:
+     * @param "Body" (optional.Interface of ExamplepbABitOfEverything) - 
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx context.Context, uuid string, body ExamplepbABitOfEverything) (interface{}, *http.Response, error) {
+
+type ABitOfEverythingServiceUpdateOpts struct { 
+	Body optional.Interface
+}
+
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx context.Context, uuid string, localVarOptionals *ABitOfEverythingServiceUpdateOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -3300,7 +3374,14 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx co
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	if localVarOptionals != nil && localVarOptionals.Body.IsSet() {
+		
+		localVarOptionalBody, localVarOptionalBodyok := localVarOptionals.Body.Value().(ExamplepbABitOfEverything)
+		if !localVarOptionalBodyok {
+				return localVarReturnValue, nil, reportError("body should be ExamplepbABitOfEverything")
+		}
+		localVarPostBody = &localVarOptionalBody
+	}
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -3409,18 +3490,19 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx co
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param abeUuid
- * @param body
  * @param optional nil or *ABitOfEverythingServiceUpdateV2Opts - Optional Parameters:
+     * @param "Body" (optional.Interface of ExamplepbABitOfEverything) - 
      * @param "UpdateMaskPaths" (optional.Interface of []string) -  The set of field mask paths.
 
 @return interface{}
 */
 
 type ABitOfEverythingServiceUpdateV2Opts struct { 
+	Body optional.Interface
 	UpdateMaskPaths optional.Interface
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, abeUuid string, body ExamplepbABitOfEverything, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, abeUuid string, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -3458,7 +3540,14 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	if localVarOptionals != nil && localVarOptionals.Body.IsSet() {
+		
+		localVarOptionalBody, localVarOptionalBodyok := localVarOptionals.Body.Value().(ExamplepbABitOfEverything)
+		if !localVarOptionalBodyok {
+				return localVarReturnValue, nil, reportError("body should be ExamplepbABitOfEverything")
+		}
+		localVarPostBody = &localVarOptionalBody
+	}
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -3567,18 +3656,19 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param abeUuid
- * @param body
  * @param optional nil or *ABitOfEverythingServiceUpdateV22Opts - Optional Parameters:
+     * @param "Body" (optional.Interface of ExamplepbABitOfEverything) - 
      * @param "UpdateMaskPaths" (optional.Interface of []string) -  The set of field mask paths.
 
 @return interface{}
 */
 
 type ABitOfEverythingServiceUpdateV22Opts struct { 
+	Body optional.Interface
 	UpdateMaskPaths optional.Interface
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, abeUuid string, body ExamplepbABitOfEverything, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, abeUuid string, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -3616,7 +3706,14 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	if localVarOptionals != nil && localVarOptionals.Body.IsSet() {
+		
+		localVarOptionalBody, localVarOptionalBodyok := localVarOptionals.Body.Value().(ExamplepbABitOfEverything)
+		if !localVarOptionalBodyok {
+				return localVarReturnValue, nil, reportError("body should be ExamplepbABitOfEverything")
+		}
+		localVarPostBody = &localVarOptionalBody
+	}
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -3725,11 +3822,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param abeUuid
- * @param body
+ * @param optional nil or *ABitOfEverythingServiceUpdateV23Opts - Optional Parameters:
+     * @param "Body" (optional.Interface of ExamplepbUpdateV2Request) - 
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx context.Context, abeUuid string, body ExamplepbUpdateV2Request) (interface{}, *http.Response, error) {
+
+type ABitOfEverythingServiceUpdateV23Opts struct { 
+	Body optional.Interface
+}
+
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx context.Context, abeUuid string, localVarOptionals *ABitOfEverythingServiceUpdateV23Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -3764,7 +3867,14 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	if localVarOptionals != nil && localVarOptionals.Body.IsSet() {
+		
+		localVarOptionalBody, localVarOptionalBodyok := localVarOptionals.Body.Value().(ExamplepbUpdateV2Request)
+		if !localVarOptionalBodyok {
+				return localVarReturnValue, nil, reportError("body should be ExamplepbUpdateV2Request")
+		}
+		localVarPostBody = &localVarOptionalBody
+	}
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {

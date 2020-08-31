@@ -241,11 +241,17 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx conte
 /* 
 UnannotatedEchoServiceApiService EchoBody method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param optional nil or *UnannotatedEchoServiceEchoBodyOpts - Optional Parameters:
+     * @param "Body" (optional.Interface of ExamplepbUnannotatedSimpleMessage) - 
 
 @return ExamplepbUnannotatedSimpleMessage
 */
-func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx context.Context, body ExamplepbUnannotatedSimpleMessage) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
+
+type UnannotatedEchoServiceEchoBodyOpts struct { 
+	Body optional.Interface
+}
+
+func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx context.Context, localVarOptionals *UnannotatedEchoServiceEchoBodyOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -279,7 +285,14 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx co
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	if localVarOptionals != nil && localVarOptionals.Body.IsSet() {
+		
+		localVarOptionalBody, localVarOptionalBodyok := localVarOptionals.Body.Value().(ExamplepbUnannotatedSimpleMessage)
+		if !localVarOptionalBodyok {
+				return localVarReturnValue, nil, reportError("body should be ExamplepbUnannotatedSimpleMessage")
+		}
+		localVarPostBody = &localVarOptionalBody
+	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err

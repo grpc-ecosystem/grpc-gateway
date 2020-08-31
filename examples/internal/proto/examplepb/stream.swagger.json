@@ -64,7 +64,7 @@
             "name": "body",
             "description": " (streaming inputs)",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "$ref": "#/definitions/examplepbABitOfEverything"
             }
@@ -106,7 +106,7 @@
             "name": "body",
             "description": " (streaming inputs)",
             "in": "body",
-            "required": true,
+            "required": false,
             "schema": {
               "$ref": "#/definitions/subStringMessage"
             }

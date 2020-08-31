@@ -79,7 +79,7 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        required: true
+        required: false
         schema:
           $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
         x-exportParamName: "Body"
