@@ -41,7 +41,7 @@ executors:
       password1: '3ec86b2e5a431be2d72c'
       GLOG_logtostderr: '1'
     docker:
-      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.14
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.15
         auth:
           username: gateway-ci-user
           password: ${password0}${password1}
