@@ -907,7 +907,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						Name:        "body",
 						Description: desc,
 						In:          "body",
-						Required:    true,
+						Required:    false,
 						Schema:      &schema,
 					})
 					// add the parameters to the query string
