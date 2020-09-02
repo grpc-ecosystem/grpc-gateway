@@ -196,13 +196,13 @@ message ABitOfEverything {
 			url: "https://github.com/grpc-ecosystem/grpc-gateway";
 			description: "Find out more about ABitOfEverything";
 		}
-		example: { value: '{ "uuid": "0cf361e1-4b44-483d-a159-54dabdf7e814" }' }
+		example: "{\"uuid\": \"0cf361e1-4b44-483d-a159-54dabdf7e814\"}"
 	};
 
 	// Nested is nested type.
 	message Nested {
 		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-			example: { value: '{ "ok": "TRUE" }' }
+			example: "{ \"ok\": \"TRUE\" }"
 		};
 		// name is nested field.
 		string name = 1;
@@ -278,7 +278,7 @@ message ABitOfEverything {
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality
 message ABitOfEverythingRepeated {
 	option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-		example: { value: '{ "path_repeated_bool_value": [true, true, false, true], "path_repeated_int32_value": [1, 2, 3] }' }
+		example: "{\"path_repeated_bool_value\": [true, true, false, true], \"path_repeated_int32_value\": [1, 2, 3]}"
 	};
 
 	// repeated values. they are comma-separated in path
