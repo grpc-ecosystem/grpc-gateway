@@ -9,6 +9,7 @@ import (
 	"net/textproto"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -160,6 +161,53 @@ func NewServerMetadataContext(ctx context.Context, md ServerMetadata) context.Co
 func ServerMetadataFromContext(ctx context.Context) (md ServerMetadata, ok bool) {
 	md, ok = ctx.Value(serverMetadataKey{}).(ServerMetadata)
 	return
+}
+
+// ServerTransportStream implement grpc.ServerTransportStream
+type ServerTransportStream struct {
+	mu      sync.Mutex
+	header  metadata.MD
+	trailer metadata.MD
+}
+
+func (s *ServerTransportStream) Method() string {
+	return ""
+}
+
+func (s *ServerTransportStream) Header() metadata.MD {
+	c := s.header.Copy()
+	return c
+}
+
+func (s *ServerTransportStream) SetHeader(md metadata.MD) error {
+	if md.Len() == 0 {
+		return nil
+	}
+
+	s.mu.Lock()
+	s.header = metadata.Join(s.header, md)
+	s.mu.Unlock()
+	return nil
+}
+
+func (s *ServerTransportStream) SendHeader(md metadata.MD) error {
+	return s.SetHeader(md)
+}
+
+func (s *ServerTransportStream) Trailer() metadata.MD {
+	c := s.trailer.Copy()
+	return c
+}
+
+func (s *ServerTransportStream) SetTrailer(md metadata.MD) error {
+	if md.Len() == 0 {
+		return nil
+	}
+
+	s.mu.Lock()
+	s.trailer = metadata.Join(s.trailer, md)
+	s.mu.Unlock()
+	return nil
 }
 
 func timeoutDecode(s string) (time.Duration, error) {
