@@ -336,8 +336,9 @@ message Schema {
   reserved 4;
   // Additional external documentation for this schema.
   ExternalDocumentation external_docs = 5;
-  // A free-form property to include an example of an instance for this schema.
-  google.protobuf.Any example = 6;
+  // A free-form property to include an example of an instance for this schema in JSON.
+  // This is copied verbatim to the output.
+  string example = 6;
 }
 
 // `JSONSchema` represents properties from JSON Schema taken, and as used, in

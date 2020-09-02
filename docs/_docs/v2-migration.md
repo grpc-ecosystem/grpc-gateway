@@ -36,6 +36,27 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 
 The bazel rule has been renamed `protoc_gen_openapiv2`.
 
+## The example field in the OpenAPI annotations is now a string
+
+This was a `google.protobuf.Any` type, but it was only used for the JSON
+representation, and it was breaking some tools and it was generally unclear to the user
+how it works. It is now a string instead. The value is copied verbatim to
+the output OpenAPI file. Remember to escape any quotes in the strings.
+
+For example, if you had an example that looked like this:
+
+```protobuf
+example: { value: '{ "uuid": "0cf361e1-4b44-483d-a159-54dabdf7e814" }' }
+```
+
+It would now look like this:
+
+```protobuf
+example: "{\"uuid\": \"0cf361e1-4b44-483d-a159-54dabdf7e814\"}"
+```
+
+See `a_bit_of_everything.proto` in the example protos for more examples.
+
 ## We now use the camelCase JSON names by default
 See
 [the original issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/375)
