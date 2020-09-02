@@ -334,7 +334,13 @@ message Schema {
   // Additional external documentation for this schema.
   ExternalDocumentation external_docs = 5;
   // A free-form property to include an example of an instance for this schema.
-  google.protobuf.Any example = 6;
+  // Deprecated, please use example_string instead.
+  google.protobuf.Any example = 6 [
+    deprecated = true
+  ];
+  // A free-form property to include a JSON example of this field. This is copied
+  // verbatim to the output swagger.json. Quotes must be escaped.
+  string example_string = 7;
 }
 
 // `JSONSchema` represents properties from JSON Schema taken, and as used, in
