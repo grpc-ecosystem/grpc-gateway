@@ -1850,8 +1850,8 @@ func openapiSchemaFromProtoSchema(s *openapi_options.Schema, reg *descriptor.Reg
 	ret.schemaCore = protoJSONSchemaToOpenAPISchemaCore(s.GetJsonSchema(), reg, refs)
 	updateswaggerObjectFromJSONSchema(&ret, s.GetJsonSchema(), reg, data)
 
-	if s != nil && s.Example != nil {
-		ret.Example = json.RawMessage(s.Example.Value)
+	if s != nil && s.Example != "" {
+		ret.Example = json.RawMessage(s.Example)
 	}
 
 	return ret

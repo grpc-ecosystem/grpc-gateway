@@ -10,7 +10,6 @@ import (
 
 	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
-	anypb "github.com/golang/protobuf/ptypes/any"
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
@@ -2727,10 +2726,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			},
 			schema: map[string]openapi_options.Schema{
 				"Message": {
-					Example: &anypb.Any{
-						TypeUrl: "this_isnt_used",
-						Value:   []byte(`{"foo":"bar"}`),
-					},
+					Example: `{"foo":"bar"}`,
 				},
 			},
 			defs: map[string]openapiSchemaObject{
@@ -2747,9 +2743,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			},
 			schema: map[string]openapi_options.Schema{
 				"Message": {
-					Example: &anypb.Any{
-						Value: []byte(`XXXX anything goes XXXX`),
-					},
+					Example: `XXXX anything goes XXXX`,
 				},
 			},
 			defs: map[string]openapiSchemaObject{
