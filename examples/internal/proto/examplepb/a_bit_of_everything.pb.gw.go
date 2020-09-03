@@ -22,6 +22,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 )
@@ -32,6 +33,7 @@ var _ io.Reader
 var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
+var _ = metadata.Join
 
 var (
 	filter_ABitOfEverythingService_Create_0 = &utilities.DoubleArray{Encoding: map[string]int{"float_value": 0, "double_value": 1, "int64_value": 2, "uint64_value": 3, "int32_value": 4, "fixed64_value": 5, "fixed32_value": 6, "bool_value": 7, "string_value": 8, "uint32_value": 9, "sfixed32_value": 10, "sfixed64_value": 11, "sint32_value": 12, "sint64_value": 13, "nonConventionalNameValue": 14, "enum_value": 15, "path_enum_value": 16, "nested_path_enum_value": 17, "enum_value_annotation": 18}, Base: []int{1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, Check: []int{0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}}
@@ -2106,12 +2108,14 @@ func local_request_CamelCaseServiceName_Empty_0(ctx context.Context, marshaler r
 // RegisterABitOfEverythingServiceHandlerServer registers the http handlers for service ABitOfEverythingService to "mux".
 // UnaryRPC     :call ABitOfEverythingServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features (such as grpc.SendHeader, etc) to stop working. Consider using RegisterABitOfEverythingServiceHandlerFromEndpoint instead.
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterABitOfEverythingServiceHandlerFromEndpoint instead.
 func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ABitOfEverythingServiceServer) error {
 
 	mux.Handle("POST", pattern_ABitOfEverythingService_Create_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Create")
 		if err != nil {
@@ -2119,6 +2123,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_Create_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2132,6 +2137,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("POST", pattern_ABitOfEverythingService_CreateBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CreateBody")
 		if err != nil {
@@ -2139,6 +2146,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_CreateBody_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2152,6 +2160,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("POST", pattern_ABitOfEverythingService_CreateBook_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CreateBook")
 		if err != nil {
@@ -2159,6 +2169,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_CreateBook_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2172,6 +2183,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("GET", pattern_ABitOfEverythingService_Lookup_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Lookup")
 		if err != nil {
@@ -2179,6 +2192,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_Lookup_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2192,6 +2206,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("PUT", pattern_ABitOfEverythingService_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Update")
 		if err != nil {
@@ -2199,6 +2215,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_Update_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2212,6 +2229,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("PUT", pattern_ABitOfEverythingService_UpdateV2_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/UpdateV2")
 		if err != nil {
@@ -2219,6 +2238,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_UpdateV2_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2232,6 +2252,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("PATCH", pattern_ABitOfEverythingService_UpdateV2_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/UpdateV2")
 		if err != nil {
@@ -2239,6 +2261,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_UpdateV2_1(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2252,6 +2275,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("PATCH", pattern_ABitOfEverythingService_UpdateV2_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/UpdateV2")
 		if err != nil {
@@ -2259,6 +2284,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_UpdateV2_2(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2272,6 +2298,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("DELETE", pattern_ABitOfEverythingService_Delete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Delete")
 		if err != nil {
@@ -2279,6 +2307,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_Delete_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2292,6 +2321,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("GET", pattern_ABitOfEverythingService_GetQuery_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/GetQuery")
 		if err != nil {
@@ -2299,6 +2330,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_GetQuery_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2312,6 +2344,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("GET", pattern_ABitOfEverythingService_GetRepeatedQuery_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/GetRepeatedQuery")
 		if err != nil {
@@ -2319,6 +2353,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_GetRepeatedQuery_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2332,6 +2367,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("GET", pattern_ABitOfEverythingService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Echo")
 		if err != nil {
@@ -2339,6 +2376,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_Echo_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2352,6 +2390,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("POST", pattern_ABitOfEverythingService_Echo_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Echo")
 		if err != nil {
@@ -2359,6 +2399,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_Echo_1(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2372,6 +2413,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("GET", pattern_ABitOfEverythingService_Echo_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Echo")
 		if err != nil {
@@ -2379,6 +2422,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_Echo_2(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2392,6 +2436,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("POST", pattern_ABitOfEverythingService_DeepPathEcho_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/DeepPathEcho")
 		if err != nil {
@@ -2399,6 +2445,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_DeepPathEcho_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2412,6 +2459,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("GET", pattern_ABitOfEverythingService_Timeout_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Timeout")
 		if err != nil {
@@ -2419,6 +2468,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_Timeout_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2432,6 +2482,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("GET", pattern_ABitOfEverythingService_ErrorWithDetails_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/ErrorWithDetails")
 		if err != nil {
@@ -2439,6 +2491,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_ErrorWithDetails_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2452,6 +2505,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("POST", pattern_ABitOfEverythingService_GetMessageWithBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/GetMessageWithBody")
 		if err != nil {
@@ -2459,6 +2514,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_GetMessageWithBody_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2472,6 +2528,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("POST", pattern_ABitOfEverythingService_PostWithEmptyBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/PostWithEmptyBody")
 		if err != nil {
@@ -2479,6 +2537,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_PostWithEmptyBody_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2492,6 +2551,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("GET", pattern_ABitOfEverythingService_CheckGetQueryParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CheckGetQueryParams")
 		if err != nil {
@@ -2499,6 +2560,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_CheckGetQueryParams_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2512,6 +2574,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("GET", pattern_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CheckNestedEnumGetQueryParams")
 		if err != nil {
@@ -2519,6 +2583,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_CheckNestedEnumGetQueryParams_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2532,6 +2597,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("POST", pattern_ABitOfEverythingService_CheckPostQueryParams_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CheckPostQueryParams")
 		if err != nil {
@@ -2539,6 +2606,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_CheckPostQueryParams_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2552,6 +2620,8 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 	mux.Handle("GET", pattern_ABitOfEverythingService_OverwriteResponseContentType_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/OverwriteResponseContentType")
 		if err != nil {
@@ -2559,6 +2629,7 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 			return
 		}
 		resp, md, err := local_request_ABitOfEverythingService_OverwriteResponseContentType_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -2575,12 +2646,14 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 // RegisterCamelCaseServiceNameHandlerServer registers the http handlers for service CamelCaseServiceName to "mux".
 // UnaryRPC     :call CamelCaseServiceNameServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features (such as grpc.SendHeader, etc) to stop working. Consider using RegisterCamelCaseServiceNameHandlerFromEndpoint instead.
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterCamelCaseServiceNameHandlerFromEndpoint instead.
 func RegisterCamelCaseServiceNameHandlerServer(ctx context.Context, mux *runtime.ServeMux, server CamelCaseServiceNameServer) error {
 
 	mux.Handle("GET", pattern_CamelCaseServiceName_Empty_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.CamelCaseServiceName/Empty")
 		if err != nil {
@@ -2588,6 +2661,7 @@ func RegisterCamelCaseServiceNameHandlerServer(ctx context.Context, mux *runtime
 			return
 		}
 		resp, md, err := local_request_CamelCaseServiceName_Empty_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
