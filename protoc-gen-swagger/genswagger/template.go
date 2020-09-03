@@ -1877,6 +1877,9 @@ func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Reg
 	if s != nil && s.Example != nil {
 		ret.Example = json.RawMessage(s.Example.Value)
 	}
+	if s != nil && s.ExampleString != "" {
+		ret.Example = json.RawMessage(s.ExampleString)
+	}
 
 	return ret
 }
