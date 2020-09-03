@@ -11,7 +11,6 @@ import (
 	"github.com/golang/protobuf/proto"
 	protodescriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/golang/protobuf/ptypes/any"
 	structpb "github.com/golang/protobuf/ptypes/struct"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
@@ -2515,10 +2514,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			},
 			schema: map[string]swagger_options.Schema{
 				"Message": swagger_options.Schema{
-					Example: &any.Any{
-						TypeUrl: "this_isnt_used",
-						Value:   []byte(`{"foo":"bar"}`),
-					},
+					ExampleString: `{"foo":"bar"}`,
 				},
 			},
 			defs: map[string]swaggerSchemaObject{
@@ -2535,9 +2531,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			},
 			schema: map[string]swagger_options.Schema{
 				"Message": swagger_options.Schema{
-					Example: &any.Any{
-						Value: []byte(`XXXX anything goes XXXX`),
-					},
+					ExampleString: `XXXX anything goes XXXX`,
 				},
 			},
 			defs: map[string]swaggerSchemaObject{
