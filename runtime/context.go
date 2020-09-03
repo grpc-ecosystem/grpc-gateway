@@ -170,15 +170,18 @@ type ServerTransportStream struct {
 	trailer metadata.MD
 }
 
+// Method returns the method for the stream.
 func (s *ServerTransportStream) Method() string {
 	return ""
 }
 
+// Header returns the header metadata of the stream.
 func (s *ServerTransportStream) Header() metadata.MD {
 	c := s.header.Copy()
 	return c
 }
 
+// SetHeader sets the header metadata.
 func (s *ServerTransportStream) SetHeader(md metadata.MD) error {
 	if md.Len() == 0 {
 		return nil
@@ -190,15 +193,18 @@ func (s *ServerTransportStream) SetHeader(md metadata.MD) error {
 	return nil
 }
 
+// SendHeader sets the header metadata.
 func (s *ServerTransportStream) SendHeader(md metadata.MD) error {
 	return s.SetHeader(md)
 }
 
+// Trailer returns the cached trailer metadata.
 func (s *ServerTransportStream) Trailer() metadata.MD {
 	c := s.trailer.Copy()
 	return c
 }
 
+// SetTrailer sets the trailer metadata.
 func (s *ServerTransportStream) SetTrailer(md metadata.MD) error {
 	if md.Len() == 0 {
 		return nil
