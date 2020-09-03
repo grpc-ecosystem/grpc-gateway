@@ -102,7 +102,7 @@ func local_request_LoginService_Logout_0(ctx context.Context, marshaler runtime.
 // RegisterLoginServiceHandlerServer registers the http handlers for service LoginService to "mux".
 // UnaryRPC     :call LoginServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features (such as grpc.SendHeader, etc) to stop working. Consider using RegisterLoginServiceHandlerFromEndpoint instead.
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterLoginServiceHandlerFromEndpoint instead.
 func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server LoginServiceServer) error {
 
 	mux.Handle("POST", pattern_LoginService_Login_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {

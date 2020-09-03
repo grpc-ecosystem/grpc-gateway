@@ -166,7 +166,9 @@ func ServerMetadataFromContext(ctx context.Context) (md ServerMetadata, ok bool)
 	return
 }
 
-// ServerTransportStream implement grpc.ServerTransportStream
+// ServerTransportStream implements grpc.ServerTransportStream.
+// It should only be used by the generated files to support grpc.SendHeader
+// outside of gRPC server use.
 type ServerTransportStream struct {
 	mu      sync.Mutex
 	header  metadata.MD
@@ -180,8 +182,9 @@ func (s *ServerTransportStream) Method() string {
 
 // Header returns the header metadata of the stream.
 func (s *ServerTransportStream) Header() metadata.MD {
-	c := s.header.Copy()
-	return c
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.header.Copy()
 }
 
 // SetHeader sets the header metadata.
@@ -203,8 +206,9 @@ func (s *ServerTransportStream) SendHeader(md metadata.MD) error {
 
 // Trailer returns the cached trailer metadata.
 func (s *ServerTransportStream) Trailer() metadata.MD {
-	c := s.trailer.Copy()
-	return c
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.trailer.Copy()
 }
 
 // SetTrailer sets the trailer metadata.
