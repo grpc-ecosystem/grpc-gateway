@@ -9,9 +9,7 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/google/go-cmp v0.5.2
 	github.com/rogpeppe/fastuuid v1.2.0
-	golang.org/x/net v0.0.0-20191002035440-2ec189313ef0 // indirect
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
-	golang.org/x/sys v0.0.0-20191001151750-bb3f8db39f24 // indirect
+	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
 	google.golang.org/genproto v0.0.0-20200903010400-9bfcb5116336
 	google.golang.org/grpc v1.31.1
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v0.0.0-20200527211525-6c9e30c09db2
