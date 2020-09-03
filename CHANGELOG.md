@@ -1,5 +1,36 @@
 # Change Log
 
+## [v1.14.8](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.8) (2020-09-03)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.7...v1.14.8)
+
+**Closed issues:**
+
+- Generated files contain calls to methods that don't exist [\#1643](https://github.com/grpc-ecosystem/grpc-gateway/issues/1643)
+- TestConvertDuration/invalid\_duration failure [\#1630](https://github.com/grpc-ecosystem/grpc-gateway/issues/1630)
+- `runtime.WithForwardResponseOption\(\)` is not respected [\#1625](https://github.com/grpc-ecosystem/grpc-gateway/issues/1625)
+- same field in params [\#1621](https://github.com/grpc-ecosystem/grpc-gateway/issues/1621)
+- Use grpc gateway to create rest API whose body is a list [\#1617](https://github.com/grpc-ecosystem/grpc-gateway/issues/1617)
+- grpc-gateway equivalent in the grpc python package [\#1613](https://github.com/grpc-ecosystem/grpc-gateway/issues/1613)
+- Migrate away from importing `github.com/golang/protobuf/{descriptor,proto}` in generated code \(similar to \#1260\). [\#1608](https://github.com/grpc-ecosystem/grpc-gateway/issues/1608)
+- runtime.WithForwardResponseOption compile error  [\#1607](https://github.com/grpc-ecosystem/grpc-gateway/issues/1607)
+- Apply FiedMask to the GET \(and LIST\) returns [\#1605](https://github.com/grpc-ecosystem/grpc-gateway/issues/1605)
+- code: 32603, message `types.Coin` is neither a v1 or v2 Message [\#1603](https://github.com/grpc-ecosystem/grpc-gateway/issues/1603)
+- protoc-gen-swagger map type filed doesn't support options.openapiv2\_field [\#1601](https://github.com/grpc-ecosystem/grpc-gateway/issues/1601)
+- 🐛HttpRule is stated in unannotated\_echo\_service.yaml, but warning is still issued [\#1578](https://github.com/grpc-ecosystem/grpc-gateway/issues/1578)
+
+**Merged pull requests:**
+
+- Add ignore for golang.org/x/oauth2 [\#1644](https://github.com/grpc-ecosystem/grpc-gateway/pull/1644) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- fix SendHeader/SetTrailer when use grpc-gateway standalone server \(master\) [\#1639](https://github.com/grpc-ecosystem/grpc-gateway/pull/1639) ([ghostiam](https://github.com/ghostiam))
+- Update golang Docker tag to v1.15.1 \(master\) [\#1634](https://github.com/grpc-ecosystem/grpc-gateway/pull/1634) ([renovate[bot]](https://github.com/apps/renovate))
+- runtime: fix duration test [\#1631](https://github.com/grpc-ecosystem/grpc-gateway/pull/1631) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Update dependency bazel\_skylib to v1.0.3 \(master\) [\#1618](https://github.com/grpc-ecosystem/grpc-gateway/pull/1618) ([renovate[bot]](https://github.com/apps/renovate))
+- Update module google.golang.org/grpc to v1.31.1 \(master\) [\#1614](https://github.com/grpc-ecosystem/grpc-gateway/pull/1614) ([renovate[bot]](https://github.com/apps/renovate))
+- Control warning behavior on unbound methods using a flag [\#1606](https://github.com/grpc-ecosystem/grpc-gateway/pull/1606) ([yousseftelda](https://github.com/yousseftelda))
+- protoc-gen-swagger: fix map field options \(\#1601\) [\#1602](https://github.com/grpc-ecosystem/grpc-gateway/pull/1602) ([yangxikun](https://github.com/yangxikun))
+- protoc-gen-swagger: remove boolean format [\#1597](https://github.com/grpc-ecosystem/grpc-gateway/pull/1597) ([algas](https://github.com/algas))
+- document optional swagger plugin for unannotated grpc\_api\_configuration [\#1588](https://github.com/grpc-ecosystem/grpc-gateway/pull/1588) ([piengeng](https://github.com/piengeng))
+
 ## [v1.14.7](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.7) (2020-08-12)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.6...v1.14.7)
 
@@ -39,8 +70,6 @@
 
 **Merged pull requests:**
 
-- chore\(deps\): update golang docker tag to v1.15.0 \(master\) [\#1585](https://github.com/grpc-ecosystem/grpc-gateway/pull/1585) ([renovate[bot]](https://github.com/apps/renovate))
-- Update github-pages [\#1581](https://github.com/grpc-ecosystem/grpc-gateway/pull/1581) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - chore\(deps\): update golang docker tag to v1.14.7 \(master\) [\#1571](https://github.com/grpc-ecosystem/grpc-gateway/pull/1571) ([renovate[bot]](https://github.com/apps/renovate))
 - Only canonicalize header key once in each iteration [\#1564](https://github.com/grpc-ecosystem/grpc-gateway/pull/1564) ([ziyi-yan](https://github.com/ziyi-yan))
 - chore\(deps\): update module google.golang.org/grpc to v1.31.0 \(master\) [\#1561](https://github.com/grpc-ecosystem/grpc-gateway/pull/1561) ([renovate[bot]](https://github.com/apps/renovate))
