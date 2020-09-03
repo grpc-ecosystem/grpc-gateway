@@ -9,6 +9,7 @@ import (
 	"net/textproto"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -160,6 +161,63 @@ func NewServerMetadataContext(ctx context.Context, md ServerMetadata) context.Co
 func ServerMetadataFromContext(ctx context.Context) (md ServerMetadata, ok bool) {
 	md, ok = ctx.Value(serverMetadataKey{}).(ServerMetadata)
 	return
+}
+
+// ServerTransportStream implements grpc.ServerTransportStream.
+// It should only be used by the generated files to support grpc.SendHeader
+// outside of gRPC server use.
+type ServerTransportStream struct {
+	mu      sync.Mutex
+	header  metadata.MD
+	trailer metadata.MD
+}
+
+// Method returns the method for the stream.
+func (s *ServerTransportStream) Method() string {
+	return ""
+}
+
+// Header returns the header metadata of the stream.
+func (s *ServerTransportStream) Header() metadata.MD {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.header.Copy()
+}
+
+// SetHeader sets the header metadata.
+func (s *ServerTransportStream) SetHeader(md metadata.MD) error {
+	if md.Len() == 0 {
+		return nil
+	}
+
+	s.mu.Lock()
+	s.header = metadata.Join(s.header, md)
+	s.mu.Unlock()
+	return nil
+}
+
+// SendHeader sets the header metadata.
+func (s *ServerTransportStream) SendHeader(md metadata.MD) error {
+	return s.SetHeader(md)
+}
+
+// Trailer returns the cached trailer metadata.
+func (s *ServerTransportStream) Trailer() metadata.MD {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.trailer.Copy()
+}
+
+// SetTrailer sets the trailer metadata.
+func (s *ServerTransportStream) SetTrailer(md metadata.MD) error {
+	if md.Len() == 0 {
+		return nil
+	}
+
+	s.mu.Lock()
+	s.trailer = metadata.Join(s.trailer, md)
+	s.mu.Unlock()
+	return nil
 }
 
 func timeoutDecode(s string) (time.Duration, error) {
