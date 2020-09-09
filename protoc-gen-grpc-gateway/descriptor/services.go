@@ -217,6 +217,13 @@ func extractAPIOptions(meth *descriptor.MethodDescriptorProto) (*options.HttpRul
 func defaultAPIOptions(svc *Service, md *descriptor.MethodDescriptorProto) (*options.HttpRule, error) {
 	// FQSN prefixes the service's full name with a '.', e.g.: '.example.ExampleService'
 	fqsn := strings.TrimPrefix(svc.FQSN(), ".")
+
+	// This generates an HttpRule that matches the gRPC mapping to HTTP/2 described in
+	// https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests
+	// i.e.:
+	//   * method is POST
+	//   * path is "/<service name>/<method name>"
+	//   * body should contain the serialized request message
 	rule := &options.HttpRule{
 		Pattern: &options.HttpRule_Post{
 			Post: fmt.Sprintf("/%s/%s", fqsn, md.GetName()),
