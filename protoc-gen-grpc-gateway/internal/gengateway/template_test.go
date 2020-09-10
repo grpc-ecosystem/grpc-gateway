@@ -452,7 +452,7 @@ func TestApplyTemplateInProcess(t *testing.T) {
 			clientStreaming: false,
 			serverStreaming: false,
 			sigWant: []string{
-				`func local_request_ExampleService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server ExampleServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {`,
+				`func local_request_ExampleService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server ExampleServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {`,
 				`resp, md, err := local_request_ExampleService_Echo_0(rctx, inboundMarshaler, server, req, pathParams)`,
 			},
 		},
@@ -573,7 +573,7 @@ func TestApplyTemplateInProcess(t *testing.T) {
 			}
 		}
 
-		if want := `func RegisterExampleServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ExampleServiceServer) error {`; !strings.Contains(got, want) {
+		if want := `func RegisterExampleServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ExampleServiceService) error {`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 	}
