@@ -40,7 +40,7 @@ func request_FlowCombination_RpcEmptyRpc_0(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_FlowCombination_RpcEmptyRpc_0(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_FlowCombination_RpcEmptyRpc_0(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq EmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -179,7 +179,7 @@ func request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_FlowCombination_RpcBodyRpc_0(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -242,7 +242,7 @@ func request_FlowCombination_RpcBodyRpc_1(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_FlowCombination_RpcBodyRpc_1(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_FlowCombination_RpcBodyRpc_1(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -308,7 +308,7 @@ func request_FlowCombination_RpcBodyRpc_2(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_FlowCombination_RpcBodyRpc_2(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_FlowCombination_RpcBodyRpc_2(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -368,7 +368,7 @@ func request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_FlowCombination_RpcBodyRpc_3(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -440,7 +440,7 @@ func request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_FlowCombination_RpcBodyRpc_4(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -509,7 +509,7 @@ func request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_FlowCombination_RpcBodyRpc_5(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -587,7 +587,7 @@ func request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_FlowCombination_RpcBodyRpc_6(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonEmptyProto
 	var metadata runtime.ServerMetadata
 
@@ -657,7 +657,7 @@ func request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, marsh
 
 }
 
-func local_request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_FlowCombination_RpcPathSingleNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SingleNestedProto
 	var metadata runtime.ServerMetadata
 
@@ -745,7 +745,7 @@ func request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler r
 
 }
 
-func local_request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_FlowCombination_RpcPathNestedRpc_0(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
@@ -833,7 +833,7 @@ func request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marshaler r
 
 }
 
-func local_request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_FlowCombination_RpcPathNestedRpc_1(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
@@ -911,7 +911,7 @@ func request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marshaler r
 
 }
 
-func local_request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_FlowCombination_RpcPathNestedRpc_2(ctx context.Context, marshaler runtime.Marshaler, server FlowCombinationService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NestedProto
 	var metadata runtime.ServerMetadata
 
@@ -1452,10 +1452,10 @@ func request_FlowCombination_RpcPathNestedStream_2(ctx context.Context, marshale
 }
 
 // RegisterFlowCombinationHandlerServer registers the http handlers for service FlowCombination to "mux".
-// UnaryRPC     :call FlowCombinationServer directly.
+// UnaryRPC     :call FlowCombinationService directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterFlowCombinationHandlerFromEndpoint instead.
-func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.ServeMux, server FlowCombinationServer) error {
+func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.ServeMux, server FlowCombinationService) error {
 
 	mux.Handle("POST", pattern_FlowCombination_RpcEmptyRpc_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())

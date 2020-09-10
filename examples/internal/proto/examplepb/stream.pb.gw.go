@@ -164,10 +164,10 @@ func request_StreamService_Download_0(ctx context.Context, marshaler runtime.Mar
 }
 
 // RegisterStreamServiceHandlerServer registers the http handlers for service StreamService to "mux".
-// UnaryRPC     :call StreamServiceServer directly.
+// UnaryRPC     :call StreamServiceService directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterStreamServiceHandlerFromEndpoint instead.
-func RegisterStreamServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server StreamServiceServer) error {
+func RegisterStreamServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server StreamServiceService) error {
 
 	mux.Handle("POST", pattern_StreamService_BulkCreate_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")

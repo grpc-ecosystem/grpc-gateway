@@ -11,7 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // LoginServiceClient is the client API for LoginService service.
 //
@@ -57,6 +57,10 @@ func NewLoginServiceClient(cc grpc.ClientConnInterface) LoginServiceClient {
 	return &loginServiceClient{cc}
 }
 
+var loginServiceLoginStreamDesc = &grpc.StreamDesc{
+	StreamName: "Login",
+}
+
 func (c *loginServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error) {
 	out := new(LoginReply)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.LoginService/Login", in, out, opts...)
@@ -64,6 +68,10 @@ func (c *loginServiceClient) Login(ctx context.Context, in *LoginRequest, opts .
 		return nil, err
 	}
 	return out, nil
+}
+
+var loginServiceLogoutStreamDesc = &grpc.StreamDesc{
+	StreamName: "Logout",
 }
 
 func (c *loginServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutReply, error) {
@@ -75,8 +83,136 @@ func (c *loginServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts
 	return out, nil
 }
 
-// LoginServiceServer is the server API for LoginService service.
-type LoginServiceServer interface {
+// LoginServiceService is the service API for LoginService service.
+// Fields should be assigned to their respective handler implementations only before
+// RegisterLoginServiceService is called.  Any unassigned fields will result in the
+// handler for that method returning an Unimplemented error.
+type LoginServiceService struct {
+	// Login
+	//
+	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+	//
+	// ## {{.RequestType.Name}}
+	// | Field ID    | Name      | Type                                                       | Description                  |
+	// | ----------- | --------- | ---------------------------------------------------------  | ---------------------------- | {{range .RequestType.Fields}}
+	// | {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+	//
+	// ## {{.ResponseType.Name}}
+	// | Field ID    | Name      | Type                                                       | Description                  |
+	// | ----------- | --------- | ---------------------------------------------------------- | ---------------------------- | {{range .ResponseType.Fields}}
+	// | {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+	Login func(context.Context, *LoginRequest) (*LoginReply, error)
+	// Logout
+	//
+	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+	//
+	// ## {{.RequestType.Name}}
+	// | Field ID    | Name      | Type                                                       | Description                  |
+	// | ----------- | --------- | ---------------------------------------------------------  | ---------------------------- | {{range .RequestType.Fields}}
+	// | {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+	//
+	// ## {{.ResponseType.Name}}
+	// | Field ID    | Name      | Type                                                       | Description                  |
+	// | ----------- | --------- | ---------------------------------------------------------- | ---------------------------- | {{range .ResponseType.Fields}}
+	// | {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+	Logout func(context.Context, *LogoutRequest) (*LogoutReply, error)
+}
+
+func (s *LoginServiceService) login(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.LoginService/Login",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+func (s *LoginServiceService) logout(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogoutRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.Logout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.LoginService/Logout",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.Logout(ctx, req.(*LogoutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// RegisterLoginServiceService registers a service implementation with a gRPC server.
+func RegisterLoginServiceService(s grpc.ServiceRegistrar, srv *LoginServiceService) {
+	srvCopy := *srv
+	if srvCopy.Login == nil {
+		srvCopy.Login = func(context.Context, *LoginRequest) (*LoginReply, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+		}
+	}
+	if srvCopy.Logout == nil {
+		srvCopy.Logout = func(context.Context, *LogoutRequest) (*LogoutReply, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+		}
+	}
+	sd := grpc.ServiceDesc{
+		ServiceName: "grpc.gateway.examples.internal.proto.examplepb.LoginService",
+		Methods: []grpc.MethodDesc{
+			{
+				MethodName: "Login",
+				Handler:    srvCopy.login,
+			},
+			{
+				MethodName: "Logout",
+				Handler:    srvCopy.logout,
+			},
+		},
+		Streams:  []grpc.StreamDesc{},
+		Metadata: "examples/internal/proto/examplepb/use_go_template.proto",
+	}
+
+	s.RegisterService(&sd, nil)
+}
+
+// NewLoginServiceService creates a new LoginServiceService containing the
+// implemented methods of the LoginService service in s.  Any unimplemented
+// methods will result in the gRPC server returning an UNIMPLEMENTED status to the client.
+// This includes situations where the method handler is misspelled or has the wrong
+// signature.  For this reason, this function should be used with great care and
+// is not recommended to be used by most users.
+func NewLoginServiceService(s interface{}) *LoginServiceService {
+	ns := &LoginServiceService{}
+	if h, ok := s.(interface {
+		Login(context.Context, *LoginRequest) (*LoginReply, error)
+	}); ok {
+		ns.Login = h.Login
+	}
+	if h, ok := s.(interface {
+		Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
+	}); ok {
+		ns.Logout = h.Logout
+	}
+	return ns
+}
+
+// UnstableLoginServiceService is the service API for LoginService service.
+// New methods may be added to this interface if they are added to the service
+// definition, which is not a backward-compatible change.  For this reason,
+// use of this type is not recommended.
+type UnstableLoginServiceService interface {
 	// Login
 	//
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
@@ -107,72 +243,4 @@ type LoginServiceServer interface {
 	// | ----------- | --------- | ---------------------------------------------------------- | ---------------------------- | {{range .ResponseType.Fields}}
 	// | {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
-}
-
-// UnimplementedLoginServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedLoginServiceServer struct {
-}
-
-func (*UnimplementedLoginServiceServer) Login(context.Context, *LoginRequest) (*LoginReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
-}
-func (*UnimplementedLoginServiceServer) Logout(context.Context, *LogoutRequest) (*LogoutReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
-}
-
-func RegisterLoginServiceServer(s *grpc.Server, srv LoginServiceServer) {
-	s.RegisterService(&_LoginService_serviceDesc, srv)
-}
-
-func _LoginService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LoginServiceServer).Login(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.LoginService/Login",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LoginServiceServer).Login(ctx, req.(*LoginRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _LoginService_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LogoutRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LoginServiceServer).Logout(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.LoginService/Logout",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LoginServiceServer).Logout(ctx, req.(*LogoutRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _LoginService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.LoginService",
-	HandlerType: (*LoginServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Login",
-			Handler:    _LoginService_Login_Handler,
-		},
-		{
-			MethodName: "Logout",
-			Handler:    _LoginService_Logout_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "examples/internal/proto/examplepb/use_go_template.proto",
 }

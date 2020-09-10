@@ -14,8 +14,8 @@ go_library(
         "//examples/internal/proto/examplepb:go_default_library",
         "//examples/internal/proto/standalone:go_default_library",
         "//runtime:go_default_library",
-        "@com_github_golang_glog//:go_default_library",
-        "@org_golang_google_grpc//:go_default_library",
-        "@org_golang_google_grpc//connectivity:go_default_library",
+        "//vendor/github.com/golang/glog:go_default_library",
+        "//vendor/google.golang.org/grpc:go_default_library",
+        "//vendor/google.golang.org/grpc/connectivity:go_default_library",
     ],
 )

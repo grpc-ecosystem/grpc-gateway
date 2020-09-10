@@ -68,7 +68,7 @@ func request_EchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_EchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_EchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -148,7 +148,7 @@ func request_EchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_EchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_EchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -253,7 +253,7 @@ func request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -373,7 +373,7 @@ func request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -468,7 +468,7 @@ func request_EchoService_Echo_4(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_EchoService_Echo_4(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_EchoService_Echo_4(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -518,7 +518,7 @@ func request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marsh
 
 }
 
-func local_request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -555,7 +555,7 @@ func request_EchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Mar
 
 }
 
-func local_request_EchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_EchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq SimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -606,7 +606,7 @@ func request_EchoService_EchoPatch_0(ctx context.Context, marshaler runtime.Mars
 
 }
 
-func local_request_EchoService_EchoPatch_0(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_EchoService_EchoPatch_0(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DynamicMessageUpdate
 	var metadata runtime.ServerMetadata
 
@@ -638,10 +638,10 @@ func local_request_EchoService_EchoPatch_0(ctx context.Context, marshaler runtim
 }
 
 // RegisterEchoServiceHandlerServer registers the http handlers for service EchoService to "mux".
-// UnaryRPC     :call EchoServiceServer directly.
+// UnaryRPC     :call EchoServiceService directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterEchoServiceHandlerFromEndpoint instead.
-func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server EchoServiceServer) error {
+func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server EchoServiceService) error {
 
 	mux.Handle("POST", pattern_EchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())

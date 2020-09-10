@@ -11,7 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // FlowCombinationClient is the client API for FlowCombination service.
 //
@@ -37,6 +37,10 @@ func NewFlowCombinationClient(cc grpc.ClientConnInterface) FlowCombinationClient
 	return &flowCombinationClient{cc}
 }
 
+var flowCombinationRpcEmptyRpcStreamDesc = &grpc.StreamDesc{
+	StreamName: "RpcEmptyRpc",
+}
+
 func (c *flowCombinationClient) RpcEmptyRpc(ctx context.Context, in *EmptyProto, opts ...grpc.CallOption) (*EmptyProto, error) {
 	out := new(EmptyProto)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcEmptyRpc", in, out, opts...)
@@ -46,8 +50,13 @@ func (c *flowCombinationClient) RpcEmptyRpc(ctx context.Context, in *EmptyProto,
 	return out, nil
 }
 
+var flowCombinationRpcEmptyStreamStreamDesc = &grpc.StreamDesc{
+	StreamName:    "RpcEmptyStream",
+	ServerStreams: true,
+}
+
 func (c *flowCombinationClient) RpcEmptyStream(ctx context.Context, in *EmptyProto, opts ...grpc.CallOption) (FlowCombination_RpcEmptyStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_FlowCombination_serviceDesc.Streams[0], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcEmptyStream", opts...)
+	stream, err := c.cc.NewStream(ctx, flowCombinationRpcEmptyStreamStreamDesc, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcEmptyStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,8 +87,13 @@ func (x *flowCombinationRpcEmptyStreamClient) Recv() (*EmptyProto, error) {
 	return m, nil
 }
 
+var flowCombinationStreamEmptyRpcStreamDesc = &grpc.StreamDesc{
+	StreamName:    "StreamEmptyRpc",
+	ClientStreams: true,
+}
+
 func (c *flowCombinationClient) StreamEmptyRpc(ctx context.Context, opts ...grpc.CallOption) (FlowCombination_StreamEmptyRpcClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_FlowCombination_serviceDesc.Streams[1], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/StreamEmptyRpc", opts...)
+	stream, err := c.cc.NewStream(ctx, flowCombinationStreamEmptyRpcStreamDesc, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/StreamEmptyRpc", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -112,8 +126,14 @@ func (x *flowCombinationStreamEmptyRpcClient) CloseAndRecv() (*EmptyProto, error
 	return m, nil
 }
 
+var flowCombinationStreamEmptyStreamStreamDesc = &grpc.StreamDesc{
+	StreamName:    "StreamEmptyStream",
+	ServerStreams: true,
+	ClientStreams: true,
+}
+
 func (c *flowCombinationClient) StreamEmptyStream(ctx context.Context, opts ...grpc.CallOption) (FlowCombination_StreamEmptyStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_FlowCombination_serviceDesc.Streams[2], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/StreamEmptyStream", opts...)
+	stream, err := c.cc.NewStream(ctx, flowCombinationStreamEmptyStreamStreamDesc, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/StreamEmptyStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -143,6 +163,10 @@ func (x *flowCombinationStreamEmptyStreamClient) Recv() (*EmptyProto, error) {
 	return m, nil
 }
 
+var flowCombinationRpcBodyRpcStreamDesc = &grpc.StreamDesc{
+	StreamName: "RpcBodyRpc",
+}
+
 func (c *flowCombinationClient) RpcBodyRpc(ctx context.Context, in *NonEmptyProto, opts ...grpc.CallOption) (*EmptyProto, error) {
 	out := new(EmptyProto)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc", in, out, opts...)
@@ -150,6 +174,10 @@ func (c *flowCombinationClient) RpcBodyRpc(ctx context.Context, in *NonEmptyProt
 		return nil, err
 	}
 	return out, nil
+}
+
+var flowCombinationRpcPathSingleNestedRpcStreamDesc = &grpc.StreamDesc{
+	StreamName: "RpcPathSingleNestedRpc",
 }
 
 func (c *flowCombinationClient) RpcPathSingleNestedRpc(ctx context.Context, in *SingleNestedProto, opts ...grpc.CallOption) (*EmptyProto, error) {
@@ -161,6 +189,10 @@ func (c *flowCombinationClient) RpcPathSingleNestedRpc(ctx context.Context, in *
 	return out, nil
 }
 
+var flowCombinationRpcPathNestedRpcStreamDesc = &grpc.StreamDesc{
+	StreamName: "RpcPathNestedRpc",
+}
+
 func (c *flowCombinationClient) RpcPathNestedRpc(ctx context.Context, in *NestedProto, opts ...grpc.CallOption) (*EmptyProto, error) {
 	out := new(EmptyProto)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", in, out, opts...)
@@ -170,8 +202,13 @@ func (c *flowCombinationClient) RpcPathNestedRpc(ctx context.Context, in *Nested
 	return out, nil
 }
 
+var flowCombinationRpcBodyStreamStreamDesc = &grpc.StreamDesc{
+	StreamName:    "RpcBodyStream",
+	ServerStreams: true,
+}
+
 func (c *flowCombinationClient) RpcBodyStream(ctx context.Context, in *NonEmptyProto, opts ...grpc.CallOption) (FlowCombination_RpcBodyStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_FlowCombination_serviceDesc.Streams[3], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", opts...)
+	stream, err := c.cc.NewStream(ctx, flowCombinationRpcBodyStreamStreamDesc, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -202,8 +239,13 @@ func (x *flowCombinationRpcBodyStreamClient) Recv() (*EmptyProto, error) {
 	return m, nil
 }
 
+var flowCombinationRpcPathSingleNestedStreamStreamDesc = &grpc.StreamDesc{
+	StreamName:    "RpcPathSingleNestedStream",
+	ServerStreams: true,
+}
+
 func (c *flowCombinationClient) RpcPathSingleNestedStream(ctx context.Context, in *SingleNestedProto, opts ...grpc.CallOption) (FlowCombination_RpcPathSingleNestedStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_FlowCombination_serviceDesc.Streams[4], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathSingleNestedStream", opts...)
+	stream, err := c.cc.NewStream(ctx, flowCombinationRpcPathSingleNestedStreamStreamDesc, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathSingleNestedStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -234,8 +276,13 @@ func (x *flowCombinationRpcPathSingleNestedStreamClient) Recv() (*EmptyProto, er
 	return m, nil
 }
 
+var flowCombinationRpcPathNestedStreamStreamDesc = &grpc.StreamDesc{
+	StreamName:    "RpcPathNestedStream",
+	ServerStreams: true,
+}
+
 func (c *flowCombinationClient) RpcPathNestedStream(ctx context.Context, in *NestedProto, opts ...grpc.CallOption) (FlowCombination_RpcPathNestedStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_FlowCombination_serviceDesc.Streams[5], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", opts...)
+	stream, err := c.cc.NewStream(ctx, flowCombinationRpcPathNestedStreamStreamDesc, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -266,83 +313,124 @@ func (x *flowCombinationRpcPathNestedStreamClient) Recv() (*EmptyProto, error) {
 	return m, nil
 }
 
-// FlowCombinationServer is the server API for FlowCombination service.
-type FlowCombinationServer interface {
-	RpcEmptyRpc(context.Context, *EmptyProto) (*EmptyProto, error)
-	RpcEmptyStream(*EmptyProto, FlowCombination_RpcEmptyStreamServer) error
-	StreamEmptyRpc(FlowCombination_StreamEmptyRpcServer) error
-	StreamEmptyStream(FlowCombination_StreamEmptyStreamServer) error
-	RpcBodyRpc(context.Context, *NonEmptyProto) (*EmptyProto, error)
-	RpcPathSingleNestedRpc(context.Context, *SingleNestedProto) (*EmptyProto, error)
-	RpcPathNestedRpc(context.Context, *NestedProto) (*EmptyProto, error)
-	RpcBodyStream(*NonEmptyProto, FlowCombination_RpcBodyStreamServer) error
-	RpcPathSingleNestedStream(*SingleNestedProto, FlowCombination_RpcPathSingleNestedStreamServer) error
-	RpcPathNestedStream(*NestedProto, FlowCombination_RpcPathNestedStreamServer) error
+// FlowCombinationService is the service API for FlowCombination service.
+// Fields should be assigned to their respective handler implementations only before
+// RegisterFlowCombinationService is called.  Any unassigned fields will result in the
+// handler for that method returning an Unimplemented error.
+type FlowCombinationService struct {
+	RpcEmptyRpc               func(context.Context, *EmptyProto) (*EmptyProto, error)
+	RpcEmptyStream            func(*EmptyProto, FlowCombination_RpcEmptyStreamServer) error
+	StreamEmptyRpc            func(FlowCombination_StreamEmptyRpcServer) error
+	StreamEmptyStream         func(FlowCombination_StreamEmptyStreamServer) error
+	RpcBodyRpc                func(context.Context, *NonEmptyProto) (*EmptyProto, error)
+	RpcPathSingleNestedRpc    func(context.Context, *SingleNestedProto) (*EmptyProto, error)
+	RpcPathNestedRpc          func(context.Context, *NestedProto) (*EmptyProto, error)
+	RpcBodyStream             func(*NonEmptyProto, FlowCombination_RpcBodyStreamServer) error
+	RpcPathSingleNestedStream func(*SingleNestedProto, FlowCombination_RpcPathSingleNestedStreamServer) error
+	RpcPathNestedStream       func(*NestedProto, FlowCombination_RpcPathNestedStreamServer) error
 }
 
-// UnimplementedFlowCombinationServer can be embedded to have forward compatible implementations.
-type UnimplementedFlowCombinationServer struct {
-}
-
-func (*UnimplementedFlowCombinationServer) RpcEmptyRpc(context.Context, *EmptyProto) (*EmptyProto, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RpcEmptyRpc not implemented")
-}
-func (*UnimplementedFlowCombinationServer) RpcEmptyStream(*EmptyProto, FlowCombination_RpcEmptyStreamServer) error {
-	return status.Errorf(codes.Unimplemented, "method RpcEmptyStream not implemented")
-}
-func (*UnimplementedFlowCombinationServer) StreamEmptyRpc(FlowCombination_StreamEmptyRpcServer) error {
-	return status.Errorf(codes.Unimplemented, "method StreamEmptyRpc not implemented")
-}
-func (*UnimplementedFlowCombinationServer) StreamEmptyStream(FlowCombination_StreamEmptyStreamServer) error {
-	return status.Errorf(codes.Unimplemented, "method StreamEmptyStream not implemented")
-}
-func (*UnimplementedFlowCombinationServer) RpcBodyRpc(context.Context, *NonEmptyProto) (*EmptyProto, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RpcBodyRpc not implemented")
-}
-func (*UnimplementedFlowCombinationServer) RpcPathSingleNestedRpc(context.Context, *SingleNestedProto) (*EmptyProto, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RpcPathSingleNestedRpc not implemented")
-}
-func (*UnimplementedFlowCombinationServer) RpcPathNestedRpc(context.Context, *NestedProto) (*EmptyProto, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RpcPathNestedRpc not implemented")
-}
-func (*UnimplementedFlowCombinationServer) RpcBodyStream(*NonEmptyProto, FlowCombination_RpcBodyStreamServer) error {
-	return status.Errorf(codes.Unimplemented, "method RpcBodyStream not implemented")
-}
-func (*UnimplementedFlowCombinationServer) RpcPathSingleNestedStream(*SingleNestedProto, FlowCombination_RpcPathSingleNestedStreamServer) error {
-	return status.Errorf(codes.Unimplemented, "method RpcPathSingleNestedStream not implemented")
-}
-func (*UnimplementedFlowCombinationServer) RpcPathNestedStream(*NestedProto, FlowCombination_RpcPathNestedStreamServer) error {
-	return status.Errorf(codes.Unimplemented, "method RpcPathNestedStream not implemented")
-}
-
-func RegisterFlowCombinationServer(s *grpc.Server, srv FlowCombinationServer) {
-	s.RegisterService(&_FlowCombination_serviceDesc, srv)
-}
-
-func _FlowCombination_RpcEmptyRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func (s *FlowCombinationService) rpcEmptyRpc(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EmptyProto)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FlowCombinationServer).RpcEmptyRpc(ctx, in)
+		return s.RpcEmptyRpc(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     srv,
+		Server:     s,
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcEmptyRpc",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FlowCombinationServer).RpcEmptyRpc(ctx, req.(*EmptyProto))
+		return s.RpcEmptyRpc(ctx, req.(*EmptyProto))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-
-func _FlowCombination_RpcEmptyStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+func (s *FlowCombinationService) rpcEmptyStream(_ interface{}, stream grpc.ServerStream) error {
 	m := new(EmptyProto)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(FlowCombinationServer).RpcEmptyStream(m, &flowCombinationRpcEmptyStreamServer{stream})
+	return s.RpcEmptyStream(m, &flowCombinationRpcEmptyStreamServer{stream})
+}
+func (s *FlowCombinationService) streamEmptyRpc(_ interface{}, stream grpc.ServerStream) error {
+	return s.StreamEmptyRpc(&flowCombinationStreamEmptyRpcServer{stream})
+}
+func (s *FlowCombinationService) streamEmptyStream(_ interface{}, stream grpc.ServerStream) error {
+	return s.StreamEmptyStream(&flowCombinationStreamEmptyStreamServer{stream})
+}
+func (s *FlowCombinationService) rpcBodyRpc(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NonEmptyProto)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.RpcBodyRpc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.RpcBodyRpc(ctx, req.(*NonEmptyProto))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+func (s *FlowCombinationService) rpcPathSingleNestedRpc(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SingleNestedProto)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.RpcPathSingleNestedRpc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathSingleNestedRpc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.RpcPathSingleNestedRpc(ctx, req.(*SingleNestedProto))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+func (s *FlowCombinationService) rpcPathNestedRpc(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NestedProto)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.RpcPathNestedRpc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.RpcPathNestedRpc(ctx, req.(*NestedProto))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+func (s *FlowCombinationService) rpcBodyStream(_ interface{}, stream grpc.ServerStream) error {
+	m := new(NonEmptyProto)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return s.RpcBodyStream(m, &flowCombinationRpcBodyStreamServer{stream})
+}
+func (s *FlowCombinationService) rpcPathSingleNestedStream(_ interface{}, stream grpc.ServerStream) error {
+	m := new(SingleNestedProto)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return s.RpcPathSingleNestedStream(m, &flowCombinationRpcPathSingleNestedStreamServer{stream})
+}
+func (s *FlowCombinationService) rpcPathNestedStream(_ interface{}, stream grpc.ServerStream) error {
+	m := new(NestedProto)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return s.RpcPathNestedStream(m, &flowCombinationRpcPathNestedStreamServer{stream})
 }
 
 type FlowCombination_RpcEmptyStreamServer interface {
@@ -356,10 +444,6 @@ type flowCombinationRpcEmptyStreamServer struct {
 
 func (x *flowCombinationRpcEmptyStreamServer) Send(m *EmptyProto) error {
 	return x.ServerStream.SendMsg(m)
-}
-
-func _FlowCombination_StreamEmptyRpc_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(FlowCombinationServer).StreamEmptyRpc(&flowCombinationStreamEmptyRpcServer{stream})
 }
 
 type FlowCombination_StreamEmptyRpcServer interface {
@@ -384,10 +468,6 @@ func (x *flowCombinationStreamEmptyRpcServer) Recv() (*EmptyProto, error) {
 	return m, nil
 }
 
-func _FlowCombination_StreamEmptyStream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(FlowCombinationServer).StreamEmptyStream(&flowCombinationStreamEmptyStreamServer{stream})
-}
-
 type FlowCombination_StreamEmptyStreamServer interface {
 	Send(*EmptyProto) error
 	Recv() (*EmptyProto, error)
@@ -410,68 +490,6 @@ func (x *flowCombinationStreamEmptyStreamServer) Recv() (*EmptyProto, error) {
 	return m, nil
 }
 
-func _FlowCombination_RpcBodyRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NonEmptyProto)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(FlowCombinationServer).RpcBodyRpc(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyRpc",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FlowCombinationServer).RpcBodyRpc(ctx, req.(*NonEmptyProto))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _FlowCombination_RpcPathSingleNestedRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SingleNestedProto)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(FlowCombinationServer).RpcPathSingleNestedRpc(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathSingleNestedRpc",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FlowCombinationServer).RpcPathSingleNestedRpc(ctx, req.(*SingleNestedProto))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _FlowCombination_RpcPathNestedRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NestedProto)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(FlowCombinationServer).RpcPathNestedRpc(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FlowCombinationServer).RpcPathNestedRpc(ctx, req.(*NestedProto))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _FlowCombination_RpcBodyStream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(NonEmptyProto)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(FlowCombinationServer).RpcBodyStream(m, &flowCombinationRpcBodyStreamServer{stream})
-}
-
 type FlowCombination_RpcBodyStreamServer interface {
 	Send(*EmptyProto) error
 	grpc.ServerStream
@@ -483,14 +501,6 @@ type flowCombinationRpcBodyStreamServer struct {
 
 func (x *flowCombinationRpcBodyStreamServer) Send(m *EmptyProto) error {
 	return x.ServerStream.SendMsg(m)
-}
-
-func _FlowCombination_RpcPathSingleNestedStream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(SingleNestedProto)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(FlowCombinationServer).RpcPathSingleNestedStream(m, &flowCombinationRpcPathSingleNestedStreamServer{stream})
 }
 
 type FlowCombination_RpcPathSingleNestedStreamServer interface {
@@ -506,14 +516,6 @@ func (x *flowCombinationRpcPathSingleNestedStreamServer) Send(m *EmptyProto) err
 	return x.ServerStream.SendMsg(m)
 }
 
-func _FlowCombination_RpcPathNestedStream_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(NestedProto)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(FlowCombinationServer).RpcPathNestedStream(m, &flowCombinationRpcPathNestedStreamServer{stream})
-}
-
 type FlowCombination_RpcPathNestedStreamServer interface {
 	Send(*EmptyProto) error
 	grpc.ServerStream
@@ -527,59 +529,192 @@ func (x *flowCombinationRpcPathNestedStreamServer) Send(m *EmptyProto) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-var _FlowCombination_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.FlowCombination",
-	HandlerType: (*FlowCombinationServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "RpcEmptyRpc",
-			Handler:    _FlowCombination_RpcEmptyRpc_Handler,
+// RegisterFlowCombinationService registers a service implementation with a gRPC server.
+func RegisterFlowCombinationService(s grpc.ServiceRegistrar, srv *FlowCombinationService) {
+	srvCopy := *srv
+	if srvCopy.RpcEmptyRpc == nil {
+		srvCopy.RpcEmptyRpc = func(context.Context, *EmptyProto) (*EmptyProto, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method RpcEmptyRpc not implemented")
+		}
+	}
+	if srvCopy.RpcEmptyStream == nil {
+		srvCopy.RpcEmptyStream = func(*EmptyProto, FlowCombination_RpcEmptyStreamServer) error {
+			return status.Errorf(codes.Unimplemented, "method RpcEmptyStream not implemented")
+		}
+	}
+	if srvCopy.StreamEmptyRpc == nil {
+		srvCopy.StreamEmptyRpc = func(FlowCombination_StreamEmptyRpcServer) error {
+			return status.Errorf(codes.Unimplemented, "method StreamEmptyRpc not implemented")
+		}
+	}
+	if srvCopy.StreamEmptyStream == nil {
+		srvCopy.StreamEmptyStream = func(FlowCombination_StreamEmptyStreamServer) error {
+			return status.Errorf(codes.Unimplemented, "method StreamEmptyStream not implemented")
+		}
+	}
+	if srvCopy.RpcBodyRpc == nil {
+		srvCopy.RpcBodyRpc = func(context.Context, *NonEmptyProto) (*EmptyProto, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method RpcBodyRpc not implemented")
+		}
+	}
+	if srvCopy.RpcPathSingleNestedRpc == nil {
+		srvCopy.RpcPathSingleNestedRpc = func(context.Context, *SingleNestedProto) (*EmptyProto, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method RpcPathSingleNestedRpc not implemented")
+		}
+	}
+	if srvCopy.RpcPathNestedRpc == nil {
+		srvCopy.RpcPathNestedRpc = func(context.Context, *NestedProto) (*EmptyProto, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method RpcPathNestedRpc not implemented")
+		}
+	}
+	if srvCopy.RpcBodyStream == nil {
+		srvCopy.RpcBodyStream = func(*NonEmptyProto, FlowCombination_RpcBodyStreamServer) error {
+			return status.Errorf(codes.Unimplemented, "method RpcBodyStream not implemented")
+		}
+	}
+	if srvCopy.RpcPathSingleNestedStream == nil {
+		srvCopy.RpcPathSingleNestedStream = func(*SingleNestedProto, FlowCombination_RpcPathSingleNestedStreamServer) error {
+			return status.Errorf(codes.Unimplemented, "method RpcPathSingleNestedStream not implemented")
+		}
+	}
+	if srvCopy.RpcPathNestedStream == nil {
+		srvCopy.RpcPathNestedStream = func(*NestedProto, FlowCombination_RpcPathNestedStreamServer) error {
+			return status.Errorf(codes.Unimplemented, "method RpcPathNestedStream not implemented")
+		}
+	}
+	sd := grpc.ServiceDesc{
+		ServiceName: "grpc.gateway.examples.internal.proto.examplepb.FlowCombination",
+		Methods: []grpc.MethodDesc{
+			{
+				MethodName: "RpcEmptyRpc",
+				Handler:    srvCopy.rpcEmptyRpc,
+			},
+			{
+				MethodName: "RpcBodyRpc",
+				Handler:    srvCopy.rpcBodyRpc,
+			},
+			{
+				MethodName: "RpcPathSingleNestedRpc",
+				Handler:    srvCopy.rpcPathSingleNestedRpc,
+			},
+			{
+				MethodName: "RpcPathNestedRpc",
+				Handler:    srvCopy.rpcPathNestedRpc,
+			},
 		},
-		{
-			MethodName: "RpcBodyRpc",
-			Handler:    _FlowCombination_RpcBodyRpc_Handler,
+		Streams: []grpc.StreamDesc{
+			{
+				StreamName:    "RpcEmptyStream",
+				Handler:       srvCopy.rpcEmptyStream,
+				ServerStreams: true,
+			},
+			{
+				StreamName:    "StreamEmptyRpc",
+				Handler:       srvCopy.streamEmptyRpc,
+				ClientStreams: true,
+			},
+			{
+				StreamName:    "StreamEmptyStream",
+				Handler:       srvCopy.streamEmptyStream,
+				ServerStreams: true,
+				ClientStreams: true,
+			},
+			{
+				StreamName:    "RpcBodyStream",
+				Handler:       srvCopy.rpcBodyStream,
+				ServerStreams: true,
+			},
+			{
+				StreamName:    "RpcPathSingleNestedStream",
+				Handler:       srvCopy.rpcPathSingleNestedStream,
+				ServerStreams: true,
+			},
+			{
+				StreamName:    "RpcPathNestedStream",
+				Handler:       srvCopy.rpcPathNestedStream,
+				ServerStreams: true,
+			},
 		},
-		{
-			MethodName: "RpcPathSingleNestedRpc",
-			Handler:    _FlowCombination_RpcPathSingleNestedRpc_Handler,
-		},
-		{
-			MethodName: "RpcPathNestedRpc",
-			Handler:    _FlowCombination_RpcPathNestedRpc_Handler,
-		},
-	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "RpcEmptyStream",
-			Handler:       _FlowCombination_RpcEmptyStream_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "StreamEmptyRpc",
-			Handler:       _FlowCombination_StreamEmptyRpc_Handler,
-			ClientStreams: true,
-		},
-		{
-			StreamName:    "StreamEmptyStream",
-			Handler:       _FlowCombination_StreamEmptyStream_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
-		},
-		{
-			StreamName:    "RpcBodyStream",
-			Handler:       _FlowCombination_RpcBodyStream_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "RpcPathSingleNestedStream",
-			Handler:       _FlowCombination_RpcPathSingleNestedStream_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "RpcPathNestedStream",
-			Handler:       _FlowCombination_RpcPathNestedStream_Handler,
-			ServerStreams: true,
-		},
-	},
-	Metadata: "examples/internal/proto/examplepb/flow_combination.proto",
+		Metadata: "examples/internal/proto/examplepb/flow_combination.proto",
+	}
+
+	s.RegisterService(&sd, nil)
+}
+
+// NewFlowCombinationService creates a new FlowCombinationService containing the
+// implemented methods of the FlowCombination service in s.  Any unimplemented
+// methods will result in the gRPC server returning an UNIMPLEMENTED status to the client.
+// This includes situations where the method handler is misspelled or has the wrong
+// signature.  For this reason, this function should be used with great care and
+// is not recommended to be used by most users.
+func NewFlowCombinationService(s interface{}) *FlowCombinationService {
+	ns := &FlowCombinationService{}
+	if h, ok := s.(interface {
+		RpcEmptyRpc(context.Context, *EmptyProto) (*EmptyProto, error)
+	}); ok {
+		ns.RpcEmptyRpc = h.RpcEmptyRpc
+	}
+	if h, ok := s.(interface {
+		RpcEmptyStream(*EmptyProto, FlowCombination_RpcEmptyStreamServer) error
+	}); ok {
+		ns.RpcEmptyStream = h.RpcEmptyStream
+	}
+	if h, ok := s.(interface {
+		StreamEmptyRpc(FlowCombination_StreamEmptyRpcServer) error
+	}); ok {
+		ns.StreamEmptyRpc = h.StreamEmptyRpc
+	}
+	if h, ok := s.(interface {
+		StreamEmptyStream(FlowCombination_StreamEmptyStreamServer) error
+	}); ok {
+		ns.StreamEmptyStream = h.StreamEmptyStream
+	}
+	if h, ok := s.(interface {
+		RpcBodyRpc(context.Context, *NonEmptyProto) (*EmptyProto, error)
+	}); ok {
+		ns.RpcBodyRpc = h.RpcBodyRpc
+	}
+	if h, ok := s.(interface {
+		RpcPathSingleNestedRpc(context.Context, *SingleNestedProto) (*EmptyProto, error)
+	}); ok {
+		ns.RpcPathSingleNestedRpc = h.RpcPathSingleNestedRpc
+	}
+	if h, ok := s.(interface {
+		RpcPathNestedRpc(context.Context, *NestedProto) (*EmptyProto, error)
+	}); ok {
+		ns.RpcPathNestedRpc = h.RpcPathNestedRpc
+	}
+	if h, ok := s.(interface {
+		RpcBodyStream(*NonEmptyProto, FlowCombination_RpcBodyStreamServer) error
+	}); ok {
+		ns.RpcBodyStream = h.RpcBodyStream
+	}
+	if h, ok := s.(interface {
+		RpcPathSingleNestedStream(*SingleNestedProto, FlowCombination_RpcPathSingleNestedStreamServer) error
+	}); ok {
+		ns.RpcPathSingleNestedStream = h.RpcPathSingleNestedStream
+	}
+	if h, ok := s.(interface {
+		RpcPathNestedStream(*NestedProto, FlowCombination_RpcPathNestedStreamServer) error
+	}); ok {
+		ns.RpcPathNestedStream = h.RpcPathNestedStream
+	}
+	return ns
+}
+
+// UnstableFlowCombinationService is the service API for FlowCombination service.
+// New methods may be added to this interface if they are added to the service
+// definition, which is not a backward-compatible change.  For this reason,
+// use of this type is not recommended.
+type UnstableFlowCombinationService interface {
+	RpcEmptyRpc(context.Context, *EmptyProto) (*EmptyProto, error)
+	RpcEmptyStream(*EmptyProto, FlowCombination_RpcEmptyStreamServer) error
+	StreamEmptyRpc(FlowCombination_StreamEmptyRpcServer) error
+	StreamEmptyStream(FlowCombination_StreamEmptyStreamServer) error
+	RpcBodyRpc(context.Context, *NonEmptyProto) (*EmptyProto, error)
+	RpcPathSingleNestedRpc(context.Context, *SingleNestedProto) (*EmptyProto, error)
+	RpcPathNestedRpc(context.Context, *NestedProto) (*EmptyProto, error)
+	RpcBodyStream(*NonEmptyProto, FlowCombination_RpcBodyStreamServer) error
+	RpcPathSingleNestedStream(*SingleNestedProto, FlowCombination_RpcPathSingleNestedStreamServer) error
+	RpcPathNestedStream(*NestedProto, FlowCombination_RpcPathNestedStreamServer) error
 }

@@ -11,7 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // NonStandardServiceClient is the client API for NonStandardService service.
 //
@@ -31,6 +31,10 @@ func NewNonStandardServiceClient(cc grpc.ClientConnInterface) NonStandardService
 	return &nonStandardServiceClient{cc}
 }
 
+var nonStandardServiceUpdateStreamDesc = &grpc.StreamDesc{
+	StreamName: "Update",
+}
+
 func (c *nonStandardServiceClient) Update(ctx context.Context, in *NonStandardUpdateRequest, opts ...grpc.CallOption) (*NonStandardMessage, error) {
 	out := new(NonStandardMessage)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.runtime.internal.examplepb.NonStandardService/Update", in, out, opts...)
@@ -38,6 +42,10 @@ func (c *nonStandardServiceClient) Update(ctx context.Context, in *NonStandardUp
 		return nil, err
 	}
 	return out, nil
+}
+
+var nonStandardServiceUpdateWithJSONNamesStreamDesc = &grpc.StreamDesc{
+	StreamName: "UpdateWithJSONNames",
 }
 
 func (c *nonStandardServiceClient) UpdateWithJSONNames(ctx context.Context, in *NonStandardWithJSONNamesUpdateRequest, opts ...grpc.CallOption) (*NonStandardMessageWithJSONNames, error) {
@@ -49,78 +57,112 @@ func (c *nonStandardServiceClient) UpdateWithJSONNames(ctx context.Context, in *
 	return out, nil
 }
 
-// NonStandardServiceServer is the server API for NonStandardService service.
-type NonStandardServiceServer interface {
+// NonStandardServiceService is the service API for NonStandardService service.
+// Fields should be assigned to their respective handler implementations only before
+// RegisterNonStandardServiceService is called.  Any unassigned fields will result in the
+// handler for that method returning an Unimplemented error.
+type NonStandardServiceService struct {
 	// Apply field mask to empty NonStandardMessage and return result.
-	Update(context.Context, *NonStandardUpdateRequest) (*NonStandardMessage, error)
+	Update func(context.Context, *NonStandardUpdateRequest) (*NonStandardMessage, error)
 	// Apply field mask to empty NonStandardMessageWithJSONNames and return result.
-	UpdateWithJSONNames(context.Context, *NonStandardWithJSONNamesUpdateRequest) (*NonStandardMessageWithJSONNames, error)
+	UpdateWithJSONNames func(context.Context, *NonStandardWithJSONNamesUpdateRequest) (*NonStandardMessageWithJSONNames, error)
 }
 
-// UnimplementedNonStandardServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedNonStandardServiceServer struct {
-}
-
-func (*UnimplementedNonStandardServiceServer) Update(context.Context, *NonStandardUpdateRequest) (*NonStandardMessage, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
-}
-func (*UnimplementedNonStandardServiceServer) UpdateWithJSONNames(context.Context, *NonStandardWithJSONNamesUpdateRequest) (*NonStandardMessageWithJSONNames, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateWithJSONNames not implemented")
-}
-
-func RegisterNonStandardServiceServer(s *grpc.Server, srv NonStandardServiceServer) {
-	s.RegisterService(&_NonStandardService_serviceDesc, srv)
-}
-
-func _NonStandardService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func (s *NonStandardServiceService) update(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NonStandardUpdateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NonStandardServiceServer).Update(ctx, in)
+		return s.Update(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     srv,
+		Server:     s,
 		FullMethod: "/grpc.gateway.runtime.internal.examplepb.NonStandardService/Update",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NonStandardServiceServer).Update(ctx, req.(*NonStandardUpdateRequest))
+		return s.Update(ctx, req.(*NonStandardUpdateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-
-func _NonStandardService_UpdateWithJSONNames_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func (s *NonStandardServiceService) updateWithJSONNames(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NonStandardWithJSONNamesUpdateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NonStandardServiceServer).UpdateWithJSONNames(ctx, in)
+		return s.UpdateWithJSONNames(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     srv,
+		Server:     s,
 		FullMethod: "/grpc.gateway.runtime.internal.examplepb.NonStandardService/UpdateWithJSONNames",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NonStandardServiceServer).UpdateWithJSONNames(ctx, req.(*NonStandardWithJSONNamesUpdateRequest))
+		return s.UpdateWithJSONNames(ctx, req.(*NonStandardWithJSONNamesUpdateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _NonStandardService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "grpc.gateway.runtime.internal.examplepb.NonStandardService",
-	HandlerType: (*NonStandardServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Update",
-			Handler:    _NonStandardService_Update_Handler,
+// RegisterNonStandardServiceService registers a service implementation with a gRPC server.
+func RegisterNonStandardServiceService(s grpc.ServiceRegistrar, srv *NonStandardServiceService) {
+	srvCopy := *srv
+	if srvCopy.Update == nil {
+		srvCopy.Update = func(context.Context, *NonStandardUpdateRequest) (*NonStandardMessage, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+		}
+	}
+	if srvCopy.UpdateWithJSONNames == nil {
+		srvCopy.UpdateWithJSONNames = func(context.Context, *NonStandardWithJSONNamesUpdateRequest) (*NonStandardMessageWithJSONNames, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method UpdateWithJSONNames not implemented")
+		}
+	}
+	sd := grpc.ServiceDesc{
+		ServiceName: "grpc.gateway.runtime.internal.examplepb.NonStandardService",
+		Methods: []grpc.MethodDesc{
+			{
+				MethodName: "Update",
+				Handler:    srvCopy.update,
+			},
+			{
+				MethodName: "UpdateWithJSONNames",
+				Handler:    srvCopy.updateWithJSONNames,
+			},
 		},
-		{
-			MethodName: "UpdateWithJSONNames",
-			Handler:    _NonStandardService_UpdateWithJSONNames_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "runtime/internal/examplepb/non_standard_names.proto",
+		Streams:  []grpc.StreamDesc{},
+		Metadata: "runtime/internal/examplepb/non_standard_names.proto",
+	}
+
+	s.RegisterService(&sd, nil)
+}
+
+// NewNonStandardServiceService creates a new NonStandardServiceService containing the
+// implemented methods of the NonStandardService service in s.  Any unimplemented
+// methods will result in the gRPC server returning an UNIMPLEMENTED status to the client.
+// This includes situations where the method handler is misspelled or has the wrong
+// signature.  For this reason, this function should be used with great care and
+// is not recommended to be used by most users.
+func NewNonStandardServiceService(s interface{}) *NonStandardServiceService {
+	ns := &NonStandardServiceService{}
+	if h, ok := s.(interface {
+		Update(context.Context, *NonStandardUpdateRequest) (*NonStandardMessage, error)
+	}); ok {
+		ns.Update = h.Update
+	}
+	if h, ok := s.(interface {
+		UpdateWithJSONNames(context.Context, *NonStandardWithJSONNamesUpdateRequest) (*NonStandardMessageWithJSONNames, error)
+	}); ok {
+		ns.UpdateWithJSONNames = h.UpdateWithJSONNames
+	}
+	return ns
+}
+
+// UnstableNonStandardServiceService is the service API for NonStandardService service.
+// New methods may be added to this interface if they are added to the service
+// definition, which is not a backward-compatible change.  For this reason,
+// use of this type is not recommended.
+type UnstableNonStandardServiceService interface {
+	// Apply field mask to empty NonStandardMessage and return result.
+	Update(context.Context, *NonStandardUpdateRequest) (*NonStandardMessage, error)
+	// Apply field mask to empty NonStandardMessageWithJSONNames and return result.
+	UpdateWithJSONNames(context.Context, *NonStandardWithJSONNamesUpdateRequest) (*NonStandardMessageWithJSONNames, error)
 }

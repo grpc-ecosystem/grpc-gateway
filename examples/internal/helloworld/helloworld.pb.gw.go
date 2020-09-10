@@ -68,7 +68,7 @@ func request_Greeter_SayHello_0(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_0(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_0(ctx context.Context, marshaler runtime.Marshaler, server GreeterService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -138,7 +138,7 @@ func request_Greeter_SayHello_1(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_1(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_1(ctx context.Context, marshaler runtime.Marshaler, server GreeterService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -208,7 +208,7 @@ func request_Greeter_SayHello_2(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_2(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_2(ctx context.Context, marshaler runtime.Marshaler, server GreeterService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -278,7 +278,7 @@ func request_Greeter_SayHello_3(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_3(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_3(ctx context.Context, marshaler runtime.Marshaler, server GreeterService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -348,7 +348,7 @@ func request_Greeter_SayHello_4(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_4(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_4(ctx context.Context, marshaler runtime.Marshaler, server GreeterService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -418,7 +418,7 @@ func request_Greeter_SayHello_5(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_5(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_5(ctx context.Context, marshaler runtime.Marshaler, server GreeterService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -488,7 +488,7 @@ func request_Greeter_SayHello_6(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_6(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_6(ctx context.Context, marshaler runtime.Marshaler, server GreeterService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -558,7 +558,7 @@ func request_Greeter_SayHello_7(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_7(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_7(ctx context.Context, marshaler runtime.Marshaler, server GreeterService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -628,7 +628,7 @@ func request_Greeter_SayHello_8(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_8(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_8(ctx context.Context, marshaler runtime.Marshaler, server GreeterService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -698,7 +698,7 @@ func request_Greeter_SayHello_9(ctx context.Context, marshaler runtime.Marshaler
 
 }
 
-func local_request_Greeter_SayHello_9(ctx context.Context, marshaler runtime.Marshaler, server GreeterServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Greeter_SayHello_9(ctx context.Context, marshaler runtime.Marshaler, server GreeterService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq HelloRequest
 	var metadata runtime.ServerMetadata
 
@@ -732,10 +732,10 @@ func local_request_Greeter_SayHello_9(ctx context.Context, marshaler runtime.Mar
 }
 
 // RegisterGreeterHandlerServer registers the http handlers for service Greeter to "mux".
-// UnaryRPC     :call GreeterServer directly.
+// UnaryRPC     :call GreeterService directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterGreeterHandlerFromEndpoint instead.
-func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, server GreeterServer) error {
+func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, server GreeterService) error {
 
 	mux.Handle("GET", pattern_Greeter_SayHello_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())

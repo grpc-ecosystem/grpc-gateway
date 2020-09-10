@@ -48,7 +48,7 @@ func request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshal
 
 }
 
-func local_request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshaler, server LoginServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_LoginService_Login_0(ctx context.Context, marshaler runtime.Marshaler, server LoginServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LoginRequest
 	var metadata runtime.ServerMetadata
 
@@ -82,7 +82,7 @@ func request_LoginService_Logout_0(ctx context.Context, marshaler runtime.Marsha
 
 }
 
-func local_request_LoginService_Logout_0(ctx context.Context, marshaler runtime.Marshaler, server LoginServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_LoginService_Logout_0(ctx context.Context, marshaler runtime.Marshaler, server LoginServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LogoutRequest
 	var metadata runtime.ServerMetadata
 
@@ -100,10 +100,10 @@ func local_request_LoginService_Logout_0(ctx context.Context, marshaler runtime.
 }
 
 // RegisterLoginServiceHandlerServer registers the http handlers for service LoginService to "mux".
-// UnaryRPC     :call LoginServiceServer directly.
+// UnaryRPC     :call LoginServiceService directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterLoginServiceHandlerFromEndpoint instead.
-func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server LoginServiceServer) error {
+func RegisterLoginServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server LoginServiceService) error {
 
 	mux.Handle("POST", pattern_LoginService_Login_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())

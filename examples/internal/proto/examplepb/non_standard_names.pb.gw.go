@@ -66,7 +66,7 @@ func request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.
 
 }
 
-func local_request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.Marshaler, server NonStandardServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.Marshaler, server NonStandardServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonStandardUpdateRequest
 	var metadata runtime.ServerMetadata
 
@@ -132,7 +132,7 @@ func request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marsh
 
 }
 
-func local_request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marshaler runtime.Marshaler, server NonStandardServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marshaler runtime.Marshaler, server NonStandardServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq NonStandardWithJSONNamesUpdateRequest
 	var metadata runtime.ServerMetadata
 
@@ -164,10 +164,10 @@ func local_request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context,
 }
 
 // RegisterNonStandardServiceHandlerServer registers the http handlers for service NonStandardService to "mux".
-// UnaryRPC     :call NonStandardServiceServer directly.
+// UnaryRPC     :call NonStandardServiceService directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterNonStandardServiceHandlerFromEndpoint instead.
-func RegisterNonStandardServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server NonStandardServiceServer) error {
+func RegisterNonStandardServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server NonStandardServiceService) error {
 
 	mux.Handle("PATCH", pattern_NonStandardService_Update_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())

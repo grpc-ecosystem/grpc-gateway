@@ -57,7 +57,7 @@ func request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshale
 
 }
 
-func local_request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ResponseBodyService_GetResponseBody_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -109,7 +109,7 @@ func request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marsh
 
 }
 
-func local_request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ResponseBodyService_ListResponseBodies_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -161,7 +161,7 @@ func request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, mars
 
 }
 
-func local_request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ResponseBodyService_ListResponseStrings_0(ctx context.Context, marshaler runtime.Marshaler, server ResponseBodyServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq ResponseBodyIn
 	var metadata runtime.ServerMetadata
 
@@ -222,10 +222,10 @@ func request_ResponseBodyService_GetResponseBodyStream_0(ctx context.Context, ma
 }
 
 // RegisterResponseBodyServiceHandlerServer registers the http handlers for service ResponseBodyService to "mux".
-// UnaryRPC     :call ResponseBodyServiceServer directly.
+// UnaryRPC     :call ResponseBodyServiceService directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterResponseBodyServiceHandlerFromEndpoint instead.
-func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ResponseBodyServiceServer) error {
+func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ResponseBodyServiceService) error {
 
 	mux.Handle("GET", pattern_ResponseBodyService_GetResponseBody_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())

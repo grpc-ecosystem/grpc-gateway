@@ -14,7 +14,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // StreamServiceClient is the client API for StreamService service.
 //
@@ -34,8 +34,13 @@ func NewStreamServiceClient(cc grpc.ClientConnInterface) StreamServiceClient {
 	return &streamServiceClient{cc}
 }
 
+var streamServiceBulkCreateStreamDesc = &grpc.StreamDesc{
+	StreamName:    "BulkCreate",
+	ClientStreams: true,
+}
+
 func (c *streamServiceClient) BulkCreate(ctx context.Context, opts ...grpc.CallOption) (StreamService_BulkCreateClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_StreamService_serviceDesc.Streams[0], "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkCreate", opts...)
+	stream, err := c.cc.NewStream(ctx, streamServiceBulkCreateStreamDesc, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkCreate", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,8 +73,13 @@ func (x *streamServiceBulkCreateClient) CloseAndRecv() (*empty.Empty, error) {
 	return m, nil
 }
 
+var streamServiceListStreamDesc = &grpc.StreamDesc{
+	StreamName:    "List",
+	ServerStreams: true,
+}
+
 func (c *streamServiceClient) List(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (StreamService_ListClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_StreamService_serviceDesc.Streams[1], "/grpc.gateway.examples.internal.proto.examplepb.StreamService/List", opts...)
+	stream, err := c.cc.NewStream(ctx, streamServiceListStreamDesc, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/List", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -100,8 +110,14 @@ func (x *streamServiceListClient) Recv() (*ABitOfEverything, error) {
 	return m, nil
 }
 
+var streamServiceBulkEchoStreamDesc = &grpc.StreamDesc{
+	StreamName:    "BulkEcho",
+	ServerStreams: true,
+	ClientStreams: true,
+}
+
 func (c *streamServiceClient) BulkEcho(ctx context.Context, opts ...grpc.CallOption) (StreamService_BulkEchoClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_StreamService_serviceDesc.Streams[2], "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkEcho", opts...)
+	stream, err := c.cc.NewStream(ctx, streamServiceBulkEchoStreamDesc, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkEcho", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -131,8 +147,13 @@ func (x *streamServiceBulkEchoClient) Recv() (*sub.StringMessage, error) {
 	return m, nil
 }
 
+var streamServiceDownloadStreamDesc = &grpc.StreamDesc{
+	StreamName:    "Download",
+	ServerStreams: true,
+}
+
 func (c *streamServiceClient) Download(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (StreamService_DownloadClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_StreamService_serviceDesc.Streams[3], "/grpc.gateway.examples.internal.proto.examplepb.StreamService/Download", opts...)
+	stream, err := c.cc.NewStream(ctx, streamServiceDownloadStreamDesc, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/Download", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -163,37 +184,36 @@ func (x *streamServiceDownloadClient) Recv() (*httpbody.HttpBody, error) {
 	return m, nil
 }
 
-// StreamServiceServer is the server API for StreamService service.
-type StreamServiceServer interface {
-	BulkCreate(StreamService_BulkCreateServer) error
-	List(*empty.Empty, StreamService_ListServer) error
-	BulkEcho(StreamService_BulkEchoServer) error
-	Download(*empty.Empty, StreamService_DownloadServer) error
+// StreamServiceService is the service API for StreamService service.
+// Fields should be assigned to their respective handler implementations only before
+// RegisterStreamServiceService is called.  Any unassigned fields will result in the
+// handler for that method returning an Unimplemented error.
+type StreamServiceService struct {
+	BulkCreate func(StreamService_BulkCreateServer) error
+	List       func(*empty.Empty, StreamService_ListServer) error
+	BulkEcho   func(StreamService_BulkEchoServer) error
+	Download   func(*empty.Empty, StreamService_DownloadServer) error
 }
 
-// UnimplementedStreamServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedStreamServiceServer struct {
+func (s *StreamServiceService) bulkCreate(_ interface{}, stream grpc.ServerStream) error {
+	return s.BulkCreate(&streamServiceBulkCreateServer{stream})
 }
-
-func (*UnimplementedStreamServiceServer) BulkCreate(StreamService_BulkCreateServer) error {
-	return status.Errorf(codes.Unimplemented, "method BulkCreate not implemented")
+func (s *StreamServiceService) list(_ interface{}, stream grpc.ServerStream) error {
+	m := new(empty.Empty)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return s.List(m, &streamServiceListServer{stream})
 }
-func (*UnimplementedStreamServiceServer) List(*empty.Empty, StreamService_ListServer) error {
-	return status.Errorf(codes.Unimplemented, "method List not implemented")
+func (s *StreamServiceService) bulkEcho(_ interface{}, stream grpc.ServerStream) error {
+	return s.BulkEcho(&streamServiceBulkEchoServer{stream})
 }
-func (*UnimplementedStreamServiceServer) BulkEcho(StreamService_BulkEchoServer) error {
-	return status.Errorf(codes.Unimplemented, "method BulkEcho not implemented")
-}
-func (*UnimplementedStreamServiceServer) Download(*empty.Empty, StreamService_DownloadServer) error {
-	return status.Errorf(codes.Unimplemented, "method Download not implemented")
-}
-
-func RegisterStreamServiceServer(s *grpc.Server, srv StreamServiceServer) {
-	s.RegisterService(&_StreamService_serviceDesc, srv)
-}
-
-func _StreamService_BulkCreate_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(StreamServiceServer).BulkCreate(&streamServiceBulkCreateServer{stream})
+func (s *StreamServiceService) download(_ interface{}, stream grpc.ServerStream) error {
+	m := new(empty.Empty)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return s.Download(m, &streamServiceDownloadServer{stream})
 }
 
 type StreamService_BulkCreateServer interface {
@@ -218,14 +238,6 @@ func (x *streamServiceBulkCreateServer) Recv() (*ABitOfEverything, error) {
 	return m, nil
 }
 
-func _StreamService_List_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(empty.Empty)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(StreamServiceServer).List(m, &streamServiceListServer{stream})
-}
-
 type StreamService_ListServer interface {
 	Send(*ABitOfEverything) error
 	grpc.ServerStream
@@ -237,10 +249,6 @@ type streamServiceListServer struct {
 
 func (x *streamServiceListServer) Send(m *ABitOfEverything) error {
 	return x.ServerStream.SendMsg(m)
-}
-
-func _StreamService_BulkEcho_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(StreamServiceServer).BulkEcho(&streamServiceBulkEchoServer{stream})
 }
 
 type StreamService_BulkEchoServer interface {
@@ -265,14 +273,6 @@ func (x *streamServiceBulkEchoServer) Recv() (*sub.StringMessage, error) {
 	return m, nil
 }
 
-func _StreamService_Download_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(empty.Empty)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(StreamServiceServer).Download(m, &streamServiceDownloadServer{stream})
-}
-
 type StreamService_DownloadServer interface {
 	Send(*httpbody.HttpBody) error
 	grpc.ServerStream
@@ -286,32 +286,99 @@ func (x *streamServiceDownloadServer) Send(m *httpbody.HttpBody) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-var _StreamService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.StreamService",
-	HandlerType: (*StreamServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "BulkCreate",
-			Handler:       _StreamService_BulkCreate_Handler,
-			ClientStreams: true,
+// RegisterStreamServiceService registers a service implementation with a gRPC server.
+func RegisterStreamServiceService(s grpc.ServiceRegistrar, srv *StreamServiceService) {
+	srvCopy := *srv
+	if srvCopy.BulkCreate == nil {
+		srvCopy.BulkCreate = func(StreamService_BulkCreateServer) error {
+			return status.Errorf(codes.Unimplemented, "method BulkCreate not implemented")
+		}
+	}
+	if srvCopy.List == nil {
+		srvCopy.List = func(*empty.Empty, StreamService_ListServer) error {
+			return status.Errorf(codes.Unimplemented, "method List not implemented")
+		}
+	}
+	if srvCopy.BulkEcho == nil {
+		srvCopy.BulkEcho = func(StreamService_BulkEchoServer) error {
+			return status.Errorf(codes.Unimplemented, "method BulkEcho not implemented")
+		}
+	}
+	if srvCopy.Download == nil {
+		srvCopy.Download = func(*empty.Empty, StreamService_DownloadServer) error {
+			return status.Errorf(codes.Unimplemented, "method Download not implemented")
+		}
+	}
+	sd := grpc.ServiceDesc{
+		ServiceName: "grpc.gateway.examples.internal.proto.examplepb.StreamService",
+		Methods:     []grpc.MethodDesc{},
+		Streams: []grpc.StreamDesc{
+			{
+				StreamName:    "BulkCreate",
+				Handler:       srvCopy.bulkCreate,
+				ClientStreams: true,
+			},
+			{
+				StreamName:    "List",
+				Handler:       srvCopy.list,
+				ServerStreams: true,
+			},
+			{
+				StreamName:    "BulkEcho",
+				Handler:       srvCopy.bulkEcho,
+				ServerStreams: true,
+				ClientStreams: true,
+			},
+			{
+				StreamName:    "Download",
+				Handler:       srvCopy.download,
+				ServerStreams: true,
+			},
 		},
-		{
-			StreamName:    "List",
-			Handler:       _StreamService_List_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "BulkEcho",
-			Handler:       _StreamService_BulkEcho_Handler,
-			ServerStreams: true,
-			ClientStreams: true,
-		},
-		{
-			StreamName:    "Download",
-			Handler:       _StreamService_Download_Handler,
-			ServerStreams: true,
-		},
-	},
-	Metadata: "examples/internal/proto/examplepb/stream.proto",
+		Metadata: "examples/internal/proto/examplepb/stream.proto",
+	}
+
+	s.RegisterService(&sd, nil)
+}
+
+// NewStreamServiceService creates a new StreamServiceService containing the
+// implemented methods of the StreamService service in s.  Any unimplemented
+// methods will result in the gRPC server returning an UNIMPLEMENTED status to the client.
+// This includes situations where the method handler is misspelled or has the wrong
+// signature.  For this reason, this function should be used with great care and
+// is not recommended to be used by most users.
+func NewStreamServiceService(s interface{}) *StreamServiceService {
+	ns := &StreamServiceService{}
+	if h, ok := s.(interface {
+		BulkCreate(StreamService_BulkCreateServer) error
+	}); ok {
+		ns.BulkCreate = h.BulkCreate
+	}
+	if h, ok := s.(interface {
+		List(*empty.Empty, StreamService_ListServer) error
+	}); ok {
+		ns.List = h.List
+	}
+	if h, ok := s.(interface {
+		BulkEcho(StreamService_BulkEchoServer) error
+	}); ok {
+		ns.BulkEcho = h.BulkEcho
+	}
+	if h, ok := s.(interface {
+		Download(*empty.Empty, StreamService_DownloadServer) error
+	}); ok {
+		ns.Download = h.Download
+	}
+	return ns
+}
+
+// UnstableStreamServiceService is the service API for StreamService service.
+// New methods may be added to this interface if they are added to the service
+// definition, which is not a backward-compatible change.  For this reason,
+// use of this type is not recommended.
+type UnstableStreamServiceService interface {
+	BulkCreate(StreamService_BulkCreateServer) error
+	List(*empty.Empty, StreamService_ListServer) error
+	BulkEcho(StreamService_BulkEchoServer) error
+	Download(*empty.Empty, StreamService_DownloadServer) error
 }

@@ -11,7 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // EchoServiceClient is the client API for EchoService service.
 //
@@ -38,6 +38,10 @@ func NewEchoServiceClient(cc grpc.ClientConnInterface) EchoServiceClient {
 	return &echoServiceClient{cc}
 }
 
+var echoServiceEchoStreamDesc = &grpc.StreamDesc{
+	StreamName: "Echo",
+}
+
 func (c *echoServiceClient) Echo(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error) {
 	out := new(SimpleMessage)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", in, out, opts...)
@@ -45,6 +49,10 @@ func (c *echoServiceClient) Echo(ctx context.Context, in *SimpleMessage, opts ..
 		return nil, err
 	}
 	return out, nil
+}
+
+var echoServiceEchoBodyStreamDesc = &grpc.StreamDesc{
+	StreamName: "EchoBody",
 }
 
 func (c *echoServiceClient) EchoBody(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error) {
@@ -56,6 +64,10 @@ func (c *echoServiceClient) EchoBody(ctx context.Context, in *SimpleMessage, opt
 	return out, nil
 }
 
+var echoServiceEchoDeleteStreamDesc = &grpc.StreamDesc{
+	StreamName: "EchoDelete",
+}
+
 func (c *echoServiceClient) EchoDelete(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error) {
 	out := new(SimpleMessage)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoDelete", in, out, opts...)
@@ -63,6 +75,10 @@ func (c *echoServiceClient) EchoDelete(ctx context.Context, in *SimpleMessage, o
 		return nil, err
 	}
 	return out, nil
+}
+
+var echoServiceEchoPatchStreamDesc = &grpc.StreamDesc{
+	StreamName: "EchoPatch",
 }
 
 func (c *echoServiceClient) EchoPatch(ctx context.Context, in *DynamicMessageUpdate, opts ...grpc.CallOption) (*DynamicMessageUpdate, error) {
@@ -74,8 +90,179 @@ func (c *echoServiceClient) EchoPatch(ctx context.Context, in *DynamicMessageUpd
 	return out, nil
 }
 
-// EchoServiceServer is the server API for EchoService service.
-type EchoServiceServer interface {
+// EchoServiceService is the service API for EchoService service.
+// Fields should be assigned to their respective handler implementations only before
+// RegisterEchoServiceService is called.  Any unassigned fields will result in the
+// handler for that method returning an Unimplemented error.
+type EchoServiceService struct {
+	// Echo method receives a simple message and returns it.
+	//
+	// The message posted as the id parameter will also be
+	// returned.
+	Echo func(context.Context, *SimpleMessage) (*SimpleMessage, error)
+	// EchoBody method receives a simple message and returns it.
+	EchoBody func(context.Context, *SimpleMessage) (*SimpleMessage, error)
+	// EchoDelete method receives a simple message and returns it.
+	EchoDelete func(context.Context, *SimpleMessage) (*SimpleMessage, error)
+	// EchoPatch method receives a NonStandardUpdateRequest and returns it.
+	EchoPatch func(context.Context, *DynamicMessageUpdate) (*DynamicMessageUpdate, error)
+}
+
+func (s *EchoServiceService) echo(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SimpleMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.Echo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.Echo(ctx, req.(*SimpleMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+func (s *EchoServiceService) echoBody(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SimpleMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.EchoBody(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoBody",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.EchoBody(ctx, req.(*SimpleMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+func (s *EchoServiceService) echoDelete(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SimpleMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.EchoDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.EchoDelete(ctx, req.(*SimpleMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+func (s *EchoServiceService) echoPatch(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DynamicMessageUpdate)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.EchoPatch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoPatch",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.EchoPatch(ctx, req.(*DynamicMessageUpdate))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// RegisterEchoServiceService registers a service implementation with a gRPC server.
+func RegisterEchoServiceService(s grpc.ServiceRegistrar, srv *EchoServiceService) {
+	srvCopy := *srv
+	if srvCopy.Echo == nil {
+		srvCopy.Echo = func(context.Context, *SimpleMessage) (*SimpleMessage, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
+		}
+	}
+	if srvCopy.EchoBody == nil {
+		srvCopy.EchoBody = func(context.Context, *SimpleMessage) (*SimpleMessage, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method EchoBody not implemented")
+		}
+	}
+	if srvCopy.EchoDelete == nil {
+		srvCopy.EchoDelete = func(context.Context, *SimpleMessage) (*SimpleMessage, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method EchoDelete not implemented")
+		}
+	}
+	if srvCopy.EchoPatch == nil {
+		srvCopy.EchoPatch = func(context.Context, *DynamicMessageUpdate) (*DynamicMessageUpdate, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method EchoPatch not implemented")
+		}
+	}
+	sd := grpc.ServiceDesc{
+		ServiceName: "grpc.gateway.examples.internal.proto.examplepb.EchoService",
+		Methods: []grpc.MethodDesc{
+			{
+				MethodName: "Echo",
+				Handler:    srvCopy.echo,
+			},
+			{
+				MethodName: "EchoBody",
+				Handler:    srvCopy.echoBody,
+			},
+			{
+				MethodName: "EchoDelete",
+				Handler:    srvCopy.echoDelete,
+			},
+			{
+				MethodName: "EchoPatch",
+				Handler:    srvCopy.echoPatch,
+			},
+		},
+		Streams:  []grpc.StreamDesc{},
+		Metadata: "examples/internal/proto/examplepb/echo_service.proto",
+	}
+
+	s.RegisterService(&sd, nil)
+}
+
+// NewEchoServiceService creates a new EchoServiceService containing the
+// implemented methods of the EchoService service in s.  Any unimplemented
+// methods will result in the gRPC server returning an UNIMPLEMENTED status to the client.
+// This includes situations where the method handler is misspelled or has the wrong
+// signature.  For this reason, this function should be used with great care and
+// is not recommended to be used by most users.
+func NewEchoServiceService(s interface{}) *EchoServiceService {
+	ns := &EchoServiceService{}
+	if h, ok := s.(interface {
+		Echo(context.Context, *SimpleMessage) (*SimpleMessage, error)
+	}); ok {
+		ns.Echo = h.Echo
+	}
+	if h, ok := s.(interface {
+		EchoBody(context.Context, *SimpleMessage) (*SimpleMessage, error)
+	}); ok {
+		ns.EchoBody = h.EchoBody
+	}
+	if h, ok := s.(interface {
+		EchoDelete(context.Context, *SimpleMessage) (*SimpleMessage, error)
+	}); ok {
+		ns.EchoDelete = h.EchoDelete
+	}
+	if h, ok := s.(interface {
+		EchoPatch(context.Context, *DynamicMessageUpdate) (*DynamicMessageUpdate, error)
+	}); ok {
+		ns.EchoPatch = h.EchoPatch
+	}
+	return ns
+}
+
+// UnstableEchoServiceService is the service API for EchoService service.
+// New methods may be added to this interface if they are added to the service
+// definition, which is not a backward-compatible change.  For this reason,
+// use of this type is not recommended.
+type UnstableEchoServiceService interface {
 	// Echo method receives a simple message and returns it.
 	//
 	// The message posted as the id parameter will also be
@@ -87,122 +274,4 @@ type EchoServiceServer interface {
 	EchoDelete(context.Context, *SimpleMessage) (*SimpleMessage, error)
 	// EchoPatch method receives a NonStandardUpdateRequest and returns it.
 	EchoPatch(context.Context, *DynamicMessageUpdate) (*DynamicMessageUpdate, error)
-}
-
-// UnimplementedEchoServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedEchoServiceServer struct {
-}
-
-func (*UnimplementedEchoServiceServer) Echo(context.Context, *SimpleMessage) (*SimpleMessage, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
-}
-func (*UnimplementedEchoServiceServer) EchoBody(context.Context, *SimpleMessage) (*SimpleMessage, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EchoBody not implemented")
-}
-func (*UnimplementedEchoServiceServer) EchoDelete(context.Context, *SimpleMessage) (*SimpleMessage, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EchoDelete not implemented")
-}
-func (*UnimplementedEchoServiceServer) EchoPatch(context.Context, *DynamicMessageUpdate) (*DynamicMessageUpdate, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EchoPatch not implemented")
-}
-
-func RegisterEchoServiceServer(s *grpc.Server, srv EchoServiceServer) {
-	s.RegisterService(&_EchoService_serviceDesc, srv)
-}
-
-func _EchoService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SimpleMessage)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(EchoServiceServer).Echo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EchoServiceServer).Echo(ctx, req.(*SimpleMessage))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _EchoService_EchoBody_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SimpleMessage)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(EchoServiceServer).EchoBody(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoBody",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EchoServiceServer).EchoBody(ctx, req.(*SimpleMessage))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _EchoService_EchoDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SimpleMessage)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(EchoServiceServer).EchoDelete(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoDelete",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EchoServiceServer).EchoDelete(ctx, req.(*SimpleMessage))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _EchoService_EchoPatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DynamicMessageUpdate)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(EchoServiceServer).EchoPatch(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoPatch",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EchoServiceServer).EchoPatch(ctx, req.(*DynamicMessageUpdate))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-var _EchoService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.EchoService",
-	HandlerType: (*EchoServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Echo",
-			Handler:    _EchoService_Echo_Handler,
-		},
-		{
-			MethodName: "EchoBody",
-			Handler:    _EchoService_EchoBody_Handler,
-		},
-		{
-			MethodName: "EchoDelete",
-			Handler:    _EchoService_EchoDelete_Handler,
-		},
-		{
-			MethodName: "EchoPatch",
-			Handler:    _EchoService_EchoPatch_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "examples/internal/proto/examplepb/echo_service.proto",
 }

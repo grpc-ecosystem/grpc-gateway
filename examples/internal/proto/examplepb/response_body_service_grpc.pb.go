@@ -11,7 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // ResponseBodyServiceClient is the client API for ResponseBodyService service.
 //
@@ -31,6 +31,10 @@ func NewResponseBodyServiceClient(cc grpc.ClientConnInterface) ResponseBodyServi
 	return &responseBodyServiceClient{cc}
 }
 
+var responseBodyServiceGetResponseBodyStreamDesc = &grpc.StreamDesc{
+	StreamName: "GetResponseBody",
+}
+
 func (c *responseBodyServiceClient) GetResponseBody(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (*ResponseBodyOut, error) {
 	out := new(ResponseBodyOut)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBody", in, out, opts...)
@@ -38,6 +42,10 @@ func (c *responseBodyServiceClient) GetResponseBody(ctx context.Context, in *Res
 		return nil, err
 	}
 	return out, nil
+}
+
+var responseBodyServiceListResponseBodiesStreamDesc = &grpc.StreamDesc{
+	StreamName: "ListResponseBodies",
 }
 
 func (c *responseBodyServiceClient) ListResponseBodies(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (*RepeatedResponseBodyOut, error) {
@@ -49,6 +57,10 @@ func (c *responseBodyServiceClient) ListResponseBodies(ctx context.Context, in *
 	return out, nil
 }
 
+var responseBodyServiceListResponseStringsStreamDesc = &grpc.StreamDesc{
+	StreamName: "ListResponseStrings",
+}
+
 func (c *responseBodyServiceClient) ListResponseStrings(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (*RepeatedResponseStrings, error) {
 	out := new(RepeatedResponseStrings)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/ListResponseStrings", in, out, opts...)
@@ -58,8 +70,13 @@ func (c *responseBodyServiceClient) ListResponseStrings(ctx context.Context, in 
 	return out, nil
 }
 
+var responseBodyServiceGetResponseBodyStreamStreamDesc = &grpc.StreamDesc{
+	StreamName:    "GetResponseBodyStream",
+	ServerStreams: true,
+}
+
 func (c *responseBodyServiceClient) GetResponseBodyStream(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (ResponseBodyService_GetResponseBodyStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ResponseBodyService_serviceDesc.Streams[0], "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBodyStream", opts...)
+	stream, err := c.cc.NewStream(ctx, responseBodyServiceGetResponseBodyStreamStreamDesc, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBodyStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,95 +107,74 @@ func (x *responseBodyServiceGetResponseBodyStreamClient) Recv() (*ResponseBodyOu
 	return m, nil
 }
 
-// ResponseBodyServiceServer is the server API for ResponseBodyService service.
-type ResponseBodyServiceServer interface {
-	GetResponseBody(context.Context, *ResponseBodyIn) (*ResponseBodyOut, error)
-	ListResponseBodies(context.Context, *ResponseBodyIn) (*RepeatedResponseBodyOut, error)
-	ListResponseStrings(context.Context, *ResponseBodyIn) (*RepeatedResponseStrings, error)
-	GetResponseBodyStream(*ResponseBodyIn, ResponseBodyService_GetResponseBodyStreamServer) error
+// ResponseBodyServiceService is the service API for ResponseBodyService service.
+// Fields should be assigned to their respective handler implementations only before
+// RegisterResponseBodyServiceService is called.  Any unassigned fields will result in the
+// handler for that method returning an Unimplemented error.
+type ResponseBodyServiceService struct {
+	GetResponseBody       func(context.Context, *ResponseBodyIn) (*ResponseBodyOut, error)
+	ListResponseBodies    func(context.Context, *ResponseBodyIn) (*RepeatedResponseBodyOut, error)
+	ListResponseStrings   func(context.Context, *ResponseBodyIn) (*RepeatedResponseStrings, error)
+	GetResponseBodyStream func(*ResponseBodyIn, ResponseBodyService_GetResponseBodyStreamServer) error
 }
 
-// UnimplementedResponseBodyServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedResponseBodyServiceServer struct {
-}
-
-func (*UnimplementedResponseBodyServiceServer) GetResponseBody(context.Context, *ResponseBodyIn) (*ResponseBodyOut, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetResponseBody not implemented")
-}
-func (*UnimplementedResponseBodyServiceServer) ListResponseBodies(context.Context, *ResponseBodyIn) (*RepeatedResponseBodyOut, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListResponseBodies not implemented")
-}
-func (*UnimplementedResponseBodyServiceServer) ListResponseStrings(context.Context, *ResponseBodyIn) (*RepeatedResponseStrings, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListResponseStrings not implemented")
-}
-func (*UnimplementedResponseBodyServiceServer) GetResponseBodyStream(*ResponseBodyIn, ResponseBodyService_GetResponseBodyStreamServer) error {
-	return status.Errorf(codes.Unimplemented, "method GetResponseBodyStream not implemented")
-}
-
-func RegisterResponseBodyServiceServer(s *grpc.Server, srv ResponseBodyServiceServer) {
-	s.RegisterService(&_ResponseBodyService_serviceDesc, srv)
-}
-
-func _ResponseBodyService_GetResponseBody_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func (s *ResponseBodyServiceService) getResponseBody(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ResponseBodyIn)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ResponseBodyServiceServer).GetResponseBody(ctx, in)
+		return s.GetResponseBody(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     srv,
+		Server:     s,
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBody",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResponseBodyServiceServer).GetResponseBody(ctx, req.(*ResponseBodyIn))
+		return s.GetResponseBody(ctx, req.(*ResponseBodyIn))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-
-func _ResponseBodyService_ListResponseBodies_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func (s *ResponseBodyServiceService) listResponseBodies(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ResponseBodyIn)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ResponseBodyServiceServer).ListResponseBodies(ctx, in)
+		return s.ListResponseBodies(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     srv,
+		Server:     s,
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/ListResponseBodies",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResponseBodyServiceServer).ListResponseBodies(ctx, req.(*ResponseBodyIn))
+		return s.ListResponseBodies(ctx, req.(*ResponseBodyIn))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-
-func _ResponseBodyService_ListResponseStrings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func (s *ResponseBodyServiceService) listResponseStrings(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ResponseBodyIn)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ResponseBodyServiceServer).ListResponseStrings(ctx, in)
+		return s.ListResponseStrings(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     srv,
+		Server:     s,
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/ListResponseStrings",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResponseBodyServiceServer).ListResponseStrings(ctx, req.(*ResponseBodyIn))
+		return s.ListResponseStrings(ctx, req.(*ResponseBodyIn))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-
-func _ResponseBodyService_GetResponseBodyStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+func (s *ResponseBodyServiceService) getResponseBodyStream(_ interface{}, stream grpc.ServerStream) error {
 	m := new(ResponseBodyIn)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ResponseBodyServiceServer).GetResponseBodyStream(m, &responseBodyServiceGetResponseBodyStreamServer{stream})
+	return s.GetResponseBodyStream(m, &responseBodyServiceGetResponseBodyStreamServer{stream})
 }
 
 type ResponseBodyService_GetResponseBodyStreamServer interface {
@@ -194,29 +190,96 @@ func (x *responseBodyServiceGetResponseBodyStreamServer) Send(m *ResponseBodyOut
 	return x.ServerStream.SendMsg(m)
 }
 
-var _ResponseBodyService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService",
-	HandlerType: (*ResponseBodyServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "GetResponseBody",
-			Handler:    _ResponseBodyService_GetResponseBody_Handler,
+// RegisterResponseBodyServiceService registers a service implementation with a gRPC server.
+func RegisterResponseBodyServiceService(s grpc.ServiceRegistrar, srv *ResponseBodyServiceService) {
+	srvCopy := *srv
+	if srvCopy.GetResponseBody == nil {
+		srvCopy.GetResponseBody = func(context.Context, *ResponseBodyIn) (*ResponseBodyOut, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method GetResponseBody not implemented")
+		}
+	}
+	if srvCopy.ListResponseBodies == nil {
+		srvCopy.ListResponseBodies = func(context.Context, *ResponseBodyIn) (*RepeatedResponseBodyOut, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method ListResponseBodies not implemented")
+		}
+	}
+	if srvCopy.ListResponseStrings == nil {
+		srvCopy.ListResponseStrings = func(context.Context, *ResponseBodyIn) (*RepeatedResponseStrings, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method ListResponseStrings not implemented")
+		}
+	}
+	if srvCopy.GetResponseBodyStream == nil {
+		srvCopy.GetResponseBodyStream = func(*ResponseBodyIn, ResponseBodyService_GetResponseBodyStreamServer) error {
+			return status.Errorf(codes.Unimplemented, "method GetResponseBodyStream not implemented")
+		}
+	}
+	sd := grpc.ServiceDesc{
+		ServiceName: "grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService",
+		Methods: []grpc.MethodDesc{
+			{
+				MethodName: "GetResponseBody",
+				Handler:    srvCopy.getResponseBody,
+			},
+			{
+				MethodName: "ListResponseBodies",
+				Handler:    srvCopy.listResponseBodies,
+			},
+			{
+				MethodName: "ListResponseStrings",
+				Handler:    srvCopy.listResponseStrings,
+			},
 		},
-		{
-			MethodName: "ListResponseBodies",
-			Handler:    _ResponseBodyService_ListResponseBodies_Handler,
+		Streams: []grpc.StreamDesc{
+			{
+				StreamName:    "GetResponseBodyStream",
+				Handler:       srvCopy.getResponseBodyStream,
+				ServerStreams: true,
+			},
 		},
-		{
-			MethodName: "ListResponseStrings",
-			Handler:    _ResponseBodyService_ListResponseStrings_Handler,
-		},
-	},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "GetResponseBodyStream",
-			Handler:       _ResponseBodyService_GetResponseBodyStream_Handler,
-			ServerStreams: true,
-		},
-	},
-	Metadata: "examples/internal/proto/examplepb/response_body_service.proto",
+		Metadata: "examples/internal/proto/examplepb/response_body_service.proto",
+	}
+
+	s.RegisterService(&sd, nil)
+}
+
+// NewResponseBodyServiceService creates a new ResponseBodyServiceService containing the
+// implemented methods of the ResponseBodyService service in s.  Any unimplemented
+// methods will result in the gRPC server returning an UNIMPLEMENTED status to the client.
+// This includes situations where the method handler is misspelled or has the wrong
+// signature.  For this reason, this function should be used with great care and
+// is not recommended to be used by most users.
+func NewResponseBodyServiceService(s interface{}) *ResponseBodyServiceService {
+	ns := &ResponseBodyServiceService{}
+	if h, ok := s.(interface {
+		GetResponseBody(context.Context, *ResponseBodyIn) (*ResponseBodyOut, error)
+	}); ok {
+		ns.GetResponseBody = h.GetResponseBody
+	}
+	if h, ok := s.(interface {
+		ListResponseBodies(context.Context, *ResponseBodyIn) (*RepeatedResponseBodyOut, error)
+	}); ok {
+		ns.ListResponseBodies = h.ListResponseBodies
+	}
+	if h, ok := s.(interface {
+		ListResponseStrings(context.Context, *ResponseBodyIn) (*RepeatedResponseStrings, error)
+	}); ok {
+		ns.ListResponseStrings = h.ListResponseStrings
+	}
+	if h, ok := s.(interface {
+		GetResponseBodyStream(*ResponseBodyIn, ResponseBodyService_GetResponseBodyStreamServer) error
+	}); ok {
+		ns.GetResponseBodyStream = h.GetResponseBodyStream
+	}
+	return ns
+}
+
+// UnstableResponseBodyServiceService is the service API for ResponseBodyService service.
+// New methods may be added to this interface if they are added to the service
+// definition, which is not a backward-compatible change.  For this reason,
+// use of this type is not recommended.
+type UnstableResponseBodyServiceService interface {
+	GetResponseBody(context.Context, *ResponseBodyIn) (*ResponseBodyOut, error)
+	ListResponseBodies(context.Context, *ResponseBodyIn) (*RepeatedResponseBodyOut, error)
+	ListResponseStrings(context.Context, *ResponseBodyIn) (*RepeatedResponseStrings, error)
+	GetResponseBodyStream(*ResponseBodyIn, ResponseBodyService_GetResponseBodyStreamServer) error
 }

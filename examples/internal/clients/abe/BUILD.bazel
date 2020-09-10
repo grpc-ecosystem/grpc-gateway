@@ -31,7 +31,7 @@ go_library(
         "//examples/internal/proto/examplepb:go_default_library",
         "//examples/internal/proto/pathenum:go_default_library",
         "//runtime:go_default_library",
-        "@com_github_antihax_optional//:go_default_library",
-        "@org_golang_x_oauth2//:go_default_library",
+        "//vendor/github.com/antihax/optional:go_default_library",
+        "//vendor/golang.org/x/oauth2:go_default_library",
     ],
 )

@@ -69,7 +69,7 @@ func request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UnannotatedEchoService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -149,7 +149,7 @@ func request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UnannotatedEchoService_Echo_1(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -254,7 +254,7 @@ func request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -374,7 +374,7 @@ func request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -469,7 +469,7 @@ func request_UnannotatedEchoService_Echo_4(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_UnannotatedEchoService_Echo_4(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UnannotatedEchoService_Echo_4(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -519,7 +519,7 @@ func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler ru
 
 }
 
-func local_request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -556,7 +556,7 @@ func request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler 
 
 }
 
-func local_request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, marshaler runtime.Marshaler, server extExamplepb.UnannotatedEchoServiceService, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq extExamplepb.UnannotatedSimpleMessage
 	var metadata runtime.ServerMetadata
 
@@ -573,10 +573,10 @@ func local_request_UnannotatedEchoService_EchoDelete_0(ctx context.Context, mars
 }
 
 // RegisterUnannotatedEchoServiceHandlerServer registers the http handlers for service UnannotatedEchoService to "mux".
-// UnaryRPC     :call UnannotatedEchoServiceServer directly.
+// UnaryRPC     :call UnannotatedEchoServiceService directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterUnannotatedEchoServiceHandlerFromEndpoint instead.
-func RegisterUnannotatedEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server extExamplepb.UnannotatedEchoServiceServer) error {
+func RegisterUnannotatedEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server extExamplepb.UnannotatedEchoServiceService) error {
 
 	mux.Handle("POST", pattern_UnannotatedEchoService_Echo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
