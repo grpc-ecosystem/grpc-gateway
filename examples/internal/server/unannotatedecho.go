@@ -12,19 +12,21 @@ import (
 // Implements of UnannotatedEchoServiceServer
 
 type unannotatedEchoServer struct {
-	examples.UnimplementedUnannotatedEchoServiceServer
 }
 
-func newUnannotatedEchoServer() examples.UnannotatedEchoServiceServer {
-	return new(unannotatedEchoServer)
+func newUnannotatedEchoServer() *examples.UnannotatedEchoServiceService {
+	var service unannotatedEchoServer
+	// to ensure everything is implemented, unstable is a unhappy name :-(
+	var _ examples.UnstableUnannotatedEchoServiceService = service
+	return examples.NewUnannotatedEchoServiceService(service)
 }
 
-func (s *unannotatedEchoServer) Echo(ctx context.Context, msg *examples.UnannotatedSimpleMessage) (*examples.UnannotatedSimpleMessage, error) {
+func (s unannotatedEchoServer) Echo(ctx context.Context, msg *examples.UnannotatedSimpleMessage) (*examples.UnannotatedSimpleMessage, error) {
 	glog.Info(msg)
 	return msg, nil
 }
 
-func (s *unannotatedEchoServer) EchoBody(ctx context.Context, msg *examples.UnannotatedSimpleMessage) (*examples.UnannotatedSimpleMessage, error) {
+func (s unannotatedEchoServer) EchoBody(ctx context.Context, msg *examples.UnannotatedSimpleMessage) (*examples.UnannotatedSimpleMessage, error) {
 	glog.Info(msg)
 	grpc.SendHeader(ctx, metadata.New(map[string]string{
 		"foo": "foo1",
@@ -37,7 +39,7 @@ func (s *unannotatedEchoServer) EchoBody(ctx context.Context, msg *examples.Unan
 	return msg, nil
 }
 
-func (s *unannotatedEchoServer) EchoDelete(ctx context.Context, msg *examples.UnannotatedSimpleMessage) (*examples.UnannotatedSimpleMessage, error) {
+func (s unannotatedEchoServer) EchoDelete(ctx context.Context, msg *examples.UnannotatedSimpleMessage) (*examples.UnannotatedSimpleMessage, error) {
 	glog.Info(msg)
 	return msg, nil
 }

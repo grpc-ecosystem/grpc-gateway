@@ -7,12 +7,13 @@ import (
 	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 )
 
-type flowCombinationServer struct {
-	examples.UnimplementedFlowCombinationServer
-}
+type flowCombinationServer struct{}
 
-func newFlowCombinationServer() examples.FlowCombinationServer {
-	return &flowCombinationServer{}
+func newFlowCombinationServer() *examples.FlowCombinationService {
+	var service flowCombinationServer
+	// to ensure everything is implemented, unstable is a unhappy name :-(
+	var _ examples.UnstableFlowCombinationService = service
+	return examples.NewFlowCombinationService(service)
 }
 
 func (s flowCombinationServer) RpcEmptyRpc(ctx context.Context, req *examples.EmptyProto) (*examples.EmptyProto, error) {

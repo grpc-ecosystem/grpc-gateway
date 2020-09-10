@@ -28,24 +28,36 @@ import (
 var uuidgen = fastuuid.MustNewGenerator()
 
 type _ABitOfEverythingServer struct {
-	examples.UnimplementedABitOfEverythingServiceServer
-	examples.UnimplementedStreamServiceServer
+	examples.UnstableABitOfEverythingServiceService
+	examples.UnstableStreamServiceService
 	v map[string]*examples.ABitOfEverything
 	m sync.Mutex
 }
 
 type ABitOfEverythingServer interface {
-	examples.ABitOfEverythingServiceServer
-	examples.StreamServiceServer
+	examples.UnstableABitOfEverythingServiceService
+	examples.UnstableStreamServiceService
 }
 
-func newABitOfEverythingServer() ABitOfEverythingServer {
-	return &_ABitOfEverythingServer{
-		v: make(map[string]*examples.ABitOfEverything),
-	}
+// Register your domainServices here
+func newABitOfEverythingServer() *examples.ABitOfEverythingServiceService {
+	var service _ABitOfEverythingServer
+	service.v = make(map[string]*examples.ABitOfEverything)
+	// to ensure everything is implemented, unstable is a unhappy name :-(
+	var _ examples.UnstableABitOfEverythingServiceService = service
+	return examples.NewABitOfEverythingServiceService(service)
 }
 
-func (s *_ABitOfEverythingServer) Create(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+// Register your domainServices here
+func newStreamServiceServer() *examples.StreamServiceService {
+	var service _ABitOfEverythingServer
+	service.v = make(map[string]*examples.ABitOfEverything)
+	// to ensure everything is implemented, unstable is a unhappy name :-(
+	var _ examples.UnstableStreamServiceService = service
+	return examples.NewStreamServiceService(service)
+}
+
+func (s _ABitOfEverythingServer) Create(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -63,15 +75,15 @@ func (s *_ABitOfEverythingServer) Create(ctx context.Context, msg *examples.ABit
 	return s.v[uuid], nil
 }
 
-func (s *_ABitOfEverythingServer) CreateBody(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+func (s _ABitOfEverythingServer) CreateBody(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	return s.Create(ctx, msg)
 }
 
-func (s *_ABitOfEverythingServer) CreateBook(ctx context.Context, req *examples.CreateBookRequest) (*examples.Book, error) {
+func (s _ABitOfEverythingServer) CreateBook(ctx context.Context, req *examples.CreateBookRequest) (*examples.Book, error) {
 	return &examples.Book{}, nil
 }
 
-func (s *_ABitOfEverythingServer) BulkCreate(stream examples.StreamService_BulkCreateServer) error {
+func (s _ABitOfEverythingServer) BulkCreate(stream examples.StreamService_BulkCreateServer) error {
 	ctx := stream.Context()
 
 	if header, ok := metadata.FromIncomingContext(ctx); ok {
@@ -110,7 +122,7 @@ func (s *_ABitOfEverythingServer) BulkCreate(stream examples.StreamService_BulkC
 	return stream.SendAndClose(new(emptypb.Empty))
 }
 
-func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *sub2.IdMessage) (*examples.ABitOfEverything, error) {
+func (s _ABitOfEverythingServer) Lookup(ctx context.Context, msg *sub2.IdMessage) (*examples.ABitOfEverything, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 	glog.Info(msg)
@@ -133,7 +145,7 @@ func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *sub2.IdMessag
 	return nil, status.Errorf(codes.NotFound, "not found")
 }
 
-func (s *_ABitOfEverythingServer) List(_ *emptypb.Empty, stream examples.StreamService_ListServer) error {
+func (s _ABitOfEverythingServer) List(_ *emptypb.Empty, stream examples.StreamService_ListServer) error {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -163,7 +175,7 @@ func (s *_ABitOfEverythingServer) List(_ *emptypb.Empty, stream examples.StreamS
 	return nil
 }
 
-func (s *_ABitOfEverythingServer) Download(_ *emptypb.Empty, stream examples.StreamService_DownloadServer) error {
+func (s _ABitOfEverythingServer) Download(_ *emptypb.Empty, stream examples.StreamService_DownloadServer) error {
 	msgs := []*httpbody.HttpBody{{
 		ContentType: "text/html",
 		Data:        []byte("Hello 1"),
@@ -183,7 +195,7 @@ func (s *_ABitOfEverythingServer) Download(_ *emptypb.Empty, stream examples.Str
 	return nil
 }
 
-func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABitOfEverything) (*emptypb.Empty, error) {
+func (s _ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABitOfEverything) (*emptypb.Empty, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -196,7 +208,7 @@ func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABit
 	return new(emptypb.Empty), nil
 }
 
-func (s *_ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.UpdateV2Request) (*emptypb.Empty, error) {
+func (s _ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.UpdateV2Request) (*emptypb.Empty, error) {
 	glog.Info(msg)
 	// If there is no update mask do a regular update
 	if msg.UpdateMask == nil || len(msg.UpdateMask.GetPaths()) == 0 {
@@ -213,7 +225,7 @@ func (s *_ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.Up
 	return new(emptypb.Empty), nil
 }
 
-func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessage) (*emptypb.Empty, error) {
+func (s _ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessage) (*emptypb.Empty, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -226,7 +238,7 @@ func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessag
 	return new(emptypb.Empty), nil
 }
 
-func (s *_ABitOfEverythingServer) GetQuery(ctx context.Context, msg *examples.ABitOfEverything) (*emptypb.Empty, error) {
+func (s _ABitOfEverythingServer) GetQuery(ctx context.Context, msg *examples.ABitOfEverything) (*emptypb.Empty, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -239,7 +251,7 @@ func (s *_ABitOfEverythingServer) GetQuery(ctx context.Context, msg *examples.AB
 	return new(emptypb.Empty), nil
 }
 
-func (s *_ABitOfEverythingServer) GetRepeatedQuery(ctx context.Context, msg *examples.ABitOfEverythingRepeated) (*examples.ABitOfEverythingRepeated, error) {
+func (s _ABitOfEverythingServer) GetRepeatedQuery(ctx context.Context, msg *examples.ABitOfEverythingRepeated) (*examples.ABitOfEverythingRepeated, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -247,7 +259,7 @@ func (s *_ABitOfEverythingServer) GetRepeatedQuery(ctx context.Context, msg *exa
 	return msg, nil
 }
 
-func (s *_ABitOfEverythingServer) Echo(ctx context.Context, msg *sub.StringMessage) (*sub.StringMessage, error) {
+func (s _ABitOfEverythingServer) Echo(ctx context.Context, msg *sub.StringMessage) (*sub.StringMessage, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -255,7 +267,7 @@ func (s *_ABitOfEverythingServer) Echo(ctx context.Context, msg *sub.StringMessa
 	return msg, nil
 }
 
-func (s *_ABitOfEverythingServer) BulkEcho(stream examples.StreamService_BulkEchoServer) error {
+func (s _ABitOfEverythingServer) BulkEcho(stream examples.StreamService_BulkEchoServer) error {
 	var msgs []*sub.StringMessage
 	for {
 		msg, err := stream.Recv()
@@ -290,7 +302,7 @@ func (s *_ABitOfEverythingServer) BulkEcho(stream examples.StreamService_BulkEch
 	return nil
 }
 
-func (s *_ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+func (s _ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -298,16 +310,16 @@ func (s *_ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *example
 	return msg, nil
 }
 
-func (s *_ABitOfEverythingServer) NoBindings(ctx context.Context, msg *durationpb.Duration) (*emptypb.Empty, error) {
+func (s _ABitOfEverythingServer) NoBindings(ctx context.Context, msg *durationpb.Duration) (*emptypb.Empty, error) {
 	return nil, nil
 }
 
-func (s *_ABitOfEverythingServer) Timeout(ctx context.Context, msg *emptypb.Empty) (*emptypb.Empty, error) {
+func (s _ABitOfEverythingServer) Timeout(ctx context.Context, msg *emptypb.Empty) (*emptypb.Empty, error) {
 	<-ctx.Done()
 	return nil, ctx.Err()
 }
 
-func (s *_ABitOfEverythingServer) ErrorWithDetails(ctx context.Context, msg *emptypb.Empty) (*emptypb.Empty, error) {
+func (s _ABitOfEverythingServer) ErrorWithDetails(ctx context.Context, msg *emptypb.Empty) (*emptypb.Empty, error) {
 	stat, err := status.New(codes.Unknown, "with details").
 		WithDetails(&errdetails.DebugInfo{
 			StackEntries: []string{"foo:1"},
@@ -319,26 +331,26 @@ func (s *_ABitOfEverythingServer) ErrorWithDetails(ctx context.Context, msg *emp
 	return nil, stat.Err()
 }
 
-func (s *_ABitOfEverythingServer) GetMessageWithBody(ctx context.Context, msg *examples.MessageWithBody) (*emptypb.Empty, error) {
+func (s _ABitOfEverythingServer) GetMessageWithBody(ctx context.Context, msg *examples.MessageWithBody) (*emptypb.Empty, error) {
 	return &emptypb.Empty{}, nil
 }
 
-func (s *_ABitOfEverythingServer) PostWithEmptyBody(ctx context.Context, msg *examples.Body) (*emptypb.Empty, error) {
+func (s _ABitOfEverythingServer) PostWithEmptyBody(ctx context.Context, msg *examples.Body) (*emptypb.Empty, error) {
 	return &emptypb.Empty{}, nil
 }
 
-func (s *_ABitOfEverythingServer) CheckGetQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+func (s _ABitOfEverythingServer) CheckGetQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	return msg, nil
 }
 
-func (s *_ABitOfEverythingServer) CheckNestedEnumGetQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+func (s _ABitOfEverythingServer) CheckNestedEnumGetQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	return msg, nil
 }
 
-func (s *_ABitOfEverythingServer) CheckPostQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+func (s _ABitOfEverythingServer) CheckPostQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	return msg, nil
 }
 
-func (s *_ABitOfEverythingServer) OverwriteResponseContentType(ctx context.Context, msg *emptypb.Empty) (*wrapperspb.StringValue, error) {
+func (s _ABitOfEverythingServer) OverwriteResponseContentType(ctx context.Context, msg *emptypb.Empty) (*wrapperspb.StringValue, error) {
 	return &wrapperspb.StringValue{}, nil
 }

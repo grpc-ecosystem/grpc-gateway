@@ -10,14 +10,16 @@ import (
 // Implements NonStandardServiceServer
 
 type nonStandardServer struct {
-	examples.UnimplementedNonStandardServiceServer
 }
 
-func newNonStandardServer() examples.NonStandardServiceServer {
-	return new(nonStandardServer)
+func newNonStandardServer() *examples.NonStandardServiceService {
+	var service nonStandardServer
+	// to ensure everything is implemented, unstable is a unhappy name :-(
+	var _ examples.UnstableNonStandardServiceService = service
+	return examples.NewNonStandardServiceService(service)
 }
 
-func (s *nonStandardServer) Update(ctx context.Context, msg *examples.NonStandardUpdateRequest) (*examples.NonStandardMessage, error) {
+func (s nonStandardServer) Update(ctx context.Context, msg *examples.NonStandardUpdateRequest) (*examples.NonStandardMessage, error) {
 	glog.Info(msg)
 
 	newMsg := &examples.NonStandardMessage{
@@ -29,7 +31,7 @@ func (s *nonStandardServer) Update(ctx context.Context, msg *examples.NonStandar
 	return newMsg, nil
 }
 
-func (s *nonStandardServer) UpdateWithJSONNames(ctx context.Context, msg *examples.NonStandardWithJSONNamesUpdateRequest) (*examples.NonStandardMessageWithJSONNames, error) {
+func (s nonStandardServer) UpdateWithJSONNames(ctx context.Context, msg *examples.NonStandardWithJSONNamesUpdateRequest) (*examples.NonStandardMessageWithJSONNames, error) {
 	glog.Info(msg)
 
 	newMsg := &examples.NonStandardMessageWithJSONNames{

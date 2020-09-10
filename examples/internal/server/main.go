@@ -26,15 +26,16 @@ func Run(ctx context.Context, network, address string) error {
 	}()
 
 	s := grpc.NewServer()
-	examples.RegisterEchoServiceServer(s, newEchoServer())
-	examples.RegisterFlowCombinationServer(s, newFlowCombinationServer())
-	examples.RegisterNonStandardServiceServer(s, newNonStandardServer())
-	examples.RegisterUnannotatedEchoServiceServer(s, newUnannotatedEchoServer())
+	examples.RegisterEchoServiceService(s, newEchoServer())
+	examples.RegisterFlowCombinationService(s, newFlowCombinationServer())
+	examples.RegisterNonStandardServiceService(s, newNonStandardServer())
+	examples.RegisterUnannotatedEchoServiceService(s, newUnannotatedEchoServer())
 
 	abe := newABitOfEverythingServer()
-	examples.RegisterABitOfEverythingServiceServer(s, abe)
-	examples.RegisterStreamServiceServer(s, abe)
-	examples.RegisterResponseBodyServiceServer(s, newResponseBodyServer())
+	abes := newStreamServiceServer()
+	examples.RegisterABitOfEverythingServiceService(s, abe)
+	examples.RegisterStreamServiceService(s, abes)
+	examples.RegisterResponseBodyServiceService(s, newResponseBodyServer())
 
 	go func() {
 		defer s.GracefulStop()
@@ -47,15 +48,16 @@ func Run(ctx context.Context, network, address string) error {
 func RunInProcessGateway(ctx context.Context, addr string, opts ...runtime.ServeMuxOption) error {
 	mux := runtime.NewServeMux(opts...)
 
-	examples.RegisterEchoServiceHandlerServer(ctx, mux, newEchoServer())
-	examples.RegisterFlowCombinationHandlerServer(ctx, mux, newFlowCombinationServer())
-	examples.RegisterNonStandardServiceHandlerServer(ctx, mux, newNonStandardServer())
-	standalone.RegisterUnannotatedEchoServiceHandlerServer(ctx, mux, newUnannotatedEchoServer())
+	examples.RegisterEchoServiceHandlerServer(ctx, mux, *newEchoServer())
+	examples.RegisterFlowCombinationHandlerServer(ctx, mux, *newFlowCombinationServer())
+	examples.RegisterNonStandardServiceHandlerServer(ctx, mux, *newNonStandardServer())
+	standalone.RegisterUnannotatedEchoServiceHandlerServer(ctx, mux, *newUnannotatedEchoServer())
 
 	abe := newABitOfEverythingServer()
-	examples.RegisterABitOfEverythingServiceHandlerServer(ctx, mux, abe)
-	examples.RegisterStreamServiceHandlerServer(ctx, mux, abe)
-	examples.RegisterResponseBodyServiceHandlerServer(ctx, mux, newResponseBodyServer())
+	abes := newStreamServiceServer()
+	examples.RegisterABitOfEverythingServiceHandlerServer(ctx, mux, *abe)
+	examples.RegisterStreamServiceHandlerServer(ctx, mux, *abes)
+	examples.RegisterResponseBodyServiceHandlerServer(ctx, mux, *newResponseBodyServer())
 
 	s := &http.Server{
 		Addr:    addr,

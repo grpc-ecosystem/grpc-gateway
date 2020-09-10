@@ -11,14 +11,16 @@ import (
 // Implements of ResponseBodyServiceServer
 
 type responseBodyServer struct {
-	examples.UnimplementedResponseBodyServiceServer
 }
 
-func newResponseBodyServer() examples.ResponseBodyServiceServer {
-	return new(responseBodyServer)
+func newResponseBodyServer() *examples.ResponseBodyServiceService {
+	var service responseBodyServer
+	// to ensure everything is implemented, unstable is a unhappy name :-(
+	var _ examples.UnstableResponseBodyServiceService = service
+	return examples.NewResponseBodyServiceService(service)
 }
 
-func (s *responseBodyServer) GetResponseBody(ctx context.Context, req *examples.ResponseBodyIn) (*examples.ResponseBodyOut, error) {
+func (s responseBodyServer) GetResponseBody(ctx context.Context, req *examples.ResponseBodyIn) (*examples.ResponseBodyOut, error) {
 	glog.Info(req)
 	return &examples.ResponseBodyOut{
 		Response: &examples.ResponseBodyOut_Response{
@@ -27,7 +29,7 @@ func (s *responseBodyServer) GetResponseBody(ctx context.Context, req *examples.
 	}, nil
 }
 
-func (s *responseBodyServer) ListResponseBodies(ctx context.Context, req *examples.ResponseBodyIn) (*examples.RepeatedResponseBodyOut, error) {
+func (s responseBodyServer) ListResponseBodies(ctx context.Context, req *examples.ResponseBodyIn) (*examples.RepeatedResponseBodyOut, error) {
 	glog.Info(req)
 	return &examples.RepeatedResponseBodyOut{
 		Response: []*examples.RepeatedResponseBodyOut_Response{
@@ -38,7 +40,7 @@ func (s *responseBodyServer) ListResponseBodies(ctx context.Context, req *exampl
 	}, nil
 }
 
-func (s *responseBodyServer) ListResponseStrings(ctx context.Context, req *examples.ResponseBodyIn) (*examples.RepeatedResponseStrings, error) {
+func (s responseBodyServer) ListResponseStrings(ctx context.Context, req *examples.ResponseBodyIn) (*examples.RepeatedResponseStrings, error) {
 	glog.Info(req)
 	if req.Data == "empty" {
 		return &examples.RepeatedResponseStrings{
@@ -50,7 +52,7 @@ func (s *responseBodyServer) ListResponseStrings(ctx context.Context, req *examp
 	}, nil
 }
 
-func (s *responseBodyServer) GetResponseBodyStream(req *examples.ResponseBodyIn, stream examples.ResponseBodyService_GetResponseBodyStreamServer) error {
+func (s responseBodyServer) GetResponseBodyStream(req *examples.ResponseBodyIn, stream examples.ResponseBodyService_GetResponseBodyStreamServer) error {
 	glog.Info(req)
 	if err := stream.Send(&examples.ResponseBodyOut{
 		Response: &examples.ResponseBodyOut_Response{

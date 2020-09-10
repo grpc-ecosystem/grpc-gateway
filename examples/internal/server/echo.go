@@ -12,19 +12,21 @@ import (
 // Implements of EchoServiceServer
 
 type echoServer struct {
-	examples.UnimplementedEchoServiceServer
 }
 
-func newEchoServer() examples.EchoServiceServer {
-	return new(echoServer)
+func newEchoServer() *examples.EchoServiceService {
+	var service echoServer
+	// to ensure everything is implemented, unstable is a unhappy name :-(
+	var _ examples.UnstableEchoServiceService = service
+	return examples.NewEchoServiceService(service)
 }
 
-func (s *echoServer) Echo(ctx context.Context, msg *examples.SimpleMessage) (*examples.SimpleMessage, error) {
+func (s echoServer) Echo(ctx context.Context, msg *examples.SimpleMessage) (*examples.SimpleMessage, error) {
 	glog.Info(msg)
 	return msg, nil
 }
 
-func (s *echoServer) EchoBody(ctx context.Context, msg *examples.SimpleMessage) (*examples.SimpleMessage, error) {
+func (s echoServer) EchoBody(ctx context.Context, msg *examples.SimpleMessage) (*examples.SimpleMessage, error) {
 	glog.Info(msg)
 	grpc.SendHeader(ctx, metadata.New(map[string]string{
 		"foo": "foo1",
@@ -37,12 +39,12 @@ func (s *echoServer) EchoBody(ctx context.Context, msg *examples.SimpleMessage) 
 	return msg, nil
 }
 
-func (s *echoServer) EchoDelete(ctx context.Context, msg *examples.SimpleMessage) (*examples.SimpleMessage, error) {
+func (s echoServer) EchoDelete(ctx context.Context, msg *examples.SimpleMessage) (*examples.SimpleMessage, error) {
 	glog.Info(msg)
 	return msg, nil
 }
 
-func (s *echoServer) EchoPatch(ctx context.Context, msg *examples.DynamicMessageUpdate) (*examples.DynamicMessageUpdate, error) {
+func (s echoServer) EchoPatch(ctx context.Context, msg *examples.DynamicMessageUpdate) (*examples.DynamicMessageUpdate, error) {
 	glog.Info(msg)
 	return msg, nil
 }
