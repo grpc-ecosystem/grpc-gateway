@@ -31,6 +31,7 @@ proto_library(
         "a_bit_of_everything.proto",
         "echo_service.proto",
         "flow_combination.proto",
+        "generate_unbound_methods.proto",
         "generated_output.proto",
         "non_standard_names.proto",
         "response_body_service.proto",
@@ -74,7 +75,10 @@ go_proto_library(
 
 go_library(
     name = "go_default_library",
-    srcs = ["unannotated_echo_service.pb.gw.go"],
+    srcs = [
+        "generate_unbound_methods.pb.gw.go",
+        "unannotated_echo_service.pb.gw.go",
+    ],
     embed = [":examplepb_go_proto"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/examplepb",
     deps = [
