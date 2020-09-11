@@ -16,7 +16,7 @@ go_library(
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/unannotatedecho",
     deps = [
-        "//vendor/github.com/antihax/optional:go_default_library",
-        "//vendor/golang.org/x/oauth2:go_default_library",
+        "@com_github_antihax_optional//:go_default_library",
+        "@org_golang_x_oauth2//:go_default_library",
     ],
 )
