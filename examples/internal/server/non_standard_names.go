@@ -14,7 +14,7 @@ type nonStandardServer struct {
 
 func newNonStandardServer() *examples.NonStandardServiceService {
 	var service nonStandardServer
-	// to ensure everything is implemented, unstable is a unhappy name :-(
+	// unstableXXXService is to ensure everything is implemented
 	var _ examples.UnstableNonStandardServiceService = service
 	return examples.NewNonStandardServiceService(service)
 }

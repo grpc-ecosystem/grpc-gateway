@@ -43,7 +43,7 @@ type ABitOfEverythingServer interface {
 func newABitOfEverythingServer() *examples.ABitOfEverythingServiceService {
 	var service _ABitOfEverythingServer
 	service.v = make(map[string]*examples.ABitOfEverything)
-	// to ensure everything is implemented, unstable is a unhappy name :-(
+	// unstableXXXService is to ensure everything is implemented
 	var _ examples.UnstableABitOfEverythingServiceService = service
 	return examples.NewABitOfEverythingServiceService(service)
 }
@@ -52,7 +52,7 @@ func newABitOfEverythingServer() *examples.ABitOfEverythingServiceService {
 func newStreamServiceServer() *examples.StreamServiceService {
 	var service _ABitOfEverythingServer
 	service.v = make(map[string]*examples.ABitOfEverything)
-	// to ensure everything is implemented, unstable is a unhappy name :-(
+	// unstableXXXService is to ensure everything is implemented
 	var _ examples.UnstableStreamServiceService = service
 	return examples.NewStreamServiceService(service)
 }

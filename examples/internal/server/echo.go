@@ -16,7 +16,7 @@ type echoServer struct {
 
 func newEchoServer() *examples.EchoServiceService {
 	var service echoServer
-	// to ensure everything is implemented, unstable is a unhappy name :-(
+	// unstableXXXService is to ensure everything is implemented
 	var _ examples.UnstableEchoServiceService = service
 	return examples.NewEchoServiceService(service)
 }

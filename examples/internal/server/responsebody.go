@@ -15,7 +15,7 @@ type responseBodyServer struct {
 
 func newResponseBodyServer() *examples.ResponseBodyServiceService {
 	var service responseBodyServer
-	// to ensure everything is implemented, unstable is a unhappy name :-(
+	// unstableXXXService is to ensure everything is implemented
 	var _ examples.UnstableResponseBodyServiceService = service
 	return examples.NewResponseBodyServiceService(service)
 }

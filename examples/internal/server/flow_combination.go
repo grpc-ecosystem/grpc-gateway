@@ -11,7 +11,7 @@ type flowCombinationServer struct{}
 
 func newFlowCombinationServer() *examples.FlowCombinationService {
 	var service flowCombinationServer
-	// to ensure everything is implemented, unstable is a unhappy name :-(
+	// unstableXXXService is to ensure everything is implemented
 	var _ examples.UnstableFlowCombinationService = service
 	return examples.NewFlowCombinationService(service)
 }

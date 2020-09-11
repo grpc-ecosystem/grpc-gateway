@@ -16,7 +16,7 @@ type unannotatedEchoServer struct {
 
 func newUnannotatedEchoServer() *examples.UnannotatedEchoServiceService {
 	var service unannotatedEchoServer
-	// to ensure everything is implemented, unstable is a unhappy name :-(
+	// unstableXXXService is to ensure everything is implemented
 	var _ examples.UnstableUnannotatedEchoServiceService = service
 	return examples.NewUnannotatedEchoServiceService(service)
 }
