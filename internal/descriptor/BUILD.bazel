@@ -6,6 +6,7 @@ go_library(
     name = "go_default_library",
     srcs = [
         "grpc_api_configuration.go",
+        "openapi_configuration.go",
         "registry.go",
         "services.go",
         "types.go",
@@ -14,6 +15,7 @@ go_library(
     deps = [
         "//internal/casing:go_default_library",
         "//internal/descriptor/apiconfig:go_default_library",
+        "//internal/descriptor/openapiconfig:go_default_library",
         "//internal/httprule:go_default_library",
         "//protoc-gen-openapiv2/options:go_default_library",
         "@com_github_ghodss_yaml//:go_default_library",
@@ -31,13 +33,14 @@ go_test(
     size = "small",
     srcs = [
         "grpc_api_configuration_test.go",
+        "openapi_configuration_test.go",
         "registry_test.go",
         "services_test.go",
         "types_test.go",
     ],
     embed = [":go_default_library"],
     deps = [
-        "//internal/descriptor/apiconfig:go_default_library",
+        "//internal/descriptor/openapiconfig:go_default_library",
         "//internal/httprule:go_default_library",
         "//protoc-gen-openapiv2/options:go_default_library",
         "@io_bazel_rules_go//proto/wkt:compiler_plugin_go_proto",
