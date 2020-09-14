@@ -184,7 +184,7 @@ $(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
 
 
-$(EXAMPLE_OPENAPISRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml
+$(EXAMPLE_OPENAPISRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml,openapi_configuration=examples/internal/proto/examplepb/unannotated_echo_service.swagger.yaml
 $(EXAMPLE_OPENAPISRCS): $(OPENAPI_PLUGIN) $(OPENAPI_EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true$(ADDITIONAL_SWG_FLAGS):. $(OPENAPI_EXAMPLES)
 
