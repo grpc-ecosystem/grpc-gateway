@@ -1,17 +1,17 @@
 syntax = "proto3";
 option go_package = "examplepb";
 
-// Unannotated Echo Service
+// Generate Unannotated Methods Echo Service
 // Similar to echo_service.proto but without annotations and without external configuration.
 //
-// Echo Service API consists of a single service which returns
+// Generate Unannotated Methods Echo Service API consists of a single service which returns
 // a message.
 package grpc.gateway.examples.internal.examplepb;
 
 // Do not need annotations.proto, can still use well known types as usual
 import "google/protobuf/duration.proto";
 
-// UnannotatedSimpleMessage represents a simple message sent to the unannotated Echo service.
+// GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.
 message GenerateUnboundMethodsSimpleMessage {
 	// Id represents the message identifier.
 	string id = 1;
@@ -19,7 +19,7 @@ message GenerateUnboundMethodsSimpleMessage {
 	google.protobuf.Duration duration = 3;
 }
 
-// Echo service responds to incoming echo requests.
+// GenerateUnboundMethodsEchoService service responds to incoming echo requests.
 service GenerateUnboundMethodsEchoService {
 	// Echo method receives a simple message and returns it.
 	//
