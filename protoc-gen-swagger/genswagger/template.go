@@ -1017,7 +1017,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 					if hasErrDef {
 						// https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#responses-object
 						operationObject.Responses["default"] = swaggerResponseObject{
-							Description: "An unexpected error response",
+							Description: "An unexpected error response.",
 							Schema: swaggerSchemaObject{
 								schemaCore: schemaCore{
 									Ref: fmt.Sprintf("#/definitions/%s", errDef),
