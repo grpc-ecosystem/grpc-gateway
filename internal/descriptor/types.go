@@ -255,6 +255,11 @@ type Field struct {
 	ForcePrefixedName bool
 }
 
+// FQFN returns a fully qualified field name of this field.
+func (f *Field) FQFN() string {
+	return strings.Join([]string{f.Message.FQMN(), f.GetName()}, ".")
+}
+
 // Parameter is a parameter provided in http requests
 type Parameter struct {
 	// FieldPath is a path to a proto field which this parameter is mapped to.

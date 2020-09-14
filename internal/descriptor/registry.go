@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
@@ -87,6 +89,22 @@ type Registry struct {
 	// warnOnUnboundMethods causes the registry to emit warning logs if an RPC method
 	// has no HttpRule annotation.
 	warnOnUnboundMethods bool
+
+	// fileOptions is a mapping of file name to additional OpenAPI file options
+	fileOptions map[string]*options.Swagger
+
+	// methodOptions is a mapping of fully-qualified method name to additional OpenAPI method options
+	methodOptions map[string]*options.Operation
+
+	// messageOptions is a mapping of fully-qualified message name to additional OpenAPI message options
+	messageOptions map[string]*options.Schema
+
+	//serviceOptions is a mapping of fully-qualified service name to additional OpenAPI service options
+	serviceOptions map[string]*options.Tag
+
+	// fieldOptions is a mapping of the fully-qualified name of the parent message concat
+	// field name and a period to additional OpenAPI field options
+	fieldOptions map[string]*options.JSONSchema
 }
 
 type repeatedFieldSeparator struct {
@@ -107,6 +125,11 @@ func NewRegistry() *Registry {
 			name: "csv",
 			sep:  ',',
 		},
+		fileOptions:    make(map[string]*options.Swagger),
+		methodOptions:  make(map[string]*options.Operation),
+		messageOptions: make(map[string]*options.Schema),
+		serviceOptions: make(map[string]*options.Tag),
+		fieldOptions:   make(map[string]*options.JSONSchema),
 	}
 }
 
@@ -581,4 +604,112 @@ func (r *Registry) packageIdentityName(f *descriptorpb.FileDescriptorProto) stri
 		return strings.TrimSuffix(base, ext)
 	}
 	return f.GetPackage()
+}
+
+// RegisterOpenAPIOptions registers OpenAPI options
+func (r *Registry) RegisterOpenAPIOptions(opts *apiconfig.OpenAPIOptions) error {
+	if opts == nil {
+		return nil
+	}
+
+	for _, opt := range opts.File {
+		if _, ok := r.files[opt.File]; !ok {
+			return fmt.Errorf("no file %s found", opt.File)
+		}
+		r.fileOptions[opt.File] = opt.Option
+	}
+
+	// build map of all registered methods
+	methods := make(map[string]struct{})
+	services := make(map[string]struct{})
+	for _, f := range r.files {
+		for _, s := range f.Services {
+			services[s.FQSN()] = struct{}{}
+			for _, m := range s.Methods {
+				methods[m.FQMN()] = struct{}{}
+			}
+		}
+	}
+
+	for _, opt := range opts.Method {
+		qualifiedMethod := opt.Method
+		if !strings.HasPrefix(qualifiedMethod, ".") {
+			qualifiedMethod = "." + qualifiedMethod
+		}
+		if _, ok := methods[qualifiedMethod]; !ok {
+			return fmt.Errorf("no method %s found", opt.Method)
+		}
+		r.methodOptions[qualifiedMethod] = opt.Option
+	}
+
+	for _, opt := range opts.Message {
+		qualifiedMessage := opt.Message
+		if !strings.HasPrefix(qualifiedMessage, ".") {
+			qualifiedMessage = "." + qualifiedMessage
+		}
+		if _, ok := r.msgs[qualifiedMessage]; !ok {
+			return fmt.Errorf("no message %s found", opt.Message)
+		}
+		r.messageOptions[qualifiedMessage] = opt.Option
+	}
+
+	for _, opt := range opts.Service {
+		qualifiedService := opt.Service
+		if !strings.HasPrefix(qualifiedService, ".") {
+			qualifiedService = "." + qualifiedService
+		}
+		if _, ok := services[qualifiedService]; !ok {
+			return fmt.Errorf("no service %s found", opt.Service)
+		}
+		r.serviceOptions[qualifiedService] = opt.Option
+	}
+
+	// build map of all registered fields
+	fields := make(map[string]struct{})
+	for _, m := range r.msgs {
+		for _, f := range m.Fields {
+			fields[f.FQFN()] = struct{}{}
+		}
+	}
+	for _, opt := range opts.Field {
+		qualifiedField := opt.Field
+		if !strings.HasPrefix(qualifiedField, ".") {
+			qualifiedField = "." + qualifiedField
+		}
+		if _, ok := fields[qualifiedField]; !ok {
+			return fmt.Errorf("no field %s found", opt.Field)
+		}
+		r.fieldOptions[qualifiedField] = opt.Option
+	}
+	return nil
+}
+
+// GetOpenAPIFileOption returns a registered OpenAPI option for a file
+func (r *Registry) GetOpenAPIFileOption(file string) (*options.Swagger, bool) {
+	opt, ok := r.fileOptions[file]
+	return opt, ok
+}
+
+// GetOpenAPIMethodOption returns a registered OpenAPI option for a method
+func (r *Registry) GetOpenAPIMethodOption(qualifiedMethod string) (*options.Operation, bool) {
+	opt, ok := r.methodOptions[qualifiedMethod]
+	return opt, ok
+}
+
+// GetOpenAPIMessageOption returns a registered OpenAPI option for a message
+func (r *Registry) GetOpenAPIMessageOption(qualifiedMessage string) (*options.Schema, bool) {
+	opt, ok := r.messageOptions[qualifiedMessage]
+	return opt, ok
+}
+
+// GetOpenAPIServiceOption returns a registered OpenAPI option for a service
+func (r *Registry) GetOpenAPIServiceOption(qualifiedService string) (*options.Tag, bool) {
+	opt, ok := r.serviceOptions[qualifiedService]
+	return opt, ok
+}
+
+// GetOpenAPIFieldOption returns a registered OpenAPI option for a field
+func (r *Registry) GetOpenAPIFieldOption(qualifiedField string) (*options.JSONSchema, bool) {
+	opt, ok := r.fieldOptions[qualifiedField]
+	return opt, ok
 }

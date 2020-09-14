@@ -362,7 +362,7 @@ func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject,
 		if err := updateOpenAPIDataFromComments(reg, &schema, msg, msgComments, false); err != nil {
 			panic(err)
 		}
-		opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
+		opts, err := getMessageOpenAPIOption(reg, msg)
 		if err != nil {
 			panic(err)
 		}
@@ -501,7 +501,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 		}
 	}
 
-	if j, err := extractJSONSchemaFromFieldDescriptor(f.FieldDescriptorProto); err == nil {
+	if j, err := getFieldOpenAPIOption(reg, f); err == nil {
 		updateswaggerObjectFromJSONSchema(&ret, j, reg, f)
 	}
 
@@ -1042,7 +1042,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					panic(err)
 				}
 
-				opts, err := extractOperationOptionFromMethodDescriptor(meth.MethodDescriptorProto)
+				opts, err := getMethodOpenAPIOption(reg, meth)
 				if opts != nil {
 					if err != nil {
 						panic(err)
@@ -1202,7 +1202,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	}
 
 	// There may be additional options in the OpenAPI option in the proto.
-	spb, err := extractOpenAPIOptionFromFileDescriptor(p.FileDescriptorProto)
+	spb, err := getFileOpenAPIOption(p.reg, p.File)
 	if err != nil {
 		panic(err)
 	}
@@ -1787,6 +1787,66 @@ func extractJSONSchemaFromFieldDescriptor(fd *descriptorpb.FieldDescriptorProto)
 	opts, ok := ext.(*openapi_options.JSONSchema)
 	if !ok {
 		return nil, fmt.Errorf("extension is %T; want a JSONSchema object", ext)
+	}
+	return opts, nil
+}
+
+func getMethodOpenAPIOption(reg *descriptor.Registry, meth *descriptor.Method) (*openapi_options.Operation, error) {
+	opts, err := extractOperationOptionFromMethodDescriptor(meth.MethodDescriptorProto)
+	if err != nil {
+		return nil, err
+	}
+	if opts != nil {
+		return opts, nil
+	}
+	opts, ok := reg.GetOpenAPIMethodOption(meth.FQMN())
+	if !ok {
+		return nil, nil
+	}
+	return opts, nil
+}
+
+func getMessageOpenAPIOption(reg *descriptor.Registry, msg *descriptor.Message) (*openapi_options.Schema, error) {
+	opts, err := extractSchemaOptionFromMessageDescriptor(msg.DescriptorProto)
+	if err != nil {
+		return nil, err
+	}
+	if opts != nil {
+		return opts, nil
+	}
+	opts, ok := reg.GetOpenAPIMessageOption(msg.FQMN())
+	if !ok {
+		return nil, nil
+	}
+	return opts, nil
+}
+
+func getFileOpenAPIOption(reg *descriptor.Registry, file *descriptor.File) (*openapi_options.Swagger, error) {
+	opts, err := extractOpenAPIOptionFromFileDescriptor(file.FileDescriptorProto)
+	if err != nil {
+		return nil, err
+	}
+	if opts != nil {
+		return opts, nil
+	}
+	opts, ok := reg.GetOpenAPIFileOption(*file.Name)
+	if !ok {
+		return nil, nil
+	}
+	return opts, nil
+}
+
+func getFieldOpenAPIOption(reg *descriptor.Registry, fd *descriptor.Field) (*openapi_options.JSONSchema, error) {
+	opts, err := extractJSONSchemaFromFieldDescriptor(fd.FieldDescriptorProto)
+	if err != nil {
+		return nil, err
+	}
+	if opts != nil {
+		return opts, nil
+	}
+	opts, ok := reg.GetOpenAPIFieldOption(fd.FQFN())
+	if !ok {
+		return nil, nil
 	}
 	return opts, nil
 }
