@@ -1012,7 +1012,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					if hasErrDef {
 						// https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#responses-object
 						operationObject.Responses["default"] = openapiResponseObject{
-							Description: "An unexpected error response",
+							Description: "An unexpected error response.",
 							Schema: openapiSchemaObject{
 								schemaCore: schemaCore{
 									Ref: fmt.Sprintf("#/definitions/%s", errDef),
