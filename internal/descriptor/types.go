@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
+	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 // IsWellKnownType returns true if the provided fully qualified type name is considered 'well-known'.
@@ -41,7 +42,7 @@ func (p GoPackage) String() string {
 // File wraps descriptorpb.FileDescriptorProto for richer features.
 type File struct {
 	*descriptorpb.FileDescriptorProto
-	// GoPkg is the go package of the go file generated from this file..
+	// GoPkg is the go package of the go file generated from this file.
 	GoPkg GoPackage
 	// Messages is the list of messages defined in this file.
 	Messages []*Message
@@ -63,6 +64,14 @@ func (f *File) Pkg() string {
 // proto2 determines if the syntax of the file is proto2.
 func (f *File) proto2() bool {
 	return f.Syntax == nil || f.GetSyntax() == "proto2"
+}
+
+// ResponseFile wraps pluginpb.CodeGeneratorResponse_File.
+type ResponseFile struct {
+	*pluginpb.CodeGeneratorResponse_File
+
+	// GoPkg is the Go package of the generated file.
+	GoPkg GoPackage
 }
 
 // Message describes a protocol buffer message types
