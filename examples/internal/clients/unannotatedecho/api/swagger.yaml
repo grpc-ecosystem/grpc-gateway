@@ -32,7 +32,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/echo/{id}/{num}:
@@ -67,7 +67,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/echo_body:
@@ -89,7 +89,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/echo_delete:
@@ -125,7 +125,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbUnannotatedSimpleMessage"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
 definitions:

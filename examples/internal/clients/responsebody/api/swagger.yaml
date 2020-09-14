@@ -27,7 +27,7 @@ paths:
             items:
               $ref: "#/definitions/examplepbRepeatedResponseBodyOutResponse"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /responsebody/stream/{data}:
@@ -53,7 +53,7 @@ paths:
                 $ref: "#/definitions/runtimeStreamError"
             title: "Stream result of examplepbResponseBodyOut"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /responsebody/{data}:
@@ -73,7 +73,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbResponseBodyOutResponse"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /responsestrings/{data}:
@@ -95,7 +95,7 @@ paths:
             items:
               type: "string"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
 definitions:

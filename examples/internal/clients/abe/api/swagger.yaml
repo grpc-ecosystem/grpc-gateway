@@ -60,7 +60,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/a_bit_of_everything/echo/{value}:
@@ -102,7 +102,7 @@ paths:
           schema: {}
           x-number: 100
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
       externalDocs:
@@ -392,7 +392,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/a_bit_of_everything/params/get/{single_nested.name}:
@@ -686,7 +686,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/a_bit_of_everything/params/post/{string_value}:
@@ -967,7 +967,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/a_bit_of_everything/query/{uuid}:
@@ -1267,7 +1267,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
       security: []
@@ -1424,7 +1424,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/a_bit_of_everything/{single_nested.name}:
@@ -1464,7 +1464,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/a_bit_of_everything/{uuid}:
@@ -1497,7 +1497,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
     put:
@@ -1534,7 +1534,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
     delete:
@@ -1565,7 +1565,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
       security:
@@ -1761,7 +1761,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/{parent=publishers/*}/books:
@@ -1812,7 +1812,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v2/example/a_bit_of_everything/{abe.uuid}:
@@ -1859,7 +1859,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
     patch:
@@ -1905,7 +1905,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v2/example/echo:
@@ -1948,7 +1948,7 @@ paths:
           schema: {}
           x-number: 100
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
       externalDocs:
@@ -1993,7 +1993,7 @@ paths:
           schema: {}
           x-number: 100
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
       externalDocs:
@@ -2023,7 +2023,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v2/example/errorwithdetails:
@@ -2050,7 +2050,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v2/example/overwriteresponsecontenttype:
@@ -2080,7 +2080,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v2/example/postwithemptybody/{name}:
@@ -2118,7 +2118,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v2/example/timeout:
@@ -2145,7 +2145,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v2/example/withbody/{id}:
@@ -2183,7 +2183,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v2/{value}:check:
@@ -2218,7 +2218,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v2a/example/a_bit_of_everything/{abe.uuid}:
@@ -2256,7 +2256,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
 securityDefinitions:
