@@ -29,7 +29,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/echo/{id}/{num}:
@@ -104,7 +104,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/echo/{id}/{num}/{lang}:
@@ -178,7 +178,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/echo1/{id}/{line_num}/{status.note}:
@@ -246,7 +246,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/echo2/{no.note}:
@@ -316,7 +316,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/echo_body:
@@ -338,7 +338,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
   /v1/example/echo_delete:
@@ -414,7 +414,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbSimpleMessage"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/runtimeError"
 definitions:
