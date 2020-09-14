@@ -60,7 +60,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v1/example/a_bit_of_everything/echo/{value}:
@@ -102,7 +102,7 @@ paths:
           schema: {}
           x-number: 100
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
       externalDocs:
@@ -392,7 +392,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v1/example/a_bit_of_everything/params/get/{singleNested.name}:
@@ -686,7 +686,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v1/example/a_bit_of_everything/params/post/{stringValue}:
@@ -967,7 +967,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v1/example/a_bit_of_everything/query/{uuid}:
@@ -1267,7 +1267,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
       security: []
@@ -1424,7 +1424,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v1/example/a_bit_of_everything/{uuid}:
@@ -1457,7 +1457,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
     put:
@@ -1494,7 +1494,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
     delete:
@@ -1525,7 +1525,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
       security:
@@ -1721,7 +1721,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v1/example/deep_path/{singleNested.name}:
@@ -1761,7 +1761,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v1/{parent=publishers/*}/books:
@@ -1812,7 +1812,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v2/example/a_bit_of_everything/{abe.uuid}:
@@ -1859,7 +1859,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
     patch:
@@ -1905,7 +1905,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v2/example/echo:
@@ -1948,7 +1948,7 @@ paths:
           schema: {}
           x-number: 100
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
       externalDocs:
@@ -1993,7 +1993,7 @@ paths:
           schema: {}
           x-number: 100
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
       externalDocs:
@@ -2023,7 +2023,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v2/example/errorwithdetails:
@@ -2050,7 +2050,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v2/example/overwriteresponsecontenttype:
@@ -2080,7 +2080,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v2/example/postwithemptybody/{name}:
@@ -2118,7 +2118,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v2/example/timeout:
@@ -2145,7 +2145,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v2/example/withbody/{id}:
@@ -2183,7 +2183,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
   /v2a/example/a_bit_of_everything/{abe.uuid}:
@@ -2221,7 +2221,7 @@ paths:
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
         default:
-          description: "An unexpected error response"
+          description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
 securityDefinitions:
