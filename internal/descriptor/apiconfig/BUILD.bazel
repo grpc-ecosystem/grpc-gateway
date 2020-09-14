@@ -10,6 +10,7 @@ proto_library(
         "apiconfig.proto",
     ],
     deps = [
+        "//protoc-gen-openapiv2/options:options_proto",
         "@go_googleapis//google/api:annotations_proto",
     ],
 )
@@ -19,7 +20,10 @@ go_proto_library(
     compilers = ["//:go_apiv2"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig",
     proto = ":apiconfig_proto",
-    deps = ["@go_googleapis//google/api:annotations_go_proto"],
+    deps = [
+        "//protoc-gen-openapiv2/options:go_default_library",
+        "@go_googleapis//google/api:annotations_go_proto",
+    ],
 )
 
 go_library(
