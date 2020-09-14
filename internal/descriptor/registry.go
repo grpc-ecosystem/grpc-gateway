@@ -632,10 +632,7 @@ func (r *Registry) RegisterOpenAPIOptions(opts *openapiconfig.OpenAPIOptions) er
 	}
 
 	for _, opt := range opts.Method {
-		qualifiedMethod := opt.Method
-		if !strings.HasPrefix(qualifiedMethod, ".") {
-			qualifiedMethod = "." + qualifiedMethod
-		}
+		qualifiedMethod := "." + opt.Method
 		if _, ok := methods[qualifiedMethod]; !ok {
 			return fmt.Errorf("no method %s found", opt.Method)
 		}
@@ -643,10 +640,7 @@ func (r *Registry) RegisterOpenAPIOptions(opts *openapiconfig.OpenAPIOptions) er
 	}
 
 	for _, opt := range opts.Message {
-		qualifiedMessage := opt.Message
-		if !strings.HasPrefix(qualifiedMessage, ".") {
-			qualifiedMessage = "." + qualifiedMessage
-		}
+		qualifiedMessage := "." + opt.Message
 		if _, ok := r.msgs[qualifiedMessage]; !ok {
 			return fmt.Errorf("no message %s found", opt.Message)
 		}
@@ -654,10 +648,7 @@ func (r *Registry) RegisterOpenAPIOptions(opts *openapiconfig.OpenAPIOptions) er
 	}
 
 	for _, opt := range opts.Service {
-		qualifiedService := opt.Service
-		if !strings.HasPrefix(qualifiedService, ".") {
-			qualifiedService = "." + qualifiedService
-		}
+		qualifiedService := "." + opt.Service
 		if _, ok := services[qualifiedService]; !ok {
 			return fmt.Errorf("no service %s found", opt.Service)
 		}
@@ -672,10 +663,7 @@ func (r *Registry) RegisterOpenAPIOptions(opts *openapiconfig.OpenAPIOptions) er
 		}
 	}
 	for _, opt := range opts.Field {
-		qualifiedField := opt.Field
-		if !strings.HasPrefix(qualifiedField, ".") {
-			qualifiedField = "." + qualifiedField
-		}
+		qualifiedField := "." + opt.Field
 		if _, ok := fields[qualifiedField]; !ok {
 			return fmt.Errorf("no field %s found", opt.Field)
 		}

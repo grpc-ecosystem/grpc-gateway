@@ -703,7 +703,7 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 			},
 		},
 		{
-			desc: "successfully accept fully qualified names",
+			desc: "reject fully qualified names with leading \".\"",
 			options: &openapiconfig.OpenAPIOptions{
 				File: []*openapiconfig.OpenAPIFileOption{
 					{
@@ -731,6 +731,7 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 					},
 				},
 			},
+			shouldErr: true,
 		},
 		{
 			desc: "error if file does not exist",
