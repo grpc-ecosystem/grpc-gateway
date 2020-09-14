@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -607,7 +607,7 @@ func (r *Registry) packageIdentityName(f *descriptorpb.FileDescriptorProto) stri
 }
 
 // RegisterOpenAPIOptions registers OpenAPI options
-func (r *Registry) RegisterOpenAPIOptions(opts *apiconfig.OpenAPIOptions) error {
+func (r *Registry) RegisterOpenAPIOptions(opts *openapiconfig.OpenAPIOptions) error {
 	if opts == nil {
 		return nil
 	}

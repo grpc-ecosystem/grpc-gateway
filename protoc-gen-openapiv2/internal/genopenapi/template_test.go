@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -1136,7 +1136,7 @@ func TestApplyTemplateOverrideOperationID(t *testing.T) {
 		}
 	}
 
-	verifyTemplateFromReq := func(t *testing.T, reg *descriptor.Registry, file *descriptor.File, opts *apiconfig.OpenAPIOptions) {
+	verifyTemplateFromReq := func(t *testing.T, reg *descriptor.Registry, file *descriptor.File, opts *openapiconfig.OpenAPIOptions) {
 		if err := AddErrorDefs(reg); err != nil {
 			t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
 			return
@@ -1184,8 +1184,8 @@ func TestApplyTemplateOverrideOperationID(t *testing.T) {
 	t.Run("verify override options annotations", func(t *testing.T) {
 		file := newFile()
 		reg := descriptor.NewRegistry()
-		opts := &apiconfig.OpenAPIOptions{
-			Method: []*apiconfig.OpenAPIMethodOption{
+		opts := &openapiconfig.OpenAPIOptions{
+			Method: []*openapiconfig.OpenAPIMethodOption{
 				{
 					Method: "example.ExampleService.Example",
 					Option: &openapiOperation,
@@ -1290,7 +1290,7 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		},
 	}
 	verifyTemplateExtensions := func(t *testing.T, reg *descriptor.Registry, file *descriptor.File,
-		opts *apiconfig.OpenAPIOptions) {
+		opts *openapiconfig.OpenAPIOptions) {
 		if err := AddErrorDefs(reg); err != nil {
 			t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
 			return
@@ -1388,14 +1388,14 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	})
 	t.Run("verify template options set via annotations", func(t *testing.T) {
 		file := newFile()
-		opts := &apiconfig.OpenAPIOptions{
-			File: []*apiconfig.OpenAPIFileOption{
+		opts := &openapiconfig.OpenAPIOptions{
+			File: []*openapiconfig.OpenAPIFileOption{
 				{
 					File:   "example.proto",
 					Option: &swagger,
 				},
 			},
-			Method: []*apiconfig.OpenAPIMethodOption{
+			Method: []*openapiconfig.OpenAPIMethodOption{
 				{
 					Method: "example.ExampleService.Example",
 					Option: &openapiOperation,
@@ -2297,7 +2297,7 @@ func TestSchemaOfField(t *testing.T) {
 		field          *descriptor.Field
 		refs           refMap
 		expected       openapiSchemaObject
-		openAPIOptions *apiconfig.OpenAPIOptions
+		openAPIOptions *openapiconfig.OpenAPIOptions
 	}
 
 	jsonSchema := &openapi_options.JSONSchema{
@@ -2717,8 +2717,8 @@ func TestSchemaOfField(t *testing.T) {
 					TypeName: proto.String(".example.Message.MapFieldEntry"),
 				},
 			},
-			openAPIOptions: &apiconfig.OpenAPIOptions{
-				Field: []*apiconfig.OpenAPIFieldOption{
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
 					{
 						Field:  "example.Message.map_field_option",
 						Option: jsonSchema,
@@ -2745,8 +2745,8 @@ func TestSchemaOfField(t *testing.T) {
 					Type:  descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
 				},
 			},
-			openAPIOptions: &apiconfig.OpenAPIOptions{
-				Field: []*apiconfig.OpenAPIFieldOption{
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
 					{
 						Field:  "example.Message.array_field_option",
 						Option: jsonSchema,
@@ -2771,8 +2771,8 @@ func TestSchemaOfField(t *testing.T) {
 					Type:  descriptorpb.FieldDescriptorProto_TYPE_INT32.Enum(),
 				},
 			},
-			openAPIOptions: &apiconfig.OpenAPIOptions{
-				Field: []*apiconfig.OpenAPIFieldOption{
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
 					{
 						Field:  "example.Message.primitive_field_option",
 						Option: jsonSchema,
@@ -2798,8 +2798,8 @@ func TestSchemaOfField(t *testing.T) {
 					TypeName: proto.String(".example.Empty"),
 				},
 			},
-			openAPIOptions: &apiconfig.OpenAPIOptions{
-				Field: []*apiconfig.OpenAPIFieldOption{
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
 					{
 						Field:  "example.Message.message_field_option",
 						Option: jsonSchema,
@@ -2898,7 +2898,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 		msgDescs       []*descriptorpb.DescriptorProto
 		schema         map[string]openapi_options.Schema // per-message schema to add
 		defs           openapiDefinitionsObject
-		openAPIOptions *apiconfig.OpenAPIOptions
+		openAPIOptions *openapiconfig.OpenAPIOptions
 	}{
 		{
 			descr: "no OpenAPI options",
@@ -3027,8 +3027,8 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			openAPIOptions: &apiconfig.OpenAPIOptions{
-				Message: []*apiconfig.OpenAPIMessageOption{
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Message: []*openapiconfig.OpenAPIMessageOption{
 					{
 						Message: "example.Message",
 						Option: &openapi_options.Schema{
@@ -3312,7 +3312,7 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 		msgDescs       []*descriptorpb.DescriptorProto
 		schema         map[string]openapi_options.Schema // per-message schema to add
 		defs           openapiDefinitionsObject
-		openAPIOptions *apiconfig.OpenAPIOptions
+		openAPIOptions *openapiconfig.OpenAPIOptions
 		useGoTemplate  bool
 	}{
 		{
@@ -3380,8 +3380,8 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			openAPIOptions: &apiconfig.OpenAPIOptions{
-				Message: []*apiconfig.OpenAPIMessageOption{
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Message: []*openapiconfig.OpenAPIMessageOption{
 					{
 						Message: "example.Message",
 						Option: &openapi_options.Schema{

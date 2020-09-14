@@ -3,7 +3,7 @@ package descriptor
 import (
 	"testing"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
@@ -665,7 +665,7 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 	>
 	`
 	for _, tcase := range []struct {
-		options   *apiconfig.OpenAPIOptions
+		options   *openapiconfig.OpenAPIOptions
 		shouldErr bool
 		desc      string
 	}{
@@ -674,28 +674,28 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 		},
 		{
 			desc: "successfully add options if referenced entity exists",
-			options: &apiconfig.OpenAPIOptions{
-				File: []*apiconfig.OpenAPIFileOption{
+			options: &openapiconfig.OpenAPIOptions{
+				File: []*openapiconfig.OpenAPIFileOption{
 					{
 						File: "a.proto",
 					},
 				},
-				Method: []*apiconfig.OpenAPIMethodOption{
+				Method: []*openapiconfig.OpenAPIMethodOption{
 					{
 						Method: "example.foo.AService.Meth",
 					},
 				},
-				Message: []*apiconfig.OpenAPIMessageOption{
+				Message: []*openapiconfig.OpenAPIMessageOption{
 					{
 						Message: "example.foo.ExampleMessage",
 					},
 				},
-				Service: []*apiconfig.OpenAPIServiceOption{
+				Service: []*openapiconfig.OpenAPIServiceOption{
 					{
 						Service: "example.foo.AService",
 					},
 				},
-				Field: []*apiconfig.OpenAPIFieldOption{
+				Field: []*openapiconfig.OpenAPIFieldOption{
 					{
 						Field: "example.foo.ExampleMessage.str",
 					},
@@ -704,28 +704,28 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 		},
 		{
 			desc: "successfully accept fully qualified names",
-			options: &apiconfig.OpenAPIOptions{
-				File: []*apiconfig.OpenAPIFileOption{
+			options: &openapiconfig.OpenAPIOptions{
+				File: []*openapiconfig.OpenAPIFileOption{
 					{
 						File: "a.proto",
 					},
 				},
-				Method: []*apiconfig.OpenAPIMethodOption{
+				Method: []*openapiconfig.OpenAPIMethodOption{
 					{
 						Method: ".example.foo.AService.Meth",
 					},
 				},
-				Message: []*apiconfig.OpenAPIMessageOption{
+				Message: []*openapiconfig.OpenAPIMessageOption{
 					{
 						Message: ".example.foo.ExampleMessage",
 					},
 				},
-				Service: []*apiconfig.OpenAPIServiceOption{
+				Service: []*openapiconfig.OpenAPIServiceOption{
 					{
 						Service: ".example.foo.AService",
 					},
 				},
-				Field: []*apiconfig.OpenAPIFieldOption{
+				Field: []*openapiconfig.OpenAPIFieldOption{
 					{
 						Field: ".example.foo.ExampleMessage.str",
 					},
@@ -734,8 +734,8 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 		},
 		{
 			desc: "error if file does not exist",
-			options: &apiconfig.OpenAPIOptions{
-				File: []*apiconfig.OpenAPIFileOption{
+			options: &openapiconfig.OpenAPIOptions{
+				File: []*openapiconfig.OpenAPIFileOption{
 					{
 						File: "b.proto",
 					},
@@ -745,8 +745,8 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 		},
 		{
 			desc: "error if method does not exist",
-			options: &apiconfig.OpenAPIOptions{
-				Method: []*apiconfig.OpenAPIMethodOption{
+			options: &openapiconfig.OpenAPIOptions{
+				Method: []*openapiconfig.OpenAPIMethodOption{
 					{
 						Method: "example.foo.AService.Meth2",
 					},
@@ -756,8 +756,8 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 		},
 		{
 			desc: "error if message does not exist",
-			options: &apiconfig.OpenAPIOptions{
-				Message: []*apiconfig.OpenAPIMessageOption{
+			options: &openapiconfig.OpenAPIOptions{
+				Message: []*openapiconfig.OpenAPIMessageOption{
 					{
 						Message: "example.foo.NonexistentMessage",
 					},
@@ -767,8 +767,8 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 		},
 		{
 			desc: "error if service does not exist",
-			options: &apiconfig.OpenAPIOptions{
-				Service: []*apiconfig.OpenAPIServiceOption{
+			options: &openapiconfig.OpenAPIOptions{
+				Service: []*openapiconfig.OpenAPIServiceOption{
 					{
 						Service: "example.foo.AService1",
 					},
@@ -778,8 +778,8 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 		},
 		{
 			desc: "error if field does not exist",
-			options: &apiconfig.OpenAPIOptions{
-				Field: []*apiconfig.OpenAPIFieldOption{
+			options: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
 					{
 						Field: "example.foo.ExampleMessage.str1",
 					},

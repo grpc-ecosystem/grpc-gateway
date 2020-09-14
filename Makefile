@@ -94,7 +94,8 @@ RUNTIME_TEST_PROTO=runtime/internal/examplepb/example.proto \
 	runtime/internal/examplepb/non_standard_names.proto
 RUNTIME_TEST_SRCS=$(RUNTIME_TEST_PROTO:.proto=.pb.go)
 
-APICONFIG_PROTO=internal/descriptor/apiconfig/apiconfig.proto
+APICONFIG_PROTO=internal/descriptor/apiconfig/apiconfig.proto \
+	internal/descriptor/openapiconfig/openapiconfig.proto
 APICONFIG_SRCS=$(APICONFIG_PROTO:.proto=.pb.go)
 
 EXAMPLE_CLIENT_DIR=examples/internal/clients
