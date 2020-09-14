@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "examples/internal/proto/examplepb/generate_unbound_methods.proto",
-    "description": "Unannotated Echo Service\nSimilar to echo_service.proto but without annotations and without external configuration.\n\nEcho Service API consists of a single service which returns\na message.",
+    "description": "Generate Unannotated Methods Echo Service\nSimilar to echo_service.proto but without annotations and without external configuration.\n\nGenerate Unannotated Methods Echo Service API consists of a single service which returns\na message.",
     "version": "version not set"
   },
   "consumes": [
@@ -129,7 +129,7 @@
           "type": "string"
         }
       },
-      "description": "UnannotatedSimpleMessage represents a simple message sent to the unannotated Echo service."
+      "description": "GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service."
     },
     "protobufAny": {
       "type": "object",

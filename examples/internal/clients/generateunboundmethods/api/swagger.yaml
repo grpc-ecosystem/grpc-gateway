@@ -1,9 +1,9 @@
 ---
 swagger: "2.0"
 info:
-  description: "Unannotated Echo Service\nSimilar to echo_service.proto but without\
-    \ annotations and without external configuration.\n\nEcho Service API consists\
-    \ of a single service which returns\na message."
+  description: "Generate Unannotated Methods Echo Service\nSimilar to echo_service.proto\
+    \ but without annotations and without external configuration.\n\nGenerate Unannotated\
+    \ Methods Echo Service API consists of a single service which returns\na message."
   version: "version not set"
   title: "examples/internal/proto/examplepb/generate_unbound_methods.proto"
 consumes:
@@ -90,8 +90,8 @@ definitions:
         format: "int64"
       duration:
         type: "string"
-    description: "UnannotatedSimpleMessage represents a simple message sent to the\
-      \ unannotated Echo service."
+    description: "GenerateUnboundMethodsSimpleMessage represents a simple message\
+      \ sent to the unannotated GenerateUnboundMethodsEchoService service."
     example:
       duration: "duration"
       num: "num"
