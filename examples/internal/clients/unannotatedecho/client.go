@@ -46,8 +46,6 @@ type APIClient struct {
 
 	// API Services
 
-	EchoRpcApi *EchoRpcApiService
-
 	UnannotatedEchoServiceApi *UnannotatedEchoServiceApiService
 }
 
@@ -67,7 +65,6 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.common.client = c
 
 	// API Services
-	c.EchoRpcApi = (*EchoRpcApiService)(&c.common)
 	c.UnannotatedEchoServiceApi = (*UnannotatedEchoServiceApiService)(&c.common)
 
 	return c

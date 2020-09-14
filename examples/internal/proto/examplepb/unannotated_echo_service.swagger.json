@@ -85,7 +85,7 @@
           }
         ],
         "tags": [
-          "echo rpc"
+          "UnannotatedEchoService"
         ],
         "externalDocs": {
           "description": "Find out more Echo",
@@ -210,7 +210,7 @@
           }
         ],
         "tags": [
-          "echo rpc"
+          "UnannotatedEchoService"
         ],
         "externalDocs": {
           "description": "Find out more Echo",

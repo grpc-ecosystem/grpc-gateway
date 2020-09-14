@@ -5,7 +5,6 @@ package(default_visibility = ["//visibility:public"])
 go_library(
     name = "go_default_library",
     srcs = [
-        "api_echo_rpc.go",
         "api_unannotated_echo_service.go",
         "client.go",
         "configuration.go",

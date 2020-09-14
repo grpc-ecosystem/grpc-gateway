@@ -36,7 +36,7 @@ paths:
   /v1/example/echo/{id}:
     post:
       tags:
-      - "echo rpc"
+      - "UnannotatedEchoService"
       summary: "Summary: Echo rpc"
       description: "Description Echo"
       operationId: "UnannotatedEchoService_Echo"
@@ -82,7 +82,7 @@ paths:
   /v1/example/echo/{id}/{num}:
     get:
       tags:
-      - "echo rpc"
+      - "UnannotatedEchoService"
       summary: "Summary: Echo rpc"
       description: "Description Echo"
       operationId: "UnannotatedEchoService_Echo2"

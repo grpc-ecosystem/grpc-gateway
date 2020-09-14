@@ -81,7 +81,6 @@ openapiOptions:
       option:
         description: "Description Echo"
         summary: "Summary: Echo rpc"
-        tags: ["echo rpc"]
         external_docs:
           url: "https://github.com/grpc-ecosystem/grpc-gateway"
           description: "Find out more Echo"
