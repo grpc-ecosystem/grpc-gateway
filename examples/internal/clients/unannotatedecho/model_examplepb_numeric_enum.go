@@ -9,9 +9,11 @@
  */
 
 package unannotatedecho
+// ExamplepbNumericEnum : NumericEnum is one or zero.   - ZERO: ZERO means 0  - ONE: ONE means 1
+type ExamplepbNumericEnum string
 
-type RpcStatus struct {
-	Code int32 `json:"code,omitempty"`
-	Message string `json:"message,omitempty"`
-	Details []ProtobufAny `json:"details,omitempty"`
-}
+// List of examplepbNumericEnum
+const (
+	ZERO_ExamplepbNumericEnum ExamplepbNumericEnum = "ZERO"
+	ONE_ExamplepbNumericEnum ExamplepbNumericEnum = "ONE"
+)

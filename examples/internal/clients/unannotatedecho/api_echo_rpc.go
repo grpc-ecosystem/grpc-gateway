@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"fmt"
 	"github.com/antihax/optional"
 )
 
@@ -24,16 +25,17 @@ var (
 	_ context.Context
 )
 
-type UnannotatedEchoServiceApiService service
+type EchoRpcApiService service
 
 /* 
-UnannotatedEchoServiceApiService EchoBody method receives a simple message and returns it.
+EchoRpcApiService Summary: Echo rpc
+Description Echo
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param id Id represents the message identifier.
 
 @return ExamplepbUnannotatedSimpleMessage
 */
-func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx context.Context, body ExamplepbUnannotatedSimpleMessage) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
+func (a *EchoRpcApiService) UnannotatedEchoServiceEcho(ctx context.Context, id string) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -43,7 +45,8 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx co
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/echo_body"
+	localVarPath := a.client.cfg.BasePath + "/v1/example/echo/{id}"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -66,8 +69,6 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx co
 	if localVarHttpHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
-	// body params
-	localVarPostBody = &body
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -134,7 +135,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx co
 		}
 		
 		if localVarHttpResponse.StatusCode == 404 {
-			var v string
+			var v int32
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -146,6 +147,17 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx co
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 503 {
+			var v interface{}
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -173,11 +185,12 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoBody(ctx co
 }
 
 /* 
-UnannotatedEchoServiceApiService EchoDelete method receives a simple message and returns it.
+EchoRpcApiService Summary: Echo rpc
+Description Echo
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param id Id represents the message identifier.
  * @param num Int value field
- * @param optional nil or *UnannotatedEchoServiceEchoDeleteOpts - Optional Parameters:
-     * @param "Id" (optional.String) -  Id represents the message identifier.
+ * @param optional nil or *UnannotatedEchoServiceEcho2Opts - Optional Parameters:
      * @param "Duration" (optional.String) - 
      * @param "LineNum" (optional.String) - 
      * @param "Lang" (optional.String) - 
@@ -190,8 +203,7 @@ UnannotatedEchoServiceApiService EchoDelete method receives a simple message and
 @return ExamplepbUnannotatedSimpleMessage
 */
 
-type UnannotatedEchoServiceEchoDeleteOpts struct { 
-	Id optional.String
+type UnannotatedEchoServiceEcho2Opts struct { 
 	Duration optional.String
 	LineNum optional.String
 	Lang optional.String
@@ -202,9 +214,9 @@ type UnannotatedEchoServiceEchoDeleteOpts struct {
 	NoNote optional.String
 }
 
-func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx context.Context, num string, localVarOptionals *UnannotatedEchoServiceEchoDeleteOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
+func (a *EchoRpcApiService) UnannotatedEchoServiceEcho2(ctx context.Context, id string, num string, localVarOptionals *UnannotatedEchoServiceEcho2Opts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Delete")
+		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
 		localVarFileName   string
 		localVarFileBytes  []byte
@@ -212,16 +224,14 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx 
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/echo_delete"
+	localVarPath := a.client.cfg.BasePath + "/v1/example/echo/{id}/{num}"
+	localVarPath = strings.Replace(localVarPath, "{"+"id"+"}", fmt.Sprintf("%v", id), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"num"+"}", fmt.Sprintf("%v", num), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if localVarOptionals != nil && localVarOptionals.Id.IsSet() {
-		localVarQueryParams.Add("id", parameterToString(localVarOptionals.Id.Value(), ""))
-	}
-	localVarQueryParams.Add("num", parameterToString(num, ""))
 	if localVarOptionals != nil && localVarOptionals.Duration.IsSet() {
 		localVarQueryParams.Add("duration", parameterToString(localVarOptionals.Duration.Value(), ""))
 	}
@@ -329,7 +339,7 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx 
 		}
 		
 		if localVarHttpResponse.StatusCode == 404 {
-			var v string
+			var v int32
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -341,6 +351,17 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx 
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 503 {
+			var v interface{}
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
