@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	options "google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 // loadServices registers services and their methods from "targetFile" to "r".
@@ -37,7 +37,7 @@ func (r *Registry) loadServices(file *File) error {
 			}
 			if len(optsList) == 0 {
 				logFn := glog.V(1).Infof
-				if  r.warnOnUnboundMethods {
+				if r.warnOnUnboundMethods {
 					logFn = glog.Warningf
 				}
 				logFn("No HttpRule found for method: %s.%s", svc.GetName(), md.GetName())

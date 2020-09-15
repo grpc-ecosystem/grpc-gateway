@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 func newExampleFileDescriptor() *descriptor.File {

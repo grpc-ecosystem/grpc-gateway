@@ -10,14 +10,14 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
-	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 	anypb "github.com/golang/protobuf/ptypes/any"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/pluginpb"
 
 	//lint:ignore SA1019 known issue, will be replaced when possible
 	legacydescriptor "github.com/golang/protobuf/descriptor"
@@ -138,7 +138,7 @@ func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error
 }
 
 // encodeOpenAPI converts OpenAPI file obj to pluginpb.CodeGeneratorResponse_File
-func encodeOpenAPI(file *wrapper) (*pluginpb.CodeGeneratorResponse_File, error) {
+func encodeOpenAPI(file *wrapper) (*descriptor.ResponseFile, error) {
 	var formatted bytes.Buffer
 	enc := json.NewEncoder(&formatted)
 	enc.SetIndent("", "  ")
@@ -149,14 +149,16 @@ func encodeOpenAPI(file *wrapper) (*pluginpb.CodeGeneratorResponse_File, error) 
 	ext := filepath.Ext(name)
 	base := strings.TrimSuffix(name, ext)
 	output := fmt.Sprintf("%s.swagger.json", base)
-	return &pluginpb.CodeGeneratorResponse_File{
-		Name:    proto.String(output),
-		Content: proto.String(formatted.String()),
+	return &descriptor.ResponseFile{
+		CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
+			Name:    proto.String(output),
+			Content: proto.String(formatted.String()),
+		},
 	}, nil
 }
 
-func (g *generator) Generate(targets []*descriptor.File) ([]*pluginpb.CodeGeneratorResponse_File, error) {
-	var files []*pluginpb.CodeGeneratorResponse_File
+func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.ResponseFile, error) {
+	var files []*descriptor.ResponseFile
 	if g.reg.IsAllowMerge() {
 		var mergedTarget *descriptor.File
 		// try to find proto leader

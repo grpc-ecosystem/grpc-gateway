@@ -3,8 +3,8 @@ package descriptor
 import (
 	"testing"
 
-	descriptorpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 func TestGoPackageStandard(t *testing.T) {
