@@ -15,11 +15,9 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway/internal/gengateway"
-	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/compiler/protogen"
 )
 
 var (
@@ -57,94 +55,88 @@ func main() {
 
 	reg := descriptor.NewRegistry()
 
-	glog.V(1).Info("Parsing code generator request")
-	req, err := codegenerator.ParseRequest(os.Stdin)
-	if err != nil {
-		glog.Fatal(err)
-	}
-	glog.V(1).Info("Parsed code generator request")
-	if req.Parameter != nil {
-		for _, p := range strings.Split(req.GetParameter(), ",") {
-			spec := strings.SplitN(p, "=", 2)
-			if len(spec) == 1 {
-				if err := flag.CommandLine.Set(spec[0], ""); err != nil {
-					glog.Fatalf("Cannot set flag %s", p)
-				}
-				continue
+	protogen.Options{
+		// FIXME: ParamFunc is not enough at this point because it does not receive all params.
+		//        Some are swallowed by protogen like "paths".
+		//        This problem will go away when the code generation is completely rewritten
+		//        to support protogen.Plugin.
+		ParamFunc: flag.CommandLine.Set,
+	}.Run(func(plugin *protogen.Plugin) error {
+		// FIXME: still needed to parse request parameter and apply flags manually, see the comment above.
+		parseFlags(reg, plugin.Request.GetParameter())
+		if err := applyFlags(reg); err != nil {
+			return err
+		}
+
+		glog.V(1).Infof("Parsing code generator request")
+
+		if err := reg.Load(plugin.Request); err != nil {
+			return err
+		}
+
+		unboundHTTPRules := reg.UnboundExternalHTTPRules()
+		if len(unboundHTTPRules) != 0 {
+			return fmt.Errorf("HTTP rules without a matching selector: %s", strings.Join(unboundHTTPRules, ", "))
+		}
+
+		var targets []*descriptor.File
+		for _, target := range plugin.Request.FileToGenerate {
+			f, err := reg.LookupFile(target)
+			if err != nil {
+				return err
 			}
-			name, value := spec[0], spec[1]
-			if strings.HasPrefix(name, "M") {
-				reg.AddPkgMap(name[1:], value)
-				continue
+			targets = append(targets, f)
+		}
+
+		g := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *pathType, *modulePath, *allowPatchFeature, *standalone)
+		files, err := g.Generate(targets)
+		for _, f := range files {
+			glog.V(1).Infof("NewGeneratedFile %q in %s", f.GetName(), f.GoPkg)
+			genFile := plugin.NewGeneratedFile(f.GetName(), protogen.GoImportPath(f.GoPkg.Path))
+			if _, err := genFile.Write([]byte(f.GetContent())); err != nil {
+				return err
 			}
-			if err := flag.CommandLine.Set(name, value); err != nil {
+		}
+
+		glog.V(1).Info("Processed code generator request")
+
+		return err
+	})
+}
+
+func parseFlags(reg *descriptor.Registry, parameter string) {
+	for _, p := range strings.Split(parameter, ",") {
+		spec := strings.SplitN(p, "=", 2)
+		if len(spec) == 1 {
+			if err := flag.CommandLine.Set(spec[0], ""); err != nil {
 				glog.Fatalf("Cannot set flag %s", p)
 			}
+			continue
+		}
+
+		name, value := spec[0], spec[1]
+
+		if strings.HasPrefix(name, "M") {
+			reg.AddPkgMap(name[1:], value)
+			continue
+		}
+		if err := flag.CommandLine.Set(name, value); err != nil {
+			glog.Fatalf("Cannot set flag %s", p)
 		}
 	}
+}
 
-	g := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *pathType, *modulePath, *allowPatchFeature, *standalone)
-
+func applyFlags(reg *descriptor.Registry) error {
 	if *grpcAPIConfiguration != "" {
 		if err := reg.LoadGrpcAPIServiceFromYAML(*grpcAPIConfiguration); err != nil {
-			emitError(err)
-			return
+			return err
 		}
 	}
-
 	reg.SetStandalone(*standalone)
 	reg.SetPrefix(*importPrefix)
 	reg.SetImportPath(*importPath)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
 	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
 	reg.SetWarnOnUnboundMethods(*warnOnUnboundMethods)
-	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
-		emitError(err)
-		return
-	}
-	if err := reg.Load(req); err != nil {
-		emitError(err)
-		return
-	}
-
-	unboundHTTPRules := reg.UnboundExternalHTTPRules()
-	if len(unboundHTTPRules) != 0 {
-		emitError(fmt.Errorf("HTTP rules without a matching selector: %s", strings.Join(unboundHTTPRules, ", ")))
-		return
-	}
-
-	var targets []*descriptor.File
-	for _, target := range req.FileToGenerate {
-		f, err := reg.LookupFile(target)
-		if err != nil {
-			glog.Fatal(err)
-		}
-		targets = append(targets, f)
-	}
-
-	out, err := g.Generate(targets)
-	glog.V(1).Info("Processed code generator request")
-	if err != nil {
-		emitError(err)
-		return
-	}
-	emitFiles(out)
-}
-
-func emitFiles(out []*pluginpb.CodeGeneratorResponse_File) {
-	emitResp(&pluginpb.CodeGeneratorResponse{File: out})
-}
-
-func emitError(err error) {
-	emitResp(&pluginpb.CodeGeneratorResponse{Error: proto.String(err.Error())})
-}
-
-func emitResp(resp *pluginpb.CodeGeneratorResponse) {
-	buf, err := proto.Marshal(resp)
-	if err != nil {
-		glog.Fatal(err)
-	}
-	if _, err := os.Stdout.Write(buf); err != nil {
-		glog.Fatal(err)
-	}
+	return reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator)
 }

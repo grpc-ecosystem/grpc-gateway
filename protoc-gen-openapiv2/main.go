@@ -7,11 +7,11 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	genopenapi "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 var (
@@ -131,8 +131,12 @@ func main() {
 	emitFiles(out)
 }
 
-func emitFiles(out []*pluginpb.CodeGeneratorResponse_File) {
-	emitResp(&pluginpb.CodeGeneratorResponse{File: out})
+func emitFiles(out []*descriptor.ResponseFile) {
+	files := make([]*pluginpb.CodeGeneratorResponse_File, len(out))
+	for idx, item := range out {
+		files[idx] = item.CodeGeneratorResponse_File
+	}
+	emitResp(&pluginpb.CodeGeneratorResponse{File: files})
 }
 
 func emitError(err error) {

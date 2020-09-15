@@ -9,10 +9,10 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	pluginpb "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 var (
@@ -93,10 +93,11 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, p
 	}
 }
 
-func (g *generator) Generate(targets []*descriptor.File) ([]*pluginpb.CodeGeneratorResponse_File, error) {
-	var files []*pluginpb.CodeGeneratorResponse_File
+func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.ResponseFile, error) {
+	var files []*descriptor.ResponseFile
 	for _, file := range targets {
 		glog.V(1).Infof("Processing %s", file.GetName())
+
 		code, err := g.generate(file)
 		if err == errNoTargetService {
 			glog.V(1).Infof("%s: %v", file.GetName(), err)
@@ -110,6 +111,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*pluginpb.CodeGenera
 			glog.Errorf("%v: %s", err, code)
 			return nil, err
 		}
+
 		name, err := g.getFilePath(file)
 		if err != nil {
 			glog.Errorf("%v: %s", err, code)
@@ -117,12 +119,14 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*pluginpb.CodeGenera
 		}
 		ext := filepath.Ext(name)
 		base := strings.TrimSuffix(name, ext)
-		output := fmt.Sprintf("%s.pb.gw.go", base)
-		files = append(files, &pluginpb.CodeGeneratorResponse_File{
-			Name:    proto.String(output),
-			Content: proto.String(string(formatted)),
+		filename := fmt.Sprintf("%s.pb.gw.go", base)
+		files = append(files, &descriptor.ResponseFile{
+			GoPkg: file.GoPkg,
+			CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
+				Name:    proto.String(filename),
+				Content: proto.String(string(formatted)),
+			},
 		})
-		glog.V(1).Infof("Will emit %s", output)
 	}
 	return files, nil
 }

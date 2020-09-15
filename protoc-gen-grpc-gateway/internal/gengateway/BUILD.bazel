@@ -16,8 +16,8 @@ go_library(
         "//internal/generator:go_default_library",
         "//utilities:go_default_library",
         "@com_github_golang_glog//:go_default_library",
-        "@io_bazel_rules_go//proto/wkt:compiler_plugin_go_proto",
         "@org_golang_google_protobuf//proto:go_default_library",
+        "@org_golang_google_protobuf//types/pluginpb:go_default_library",
     ],
 )
 
@@ -32,7 +32,7 @@ go_test(
     deps = [
         "//internal/descriptor:go_default_library",
         "//internal/httprule:go_default_library",
-        "@io_bazel_rules_go//proto/wkt:descriptor_go_proto",
         "@org_golang_google_protobuf//proto:go_default_library",
+        "@org_golang_google_protobuf//types/descriptorpb:go_default_library",
     ],
 )
