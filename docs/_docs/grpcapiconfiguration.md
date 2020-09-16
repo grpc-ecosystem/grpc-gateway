@@ -77,7 +77,9 @@ The following is equivalent to the basic [usage example](usage.html) but without
     or using an OpenAPI configuration file
 
     ```sh
-    protoc -I. --swagger_out=grpc_api_configuration=path/to/your_service.yaml,openapi_configuration=path/to/your_service_swagger.yaml:./gen/go \
+    protoc -I . --swagger_out ./gen/go \
+      --swagger_opt grpc_api_configuration=path/to/your_service.yaml \
+      --swagger_opt openapi_configuration=path/to/your_service_swagger.yaml \
       your/service/v1/your_service.proto
     ```
 
