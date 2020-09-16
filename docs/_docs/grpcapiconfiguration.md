@@ -69,7 +69,8 @@ The following is equivalent to the basic [usage example](usage.html) but without
 6. Generate the optional your_service.swagger.json
 
     ```sh
-    protoc -I. --swagger_out=grpc_api_configuration=path/to/your_service.yaml:./gen/go \
+    protoc -I . --swagger_out ./gen/go \
+      --swagger_opt grpc_api_configuration=path/to/your_service.yaml \
       your/service/v1/your_service.proto
     ```
 
