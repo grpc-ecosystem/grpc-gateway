@@ -103,7 +103,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
     Here's an example of what a `protoc` command might look like to generate Go stubs:
 
     ```sh
-    protoc -I. --go_out=plugins=grpc,paths=source_relative:./gen/go/ your/service/v1/your_service.proto
+    protoc -I . --go_out ./gen/go/ --go_opt plugins=grpc --go_opt paths=source_relative your/service/v1/your_service.proto
     ```
 
 3. Implement your service in gRPC as usual
@@ -112,9 +112,9 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
      For example, the following generates gRPC code for Ruby based on `your/service/v1/your_service.proto`:
      ```sh
-     protoc -I. --ruby_out=./gen/ruby your/service/v1/your_service.proto
+     protoc -I . --ruby_out ./gen/ruby your/service/v1/your_service.proto
 
-     protoc -I. --grpc-ruby_out=./gen/ruby your/service/v1/your_service.proto
+     protoc -I . --grpc-ruby_out ./gen/ruby your/service/v1/your_service.proto
      ```
    2. Add the googleapis-common-protos gem (or your language equivalent) as a dependency to your project.
    3. Implement your gRPC service stubs
@@ -139,8 +139,10 @@ Make sure that your `$GOBIN` is in your `$PATH`.
     Here's what a `protoc` execution might look like with this option enabled:
 
     ```sh
-       protoc -I. --grpc-gateway_out=logtostderr=true,paths=source_relative:./gen/go \
-         --grpc-gateway_opt=generate_unbound_methods=true \
+       protoc -I . --grpc-gateway_out ./gen/go \
+         --grpc-gateway_opt logtostderr=true \
+         --grpc-gateway_opt paths=source_relative \
+         --grpc-gateway_opt generate_unbound_methods=true \
          your/service/v1/your_service.proto
     ```
 
@@ -184,7 +186,9 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    Here's what a `protoc` execution might look like:
 
     ```sh
-       protoc -I. --grpc-gateway_out=logtostderr=true,paths=source_relative:./gen/go \
+       protoc -I . --grpc-gateway_out ./gen/go \
+         --grpc-gateway_opt logtostderr=true \
+         --grpc-gateway_opt paths=source_relative \
          your/service/v1/your_service.proto
     ```
 
@@ -198,9 +202,11 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    Here's what a `protoc` execution might look like with this option enabled:
 
     ```sh
-       protoc -I. --grpc-gateway_out=logtostderr=true,paths=source_relative:./gen/go \
-         --grpc-gateway_opt=grpc_api_configuration=path/to/config.yaml \
-        your/service/v1/your_service.proto
+       protoc -I . --grpc-gateway_out ./gen/go \
+         --grpc-gateway_opt logtostderr=true \
+         --grpc-gateway_opt paths=source_relative \
+         --grpc-gateway_opt grpc_api_configuration=path/to/config.yaml \
+         your/service/v1/your_service.proto
     ```
 
 5. Write an entrypoint for the HTTP reverse-proxy server
@@ -257,8 +263,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 6. (Optional) Generate swagger definitions using `protoc-gen-swagger`
 
    ```sh
-   protoc -I. --swagger_out=logtostderr=true:./gen/swagger your/service/v1/your_service.proto
-   ```
+   protoc -I . --swagger_out ./gen/swagger --swagger_opt logtostderr=true your/service/v1/your_service.proto
 
    Note that this plugin also supports generating swagger definitions for unannotated methods; use the `generate_unbound_methods` option to enable this.
 
