@@ -37,6 +37,7 @@ var (
 	allowColonFinalSegments    = flag.Bool("allow_colon_final_segments", false, "determines whether colons are permitted in the final segment of a path")
 	versionFlag                = flag.Bool("version", false, "print the current version")
 	warnOnUnboundMethods       = flag.Bool("warn_on_unbound_methods", false, "emit a warning message if an RPC method has no HttpRule annotation")
+	generateUnboundMethods     = flag.Bool("generate_unbound_methods", false, "generate proxy methods even for RPC methods that have no HttpRule annotation")
 )
 
 // Variables set by goreleaser at build time
@@ -97,7 +98,13 @@ func main() {
 	reg.SetAllowDeleteBody(*allowDeleteBody)
 	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
 	reg.SetAllowColonFinalSegments(*allowColonFinalSegments)
+
+	if *warnOnUnboundMethods && *generateUnboundMethods {
+		glog.Warningf("Option warn_on_unbound_methods has no effect when generate_unbound_methods is used.")
+	}
+
 	reg.SetWarnOnUnboundMethods(*warnOnUnboundMethods)
+	reg.SetGenerateUnboundMethods(*generateUnboundMethods)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
 		return
