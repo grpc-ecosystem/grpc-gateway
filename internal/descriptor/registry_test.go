@@ -3,6 +3,7 @@ package descriptor
 import (
 	"testing"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
@@ -633,6 +634,172 @@ func TestUnboundExternalHTTPRules(t *testing.T) {
 		>
 	`)
 	assertStringSlice(t, "unbound external HTTP rules", reg.UnboundExternalHTTPRules(), []string{})
+}
+
+func TestRegisterOpenAPIOptions(t *testing.T) {
+	codeReq := `file_to_generate: 'a.proto'
+	proto_file <
+		name: 'a.proto'
+		package: 'example.foo'
+		options < go_package: 'foo' >
+		message_type <
+			name: 'ExampleMessage'
+			field <
+				name: 'str'
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				number: 1
+			>
+		>
+		service <
+			name: "AService"
+			method <
+				name: "Meth"
+				input_type: "ExampleMessage"
+				output_type: "ExampleMessage"
+				options <
+					[google.api.http] < post: "/v1/a" body: "*" >
+				>
+			>
+		>
+	>
+	`
+	for _, tcase := range []struct {
+		options   *openapiconfig.OpenAPIOptions
+		shouldErr bool
+		desc      string
+	}{
+		{
+			desc: "handle nil options",
+		},
+		{
+			desc: "successfully add options if referenced entity exists",
+			options: &openapiconfig.OpenAPIOptions{
+				File: []*openapiconfig.OpenAPIFileOption{
+					{
+						File: "a.proto",
+					},
+				},
+				Method: []*openapiconfig.OpenAPIMethodOption{
+					{
+						Method: "example.foo.AService.Meth",
+					},
+				},
+				Message: []*openapiconfig.OpenAPIMessageOption{
+					{
+						Message: "example.foo.ExampleMessage",
+					},
+				},
+				Service: []*openapiconfig.OpenAPIServiceOption{
+					{
+						Service: "example.foo.AService",
+					},
+				},
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field: "example.foo.ExampleMessage.str",
+					},
+				},
+			},
+		},
+		{
+			desc: "reject fully qualified names with leading \".\"",
+			options: &openapiconfig.OpenAPIOptions{
+				File: []*openapiconfig.OpenAPIFileOption{
+					{
+						File: "a.proto",
+					},
+				},
+				Method: []*openapiconfig.OpenAPIMethodOption{
+					{
+						Method: ".example.foo.AService.Meth",
+					},
+				},
+				Message: []*openapiconfig.OpenAPIMessageOption{
+					{
+						Message: ".example.foo.ExampleMessage",
+					},
+				},
+				Service: []*openapiconfig.OpenAPIServiceOption{
+					{
+						Service: ".example.foo.AService",
+					},
+				},
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field: ".example.foo.ExampleMessage.str",
+					},
+				},
+			},
+			shouldErr: true,
+		},
+		{
+			desc: "error if file does not exist",
+			options: &openapiconfig.OpenAPIOptions{
+				File: []*openapiconfig.OpenAPIFileOption{
+					{
+						File: "b.proto",
+					},
+				},
+			},
+			shouldErr: true,
+		},
+		{
+			desc: "error if method does not exist",
+			options: &openapiconfig.OpenAPIOptions{
+				Method: []*openapiconfig.OpenAPIMethodOption{
+					{
+						Method: "example.foo.AService.Meth2",
+					},
+				},
+			},
+			shouldErr: true,
+		},
+		{
+			desc: "error if message does not exist",
+			options: &openapiconfig.OpenAPIOptions{
+				Message: []*openapiconfig.OpenAPIMessageOption{
+					{
+						Message: "example.foo.NonexistentMessage",
+					},
+				},
+			},
+			shouldErr: true,
+		},
+		{
+			desc: "error if service does not exist",
+			options: &openapiconfig.OpenAPIOptions{
+				Service: []*openapiconfig.OpenAPIServiceOption{
+					{
+						Service: "example.foo.AService1",
+					},
+				},
+			},
+			shouldErr: true,
+		},
+		{
+			desc: "error if field does not exist",
+			options: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field: "example.foo.ExampleMessage.str1",
+					},
+				},
+			},
+			shouldErr: true,
+		},
+	} {
+		t.Run(tcase.desc, func(t *testing.T) {
+			reg := NewRegistry()
+			if err := load(t, reg, codeReq); err != nil {
+				t.Fatalf("got unexpected error when loading request: %s", err)
+			}
+			err := reg.RegisterOpenAPIOptions(tcase.options)
+			if (err != nil) != tcase.shouldErr {
+				t.Fatalf("got unexpected error: %s", err)
+			}
+		})
+	}
 }
 
 func assertStringSlice(t *testing.T, message string, got, want []string) {

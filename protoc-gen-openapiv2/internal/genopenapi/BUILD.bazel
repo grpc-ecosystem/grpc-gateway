@@ -37,6 +37,7 @@ go_test(
     embed = [":go_default_library"],
     deps = [
         "//internal/descriptor:go_default_library",
+        "//internal/descriptor/openapiconfig:go_default_library",
         "//internal/httprule:go_default_library",
         "//protoc-gen-openapiv2/options:go_default_library",
         "//runtime:go_default_library",
