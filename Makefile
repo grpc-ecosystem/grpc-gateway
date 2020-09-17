@@ -79,6 +79,8 @@ EXAMPLES=examples/internal/proto/examplepb/echo_service.proto \
 	 examples/internal/proto/examplepb/use_go_template.proto \
 	 examples/internal/proto/examplepb/response_body_service.proto
 
+GENERATE_UNBOUND_METHODS_EXAMPLE=examples/internal/proto/examplepb/generate_unbound_methods.proto
+
 HELLOWORLD=examples/internal/helloworld/helloworld.proto
 
 EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
@@ -87,6 +89,10 @@ EXAMPLE_SWAGGERSRCS=$(SWAGGER_EXAMPLES:.proto=.swagger.json)
 EXAMPLE_SWAGGER_MERGE=examples/internal/proto/examplepb/swagger_merge.swagger.json
 EXAMPLE_DEPS=examples/internal/proto/pathenum/path_enum.proto examples/internal/proto/sub/message.proto examples/internal/proto/sub2/message.proto
 EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
+
+GENERATE_UNBOUND_METHODS_EXAMPLE_SWAGGERSRCS=$(GENERATE_UNBOUND_METHODS_EXAMPLE:.proto=.swagger.json)
+GENERATE_UNBOUND_METHODS_EXAMPLE_SVCSRCS=$(GENERATE_UNBOUND_METHODS_EXAMPLE:.proto=.pb.go)
+GENERATE_UNBOUND_METHODS_EXAMPLE_GWSRCS=$(GENERATE_UNBOUND_METHODS_EXAMPLE:.proto=.pb.gw.go)
 
 HELLOWORLD_SVCSRCS=$(HELLOWORLD:.proto=.pb.go)
 HELLOWORLD_GWSRCS=$(HELLOWORLD:.proto=.pb.gw.go)
@@ -136,8 +142,14 @@ RESPONSE_BODY_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/responsebody/client.go \
 		 $(EXAMPLE_CLIENT_DIR)/responsebody/model_examplepb_response_body_out_response.go \
 		 $(EXAMPLE_CLIENT_DIR)/responsebody/model_response_response_type.go \
 		 $(EXAMPLE_CLIENT_DIR)/responsebody/api_response_body_service.go
+GENERATE_UNBOUND_METHODS_EXAMPLE_SPEC=examples/internal/proto/examplepb/generate_unbound_methods.swagger.json
+GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/generateunboundmethods/client.go \
+		 $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/response.go \
+		 $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/configuration.go \
+		 $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/model_examplepb_generate_unbound_methods_simple_message.go \
+		 $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/api_generate_unbound_methods.go
 
-EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS)
+EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS)
 SWAGGER_CODEGEN=swagger-codegen
 
 PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
@@ -182,6 +194,13 @@ $(EXAMPLE_SWAGGERSRCS): $(SWAGGER_PLUGIN) $(SWAGGER_EXAMPLES)
 $(EXAMPLE_SWAGGER_MERGE): $(SWAGGER_PLUGIN) $(SWAGGER_EXAMPLE_MERGE)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(SWAGGER_PLUGIN) --swagger_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true,allow_merge=true,merge_file_name=$(EXAMPLE_SWAGGER_MERGE:.swagger.json=),$(PKGMAP):. $(SWAGGER_EXAMPLE_MERGE)
 
+$(GENERATE_UNBOUND_METHODS_EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(GENERATE_UNBOUND_METHODS_EXAMPLE)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,generate_unbound_methods=true,$(PKGMAP)$(ADDITIONAL_GW_FLAGS):. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
+$(GENERATE_UNBOUND_METHODS_EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(GENERATE_UNBOUND_METHODS_EXAMPLE)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc,paths=source_relative:. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
+$(GENERATE_UNBOUND_METHODS_EXAMPLE_SWAGGERSRCS): $(SWAGGER_PLUGIN) $(GENERATE_UNBOUND_METHODS_EXAMPLE)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(SWAGGER_PLUGIN) --swagger_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true,generate_unbound_methods=true,$(PKGMAP):. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
+
 $(HELLOWORLD_SVCSRCS): $(GO_PLUGIN) $(HELLOWORLD)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=$(PKGMAP),plugins=grpc,paths=source_relative:. $(HELLOWORLD)
 
@@ -210,8 +229,13 @@ $(RESPONSE_BODY_EXAMPLE_SRCS): $(RESPONSE_BODY_EXAMPLE_SPEC)
 	    -l go -o examples/internal/clients/responsebody --additional-properties packageName=responsebody
 	@rm -f $(EXAMPLE_CLIENT_DIR)/responsebody/README.md \
 		$(EXAMPLE_CLIENT_DIR)/responsebody/git_push.sh
+$(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS): $(GENERATE_UNBOUND_METHODS_EXAMPLE_SPEC)
+	$(SWAGGER_CODEGEN) generate -i $(GENERATE_UNBOUND_METHODS_EXAMPLE_SPEC) \
+	    -l go -o examples/internal/clients/generateunboundmethods --additional-properties packageName=generateunboundmethods
+	@rm -f $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/README.md \
+		$(EXAMPLE_CLIENT_DIR)/generateunboundmethods/git_push.sh
 
-examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_SWAGGER_MERGE) $(EXAMPLE_CLIENT_SRCS) $(HELLOWORLD_SVCSRCS) $(HELLOWORLD_GWSRCS)
+examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_SWAGGERSRCS) $(EXAMPLE_SWAGGER_MERGE) $(EXAMPLE_CLIENT_SRCS) $(HELLOWORLD_SVCSRCS) $(HELLOWORLD_GWSRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_GWSRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SVCSRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SWAGGERSRCS)
 testproto: $(RUNTIME_TEST_SRCS)
 test: examples testproto
 	go test -short -race ./...
@@ -250,6 +274,9 @@ realclean: distclean
 	rm -f $(EXAMPLE_GWSRCS)
 	rm -f $(EXAMPLE_SWAGGERSRCS)
 	rm -f $(EXAMPLE_CLIENT_SRCS)
+	rm -f $(GENERATE_UNBOUND_METHODS_EXAMPLE_GWSRCS)
+	rm -f $(GENERATE_UNBOUND_METHODS_EXAMPLE_SVCSRCS)
+	rm -f $(GENERATE_UNBOUND_METHODS_EXAMPLE_SWAGGERSRCS)
 	rm -f $(HELLOWORLD_SVCSRCS)
 	rm -f $(HELLOWORLD_GWSRCS)
 	rm -f $(OPENAPIV2_GO)

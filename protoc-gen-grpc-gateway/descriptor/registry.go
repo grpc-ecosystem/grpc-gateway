@@ -90,6 +90,10 @@ type Registry struct {
 	// warnOnUnboundMethods causes the registry to emit warning logs if an RPC method
 	// has no HttpRule annotation.
 	warnOnUnboundMethods bool
+
+	// generateUnboundMethods causes the registry to generate proxy methods even for
+	// RPC methods that have no HttpRule annotation.
+	generateUnboundMethods bool
 }
 
 type repeatedFieldSeparator struct {
@@ -531,6 +535,11 @@ func (r *Registry) GetSimpleOperationIDs() bool {
 // SetWarnOnUnboundMethods sets warnOnUnboundMethods
 func (r *Registry) SetWarnOnUnboundMethods(warn bool) {
 	r.warnOnUnboundMethods = warn
+}
+
+// SetGenerateUnboundMethods sets generateUnboundMethods
+func (r *Registry) SetGenerateUnboundMethods(generate bool) {
+	r.generateUnboundMethods = generate
 }
 
 // sanitizePackageName replaces unallowed character in package name
