@@ -94,7 +94,8 @@ RUNTIME_TEST_PROTO=runtime/internal/examplepb/example.proto \
 	runtime/internal/examplepb/non_standard_names.proto
 RUNTIME_TEST_SRCS=$(RUNTIME_TEST_PROTO:.proto=.pb.go)
 
-APICONFIG_PROTO=internal/descriptor/apiconfig/apiconfig.proto
+APICONFIG_PROTO=internal/descriptor/apiconfig/apiconfig.proto \
+	internal/descriptor/openapiconfig/openapiconfig.proto
 APICONFIG_SRCS=$(APICONFIG_PROTO:.proto=.pb.go)
 
 EXAMPLE_CLIENT_DIR=examples/internal/clients
@@ -156,7 +157,7 @@ $(GO_GRPC_PLUGIN):
 $(OPENAPIV2_GO): $(OPENAPIV2_PROTO) $(GO_PLUGIN)
 	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=paths=source_relative:. $(OPENAPIV2_PROTO)
 
-$(GATEWAY_PLUGIN): $(GATEWAY_PLUGIN_SRC)
+$(GATEWAY_PLUGIN): $(GATEWAY_PLUGIN_SRC) $(OPENAPIV2_GO)
 	go build -o $@ $(GATEWAY_PLUGIN_PKG)
 
 $(OPENAPI_PLUGIN): $(OPENAPI_PLUGIN_SRC) $(OPENAPIV2_GO)
@@ -183,7 +184,7 @@ $(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
 
 
-$(EXAMPLE_OPENAPISRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml
+$(EXAMPLE_OPENAPISRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml,openapi_configuration=examples/internal/proto/examplepb/unannotated_echo_service.swagger.yaml
 $(EXAMPLE_OPENAPISRCS): $(OPENAPI_PLUGIN) $(OPENAPI_EXAMPLES)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true$(ADDITIONAL_SWG_FLAGS):. $(OPENAPI_EXAMPLES)
 

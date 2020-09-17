@@ -1,28 +1,72 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/internal/proto/examplepb/unannotated_echo_service.proto",
+    "title": "Unannotated Echo",
     "description": "Unannotated Echo Service\nSimilar to echo_service.proto but without annotations. See\nunannotated_echo_service.yaml for the equivalent of the annotations in\ngRPC API configuration format.\n\nEcho Service API consists of a single service which returns\na message.",
-    "version": "version not set"
+    "version": "1.0",
+    "contact": {
+      "name": "gRPC-Gateway project",
+      "url": "https://github.com/grpc-ecosystem/grpc-gateway",
+      "email": "none@example.com"
+    },
+    "license": {
+      "name": "BSD 3-Clause License",
+      "url": "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt"
+    },
+    "x-something-something": "yadda"
   },
+  "schemes": [
+    "http",
+    "https",
+    "wss"
+  ],
   "consumes": [
-    "application/json"
+    "application/json",
+    "application/x-foo-mime"
   ],
   "produces": [
-    "application/json"
+    "application/json",
+    "application/x-foo-mime"
   ],
   "paths": {
     "/v1/example/echo/{id}": {
       "post": {
-        "summary": "Echo method receives a simple message and returns it.",
-        "description": "The message posted as the id parameter will also be\nreturned.",
+        "summary": "Summary: Echo rpc",
+        "description": "Description Echo",
         "operationId": "UnannotatedEchoService_Echo",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbUnannotatedSimpleMessage"
+            },
+            "examples": {
+              "application/json": {
+                "value": "the input value"
+              }
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "integer",
+              "format": "integer"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "503": {
+            "description": "Returned when the resource is temporarily unavailable.",
+            "schema": {},
+            "x-number": 100
           },
           "default": {
             "description": "An unexpected error response.",
@@ -42,20 +86,51 @@
         ],
         "tags": [
           "UnannotatedEchoService"
-        ]
+        ],
+        "externalDocs": {
+          "description": "Find out more Echo",
+          "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+        }
       }
     },
     "/v1/example/echo/{id}/{num}": {
       "get": {
-        "summary": "Echo method receives a simple message and returns it.",
-        "description": "The message posted as the id parameter will also be\nreturned.",
+        "summary": "Summary: Echo rpc",
+        "description": "Description Echo",
         "operationId": "UnannotatedEchoService_Echo2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbUnannotatedSimpleMessage"
+            },
+            "examples": {
+              "application/json": {
+                "value": "the input value"
+              }
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "integer",
+              "format": "integer"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "503": {
+            "description": "Returned when the resource is temporarily unavailable.",
+            "schema": {},
+            "x-number": 100
           },
           "default": {
             "description": "An unexpected error response.",
@@ -74,10 +149,12 @@
           },
           {
             "name": "num",
+            "description": "Int value field",
             "in": "path",
             "required": true,
             "type": "string",
-            "format": "int64"
+            "format": "int64",
+            "default": "42"
           },
           {
             "name": "duration",
@@ -134,7 +211,11 @@
         ],
         "tags": [
           "UnannotatedEchoService"
-        ]
+        ],
+        "externalDocs": {
+          "description": "Find out more Echo",
+          "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+        }
       }
     },
     "/v1/example/echo_body": {
@@ -146,6 +227,23 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/examplepbUnannotatedSimpleMessage"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
           "default": {
@@ -181,6 +279,23 @@
               "$ref": "#/definitions/examplepbUnannotatedSimpleMessage"
             }
           },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -198,10 +313,12 @@
           },
           {
             "name": "num",
+            "description": "Int value field",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
-            "format": "int64"
+            "format": "int64",
+            "default": "42"
           },
           {
             "name": "duration",
@@ -263,6 +380,15 @@
     }
   },
   "definitions": {
+    "examplepbNumericEnum": {
+      "type": "string",
+      "enum": [
+        "ZERO",
+        "ONE"
+      ],
+      "default": "ZERO",
+      "description": "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+    },
     "examplepbUnannotatedEmbedded": {
       "type": "object",
       "properties": {
@@ -278,6 +404,9 @@
     },
     "examplepbUnannotatedSimpleMessage": {
       "type": "object",
+      "example": {
+        "id": "myid"
+      },
       "properties": {
         "id": {
           "type": "string",
@@ -285,7 +414,12 @@
         },
         "num": {
           "type": "string",
-          "format": "int64"
+          "format": "int64",
+          "default": "42",
+          "description": "Int value field",
+          "required": [
+            "num"
+          ]
         },
         "duration": {
           "type": "string"
@@ -308,7 +442,15 @@
           "$ref": "#/definitions/examplepbUnannotatedEmbedded"
         }
       },
-      "description": "UnannotatedSimpleMessage represents a simple message sent to the unannotated Echo service."
+      "description": "A simple message with many types",
+      "title": "A bit of everything",
+      "externalDocs": {
+        "description": "Find out more about UnannotatedSimpleMessage",
+        "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+      },
+      "required": [
+        "id"
+      ]
     },
     "protobufAny": {
       "type": "object",
@@ -343,5 +485,42 @@
         }
       }
     }
-  }
+  },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "X-API-Key",
+      "in": "header",
+      "x-amazon-apigateway-authorizer": {
+        "authorizerResultTtlInSeconds": 60,
+        "type": "token"
+      },
+      "x-amazon-apigateway-authtype": "oauth2"
+    },
+    "BasicAuth": {
+      "type": "basic"
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": [],
+      "BasicAuth": []
+    },
+    {
+      "ApiKeyAuth": [],
+      "OAuth2": [
+        "read",
+        "write"
+      ]
+    }
+  ],
+  "externalDocs": {
+    "description": "More about gRPC-Gateway",
+    "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+  },
+  "x-grpc-gateway-baz-list": [
+    "one",
+    true
+  ],
+  "x-grpc-gateway-foo": "bar"
 }
