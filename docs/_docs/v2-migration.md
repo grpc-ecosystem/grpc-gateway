@@ -61,7 +61,7 @@ See `a_bit_of_everything.proto` in the example protos for more examples.
 See
 [the original issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/375)
 and
-[original pull request](https://github.com/grpc-ecosystem/grpc-gateway/issues/375)
+[original pull request](https://github.com/grpc-ecosystem/grpc-gateway/pull/540)
 for more information.
 
 If you want to revert to the old behaviour, configure a custom marshaler with
