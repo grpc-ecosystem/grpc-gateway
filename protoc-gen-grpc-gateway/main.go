@@ -35,6 +35,7 @@ var (
 	standalone                 = flag.Bool("standalone", false, "generates a standalone gateway package, which imports the target service package")
 	versionFlag                = flag.Bool("version", false, "print the current version")
 	warnOnUnboundMethods       = flag.Bool("warn_on_unbound_methods", false, "emit a warning message if an RPC method has no HttpRule annotation")
+	generateUnboundMethods     = flag.Bool("generate_unbound_methods", false, "generate proxy methods even for RPC methods that have no HttpRule annotation")
 )
 
 // Variables set by goreleaser at build time
@@ -132,11 +133,15 @@ func applyFlags(reg *descriptor.Registry) error {
 			return err
 		}
 	}
+	if *warnOnUnboundMethods && *generateUnboundMethods {
+		glog.Warningf("Option warn_on_unbound_methods has no effect when generate_unbound_methods is used.")
+	}
 	reg.SetStandalone(*standalone)
 	reg.SetPrefix(*importPrefix)
 	reg.SetImportPath(*importPath)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
 	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
 	reg.SetWarnOnUnboundMethods(*warnOnUnboundMethods)
+	reg.SetGenerateUnboundMethods(*generateUnboundMethods)
 	return reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator)
 }

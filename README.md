@@ -97,8 +97,60 @@ Make sure that your `$GOBIN` is in your `$PATH`.
     }
    ```
 
-2. Add a [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46)
-annotation to your .proto file
+2. Generate gRPC stubs
+
+    This step generates the gRPC stubs that you can use to implement the service and consume from clients:
+
+    Here's an example of what a `protoc` command might look like to generate Go stubs:
+
+    ```sh
+    protoc -I . --go_out ./gen/go/ --go_opt plugins=grpc --go_opt paths=source_relative your/service/v1/your_service.proto
+    ```
+
+3. Implement your service in gRPC as usual
+
+   1. (Optional) Generate gRPC stub in the [other programming languages](https://grpc.io/docs/).
+
+     For example, the following generates gRPC code for Ruby based on `your/service/v1/your_service.proto`:
+     ```sh
+     protoc -I . --ruby_out ./gen/ruby your/service/v1/your_service.proto
+
+     protoc -I . --grpc-ruby_out ./gen/ruby your/service/v1/your_service.proto
+     ```
+   2. Add the googleapis-common-protos gem (or your language equivalent) as a dependency to your project.
+   3. Implement your gRPC service stubs
+
+4. Generate reverse-proxy using `protoc-gen-grpc-gateway`
+
+    At this point, you have 3 options:
+
+    * no further modifications, use the default mapping to HTTP semantics (method, path, etc.)
+        * this will work on any `.proto` file, but will not allow setting HTTP paths, request parameters or similar
+    * additional `.proto` modifications to use a custom mapping
+        * relies on parameters in the `.proto` file to set custom HTTP mappings
+    * no `.proto` modifications, but use an external configuration file
+        * relies on an external configuration file to set custom HTTP mappings
+        * mostly useful when the source proto file isn't under your control
+
+    1. Using the default mapping
+
+    This requires no additional modification to the `.proto` file, but does require enabling a specific option when executing the plugin.
+    The `generate_unbound_methods` should be enabled.
+
+    Here's what a `protoc` execution might look like with this option enabled:
+
+    ```sh
+       protoc -I . --grpc-gateway_out ./gen/go \
+         --grpc-gateway_opt logtostderr=true \
+         --grpc-gateway_opt paths=source_relative \
+         --grpc-gateway_opt generate_unbound_methods=true \
+         your/service/v1/your_service.proto
+    ```
+
+    2. With custom annotations
+
+    Add a [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46)
+    annotation to your .proto file
 
    `your_service.proto`:
    ```diff
@@ -131,68 +183,34 @@ annotation to your .proto file
    See [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
    for examples of more annotations you can add to customize gateway behavior
    and generated OpenAPI output.
+   
+   Here's what a `protoc` execution might look like:
 
-   If you do not want to modify the proto file for use with grpc-gateway you can
+    ```sh
+       protoc -I . --grpc-gateway_out ./gen/go \
+         --grpc-gateway_opt logtostderr=true \
+         --grpc-gateway_opt paths=source_relative \
+         your/service/v1/your_service.proto
+    ```
+
+    3. External configuration
+   If you do not want to (or cannot) modify the proto file for use with grpc-gateway you can
    alternatively use an external
    [gRPC Service Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file.
    [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/grpcapiconfiguration.html)
    for more information.
 
-3. Generate gRPC stub
+   Here's what a `protoc` execution might look like with this option enabled:
 
-  You will need to provide the required third party protobuf files to the `protoc` compiler.
-  They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
-  them into your `protoc` generation file structure. If you've structured your protofiles according
-  to something like [the Buf style guide](https://buf.build/docs/style-guide#files-and-packages),
-  you could copy the files into a top-level `./google` folder.
-  
-  Here is an example of what a `protoc` command might look like:
+    ```sh
+       protoc -I . --grpc-gateway_out ./gen/go \
+         --grpc-gateway_opt logtostderr=true \
+         --grpc-gateway_opt paths=source_relative \
+         --grpc-gateway_opt grpc_api_configuration=path/to/config.yaml \
+         your/service/v1/your_service.proto
+    ```
 
-  ```sh
-  protoc -I. --go_out=plugins=grpc,paths=source_relative:./gen/go/ your/service/v1/your_service.proto
-  ```
-
-  It will generate a stub file with path `./gen/go/your/service/v1/your_service.pb.go`.
-
-4. Implement your service in gRPC as usual
-
-   1. (Optional) Generate gRPC stub in the [other programming languages](https://grpc.io/docs/).
-
-     For example, the following generates gRPC code for Ruby based on `your/service/v1/your_service.proto`:
-     ```sh
-     protoc -I. --ruby_out=./gen/ruby your/service/v1/your_service.proto
-
-     protoc -I. --grpc-ruby_out=./gen/ruby your/service/v1/your_service.proto
-     ```
-   2. Add the googleapis-common-protos gem (or your language equivalent) as a dependency to your project.
-   3. Implement your gRPC service stubs
-
-5. Generate reverse-proxy using `protoc-gen-grpc-gateway`
-
-   ```sh
-   protoc -I. --grpc-gateway_out=logtostderr=true,paths=source_relative:./gen/go \
-     your/service/v1/your_service.proto
-   ```
-
-   It will generate a reverse proxy `gen/go/your/service/v1/your_service.pb.gw.go`.
-   
-   OR generate a standalone reverse-proxy if needed.
-
-   Suppose you have a generated gRPC stub package, and you want to deploy several
-   API gateways using client-specific
-   [YAML annotations](https://grpc-ecosystem.github.io/grpc-gateway/docs/grpcapiconfiguration.html).
-   You can generate a grpc-gateway which imports the stub as an external 
-   package, so you don't have to regenerate it several times.
-   To set the import path of the stub package, set its full path in the `go_package`.
-   
-   ```sh
-   protoc -I. --grpc-gateway_out=logtostderr=true,grpc_api_configuration=apiOne.yaml,paths=source_relative,standalone=true:./gen/go/client_one \
-     your/service/v1/your_service.proto
-
-   protoc -I. --grpc-gateway_out=logtostderr=true,grpc_api_configuration=apiTwo.yaml,paths=source_relative,standalone=true:./gen/go/client_two \
-     your/service/v1/your_service.proto
-
-6. Write an entrypoint for the HTTP reverse-proxy server
+5. Write an entrypoint for the HTTP reverse-proxy server
 
    ```go
    package main
@@ -243,11 +261,13 @@ annotation to your .proto file
    }
    ```
 
-7. (Optional) Generate OpenAPI definitions using `protoc-gen-openapiv2`
+6. (Optional) Generate OpenAPI definitions using `protoc-gen-openapiv2`
 
    ```sh
-   protoc -I. --openapiv2_out=logtostderr=true:./gen/openapiv2 your/service/v1/your_service.proto
+   protoc -I . --openapiv2_out ./gen/openapiv2 --openapiv2_opt logtostderr=true your/service/v1/your_service.proto
    ```
+
+   Note that this plugin also supports generating swagger definitions for unannotated methods; use the `generate_unbound_methods` option to enable this.
 
 ## Video intro
 
@@ -261,12 +281,25 @@ https://github.com/johanbrandhorst/grpc-gateway-boilerplate.
 ## Parameters and flags
 
 During code generation with `protoc`, flags to grpc-gateway tools must be passed
-through protoc using the `--<tool_suffix>_out=<flags>:<path>` pattern, for
-example:
+through protoc using one of 2 patterns:
+
+* as part of the `--<tool_suffix>_out` `protoc` parameter: `--<tool_suffix>_out=<flags>:<path>`
 
 ```sh
 --grpc-gateway_out=logtostderr=true,repeated_path_param_separator=ssv:.
 --openapiv2_out=logtostderr=true,repeated_path_param_separator=ssv:.
+```
+
+* using additional `--<tool_suffix>_opt` parameters: `--<tool_suffix>_opt=<flag>[,<flag>]*`
+
+```sh
+--grpc-gateway_opt logtostderr=true,repeated_path_param_separator=ssv
+# or separately
+--grpc-gateway_opt logtostderr=true --grpc-gateway_opt repeated_path_param_separator=ssv
+
+--openapiv2_opt logtostderr=true,repeated_path_param_separator=ssv
+# or separately
+--openapiv2_opt logtostderr=true --openapiv2_opt repeated_path_param_separator=ssv
 ```
 
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to
