@@ -105,6 +105,10 @@ type Registry struct {
 	// fieldOptions is a mapping of the fully-qualified name of the parent message concat
 	// field name and a period to additional OpenAPI field options
 	fieldOptions map[string]*options.JSONSchema
+
+	// generateUnboundMethods causes the registry to generate proxy methods even for
+	// RPC methods that have no HttpRule annotation.
+	generateUnboundMethods bool
 }
 
 type repeatedFieldSeparator struct {
@@ -553,6 +557,11 @@ func (r *Registry) GetSimpleOperationIDs() bool {
 // SetWarnOnUnboundMethods sets warnOnUnboundMethods
 func (r *Registry) SetWarnOnUnboundMethods(warn bool) {
 	r.warnOnUnboundMethods = warn
+}
+
+// SetGenerateUnboundMethods sets generateUnboundMethods
+func (r *Registry) SetGenerateUnboundMethods(generate bool) {
+	r.generateUnboundMethods = generate
 }
 
 // sanitizePackageName replaces unallowed character in package name

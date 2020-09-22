@@ -13,6 +13,8 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude echo_service_grpc.pb.go
 # gazelle:exclude flow_combination.pb.gw.go
 # gazelle:exclude flow_combination_grpc.pb.go
+# gazelle:exclude generate_unbound_methods.pb.gw.go
+# gazelle:exclude generate_unbound_methods_grpc.pb.go
 # gazelle:exclude generated_input.proto
 # gazelle:exclude non_standard_names.pb.gw.go
 # gazelle:exclude non_standard_names_grpc.pb.go
@@ -43,6 +45,7 @@ proto_library(
         "a_bit_of_everything.proto",
         "echo_service.proto",
         "flow_combination.proto",
+        "generate_unbound_methods.proto",
         "generated_output.proto",
         "non_standard_names.proto",
         "response_body_service.proto",
