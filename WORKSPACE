@@ -31,8 +31,6 @@ rules_proto_dependencies()
 
 rules_proto_toolchains()
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
 http_archive(
     name = "io_bazel_rules_go",
     sha256 = "b725e6497741d7fc2d55fcc29a276627d10e43fa5d0bb692692890ae30d98d00",

@@ -22,7 +22,9 @@ All submissions, including submissions by project members, require review.
 
 ### I want to regenerate the files after making changes
 
-Great! It should be as simple as this (run from the root of the directory):
+#### Using Docker
+
+It should be as simple as this (run from the root of the repository):
 
 ```bash
 docker run -v $(pwd):/src/grpc-gateway --rm docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.15 \
@@ -39,6 +41,25 @@ docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --r
 
 You may need to authenticate with GitHub to pull `docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env`.
 You can do this by following the steps on the [GitHub Package docs](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-docker-for-use-with-github-packages#authenticating-to-github-packages).
+
+#### Using Visual Studio Code dev containers
+
+This repo contains a `devcontainer.json` configuration that sets up the build environment in a container using
+[VS Code dev containers](https://code.visualstudio.com/docs/remote/containers). If you're using the dev container,
+you can run the commands directly in your terminal:
+
+```shell
+$ make realclean && make examples && make testproto
+```
+
+```shell
+$ bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories && \
+    bazel run :gazelle && \
+    bazel run :buildifier
+```
+
+Note that the above listed docker commands will not work in the dev container, since volume mounts from
+nested docker container are not possible.
 
 If this has resulted in some file changes in the repo, please ensure you check those in with your merge request.
 

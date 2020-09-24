@@ -80,8 +80,7 @@ jobs:
       - generate
       - run: git diff --exit-code
   lint:
-    docker:
-      - image: golang:1.15
+    executor: build-env
     working_directory: /src/grpc-gateway
     steps:
       - checkout
@@ -110,8 +109,7 @@ jobs:
       - setup_remote_docker
       - run: ./fuzzit.sh
   bazel:
-    docker:
-      - image: l.gcr.io/google/bazel:latest
+    executor: build-env
     working_directory: /src/grpc-gateway
     steps:
       - checkout
@@ -162,8 +160,7 @@ jobs:
       - run: go mod vendor
       - run: curl -sL https://git.io/goreleaser | bash
   update-repositoriesbzl:
-    docker:
-      - image: l.gcr.io/google/bazel:latest
+    executor: build-env
     working_directory: /src/grpc-gateway
     steps:
       - checkout
