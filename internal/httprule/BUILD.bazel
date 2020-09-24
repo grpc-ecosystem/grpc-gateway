@@ -10,10 +10,7 @@ go_library(
         "types.go",
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule",
-    deps = [
-        "//utilities:go_default_library",
-        "@com_github_golang_glog//:go_default_library",
-    ],
+    deps = ["//utilities:go_default_library"],
 )
 
 go_test(
