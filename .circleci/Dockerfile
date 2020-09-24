@@ -28,6 +28,10 @@ ENV NODE_VERSION=v10.16.3
 ENV NVM_VERSION=v0.35.0
 RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/${NVM_VERSION}/install.sh | bash
 
+# Install Bazelisk as bazel to manage Bazel
+RUN go get github.com/bazelbuild/bazelisk && \
+    mv $(which bazelisk) /usr/local/bin/bazel
+
 # Clean up
 RUN apt-get autoremove -y && \
     apt-get remove -y wget \
