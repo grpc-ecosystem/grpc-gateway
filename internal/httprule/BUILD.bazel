@@ -27,4 +27,3 @@ go_test(
         "@com_github_golang_glog//:go_default_library",
     ],
 )
-
