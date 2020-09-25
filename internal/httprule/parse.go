@@ -3,8 +3,6 @@ package httprule
 import (
 	"fmt"
 	"strings"
-
-	"github.com/golang/glog"
 )
 
 // InvalidTemplateError indicates that the path template is not valid.
@@ -100,16 +98,13 @@ type parser struct {
 
 // topLevelSegments is the target of this parser.
 func (p *parser) topLevelSegments() ([]segment, error) {
-	glog.V(1).Infof("Parsing %q", p.tokens)
 	segs, err := p.segments()
 	if err != nil {
 		return nil, err
 	}
-	glog.V(2).Infof("accept segments: %q; %q", p.accepted, p.tokens)
 	if _, err := p.accept(typeEOF); err != nil {
 		return nil, fmt.Errorf("unexpected token %q after segments %q", p.tokens[0], strings.Join(p.accepted, ""))
 	}
-	glog.V(2).Infof("accept eof: %q; %q", p.accepted, p.tokens)
 	return segs, nil
 }
 
@@ -118,7 +113,6 @@ func (p *parser) segments() ([]segment, error) {
 	if err != nil {
 		return nil, err
 	}
-	glog.V(2).Infof("accept segment: %q; %q", p.accepted, p.tokens)
 
 	segs := []segment{s}
 	for {
@@ -130,7 +124,6 @@ func (p *parser) segments() ([]segment, error) {
 			return segs, err
 		}
 		segs = append(segs, s)
-		glog.V(2).Infof("accept segment: %q; %q", p.accepted, p.tokens)
 	}
 }
 
