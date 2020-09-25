@@ -2,10 +2,12 @@ FROM golang:1.15.2
 
 # Warm apt cache and install dependencies
 # bzip2 is required by the node_tests (to extract its dependencies).
+# patch is required by bazel tests
 RUN apt-get update && \
     apt-get install -y wget unzip \
     openjdk-11-jre \
-    bzip2
+    bzip2 \
+    patch
 
 # Install swagger-codegen
 ENV SWAGGER_CODEGEN_VERSION=2.4.8
