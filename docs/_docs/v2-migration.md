@@ -90,7 +90,7 @@ To change the OpenAPI generator behaviour to match, set `json_names_for_fields=f
 
 If using the Bazel rule, set `json_names_for_fields=False`.
 
-## We now emit default vaules for all fields
+## We now emit default values for all fields
 
 See [the original issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/233)
 for more information.
