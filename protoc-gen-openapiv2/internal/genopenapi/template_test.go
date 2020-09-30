@@ -754,9 +754,10 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 
 func TestMessageToQueryParametersWellKnownTypes(t *testing.T) {
 	type test struct {
-		MsgDescs []*descriptorpb.DescriptorProto
-		Message  string
-		Params   []openapiParameterObject
+		MsgDescs          []*descriptorpb.DescriptorProto
+		WellKnownMsgDescs []*descriptorpb.DescriptorProto
+		Message           string
+		Params            []openapiParameterObject
 	}
 
 	tests := []test{
@@ -779,6 +780,8 @@ func TestMessageToQueryParametersWellKnownTypes(t *testing.T) {
 						},
 					},
 				},
+			},
+			WellKnownMsgDescs: []*descriptorpb.DescriptorProto{
 				{
 					Name: proto.String("FieldMask"),
 					Field: []*descriptorpb.FieldDescriptorProto{
@@ -832,28 +835,29 @@ func TestMessageToQueryParametersWellKnownTypes(t *testing.T) {
 	for _, test := range tests {
 		reg := descriptor.NewRegistry()
 		reg.SetEnumsAsInts(true)
-		msgs := []*descriptor.Message{}
-		for _, msgdesc := range test.MsgDescs {
-			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
-		}
-		file := descriptor.File{
-			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
-				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
-				Name:           proto.String("example.proto"),
-				Package:        proto.String("example"),
-				Dependency:     []string{},
-				MessageType:    test.MsgDescs,
-				Service:        []*descriptorpb.ServiceDescriptorProto{},
+		err := reg.Load(&pluginpb.CodeGeneratorRequest{
+			ProtoFile: []*descriptorpb.FileDescriptorProto{
+				{
+					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+					Name:           proto.String("google/well_known.proto"),
+					Package:        proto.String("google.protobuf"),
+					Dependency:     []string{},
+					MessageType:    test.WellKnownMsgDescs,
+					Service:        []*descriptorpb.ServiceDescriptorProto{},
+				},
+				{
+					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+					Name:           proto.String("acme/example.proto"),
+					Package:        proto.String("example"),
+					Dependency:     []string{"google/well_known.proto"},
+					MessageType:    test.MsgDescs,
+					Service:        []*descriptorpb.ServiceDescriptorProto{},
+				},
 			},
-			GoPkg: descriptor.GoPackage{
-				Path: "example.com/path/to/example/example.pb",
-				Name: "example_pb",
-			},
-			Messages: msgs,
-		}
-		reg.Load(&pluginpb.CodeGeneratorRequest{
-			ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 		})
+		if err != nil {
+			t.Fatalf("failed to load CodeGeneratorRequest: %v", err)
+		}
 
 		message, err := reg.LookupMsg("", ".example."+test.Message)
 		if err != nil {
@@ -890,7 +894,6 @@ func TestApplyTemplateSimple(t *testing.T) {
 			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
 			Name:           proto.String("example.proto"),
 			Package:        proto.String("example"),
-			Dependency:     []string{"a.example/b/c.proto", "a.example/d/e.proto"},
 			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
 			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
 		},
@@ -991,7 +994,6 @@ func TestApplyTemplateMultiService(t *testing.T) {
 			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
 			Name:           proto.String("example.proto"),
 			Package:        proto.String("example"),
-			Dependency:     []string{"a.example/b/c.proto", "a.example/d/e.proto"},
 			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
 			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
 		},
@@ -1101,7 +1103,6 @@ func TestApplyTemplateOverrideOperationID(t *testing.T) {
 				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
 				Name:           proto.String("example.proto"),
 				Package:        proto.String("example"),
-				Dependency:     []string{"a.example/b/c.proto", "a.example/d/e.proto"},
 				MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
 				Service:        []*descriptorpb.ServiceDescriptorProto{svc},
 			},
@@ -1219,7 +1220,6 @@ func TestApplyTemplateExtensions(t *testing.T) {
 				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
 				Name:           proto.String("example.proto"),
 				Package:        proto.String("example"),
-				Dependency:     []string{"a.example/b/c.proto", "a.example/d/e.proto"},
 				MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
 				Service:        []*descriptorpb.ServiceDescriptorProto{svc},
 				Options:        &descriptorpb.FileOptions{},
@@ -1902,11 +1902,10 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 				Number: proto.Int32(1),
 			},
 			{
-				Name:     proto.String("book"),
-				Label:    descriptorpb.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
-				Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-				TypeName: proto.String("Book"),
-				Number:   proto.Int32(2),
+				Name:   proto.String("book"),
+				Label:  descriptorpb.FieldDescriptorProto_LABEL_REQUIRED.Enum(),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(2),
 			},
 			{
 				Name:   proto.String("book_id"),
@@ -2008,7 +2007,11 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
 		return
 	}
-	reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Errorf("Registry.Load() failed with %v; want success", err)
+		return
+	}
 	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
