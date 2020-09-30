@@ -130,7 +130,7 @@ func TestFieldPath(t *testing.T) {
 		}
 		fds = append(fds, &fd)
 	}
-	nest := &Message{
+	nest1 := &Message{
 		DescriptorProto: fds[0].MessageType[0],
 		Fields: []*Field{
 			{FieldDescriptorProto: fds[0].MessageType[0].Field[0]},
@@ -147,7 +147,7 @@ func TestFieldPath(t *testing.T) {
 	file1 := &File{
 		FileDescriptorProto: fds[0],
 		GoPkg:               GoPackage{Path: "example", Name: "example"},
-		Messages:            []*Message{nest},
+		Messages:            []*Message{nest1},
 	}
 	file2 := &File{
 		FileDescriptorProto: fds[1],
@@ -170,7 +170,7 @@ func TestFieldPath(t *testing.T) {
 
 	c2 := FieldPathComponent{
 		Name:   "nest2_field",
-		Target: nest.Fields[0],
+		Target: nest1.Fields[0],
 	}
 	if got, want := c2.ValueExpr(), "Nest2Field"; got != want {
 		t.Errorf("c2.ValueExpr() = %q; want %q", got, want)
@@ -182,7 +182,7 @@ func TestFieldPath(t *testing.T) {
 	fp := FieldPath{
 		c1, c2, c1, FieldPathComponent{
 			Name:   "terminal_field",
-			Target: nest.Fields[1],
+			Target: nest1.Fields[1],
 		},
 	}
 	if got, want := fp.AssignableExpr("resp"), "resp.GetNestField().Nest2Field.GetNestField().TerminalField"; got != want {

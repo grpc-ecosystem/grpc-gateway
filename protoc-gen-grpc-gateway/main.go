@@ -21,8 +21,6 @@ import (
 )
 
 var (
-	importPrefix               = flag.String("import_prefix", "", "prefix to be added to go package paths for imported proto files")
-	importPath                 = flag.String("import_path", "", "used as the package if no input files declare go_package. If it contains slashes, everything up to the rightmost slash is ignored.")
 	registerFuncSuffix         = flag.String("register_func_suffix", "Handler", "used to construct names of generated Register*<Suffix> methods.")
 	useRequestContext          = flag.Bool("request_context", true, "determine whether to use http.Request's context or not")
 	allowDeleteBody            = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
@@ -55,24 +53,19 @@ func main() {
 		os.Exit(0)
 	}
 
-	reg := descriptor.NewRegistry()
-
 	protogen.Options{
-		// FIXME: ParamFunc is not enough at this point because it does not receive all params.
-		//        Some are swallowed by protogen like "paths".
-		//        This problem will go away when the code generation is completely rewritten
-		//        to support protogen.Plugin.
 		ParamFunc: flag.CommandLine.Set,
-	}.Run(func(plugin *protogen.Plugin) error {
-		// FIXME: still needed to parse request parameter and apply flags manually, see the comment above.
-		parseFlags(reg, plugin.Request.GetParameter())
-		if err := applyFlags(reg); err != nil {
+	}.Run(func(gen *protogen.Plugin) error {
+		reg := descriptor.NewRegistry()
+
+		err := applyFlags(reg)
+		if err != nil {
 			return err
 		}
 
 		glog.V(1).Infof("Parsing code generator request")
 
-		if err := reg.Load(plugin.Request); err != nil {
+		if err := reg.LoadFromPlugin(gen); err != nil {
 			return err
 		}
 
@@ -82,7 +75,7 @@ func main() {
 		}
 
 		var targets []*descriptor.File
-		for _, target := range plugin.Request.FileToGenerate {
+		for _, target := range gen.Request.FileToGenerate {
 			f, err := reg.LookupFile(target)
 			if err != nil {
 				return err
@@ -94,7 +87,7 @@ func main() {
 		files, err := g.Generate(targets)
 		for _, f := range files {
 			glog.V(1).Infof("NewGeneratedFile %q in %s", f.GetName(), f.GoPkg)
-			genFile := plugin.NewGeneratedFile(f.GetName(), protogen.GoImportPath(f.GoPkg.Path))
+			genFile := gen.NewGeneratedFile(f.GetName(), protogen.GoImportPath(f.GoPkg.Path))
 			if _, err := genFile.Write([]byte(f.GetContent())); err != nil {
 				return err
 			}
@@ -104,28 +97,6 @@ func main() {
 
 		return err
 	})
-}
-
-func parseFlags(reg *descriptor.Registry, parameter string) {
-	for _, p := range strings.Split(parameter, ",") {
-		spec := strings.SplitN(p, "=", 2)
-		if len(spec) == 1 {
-			if err := flag.CommandLine.Set(spec[0], ""); err != nil {
-				glog.Fatalf("Cannot set flag %s", p)
-			}
-			continue
-		}
-
-		name, value := spec[0], spec[1]
-
-		if strings.HasPrefix(name, "M") {
-			reg.AddPkgMap(name[1:], value)
-			continue
-		}
-		if err := flag.CommandLine.Set(name, value); err != nil {
-			glog.Fatalf("Cannot set flag %s", p)
-		}
-	}
 }
 
 func applyFlags(reg *descriptor.Registry) error {
@@ -138,8 +109,6 @@ func applyFlags(reg *descriptor.Registry) error {
 		glog.Warningf("Option warn_on_unbound_methods has no effect when generate_unbound_methods is used.")
 	}
 	reg.SetStandalone(*standalone)
-	reg.SetPrefix(*importPrefix)
-	reg.SetImportPath(*importPath)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
 	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
 	reg.SetOmitPackageDoc(*omitPackageDoc)

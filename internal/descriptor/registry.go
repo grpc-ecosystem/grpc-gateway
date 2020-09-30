@@ -10,6 +10,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
+	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
 )
@@ -142,39 +143,42 @@ func NewRegistry() *Registry {
 
 // Load loads definitions of services, methods, messages, enumerations and fields from "req".
 func (r *Registry) Load(req *pluginpb.CodeGeneratorRequest) error {
-	for _, file := range req.GetProtoFile() {
-		r.loadFile(file)
+	gen, err := protogen.Options{}.New(req)
+	if err != nil {
+		return err
+	}
+	return r.load(gen)
+}
+
+func (r *Registry) LoadFromPlugin(gen *protogen.Plugin) error {
+	return r.load(gen)
+}
+
+func (r *Registry) load(gen *protogen.Plugin) error {
+	for filePath, f := range gen.FilesByPath {
+		r.loadFile(filePath, f)
 	}
 
-	var targetPkg string
-	for _, name := range req.FileToGenerate {
-		target := r.files[name]
-		if target == nil {
-			return fmt.Errorf("no such file: %s", name)
+	for filePath, f := range gen.FilesByPath {
+		if !f.Generate {
+			continue
 		}
-		name := r.packageIdentityName(target.FileDescriptorProto)
-		if targetPkg == "" {
-			targetPkg = name
-		} else {
-			if targetPkg != name {
-				return fmt.Errorf("inconsistent package names: %s %s", targetPkg, name)
-			}
-		}
-
-		if err := r.loadServices(target); err != nil {
+		file := r.files[filePath]
+		if err := r.loadServices(file); err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 
 // loadFile loads messages, enumerations and fields from "file".
 // It does not loads services and methods in "file".  You need to call
 // loadServices after loadFiles is called for all files to load services and methods.
-func (r *Registry) loadFile(file *descriptorpb.FileDescriptorProto) {
+func (r *Registry) loadFile(filePath string, file *protogen.File) {
 	pkg := GoPackage{
-		Path: r.goPackagePath(file),
-		Name: r.defaultGoPackageName(file),
+		Path: string(file.GoImportPath),
+		Name: string(file.GoPackageName),
 	}
 	if r.standalone {
 		pkg.Alias = "ext" + strings.Title(pkg.Name)
@@ -190,13 +194,13 @@ func (r *Registry) loadFile(file *descriptorpb.FileDescriptorProto) {
 		}
 	}
 	f := &File{
-		FileDescriptorProto: file,
+		FileDescriptorProto: file.Proto,
 		GoPkg:               pkg,
 	}
 
-	r.files[file.GetName()] = f
-	r.registerMsg(f, nil, file.GetMessageType())
-	r.registerEnum(f, nil, file.GetEnumType())
+	r.files[filePath] = f
+	r.registerMsg(f, nil, file.Proto.MessageType)
+	r.registerEnum(f, nil, file.Proto.EnumType)
 }
 
 func (r *Registry) registerMsg(file *File, outerPath []string, msgs []*descriptorpb.DescriptorProto) {
@@ -349,13 +353,6 @@ func (r *Registry) SetPrefix(prefix string) {
 // SetStandalone registers standalone flag to control package prefix
 func (r *Registry) SetStandalone(standalone bool) {
 	r.standalone = standalone
-}
-
-// SetImportPath registers the importPath which is used as the package if no
-// input files declare go_package. If it contains slashes, everything up to the
-// rightmost slash is ignored.
-func (r *Registry) SetImportPath(importPath string) {
-	r.importPath = importPath
 }
 
 // ReserveGoPackageAlias reserves the unique alias of go package.
