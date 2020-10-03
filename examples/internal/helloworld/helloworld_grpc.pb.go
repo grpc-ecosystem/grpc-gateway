@@ -11,7 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // GreeterClient is the client API for Greeter service.
 //
@@ -38,16 +38,25 @@ func (c *greeterClient) SayHello(ctx context.Context, in *HelloRequest, opts ...
 }
 
 // GreeterServer is the server API for Greeter service.
+// All implementations should embed UnimplementedGreeterServer
+// for forward compatibility
 type GreeterServer interface {
 	SayHello(context.Context, *HelloRequest) (*HelloReply, error)
 }
 
-// UnimplementedGreeterServer can be embedded to have forward compatible implementations.
+// UnimplementedGreeterServer should be embedded to have forward compatible implementations.
 type UnimplementedGreeterServer struct {
 }
 
-func (*UnimplementedGreeterServer) SayHello(context.Context, *HelloRequest) (*HelloReply, error) {
+func (UnimplementedGreeterServer) SayHello(context.Context, *HelloRequest) (*HelloReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SayHello not implemented")
+}
+
+// UnsafeGreeterServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to GreeterServer will
+// result in compilation errors.
+type UnsafeGreeterServer interface {
+	mustEmbedUnimplementedGreeterServer()
 }
 
 func RegisterGreeterServer(s *grpc.Server, srv GreeterServer) {

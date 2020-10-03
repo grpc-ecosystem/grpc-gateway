@@ -13,7 +13,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // WrappersServiceClient is the client API for WrappersService service.
 //
@@ -140,6 +140,8 @@ func (c *wrappersServiceClient) CreateEmpty(ctx context.Context, in *empty.Empty
 }
 
 // WrappersServiceServer is the server API for WrappersService service.
+// All implementations should embed UnimplementedWrappersServiceServer
+// for forward compatibility
 type WrappersServiceServer interface {
 	Create(context.Context, *Wrappers) (*Wrappers, error)
 	CreateStringValue(context.Context, *wrappers.StringValue) (*wrappers.StringValue, error)
@@ -154,42 +156,49 @@ type WrappersServiceServer interface {
 	CreateEmpty(context.Context, *empty.Empty) (*empty.Empty, error)
 }
 
-// UnimplementedWrappersServiceServer can be embedded to have forward compatible implementations.
+// UnimplementedWrappersServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedWrappersServiceServer struct {
 }
 
-func (*UnimplementedWrappersServiceServer) Create(context.Context, *Wrappers) (*Wrappers, error) {
+func (UnimplementedWrappersServiceServer) Create(context.Context, *Wrappers) (*Wrappers, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (*UnimplementedWrappersServiceServer) CreateStringValue(context.Context, *wrappers.StringValue) (*wrappers.StringValue, error) {
+func (UnimplementedWrappersServiceServer) CreateStringValue(context.Context, *wrappers.StringValue) (*wrappers.StringValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateStringValue not implemented")
 }
-func (*UnimplementedWrappersServiceServer) CreateInt32Value(context.Context, *wrappers.Int32Value) (*wrappers.Int32Value, error) {
+func (UnimplementedWrappersServiceServer) CreateInt32Value(context.Context, *wrappers.Int32Value) (*wrappers.Int32Value, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateInt32Value not implemented")
 }
-func (*UnimplementedWrappersServiceServer) CreateInt64Value(context.Context, *wrappers.Int64Value) (*wrappers.Int64Value, error) {
+func (UnimplementedWrappersServiceServer) CreateInt64Value(context.Context, *wrappers.Int64Value) (*wrappers.Int64Value, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateInt64Value not implemented")
 }
-func (*UnimplementedWrappersServiceServer) CreateFloatValue(context.Context, *wrappers.FloatValue) (*wrappers.FloatValue, error) {
+func (UnimplementedWrappersServiceServer) CreateFloatValue(context.Context, *wrappers.FloatValue) (*wrappers.FloatValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateFloatValue not implemented")
 }
-func (*UnimplementedWrappersServiceServer) CreateDoubleValue(context.Context, *wrappers.DoubleValue) (*wrappers.DoubleValue, error) {
+func (UnimplementedWrappersServiceServer) CreateDoubleValue(context.Context, *wrappers.DoubleValue) (*wrappers.DoubleValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateDoubleValue not implemented")
 }
-func (*UnimplementedWrappersServiceServer) CreateBoolValue(context.Context, *wrappers.BoolValue) (*wrappers.BoolValue, error) {
+func (UnimplementedWrappersServiceServer) CreateBoolValue(context.Context, *wrappers.BoolValue) (*wrappers.BoolValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBoolValue not implemented")
 }
-func (*UnimplementedWrappersServiceServer) CreateUInt32Value(context.Context, *wrappers.UInt32Value) (*wrappers.UInt32Value, error) {
+func (UnimplementedWrappersServiceServer) CreateUInt32Value(context.Context, *wrappers.UInt32Value) (*wrappers.UInt32Value, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUInt32Value not implemented")
 }
-func (*UnimplementedWrappersServiceServer) CreateUInt64Value(context.Context, *wrappers.UInt64Value) (*wrappers.UInt64Value, error) {
+func (UnimplementedWrappersServiceServer) CreateUInt64Value(context.Context, *wrappers.UInt64Value) (*wrappers.UInt64Value, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUInt64Value not implemented")
 }
-func (*UnimplementedWrappersServiceServer) CreateBytesValue(context.Context, *wrappers.BytesValue) (*wrappers.BytesValue, error) {
+func (UnimplementedWrappersServiceServer) CreateBytesValue(context.Context, *wrappers.BytesValue) (*wrappers.BytesValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBytesValue not implemented")
 }
-func (*UnimplementedWrappersServiceServer) CreateEmpty(context.Context, *empty.Empty) (*empty.Empty, error) {
+func (UnimplementedWrappersServiceServer) CreateEmpty(context.Context, *empty.Empty) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateEmpty not implemented")
+}
+
+// UnsafeWrappersServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to WrappersServiceServer will
+// result in compilation errors.
+type UnsafeWrappersServiceServer interface {
+	mustEmbedUnimplementedWrappersServiceServer()
 }
 
 func RegisterWrappersServiceServer(s *grpc.Server, srv WrappersServiceServer) {

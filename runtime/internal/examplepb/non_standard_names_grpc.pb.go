@@ -11,7 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // NonStandardServiceClient is the client API for NonStandardService service.
 //
@@ -50,6 +50,8 @@ func (c *nonStandardServiceClient) UpdateWithJSONNames(ctx context.Context, in *
 }
 
 // NonStandardServiceServer is the server API for NonStandardService service.
+// All implementations should embed UnimplementedNonStandardServiceServer
+// for forward compatibility
 type NonStandardServiceServer interface {
 	// Apply field mask to empty NonStandardMessage and return result.
 	Update(context.Context, *NonStandardUpdateRequest) (*NonStandardMessage, error)
@@ -57,15 +59,22 @@ type NonStandardServiceServer interface {
 	UpdateWithJSONNames(context.Context, *NonStandardWithJSONNamesUpdateRequest) (*NonStandardMessageWithJSONNames, error)
 }
 
-// UnimplementedNonStandardServiceServer can be embedded to have forward compatible implementations.
+// UnimplementedNonStandardServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedNonStandardServiceServer struct {
 }
 
-func (*UnimplementedNonStandardServiceServer) Update(context.Context, *NonStandardUpdateRequest) (*NonStandardMessage, error) {
+func (UnimplementedNonStandardServiceServer) Update(context.Context, *NonStandardUpdateRequest) (*NonStandardMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (*UnimplementedNonStandardServiceServer) UpdateWithJSONNames(context.Context, *NonStandardWithJSONNamesUpdateRequest) (*NonStandardMessageWithJSONNames, error) {
+func (UnimplementedNonStandardServiceServer) UpdateWithJSONNames(context.Context, *NonStandardWithJSONNamesUpdateRequest) (*NonStandardMessageWithJSONNames, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateWithJSONNames not implemented")
+}
+
+// UnsafeNonStandardServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to NonStandardServiceServer will
+// result in compilation errors.
+type UnsafeNonStandardServiceServer interface {
+	mustEmbedUnimplementedNonStandardServiceServer()
 }
 
 func RegisterNonStandardServiceServer(s *grpc.Server, srv NonStandardServiceServer) {

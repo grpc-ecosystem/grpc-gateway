@@ -14,7 +14,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // StreamServiceClient is the client API for StreamService service.
 //
@@ -164,6 +164,8 @@ func (x *streamServiceDownloadClient) Recv() (*httpbody.HttpBody, error) {
 }
 
 // StreamServiceServer is the server API for StreamService service.
+// All implementations should embed UnimplementedStreamServiceServer
+// for forward compatibility
 type StreamServiceServer interface {
 	BulkCreate(StreamService_BulkCreateServer) error
 	List(*empty.Empty, StreamService_ListServer) error
@@ -171,21 +173,28 @@ type StreamServiceServer interface {
 	Download(*empty.Empty, StreamService_DownloadServer) error
 }
 
-// UnimplementedStreamServiceServer can be embedded to have forward compatible implementations.
+// UnimplementedStreamServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedStreamServiceServer struct {
 }
 
-func (*UnimplementedStreamServiceServer) BulkCreate(StreamService_BulkCreateServer) error {
+func (UnimplementedStreamServiceServer) BulkCreate(StreamService_BulkCreateServer) error {
 	return status.Errorf(codes.Unimplemented, "method BulkCreate not implemented")
 }
-func (*UnimplementedStreamServiceServer) List(*empty.Empty, StreamService_ListServer) error {
+func (UnimplementedStreamServiceServer) List(*empty.Empty, StreamService_ListServer) error {
 	return status.Errorf(codes.Unimplemented, "method List not implemented")
 }
-func (*UnimplementedStreamServiceServer) BulkEcho(StreamService_BulkEchoServer) error {
+func (UnimplementedStreamServiceServer) BulkEcho(StreamService_BulkEchoServer) error {
 	return status.Errorf(codes.Unimplemented, "method BulkEcho not implemented")
 }
-func (*UnimplementedStreamServiceServer) Download(*empty.Empty, StreamService_DownloadServer) error {
+func (UnimplementedStreamServiceServer) Download(*empty.Empty, StreamService_DownloadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Download not implemented")
+}
+
+// UnsafeStreamServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to StreamServiceServer will
+// result in compilation errors.
+type UnsafeStreamServiceServer interface {
+	mustEmbedUnimplementedStreamServiceServer()
 }
 
 func RegisterStreamServiceServer(s *grpc.Server, srv StreamServiceServer) {

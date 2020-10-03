@@ -10,7 +10,6 @@ import (
 // Implements NonStandardServiceServer
 
 type nonStandardServer struct {
-	examples.UnimplementedNonStandardServiceServer
 }
 
 func newNonStandardServer() examples.NonStandardServiceServer {

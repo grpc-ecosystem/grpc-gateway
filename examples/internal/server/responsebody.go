@@ -11,7 +11,6 @@ import (
 // Implements of ResponseBodyServiceServer
 
 type responseBodyServer struct {
-	examples.UnimplementedResponseBodyServiceServer
 }
 
 func newResponseBodyServer() examples.ResponseBodyServiceServer {

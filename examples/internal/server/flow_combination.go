@@ -8,7 +8,6 @@ import (
 )
 
 type flowCombinationServer struct {
-	examples.UnimplementedFlowCombinationServer
 }
 
 func newFlowCombinationServer() examples.FlowCombinationServer {
