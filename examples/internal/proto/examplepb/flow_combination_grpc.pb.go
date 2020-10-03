@@ -11,7 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // FlowCombinationClient is the client API for FlowCombination service.
 //
@@ -267,6 +267,8 @@ func (x *flowCombinationRpcPathNestedStreamClient) Recv() (*EmptyProto, error) {
 }
 
 // FlowCombinationServer is the server API for FlowCombination service.
+// All implementations should embed UnimplementedFlowCombinationServer
+// for forward compatibility
 type FlowCombinationServer interface {
 	RpcEmptyRpc(context.Context, *EmptyProto) (*EmptyProto, error)
 	RpcEmptyStream(*EmptyProto, FlowCombination_RpcEmptyStreamServer) error
@@ -280,39 +282,46 @@ type FlowCombinationServer interface {
 	RpcPathNestedStream(*NestedProto, FlowCombination_RpcPathNestedStreamServer) error
 }
 
-// UnimplementedFlowCombinationServer can be embedded to have forward compatible implementations.
+// UnimplementedFlowCombinationServer should be embedded to have forward compatible implementations.
 type UnimplementedFlowCombinationServer struct {
 }
 
-func (*UnimplementedFlowCombinationServer) RpcEmptyRpc(context.Context, *EmptyProto) (*EmptyProto, error) {
+func (UnimplementedFlowCombinationServer) RpcEmptyRpc(context.Context, *EmptyProto) (*EmptyProto, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RpcEmptyRpc not implemented")
 }
-func (*UnimplementedFlowCombinationServer) RpcEmptyStream(*EmptyProto, FlowCombination_RpcEmptyStreamServer) error {
+func (UnimplementedFlowCombinationServer) RpcEmptyStream(*EmptyProto, FlowCombination_RpcEmptyStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method RpcEmptyStream not implemented")
 }
-func (*UnimplementedFlowCombinationServer) StreamEmptyRpc(FlowCombination_StreamEmptyRpcServer) error {
+func (UnimplementedFlowCombinationServer) StreamEmptyRpc(FlowCombination_StreamEmptyRpcServer) error {
 	return status.Errorf(codes.Unimplemented, "method StreamEmptyRpc not implemented")
 }
-func (*UnimplementedFlowCombinationServer) StreamEmptyStream(FlowCombination_StreamEmptyStreamServer) error {
+func (UnimplementedFlowCombinationServer) StreamEmptyStream(FlowCombination_StreamEmptyStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method StreamEmptyStream not implemented")
 }
-func (*UnimplementedFlowCombinationServer) RpcBodyRpc(context.Context, *NonEmptyProto) (*EmptyProto, error) {
+func (UnimplementedFlowCombinationServer) RpcBodyRpc(context.Context, *NonEmptyProto) (*EmptyProto, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RpcBodyRpc not implemented")
 }
-func (*UnimplementedFlowCombinationServer) RpcPathSingleNestedRpc(context.Context, *SingleNestedProto) (*EmptyProto, error) {
+func (UnimplementedFlowCombinationServer) RpcPathSingleNestedRpc(context.Context, *SingleNestedProto) (*EmptyProto, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RpcPathSingleNestedRpc not implemented")
 }
-func (*UnimplementedFlowCombinationServer) RpcPathNestedRpc(context.Context, *NestedProto) (*EmptyProto, error) {
+func (UnimplementedFlowCombinationServer) RpcPathNestedRpc(context.Context, *NestedProto) (*EmptyProto, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RpcPathNestedRpc not implemented")
 }
-func (*UnimplementedFlowCombinationServer) RpcBodyStream(*NonEmptyProto, FlowCombination_RpcBodyStreamServer) error {
+func (UnimplementedFlowCombinationServer) RpcBodyStream(*NonEmptyProto, FlowCombination_RpcBodyStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method RpcBodyStream not implemented")
 }
-func (*UnimplementedFlowCombinationServer) RpcPathSingleNestedStream(*SingleNestedProto, FlowCombination_RpcPathSingleNestedStreamServer) error {
+func (UnimplementedFlowCombinationServer) RpcPathSingleNestedStream(*SingleNestedProto, FlowCombination_RpcPathSingleNestedStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method RpcPathSingleNestedStream not implemented")
 }
-func (*UnimplementedFlowCombinationServer) RpcPathNestedStream(*NestedProto, FlowCombination_RpcPathNestedStreamServer) error {
+func (UnimplementedFlowCombinationServer) RpcPathNestedStream(*NestedProto, FlowCombination_RpcPathNestedStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method RpcPathNestedStream not implemented")
+}
+
+// UnsafeFlowCombinationServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to FlowCombinationServer will
+// result in compilation errors.
+type UnsafeFlowCombinationServer interface {
+	mustEmbedUnimplementedFlowCombinationServer()
 }
 
 func RegisterFlowCombinationServer(s *grpc.Server, srv FlowCombinationServer) {

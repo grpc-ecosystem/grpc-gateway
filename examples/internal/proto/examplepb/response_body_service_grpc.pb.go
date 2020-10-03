@@ -11,7 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // ResponseBodyServiceClient is the client API for ResponseBodyService service.
 //
@@ -91,6 +91,8 @@ func (x *responseBodyServiceGetResponseBodyStreamClient) Recv() (*ResponseBodyOu
 }
 
 // ResponseBodyServiceServer is the server API for ResponseBodyService service.
+// All implementations should embed UnimplementedResponseBodyServiceServer
+// for forward compatibility
 type ResponseBodyServiceServer interface {
 	GetResponseBody(context.Context, *ResponseBodyIn) (*ResponseBodyOut, error)
 	ListResponseBodies(context.Context, *ResponseBodyIn) (*RepeatedResponseBodyOut, error)
@@ -98,21 +100,28 @@ type ResponseBodyServiceServer interface {
 	GetResponseBodyStream(*ResponseBodyIn, ResponseBodyService_GetResponseBodyStreamServer) error
 }
 
-// UnimplementedResponseBodyServiceServer can be embedded to have forward compatible implementations.
+// UnimplementedResponseBodyServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedResponseBodyServiceServer struct {
 }
 
-func (*UnimplementedResponseBodyServiceServer) GetResponseBody(context.Context, *ResponseBodyIn) (*ResponseBodyOut, error) {
+func (UnimplementedResponseBodyServiceServer) GetResponseBody(context.Context, *ResponseBodyIn) (*ResponseBodyOut, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetResponseBody not implemented")
 }
-func (*UnimplementedResponseBodyServiceServer) ListResponseBodies(context.Context, *ResponseBodyIn) (*RepeatedResponseBodyOut, error) {
+func (UnimplementedResponseBodyServiceServer) ListResponseBodies(context.Context, *ResponseBodyIn) (*RepeatedResponseBodyOut, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListResponseBodies not implemented")
 }
-func (*UnimplementedResponseBodyServiceServer) ListResponseStrings(context.Context, *ResponseBodyIn) (*RepeatedResponseStrings, error) {
+func (UnimplementedResponseBodyServiceServer) ListResponseStrings(context.Context, *ResponseBodyIn) (*RepeatedResponseStrings, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListResponseStrings not implemented")
 }
-func (*UnimplementedResponseBodyServiceServer) GetResponseBodyStream(*ResponseBodyIn, ResponseBodyService_GetResponseBodyStreamServer) error {
+func (UnimplementedResponseBodyServiceServer) GetResponseBodyStream(*ResponseBodyIn, ResponseBodyService_GetResponseBodyStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetResponseBodyStream not implemented")
+}
+
+// UnsafeResponseBodyServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ResponseBodyServiceServer will
+// result in compilation errors.
+type UnsafeResponseBodyServiceServer interface {
+	mustEmbedUnimplementedResponseBodyServiceServer()
 }
 
 func RegisterResponseBodyServiceServer(s *grpc.Server, srv ResponseBodyServiceServer) {

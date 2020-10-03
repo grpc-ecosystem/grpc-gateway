@@ -174,12 +174,12 @@ $(OPENAPI_PLUGIN): $(OPENAPI_PLUGIN_SRC) $(OPENAPIV2_GO)
 	go build -o $@ $(OPENAPI_PLUGIN_PKG)
 
 $(EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. $(EXAMPLES)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(EXAMPLES)
 $(EXAMPLE_DEPSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(EXAMPLE_DEPS)
-	protoc -I $(PROTOC_INC_PATH) -I. --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. $(@:.pb.go=.proto)
+	protoc -I $(PROTOC_INC_PATH) -I. --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(@:.pb.go=.proto)
 
 $(RUNTIME_TEST_SRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(RUNTIME_TEST_PROTO)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. $(RUNTIME_TEST_PROTO)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(RUNTIME_TEST_PROTO)
 
 $(APICONFIG_SRCS): $(GO_PLUGIN) $(APICONFIG_PROTO)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=paths=source_relative:. $(APICONFIG_PROTO)
@@ -202,12 +202,12 @@ $(EXAMPLE_OPENAPIMERGESRCS): $(OPENAPI_PLUGIN) $(OPENAPIMERGE_EXAMPLES)
 $(GENERATE_UNBOUND_METHODS_EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(GENERATE_UNBOUND_METHODS_EXAMPLE)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,paths=source_relative,allow_repeated_fields_in_body=true,generate_unbound_methods=true$(ADDITIONAL_GW_FLAGS):. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
 $(GENERATE_UNBOUND_METHODS_EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(GENERATE_UNBOUND_METHODS_EXAMPLE)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
 $(GENERATE_UNBOUND_METHODS_EXAMPLE_OPENAPISRCS): $(OPENAPI_PLUGIN) $(GENERATE_UNBOUND_METHODS_EXAMPLE)
 	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true,generate_unbound_methods=true:. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
 
 $(HELLOWORLD_SVCSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(HELLOWORLD)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. $(HELLOWORLD)
+	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(HELLOWORLD)
 
 $(HELLOWORLD_GWSRCS):
 $(HELLOWORLD_GWSRCS): $(GATEWAY_PLUGIN) $(HELLOWORLD)
