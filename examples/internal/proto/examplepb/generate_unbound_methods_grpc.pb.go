@@ -11,7 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // GenerateUnboundMethodsEchoServiceClient is the client API for GenerateUnboundMethodsEchoService service.
 //
@@ -64,6 +64,8 @@ func (c *generateUnboundMethodsEchoServiceClient) EchoDelete(ctx context.Context
 }
 
 // GenerateUnboundMethodsEchoServiceServer is the server API for GenerateUnboundMethodsEchoService service.
+// All implementations should embed UnimplementedGenerateUnboundMethodsEchoServiceServer
+// for forward compatibility
 type GenerateUnboundMethodsEchoServiceServer interface {
 	// Echo method receives a simple message and returns it.
 	//
@@ -76,18 +78,25 @@ type GenerateUnboundMethodsEchoServiceServer interface {
 	EchoDelete(context.Context, *GenerateUnboundMethodsSimpleMessage) (*GenerateUnboundMethodsSimpleMessage, error)
 }
 
-// UnimplementedGenerateUnboundMethodsEchoServiceServer can be embedded to have forward compatible implementations.
+// UnimplementedGenerateUnboundMethodsEchoServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedGenerateUnboundMethodsEchoServiceServer struct {
 }
 
-func (*UnimplementedGenerateUnboundMethodsEchoServiceServer) Echo(context.Context, *GenerateUnboundMethodsSimpleMessage) (*GenerateUnboundMethodsSimpleMessage, error) {
+func (UnimplementedGenerateUnboundMethodsEchoServiceServer) Echo(context.Context, *GenerateUnboundMethodsSimpleMessage) (*GenerateUnboundMethodsSimpleMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
 }
-func (*UnimplementedGenerateUnboundMethodsEchoServiceServer) EchoBody(context.Context, *GenerateUnboundMethodsSimpleMessage) (*GenerateUnboundMethodsSimpleMessage, error) {
+func (UnimplementedGenerateUnboundMethodsEchoServiceServer) EchoBody(context.Context, *GenerateUnboundMethodsSimpleMessage) (*GenerateUnboundMethodsSimpleMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoBody not implemented")
 }
-func (*UnimplementedGenerateUnboundMethodsEchoServiceServer) EchoDelete(context.Context, *GenerateUnboundMethodsSimpleMessage) (*GenerateUnboundMethodsSimpleMessage, error) {
+func (UnimplementedGenerateUnboundMethodsEchoServiceServer) EchoDelete(context.Context, *GenerateUnboundMethodsSimpleMessage) (*GenerateUnboundMethodsSimpleMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoDelete not implemented")
+}
+
+// UnsafeGenerateUnboundMethodsEchoServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to GenerateUnboundMethodsEchoServiceServer will
+// result in compilation errors.
+type UnsafeGenerateUnboundMethodsEchoServiceServer interface {
+	mustEmbedUnimplementedGenerateUnboundMethodsEchoServiceServer()
 }
 
 func RegisterGenerateUnboundMethodsEchoServiceServer(s *grpc.Server, srv GenerateUnboundMethodsEchoServiceServer) {

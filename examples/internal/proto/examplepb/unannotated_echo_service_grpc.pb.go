@@ -11,7 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // UnannotatedEchoServiceClient is the client API for UnannotatedEchoService service.
 //
@@ -64,6 +64,8 @@ func (c *unannotatedEchoServiceClient) EchoDelete(ctx context.Context, in *Unann
 }
 
 // UnannotatedEchoServiceServer is the server API for UnannotatedEchoService service.
+// All implementations should embed UnimplementedUnannotatedEchoServiceServer
+// for forward compatibility
 type UnannotatedEchoServiceServer interface {
 	// Echo method receives a simple message and returns it.
 	//
@@ -76,18 +78,25 @@ type UnannotatedEchoServiceServer interface {
 	EchoDelete(context.Context, *UnannotatedSimpleMessage) (*UnannotatedSimpleMessage, error)
 }
 
-// UnimplementedUnannotatedEchoServiceServer can be embedded to have forward compatible implementations.
+// UnimplementedUnannotatedEchoServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedUnannotatedEchoServiceServer struct {
 }
 
-func (*UnimplementedUnannotatedEchoServiceServer) Echo(context.Context, *UnannotatedSimpleMessage) (*UnannotatedSimpleMessage, error) {
+func (UnimplementedUnannotatedEchoServiceServer) Echo(context.Context, *UnannotatedSimpleMessage) (*UnannotatedSimpleMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
 }
-func (*UnimplementedUnannotatedEchoServiceServer) EchoBody(context.Context, *UnannotatedSimpleMessage) (*UnannotatedSimpleMessage, error) {
+func (UnimplementedUnannotatedEchoServiceServer) EchoBody(context.Context, *UnannotatedSimpleMessage) (*UnannotatedSimpleMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoBody not implemented")
 }
-func (*UnimplementedUnannotatedEchoServiceServer) EchoDelete(context.Context, *UnannotatedSimpleMessage) (*UnannotatedSimpleMessage, error) {
+func (UnimplementedUnannotatedEchoServiceServer) EchoDelete(context.Context, *UnannotatedSimpleMessage) (*UnannotatedSimpleMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoDelete not implemented")
+}
+
+// UnsafeUnannotatedEchoServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UnannotatedEchoServiceServer will
+// result in compilation errors.
+type UnsafeUnannotatedEchoServiceServer interface {
+	mustEmbedUnimplementedUnannotatedEchoServiceServer()
 }
 
 func RegisterUnannotatedEchoServiceServer(s *grpc.Server, srv UnannotatedEchoServiceServer) {

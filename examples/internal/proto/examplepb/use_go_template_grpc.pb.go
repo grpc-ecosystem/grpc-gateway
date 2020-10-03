@@ -11,7 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // LoginServiceClient is the client API for LoginService service.
 //
@@ -76,6 +76,8 @@ func (c *loginServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts
 }
 
 // LoginServiceServer is the server API for LoginService service.
+// All implementations should embed UnimplementedLoginServiceServer
+// for forward compatibility
 type LoginServiceServer interface {
 	// Login
 	//
@@ -109,15 +111,22 @@ type LoginServiceServer interface {
 	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
 }
 
-// UnimplementedLoginServiceServer can be embedded to have forward compatible implementations.
+// UnimplementedLoginServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedLoginServiceServer struct {
 }
 
-func (*UnimplementedLoginServiceServer) Login(context.Context, *LoginRequest) (*LoginReply, error) {
+func (UnimplementedLoginServiceServer) Login(context.Context, *LoginRequest) (*LoginReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
-func (*UnimplementedLoginServiceServer) Logout(context.Context, *LogoutRequest) (*LogoutReply, error) {
+func (UnimplementedLoginServiceServer) Logout(context.Context, *LogoutRequest) (*LogoutReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
+
+// UnsafeLoginServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to LoginServiceServer will
+// result in compilation errors.
+type UnsafeLoginServiceServer interface {
+	mustEmbedUnimplementedLoginServiceServer()
 }
 
 func RegisterLoginServiceServer(s *grpc.Server, srv LoginServiceServer) {

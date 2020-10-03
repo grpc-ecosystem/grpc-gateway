@@ -16,7 +16,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+const _ = grpc.SupportPackageIsVersion7
 
 // ABitOfEverythingServiceClient is the client API for ABitOfEverythingService service.
 //
@@ -244,6 +244,8 @@ func (c *aBitOfEverythingServiceClient) OverwriteResponseContentType(ctx context
 }
 
 // ABitOfEverythingServiceServer is the server API for ABitOfEverythingService service.
+// All implementations should embed UnimplementedABitOfEverythingServiceServer
+// for forward compatibility
 type ABitOfEverythingServiceServer interface {
 	// Create a new ABitOfEverything
 	//
@@ -278,69 +280,76 @@ type ABitOfEverythingServiceServer interface {
 	OverwriteResponseContentType(context.Context, *empty.Empty) (*wrappers.StringValue, error)
 }
 
-// UnimplementedABitOfEverythingServiceServer can be embedded to have forward compatible implementations.
+// UnimplementedABitOfEverythingServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedABitOfEverythingServiceServer struct {
 }
 
-func (*UnimplementedABitOfEverythingServiceServer) Create(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+func (UnimplementedABitOfEverythingServiceServer) Create(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) CreateBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+func (UnimplementedABitOfEverythingServiceServer) CreateBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBody not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) CreateBook(context.Context, *CreateBookRequest) (*Book, error) {
+func (UnimplementedABitOfEverythingServiceServer) CreateBook(context.Context, *CreateBookRequest) (*Book, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBook not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) Lookup(context.Context, *sub2.IdMessage) (*ABitOfEverything, error) {
+func (UnimplementedABitOfEverythingServiceServer) Lookup(context.Context, *sub2.IdMessage) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Lookup not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) Update(context.Context, *ABitOfEverything) (*empty.Empty, error) {
+func (UnimplementedABitOfEverythingServiceServer) Update(context.Context, *ABitOfEverything) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) UpdateV2(context.Context, *UpdateV2Request) (*empty.Empty, error) {
+func (UnimplementedABitOfEverythingServiceServer) UpdateV2(context.Context, *UpdateV2Request) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateV2 not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) Delete(context.Context, *sub2.IdMessage) (*empty.Empty, error) {
+func (UnimplementedABitOfEverythingServiceServer) Delete(context.Context, *sub2.IdMessage) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) GetQuery(context.Context, *ABitOfEverything) (*empty.Empty, error) {
+func (UnimplementedABitOfEverythingServiceServer) GetQuery(context.Context, *ABitOfEverything) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetQuery not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) GetRepeatedQuery(context.Context, *ABitOfEverythingRepeated) (*ABitOfEverythingRepeated, error) {
+func (UnimplementedABitOfEverythingServiceServer) GetRepeatedQuery(context.Context, *ABitOfEverythingRepeated) (*ABitOfEverythingRepeated, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRepeatedQuery not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) Echo(context.Context, *sub.StringMessage) (*sub.StringMessage, error) {
+func (UnimplementedABitOfEverythingServiceServer) Echo(context.Context, *sub.StringMessage) (*sub.StringMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) DeepPathEcho(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+func (UnimplementedABitOfEverythingServiceServer) DeepPathEcho(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeepPathEcho not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) NoBindings(context.Context, *duration.Duration) (*empty.Empty, error) {
+func (UnimplementedABitOfEverythingServiceServer) NoBindings(context.Context, *duration.Duration) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NoBindings not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) Timeout(context.Context, *empty.Empty) (*empty.Empty, error) {
+func (UnimplementedABitOfEverythingServiceServer) Timeout(context.Context, *empty.Empty) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Timeout not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) ErrorWithDetails(context.Context, *empty.Empty) (*empty.Empty, error) {
+func (UnimplementedABitOfEverythingServiceServer) ErrorWithDetails(context.Context, *empty.Empty) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ErrorWithDetails not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) GetMessageWithBody(context.Context, *MessageWithBody) (*empty.Empty, error) {
+func (UnimplementedABitOfEverythingServiceServer) GetMessageWithBody(context.Context, *MessageWithBody) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMessageWithBody not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) PostWithEmptyBody(context.Context, *Body) (*empty.Empty, error) {
+func (UnimplementedABitOfEverythingServiceServer) PostWithEmptyBody(context.Context, *Body) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PostWithEmptyBody not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) CheckGetQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+func (UnimplementedABitOfEverythingServiceServer) CheckGetQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckGetQueryParams not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) CheckNestedEnumGetQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+func (UnimplementedABitOfEverythingServiceServer) CheckNestedEnumGetQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckNestedEnumGetQueryParams not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) CheckPostQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+func (UnimplementedABitOfEverythingServiceServer) CheckPostQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckPostQueryParams not implemented")
 }
-func (*UnimplementedABitOfEverythingServiceServer) OverwriteResponseContentType(context.Context, *empty.Empty) (*wrappers.StringValue, error) {
+func (UnimplementedABitOfEverythingServiceServer) OverwriteResponseContentType(context.Context, *empty.Empty) (*wrappers.StringValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OverwriteResponseContentType not implemented")
+}
+
+// UnsafeABitOfEverythingServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ABitOfEverythingServiceServer will
+// result in compilation errors.
+type UnsafeABitOfEverythingServiceServer interface {
+	mustEmbedUnimplementedABitOfEverythingServiceServer()
 }
 
 func RegisterABitOfEverythingServiceServer(s *grpc.Server, srv ABitOfEverythingServiceServer) {
@@ -821,16 +830,25 @@ func (c *camelCaseServiceNameClient) Empty(ctx context.Context, in *empty.Empty,
 }
 
 // CamelCaseServiceNameServer is the server API for CamelCaseServiceName service.
+// All implementations should embed UnimplementedCamelCaseServiceNameServer
+// for forward compatibility
 type CamelCaseServiceNameServer interface {
 	Empty(context.Context, *empty.Empty) (*empty.Empty, error)
 }
 
-// UnimplementedCamelCaseServiceNameServer can be embedded to have forward compatible implementations.
+// UnimplementedCamelCaseServiceNameServer should be embedded to have forward compatible implementations.
 type UnimplementedCamelCaseServiceNameServer struct {
 }
 
-func (*UnimplementedCamelCaseServiceNameServer) Empty(context.Context, *empty.Empty) (*empty.Empty, error) {
+func (UnimplementedCamelCaseServiceNameServer) Empty(context.Context, *empty.Empty) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Empty not implemented")
+}
+
+// UnsafeCamelCaseServiceNameServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to CamelCaseServiceNameServer will
+// result in compilation errors.
+type UnsafeCamelCaseServiceNameServer interface {
+	mustEmbedUnimplementedCamelCaseServiceNameServer()
 }
 
 func RegisterCamelCaseServiceNameServer(s *grpc.Server, srv CamelCaseServiceNameServer) {
@@ -893,16 +911,25 @@ func (c *anotherServiceWithNoBindingsClient) NoBindings(ctx context.Context, in 
 }
 
 // AnotherServiceWithNoBindingsServer is the server API for AnotherServiceWithNoBindings service.
+// All implementations should embed UnimplementedAnotherServiceWithNoBindingsServer
+// for forward compatibility
 type AnotherServiceWithNoBindingsServer interface {
 	NoBindings(context.Context, *empty.Empty) (*empty.Empty, error)
 }
 
-// UnimplementedAnotherServiceWithNoBindingsServer can be embedded to have forward compatible implementations.
+// UnimplementedAnotherServiceWithNoBindingsServer should be embedded to have forward compatible implementations.
 type UnimplementedAnotherServiceWithNoBindingsServer struct {
 }
 
-func (*UnimplementedAnotherServiceWithNoBindingsServer) NoBindings(context.Context, *empty.Empty) (*empty.Empty, error) {
+func (UnimplementedAnotherServiceWithNoBindingsServer) NoBindings(context.Context, *empty.Empty) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NoBindings not implemented")
+}
+
+// UnsafeAnotherServiceWithNoBindingsServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AnotherServiceWithNoBindingsServer will
+// result in compilation errors.
+type UnsafeAnotherServiceWithNoBindingsServer interface {
+	mustEmbedUnimplementedAnotherServiceWithNoBindingsServer()
 }
 
 func RegisterAnotherServiceWithNoBindingsServer(s *grpc.Server, srv AnotherServiceWithNoBindingsServer) {

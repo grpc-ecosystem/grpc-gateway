@@ -58,6 +58,7 @@ go_proto_compiler(
     name = "go_grpc",
     options = [
         "paths=source_relative",
+        "require_unimplemented_servers=false",
     ],
     plugin = "@org_golang_google_grpc_cmd_protoc_gen_go_grpc//:protoc-gen-go-grpc",
     suffix = "_grpc.pb.go",
