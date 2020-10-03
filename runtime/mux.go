@@ -33,6 +33,7 @@ type ServeMux struct {
 	marshalers                marshalerRegistry
 	incomingHeaderMatcher     HeaderMatcherFunc
 	outgoingHeaderMatcher     HeaderMatcherFunc
+	outgoingTrailerMatcher	  TrailerMatcherFunc
 	metadataAnnotators        []func(context.Context, *http.Request) metadata.MD
 	streamErrorHandler        StreamErrorHandlerFunc
 	protoErrorHandler         ProtoErrorHandlerFunc
@@ -67,6 +68,11 @@ func SetQueryParameterParser(queryParameterParser QueryParameterParser) ServeMux
 // HeaderMatcherFunc checks whether a header key should be forwarded to/from gRPC context.
 type HeaderMatcherFunc func(string) (string, bool)
 
+// TrailerMatcherFunc checks wherther a trailer should be forwarded from gRPC context.
+//
+// Best practice: omit "TE" header if no header or trailers need be forwarded from gRPC context.
+type TrailerMatcherFunc func(string) (string, bool)
+
 // DefaultHeaderMatcher is used to pass http request headers to/from gRPC context. This adds permanent HTTP header
 // keys (as specified by the IANA) to gRPC context with grpcgateway- prefix. HTTP headers that start with
 // 'Grpc-Metadata-' are mapped to gRPC metadata after removing prefix 'Grpc-Metadata-'.
@@ -98,6 +104,16 @@ func WithIncomingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
 func WithOutgoingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
 	return func(mux *ServeMux) {
 		mux.outgoingHeaderMatcher = fn
+	}
+}
+
+//WithOutgoingTrailerMatcher returns a ServeMuxOption representing a trailerMatcher for outgoing response from gateway.
+//
+//Similar to func WithOutgoingHeaderMatcher
+//Best practice: omit "TE" header if no header or trailers need be forwarded from gRPC context.
+func WithOutgoingTrailerMatcher(fn TrailerMatcherFunc) ServeMuxOption {
+	return func(mux *ServeMux) {
+		mux.outgoingTrailerMatcher = fn
 	}
 }
 
