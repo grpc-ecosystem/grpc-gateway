@@ -601,7 +601,7 @@ func TestUnboundExternalHTTPRules(t *testing.T) {
 }
 
 func TestRegisterOpenAPIOptions(t *testing.T) {
-	codeReq := `file_to_generate: 'a.proto'
+	codeReqText := `file_to_generate: 'a.proto'
 	proto_file <
 		name: 'a.proto'
 		package: 'example.foo'
@@ -628,6 +628,11 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 		>
 	>
 	`
+	var codeReq pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(codeReqText), &codeReq); err != nil {
+		t.Fatalf("proto.UnmarshalText(%s, &file) failed with %v; want success", codeReqText, err)
+	}
+
 	for _, tcase := range []struct {
 		options   *openapiconfig.OpenAPIOptions
 		shouldErr bool
@@ -755,9 +760,7 @@ func TestRegisterOpenAPIOptions(t *testing.T) {
 	} {
 		t.Run(tcase.desc, func(t *testing.T) {
 			reg := NewRegistry()
-			if err := loadFile(t, reg, codeReq); err != nil {
-				t.Fatalf("got unexpected error when loading request: %s", err)
-			}
+			loadFileWithCodeGeneratorRequest(t, reg, &codeReq)
 			err := reg.RegisterOpenAPIOptions(tcase.options)
 			if (err != nil) != tcase.shouldErr {
 				t.Fatalf("got unexpected error: %s", err)
