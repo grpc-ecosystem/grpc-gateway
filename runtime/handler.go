@@ -100,6 +100,14 @@ func handleForwardResponseServerMetadata(w http.ResponseWriter, mux *ServeMux, m
 			}
 		}
 	}
+	for k, vs := range md.TrailerMD {
+		if h, ok := mux.outgoingTrailerMatcher(k); ok {
+			w.Header().Set("Trailer",h)
+			for _, v := range vs {
+				w.Header().Add(h, v)
+			}
+		}
+	}
 }
 
 func handleForwardResponseTrailerHeader(w http.ResponseWriter, md ServerMetadata) {
