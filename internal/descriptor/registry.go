@@ -2,8 +2,6 @@ package descriptor
 
 import (
 	"fmt"
-	"path"
-	"path/filepath"
 	"strings"
 
 	"github.com/golang/glog"
@@ -28,9 +26,6 @@ type Registry struct {
 
 	// prefix is a prefix to be inserted to golang package paths generated from proto package names.
 	prefix string
-
-	// importPath is used as the package if no input files declare go_package. If it contains slashes, everything up to the rightmost slash is ignored.
-	importPath string
 
 	// pkgMap is a user-specified mapping from file path to proto package.
 	pkgMap map[string]string
@@ -371,27 +366,6 @@ func (r *Registry) ReserveGoPackageAlias(alias, pkgpath string) error {
 	return nil
 }
 
-// goPackagePath returns the go package path which go files generated from "f" should have.
-// It respects the mapping registered by AddPkgMap if exists. Or use go_package as import path
-// if it includes a slash,  Otherwide, it generates a path from the file name of "f".
-func (r *Registry) goPackagePath(f *descriptorpb.FileDescriptorProto) string {
-	name := f.GetName()
-	if pkg, ok := r.pkgMap[name]; ok {
-		return path.Join(r.prefix, pkg)
-	}
-
-	gopkg := f.Options.GetGoPackage()
-	idx := strings.LastIndex(gopkg, "/")
-	if idx >= 0 {
-		if sc := strings.LastIndex(gopkg, ";"); sc > 0 {
-			gopkg = gopkg[:sc+1-1]
-		}
-		return gopkg
-	}
-
-	return path.Join(r.prefix, path.Dir(name))
-}
-
 // GetAllFQMNs returns a list of all FQMNs
 func (r *Registry) GetAllFQMNs() []string {
 	var keys []string
@@ -573,57 +547,6 @@ func (r *Registry) SetOmitPackageDoc(omit bool) {
 // GetOmitPackageDoc returns whether a package comment will be omitted from the generated code
 func (r *Registry) GetOmitPackageDoc() bool {
 	return r.omitPackageDoc
-}
-
-// sanitizePackageName replaces unallowed character in package name
-// with allowed character.
-func sanitizePackageName(pkgName string) string {
-	pkgName = strings.Replace(pkgName, ".", "_", -1)
-	pkgName = strings.Replace(pkgName, "-", "_", -1)
-	return pkgName
-}
-
-// defaultGoPackageName returns the default go package name to be used for go files generated from "f".
-// You might need to use an unique alias for the package when you import it.  Use ReserveGoPackageAlias to get a unique alias.
-func (r *Registry) defaultGoPackageName(f *descriptorpb.FileDescriptorProto) string {
-	name := r.packageIdentityName(f)
-	return sanitizePackageName(name)
-}
-
-// packageIdentityName returns the identity of packages.
-// protoc-gen-grpc-gateway rejects CodeGenerationRequests which contains more than one packages
-// as protoc-gen-go does.
-func (r *Registry) packageIdentityName(f *descriptorpb.FileDescriptorProto) string {
-	if f.Options != nil && f.Options.GoPackage != nil {
-		gopkg := f.Options.GetGoPackage()
-		idx := strings.LastIndex(gopkg, "/")
-		if idx < 0 {
-			gopkg = gopkg[idx+1:]
-		}
-
-		gopkg = gopkg[idx+1:]
-		// package name is overrided with the string after the
-		// ';' character
-		sc := strings.IndexByte(gopkg, ';')
-		if sc < 0 {
-			return sanitizePackageName(gopkg)
-
-		}
-		return sanitizePackageName(gopkg[sc+1:])
-	}
-	if p := r.importPath; len(p) != 0 {
-		if i := strings.LastIndex(p, "/"); i >= 0 {
-			p = p[i+1:]
-		}
-		return p
-	}
-
-	if f.Package == nil {
-		base := filepath.Base(f.GetName())
-		ext := filepath.Ext(base)
-		return strings.TrimSuffix(base, ext)
-	}
-	return f.GetPackage()
 }
 
 // RegisterOpenAPIOptions registers OpenAPI options
