@@ -68,9 +68,9 @@ func SetQueryParameterParser(queryParameterParser QueryParameterParser) ServeMux
 // HeaderMatcherFunc checks whether a header key should be forwarded to/from gRPC context.
 type HeaderMatcherFunc func(string) (string, bool)
 
-// TrailerMatcherFunc checks wherther a trailer should be forwarded from gRPC context.
+// TrailerMatcherFunc checks whether a trailer should be forwarded from the gRPC server.
 //
-// Best practice: omit "TE" header if no header or trailers need be forwarded from gRPC context.
+// Best practice: omit "TE" header if no trailers need to be forwarded from the gRPC server.
 type TrailerMatcherFunc func(string) (string, bool)
 
 // DefaultHeaderMatcher is used to pass http request headers to/from gRPC context. This adds permanent HTTP header
@@ -107,10 +107,12 @@ func WithOutgoingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
 	}
 }
 
-//WithOutgoingTrailerMatcher returns a ServeMuxOption representing a trailerMatcher for outgoing response from gateway.
+// WithOutgoingTrailerMatcher returns a ServeMuxOption representing a trailerMatcher for the outgoing response from the gateway.
 //
-//Similar to func WithOutgoingHeaderMatcher
-//Best practice: omit "TE" header if no header or trailers need be forwarded from gRPC context.
+// This matcher will be called with each trailer in the response trailer metadata. If matcher returns true, that header will be
+// passed to the http response returned from the gateway. To transform the trailer before passing to response,
+// the matcher should return a modified header.
+// Best practice: omit "TE" header if no trailers need to be forwarded from the gRPC server.
 func WithOutgoingTrailerMatcher(fn TrailerMatcherFunc) ServeMuxOption {
 	return func(mux *ServeMux) {
 		mux.outgoingTrailerMatcher = fn
