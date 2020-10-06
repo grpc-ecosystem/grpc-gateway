@@ -194,8 +194,9 @@ func (r *Registry) loadFile(filePath string, file *protogen.File) {
 		}
 	}
 	f := &File{
-		FileDescriptorProto: file.Proto,
-		GoPkg:               pkg,
+		FileDescriptorProto:     file.Proto,
+		GoPkg:                   pkg,
+		GeneratedFilenamePrefix: file.GeneratedFilenamePrefix,
 	}
 
 	r.files[filePath] = f

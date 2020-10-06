@@ -1,9 +1,6 @@
 package gengateway
 
 import (
-	"errors"
-	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
@@ -11,16 +8,7 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-func newExampleFileDescriptor() *descriptor.File {
-	return newExampleFileDescriptorWithGoPkg(
-		&descriptor.GoPackage{
-			Path: "example.com/path/to/example/example.pb",
-			Name: "example_pb",
-		},
-	)
-}
-
-func newExampleFileDescriptorWithGoPkg(gp *descriptor.GoPackage) *descriptor.File {
+func newExampleFileDescriptorWithGoPkg(gp *descriptor.GoPackage, filenamePrefix string) *descriptor.File {
 	msgdesc := &descriptorpb.DescriptorProto{
 		Name: proto.String("ExampleMessage"),
 	}
@@ -58,8 +46,9 @@ func newExampleFileDescriptorWithGoPkg(gp *descriptor.GoPackage) *descriptor.Fil
 			MessageType: []*descriptorpb.DescriptorProto{msgdesc},
 			Service:     []*descriptorpb.ServiceDescriptorProto{svc},
 		},
-		GoPkg:    *gp,
-		Messages: []*descriptor.Message{msg},
+		GoPkg:                   *gp,
+		GeneratedFilenamePrefix: filenamePrefix,
+		Messages:                []*descriptor.Message{msg},
 		Services: []*descriptor.Service{
 			{
 				ServiceDescriptorProto: svc,
@@ -86,159 +75,23 @@ func newExampleFileDescriptorWithGoPkg(gp *descriptor.GoPackage) *descriptor.Fil
 	}
 }
 
-func TestGenerateServiceWithoutBindings(t *testing.T) {
-	file := newExampleFileDescriptor()
-	g := &generator{}
-	got, err := g.generate(crossLinkFixture(file))
+func TestGenerator_Generate(t *testing.T) {
+	g := new(generator)
+	result, err := g.Generate([]*descriptor.File{
+		crossLinkFixture(newExampleFileDescriptorWithGoPkg(&descriptor.GoPackage{
+			Path: "example.com/path/to/example",
+			Name: "example_pb",
+		}, "path/to/example")),
+	})
 	if err != nil {
-		t.Errorf("generate(%#v) failed with %v; want success", file, err)
-		return
+		t.Fatalf("failed to generate stubs: %v", err)
 	}
-	if notwanted := `"github.com/golang/protobuf/ptypes/empty"`; strings.Contains(got, notwanted) {
-		t.Errorf("generate(%#v) = %s; does not want to contain %s", file, got, notwanted)
+	if len(result) != 1 {
+		t.Fatalf("expected to generate one file, got: %d", len(result))
 	}
-}
-
-func TestGenerateOutputPath(t *testing.T) {
-	cases := []struct {
-		file          *descriptor.File
-		pathType      pathType
-		modulePath    string
-		expected      string
-		expectedError error
-	}{
-		{
-			file: newExampleFileDescriptorWithGoPkg(
-				&descriptor.GoPackage{
-					Path: "example.com/path/to/example",
-					Name: "example_pb",
-				},
-			),
-			expected: "example.com/path/to/example",
-		},
-		{
-			file: newExampleFileDescriptorWithGoPkg(
-				&descriptor.GoPackage{
-					Path: "example",
-					Name: "example_pb",
-				},
-			),
-			expected: "example",
-		},
-		{
-			file: newExampleFileDescriptorWithGoPkg(
-				&descriptor.GoPackage{
-					Path: "example.com/path/to/example",
-					Name: "example_pb",
-				},
-			),
-			pathType: pathTypeSourceRelative,
-			expected: ".",
-		},
-		{
-			file: newExampleFileDescriptorWithGoPkg(
-				&descriptor.GoPackage{
-					Path: "example",
-					Name: "example_pb",
-				},
-			),
-			pathType: pathTypeSourceRelative,
-			expected: ".",
-		},
-		{
-			file: newExampleFileDescriptorWithGoPkg(
-				&descriptor.GoPackage{
-					Path: "example.com/path/root",
-					Name: "example_pb",
-				},
-			),
-			modulePath: "example.com/path/root",
-			expected:   ".",
-		},
-		{
-			file: newExampleFileDescriptorWithGoPkg(
-				&descriptor.GoPackage{
-					Path: "example.com/path/to/example",
-					Name: "example_pb",
-				},
-			),
-			modulePath: "example.com/path/to",
-			expected:   "example",
-		},
-		{
-			file: newExampleFileDescriptorWithGoPkg(
-				&descriptor.GoPackage{
-					Path: "example.com/path/to/example/with/many/nested/paths",
-					Name: "example_pb",
-				},
-			),
-			modulePath: "example.com/path/to",
-			expected:   "example/with/many/nested/paths",
-		},
-
-		// Error cases
-		{
-			file: newExampleFileDescriptorWithGoPkg(
-				&descriptor.GoPackage{
-					Path: "example.com/path/root",
-					Name: "example_pb",
-				},
-			),
-			modulePath:    "example.com/path/root",
-			pathType:      pathTypeSourceRelative, // Not allowed
-			expectedError: errors.New("cannot use module= with paths="),
-		},
-		{
-			file: newExampleFileDescriptorWithGoPkg(
-				&descriptor.GoPackage{
-					Path: "example.com/path/rootextra",
-					Name: "example_pb",
-				},
-			),
-			modulePath:    "example.com/path/root",
-			expectedError: errors.New("example.com/path/rootextra: file go path does not match module prefix: example.com/path/root/"),
-		},
-	}
-
-	for _, c := range cases {
-		g := &generator{
-			pathType:   c.pathType,
-			modulePath: c.modulePath,
-		}
-
-		file := c.file
-		gots, err := g.Generate([]*descriptor.File{crossLinkFixture(file)})
-
-		// If we expect an error response, check it matches what we want
-		if c.expectedError != nil {
-			if err == nil || err.Error() != c.expectedError.Error() {
-				t.Errorf("Generate(%#v) failed with %v; wants error of: %v", file, err, c.expectedError)
-			}
-			return
-		}
-
-		// Handle case where we don't expect an error
-		if err != nil {
-			t.Errorf("Generate(%#v) failed with %v; wants success", file, err)
-			return
-		}
-
-		if len(gots) != 1 {
-			t.Errorf("Generate(%#v) failed; expects on result got %d", file, len(gots))
-			return
-		}
-
-		got := gots[0]
-		if got.Name == nil {
-			t.Errorf("Generate(%#v) failed; expects non-nil Name(%v)", file, got.Name)
-			return
-		}
-
-		gotPath := filepath.Dir(*got.Name)
-		expectedPath := c.expected
-		if gotPath != expectedPath {
-			t.Errorf("Generate(%#v) failed; got path: %s expected path: %s", file, gotPath, expectedPath)
-			return
-		}
+	expectedName := "path/to/example.pb.gw.go"
+	gotName := result[0].GetName()
+	if gotName != expectedName {
+		t.Fatalf("invalid name %q, expected %q", gotName, expectedName)
 	}
 }

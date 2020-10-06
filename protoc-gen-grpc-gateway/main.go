@@ -25,8 +25,6 @@ var (
 	useRequestContext          = flag.Bool("request_context", true, "determine whether to use http.Request's context or not")
 	allowDeleteBody            = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
 	grpcAPIConfiguration       = flag.String("grpc_api_configuration", "", "path to gRPC API Configuration in YAML format")
-	pathType                   = flag.String("paths", "", "specifies how the paths of generated files are structured")
-	modulePath                 = flag.String("module", "", "specifies a module prefix that will be stripped from the go package to determine the output directory")
 	allowRepeatedFieldsInBody  = flag.Bool("allow_repeated_fields_in_body", false, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option")
 	repeatedPathParamSeparator = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`.")
 	allowPatchFeature          = flag.Bool("allow_patch_feature", true, "determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).")
@@ -83,7 +81,7 @@ func main() {
 			targets = append(targets, f)
 		}
 
-		g := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *pathType, *modulePath, *allowPatchFeature, *standalone)
+		g := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *allowPatchFeature, *standalone)
 		files, err := g.Generate(targets)
 		for _, f := range files {
 			glog.V(1).Infof("NewGeneratedFile %q in %s", f.GetName(), f.GoPkg)

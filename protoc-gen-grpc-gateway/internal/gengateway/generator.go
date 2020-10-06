@@ -3,27 +3,17 @@ package gengateway
 import (
 	"errors"
 	"fmt"
-	"go/format"
-	"path"
-	"path/filepath"
-	"strings"
-
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
+	"go/format"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
+	"path"
 )
 
 var (
 	errNoTargetService = errors.New("no target service defined in the file")
-)
-
-type pathType int
-
-const (
-	pathTypeImport pathType = iota
-	pathTypeSourceRelative
 )
 
 type generator struct {
@@ -31,14 +21,12 @@ type generator struct {
 	baseImports        []descriptor.GoPackage
 	useRequestContext  bool
 	registerFuncSuffix string
-	pathType           pathType
-	modulePath         string
 	allowPatchFeature  bool
 	standalone         bool
 }
 
 // New returns a new generator which generates grpc gateway files.
-func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, pathTypeString, modulePathString string,
+func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix string,
 	allowPatchFeature, standalone bool) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
@@ -71,23 +59,11 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, p
 		imports = append(imports, pkg)
 	}
 
-	var pathType pathType
-	switch pathTypeString {
-	case "", "import":
-		// paths=import is default
-	case "source_relative":
-		pathType = pathTypeSourceRelative
-	default:
-		glog.Fatalf(`Unknown path type %q: want "import" or "source_relative".`, pathTypeString)
-	}
-
 	return &generator{
 		reg:                reg,
 		baseImports:        imports,
 		useRequestContext:  useRequestContext,
 		registerFuncSuffix: registerFuncSuffix,
-		pathType:           pathType,
-		modulePath:         modulePathString,
 		allowPatchFeature:  allowPatchFeature,
 		standalone:         standalone,
 	}
@@ -111,45 +87,15 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 			glog.Errorf("%v: %s", err, code)
 			return nil, err
 		}
-
-		name, err := g.getFilePath(file)
-		if err != nil {
-			glog.Errorf("%v: %s", err, code)
-			return nil, err
-		}
-		ext := filepath.Ext(name)
-		base := strings.TrimSuffix(name, ext)
-		filename := fmt.Sprintf("%s.pb.gw.go", base)
 		files = append(files, &descriptor.ResponseFile{
 			GoPkg: file.GoPkg,
 			CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
-				Name:    proto.String(filename),
+				Name:    proto.String(file.GeneratedFilenamePrefix + ".pb.gw.go"),
 				Content: proto.String(string(formatted)),
 			},
 		})
 	}
 	return files, nil
-}
-
-func (g *generator) getFilePath(file *descriptor.File) (string, error) {
-	name := file.GetName()
-	switch {
-	case g.modulePath != "" && g.pathType != pathTypeImport:
-		return "", errors.New("cannot use module= with paths=")
-
-	case g.modulePath != "":
-		trimPath, pkgPath := g.modulePath+"/", file.GoPkg.Path+"/"
-		if !strings.HasPrefix(pkgPath, trimPath) {
-			return "", fmt.Errorf("%v: file go path does not match module prefix: %v", file.GoPkg.Path, trimPath)
-		}
-		return filepath.Join(strings.TrimPrefix(pkgPath, trimPath), filepath.Base(name)), nil
-
-	case g.pathType == pathTypeImport && file.GoPkg.Path != "":
-		return fmt.Sprintf("%s/%s", file.GoPkg.Path, filepath.Base(name)), nil
-
-	default:
-		return name, nil
-	}
 }
 
 func (g *generator) generate(file *descriptor.File) (string, error) {

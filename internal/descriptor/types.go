@@ -51,6 +51,12 @@ type File struct {
 	*descriptorpb.FileDescriptorProto
 	// GoPkg is the go package of the go file generated from this file.
 	GoPkg GoPackage
+	// GeneratedFilenamePrefix is used to construct filenames for generated
+	// files associated with this source file.
+	//
+	// For example, the source file "dir/foo.proto" might have a filename prefix
+	// of "dir/foo". Appending ".pb.go" produces an output file of "dir/foo.pb.go".
+	GeneratedFilenamePrefix string
 	// Messages is the list of messages defined in this file.
 	Messages []*Message
 	// Enums is the list of enums defined in this file.
