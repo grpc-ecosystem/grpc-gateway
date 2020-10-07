@@ -193,8 +193,8 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 		}
 	}
 	if serveMux.outgoingTrailerMatcher == nil {
-		serveMux.outgoingTrailerMatcher = func(key string) (string, bool) {
-			return fmt.Sprintf("%s%s", MetadataTrailerPrefix, key), true
+		serveMux.outgoingTrailerMatcher = func(string) (string, bool) {
+			return fmt.Sprintf("%s%s", MetadataTrailerPrefix, "TE"), true
 		}
 	}
 
