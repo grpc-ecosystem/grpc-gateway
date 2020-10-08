@@ -1001,7 +1001,6 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 				if pkg := svc.File.GetPackage(); pkg != "" && reg.IsIncludePackageInTags() {
 					tag = pkg + "." + tag
 				}
-
 				operationObject := &swaggerOperationObject{
 					Tags:       []string{tag},
 					Parameters: parameters,
@@ -1009,6 +1008,8 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						"200": swaggerResponseObject{
 							Description: desc,
 							Schema:      responseSchema,
+							Headers: swaggerHeadersObject{},
+
 						},
 					},
 				}
@@ -1104,6 +1105,13 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							}
 							if resp.Examples != nil {
 								respObj.Examples = swaggerExamplesFromProtoExamples(resp.Examples)
+							}
+							if resp.Headers != nil {
+								hdrs, err := processHeaders(resp.Headers)
+								if err != nil{
+									return err
+								}
+								respObj.Headers = hdrs
 							}
 							if resp.Extensions != nil {
 								exts, err := processExtensions(resp.Extensions)
@@ -1446,6 +1454,104 @@ func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error
 	}
 	sort.Slice(exts, func(i, j int) bool { return exts[i].key < exts[j].key })
 	return exts, nil
+}
+
+func validateHeaderType(headerType string) error {
+	switch headerType {
+	case
+		"string",
+		"number",
+		"integer",
+		"boolean":
+			return nil
+	}
+	return fmt.Errorf("The provided header type: %s. Is not supported", headerType)
+}
+
+func validateDefaultValueType(headerType string, defaultValue string)  (error){
+
+	switch headerType {
+	case
+		"string":
+		if !(isString(defaultValue)){
+			return fmt.Errorf("The provided default value: %s  does not match provider type: %s, or is not properly qouted with escaped quotations", defaultValue, headerType)
+		}
+	case
+		"number":
+			if !(isNumber(defaultValue)){
+				return fmt.Errorf("The provided default value: %s  does not match provider type: %s", defaultValue, headerType)
+			}
+	case
+		"integer":
+			if !(isInt(defaultValue)){
+				return fmt.Errorf("The provided default value: %s  does not match provider type: %s", defaultValue, headerType)
+			}
+	case
+		"boolean":
+			if !(isBool(defaultValue)){
+				return fmt.Errorf("The provided default value: %s  does not match provider type: %s", defaultValue, headerType)
+			}
+	}
+	return nil
+}
+
+func isInt(s string) (bool)  {
+	var digitCheck = regexp.MustCompile(`^[0-9]+$`)
+	return digitCheck.MatchString(s)
+}
+
+func isNumber(s string) (bool)  {
+	var digitCheck = regexp.MustCompile(`^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$`)
+	return digitCheck.MatchString(s)
+}
+
+func isString(s string) (bool)  {
+	var digitCheck = regexp.MustCompile(`^"\w+"$`)
+	return digitCheck.MatchString(s)
+}
+
+func isBool(s string) (bool)  {
+	var digitCheck = regexp.MustCompile(`^true|false$`)
+	return digitCheck.MatchString(s)
+}
+
+
+
+func processHeaders(inputHdrs map[string]*swagger_options.Header) (swaggerHeadersObject, error) {
+	hdrs := map[string]swaggerHeaderObject{}
+	for k, v := range inputHdrs{
+		ret := swaggerHeaderObject{
+			Description: v.Description,
+			Format: v.Format,
+			Pattern: v.Pattern,
+		}
+		err := validateHeaderType(v.Type)
+		if err != nil{
+			return nil, err
+		} else {
+			ret.Type = v.Type
+		}
+
+
+		if v.Default != nil {
+			raw := json.RawMessage(v.Default.Value)
+			defaultString := string(raw)
+			err := validateDefaultValueType(v.Type, defaultString)
+			if err != nil{
+				return nil, err
+			} else {
+				ret.Default = raw
+			}
+		}
+
+
+		hdrs[k] = ret
+
+
+
+	}
+
+	return hdrs, nil
 }
 
 // updateSwaggerDataFromComments updates a Swagger object based on a comment
@@ -1861,9 +1967,17 @@ func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_option
 	s.MaxProperties = j.GetMaxProperties()
 	s.MinProperties = j.GetMinProperties()
 	s.Required = j.GetRequired()
+	s.Enum     = j.GetEnum()
 	if overrideType := j.GetType(); len(overrideType) > 0 {
 		s.Type = strings.ToLower(overrideType[0].String())
 	}
+	if j != nil && j.GetExample() != nil {
+		s.Example = j.GetExample().Value
+	}
+	if j != nil && j.GetFormat() != "" {
+		s.Format = j.GetFormat()
+	}
+
 }
 
 func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Registry, refs refMap, data interface{}) swaggerSchemaObject {

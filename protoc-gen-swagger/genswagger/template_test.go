@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/golang/protobuf/ptypes/any"
 	"reflect"
 	"strings"
 	"testing"
@@ -1184,6 +1185,300 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	if want, is, name := []extension{
 		{key: "x-resp-id", value: json.RawMessage("\"resp1000\"")},
 	}, response.extensions, "response.Extensions"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+}
+
+func TestValidateHeaderType(t *testing.T){
+	type test struct {
+		Type     string
+		expectedError error
+	}
+	tests := []test{
+		{   "string",
+			nil,
+		},
+		{
+			"boolean",
+			nil,
+
+		},
+		{
+			"number",
+			nil,
+		},
+		{
+			"integer",
+			nil,
+		},
+		{
+			"array",
+			errors.New("The provided header type: array. Is not supported"),
+		},
+		{
+			"foo",
+			errors.New("The provided header type: foo. Is not supported"),
+		},
+	}
+	for _, v := range tests {
+		err := validateHeaderType(v.Type)
+
+		if v.expectedError == nil {
+			if err != nil {
+				t.Errorf("unexpected error '%v'", err)
+			}
+		} else {
+			if err == nil {
+				t.Error("expected update error not returned")
+			}
+			if err.Error() != v.expectedError.Error() {
+				t.Errorf("expected error malformed, expected %q, got %q", v.expectedError.Error(), err.Error())
+			}
+		}
+	}
+
+}
+
+func TestValidateDefaultValueType(t *testing.T){
+	type test struct {
+		Type     string
+		Value       string
+		expectedError error
+	}
+	tests := []test{
+		{   "string",
+			"\"string\"",
+			nil,
+		},
+		{
+			"string",
+			"0",
+			errors.New("The provided default value: 0  does not match provider type: string, or is not properly qouted with escaped quotations"),
+		},
+		{
+			"string",
+			"false",
+			errors.New("The provided default value: false  does not match provider type: string, or is not properly qouted with escaped quotations"),
+		},
+		{
+			"boolean",
+			"true",
+			nil,
+
+		},
+		{
+			"boolean",
+			"0",
+			errors.New("The provided default value: 0  does not match provider type: boolean"),
+		},
+		{
+			"boolean",
+			"\"string\"",
+			errors.New("The provided default value: \"string\"  does not match provider type: boolean"),
+		},
+		{
+			"number",
+			"1.2",
+			nil,
+		},
+		{
+			"number",
+			"123",
+			nil,
+		},
+		{
+			"number",
+			"false",
+			errors.New("The provided default value: false  does not match provider type: number"),
+		},
+		{
+			"number",
+			"\"string\"",
+			errors.New("The provided default value: \"string\"  does not match provider type: number"),
+		},
+		{
+			"integer",
+			"2",
+			nil,
+		},
+		{
+			"integer",
+			"false",
+			errors.New("The provided default value: false  does not match provider type: integer"),
+		},
+		{
+			"integer",
+			"1.2",
+			errors.New("The provided default value: 1.2  does not match provider type: integer"),
+		},
+		{
+			"integer",
+			"\"string\"",
+			errors.New("The provided default value: \"string\"  does not match provider type: integer"),
+		},
+
+	}
+	for _, v := range tests {
+		err := validateDefaultValueType(v.Type, v.Value)
+
+		if v.expectedError == nil {
+			if err != nil {
+				t.Errorf("unexpected error '%v'", err)
+			}
+		} else {
+			if err == nil {
+				t.Error("expected update error not returned")
+			}
+			if err.Error() != v.expectedError.Error() {
+				t.Errorf("expected error malformed, expected %q, got %q", v.expectedError.Error(), err.Error())
+			}
+		}
+	}
+
+}
+
+func TestApplyTemplateHeaders(t *testing.T) {
+	msgdesc := &protodescriptor.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+	}
+	meth := &protodescriptor.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+		Options:    &protodescriptor.MethodOptions{},
+	}
+	svc := &protodescriptor.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*protodescriptor.MethodDescriptorProto{meth},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			Dependency:     []string{"a.example/b/c.proto", "a.example/d/e.proto"},
+			MessageType:    []*protodescriptor.DescriptorProto{msgdesc},
+			Service:        []*protodescriptor.ServiceDescriptorProto{svc},
+			Options:        &protodescriptor.FileOptions{},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	swaggerOperation := swagger_options.Operation{
+		Responses: map[string]*swagger_options.Response{
+			"200": &swagger_options.Response{
+				Description: "Testing Headers",
+				Headers: map[string]*swagger_options.Header{
+					"string": {
+						Description: "string header description",
+						Type: "string",
+						Format: "uuid",
+						Pattern: "",
+					},
+					"boolean": {
+						Description: "boolean header description",
+						Type: "boolean",
+						Default: &any.Any{Value: []byte("true")},
+						Pattern: "^true|false$",
+					},
+					"integer": {
+						Description: "integer header description",
+						Type: "integer",
+						Default: &any.Any{Value: []byte("0")},
+						Pattern: "^[0-9]$",
+					},
+					"number": {
+						Description: "number header description",
+						Type: "number",
+						Default: &any.Any{Value: []byte("1.2")},
+						Pattern: "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
+					},
+				},
+			},
+		},
+	}
+	if err := proto.SetExtension(proto.Message(meth.Options), swagger_options.E_Openapiv2Operation, &swaggerOperation); err != nil {
+		t.Fatalf("proto.SetExtension(MethodDescriptorProto.Options) failed: %v", err)
+	}
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+	if want, is, name := "2.0", result.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+
+	var response swaggerResponseObject
+	for _, v := range result.Paths {
+		response = v.Get.Responses["200"]
+	}
+	if want, is, name := []swaggerHeadersObject{
+		{
+			"string": swaggerHeaderObject{
+				Description: "string header description",
+				Type: "string",
+				Format: "uuid",
+				Pattern: "",
+			},
+			"boolean": swaggerHeaderObject{
+				Description: "boolean header description",
+				Type: "boolean",
+				Default: json.RawMessage("true"),
+				Pattern: "^true|false$",
+			},
+			"integer": swaggerHeaderObject{
+				Description: "integer header description",
+				Type: "integer",
+				Default: json.RawMessage("0"),
+				Pattern: "^[0-9]$",
+			},
+			"number": swaggerHeaderObject{
+				Description: "number header description",
+				Type: "number",
+				Default: json.RawMessage("1.2"),
+				Pattern: "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
+			},
+		},
+
+	}[0], response.Headers, "response.Headers"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 }
