@@ -170,6 +170,7 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 					description: "Unique event identifier for server requests\n\nExample: `2438ac3c-37eb-4902-adef-ed16b4431030`\n\nPattern: `^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$`"
 					type: "string"
 					format: "uuid"
+					default: "\"2438ac3c-37eb-4902-adef-ed16b4431030\""
 				}
 			};
 			schema: {
@@ -204,8 +205,9 @@ message ErrorResponse{
 	string correlationId = 1 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {
 		pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$",
 		title: "x-correlation-id",
-		description: "Unique event identifier for server requests"
-		format: "uuid"
+		description: "Unique event identifier for server requests",
+		format: "uuid",
+		example: "\"2438ac3c-37eb-4902-adef-ed16b4431030\""
 	}];
 	ErrorObject error = 2;
 }
@@ -214,7 +216,7 @@ message ErrorObject{
 	int32 code = 1 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {
 		pattern: "^[0-9]$",
 		title: "code",
-		description: "Response code"
+		description: "Response code",
 		format: "integer"
 	}];
 	string message = 2 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {
@@ -314,7 +316,6 @@ message ABitOfEverything {
 	Nested nested_annotation = 36 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {title: "Nested object title", description: "Nested object description."}];
 
 	int64 int64_override_type = 37 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {type: INTEGER}];
-
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality

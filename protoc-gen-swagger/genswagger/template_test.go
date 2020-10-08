@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/golang/protobuf/ptypes/any"
 	"reflect"
 	"strings"
 	"testing"
@@ -1189,19 +1188,18 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	}
 }
 
-func TestValidateHeaderType(t *testing.T){
+func TestValidateHeaderType(t *testing.T) {
 	type test struct {
-		Type     string
+		Type          string
 		expectedError error
 	}
 	tests := []test{
-		{   "string",
+		{"string",
 			nil,
 		},
 		{
 			"boolean",
 			nil,
-
 		},
 		{
 			"number",
@@ -1213,11 +1211,11 @@ func TestValidateHeaderType(t *testing.T){
 		},
 		{
 			"array",
-			errors.New("The provided header type: array. Is not supported"),
+			errors.New("the provided header type \"array\" is not supported"),
 		},
 		{
 			"foo",
-			errors.New("The provided header type: foo. Is not supported"),
+			errors.New("the provided header type \"foo\" is not supported"),
 		},
 	}
 	for _, v := range tests {
@@ -1229,7 +1227,7 @@ func TestValidateHeaderType(t *testing.T){
 			}
 		} else {
 			if err == nil {
-				t.Error("expected update error not returned")
+				t.Fatal("expected header error not returned")
 			}
 			if err.Error() != v.expectedError.Error() {
 				t.Errorf("expected error malformed, expected %q, got %q", v.expectedError.Error(), err.Error())
@@ -1239,42 +1237,41 @@ func TestValidateHeaderType(t *testing.T){
 
 }
 
-func TestValidateDefaultValueType(t *testing.T){
+func TestValidateDefaultValueType(t *testing.T) {
 	type test struct {
-		Type     string
-		Value       string
+		Type          string
+		Value         string
 		expectedError error
 	}
 	tests := []test{
-		{   "string",
-			"\"string\"",
+		{"string",
+			`"string"`,
 			nil,
 		},
 		{
 			"string",
 			"0",
-			errors.New("The provided default value: 0  does not match provider type: string, or is not properly qouted with escaped quotations"),
+			errors.New("the provided default value \"0\" does not match provider type \"string\", or is not properly quoted with escaped quotations"),
 		},
 		{
 			"string",
 			"false",
-			errors.New("The provided default value: false  does not match provider type: string, or is not properly qouted with escaped quotations"),
+			errors.New("the provided default value \"false\" does not match provider type \"string\", or is not properly quoted with escaped quotations"),
 		},
 		{
 			"boolean",
 			"true",
 			nil,
-
 		},
 		{
 			"boolean",
 			"0",
-			errors.New("The provided default value: 0  does not match provider type: boolean"),
+			errors.New("the provided default value \"0\" does not match provider type \"boolean\""),
 		},
 		{
 			"boolean",
-			"\"string\"",
-			errors.New("The provided default value: \"string\"  does not match provider type: boolean"),
+			`"string"`,
+			errors.New("the provided default value \"\\\"string\\\"\" does not match provider type \"boolean\""),
 		},
 		{
 			"number",
@@ -1288,13 +1285,33 @@ func TestValidateDefaultValueType(t *testing.T){
 		},
 		{
 			"number",
-			"false",
-			errors.New("The provided default value: false  does not match provider type: number"),
+			"NaN",
+			nil,
 		},
 		{
 			"number",
-			"\"string\"",
-			errors.New("The provided default value: \"string\"  does not match provider type: number"),
+			"-459.67",
+			nil,
+		},
+		{
+			"number",
+			"inf",
+			nil,
+		},
+		{
+			"number",
+			"infinity",
+			nil,
+		},
+		{
+			"number",
+			"false",
+			errors.New("the provided default value \"false\" does not match provider type \"number\""),
+		},
+		{
+			"number",
+			`"string"`,
+			errors.New("the provided default value \"\\\"string\\\"\" does not match provider type \"number\""),
 		},
 		{
 			"integer",
@@ -1304,19 +1321,18 @@ func TestValidateDefaultValueType(t *testing.T){
 		{
 			"integer",
 			"false",
-			errors.New("The provided default value: false  does not match provider type: integer"),
+			errors.New("the provided default value \"false\" does not match provider type \"integer\""),
 		},
 		{
 			"integer",
 			"1.2",
-			errors.New("The provided default value: 1.2  does not match provider type: integer"),
+			errors.New("the provided default value \"1.2\" does not match provider type \"integer\""),
 		},
 		{
 			"integer",
-			"\"string\"",
-			errors.New("The provided default value: \"string\"  does not match provider type: integer"),
+			`"string"`,
+			errors.New("the provided default value \"\\\"string\\\"\" does not match provider type \"integer\""),
 		},
-
 	}
 	for _, v := range tests {
 		err := validateDefaultValueType(v.Type, v.Value)
@@ -1384,7 +1400,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 								PathTmpl: httprule.Template{
 									Version:  1,
 									OpCodes:  []int{0, 0},
-									Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
+									Template: "/v1/echo",
 								},
 							},
 						},
@@ -1401,27 +1417,27 @@ func TestApplyTemplateHeaders(t *testing.T) {
 				Headers: map[string]*swagger_options.Header{
 					"string": {
 						Description: "string header description",
-						Type: "string",
-						Format: "uuid",
-						Pattern: "",
+						Type:        "string",
+						Format:      "uuid",
+						Pattern:     "",
 					},
 					"boolean": {
 						Description: "boolean header description",
-						Type: "boolean",
-						Default: &any.Any{Value: []byte("true")},
-						Pattern: "^true|false$",
+						Type:        "boolean",
+						Default:     "true",
+						Pattern:     "^true|false$",
 					},
 					"integer": {
 						Description: "integer header description",
-						Type: "integer",
-						Default: &any.Any{Value: []byte("0")},
-						Pattern: "^[0-9]$",
+						Type:        "integer",
+						Default:     "0",
+						Pattern:     "^[0-9]$",
 					},
 					"number": {
 						Description: "number header description",
-						Type: "number",
-						Default: &any.Any{Value: []byte("1.2")},
-						Pattern: "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
+						Type:        "number",
+						Default:     "1.2",
+						Pattern:     "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
 					},
 				},
 			},
@@ -1454,30 +1470,29 @@ func TestApplyTemplateHeaders(t *testing.T) {
 		{
 			"string": swaggerHeaderObject{
 				Description: "string header description",
-				Type: "string",
-				Format: "uuid",
-				Pattern: "",
+				Type:        "string",
+				Format:      "uuid",
+				Pattern:     "",
 			},
 			"boolean": swaggerHeaderObject{
 				Description: "boolean header description",
-				Type: "boolean",
-				Default: json.RawMessage("true"),
-				Pattern: "^true|false$",
+				Type:        "boolean",
+				Default:     json.RawMessage("true"),
+				Pattern:     "^true|false$",
 			},
 			"integer": swaggerHeaderObject{
 				Description: "integer header description",
-				Type: "integer",
-				Default: json.RawMessage("0"),
-				Pattern: "^[0-9]$",
+				Type:        "integer",
+				Default:     json.RawMessage("0"),
+				Pattern:     "^[0-9]$",
 			},
 			"number": swaggerHeaderObject{
 				Description: "number header description",
-				Type: "number",
-				Default: json.RawMessage("1.2"),
-				Pattern: "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
+				Type:        "number",
+				Default:     json.RawMessage("1.2"),
+				Pattern:     "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
 			},
 		},
-
 	}[0], response.Headers, "response.Headers"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}

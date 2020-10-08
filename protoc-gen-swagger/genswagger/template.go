@@ -84,6 +84,10 @@ var wktSchemas = map[string]schemaCore{
 	},
 }
 
+var regBool = `^true|false$`
+
+var regString = `^"\w+"$`
+
 func listEnumNames(enum *descriptor.Enum) (names []string) {
 	for _, value := range enum.GetValue() {
 		names = append(names, value.GetName())
@@ -1008,8 +1012,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 						"200": swaggerResponseObject{
 							Description: desc,
 							Schema:      responseSchema,
-							Headers: swaggerHeadersObject{},
-
+							Headers:     swaggerHeadersObject{},
 						},
 					},
 				}
@@ -1108,7 +1111,7 @@ func renderServices(services []*descriptor.Service, paths swaggerPathsObject, re
 							}
 							if resp.Headers != nil {
 								hdrs, err := processHeaders(resp.Headers)
-								if err != nil{
+								if err != nil {
 									return err
 								}
 								respObj.Headers = hdrs
@@ -1463,91 +1466,75 @@ func validateHeaderType(headerType string) error {
 		"number",
 		"integer",
 		"boolean":
-			return nil
+		return nil
 	}
-	return fmt.Errorf("The provided header type: %s. Is not supported", headerType)
+	return fmt.Errorf("the provided header type %q is not supported", headerType)
 }
 
-func validateDefaultValueType(headerType string, defaultValue string)  (error){
-
+func validateDefaultValueType(headerType string, defaultValue string) error {
 	switch headerType {
 	case
 		"string":
-		if !(isString(defaultValue)){
-			return fmt.Errorf("The provided default value: %s  does not match provider type: %s, or is not properly qouted with escaped quotations", defaultValue, headerType)
+		if !(isString(defaultValue)) {
+			return fmt.Errorf("the provided default value %q does not match provider type %q, or is not properly quoted with escaped quotations", defaultValue, headerType)
 		}
 	case
 		"number":
-			if !(isNumber(defaultValue)){
-				return fmt.Errorf("The provided default value: %s  does not match provider type: %s", defaultValue, headerType)
-			}
+		_, err := strconv.ParseFloat(defaultValue, 64)
+		if err != nil {
+			return fmt.Errorf("the provided default value %q does not match provider type %q", defaultValue, headerType)
+		}
 	case
 		"integer":
-			if !(isInt(defaultValue)){
-				return fmt.Errorf("The provided default value: %s  does not match provider type: %s", defaultValue, headerType)
-			}
+		_, err := strconv.ParseInt(defaultValue, 0, 64)
+		if err != nil {
+			return fmt.Errorf("the provided default value %q does not match provider type %q", defaultValue, headerType)
+		}
 	case
 		"boolean":
-			if !(isBool(defaultValue)){
-				return fmt.Errorf("The provided default value: %s  does not match provider type: %s", defaultValue, headerType)
-			}
+		if !isBool(defaultValue) {
+			return fmt.Errorf("the provided default value %q does not match provider type %q", defaultValue, headerType)
+		}
 	}
 	return nil
 }
 
-func isInt(s string) (bool)  {
-	var digitCheck = regexp.MustCompile(`^[0-9]+$`)
+func isString(s string) bool {
+	var digitCheck = regexp.MustCompile(regString)
 	return digitCheck.MatchString(s)
 }
 
-func isNumber(s string) (bool)  {
-	var digitCheck = regexp.MustCompile(`^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$`)
+func isBool(s string) bool {
+	//Unable to use strconv.ParseBool because it returns truthy values https://golang.org/pkg/strconv/#example_ParseBool
+	// per https://swagger.io/docs/specification/data-models/data-types/#boolean
+	// type: boolean represents two values: true and false. Note that truthy and falsy values such as "true", "", 0 or null are not considered boolean values.
+	var digitCheck = regexp.MustCompile(regBool)
 	return digitCheck.MatchString(s)
 }
-
-func isString(s string) (bool)  {
-	var digitCheck = regexp.MustCompile(`^"\w+"$`)
-	return digitCheck.MatchString(s)
-}
-
-func isBool(s string) (bool)  {
-	var digitCheck = regexp.MustCompile(`^true|false$`)
-	return digitCheck.MatchString(s)
-}
-
-
 
 func processHeaders(inputHdrs map[string]*swagger_options.Header) (swaggerHeadersObject, error) {
 	hdrs := map[string]swaggerHeaderObject{}
-	for k, v := range inputHdrs{
+	for k, v := range inputHdrs {
 		ret := swaggerHeaderObject{
 			Description: v.Description,
-			Format: v.Format,
-			Pattern: v.Pattern,
+			Format:      v.Format,
+			Pattern:     v.Pattern,
 		}
 		err := validateHeaderType(v.Type)
-		if err != nil{
+		if err != nil {
 			return nil, err
 		}
 		ret.Type = v.Type
 
-
-
-		if v.Default != nil {
-			raw := json.RawMessage(v.Default.Value)
-			defaultString := string(raw)
-			err := validateDefaultValueType(v.Type, defaultString)
-			if err != nil{
+		if v.Default != "" {
+			err := validateDefaultValueType(v.Type, v.Default)
+			if err != nil {
 				return nil, err
 			}
-			ret.Default = raw
-
+			ret.Default = json.RawMessage(v.Default)
 		}
 
-
 		hdrs[k] = ret
-
-
 
 	}
 
@@ -1967,13 +1954,14 @@ func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_option
 	s.MaxProperties = j.GetMaxProperties()
 	s.MinProperties = j.GetMinProperties()
 	s.Required = j.GetRequired()
-	s.Enum     = j.GetEnum()
+	s.Enum = j.GetEnum()
 	if overrideType := j.GetType(); len(overrideType) > 0 {
 		s.Type = strings.ToLower(overrideType[0].String())
 	}
-	if j != nil && j.GetExample() != nil {
-		s.Example = j.GetExample().Value
+	if j != nil && j.GetExample() != "" {
+		s.Example = json.RawMessage(j.GetExample())
 	}
+
 	if j != nil && j.GetFormat() != "" {
 		s.Format = j.GetFormat()
 	}

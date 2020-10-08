@@ -177,7 +177,7 @@ message Operation {
 message Header {
   // `Description` is a short description of the header.
   string description = 1;
-  // `Type` Required. The type of the object. The value MUST be one of "string", "number", "integer", or "boolean" "array" is not supported.
+  // The type of the object. The value MUST be one of "string", "number", "integer", or "boolean". The "array" type is not supported.
   string type = 2;
   // `Format` The extending format for the previously mentioned type.
   string format = 3;
@@ -185,10 +185,10 @@ message Header {
   reserved 4;
   // field 5 is reserved `Collection Format` Determines the format of the array if type array is used.
   reserved 5;
-  // Declares the value of the header that the server will use if none is provided. (Note: "default" has no meaning for required headers.) See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-6.2. Unlike JSON Schema this value MUST conform to the defined type for the header.
-  // A free-form property to include a JSON example of this field. This is copied
-  // verbatim to the output swagger.json. Quotes must be escaped.
-  google.protobuf.Any default = 6;
+  // `Default` Declares the value of the header that the server will use if none is provided.
+  // See: https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-6.2.
+  // Unlike JSON Schema this value MUST conform to the defined type for the header.
+  string default = 6;
   // field 7 is reserved for 'maximum'.
   reserved 7;
   // field 8 is reserved for 'exclusiveMaximum'.
@@ -439,7 +439,7 @@ message JSONSchema {
   // A free-form property to include a JSON example of this field. This is copied
   // verbatim to the output swagger.json. Quotes must be escaped.
   // This property is the same for 2.0 and 3.0.0 https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/3.0.0.md#schemaObject  https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#schemaObject
-  google.protobuf.Any example = 9;
+  string example = 9;
   double multiple_of = 10;
   // Maximum represents an inclusive upper limit for a numeric instance. The 
   // value of MUST be a number, 
