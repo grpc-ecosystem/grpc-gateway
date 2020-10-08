@@ -1528,9 +1528,9 @@ func processHeaders(inputHdrs map[string]*swagger_options.Header) (swaggerHeader
 		err := validateHeaderType(v.Type)
 		if err != nil{
 			return nil, err
-		} else {
-			ret.Type = v.Type
 		}
+		ret.Type = v.Type
+
 
 
 		if v.Default != nil {
@@ -1539,9 +1539,9 @@ func processHeaders(inputHdrs map[string]*swagger_options.Header) (swaggerHeader
 			err := validateDefaultValueType(v.Type, defaultString)
 			if err != nil{
 				return nil, err
-			} else {
-				ret.Default = raw
 			}
+			ret.Default = raw
+
 		}
 
 
