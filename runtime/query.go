@@ -2,20 +2,25 @@ package runtime
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"net/url"
-	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/grpc-ecosystem/grpc-gateway/utilities"
+	"github.com/golang/protobuf/ptypes"
+	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
+	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
-var valuesKeyRegexp = regexp.MustCompile("^(.*)\\[(.*)\\]$")
+var valuesKeyRegexp = regexp.MustCompile(`^(.*)\[(.*)\]$`)
 
 var currentQueryParser QueryParameterParser = &defaultQueryParser{}
 
@@ -45,7 +50,7 @@ func (*defaultQueryParser) Parse(msg proto.Message, values url.Values, filter *u
 		if filter.HasCommonPrefix(fieldPath) {
 			continue
 		}
-		if err := populateFieldValueFromPath(msg, fieldPath, values); err != nil {
+		if err := populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, values); err != nil {
 			return err
 		}
 	}
@@ -53,354 +58,274 @@ func (*defaultQueryParser) Parse(msg proto.Message, values url.Values, filter *u
 }
 
 // PopulateFieldFromPath sets a value in a nested Protobuf structure.
-// It instantiates missing protobuf fields as it goes.
 func PopulateFieldFromPath(msg proto.Message, fieldPathString string, value string) error {
 	fieldPath := strings.Split(fieldPathString, ".")
-	return populateFieldValueFromPath(msg, fieldPath, []string{value})
+	return populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, []string{value})
 }
 
-func populateFieldValueFromPath(msg proto.Message, fieldPath []string, values []string) error {
-	m := reflect.ValueOf(msg)
-	if m.Kind() != reflect.Ptr {
-		return fmt.Errorf("unexpected type %T: %v", msg, msg)
+func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []string, values []string) error {
+	if len(fieldPath) < 1 {
+		return errors.New("no field path")
 	}
-	var props *proto.Properties
-	m = m.Elem()
+	if len(values) < 1 {
+		return errors.New("no value provided")
+	}
+
+	var fieldDescriptor protoreflect.FieldDescriptor
 	for i, fieldName := range fieldPath {
-		isLast := i == len(fieldPath)-1
-		if !isLast && m.Kind() != reflect.Struct {
-			return fmt.Errorf("non-aggregate type in the mid of path: %s", strings.Join(fieldPath, "."))
+		fields := msgValue.Descriptor().Fields()
+
+		// Get field by name
+		fieldDescriptor = fields.ByName(protoreflect.Name(fieldName))
+		if fieldDescriptor == nil {
+			fieldDescriptor = fields.ByJSONName(fieldName)
+			if fieldDescriptor == nil {
+				// We're not returning an error here because this could just be
+				// an extra query parameter that isn't part of the request.
+				grpclog.Infof("field not found in %q: %q", msgValue.Descriptor().FullName(), strings.Join(fieldPath, "."))
+				return nil
+			}
 		}
-		var f reflect.Value
-		var err error
-		f, props, err = fieldByProtoName(m, fieldName)
+
+		// If this is the last element, we're done
+		if i == len(fieldPath)-1 {
+			break
+		}
+
+		// Only singular message fields are allowed
+		if fieldDescriptor.Message() == nil || fieldDescriptor.Cardinality() == protoreflect.Repeated {
+			return fmt.Errorf("invalid path: %q is not a message", fieldName)
+		}
+
+		// Get the nested message
+		msgValue = msgValue.Mutable(fieldDescriptor).Message()
+	}
+
+	// Check if oneof already set
+	if of := fieldDescriptor.ContainingOneof(); of != nil {
+		if f := msgValue.WhichOneof(of); f != nil {
+			return fmt.Errorf("field already set for oneof %q", of.FullName().Name())
+		}
+	}
+
+	switch {
+	case fieldDescriptor.IsList():
+		return populateRepeatedField(fieldDescriptor, msgValue.Mutable(fieldDescriptor).List(), values)
+	case fieldDescriptor.IsMap():
+		return populateMapField(fieldDescriptor, msgValue.Mutable(fieldDescriptor).Map(), values)
+	}
+
+	if len(values) > 1 {
+		return fmt.Errorf("too many values for field %q: %s", fieldDescriptor.FullName().Name(), strings.Join(values, ", "))
+	}
+
+	return populateField(fieldDescriptor, msgValue, values[0])
+}
+
+func populateField(fieldDescriptor protoreflect.FieldDescriptor, msgValue protoreflect.Message, value string) error {
+	v, err := parseField(fieldDescriptor, value)
+	if err != nil {
+		return fmt.Errorf("parsing field %q: %w", fieldDescriptor.FullName().Name(), err)
+	}
+
+	msgValue.Set(fieldDescriptor, v)
+	return nil
+}
+
+func populateRepeatedField(fieldDescriptor protoreflect.FieldDescriptor, list protoreflect.List, values []string) error {
+	for _, value := range values {
+		v, err := parseField(fieldDescriptor, value)
 		if err != nil {
-			return err
-		} else if !f.IsValid() {
-			grpclog.Infof("field not found in %T: %s", msg, strings.Join(fieldPath, "."))
-			return nil
+			return fmt.Errorf("parsing list %q: %w", fieldDescriptor.FullName().Name(), err)
 		}
+		list.Append(v)
+	}
 
-		switch f.Kind() {
-		case reflect.Bool, reflect.Float32, reflect.Float64, reflect.Int32, reflect.Int64, reflect.String, reflect.Uint32, reflect.Uint64:
-			if !isLast {
-				return fmt.Errorf("unexpected nested field %s in %s", fieldPath[i+1], strings.Join(fieldPath[:i+1], "."))
-			}
-			m = f
-		case reflect.Slice:
-			if !isLast {
-				return fmt.Errorf("unexpected repeated field in %s", strings.Join(fieldPath, "."))
-			}
-			// Handle []byte
-			if f.Type().Elem().Kind() == reflect.Uint8 {
-				m = f
-				break
-			}
-			return populateRepeatedField(f, values, props)
-		case reflect.Ptr:
-			if f.IsNil() {
-				m = reflect.New(f.Type().Elem())
-				f.Set(m.Convert(f.Type()))
-			}
-			m = f.Elem()
-			continue
-		case reflect.Struct:
-			m = f
-			continue
-		case reflect.Map:
-			if !isLast {
-				return fmt.Errorf("unexpected nested field %s in %s", fieldPath[i+1], strings.Join(fieldPath[:i+1], "."))
-			}
-			return populateMapField(f, values, props)
-		default:
-			return fmt.Errorf("unexpected type %s in %T", f.Type(), msg)
-		}
-	}
-	switch len(values) {
-	case 0:
-		return fmt.Errorf("no value of field: %s", strings.Join(fieldPath, "."))
-	case 1:
-	default:
-		grpclog.Infof("too many field values: %s", strings.Join(fieldPath, "."))
-	}
-	return populateField(m, values[0], props)
+	return nil
 }
 
-// fieldByProtoName looks up a field whose corresponding protobuf field name is "name".
-// "m" must be a struct value. It returns zero reflect.Value if no such field found.
-func fieldByProtoName(m reflect.Value, name string) (reflect.Value, *proto.Properties, error) {
-	props := proto.GetProperties(m.Type())
-
-	// look up field name in oneof map
-	for _, op := range props.OneofTypes {
-		if name == op.Prop.OrigName || name == op.Prop.JSONName {
-			v := reflect.New(op.Type.Elem())
-			field := m.Field(op.Field)
-			if !field.IsNil() {
-				return reflect.Value{}, nil, fmt.Errorf("field already set for %s oneof", props.Prop[op.Field].OrigName)
-			}
-			field.Set(v)
-			return v.Elem().Field(0), op.Prop, nil
-		}
-	}
-
-	for _, p := range props.Prop {
-		if p.OrigName == name {
-			return m.FieldByName(p.Name), p, nil
-		}
-		if p.JSONName == name {
-			return m.FieldByName(p.Name), p, nil
-		}
-	}
-	return reflect.Value{}, nil, nil
-}
-
-func populateMapField(f reflect.Value, values []string, props *proto.Properties) error {
+func populateMapField(fieldDescriptor protoreflect.FieldDescriptor, mp protoreflect.Map, values []string) error {
 	if len(values) != 2 {
-		return fmt.Errorf("more than one value provided for key %s in map %s", values[0], props.Name)
+		return fmt.Errorf("more than one value provided for key %q in map %q", values[0], fieldDescriptor.FullName())
 	}
 
-	key, value := values[0], values[1]
-	keyType := f.Type().Key()
-	valueType := f.Type().Elem()
-	if f.IsNil() {
-		f.Set(reflect.MakeMap(f.Type()))
+	key, err := parseField(fieldDescriptor.MapKey(), values[0])
+	if err != nil {
+		return fmt.Errorf("parsing map key %q: %w", fieldDescriptor.FullName().Name(), err)
 	}
 
-	keyConv, ok := convFromType[keyType.Kind()]
-	if !ok {
-		return fmt.Errorf("unsupported key type %s in map %s", keyType, props.Name)
-	}
-	valueConv, ok := convFromType[valueType.Kind()]
-	if !ok {
-		return fmt.Errorf("unsupported value type %s in map %s", valueType, props.Name)
+	value, err := parseField(fieldDescriptor.MapValue(), values[1])
+	if err != nil {
+		return fmt.Errorf("parsing map value %q: %w", fieldDescriptor.FullName().Name(), err)
 	}
 
-	keyV := keyConv.Call([]reflect.Value{reflect.ValueOf(key)})
-	if err := keyV[1].Interface(); err != nil {
-		return err.(error)
-	}
-	valueV := valueConv.Call([]reflect.Value{reflect.ValueOf(value)})
-	if err := valueV[1].Interface(); err != nil {
-		return err.(error)
-	}
-
-	f.SetMapIndex(keyV[0].Convert(keyType), valueV[0].Convert(valueType))
+	mp.Set(key.MapKey(), value)
 
 	return nil
 }
 
-func populateRepeatedField(f reflect.Value, values []string, props *proto.Properties) error {
-	elemType := f.Type().Elem()
-
-	// is the destination field a slice of an enumeration type?
-	if enumValMap := proto.EnumValueMap(props.Enum); enumValMap != nil {
-		return populateFieldEnumRepeated(f, values, enumValMap)
-	}
-
-	conv, ok := convFromType[elemType.Kind()]
-	if !ok {
-		return fmt.Errorf("unsupported field type %s", elemType)
-	}
-	f.Set(reflect.MakeSlice(f.Type(), len(values), len(values)).Convert(f.Type()))
-	for i, v := range values {
-		result := conv.Call([]reflect.Value{reflect.ValueOf(v)})
-		if err := result[1].Interface(); err != nil {
-			return err.(error)
+func parseField(fieldDescriptor protoreflect.FieldDescriptor, value string) (protoreflect.Value, error) {
+	switch fieldDescriptor.Kind() {
+	case protoreflect.BoolKind:
+		v, err := strconv.ParseBool(value)
+		if err != nil {
+			return protoreflect.Value{}, err
 		}
-		f.Index(i).Set(result[0].Convert(f.Index(i).Type()))
+		return protoreflect.ValueOfBool(v), nil
+	case protoreflect.EnumKind:
+		enum, err := protoregistry.GlobalTypes.FindEnumByName(fieldDescriptor.Enum().FullName())
+		switch {
+		case errors.Is(err, protoregistry.NotFound):
+			return protoreflect.Value{}, fmt.Errorf("enum %q is not registered", fieldDescriptor.Enum().FullName())
+		case err != nil:
+			return protoreflect.Value{}, fmt.Errorf("failed to look up enum: %w", err)
+		}
+		// Look for enum by name
+		v := enum.Descriptor().Values().ByName(protoreflect.Name(value))
+		if v == nil {
+			i, err := strconv.Atoi(value)
+			if err != nil {
+				return protoreflect.Value{}, fmt.Errorf("%q is not a valid value", value)
+			}
+			// Look for enum by number
+			v = enum.Descriptor().Values().ByNumber(protoreflect.EnumNumber(i))
+			if v == nil {
+				return protoreflect.Value{}, fmt.Errorf("%q is not a valid value", value)
+			}
+		}
+		return protoreflect.ValueOfEnum(v.Number()), nil
+	case protoreflect.Int32Kind, protoreflect.Sint32Kind, protoreflect.Sfixed32Kind:
+		v, err := strconv.ParseInt(value, 10, 32)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		return protoreflect.ValueOfInt32(int32(v)), nil
+	case protoreflect.Int64Kind, protoreflect.Sint64Kind, protoreflect.Sfixed64Kind:
+		v, err := strconv.ParseInt(value, 10, 64)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		return protoreflect.ValueOfInt64(v), nil
+	case protoreflect.Uint32Kind, protoreflect.Fixed32Kind:
+		v, err := strconv.ParseUint(value, 10, 32)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		return protoreflect.ValueOfUint32(uint32(v)), nil
+	case protoreflect.Uint64Kind, protoreflect.Fixed64Kind:
+		v, err := strconv.ParseUint(value, 10, 64)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		return protoreflect.ValueOfUint64(v), nil
+	case protoreflect.FloatKind:
+		v, err := strconv.ParseFloat(value, 32)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		return protoreflect.ValueOfFloat32(float32(v)), nil
+	case protoreflect.DoubleKind:
+		v, err := strconv.ParseFloat(value, 64)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		return protoreflect.ValueOfFloat64(v), nil
+	case protoreflect.StringKind:
+		return protoreflect.ValueOfString(value), nil
+	case protoreflect.BytesKind:
+		v, err := base64.StdEncoding.DecodeString(value)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		return protoreflect.ValueOfBytes(v), nil
+	case protoreflect.MessageKind, protoreflect.GroupKind:
+		return parseMessage(fieldDescriptor.Message(), value)
+	default:
+		panic(fmt.Sprintf("unknown field kind: %v", fieldDescriptor.Kind()))
 	}
-	return nil
 }
 
-func populateField(f reflect.Value, value string, props *proto.Properties) error {
-	i := f.Addr().Interface()
-
-	// Handle protobuf well known types
-	var name string
-	switch m := i.(type) {
-	case interface{ XXX_WellKnownType() string }:
-		name = m.XXX_WellKnownType()
-	case proto.Message:
-		const wktPrefix = "google.protobuf."
-		if fullName := proto.MessageName(m); strings.HasPrefix(fullName, wktPrefix) {
-			name = fullName[len(wktPrefix):]
-		}
-	}
-	switch name {
-	case "Timestamp":
+func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (protoreflect.Value, error) {
+	var msg proto.Message
+	switch msgDescriptor.FullName() {
+	case "google.protobuf.Timestamp":
 		if value == "null" {
-			f.FieldByName("Seconds").SetInt(0)
-			f.FieldByName("Nanos").SetInt(0)
-			return nil
+			break
 		}
-
 		t, err := time.Parse(time.RFC3339Nano, value)
 		if err != nil {
-			return fmt.Errorf("bad Timestamp: %v", err)
+			return protoreflect.Value{}, err
 		}
-		f.FieldByName("Seconds").SetInt(int64(t.Unix()))
-		f.FieldByName("Nanos").SetInt(int64(t.Nanosecond()))
-		return nil
-	case "Duration":
+		msg, err = ptypes.TimestampProto(t)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+	case "google.protobuf.Duration":
 		if value == "null" {
-			f.FieldByName("Seconds").SetInt(0)
-			f.FieldByName("Nanos").SetInt(0)
-			return nil
+			break
 		}
 		d, err := time.ParseDuration(value)
 		if err != nil {
-			return fmt.Errorf("bad Duration: %v", err)
+			return protoreflect.Value{}, err
 		}
-
-		ns := d.Nanoseconds()
-		s := ns / 1e9
-		ns %= 1e9
-		f.FieldByName("Seconds").SetInt(s)
-		f.FieldByName("Nanos").SetInt(ns)
-		return nil
-	case "DoubleValue":
-		fallthrough
-	case "FloatValue":
-		float64Val, err := strconv.ParseFloat(value, 64)
+		msg = ptypes.DurationProto(d)
+	case "google.protobuf.DoubleValue":
+		v, err := strconv.ParseFloat(value, 64)
 		if err != nil {
-			return fmt.Errorf("bad DoubleValue: %s", value)
+			return protoreflect.Value{}, err
 		}
-		f.FieldByName("Value").SetFloat(float64Val)
-		return nil
-	case "Int64Value":
-		fallthrough
-	case "Int32Value":
-		int64Val, err := strconv.ParseInt(value, 10, 64)
+		msg = &wrapperspb.DoubleValue{Value: v}
+	case "google.protobuf.FloatValue":
+		v, err := strconv.ParseFloat(value, 32)
 		if err != nil {
-			return fmt.Errorf("bad DoubleValue: %s", value)
+			return protoreflect.Value{}, err
 		}
-		f.FieldByName("Value").SetInt(int64Val)
-		return nil
-	case "UInt64Value":
-		fallthrough
-	case "UInt32Value":
-		uint64Val, err := strconv.ParseUint(value, 10, 64)
+		msg = &wrapperspb.FloatValue{Value: float32(v)}
+	case "google.protobuf.Int64Value":
+		v, err := strconv.ParseInt(value, 10, 64)
 		if err != nil {
-			return fmt.Errorf("bad DoubleValue: %s", value)
+			return protoreflect.Value{}, err
 		}
-		f.FieldByName("Value").SetUint(uint64Val)
-		return nil
-	case "BoolValue":
-		if value == "true" {
-			f.FieldByName("Value").SetBool(true)
-		} else if value == "false" {
-			f.FieldByName("Value").SetBool(false)
-		} else {
-			return fmt.Errorf("bad BoolValue: %s", value)
-		}
-		return nil
-	case "StringValue":
-		f.FieldByName("Value").SetString(value)
-		return nil
-	case "BytesValue":
-		bytesVal, err := base64.StdEncoding.DecodeString(value)
+		msg = &wrapperspb.Int64Value{Value: v}
+	case "google.protobuf.Int32Value":
+		v, err := strconv.ParseInt(value, 10, 32)
 		if err != nil {
-			return fmt.Errorf("bad BytesValue: %s", value)
+			return protoreflect.Value{}, err
 		}
-		f.FieldByName("Value").SetBytes(bytesVal)
-		return nil
-	case "FieldMask":
-		p := f.FieldByName("Paths")
-		for _, v := range strings.Split(value, ",") {
-			if v != "" {
-				p.Set(reflect.Append(p, reflect.ValueOf(v)))
-			}
+		msg = &wrapperspb.Int32Value{Value: int32(v)}
+	case "google.protobuf.UInt64Value":
+		v, err := strconv.ParseUint(value, 10, 64)
+		if err != nil {
+			return protoreflect.Value{}, err
 		}
-		return nil
+		msg = &wrapperspb.UInt64Value{Value: v}
+	case "google.protobuf.UInt32Value":
+		v, err := strconv.ParseUint(value, 10, 32)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		msg = &wrapperspb.UInt32Value{Value: uint32(v)}
+	case "google.protobuf.BoolValue":
+		v, err := strconv.ParseBool(value)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		msg = &wrapperspb.BoolValue{Value: v}
+	case "google.protobuf.StringValue":
+		msg = &wrapperspb.StringValue{Value: value}
+	case "google.protobuf.BytesValue":
+		v, err := base64.StdEncoding.DecodeString(value)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		msg = &wrapperspb.BytesValue{Value: v}
+	case "google.protobuf.FieldMask":
+		fm := &field_mask.FieldMask{}
+		fm.Paths = append(fm.Paths, strings.Split(value, ",")...)
+		msg = fm
+	default:
+		return protoreflect.Value{}, fmt.Errorf("unsupported message type: %q", string(msgDescriptor.FullName()))
 	}
 
-	// Handle Time and Duration stdlib types
-	switch t := i.(type) {
-	case *time.Time:
-		pt, err := time.Parse(time.RFC3339Nano, value)
-		if err != nil {
-			return fmt.Errorf("bad Timestamp: %v", err)
-		}
-		*t = pt
-		return nil
-	case *time.Duration:
-		d, err := time.ParseDuration(value)
-		if err != nil {
-			return fmt.Errorf("bad Duration: %v", err)
-		}
-		*t = d
-		return nil
-	}
-
-	// is the destination field an enumeration type?
-	if enumValMap := proto.EnumValueMap(props.Enum); enumValMap != nil {
-		return populateFieldEnum(f, value, enumValMap)
-	}
-
-	conv, ok := convFromType[f.Kind()]
-	if !ok {
-		return fmt.Errorf("field type %T is not supported in query parameters", i)
-	}
-	result := conv.Call([]reflect.Value{reflect.ValueOf(value)})
-	if err := result[1].Interface(); err != nil {
-		return err.(error)
-	}
-	f.Set(result[0].Convert(f.Type()))
-	return nil
+	return protoreflect.ValueOfMessage(msg.ProtoReflect()), nil
 }
-
-func convertEnum(value string, t reflect.Type, enumValMap map[string]int32) (reflect.Value, error) {
-	// see if it's an enumeration string
-	if enumVal, ok := enumValMap[value]; ok {
-		return reflect.ValueOf(enumVal).Convert(t), nil
-	}
-
-	// check for an integer that matches an enumeration value
-	eVal, err := strconv.Atoi(value)
-	if err != nil {
-		return reflect.Value{}, fmt.Errorf("%s is not a valid %s", value, t)
-	}
-	for _, v := range enumValMap {
-		if v == int32(eVal) {
-			return reflect.ValueOf(eVal).Convert(t), nil
-		}
-	}
-	return reflect.Value{}, fmt.Errorf("%s is not a valid %s", value, t)
-}
-
-func populateFieldEnum(f reflect.Value, value string, enumValMap map[string]int32) error {
-	cval, err := convertEnum(value, f.Type(), enumValMap)
-	if err != nil {
-		return err
-	}
-	f.Set(cval)
-	return nil
-}
-
-func populateFieldEnumRepeated(f reflect.Value, values []string, enumValMap map[string]int32) error {
-	elemType := f.Type().Elem()
-	f.Set(reflect.MakeSlice(f.Type(), len(values), len(values)).Convert(f.Type()))
-	for i, v := range values {
-		result, err := convertEnum(v, elemType, enumValMap)
-		if err != nil {
-			return err
-		}
-		f.Index(i).Set(result)
-	}
-	return nil
-}
-
-var (
-	convFromType = map[reflect.Kind]reflect.Value{
-		reflect.String:  reflect.ValueOf(String),
-		reflect.Bool:    reflect.ValueOf(Bool),
-		reflect.Float64: reflect.ValueOf(Float64),
-		reflect.Float32: reflect.ValueOf(Float32),
-		reflect.Int64:   reflect.ValueOf(Int64),
-		reflect.Int32:   reflect.ValueOf(Int32),
-		reflect.Uint64:  reflect.ValueOf(Uint64),
-		reflect.Uint32:  reflect.ValueOf(Uint32),
-		reflect.Slice:   reflect.ValueOf(Bytes),
-	}
-)

@@ -11,7 +11,7 @@ consumes:
 produces:
 - "application/json"
 paths:
-  /grpc.gateway.examples.internal.examplepb.GenerateUnboundMethodsEchoService/Echo:
+  /grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo:
     post:
       tags:
       - "GenerateUnboundMethodsEchoService"
@@ -33,8 +33,8 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
-  /grpc.gateway.examples.internal.examplepb.GenerateUnboundMethodsEchoService/EchoBody:
+            $ref: "#/definitions/rpcStatus"
+  /grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody:
     post:
       tags:
       - "GenerateUnboundMethodsEchoService"
@@ -55,8 +55,8 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
-  /grpc.gateway.examples.internal.examplepb.GenerateUnboundMethodsEchoService/EchoDelete:
+            $ref: "#/definitions/rpcStatus"
+  /grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete:
     post:
       tags:
       - "GenerateUnboundMethodsEchoService"
@@ -77,7 +77,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
 definitions:
   examplepbGenerateUnboundMethodsSimpleMessage:
     type: "object"
@@ -99,17 +99,15 @@ definitions:
   protobufAny:
     type: "object"
     properties:
-      type_url:
+      typeUrl:
         type: "string"
       value:
         type: "string"
         format: "byte"
         pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
-  runtimeError:
+  rpcStatus:
     type: "object"
     properties:
-      error:
-        type: "string"
       code:
         type: "integer"
         format: "int32"

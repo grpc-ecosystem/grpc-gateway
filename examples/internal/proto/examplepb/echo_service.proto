@@ -1,13 +1,15 @@
 syntax = "proto3";
-option go_package = "examplepb";
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
 
 // Echo Service
 //
 // Echo Service API consists of a single service which returns
 // a message.
-package grpc.gateway.examples.internal.examplepb;
+package grpc.gateway.examples.internal.proto.examplepb;
 
 import "google/api/annotations.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/struct.proto";
 
 // Embedded represents a message embedded in SimpleMessage.
 message Embedded {
@@ -31,6 +33,18 @@ message SimpleMessage {
 		int64 en = 6;
 		Embedded no = 7;
 	}
+}
+
+// DynamicMessage represents a message which can have its structure
+// built dynamically using Struct and Values.
+message DynamicMessage {
+	google.protobuf.Struct struct_field = 1;
+	google.protobuf.Value value_field = 2;
+}
+
+message DynamicMessageUpdate {
+	DynamicMessage body = 1;
+	google.protobuf.FieldMask update_mask = 2;
 }
 
 // Echo service responds to incoming echo requests.
@@ -67,6 +81,13 @@ service EchoService {
 	rpc EchoDelete(SimpleMessage) returns (SimpleMessage) {
 		option (google.api.http) = {
 			delete: "/v1/example/echo_delete"
+		};
+	}
+	// EchoPatch method receives a NonStandardUpdateRequest and returns it.
+	rpc EchoPatch(DynamicMessageUpdate) returns (DynamicMessageUpdate) {
+		option (google.api.http) = {
+			patch: "/v1/example/echo_patch"
+			body: "body"
 		};
 	}
 }

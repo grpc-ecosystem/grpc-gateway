@@ -31,7 +31,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/echo/{id}/{num}:
     get:
       tags:
@@ -52,7 +52,7 @@ paths:
         type: "string"
         format: "int64"
         x-exportParamName: "Num"
-      - name: "line_num"
+      - name: "lineNum"
         in: "query"
         required: false
         type: "string"
@@ -106,7 +106,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/echo/{id}/{num}/{lang}:
     get:
       tags:
@@ -132,7 +132,7 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "Lang"
-      - name: "line_num"
+      - name: "lineNum"
         in: "query"
         required: false
         type: "string"
@@ -180,8 +180,8 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
-  /v1/example/echo1/{id}/{line_num}/{status.note}:
+            $ref: "#/definitions/rpcStatus"
+  /v1/example/echo1/{id}/{lineNum}/{status.note}:
     get:
       tags:
       - "EchoService"
@@ -195,7 +195,7 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "Id"
-      - name: "line_num"
+      - name: "lineNum"
         in: "path"
         required: true
         type: "string"
@@ -248,7 +248,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/echo2/{no.note}:
     get:
       tags:
@@ -276,7 +276,7 @@ paths:
         format: "int64"
         x-exportParamName: "Num"
         x-optionalDataType: "String"
-      - name: "line_num"
+      - name: "lineNum"
         in: "query"
         required: false
         type: "string"
@@ -318,7 +318,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/echo_body:
     post:
       tags:
@@ -340,7 +340,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /v1/example/echo_delete:
     delete:
       tags:
@@ -362,7 +362,7 @@ paths:
         format: "int64"
         x-exportParamName: "Num"
         x-optionalDataType: "String"
-      - name: "line_num"
+      - name: "lineNum"
         in: "query"
         required: false
         type: "string"
@@ -416,8 +416,68 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
+  /v1/example/echo_patch:
+    patch:
+      tags:
+      - "EchoService"
+      summary: "EchoPatch method receives a NonStandardUpdateRequest and returns it."
+      operationId: "EchoService_EchoPatch"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbDynamicMessage"
+        x-exportParamName: "Body"
+      - name: "updateMask"
+        in: "query"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "UpdateMask"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbDynamicMessageUpdate"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
 definitions:
+  examplepbDynamicMessage:
+    type: "object"
+    properties:
+      structField:
+        type: "object"
+        properties: {}
+      valueField:
+        type: "object"
+        properties: {}
+    description: "DynamicMessage represents a message which can have its structure\n\
+      built dynamically using Struct and Values."
+    example:
+      structField: "{}"
+      valueField: "{}"
+  examplepbDynamicMessageUpdate:
+    type: "object"
+    properties:
+      body:
+        $ref: "#/definitions/examplepbDynamicMessage"
+      updateMask:
+        type: "array"
+        items:
+          type: "string"
+    example:
+      body:
+        structField: "{}"
+        valueField: "{}"
+      updateMask:
+      - "updateMask"
+      - "updateMask"
   examplepbEmbedded:
     type: "object"
     properties:
@@ -439,7 +499,7 @@ definitions:
       num:
         type: "string"
         format: "int64"
-      line_num:
+      lineNum:
         type: "string"
         format: "int64"
       lang:
@@ -456,8 +516,8 @@ definitions:
       "no":
         note: "note"
         progress: "progress"
-      line_num: "line_num"
       num: "num"
+      lineNum: "lineNum"
       en: "en"
       id: "id"
       lang: "lang"
@@ -467,7 +527,7 @@ definitions:
   protobufAny:
     type: "object"
     properties:
-      type_url:
+      typeUrl:
         type: "string"
         description: "A URL/resource name that uniquely identifies the type of the\
           \ serialized\nprotocol buffer message. This string must contain at least\n\
@@ -522,11 +582,17 @@ definitions:
       \ custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\
       \n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n\
       \      \"value\": \"1.212s\"\n    }"
-  runtimeError:
+  protobufNullValue:
+    type: "string"
+    description: "`NullValue` is a singleton enumeration to represent the null value\
+      \ for the\n`Value` type union.\n\n The JSON representation for `NullValue` is\
+      \ JSON `null`.\n\n - NULL_VALUE: Null value."
+    enum:
+    - "NULL_VALUE"
+    default: "NULL_VALUE"
+  rpcStatus:
     type: "object"
     properties:
-      error:
-        type: "string"
       code:
         type: "integer"
         format: "int32"

@@ -5,17 +5,18 @@ import (
 	"fmt"
 	"io"
 	"sync"
+	"time"
 
 	"github.com/golang/glog"
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/duration"
-	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/golang/protobuf/ptypes/wrappers"
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/examplepb"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/pathenum"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/sub"
-	"github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/sub2"
+	durationpb "github.com/golang/protobuf/ptypes/duration"
+	emptypb "github.com/golang/protobuf/ptypes/empty"
+	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
+	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2"
 	"github.com/rogpeppe/fastuuid"
+	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -105,7 +106,7 @@ func (s *_ABitOfEverythingServer) BulkCreate(stream examples.StreamService_BulkC
 		"foo": "foo2",
 		"bar": "bar2",
 	}))
-	return stream.SendAndClose(new(empty.Empty))
+	return stream.SendAndClose(new(emptypb.Empty))
 }
 
 func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *sub2.IdMessage) (*examples.ABitOfEverything, error) {
@@ -131,7 +132,7 @@ func (s *_ABitOfEverythingServer) Lookup(ctx context.Context, msg *sub2.IdMessag
 	return nil, status.Errorf(codes.NotFound, "not found")
 }
 
-func (s *_ABitOfEverythingServer) List(_ *empty.Empty, stream examples.StreamService_ListServer) error {
+func (s *_ABitOfEverythingServer) List(_ *emptypb.Empty, stream examples.StreamService_ListServer) error {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -161,7 +162,27 @@ func (s *_ABitOfEverythingServer) List(_ *empty.Empty, stream examples.StreamSer
 	return nil
 }
 
-func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABitOfEverything) (*empty.Empty, error) {
+func (s *_ABitOfEverythingServer) Download(_ *emptypb.Empty, stream examples.StreamService_DownloadServer) error {
+	msgs := []*httpbody.HttpBody{{
+		ContentType: "text/html",
+		Data:        []byte("Hello 1"),
+	}, {
+		ContentType: "text/html",
+		Data:        []byte("Hello 2"),
+	}}
+
+	for _, msg := range msgs {
+		if err := stream.Send(msg); err != nil {
+			return err
+		}
+
+		time.Sleep(5 * time.Millisecond)
+	}
+
+	return nil
+}
+
+func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABitOfEverything) (*emptypb.Empty, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -171,10 +192,10 @@ func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABit
 	} else {
 		return nil, status.Errorf(codes.NotFound, "not found")
 	}
-	return new(empty.Empty), nil
+	return new(emptypb.Empty), nil
 }
 
-func (s *_ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.UpdateV2Request) (*empty.Empty, error) {
+func (s *_ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.UpdateV2Request) (*emptypb.Empty, error) {
 	glog.Info(msg)
 	// If there is no update mask do a regular update
 	if msg.UpdateMask == nil || len(msg.UpdateMask.GetPaths()) == 0 {
@@ -188,10 +209,10 @@ func (s *_ABitOfEverythingServer) UpdateV2(ctx context.Context, msg *examples.Up
 	} else {
 		return nil, status.Errorf(codes.NotFound, "not found")
 	}
-	return new(empty.Empty), nil
+	return new(emptypb.Empty), nil
 }
 
-func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessage) (*empty.Empty, error) {
+func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessage) (*emptypb.Empty, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -201,10 +222,10 @@ func (s *_ABitOfEverythingServer) Delete(ctx context.Context, msg *sub2.IdMessag
 	} else {
 		return nil, status.Errorf(codes.NotFound, "not found")
 	}
-	return new(empty.Empty), nil
+	return new(emptypb.Empty), nil
 }
 
-func (s *_ABitOfEverythingServer) GetQuery(ctx context.Context, msg *examples.ABitOfEverything) (*empty.Empty, error) {
+func (s *_ABitOfEverythingServer) GetQuery(ctx context.Context, msg *examples.ABitOfEverything) (*emptypb.Empty, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
 
@@ -214,7 +235,7 @@ func (s *_ABitOfEverythingServer) GetQuery(ctx context.Context, msg *examples.AB
 	} else {
 		return nil, status.Errorf(codes.NotFound, "not found")
 	}
-	return new(empty.Empty), nil
+	return new(emptypb.Empty), nil
 }
 
 func (s *_ABitOfEverythingServer) GetRepeatedQuery(ctx context.Context, msg *examples.ABitOfEverythingRepeated) (*examples.ABitOfEverythingRepeated, error) {
@@ -276,37 +297,33 @@ func (s *_ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *example
 	return msg, nil
 }
 
-func (s *_ABitOfEverythingServer) NoBindings(ctx context.Context, msg *duration.Duration) (*empty.Empty, error) {
+func (s *_ABitOfEverythingServer) NoBindings(ctx context.Context, msg *durationpb.Duration) (*emptypb.Empty, error) {
 	return nil, nil
 }
 
-func (s *_ABitOfEverythingServer) Timeout(ctx context.Context, msg *empty.Empty) (*empty.Empty, error) {
-	select {
-	case <-ctx.Done():
-		return nil, ctx.Err()
-	}
+func (s *_ABitOfEverythingServer) Timeout(ctx context.Context, msg *emptypb.Empty) (*emptypb.Empty, error) {
+	<-ctx.Done()
+	return nil, ctx.Err()
 }
 
-func (s *_ABitOfEverythingServer) ErrorWithDetails(ctx context.Context, msg *empty.Empty) (*empty.Empty, error) {
+func (s *_ABitOfEverythingServer) ErrorWithDetails(ctx context.Context, msg *emptypb.Empty) (*emptypb.Empty, error) {
 	stat, err := status.New(codes.Unknown, "with details").
-		WithDetails(proto.Message(
-			&errdetails.DebugInfo{
-				StackEntries: []string{"foo:1"},
-				Detail:       "error debug details",
-			},
-		))
+		WithDetails(&errdetails.DebugInfo{
+			StackEntries: []string{"foo:1"},
+			Detail:       "error debug details",
+		})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "unexpected error adding details: %s", err)
 	}
 	return nil, stat.Err()
 }
 
-func (s *_ABitOfEverythingServer) GetMessageWithBody(ctx context.Context, msg *examples.MessageWithBody) (*empty.Empty, error) {
-	return &empty.Empty{}, nil
+func (s *_ABitOfEverythingServer) GetMessageWithBody(ctx context.Context, msg *examples.MessageWithBody) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
 }
 
-func (s *_ABitOfEverythingServer) PostWithEmptyBody(ctx context.Context, msg *examples.Body) (*empty.Empty, error) {
-	return &empty.Empty{}, nil
+func (s *_ABitOfEverythingServer) PostWithEmptyBody(ctx context.Context, msg *examples.Body) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
 }
 
 func (s *_ABitOfEverythingServer) CheckGetQueryParams(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
@@ -321,14 +338,14 @@ func (s *_ABitOfEverythingServer) CheckPostQueryParams(ctx context.Context, msg 
 	return msg, nil
 }
 
-func (s *_ABitOfEverythingServer) OverwriteResponseContentType(ctx context.Context, msg *empty.Empty) (*wrappers.StringValue, error) {
-	return &wrappers.StringValue{}, nil
+func (s *_ABitOfEverythingServer) OverwriteResponseContentType(ctx context.Context, msg *emptypb.Empty) (*wrapperspb.StringValue, error) {
+	return &wrapperspb.StringValue{}, nil
 }
 
-func (s *_ABitOfEverythingServer) CheckExternalPathEnum(ctx context.Context, msg *pathenum.MessageWithPathEnum) (*empty.Empty, error) {
-	return &empty.Empty{}, nil
+func (s *_ABitOfEverythingServer) CheckExternalPathEnum(ctx context.Context, msg *pathenum.MessageWithPathEnum) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
 }
 
-func (s *_ABitOfEverythingServer) CheckExternalNestedPathEnum(ctx context.Context, msg *pathenum.MessageWithNestedPathEnum) (*empty.Empty, error) {
-	return &empty.Empty{}, nil
+func (s *_ABitOfEverythingServer) CheckExternalNestedPathEnum(ctx context.Context, msg *pathenum.MessageWithNestedPathEnum) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
 }

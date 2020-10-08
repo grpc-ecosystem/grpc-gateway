@@ -42,7 +42,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/grpc.gateway.examples.internal.examplepb.GenerateUnboundMethodsEchoService/Echo"
+	localVarPath := a.client.cfg.BasePath + "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -109,7 +109,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -142,7 +142,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/grpc.gateway.examples.internal.examplepb.GenerateUnboundMethodsEchoService/EchoBody"
+	localVarPath := a.client.cfg.BasePath + "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -209,7 +209,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -242,7 +242,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/grpc.gateway.examples.internal.examplepb.GenerateUnboundMethodsEchoService/EchoDelete"
+	localVarPath := a.client.cfg.BasePath + "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -309,7 +309,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()

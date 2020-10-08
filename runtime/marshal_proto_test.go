@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/timestamp"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb"
+	timestamppb "github.com/golang/protobuf/ptypes/timestamp"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
+	"google.golang.org/protobuf/proto"
 )
 
 var message = &examplepb.ABitOfEverything{
@@ -16,7 +16,7 @@ var message = &examplepb.ABitOfEverything{
 	MappedStringValue:   nil,
 	MappedNestedValue:   nil,
 	RepeatedEnumValue:   nil,
-	TimestampValue:      &timestamp.Timestamp{},
+	TimestampValue:      &timestamppb.Timestamp{},
 	Uuid:                "6EC2446F-7E89-4127-B3E6-5C05E6BECBA7",
 	Nested: []*examplepb.ABitOfEverything_Nested{
 		{

@@ -23,11 +23,21 @@ You might want to serialize request/response messages in MessagePack instead of 
 
 You can see [the default implementation for JSON](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/marshal_jsonpb.go) for reference.
 
-### Using camelCase for JSON
+### Using proto names in JSON
 
-The protocol buffer compiler generates camelCase JSON tags that can be used with jsonpb package. By default jsonpb Marshaller uses `OrigName: true` which uses the exact case used in the proto files. To use camelCase for the JSON representation,
+The protocol buffer compiler generates camelCase JSON tags that are used by default.
+If you want to use the exact case used in the proto files, set `UseProtoNames: true`:
 ```go
-mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{OrigName:false}))
+mux := runtime.NewServeMux(
+	runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
+		MarshalOptions: protojson.MarshalOptions{
+			UseProtoNames: true,
+		},
+		UnmarshalOptions: protojson.UnmarshalOptions{
+			DiscardUnknown: true,
+		},
+	}),
+)
 ```
 
 ### Pretty-print JSON responses when queried with ?pretty
@@ -42,7 +52,15 @@ For example:
 
 ```go
 mux := runtime.NewServeMux(
-	runtime.WithMarshalerOption("application/json+pretty", &runtime.JSONPb{Indent: "  "}),
+	runtime.WithMarshalerOption("application/json+pretty", &runtime.JSONPb{
+		MarshalOptions: protojson.MarshalOptions{
+			Indent: "  ",
+			Multiline: true, // Optional, implied by presence of "Indent".
+		},
+		UnmarshalOptions: protojson.UnmarshalOptions{
+			DiscardUnknown: true,
+		},
+	}),
 )
 prettier := func(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -57,22 +75,6 @@ prettier := func(h http.Handler) http.Handler {
 http.ListenAndServe(":8080", prettier(mux))
 ```
 
-Note that  `runtime.JSONPb{Indent: "  "}` will do the trick for pretty-printing: it wraps
-`jsonpb.Marshaler`:
-```go
-type Marshaler struct {
-	// ...
-
-	// A string to indent each level by. The presence of this field will
-	// also cause a space to appear between the field separator and
-	// value, and for newlines to appear between fields and array
-	// elements.
-	Indent string
-
-	// ...
-}
-```
-
 Now, either when passing the header `Accept: application/json+pretty` or appending `?pretty` to
 your HTTP endpoints, the response will be pretty-printed.
 
@@ -81,42 +83,15 @@ also, this example code does not remove the query parameter `pretty` from furthe
 
 ## Customize unmarshaling per Content-Type
 
-Having different unmarshaling options per Content-Type is possible by wrapping the decoder and passing that to `runtime.WithMarshalerOption`:
-
-```go
-type m struct {
-	*runtime.JSONPb
-	unmarshaler *jsonpb.Unmarshaler
-}
-
-type decoderWrapper struct {
-	*json.Decoder
-	*jsonpb.Unmarshaler
-}
-
-func (n *m) NewDecoder(r io.Reader) runtime.Decoder {
-	d := json.NewDecoder(r)
-	return &decoderWrapper{Decoder: d, Unmarshaler: n.unmarshaler}
-}
-
-func (d *decoderWrapper) Decode(v interface{}) error {
-	p, ok := v.(proto.Message)
-	if !ok { // if it's not decoding into a proto.Message, there's no notion of unknown fields
-		return d.Decoder.Decode(v)
-	}
-	return d.UnmarshalNext(d.Decoder, p) // uses m's jsonpb.Unmarshaler configuration
-}
-```
-
-This scaffolding allows us to pass a custom unmarshal options. In this example, we configure the
-unmarshaler to disallow unknown fields. For demonstration purposes, we'll also change some of the
-default marshaler options:
+Having different unmarshaling options per Content-Type is as easy as
+configuring a custom marshaler:
 
 ```go
 mux := runtime.NewServeMux(
-	runtime.WithMarshalerOption("application/json+strict", &m{
-		JSONPb: &runtime.JSONPb{EmitDefaults: true},
-		unmarshaler: &jsonpb.Unmarshaler{AllowUnknownFields: false}, // explicit "false", &jsonpb.Unmarshaler{} would have the same effect
+	runtime.WithMarshalerOption("application/json+strict", &runtime.JSONPb{
+		UnmarshalOptions: &protojson.UnmarshalOptions{
+			DiscardUnknown: false, // explicit "false", &protojson.UnmarshalOptions{} would have the same effect
+		},
 	}),
 )
 ```
@@ -258,83 +233,15 @@ gwMux := runtime.NewServeMux(
 )
 ```
 
-## OpenTracing Support
-
-If your project uses [OpenTracing](https://github.com/opentracing/opentracing-go) and you'd like spans to propagate through the gateway, you can add some middleware which parses the incoming HTTP headers to create a new span correctly.
-
-```go
-import (
-	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
-)
-
-var grpcGatewayTag = opentracing.Tag{Key: string(ext.Component), Value: "grpc-gateway"}
-
-func tracingWrapper(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		parentSpanContext, err := opentracing.GlobalTracer().Extract(
-			opentracing.HTTPHeaders,
-			opentracing.HTTPHeadersCarrier(r.Header))
-		if err == nil || err == opentracing.ErrSpanContextNotFound {
-			serverSpan := opentracing.GlobalTracer().StartSpan(
-				"ServeHTTP",
-				// this is magical, it attaches the new span to the parent parentSpanContext, and creates an unparented one if empty.
-				ext.RPCServerOption(parentSpanContext),
-				grpcGatewayTag,
-			)
-			r = r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
-			defer serverSpan.Finish()
-		}
-		h.ServeHTTP(w, r)
-	})
-}
-
-// Then just wrap the mux returned by runtime.NewServeMux() like this
-if err := http.ListenAndServe(":8080", tracingWrapper(mux)); err != nil {
-	log.Fatalf("failed to start gateway server on 8080: %v", err)
-}
-```
-
-Finally, don't forget to add a tracing interceptor when registering
-the services. E.g.
-
-```go
-import (
-	"google.golang.org/grpc"
-	"github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
-)
-
-opts := []grpc.DialOption{
-	grpc.WithUnaryInterceptor(
-		grpc_opentracing.UnaryClientInterceptor(
-			grpc_opentracing.WithTracer(opentracing.GlobalTracer()),
-		),
-	),
-}
-if err := pb.RegisterMyServiceHandlerFromEndpoint(ctx, mux, serviceEndpoint, opts); err != nil {
-	log.Fatalf("could not register HTTP service: %v", err)
-}
-```
-
 ## Error handler
-The gateway uses two different error handlers for non-streaming requests:
-
- * `runtime.HTTPError` is called for errors from backend calls
- * `runtime.OtherErrorHandler` is called for errors from parsing and routing client requests
-
-To override all error handling for a `*runtime.ServeMux`, use the
-`runtime.WithProtoErrorHandler` serve option.
-
-Alternatively, you can override the global default `HTTPError` handling by
-setting `runtime.GlobalHTTPErrorHandler` to a custom function, and override
-the global default `OtherErrorHandler` by setting `runtime.OtherErrorHandler`
-to a custom function.
-
-You should not set `runtime.HTTPError` directly, because that might break
-any `ServeMux` set up with the `WithProtoErrorHandler` option.
+To override error handling for a `*runtime.ServeMux`, use the
+`runtime.WithErrorHandler` option. This will configure all unary error
+responses to pass through this error handler.
 
 See https://mycodesmells.com/post/grpc-gateway-error-handler for an example
-of writing a custom error handler function.
+of writing a custom error handler function. Note that this post targets
+the v1 release of the gateway, and you no longer assign to `HTTPError` to
+configure an error handler.
 
 ## Stream Error Handler
 The error handler described in the previous section applies only
@@ -358,7 +265,7 @@ mux := runtime.NewServeMux(
 
 The signature of the handler is much more rigid because we need
 to know the structure of the error payload to properly
-encode the "chunk" schema into a Swagger/OpenAPI spec.
+encode the "chunk" schema into an OpenAPI spec.
 
 So the function must return a `*runtime.StreamError`. The handler
 can choose to omit some fields and can filter/transform the original
@@ -369,37 +276,44 @@ Here's an example custom handler:
 // handleStreamError overrides default behavior for computing an error
 // message for a server stream.
 //
-// It uses a default "502 Bad Gateway" HTTP code; only emits "safe"
-// messages; and does not set gRPC code or details fields (so they will
+// It uses a default "502 Bad Gateway" HTTP code, only emits "safe"
+// messages and does not set the details field (so it will
 // be omitted from the resulting JSON object that is sent to client).
-func handleStreamError(ctx context.Context, err error) *runtime.StreamError {
-	code := http.StatusBadGateway
+func handleStreamError(ctx context.Context, err error) *status.Status {
+	code := codes.Internal
 	msg := "unexpected error"
 	if s, ok := status.FromError(err); ok {
-		code = runtime.HTTPStatusFromCode(s.Code())
-		// default message, based on the name of the gRPC code
-		msg = code.String()
+		code = s.Code()
+		// default message, based on the gRPC status
+		msg = s.Message()
 		// see if error details include "safe" message to send
 		// to external callers
-		for _, msg := s.Details() {
+		for _, msg := range s.Details() {
 			if safe, ok := msg.(*SafeMessage); ok {
 				msg = safe.Text
 				break
 			}
 		}
 	}
-	return &runtime.StreamError{
-	    HttpCode:   int32(code),
-	    HttpStatus: http.StatusText(code),
-	    Message:    msg,
-	}
+	return status.Errorf(code, msg)
 }
 ```
 
 If no custom handler is provided, the default stream error handler
 will include any gRPC error attributes (code, message, detail messages),
 if the error being reported includes them. If the error does not have
-these attributes, a gRPC code of `Unknown` (2) is reported. The default
-handler will also include an HTTP code and status, which is derived
-from the gRPC code (or set to `"500 Internal Server Error"` when
-the source error has no gRPC attributes).
+these attributes, a gRPC code of `Unknown` (2) is reported.
+
+## Routing Error handler
+To override the error behavior when `*runtime.ServeMux` was not 
+able to serve the request due to routing issues, use the `runtime.WithRoutingErrorHandler` option. 
+
+This will configure all HTTP routing errors to pass through this error handler.
+Default behavior is to map HTTP error codes to gRPC errors.
+
+HTTP statuses and their mappings to gRPC statuses: 
+* HTTP `404 Not Found` -> gRPC `5 NOT_FOUND`
+* HTTP `405 Method Not Allowed` -> gRPC `12 UNIMPLEMENTED`
+* HTTP `400 Bad Request` -> gRPC `3 INVALID_ARGUMENT`
+
+This method is not used outside of the initial routing.

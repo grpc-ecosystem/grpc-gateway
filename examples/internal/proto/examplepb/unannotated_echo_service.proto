@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "examplepb";
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb;examplepb";
 
 // Unannotated Echo Service
 // Similar to echo_service.proto but without annotations. See
@@ -8,10 +8,18 @@ option go_package = "examplepb";
 //
 // Echo Service API consists of a single service which returns
 // a message.
-package grpc.gateway.examples.internal.examplepb;
+package grpc.gateway.examples.internal.proto.examplepb;
 
 // Do not need annotations.proto, can still use well known types as usual
 import "google/protobuf/duration.proto";
+
+// Embedded represents a message embedded in SimpleMessage.
+message UnannotatedEmbedded {
+	oneof mark {
+		int64 progress = 1;
+		string note = 2;
+	}
+}
 
 // UnannotatedSimpleMessage represents a simple message sent to the unannotated Echo service.
 message UnannotatedSimpleMessage {
@@ -19,6 +27,15 @@ message UnannotatedSimpleMessage {
 	string id = 1;
 	int64 num = 2;
 	google.protobuf.Duration duration = 3;
+	oneof code {
+		int64 line_num = 4;
+		string lang = 5;
+	}
+	UnannotatedEmbedded status = 6;
+	oneof ext {
+		int64 en = 7;
+		UnannotatedEmbedded no = 8;
+	}
 }
 
 // Echo service responds to incoming echo requests.
