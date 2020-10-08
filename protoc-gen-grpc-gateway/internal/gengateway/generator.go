@@ -9,10 +9,10 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	"github.com/golang/protobuf/proto"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/descriptor"
-	gen "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/generator"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 var (
@@ -34,19 +34,20 @@ type generator struct {
 	pathType           pathType
 	modulePath         string
 	allowPatchFeature  bool
+	standalone         bool
 }
 
 // New returns a new generator which generates grpc gateway files.
-func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, pathTypeString, modulePathString string, allowPatchFeature bool) gen.Generator {
+func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, pathTypeString, modulePathString string,
+	allowPatchFeature, standalone bool) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
 		"context",
 		"io",
 		"net/http",
-		"github.com/grpc-ecosystem/grpc-gateway/runtime",
-		"github.com/grpc-ecosystem/grpc-gateway/utilities",
-		"github.com/golang/protobuf/descriptor",
-		"github.com/golang/protobuf/proto",
+		"github.com/grpc-ecosystem/grpc-gateway/v2/runtime",
+		"github.com/grpc-ecosystem/grpc-gateway/v2/utilities",
+		"google.golang.org/protobuf/proto",
 		"google.golang.org/grpc",
 		"google.golang.org/grpc/codes",
 		"google.golang.org/grpc/grpclog",
@@ -88,13 +89,15 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, p
 		pathType:           pathType,
 		modulePath:         modulePathString,
 		allowPatchFeature:  allowPatchFeature,
+		standalone:         standalone,
 	}
 }
 
-func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGeneratorResponse_File, error) {
-	var files []*plugin.CodeGeneratorResponse_File
+func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.ResponseFile, error) {
+	var files []*descriptor.ResponseFile
 	for _, file := range targets {
 		glog.V(1).Infof("Processing %s", file.GetName())
+
 		code, err := g.generate(file)
 		if err == errNoTargetService {
 			glog.V(1).Infof("%s: %v", file.GetName(), err)
@@ -108,6 +111,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 			glog.Errorf("%v: %s", err, code)
 			return nil, err
 		}
+
 		name, err := g.getFilePath(file)
 		if err != nil {
 			glog.Errorf("%v: %s", err, code)
@@ -115,12 +119,14 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*plugin.CodeGenerato
 		}
 		ext := filepath.Ext(name)
 		base := strings.TrimSuffix(name, ext)
-		output := fmt.Sprintf("%s.pb.gw.go", base)
-		files = append(files, &plugin.CodeGeneratorResponse_File{
-			Name:    proto.String(output),
-			Content: proto.String(string(formatted)),
+		filename := fmt.Sprintf("%s.pb.gw.go", base)
+		files = append(files, &descriptor.ResponseFile{
+			GoPkg: file.GoPkg,
+			CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
+				Name:    proto.String(filename),
+				Content: proto.String(string(formatted)),
+			},
 		})
-		glog.V(1).Infof("Will emit %s", output)
 	}
 	return files, nil
 }
@@ -153,6 +159,11 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 		pkgSeen[pkg.Path] = true
 		imports = append(imports, pkg)
 	}
+
+	if g.standalone {
+		imports = append(imports, file.GoPkg)
+	}
+
 	for _, svc := range file.Services {
 		for _, m := range svc.Methods {
 			imports = append(imports, g.addEnumPathParamImports(file, m, pkgSeen)...)

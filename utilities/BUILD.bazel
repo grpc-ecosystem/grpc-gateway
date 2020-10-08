@@ -10,7 +10,7 @@ go_library(
         "readerfactory.go",
         "trie.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/utilities",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/utilities",
 )
 
 go_test(

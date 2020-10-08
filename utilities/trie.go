@@ -145,10 +145,7 @@ func (l byLex) Less(i, j int) bool {
 			return false
 		}
 	}
-	if k < len(sj) {
-		return true
-	}
-	return false
+	return k < len(sj)
 }
 
 // HasCommonPrefix determines if any sequence in the DoubleArray is a prefix of the given sequence.

@@ -36,7 +36,7 @@ commands:
 executors:
   build-env:
     environment:
-    ## Split key to avoid github from revoking it
+    ## Split key to avoid github revoking it
       password0: '99544cdcb19ad4e3fd64'
       password1: '3ec86b2e5a431be2d72c'
       GLOG_logtostderr: '1'
@@ -84,8 +84,22 @@ jobs:
     working_directory: /src/grpc-gateway
     steps:
       - checkout
-      - run: go get golang.org/x/lint/golint
-      - run: make lint
+      - restore_cache:
+          keys:
+            - v1-staticcheck-cache-{{ checksum "go.sum" }}
+            - v1-staticcheck-cache-
+      - run:
+          name: Install staticcheck outside local module
+          command: |
+            cd $(mktemp -d) &&
+            go mod init tmp &&
+            go get honnef.co/go/tools/cmd/staticcheck
+      - run: staticcheck ./...
+      - save_cache:
+          key: v1-staticcheck-cache-{{ checksum "go.sum" }}
+          paths:
+            - /root/.cache/go-build
+            - /root/.cache/staticcheck
   fuzzit:
     docker:
       - image: fuzzitdev/fuzzit:golang1.12-stretch-llvm9
@@ -106,16 +120,22 @@ jobs:
       - configure_bazel
       - run:
           name: Check that Bazel BUILD files are up-to-date
-          command: 'bazel run //:gazelle -- --mode=diff ||
-            (echo "ERROR: Bazel files out-of-date, please run \`bazel run :gazelle\`" >&2; exit 1)'
+          command: |
+            bazel run //:gazelle &&
+            git diff --exit-code
+      - run:
+          name: Check that repositories.bzl is up-to-date
+          command: |
+            bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories &&
+            git diff --exit-code
+      - run:
+          name: Check formatting of Bazel BUILD files
+          command: |
+            bazel run //:buildifier &&
+            git diff --exit-code
       - run:
           name: Run tests with Bazel
           command: bazel test //...
-      - run:
-          name: Check formatting of Bazel BUILD files
-          command: 'bazel run //:buildifier_check ||
-            (echo "ERROR: Bazel files not formatted, please run \`bazel run :buildifier\`" >&2; exit 1)'
-          when: always
       - save_cache:
           key: v2-bazel-cache-{{ checksum "repositories.bzl" }}
           paths:
@@ -131,7 +151,7 @@ jobs:
             cd $(mktemp -d) &&
             go mod init tmp &&
             go get golang.org/x/exp/cmd/gorelease@latest
-      - run: gorelease
+      - run: gorelease -base=v2.0.0-alpha.2
   release:
     executor: build-env
     working_directory: /src/grpc-gateway
@@ -182,7 +202,7 @@ workflows:
       - update-repositoriesbzl:
           filters:
             branches:
-              only: /renovate\/.+/
+              only: /renovate\/v2-.+/
             tags:
               ignore: /.*/
       - regenerate:
@@ -192,7 +212,7 @@ workflows:
             - update-repositoriesbzl
           filters:
             branches:
-              only: /renovate\/master-.+/
+              only: /renovate\/v2-.+/
             tags:
               ignore: /.*/
 

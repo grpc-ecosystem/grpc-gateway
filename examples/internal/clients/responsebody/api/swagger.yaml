@@ -29,7 +29,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /responsebody/stream/{data}:
     get:
       tags:
@@ -50,12 +50,12 @@ paths:
               result:
                 $ref: "#/definitions/examplepbResponseBodyOutResponse"
               error:
-                $ref: "#/definitions/runtimeStreamError"
+                $ref: "#/definitions/rpcStatus"
             title: "Stream result of examplepbResponseBodyOut"
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /responsebody/{data}:
     get:
       tags:
@@ -75,7 +75,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
   /responsestrings/{data}:
     get:
       tags:
@@ -97,7 +97,7 @@ paths:
         default:
           description: "An unexpected error response."
           schema:
-            $ref: "#/definitions/runtimeError"
+            $ref: "#/definitions/rpcStatus"
 definitions:
   ResponseResponseType:
     type: "string"
@@ -146,7 +146,7 @@ definitions:
   protobufAny:
     type: "object"
     properties:
-      type_url:
+      typeUrl:
         type: "string"
         description: "A URL/resource name that uniquely identifies the type of the\
           \ serialized\nprotocol buffer message. This string must contain at least\n\
@@ -202,13 +202,11 @@ definitions:
       \n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n\
       \      \"value\": \"1.212s\"\n    }"
     example:
+      typeUrl: "typeUrl"
       value: "value"
-      type_url: "type_url"
-  runtimeError:
+  rpcStatus:
     type: "object"
     properties:
-      error:
-        type: "string"
       code:
         type: "integer"
         format: "int32"
@@ -218,49 +216,28 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/protobufAny"
-  runtimeStreamError:
-    type: "object"
-    properties:
-      grpc_code:
-        type: "integer"
-        format: "int32"
-      http_code:
-        type: "integer"
-        format: "int32"
-      message:
-        type: "string"
-      http_status:
-        type: "string"
-      details:
-        type: "array"
-        items:
-          $ref: "#/definitions/protobufAny"
     example:
-      http_code: 6
-      http_status: "http_status"
+      code: 0
       details:
-      - value: "value"
-        type_url: "type_url"
-      - value: "value"
-        type_url: "type_url"
+      - typeUrl: "typeUrl"
+        value: "value"
+      - typeUrl: "typeUrl"
+        value: "value"
       message: "message"
-      grpc_code: 0
   Stream result of examplepbResponseBodyOut:
     properties:
       result:
         $ref: "#/definitions/examplepbResponseBodyOutResponse"
       error:
-        $ref: "#/definitions/runtimeStreamError"
+        $ref: "#/definitions/rpcStatus"
     example:
       result:
         data: "data"
       error:
-        http_code: 6
-        http_status: "http_status"
+        code: 0
         details:
-        - value: "value"
-          type_url: "type_url"
-        - value: "value"
-          type_url: "type_url"
+        - typeUrl: "typeUrl"
+          value: "value"
+        - typeUrl: "typeUrl"
+          value: "value"
         message: "message"
-        grpc_code: 0

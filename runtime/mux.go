@@ -7,22 +7,15 @@ import (
 	"net/textproto"
 	"strings"
 
-	"github.com/golang/protobuf/proto"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 )
 
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
 type HandlerFunc func(w http.ResponseWriter, r *http.Request, pathParams map[string]string)
-
-// ErrUnknownURI is the error supplied to a custom ProtoErrorHandlerFunc when
-// a request is received with a URI path that does not match any registered
-// service method.
-//
-// Since gRPC servers return an "Unimplemented" code for requests with an
-// unrecognized URI path, this error also has a gRPC "Unimplemented" code.
-var ErrUnknownURI = status.Error(codes.Unimplemented, http.StatusText(http.StatusNotImplemented))
 
 // ServeMux is a request multiplexer for grpc-gateway.
 // It matches http requests to patterns and invokes the corresponding handler.
@@ -34,10 +27,10 @@ type ServeMux struct {
 	incomingHeaderMatcher     HeaderMatcherFunc
 	outgoingHeaderMatcher     HeaderMatcherFunc
 	metadataAnnotators        []func(context.Context, *http.Request) metadata.MD
+	errorHandler              ErrorHandlerFunc
 	streamErrorHandler        StreamErrorHandlerFunc
-	protoErrorHandler         ProtoErrorHandlerFunc
+	routingErrorHandler       RoutingErrorHandlerFunc
 	disablePathLengthFallback bool
-	lastMatchWins             bool
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -56,7 +49,7 @@ func WithForwardResponseOption(forwardResponseOption func(context.Context, http.
 }
 
 // SetQueryParameterParser sets the query parameter parser, used to populate message from query parameters.
-// Configuring this will mean the generated swagger output is no longer correct, and it should be
+// Configuring this will mean the generated OpenAPI output is no longer correct, and it should be
 // done with careful consideration.
 func SetQueryParameterParser(queryParameterParser QueryParameterParser) ServeMuxOption {
 	return func(serveMux *ServeMux) {
@@ -111,14 +104,36 @@ func WithMetadata(annotator func(context.Context, *http.Request) metadata.MD) Se
 	}
 }
 
-// WithProtoErrorHandler returns a ServeMuxOption for configuring a custom error handler.
+// WithErrorHandler returns a ServeMuxOption for configuring a custom error handler.
 //
-// This can be used to handle an error as general proto message defined by gRPC.
-// When this option is used, the mux uses the configured error handler instead of HTTPError and
-// OtherErrorHandler.
-func WithProtoErrorHandler(fn ProtoErrorHandlerFunc) ServeMuxOption {
+// This can be used to configure a custom error response.
+func WithErrorHandler(fn ErrorHandlerFunc) ServeMuxOption {
 	return func(serveMux *ServeMux) {
-		serveMux.protoErrorHandler = fn
+		serveMux.errorHandler = fn
+	}
+}
+
+// WithStreamErrorHandler returns a ServeMuxOption that will use the given custom stream
+// error handler, which allows for customizing the error trailer for server-streaming
+// calls.
+//
+// For stream errors that occur before any response has been written, the mux's
+// ErrorHandler will be invoked. However, once data has been written, the errors must
+// be handled differently: they must be included in the response body. The response body's
+// final message will include the error details returned by the stream error handler.
+func WithStreamErrorHandler(fn StreamErrorHandlerFunc) ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		serveMux.streamErrorHandler = fn
+	}
+}
+
+// WithRoutingErrorHandler returns a ServeMuxOption for configuring a custom error handler to  handle http routing errors.
+//
+// Method called for errors which can happen before gRPC route selected or executed.
+// The following error codes: StatusMethodNotAllowed StatusNotFound StatusBadRequest
+func WithRoutingErrorHandler(fn RoutingErrorHandlerFunc) ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		serveMux.routingErrorHandler = fn
 	}
 }
 
@@ -129,36 +144,15 @@ func WithDisablePathLengthFallback() ServeMuxOption {
 	}
 }
 
-// WithStreamErrorHandler returns a ServeMuxOption that will use the given custom stream
-// error handler, which allows for customizing the error trailer for server-streaming
-// calls.
-//
-// For stream errors that occur before any response has been written, the mux's
-// ProtoErrorHandler will be invoked. However, once data has been written, the errors must
-// be handled differently: they must be included in the response body. The response body's
-// final message will include the error details returned by the stream error handler.
-func WithStreamErrorHandler(fn StreamErrorHandlerFunc) ServeMuxOption {
-	return func(serveMux *ServeMux) {
-		serveMux.streamErrorHandler = fn
-	}
-}
-
-// WithLastMatchWins returns a ServeMuxOption that will enable "last
-// match wins" behavior, where if multiple path patterns match a
-// request path, the last one defined in the .proto file will be used.
-func WithLastMatchWins() ServeMuxOption {
-	return func(serveMux *ServeMux) {
-		serveMux.lastMatchWins = true
-	}
-}
-
 // NewServeMux returns a new ServeMux whose internal mapping is empty.
 func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 	serveMux := &ServeMux{
 		handlers:               make(map[string][]handler),
 		forwardResponseOptions: make([]func(context.Context, http.ResponseWriter, proto.Message) error, 0),
 		marshalers:             makeMarshalerMIMERegistry(),
-		streamErrorHandler:     DefaultHTTPStreamErrorHandler,
+		errorHandler:           DefaultHTTPErrorHandler,
+		streamErrorHandler:     DefaultStreamErrorHandler,
+		routingErrorHandler:    DefaultRoutingErrorHandler,
 	}
 
 	for _, opt := range opts {
@@ -180,11 +174,23 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 
 // Handle associates "h" to the pair of HTTP method and path pattern.
 func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
-	if s.lastMatchWins {
-		s.handlers[meth] = append([]handler{handler{pat: pat, h: h}}, s.handlers[meth]...)
-	} else {
-		s.handlers[meth] = append(s.handlers[meth], handler{pat: pat, h: h})
+	s.handlers[meth] = append([]handler{{pat: pat, h: h}}, s.handlers[meth]...)
+}
+
+// HandlePath allows users to configure custom path handlers.
+// refer: https://grpc-ecosystem.github.io/grpc-gateway/docs/inject_router.html
+func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) error {
+	compiler, err := httprule.Parse(pathPattern)
+	if err != nil {
+		return fmt.Errorf("parsing path pattern: %w", err)
 	}
+	tp := compiler.Compile()
+	pattern, err := NewPattern(tp.Version, tp.OpCodes, tp.Pool, tp.Verb)
+	if err != nil {
+		return fmt.Errorf("creating new pattern: %w", err)
+	}
+	s.Handle(meth, pattern, h)
+	return nil
 }
 
 // ServeHTTP dispatches the request to the first handler whose pattern matches to r.Method and r.Path.
@@ -193,28 +199,21 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	path := r.URL.Path
 	if !strings.HasPrefix(path, "/") {
-		if s.protoErrorHandler != nil {
-			_, outboundMarshaler := MarshalerForRequest(s, r)
-			sterr := status.Error(codes.InvalidArgument, http.StatusText(http.StatusBadRequest))
-			s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
-		} else {
-			OtherErrorHandler(w, r, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		}
+		_, outboundMarshaler := MarshalerForRequest(s, r)
+		s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusBadRequest)
 		return
 	}
 
 	components := strings.Split(path[1:], "/")
 	l := len(components)
 	var verb string
-	if idx := strings.LastIndex(components[l-1], ":"); idx == 0 {
-		if s.protoErrorHandler != nil {
-			_, outboundMarshaler := MarshalerForRequest(s, r)
-			s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, ErrUnknownURI)
-		} else {
-			OtherErrorHandler(w, r, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-		}
+	idx := strings.LastIndex(components[l-1], ":")
+	if idx == 0 {
+		_, outboundMarshaler := MarshalerForRequest(s, r)
+		s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusNotFound)
 		return
-	} else if idx > 0 {
+	}
+	if idx > 0 {
 		c := components[l-1]
 		components[l-1], verb = c[:idx], c[idx+1:]
 	}
@@ -222,13 +221,9 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && s.isPathLengthFallback(r) {
 		r.Method = strings.ToUpper(override)
 		if err := r.ParseForm(); err != nil {
-			if s.protoErrorHandler != nil {
-				_, outboundMarshaler := MarshalerForRequest(s, r)
-				sterr := status.Error(codes.InvalidArgument, err.Error())
-				s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
-			} else {
-				OtherErrorHandler(w, r, err.Error(), http.StatusBadRequest)
-			}
+			_, outboundMarshaler := MarshalerForRequest(s, r)
+			sterr := status.Error(codes.InvalidArgument, err.Error())
+			s.errorHandler(ctx, s, outboundMarshaler, w, r, sterr)
 			return
 		}
 	}
@@ -242,7 +237,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// lookup other methods to handle fallback from GET to POST and
-	// to determine if it is MethodNotAllowed or NotFound.
+	// to determine if it is NotImplemented or NotFound.
 	for m, handlers := range s.handlers {
 		if m == r.Method {
 			continue
@@ -255,34 +250,22 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			// X-HTTP-Method-Override is optional. Always allow fallback to POST.
 			if s.isPathLengthFallback(r) {
 				if err := r.ParseForm(); err != nil {
-					if s.protoErrorHandler != nil {
-						_, outboundMarshaler := MarshalerForRequest(s, r)
-						sterr := status.Error(codes.InvalidArgument, err.Error())
-						s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, sterr)
-					} else {
-						OtherErrorHandler(w, r, err.Error(), http.StatusBadRequest)
-					}
+					_, outboundMarshaler := MarshalerForRequest(s, r)
+					sterr := status.Error(codes.InvalidArgument, err.Error())
+					s.errorHandler(ctx, s, outboundMarshaler, w, r, sterr)
 					return
 				}
 				h.h(w, r, pathParams)
 				return
 			}
-			if s.protoErrorHandler != nil {
-				_, outboundMarshaler := MarshalerForRequest(s, r)
-				s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, ErrUnknownURI)
-			} else {
-				OtherErrorHandler(w, r, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
-			}
+			_, outboundMarshaler := MarshalerForRequest(s, r)
+			s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusMethodNotAllowed)
 			return
 		}
 	}
 
-	if s.protoErrorHandler != nil {
-		_, outboundMarshaler := MarshalerForRequest(s, r)
-		s.protoErrorHandler(ctx, s, outboundMarshaler, w, r, ErrUnknownURI)
-	} else {
-		OtherErrorHandler(w, r, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-	}
+	_, outboundMarshaler := MarshalerForRequest(s, r)
+	s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusNotFound)
 }
 
 // GetForwardResponseOptions returns the ForwardResponseOptions associated with this ServeMux.

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/grpc-ecosystem/grpc-gateway/utilities"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/grpc/grpclog"
 )
 
@@ -21,7 +21,8 @@ type op struct {
 	operand int
 }
 
-// Pattern is a template pattern of http request paths defined in github.com/googleapis/googleapis/google/api/http.proto.
+// Pattern is a template pattern of http request paths defined in
+// https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
 type Pattern struct {
 	// ops is a list of operations
 	ops []op
@@ -35,31 +36,14 @@ type Pattern struct {
 	tailLen int
 	// verb is the VERB part of the path pattern. It is empty if the pattern does not have VERB part.
 	verb string
-	// assumeColonVerb indicates whether a path suffix after a final
-	// colon may only be interpreted as a verb.
-	assumeColonVerb bool
 }
-
-type patternOptions struct {
-	assumeColonVerb bool
-}
-
-// PatternOpt is an option for creating Patterns.
-type PatternOpt func(*patternOptions)
 
 // NewPattern returns a new Pattern from the given definition values.
 // "ops" is a sequence of op codes. "pool" is a constant pool.
 // "verb" is the verb part of the pattern. It is empty if the pattern does not have the part.
 // "version" must be 1 for now.
 // It returns an error if the given definition is invalid.
-func NewPattern(version int, ops []int, pool []string, verb string, opts ...PatternOpt) (Pattern, error) {
-	options := patternOptions{
-		assumeColonVerb: true,
-	}
-	for _, o := range opts {
-		o(&options)
-	}
-
+func NewPattern(version int, ops []int, pool []string, verb string) (Pattern, error) {
 	if version != 1 {
 		grpclog.Infof("unsupported version: %d", version)
 		return Pattern{}, ErrInvalidPattern
@@ -111,7 +95,7 @@ func NewPattern(version int, ops []int, pool []string, verb string, opts ...Patt
 			}
 			stack -= op.operand
 			if stack < 0 {
-				grpclog.Print("stack underflow")
+				grpclog.Info("stack underflow")
 				return Pattern{}, ErrInvalidPattern
 			}
 			stack++
@@ -139,13 +123,12 @@ func NewPattern(version int, ops []int, pool []string, verb string, opts ...Patt
 		typedOps = append(typedOps, op)
 	}
 	return Pattern{
-		ops:             typedOps,
-		pool:            pool,
-		vars:            vars,
-		stacksize:       maxstack,
-		tailLen:         tailLen,
-		verb:            verb,
-		assumeColonVerb: options.assumeColonVerb,
+		ops:       typedOps,
+		pool:      pool,
+		vars:      vars,
+		stacksize: maxstack,
+		tailLen:   tailLen,
+		verb:      verb,
 	}, nil
 }
 
@@ -162,7 +145,7 @@ func MustPattern(p Pattern, err error) Pattern {
 // If otherwise, the function returns an error.
 func (p Pattern) Match(components []string, verb string) (map[string]string, error) {
 	if p.verb != verb {
-		if p.assumeColonVerb || p.verb != "" {
+		if p.verb != "" {
 			return nil, ErrNotMatch
 		}
 		if len(components) == 0 {
@@ -251,12 +234,4 @@ func (p Pattern) String() string {
 		return fmt.Sprintf("/%s:%s", segs, p.verb)
 	}
 	return "/" + segs
-}
-
-// AssumeColonVerbOpt indicates whether a path suffix after a final
-// colon may only be interpreted as a verb.
-func AssumeColonVerbOpt(val bool) PatternOpt {
-	return PatternOpt(func(o *patternOptions) {
-		o.assumeColonVerb = val
-	})
 }

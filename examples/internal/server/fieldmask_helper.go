@@ -1,56 +1,40 @@
 package server
 
 import (
-	"log"
-	"reflect"
 	"strings"
 
-	"github.com/grpc-ecosystem/grpc-gateway/internal/casing"
 	"google.golang.org/genproto/protobuf/field_mask"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
-func applyFieldMask(patchee, patcher interface{}, mask *field_mask.FieldMask) {
+func applyFieldMask(patchee, patcher proto.Message, mask *field_mask.FieldMask) {
 	if mask == nil {
 		return
 	}
+	if patchee.ProtoReflect().Descriptor().FullName() != patcher.ProtoReflect().Descriptor().FullName() {
+		panic("patchee and patcher must be same type")
+	}
 
 	for _, path := range mask.GetPaths() {
-		val := getField(patcher, path)
-		if val.IsValid() {
-			setValue(patchee, val, path)
-		}
+		patcherField, patcherParent := getField(patcher.ProtoReflect(), path)
+		patcheeField, patcheeParent := getField(patchee.ProtoReflect(), path)
+		patcheeParent.Set(patcheeField, patcherParent.Get(patcherField))
 	}
 }
 
-func getField(obj interface{}, path string) (val reflect.Value) {
-	// this func is lazy -- if anything bad happens just return nil
-	defer func() {
-		if r := recover(); r != nil {
-			log.Printf("failed to get field:\npath: %q\nobj: %#v\nerr: %v", path, obj, r)
-			val = reflect.Value{}
-		}
-	}()
+func getField(msg protoreflect.Message, path string) (field protoreflect.FieldDescriptor, parent protoreflect.Message) {
+	fields := msg.Descriptor().Fields()
+	parent = msg
+	names := strings.Split(path, ".")
+	for i, name := range names {
+		field = fields.ByName(protoreflect.Name(name))
 
-	v := reflect.ValueOf(obj)
-	if len(path) == 0 {
-		return v
+		if i < len(names)-1 {
+			parent = parent.Get(field).Message()
+			fields = field.Message().Fields()
+		}
 	}
 
-	for _, s := range strings.Split(path, ".") {
-		if v.Kind() == reflect.Ptr {
-			v = reflect.Indirect(v)
-		}
-		v = v.FieldByName(casing.Camel(s))
-	}
-
-	return v
-}
-
-func setValue(obj interface{}, newValue reflect.Value, path string) {
-	defer func() {
-		if r := recover(); r != nil {
-			log.Printf("failed to set value:\nnewValue: %#v\npath: %q\nobj: %#v\nerr: %v", newValue, path, obj, r)
-		}
-	}()
-	getField(obj, path).Set(newValue)
+	return field, parent
 }

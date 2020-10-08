@@ -7,20 +7,23 @@ import (
 	"io"
 	"reflect"
 
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
 // JSONPb is a Marshaler which marshals/unmarshals into/from JSON
-// with the "github.com/golang/protobuf/jsonpb".
-// It supports fully functionality of protobuf unlike JSONBuiltin.
+// with the "google.golang.org/protobuf/encoding/protojson" marshaler.
+// It supports the full functionality of protobuf unlike JSONBuiltin.
 //
 // The NewDecoder method returns a DecoderWrapper, so the underlying
 // *json.Decoder methods can be used.
-type JSONPb jsonpb.Marshaler
+type JSONPb struct {
+	protojson.MarshalOptions
+	protojson.UnmarshalOptions
+}
 
 // ContentType always returns "application/json".
-func (*JSONPb) ContentType() string {
+func (*JSONPb) ContentType(_ interface{}) string {
 	return "application/json"
 }
 
@@ -47,7 +50,13 @@ func (j *JSONPb) marshalTo(w io.Writer, v interface{}) error {
 		_, err = w.Write(buf)
 		return err
 	}
-	return (*jsonpb.Marshaler)(j).Marshal(w, p)
+	b, err := j.MarshalOptions.Marshal(p)
+	if err != nil {
+		return err
+	}
+
+	_, err = w.Write(b)
+	return err
 }
 
 var (
@@ -56,8 +65,8 @@ var (
 )
 
 // marshalNonProto marshals a non-message field of a protobuf message.
-// This function does not correctly marshals arbitrary data structure into JSON,
-// but it is only capable of marshaling non-message field values of protobuf,
+// This function does not correctly marshal arbitrary data structures into JSON,
+// it is only capable of marshaling non-message field values of protobuf,
 // i.e. primitive types, enums; pointers to primitives or enums; maps from
 // integer/string types to primitives/enums/pointers to messages.
 func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
@@ -74,7 +83,7 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 
 	if rv.Kind() == reflect.Slice {
 		if rv.IsNil() {
-			if j.EmitDefaults {
+			if j.EmitUnpopulated {
 				return []byte("[]"), nil
 			}
 			return []byte("null"), nil
@@ -93,7 +102,7 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 						return nil, err
 					}
 				}
-				if err = (*jsonpb.Marshaler)(j).Marshal(&buf, rv.Index(i).Interface().(proto.Message)); err != nil {
+				if err = j.marshalTo(&buf, rv.Index(i).Interface().(proto.Message)); err != nil {
 					return nil, err
 				}
 			}
@@ -120,7 +129,7 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 		}
 		return json.Marshal(m)
 	}
-	if enum, ok := rv.Interface().(protoEnum); ok && !j.EnumsAsInts {
+	if enum, ok := rv.Interface().(protoEnum); ok && !j.UseEnumNumbers {
 		return json.Marshal(enum.String())
 	}
 	return json.Marshal(rv.Interface())
@@ -128,25 +137,29 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 
 // Unmarshal unmarshals JSON "data" into "v"
 func (j *JSONPb) Unmarshal(data []byte, v interface{}) error {
-	return unmarshalJSONPb(data, v)
+	return unmarshalJSONPb(data, j.UnmarshalOptions, v)
 }
 
 // NewDecoder returns a Decoder which reads JSON stream from "r".
 func (j *JSONPb) NewDecoder(r io.Reader) Decoder {
 	d := json.NewDecoder(r)
-	return DecoderWrapper{Decoder: d}
+	return DecoderWrapper{
+		Decoder:          d,
+		UnmarshalOptions: j.UnmarshalOptions,
+	}
 }
 
 // DecoderWrapper is a wrapper around a *json.Decoder that adds
 // support for protos to the Decode method.
 type DecoderWrapper struct {
 	*json.Decoder
+	protojson.UnmarshalOptions
 }
 
 // Decode wraps the embedded decoder's Decode method to support
 // protos using a jsonpb.Unmarshaler.
 func (d DecoderWrapper) Decode(v interface{}) error {
-	return decodeJSONPb(d.Decoder, v)
+	return decodeJSONPb(d.Decoder, d.UnmarshalOptions, v)
 }
 
 // NewEncoder returns an Encoder which writes JSON stream into "w".
@@ -162,21 +175,28 @@ func (j *JSONPb) NewEncoder(w io.Writer) Encoder {
 	})
 }
 
-func unmarshalJSONPb(data []byte, v interface{}) error {
+func unmarshalJSONPb(data []byte, unmarshaler protojson.UnmarshalOptions, v interface{}) error {
 	d := json.NewDecoder(bytes.NewReader(data))
-	return decodeJSONPb(d, v)
+	return decodeJSONPb(d, unmarshaler, v)
 }
 
-func decodeJSONPb(d *json.Decoder, v interface{}) error {
+func decodeJSONPb(d *json.Decoder, unmarshaler protojson.UnmarshalOptions, v interface{}) error {
 	p, ok := v.(proto.Message)
 	if !ok {
-		return decodeNonProtoField(d, v)
+		return decodeNonProtoField(d, unmarshaler, v)
 	}
-	unmarshaler := &jsonpb.Unmarshaler{AllowUnknownFields: allowUnknownFields}
-	return unmarshaler.UnmarshalNext(d, p)
+
+	// Decode into bytes for marshalling
+	var b json.RawMessage
+	err := d.Decode(&b)
+	if err != nil {
+		return err
+	}
+
+	return unmarshaler.Unmarshal([]byte(b), p)
 }
 
-func decodeNonProtoField(d *json.Decoder, v interface{}) error {
+func decodeNonProtoField(d *json.Decoder, unmarshaler protojson.UnmarshalOptions, v interface{}) error {
 	rv := reflect.ValueOf(v)
 	if rv.Kind() != reflect.Ptr {
 		return fmt.Errorf("%T is not a pointer", v)
@@ -186,8 +206,14 @@ func decodeNonProtoField(d *json.Decoder, v interface{}) error {
 			rv.Set(reflect.New(rv.Type().Elem()))
 		}
 		if rv.Type().ConvertibleTo(typeProtoMessage) {
-			unmarshaler := &jsonpb.Unmarshaler{AllowUnknownFields: allowUnknownFields}
-			return unmarshaler.UnmarshalNext(d, rv.Interface().(proto.Message))
+			// Decode into bytes for marshalling
+			var b json.RawMessage
+			err := d.Decode(&b)
+			if err != nil {
+				return err
+			}
+
+			return unmarshaler.Unmarshal([]byte(b), rv.Interface().(proto.Message))
 		}
 		rv = rv.Elem()
 	}
@@ -211,10 +237,27 @@ func decodeNonProtoField(d *json.Decoder, v interface{}) error {
 			}
 			bk := result[0]
 			bv := reflect.New(rv.Type().Elem())
-			if err := unmarshalJSONPb([]byte(*v), bv.Interface()); err != nil {
+			if err := unmarshalJSONPb([]byte(*v), unmarshaler, bv.Interface()); err != nil {
 				return err
 			}
 			rv.SetMapIndex(bk, bv.Elem())
+		}
+		return nil
+	}
+	if rv.Kind() == reflect.Slice {
+		var sl []json.RawMessage
+		if err := d.Decode(&sl); err != nil {
+			return err
+		}
+		if sl != nil {
+			rv.Set(reflect.MakeSlice(rv.Type(), 0, 0))
+		}
+		for _, item := range sl {
+			bv := reflect.New(rv.Type().Elem())
+			if err := unmarshalJSONPb([]byte(item), unmarshaler, bv.Interface()); err != nil {
+				return err
+			}
+			rv.Set(reflect.Append(rv, bv.Elem()))
 		}
 		return nil
 	}
@@ -223,12 +266,12 @@ func decodeNonProtoField(d *json.Decoder, v interface{}) error {
 		if err := d.Decode(&repr); err != nil {
 			return err
 		}
-		switch repr.(type) {
+		switch v := repr.(type) {
 		case string:
 			// TODO(yugui) Should use proto.StructProperties?
 			return fmt.Errorf("unmarshaling of symbolic enum %q not supported: %T", repr, rv.Interface())
 		case float64:
-			rv.Set(reflect.ValueOf(int32(repr.(float64))).Convert(rv.Type()))
+			rv.Set(reflect.ValueOf(int32(v)).Convert(rv.Type()))
 			return nil
 		default:
 			return fmt.Errorf("cannot assign %#v into Go type %T", repr, rv.Interface())
@@ -249,14 +292,16 @@ func (j *JSONPb) Delimiter() []byte {
 	return []byte("\n")
 }
 
-// allowUnknownFields helps not to return an error when the destination
-// is a struct and the input contains object keys which do not match any
-// non-ignored, exported fields in the destination.
-var allowUnknownFields = true
-
-// DisallowUnknownFields enables option in decoder (unmarshaller) to
-// return an error when it finds an unknown field. This function must be
-// called before using the JSON marshaller.
-func DisallowUnknownFields() {
-	allowUnknownFields = false
-}
+var (
+	convFromType = map[reflect.Kind]reflect.Value{
+		reflect.String:  reflect.ValueOf(String),
+		reflect.Bool:    reflect.ValueOf(Bool),
+		reflect.Float64: reflect.ValueOf(Float64),
+		reflect.Float32: reflect.ValueOf(Float32),
+		reflect.Int64:   reflect.ValueOf(Int64),
+		reflect.Int32:   reflect.ValueOf(Int32),
+		reflect.Uint64:  reflect.ValueOf(Uint64),
+		reflect.Uint32:  reflect.ValueOf(Uint32),
+		reflect.Slice:   reflect.ValueOf(Bytes),
+	}
+)

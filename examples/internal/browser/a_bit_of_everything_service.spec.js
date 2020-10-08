@@ -7,7 +7,7 @@ describe('ABitOfEverythingService', function() {
 
   beforeEach(function(done) {
     new SwaggerClient({
-      url: "http://localhost:8080/swagger/a_bit_of_everything.swagger.json",
+      url: "http://localhost:8080/openapiv2/a_bit_of_everything.swagger.json",
       usePromise: true,
     }).then(function(c) {
       client = c;

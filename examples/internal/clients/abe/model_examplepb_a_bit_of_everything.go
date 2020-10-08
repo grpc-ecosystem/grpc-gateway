@@ -16,46 +16,46 @@ import (
 
 // Intentionaly complicated message type to cover many features of Protobuf.
 type ExamplepbABitOfEverything struct {
-	SingleNested *ABitOfEverythingNested `json:"single_nested,omitempty"`
+	SingleNested *ABitOfEverythingNested `json:"singleNested,omitempty"`
 	Uuid string `json:"uuid"`
 	Nested []ABitOfEverythingNested `json:"nested,omitempty"`
 	// Float value field
-	FloatValue float32 `json:"float_value,omitempty"`
-	DoubleValue float64 `json:"double_value"`
-	Int64Value string `json:"int64_value"`
-	Uint64Value string `json:"uint64_value,omitempty"`
-	Int32Value int32 `json:"int32_value,omitempty"`
-	Fixed64Value string `json:"fixed64_value,omitempty"`
-	Fixed32Value int64 `json:"fixed32_value,omitempty"`
-	BoolValue bool `json:"bool_value,omitempty"`
-	StringValue string `json:"string_value,omitempty"`
-	BytesValue string `json:"bytes_value,omitempty"`
-	Uint32Value int64 `json:"uint32_value,omitempty"`
-	EnumValue *ExamplepbNumericEnum `json:"enum_value,omitempty"`
-	PathEnumValue *PathenumPathEnum `json:"path_enum_value,omitempty"`
-	NestedPathEnumValue *MessagePathEnumNestedPathEnum `json:"nested_path_enum_value,omitempty"`
-	Sfixed32Value int32 `json:"sfixed32_value,omitempty"`
-	Sfixed64Value string `json:"sfixed64_value,omitempty"`
-	Sint32Value int32 `json:"sint32_value,omitempty"`
-	Sint64Value string `json:"sint64_value,omitempty"`
-	RepeatedStringValue []string `json:"repeated_string_value,omitempty"`
-	OneofEmpty *interface{} `json:"oneof_empty,omitempty"`
-	OneofString string `json:"oneof_string,omitempty"`
-	MapValue map[string]ExamplepbNumericEnum `json:"map_value,omitempty"`
-	MappedStringValue map[string]string `json:"mapped_string_value,omitempty"`
-	MappedNestedValue map[string]ABitOfEverythingNested `json:"mapped_nested_value,omitempty"`
+	FloatValue float32 `json:"floatValue,omitempty"`
+	DoubleValue float64 `json:"doubleValue,omitempty"`
+	Int64Value string `json:"int64Value,omitempty"`
+	Uint64Value string `json:"uint64Value,omitempty"`
+	Int32Value int32 `json:"int32Value,omitempty"`
+	Fixed64Value string `json:"fixed64Value,omitempty"`
+	Fixed32Value int64 `json:"fixed32Value,omitempty"`
+	BoolValue bool `json:"boolValue,omitempty"`
+	StringValue string `json:"stringValue,omitempty"`
+	BytesValue string `json:"bytesValue,omitempty"`
+	Uint32Value int64 `json:"uint32Value,omitempty"`
+	EnumValue *ExamplepbNumericEnum `json:"enumValue,omitempty"`
+	PathEnumValue *PathenumPathEnum `json:"pathEnumValue,omitempty"`
+	NestedPathEnumValue *MessagePathEnumNestedPathEnum `json:"nestedPathEnumValue,omitempty"`
+	Sfixed32Value int32 `json:"sfixed32Value,omitempty"`
+	Sfixed64Value string `json:"sfixed64Value,omitempty"`
+	Sint32Value int32 `json:"sint32Value,omitempty"`
+	Sint64Value string `json:"sint64Value,omitempty"`
+	RepeatedStringValue []string `json:"repeatedStringValue,omitempty"`
+	OneofEmpty *interface{} `json:"oneofEmpty,omitempty"`
+	OneofString string `json:"oneofString,omitempty"`
+	MapValue map[string]ExamplepbNumericEnum `json:"mapValue,omitempty"`
+	MappedStringValue map[string]string `json:"mappedStringValue,omitempty"`
+	MappedNestedValue map[string]ABitOfEverythingNested `json:"mappedNestedValue,omitempty"`
 	NonConventionalNameValue string `json:"nonConventionalNameValue,omitempty"`
-	TimestampValue time.Time `json:"timestamp_value,omitempty"`
-	RepeatedEnumValue []ExamplepbNumericEnum `json:"repeated_enum_value,omitempty"`
+	TimestampValue time.Time `json:"timestampValue,omitempty"`
+	RepeatedEnumValue []ExamplepbNumericEnum `json:"repeatedEnumValue,omitempty"`
 	// Repeated numeric enum description.
-	RepeatedEnumAnnotation []ExamplepbNumericEnum `json:"repeated_enum_annotation,omitempty"`
+	RepeatedEnumAnnotation []ExamplepbNumericEnum `json:"repeatedEnumAnnotation,omitempty"`
 	// Numeric enum description.
-	EnumValueAnnotation *ExamplepbNumericEnum `json:"enum_value_annotation,omitempty"`
+	EnumValueAnnotation *ExamplepbNumericEnum `json:"enumValueAnnotation,omitempty"`
 	// Repeated string description.
-	RepeatedStringAnnotation []string `json:"repeated_string_annotation,omitempty"`
+	RepeatedStringAnnotation []string `json:"repeatedStringAnnotation,omitempty"`
 	// Repeated nested object description.
-	RepeatedNestedAnnotation []ABitOfEverythingNested `json:"repeated_nested_annotation,omitempty"`
+	RepeatedNestedAnnotation []ABitOfEverythingNested `json:"repeatedNestedAnnotation,omitempty"`
 	// Nested object description.
-	NestedAnnotation *ABitOfEverythingNested `json:"nested_annotation,omitempty"`
-	Int64OverrideType int64 `json:"int64_override_type,omitempty"`
+	NestedAnnotation *ABitOfEverythingNested `json:"nestedAnnotation,omitempty"`
+	Int64OverrideType int64 `json:"int64OverrideType,omitempty"`
 }

@@ -1,8 +1,8 @@
 # grpc-gateway
 
-[![release](https://img.shields.io/github/release/grpc-ecosystem/grpc-gateway.svg?style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/releases)
-[![CircleCI](https://img.shields.io/circleci/project/github/grpc-ecosystem/grpc-gateway/master.svg?style=flat-square)](https://circleci.com/gh/grpc-ecosystem/grpc-gateway)
-[![coverage](https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway/master.svg?style=flat-square)](https://codecov.io/gh/grpc-ecosystem/grpc-gateway)
+[![release](https://img.shields.io/github/v/release/grpc-ecosystem/grpc-gateway?include_prereleases&sort=semver&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/releases)
+[![CircleCI](https://img.shields.io/circleci/project/github/grpc-ecosystem/grpc-gateway/v2.svg?style=flat-square)](https://circleci.com/gh/grpc-ecosystem/grpc-gateway/tree/v2)
+[![coverage](https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway/v2.svg?style=flat-square)](https://codecov.io/gh/grpc-ecosystem/grpc-gateway)
 [![license](https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway.svg?style=flat-square)](LICENSE.txt)
 [![Slack](https://img.shields.io/badge/slack-%23grpc--gateway-brightgreen?style=flat-square)](https://join.slack.com/t/gophers/shared_invite/zt-gmw97q11-1OWgj2Dqsc13eqoSPwvNDQ)
 
@@ -60,8 +60,8 @@ to track the versions of the following executable packages:
 package tools
 
 import (
-    _ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway"
-    _ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger"
+    _ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway"
+    _ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2"
     _ "github.com/golang/protobuf/protoc-gen-go"
 )
 ```
@@ -70,15 +70,15 @@ Run `go mod tidy` to resolve the versions. Install by running
 
 ```sh
 $ go install \
-    github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
-    github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger \
+    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
+    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
     github.com/golang/protobuf/protoc-gen-go
 ```
 
 This will place three binaries in your `$GOBIN`;
 
 * `protoc-gen-grpc-gateway`
-* `protoc-gen-swagger`
+* `protoc-gen-openapiv2`
 * `protoc-gen-go`
 
 Make sure that your `$GOBIN` is in your `$PATH`.
@@ -89,15 +89,16 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
    `your_service.proto`:
    ```protobuf
-   syntax = "proto3";
-   package example;
-   message StringMessage {
-     string value = 1;
-   }
+    syntax = "proto3";
+    package your.service.v1;
+    option go_package = "github.com/yourorg/yourprotos/gen/go/your/service/v1";
+    message StringMessage {
+      string value = 1;
+    }
 
-   service YourService {
-     rpc Echo(StringMessage) returns (StringMessage) {}
-   }
+    service YourService {
+      rpc Echo(StringMessage) returns (StringMessage) {}
+    }
    ```
 
 2. Generate gRPC stubs
@@ -158,7 +159,8 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    `your_service.proto`:
    ```diff
     syntax = "proto3";
-    package example;
+    package your.service.v1;
+    option go_package = "github.com/yourorg/yourprotos/gen/go/your/service/v1";
    +
    +import "google/api/annotations.proto";
    +
@@ -176,6 +178,11 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    +  }
     }
    ```
+   >You will need to provide the required third party protobuf files to the `protoc` compiler.
+   >They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
+   >them into your `protoc` generation file structure. If you've structured your proto files according
+   >to something like [the Buf style guide](https://buf.build/docs/style-guide#files-and-packages),
+   >you could copy the files into a top-level `./google` folder.
 
    >You will need to provide the required third party protobuf files to the `protoc` compiler.
    >They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
@@ -185,7 +192,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
    See [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
    for examples of more annotations you can add to customize gateway behavior
-   and generated Swagger output.
+   and generated OpenAPI output.
    
    Here's what a `protoc` execution might look like:
 
@@ -224,9 +231,9 @@ Make sure that your `$GOBIN` is in your `$PATH`.
      "net/http"
  
      "github.com/golang/glog"
-     "github.com/grpc-ecosystem/grpc-gateway/runtime"
+     "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
      "google.golang.org/grpc"
- 
+
      gw "github.com/yourorg/yourrepo/proto/gen/go/your/service/v1/your_service"  // Update
    )
  
@@ -264,10 +271,10 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    }
    ```
 
-6. (Optional) Generate swagger definitions using `protoc-gen-swagger`
+6. (Optional) Generate OpenAPI definitions using `protoc-gen-openapiv2`
 
    ```sh
-   protoc -I . --swagger_out ./gen/swagger --swagger_opt logtostderr=true your/service/v1/your_service.proto
+   protoc -I . --openapiv2_out ./gen/openapiv2 --openapiv2_opt logtostderr=true your/service/v1/your_service.proto
    ```
 
    Note that this plugin also supports generating swagger definitions for unannotated methods; use the `generate_unbound_methods` option to enable this.
@@ -290,7 +297,19 @@ through protoc using one of 2 patterns:
 
 ```sh
 --grpc-gateway_out=logtostderr=true,repeated_path_param_separator=ssv:.
---swagger_out=logtostderr=true,repeated_path_param_separator=ssv:.
+--openapiv2_out=logtostderr=true,repeated_path_param_separator=ssv:.
+```
+
+* using additional `--<tool_suffix>_opt` parameters: `--<tool_suffix>_opt=<flag>[,<flag>]*`
+
+```sh
+--grpc-gateway_opt logtostderr=true,repeated_path_param_separator=ssv
+# or separately
+--grpc-gateway_opt logtostderr=true --grpc-gateway_opt repeated_path_param_separator=ssv
+
+--openapiv2_opt logtostderr=true,repeated_path_param_separator=ssv
+# or separately
+--openapiv2_opt logtostderr=true --openapiv2_opt repeated_path_param_separator=ssv
 ```
 
 * using additional `--<tool_suffix>_opt` parameters: `--<tool_suffix>_opt=<flag>[,<flag>]*`
@@ -317,12 +336,12 @@ useful to pass the request-scoped context between the gateway and the gRPC servi
 logging. You can give these flags together with parameters above. Run
 `protoc-gen-grpc-gateway --help` for more details about the flags.
 
-Similarly, `protoc-gen-swagger` supports command-line flags to control Swagger
+Similarly, `protoc-gen-openapiv2` supports command-line flags to control OpenAPI
 output (for example, `json_names_for_fields` to output JSON names for fields
-instead of protobuf names). Run `protoc-gen-swagger --help` for more flag
-details. Further Swagger customization is possible by annotating your `.proto`
+instead of protobuf names). Run `protoc-gen-openapiv2 --help` for more flag
+details. Further OpenAPI customization is possible by annotating your `.proto`
 files with options from
-[openapiv2.proto](protoc-gen-swagger/options/openapiv2.proto) - see
+[openapiv2.proto](protoc-gen-openapiv2/options/openapiv2.proto) - see
 [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
 for examples.
 
