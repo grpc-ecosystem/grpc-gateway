@@ -3,8 +3,8 @@
         "config:base"
     ],
     "baseBranches": [
-        "master",
-        "v2"
+        "v1",
+        "master"
     ],
     "postUpdateOptions": [
         "gomodTidy"
@@ -21,7 +21,7 @@
         },
         {
             "baseBranchList": [
-                "master"
+                "v1"
             ],
             "packageNames": [
                 "github.com/golang/protobuf",
@@ -32,7 +32,7 @@
         },
         {
             "baseBranchList": [
-                "v2"
+                "master"
             ],
             "packageNames": [
                 "github.com/golang/protobuf",
@@ -42,7 +42,8 @@
         },
         {
             "packagePatterns": [
-                "jekyll-.*"
+                "jekyll-.*",
+                "github-pages"
             ],
             "enabled": false
         }

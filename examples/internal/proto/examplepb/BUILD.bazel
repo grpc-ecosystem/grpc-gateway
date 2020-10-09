@@ -50,8 +50,6 @@ proto_library(
         "non_standard_names.proto",
         "response_body_service.proto",
         "stream.proto",
-        "swagger_merge_a.proto",
-        "swagger_merge_b.proto",
         "unannotated_echo_service.proto",
         "use_go_template.proto",
         "wrappers.proto",
@@ -87,44 +85,29 @@ proto_library(
 
 go_proto_library(
     name = "examplepb_go_proto",
+    compilers = [
+        "//:go_apiv2",
+        "//:go_grpc",
+        "//protoc-gen-grpc-gateway:go_gen_grpc_gateway",
+    ],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
+    proto = ":examplepb_proto",
     deps = [
+        "//examples/internal/proto/pathenum:go_default_library",
+        "//examples/internal/proto/sub:go_default_library",
+        "//examples/internal/proto/sub2:go_default_library",
+        "//protoc-gen-openapiv2/options:go_default_library",
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",  # keep
+        "@go_googleapis//google/api:annotations_go_proto",
+        "@go_googleapis//google/api:httpbody_go_proto",
         "@org_golang_google_protobuf//proto:go_default_library",  # keep
     ],
 )
 
 go_library(
     name = "go_default_library",
-    srcs = [
-        "a_bit_of_everything.pb.go",
-        "echo_service.pb.go",
-        "flow_combination.pb.go",
-        "generate_unbound_methods.pb.go",
-        "non_standard_names.pb.go",
-        "response_body_service.pb.go",
-        "stream.pb.go",
-        "unannotated_echo_service.pb.go",
-        "use_go_template.pb.go",
-        "wrappers.pb.go",
-    ],
+    embed = [":examplepb_go_proto"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
-    deps = [
-        "//examples/internal/proto/pathenum:go_default_library",
-        "//examples/internal/proto/sub:go_default_library",
-        "//examples/internal/proto/sub2:go_default_library",
-        "//protoc-gen-openapiv2/options:go_default_library",
-        "@com_github_golang_protobuf//proto:go_default_library",
-        "@go_googleapis//google/api:annotations_go_proto",
-        "@go_googleapis//google/api:httpbody_go_proto",
-        "@io_bazel_rules_go//proto/wkt:duration_go_proto",
-        "@io_bazel_rules_go//proto/wkt:empty_go_proto",
-        "@io_bazel_rules_go//proto/wkt:field_mask_go_proto",
-        "@io_bazel_rules_go//proto/wkt:struct_go_proto",
-        "@io_bazel_rules_go//proto/wkt:timestamp_go_proto",
-        "@io_bazel_rules_go//proto/wkt:wrappers_go_proto",
-        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
-        "@org_golang_google_protobuf//runtime/protoimpl:go_default_library",
-    ],
 )
 
 protoc_gen_openapiv2(

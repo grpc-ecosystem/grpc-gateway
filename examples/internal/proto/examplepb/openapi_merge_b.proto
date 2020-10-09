@@ -28,8 +28,8 @@ service ServiceB {
 	// Here is the detail explanation about ServiceB.MethodOne.
 	rpc MethodOne(InMessageB) returns (OutMessageB) {
 		option (google.api.http) = {
-            post: "/v1/example/b/1"
-            body: "*"
+      post: "/v1/example/b/1"
+      body: "*"
 		};
 	}
 	// ServiceB.MethodTwo receives OutMessageB and returns InMessageB
@@ -37,8 +37,8 @@ service ServiceB {
 	// Here is the detail explanation about ServiceB.MethodTwo.
 	rpc MethodTwo(OutMessageB) returns (InMessageB) {
 		option (google.api.http) = {
-            post: "/v1/example/b/2"
-            body: "*"
+      post: "/v1/example/b/2"
+      body: "*"
 		};
 	}
 }

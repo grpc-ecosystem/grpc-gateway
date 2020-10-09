@@ -1,15 +1,15 @@
 syntax = "proto3";
-
-package grpc.gateway.runtime.internal.examplepb;
-
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb";
+package grpc.gateway.runtime.internal.examplepb;
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/field_mask.proto";
 
 // SimpleMessage represents a simple message sent to the Echo service.
-message SimpleMessage { string id = 1; }
+message SimpleMessage {
+  string id = 1;
+}
 
 message ABitOfEverything {
   // Nested is nested type.
@@ -124,7 +124,6 @@ message NestedThree {
   bool a = 1;
   bool b = 2;
 };
-
 
 message UpdateNestedRequest {
   NestedOuter nested = 1;

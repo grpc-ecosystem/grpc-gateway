@@ -1,8 +1,8 @@
 # grpc-gateway
 
-[![release](https://img.shields.io/github/v/release/grpc-ecosystem/grpc-gateway?include_prereleases&sort=semver&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/releases)
-[![CircleCI](https://img.shields.io/circleci/project/github/grpc-ecosystem/grpc-gateway/v2.svg?style=flat-square)](https://circleci.com/gh/grpc-ecosystem/grpc-gateway/tree/v2)
-[![coverage](https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway/v2.svg?style=flat-square)](https://codecov.io/gh/grpc-ecosystem/grpc-gateway)
+[![release](https://img.shields.io/github/release/grpc-ecosystem/grpc-gateway.svg?style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/releases)
+[![CircleCI](https://img.shields.io/circleci/project/github/grpc-ecosystem/grpc-gateway/master.svg?style=flat-square)](https://circleci.com/gh/grpc-ecosystem/grpc-gateway)
+[![coverage](https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway/master.svg?style=flat-square)](https://codecov.io/gh/grpc-ecosystem/grpc-gateway)
 [![license](https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway.svg?style=flat-square)](LICENSE.txt)
 [![Slack](https://img.shields.io/badge/slack-%23grpc--gateway-brightgreen?style=flat-square)](https://join.slack.com/t/gophers/shared_invite/zt-gmw97q11-1OWgj2Dqsc13eqoSPwvNDQ)
 

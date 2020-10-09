@@ -11,8 +11,7 @@ import (
 
 // Implements of EchoServiceServer
 
-type echoServer struct {
-}
+type echoServer struct{}
 
 func newEchoServer() examples.EchoServiceServer {
 	return new(echoServer)

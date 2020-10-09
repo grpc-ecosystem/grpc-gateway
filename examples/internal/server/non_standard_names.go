@@ -9,8 +9,7 @@ import (
 
 // Implements NonStandardServiceServer
 
-type nonStandardServer struct {
-}
+type nonStandardServer struct{}
 
 func newNonStandardServer() examples.NonStandardServiceServer {
 	return new(nonStandardServer)
