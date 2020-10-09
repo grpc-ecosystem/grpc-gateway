@@ -151,7 +151,7 @@ jobs:
             cd $(mktemp -d) &&
             go mod init tmp &&
             go get golang.org/x/exp/cmd/gorelease@latest
-      - run: gorelease -base=v2.0.0-alpha.2
+      - run: gorelease -base=v2.0.0-beta.5
   release:
     executor: build-env
     working_directory: /src/grpc-gateway
@@ -202,7 +202,7 @@ workflows:
       - update-repositoriesbzl:
           filters:
             branches:
-              only: /renovate\/v2-.+/
+              only: /renovate\/master-.+/
             tags:
               ignore: /.*/
       - regenerate:
@@ -212,7 +212,7 @@ workflows:
             - update-repositoriesbzl
           filters:
             branches:
-              only: /renovate\/v2-.+/
+              only: /renovate\/master-.+/
             tags:
               ignore: /.*/
 

@@ -28,7 +28,7 @@ Google Cloud Platform offers a way to do this for services hosted with them call
 
 grpc-gateway generators implement the [HTTP rules part](https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#httprule) of this specification. This allows you to take a completely unannotated service proto file, add a YAML file describing its HTTP endpoints and use them together like a annotated proto file with the grpc-gateway generators.
 
-OpenAPI options may also be configured via ["OpenAPI Configuration"](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2/internal/descriptor/openapiconfig/openapiconfig.proto) in the form of YAML configuration files.
+OpenAPI options may also be configured via ["OpenAPI Configuration"](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/internal/descriptor/openapiconfig/openapiconfig.proto) in the form of YAML configuration files.
 
 ### Usage of gRPC API Configuration YAML files
 The following is equivalent to the basic [usage example](usage.html) but without direct annotation for grpc-gateway in the .proto file. Only some steps require minor changes to use a gRPC API Configuration YAML file instead:
@@ -100,7 +100,7 @@ The following is equivalent to the basic [usage example](usage.html) but without
       your/service/v1/your_service.proto
     ```
 
-    For an example of an OpenAPI configuration file, see [unannotated_echo_service.swagger.yaml](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2/examples/internal/proto/examplepb/unannotated_echo_service.swagger.yaml), which adds OpenAPI options to [unannotated_echo_service.proto](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2/examples/internal/proto/examplepb/unannotated_echo_service.proto).
+    For an example of an OpenAPI configuration file, see [unannotated_echo_service.swagger.yaml](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/unannotated_echo_service.swagger.yaml), which adds OpenAPI options to [unannotated_echo_service.proto](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/unannotated_echo_service.proto).
 
     ```sh
     protoc -I. --swagger_out=grpc_api_configuration=path/to/your_service.yaml:./gen/go \
