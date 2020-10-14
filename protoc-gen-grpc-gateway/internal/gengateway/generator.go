@@ -37,9 +37,10 @@ type generator struct {
 	standalone         bool
 }
 
-// New returns a new generator which generates grpc gateway files.
-func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, pathTypeString, modulePathString string,
-	allowPatchFeature, standalone bool) gen.Generator {
+// New returns a new generator which generates grpc gateway files and the registry to be used for loading files.
+func New(useRequestContext bool, registerFuncSuffix, pathTypeString, modulePathString string, allowPatchFeature, standalone bool) (gen.Generator, *descriptor.Registry) {
+	reg := descriptor.NewRegistry()
+
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
 		"context",
@@ -81,7 +82,7 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, p
 		glog.Fatalf(`Unknown path type %q: want "import" or "source_relative".`, pathTypeString)
 	}
 
-	return &generator{
+	g := &generator{
 		reg:                reg,
 		baseImports:        imports,
 		useRequestContext:  useRequestContext,
@@ -91,6 +92,8 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, p
 		allowPatchFeature:  allowPatchFeature,
 		standalone:         standalone,
 	}
+
+	return g, reg
 }
 
 func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.ResponseFile, error) {

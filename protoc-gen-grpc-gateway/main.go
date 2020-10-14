@@ -55,8 +55,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	reg := descriptor.NewRegistry()
-
 	protogen.Options{
 		// FIXME: ParamFunc is not enough at this point because it does not receive all params.
 		//        Some are swallowed by protogen like "paths".
@@ -65,8 +63,11 @@ func main() {
 		ParamFunc: flag.CommandLine.Set,
 	}.Run(func(plugin *protogen.Plugin) error {
 		// FIXME: still needed to parse request parameter and apply flags manually, see the comment above.
-		parseFlags(reg, plugin.Request.GetParameter())
-		if err := applyFlags(reg); err != nil {
+		pkgMap := parseFlags(plugin.Request.GetParameter())
+
+		gen, reg := gengateway.New(*useRequestContext, *registerFuncSuffix, *pathType, *modulePath, *allowPatchFeature, *standalone)
+
+		if err := applyFlags(reg, pkgMap); err != nil {
 			return err
 		}
 
@@ -90,8 +91,7 @@ func main() {
 			targets = append(targets, f)
 		}
 
-		g := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *pathType, *modulePath, *allowPatchFeature, *standalone)
-		files, err := g.Generate(targets)
+		files, err := gen.Generate(targets)
 		for _, f := range files {
 			glog.V(1).Infof("NewGeneratedFile %q in %s", f.GetName(), f.GoPkg)
 			genFile := plugin.NewGeneratedFile(f.GetName(), protogen.GoImportPath(f.GoPkg.Path))
@@ -106,7 +106,11 @@ func main() {
 	})
 }
 
-func parseFlags(reg *descriptor.Registry, parameter string) {
+// parseFlags parses command line options, updates the flags, and returns a list of filenames to their path for
+// any supplied mapping arguments.
+func parseFlags(parameter string) (packageMap map[string]string) {
+	packageMap = make(map[string]string)
+
 	for _, p := range strings.Split(parameter, ",") {
 		spec := strings.SplitN(p, "=", 2)
 		if len(spec) == 1 {
@@ -119,16 +123,22 @@ func parseFlags(reg *descriptor.Registry, parameter string) {
 		name, value := spec[0], spec[1]
 
 		if strings.HasPrefix(name, "M") {
-			reg.AddPkgMap(name[1:], value)
+			packageMap[name[1:]] = value
 			continue
 		}
 		if err := flag.CommandLine.Set(name, value); err != nil {
 			glog.Fatalf("Cannot set flag %s", p)
 		}
 	}
+
+	return packageMap
 }
 
-func applyFlags(reg *descriptor.Registry) error {
+func applyFlags(reg *descriptor.Registry, packageMap map[string]string) error {
+	for k, v := range packageMap {
+		reg.AddPkgMap(k, v)
+	}
+
 	if *grpcAPIConfiguration != "" {
 		if err := reg.LoadGrpcAPIServiceFromYAML(*grpcAPIConfiguration); err != nil {
 			return err
