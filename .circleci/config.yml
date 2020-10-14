@@ -131,7 +131,7 @@ jobs:
             cd $(mktemp -d) &&
             go mod init tmp &&
             go get golang.org/x/exp/cmd/gorelease@latest
-      - run: gorelease
+      - run: gorelease -base=v1.15.2
   release:
     executor: build-env
     working_directory: /src/grpc-gateway
