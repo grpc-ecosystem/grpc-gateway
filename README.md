@@ -60,9 +60,10 @@ to track the versions of the following executable packages:
 package tools
 
 import (
+    _ "github.com/golang/protobuf/protoc-gen-go"
     _ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway"
     _ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2"
-    _ "github.com/golang/protobuf/protoc-gen-go"
+    _ "google.golang.org/grpc/cmd/protoc-gen-go-grpc"
 )
 ```
 
@@ -72,14 +73,16 @@ Run `go mod tidy` to resolve the versions. Install by running
 $ go install \
     github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
     github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
-    github.com/golang/protobuf/protoc-gen-go
+    github.com/golang/protobuf/protoc-gen-go \
+    google.golang.org/grpc/cmd/protoc-gen-go-grpc
 ```
 
-This will place three binaries in your `$GOBIN`;
+This will place four binaries in your `$GOBIN`;
 
 * `protoc-gen-grpc-gateway`
 * `protoc-gen-openapiv2`
 * `protoc-gen-go`
+* `protoc-gen-go-grpc`
 
 Make sure that your `$GOBIN` is in your `$PATH`.
 
@@ -108,7 +111,10 @@ Make sure that your `$GOBIN` is in your `$PATH`.
     Here's an example of what a `protoc` command might look like to generate Go stubs:
 
     ```sh
-    protoc -I . --go_out ./gen/go/ --go_opt plugins=grpc --go_opt paths=source_relative your/service/v1/your_service.proto
+    protoc -I . \
+       --go_out ./gen/go/ --go_opt paths=source_relative \
+       --go-grpc_out ./gen/go/ --go-grpc_opt paths=source_relative \
+       your/service/v1/your_service.proto
     ```
 
 3. Implement your service in gRPC as usual
@@ -178,11 +184,6 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    +  }
     }
    ```
-   >You will need to provide the required third party protobuf files to the `protoc` compiler.
-   >They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
-   >them into your `protoc` generation file structure. If you've structured your proto files according
-   >to something like [the Buf style guide](https://buf.build/docs/style-guide#files-and-packages),
-   >you could copy the files into a top-level `./google` folder.
 
    >You will need to provide the required third party protobuf files to the `protoc` compiler.
    >They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
