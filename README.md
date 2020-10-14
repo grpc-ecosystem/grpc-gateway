@@ -277,7 +277,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    protoc -I . --openapiv2_out ./gen/openapiv2 --openapiv2_opt logtostderr=true your/service/v1/your_service.proto
    ```
 
-   Note that this plugin also supports generating swagger definitions for unannotated methods; use the `generate_unbound_methods` option to enable this.
+   Note that this plugin also supports generating OpenAPI definitions for unannotated methods; use the `generate_unbound_methods` option to enable this.
 
 ## Video intro
 
@@ -310,18 +310,6 @@ through protoc using one of 2 patterns:
 --openapiv2_opt logtostderr=true,repeated_path_param_separator=ssv
 # or separately
 --openapiv2_opt logtostderr=true --openapiv2_opt repeated_path_param_separator=ssv
-```
-
-* using additional `--<tool_suffix>_opt` parameters: `--<tool_suffix>_opt=<flag>[,<flag>]*`
-
-```sh
---grpc-gateway_opt logtostderr=true,repeated_path_param_separator=ssv
-# or separately
---grpc-gateway_opt logtostderr=true --grpc-gateway_opt repeated_path_param_separator=ssv
-
---swagger_opt logtostderr=true,repeated_path_param_separator=ssv
-# or separately
---swagger_opt logtostderr=true --swagger_opt repeated_path_param_separator=ssv
 ```
 
 `protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to
