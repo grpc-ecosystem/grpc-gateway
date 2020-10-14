@@ -24,7 +24,7 @@
                   "$ref": "#/definitions/examplepbABitOfEverything"
                 },
                 "error": {
-                  "$ref": "#/definitions/runtimeStreamError"
+                  "$ref": "#/definitions/rpcStatus"
                 }
               },
               "title": "Stream result of examplepbABitOfEverything"
@@ -33,7 +33,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -55,7 +55,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -88,7 +88,7 @@
                   "$ref": "#/definitions/subStringMessage"
                 },
                 "error": {
-                  "$ref": "#/definitions/runtimeStreamError"
+                  "$ref": "#/definitions/rpcStatus"
                 }
               },
               "title": "Stream result of subStringMessage"
@@ -97,7 +97,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -112,6 +112,37 @@
             }
           }
         ],
+        "tags": [
+          "StreamService"
+        ]
+      }
+    },
+    "/v1/example/download": {
+      "get": {
+        "operationId": "StreamService_Download",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/apiHttpBody"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of apiHttpBody"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
         "tags": [
           "StreamService"
         ]
@@ -157,13 +188,35 @@
       "default": "FALSE",
       "description": "DeepEnum is one or zero.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true."
     },
+    "apiHttpBody": {
+      "type": "object",
+      "properties": {
+        "contentType": {
+          "type": "string",
+          "description": "The HTTP Content-Type header value specifying the content type of the body."
+        },
+        "data": {
+          "type": "string",
+          "format": "byte",
+          "description": "The HTTP request/response body as raw binary."
+        },
+        "extensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          },
+          "description": "Application specific response metadata. Must be set in the first response\nfor streaming APIs."
+        }
+      },
+      "description": "Message that represents an arbitrary HTTP body. It should only be used for\npayload formats that can't be represented as JSON, such as raw binary or\nan HTML page.\n\n\nThis message can be used both in streaming and non-streaming API methods in\nthe request as well as the response.\n\nIt can be used as a top-level request field, which is convenient if one\nwants to extract parameters from either the URL or HTTP template into the\nrequest fields and also want access to the raw HTTP body.\n\nExample:\n\n    message GetResourceRequest {\n      // A unique request id.\n      string request_id = 1;\n\n      // The raw HTTP body is bound to this field.\n      google.api.HttpBody http_body = 2;\n    }\n\n    service ResourceService {\n      rpc GetResource(GetResourceRequest) returns (google.api.HttpBody);\n      rpc UpdateResource(google.api.HttpBody) returns\n      (google.protobuf.Empty);\n    }\n\nExample with streaming methods:\n\n    service CaldavService {\n      rpc GetCalendar(stream google.api.HttpBody)\n        returns (stream google.api.HttpBody);\n      rpc UpdateCalendar(stream google.api.HttpBody)\n        returns (stream google.api.HttpBody);\n    }\n\nUse of this type only changes how the request and response bodies are\nhandled, all other features will continue to work unchanged."
+    },
     "examplepbABitOfEverything": {
       "type": "object",
       "example": {
         "uuid": "0cf361e1-4b44-483d-a159-54dabdf7e814"
       },
       "properties": {
-        "single_nested": {
+        "singleNested": {
           "$ref": "#/definitions/ABitOfEverythingNested"
         },
         "uuid": {
@@ -177,7 +230,7 @@
             "$ref": "#/definitions/ABitOfEverythingNested"
           }
         },
-        "float_value": {
+        "floatValue": {
           "type": "number",
           "format": "float",
           "default": "0.2",
@@ -186,94 +239,94 @@
             "float_value"
           ]
         },
-        "double_value": {
+        "doubleValue": {
           "type": "number",
           "format": "double"
         },
-        "int64_value": {
+        "int64Value": {
           "type": "string",
           "format": "int64"
         },
-        "uint64_value": {
+        "uint64Value": {
           "type": "string",
           "format": "uint64"
         },
-        "int32_value": {
+        "int32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "fixed64_value": {
+        "fixed64Value": {
           "type": "string",
           "format": "uint64"
         },
-        "fixed32_value": {
+        "fixed32Value": {
           "type": "integer",
           "format": "int64"
         },
-        "bool_value": {
+        "boolValue": {
           "type": "boolean"
         },
-        "string_value": {
+        "stringValue": {
           "type": "string"
         },
-        "bytes_value": {
+        "bytesValue": {
           "type": "string",
           "format": "byte"
         },
-        "uint32_value": {
+        "uint32Value": {
           "type": "integer",
           "format": "int64"
         },
-        "enum_value": {
+        "enumValue": {
           "$ref": "#/definitions/examplepbNumericEnum"
         },
-        "path_enum_value": {
+        "pathEnumValue": {
           "$ref": "#/definitions/pathenumPathEnum"
         },
-        "nested_path_enum_value": {
+        "nestedPathEnumValue": {
           "$ref": "#/definitions/MessagePathEnumNestedPathEnum"
         },
-        "sfixed32_value": {
+        "sfixed32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "sfixed64_value": {
+        "sfixed64Value": {
           "type": "string",
           "format": "int64"
         },
-        "sint32_value": {
+        "sint32Value": {
           "type": "integer",
           "format": "int32"
         },
-        "sint64_value": {
+        "sint64Value": {
           "type": "string",
           "format": "int64"
         },
-        "repeated_string_value": {
+        "repeatedStringValue": {
           "type": "array",
           "items": {
             "type": "string"
           }
         },
-        "oneof_empty": {
+        "oneofEmpty": {
           "properties": {}
         },
-        "oneof_string": {
+        "oneofString": {
           "type": "string"
         },
-        "map_value": {
+        "mapValue": {
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/examplepbNumericEnum"
           }
         },
-        "mapped_string_value": {
+        "mappedStringValue": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
           }
         },
-        "mapped_nested_value": {
+        "mappedNestedValue": {
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/ABitOfEverythingNested"
@@ -282,18 +335,18 @@
         "nonConventionalNameValue": {
           "type": "string"
         },
-        "timestamp_value": {
+        "timestampValue": {
           "type": "string",
           "format": "date-time"
         },
-        "repeated_enum_value": {
+        "repeatedEnumValue": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/examplepbNumericEnum"
           },
           "title": "repeated enum value. it is comma-separated in query"
         },
-        "repeated_enum_annotation": {
+        "repeatedEnumAnnotation": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/examplepbNumericEnum"
@@ -301,12 +354,12 @@
           "description": "Repeated numeric enum description.",
           "title": "Repeated numeric enum title"
         },
-        "enum_value_annotation": {
+        "enumValueAnnotation": {
           "$ref": "#/definitions/examplepbNumericEnum",
           "description": "Numeric enum description.",
           "title": "Numeric enum title"
         },
-        "repeated_string_annotation": {
+        "repeatedStringAnnotation": {
           "type": "array",
           "items": {
             "type": "string"
@@ -314,7 +367,7 @@
           "description": "Repeated string description.",
           "title": "Repeated string title"
         },
-        "repeated_nested_annotation": {
+        "repeatedNestedAnnotation": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/ABitOfEverythingNested"
@@ -322,12 +375,12 @@
           "description": "Repeated nested object description.",
           "title": "Repeated nested object title"
         },
-        "nested_annotation": {
+        "nestedAnnotation": {
           "$ref": "#/definitions/ABitOfEverythingNested",
           "description": "Nested object description.",
           "title": "Nested object title"
         },
-        "int64_override_type": {
+        "int64OverrideType": {
           "type": "integer",
           "format": "int64"
         }
@@ -364,7 +417,7 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "type_url": {
+        "typeUrl": {
           "type": "string",
           "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
         },
@@ -376,42 +429,14 @@
       },
       "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := ptypes.MarshalAny(foo)\n     ...\n     foo := \u0026pb.Foo{}\n     if err := ptypes.UnmarshalAny(any, foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
     },
-    "runtimeError": {
+    "rpcStatus": {
       "type": "object",
       "properties": {
-        "error": {
-          "type": "string"
-        },
         "code": {
           "type": "integer",
           "format": "int32"
         },
         "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufAny"
-          }
-        }
-      }
-    },
-    "runtimeStreamError": {
-      "type": "object",
-      "properties": {
-        "grpc_code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "http_code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "http_status": {
           "type": "string"
         },
         "details": {

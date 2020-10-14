@@ -3,23 +3,23 @@ package runtime_test
 import (
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/golang/protobuf/ptypes/duration"
-	"github.com/golang/protobuf/ptypes/timestamp"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	durationpb "github.com/golang/protobuf/ptypes/duration"
+	timestamppb "github.com/golang/protobuf/ptypes/timestamp"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestConvertTimestamp(t *testing.T) {
 	specs := []struct {
 		name    string
 		input   string
-		output  *timestamp.Timestamp
+		output  *timestamppb.Timestamp
 		wanterr bool
 	}{
 		{
 			name:  "a valid RFC3339 timestamp",
 			input: `"2016-05-10T10:19:13.123Z"`,
-			output: &timestamp.Timestamp{
+			output: &timestamppb.Timestamp{
 				Seconds: 1462875553,
 				Nanos:   123000000,
 			},
@@ -69,13 +69,13 @@ func TestConvertDuration(t *testing.T) {
 	specs := []struct {
 		name    string
 		input   string
-		output  *duration.Duration
+		output  *durationpb.Duration
 		wanterr bool
 	}{
 		{
 			name:  "a valid duration",
 			input: `"123.456s"`,
-			output: &duration.Duration{
+			output: &durationpb.Duration{
 				Seconds: 123,
 				Nanos:   456000000,
 			},

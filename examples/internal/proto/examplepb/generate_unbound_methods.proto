@@ -1,12 +1,12 @@
 syntax = "proto3";
-option go_package = "examplepb";
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
 
 // Generate Unannotated Methods Echo Service
 // Similar to echo_service.proto but without annotations and without external configuration.
 //
 // Generate Unannotated Methods Echo Service API consists of a single service which returns
 // a message.
-package grpc.gateway.examples.internal.examplepb;
+package grpc.gateway.examples.internal.proto.examplepb;
 
 // Do not need annotations.proto, can still use well known types as usual
 import "google/protobuf/duration.proto";

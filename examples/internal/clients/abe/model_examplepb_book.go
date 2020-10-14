@@ -21,5 +21,5 @@ type ExamplepbBook struct {
 	// Output only. The book's ID.
 	Id string `json:"id,omitempty"`
 	// Output only. Creation time of the book.
-	CreateTime time.Time `json:"create_time,omitempty"`
+	CreateTime time.Time `json:"createTime,omitempty"`
 }

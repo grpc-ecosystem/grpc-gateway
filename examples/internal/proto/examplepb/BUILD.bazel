@@ -1,22 +1,36 @@
 load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
-load("@grpc_ecosystem_grpc_gateway//protoc-gen-swagger:defs.bzl", "protoc_gen_swagger")
+load("@grpc_ecosystem_grpc_gateway//protoc-gen-openapiv2:defs.bzl", "protoc_gen_openapiv2")
 
 package(default_visibility = ["//visibility:public"])
 
 # TODO(yannic): Add examples/tests that use import_prefix/strip_import_prefix.
 
 # gazelle:exclude a_bit_of_everything.pb.gw.go
+# gazelle:exclude a_bit_of_everything_grpc.pb.go
 # gazelle:exclude echo_service.pb.gw.go
+# gazelle:exclude echo_service_grpc.pb.go
 # gazelle:exclude flow_combination.pb.gw.go
+# gazelle:exclude flow_combination_grpc.pb.go
+# gazelle:exclude generate_unbound_methods.pb.gw.go
+# gazelle:exclude generate_unbound_methods_grpc.pb.go
 # gazelle:exclude generated_input.proto
 # gazelle:exclude non_standard_names.pb.gw.go
+# gazelle:exclude non_standard_names_grpc.pb.go
 # gazelle:exclude response_body_service.pb.gw.go
+# gazelle:exclude response_body_service_grpc.pb.go
 # gazelle:exclude stream.pb.gw.go
+# gazelle:exclude stream_grpc.pb.go
 # gazelle:exclude use_go_template.pb.gw.go
+# gazelle:exclude use_go_template_grpc.pb.go
 # gazelle:exclude wrappers.pb.gw.go
-# gazelle:go_grpc_compilers @io_bazel_rules_go//proto:go_grpc,//protoc-gen-grpc-gateway:go_gen_grpc_gateway
+# gazelle:exclude wrappers_grpc.pb.go
+# gazelle:exclude unannotated_echo_service.pb.gw.go
+# gazelle:exclude unannotated_echo_service_grpc.pb.go
+# gazelle:exclude openapi_merge_a.proto
+# gazelle:exclude openapi_merge_b.proto
+# gazelle:go_grpc_compilers //:go_apiv2, //:go_grpc, //protoc-gen-grpc-gateway:go_gen_grpc_gateway
 
 genrule(
     name = "generated_proto",
@@ -36,8 +50,6 @@ proto_library(
         "non_standard_names.proto",
         "response_body_service.proto",
         "stream.proto",
-        "swagger_merge_a.proto",
-        "swagger_merge_b.proto",
         "unannotated_echo_service.proto",
         "use_go_template.proto",
         "wrappers.proto",
@@ -46,61 +58,71 @@ proto_library(
         "//examples/internal/proto/pathenum:pathenum_proto",
         "//examples/internal/proto/sub:sub_proto",
         "//examples/internal/proto/sub2:sub2_proto",
-        "//protoc-gen-swagger/options:options_proto",
+        "//protoc-gen-openapiv2/options:options_proto",
         "@com_google_protobuf//:duration_proto",
         "@com_google_protobuf//:empty_proto",
         "@com_google_protobuf//:field_mask_proto",
+        "@com_google_protobuf//:struct_proto",
         "@com_google_protobuf//:timestamp_proto",
         "@com_google_protobuf//:wrappers_proto",
         "@go_googleapis//google/api:annotations_proto",
+        "@go_googleapis//google/api:httpbody_proto",
+    ],
+)
+
+#keep
+proto_library(
+    name = "openapi_merge_proto",
+    srcs = [
+        "openapi_merge_a.proto",
+        "openapi_merge_b.proto",
+    ],
+    deps = [
+        "@go_googleapis//google/api:annotations_proto",
+        "@go_googleapis//google/api:httpbody_proto",
     ],
 )
 
 go_proto_library(
     name = "examplepb_go_proto",
     compilers = [
-        "@io_bazel_rules_go//proto:go_grpc",
+        "//:go_apiv2",
+        "//:go_grpc",
         "//protoc-gen-grpc-gateway:go_gen_grpc_gateway",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/examplepb",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
     proto = ":examplepb_proto",
     deps = [
         "//examples/internal/proto/pathenum:go_default_library",
         "//examples/internal/proto/sub:go_default_library",
         "//examples/internal/proto/sub2:go_default_library",
-        "//protoc-gen-swagger/options:go_default_library",
+        "//protoc-gen-openapiv2/options:go_default_library",
+        "@com_github_golang_protobuf//descriptor:go_default_library_gen",  # keep
         "@go_googleapis//google/api:annotations_go_proto",
+        "@go_googleapis//google/api:httpbody_go_proto",
+        "@org_golang_google_protobuf//proto:go_default_library",  # keep
     ],
 )
 
 go_library(
     name = "go_default_library",
-    srcs = [
-        "generate_unbound_methods.pb.gw.go",
-        "unannotated_echo_service.pb.gw.go",
-    ],
     embed = [":examplepb_go_proto"],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/examplepb",
-    deps = [
-        "//runtime:go_default_library",
-        "//utilities:go_default_library",
-        "@com_github_golang_protobuf//descriptor:go_default_library_gen",
-        "@com_github_golang_protobuf//proto:go_default_library",
-        "@org_golang_google_grpc//:go_default_library",
-        "@org_golang_google_grpc//codes:go_default_library",
-        "@org_golang_google_grpc//grpclog:go_default_library",
-        "@org_golang_google_grpc//metadata:go_default_library",
-        "@org_golang_google_grpc//status:go_default_library",
-    ],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
 )
 
-protoc_gen_swagger(
-    name = "examplepb_protoc_gen_swagger",
+protoc_gen_openapiv2(
+    name = "examplepb_protoc_gen_openapiv2",
     proto = ":examplepb_proto",
 )
 
-protoc_gen_swagger(
-    name = "examplepb_protoc_gen_swagger_merged",
+protoc_gen_openapiv2(
+    name = "examplepb_protoc_gen_openapiv2_merged",
     proto = ":examplepb_proto",
+    single_output = True,  # Outputs a single swagger.json file.
+)
+
+protoc_gen_openapiv2(
+    name = "examplepb_openapi_merge",
+    proto = ":openapi_merge_proto",
     single_output = True,  # Outputs a single swagger.json file.
 )

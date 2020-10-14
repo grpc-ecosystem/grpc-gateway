@@ -33,7 +33,7 @@ e.g. https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/interna
 AFAIK, no. But it should not be a big issue because the reverse-proxy which grpc-gateway generates
 usually works as an independent process and communicates with your gRPC server over TCP or a unix-domain socket.
 
-## Why are the models in the swagger specification prefixed with the last part of the proto package name?
+## Why are the models in the OpenAPI specification prefixed with the last part of the proto package name?
 
 The reason to generate the prefixes is that we don't have a guaranteed unique namespace.
 If two packages produce different Foo messages then we will have trouble.

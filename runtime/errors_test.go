@@ -2,15 +2,16 @@ package runtime_test
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
+	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -22,7 +23,7 @@ func TestDefaultHTTPError(t *testing.T) {
 		&errdetails.PreconditionFailure{},
 	)
 
-	for _, spec := range []struct {
+	for i, spec := range []struct {
 		err         error
 		status      int
 		msg         string
@@ -60,43 +61,39 @@ func TestDefaultHTTPError(t *testing.T) {
 			msg:         "example error",
 		},
 	} {
-		w := httptest.NewRecorder()
-		req, _ := http.NewRequest("", "", nil) // Pass in an empty request to match the signature
-		runtime.DefaultHTTPError(ctx, &runtime.ServeMux{}, &runtime.JSONPb{}, w, req, spec.err)
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			w := httptest.NewRecorder()
+			req, _ := http.NewRequest("", "", nil) // Pass in an empty request to match the signature
+			mux := runtime.NewServeMux()
+			marshaler := &runtime.JSONPb{}
+			runtime.HTTPError(ctx, mux, marshaler, w, req, spec.err)
 
-		if got, want := w.Header().Get("Content-Type"), "application/json"; got != want {
-			t.Errorf(`w.Header().Get("Content-Type") = %q; want %q; on spec.err=%v`, got, want, spec.err)
-		}
-		if got, want := w.Code, spec.status; got != want {
-			t.Errorf("w.Code = %d; want %d", got, want)
-		}
-
-		body := make(map[string]interface{})
-		if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
-			t.Errorf("json.Unmarshal(%q, &body) failed with %v; want success", w.Body.Bytes(), err)
-			continue
-		}
-
-		if got, want := body["error"].(string), spec.msg; !strings.Contains(got, want) {
-			t.Errorf(`body["error"] = %q; want %q; on spec.err=%v`, got, want, spec.err)
-		}
-		if got, want := body["message"].(string), spec.msg; !strings.Contains(got, want) {
-			t.Errorf(`body["message"] = %q; want %q; on spec.err=%v`, got, want, spec.err)
-		}
-
-		if spec.details != "" {
-			details, ok := body["details"].([]interface{})
-			if !ok {
-				t.Errorf(`body["details"] = %T; want %T`, body["details"], []interface{}{})
-				continue
+			if got, want := w.Header().Get("Content-Type"), "application/json"; got != want {
+				t.Errorf(`w.Header().Get("Content-Type") = %q; want %q; on spec.err=%v`, got, want, spec.err)
 			}
-			if len(details) != 1 {
-				t.Errorf(`len(body["details"]) = %v; want 1`, len(details))
-				continue
+			if got, want := w.Code, spec.status; got != want {
+				t.Errorf("w.Code = %d; want %d", got, want)
 			}
-			if details[0].(map[string]interface{})["@type"] != spec.details {
-				t.Errorf(`details.@type = %s; want %s`, details[0].(map[string]interface{})["@type"], spec.details)
+
+			var st statuspb.Status
+			if err := marshaler.Unmarshal(w.Body.Bytes(), &st); err != nil {
+				t.Errorf("marshaler.Unmarshal(%q, &body) failed with %v; want success", w.Body.Bytes(), err)
+				return
 			}
-		}
+
+			if got, want := st.Message, spec.msg; !strings.Contains(got, want) {
+				t.Errorf(`st.Message = %q; want %q; on spec.err=%v`, got, want, spec.err)
+			}
+
+			if spec.details != "" {
+				if len(st.Details) != 1 {
+					t.Errorf(`len(st.Details) = %v; want 1`, len(st.Details))
+					return
+				}
+				if st.Details[0].TypeUrl != spec.details {
+					t.Errorf(`details.type_url = %s; want %s`, st.Details[0].TypeUrl, spec.details)
+				}
+			}
+		})
 	}
 }
