@@ -26,7 +26,9 @@
             "packageNames": [
                 "github.com/golang/protobuf",
                 "google.golang.org/genproto",
-                "io_bazel_rules_go"
+                "io_bazel_rules_go",
+                "golang.org/x/oauth2",
+                "jekyll"
             ],
             "enabled": false
         },
