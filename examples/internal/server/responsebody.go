@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/examplepb"
+	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 )
 
 // Implements of ResponseBodyServiceServer
@@ -26,7 +26,7 @@ func (s *responseBodyServer) GetResponseBody(ctx context.Context, req *examples.
 func (s *responseBodyServer) ListResponseBodies(ctx context.Context, req *examples.ResponseBodyIn) (*examples.RepeatedResponseBodyOut, error) {
 	return &examples.RepeatedResponseBodyOut{
 		Response: []*examples.RepeatedResponseBodyOut_Response{
-			&examples.RepeatedResponseBodyOut_Response{
+			{
 				Data: req.Data,
 			},
 		},

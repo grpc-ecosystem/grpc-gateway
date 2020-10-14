@@ -10,6 +10,6 @@
 package generateunboundmethods
 
 type ProtobufAny struct {
-	TypeUrl string `json:"type_url,omitempty"`
+	TypeUrl string `json:"typeUrl,omitempty"`
 	Value string `json:"value,omitempty"`
 }

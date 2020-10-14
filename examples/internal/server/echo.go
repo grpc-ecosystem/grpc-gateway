@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/golang/glog"
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/examplepb"
+	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -36,6 +36,11 @@ func (s *echoServer) EchoBody(ctx context.Context, msg *examples.SimpleMessage) 
 }
 
 func (s *echoServer) EchoDelete(ctx context.Context, msg *examples.SimpleMessage) (*examples.SimpleMessage, error) {
+	glog.Info(msg)
+	return msg, nil
+}
+
+func (s *echoServer) EchoPatch(ctx context.Context, msg *examples.DynamicMessageUpdate) (*examples.DynamicMessageUpdate, error) {
 	glog.Info(msg)
 	return msg, nil
 }

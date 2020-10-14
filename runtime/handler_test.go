@@ -8,12 +8,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/grpc-ecosystem/grpc-gateway/internal"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	pb "github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	pb "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 )
 
 type fakeReponseBodyWrapper struct {
@@ -118,16 +117,9 @@ func TestForwardResponseStream(t *testing.T) {
 						// Skip non-stream errors
 						t.Skip("checking error encodings")
 					}
-					st, _ := status.FromError(msg.err)
-					httpCode := runtime.HTTPStatusFromCode(st.Code())
+					st := status.Convert(msg.err)
 					b, err := marshaler.Marshal(map[string]proto.Message{
-						"error": &internal.StreamError{
-							GrpcCode:   int32(st.Code()),
-							HttpCode:   int32(httpCode),
-							Message:    st.Message(),
-							HttpStatus: http.StatusText(httpCode),
-							Details:    st.Proto().GetDetails(),
-						},
+						"error": st.Proto(),
 					})
 					if err != nil {
 						t.Errorf("marshaler.Marshal() failed %v", err)
@@ -174,12 +166,11 @@ type CustomMarshaler struct {
 	m *runtime.JSONPb
 }
 
-func (c *CustomMarshaler) Marshal(v interface{}) ([]byte, error)       { return c.m.Marshal(v) }
-func (c *CustomMarshaler) Unmarshal(data []byte, v interface{}) error  { return c.m.Unmarshal(data, v) }
-func (c *CustomMarshaler) NewDecoder(r io.Reader) runtime.Decoder      { return c.m.NewDecoder(r) }
-func (c *CustomMarshaler) NewEncoder(w io.Writer) runtime.Encoder      { return c.m.NewEncoder(w) }
-func (c *CustomMarshaler) ContentType() string                         { return c.m.ContentType() }
-func (c *CustomMarshaler) ContentTypeFromMessage(v interface{}) string { return "Custom-Content-Type" }
+func (c *CustomMarshaler) Marshal(v interface{}) ([]byte, error)      { return c.m.Marshal(v) }
+func (c *CustomMarshaler) Unmarshal(data []byte, v interface{}) error { return c.m.Unmarshal(data, v) }
+func (c *CustomMarshaler) NewDecoder(r io.Reader) runtime.Decoder     { return c.m.NewDecoder(r) }
+func (c *CustomMarshaler) NewEncoder(w io.Writer) runtime.Encoder     { return c.m.NewEncoder(w) }
+func (c *CustomMarshaler) ContentType(v interface{}) string           { return "Custom-Content-Type" }
 
 func TestForwardResponseStreamCustomMarshaler(t *testing.T) {
 	type msg struct {

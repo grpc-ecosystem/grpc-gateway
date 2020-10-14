@@ -12,7 +12,7 @@
     "application/json"
   ],
   "paths": {
-    "/grpc.gateway.examples.internal.examplepb.GenerateUnboundMethodsEchoService/Echo": {
+    "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo": {
       "post": {
         "summary": "Echo method receives a simple message and returns it.",
         "description": "The message posted as the id parameter will also be\nreturned.",
@@ -27,7 +27,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -46,7 +46,7 @@
         ]
       }
     },
-    "/grpc.gateway.examples.internal.examplepb.GenerateUnboundMethodsEchoService/EchoBody": {
+    "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoBody": {
       "post": {
         "summary": "EchoBody method receives a simple message and returns it.",
         "operationId": "GenerateUnboundMethodsEchoService_EchoBody",
@@ -60,7 +60,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -79,7 +79,7 @@
         ]
       }
     },
-    "/grpc.gateway.examples.internal.examplepb.GenerateUnboundMethodsEchoService/EchoDelete": {
+    "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/EchoDelete": {
       "post": {
         "summary": "EchoDelete method receives a simple message and returns it.",
         "operationId": "GenerateUnboundMethodsEchoService_EchoDelete",
@@ -93,7 +93,7 @@
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/runtimeError"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -134,7 +134,7 @@
     "protobufAny": {
       "type": "object",
       "properties": {
-        "type_url": {
+        "typeUrl": {
           "type": "string"
         },
         "value": {
@@ -143,12 +143,9 @@
         }
       }
     },
-    "runtimeError": {
+    "rpcStatus": {
       "type": "object",
       "properties": {
-        "error": {
-          "type": "string"
-        },
         "code": {
           "type": "integer",
           "format": "int32"

@@ -8,7 +8,7 @@ $ dep init
 Follow the guides from this [README.md](./browser/README.md) to run the server and gateway.
 ```bash
 # Make sure you are in the correct directory: 
-# $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/examples
+# $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/v2/examples
 $ cd examples/internal/browser
 $ pwd
 
@@ -26,7 +26,7 @@ Then you can use curl or a browser to test:
 
 ```bash
 # List all apis
-$ curl http://localhost:8080/swagger/echo_service.swagger.json
+$ curl http://localhost:8080/openapiv2/echo_service.swagger.json
 
 # Visit the apis
 $ curl -XPOST http://localhost:8080/v1/example/echo/foo

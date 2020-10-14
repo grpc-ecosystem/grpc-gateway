@@ -14,7 +14,7 @@ type ExamplepbSimpleMessage struct {
 	// Id represents the message identifier.
 	Id string `json:"id,omitempty"`
 	Num string `json:"num,omitempty"`
-	LineNum string `json:"line_num,omitempty"`
+	LineNum string `json:"lineNum,omitempty"`
 	Lang string `json:"lang,omitempty"`
 	Status *ExamplepbEmbedded `json:"status,omitempty"`
 	En string `json:"en,omitempty"`

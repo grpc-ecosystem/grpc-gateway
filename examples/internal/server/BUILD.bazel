@@ -1,4 +1,4 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -14,17 +14,17 @@ go_library(
         "responsebody.go",
         "unannotatedecho.go",
     ],
-    importpath = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/server",
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/server",
     deps = [
         "//examples/internal/proto/examplepb:go_default_library",
         "//examples/internal/proto/pathenum:go_default_library",
+        "//examples/internal/proto/standalone:go_default_library",
         "//examples/internal/proto/sub:go_default_library",
         "//examples/internal/proto/sub2:go_default_library",
-        "//internal/casing:go_default_library",
         "//runtime:go_default_library",
         "@com_github_golang_glog//:go_default_library",
-        "@com_github_golang_protobuf//proto:go_default_library",
         "@com_github_rogpeppe_fastuuid//:go_default_library",
+        "@go_googleapis//google/api:httpbody_go_proto",
         "@go_googleapis//google/rpc:errdetails_go_proto",
         "@io_bazel_rules_go//proto/wkt:duration_go_proto",
         "@io_bazel_rules_go//proto/wkt:empty_go_proto",
@@ -34,12 +34,7 @@ go_library(
         "@org_golang_google_grpc//codes:go_default_library",
         "@org_golang_google_grpc//metadata:go_default_library",
         "@org_golang_google_grpc//status:go_default_library",
+        "@org_golang_google_protobuf//proto:go_default_library",
+        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
     ],
-)
-
-go_test(
-    name = "go_default_test",
-    srcs = ["fieldmask_helper_test.go"],
-    embed = [":go_default_library"],
-    deps = ["@io_bazel_rules_go//proto/wkt:field_mask_go_proto"],
 )

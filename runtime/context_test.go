@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -18,13 +18,13 @@ const (
 
 func TestAnnotateContext_WorksWithEmpty(t *testing.T) {
 	ctx := context.Background()
-
+	expectedRPCName := "/example.Example/Example"
 	request, err := http.NewRequest("GET", "http://www.example.com", nil)
 	if err != nil {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
 	}
 	request.Header.Add("Some-Irrelevant-Header", "some value")
-	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -37,6 +37,7 @@ func TestAnnotateContext_WorksWithEmpty(t *testing.T) {
 
 func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
 	request, err := http.NewRequest("GET", "http://www.example.com", nil)
 	if err != nil {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
@@ -46,7 +47,7 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	request.Header.Add("Grpc-Metadata-Foo-BAZ", "Value2")
 	request.Header.Add("Grpc-Metadata-foo-bAz", "Value3")
 	request.Header.Add("Authorization", "Token 1234567890")
-	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -67,10 +68,16 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	if got, want := md["authorization"], []string{"Token 1234567890"}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["authorization"] = %q want %q`, got, want)
 	}
+	if m, ok := runtime.RPCMethod(annotated); !ok {
+		t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
+	} else if m != expectedRPCName {
+		t.Errorf("runtime.RPCMethod(annotated) failed with %s; want %s", m, expectedRPCName)
+	}
 }
 
 func TestAnnotateContext_ForwardGrpcBinaryMetadata(t *testing.T) {
 	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
 	request, err := http.NewRequest("GET", "http://www.example.com", nil)
 	if err != nil {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
@@ -79,7 +86,7 @@ func TestAnnotateContext_ForwardGrpcBinaryMetadata(t *testing.T) {
 	binData := []byte("\x00test-binary-data")
 	request.Header.Add("Grpc-Metadata-Test-Bin", base64.StdEncoding.EncodeToString(binData))
 
-	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -91,10 +98,16 @@ func TestAnnotateContext_ForwardGrpcBinaryMetadata(t *testing.T) {
 	if got, want := md["test-bin"], []string{string(binData)}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["test-bin"] = %q want %q`, got, want)
 	}
+	if m, ok := runtime.RPCMethod(annotated); !ok {
+		t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
+	} else if m != expectedRPCName {
+		t.Errorf("runtime.RPCMethod(annotated) failed with %s; want %s", m, expectedRPCName)
+	}
 }
 
 func TestAnnotateContext_XForwardedFor(t *testing.T) {
 	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
 	request, err := http.NewRequest("GET", "http://bar.foo.example.com", nil)
 	if err != nil {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://bar.foo.example.com", err)
@@ -102,7 +115,7 @@ func TestAnnotateContext_XForwardedFor(t *testing.T) {
 	request.Header.Add("X-Forwarded-For", "192.0.2.100") // client
 	request.RemoteAddr = "192.0.2.200:12345"             // proxy
 
-	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -118,15 +131,21 @@ func TestAnnotateContext_XForwardedFor(t *testing.T) {
 	if got, want := md["x-forwarded-for"], []string{"192.0.2.100, 192.0.2.200"}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["x-forwarded-for"] = %v want %v`, got, want)
 	}
+	if m, ok := runtime.RPCMethod(annotated); !ok {
+		t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
+	} else if m != expectedRPCName {
+		t.Errorf("runtime.RPCMethod(annotated) failed with %s; want %s", m, expectedRPCName)
+	}
 }
 
 func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
 	request, err := http.NewRequest("GET", "http://example.com", nil)
 	if err != nil {
 		t.Fatalf(`http.NewRequest("GET", "http://example.com", nil failed with %v; want success`, err)
 	}
-	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -138,7 +157,7 @@ func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 
 	const acceptableError = 50 * time.Millisecond
 	runtime.DefaultContextTimeout = 10 * time.Second
-	annotated, err = runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
+	annotated, err = runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -147,8 +166,8 @@ func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 	if !ok {
 		t.Errorf("annotated.Deadline() = _, false; want _, true")
 	}
-	if got, want := deadline.Sub(time.Now()), runtime.DefaultContextTimeout; got-want > acceptableError || got-want < -acceptableError {
-		t.Errorf("deadline.Sub(time.Now()) = %v; want %v; with error %v", got, want, acceptableError)
+	if got, want := time.Until(deadline), runtime.DefaultContextTimeout; got-want > acceptableError || got-want < -acceptableError {
+		t.Errorf("time.Until(deadline) = %v; want %v; with error %v", got, want, acceptableError)
 	}
 
 	for _, spec := range []struct {
@@ -181,7 +200,7 @@ func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 		},
 	} {
 		request.Header.Set("Grpc-Timeout", spec.timeout)
-		annotated, err = runtime.AnnotateContext(ctx, runtime.NewServeMux(), request)
+		annotated, err = runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 		if err != nil {
 			t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 			return
@@ -190,8 +209,13 @@ func TestAnnotateContext_SupportsTimeouts(t *testing.T) {
 		if !ok {
 			t.Errorf("annotated.Deadline() = _, false; want _, true; timeout = %q", spec.timeout)
 		}
-		if got, want := deadline.Sub(time.Now()), spec.want; got-want > acceptableError || got-want < -acceptableError {
-			t.Errorf("deadline.Sub(time.Now()) = %v; want %v; with error %v; timeout= %q", got, want, acceptableError, spec.timeout)
+		if got, want := time.Until(deadline), spec.want; got-want > acceptableError || got-want < -acceptableError {
+			t.Errorf("time.Until(deadline) = %v; want %v; with error %v; timeout= %q", got, want, acceptableError, spec.timeout)
+		}
+		if m, ok := runtime.RPCMethod(annotated); !ok {
+			t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
+		} else if m != expectedRPCName {
+			t.Errorf("runtime.RPCMethod(annotated) failed with %s; want %s", m, expectedRPCName)
 		}
 	}
 }
@@ -199,11 +223,12 @@ func TestAnnotateContext_SupportsCustomAnnotators(t *testing.T) {
 	md1 := func(context.Context, *http.Request) metadata.MD { return metadata.New(map[string]string{"foo": "bar"}) }
 	md2 := func(context.Context, *http.Request) metadata.MD { return metadata.New(map[string]string{"baz": "qux"}) }
 	expected := metadata.New(map[string]string{"foo": "bar", "baz": "qux"})
+	expectedRPCName := "/example.Example/Example"
 	request, err := http.NewRequest("GET", "http://example.com", nil)
 	if err != nil {
 		t.Fatalf(`http.NewRequest("GET", "http://example.com", nil failed with %v; want success`, err)
 	}
-	annotated, err := runtime.AnnotateContext(context.Background(), runtime.NewServeMux(runtime.WithMetadata(md1), runtime.WithMetadata(md2)), request)
+	annotated, err := runtime.AnnotateContext(context.Background(), runtime.NewServeMux(runtime.WithMetadata(md1), runtime.WithMetadata(md2)), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -214,17 +239,22 @@ func TestAnnotateContext_SupportsCustomAnnotators(t *testing.T) {
 			t.Errorf("metadata.MD[%s] = %v; want %v", key, a, e)
 		}
 	}
+	if m, ok := runtime.RPCMethod(annotated); !ok {
+		t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
+	} else if m != expectedRPCName {
+		t.Errorf("runtime.RPCMethod(annotated) failed with %s; want %s", m, expectedRPCName)
+	}
 }
 
 func TestAnnotateIncomingContext_WorksWithEmpty(t *testing.T) {
 	ctx := context.Background()
-
+	expectedRPCName := "/example.Example/Example"
 	request, err := http.NewRequest("GET", "http://www.example.com", nil)
 	if err != nil {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
 	}
 	request.Header.Add("Some-Irrelevant-Header", "some value")
-	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request)
+	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateIncomingContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -233,10 +263,16 @@ func TestAnnotateIncomingContext_WorksWithEmpty(t *testing.T) {
 	if !ok || len(md) != emptyForwardMetaCount {
 		t.Errorf("Expected %d metadata items in context; got %v", emptyForwardMetaCount, md)
 	}
+	if m, ok := runtime.RPCMethod(annotated); !ok {
+		t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
+	} else if m != expectedRPCName {
+		t.Errorf("runtime.RPCMethod(annotated) failed with %s; want %s", m, expectedRPCName)
+	}
 }
 
 func TestAnnotateIncomingContext_ForwardsGrpcMetadata(t *testing.T) {
 	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
 	request, err := http.NewRequest("GET", "http://www.example.com", nil)
 	if err != nil {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
@@ -246,7 +282,7 @@ func TestAnnotateIncomingContext_ForwardsGrpcMetadata(t *testing.T) {
 	request.Header.Add("Grpc-Metadata-Foo-BAZ", "Value2")
 	request.Header.Add("Grpc-Metadata-foo-bAz", "Value3")
 	request.Header.Add("Authorization", "Token 1234567890")
-	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request)
+	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateIncomingContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -267,10 +303,16 @@ func TestAnnotateIncomingContext_ForwardsGrpcMetadata(t *testing.T) {
 	if got, want := md["authorization"], []string{"Token 1234567890"}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["authorization"] = %q want %q`, got, want)
 	}
+	if m, ok := runtime.RPCMethod(annotated); !ok {
+		t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
+	} else if m != expectedRPCName {
+		t.Errorf("runtime.RPCMethod(annotated) failed with %s; want %s", m, expectedRPCName)
+	}
 }
 
 func TestAnnotateIncomingContext_ForwardGrpcBinaryMetadata(t *testing.T) {
 	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
 	request, err := http.NewRequest("GET", "http://www.example.com", nil)
 	if err != nil {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
@@ -279,7 +321,7 @@ func TestAnnotateIncomingContext_ForwardGrpcBinaryMetadata(t *testing.T) {
 	binData := []byte("\x00test-binary-data")
 	request.Header.Add("Grpc-Metadata-Test-Bin", base64.StdEncoding.EncodeToString(binData))
 
-	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request)
+	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateIncomingContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -291,10 +333,16 @@ func TestAnnotateIncomingContext_ForwardGrpcBinaryMetadata(t *testing.T) {
 	if got, want := md["test-bin"], []string{string(binData)}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["test-bin"] = %q want %q`, got, want)
 	}
+	if m, ok := runtime.RPCMethod(annotated); !ok {
+		t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
+	} else if m != expectedRPCName {
+		t.Errorf("runtime.RPCMethod(annotated) failed with %s; want %s", m, expectedRPCName)
+	}
 }
 
 func TestAnnotateIncomingContext_XForwardedFor(t *testing.T) {
 	ctx := context.Background()
+	expectedRPCName := "/example.Example/Example"
 	request, err := http.NewRequest("GET", "http://bar.foo.example.com", nil)
 	if err != nil {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://bar.foo.example.com", err)
@@ -302,7 +350,7 @@ func TestAnnotateIncomingContext_XForwardedFor(t *testing.T) {
 	request.Header.Add("X-Forwarded-For", "192.0.2.100") // client
 	request.RemoteAddr = "192.0.2.200:12345"             // proxy
 
-	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request)
+	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateIncomingContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -318,18 +366,23 @@ func TestAnnotateIncomingContext_XForwardedFor(t *testing.T) {
 	if got, want := md["x-forwarded-for"], []string{"192.0.2.100, 192.0.2.200"}; !reflect.DeepEqual(got, want) {
 		t.Errorf(`md["x-forwarded-for"] = %v want %v`, got, want)
 	}
+	if m, ok := runtime.RPCMethod(annotated); !ok {
+		t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
+	} else if m != expectedRPCName {
+		t.Errorf("runtime.RPCMethod(annotated) failed with %s; want %s", m, expectedRPCName)
+	}
 }
 
 func TestAnnotateIncomingContext_SupportsTimeouts(t *testing.T) {
 	// While run all test, TestAnnotateContext_SupportsTimeouts() will change the DefaultContextTimeout, so reset it to zero.
 	runtime.DefaultContextTimeout = 0 * time.Second
-
+	expectedRPCName := "/example.Example/Example"
 	ctx := context.Background()
 	request, err := http.NewRequest("GET", "http://example.com", nil)
 	if err != nil {
 		t.Fatalf(`http.NewRequest("GET", "http://example.com", nil failed with %v; want success`, err)
 	}
-	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request)
+	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateIncomingContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -341,7 +394,7 @@ func TestAnnotateIncomingContext_SupportsTimeouts(t *testing.T) {
 
 	const acceptableError = 50 * time.Millisecond
 	runtime.DefaultContextTimeout = 10 * time.Second
-	annotated, err = runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request)
+	annotated, err = runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateIncomingContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -350,8 +403,8 @@ func TestAnnotateIncomingContext_SupportsTimeouts(t *testing.T) {
 	if !ok {
 		t.Errorf("annotated.Deadline() = _, false; want _, true")
 	}
-	if got, want := deadline.Sub(time.Now()), runtime.DefaultContextTimeout; got-want > acceptableError || got-want < -acceptableError {
-		t.Errorf("deadline.Sub(time.Now()) = %v; want %v; with error %v", got, want, acceptableError)
+	if got, want := time.Until(deadline), runtime.DefaultContextTimeout; got-want > acceptableError || got-want < -acceptableError {
+		t.Errorf("time.Until(deadline) = %v; want %v; with error %v", got, want, acceptableError)
 	}
 
 	for _, spec := range []struct {
@@ -384,7 +437,7 @@ func TestAnnotateIncomingContext_SupportsTimeouts(t *testing.T) {
 		},
 	} {
 		request.Header.Set("Grpc-Timeout", spec.timeout)
-		annotated, err = runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request)
+		annotated, err = runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName)
 		if err != nil {
 			t.Errorf("runtime.AnnotateIncomingContext(ctx, %#v) failed with %v; want success", request, err)
 			return
@@ -393,8 +446,13 @@ func TestAnnotateIncomingContext_SupportsTimeouts(t *testing.T) {
 		if !ok {
 			t.Errorf("annotated.Deadline() = _, false; want _, true; timeout = %q", spec.timeout)
 		}
-		if got, want := deadline.Sub(time.Now()), spec.want; got-want > acceptableError || got-want < -acceptableError {
-			t.Errorf("deadline.Sub(time.Now()) = %v; want %v; with error %v; timeout= %q", got, want, acceptableError, spec.timeout)
+		if got, want := time.Until(deadline), spec.want; got-want > acceptableError || got-want < -acceptableError {
+			t.Errorf("time.Until(deadline) = %v; want %v; with error %v; timeout= %q", got, want, acceptableError, spec.timeout)
+		}
+		if m, ok := runtime.RPCMethod(annotated); !ok {
+			t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
+		} else if m != expectedRPCName {
+			t.Errorf("runtime.RPCMethod(annotated) failed with %s; want %s", m, expectedRPCName)
 		}
 	}
 }
@@ -402,11 +460,12 @@ func TestAnnotateIncomingContext_SupportsCustomAnnotators(t *testing.T) {
 	md1 := func(context.Context, *http.Request) metadata.MD { return metadata.New(map[string]string{"foo": "bar"}) }
 	md2 := func(context.Context, *http.Request) metadata.MD { return metadata.New(map[string]string{"baz": "qux"}) }
 	expected := metadata.New(map[string]string{"foo": "bar", "baz": "qux"})
+	expectedRPCName := "/example.Example/Example"
 	request, err := http.NewRequest("GET", "http://example.com", nil)
 	if err != nil {
 		t.Fatalf(`http.NewRequest("GET", "http://example.com", nil failed with %v; want success`, err)
 	}
-	annotated, err := runtime.AnnotateIncomingContext(context.Background(), runtime.NewServeMux(runtime.WithMetadata(md1), runtime.WithMetadata(md2)), request)
+	annotated, err := runtime.AnnotateIncomingContext(context.Background(), runtime.NewServeMux(runtime.WithMetadata(md1), runtime.WithMetadata(md2)), request, expectedRPCName)
 	if err != nil {
 		t.Errorf("runtime.AnnotateIncomingContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -416,5 +475,10 @@ func TestAnnotateIncomingContext_SupportsCustomAnnotators(t *testing.T) {
 		if a, ok := actual[key]; !ok || !reflect.DeepEqual(e, a) {
 			t.Errorf("metadata.MD[%s] = %v; want %v", key, a, e)
 		}
+	}
+	if m, ok := runtime.RPCMethod(annotated); !ok {
+		t.Errorf("runtime.RPCMethod(annotated) failed with no value; want %s", expectedRPCName)
+	} else if m != expectedRPCName {
+		t.Errorf("runtime.RPCMethod(annotated) failed with %s; want %s", m, expectedRPCName)
 	}
 }

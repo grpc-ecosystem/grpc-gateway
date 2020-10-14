@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
 func TestMarshalerForRequest(t *testing.T) {
@@ -21,11 +21,11 @@ func TestMarshalerForRequest(t *testing.T) {
 	r.Header.Set("Accept", "application/x-out")
 	r.Header.Set("Content-Type", "application/x-in")
 	in, out := runtime.MarshalerForRequest(mux, r)
-	if _, ok := in.(*runtime.JSONPb); !ok {
-		t.Errorf("in = %#v; want a runtime.JSONPb", in)
+	if _, ok := in.(*runtime.HTTPBodyMarshaler); !ok {
+		t.Errorf("in = %#v; want a runtime.HTTPBodyMarshaler", in)
 	}
-	if _, ok := out.(*runtime.JSONPb); !ok {
-		t.Errorf("out = %#v; want a runtime.JSONPb", in)
+	if _, ok := out.(*runtime.HTTPBodyMarshaler); !ok {
+		t.Errorf("out = %#v; want a runtime.HTTPBodyMarshaler", in)
 	}
 
 	marshalers := []dummyMarshaler{0, 1, 2}
@@ -93,7 +93,7 @@ func TestMarshalerForRequest(t *testing.T) {
 
 type dummyMarshaler int
 
-func (dummyMarshaler) ContentType() string { return "" }
+func (dummyMarshaler) ContentType(_ interface{}) string { return "" }
 func (dummyMarshaler) Marshal(interface{}) ([]byte, error) {
 	return nil, errors.New("not implemented")
 }

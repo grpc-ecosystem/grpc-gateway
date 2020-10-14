@@ -1,0 +1,51 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+package(default_visibility = ["//visibility:public"])
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "grpc_api_configuration.go",
+        "openapi_configuration.go",
+        "registry.go",
+        "services.go",
+        "types.go",
+    ],
+    importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor",
+    deps = [
+        "//internal/casing:go_default_library",
+        "//internal/descriptor/apiconfig:go_default_library",
+        "//internal/descriptor/openapiconfig:go_default_library",
+        "//internal/httprule:go_default_library",
+        "//protoc-gen-openapiv2/options:go_default_library",
+        "@com_github_ghodss_yaml//:go_default_library",
+        "@com_github_golang_glog//:go_default_library",
+        "@go_googleapis//google/api:annotations_go_proto",
+        "@org_golang_google_protobuf//encoding/protojson:go_default_library",
+        "@org_golang_google_protobuf//proto:go_default_library",
+        "@org_golang_google_protobuf//types/descriptorpb:go_default_library",
+        "@org_golang_google_protobuf//types/pluginpb:go_default_library",
+    ],
+)
+
+go_test(
+    name = "go_default_test",
+    size = "small",
+    srcs = [
+        "grpc_api_configuration_test.go",
+        "openapi_configuration_test.go",
+        "registry_test.go",
+        "services_test.go",
+        "types_test.go",
+    ],
+    embed = [":go_default_library"],
+    deps = [
+        "//internal/descriptor/openapiconfig:go_default_library",
+        "//internal/httprule:go_default_library",
+        "//protoc-gen-openapiv2/options:go_default_library",
+        "@org_golang_google_protobuf//encoding/prototext:go_default_library",
+        "@org_golang_google_protobuf//proto:go_default_library",
+        "@org_golang_google_protobuf//types/descriptorpb:go_default_library",
+        "@org_golang_google_protobuf//types/pluginpb:go_default_library",
+    ],
+)

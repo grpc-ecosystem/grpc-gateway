@@ -4,7 +4,7 @@
     <script type="application/javascript" src="bower_components/swagger-js/browser/swagger-client.min.js"></script>
     <script type="application/javascript">
       window.client = new SwaggerClient({
-        url: "http://localhost:8080/swagger/echo_service.swagger.json",
+        url: "http://localhost:8080/openapiv2/echo_service.swagger.json",
         success: function() {
           client.EchoService.Echo(
               {id: "foo"},

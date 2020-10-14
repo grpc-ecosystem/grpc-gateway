@@ -108,7 +108,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceGetResponseBody(ctx c
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -207,7 +207,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceGetResponseBodyStream
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -306,7 +306,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseBodies(ct
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -405,7 +405,7 @@ func (a *ResponseBodyServiceApiService) ResponseBodyServiceListResponseStrings(c
 		}
 		
 		if localVarHttpResponse.StatusCode == 0 {
-			var v RuntimeError
+			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()

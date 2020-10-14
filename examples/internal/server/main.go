@@ -6,8 +6,9 @@ import (
 	"net/http"
 
 	"github.com/golang/glog"
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/examplepb"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
+	standalone "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/standalone"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )
 
@@ -28,6 +29,7 @@ func Run(ctx context.Context, network, address string) error {
 	examples.RegisterEchoServiceServer(s, newEchoServer())
 	examples.RegisterFlowCombinationServer(s, newFlowCombinationServer())
 	examples.RegisterNonStandardServiceServer(s, newNonStandardServer())
+	examples.RegisterUnannotatedEchoServiceServer(s, newUnannotatedEchoServer())
 
 	abe := newABitOfEverythingServer()
 	examples.RegisterABitOfEverythingServiceServer(s, abe)
@@ -48,6 +50,7 @@ func RunInProcessGateway(ctx context.Context, addr string, opts ...runtime.Serve
 	examples.RegisterEchoServiceHandlerServer(ctx, mux, newEchoServer())
 	examples.RegisterFlowCombinationHandlerServer(ctx, mux, newFlowCombinationServer())
 	examples.RegisterNonStandardServiceHandlerServer(ctx, mux, newNonStandardServer())
+	standalone.RegisterUnannotatedEchoServiceHandlerServer(ctx, mux, newUnannotatedEchoServer())
 
 	abe := newABitOfEverythingServer()
 	examples.RegisterABitOfEverythingServiceHandlerServer(ctx, mux, abe)

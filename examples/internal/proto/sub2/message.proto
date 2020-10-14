@@ -1,6 +1,6 @@
 syntax = "proto3";
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/sub2";
-package sub2;
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2";
+package grpc.gateway.examples.internal.proto.sub2;
 
 message IdMessage {
 	string uuid = 1;

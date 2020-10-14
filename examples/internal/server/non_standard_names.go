@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/golang/glog"
-	examples "github.com/grpc-ecosystem/grpc-gateway/examples/internal/proto/examplepb"
+	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 )
 
 // Implements NonStandardServiceServer

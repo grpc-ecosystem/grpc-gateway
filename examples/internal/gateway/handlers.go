@@ -11,8 +11,8 @@ import (
 	"google.golang.org/grpc/connectivity"
 )
 
-// swaggerServer returns swagger specification files located under "/swagger/"
-func swaggerServer(dir string) http.HandlerFunc {
+// openAPIServer returns OpenAPI specification files located under "/openapiv2/"
+func openAPIServer(dir string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if !strings.HasSuffix(r.URL.Path, ".swagger.json") {
 			glog.Errorf("Not Found: %s", r.URL.Path)
@@ -21,7 +21,7 @@ func swaggerServer(dir string) http.HandlerFunc {
 		}
 
 		glog.Infof("Serving %s", r.URL.Path)
-		p := strings.TrimPrefix(r.URL.Path, "/swagger/")
+		p := strings.TrimPrefix(r.URL.Path, "/openapiv2/")
 		p = path.Join(dir, p)
 		http.ServeFile(w, r, p)
 	}

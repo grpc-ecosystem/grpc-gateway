@@ -1,8 +1,9 @@
 syntax = "proto3";
-option go_package = "examplepb";
-package grpc.gateway.examples.internal.examplepb;
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+package grpc.gateway.examples.internal.proto.examplepb;
 
 import "google/api/annotations.proto";
+import "google/api/httpbody.proto";
 import "google/protobuf/empty.proto";
 import "examples/internal/proto/examplepb/a_bit_of_everything.proto";
 import "examples/internal/proto/sub/message.proto";
@@ -20,10 +21,16 @@ service StreamService {
 			get: "/v1/example/a_bit_of_everything"
 		};
 	}
-	rpc BulkEcho(stream grpc.gateway.examples.internal.sub.StringMessage) returns (stream grpc.gateway.examples.internal.sub.StringMessage) {
+	rpc BulkEcho(stream grpc.gateway.examples.internal.proto.sub.StringMessage) returns (stream grpc.gateway.examples.internal.proto.sub.StringMessage) {
 		option (google.api.http) = {
 			post: "/v1/example/a_bit_of_everything/echo"
 			body: "*"
+		};
+	}
+
+	rpc Download(google.protobuf.Empty) returns (stream google.api.HttpBody) {
+		option (google.api.http) = {
+		  get : "/v1/example/download"
 		};
 	}
 }
