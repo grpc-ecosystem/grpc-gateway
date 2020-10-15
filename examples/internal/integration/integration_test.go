@@ -25,11 +25,11 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
+	fieldmaskpb "google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
-	"google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -62,14 +62,15 @@ func TestEchoPatch(t *testing.T) {
 
 	sent := examplepb.DynamicMessage{
 		StructField: &structpb.Struct{Fields: map[string]*structpb.Value{
-			"struct_key": {Kind: &structpb.Value_StructValue{
-				StructValue: &structpb.Struct{Fields: map[string]*structpb.Value{
-					"layered_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "struct_val"}},
-				}},
+		"struct_key": {Kind: &structpb.Value_StructValue{
+			StructValue: &structpb.Struct{Fields: map[string]*structpb.Value{
+				"layered_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "struct_val"}},
+			}},
+		}}}},
+		ValueField: &structpb.Value{Kind: &structpb.Value_StructValue{StructValue:
+			&structpb.Struct{Fields: map[string]*structpb.Value{
+				"value_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "value_struct_val"},
 			}}},
-		},
-		ValueField: &structpb.Value{Kind: &structpb.Value_StructValue{StructValue: &structpb.Struct{Fields: map[string]*structpb.Value{
-			"value_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "value_struct_val"}}}},
 		}},
 	}
 	payload, err := protojson.MarshalOptions{UseProtoNames: true}.Marshal(&sent)
