@@ -32,13 +32,12 @@ type generator struct {
 	useRequestContext  bool
 	registerFuncSuffix string
 	pathType           pathType
-	modulePath         string
 	allowPatchFeature  bool
 	standalone         bool
 }
 
 // New returns a new generator which generates grpc gateway files.
-func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, pathTypeString, modulePathString string,
+func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, pathTypeString string,
 	allowPatchFeature, standalone bool) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
@@ -87,7 +86,6 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix, p
 		useRequestContext:  useRequestContext,
 		registerFuncSuffix: registerFuncSuffix,
 		pathType:           pathType,
-		modulePath:         modulePathString,
 		allowPatchFeature:  allowPatchFeature,
 		standalone:         standalone,
 	}
@@ -112,11 +110,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 			return nil, err
 		}
 
-		name, err := g.getFilePath(file)
-		if err != nil {
-			glog.Errorf("%v: %s", err, code)
-			return nil, err
-		}
+		name := g.getFilePath(file)
 		ext := filepath.Ext(name)
 		base := strings.TrimSuffix(name, ext)
 		filename := fmt.Sprintf("%s.pb.gw.go", base)
@@ -131,25 +125,13 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 	return files, nil
 }
 
-func (g *generator) getFilePath(file *descriptor.File) (string, error) {
+func (g *generator) getFilePath(file *descriptor.File) string {
 	name := file.GetName()
-	switch {
-	case g.modulePath != "" && g.pathType != pathTypeImport:
-		return "", errors.New("cannot use module= with paths=")
-
-	case g.modulePath != "":
-		trimPath, pkgPath := g.modulePath+"/", file.GoPkg.Path+"/"
-		if !strings.HasPrefix(pkgPath, trimPath) {
-			return "", fmt.Errorf("%v: file go path does not match module prefix: %v", file.GoPkg.Path, trimPath)
-		}
-		return filepath.Join(strings.TrimPrefix(pkgPath, trimPath), filepath.Base(name)), nil
-
-	case g.pathType == pathTypeImport && file.GoPkg.Path != "":
-		return fmt.Sprintf("%s/%s", file.GoPkg.Path, filepath.Base(name)), nil
-
-	default:
-		return name, nil
+	if g.pathType == pathTypeImport && file.GoPkg.Path != "" {
+		return fmt.Sprintf("%s/%s", file.GoPkg.Path, filepath.Base(name))
 	}
+
+	return name
 }
 
 func (g *generator) generate(file *descriptor.File) (string, error) {
