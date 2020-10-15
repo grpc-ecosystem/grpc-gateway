@@ -15,8 +15,13 @@ import (
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
@@ -2607,7 +2612,7 @@ func TestSchemaOfField(t *testing.T) {
 				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
 					Name:     proto.String("wrapped_field"),
 					TypeName: proto.String(".google.protobuf.NullValue"),
-					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum(),
 				},
 			},
 			refs: make(refMap),
@@ -2714,7 +2719,7 @@ func TestSchemaOfField(t *testing.T) {
 		{
 			field: &descriptor.Field{
 				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-					Name:     proto.String("map_field_option"),
+					Name:     proto.String("map_field"), // should be called map_field_option but it's not valid map field name
 					Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
 					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
 					TypeName: proto.String(".example.Message.MapFieldEntry"),
@@ -2723,7 +2728,7 @@ func TestSchemaOfField(t *testing.T) {
 			openAPIOptions: &openapiconfig.OpenAPIOptions{
 				Field: []*openapiconfig.OpenAPIFieldOption{
 					{
-						Field:  "example.Message.map_field_option",
+						Field:  "example.Message.map_field",
 						Option: jsonSchema,
 					},
 				},
@@ -2824,30 +2829,65 @@ func TestSchemaOfField(t *testing.T) {
 		req := &pluginpb.CodeGeneratorRequest{
 			ProtoFile: []*descriptorpb.FileDescriptorProto{
 				{
+					Name:    proto.String("third_party/google.proto"),
+					Package: proto.String("google.protobuf"),
+					MessageType: []*descriptorpb.DescriptorProto{
+						protodesc.ToDescriptorProto((&structpb.Struct{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&structpb.Value{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&structpb.ListValue{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&fieldmaskpb.FieldMask{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&timestamppb.Timestamp{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&durationpb.Duration{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&wrapperspb.StringValue{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&wrapperspb.BytesValue{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&wrapperspb.Int32Value{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&wrapperspb.UInt32Value{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&wrapperspb.Int64Value{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&wrapperspb.UInt64Value{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&wrapperspb.FloatValue{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&wrapperspb.DoubleValue{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&wrapperspb.BoolValue{}).ProtoReflect().Descriptor()),
+					},
+					EnumType: []*descriptorpb.EnumDescriptorProto{
+						protodesc.ToEnumDescriptorProto(structpb.NullValue(0).Descriptor()),
+					},
+				},
+				{
 					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
 					Name:           proto.String("example.proto"),
 					Package:        proto.String("example"),
-					Dependency:     []string{},
+					Dependency:     []string{"third_party/google.proto"},
 					MessageType: []*descriptorpb.DescriptorProto{
 						{
 							Name: proto.String("Message"),
 							Field: []*descriptorpb.FieldDescriptorProto{
 								{
-									Name: proto.String("value"),
-									Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+									Name:   proto.String("value"),
+									Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+									Number: proto.Int32(1),
 								},
-								test.field.FieldDescriptorProto,
+								func() *descriptorpb.FieldDescriptorProto {
+									fd := test.field.FieldDescriptorProto
+									fd.Number = proto.Int32(2)
+									return fd
+								}(),
 							},
 							NestedType: []*descriptorpb.DescriptorProto{
 								{
 									Name:    proto.String("MapFieldEntry"),
 									Options: &descriptorpb.MessageOptions{MapEntry: proto.Bool(true)},
 									Field: []*descriptorpb.FieldDescriptorProto{
-										{},
 										{
-											Name:  proto.String("value"),
-											Label: descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-											Type:  descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+											Name:   proto.String("key"),
+											Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+											Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+											Number: proto.Int32(1),
+										},
+										{
+											Name:   proto.String("value"),
+											Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+											Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+											Number: proto.Int32(2),
 										},
 									},
 								},
@@ -2859,20 +2899,29 @@ func TestSchemaOfField(t *testing.T) {
 					},
 					EnumType: []*descriptorpb.EnumDescriptorProto{
 						{
-							Name: proto.String("Message"),
+							Name: proto.String("MessageType"),
+							Value: []*descriptorpb.EnumValueDescriptorProto{
+								{
+									Name:   proto.String("MESSAGE_TYPE_1"),
+									Number: proto.Int32(0),
+								},
+							},
 						},
 					},
 					Service: []*descriptorpb.ServiceDescriptorProto{},
 				},
 			},
 		}
-		reg.Load(req)
+		err := reg.Load(req)
+		if err != nil {
+			t.Errorf("failed to reg.Load(req): %v", err)
+		}
 
 		// set field's parent message pointer to message so field can resolve its FQFN
 		test.field.Message = &descriptor.Message{
-			DescriptorProto: req.ProtoFile[0].MessageType[0],
+			DescriptorProto: req.ProtoFile[1].MessageType[0],
 			File: &descriptor.File{
-				FileDescriptorProto: req.ProtoFile[0],
+				FileDescriptorProto: req.ProtoFile[1],
 			},
 		}
 
@@ -2886,7 +2935,7 @@ func TestSchemaOfField(t *testing.T) {
 		actual := schemaOfField(test.field, reg, refs)
 		expectedSchemaObject := test.expected
 		if e, a := expectedSchemaObject, actual; !reflect.DeepEqual(a, e) {
-			t.Errorf("Expected schemaOfField(%v) = %v, actual: %v", test.field, e, a)
+			t.Errorf("Expected schemaOfField(%v) = \n%#+v, actual: \n%#+v", test.field, e, a)
 		}
 		if !reflect.DeepEqual(refs, test.refs) {
 			t.Errorf("Expected schemaOfField(%v) to add refs %v, not %v", test.field, test.refs, refs)
@@ -3497,7 +3546,7 @@ func TestTemplateWithoutErrorDefinition(t *testing.T) {
 			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
 			Name:           proto.String("example.proto"),
 			Package:        proto.String("example"),
-			MessageType:    []*descriptorpb.DescriptorProto{msgdesc, msgdesc},
+			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
 			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
 		},
 		GoPkg: descriptor.GoPackage{
@@ -3532,7 +3581,11 @@ func TestTemplateWithoutErrorDefinition(t *testing.T) {
 		},
 	}
 	reg := descriptor.NewRegistry()
-	reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Errorf("failed to reg.Load(): %v", err)
+		return
+	}
 	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
