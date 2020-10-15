@@ -7,7 +7,6 @@ import (
 	"sync"
 	"time"
 
-
 	"github.com/golang/glog"
 	durationpb "github.com/golang/protobuf/ptypes/duration"
 	emptypb "github.com/golang/protobuf/ptypes/empty"
