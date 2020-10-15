@@ -175,7 +175,7 @@ type ABitOfEverything struct {
 	RepeatedEnumValue []NumericEnum `protobuf:"varint,28,rep,packed,name=repeated_enum_value,json=repeatedEnumValue,proto3,enum=grpc.gateway.examples.internal.proto.examplepb.NumericEnum" json:"repeated_enum_value,omitempty"`
 	// repeated numeric enum comment (This comment is overridden by the field annotation)
 	RepeatedEnumAnnotation []NumericEnum `protobuf:"varint,32,rep,packed,name=repeated_enum_annotation,json=repeatedEnumAnnotation,proto3,enum=grpc.gateway.examples.internal.proto.examplepb.NumericEnum" json:"repeated_enum_annotation,omitempty"`
-	// numeric enum comment (This comment is overridden by the field annCheckExternalNestedPathEnumotation)
+	// numeric enum comment (This comment is overridden by the field annotation)
 	EnumValueAnnotation NumericEnum `protobuf:"varint,33,opt,name=enum_value_annotation,json=enumValueAnnotation,proto3,enum=grpc.gateway.examples.internal.proto.examplepb.NumericEnum" json:"enum_value_annotation,omitempty"`
 	// repeated string comment (This comment is overridden by the field annotation)
 	RepeatedStringAnnotation []string `protobuf:"bytes,34,rep,name=repeated_string_annotation,json=repeatedStringAnnotation,proto3" json:"repeated_string_annotation,omitempty"`

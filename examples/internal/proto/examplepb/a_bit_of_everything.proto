@@ -259,7 +259,7 @@ message ABitOfEverything {
 	// repeated numeric enum comment (This comment is overridden by the field annotation)
 	repeated NumericEnum repeated_enum_annotation = 32 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {title: "Repeated numeric enum title", description: "Repeated numeric enum description."}];
 
-	// numeric enum comment (This comment is overridden by the field annCheckExternalNestedPathEnumotation)
+	// numeric enum comment (This comment is overridden by the field annotation)
 	NumericEnum enum_value_annotation = 33 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {title: "Numeric enum title", description: "Numeric enum description."}];
 
 	// repeated string comment (This comment is overridden by the field annotation)
