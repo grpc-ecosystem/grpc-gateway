@@ -107,6 +107,10 @@ func main() {
 }
 
 func parseFlags(reg *descriptor.Registry, parameter string) {
+	if parameter == "" {
+		return
+	}
+
 	for _, p := range strings.Split(parameter, ",") {
 		spec := strings.SplitN(p, "=", 2)
 		if len(spec) == 1 {
