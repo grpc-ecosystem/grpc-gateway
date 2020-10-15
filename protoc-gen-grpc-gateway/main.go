@@ -65,7 +65,7 @@ func main() {
 		// FIXME: still needed to parse request parameter and apply flags manually, see the comment above.
 		pkgMap := parseFlags(plugin.Request.GetParameter())
 
-		gen, reg := gengateway.New(*useRequestContext, *registerFuncSuffix, *pathType, *modulePath, *allowPatchFeature, *standalone)
+		gen, reg := gengateway.New(*useRequestContext, *registerFuncSuffix, *pathType, *allowPatchFeature, *standalone)
 
 		if err := applyFlags(reg, pkgMap); err != nil {
 			return err

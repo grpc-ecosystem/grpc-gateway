@@ -37,7 +37,7 @@ type generator struct {
 }
 
 // New returns a new generator which generates grpc gateway files and the registry to be used for loading files.
-func New(useRequestContext bool, registerFuncSuffix, pathTypeString, modulePathString string, allowPatchFeature, standalone bool) (gen.Generator, *descriptor.Registry) {
+func New(useRequestContext bool, registerFuncSuffix, pathTypeString string, allowPatchFeature, standalone bool) (gen.Generator, *descriptor.Registry) {
 	reg := descriptor.NewRegistry()
 
 	var imports []descriptor.GoPackage
