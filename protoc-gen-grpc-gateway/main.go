@@ -109,6 +109,10 @@ func main() {
 // parseFlags parses command line options, updates the flags, and returns a list of filenames to their path for
 // any supplied mapping arguments.
 func parseFlags(parameter string) (packageMap map[string]string) {
+	if parameter == "" {
+		return
+	}
+
 	packageMap = make(map[string]string)
 
 	for _, p := range strings.Split(parameter, ",") {

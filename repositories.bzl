@@ -124,8 +124,8 @@ def go_repositories():
     go_repository(
         name = "com_github_golang_protobuf",
         importpath = "github.com/golang/protobuf",
-        sum = "h1:+Z5KGCizgyZCbGh1KZqA0fcLLkwbsjIzS4aV2v7wJX0=",
-        version = "v1.4.2",
+        sum = "h1:JjCZWpVbqXDqFVmTfYWEVTMIYrL/NPdPSCHPJ0T/raM=",
+        version = "v1.4.3",
     )
 
     go_repository(
@@ -352,8 +352,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:fG84H9C3EXfuDlzkG+VEPDYHHExklP6scH1QZ5gQTqU=",
-        version = "v0.0.0-20201014134559-03b6142f0dc9",
+        sum = "h1:FM0/YezufKHjM3Y9gndHmhytJuCHW0bExs92Pu3LTQ0=",
+        version = "v0.0.0-20201015140912-32ed001d685c",
     )
     go_repository(
         name = "org_golang_google_grpc",
