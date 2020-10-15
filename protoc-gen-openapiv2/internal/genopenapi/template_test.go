@@ -14,11 +14,11 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/durationpb"
-	"google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -2835,7 +2835,7 @@ func TestSchemaOfField(t *testing.T) {
 						protodesc.ToDescriptorProto((&structpb.Struct{}).ProtoReflect().Descriptor()),
 						protodesc.ToDescriptorProto((&structpb.Value{}).ProtoReflect().Descriptor()),
 						protodesc.ToDescriptorProto((&structpb.ListValue{}).ProtoReflect().Descriptor()),
-						protodesc.ToDescriptorProto((&fieldmaskpb.FieldMask{}).ProtoReflect().Descriptor()),
+						protodesc.ToDescriptorProto((&field_mask.FieldMask{}).ProtoReflect().Descriptor()),
 						protodesc.ToDescriptorProto((&timestamppb.Timestamp{}).ProtoReflect().Descriptor()),
 						protodesc.ToDescriptorProto((&durationpb.Duration{}).ProtoReflect().Descriptor()),
 						protodesc.ToDescriptorProto((&wrapperspb.StringValue{}).ProtoReflect().Descriptor()),
