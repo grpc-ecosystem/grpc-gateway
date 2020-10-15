@@ -1,16 +1,14 @@
 package gengateway
 
 import (
-	"fmt"
+	"errors"
 	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
-	"google.golang.org/protobuf/types/pluginpb"
 )
 
 func newExampleFileDescriptor() *descriptor.File {
@@ -103,15 +101,11 @@ func TestGenerateServiceWithoutBindings(t *testing.T) {
 
 func TestGenerateOutputPath(t *testing.T) {
 	cases := []struct {
-		file       *descriptor.File
-		pathType   pathType
-		modulePath string
-
-		// the path that function Generate should output
-		expectedPath string
-		// the path after protogen has remove the module prefix
-		expectedFinalPath string
-		expectedError     bool
+		file          *descriptor.File
+		pathType      pathType
+		modulePath    string
+		expected      string
+		expectedError error
 	}{
 		{
 			file: newExampleFileDescriptorWithGoPkg(
@@ -120,8 +114,7 @@ func TestGenerateOutputPath(t *testing.T) {
 					Name: "example_pb",
 				},
 			),
-			expectedPath:      "example.com/path/to/example",
-			expectedFinalPath: "example.com/path/to/example",
+			expected: "example.com/path/to/example",
 		},
 		{
 			file: newExampleFileDescriptorWithGoPkg(
@@ -130,8 +123,7 @@ func TestGenerateOutputPath(t *testing.T) {
 					Name: "example_pb",
 				},
 			),
-			expectedPath:      "example",
-			expectedFinalPath: "example",
+			expected: "example",
 		},
 		{
 			file: newExampleFileDescriptorWithGoPkg(
@@ -141,9 +133,7 @@ func TestGenerateOutputPath(t *testing.T) {
 				},
 			),
 			pathType: pathTypeSourceRelative,
-
-			expectedPath:      ".",
-			expectedFinalPath: ".",
+			expected: ".",
 		},
 		{
 			file: newExampleFileDescriptorWithGoPkg(
@@ -153,9 +143,7 @@ func TestGenerateOutputPath(t *testing.T) {
 				},
 			),
 			pathType: pathTypeSourceRelative,
-
-			expectedPath:      ".",
-			expectedFinalPath: ".",
+			expected: ".",
 		},
 		{
 			file: newExampleFileDescriptorWithGoPkg(
@@ -165,9 +153,7 @@ func TestGenerateOutputPath(t *testing.T) {
 				},
 			),
 			modulePath: "example.com/path/root",
-
-			expectedPath:      "example.com/path/root",
-			expectedFinalPath: ".",
+			expected:   ".",
 		},
 		{
 			file: newExampleFileDescriptorWithGoPkg(
@@ -177,9 +163,7 @@ func TestGenerateOutputPath(t *testing.T) {
 				},
 			),
 			modulePath: "example.com/path/to",
-
-			expectedPath:      "example.com/path/to/example",
-			expectedFinalPath: "example",
+			expected:   "example",
 		},
 		{
 			file: newExampleFileDescriptorWithGoPkg(
@@ -189,9 +173,7 @@ func TestGenerateOutputPath(t *testing.T) {
 				},
 			),
 			modulePath: "example.com/path/to",
-
-			expectedPath:      "example.com/path/to/example/with/many/nested/paths",
-			expectedFinalPath: "example/with/many/nested/paths",
+			expected:   "example/with/many/nested/paths",
 		},
 
 		// Error cases
@@ -204,7 +186,7 @@ func TestGenerateOutputPath(t *testing.T) {
 			),
 			modulePath:    "example.com/path/root",
 			pathType:      pathTypeSourceRelative, // Not allowed
-			expectedError: true,
+			expectedError: errors.New("cannot use module= with paths="),
 		},
 		{
 			file: newExampleFileDescriptorWithGoPkg(
@@ -213,77 +195,50 @@ func TestGenerateOutputPath(t *testing.T) {
 					Name: "example_pb",
 				},
 			),
-			modulePath:    "example.com/path/root", // Not a prefix of path
-			expectedError: true,
+			modulePath:    "example.com/path/root",
+			expectedError: errors.New("example.com/path/rootextra: file go path does not match module prefix: example.com/path/root/"),
 		},
 	}
 
-	for i, c := range cases {
-		t.Run(fmt.Sprintf("case %d", i), func(t *testing.T) {
-			g := &generator{
-				pathType: c.pathType,
+	for _, c := range cases {
+		g := &generator{
+			pathType:   c.pathType,
+			modulePath: c.modulePath,
+		}
+
+		file := c.file
+		gots, err := g.Generate([]*descriptor.File{crossLinkFixture(file)})
+
+		// If we expect an error response, check it matches what we want
+		if c.expectedError != nil {
+			if err == nil || err.Error() != c.expectedError.Error() {
+				t.Errorf("Generate(%#v) failed with %v; wants error of: %v", file, err, c.expectedError)
 			}
+			return
+		}
 
-			file := c.file
-			gots, err := g.Generate([]*descriptor.File{crossLinkFixture(file)})
+		// Handle case where we don't expect an error
+		if err != nil {
+			t.Errorf("Generate(%#v) failed with %v; wants success", file, err)
+			return
+		}
 
-			// We don't expect an error during generation
-			if err != nil {
-				t.Errorf("Generate(%#v) failed with %v; wants success", file, err)
-				return
-			}
+		if len(gots) != 1 {
+			t.Errorf("Generate(%#v) failed; expects on result got %d", file, len(gots))
+			return
+		}
 
-			if len(gots) != 1 {
-				t.Errorf("Generate(%#v) failed; expects one result, got %d", file, len(gots))
-				return
-			}
+		got := gots[0]
+		if got.Name == nil {
+			t.Errorf("Generate(%#v) failed; expects non-nil Name(%v)", file, got.Name)
+			return
+		}
 
-			got := gots[0]
-			if got.Name == nil {
-				t.Errorf("Generate(%#v) failed; expects non-nil Name(%v)", file, got.Name)
-				return
-			}
-
-			gotPath := filepath.Dir(*got.Name)
-			if gotPath != c.expectedPath && !c.expectedError {
-				t.Errorf("Generate(%#v) failed; got path: %s expected path: %s", file, gotPath, c.expectedPath)
-				return
-			}
-
-			// We now use codegen to verify how it optionally removes the module prefix
-
-			reqParam := ""
-			if c.modulePath != "" {
-				reqParam = "module=" + c.modulePath
-			}
-			req := &pluginpb.CodeGeneratorRequest{Parameter: &reqParam}
-			plugin, err := protogen.Options{}.New(req)
-			if err != nil {
-				t.Errorf("Unexpected error during plugin creation: %v", err)
-			}
-
-			genFile := plugin.NewGeneratedFile(got.GetName(), protogen.GoImportPath(got.GoPkg.Path))
-			_, _ = genFile.Write([]byte(got.GetContent()))
-			resp := plugin.Response()
-
-			if !c.expectedError && resp.GetError() != "" {
-				t.Errorf("Unexpected error in protogen response: %v", resp.GetError())
-				return
-			}
-
-			if c.expectedError {
-				if resp.GetError() == "" {
-					t.Error("Expected an non-null error in protogen response")
-				}
-				return
-			}
-
-			finalName := resp.File[0].GetName()
-			gotPath = filepath.Dir(finalName)
-			if gotPath != c.expectedFinalPath {
-				t.Errorf("After protogen, got path: %s expected path: %s", gotPath, c.expectedFinalPath)
-				return
-			}
-		})
+		gotPath := filepath.Dir(*got.Name)
+		expectedPath := c.expected
+		if gotPath != expectedPath {
+			t.Errorf("Generate(%#v) failed; got path: %s expected path: %s", file, gotPath, expectedPath)
+			return
+		}
 	}
 }

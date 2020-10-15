@@ -28,7 +28,7 @@ var (
 	allowDeleteBody            = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
 	grpcAPIConfiguration       = flag.String("grpc_api_configuration", "", "path to gRPC API Configuration in YAML format")
 	pathType                   = flag.String("paths", "", "specifies how the paths of generated files are structured")
-	_                          = flag.String("module", "", "specifies a module prefix that will be stripped from the go package to determine the output directory")
+	modulePath                 = flag.String("module", "", "specifies a module prefix that will be stripped from the go package to determine the output directory")
 	allowRepeatedFieldsInBody  = flag.Bool("allow_repeated_fields_in_body", false, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option")
 	repeatedPathParamSeparator = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`.")
 	allowPatchFeature          = flag.Bool("allow_patch_feature", true, "determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).")
@@ -55,6 +55,8 @@ func main() {
 		os.Exit(0)
 	}
 
+	reg := descriptor.NewRegistry()
+
 	protogen.Options{
 		// FIXME: ParamFunc is not enough at this point because it does not receive all params.
 		//        Some are swallowed by protogen like "paths".
@@ -63,13 +65,12 @@ func main() {
 		ParamFunc: flag.CommandLine.Set,
 	}.Run(func(plugin *protogen.Plugin) error {
 		// FIXME: still needed to parse request parameter and apply flags manually, see the comment above.
-		pkgMap := parseFlags(plugin.Request.GetParameter())
-
-		gen, reg := gengateway.New(*useRequestContext, *registerFuncSuffix, *pathType, *allowPatchFeature, *standalone)
-
-		if err := applyFlags(reg, pkgMap); err != nil {
+		parseFlags(reg, plugin.Request.GetParameter())
+		if err := applyFlags(reg); err != nil {
 			return err
 		}
+
+		gen := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *pathType, *modulePath, *allowPatchFeature, *standalone)
 
 		glog.V(1).Infof("Parsing code generator request")
 
@@ -106,14 +107,10 @@ func main() {
 	})
 }
 
-// parseFlags parses command line options, updates the flags, and returns a list of filenames to their path for
-// any supplied mapping arguments.
-func parseFlags(parameter string) (packageMap map[string]string) {
+func parseFlags(reg *descriptor.Registry, parameter string) {
 	if parameter == "" {
 		return
 	}
-
-	packageMap = make(map[string]string)
 
 	for _, p := range strings.Split(parameter, ",") {
 		spec := strings.SplitN(p, "=", 2)
@@ -127,22 +124,16 @@ func parseFlags(parameter string) (packageMap map[string]string) {
 		name, value := spec[0], spec[1]
 
 		if strings.HasPrefix(name, "M") {
-			packageMap[name[1:]] = value
+			reg.AddPkgMap(name[1:], value)
 			continue
 		}
 		if err := flag.CommandLine.Set(name, value); err != nil {
 			glog.Fatalf("Cannot set flag %s", p)
 		}
 	}
-
-	return packageMap
 }
 
-func applyFlags(reg *descriptor.Registry, packageMap map[string]string) error {
-	for k, v := range packageMap {
-		reg.AddPkgMap(k, v)
-	}
-
+func applyFlags(reg *descriptor.Registry) error {
 	if *grpcAPIConfiguration != "" {
 		if err := reg.LoadGrpcAPIServiceFromYAML(*grpcAPIConfiguration); err != nil {
 			return err
