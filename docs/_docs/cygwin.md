@@ -35,9 +35,10 @@ From an elevated cmd.exe prompt set the GOPATH variable in Windows and add the `
 
 Then `go get -u -v` the following packages:
 
-    go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-    go get -u -v github.com/grpc-ecosystem/grpc-gateway/protoc-gen-openapiv2
-    go get -u -v github.com/golang/protobuf/protoc-gen-go
+    go get -u -v github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+    go get -u -v github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
+    go get -u -v google.golang.org/protobuf/cmd/protoc-gen-go
+    go get -u -v google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
 This will probably fail with a similar output to this:
 
@@ -45,7 +46,7 @@ This will probably fail with a similar output to this:
     # cd .; git clone https://github.com/grpc-ecosystem/grpc-gateway C:\path\to\your\cygwin\home\user\go\src\github.com\grpc-ecosystem\grpc-gateway
     Cloning into 'C:\path\to\your\cygwin\home\user\go\src\github.com\grpc-ecosystem\grpc-gateway'...
     fatal: Invalid path '/home/user/go/C:\path\to\your\cygwin\home\user\go\src\github.com\grpc-ecosystem\grpc-gateway': No such file or directory
-    package github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway: exit status 128
+    package github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway: exit status 128
 
 To fix this you need to run the `go get -u -v` commands and look for all lines starting with `# cd .;`.
 Copy and paste these lines into your shell and change the clone destination directories.
@@ -63,7 +64,7 @@ Follow the [instructions](https://github.com/grpc-ecosystem/grpc-gateway#usage) 
 
 Adjust steps 3, 5 and 7 like this. protoc expects native Windows paths.
 
-    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --go_out=plugins=grpc:. ./path/to/your_service.proto
+    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --go_out=. --go-grpc_out=. ./path/to/your_service.proto
     protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --grpc-gateway_out=logtostderr=true:. ./path/to/your_service.proto
     protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --openapiv2_out=logtostderr=true:. ./path/to/your_service.proto
 

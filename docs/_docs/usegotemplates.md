@@ -28,7 +28,7 @@ Example of a bash script with the `use_go_templates` flag set to true:
 
 ```shell
 $ protoc -I. \
-    --go_out=plugins=grpc:. \
+    --go_out=. --go-grpc_out=. \
     --grpc-gateway_out=logtostderr=true:. \
     --openapiv2_out=logtostderr=true,use_go_templates=true:. \
     path/to/my/proto/v1/myproto.proto 

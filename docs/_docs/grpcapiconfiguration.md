@@ -66,7 +66,10 @@ The following is equivalent to the basic [usage example](usage.html) but without
 3. Generate gRPC stub as before
 
     ```sh
-    protoc -I. --go_out=plugins=grpc,paths=source_relative:./gen/go/ your/service/v1/your_service.proto
+    protoc -I . \
+      --go_out=paths=source_relative:./gen/go/ \
+      --go-grpc_out=paths=source_relative:./gen/go/ \
+      your/service/v1/your_service.proto
     ```
 
   It will generate a stub file with path `./gen/go/your/service/v1/your_service.pb.go`.
@@ -77,7 +80,7 @@ The following is equivalent to the basic [usage example](usage.html) but without
     the `your_service.yaml` in addition to the .proto file:
 
     ```sh
-    protoc -I. --grpc-gateway_out=logtostderr=true,paths=source_relative,grpc_api_configuration=path/to/your_service.yaml:./gen/go \
+    protoc -I . --grpc-gateway_out=logtostderr=true,paths=source_relative,grpc_api_configuration=path/to/your_service.yaml:./gen/go \
       your/service/v1/your_service.proto
     ```
 
@@ -103,7 +106,7 @@ The following is equivalent to the basic [usage example](usage.html) but without
     For an example of an OpenAPI configuration file, see [unannotated_echo_service.swagger.yaml](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/unannotated_echo_service.swagger.yaml), which adds OpenAPI options to [unannotated_echo_service.proto](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/unannotated_echo_service.proto).
 
     ```sh
-    protoc -I. --swagger_out=grpc_api_configuration=path/to/your_service.yaml:./gen/go \
+    protoc -I . --swagger_out=grpc_api_configuration=path/to/your_service.yaml:./gen/go \
       your/service/v1/your_service.proto
     ```
     
