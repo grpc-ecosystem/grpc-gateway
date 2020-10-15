@@ -13,9 +13,9 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
-	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
 )
 
 func BenchmarkPopulateQueryParameters(b *testing.B) {
@@ -95,7 +95,10 @@ func TestPopulateParameters(t *testing.T) {
 	durationPb := ptypes.DurationProto(durationT)
 
 	fieldmaskStr := "float_value,double_value"
-	fieldmaskPb := &field_mask.FieldMask{Paths: []string{"float_value", "double_value"}}
+	fieldmaskPb, err := fieldmaskpb.New(&examplepb.Proto3Message{}, "float_value", "double_value")
+	if err != nil {
+		t.Fatalf("failed to initiate field mask: %v", err)
+	}
 
 	for i, spec := range []struct {
 		values  url.Values

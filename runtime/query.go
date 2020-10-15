@@ -13,11 +13,11 @@ import (
 	"github.com/golang/protobuf/ptypes"
 	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
-	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
 )
 
 var valuesKeyRegexp = regexp.MustCompile(`^(.*)\[(.*)\]$`)
@@ -320,7 +320,7 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		}
 		msg = &wrapperspb.BytesValue{Value: v}
 	case "google.protobuf.FieldMask":
-		fm := &field_mask.FieldMask{}
+		fm := &fieldmaskpb.FieldMask{}
 		fm.Paths = append(fm.Paths, strings.Split(value, ",")...)
 		msg = fm
 	default:

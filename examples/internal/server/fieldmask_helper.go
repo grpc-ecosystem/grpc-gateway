@@ -3,12 +3,12 @@ package server
 import (
 	"strings"
 
-	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
 )
 
-func applyFieldMask(patchee, patcher proto.Message, mask *field_mask.FieldMask) {
+func applyFieldMask(patchee, patcher proto.Message, mask *fieldmaskpb.FieldMask) {
 	if mask == nil {
 		return
 	}

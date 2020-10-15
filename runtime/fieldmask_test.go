@@ -8,13 +8,13 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
-	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
 )
 
-func newFieldMask(paths ...string) *field_mask.FieldMask {
-	return &field_mask.FieldMask{Paths: paths}
+func newFieldMask(paths ...string) *fieldmaskpb.FieldMask {
+	return &fieldmaskpb.FieldMask{Paths: paths}
 }
 
 func TestFieldMaskFromRequestBody(t *testing.T) {
@@ -22,7 +22,7 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 		name     string
 		input    string
 		msg      proto.Message
-		expected *field_mask.FieldMask
+		expected *fieldmaskpb.FieldMask
 	}{
 		{
 			name:     "empty",
@@ -178,12 +178,12 @@ func TestFieldMaskRepeatedFieldsLast(t *testing.T) {
 	for _, tc := range []struct {
 		name     string
 		input    string
-		expected *field_mask.FieldMask
+		expected *fieldmaskpb.FieldMask
 	}{
 		{
 			name:  "map",
 			input: `{"mapped_string_value": {"a": "x"}, "uuid":"1234"}`,
-			expected: &field_mask.FieldMask{
+			expected: &fieldmaskpb.FieldMask{
 				Paths: []string{
 					"uuid",
 					"mapped_string_value",
@@ -206,7 +206,7 @@ func TestFieldMaskRepeatedFieldsLast(t *testing.T) {
 				],
 				"uuid":"1234"
 			}`,
-			expected: &field_mask.FieldMask{
+			expected: &fieldmaskpb.FieldMask{
 				Paths: []string{
 					"uuid",
 					"nested",
@@ -248,7 +248,7 @@ func TestFieldMaskErrors(t *testing.T) {
 }
 
 // avoid compiler optimising benchmark away
-var result *field_mask.FieldMask
+var result *fieldmaskpb.FieldMask
 
 func BenchmarkABEFieldMaskFromRequestBody(b *testing.B) {
 	input := `{` +
@@ -300,7 +300,7 @@ func BenchmarkABEFieldMaskFromRequestBody(b *testing.B) {
 		`								 "amount": 10},` +
 		`"int64_override_type":			12345` +
 		`}`
-	var r *field_mask.FieldMask
+	var r *fieldmaskpb.FieldMask
 	var err error
 	for i := 0; i < b.N; i++ {
 		r, err = FieldMaskFromRequestBody(bytes.NewReader([]byte(input)), nil)
@@ -319,7 +319,7 @@ func BenchmarkNonStandardFieldMaskFromRequestBody(b *testing.B) {
 		`"langIdent":	"bar",` +
 		`"STATUS": 		"baz"` +
 		`}`
-	var r *field_mask.FieldMask
+	var r *fieldmaskpb.FieldMask
 	var err error
 	for i := 0; i < b.N; i++ {
 		r, err = FieldMaskFromRequestBody(bytes.NewReader([]byte(input)), nil)
