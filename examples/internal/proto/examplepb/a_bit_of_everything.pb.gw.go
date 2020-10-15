@@ -2203,6 +2203,24 @@ func local_request_ABitOfEverythingService_CheckExternalNestedPathEnum_0(ctx con
 
 }
 
+func request_ABitOfEverythingService_CheckStatus_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq empty.Empty
+	var metadata runtime.ServerMetadata
+
+	msg, err := client.CheckStatus(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ABitOfEverythingService_CheckStatus_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq empty.Empty
+	var metadata runtime.ServerMetadata
+
+	msg, err := server.CheckStatus(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_CamelCaseServiceName_Empty_0(ctx context.Context, marshaler runtime.Marshaler, client CamelCaseServiceNameClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq empty.Empty
 	var metadata runtime.ServerMetadata
@@ -2802,6 +2820,29 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 
 	})
 
+	mux.Handle("GET", pattern_ABitOfEverythingService_CheckStatus_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CheckStatus")
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ABitOfEverythingService_CheckStatus_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ABitOfEverythingService_CheckStatus_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -3375,6 +3416,26 @@ func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runt
 
 	})
 
+	mux.Handle("GET", pattern_ABitOfEverythingService_CheckStatus_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CheckStatus")
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ABitOfEverythingService_CheckStatus_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ABitOfEverythingService_CheckStatus_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -3428,6 +3489,8 @@ var (
 	pattern_ABitOfEverythingService_CheckExternalPathEnum_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"v2", "value"}, "check"))
 
 	pattern_ABitOfEverythingService_CheckExternalNestedPathEnum_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"v2", "value"}, "check"))
+
+	pattern_ABitOfEverythingService_CheckStatus_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "checkStatus"}, ""))
 )
 
 var (
@@ -3480,6 +3543,8 @@ var (
 	forward_ABitOfEverythingService_CheckExternalPathEnum_0 = runtime.ForwardResponseMessage
 
 	forward_ABitOfEverythingService_CheckExternalNestedPathEnum_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_CheckStatus_0 = runtime.ForwardResponseMessage
 )
 
 // RegisterCamelCaseServiceNameHandlerFromEndpoint is same as RegisterCamelCaseServiceNameHandler but

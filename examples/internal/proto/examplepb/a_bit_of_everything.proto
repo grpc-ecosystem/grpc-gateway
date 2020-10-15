@@ -11,6 +11,7 @@ import "examples/internal/proto/pathenum/path_enum.proto";
 import "examples/internal/proto/sub/message.proto";
 import "examples/internal/proto/sub2/message.proto";
 import "google/protobuf/timestamp.proto";
+import "google/rpc/status.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
@@ -258,7 +259,7 @@ message ABitOfEverything {
 	// repeated numeric enum comment (This comment is overridden by the field annotation)
 	repeated NumericEnum repeated_enum_annotation = 32 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {title: "Repeated numeric enum title", description: "Repeated numeric enum description."}];
 
-	// numeric enum comment (This comment is overridden by the field annotation)
+	// numeric enum comment (This comment is overridden by the field annCheckExternalNestedPathEnumotation)
 	NumericEnum enum_value_annotation = 33 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {title: "Numeric enum title", description: "Numeric enum description."}];
 
 	// repeated string comment (This comment is overridden by the field annotation)
@@ -296,6 +297,10 @@ message ABitOfEverythingRepeated {
 	repeated sfixed64 path_repeated_sfixed64_value = 14;
 	repeated sint32 path_repeated_sint32_value = 15;
 	repeated sint64 path_repeated_sint64_value = 16;
+}
+
+message CheckStatusResponse {
+	google.rpc.Status status = 1;
 }
 
 message Body {
@@ -592,6 +597,12 @@ service ABitOfEverythingService {
 	rpc CheckExternalNestedPathEnum(pathenum.MessageWithNestedPathEnum) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
 			get: "/v2/{value}:check"
+		};
+	}
+
+	rpc CheckStatus(google.protobuf.Empty) returns (CheckStatusResponse) {
+		option (google.api.http) = {
+			get: "/v1/example/checkStatus"
 		};
 	}
 }
