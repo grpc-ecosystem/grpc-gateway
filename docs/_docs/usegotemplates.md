@@ -15,8 +15,13 @@ as:
 ## How to use it
 
 By default this function is turned off, so if you want to use it you
-have to set the `use_go_templates` flag to true inside of the
-`openapiv2_out` flag.
+have to add the `use_go_templates` option:
+
+```shell
+--openapiv2_out . --openapiv2_opt use_go_templates=true
+```
+
+or:
 
 ```shell
 --openapiv2_out=use_go_templates=true:.
@@ -28,9 +33,11 @@ Example of a bash script with the `use_go_templates` flag set to true:
 
 ```shell
 $ protoc -I. \
-    --go_out=plugins=grpc:. \
-    --grpc-gateway_out=logtostderr=true:. \
-    --openapiv2_out=logtostderr=true,use_go_templates=true:. \
+    --go_out . --go-grpc_out . \
+    --grpc-gateway_out . --grpc-gateway_opt logtostderr=true \
+    --openapiv2_out . \
+    --openapiv2_opt logtostderr=true \
+    --openapiv2_opt use_go_templates=true \
     path/to/my/proto/v1/myproto.proto 
 ```
 
