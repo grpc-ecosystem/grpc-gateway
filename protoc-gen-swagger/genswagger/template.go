@@ -1500,13 +1500,7 @@ func validateDefaultValueType(headerType string, defaultValue string) error {
 }
 
 func isQuotedString(s string) bool {
-	if !(strings.HasPrefix(s, "\"")) {
-		return false
-	}
-	if !(strings.HasSuffix(s, "\"")) {
-		return false
-	}
-	return true
+	return len(s) >= 2 && s[0] == `"` && s[len(s)-1] == `"`
 }
 
 func isJSONNumber(s string, t string) error {
