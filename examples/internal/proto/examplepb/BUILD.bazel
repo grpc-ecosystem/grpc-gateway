@@ -67,6 +67,7 @@ proto_library(
         "@com_google_protobuf//:wrappers_proto",
         "@go_googleapis//google/api:annotations_proto",
         "@go_googleapis//google/api:httpbody_proto",
+        "@go_googleapis//google/rpc:status_proto",
     ],
 )
 
@@ -100,6 +101,7 @@ go_proto_library(
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",  # keep
         "@go_googleapis//google/api:annotations_go_proto",
         "@go_googleapis//google/api:httpbody_go_proto",
+        "@go_googleapis//google/rpc:status_go_proto",
         "@org_golang_google_protobuf//proto:go_default_library",  # keep
     ],
 )

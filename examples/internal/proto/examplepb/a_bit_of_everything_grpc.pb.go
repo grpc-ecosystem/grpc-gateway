@@ -56,6 +56,7 @@ type ABitOfEverythingServiceClient interface {
 	OverwriteResponseContentType(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*wrappers.StringValue, error)
 	CheckExternalPathEnum(ctx context.Context, in *pathenum.MessageWithPathEnum, opts ...grpc.CallOption) (*empty.Empty, error)
 	CheckExternalNestedPathEnum(ctx context.Context, in *pathenum.MessageWithNestedPathEnum, opts ...grpc.CallOption) (*empty.Empty, error)
+	CheckStatus(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*CheckStatusResponse, error)
 }
 
 type aBitOfEverythingServiceClient struct {
@@ -264,6 +265,15 @@ func (c *aBitOfEverythingServiceClient) CheckExternalNestedPathEnum(ctx context.
 	return out, nil
 }
 
+func (c *aBitOfEverythingServiceClient) CheckStatus(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*CheckStatusResponse, error) {
+	out := new(CheckStatusResponse)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CheckStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ABitOfEverythingServiceServer is the server API for ABitOfEverythingService service.
 // All implementations should embed UnimplementedABitOfEverythingServiceServer
 // for forward compatibility
@@ -301,6 +311,7 @@ type ABitOfEverythingServiceServer interface {
 	OverwriteResponseContentType(context.Context, *empty.Empty) (*wrappers.StringValue, error)
 	CheckExternalPathEnum(context.Context, *pathenum.MessageWithPathEnum) (*empty.Empty, error)
 	CheckExternalNestedPathEnum(context.Context, *pathenum.MessageWithNestedPathEnum) (*empty.Empty, error)
+	CheckStatus(context.Context, *empty.Empty) (*CheckStatusResponse, error)
 }
 
 // UnimplementedABitOfEverythingServiceServer should be embedded to have forward compatible implementations.
@@ -372,6 +383,9 @@ func (UnimplementedABitOfEverythingServiceServer) CheckExternalPathEnum(context.
 }
 func (UnimplementedABitOfEverythingServiceServer) CheckExternalNestedPathEnum(context.Context, *pathenum.MessageWithNestedPathEnum) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckExternalNestedPathEnum not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) CheckStatus(context.Context, *empty.Empty) (*CheckStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckStatus not implemented")
 }
 
 // UnsafeABitOfEverythingServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -781,6 +795,24 @@ func _ABitOfEverythingService_CheckExternalNestedPathEnum_Handler(srv interface{
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ABitOfEverythingService_CheckStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).CheckStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CheckStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).CheckStatus(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _ABitOfEverythingService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService",
 	HandlerType: (*ABitOfEverythingServiceServer)(nil),
@@ -872,6 +904,10 @@ var _ABitOfEverythingService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckExternalNestedPathEnum",
 			Handler:    _ABitOfEverythingService_CheckExternalNestedPathEnum_Handler,
+		},
+		{
+			MethodName: "CheckStatus",
+			Handler:    _ABitOfEverythingService_CheckStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
