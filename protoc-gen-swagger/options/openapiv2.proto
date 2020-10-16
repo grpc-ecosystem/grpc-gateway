@@ -227,6 +227,8 @@ message Response {
   // If `Schema` is not provided, it means there is no content to the response.
   Schema schema = 2;
   // `Headers` A list of headers that are sent with the response.
+  // `Header` name is expected to be a string in the canonical format of the MIME header key
+  // See: https://golang.org/pkg/net/textproto/#CanonicalMIMEHeaderKey
   map<string, Header> headers = 3;
   // `Examples` gives per-mimetype response examples.
   // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#example-object

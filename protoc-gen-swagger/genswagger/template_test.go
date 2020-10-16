@@ -1194,7 +1194,8 @@ func TestValidateHeaderType(t *testing.T) {
 		expectedError error
 	}
 	tests := []test{
-		{"string",
+		{
+			"string",
 			nil,
 		},
 		{
@@ -1285,8 +1286,13 @@ func TestValidateDefaultValueType(t *testing.T) {
 		},
 		{
 			"number",
+			"nan",
+			errors.New("the provided number \"nan\" is not a valid JSON number"),
+		},
+		{
+			"number",
 			"NaN",
-			nil,
+			errors.New("the provided number \"nan\" is not a valid JSON number"),
 		},
 		{
 			"number",
@@ -1296,12 +1302,22 @@ func TestValidateDefaultValueType(t *testing.T) {
 		{
 			"number",
 			"inf",
-			nil,
+			errors.New("the provided number \"inf\" is not a valid JSON number"),
 		},
 		{
 			"number",
 			"infinity",
-			nil,
+			errors.New("the provided number \"infinity\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"Inf",
+			errors.New("the provided number \"inf\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"Infinity",
+			errors.New("the provided number \"infinity\" is not a valid JSON number"),
 		},
 		{
 			"number",
@@ -1468,25 +1484,25 @@ func TestApplyTemplateHeaders(t *testing.T) {
 	}
 	if want, is, name := []swaggerHeadersObject{
 		{
-			"string": swaggerHeaderObject{
+			"String": swaggerHeaderObject{
 				Description: "string header description",
 				Type:        "string",
 				Format:      "uuid",
 				Pattern:     "",
 			},
-			"boolean": swaggerHeaderObject{
+			"Boolean": swaggerHeaderObject{
 				Description: "boolean header description",
 				Type:        "boolean",
 				Default:     json.RawMessage("true"),
 				Pattern:     "^true|false$",
 			},
-			"integer": swaggerHeaderObject{
+			"Integer": swaggerHeaderObject{
 				Description: "integer header description",
 				Type:        "integer",
 				Default:     json.RawMessage("0"),
 				Pattern:     "^[0-9]$",
 			},
-			"number": swaggerHeaderObject{
+			"Number": swaggerHeaderObject{
 				Description: "number header description",
 				Type:        "number",
 				Default:     json.RawMessage("1.2"),

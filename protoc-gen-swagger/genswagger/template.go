@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/textproto"
 	"os"
 	"reflect"
 	"regexp"
@@ -83,10 +84,6 @@ var wktSchemas = map[string]schemaCore{
 		Type: "string",
 	},
 }
-
-var regBool = `^true|false$`
-
-var regString = `^"\w+"$`
 
 func listEnumNames(enum *descriptor.Enum) (names []string) {
 	for _, value := range enum.GetValue() {
@@ -1460,6 +1457,9 @@ func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error
 }
 
 func validateHeaderType(headerType string) error {
+	// The type of the object. The value MUST be one of "string", "number", "integer", "boolean", or "array"
+	// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#headerObject
+	// Note: currently not implementing array as we are only implementing this in the operation response context
 	switch headerType {
 	case
 		"string",
@@ -1475,14 +1475,14 @@ func validateDefaultValueType(headerType string, defaultValue string) error {
 	switch headerType {
 	case
 		"string":
-		if !(isString(defaultValue)) {
+		if !(isQuotedString(defaultValue)) {
 			return fmt.Errorf("the provided default value %q does not match provider type %q, or is not properly quoted with escaped quotations", defaultValue, headerType)
 		}
 	case
 		"number":
-		_, err := strconv.ParseFloat(defaultValue, 64)
+		err := isJSONNumber(strings.ToLower(defaultValue), headerType)
 		if err != nil {
-			return fmt.Errorf("the provided default value %q does not match provider type %q", defaultValue, headerType)
+			return err
 		}
 	case
 		"integer":
@@ -1499,22 +1499,44 @@ func validateDefaultValueType(headerType string, defaultValue string) error {
 	return nil
 }
 
-func isString(s string) bool {
-	var digitCheck = regexp.MustCompile(regString)
-	return digitCheck.MatchString(s)
+func isQuotedString(s string) bool {
+	if !(strings.HasPrefix(s, "\"")) {
+		return false
+	}
+	if !(strings.HasSuffix(s, "\"")) {
+		return false
+	}
+	return true
+}
+
+func isJSONNumber(s string, t string) error {
+	// Numeric values that cannot be represented as sequences of digits (such as Infinity and NaN) are not permitted.
+	// See: https://tools.ietf.org/html/rfc4627#section-2.4
+	switch s {
+	case
+		"nan",
+		"inf",
+		"infinity":
+		return fmt.Errorf("the provided number %q is not a valid JSON number", s)
+	}
+	_, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return fmt.Errorf("the provided default value %q does not match provider type %q", s, t)
+	}
+	return nil
 }
 
 func isBool(s string) bool {
-	//Unable to use strconv.ParseBool because it returns truthy values https://golang.org/pkg/strconv/#example_ParseBool
-	// per https://swagger.io/docs/specification/data-models/data-types/#boolean
+	// Unable to use strconv.ParseBool because it returns truthy values https://golang.org/pkg/strconv/#example_ParseBool
+	// per https://swagger.io/specification/v2/#data-types
 	// type: boolean represents two values: true and false. Note that truthy and falsy values such as "true", "", 0 or null are not considered boolean values.
-	var digitCheck = regexp.MustCompile(regBool)
-	return digitCheck.MatchString(s)
+	return s == "true" || s == "false"
 }
 
 func processHeaders(inputHdrs map[string]*swagger_options.Header) (swaggerHeadersObject, error) {
 	hdrs := map[string]swaggerHeaderObject{}
 	for k, v := range inputHdrs {
+		header := textproto.CanonicalMIMEHeaderKey(k)
 		ret := swaggerHeaderObject{
 			Description: v.Description,
 			Format:      v.Format,
@@ -1525,7 +1547,6 @@ func processHeaders(inputHdrs map[string]*swagger_options.Header) (swaggerHeader
 			return nil, err
 		}
 		ret.Type = v.Type
-
 		if v.Default != "" {
 			err := validateDefaultValueType(v.Type, v.Default)
 			if err != nil {
@@ -1533,11 +1554,8 @@ func processHeaders(inputHdrs map[string]*swagger_options.Header) (swaggerHeader
 			}
 			ret.Default = json.RawMessage(v.Default)
 		}
-
-		hdrs[k] = ret
-
+		hdrs[header] = ret
 	}
-
 	return hdrs, nil
 }
 
