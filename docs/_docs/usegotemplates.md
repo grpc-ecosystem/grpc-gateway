@@ -33,7 +33,7 @@ Example of a bash script with the `use_go_templates` flag set to true:
 
 ```shell
 $ protoc -I. \
-    --go_out=. --go-grpc_out=. \
+    --go_out . --go-grpc_out . \
     --grpc-gateway_out . --grpc-gateway_opt logtostderr=true \
     --openapiv2_out . \
     --openapiv2_opt logtostderr=true \
