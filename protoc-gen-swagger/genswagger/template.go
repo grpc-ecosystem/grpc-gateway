@@ -1504,19 +1504,16 @@ func isQuotedString(s string) bool {
 }
 
 func isJSONNumber(s string, t string) error {
-	// Numeric values that cannot be represented as sequences of digits (such as Infinity and NaN) are not permitted.
-	// See: https://tools.ietf.org/html/rfc4627#section-2.4
-	switch s {
-	case
-		"nan",
-		"inf",
-		"infinity":
-		return fmt.Errorf("the provided number %q is not a valid JSON number", s)
-	}
-	_, err := strconv.ParseFloat(s, 64)
+	val, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		return fmt.Errorf("the provided default value %q does not match provider type %q", s, t)
 	}
+	// Floating point values that cannot be represented as sequences of digits (such as Infinity and NaN) are not permitted.
+	// See: https://tools.ietf.org/html/rfc4627#section-2.4
+	if math.IsInf(val, 0) || math.IsNaN(val) {
+		return fmt.Errorf("the provided number %q is not a valid JSON number", s)
+	}
+	
 	return nil
 }
 
