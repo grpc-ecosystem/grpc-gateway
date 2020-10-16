@@ -21,7 +21,7 @@ This is similar to how [Cloud Endpoints behaves](https://cloud.google.com/endpoi
 * URI path is built from the service's name and method: `/<fully qualified service name>/<method name>` (e.g.: `/my.package.EchoService/Echo`)
 * HTTP body is the serialized protobuf message.
 
-NOTE: the same option is also supported by the `gen-swagger` plugin.
+NOTE: the same option is also supported by the `gen-openapiv2` plugin.
 
 ## Using an external configuration file
 Google Cloud Platform offers a way to do this for services hosted with them called ["gRPC API Configuration"](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config). It can be used to define the behavior of a gRPC API service without modifications to the service itself in the form of [YAML](https://en.wikipedia.org/wiki/YAML) configuration files.
@@ -67,8 +67,10 @@ The following is equivalent to the basic [usage example](usage.html) but without
 
     ```sh
     protoc -I . \
-      --go_out=paths=source_relative:./gen/go/ \
-      --go-grpc_out=paths=source_relative:./gen/go/ \
+      --go_out ./gen/go/ \
+      --go_opt paths=source_relative \
+      --go-grpc_out ./gen/go/ \
+      --go-grpc_opt paths=source_relative \
       your/service/v1/your_service.proto
     ```
 
@@ -80,7 +82,11 @@ The following is equivalent to the basic [usage example](usage.html) but without
     the `your_service.yaml` in addition to the .proto file:
 
     ```sh
-    protoc -I . --grpc-gateway_out=logtostderr=true,paths=source_relative,grpc_api_configuration=path/to/your_service.yaml:./gen/go \
+    protoc -I . \
+      --grpc-gateway_out ./gen/go \
+      --grpc-gateway_opt logtostderr=true \
+      --grpc-gateway_opt paths=source_relative \
+      --grpc-gateway_opt grpc_api_configuration=path/to/your_service.yaml \
       your/service/v1/your_service.proto
     ```
 
@@ -89,24 +95,25 @@ The following is equivalent to the basic [usage example](usage.html) but without
 6. Generate the optional your_service.swagger.json
 
     ```sh
-    protoc -I . --swagger_out ./gen/go \
-      --swagger_opt grpc_api_configuration=path/to/your_service.yaml \
+    protoc -I . --openapiv2_out ./gen/go \
+      --openapiv2_opt grpc_api_configuration=path/to/your_service.yaml \
       your/service/v1/your_service.proto
     ```
 
     or using an OpenAPI configuration file
 
     ```sh
-    protoc -I . --swagger_out ./gen/go \
-      --swagger_opt grpc_api_configuration=path/to/your_service.yaml \
-      --swagger_opt openapi_configuration=path/to/your_service_swagger.yaml \
+    protoc -I . --openapiv2_out ./gen/go \
+      --openapiv2_opt grpc_api_configuration=path/to/your_service.yaml \
+      --openapiv2_opt openapi_configuration=path/to/your_service_swagger.yaml \
       your/service/v1/your_service.proto
     ```
 
     For an example of an OpenAPI configuration file, see [unannotated_echo_service.swagger.yaml](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/unannotated_echo_service.swagger.yaml), which adds OpenAPI options to [unannotated_echo_service.proto](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/unannotated_echo_service.proto).
 
     ```sh
-    protoc -I . --swagger_out=grpc_api_configuration=path/to/your_service.yaml:./gen/go \
+    protoc -I . --openapiv2_out ./gen/go \
+      --openapiv2_opt grpc_api_configuration=path/to/your_service.yaml \
       your/service/v1/your_service.proto
     ```
     
