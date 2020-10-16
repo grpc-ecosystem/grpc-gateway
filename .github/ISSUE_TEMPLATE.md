@@ -4,13 +4,13 @@
 - [ ] Update your protoc to the [latest version](https://github.com/google/protobuf/releases).
 - [ ] Update your copy of the `grpc-gateway` library to the latest version from github:
   ```sh
-  go get -u github.com/grpc-ecosystem/grpc-gateway
+  go get github.com/grpc-ecosystem/grpc-gateway/v2@latest
   ```
 - [ ] Delete the `protoc-gen-grpc-gateway` and `protoc-gen-openapiv2` binary from your `PATH`,
   and reinstall the latest versions:
   ```sh
-  go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-  go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-openapiv2
+  go get github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+  go get github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
   ```
   
 ## I still have a problem!
