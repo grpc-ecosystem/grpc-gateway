@@ -16,13 +16,13 @@ func IsWellKnownType(typeName string) bool {
 	return ok
 }
 
-// GoPackage represents a golang package
+// GoPackage represents a golang package.
 type GoPackage struct {
 	// Path is the package path to the package.
 	Path string
 	// Name is the package name of the package
 	Name string
-	// Alias is an alias of the package unique within the current invokation of grpc-gateway generator.
+	// Alias is an alias of the package unique within the current invocation of grpc-gateway generator.
 	Alias string
 }
 
@@ -39,11 +39,24 @@ func (p GoPackage) String() string {
 	return fmt.Sprintf("%s %q", p.Alias, p.Path)
 }
 
+// ResponseFile wraps pluginpb.CodeGeneratorResponse_File.
+type ResponseFile struct {
+	*pluginpb.CodeGeneratorResponse_File
+	// GoPkg is the Go package of the generated file.
+	GoPkg GoPackage
+}
+
 // File wraps descriptorpb.FileDescriptorProto for richer features.
 type File struct {
 	*descriptorpb.FileDescriptorProto
 	// GoPkg is the go package of the go file generated from this file.
 	GoPkg GoPackage
+	// GeneratedFilenamePrefix is used to construct filenames for generated
+	// files associated with this source file.
+	//
+	// For example, the source file "dir/foo.proto" might have a filename prefix
+	// of "dir/foo". Appending ".pb.go" produces an output file of "dir/foo.pb.go".
+	GeneratedFilenamePrefix string
 	// Messages is the list of messages defined in this file.
 	Messages []*Message
 	// Enums is the list of enums defined in this file.
@@ -66,26 +79,18 @@ func (f *File) proto2() bool {
 	return f.Syntax == nil || f.GetSyntax() == "proto2"
 }
 
-// ResponseFile wraps pluginpb.CodeGeneratorResponse_File.
-type ResponseFile struct {
-	*pluginpb.CodeGeneratorResponse_File
-
-	// GoPkg is the Go package of the generated file.
-	GoPkg GoPackage
-}
-
-// Message describes a protocol buffer message types
+// Message describes a protocol buffer message types.
 type Message struct {
-	// File is the file where the message is defined
+	*descriptorpb.DescriptorProto
+	// File is the file where the message is defined.
 	File *File
 	// Outers is a list of outer messages if this message is a nested type.
 	Outers []string
-	*descriptorpb.DescriptorProto
+	// Fields is a list of message fields.
 	Fields []*Field
-
 	// Index is proto path index of this message in File.
 	Index int
-
+	// ForcePrefixedName when set to true, prefixes a type with a package prefix.
 	ForcePrefixedName bool
 }
 
@@ -115,16 +120,16 @@ func (m *Message) GoType(currentPackage string) string {
 	return fmt.Sprintf("%s.%s", m.File.Pkg(), name)
 }
 
-// Enum describes a protocol buffer enum types
+// Enum describes a protocol buffer enum types.
 type Enum struct {
+	*descriptorpb.EnumDescriptorProto
 	// File is the file where the enum is defined
 	File *File
 	// Outers is a list of outer messages if this enum is a nested type.
 	Outers []string
-	*descriptorpb.EnumDescriptorProto
-
+	// Index is a enum index value.
 	Index int
-
+	// ForcePrefixedName when set to true, prefixes a type with a package prefix.
 	ForcePrefixedName bool
 }
 
@@ -156,12 +161,12 @@ func (e *Enum) GoType(currentPackage string) string {
 
 // Service wraps descriptorpb.ServiceDescriptorProto for richer features.
 type Service struct {
+	*descriptorpb.ServiceDescriptorProto
 	// File is the file where this service is defined.
 	File *File
-	*descriptorpb.ServiceDescriptorProto
 	// Methods is the list of methods defined in this service.
 	Methods []*Method
-
+	// ForcePrefixedName when set to true, prefixes a type with a package prefix.
 	ForcePrefixedName bool
 }
 
@@ -194,10 +199,9 @@ func (s *Service) ClientConstructorName() string {
 
 // Method wraps descriptorpb.MethodDescriptorProto for richer features.
 type Method struct {
+	*descriptorpb.MethodDescriptorProto
 	// Service is the service which this method belongs to.
 	Service *Service
-	*descriptorpb.MethodDescriptorProto
-
 	// RequestType is the message type of requests to this method.
 	RequestType *Message
 	// ResponseType is the message type of responses from this method.
@@ -207,7 +211,7 @@ type Method struct {
 
 // FQMN returns a fully qualified rpc method name of this method.
 func (m *Method) FQMN() string {
-	components := []string{}
+	var components []string
 	components = append(components, m.Service.FQSN())
 	components = append(components, m.GetName())
 	return strings.Join(components, ".")
@@ -246,12 +250,12 @@ func (b *Binding) ExplicitParams() []string {
 
 // Field wraps descriptorpb.FieldDescriptorProto for richer features.
 type Field struct {
+	*descriptorpb.FieldDescriptorProto
 	// Message is the message type which this field belongs to.
 	Message *Message
 	// FieldMessage is the message type of the field.
 	FieldMessage *Message
-	*descriptorpb.FieldDescriptorProto
-
+	// ForcePrefixedName when set to true, prefixes a type with a package prefix.
 	ForcePrefixedName bool
 }
 

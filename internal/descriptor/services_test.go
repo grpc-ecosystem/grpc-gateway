@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
+	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/encoding/prototext"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -24,7 +25,9 @@ func testExtractServices(t *testing.T, input []*descriptorpb.FileDescriptorProto
 
 func testExtractServicesWithRegistry(t *testing.T, reg *Registry, input []*descriptorpb.FileDescriptorProto, target string, wantSvcs []*Service) {
 	for _, file := range input {
-		reg.loadFile(file)
+		reg.loadFile(file.GetName(), &protogen.File{
+			Proto: file,
+		})
 	}
 	err := reg.loadServices(reg.files[target])
 	if err != nil {
@@ -399,7 +402,7 @@ func TestExtractServicesCrossPackage(t *testing.T) {
 	for _, src := range srcs {
 		var fd descriptorpb.FileDescriptorProto
 		if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
-			t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
+			t.Fatalf("prototext.Unmarshal(%s, &fd) failed with %v; want success", src, err)
 		}
 		fds = append(fds, &fd)
 	}
@@ -1044,7 +1047,9 @@ func TestExtractServicesWithError(t *testing.T) {
 			if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 				t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 			}
-			reg.loadFile(&fd)
+			reg.loadFile(spec.target, &protogen.File{
+				Proto: &fd,
+			})
 		}
 		err := reg.loadServices(reg.files[spec.target])
 		if err == nil {
@@ -1224,7 +1229,9 @@ func TestResolveFieldPath(t *testing.T) {
 			t.Fatalf("proto.Unmarshal(%s) failed with %v; want success", spec.src, err)
 		}
 		reg := NewRegistry()
-		reg.loadFile(&file)
+		reg.loadFile(file.GetName(), &protogen.File{
+			Proto: &file,
+		})
 		f, err := reg.LookupFile(file.GetName())
 		if err != nil {
 			t.Fatalf("reg.LookupFile(%q) failed with %v; want success; on file=%s", file.GetName(), err, spec.src)
@@ -1326,7 +1333,9 @@ func TestExtractServicesWithDeleteBody(t *testing.T) {
 			if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
 				t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
 			}
-			reg.loadFile(&fd)
+			reg.loadFile(fd.GetName(), &protogen.File{
+				Proto: &fd,
+			})
 		}
 		err := reg.loadServices(reg.files[spec.target])
 		if spec.expectErr && err == nil {
