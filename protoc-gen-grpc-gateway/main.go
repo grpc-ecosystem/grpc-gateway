@@ -61,6 +61,8 @@ func main() {
 			return err
 		}
 
+		generator := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *allowPatchFeature, *standalone)
+
 		glog.V(1).Infof("Parsing code generator request")
 
 		if err := reg.LoadFromPlugin(gen); err != nil {
@@ -81,8 +83,7 @@ func main() {
 			targets = append(targets, f)
 		}
 
-		g := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *allowPatchFeature, *standalone)
-		files, err := g.Generate(targets)
+		files, err := generator.Generate(targets)
 		for _, f := range files {
 			glog.V(1).Infof("NewGeneratedFile %q in %s", f.GetName(), f.GoPkg)
 			genFile := gen.NewGeneratedFile(f.GetName(), protogen.GoImportPath(f.GoPkg.Path))

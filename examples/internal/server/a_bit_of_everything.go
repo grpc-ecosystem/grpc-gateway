@@ -18,6 +18,7 @@ import (
 	"github.com/rogpeppe/fastuuid"
 	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
+	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -348,4 +349,8 @@ func (s *_ABitOfEverythingServer) CheckExternalPathEnum(ctx context.Context, msg
 
 func (s *_ABitOfEverythingServer) CheckExternalNestedPathEnum(ctx context.Context, msg *pathenum.MessageWithNestedPathEnum) (*emptypb.Empty, error) {
 	return &emptypb.Empty{}, nil
+}
+
+func (s *_ABitOfEverythingServer) CheckStatus(ctx context.Context, empty *emptypb.Empty) (*examples.CheckStatusResponse, error) {
+	return &examples.CheckStatusResponse{Status: &statuspb.Status{}}, nil
 }
