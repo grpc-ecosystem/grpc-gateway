@@ -258,7 +258,7 @@ changelog:
 				--github-site=https://github.com \
 				--unreleased-label "**Next release**" \
 				--release-branch=master \
-				--future-release=v2.0.0
+				--future-release=v2.0.1
 
 clean:
 	rm -f $(GATEWAY_PLUGIN) $(OPENAPI_PLUGIN)
