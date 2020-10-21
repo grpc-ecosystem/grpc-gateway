@@ -1,7 +1,34 @@
 # Change Log
 
+## [v2.0.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.1) (2020-10-21)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0...v2.0.1)
+
+**Closed issues:**
+
+- why was swagger removed [\#1765](https://github.com/grpc-ecosystem/grpc-gateway/issues/1765)
+- Option -module does not work anymore for protoc-gen-grpc-gateway v2 [\#1753](https://github.com/grpc-ecosystem/grpc-gateway/issues/1753)
+- grpc-gateway\_out Cannot set flag [\#1751](https://github.com/grpc-ecosystem/grpc-gateway/issues/1751)
+
+**Merged pull requests:**
+
+- Update module google.golang.org/grpc to v1.33.1 \(master\) [\#1768](https://github.com/grpc-ecosystem/grpc-gateway/pull/1768) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 1ed22bb \(master\) [\#1764](https://github.com/grpc-ecosystem/grpc-gateway/pull/1764) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency io\_bazel\_rules\_go to v0.24.4 \(master\) [\#1762](https://github.com/grpc-ecosystem/grpc-gateway/pull/1762) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 32ed001 \(master\) [\#1761](https://github.com/grpc-ecosystem/grpc-gateway/pull/1761) ([renovate[bot]](https://github.com/apps/renovate))
+- Update module golang/protobuf to v1.4.3 \(master\) [\#1760](https://github.com/grpc-ecosystem/grpc-gateway/pull/1760) ([renovate[bot]](https://github.com/apps/renovate))
+- Update golang Docker tag to v1.15.3 \(master\) [\#1759](https://github.com/grpc-ecosystem/grpc-gateway/pull/1759) ([renovate[bot]](https://github.com/apps/renovate))
+- fix import alias issue with protoc-gen-grpc-gateway [\#1757](https://github.com/grpc-ecosystem/grpc-gateway/pull/1757) ([danielhochman](https://github.com/danielhochman))
+- Refactor registry and generator to use protogen [\#1756](https://github.com/grpc-ecosystem/grpc-gateway/pull/1756) ([adambabik](https://github.com/adambabik))
+- Adapt usage instructions to use protoc-gen-go-grpc [\#1755](https://github.com/grpc-ecosystem/grpc-gateway/pull/1755) ([olivierlemasle](https://github.com/olivierlemasle))
+- Fix -module option for protoc-gen-grpc-gateway [\#1754](https://github.com/grpc-ecosystem/grpc-gateway/pull/1754) ([olivierlemasle](https://github.com/olivierlemasle))
+- fix empty parameter fatal in protoc-gen-grpc-gateway  [\#1752](https://github.com/grpc-ecosystem/grpc-gateway/pull/1752) ([danielhochman](https://github.com/danielhochman))
+- Update google.golang.org/genproto commit hash to 03b6142 \(master\) [\#1750](https://github.com/grpc-ecosystem/grpc-gateway/pull/1750) ([renovate[bot]](https://github.com/apps/renovate))
+- Update Readme  + remove duplicated paragraph [\#1749](https://github.com/grpc-ecosystem/grpc-gateway/pull/1749) ([olivierlemasle](https://github.com/olivierlemasle))
+- Update gorelease base for master [\#1747](https://github.com/grpc-ecosystem/grpc-gateway/pull/1747) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Update google.golang.org/genproto commit hash to 7f9ee70 \(master\) [\#1745](https://github.com/grpc-ecosystem/grpc-gateway/pull/1745) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [v2.0.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.0) (2020-10-14)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.15.2...v2.0.0)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.15.1...v2.0.0)
 
 **Closed issues:**
 
@@ -13,14 +40,15 @@
 
 **Merged pull requests:**
 
+- Generate changelog for v2.0.0 [\#1744](https://github.com/grpc-ecosystem/grpc-gateway/pull/1744) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Disable renovate automerge while master is frozen [\#1739](https://github.com/grpc-ecosystem/grpc-gateway/pull/1739) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Merge v2 into master [\#1731](https://github.com/grpc-ecosystem/grpc-gateway/pull/1731) ([johanbrandhorst](https://github.com/johanbrandhorst))
 
-## [v1.15.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.15.2) (2020-10-02)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.15.1...v1.15.2)
-
 ## [v1.15.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.15.1) (2020-10-02)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0-beta.5...v1.15.1)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.15.2...v1.15.1)
+
+## [v1.15.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.15.2) (2020-10-02)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0-beta.5...v1.15.2)
 
 **Closed issues:**
 
@@ -196,13 +224,13 @@
 - Adding docs about controlling http response status codes [\#1391](https://github.com/grpc-ecosystem/grpc-gateway/pull/1391) ([zhughes3](https://github.com/zhughes3))
 
 ## [v2.0.0-beta.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.0-beta.3) (2020-05-25)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0-beta.2...v2.0.0-beta.3)
-
-## [v2.0.0-beta.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.0-beta.2) (2020-05-25)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.6...v2.0.0-beta.2)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.6...v2.0.0-beta.3)
 
 ## [v1.14.6](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.6) (2020-05-25)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0-beta.1...v1.14.6)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0-beta.2...v1.14.6)
+
+## [v2.0.0-beta.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.0-beta.2) (2020-05-25)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0-beta.1...v2.0.0-beta.2)
 
 ## [v2.0.0-beta.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.0-beta.1) (2020-05-25)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.5...v2.0.0-beta.1)
