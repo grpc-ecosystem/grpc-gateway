@@ -1530,7 +1530,7 @@ func validateDefaultValueTypeAndFormat(headerType string, defaultValue string, f
 		if format != "" {
 			switch format {
 			case "date-time":
-				unquoteTime := defaultValue[1 : len(defaultValue)-1]
+				unquoteTime := strings.Trim(defaultValue, `"`).
 				_, err := time.Parse(time.RFC3339, unquoteTime)
 				if err != nil {
 					return fmt.Errorf("the provided default value %q is not a valid RFC3339 date-time string", defaultValue)
