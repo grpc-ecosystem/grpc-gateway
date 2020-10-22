@@ -1191,36 +1191,193 @@ func TestApplyTemplateExtensions(t *testing.T) {
 func TestValidateHeaderType(t *testing.T) {
 	type test struct {
 		Type          string
+		Format        string
 		expectedError error
 	}
 	tests := []test{
 		{
 			"string",
+			"date-time",
 			nil,
 		},
 		{
 			"boolean",
-			nil,
-		},
-		{
-			"number",
+			"",
 			nil,
 		},
 		{
 			"integer",
+			"uint",
 			nil,
 		},
 		{
+			"integer",
+			"uint8",
+			nil,
+		},
+		{
+			"integer",
+			"uint16",
+			nil,
+		},
+		{
+			"integer",
+			"uint32",
+			nil,
+		},
+		{
+			"integer",
+			"uint64",
+			nil,
+		},
+		{
+			"integer",
+			"int",
+			nil,
+		},
+		{
+			"integer",
+			"int8",
+			nil,
+		},
+		{
+			"integer",
+			"int16",
+			nil,
+		},
+		{
+			"integer",
+			"int32",
+			nil,
+		},
+		{
+			"integer",
+			"int64",
+			nil,
+		},
+		{
+			"integer",
+			"float64",
+			errors.New("the provided format \"float64\" is not a valid extension of the type \"integer\""),
+		},
+		{
+			"integer",
+			"uuid",
+			errors.New("the provided format \"uuid\" is not a valid extension of the type \"integer\""),
+		},
+		{
+			"number",
+			"uint",
+			nil,
+		},
+		{
+			"number",
+			"uint8",
+			nil,
+		},
+		{
+			"number",
+			"uint16",
+			nil,
+		},
+		{
+			"number",
+			"uint32",
+			nil,
+		},
+		{
+			"number",
+			"uint64",
+			nil,
+		},
+		{
+			"number",
+			"int",
+			nil,
+		},
+		{
+			"number",
+			"int8",
+			nil,
+		},
+		{
+			"number",
+			"int16",
+			nil,
+		},
+		{
+			"number",
+			"int32",
+			nil,
+		},
+		{
+			"number",
+			"int64",
+			nil,
+		},
+		{
+			"number",
+			"float",
+			nil,
+		},
+		{
+			"number",
+			"float32",
+			nil,
+		},
+		{
+			"number",
+			"float64",
+			nil,
+		},
+		{
+			"number",
+			"complex64",
+			nil,
+		},
+		{
+			"number",
+			"complex128",
+			nil,
+		},
+		{
+			"number",
+			"double",
+			nil,
+		},
+		{
+			"number",
+			"byte",
+			nil,
+		},
+		{
+			"number",
+			"rune",
+			nil,
+		},
+		{
+			"number",
+			"uintptr",
+			nil,
+		},
+		{
+			"number",
+			"date",
+			errors.New("the provided format \"date\" is not a valid extension of the type \"number\""),
+		},
+		{
 			"array",
+			"",
 			errors.New("the provided header type \"array\" is not supported"),
 		},
 		{
 			"foo",
+			"",
 			errors.New("the provided header type \"foo\" is not supported"),
 		},
 	}
 	for _, v := range tests {
-		err := validateHeaderType(v.Type)
+		err := validateHeaderTypeAndFormat(v.Type, v.Format)
 
 		if v.expectedError == nil {
 			if err != nil {
@@ -1242,116 +1399,175 @@ func TestValidateDefaultValueType(t *testing.T) {
 	type test struct {
 		Type          string
 		Value         string
+		Format        string
 		expectedError error
 	}
 	tests := []test{
-		{"string",
+		{
+			"string",
 			`"string"`,
+			"",
+			nil,
+		},
+		{
+			"string",
+			"\"2012-11-01T22:08:41+00:00\"",
+			"date-time",
+			nil,
+		},
+		{
+			"string",
+			"\"2012-11-01\"",
+			"date",
 			nil,
 		},
 		{
 			"string",
 			"0",
+			"",
 			errors.New("the provided default value \"0\" does not match provider type \"string\", or is not properly quoted with escaped quotations"),
 		},
 		{
 			"string",
 			"false",
+			"",
 			errors.New("the provided default value \"false\" does not match provider type \"string\", or is not properly quoted with escaped quotations"),
 		},
 		{
 			"boolean",
 			"true",
+			"",
 			nil,
 		},
 		{
 			"boolean",
 			"0",
+			"",
 			errors.New("the provided default value \"0\" does not match provider type \"boolean\""),
 		},
 		{
 			"boolean",
 			`"string"`,
+			"",
 			errors.New("the provided default value \"\\\"string\\\"\" does not match provider type \"boolean\""),
 		},
 		{
 			"number",
 			"1.2",
+			"",
 			nil,
 		},
 		{
 			"number",
 			"123",
+			"",
 			nil,
 		},
 		{
 			"number",
 			"nan",
+			"",
 			errors.New("the provided number \"nan\" is not a valid JSON number"),
 		},
 		{
 			"number",
 			"NaN",
-			errors.New("the provided number \"nan\" is not a valid JSON number"),
+			"",
+			errors.New("the provided number \"NaN\" is not a valid JSON number"),
 		},
 		{
 			"number",
 			"-459.67",
+			"",
 			nil,
 		},
 		{
 			"number",
 			"inf",
+			"",
 			errors.New("the provided number \"inf\" is not a valid JSON number"),
 		},
 		{
 			"number",
 			"infinity",
+			"",
 			errors.New("the provided number \"infinity\" is not a valid JSON number"),
 		},
 		{
 			"number",
 			"Inf",
-			errors.New("the provided number \"inf\" is not a valid JSON number"),
+			"",
+			errors.New("the provided number \"Inf\" is not a valid JSON number"),
 		},
 		{
 			"number",
 			"Infinity",
-			errors.New("the provided number \"infinity\" is not a valid JSON number"),
+			"",
+			errors.New("the provided number \"Infinity\" is not a valid JSON number"),
 		},
 		{
 			"number",
 			"false",
+			"",
 			errors.New("the provided default value \"false\" does not match provider type \"number\""),
 		},
 		{
 			"number",
 			`"string"`,
+			"",
 			errors.New("the provided default value \"\\\"string\\\"\" does not match provider type \"number\""),
 		},
 		{
 			"integer",
 			"2",
+			"",
 			nil,
 		},
 		{
 			"integer",
+			"2147483647",
+			"int32",
+			nil,
+		},
+		{
+			"integer",
+			"21474836477",
+			"int32",
+			errors.New("the provided default value \"21474836477\" does not match provided format \"int32\""),
+		},
+		{
+			"integer",
+			"9223372036854775807",
+			"int64",
+			nil,
+		},
+		{
+			"integer",
+			"92233720368547758077",
+			"int64",
+			errors.New("the provided default value \"92233720368547758077\" does not match provided format \"int64\""),
+		},
+		{
+			"integer",
 			"false",
-			errors.New("the provided default value \"false\" does not match provider type \"integer\""),
+			"",
+			errors.New("the provided default value \"false\" does not match provided type \"integer\""),
 		},
 		{
 			"integer",
 			"1.2",
-			errors.New("the provided default value \"1.2\" does not match provider type \"integer\""),
+			"",
+			errors.New("the provided default value \"1.2\" does not match provided type \"integer\""),
 		},
 		{
 			"integer",
 			`"string"`,
-			errors.New("the provided default value \"\\\"string\\\"\" does not match provider type \"integer\""),
+			"",
+			errors.New("the provided default value \"\\\"string\\\"\" does not match provided type \"integer\""),
 		},
 	}
 	for _, v := range tests {
-		err := validateDefaultValueType(v.Type, v.Value)
+		err := validateDefaultValueTypeAndFormat(v.Type, v.Value, v.Format)
 
 		if v.expectedError == nil {
 			if err != nil {

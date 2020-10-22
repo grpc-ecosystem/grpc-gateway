@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"net/textproto"
 	"os"
 	"reflect"
@@ -14,6 +15,7 @@ import (
 	"strings"
 	"sync"
 	"text/template"
+	"time"
 
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/jsonpb"
@@ -1456,42 +1458,124 @@ func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error
 	return exts, nil
 }
 
-func validateHeaderType(headerType string) error {
+func validateHeaderTypeAndFormat(headerType string, format string) error {
 	// The type of the object. The value MUST be one of "string", "number", "integer", "boolean", or "array"
 	// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#headerObject
 	// Note: currently not implementing array as we are only implementing this in the operation response context
 	switch headerType {
-	case
-		"string",
-		"number",
-		"integer",
-		"boolean":
+	// the format property is an open string-valued property, and can have any value to support documentation needs
+	// primary check for format is to ensure that the number/integer formats are extensions of the specified type
+	// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#dataTypeFormat
+	case "string":
+		return nil
+	case "number":
+		if format != "" {
+			switch format {
+			case
+				"uint",
+				"uint8",
+				"uint16",
+				"uint32",
+				"uint64",
+				"int",
+				"int8",
+				"int16",
+				"int32",
+				"int64",
+				"float",
+				"float32",
+				"float64",
+				"complex64",
+				"complex128",
+				"double",
+				"byte",
+				"rune",
+				"uintptr":
+				return nil
+			}
+			return fmt.Errorf("the provided format %q is not a valid extension of the type %q", format, headerType)
+		}
+		return nil
+	case "integer":
+		if format != "" {
+			switch format {
+			case
+				"uint",
+				"uint8",
+				"uint16",
+				"uint32",
+				"uint64",
+				"int",
+				"int8",
+				"int16",
+				"int32",
+				"int64":
+				return nil
+			}
+			return fmt.Errorf("the provided format %q is not a valid extension of the type %q", format, headerType)
+		}
+		return nil
+	case "boolean":
 		return nil
 	}
 	return fmt.Errorf("the provided header type %q is not supported", headerType)
 }
 
-func validateDefaultValueType(headerType string, defaultValue string) error {
+func validateDefaultValueTypeAndFormat(headerType string, defaultValue string, format string) error {
 	switch headerType {
-	case
-		"string":
-		if !(isQuotedString(defaultValue)) {
+	case "string":
+		if !isQuotedString(defaultValue) {
 			return fmt.Errorf("the provided default value %q does not match provider type %q, or is not properly quoted with escaped quotations", defaultValue, headerType)
 		}
-	case
-		"number":
-		err := isJSONNumber(strings.ToLower(defaultValue), headerType)
+		if format != "" {
+			switch format {
+			case "date-time":
+				unquoteTime := defaultValue[1 : len(defaultValue)-1]
+				_, err := time.Parse(time.RFC3339, unquoteTime)
+				if err != nil {
+					return fmt.Errorf("the provided default value %q is not a valid RFC3339 date-time string", defaultValue)
+				}
+			case "date":
+				const (
+					layoutRFC3339Date = "2006-01-02"
+				)
+				unquoteDate := defaultValue[1 : len(defaultValue)-1]
+				_, err := time.Parse(layoutRFC3339Date, unquoteDate)
+				if err != nil {
+					return fmt.Errorf("the provided default value %q is not a valid RFC3339 date-time string", defaultValue)
+				}
+
+			}
+		}
+	case "number":
+		err := isJSONNumber(defaultValue, headerType)
 		if err != nil {
 			return err
 		}
-	case
-		"integer":
+	case "integer":
+		if format != "" {
+			switch format {
+			case "int32",
+				"uint32":
+				_, err := strconv.ParseInt(defaultValue, 0, 32)
+				if err != nil {
+					return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
+				}
+			case "int64",
+				"uint64":
+				_, err := strconv.ParseInt(defaultValue, 0, 64)
+				if err != nil {
+					return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
+				}
+
+			}
+		}
+
 		_, err := strconv.ParseInt(defaultValue, 0, 64)
 		if err != nil {
-			return fmt.Errorf("the provided default value %q does not match provider type %q", defaultValue, headerType)
+			return fmt.Errorf("the provided default value %q does not match provided type %q", defaultValue, headerType)
 		}
-	case
-		"boolean":
+	case "boolean":
 		if !isBool(defaultValue) {
 			return fmt.Errorf("the provided default value %q does not match provider type %q", defaultValue, headerType)
 		}
@@ -1500,7 +1584,7 @@ func validateDefaultValueType(headerType string, defaultValue string) error {
 }
 
 func isQuotedString(s string) bool {
-	return len(s) >= 2 && s[0] == `"` && s[len(s)-1] == `"`
+	return len(s) >= 2 && string(s[0]) == `"` && string(s[len(s)-1]) == `"`
 }
 
 func isJSONNumber(s string, t string) error {
@@ -1513,7 +1597,7 @@ func isJSONNumber(s string, t string) error {
 	if math.IsInf(val, 0) || math.IsNaN(val) {
 		return fmt.Errorf("the provided number %q is not a valid JSON number", s)
 	}
-	
+
 	return nil
 }
 
@@ -1533,13 +1617,13 @@ func processHeaders(inputHdrs map[string]*swagger_options.Header) (swaggerHeader
 			Format:      v.Format,
 			Pattern:     v.Pattern,
 		}
-		err := validateHeaderType(v.Type)
+		err := validateHeaderTypeAndFormat(v.Type, v.Format)
 		if err != nil {
 			return nil, err
 		}
 		ret.Type = v.Type
 		if v.Default != "" {
-			err := validateDefaultValueType(v.Type, v.Default)
+			err := validateDefaultValueTypeAndFormat(v.Type, v.Default, v.Format)
 			if err != nil {
 				return nil, err
 			}
