@@ -1530,7 +1530,7 @@ func validateDefaultValueTypeAndFormat(headerType string, defaultValue string, f
 		if format != "" {
 			switch format {
 			case "date-time":
-				unquoteTime := strings.Trim(defaultValue, `"`).
+				unquoteTime := strings.Trim(defaultValue, `"`)
 				_, err := time.Parse(time.RFC3339, unquoteTime)
 				if err != nil {
 					return fmt.Errorf("the provided default value %q is not a valid RFC3339 date-time string", defaultValue)
@@ -1539,12 +1539,11 @@ func validateDefaultValueTypeAndFormat(headerType string, defaultValue string, f
 				const (
 					layoutRFC3339Date = "2006-01-02"
 				)
-				unquoteDate := defaultValue[1 : len(defaultValue)-1]
+				unquoteDate := strings.Trim(defaultValue, `"`)
 				_, err := time.Parse(layoutRFC3339Date, unquoteDate)
 				if err != nil {
 					return fmt.Errorf("the provided default value %q is not a valid RFC3339 date-time string", defaultValue)
 				}
-
 			}
 		}
 	case "number":
@@ -1555,19 +1554,26 @@ func validateDefaultValueTypeAndFormat(headerType string, defaultValue string, f
 	case "integer":
 		if format != "" {
 			switch format {
-			case "int32",
-				"uint32":
+			case "int32":
 				_, err := strconv.ParseInt(defaultValue, 0, 32)
 				if err != nil {
 					return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
 				}
-			case "int64",
-				"uint64":
+			case "uint32":
+				_, err := strconv.ParseUint(defaultValue, 0, 32)
+				if err != nil {
+					return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
+				}
+			case "int64":
 				_, err := strconv.ParseInt(defaultValue, 0, 64)
 				if err != nil {
 					return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
 				}
-
+			case "uint64":
+				_, err := strconv.ParseUint(defaultValue, 0, 64)
+				if err != nil {
+					return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
+				}
 			}
 		}
 
