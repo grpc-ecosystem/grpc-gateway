@@ -1381,7 +1381,7 @@ func TestValidateHeaderType(t *testing.T) {
 
 		if v.expectedError == nil {
 			if err != nil {
-				t.Errorf("unexpected error '%v'", err)
+				t.Errorf("unexpected error %v", err)
 			}
 		} else {
 			if err == nil {
