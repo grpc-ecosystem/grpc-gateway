@@ -1584,7 +1584,7 @@ func validateDefaultValueTypeAndFormat(headerType string, defaultValue string, f
 }
 
 func isQuotedString(s string) bool {
-	return len(s) >= 2 && string(s[0]) == `"` && string(s[len(s)-1]) == `"`
+	return len(s) >= 2 && s[0] == '"' && s[len(s)-1] == '"'
 }
 
 func isJSONNumber(s string, t string) error {
