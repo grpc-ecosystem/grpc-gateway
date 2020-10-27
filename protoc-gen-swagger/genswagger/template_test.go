@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"reflect"
 	"strings"
 	"testing"
@@ -1525,27 +1526,33 @@ func TestValidateDefaultValueType(t *testing.T) {
 		},
 		{
 			"integer",
-			"2147483647",
+			fmt.Sprint(math.MaxInt32),
 			"int32",
 			nil,
 		},
 		{
 			"integer",
-			"21474836477",
+			fmt.Sprint(math.MaxInt32 + 1),
 			"int32",
-			errors.New("the provided default value \"21474836477\" does not match provided format \"int32\""),
+			errors.New("the provided default value \"2147483648\" does not match provided format \"int32\""),
 		},
 		{
 			"integer",
-			"9223372036854775807",
+			fmt.Sprint(math.MaxInt64),
 			"int64",
 			nil,
 		},
 		{
 			"integer",
-			"92233720368547758077",
+			"9223372036854775808",
 			"int64",
-			errors.New("the provided default value \"92233720368547758077\" does not match provided format \"int64\""),
+			errors.New("the provided default value \"9223372036854775808\" does not match provided format \"int64\""),
+		},
+		{
+			"integer",
+			"18446744073709551615",
+			"uint64",
+			nil,
 		},
 		{
 			"integer",

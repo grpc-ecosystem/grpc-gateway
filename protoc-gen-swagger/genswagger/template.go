@@ -1552,35 +1552,34 @@ func validateDefaultValueTypeAndFormat(headerType string, defaultValue string, f
 			return err
 		}
 	case "integer":
-		if format != "" {
-			switch format {
-			case "int32":
-				_, err := strconv.ParseInt(defaultValue, 0, 32)
-				if err != nil {
-					return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
-				}
-			case "uint32":
-				_, err := strconv.ParseUint(defaultValue, 0, 32)
-				if err != nil {
-					return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
-				}
-			case "int64":
-				_, err := strconv.ParseInt(defaultValue, 0, 64)
-				if err != nil {
-					return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
-				}
-			case "uint64":
-				_, err := strconv.ParseUint(defaultValue, 0, 64)
-				if err != nil {
-					return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
-				}
+		switch format {
+		case "int32":
+			_, err := strconv.ParseInt(defaultValue, 0, 32)
+			if err != nil {
+				return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
+			}
+		case "uint32":
+			_, err := strconv.ParseUint(defaultValue, 0, 32)
+			if err != nil {
+				return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
+			}
+		case "int64":
+			_, err := strconv.ParseInt(defaultValue, 0, 64)
+			if err != nil {
+				return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
+			}
+		case "uint64":
+			_, err := strconv.ParseUint(defaultValue, 0, 64)
+			if err != nil {
+				return fmt.Errorf("the provided default value %q does not match provided format %q", defaultValue, format)
+			}
+		default:
+			_, err := strconv.ParseInt(defaultValue, 0, 64)
+			if err != nil {
+				return fmt.Errorf("the provided default value %q does not match provided type %q", defaultValue, headerType)
 			}
 		}
 
-		_, err := strconv.ParseInt(defaultValue, 0, 64)
-		if err != nil {
-			return fmt.Errorf("the provided default value %q does not match provided type %q", defaultValue, headerType)
-		}
 	case "boolean":
 		if !isBool(defaultValue) {
 			return fmt.Errorf("the provided default value %q does not match provider type %q", defaultValue, headerType)
