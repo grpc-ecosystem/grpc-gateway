@@ -1469,52 +1469,48 @@ func validateHeaderTypeAndFormat(headerType string, format string) error {
 	case "string":
 		return nil
 	case "number":
-		if format != "" {
-			switch format {
-			case
-				"uint",
-				"uint8",
-				"uint16",
-				"uint32",
-				"uint64",
-				"int",
-				"int8",
-				"int16",
-				"int32",
-				"int64",
-				"float",
-				"float32",
-				"float64",
-				"complex64",
-				"complex128",
-				"double",
-				"byte",
-				"rune",
-				"uintptr":
-				return nil
-			}
+		switch format {
+		case "uint",
+			"uint8",
+			"uint16",
+			"uint32",
+			"uint64",
+			"int",
+			"int8",
+			"int16",
+			"int32",
+			"int64",
+			"float",
+			"float32",
+			"float64",
+			"complex64",
+			"complex128",
+			"double",
+			"byte",
+			"rune",
+			"uintptr",
+			"":
+			return nil
+		default:
 			return fmt.Errorf("the provided format %q is not a valid extension of the type %q", format, headerType)
 		}
-		return nil
 	case "integer":
-		if format != "" {
-			switch format {
-			case
-				"uint",
-				"uint8",
-				"uint16",
-				"uint32",
-				"uint64",
-				"int",
-				"int8",
-				"int16",
-				"int32",
-				"int64":
-				return nil
-			}
+		switch format {
+		case "uint",
+			"uint8",
+			"uint16",
+			"uint32",
+			"uint64",
+			"int",
+			"int8",
+			"int16",
+			"int32",
+			"int64",
+			"":
+			return nil
+		default:
 			return fmt.Errorf("the provided format %q is not a valid extension of the type %q", format, headerType)
 		}
-		return nil
 	case "boolean":
 		return nil
 	}
@@ -1527,23 +1523,21 @@ func validateDefaultValueTypeAndFormat(headerType string, defaultValue string, f
 		if !isQuotedString(defaultValue) {
 			return fmt.Errorf("the provided default value %q does not match provider type %q, or is not properly quoted with escaped quotations", defaultValue, headerType)
 		}
-		if format != "" {
-			switch format {
-			case "date-time":
-				unquoteTime := strings.Trim(defaultValue, `"`)
-				_, err := time.Parse(time.RFC3339, unquoteTime)
-				if err != nil {
-					return fmt.Errorf("the provided default value %q is not a valid RFC3339 date-time string", defaultValue)
-				}
-			case "date":
-				const (
-					layoutRFC3339Date = "2006-01-02"
-				)
-				unquoteDate := strings.Trim(defaultValue, `"`)
-				_, err := time.Parse(layoutRFC3339Date, unquoteDate)
-				if err != nil {
-					return fmt.Errorf("the provided default value %q is not a valid RFC3339 date-time string", defaultValue)
-				}
+		switch format {
+		case "date-time":
+			unquoteTime := strings.Trim(defaultValue, `"`)
+			_, err := time.Parse(time.RFC3339, unquoteTime)
+			if err != nil {
+				return fmt.Errorf("the provided default value %q is not a valid RFC3339 date-time string", defaultValue)
+			}
+		case "date":
+			const (
+				layoutRFC3339Date = "2006-01-02"
+			)
+			unquoteDate := strings.Trim(defaultValue, `"`)
+			_, err := time.Parse(layoutRFC3339Date, unquoteDate)
+			if err != nil {
+				return fmt.Errorf("the provided default value %q is not a valid RFC3339 date-time string", defaultValue)
 			}
 		}
 	case "number":
@@ -1579,7 +1573,6 @@ func validateDefaultValueTypeAndFormat(headerType string, defaultValue string, f
 				return fmt.Errorf("the provided default value %q does not match provided type %q", defaultValue, headerType)
 			}
 		}
-
 	case "boolean":
 		if !isBool(defaultValue) {
 			return fmt.Errorf("the provided default value %q does not match provider type %q", defaultValue, headerType)
