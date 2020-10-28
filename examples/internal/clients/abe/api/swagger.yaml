@@ -59,6 +59,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -97,6 +101,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         503:
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
@@ -391,6 +399,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -685,6 +697,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -966,6 +982,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1266,6 +1286,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1423,6 +1447,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1463,6 +1491,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1496,6 +1528,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1533,6 +1569,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1564,6 +1604,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1760,6 +1804,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1811,6 +1859,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1858,6 +1910,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1904,6 +1960,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1943,6 +2003,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         503:
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
@@ -1988,6 +2052,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         503:
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
@@ -2022,6 +2090,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2049,6 +2121,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2079,6 +2155,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2117,6 +2197,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2144,6 +2228,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2182,6 +2270,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2217,6 +2309,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2255,6 +2351,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2566,6 +2666,31 @@ definitions:
       create_time: "2000-01-23T04:56:07.000+00:00"
       name: "name"
       id: "id"
+  examplepbErrorObject:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "integer"
+        description: "Response code"
+        title: "code"
+      message:
+        type: "string"
+        description: "Response message"
+        title: "message"
+        pattern: "^[a-zA-Z0-9]{1, 32}$"
+  examplepbErrorResponse:
+    type: "object"
+    properties:
+      correlationId:
+        type: "string"
+        format: "uuid"
+        example: "2438ac3c-37eb-4902-adef-ed16b4431030"
+        description: "Unique event identifier for server requests"
+        title: "x-correlation-id"
+        pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+      error:
+        $ref: "#/definitions/examplepbErrorObject"
   examplepbNumericEnum:
     type: "string"
     description: "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE\

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"reflect"
 	"strings"
 	"testing"
@@ -1184,6 +1185,554 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	if want, is, name := []extension{
 		{key: "x-resp-id", value: json.RawMessage("\"resp1000\"")},
 	}, response.extensions, "response.Extensions"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+}
+
+func TestValidateHeaderType(t *testing.T) {
+	type test struct {
+		Type          string
+		Format        string
+		expectedError error
+	}
+	tests := []test{
+		{
+			"string",
+			"date-time",
+			nil,
+		},
+		{
+			"boolean",
+			"",
+			nil,
+		},
+		{
+			"integer",
+			"uint",
+			nil,
+		},
+		{
+			"integer",
+			"uint8",
+			nil,
+		},
+		{
+			"integer",
+			"uint16",
+			nil,
+		},
+		{
+			"integer",
+			"uint32",
+			nil,
+		},
+		{
+			"integer",
+			"uint64",
+			nil,
+		},
+		{
+			"integer",
+			"int",
+			nil,
+		},
+		{
+			"integer",
+			"int8",
+			nil,
+		},
+		{
+			"integer",
+			"int16",
+			nil,
+		},
+		{
+			"integer",
+			"int32",
+			nil,
+		},
+		{
+			"integer",
+			"int64",
+			nil,
+		},
+		{
+			"integer",
+			"float64",
+			errors.New("the provided format \"float64\" is not a valid extension of the type \"integer\""),
+		},
+		{
+			"integer",
+			"uuid",
+			errors.New("the provided format \"uuid\" is not a valid extension of the type \"integer\""),
+		},
+		{
+			"number",
+			"uint",
+			nil,
+		},
+		{
+			"number",
+			"uint8",
+			nil,
+		},
+		{
+			"number",
+			"uint16",
+			nil,
+		},
+		{
+			"number",
+			"uint32",
+			nil,
+		},
+		{
+			"number",
+			"uint64",
+			nil,
+		},
+		{
+			"number",
+			"int",
+			nil,
+		},
+		{
+			"number",
+			"int8",
+			nil,
+		},
+		{
+			"number",
+			"int16",
+			nil,
+		},
+		{
+			"number",
+			"int32",
+			nil,
+		},
+		{
+			"number",
+			"int64",
+			nil,
+		},
+		{
+			"number",
+			"float",
+			nil,
+		},
+		{
+			"number",
+			"float32",
+			nil,
+		},
+		{
+			"number",
+			"float64",
+			nil,
+		},
+		{
+			"number",
+			"complex64",
+			nil,
+		},
+		{
+			"number",
+			"complex128",
+			nil,
+		},
+		{
+			"number",
+			"double",
+			nil,
+		},
+		{
+			"number",
+			"byte",
+			nil,
+		},
+		{
+			"number",
+			"rune",
+			nil,
+		},
+		{
+			"number",
+			"uintptr",
+			nil,
+		},
+		{
+			"number",
+			"date",
+			errors.New("the provided format \"date\" is not a valid extension of the type \"number\""),
+		},
+		{
+			"array",
+			"",
+			errors.New("the provided header type \"array\" is not supported"),
+		},
+		{
+			"foo",
+			"",
+			errors.New("the provided header type \"foo\" is not supported"),
+		},
+	}
+	for _, v := range tests {
+		err := validateHeaderTypeAndFormat(v.Type, v.Format)
+
+		if v.expectedError == nil {
+			if err != nil {
+				t.Errorf("unexpected error %v", err)
+			}
+		} else {
+			if err == nil {
+				t.Fatal("expected header error not returned")
+			}
+			if err.Error() != v.expectedError.Error() {
+				t.Errorf("expected error malformed, expected %q, got %q", v.expectedError.Error(), err.Error())
+			}
+		}
+	}
+
+}
+
+func TestValidateDefaultValueType(t *testing.T) {
+	type test struct {
+		Type          string
+		Value         string
+		Format        string
+		expectedError error
+	}
+	tests := []test{
+		{
+			"string",
+			`"string"`,
+			"",
+			nil,
+		},
+		{
+			"string",
+			"\"2012-11-01T22:08:41+00:00\"",
+			"date-time",
+			nil,
+		},
+		{
+			"string",
+			"\"2012-11-01\"",
+			"date",
+			nil,
+		},
+		{
+			"string",
+			"0",
+			"",
+			errors.New("the provided default value \"0\" does not match provider type \"string\", or is not properly quoted with escaped quotations"),
+		},
+		{
+			"string",
+			"false",
+			"",
+			errors.New("the provided default value \"false\" does not match provider type \"string\", or is not properly quoted with escaped quotations"),
+		},
+		{
+			"boolean",
+			"true",
+			"",
+			nil,
+		},
+		{
+			"boolean",
+			"0",
+			"",
+			errors.New("the provided default value \"0\" does not match provider type \"boolean\""),
+		},
+		{
+			"boolean",
+			`"string"`,
+			"",
+			errors.New("the provided default value \"\\\"string\\\"\" does not match provider type \"boolean\""),
+		},
+		{
+			"number",
+			"1.2",
+			"",
+			nil,
+		},
+		{
+			"number",
+			"123",
+			"",
+			nil,
+		},
+		{
+			"number",
+			"nan",
+			"",
+			errors.New("the provided number \"nan\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"NaN",
+			"",
+			errors.New("the provided number \"NaN\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"-459.67",
+			"",
+			nil,
+		},
+		{
+			"number",
+			"inf",
+			"",
+			errors.New("the provided number \"inf\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"infinity",
+			"",
+			errors.New("the provided number \"infinity\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"Inf",
+			"",
+			errors.New("the provided number \"Inf\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"Infinity",
+			"",
+			errors.New("the provided number \"Infinity\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"false",
+			"",
+			errors.New("the provided default value \"false\" does not match provider type \"number\""),
+		},
+		{
+			"number",
+			`"string"`,
+			"",
+			errors.New("the provided default value \"\\\"string\\\"\" does not match provider type \"number\""),
+		},
+		{
+			"integer",
+			"2",
+			"",
+			nil,
+		},
+		{
+			"integer",
+			fmt.Sprint(math.MaxInt32),
+			"int32",
+			nil,
+		},
+		{
+			"integer",
+			fmt.Sprint(math.MaxInt32 + 1),
+			"int32",
+			errors.New("the provided default value \"2147483648\" does not match provided format \"int32\""),
+		},
+		{
+			"integer",
+			fmt.Sprint(math.MaxInt64),
+			"int64",
+			nil,
+		},
+		{
+			"integer",
+			"9223372036854775808",
+			"int64",
+			errors.New("the provided default value \"9223372036854775808\" does not match provided format \"int64\""),
+		},
+		{
+			"integer",
+			"18446744073709551615",
+			"uint64",
+			nil,
+		},
+		{
+			"integer",
+			"false",
+			"",
+			errors.New("the provided default value \"false\" does not match provided type \"integer\""),
+		},
+		{
+			"integer",
+			"1.2",
+			"",
+			errors.New("the provided default value \"1.2\" does not match provided type \"integer\""),
+		},
+		{
+			"integer",
+			`"string"`,
+			"",
+			errors.New("the provided default value \"\\\"string\\\"\" does not match provided type \"integer\""),
+		},
+	}
+	for _, v := range tests {
+		err := validateDefaultValueTypeAndFormat(v.Type, v.Value, v.Format)
+
+		if v.expectedError == nil {
+			if err != nil {
+				t.Errorf("unexpected error '%v'", err)
+			}
+		} else {
+			if err == nil {
+				t.Error("expected update error not returned")
+			}
+			if err.Error() != v.expectedError.Error() {
+				t.Errorf("expected error malformed, expected %q, got %q", v.expectedError.Error(), err.Error())
+			}
+		}
+	}
+
+}
+
+func TestApplyTemplateHeaders(t *testing.T) {
+	msgdesc := &protodescriptor.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+	}
+	meth := &protodescriptor.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+		Options:    &protodescriptor.MethodOptions{},
+	}
+	svc := &protodescriptor.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*protodescriptor.MethodDescriptorProto{meth},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
+			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			Dependency:     []string{"a.example/b/c.proto", "a.example/d/e.proto"},
+			MessageType:    []*protodescriptor.DescriptorProto{msgdesc},
+			Service:        []*protodescriptor.ServiceDescriptorProto{svc},
+			Options:        &protodescriptor.FileOptions{},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	swaggerOperation := swagger_options.Operation{
+		Responses: map[string]*swagger_options.Response{
+			"200": &swagger_options.Response{
+				Description: "Testing Headers",
+				Headers: map[string]*swagger_options.Header{
+					"string": {
+						Description: "string header description",
+						Type:        "string",
+						Format:      "uuid",
+						Pattern:     "",
+					},
+					"boolean": {
+						Description: "boolean header description",
+						Type:        "boolean",
+						Default:     "true",
+						Pattern:     "^true|false$",
+					},
+					"integer": {
+						Description: "integer header description",
+						Type:        "integer",
+						Default:     "0",
+						Pattern:     "^[0-9]$",
+					},
+					"number": {
+						Description: "number header description",
+						Type:        "number",
+						Default:     "1.2",
+						Pattern:     "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
+					},
+				},
+			},
+		},
+	}
+	if err := proto.SetExtension(proto.Message(meth.Options), swagger_options.E_Openapiv2Operation, &swaggerOperation); err != nil {
+		t.Fatalf("proto.SetExtension(MethodDescriptorProto.Options) failed: %v", err)
+	}
+	reg := descriptor.NewRegistry()
+	fileCL := crossLinkFixture(&file)
+	err := reg.Load(reqFromFile(fileCL))
+	if err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+		return
+	}
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+	if want, is, name := "2.0", result.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+
+	var response swaggerResponseObject
+	for _, v := range result.Paths {
+		response = v.Get.Responses["200"]
+	}
+	if want, is, name := []swaggerHeadersObject{
+		{
+			"String": swaggerHeaderObject{
+				Description: "string header description",
+				Type:        "string",
+				Format:      "uuid",
+				Pattern:     "",
+			},
+			"Boolean": swaggerHeaderObject{
+				Description: "boolean header description",
+				Type:        "boolean",
+				Default:     json.RawMessage("true"),
+				Pattern:     "^true|false$",
+			},
+			"Integer": swaggerHeaderObject{
+				Description: "integer header description",
+				Type:        "integer",
+				Default:     json.RawMessage("0"),
+				Pattern:     "^[0-9]$",
+			},
+			"Number": swaggerHeaderObject{
+				Description: "number header description",
+				Type:        "number",
+				Default:     json.RawMessage("1.2"),
+				Pattern:     "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
+			},
+		},
+	}[0], response.Headers, "response.Headers"; !reflect.DeepEqual(is, want) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 }
