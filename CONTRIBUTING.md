@@ -78,7 +78,7 @@ To make a release, follow these steps:
 1. Commit the `Makefile` and `CHANGELOG.md` changes.
 1. Open a PR and check that everything looks right.
 1. Merge the PR.
-1. Tag the release on `master`, the tag should be made against the commit you just merged.
+1. Tag the release on `v1`, the tag should be made against the commit you just merged.
    1. The release can be created using the command line, or also through GitHub's [releases
       UI](https://github.com/grpc-ecosystem/grpc-gateway/releases/new).
    1. If you create a release using the web UI you can publish it as a draft and have it
