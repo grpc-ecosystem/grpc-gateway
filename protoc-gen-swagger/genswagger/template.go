@@ -2052,11 +2052,9 @@ func updateSwaggerObjectFromJSONSchema(s *swaggerSchemaObject, j *swagger_option
 	if j != nil && j.GetExample() != "" {
 		s.Example = json.RawMessage(j.GetExample())
 	}
-
 	if j != nil && j.GetFormat() != "" {
 		s.Format = j.GetFormat()
 	}
-
 }
 
 func swaggerSchemaFromProtoSchema(s *swagger_options.Schema, reg *descriptor.Registry, refs refMap, data interface{}) swaggerSchemaObject {
