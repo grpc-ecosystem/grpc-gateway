@@ -251,8 +251,8 @@ changelog:
 				--compare-link \
 				--github-site=https://github.com \
 				--unreleased-label "**Next release**" \
-				--release-branch=master \
-				--future-release=v1.15.0
+				--release-branch=v1 \
+				--future-release=v1.16.0
 lint:
 	golint --set_exit_status ./runtime
 	golint --set_exit_status ./utilities/...
