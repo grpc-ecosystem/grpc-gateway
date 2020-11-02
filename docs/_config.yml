@@ -84,7 +84,7 @@ gh_edit_view_mode: "tree" # "tree" or "edit" if you want the user to jump into t
 color_scheme: nil
 
 # Disqus Comments
-disqus:
+# disqus:
   # Leave shortname blank to disable comments site-wide.
   # Enable comments for any post by adding `comments: true` to that post's YAML Front Matter.
   # shortname:
