@@ -2,7 +2,6 @@
 layout: default
 title: Customizing your gateway
 nav_order: 4
-comments: true
 ---
 
 # Customizing your gateway

@@ -2,7 +2,6 @@
 layout: default
 title: How do I use this?
 nav_order: 15
-comments: true
 ---
 
 # How do I use this?

@@ -2,7 +2,6 @@
 layout: default
 title: 2020 Season of Docs
 nav_order: 13
-comments: true
 ---
 
 # 2020 Season of Docs

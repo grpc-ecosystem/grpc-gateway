@@ -2,7 +2,6 @@
 layout: default
 title: Adding custom routes to the mux
 nav_order: 11
-comments: true
 ---
 
 # Adding custom routes to the mux

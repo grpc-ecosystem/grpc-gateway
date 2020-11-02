@@ -2,7 +2,6 @@
 layout: default
 title: Background
 nav_order: 3
-comments: true
 ---
 
 # Background

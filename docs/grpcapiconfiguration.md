@@ -2,7 +2,6 @@
 layout: default
 title: gRPC API Configuration
 nav_order: 8
-comments: true
 ---
 
 # gRPC API Configuration
