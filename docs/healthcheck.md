@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Health Check
-nav_order: 11
+nav_order: 9
+comments: true
 ---
 
 # Health check

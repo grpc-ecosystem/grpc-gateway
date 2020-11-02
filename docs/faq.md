@@ -1,7 +1,8 @@
 ---
 layout: default
 title: FAQ
-nav_order: 8
+nav_order: 7
+comments: true
 ---
 
 # FAQ

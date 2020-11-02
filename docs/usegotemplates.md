@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Use go templates in protofile comments
-nav_order: 18
+nav_order: 16
 ---
 
 {% raw %}

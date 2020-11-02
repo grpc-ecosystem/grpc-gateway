@@ -1,7 +1,8 @@
 ---
 layout: default
 title: HttpBody messages
-nav_order: 12
+nav_order: 10
+comments: true
 ---
 
 # HttpBody messages

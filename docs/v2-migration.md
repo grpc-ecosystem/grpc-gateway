@@ -1,7 +1,8 @@
 ---
 layout: default
 title: gRPC-Gateway v2 migration guide
-nav_order: 19
+nav_order: 17
+comments: true
 ---
 
 # gRPC-Gateway v2 migration guide

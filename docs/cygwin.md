@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Installation for Cygwin
-nav_order: 6
+nav_order: 5
+comments: true
 ---
 
 # Installation for Cygwin
