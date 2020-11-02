@@ -5,6 +5,8 @@
 # in the templates via {{ site.myvariable }}.
 title: gRPC-Gateway
 description: gRPC-Gateway Documentation Website
+baseurl: "/docs" # the subpath of your site, e.g. /blog
+url: "https://grpc-ecosystem.github.io/grpc-gateway/" # the base hostname & protocol for your site, e.g. http://example.com
 
 repository: grpc-ecosystem/grpc-gateway
 remote_theme: pmarsceill/just-the-docs
