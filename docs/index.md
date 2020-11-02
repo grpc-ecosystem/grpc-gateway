@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Home
+title: gRPC-Gateway
 nav_order: 1
-description: "Home Page Of gRPC-Gateway"
+description: "Documentation site for the gRPC-Gateway"
 permalink: /
 ---
 
@@ -21,12 +21,12 @@ This server is generated according to [custom options](https://cloud.google.com/
 
 ## About
 
-[![issues](https://img.shields.io/github/issues/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/issues)
-[![forks](https://img.shields.io/github/forks/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/network/members)
-[![stars](https://img.shields.io/github/stars/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/stargazers)
-[![license](https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt)
-[![codecov](https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=codecov&logoColor=ffffff&style=flat-square)](https://codecov.io/gh/grpc-ecosystem/grpc-gateway)
 [![circleci](https://img.shields.io/circleci/build/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=circleci&logoColor=ffffff&style=flat-square)](https://circleci.com/gh/grpc-ecosystem/grpc-gateway)
+[![codecov](https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=codecov&logoColor=ffffff&style=flat-square)](https://codecov.io/gh/grpc-ecosystem/grpc-gateway)
+[![forks](https://img.shields.io/github/forks/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/network/members)
+[![issues](https://img.shields.io/github/issues/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/issues)
+[![license](https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt)
+[![stars](https://img.shields.io/github/stars/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/stargazers)
 
 grpc-gateway is a plugin of [protoc](https://github.com/protocolbuffers/protobuf).
 It reads a [gRPC](https://grpc.io) service definition,
@@ -37,13 +37,7 @@ It helps you to provide your APIs in both gRPC and RESTful style at the same tim
 
 ![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&h=370)
 
-To learn more about us check out our documentation on:
-
-- [Our background](_docs/background.md)
-- [Installation and usage](_docs/usage.md)
-- [Examples](_docs/examples.md)
-- [Features](_docs/features.md)
-- [AWS API Gateway tips](_docs/aws.md)
+To learn more about us check out our documentation.
 
 ## Contribution
 
