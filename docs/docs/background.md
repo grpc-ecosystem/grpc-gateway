@@ -1,5 +1,7 @@
 ---
-category: documentation
+layout: default
+title: Background
+nav_order: 3
 ---
 
 # Background
@@ -8,4 +10,3 @@ gRPC is great -- it generates API clients and server stubs in many programming l
 However, you might still want to provide a traditional RESTful API as well. Reasons can range from maintaining backwards-compatibility, supporting languages or clients not well supported by gRPC to simply maintaining the aesthetics and tooling involved with a RESTful architecture.
 
 This project aims to provide that HTTP+JSON interface to your gRPC service. A small amount of configuration in your service to attach HTTP semantics is all that's needed to generate a reverse-proxy with this library.
-

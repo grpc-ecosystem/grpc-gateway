@@ -1,6 +1,7 @@
 ---
-category: documentation
-name: 2020 Season of Docs
+layout: default
+title: 2020 Season of Docs
+nav_order: 13
 ---
 
 # 2020 Season of Docs
@@ -12,18 +13,18 @@ We're excited to see what contributions this will bring to our documentation.
 
 ## Project details
 
-  - Organization name: **gRPC-Gateway**
-  - Organization description: The gRPC-Gateway brings the power and safety of designing APIs with Protobuf and gRPC to the JSON/HTTP API world. It has several
-    common use cases:
-    - When a user wants to migrate an API to gRPC, but needs to expose a JSON/HTTP API
-      to old users.
-    - When a user wants to expose an existing gRPC API to a JSON/HTTP API audience.
-    - When quickly iterating on a JSON/HTTP API design.
-  - Website: https://grpc-ecosystem.github.io/grpc-gateway
-  - Repo: https://github.com/grpc-ecosystem/grpc-gateway
-  - Project administrators and mentors:
-    - Johan Brandhorst (@johanbrandhorst)
-    - Andrew Z Allen (@achew22)
+- Organization name: **gRPC-Gateway**
+- Organization description: The gRPC-Gateway brings the power and safety of designing APIs with Protobuf and gRPC to the JSON/HTTP API world. It has several
+  common use cases:
+  - When a user wants to migrate an API to gRPC, but needs to expose a JSON/HTTP API
+    to old users.
+  - When a user wants to expose an existing gRPC API to a JSON/HTTP API audience.
+  - When quickly iterating on a JSON/HTTP API design.
+- Website: https://grpc-ecosystem.github.io/grpc-gateway
+- Repo: https://github.com/grpc-ecosystem/grpc-gateway
+- Project administrators and mentors:
+  - Johan Brandhorst (@johanbrandhorst)
+  - Andrew Z Allen (@achew22)
 
 ## Project Ideas
 
@@ -42,11 +43,12 @@ try to use the current material and note anything that was unclear and that they
 easily find with our existing docs.
 
 Material:
-  - [The current site](https://grpc-ecosystem.github.io/grpc-gateway/)
-  - [Jekyll](https://jekyllrb.com/) which powers the site now.
-  - [The source code](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/docs) for the site today.
-  - [The project README](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/README.md) which
-    contains an intro to the project.
+
+- [The current site](https://grpc-ecosystem.github.io/grpc-gateway/)
+- [Jekyll](https://jekyllrb.com/) which powers the site now.
+- [The source code](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/docs) for the site today.
+- [The project README](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/README.md) which
+  contains an intro to the project.
 
 ### Rewrite the README with a better intro and examples
 
@@ -54,25 +56,26 @@ The README has evolved since the start of the project and could do with a rewrit
 first principles. The README is the first thing our prospective users see, and it should
 quickly and concisely answer the most important questions for our users.
 
-  - What problems can the gRPC-Gateway solve?
-  - How do I use the gRPC-Gateway?
-  - What does a complete example look like?
-  - Where can I find more information about using it?
-  - Where can I learn more about the technologies the gRPC-Gateway is built on?
-  - How do I submit an issue report or get help?
+- What problems can the gRPC-Gateway solve?
+- How do I use the gRPC-Gateway?
+- What does a complete example look like?
+- Where can I find more information about using it?
+- Where can I learn more about the technologies the gRPC-Gateway is built on?
+- How do I submit an issue report or get help?
 
 Material:
-  - [The current README](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/README.md).
+
+- [The current README](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/README.md).
 
 ### Create a tutorial for the docs site
 
 We'd like to be able to point to a tutorial for one of the common use cases of the project.
 The ones mentioned in the project details are the primary use cases we advertise:
 
-  - When a user wants to migrate an API to gRPC, but needs to expose a JSON/HTTP API
-    to old users.
-  - When a user wants to expose an existing gRPC API to a JSON/HTTP API audience.
-  - When quickly iterating on an JSON/HTTP API design.
+- When a user wants to migrate an API to gRPC, but needs to expose a JSON/HTTP API
+  to old users.
+- When a user wants to expose an existing gRPC API to a JSON/HTTP API audience.
+- When quickly iterating on an JSON/HTTP API design.
 
 It could be a single or several blog posts on our docs site, or another site, like Medium.
 
@@ -84,7 +87,8 @@ to have a look over this and add detail where possible and generally structure i
 a bit better. Maybe it could be rewritten as a FAQ that details solutions to common issues?
 
 Material:
-  - [The customize your gateway page](https://grpc-ecosystem.github.io/grpc-gateway/docs/customizingyourgateway.html)
+
+- [The customize your gateway page](https://grpc-ecosystem.github.io/grpc-gateway/docs/customizingyourgateway.html)
 
 ### Improve the contributor's guide
 
@@ -94,8 +98,9 @@ and the [issue templates](https://github.com/grpc-ecosystem/grpc-gateway/tree/ma
 Both of these are a little ad-hoc and could do with a fresh pair of eyes.
 
 Material:
-  - [Current CONTRIBUTING.md](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md)
-  - [Current issue templates](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/.github/ISSUE_TEMPLATE)
+
+- [Current CONTRIBUTING.md](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md)
+- [Current issue templates](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/.github/ISSUE_TEMPLATE)
 
 ### Write a v2.0.0 migration guide
 
@@ -104,11 +109,12 @@ We need to write a migration guide so that users know what to expect when upgrad
 
 This should include:
 
-  - A list of all the breaking changes and their consequences for the user.
-  - For each breaking change, a guide to how their systems may need to be changed.
+- A list of all the breaking changes and their consequences for the user.
+- For each breaking change, a guide to how their systems may need to be changed.
 
 Currently, the scope of the v2 release is not entirely known, as it is still in progress, but we will
 endeavour not to make too many breaking changes as that will discourage users from upgrading.
 
 Material:
-  - [v2 Tracking issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/1223)
+
+- [v2 Tracking issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/1223)
