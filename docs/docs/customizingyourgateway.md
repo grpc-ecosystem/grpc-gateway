@@ -1,25 +1,26 @@
 ---
+layout: default
 title: Customizing your gateway
-category: documentation
-order: 101
+nav_order: 4
 ---
 
 # Customizing your gateway
 
 ## Message serialization
+
 ### Custom serializer
 
 You might want to serialize request/response messages in MessagePack instead of JSON, for example.
 
 1. Write a custom implementation of [`Marshaler`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#Marshaler)
 2. Register your marshaler with [`WithMarshalerOption`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithMarshalerOption)
-	e.g.
-	```go
-	var m your.MsgPackMarshaler
-	mux := runtime.NewServeMux(
-		runtime.WithMarshalerOption("application/x-msgpack", m),
-	)
-	```
+   e.g.
+   ```go
+   var m your.MsgPackMarshaler
+   mux := runtime.NewServeMux(
+   	runtime.WithMarshalerOption("application/x-msgpack", m),
+   )
+   ```
 
 You can see [the default implementation for JSON](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/marshal_jsonpb.go) for reference.
 
@@ -27,6 +28,7 @@ You can see [the default implementation for JSON](https://github.com/grpc-ecosys
 
 The protocol buffer compiler generates camelCase JSON tags that are used by default.
 If you want to use the exact case used in the proto files, set `UseProtoNames: true`:
+
 ```go
 mux := runtime.NewServeMux(
 	runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
@@ -45,7 +47,7 @@ mux := runtime.NewServeMux(
 You can have Elasticsearch-style `?pretty` support in your gateway's endpoints as follows:
 
 1. Wrap the ServeMux using a stdlib [`http.HandlerFunc`](https://golang.org/pkg/net/http/#HandlerFunc)
-	that translates the provided query parameter into a custom `Accept` header, and
+   that translates the provided query parameter into a custom `Accept` header, and
 2. Register a pretty-printing marshaler for that MIME code.
 
 For example:
@@ -97,28 +99,30 @@ mux := runtime.NewServeMux(
 ```
 
 ## Mapping from HTTP request headers to gRPC client metadata
+
 You might not like [the default mapping rule](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#DefaultHeaderMatcher) and might want to pass through all the HTTP headers, for example.
 
 1. Write a [`HeaderMatcherFunc`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#HeaderMatcherFunc).
 2. Register the function with [`WithIncomingHeaderMatcher`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithIncomingHeaderMatcher)
 
-	e.g.
-	```go
-	func CustomMatcher(key string) (string, bool) {
-		switch key {
-		case "X-Custom-Header1":
-			return key, true
-		case "X-Custom-Header2":
-			return "custom-header2", true
-		default:
-			return key, false
-		}
-	}
+   e.g.
 
-	mux := runtime.NewServeMux(
-		runtime.WithIncomingHeaderMatcher(CustomMatcher),
-	)
-	```
+   ```go
+   func CustomMatcher(key string) (string, bool) {
+   	switch key {
+   	case "X-Custom-Header1":
+   		return key, true
+   	case "X-Custom-Header2":
+   		return "custom-header2", true
+   	default:
+   		return key, false
+   	}
+   }
+
+   mux := runtime.NewServeMux(
+   	runtime.WithIncomingHeaderMatcher(CustomMatcher),
+   )
+   ```
 
 To keep the [the default mapping rule](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#DefaultHeaderMatcher) alongside with your own rules write:
 
@@ -132,16 +136,21 @@ func CustomMatcher(key string) (string, bool) {
 	}
 }
 ```
+
 It will work with both:
 
 ```shell
 $ curl --header "x-user-id: 100d9f38-2777-4ee2-ac3b-b3a108f81a30" ...
 ```
+
 and:
+
 ```shell
 $ curl --header "X-USER-ID: 100d9f38-2777-4ee2-ac3b-b3a108f81a30" ...
 ```
+
 To access this header on gRPC server side use:
+
 ```go
 userID := ""
 if md, ok := metadata.FromIncomingContext(ctx); ok {
@@ -152,9 +161,11 @@ if md, ok := metadata.FromIncomingContext(ctx); ok {
 ```
 
 ## Mapping from gRPC server metadata to HTTP response headers
+
 ditto. Use [`WithOutgoingHeaderMatcher`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithOutgoingHeaderMatcher).
 See [gRPC metadata docs](https://github.com/grpc/grpc-go/blob/master/Documentation/grpc-metadata.md)
 for more info on sending / receiving gRPC metadata, e.g.
+
 ```go
 if appendCustomHeader {
 	grpc.SendHeader(ctx, metadata.New(map[string]string{
@@ -164,7 +175,9 @@ if appendCustomHeader {
 ```
 
 ## Mutate response messages or set response headers
+
 ### Set HTTP headers
+
 You might want to return a subset of response fields as HTTP response headers;
 You might want to simply set an application-specific token in a header.
 Or you might want to mutate the response messages to be returned.
@@ -181,15 +194,19 @@ func myFilter(ctx context.Context, w http.ResponseWriter, resp proto.Message) er
 	return nil
 }
 ```
+
 2. Register the filter with [`WithForwardResponseOption`](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithForwardResponseOption)
 
 e.g.
+
 ```go
 mux := runtime.NewServeMux(
 	runtime.WithForwardResponseOption(myFilter),
 )
 ```
+
 ### Controlling HTTP response status codes
+
 To have the most control over the HTTP response status codes, you can use custom metadata.
 
 While handling the rpc, set the intended status code:
@@ -198,10 +215,11 @@ While handling the rpc, set the intended status code:
 grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "401"))
 ```
 
-Now, before sending the HTTP response, we need to check for this metadata pair and explicitly set the status code for the response if found. 
+Now, before sending the HTTP response, we need to check for this metadata pair and explicitly set the status code for the response if found.
 To do so, create a function and hook it into the grpc-gateway as a Forward Response Option.
 
 The function looks like this:
+
 ```go
 func httpResponseModifier(ctx context.Context, w http.ResponseWriter, p proto.Message) error {
 	md, ok := runtime.ServerMetadataFromContext(ctx)
@@ -234,6 +252,7 @@ gwMux := runtime.NewServeMux(
 ```
 
 ## Error handler
+
 To override error handling for a `*runtime.ServeMux`, use the
 `runtime.WithErrorHandler` option. This will configure all unary error
 responses to pass through this error handler.
@@ -244,6 +263,7 @@ the v1 release of the gateway, and you no longer assign to `HTTPError` to
 configure an error handler.
 
 ## Stream Error Handler
+
 The error handler described in the previous section applies only
 to RPC methods that have a unary response.
 
@@ -272,6 +292,7 @@ can choose to omit some fields and can filter/transform the original
 error, such as stripping stack traces from error messages.
 
 Here's an example custom handler:
+
 ```go
 // handleStreamError overrides default behavior for computing an error
 // message for a server stream.
@@ -305,15 +326,17 @@ if the error being reported includes them. If the error does not have
 these attributes, a gRPC code of `Unknown` (2) is reported.
 
 ## Routing Error handler
-To override the error behavior when `*runtime.ServeMux` was not 
-able to serve the request due to routing issues, use the `runtime.WithRoutingErrorHandler` option. 
+
+To override the error behavior when `*runtime.ServeMux` was not
+able to serve the request due to routing issues, use the `runtime.WithRoutingErrorHandler` option.
 
 This will configure all HTTP routing errors to pass through this error handler.
 Default behavior is to map HTTP error codes to gRPC errors.
 
-HTTP statuses and their mappings to gRPC statuses: 
-* HTTP `404 Not Found` -> gRPC `5 NOT_FOUND`
-* HTTP `405 Method Not Allowed` -> gRPC `12 UNIMPLEMENTED`
-* HTTP `400 Bad Request` -> gRPC `3 INVALID_ARGUMENT`
+HTTP statuses and their mappings to gRPC statuses:
+
+- HTTP `404 Not Found` -> gRPC `5 NOT_FOUND`
+- HTTP `405 Method Not Allowed` -> gRPC `12 UNIMPLEMENTED`
+- HTTP `400 Bad Request` -> gRPC `3 INVALID_ARGUMENT`
 
 This method is not used outside of the initial routing.

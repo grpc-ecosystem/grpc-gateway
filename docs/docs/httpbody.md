@@ -1,5 +1,7 @@
 ---
-category: documentation
+layout: default
+title: HttpBody messages
+nav_order: 10
 ---
 
 # HttpBody messages

@@ -1,6 +1,7 @@
 ---
-title: v2 migration guide
-category: documentation
+layout: default
+title: gRPC-Gateway v2 migration guide
+nav_order: 17
 ---
 
 # gRPC-Gateway v2 migration guide
@@ -21,15 +22,21 @@ difference to users will be a slightly different proto annotation:
 ```protobuf
 import "protoc-gen-openapiv2/options/annotations.proto";
 ```
+
 instead of
+
 ```protobuf
 import "protoc-gen-swagger/options/annotations.proto";
 ```
+
 and
+
 ```protobuf
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 ```
+
 instead of
+
 ```protobuf
 option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 ```
@@ -58,6 +65,7 @@ example: "{\"uuid\": \"0cf361e1-4b44-483d-a159-54dabdf7e814\"}"
 See `a_bit_of_everything.proto` in the example protos for more examples.
 
 ## We now use the camelCase JSON names by default
+
 See
 [the original issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/375)
 and
@@ -66,6 +74,7 @@ for more information.
 
 If you want to revert to the old behaviour, configure a custom marshaler with
 `UseProtoNames: true`:
+
 ```go
 mux := runtime.NewServeMux(
 	runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
@@ -97,6 +106,7 @@ for more information.
 
 If you want to revert to the old behaviour, configure a custom marshaler with
 `EmitUnpopulated: false`:
+
 ```go
 mux := runtime.NewServeMux(
 	runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
@@ -169,5 +179,5 @@ services.
 `runtime.WithProtoErrorHandler` are all gone. Error handling is rewritten around the
 use of gRPCs Status types. If you wish to configure how the gateway handles errors,
 please use `runtime.WithErrorHandler` and `runtime.WithStreamErrorHandler`.
-To handle routing errors (similar to the removed `runtime.OtherErrorHandler`) please use 
+To handle routing errors (similar to the removed `runtime.OtherErrorHandler`) please use
 `runtime.WithRoutingErrorHandler`.

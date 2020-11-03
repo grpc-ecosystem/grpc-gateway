@@ -1,5 +1,7 @@
 ---
-category: documentation
+layout: default
+title: Health Check
+nav_order: 9
 ---
 
 # Health check
@@ -23,7 +25,7 @@ func (s *serviceServer) Check(ctx context.Context, in *health.HealthCheckRequest
 }
 ```
 
-2. Watch method 
+2. Watch method
 
 ```
 func (s *serviceServer) Watch(in *health.HealthCheckRequest, _ health.Health_WatchServer) error {

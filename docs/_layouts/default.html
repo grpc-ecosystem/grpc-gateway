@@ -1,92 +1,187 @@
+---
+layout: table_wrappers
+---
+
 <!DOCTYPE html>
-<html lang="{{ site.lang | default: "en-US" }}">
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}" media="screen" type="text/css">
-    <link rel="stylesheet" href="{{ '/assets/css/print.css' | relative_url }}" media="print" type="text/css">
-    <!--
-    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision }}" media="screen" type="text/css">
-    <link rel="stylesheet" href="{{ '/assets/css/print.css' }}" media="print" type="text/css">
-    -->
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+<html lang="{{ site.lang | default: 'en-US' }}">
+{% include head.html %}
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="svg-link" viewBox="0 0 24 24">
+      <title>Link</title>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+      </svg>
+    </symbol>
+    <symbol id="svg-search" viewBox="0 0 24 24">
+      <title>Search</title>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+        <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </symbol>
+    <symbol id="svg-menu" viewBox="0 0 24 24">
+      <title>Menu</title>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+        <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </symbol>
+    <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+      <title>Expand</title>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </symbol>
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+      <title>Document</title>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+      </svg>
+    </symbol>
+  </svg>
 
-{% seo %}
-  </head>
-
-  <body>
-    <header>
-      <div class="inner">
-        <a href="{{ '/' | absolute_url }}">
-          <h1>{{ site.title | default: site.github.repository_name }}</h1>
-        </a>
-        <h2>{{ site.description | default: site.github.project_tagline }}</h2>
-        {% if site.github.is_project_page %}
-          <a href="{{ site.github.repository_url }}" class="button"><small>View project on</small> GitHub</a>
-        {% endif %}
-        {% if site.github.is_user_page %}
-          <a href="{{ site.github.owner_url }}" class="button"><small>Follow me on</small> GitHub</a>
-        {% endif %}
-      </div>
-    </header>
-
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          {{ content | toc }}
-        </section>
-
-        <aside id="sidebar">
-          {% if site.show_downloads %}
-            <a href="{{ site.github.zip_url }}" class="button">
-              <small>Download</small>
-              .zip file
-            </a>
-            <a href="{{ site.github.tar_url }}" class="button">
-              <small>Download</small>
-              .tar.gz file
-            </a>
+  <div class="side-bar">
+    <div class="site-header">
+      <a href="{{ '/' | absolute_url }}" class="site-title lh-tight">{% include title.html %}</a>
+      <a href="#" id="menu-button" class="site-button">
+        <svg viewBox="0 0 24 24" class="icon"><use xlink:href="#svg-menu"></use></svg>
+      </a>
+    </div>
+    <nav role="navigation" aria-label="Main" id="site-nav" class="site-nav">
+      {% if site.just_the_docs.collections %}
+        {% assign collections_size = site.just_the_docs.collections | size %}
+        {% for collection_entry in site.just_the_docs.collections %}
+          {% assign collection_key = collection_entry[0] %}
+          {% assign collection_value = collection_entry[1] %}
+          {% assign collection = site[collection_key] %}
+          {% if collection_value.nav_exclude != true %}
+            {% if collections_size > 1 %}
+              <div class="nav-category">{{ collection_value.name }}</div>
+            {% endif %}
+            {% include nav.html pages=collection %}
           {% endif %}
+        {% endfor %}
+      {% else %}
+        {% include nav.html pages=site.html_pages %}
+      {% endif %}
+    </nav>
+    <footer class="site-footer">
+      This site uses <a href="https://github.com/pmarsceill/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    </footer>
+  </div>
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+      {% if site.search_enabled != false %}
+        <div class="search">
+          <div class="search-input-wrap">
+            <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search {{ site.title }}" aria-label="Search {{ site.title }}" autocomplete="off">
+            <label for="search-input" class="search-label"><svg viewBox="0 0 24 24" class="search-icon"><use xlink:href="#svg-search"></use></svg></label>
+          </div>
+          <div id="search-results" class="search-results"></div>
+        </div>
+      {% endif %}
+      {% if site.aux_links %}
+        <nav aria-label="Auxiliary" class="aux-nav">
+          <ul class="aux-nav-list">
+            {% for link in site.aux_links %}
+              <li class="aux-nav-list-item">
+                <a href="{{ link.last }}" class="site-button"
+                  {% if site.aux_links_new_tab %}
+                  target="_blank" rel="noopener noreferrer"
+                  {% endif %}
+                >
+                  {{ link.first }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      {% endif %}
+    </div>
+    <div id="main-content-wrap" class="main-content-wrap">
+      {% unless page.url == "/" %}
+        {% if page.parent %}
+          <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+            <ol class="breadcrumb-nav-list">
+              {% if page.grand_parent %}
+                <li class="breadcrumb-nav-list-item"><a href="{{ first_level_url }}">{{ page.grand_parent }}</a></li>
+                <li class="breadcrumb-nav-list-item"><a href="{{ second_level_url }}">{{ page.parent }}</a></li>
+              {% else %}
+                <li class="breadcrumb-nav-list-item"><a href="{{ first_level_url }}">{{ page.parent }}</a></li>
+              {% endif %}
+              <li class="breadcrumb-nav-list-item"><span>{{ page.title }}</span></li>
+            </ol>
+          </nav>
+        {% endif %}
+      {% endunless %}
+      <div id="main-content" class="main-content" role="main">
+        {% if site.heading_anchors != false %}
+          {% include vendor/anchor_headings.html html=content beforeHeading="true" anchorBody="<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><use xlink:href=\"#svg-link\"></use></svg>" anchorClass="anchor-heading" anchorAttrs="aria-labelledby=\"%html_id%\"" %}
+        {% else %}
+          {{ content }}
+        {% endif %}
 
-          {% if site.github.is_project_page %}
-            <p class="repo-owner"><a href="{{ site.github.repository_url }}">{{ site.github.repository_name }}</a> is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>.</p>
-          {% endif %}
+        {% if page.has_children == true and page.has_toc != false %}
+          <hr>
+          <h2 class="text-delta">Table of contents</h2>
+          <ul>
+            {%- assign children_list = pages_list | where: "parent", page.title | where: "grand_parent", page.parent -%}
+            {% for child in children_list %}
+              <li>
+                <a href="{{ child.url | absolute_url }}">{{ child.title }}</a>{% if child.summary %} - {{ child.summary }}{% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
 
-          {% assign mydocs = site.docs | group_by: 'category' %}
-          {% for cat in mydocs %}
-          <h2>{{ cat.name | capitalize }}</h2>
-              <ul>
-                {% assign items = cat.items | sort: 'order' %}
-                {% for item in items %}
-                  <li><a href="{{ item.url | relative_url }}">
-                      {% if item.url == page.url %}
-                        <b>{{ item.title }}</b>
-                      {% else %}
-                        {{ item.title }}
-                      {% endif %}
-                    </a></li>
-                {% endfor %}
-              </ul>
-          {% endfor %}
+        {% if site.footer_content != nil or site.last_edit_timestamp or site.gh_edit_link %}
+          <hr>
+          <footer>
+            {% if site.back_to_top %}
+              <p><a href="#top" id="back-to-top">{{ site.back_to_top_text }}</a></p>
+            {% endif %}
+            {% if site.footer_content != nil %}
+              <p class="text-small text-grey-dk-000 mb-0">{{ site.footer_content }}</p>
+            {% endif %}
 
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</p>
-        </aside>
+            {% if site.last_edit_timestamp or site.gh_edit_link %}
+              <div class="d-flex mt-2">
+                {% if site.last_edit_timestamp and site.last_edit_time_format and page.last_modified_date %}
+                  <p class="text-small text-grey-dk-000 mb-0 mr-2">
+                    Page last modified: <span class="d-inline-block">{{ page.last_modified_date | date: site.last_edit_time_format }}</span>.
+                  </p>
+                {% endif %}
+                {% if
+                  site.gh_edit_link and
+                  site.gh_edit_link_text and
+                  site.gh_edit_repository and
+                  site.gh_edit_branch and
+                  site.gh_edit_view_mode
+                %}
+                  <p class="text-small text-grey-dk-000 mb-0">
+                    <a href="{{ site.gh_edit_repository }}/{{ site.gh_edit_view_mode }}/{{ site.gh_edit_branch }}{% if site.gh_edit_source %}/{{ site.gh_edit_source }}{% endif %}/{{ page.path }}" id="edit-this-page">{{ site.gh_edit_link_text }}</a>
+                  </p>
+                {% endif %}
+              </div>
+            {% endif %}
+            {% if site.disqus.shortname %}
+             {% include comments.html %}
+            {% endif %}
+          </footer>
+        {% endif %}
+
       </div>
     </div>
 
-    {% if site.google_analytics %}
-      <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-        ga('create', '{{ site.google_analytics }}', 'auto');
-        ga('send', 'pageview');
-      </script>
+    {% if site.search_enabled != false %}
+      {% if site.search.button %}
+        <a href="#" id="search-button" class="search-button">
+          <svg viewBox="0 0 24 24" class="icon"><use xlink:href="#svg-search"></use></svg>
+        </a>
+      {% endif %}
+
+      <div class="search-overlay"></div>
     {% endif %}
-  </body>
+  </div>
+</body>
 </html>

@@ -1,16 +1,20 @@
 ---
-category: documentation
-name: Use go templates in protofile comments
+layout: default
+title: Use go templates in protofile comments
+nav_order: 16
 ---
+
+{% raw %}
 
 # Use go templates in protofile comments
 
 Use [Go templates](https://golang.org/pkg/text/template/)
 in your protofile comments to allow more advanced documentation such
-as:  
-* Documentation about fields in the proto objects.  
-* Import the content of external files (such as
-    [Markdown](https://en.wikipedia.org/wiki/Markdown)).
+as:
+
+- Documentation about fields in the proto objects.
+- Import the content of external files (such as
+  [Markdown](https://en.wikipedia.org/wiki/Markdown)).
 
 ## How to use it
 
@@ -38,16 +42,17 @@ $ protoc -I. \
     --openapiv2_out . \
     --openapiv2_opt logtostderr=true \
     --openapiv2_opt use_go_templates=true \
-    path/to/my/proto/v1/myproto.proto 
+    path/to/my/proto/v1/myproto.proto
 ```
 
 ### Example proto file
 
 Example of a protofile with Go templates. This proto file imports documentation from another file, `tables.md`:
+
 ```protobuf
 service LoginService {
     // Login
-    // 
+    //
     // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
     // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
     //
@@ -61,7 +66,7 @@ service LoginService {
 }
 
 message LoginRequest {
-    // The entered username 
+    // The entered username
     string username = 1;
     // The entered password
     string password = 2;
@@ -93,13 +98,15 @@ The content of `tables.md`:
 
 This is how the OpenAPI file would be rendered in [Swagger UI](https://swagger.io/tools/swagger-ui/)
 
-![Screenshot OpenAPI file in SwaggerUI](https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/docs/_imgs/gotemplates/swaggerui.png)
+![Screenshot OpenAPI file in SwaggerUI](../assets/images/gotemplates/swaggerui.png)
 
 ### Postman
 
 This is how the OpenAPI file would be rendered in [Postman](https://www.getpostman.com/)
 
-![Screenshot OpenAPI file in Postman](https://raw.githubusercontent.com/grpc-ecosystem/grpc-gateway/master/docs/_imgs/gotemplates/postman.png)
+![Screenshot OpenAPI file in Postman](../assets/images/gotemplates/postman.png)
 
 For a more detailed example of a protofile that has Go templates enabled,
 [see the examples](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/use_go_template.proto).
+
+{% endraw %}

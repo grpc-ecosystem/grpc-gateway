@@ -1,6 +1,7 @@
 ---
-category: documentation
+layout: default
 title: Adding custom routes to the mux
+nav_order: 11
 ---
 
 # Adding custom routes to the mux
@@ -15,7 +16,7 @@ package main
 import (
 	"context"
 	"net/http"
-	
+
 	pb "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/helloworld"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
@@ -41,7 +42,7 @@ func main() {
 
 // GreeterServer is the server API for Greeter service.
 type GreeterServer struct {
-	
+
 }
 
 // SayHello implement to say hello

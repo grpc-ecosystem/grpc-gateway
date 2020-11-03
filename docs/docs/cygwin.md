@@ -1,7 +1,7 @@
 ---
-category: documentation
+layout: default
 title: Installation for Cygwin
-order: 1000
+nav_order: 5
 ---
 
 # Installation for Cygwin
