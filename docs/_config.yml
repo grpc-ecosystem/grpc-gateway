@@ -66,7 +66,7 @@ nav_sort: case_sensitive # Capital letters sorted before lowercase
 back_to_top: true
 back_to_top_text: "Back to top"
 
-footer_content: 'Copyright &copy; 2020. Distributed by a <a href="https://github.com/grpc-ecosystem/grpc-gateway/tree/master/LICENSE.txt">BSD 3-Clause License.</a>'
+footer_content: 'Copyright &copy; gRPC-Gateway Authors. Distributed by a <a href="https://github.com/grpc-ecosystem/grpc-gateway/tree/master/LICENSE.txt">BSD 3-Clause License.</a>'
 
 # Footer last edited timestamp
 last_edit_timestamp: true # show or hide edit time - page must have `last_modified_date` defined in the frontmatter
