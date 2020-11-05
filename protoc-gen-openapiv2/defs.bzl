@@ -72,7 +72,7 @@ def _run_proto_gen_openapi(
         args.add("--openapiv2_opt", "json_names_for_fields=false")
 
     if fqn_for_openapi_name:
-        args.add("--openapi_opt", "fqn_for_openapi_name=true")
+        args.add("--openapiv2_opt", "fqn_for_openapi_name=true")
 
     if generate_unbound_methods:
         args.add("--openapiv2_opt", "generate_unbound_methods=true")
