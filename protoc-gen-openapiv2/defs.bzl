@@ -54,7 +54,8 @@ def _run_proto_gen_openapi(
         grpc_api_configuration,
         single_output,
         json_names_for_fields,
-        fqn_for_openapi_name):
+        fqn_for_openapi_name,
+        generate_unbound_methods):
     args = actions.args()
 
     args.add("--plugin", "protoc-gen-openapiv2=%s" % protoc_gen_openapiv2.path)
@@ -72,6 +73,9 @@ def _run_proto_gen_openapi(
 
     if fqn_for_openapi_name:
         args.add("--openapi_opt", "fqn_for_openapi_name=true")
+
+    if generate_unbound_methods:
+        args.add("--openapiv2_opt", "generate_unbound_methods=true")
 
     proto_file_infos = _direct_source_infos(proto_info)
 
@@ -158,6 +162,7 @@ def _proto_gen_openapi_impl(ctx):
                     single_output = ctx.attr.single_output,
                     json_names_for_fields = ctx.attr.json_names_for_fields,
                     fqn_for_openapi_name = ctx.attr.fqn_for_openapi_name,
+                    generate_unbound_methods = ctx.attr.generate_unbound_methods,
                 ),
             ),
         ),
@@ -182,6 +187,10 @@ protoc_gen_openapiv2 = rule(
             mandatory = False,
         ),
         "fqn_for_openapi_name": attr.bool(
+            default = False,
+            mandatory = False,
+        ),
+        "generate_unbound_methods": attr.bool(
             default = False,
             mandatory = False,
         ),
