@@ -507,7 +507,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	}
 
 	if j, err := getFieldBehaviorOption(reg, f); err == nil {
-		updateSwaggerObjectFromFieldBehavior(&ret, j, reg, f)
+		updateSwaggerObjectFromFieldBehavior(&ret, j, f)
 	}
 
 	return ret
@@ -1937,23 +1937,17 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 	}
 }
 
-func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotations.FieldBehavior, reg *descriptor.Registry, field *descriptor.Field) {
-	if j != nil {
-		for _, fb := range j {
-			switch fb {
-			case annotations.FieldBehavior_FIELD_BEHAVIOR_UNSPECIFIED:
-				break
-			case annotations.FieldBehavior_OPTIONAL:
-				break
-			case annotations.FieldBehavior_REQUIRED:
-				s.Required = append(s.Required, *field.Name)
-			case annotations.FieldBehavior_OUTPUT_ONLY:
-				s.ReadOnly = true
-			case annotations.FieldBehavior_INPUT_ONLY:
-				break
-			case annotations.FieldBehavior_IMMUTABLE:
-				break
-			}
+func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotations.FieldBehavior, field *descriptor.Field) {
+	for _, fb := range j {
+		switch fb {
+		case annotations.FieldBehavior_REQUIRED:
+			s.Required = append(s.Required, *field.Name)
+		case annotations.FieldBehavior_OUTPUT_ONLY:
+			s.ReadOnly = true
+		case annotations.FieldBehavior_FIELD_BEHAVIOR_UNSPECIFIED:
+		case annotations.FieldBehavior_OPTIONAL:
+		case annotations.FieldBehavior_INPUT_ONLY:
+		case annotations.FieldBehavior_IMMUTABLE:
 		}
 	}
 }
