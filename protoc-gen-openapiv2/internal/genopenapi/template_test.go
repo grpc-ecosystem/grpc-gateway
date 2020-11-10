@@ -14,6 +14,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
@@ -2390,6 +2391,14 @@ func TestSchemaOfField(t *testing.T) {
 	var fieldOptions = new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldOptions, openapi_options.E_Openapiv2Field, jsonSchema)
 
+	var requiredField = []annotations.FieldBehavior{ annotations.FieldBehavior_REQUIRED }
+	var requiredFieldOptions = new(descriptorpb.FieldOptions)
+	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, requiredField)
+
+	var outputOnlyField = []annotations.FieldBehavior{ annotations.FieldBehavior_OUTPUT_ONLY }
+	var outputOnlyOptions = new(descriptorpb.FieldOptions)
+	proto.SetExtension(outputOnlyOptions, annotations.E_FieldBehavior, outputOnlyField)
+
 	tests := []test{
 		{
 			field: &descriptor.Field{
@@ -2895,6 +2904,38 @@ func TestSchemaOfField(t *testing.T) {
 				},
 				Title:       "field title",
 				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name: proto.String("required_via_field_behavior_field"),
+					Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+					Options: requiredFieldOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
+				Required: []string{"required_via_field_behavior_field"},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name: proto.String("readonly_via_field_behavior_field"),
+					Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+					Options: outputOnlyOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
+				ReadOnly: true,
 			},
 		},
 	}

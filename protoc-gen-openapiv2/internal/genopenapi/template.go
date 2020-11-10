@@ -19,6 +19,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -503,6 +504,10 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 
 	if j, err := getFieldOpenAPIOption(reg, f); err == nil {
 		updateswaggerObjectFromJSONSchema(&ret, j, reg, f)
+	}
+
+	if j, err := getFieldBehaviorOption(reg, f); err == nil {
+		updateSwaggerObjectFromFieldBehavior(&ret, j, reg, f)
 	}
 
 	return ret
@@ -1794,6 +1799,21 @@ func extractJSONSchemaFromFieldDescriptor(fd *descriptorpb.FieldDescriptorProto)
 	return opts, nil
 }
 
+func extractFieldBehaviorFromFieldDescriptor(fd *descriptorpb.FieldDescriptorProto) ([]annotations.FieldBehavior, error) {
+	if fd.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(fd.Options, annotations.E_FieldBehavior) {
+		return nil, nil
+	}
+	ext := proto.GetExtension(fd.Options, annotations.E_FieldBehavior)
+	opts, ok := ext.([]annotations.FieldBehavior)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want a []FieldBehavior object", ext)
+	}
+	return opts, nil
+}
+
 func getMethodOpenAPIOption(reg *descriptor.Registry, meth *descriptor.Method) (*openapi_options.Operation, error) {
 	opts, err := extractOperationOptionFromMethodDescriptor(meth.MethodDescriptorProto)
 	if err != nil {
@@ -1839,6 +1859,7 @@ func getFileOpenAPIOption(reg *descriptor.Registry, file *descriptor.File) (*ope
 	return opts, nil
 }
 
+
 func getFieldOpenAPIOption(reg *descriptor.Registry, fd *descriptor.Field) (*openapi_options.JSONSchema, error) {
 	opts, err := extractJSONSchemaFromFieldDescriptor(fd.FieldDescriptorProto)
 	if err != nil {
@@ -1850,6 +1871,17 @@ func getFieldOpenAPIOption(reg *descriptor.Registry, fd *descriptor.Field) (*ope
 	opts, ok := reg.GetOpenAPIFieldOption(fd.FQFN())
 	if !ok {
 		return nil, nil
+	}
+	return opts, nil
+}
+
+func getFieldBehaviorOption(reg *descriptor.Registry, fd *descriptor.Field) ([]annotations.FieldBehavior, error) {
+	opts, err := extractFieldBehaviorFromFieldDescriptor(fd.FieldDescriptorProto)
+	if err != nil {
+		return nil, err
+	}
+	if opts != nil {
+		return opts, nil
 	}
 	return opts, nil
 }
@@ -1902,6 +1934,27 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 	s.Required = j.GetRequired()
 	if overrideType := j.GetType(); len(overrideType) > 0 {
 		s.Type = strings.ToLower(overrideType[0].String())
+	}
+}
+
+func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotations.FieldBehavior, reg *descriptor.Registry, field *descriptor.Field) {
+	if j != nil {
+		for _, fb := range j {
+			switch fb {
+			case annotations.FieldBehavior_FIELD_BEHAVIOR_UNSPECIFIED:
+				break
+			case annotations.FieldBehavior_OPTIONAL:
+				break
+			case annotations.FieldBehavior_REQUIRED:
+				s.Required = append(s.Required, *field.Name)
+			case annotations.FieldBehavior_OUTPUT_ONLY:
+				s.ReadOnly = true
+			case annotations.FieldBehavior_INPUT_ONLY:
+				break
+			case annotations.FieldBehavior_IMMUTABLE:
+				break
+			}
+		}
 	}
 }
 
