@@ -383,6 +383,18 @@
         "int64OverrideType": {
           "type": "integer",
           "format": "int64"
+        },
+        "requiredStringViaFieldBehaviorAnnotation": {
+          "type": "string",
+          "title": "mark a field as required in Open API definition",
+          "required": [
+            "required_string_via_field_behavior_annotation"
+          ]
+        },
+        "outputOnlyStringViaFieldBehaviorAnnotation": {
+          "type": "string",
+          "title": "mark a field as readonly in Open API definition",
+          "readOnly": true
         }
       },
       "description": "Intentionaly complicated message type to cover many features of Protobuf.",

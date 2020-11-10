@@ -373,6 +373,19 @@ paths:
         format: "int64"
         x-exportParamName: "Int64OverrideType"
         x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition."
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition."
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -667,6 +680,19 @@ paths:
         format: "int64"
         x-exportParamName: "Int64OverrideType"
         x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition."
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition."
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -948,6 +974,19 @@ paths:
         format: "int64"
         x-exportParamName: "Int64OverrideType"
         x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition."
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition."
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -1249,6 +1288,19 @@ paths:
         format: "int64"
         x-exportParamName: "Int64OverrideType"
         x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition."
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition."
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -2464,6 +2516,13 @@ definitions:
       int64OverrideType:
         type: "integer"
         format: "int64"
+      requiredStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as required in Open API definition"
+      outputOnlyStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as readonly in Open API definition"
+        readOnly: true
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
