@@ -3065,6 +3065,18 @@ func TestSchemaOfField(t *testing.T) {
 }
 
 func TestRenderMessagesAsDefinition(t *testing.T) {
+	jsonSchema := &openapi_options.JSONSchema{
+		Title:       "field title",
+		Description: "field description",
+		Required: []string { "aRequiredField" },
+	}
+
+	var requiredField = new(descriptorpb.FieldOptions)
+	proto.SetExtension(requiredField, openapi_options.E_Openapiv2Field, jsonSchema)
+
+	var fieldBehaviorRequired = []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED }
+	var requiredFieldOptions = new(descriptorpb.FieldOptions)
+	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, fieldBehaviorRequired)
 
 	tests := []struct {
 		descr          string
@@ -3253,6 +3265,96 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 				},
 			},
 		},
+		{
+			descr: "JSONSchema with required properties",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:    proto.String("aRequiredField"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(1),
+							Options: requiredField,
+						},
+					},
+				},
+			},
+			schema: map[string]openapi_options.Schema{
+				"Message": {
+					JsonSchema: &openapi_options.JSONSchema{
+						Title:            "title",
+						Description:      "desc",
+						Required:         []string{"req"},
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"Message": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "title",
+					Description: "desc",
+					Required:    []string{"req", "aRequiredField"},
+					Properties: &openapiSchemaObjectProperties{
+						{
+							Key: "a",
+							Value: &openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			descr: "JSONSchema with required properties via field_behavior",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:   proto.String("aRequiredField"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+							Options: requiredFieldOptions,
+						},
+					},
+				},
+			},
+			schema: map[string]openapi_options.Schema{
+				"Message": {
+					JsonSchema: &openapi_options.JSONSchema{
+						Title:            "title",
+						Description:      "desc",
+						Required:         []string{"req"},
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"Message": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "title",
+					Description: "desc",
+					Required:    []string{"req", "aRequiredField"},
+					Properties: &openapiSchemaObjectProperties{
+						{
+							Key: "a",
+							Value: &openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -3311,8 +3413,34 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			actual := make(openapiDefinitionsObject)
 			renderMessagesAsDefinition(msgMap, actual, reg, refs)
 
+			var actualProps []openapiSchemaObjectProperties
+			for key, obj := range actual {
+				if obj.Properties != nil {
+					actualProps = append(actualProps, *obj.Properties)
+					obj.Properties = nil
+					actual[key] = obj
+				}
+			}
+
+			var testProps []openapiSchemaObjectProperties
+			for key, obj := range test.defs {
+				if obj.Properties != nil {
+					testProps = append(actualProps, *obj.Properties)
+					obj.Properties = nil
+					test.defs[key] = obj
+				}
+			}
+
 			if !reflect.DeepEqual(actual, test.defs) {
 				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
+			}
+
+
+			for i, actualProp := range actualProps {
+				testProp := testProps[i]
+				if !reflect.DeepEqual(actualProp, testProp) {
+					t.Errorf("Expected renderMessagesAsDefinition() Properties defs as %+v, not %+v", testProp, actualProp)
+				}
 			}
 		})
 	}

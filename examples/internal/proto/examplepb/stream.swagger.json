@@ -405,8 +405,10 @@
       },
       "required": [
         "uuid",
-        "int64_value",
-        "double_value"
+        "int64Value",
+        "doubleValue",
+        "floatValue",
+        "requiredStringViaFieldBehaviorAnnotation"
       ]
     },
     "examplepbNumericEnum": {

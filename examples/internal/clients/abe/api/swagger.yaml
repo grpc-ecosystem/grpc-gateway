@@ -2392,6 +2392,10 @@ definitions:
   examplepbABitOfEverything:
     type: "object"
     required:
+    - "doubleValue"
+    - "floatValue"
+    - "int64Value"
+    - "requiredStringViaFieldBehaviorAnnotation"
     - "uuid"
     properties:
       singleNested:

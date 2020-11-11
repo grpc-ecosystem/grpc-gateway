@@ -409,6 +409,20 @@ func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject,
 				panic(err)
 			}
 
+			if requiredIdx := find(schema.Required, *f.Name); requiredIdx != -1 && reg.GetUseJSONNamesForFields() {
+				schema.Required[requiredIdx] = f.GetJsonName()
+			}
+
+			if fieldValue.Required != nil {
+				for _, req := range fieldValue.Required {
+					if reg.GetUseJSONNamesForFields() {
+						schema.Required = append(schema.Required, f.GetJsonName())
+					} else {
+						schema.Required = append(schema.Required, req)
+					}
+				}
+			}
+
 			kv := keyVal{Value: fieldValue}
 			if reg.GetUseJSONNamesForFields() {
 				kv.Key = f.GetJsonName()
@@ -2122,4 +2136,14 @@ func getReservedJSONName(fieldName string, messageNameToFieldsToJSONName map[str
 	}
 	fieldNames := strings.Split(fieldName, ".")
 	return getReservedJSONName(strings.Join(fieldNames[1:], "."), messageNameToFieldsToJSONName, fieldNameToType)
+}
+
+func find(a []string, x string) int {
+	// This is a linear search but we are dealing with a small number of fields
+	for i, n := range a {
+		if x == n {
+			return i
+		}
+	}
+	return -1
 }
