@@ -10,7 +10,7 @@ require (
 	github.com/google/go-cmp v0.5.2
 	github.com/rogpeppe/fastuuid v1.2.0
 	golang.org/x/oauth2 v0.0.0-20201109201403-9fd604954f58
-	google.golang.org/genproto v0.0.0-20201111145450-ac7456db90a6
+	google.golang.org/genproto v0.0.0-20201112120144-2985b7af83de
 	google.golang.org/grpc v1.33.2
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.0.0
 	google.golang.org/protobuf v1.25.0
