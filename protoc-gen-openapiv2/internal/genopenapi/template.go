@@ -1960,6 +1960,7 @@ func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotation
 		case annotations.FieldBehavior_FIELD_BEHAVIOR_UNSPECIFIED:
 		case annotations.FieldBehavior_OPTIONAL:
 		case annotations.FieldBehavior_INPUT_ONLY:
+			// OpenAPI v3 supports a writeOnly property, but this is not supported in Open API v2
 		case annotations.FieldBehavior_IMMUTABLE:
 		}
 	}

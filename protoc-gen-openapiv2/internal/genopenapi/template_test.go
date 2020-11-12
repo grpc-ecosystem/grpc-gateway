@@ -3078,6 +3078,10 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 	var requiredFieldOptions = new(descriptorpb.FieldOptions)
 	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, fieldBehaviorRequired)
 
+	var fieldBehaviorOutputOnlyField = []annotations.FieldBehavior{ annotations.FieldBehavior_OUTPUT_ONLY }
+	var fieldBehaviorOutputOnlyOptions = new(descriptorpb.FieldOptions)
+	proto.SetExtension(fieldBehaviorOutputOnlyOptions, annotations.E_FieldBehavior, fieldBehaviorOutputOnlyField)
+
 	tests := []struct {
 		descr          string
 		msgDescs       []*descriptorpb.DescriptorProto
@@ -3299,11 +3303,14 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					Required:    []string{"req", "aRequiredField"},
 					Properties: &openapiSchemaObjectProperties{
 						{
-							Key: "a",
-							Value: &openapiSchemaObject{
+							Key: "aRequiredField",
+							Value: openapiSchemaObject{
 								schemaCore: schemaCore{
 									Type: "string",
 								},
+								Description: "field description",
+								Title:       "field title",
+								Required:    []string{"aRequiredField"},
 							},
 						},
 					},
@@ -3321,6 +3328,12 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
 							Number: proto.Int32(1),
 							Options: requiredFieldOptions,
+						},
+						{
+							Name:    proto.String("aOutputOnlyField"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(2),
+							Options: fieldBehaviorOutputOnlyOptions,
 						},
 					},
 				},
@@ -3344,11 +3357,21 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					Required:    []string{"req", "aRequiredField"},
 					Properties: &openapiSchemaObjectProperties{
 						{
-							Key: "a",
-							Value: &openapiSchemaObject{
+							Key: "aRequiredField",
+							Value: openapiSchemaObject{
 								schemaCore: schemaCore{
 									Type: "string",
 								},
+								Required:    []string{"aRequiredField"},
+							},
+						},
+						{
+							Key: "aOutputOnlyField",
+							Value: openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
+								ReadOnly: true,
 							},
 						},
 					},
@@ -3413,34 +3436,8 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			actual := make(openapiDefinitionsObject)
 			renderMessagesAsDefinition(msgMap, actual, reg, refs)
 
-			var actualProps []openapiSchemaObjectProperties
-			for key, obj := range actual {
-				if obj.Properties != nil {
-					actualProps = append(actualProps, *obj.Properties)
-					obj.Properties = nil
-					actual[key] = obj
-				}
-			}
-
-			var testProps []openapiSchemaObjectProperties
-			for key, obj := range test.defs {
-				if obj.Properties != nil {
-					testProps = append(actualProps, *obj.Properties)
-					obj.Properties = nil
-					test.defs[key] = obj
-				}
-			}
-
 			if !reflect.DeepEqual(actual, test.defs) {
 				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
-			}
-
-
-			for i, actualProp := range actualProps {
-				testProp := testProps[i]
-				if !reflect.DeepEqual(actualProp, testProp) {
-					t.Errorf("Expected renderMessagesAsDefinition() Properties defs as %+v, not %+v", testProp, actualProp)
-				}
 			}
 		})
 	}
