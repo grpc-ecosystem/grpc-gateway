@@ -36,10 +36,10 @@ commands:
 executors:
   build-env:
     environment:
-    ## Split key to avoid github revoking it
-      password0: '99544cdcb19ad4e3fd64'
-      password1: '3ec86b2e5a431be2d72c'
-      GLOG_logtostderr: '1'
+      ## Split key to avoid github revoking it
+      password0: "99544cdcb19ad4e3fd64"
+      password1: "3ec86b2e5a431be2d72c"
+      GLOG_logtostderr: "1"
     docker:
       - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.15
         auth:
@@ -79,27 +79,6 @@ jobs:
       - checkout
       - generate
       - run: git diff --exit-code
-  lint:
-    executor: build-env
-    working_directory: /src/grpc-gateway
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-staticcheck-cache-{{ checksum "go.sum" }}
-            - v1-staticcheck-cache-
-      - run:
-          name: Install staticcheck outside local module
-          command: |
-            cd $(mktemp -d) &&
-            go mod init tmp &&
-            go get honnef.co/go/tools/cmd/staticcheck
-      - run: staticcheck ./...
-      - save_cache:
-          key: v1-staticcheck-cache-{{ checksum "go.sum" }}
-          paths:
-            - /root/.cache/go-build
-            - /root/.cache/staticcheck
   fuzzit:
     docker:
       - image: fuzzitdev/fuzzit:golang1.12-stretch-llvm9
@@ -190,7 +169,6 @@ workflows:
       - fuzzit
       - node_test
       - generate
-      - lint
       - bazel
       - gorelease
       - release:
@@ -215,4 +193,3 @@ workflows:
               only: /renovate\/master-.+/
             tags:
               ignore: /.*/
-
