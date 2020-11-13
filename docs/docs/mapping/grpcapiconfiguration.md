@@ -1,7 +1,8 @@
 ---
 layout: default
 title: gRPC API Configuration
-nav_order: 8
+parent: Mapping
+nav_order: 4
 ---
 
 # gRPC API Configuration

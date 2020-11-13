@@ -1,7 +1,7 @@
 ---
 layout: default
 title: gRPC-Gateway
-nav_order: 1
+nav_order: 0
 description: "Documentation site for the gRPC-Gateway"
 permalink: /
 ---

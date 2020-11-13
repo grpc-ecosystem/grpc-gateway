@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Patch Feature
-nav_order: 12
+parent: Mapping
+nav_order: 3
 ---
 
 # Patch Feature

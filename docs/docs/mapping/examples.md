@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Examples
-nav_order: 6
+parent: Mapping
+nav_order: 1
 ---
 
 # Examples

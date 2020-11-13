@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Tracing
-nav_order: 14
+parent: Operations
+nav_order: 4
 ---
 
 # Tracing
