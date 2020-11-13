@@ -455,7 +455,7 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 		// }
 		{
 			MsgDescs: []*descriptorpb.DescriptorProto{
-				&descriptorpb.DescriptorProto{
+				{
 					Name: proto.String("QueryMessage"),
 					Field: []*descriptorpb.FieldDescriptorProto{
 						{
@@ -471,7 +471,7 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 						},
 					},
 				},
-				&descriptorpb.DescriptorProto{
+				{
 					Name: proto.String("BaseMessage"),
 					Field: []*descriptorpb.FieldDescriptorProto{
 						{
@@ -489,7 +489,7 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 					},
 				},
 				// Note there is no recursive nature to this message
-				&descriptorpb.DescriptorProto{
+				{
 					Name: proto.String("NonRecursiveMessage"),
 					Field: []*descriptorpb.FieldDescriptorProto{
 						{
@@ -2391,11 +2391,11 @@ func TestSchemaOfField(t *testing.T) {
 	var fieldOptions = new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldOptions, openapi_options.E_Openapiv2Field, jsonSchema)
 
-	var requiredField = []annotations.FieldBehavior{ annotations.FieldBehavior_REQUIRED }
+	var requiredField = []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
 	var requiredFieldOptions = new(descriptorpb.FieldOptions)
 	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, requiredField)
 
-	var outputOnlyField = []annotations.FieldBehavior{ annotations.FieldBehavior_OUTPUT_ONLY }
+	var outputOnlyField = []annotations.FieldBehavior{annotations.FieldBehavior_OUTPUT_ONLY}
 	var outputOnlyOptions = new(descriptorpb.FieldOptions)
 	proto.SetExtension(outputOnlyOptions, annotations.E_FieldBehavior, outputOnlyField)
 
@@ -2909,8 +2909,8 @@ func TestSchemaOfField(t *testing.T) {
 		{
 			field: &descriptor.Field{
 				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-					Name: proto.String("required_via_field_behavior_field"),
-					Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+					Name:    proto.String("required_via_field_behavior_field"),
+					Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
 					Options: requiredFieldOptions,
 				},
 			},
@@ -2925,8 +2925,8 @@ func TestSchemaOfField(t *testing.T) {
 		{
 			field: &descriptor.Field{
 				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-					Name: proto.String("readonly_via_field_behavior_field"),
-					Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+					Name:    proto.String("readonly_via_field_behavior_field"),
+					Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
 					Options: outputOnlyOptions,
 				},
 			},
@@ -3068,17 +3068,17 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 	jsonSchema := &openapi_options.JSONSchema{
 		Title:       "field title",
 		Description: "field description",
-		Required: []string { "aRequiredField" },
+		Required:    []string{"aRequiredField"},
 	}
 
 	var requiredField = new(descriptorpb.FieldOptions)
 	proto.SetExtension(requiredField, openapi_options.E_Openapiv2Field, jsonSchema)
 
-	var fieldBehaviorRequired = []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED }
+	var fieldBehaviorRequired = []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
 	var requiredFieldOptions = new(descriptorpb.FieldOptions)
 	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, fieldBehaviorRequired)
 
-	var fieldBehaviorOutputOnlyField = []annotations.FieldBehavior{ annotations.FieldBehavior_OUTPUT_ONLY }
+	var fieldBehaviorOutputOnlyField = []annotations.FieldBehavior{annotations.FieldBehavior_OUTPUT_ONLY}
 	var fieldBehaviorOutputOnlyOptions = new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldBehaviorOutputOnlyOptions, annotations.E_FieldBehavior, fieldBehaviorOutputOnlyField)
 
@@ -3287,9 +3287,9 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			schema: map[string]openapi_options.Schema{
 				"Message": {
 					JsonSchema: &openapi_options.JSONSchema{
-						Title:            "title",
-						Description:      "desc",
-						Required:         []string{"req"},
+						Title:       "title",
+						Description: "desc",
+						Required:    []string{"req"},
 					},
 				},
 			},
@@ -3324,9 +3324,9 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					Name: proto.String("Message"),
 					Field: []*descriptorpb.FieldDescriptorProto{
 						{
-							Name:   proto.String("aRequiredField"),
-							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-							Number: proto.Int32(1),
+							Name:    proto.String("aRequiredField"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(1),
 							Options: requiredFieldOptions,
 						},
 						{
@@ -3341,9 +3341,9 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			schema: map[string]openapi_options.Schema{
 				"Message": {
 					JsonSchema: &openapi_options.JSONSchema{
-						Title:            "title",
-						Description:      "desc",
-						Required:         []string{"req"},
+						Title:       "title",
+						Description: "desc",
+						Required:    []string{"req"},
 					},
 				},
 			},
@@ -3362,7 +3362,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 								schemaCore: schemaCore{
 									Type: "string",
 								},
-								Required:    []string{"aRequiredField"},
+								Required: []string{"aRequiredField"},
 							},
 						},
 						{
