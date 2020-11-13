@@ -1355,6 +1355,9 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 			for _, secReq := range spb.Security {
 				newSecReq := openapiSecurityRequirementObject{}
 				for secReqKey, secReqValue := range secReq.SecurityRequirement {
+					if secReqValue == nil {
+						return nil, fmt.Errorf("malformed security requirement spec for key %q; value is required", secReqKey)
+					}
 					newSecReqValue := make([]string, len(secReqValue.Scope))
 					copy(newSecReqValue, secReqValue.Scope)
 					newSecReq[secReqKey] = newSecReqValue

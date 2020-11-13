@@ -3732,3 +3732,35 @@ func Test_getReservedJsonName(t *testing.T) {
 		})
 	}
 }
+
+func TestParseIncompleteSecurityRequirement(t *testing.T) {
+	swagger := openapi_options.Swagger{
+		Security: []*openapi_options.SecurityRequirement{
+			{
+				SecurityRequirement: map[string]*openapi_options.SecurityRequirement_SecurityRequirementValue{
+					"key": nil,
+				},
+			},
+		},
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			Options:        &descriptorpb.FileOptions{},
+		},
+	}
+	proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), openapi_options.E_Openapiv2Swagger, &swagger)
+	reg := descriptor.NewRegistry()
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Errorf("failed to reg.Load(): %v", err)
+		return
+	}
+	_, err = applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err == nil {
+		t.Errorf("applyTemplate(%#v) did not error as expected", file)
+		return
+	}
+}
