@@ -207,6 +207,9 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 				Dependency:     []string{},
 				MessageType:    test.MsgDescs,
 				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String(".;example"),
+				},
 			},
 			GoPkg: descriptor.GoPackage{
 				Path: "example.com/path/to/example/example.pb",
@@ -390,6 +393,9 @@ func TestMessageToQueryParameters(t *testing.T) {
 				Dependency:     []string{},
 				MessageType:    test.MsgDescs,
 				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String(".;example"),
+				},
 			},
 			GoPkg: descriptor.GoPackage{
 				Path: "example.com/path/to/example/example.pb",
@@ -512,6 +518,9 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 				Dependency:     []string{},
 				MessageType:    test.MsgDescs,
 				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String(".;example"),
+				},
 			},
 			GoPkg: descriptor.GoPackage{
 				Path: "example.com/path/to/example/example.pb",
@@ -634,6 +643,9 @@ func TestMessageToQueryParametersRecursive(t *testing.T) {
 				Dependency:     []string{},
 				MessageType:    test.MsgDescs,
 				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String(".;example"),
+				},
 			},
 			GoPkg: descriptor.GoPackage{
 				Path: "example.com/path/to/example/example.pb",
@@ -744,6 +756,9 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 				Dependency:     []string{},
 				MessageType:    test.MsgDescs,
 				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String(".;example"),
+				},
 			},
 			GoPkg: descriptor.GoPackage{
 				Path: "example.com/path/to/example/example.pb",
@@ -864,6 +879,9 @@ func TestMessageToQueryParametersWellKnownTypes(t *testing.T) {
 					Dependency:     []string{},
 					MessageType:    test.WellKnownMsgDescs,
 					Service:        []*descriptorpb.ServiceDescriptorProto{},
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String("google/well_known"),
+					},
 				},
 				{
 					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
@@ -872,6 +890,9 @@ func TestMessageToQueryParametersWellKnownTypes(t *testing.T) {
 					Dependency:     []string{"google/well_known.proto"},
 					MessageType:    test.MsgDescs,
 					Service:        []*descriptorpb.ServiceDescriptorProto{},
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String("acme/example"),
+					},
 				},
 			},
 		})
@@ -916,6 +937,9 @@ func TestApplyTemplateSimple(t *testing.T) {
 			Package:        proto.String("example"),
 			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
 			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String(".;example"),
+			},
 		},
 		GoPkg: descriptor.GoPackage{
 			Path: "example.com/path/to/example/example.pb",
@@ -1016,6 +1040,9 @@ func TestApplyTemplateMultiService(t *testing.T) {
 			Package:        proto.String("example"),
 			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
 			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String(".;example"),
+			},
 		},
 		GoPkg: descriptor.GoPackage{
 			Path: "example.com/path/to/example/example.pb",
@@ -1125,6 +1152,9 @@ func TestApplyTemplateOverrideOperationID(t *testing.T) {
 				Package:        proto.String("example"),
 				MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
 				Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String(".;example"),
+				},
 			},
 			GoPkg: descriptor.GoPackage{
 				Path: "example.com/path/to/example/example.pb",
@@ -1242,7 +1272,9 @@ func TestApplyTemplateExtensions(t *testing.T) {
 				Package:        proto.String("example"),
 				MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
 				Service:        []*descriptorpb.ServiceDescriptorProto{svc},
-				Options:        &descriptorpb.FileOptions{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String(".;example"),
+				},
 			},
 			GoPkg: descriptor.GoPackage{
 				Path: "example.com/path/to/example/example.pb",
@@ -1496,6 +1528,9 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 			Package:        proto.String("example"),
 			MessageType:    []*descriptorpb.DescriptorProto{msgdesc, nesteddesc},
 			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String(".;example"),
+			},
 		},
 		GoPkg: descriptor.GoPackage{
 			Path: "example.com/path/to/example/example.pb",
@@ -1659,6 +1694,9 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 			Package:        proto.String("example"),
 			MessageType:    []*descriptorpb.DescriptorProto{msgdesc, nesteddesc},
 			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String(".;example"),
+			},
 		},
 		GoPkg: descriptor.GoPackage{
 			Path: "example.com/path/to/example/example.pb",
@@ -1823,6 +1861,9 @@ func TestApplyTemplateRequestWithUnusedReferences(t *testing.T) {
 			Package:        proto.String("example"),
 			MessageType:    []*descriptorpb.DescriptorProto{reqdesc, respdesc},
 			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String(".;example"),
+			},
 		},
 		GoPkg: descriptor.GoPackage{
 			Path: "example.com/path/to/example/example.pb",
@@ -1989,6 +2030,9 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 			Name:           proto.String("book.proto"),
 			MessageType:    []*descriptorpb.DescriptorProto{bookDesc, createDesc},
 			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String(".;example"),
+			},
 		},
 		GoPkg: descriptor.GoPackage{
 			Path: "example.com/path/to/book.pb",
@@ -2861,6 +2905,9 @@ func TestSchemaOfField(t *testing.T) {
 				{
 					Name:    proto.String("third_party/google.proto"),
 					Package: proto.String("google.protobuf"),
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String("third_party/google"),
+					},
 					MessageType: []*descriptorpb.DescriptorProto{
 						protodesc.ToDescriptorProto((&structpb.Struct{}).ProtoReflect().Descriptor()),
 						protodesc.ToDescriptorProto((&structpb.Value{}).ProtoReflect().Descriptor()),
@@ -2887,6 +2934,9 @@ func TestSchemaOfField(t *testing.T) {
 					Name:           proto.String("example.proto"),
 					Package:        proto.String("example"),
 					Dependency:     []string{"third_party/google.proto"},
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String(".;example"),
+					},
 					MessageType: []*descriptorpb.DescriptorProto{
 						{
 							Name: proto.String("Message"),
@@ -3183,6 +3233,9 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					MessageType:    test.msgDescs,
 					EnumType:       []*descriptorpb.EnumDescriptorProto{},
 					Service:        []*descriptorpb.ServiceDescriptorProto{},
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String(".;example"),
+					},
 				},
 				Messages: msgs,
 			}
@@ -3517,6 +3570,9 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 					MessageType:    test.msgDescs,
 					EnumType:       []*descriptorpb.EnumDescriptorProto{},
 					Service:        []*descriptorpb.ServiceDescriptorProto{},
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String(".;example"),
+					},
 				},
 				Messages: msgs,
 			}
@@ -3584,6 +3640,9 @@ func TestTemplateWithoutErrorDefinition(t *testing.T) {
 			Package:        proto.String("example"),
 			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
 			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String(".;example"),
+			},
 		},
 		GoPkg: descriptor.GoPackage{
 			Path: "example.com/path/to/example/example.pb",
@@ -3748,7 +3807,9 @@ func TestParseIncompleteSecurityRequirement(t *testing.T) {
 			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
 			Name:           proto.String("example.proto"),
 			Package:        proto.String("example"),
-			Options:        &descriptorpb.FileOptions{},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String(".;example"),
+			},
 		},
 	}
 	proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), openapi_options.E_Openapiv2Swagger, &swagger)
