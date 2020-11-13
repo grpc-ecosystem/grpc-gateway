@@ -214,9 +214,12 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 			},
 			Messages: msgs,
 		}
-		reg.Load(&pluginpb.CodeGeneratorRequest{
+		err := reg.Load(&pluginpb.CodeGeneratorRequest{
 			ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 		})
+		if err != nil {
+			t.Fatalf("failed to load code generator request: %v", err)
+		}
 
 		message, err := reg.LookupMsg("", ".example."+test.Message)
 		if err != nil {
@@ -394,9 +397,12 @@ func TestMessageToQueryParameters(t *testing.T) {
 			},
 			Messages: msgs,
 		}
-		reg.Load(&pluginpb.CodeGeneratorRequest{
+		err := reg.Load(&pluginpb.CodeGeneratorRequest{
 			ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 		})
+		if err != nil {
+			t.Fatalf("failed to load code generator request: %v", err)
+		}
 
 		message, err := reg.LookupMsg("", ".example."+test.Message)
 		if err != nil {
@@ -513,9 +519,12 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 			},
 			Messages: msgs,
 		}
-		reg.Load(&pluginpb.CodeGeneratorRequest{
+		err := reg.Load(&pluginpb.CodeGeneratorRequest{
 			ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 		})
+		if err != nil {
+			t.Fatalf("failed to load code generator request: %v", err)
+		}
 
 		message, err := reg.LookupMsg("", ".example."+test.Message)
 		if err != nil {
@@ -632,9 +641,12 @@ func TestMessageToQueryParametersRecursive(t *testing.T) {
 			},
 			Messages: msgs,
 		}
-		reg.Load(&pluginpb.CodeGeneratorRequest{
+		err := reg.Load(&pluginpb.CodeGeneratorRequest{
 			ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 		})
+		if err != nil {
+			t.Fatalf("failed to load code generator request: %v", err)
+		}
 
 		message, err := reg.LookupMsg("", ".example."+test.Message)
 		if err != nil {
@@ -739,9 +751,12 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 			},
 			Messages: msgs,
 		}
-		reg.Load(&pluginpb.CodeGeneratorRequest{
+		err := reg.Load(&pluginpb.CodeGeneratorRequest{
 			ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 		})
+		if err != nil {
+			t.Fatalf("failed to load code generator request: %v", err)
+		}
 
 		message, err := reg.LookupMsg("", ".example."+test.Message)
 		if err != nil {
@@ -1542,7 +1557,12 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
 		return
 	}
-	reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+	})
+	if err != nil {
+		t.Fatalf("failed to load code generator request: %v", err)
+	}
 	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
@@ -1700,7 +1720,12 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
 		return
 	}
-	reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+	})
+	if err != nil {
+		t.Fatalf("failed to load code generator request: %v", err)
+	}
 	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
@@ -1860,7 +1885,12 @@ func TestApplyTemplateRequestWithUnusedReferences(t *testing.T) {
 		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
 		return
 	}
-	reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+	})
+	if err != nil {
+		t.Fatalf("failed to load code generator request: %v", err)
+	}
 	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
@@ -3156,9 +3186,12 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 				},
 				Messages: msgs,
 			}
-			reg.Load(&pluginpb.CodeGeneratorRequest{
+			err := reg.Load(&pluginpb.CodeGeneratorRequest{
 				ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 			})
+			if err != nil {
+				t.Fatalf("failed to load code generator request: %v", err)
+			}
 
 			msgMap := map[string]*descriptor.Message{}
 			for _, d := range test.msgDescs {
@@ -3487,9 +3520,12 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 				},
 				Messages: msgs,
 			}
-			reg.Load(&pluginpb.CodeGeneratorRequest{
+			err := reg.Load(&pluginpb.CodeGeneratorRequest{
 				ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 			})
+			if err != nil {
+				t.Fatalf("failed to load code generator request: %v", err)
+			}
 
 			msgMap := map[string]*descriptor.Message{}
 			for _, d := range test.msgDescs {

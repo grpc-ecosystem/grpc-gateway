@@ -102,7 +102,10 @@ func TestTokenize(t *testing.T) {
 }
 
 func TestParseSegments(t *testing.T) {
-	flag.Set("v", "3")
+	err := flag.Set("v", "3")
+	if err != nil {
+		t.Fatalf("failed to set flag: %v", err)
+	}
 	for _, spec := range []struct {
 		tokens []string
 		want   []segment
@@ -247,7 +250,10 @@ func TestParseSegments(t *testing.T) {
 }
 
 func TestParseSegmentsWithErrors(t *testing.T) {
-	flag.Set("v", "3")
+	err := flag.Set("v", "3")
+	if err != nil {
+		t.Fatalf("failed to set flag: %v", err)
+	}
 	for _, spec := range []struct {
 		tokens []string
 	}{
