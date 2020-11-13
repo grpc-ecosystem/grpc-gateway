@@ -154,7 +154,6 @@ func (p Pattern) Match(components []string, verb string) (map[string]string, err
 			components = append([]string{}, components...)
 			components[len(components)-1] += ":" + verb
 		}
-		verb = ""
 	}
 
 	var pos int

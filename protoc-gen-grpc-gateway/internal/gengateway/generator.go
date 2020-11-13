@@ -3,13 +3,14 @@ package gengateway
 import (
 	"errors"
 	"fmt"
+	"go/format"
+	"path"
+
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	gen "github.com/grpc-ecosystem/grpc-gateway/v2/internal/generator"
-	"go/format"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
-	"path"
 )
 
 var (
