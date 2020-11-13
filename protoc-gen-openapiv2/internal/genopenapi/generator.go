@@ -19,7 +19,7 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
 
-	//lint:ignore SA1019 known issue, will be replaced when possible
+	//nolint:staticcheck // Known issue, will be replaced when possible
 	legacydescriptor "github.com/golang/protobuf/descriptor"
 )
 
