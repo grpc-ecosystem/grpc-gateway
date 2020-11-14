@@ -3,6 +3,7 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal
 package grpc.gateway.examples.internal.proto.examplepb;
 
 import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
@@ -272,6 +273,12 @@ message ABitOfEverything {
 	Nested nested_annotation = 36 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {title: "Nested object title", description: "Nested object description."}];
 
 	int64 int64_override_type = 37 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {type: INTEGER}];
+
+	// mark a field as required in Open API definition
+	string required_string_via_field_behavior_annotation = 38 [(google.api.field_behavior) = REQUIRED];
+
+	// mark a field as readonly in Open API definition
+	string output_only_string_via_field_behavior_annotation = 39 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality
