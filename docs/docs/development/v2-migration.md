@@ -1,7 +1,8 @@
 ---
 layout: default
 title: gRPC-Gateway v2 migration guide
-nav_order: 17
+parent: Developing
+nav_order: 1
 ---
 
 # gRPC-Gateway v2 migration guide

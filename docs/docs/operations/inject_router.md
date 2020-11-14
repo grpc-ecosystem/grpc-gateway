@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Adding custom routes to the mux
-nav_order: 11
+parent: Operations
+nav_order: 2
 ---
 
 # Adding custom routes to the mux

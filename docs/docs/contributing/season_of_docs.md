@@ -1,7 +1,7 @@
 ---
 layout: default
 title: 2020 Season of Docs
-nav_order: 13
+parent: Contributing
 ---
 
 # 2020 Season of Docs

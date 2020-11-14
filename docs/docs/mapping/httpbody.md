@@ -1,7 +1,8 @@
 ---
 layout: default
 title: HttpBody messages
-nav_order: 10
+parent: Mapping
+nav_order: 2
 ---
 
 # HttpBody messages
