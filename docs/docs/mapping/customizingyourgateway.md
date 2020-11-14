@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Customizing your gateway
-nav_order: 4
+parent: Mapping
+nav_order: 10
 ---
 
 # Customizing your gateway

@@ -1,7 +1,8 @@
 ---
 layout: default
-title: AWS
-nav_order: 2
+title: AWS Gateway Integration
+parent: Operations
+nav_order: 5
 ---
 
 # AWS

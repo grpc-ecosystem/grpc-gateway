@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Installation for Cygwin
-nav_order: 5
+parent: Developing
+nav_order: 2
 ---
 
 # Installation for Cygwin
