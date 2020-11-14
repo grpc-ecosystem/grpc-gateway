@@ -208,7 +208,7 @@ func TestUnannotatedEchoBodyClient(t *testing.T) {
 
 	cl := unannotatedecho.NewAPIClient(cfg)
 
-	req := unannotatedecho.ExamplepbUnannotatedSimpleMessage{Id: "foo"}
+	req := unannotatedecho.ExamplepbUnannotatedSimpleMessage{Id: "foo", Num: "1"}
 	resp, _, err := cl.UnannotatedEchoServiceApi.UnannotatedEchoServiceEchoBody(context.Background(), req)
 	if err != nil {
 		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)

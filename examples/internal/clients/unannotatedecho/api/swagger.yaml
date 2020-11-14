@@ -349,6 +349,7 @@ definitions:
     type: "object"
     required:
     - "id"
+    - "num"
     properties:
       id:
         type: "string"

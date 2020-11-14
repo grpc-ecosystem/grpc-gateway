@@ -449,7 +449,8 @@
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"
       },
       "required": [
-        "id"
+        "id",
+        "num"
       ]
     },
     "protobufAny": {

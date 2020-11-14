@@ -447,6 +447,20 @@
             "required": false,
             "type": "integer",
             "format": "int64"
+          },
+          {
+            "name": "requiredStringViaFieldBehaviorAnnotation",
+            "description": "mark a field as required in Open API definition.",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "outputOnlyStringViaFieldBehaviorAnnotation",
+            "description": "mark a field as readonly in Open API definition.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -767,6 +781,20 @@
             "required": false,
             "type": "integer",
             "format": "int64"
+          },
+          {
+            "name": "requiredStringViaFieldBehaviorAnnotation",
+            "description": "mark a field as required in Open API definition.",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "outputOnlyStringViaFieldBehaviorAnnotation",
+            "description": "mark a field as readonly in Open API definition.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -1076,6 +1104,20 @@
             "required": false,
             "type": "integer",
             "format": "int64"
+          },
+          {
+            "name": "requiredStringViaFieldBehaviorAnnotation",
+            "description": "mark a field as required in Open API definition.",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "outputOnlyStringViaFieldBehaviorAnnotation",
+            "description": "mark a field as readonly in Open API definition.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -1403,6 +1445,20 @@
             "required": false,
             "type": "integer",
             "format": "int64"
+          },
+          {
+            "name": "requiredStringViaFieldBehaviorAnnotation",
+            "description": "mark a field as required in Open API definition.",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "outputOnlyStringViaFieldBehaviorAnnotation",
+            "description": "mark a field as readonly in Open API definition.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -2998,6 +3054,18 @@
         "int64OverrideType": {
           "type": "integer",
           "format": "int64"
+        },
+        "requiredStringViaFieldBehaviorAnnotation": {
+          "type": "string",
+          "title": "mark a field as required in Open API definition",
+          "required": [
+            "required_string_via_field_behavior_annotation"
+          ]
+        },
+        "outputOnlyStringViaFieldBehaviorAnnotation": {
+          "type": "string",
+          "title": "mark a field as readonly in Open API definition",
+          "readOnly": true
         }
       },
       "description": "Intentionaly complicated message type to cover many features of Protobuf.",
@@ -3008,8 +3076,10 @@
       },
       "required": [
         "uuid",
-        "int64_value",
-        "double_value"
+        "int64Value",
+        "doubleValue",
+        "floatValue",
+        "requiredStringViaFieldBehaviorAnnotation"
       ]
     },
     "examplepbABitOfEverythingRepeated": {
