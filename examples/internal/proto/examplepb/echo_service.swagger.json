@@ -526,11 +526,7 @@
             "name": "updateMask",
             "in": "query",
             "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
+            "type": "string"
           }
         ],
         "tags": [
@@ -559,10 +555,7 @@
           "$ref": "#/definitions/examplepbDynamicMessage"
         },
         "updateMask": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         }
       }
     },

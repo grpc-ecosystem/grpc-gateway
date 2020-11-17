@@ -2264,11 +2264,7 @@
             "description": "The paths to update.",
             "in": "query",
             "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
+            "type": "string"
           }
         ],
         "tags": [
@@ -2328,11 +2324,7 @@
             "description": "The paths to update.",
             "in": "query",
             "required": false,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "collectionFormat": "multi"
+            "type": "string"
           }
         ],
         "tags": [
@@ -3264,10 +3256,7 @@
           "$ref": "#/definitions/examplepbABitOfEverything"
         },
         "updateMask": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
+          "type": "string",
           "description": "The paths to update."
         }
       },

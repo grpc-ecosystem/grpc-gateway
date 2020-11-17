@@ -30,10 +30,7 @@ import (
 // https://github.com/protocolbuffers/protobuf-go/blob/v1.25.0/encoding/protojson/well_known_types.go
 var wktSchemas = map[string]schemaCore{
 	".google.protobuf.FieldMask": {
-		Type: "array",
-		Items: (*openapiItemsObject)(&schemaCore{
-			Type: "string",
-		}),
+		Type: "string",
 	},
 	".google.protobuf.Timestamp": {
 		Type:   "string",
