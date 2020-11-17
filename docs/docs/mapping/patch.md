@@ -94,7 +94,7 @@ that is what we specify in the field_mask.
 
 ```shell
 $ curl \
-	--data '{"abe":{"single_nested":{"amount":457},"string_value":"some value that won't get updated because not in the field mask"},"update_mask":{"paths":["single_nested"]}}' \
+	--data '{"abe":{"single_nested":{"amount":457},"string_value":"some value that will not get updated because not in the field mask"},"update_mask":"singleNested"}}' \
 	-X PATCH \
 	http://address:port/v2a/example/a_bit_of_everything/1
 ```
