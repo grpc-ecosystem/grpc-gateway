@@ -851,11 +851,7 @@ func TestMessageToQueryParametersWellKnownTypes(t *testing.T) {
 					Name:     "a_field_mask",
 					In:       "query",
 					Required: false,
-					Type:     "array",
-					Items: &openapiItemsObject{
-						Type: "string",
-					},
-					CollectionFormat: "multi",
+					Type:     "string",
 				},
 				{
 					Name:     "a_timestamp",
@@ -2443,10 +2439,7 @@ func TestSchemaOfField(t *testing.T) {
 			refs: make(refMap),
 			expected: openapiSchemaObject{
 				schemaCore: schemaCore{
-					Type: "array",
-					Items: &openapiItemsObject{
-						Type: "string",
-					},
+					Type: "string",
 				},
 			},
 		},

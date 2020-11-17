@@ -1916,11 +1916,9 @@ paths:
         in: "query"
         description: "The paths to update."
         required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
+        type: "string"
         x-exportParamName: "UpdateMask"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -1962,11 +1960,9 @@ paths:
         in: "query"
         description: "The paths to update."
         required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
+        type: "string"
         x-exportParamName: "UpdateMask"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -2683,10 +2679,8 @@ definitions:
       abe:
         $ref: "#/definitions/examplepbABitOfEverything"
       updateMask:
-        type: "array"
+        type: "string"
         description: "The paths to update."
-        items:
-          type: "string"
     title: "UpdateV2Request request for update includes the message and the update\
       \ mask"
   pathenumPathEnum:

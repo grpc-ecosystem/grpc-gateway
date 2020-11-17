@@ -433,11 +433,9 @@ paths:
       - name: "updateMask"
         in: "query"
         required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
+        type: "string"
         x-exportParamName: "UpdateMask"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -468,16 +466,12 @@ definitions:
       body:
         $ref: "#/definitions/examplepbDynamicMessage"
       updateMask:
-        type: "array"
-        items:
-          type: "string"
+        type: "string"
     example:
       body:
         structField: "{}"
         valueField: "{}"
-      updateMask:
-      - "updateMask"
-      - "updateMask"
+      updateMask: "updateMask"
   examplepbEmbedded:
     type: "object"
     properties:

@@ -13,5 +13,5 @@ package abe
 type ExamplepbUpdateV2Request struct {
 	Abe *ExamplepbABitOfEverything `json:"abe,omitempty"`
 	// The paths to update.
-	UpdateMask []string `json:"updateMask,omitempty"`
+	UpdateMask string `json:"updateMask,omitempty"`
 }

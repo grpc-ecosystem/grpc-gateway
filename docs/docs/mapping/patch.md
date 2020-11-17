@@ -82,7 +82,7 @@ else in our resource the same.
 
 ```shell
 $ curl \
-	--data '{"string_value": "strprefix/foo"}' \
+	--data '{"stringValue": "strprefix/foo"}' \
 	-X PATCH \
 	http://address:port/v2/example/a_bit_of_everything/1
 ```
@@ -94,7 +94,7 @@ that is what we specify in the field_mask.
 
 ```shell
 $ curl \
-	--data '{"abe":{"single_nested":{"amount":457},"string_value":"some value that won't get updated because not in the field mask"},"update_mask":{"paths":["single_nested"]}}' \
+	--data '{"abe":{"singleNested":{"amount":457},"stringValue":"some value that will not get updated because not in the field mask"},"updateMask":"singleNested"}}' \
 	-X PATCH \
 	http://address:port/v2a/example/a_bit_of_everything/1
 ```
