@@ -19,13 +19,13 @@ This server is generated according to [custom options](https://cloud.google.com/
 
 ---
 
-## About
+## Getting started
 
 [![circleci](https://img.shields.io/circleci/build/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=circleci&logoColor=ffffff&style=flat-square)](https://circleci.com/gh/grpc-ecosystem/grpc-gateway)
 [![codecov](https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=codecov&logoColor=ffffff&style=flat-square)](https://codecov.io/gh/grpc-ecosystem/grpc-gateway)
-[![forks](https://img.shields.io/github/forks/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/network/members)
-[![issues](https://img.shields.io/github/issues/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/issues)
+[![slack](https://img.shields.io/badge/slack-grpc--gateway-379c9c?logo=slack&logoColor=ffffff&style=flat-square)](https://app.slack.com/client/T029RQSE6/CBATURP1D)
 [![license](https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt)
+[![release](https://img.shields.io/github/v/release/grpc-ecosystem/grpc-gateway?color=379c9c&logoColor=ffffff&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/releases)
 [![stars](https://img.shields.io/github/stars/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/stargazers)
 
 grpc-gateway is a plugin of [protoc](https://github.com/protocolbuffers/protobuf).
