@@ -76,7 +76,7 @@ def _run_proto_gen_openapi(
         extra_inputs.append(grpc_api_configuration)
         args.add("--openapiv2_opt", "grpc_api_configuration=%s" % grpc_api_configuration.path)
 
-    if grpc_api_configuration:
+    if openapi_configuration:
         extra_inputs.append(openapi_configuration)
         args.add("--openapiv2_opt", "openapi_configuration=%s" % openapi_configuration.path)
 
