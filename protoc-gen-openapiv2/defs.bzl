@@ -51,10 +51,18 @@ def _run_proto_gen_openapi(
         transitive_proto_srcs,
         protoc,
         protoc_gen_openapiv2,
-        grpc_api_configuration,
         single_output,
+        allow_delete_body,
+        grpc_api_configuration,
         json_names_for_fields,
+        repeated_path_param_separator,
+        include_package_in_tags,
         fqn_for_openapi_name,
+        use_go_templates,
+        disable_default_errors,
+        enums_as_ints,
+        simple_operation_ids,
+        openapi_configuration,
         generate_unbound_methods):
     args = actions.args()
 
@@ -68,6 +76,10 @@ def _run_proto_gen_openapi(
         extra_inputs.append(grpc_api_configuration)
         args.add("--openapiv2_opt", "grpc_api_configuration=%s" % grpc_api_configuration.path)
 
+    if grpc_api_configuration:
+        extra_inputs.append(openapi_configuration)
+        args.add("--openapiv2_opt", "openapi_configuration=%s" % openapi_configuration.path)
+
     if not json_names_for_fields:
         args.add("--openapiv2_opt", "json_names_for_fields=false")
 
@@ -76,6 +88,26 @@ def _run_proto_gen_openapi(
 
     if generate_unbound_methods:
         args.add("--openapiv2_opt", "generate_unbound_methods=true")
+
+    if simple_operation_ids:
+        args.add("--openapiv2_opt", "simple_operation_ids=true")
+
+    if allow_delete_body:
+        args.add("--openapiv2_opt", "allow_delete_body=true")
+
+    if include_package_in_tags:
+        args.add("--openapiv2_opt", "include_package_in_tags=true")
+
+    if use_go_templates:
+        args.add("--openapiv2_opt", "use_go_templates=true")
+
+    if disable_default_errors:
+        args.add("--openapiv2_opt", "disable_default_errors=true")
+
+    if enums_as_ints:
+        args.add("--openapiv2_opt", "enums_as_ints=true")
+
+    args.add("--openapiv2_opt", "repeated_path_param_separator=%s" % repeated_path_param_separator)
 
     proto_file_infos = _direct_source_infos(proto_info)
 
@@ -158,10 +190,18 @@ def _proto_gen_openapi_impl(ctx):
                     ),
                     protoc = ctx.executable._protoc,
                     protoc_gen_openapiv2 = ctx.executable._protoc_gen_openapi,
-                    grpc_api_configuration = ctx.file.grpc_api_configuration,
                     single_output = ctx.attr.single_output,
+                    allow_delete_body = ctx.attr.allow_delete_body,
+                    grpc_api_configuration = ctx.file.grpc_api_configuration,
                     json_names_for_fields = ctx.attr.json_names_for_fields,
+                    repeated_path_param_separator = ctx.attr.repeated_path_param_separator,
+                    include_package_in_tags = ctx.attr.include_package_in_tags,
                     fqn_for_openapi_name = ctx.attr.fqn_for_openapi_name,
+                    use_go_templates = ctx.attr.use_go_templates,
+                    disable_default_errors = ctx.attr.disable_default_errors,
+                    enums_as_ints = ctx.attr.enums_as_ints,
+                    simple_operation_ids = ctx.attr.simple_operation_ids,
+                    openapi_configuration = ctx.attr.openapi_configuration,
                     generate_unbound_methods = ctx.attr.generate_unbound_methods,
                 ),
             ),
@@ -174,25 +214,81 @@ protoc_gen_openapiv2 = rule(
             mandatory = True,
             providers = [ProtoInfo],
         ),
-        "grpc_api_configuration": attr.label(
-            allow_single_file = True,
-            mandatory = False,
-        ),
         "single_output": attr.bool(
             default = False,
             mandatory = False,
+            doc = "if set, rule will generate single OpenAPI file",
+        ),
+        "allow_delete_body": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "unless set, HTTP DELETE methods may not have a body",
+        ),
+        "grpc_api_configuration": attr.label(
+            allow_single_file = True,
+            mandatory = False,
+            doc = "label gRPC API Configuration in YAML format",
         ),
         "json_names_for_fields": attr.bool(
             default = True,
             mandatory = False,
+            doc = "if set, the original proto name will be used for" +
+                  " generating OpenAPI definitions",
+        ),
+        "repeated_path_param_separator": attr.string(
+            default = "csv",
+            mandatory = False,
+            values = ["csv", "pipes", "ssv", "ysv"],
+            doc = "configures how repeated fields should be split." +
+                  " Allowed values are `csv`, `pipes`, `ssv` and `tsv`",
+        ),
+        "include_package_in_tags": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if unset, the gRPC service name is added to the `Tags`" +
+                  " field of each operation. if set and the `package` directive" +
+                  " is shown in the proto file, the package name will be " +
+                  " prepended to the service name",
         ),
         "fqn_for_openapi_name": attr.bool(
             default = False,
             mandatory = False,
+            doc = "if set, the object's OpenAPI names will use the fully" +
+                  " qualify name from the proto definition" +
+                  " (ie my.package.MyMessage.MyInnerMessage",
+        ),
+        "use_go_templates": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, you can use Go templates in protofile comments",
+        ),
+        "disable_default_errors": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, disables generation of default errors." +
+                  " This is useful if you have defined custom error handling",
+        ),
+        "enums_as_ints": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "whether to render enum values as integers, as opposed to string values",
+        ),
+        "simple_operation_ids": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "whether to remove the service prefix in the operationID" +
+                  " generation. Can introduce duplicate operationIDs, use with caution.",
+        ),
+        "openapi_configuration": attr.label(
+            allow_single_file = True,
+            mandatory = False,
+            doc = "label with OpenAPI Configuration in YAML format",
         ),
         "generate_unbound_methods": attr.bool(
             default = False,
             mandatory = False,
+            doc = "generate swagger metadata even for RPC methods that have" +
+                  " no HttpRule annotation",
         ),
         "_protoc": attr.label(
             default = "@com_google_protobuf//:protoc",
