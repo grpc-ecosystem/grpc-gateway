@@ -21,8 +21,6 @@ version: v1beta1
 build:
   roots:
     - proto
-    - third_party/grpc-gateway
-    - third_party/googleapis
 ```
 
 To generate type and gRPC stubs for Go, create the file `buf.gen.yaml` at the root of the repository:
