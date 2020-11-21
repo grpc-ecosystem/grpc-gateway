@@ -232,8 +232,7 @@ protoc_gen_openapiv2 = rule(
         "json_names_for_fields": attr.bool(
             default = True,
             mandatory = False,
-            doc = "if set, the original proto name will be used for" +
-                  " generating OpenAPI definitions",
+            doc = "if disabled, the original proto name will be used for generating OpenAPI definitions",
         ),
         "repeated_path_param_separator": attr.string(
             default = "csv",
