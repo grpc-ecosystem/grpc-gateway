@@ -217,7 +217,7 @@ protoc_gen_openapiv2 = rule(
         "single_output": attr.bool(
             default = False,
             mandatory = False,
-            doc = "if set, rule will generate single OpenAPI file",
+            doc = "if set, the rule will generate a single OpenAPI file",
         ),
         "allow_delete_body": attr.bool(
             default = False,
@@ -227,7 +227,7 @@ protoc_gen_openapiv2 = rule(
         "grpc_api_configuration": attr.label(
             allow_single_file = True,
             mandatory = False,
-            doc = "label gRPC API Configuration in YAML format",
+            doc = "path to file which describes the gRPC API Configuration in YAML format",
         ),
         "json_names_for_fields": attr.bool(
             default = True,
@@ -238,7 +238,7 @@ protoc_gen_openapiv2 = rule(
         "repeated_path_param_separator": attr.string(
             default = "csv",
             mandatory = False,
-            values = ["csv", "pipes", "ssv", "ysv"],
+            values = ["csv", "pipes", "ssv", "tsv"],
             doc = "configures how repeated fields should be split." +
                   " Allowed values are `csv`, `pipes`, `ssv` and `tsv`",
         ),
@@ -246,7 +246,7 @@ protoc_gen_openapiv2 = rule(
             default = False,
             mandatory = False,
             doc = "if unset, the gRPC service name is added to the `Tags`" +
-                  " field of each operation. if set and the `package` directive" +
+                  " field of each operation. If set and the `package` directive" +
                   " is shown in the proto file, the package name will be " +
                   " prepended to the service name",
         ),
@@ -254,7 +254,7 @@ protoc_gen_openapiv2 = rule(
             default = False,
             mandatory = False,
             doc = "if set, the object's OpenAPI names will use the fully" +
-                  " qualify name from the proto definition" +
+                  " qualified names from the proto definition" +
                   " (ie my.package.MyMessage.MyInnerMessage",
         ),
         "use_go_templates": attr.bool(
@@ -282,7 +282,7 @@ protoc_gen_openapiv2 = rule(
         "openapi_configuration": attr.label(
             allow_single_file = True,
             mandatory = False,
-            doc = "label with OpenAPI Configuration in YAML format",
+            doc = "path to file which describes the OpenAPI Configuration in YAML format",
         ),
         "generate_unbound_methods": attr.bool(
             default = False,
