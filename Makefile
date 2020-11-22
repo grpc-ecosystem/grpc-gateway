@@ -154,6 +154,7 @@ GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/generateunboundmetho
 EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS)
 SWAGGER_CODEGEN=swagger-codegen
 
+PROTOC=protoc --experimental_allow_proto3_optional
 PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
 
 .SUFFIXES: .go .proto
@@ -165,7 +166,7 @@ $(GO_GRPC_PLUGIN):
 	go build -o $(GO_GRPC_PLUGIN) $(GO_GRPC_PLUGIN_PKG)
 
 $(OPENAPIV2_GO): $(OPENAPIV2_PROTO) $(GO_PLUGIN)
-	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=paths=source_relative:. $(OPENAPIV2_PROTO)
+	$(PROTOC) -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=paths=source_relative:. $(OPENAPIV2_PROTO)
 
 $(GATEWAY_PLUGIN): $(GATEWAY_PLUGIN_SRC) $(OPENAPIV2_GO)
 	go build -o $@ $(GATEWAY_PLUGIN_PKG)
@@ -174,44 +175,44 @@ $(OPENAPI_PLUGIN): $(OPENAPI_PLUGIN_SRC) $(OPENAPIV2_GO)
 	go build -o $@ $(OPENAPI_PLUGIN_PKG)
 
 $(EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(EXAMPLES)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(EXAMPLES)
 $(EXAMPLE_DEPSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(EXAMPLE_DEPS)
-	protoc -I $(PROTOC_INC_PATH) -I. --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(@:.pb.go=.proto)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(@:.pb.go=.proto)
 
 $(RUNTIME_TEST_SRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(RUNTIME_TEST_PROTO)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(RUNTIME_TEST_PROTO)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(RUNTIME_TEST_PROTO)
 
 $(APICONFIG_SRCS): $(GO_PLUGIN) $(APICONFIG_PROTO)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=paths=source_relative:. $(APICONFIG_PROTO)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=paths=source_relative:. $(APICONFIG_PROTO)
 
 $(EXAMPLE_GWSRCS): ADDITIONAL_GW_FLAGS:=$(ADDITIONAL_GW_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml
 $(EXAMPLE_GWSRCS): ADDITIONAL_SA_FLAGS:=,standalone=true,grpc_api_configuration=examples/internal/proto/examplepb/standalone_echo_service.yaml
 $(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_SA_FLAGS):. $(STANDALONE_EXAMPLES)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_SA_FLAGS):. $(STANDALONE_EXAMPLES)
 	mv examples/internal/proto/examplepb/unannotated_echo_service.pb.gw.go examples/internal/proto/standalone/
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
 
 
 $(EXAMPLE_OPENAPISRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml,openapi_configuration=examples/internal/proto/examplepb/unannotated_echo_service.swagger.yaml
 $(EXAMPLE_OPENAPISRCS): $(OPENAPI_PLUGIN) $(OPENAPI_EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true$(ADDITIONAL_SWG_FLAGS):. $(OPENAPI_EXAMPLES)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true$(ADDITIONAL_SWG_FLAGS):. $(OPENAPI_EXAMPLES)
 
 $(EXAMPLE_OPENAPIMERGESRCS): $(OPENAPI_PLUGIN) $(OPENAPIMERGE_EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true,allow_merge=true,merge_file_name=$(EXAMPLE_OPENAPIMERGESRCS:.swagger.json=):. $(OPENAPIMERGE_EXAMPLES)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true,allow_merge=true,merge_file_name=$(EXAMPLE_OPENAPIMERGESRCS:.swagger.json=):. $(OPENAPIMERGE_EXAMPLES)
 
 $(GENERATE_UNBOUND_METHODS_EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(GENERATE_UNBOUND_METHODS_EXAMPLE)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,paths=source_relative,allow_repeated_fields_in_body=true,generate_unbound_methods=true$(ADDITIONAL_GW_FLAGS):. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,paths=source_relative,allow_repeated_fields_in_body=true,generate_unbound_methods=true$(ADDITIONAL_GW_FLAGS):. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
 $(GENERATE_UNBOUND_METHODS_EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(GENERATE_UNBOUND_METHODS_EXAMPLE)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
 $(GENERATE_UNBOUND_METHODS_EXAMPLE_OPENAPISRCS): $(OPENAPI_PLUGIN) $(GENERATE_UNBOUND_METHODS_EXAMPLE)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true,generate_unbound_methods=true:. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true,generate_unbound_methods=true:. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
 
 $(HELLOWORLD_SVCSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(HELLOWORLD)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(HELLOWORLD)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(HELLOWORLD)
 
 $(HELLOWORLD_GWSRCS):
 $(HELLOWORLD_GWSRCS): $(GATEWAY_PLUGIN) $(HELLOWORLD)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_GW_FLAGS):. $(HELLOWORLD)
+	$(PROTOC) -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_GW_FLAGS):. $(HELLOWORLD)
 
 $(ECHO_EXAMPLE_SRCS): $(ECHO_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ECHO_EXAMPLE_SPEC) \

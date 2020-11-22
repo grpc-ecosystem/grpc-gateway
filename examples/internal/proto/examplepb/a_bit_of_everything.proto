@@ -325,6 +325,9 @@ message ABitOfEverything {
 
 	// mark a field as readonly in Open API definition
 	string output_only_string_via_field_behavior_annotation = 39 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+	// mark a field as optional
+	optional string optional_string_value = 40;
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality

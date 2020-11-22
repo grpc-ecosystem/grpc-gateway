@@ -9,6 +9,7 @@ commands:
           startup --output_base /root/.cache/_grpc_gateway_bazel
           build --test_output errors
           build --features race
+          build --protocopt=--experimental_allow_proto3_optional # To make proto_library rules include optional support at build time
           # Workaround https://github.com/bazelbuild/bazel/issues/3645
           # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
           build --local_ram_resources=4096 # Circle Docker runners have 4G of memory
