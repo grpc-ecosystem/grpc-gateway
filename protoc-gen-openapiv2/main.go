@@ -146,7 +146,8 @@ func emitFiles(out []*descriptor.ResponseFile) {
 	for idx, item := range out {
 		files[idx] = item.CodeGeneratorResponse_File
 	}
-	emitResp(&pluginpb.CodeGeneratorResponse{File: files})
+	supportedFeatures := uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
+	emitResp(&pluginpb.CodeGeneratorResponse{SupportedFeatures: &supportedFeatures, File: files})
 }
 
 func emitError(err error) {

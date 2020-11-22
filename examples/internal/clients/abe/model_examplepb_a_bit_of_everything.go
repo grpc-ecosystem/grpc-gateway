@@ -60,4 +60,5 @@ type ExamplepbABitOfEverything struct {
 	Int64OverrideType int64 `json:"int64OverrideType,omitempty"`
 	RequiredStringViaFieldBehaviorAnnotation string `json:"requiredStringViaFieldBehaviorAnnotation"`
 	OutputOnlyStringViaFieldBehaviorAnnotation string `json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
+	OptionalStringValue string `json:"optionalStringValue,omitempty"`
 }

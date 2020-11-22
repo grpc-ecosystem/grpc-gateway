@@ -403,6 +403,13 @@ paths:
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
         x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        description: "mark a field as optional."
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -714,6 +721,13 @@ paths:
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
         x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        description: "mark a field as optional."
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -1011,6 +1025,13 @@ paths:
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        description: "mark a field as optional."
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
       responses:
         200:
@@ -1329,6 +1350,13 @@ paths:
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        description: "mark a field as optional."
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
       responses:
         200:
@@ -2698,6 +2726,9 @@ definitions:
         type: "string"
         title: "mark a field as readonly in Open API definition"
         readOnly: true
+      optionalStringValue:
+        type: "string"
+        title: "mark a field as optional"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"

@@ -495,6 +495,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "optionalStringValue",
+            "description": "mark a field as optional.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -835,6 +842,13 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "optionalStringValue",
+            "description": "mark a field as optional.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -1161,6 +1175,13 @@
           {
             "name": "outputOnlyStringViaFieldBehaviorAnnotation",
             "description": "mark a field as readonly in Open API definition.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "optionalStringValue",
+            "description": "mark a field as optional.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1508,6 +1529,13 @@
           {
             "name": "outputOnlyStringViaFieldBehaviorAnnotation",
             "description": "mark a field as readonly in Open API definition.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "optionalStringValue",
+            "description": "mark a field as optional.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -3307,6 +3335,10 @@
           "type": "string",
           "title": "mark a field as readonly in Open API definition",
           "readOnly": true
+        },
+        "optionalStringValue": {
+          "type": "string",
+          "title": "mark a field as optional"
         }
       },
       "description": "Intentionaly complicated message type to cover many features of Protobuf.",

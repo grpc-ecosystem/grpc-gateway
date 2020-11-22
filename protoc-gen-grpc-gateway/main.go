@@ -18,6 +18,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway/internal/gengateway"
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 var (
@@ -54,6 +55,7 @@ func main() {
 	protogen.Options{
 		ParamFunc: flag.CommandLine.Set,
 	}.Run(func(gen *protogen.Plugin) error {
+		gen.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 		reg := descriptor.NewRegistry()
 
 		err := applyFlags(reg)

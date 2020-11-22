@@ -222,6 +222,7 @@ ABitOfEverythingServiceApiService
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OptionalStringValue" (optional.String) -  mark a field as optional.
 
 @return ExamplepbABitOfEverything
 */
@@ -259,6 +260,7 @@ type ABitOfEverythingServiceCheckGetQueryParamsOpts struct {
 	NestedAnnotationOk optional.String
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
+	OptionalStringValue optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -375,6 +377,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	localVarQueryParams.Add("requiredStringViaFieldBehaviorAnnotation", parameterToString(requiredStringViaFieldBehaviorAnnotation, ""))
 	if localVarOptionals != nil && localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.IsSet() {
 		localVarQueryParams.Add("outputOnlyStringViaFieldBehaviorAnnotation", parameterToString(localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
+		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -547,6 +552,7 @@ ABitOfEverythingServiceApiService
      * @param "NestedAnnotationAmount" (optional.Int64) - 
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OptionalStringValue" (optional.String) -  mark a field as optional.
 
 @return ExamplepbABitOfEverything
 */
@@ -584,6 +590,7 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct {
 	NestedAnnotationAmount optional.Int64
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
+	OptionalStringValue optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -700,6 +707,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	localVarQueryParams.Add("requiredStringViaFieldBehaviorAnnotation", parameterToString(requiredStringViaFieldBehaviorAnnotation, ""))
 	if localVarOptionals != nil && localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.IsSet() {
 		localVarQueryParams.Add("outputOnlyStringViaFieldBehaviorAnnotation", parameterToString(localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
+		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -871,6 +881,7 @@ ABitOfEverythingServiceApiService
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OptionalStringValue" (optional.String) -  mark a field as optional.
 
 @return ExamplepbABitOfEverything
 */
@@ -906,6 +917,7 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	NestedAnnotationOk optional.String
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
+	OptionalStringValue optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, body ABitOfEverythingNested, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -1016,6 +1028,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	localVarQueryParams.Add("requiredStringViaFieldBehaviorAnnotation", parameterToString(requiredStringViaFieldBehaviorAnnotation, ""))
 	if localVarOptionals != nil && localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.IsSet() {
 		localVarQueryParams.Add("outputOnlyStringViaFieldBehaviorAnnotation", parameterToString(localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
+		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -2492,6 +2507,7 @@ ABitOfEverythingServiceApiService
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OptionalStringValue" (optional.String) -  mark a field as optional.
 
 @return interface{}
 */
@@ -2530,6 +2546,7 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	NestedAnnotationOk optional.String
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
+	OptionalStringValue optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuid string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
@@ -2649,6 +2666,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	localVarQueryParams.Add("requiredStringViaFieldBehaviorAnnotation", parameterToString(requiredStringViaFieldBehaviorAnnotation, ""))
 	if localVarOptionals != nil && localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.IsSet() {
 		localVarQueryParams.Add("outputOnlyStringViaFieldBehaviorAnnotation", parameterToString(localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
+		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
