@@ -258,11 +258,6 @@ To override error handling for a `*runtime.ServeMux`, use the
 `runtime.WithErrorHandler` option. This will configure all unary error
 responses to pass through this error handler.
 
-See https://mycodesmells.com/post/grpc-gateway-error-handler for an example
-of writing a custom error handler function. Note that this post targets
-the v1 release of the gateway, and you no longer assign to `HTTPError` to
-configure an error handler.
-
 ## Stream Error Handler
 
 The error handler described in the previous section applies only
