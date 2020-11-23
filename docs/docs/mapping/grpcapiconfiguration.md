@@ -27,15 +27,30 @@ NOTE: the same option is also supported by the `gen-openapiv2` plugin.
 
 ## Using an external configuration file
 
-Google Cloud Platform offers a way to do this for services hosted with them called ["gRPC API Configuration"](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config). It can be used to define the behavior of a gRPC API service without modifications to the service itself in the form of [YAML](https://en.wikipedia.org/wiki/YAML) configuration files.
+Google Cloud Platform offers a way to do this for services
+hosted with them called
+["gRPC API Configuration"](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config).
+It can be used to define the behavior of a gRPC API service
+without modifications to the service itself in the form of
+[YAML](https://en.wikipedia.org/wiki/YAML) configuration files.
 
-grpc-gateway generators implement the [HTTP rules part](https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#httprule) of this specification. This allows you to take a completely unannotated service proto file, add a YAML file describing its HTTP endpoints and use them together like a annotated proto file with the grpc-gateway generators.
+grpc-gateway generators implement the
+[HTTP rules part](https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#httprule)
+of this specification. This allows you to take a completely
+unannotated service proto file, add a YAML file describing
+its HTTP endpoints and use them together like a annotated
+proto file with the grpc-gateway generators.
 
-OpenAPI options may also be configured via ["OpenAPI Configuration"](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/internal/descriptor/openapiconfig/openapiconfig.proto) in the form of YAML configuration files.
+OpenAPI options may also be configured via
+["OpenAPI Configuration"](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/internal/descriptor/openapiconfig/openapiconfig.proto) in the form of YAML configuration files.
 
 ### Usage of gRPC API Configuration YAML files
 
-The following is equivalent to the basic [usage example](usage.html) but without direct annotation for grpc-gateway in the .proto file. Only some steps require minor changes to use a gRPC API Configuration YAML file instead:
+The following is equivalent to the basic
+[`README.md`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/README.md#usage)
+example but without direct
+annotation for grpc-gateway in the .proto file. Only some steps require minor
+changes to use a gRPC API Configuration YAML file instead:
 
 1. Define your service in gRPC as usual
 

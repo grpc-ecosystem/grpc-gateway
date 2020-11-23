@@ -46,7 +46,7 @@ message ABitOfEverything {
 Operations can also be customized:
 
 ```protobuf
-service ABitOfEverythingService { 
+service ABitOfEverythingService {
    rpc Delete(grpc.gateway.examples.internal.proto.sub2.IdMessage) returns (google.protobuf.Empty) {
         option (google.api.http) = {
             delete: "/v1/example/a_bit_of_everything/{uuid}"
@@ -95,7 +95,13 @@ The following options are used in the Open API output:
 * `REQUIRED` - marks a field as required
 * `OUTPUT_ONLY` - marks a field as readonly
 
-Google defines a couple other options - `OPTIONAL`, `IMMUTABLE`, `INPUT_ONLY` - that are not currently used. `OPTIONAL` support is currently under discussion in [this issue](https://github.com/grpc-ec system/grpc-gateway/issues/669). For `IMMUTABLE` and `INPUT_ONLY` fields, there is an [open issue](https://github.com/OAI/OpenAPI-Specification/issues/1497) in the Open API specification for adding functionality for write once or immutable fields to the spec.
+Google defines a couple other options - `OPTIONAL`, `IMMUTABLE`, `INPUT_ONLY` -
+that are not currently used. `OPTIONAL` support is currently under discussion
+in [this issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/669).
+For `IMMUTABLE` and `INPUT_ONLY` fields, there is an
+[open issue](https://github.com/OAI/OpenAPI-Specification/issues/1497)
+in the Open API specification for adding functionality for write once or
+immutable fields to the spec.
 
 # Using go templates in protofile comments
 
@@ -189,13 +195,13 @@ The content of `tables.md`:
 
 This is how the OpenAPI file would be rendered in [Swagger UI](https://swagger.io/tools/swagger-ui/)
 
-![Screenshot OpenAPI file in SwaggerUI](../assets/images/gotemplates/swaggerui.png)
+![Screenshot OpenAPI file in SwaggerUI](../../assets/images/gotemplates/swaggerui.png)
 
 ### Postman
 
 This is how the OpenAPI file would be rendered in [Postman](https://www.getpostman.com/)
 
-![Screenshot OpenAPI file in Postman](../assets/images/gotemplates/postman.png)
+![Screenshot OpenAPI file in Postman](../../assets/images/gotemplates/postman.png)
 
 For a more detailed example of a protofile that has Go templates enabled,
 [see the examples](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/use_go_template.proto).
