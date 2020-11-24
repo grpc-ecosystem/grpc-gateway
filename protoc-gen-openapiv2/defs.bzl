@@ -201,7 +201,7 @@ def _proto_gen_openapi_impl(ctx):
                     disable_default_errors = ctx.attr.disable_default_errors,
                     enums_as_ints = ctx.attr.enums_as_ints,
                     simple_operation_ids = ctx.attr.simple_operation_ids,
-                    openapi_configuration = ctx.attr.openapi_configuration,
+                    openapi_configuration = ctx.file.openapi_configuration,
                     generate_unbound_methods = ctx.attr.generate_unbound_methods,
                 ),
             ),
