@@ -55,6 +55,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -111,6 +117,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "503": {
             "description": "Returned when the resource is temporarily unavailable.",
             "schema": {},
@@ -165,6 +177,12 @@
             "description": "I'm a teapot.",
             "schema": {
               "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
             }
           },
           "default": {
@@ -493,6 +511,12 @@
             "description": "I'm a teapot.",
             "schema": {
               "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
             }
           },
           "default": {
@@ -829,6 +853,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -1150,6 +1180,12 @@
             "description": "I'm a teapot.",
             "schema": {
               "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
             }
           },
           "default": {
@@ -1501,6 +1537,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -1660,6 +1702,68 @@
         ]
       }
     },
+    "/v1/example/a_bit_of_everything/{single_nested.name}": {
+      "post": {
+        "operationId": "ABitOfEverythingService_DeepPathEcho",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "single_nested.name",
+            "description": "name is nested field.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v1/example/a_bit_of_everything/{uuid}": {
       "get": {
         "operationId": "ABitOfEverythingService_Lookup",
@@ -1685,6 +1789,12 @@
             "description": "I'm a teapot.",
             "schema": {
               "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
             }
           },
           "default": {
@@ -1730,6 +1840,12 @@
             "description": "I'm a teapot.",
             "schema": {
               "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
             }
           },
           "default": {
@@ -1787,6 +1903,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -1840,6 +1962,12 @@
             "description": "I'm a teapot.",
             "schema": {
               "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
             }
           },
           "default": {
@@ -2173,6 +2301,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -2237,6 +2371,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -2295,6 +2435,12 @@
             "description": "I'm a teapot.",
             "schema": {
               "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
             }
           },
           "default": {
@@ -2366,6 +2512,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "503": {
             "description": "Returned when the resource is temporarily unavailable.",
             "schema": {},
@@ -2427,6 +2579,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "503": {
             "description": "Returned when the resource is temporarily unavailable.",
             "schema": {},
@@ -2485,6 +2643,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -2524,6 +2688,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -2561,6 +2731,12 @@
             "description": "I'm a teapot.",
             "schema": {
               "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
             }
           },
           "default": {
@@ -2603,6 +2779,12 @@
             "description": "I'm a teapot.",
             "schema": {
               "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
             }
           },
           "default": {
@@ -2660,6 +2842,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -2697,6 +2885,12 @@
             "description": "I'm a teapot.",
             "schema": {
               "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
             }
           },
           "default": {
@@ -2754,6 +2948,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -2803,6 +3003,12 @@
             "description": "I'm a teapot.",
             "schema": {
               "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
             }
           },
           "default": {
@@ -3231,6 +3437,40 @@
         }
       },
       "description": "An example resource type from AIP-123 used to test the behavior described in\nthe CreateBookRequest message.\n\nSee: https://google.aip.dev/123"
+    },
+    "examplepbErrorObject": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "integer",
+          "description": "Response code",
+          "title": "code",
+          "pattern": "^[0-9]$"
+        },
+        "message": {
+          "type": "string",
+          "description": "Response message",
+          "title": "message",
+          "pattern": "^[a-zA-Z0-9]{1, 32}$"
+        }
+      }
+    },
+    "examplepbErrorResponse": {
+      "type": "object",
+      "properties": {
+        "correlationId": {
+          "type": "string",
+          "format": "uuid",
+          "example": "2438ac3c-37eb-4902-adef-ed16b4431030",
+          "description": "Unique event identifier for server requests",
+          "title": "x-correlation-id",
+          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+        },
+        "error": {
+          "$ref": "#/definitions/examplepbErrorObject"
+        }
+      }
     },
     "examplepbCheckStatusResponse": {
       "type": "object",
