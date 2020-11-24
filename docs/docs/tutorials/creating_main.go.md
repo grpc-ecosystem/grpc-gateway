@@ -23,9 +23,9 @@ import (
 
 	// Static files
 
-	"github.com/hello/hello_world\gateway"
-	"github.com/hello/hello_world\insecure"
-	hello "github.com/hello/hello_world\proto"
+	"github.com/hello/hello_world/gateway"
+	"github.com/hello/hello_world/insecure"
+	hello "github.com/hello/hello_world/proto"
 )
 
 type server struct{}
