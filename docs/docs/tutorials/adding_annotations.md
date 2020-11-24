@@ -2,7 +2,7 @@
 layout: default
 title: Adding the grpc-gateway annotations to an existing protobuf file
 parent: Tutorials
-nav_order: 6
+nav_order: 5
 ---
 
 ## Adding the grpc-gateway annotations to an existing protobuf file
@@ -16,13 +16,13 @@ package helloworld;
 
 import "google/api/annotations.proto";
 
-// The greeting service definition.
+// Here is the overall greeting service definition where we define all our endpoints
 service Greeter {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply) {
-        option (google.api.http) = {
-        post: "/v1/example/echo"
-        body: "*"
+    option (google.api.http) = {
+      post: "/v1/example/echo"
+      body: "*"
     };
   }
 }
@@ -38,13 +38,15 @@ message HelloReply {
 }
 ```
 
+Also, See [a_bit_of_everything.proto](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/a_bit_of_everything.proto) for examples of more annotations you can add to customize gateway behavior and generated OpenAPI output.
+
 ### Generating the grpc-gateway stubs
 
 Now that we've got the grpc-gateway annotations added to the proto file, we need to use the grpc-gateway generator to generate the stubs.
 
 Before we can do that, we need to copy some dependencies into our protofile structure. Copy the `third_party/googleapis` folder from the grpc-gateway repository to your local protofile structure. It should look like this afterwards:
 
-''' (backticks)
+```
 proto/
 helloworld/
 hello_world.proto
@@ -52,30 +54,69 @@ google/
 api/
 http.proto
 annotations.proto
-''' (backticks)
+```
 
 #### Using buf
 
-[Using buf](generating_stubs/using_buf.md)
+We'll need to add the grpc-gateway generator to the generation configuration:
+
+```yml
+plugins:
+  - name: go
+    out: proto
+    opt: paths=source_relative
+  - name: go-grpc
+    out: proto
+    opt: paths=source_relative
+  - name: grpc-gateway
+    out: proto
+    opt: paths=source_relative
+```
+
+And that's it! Now if you run:
+
+```sh
+buf generate
+```
+
+It should produce a `*.gw.pb.go` file.
 
 #### Using protoc
 
-[Using protoc](generating_stubs/using_protoc.md)
+Now we need to add the grpc-gateway generator to the protoc invocation:
 
-Start the greeter_server service first, and then start the gateway. Then gateway connects to greeter_server and establishes http monitoring.
+```
+protoc -I ./proto \
+ ... other plugins ...
+--grpc-gateway_out ./proto --grpc-gateway_opt paths=source_relative
+./proto/helloworld/hello_world.proto
+```
+
+```sh
+protoc -I ./proto \
+   --go_out ./proto --go_opt paths=source_relative \
+   --go-grpc_out ./proto --go-grpc_opt paths=source_relative \
+   ./proto/helloworld/hello_world.proto
+  --grpc-gateway_out ./proto --grpc-gateway_opt paths=source_relative
+   ./proto/helloworld/hello_world.proto
+```
+
+This should generate a `*.gw.pb.go` file.
+
+### Testing the grpc-gateway
 
 Then we use curl to send http requests:
 
 ```sh
-curl -X POST -k http://localhost:8080/v1/example/echo -d '{"name": " world"}
+curl -X POST -k http://localhost:8080/v1/example/echo -d '{"name": " Hello"}'
 ```
 
 ```
-{"message":"Hello  world"}
+{"message":"Hello  World"}
 ```
 
 The process is as follows:
 
-curl sends a request to the gateway with the post, gateway as proxy forwards the request to greeter_server through grpc, greeter_server returns the result through grpc, the gateway receives the result, and json returns to the front end.
+`curl` sends a request to the gateway with the post, gateway as proxy forwards the request to greeter_server through grpc, greeter_server returns the result through grpc, the gateway receives the result, and json returns to the front end.
 
 In this way, the transformation process from http json to internal grpc is completed through grpc-gateway.

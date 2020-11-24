@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Introduction
+title: Introduction about gRPC-Gateway
 parent: Tutorials
 nav_order: 1
 ---
@@ -13,24 +13,15 @@ So is there any way to code just once, but can provide APIs in both gRPC and RES
 
 The answer is Yes.
 
-The grpc-gateway is a plugin of the Google protocol buffers compiler
-[protoc](https://github.com/protocolbuffers/protobuf).
-It reads protobuf service definitions and generates a reverse-proxy server which
-translates a RESTful HTTP API into gRPC. This server is generated according to the
-[`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46)
-annotations in your service definitions.
+The grpc-gateway is a plugin of the Google protocol buffers compiler [protoc](https://github.com/protocolbuffers/protobuf). It reads protobuf service definitions and generates a reverse-proxy server which translates a RESTful HTTP API into gRPC. This server is generated according to the [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46) annotations in your service definitions.
 
 This helps you provide your APIs in both gRPC and RESTful style at the same time.
 
 ![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&h=370)
 
-## Prerequisites
+### Prerequisites
 
-One way to achieve that is to use gRPC gateway. gRPC gateway is a plugin of the protocol buffer compiler. It reads the protobuf service definitions and generates a proxy server, which translates a RESTful HTTP call into gRPC request.
-
-All we need to do is a small amount of configuration
-in the service. Before start coding, we have to install some
-tools.
+Before start coding, we have to install some tools and need to do small amount of configuration in the service.
 
 We will be using a Go gRPC server in the examples, so please install Go first from [https://golang.org/dl/](https://golang.org/dl/).
 
