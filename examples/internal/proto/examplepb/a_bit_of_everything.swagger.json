@@ -1702,68 +1702,6 @@
         ]
       }
     },
-    "/v1/example/a_bit_of_everything/{single_nested.name}": {
-      "post": {
-        "operationId": "ABitOfEverythingService_DeepPathEcho",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbABitOfEverything"
-            }
-          },
-          "403": {
-            "description": "Returned when the user does not have permission to access the resource.",
-            "schema": {}
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {
-              "type": "string",
-              "format": "string"
-            }
-          },
-          "418": {
-            "description": "I'm a teapot.",
-            "schema": {
-              "$ref": "#/definitions/examplepbNumericEnum"
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "schema": {
-              "$ref": "#/definitions/examplepbErrorResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "single_nested.name",
-            "description": "name is nested field.",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/examplepbABitOfEverything"
-            }
-          }
-        ],
-        "tags": [
-          "ABitOfEverythingService"
-        ]
-      }
-    },
     "/v1/example/a_bit_of_everything/{uuid}": {
       "get": {
         "operationId": "ABitOfEverythingService_Lookup",
@@ -2205,6 +2143,12 @@
               "$ref": "#/definitions/examplepbNumericEnum"
             }
           },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -2242,6 +2186,12 @@
             "description": "I'm a teapot.",
             "schema": {
               "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
             }
           },
           "default": {
@@ -3438,6 +3388,14 @@
       },
       "description": "An example resource type from AIP-123 used to test the behavior described in\nthe CreateBookRequest message.\n\nSee: https://google.aip.dev/123"
     },
+    "examplepbCheckStatusResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/rpcStatus"
+        }
+      }
+    },
     "examplepbErrorObject": {
       "type": "object",
       "properties": {
@@ -3469,14 +3427,6 @@
         },
         "error": {
           "$ref": "#/definitions/examplepbErrorObject"
-        }
-      }
-    },
-    "examplepbCheckStatusResponse": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "$ref": "#/definitions/rpcStatus"
         }
       }
     },

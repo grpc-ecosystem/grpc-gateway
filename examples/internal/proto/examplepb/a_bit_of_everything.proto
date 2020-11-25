@@ -178,7 +178,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 			};
 			schema: {
 				json_schema: {
-					ref: ".grpc.gateway.examples.internal.examplepb.ErrorResponse";
+					ref: ".grpc.gateway.examples.internal.proto.examplepb.ErrorResponse";
 				}
 			}
 		}
@@ -205,7 +205,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 };
 
 message ErrorResponse{
-	string correlationId = 1 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {
+	string correlationId = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
 		pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$",
 		title: "x-correlation-id",
 		description: "Unique event identifier for server requests",
@@ -216,13 +216,13 @@ message ErrorResponse{
 }
 
 message ErrorObject{
-	int32 code = 1 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {
+	int32 code = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
 		pattern: "^[0-9]$",
 		title: "code",
 		description: "Response code",
 		format: "integer"
 	}];
-	string message = 2 [(grpc.gateway.protoc_gen_swagger.options.openapiv2_field) = {
+	string message = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
 		pattern: "^[a-zA-Z0-9]{1, 32}$",
 		title: "message",
 		description: "Response message"

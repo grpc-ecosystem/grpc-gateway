@@ -1457,6 +1457,168 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	})
 }
 
+func TestApplyTemplateHeaders(t *testing.T) {
+	newFile := func() *descriptor.File {
+		msgdesc := &descriptorpb.DescriptorProto{
+			Name: proto.String("ExampleMessage"),
+		}
+		meth := &descriptorpb.MethodDescriptorProto{
+			Name:       proto.String("Example"),
+			InputType:  proto.String("ExampleMessage"),
+			OutputType: proto.String("ExampleMessage"),
+			Options:    &descriptorpb.MethodOptions{},
+		}
+		svc := &descriptorpb.ServiceDescriptorProto{
+			Name:   proto.String("ExampleService"),
+			Method: []*descriptorpb.MethodDescriptorProto{meth},
+		}
+		msg := &descriptor.Message{
+			DescriptorProto: msgdesc,
+		}
+		return &descriptor.File{
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+				Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String(".;example"),
+				},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: []*descriptor.Message{msg},
+			Services: []*descriptor.Service{
+				{
+					ServiceDescriptorProto: svc,
+					Methods: []*descriptor.Method{
+						{
+							MethodDescriptorProto: meth,
+							RequestType:           msg,
+							ResponseType:          msg,
+							Bindings: []*descriptor.Binding{
+								{
+									HTTPMethod: "GET",
+									Body:       &descriptor.Body{FieldPath: nil},
+									PathTmpl: httprule.Template{
+										Version:  1,
+										OpCodes:  []int{0, 0},
+										Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+	}
+	openapiOperation := openapi_options.Operation{
+		Responses: map[string]*openapi_options.Response{
+			"200": &openapi_options.Response{
+				Description: "Testing Headers",
+				Headers: map[string]*openapi_options.Header{
+					"string": {
+						Description: "string header description",
+						Type:        "string",
+						Format:      "uuid",
+						Pattern:     "",
+					},
+					"boolean": {
+						Description: "boolean header description",
+						Type:        "boolean",
+						Default:     "true",
+						Pattern:     "^true|false$",
+					},
+					"integer": {
+						Description: "integer header description",
+						Type:        "integer",
+						Default:     "0",
+						Pattern:     "^[0-9]$",
+					},
+					"number": {
+						Description: "number header description",
+						Type:        "number",
+						Default:     "1.2",
+						Pattern:     "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
+					},
+				},
+			},
+		},
+	}
+	verifyTemplateHeaders := func(t *testing.T, reg *descriptor.Registry, file *descriptor.File,
+		opts *openapiconfig.OpenAPIOptions) {
+		if err := AddErrorDefs(reg); err != nil {
+			t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+			return
+		}
+		fileCL := crossLinkFixture(file)
+		err := reg.Load(reqFromFile(fileCL))
+		if err != nil {
+			t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+			return
+		}
+		if opts != nil {
+			if err := reg.RegisterOpenAPIOptions(opts); err != nil {
+				t.Fatalf("failed to register OpenAPI annotations: %s", err)
+			}
+		}
+		result, err := applyTemplate(param{File: fileCL, reg: reg})
+		if err != nil {
+			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+			return
+		}
+		if want, is, name := "2.0", result.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+		}
+
+		var response openapiResponseObject
+		for _, v := range result.Paths {
+			response = v.Get.Responses["200"]
+		}
+		if want, is, name := []openapiHeadersObject{
+			{
+				"String": openapiHeaderObject{
+					Description: "string header description",
+					Type:        "string",
+					Format:      "uuid",
+					Pattern:     "",
+				},
+				"Boolean": openapiHeaderObject{
+					Description: "boolean header description",
+					Type:        "boolean",
+					Default:     json.RawMessage("true"),
+					Pattern:     "^true|false$",
+				},
+				"Integer": openapiHeaderObject{
+					Description: "integer header description",
+					Type:        "integer",
+					Default:     json.RawMessage("0"),
+					Pattern:     "^[0-9]$",
+				},
+				"Number": openapiHeaderObject{
+					Description: "number header description",
+					Type:        "number",
+					Default:     json.RawMessage("1.2"),
+					Pattern:     "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
+				},
+			},
+		}[0], response.Headers, "response.Headers"; !reflect.DeepEqual(is, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+		}
+
+	}
+	t.Run("verify template options set via proto options", func(t *testing.T) {
+		file := newFile()
+		proto.SetExtension(proto.Message(file.Services[0].Methods[0].Options), openapi_options.E_Openapiv2Operation, &openapiOperation)
+		reg := descriptor.NewRegistry()
+		verifyTemplateHeaders(t, reg, file, nil)
+	})
+}
+
 func TestValidateHeaderType(t *testing.T) {
 	type test struct {
 		Type          string
@@ -1858,151 +2020,6 @@ func TestValidateDefaultValueType(t *testing.T) {
 		}
 	}
 
-}
-
-func TestApplyTemplateHeaders(t *testing.T) {
-	msgdesc := &protodescriptor.DescriptorProto{
-		Name: proto.String("ExampleMessage"),
-	}
-	meth := &protodescriptor.MethodDescriptorProto{
-		Name:       proto.String("Example"),
-		InputType:  proto.String("ExampleMessage"),
-		OutputType: proto.String("ExampleMessage"),
-		Options:    &protodescriptor.MethodOptions{},
-	}
-	svc := &protodescriptor.ServiceDescriptorProto{
-		Name:   proto.String("ExampleService"),
-		Method: []*protodescriptor.MethodDescriptorProto{meth},
-	}
-	msg := &descriptor.Message{
-		DescriptorProto: msgdesc,
-	}
-	file := descriptor.File{
-		FileDescriptorProto: &protodescriptor.FileDescriptorProto{
-			SourceCodeInfo: &protodescriptor.SourceCodeInfo{},
-			Name:           proto.String("example.proto"),
-			Package:        proto.String("example"),
-			Dependency:     []string{"a.example/b/c.proto", "a.example/d/e.proto"},
-			MessageType:    []*protodescriptor.DescriptorProto{msgdesc},
-			Service:        []*protodescriptor.ServiceDescriptorProto{svc},
-			Options:        &protodescriptor.FileOptions{},
-		},
-		GoPkg: descriptor.GoPackage{
-			Path: "example.com/path/to/example/example.pb",
-			Name: "example_pb",
-		},
-		Messages: []*descriptor.Message{msg},
-		Services: []*descriptor.Service{
-			{
-				ServiceDescriptorProto: svc,
-				Methods: []*descriptor.Method{
-					{
-						MethodDescriptorProto: meth,
-						RequestType:           msg,
-						ResponseType:          msg,
-						Bindings: []*descriptor.Binding{
-							{
-								HTTPMethod: "GET",
-								Body:       &descriptor.Body{FieldPath: nil},
-								PathTmpl: httprule.Template{
-									Version:  1,
-									OpCodes:  []int{0, 0},
-									Template: "/v1/echo",
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-	}
-
-	swaggerOperation := swagger_options.Operation{
-		Responses: map[string]*swagger_options.Response{
-			"200": &swagger_options.Response{
-				Description: "Testing Headers",
-				Headers: map[string]*swagger_options.Header{
-					"string": {
-						Description: "string header description",
-						Type:        "string",
-						Format:      "uuid",
-						Pattern:     "",
-					},
-					"boolean": {
-						Description: "boolean header description",
-						Type:        "boolean",
-						Default:     "true",
-						Pattern:     "^true|false$",
-					},
-					"integer": {
-						Description: "integer header description",
-						Type:        "integer",
-						Default:     "0",
-						Pattern:     "^[0-9]$",
-					},
-					"number": {
-						Description: "number header description",
-						Type:        "number",
-						Default:     "1.2",
-						Pattern:     "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
-					},
-				},
-			},
-		},
-	}
-	if err := proto.SetExtension(proto.Message(meth.Options), swagger_options.E_Openapiv2Operation, &swaggerOperation); err != nil {
-		t.Fatalf("proto.SetExtension(MethodDescriptorProto.Options) failed: %v", err)
-	}
-	reg := descriptor.NewRegistry()
-	fileCL := crossLinkFixture(&file)
-	err := reg.Load(reqFromFile(fileCL))
-	if err != nil {
-		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
-		return
-	}
-	result, err := applyTemplate(param{File: fileCL, reg: reg})
-	if err != nil {
-		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
-		return
-	}
-	if want, is, name := "2.0", result.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
-	}
-
-	var response swaggerResponseObject
-	for _, v := range result.Paths {
-		response = v.Get.Responses["200"]
-	}
-	if want, is, name := []swaggerHeadersObject{
-		{
-			"String": swaggerHeaderObject{
-				Description: "string header description",
-				Type:        "string",
-				Format:      "uuid",
-				Pattern:     "",
-			},
-			"Boolean": swaggerHeaderObject{
-				Description: "boolean header description",
-				Type:        "boolean",
-				Default:     json.RawMessage("true"),
-				Pattern:     "^true|false$",
-			},
-			"Integer": swaggerHeaderObject{
-				Description: "integer header description",
-				Type:        "integer",
-				Default:     json.RawMessage("0"),
-				Pattern:     "^[0-9]$",
-			},
-			"Number": swaggerHeaderObject{
-				Description: "number header description",
-				Type:        "number",
-				Default:     json.RawMessage("1.2"),
-				Pattern:     "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
-			},
-		},
-	}[0], response.Headers, "response.Headers"; !reflect.DeepEqual(is, want) {
-		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
-	}
 }
 
 func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {

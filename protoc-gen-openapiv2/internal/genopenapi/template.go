@@ -1023,7 +1023,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						"200": openapiResponseObject{
 							Description: desc,
 							Schema:      responseSchema,
-							Headers:     swaggerHeadersObject{},
+							Headers:     openapiHeadersObject{},
 						},
 					},
 				}
@@ -1614,11 +1614,11 @@ func isBool(s string) bool {
 	return s == "true" || s == "false"
 }
 
-func processHeaders(inputHdrs map[string]*swagger_options.Header) (swaggerHeadersObject, error) {
-	hdrs := map[string]swaggerHeaderObject{}
+func processHeaders(inputHdrs map[string]*openapi_options.Header) (openapiHeadersObject, error) {
+	hdrs := map[string]openapiHeaderObject{}
 	for k, v := range inputHdrs {
 		header := textproto.CanonicalMIMEHeaderKey(k)
-		ret := swaggerHeaderObject{
+		ret := openapiHeaderObject{
 			Description: v.Description,
 			Format:      v.Format,
 			Pattern:     v.Pattern,

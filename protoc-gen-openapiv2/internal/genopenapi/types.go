@@ -177,15 +177,15 @@ type openapiResponseObject struct {
 	Description string                 `json:"description"`
 	Schema      openapiSchemaObject    `json:"schema"`
 	Examples    map[string]interface{} `json:"examples,omitempty"`
-	Headers     swaggerHeadersObject   `json:"headers,omitempty"`
+	Headers     openapiHeadersObject   `json:"headers,omitempty"`
 
 	extensions []extension
 }
 
-type swaggerHeadersObject map[string]swaggerHeaderObject
+type openapiHeadersObject map[string]openapiHeaderObject
 
 // http://swagger.io/specification/#headerObject
-type swaggerHeaderObject struct {
+type openapiHeaderObject struct {
 	Description string          `json:"description,omitempty"`
 	Type        string          `json:"type,omitempty"`
 	Format      string          `json:"format,omitempty"`
