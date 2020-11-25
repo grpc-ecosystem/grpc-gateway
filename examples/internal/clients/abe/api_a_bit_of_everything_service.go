@@ -155,6 +155,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckExternal
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -460,6 +471,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -783,6 +805,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -1090,6 +1123,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -1224,6 +1268,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckStatus(c
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1415,6 +1470,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -1552,6 +1618,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ct
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -1719,6 +1796,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ct
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -1858,6 +1946,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -2012,6 +2111,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDelete(ctx co
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -2146,6 +2256,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceErrorWithDeta
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -2294,6 +2415,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWit
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -2609,6 +2741,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -2832,6 +2975,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetRepeatedQu
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -2977,6 +3131,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceLookup(ctx co
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -3111,6 +3276,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceOverwriteResp
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -3268,6 +3444,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmpty
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -3402,6 +3589,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceTimeout(ctx c
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -3550,6 +3748,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx co
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -3717,6 +3926,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -3875,6 +4095,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -4014,6 +4245,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
