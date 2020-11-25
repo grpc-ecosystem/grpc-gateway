@@ -17,24 +17,4 @@ HttpRule defines the gRPC / REST mapping scheme. The mapping defines how differe
 
 Each mapping defines a URL path template and an HTTP method. A path template can refer to one or more fields in a gRPC request message if each field is a non-repeating field with a primitive type. The path template controls how the request message fields are mapped to the URL path.
 
-```proto
-import "google/api/annotations.proto";
-import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
-message StatusResponse {
- google.protobuf.Timestamp current_time = 1;
-}
-service MyService {
- rpc Status(google.protobuf.Empty)
-  returns (StatusResponse) {
-   option (google.api.http) = {
-    get: "/status"
-   };
-  }
- }
-}
-```
-
-You will need to provide the necessary third-party `protobuf` files to the `protoc` compiler. They have included in the `grpc-gateway` repository in the `[third_party/googleapis](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/third_party/googleapis)` folder, and we recommend copying them to the project file structure.
-
 Read more about HTTP and gRPC Transcoding on https://google.aip.dev/127.

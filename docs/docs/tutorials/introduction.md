@@ -21,7 +21,7 @@ This helps you provide your APIs in both gRPC and RESTful style at the same time
 
 ### Prerequisites
 
-Before start coding, we have to install some tools and need to do small amount of configuration in the service.
+Before we start coding, we have to install some tools and need to do a small amount of configuration in the service.
 
 We will be using a Go gRPC server in the examples, so please install Go first from [https://golang.org/dl/](https://golang.org/dl/).
 

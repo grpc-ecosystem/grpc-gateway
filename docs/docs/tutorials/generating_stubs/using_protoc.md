@@ -8,10 +8,6 @@ nav_order: 2
 
 ## Generating stubs using protoc
 
-Generate Go type and gRPC stubs:
-
-This step generates the Go types and gRPC stubs that you can use to implement the service and consume from clients.
-
 Here's an example of what a `protoc` command might look like to generate Go stubs, assuming that you're at the root of your repository and you have your proto files in a directory called `proto`:
 
 ```sh
