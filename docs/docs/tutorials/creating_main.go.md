@@ -21,7 +21,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
 
-	helloworldpb "github.com/myuser/myrepo/proto/helloworld/"
+	helloworldpb "github.com/myuser/myrepo/proto/helloworld"
 )
 
 type server struct{}
@@ -31,13 +31,10 @@ func NewServer() *server {
 }
 
 func (s *server) SayHello(ctx context.Context, in *helloworldpb.HelloRequest) (*helloworldpb.HelloReply, error) {
-
 	return &helloworldpb.HelloReply{Message: in.Name + " World"}, nil
 }
 
 func main() {
-	log := grpclog.NewLoggerV2(os.Stdout, ioutil.Discard, ioutil.Discard)
-	grpclog.SetLoggerV2(log)
 	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln("Failed to listen:", err)

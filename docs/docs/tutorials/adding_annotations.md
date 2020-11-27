@@ -31,7 +31,7 @@ service Greeter {
   }
 }
 
-// The request message containing the user's name.
+// The request message containing the user's name
 message HelloRequest {
   string name = 1;
 }
@@ -41,6 +41,8 @@ message HelloReply {
   string message = 1;
 }
 ```
+
+HttpRule is typically specified as an `google.api.http` annotation on the gRPC method. Each mapping specifies a URL path template and an HTTP method.
 
 Also, See [a_bit_of_everything.proto](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/a_bit_of_everything.proto) for examples of more annotations you can add to customize gateway behavior and generated OpenAPI output.
 

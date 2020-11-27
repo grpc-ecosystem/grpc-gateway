@@ -18,7 +18,13 @@ syntax = "proto3";
 
 package helloworld;
 
-// The request message containing the user's name.
+// The greeting service definition
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name
 message HelloRequest {
   string name = 1;
 }
