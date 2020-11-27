@@ -45,7 +45,6 @@ func main() {
 	log.Info("Serving gRPC on 0.0.0.0:8080")
 	log.Fatal(s.Serve(lis))
 }
-
 ```
 
 ### Read More

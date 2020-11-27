@@ -26,6 +26,7 @@ build:
 To generate type and gRPC stubs for Go, create the file `buf.gen.yaml` at the root of the repository:
 
 ```yml
+version: v1beta1
 plugins:
   - name: go
     out: proto
