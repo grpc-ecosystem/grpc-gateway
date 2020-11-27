@@ -67,13 +67,14 @@ proto
 We'll need to add the grpc-gateway generator to the generation configuration:
 
 ```yml
+version: v1beta1
 plugins:
   - name: go
     out: proto
     opt: paths=source_relative
   - name: go-grpc
     out: proto
-    opt: paths=source_relative
+    opt: paths=source_relative,require_unimplemented_servers=false
   - name: grpc-gateway
     out: proto
     opt: paths=source_relative

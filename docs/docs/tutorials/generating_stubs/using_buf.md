@@ -8,7 +8,7 @@ nav_order: 1
 
 ## Generating stubs using buf
 
-[Buf](https://github.com/bufbuild/buf) is a tool that provides various protobuf utilities such as linting, breaking change detection and generation. Please find installation instructions on https://github.com/bufbuild/buf.
+[Buf](https://github.com/bufbuild/buf) is a tool that provides various protobuf utilities such as linting, breaking change detection and generation. Please find installation instructions on [https://docs.buf.build/installation/](https://docs.buf.build/installation/)].
 
 It is configured through a `buf.yaml` file that should be checked in to the root of your repository. Buf will automatically read this file if present. Configuration can also be provided via the command-line flag `--config`, which accepts a path to a `.json` or `.yaml` file, or direct JSON or YAML data.
 
