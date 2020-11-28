@@ -125,4 +125,4 @@ The process is as follows:
 
 In this way, the transformation process from HTTP JSON to internal grpc is completed through gRPC-Gateway.
 
-[Next Tutorial](learn_more.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Next](learn_more.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }

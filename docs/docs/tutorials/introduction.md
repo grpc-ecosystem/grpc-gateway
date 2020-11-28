@@ -40,4 +40,4 @@ We will be working in a new module for this tutorial, so go ahead and create tha
 go mod init github.com/myuser/myrepo
 ```
 
-[Next Tutorial](simple_hello_world.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Next](simple_hello_world.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }

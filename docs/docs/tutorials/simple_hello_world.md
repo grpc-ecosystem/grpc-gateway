@@ -35,4 +35,4 @@ message HelloReply {
 }
 ```
 
-[Next Tutorial](generating_stubs/index.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Next](generating_stubs/index.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }

@@ -21,4 +21,4 @@ We use the `go` and `go-grpc` plugins to generate Go types and gRPC service defi
 
 This will have generated a `*.pb.go` and a `*_grpc.pb.go` file for `proto/helloworld/hello_world.proto`.
 
-[Next Tutorial](../creating_main.go.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Next](../creating_main.go.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }

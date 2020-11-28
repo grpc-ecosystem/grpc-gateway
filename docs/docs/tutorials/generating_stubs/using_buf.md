@@ -46,4 +46,4 @@ buf generate
 
 This will have generated a `*.pb.go` and a `*_grpc.pb.go` file for each protobuf package in our `proto` file hierarchy.
 
-[Next Tutorial](using_protoc.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Next](using_protoc.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }

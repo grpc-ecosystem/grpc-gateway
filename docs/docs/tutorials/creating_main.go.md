@@ -51,4 +51,4 @@ func main() {
 
 For more refer to gRPC docs [https://grpc.io/docs/languages/go/](https://grpc.io/docs/languages/go/).
 
-[Next Tutorial](adding_annotations.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Next](adding_annotations.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
