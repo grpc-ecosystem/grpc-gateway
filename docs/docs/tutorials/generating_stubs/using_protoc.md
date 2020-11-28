@@ -6,7 +6,7 @@ grand_parent: Tutorials
 nav_order: 2
 ---
 
-## Generating stubs using protoc
+# Generating stubs using protoc
 
 Here's an example of what a `protoc` command might look like to generate Go stubs, assuming that you're at the root of your repository and you have your proto files in a directory called `proto`:
 
@@ -20,3 +20,5 @@ protoc -I ./proto \
 We use the `go` and `go-grpc` plugins to generate Go types and gRPC service definitions. We're outputting the generated files relative to the `proto` folder, and we're using the `paths=source_relative` option, which means that the generated files will appear in the same directory as the source `.proto` file.
 
 This will have generated a `*.pb.go` and a `*_grpc.pb.go` file for `proto/helloworld/hello_world.proto`.
+
+[Next Tutorial](../creating_main.go.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }

@@ -6,7 +6,7 @@ grand_parent: Tutorials
 nav_order: 1
 ---
 
-## Generating stubs using buf
+# Generating stubs using buf
 
 [Buf](https://github.com/bufbuild/buf) is a tool that provides various protobuf utilities such as linting, breaking change detection and generation. Please find installation instructions on [https://docs.buf.build/installation/](https://docs.buf.build/installation/)].
 
@@ -45,3 +45,5 @@ buf generate
 ```
 
 This will have generated a `*.pb.go` and a `*_grpc.pb.go` file for each protobuf package in our `proto` file hierarchy.
+
+[Next Tutorial](using_protoc.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }

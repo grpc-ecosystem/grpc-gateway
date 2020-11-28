@@ -5,7 +5,7 @@ parent: Tutorials
 nav_order: 5
 ---
 
-## Adding the grpc-gateway annotations to an existing protobuf file
+# Adding the grpc-gateway annotations to an existing protobuf file
 
 Now that we've got a working Go gRPC server, we need to add the grpc-gateway annotations.
 
@@ -46,7 +46,7 @@ HttpRule is typically specified as an `google.api.http` annotation on the gRPC m
 
 Also, See [a_bit_of_everything.proto](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/a_bit_of_everything.proto) for examples of more annotations you can add to customize gateway behavior and generated OpenAPI output.
 
-### Generating the grpc-gateway stubs
+## Generating the grpc-gateway stubs
 
 Now that we've got the grpc-gateway annotations added to the proto file, we need to use the grpc-gateway generator to generate the stubs.
 
@@ -62,7 +62,7 @@ proto
     └── hello_world.proto
 ```
 
-#### Using buf
+### Using buf
 
 We'll need to add the grpc-gateway generator to the generation configuration:
 
@@ -88,7 +88,7 @@ buf generate
 
 It should produce a `*.gw.pb.go` file.
 
-#### Using protoc
+### Using protoc
 
 Now we need to add the grpc-gateway generator to the protoc invocation:
 
@@ -107,7 +107,7 @@ Usage examples can be found on this [Usage](https://github.com/grpc-ecosystem/gr
 For more refer to this boilerplate repository [grpc-gateway-boilerplate
 ](https://github.com/johanbrandhorst/grpc-gateway-boilerplate)
 
-### Testing the gRPC-Gateway
+## Testing the gRPC-Gateway
 
 Then we use curl to send HTTP requests:
 
@@ -124,3 +124,5 @@ The process is as follows:
 `curl` sends a request to the gateway with the post, gateway as proxy forwards the request to greeter_server through grpc, greeter_server returns the result through grpc, the gateway receives the result, and JSON returns to the front end.
 
 In this way, the transformation process from HTTP JSON to internal grpc is completed through gRPC-Gateway.
+
+[Next Tutorial](learn_more.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }

@@ -5,7 +5,7 @@ parent: Tutorials
 nav_order: 4
 ---
 
-## Creating main.go
+# Creating main.go
 
 Before creating `main.go` file we are assuming that the user has created a `go.mod` with the name `github.com/myuser/myrepo`. Then import here is using the path to the generated files in `proto/helloworld` relative to the root of the repository.
 
@@ -47,6 +47,8 @@ func main() {
 }
 ```
 
-### Read More
+## Read More
 
 For more refer to gRPC docs [https://grpc.io/docs/languages/go/](https://grpc.io/docs/languages/go/).
+
+[Next Tutorial](adding_annotations.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
