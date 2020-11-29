@@ -158,8 +158,6 @@ func Run(dialAddr string) error {
 	log.Info("Serving gRPC-Gateway and OpenAPI Documentation on http://", gatewayAddr)
 	return fmt.Errorf("serving gRPC-Gateway server: %w", gwServer.ListenAndServe())
 }
-
-
 ```
 
 For more refer to this boilerplate repository [grpc-gateway-boilerplate
