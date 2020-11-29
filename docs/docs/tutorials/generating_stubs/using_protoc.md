@@ -11,7 +11,7 @@ nav_order: 2
 Here's an example of what a `protoc` command might look like to generate Go stubs, assuming that you're at the root of your repository and you have your proto files in a directory called `proto`:
 
 ```sh
-protoc -I ./proto \
+$ protoc -I ./proto \
    --go_out ./proto --go_opt paths=source_relative \
    --go-grpc_out ./proto --go-grpc_opt paths=source_relative \
    ./proto/helloworld/hello_world.proto

@@ -41,7 +41,7 @@ We use the `go` and `go-grpc` plugins to generate Go types and gRPC service defi
 Then run
 
 ```sh
-buf generate
+$ buf generate
 ```
 
 This will have generated a `*.pb.go` and a `*_grpc.pb.go` file for each protobuf package in our `proto` file hierarchy.

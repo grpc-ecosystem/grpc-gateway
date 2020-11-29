@@ -7,7 +7,7 @@ nav_order: 4
 
 # Creating main.go
 
-Before creating `main.go` file we are assuming that the user has created a `go.mod` with the name `github.com/myuser/myrepo`. Then import here is using the path to the generated files in `proto/helloworld` relative to the root of the repository.
+Before creating `main.go` file we are assuming that the user has created a `go.mod` with the name `github.com/myuser/myrepo` if not refer [Creating go.mod file](introduction.md#creating-gomod-file). Then import here is using the path to the generated files in `proto/helloworld` relative to the root of the repository.
 
 ```go
 package main

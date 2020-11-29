@@ -13,6 +13,8 @@ To understand the gRPC-Gateway we are going to first make a hello world gRPC ser
 
 Before we create a gRPC service, we should create a proto file to define what we need, here we create a file named `hello_world.proto` in the directory `proto/helloworld/hello_world.proto`.
 
+The gRPC service is defined using [protocol buffers][pb]. To learn more about how to define a service in a `.proto` file see [Basics tutorial](https://grpc.io/docs/languages/go/basics/). For now, all you need to know is that both the server and the client stub have a `SayHello()` RPC method that takes a `HelloRequest` parameter from the client and returns a `HelloReply` from the server, and that the method is defined like this:
+
 ```proto
 syntax = "proto3";
 

@@ -83,7 +83,7 @@ plugins:
 And that's it! Now if you run:
 
 ```sh
-buf generate
+$ buf generate
 ```
 
 It should produce a `*.gw.pb.go` file.
@@ -93,7 +93,7 @@ It should produce a `*.gw.pb.go` file.
 Now we need to add the grpc-gateway generator to the protoc invocation:
 
 ```sh
-protoc -I ./proto \
+$ protoc -I ./proto \
   --go_out ./proto --go_opt paths=source_relative \
   --go-grpc_out ./proto --go-grpc_opt paths=source_relative \
   --grpc-gateway_out ./proto --grpc-gateway_opt paths=source_relative \
@@ -112,7 +112,7 @@ For more refer to this boilerplate repository [grpc-gateway-boilerplate
 Then we use curl to send HTTP requests:
 
 ```sh
-curl -X POST -k http://localhost:8080/v1/example/echo -d '{"name": " Hello"}'
+$ curl -X POST -k http://localhost:8080/v1/example/echo -d '{"name": " Hello"}'
 ```
 
 ```
