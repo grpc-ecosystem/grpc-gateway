@@ -51,13 +51,7 @@ This is in an effort to adhere to the
 
 ## What is the difference between the grpc-gateway and grpc-httpjson-transcoding?
 
-The grpc-gateway is a generator that generates a Go implementation of a JSON/HTTP-gRPC reverse proxy based on annotations in your proto file, while [grpc-httpjson-transcoding](https://github.com/grpc-ecosystem/grpc-httpjson-transcoding) library doesn't require the generation step, it uses protobuf descriptors as config. It can be used as a component of an existing proxy. Google Cloud Endpoints and the gRPC-JSON transcoder filter in Envoy are using this.
-
-## What the difference between grpc-gateway and gRPC HTTP API?
-
-The biggest difference between grpc-gateway and gRPC HTTP API is grpc-gateway uses code generation to create a reverse-proxy server. The reverse-proxy translates RESTful calls into gRPC and then sends them on to the gRPC service.
-
-Read more about gRPC HTTP API on this [https://docs.microsoft.com/en-us/aspnet/core/grpc/httpapi?view=aspnetcore-5.0#grpc-http-api](https://docs.microsoft.com/en-us/aspnet/core/grpc/httpapi?view=aspnetcore-5.0#grpc-http-api).
+The grpc-gateway is a generator that generates a Go implementation of a JSON/HTTP-gRPC reverse proxy based on annotations in your proto file, while the [grpc-httpjson-transcoding](https://github.com/grpc-ecosystem/grpc-httpjson-transcoding) library doesn't require the generation step, it uses protobuf descriptors as config. It can be used as a component of an existing proxy. Google Cloud Endpoints and the gRPC-JSON transcoder filter in Envoy are using this.
 
 ## What is the difference between the grpc-gateway and grpc-web?
 
