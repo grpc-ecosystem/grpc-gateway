@@ -104,6 +104,64 @@ This should generate a `*.gw.pb.go` file.
 
 Usage examples can be found on this [Usage](https://github.com/grpc-ecosystem/grpc-gateway#usage)
 
+### In addition to the main.go
+
+```go
+package gateway
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"os"
+	"strings"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	helloworldpb "github.com/iamrajiv/helloworld/proto/helloworld"
+	"github.com/prometheus/common/log"
+	"google.golang.org/grpc"
+)
+
+// Run runs the gRPC-Gateway, dialling the provided address.
+func Run(dialAddr string) error {
+	// Create a client connection to the gRPC Server we just started.
+	// This is where the gRPC-Gateway proxies the requests.
+	conn, err := grpc.DialContext(
+		context.Background(),
+		dialAddr,
+		grpc.WithBlock(),
+	)
+	if err != nil {
+		return fmt.Errorf("failed to dial server: %w", err)
+	}
+
+	gwmux := runtime.NewServeMux()
+	err = helloworldpb.RegisterGreeterHandler(context.Background(), gwmux, conn)
+	if err != nil {
+		return fmt.Errorf("failed to register gateway: %w", err)
+	}
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "11000"
+	}
+	gatewayAddr := "0.0.0.0:" + port
+	gwServer := &http.Server{
+		Addr: gatewayAddr,
+		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if strings.HasPrefix(r.URL.Path, "") {
+				gwmux.ServeHTTP(w, r)
+				return
+			}
+		}),
+	}
+	log.Info("Serving gRPC-Gateway and OpenAPI Documentation on http://", gatewayAddr)
+	return fmt.Errorf("serving gRPC-Gateway server: %w", gwServer.ListenAndServe())
+}
+
+
+```
+
 For more refer to this boilerplate repository [grpc-gateway-boilerplate
 ](https://github.com/johanbrandhorst/grpc-gateway-boilerplate)
 
