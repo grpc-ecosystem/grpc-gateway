@@ -35,7 +35,9 @@ This server is generated according to [custom options](https://cloud.google.com/
 
 It helps you to provide your APIs in both gRPC and RESTful style at the same time.
 
-![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&h=370)
+<div align="center">
+<img src="assets/images/architecture_introduction_diagram.svg" />
+</div>
 
 To learn more about us check out our documentation.
 

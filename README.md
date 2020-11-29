@@ -1,10 +1,11 @@
 # grpc-gateway
 
-[![release](https://img.shields.io/github/release/grpc-ecosystem/grpc-gateway.svg?style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/releases)
-[![CircleCI](https://img.shields.io/circleci/project/github/grpc-ecosystem/grpc-gateway/master.svg?style=flat-square)](https://circleci.com/gh/grpc-ecosystem/grpc-gateway)
-[![coverage](https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway/master.svg?style=flat-square)](https://codecov.io/gh/grpc-ecosystem/grpc-gateway)
-[![license](https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway.svg?style=flat-square)](LICENSE.txt)
-[![Slack](https://img.shields.io/badge/slack-%23grpc--gateway-brightgreen?style=flat-square)](https://join.slack.com/t/gophers/shared_invite/zt-gmw97q11-1OWgj2Dqsc13eqoSPwvNDQ)
+[![circleci](https://img.shields.io/circleci/build/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=circleci&logoColor=ffffff&style=flat-square)](https://circleci.com/gh/grpc-ecosystem/grpc-gateway)
+[![codecov](https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=codecov&logoColor=ffffff&style=flat-square)](https://codecov.io/gh/grpc-ecosystem/grpc-gateway)
+[![slack](https://img.shields.io/badge/slack-grpc--gateway-379c9c?logo=slack&logoColor=ffffff&style=flat-square)](https://app.slack.com/client/T029RQSE6/CBATURP1D)
+[![license](https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt)
+[![release](https://img.shields.io/github/v/release/grpc-ecosystem/grpc-gateway?color=379c9c&logoColor=ffffff&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/releases)
+[![stars](https://img.shields.io/github/stars/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/stargazers)
 
 The grpc-gateway is a plugin of the Google protocol buffers compiler
 [protoc](https://github.com/protocolbuffers/protobuf).
@@ -15,19 +16,22 @@ annotations in your service definitions.
 
 This helps you provide your APIs in both gRPC and RESTful style at the same time.
 
-![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&amp;h=370)
+<div align="center">
+<img src="docs/assets/images/architecture_introduction_diagram.svg" />
+</div>
 
 ## Testimonials
 
- > We use the gRPC-Gateway to serve millions of API requests per day,
-   and have been since 2018, and through all of that,
-   we have never had any issues with it.
+> We use the gRPC-Gateway to serve millions of API requests per day,
+> and have been since 2018, and through all of that,
+> we have never had any issues with it.
 >
 > _- William Mill, [Ad Hoc](http://adhocteam.us/)_
 
 ## Check out our [documentation](https://grpc-ecosystem.github.io/grpc-gateway/)!
 
 ## Background
+
 gRPC is great -- it generates API clients and server stubs in many programming
 languages, it is fast, easy-to-use, bandwidth-efficient and its design is
 combat-proven by Google. However, you might still want to provide a traditional
@@ -79,18 +83,19 @@ $ go install \
 
 This will place four binaries in your `$GOBIN`;
 
-* `protoc-gen-grpc-gateway`
-* `protoc-gen-openapiv2`
-* `protoc-gen-go`
-* `protoc-gen-go-grpc`
+- `protoc-gen-grpc-gateway`
+- `protoc-gen-openapiv2`
+- `protoc-gen-go`
+- `protoc-gen-go-grpc`
 
 Make sure that your `$GOBIN` is in your `$PATH`.
 
 ## Usage
 
-1. Define your [gRPC](https://grpc.io/docs/) service using protocol buffers 
+1. Define your [gRPC](https://grpc.io/docs/) service using protocol buffers
 
    `your_service.proto`:
+
    ```protobuf
     syntax = "proto3";
     package your.service.v1;
@@ -106,63 +111,66 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
 2. Generate gRPC stubs
 
-    This step generates the gRPC stubs that you can use to implement the service and consume from clients:
+   This step generates the gRPC stubs that you can use to implement the service and consume from clients:
 
-    Here's an example of what a `protoc` command might look like to generate Go stubs:
+   Here's an example of what a `protoc` command might look like to generate Go stubs:
 
-    ```sh
-    protoc -I . \
-       --go_out ./gen/go/ --go_opt paths=source_relative \
-       --go-grpc_out ./gen/go/ --go-grpc_opt paths=source_relative \
-       your/service/v1/your_service.proto
-    ```
+   ```sh
+   protoc -I . \
+      --go_out ./gen/go/ --go_opt paths=source_relative \
+      --go-grpc_out ./gen/go/ --go-grpc_opt paths=source_relative \
+      your/service/v1/your_service.proto
+   ```
 
 3. Implement your service in gRPC as usual
 
    1. (Optional) Generate gRPC stub in the [other programming languages](https://grpc.io/docs/).
 
-     For example, the following generates gRPC code for Ruby based on `your/service/v1/your_service.proto`:
-     ```sh
-     protoc -I . --ruby_out ./gen/ruby your/service/v1/your_service.proto
+   For example, the following generates gRPC code for Ruby based on `your/service/v1/your_service.proto`:
 
-     protoc -I . --grpc-ruby_out ./gen/ruby your/service/v1/your_service.proto
-     ```
+   ```sh
+   protoc -I . --ruby_out ./gen/ruby your/service/v1/your_service.proto
+
+   protoc -I . --grpc-ruby_out ./gen/ruby your/service/v1/your_service.proto
+   ```
+
    2. Add the googleapis-common-protos gem (or your language equivalent) as a dependency to your project.
    3. Implement your gRPC service stubs
 
 4. Generate reverse-proxy using `protoc-gen-grpc-gateway`
 
-    At this point, you have 3 options:
+   At this point, you have 3 options:
 
-    * no further modifications, use the default mapping to HTTP semantics (method, path, etc.)
-        * this will work on any `.proto` file, but will not allow setting HTTP paths, request parameters or similar
-    * additional `.proto` modifications to use a custom mapping
-        * relies on parameters in the `.proto` file to set custom HTTP mappings
-    * no `.proto` modifications, but use an external configuration file
-        * relies on an external configuration file to set custom HTTP mappings
-        * mostly useful when the source proto file isn't under your control
+   - no further modifications, use the default mapping to HTTP semantics (method, path, etc.)
+     - this will work on any `.proto` file, but will not allow setting HTTP paths, request parameters or similar
+   - additional `.proto` modifications to use a custom mapping
+     - relies on parameters in the `.proto` file to set custom HTTP mappings
+   - no `.proto` modifications, but use an external configuration file
+     - relies on an external configuration file to set custom HTTP mappings
+     - mostly useful when the source proto file isn't under your control
 
-    1. Using the default mapping
+   1. Using the default mapping
 
-    This requires no additional modification to the `.proto` file, but does require enabling a specific option when executing the plugin.
-    The `generate_unbound_methods` should be enabled.
+   This requires no additional modification to the `.proto` file, but does require enabling a specific option when executing the plugin.
+   The `generate_unbound_methods` should be enabled.
 
-    Here's what a `protoc` execution might look like with this option enabled:
+   Here's what a `protoc` execution might look like with this option enabled:
 
-    ```sh
-       protoc -I . --grpc-gateway_out ./gen/go \
-         --grpc-gateway_opt logtostderr=true \
-         --grpc-gateway_opt paths=source_relative \
-         --grpc-gateway_opt generate_unbound_methods=true \
-         your/service/v1/your_service.proto
-    ```
+   ```sh
+      protoc -I . --grpc-gateway_out ./gen/go \
+        --grpc-gateway_opt logtostderr=true \
+        --grpc-gateway_opt paths=source_relative \
+        --grpc-gateway_opt generate_unbound_methods=true \
+        your/service/v1/your_service.proto
+   ```
 
-    2. With custom annotations
+   2. With custom annotations
 
-    Add a [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46)
-    annotation to your .proto file
+   Add a [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46)
+   annotation to your .proto file
 
    `your_service.proto`:
+
    ```diff
     syntax = "proto3";
     package your.service.v1;
@@ -185,70 +193,70 @@ Make sure that your `$GOBIN` is in your `$PATH`.
     }
    ```
 
-   >You will need to provide the required third party protobuf files to the `protoc` compiler.
-   >They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
-   >them into your `protoc` generation file structure. If you've structured your proto files according
-   >to something like [the Buf style guide](https://buf.build/docs/style-guide#files-and-packages),
-   >you could copy the files into a top-level `./google` folder.
+   > You will need to provide the required third party protobuf files to the `protoc` compiler.
+   > They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
+   > them into your `protoc` generation file structure. If you've structured your proto files according
+   > to something like [the Buf style guide](https://buf.build/docs/style-guide#files-and-packages),
+   > you could copy the files into a top-level `./google` folder.
 
    See [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
    for examples of more annotations you can add to customize gateway behavior
    and generated OpenAPI output.
-   
+
    Here's what a `protoc` execution might look like:
 
-    ```sh
-       protoc -I . --grpc-gateway_out ./gen/go \
-         --grpc-gateway_opt logtostderr=true \
-         --grpc-gateway_opt paths=source_relative \
-         your/service/v1/your_service.proto
-    ```
+   ```sh
+      protoc -I . --grpc-gateway_out ./gen/go \
+        --grpc-gateway_opt logtostderr=true \
+        --grpc-gateway_opt paths=source_relative \
+        your/service/v1/your_service.proto
+   ```
 
-    3. External configuration
-   If you do not want to (or cannot) modify the proto file for use with grpc-gateway you can
-   alternatively use an external
-   [gRPC Service Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file.
-   [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/grpcapiconfiguration.html)
-   for more information.
+   3. External configuration
+      If you do not want to (or cannot) modify the proto file for use with grpc-gateway you can
+      alternatively use an external
+      [gRPC Service Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file.
+      [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/grpcapiconfiguration.html)
+      for more information.
 
    Here's what a `protoc` execution might look like with this option enabled:
 
-    ```sh
-       protoc -I . --grpc-gateway_out ./gen/go \
-         --grpc-gateway_opt logtostderr=true \
-         --grpc-gateway_opt paths=source_relative \
-         --grpc-gateway_opt grpc_api_configuration=path/to/config.yaml \
-         your/service/v1/your_service.proto
-    ```
+   ```sh
+      protoc -I . --grpc-gateway_out ./gen/go \
+        --grpc-gateway_opt logtostderr=true \
+        --grpc-gateway_opt paths=source_relative \
+        --grpc-gateway_opt grpc_api_configuration=path/to/config.yaml \
+        your/service/v1/your_service.proto
+   ```
 
 5. Write an entrypoint for the HTTP reverse-proxy server
 
    ```go
    package main
- 
+
    import (
      "context"
      "flag"
      "net/http"
- 
+
      "github.com/golang/glog"
      "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
      "google.golang.org/grpc"
 
      gw "github.com/yourorg/yourrepo/proto/gen/go/your/service/v1/your_service"  // Update
    )
- 
+
    var (
      // command-line options:
      // gRPC server endpoint
      grpcServerEndpoint = flag.String("grpc-server-endpoint",  "localhost:9090", "gRPC server endpoint")
    )
- 
+
    func run() error {
      ctx := context.Background()
      ctx, cancel := context.WithCancel(ctx)
      defer cancel()
- 
+
      // Register gRPC server endpoint
      // Note: Make sure the gRPC server is running properly and accessible
      mux := runtime.NewServeMux()
@@ -257,15 +265,15 @@ Make sure that your `$GOBIN` is in your `$PATH`.
      if err != nil {
        return err
      }
- 
+
      // Start HTTP server (and proxy calls to gRPC server endpoint)
      return http.ListenAndServe(":8081", mux)
    }
- 
+
    func main() {
      flag.Parse()
      defer glog.Flush()
- 
+
      if err := run(); err != nil {
        glog.Fatal(err)
      }
@@ -294,14 +302,14 @@ https://github.com/johanbrandhorst/grpc-gateway-boilerplate.
 During code generation with `protoc`, flags to grpc-gateway tools must be passed
 through protoc using one of 2 patterns:
 
-* as part of the `--<tool_suffix>_out` `protoc` parameter: `--<tool_suffix>_out=<flags>:<path>`
+- as part of the `--<tool_suffix>_out` `protoc` parameter: `--<tool_suffix>_out=<flags>:<path>`
 
 ```sh
 --grpc-gateway_out=logtostderr=true,repeated_path_param_separator=ssv:.
 --openapiv2_out=logtostderr=true,repeated_path_param_separator=ssv:.
 ```
 
-* using additional `--<tool_suffix>_opt` parameters: `--<tool_suffix>_opt=<flag>[,<flag>]*`
+- using additional `--<tool_suffix>_opt` parameters: `--<tool_suffix>_opt=<flag>[,<flag>]*`
 
 ```sh
 --grpc-gateway_opt logtostderr=true,repeated_path_param_separator=ssv
@@ -335,13 +343,15 @@ files with options from
 for examples.
 
 ## More Examples
+
 More examples are available under `examples` directory.
-* `proto/examplepb/echo_service.proto`, `proto/examplepb/a_bit_of_everything.proto`, `proto/examplepb/unannotated_echo_service.proto`: service definition
-  * `proto/examplepb/echo_service.pb.go`, `proto/examplepb/a_bit_of_everything.pb.go`, `proto/examplepb/unannotated_echo_service.pb.go`: [generated] stub of the service
-  * `proto/examplepb/echo_service.pb.gw.go`, `proto/examplepb/a_bit_of_everything.pb.gw.go`, `proto/examplepb/uannotated_echo_service.pb.gw.go`: [generated] reverse proxy for the service
-  * `proto/examplepb/unannotated_echo_service.yaml`: gRPC API Configuration for ```unannotated_echo_service.proto```
-* `server/main.go`: service implementation
-* `main.go`: entrypoint of the generated reverse proxy
+
+- `proto/examplepb/echo_service.proto`, `proto/examplepb/a_bit_of_everything.proto`, `proto/examplepb/unannotated_echo_service.proto`: service definition
+  - `proto/examplepb/echo_service.pb.go`, `proto/examplepb/a_bit_of_everything.pb.go`, `proto/examplepb/unannotated_echo_service.pb.go`: [generated] stub of the service
+  - `proto/examplepb/echo_service.pb.gw.go`, `proto/examplepb/a_bit_of_everything.pb.gw.go`, `proto/examplepb/uannotated_echo_service.pb.gw.go`: [generated] reverse proxy for the service
+  - `proto/examplepb/unannotated_echo_service.yaml`: gRPC API Configuration for `unannotated_echo_service.proto`
+- `server/main.go`: service implementation
+- `main.go`: entrypoint of the generated reverse proxy
 
 To use the same port for custom HTTP handlers (e.g. serving `swagger.json`),
 gRPC-gateway, and a gRPC server, see
@@ -352,49 +362,53 @@ gRPC-gateway, and a gRPC server, see
 
 ### Supported
 
-* Generating JSON API handlers.
-* Method parameters in the request body.
-* Method parameters in the request path.
-* Method parameters in query string.
-* Enum fields in the path parameter (including repeated enum fields).
-* Mapping streaming APIs to newline-delimited JSON streams.
-* Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata (prefixed with `grpcgateway-`)
-* Optionally emitting API definitions for
-[OpenAPI (Swagger) v2](https://swagger.io/docs/specification/2-0/basic-structure/).
-* Setting [gRPC timeouts](https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests)
-through inbound HTTP `Grpc-Timeout` header.
-* Partial support for [gRPC API Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config)
-files as an alternative to annotation.
-* Automatically translating PATCH requests into Field Mask gRPC requests. See
-[the docs](https://grpc-ecosystem.github.io/grpc-gateway/docs/patch.html)
-for more information.
+- Generating JSON API handlers.
+- Method parameters in the request body.
+- Method parameters in the request path.
+- Method parameters in query string.
+- Enum fields in the path parameter (including repeated enum fields).
+- Mapping streaming APIs to newline-delimited JSON streams.
+- Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata (prefixed with `grpcgateway-`)
+- Optionally emitting API definitions for
+  [OpenAPI (Swagger) v2](https://swagger.io/docs/specification/2-0/basic-structure/).
+- Setting [gRPC timeouts](https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests)
+  through inbound HTTP `Grpc-Timeout` header.
+- Partial support for [gRPC API Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config)
+  files as an alternative to annotation.
+- Automatically translating PATCH requests into Field Mask gRPC requests. See
+  [the docs](https://grpc-ecosystem.github.io/grpc-gateway/docs/patch.html)
+  for more information.
 
 ### No plan to support
+
 But patch is welcome.
-* Method parameters in HTTP headers.
-* Handling trailer metadata.
-* Encoding request/response body in XML.
-* True bi-directional streaming.
+
+- Method parameters in HTTP headers.
+- Handling trailer metadata.
+- Encoding request/response body in XML.
+- True bi-directional streaming.
 
 # Mapping gRPC to HTTP
 
-* [How gRPC error codes map to HTTP status codes in the response](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/errors.go#L15).
-* HTTP request source IP is added as `X-Forwarded-For` gRPC request header.
-* HTTP request host is added as `X-Forwarded-Host` gRPC request header.
-* HTTP `Authorization` header is added as `authorization` gRPC request header.
-* Remaining Permanent HTTP header keys (as specified by the IANA
-[here](http://www.iana.org/assignments/message-headers/message-headers.xhtml)
-are prefixed with `grpcgateway-` and added with their values to gRPC request
-header.
-* HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata
-(prefixed with `grpcgateway-`).
-* While configurable, the default {un,}marshaling uses
-[jsonpb](https://pkg.go.dev/github.com/golang/protobuf/jsonpb) with
-`OrigName: true`.
+- [How gRPC error codes map to HTTP status codes in the response](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/errors.go#L15).
+- HTTP request source IP is added as `X-Forwarded-For` gRPC request header.
+- HTTP request host is added as `X-Forwarded-Host` gRPC request header.
+- HTTP `Authorization` header is added as `authorization` gRPC request header.
+- Remaining Permanent HTTP header keys (as specified by the IANA
+  [here](http://www.iana.org/assignments/message-headers/message-headers.xhtml)
+  are prefixed with `grpcgateway-` and added with their values to gRPC request
+  header.
+- HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata
+  (prefixed with `grpcgateway-`).
+- While configurable, the default {un,}marshaling uses
+  [jsonpb](https://pkg.go.dev/github.com/golang/protobuf/jsonpb) with
+  `OrigName: true`.
 
 # Contribution
+
 See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md).
 
 # License
+
 grpc-gateway is licensed under the BSD 3-Clause License.
 See [LICENSE.txt](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt) for more details.
