@@ -31,7 +31,7 @@ you can easily write a custom wrapper of `runtime.ServeMux`, leveraged with exis
 libraries in Go.
 e.g. https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/gateway/main.go
 
-## My gRPC server is written in (Scala, C++, Ruby, Haskell ...). Is there a (Scala, C++, Ruby, Haskell ...) version of grpc-gateway?
+## My gRPC server is written in (Scala or C++ or Ruby or Haskell...). Is there a (Scala or C++ or Ruby or Haskell...) version of grpc-gateway?
 
 AFAIK, no. But it should not be a big issue because the reverse-proxy which grpc-gateway generates
 usually works as an independent process and communicates with your gRPC server over TCP or a unix-domain socket.
@@ -49,27 +49,32 @@ it will break code that is very far away from the code that changed.
 This is in an effort to adhere to the
 [principle of least astonishment](https://en.wikipedia.org/wiki/Principle_of_least_astonishment).
 
-## What the difference between grpc-gateway and grpc-httpjson-transcoding?
+## What is the difference between the grpc-gateway and grpc-httpjson-transcoding?
 
-grpc-gateway is a generator that generates a go implementation of gRPC-JSON proxy so you can compile and use it solely while [grpc-httpjson-transcoding](https://github.com/grpc-ecosystem/grpc-httpjson-transcoding) library doesn't require the compilation step, it uses protobuf descriptors as config. It can be used as a component of an existing proxy. Google Cloud Endpoints and gRPC-JSON transcoder filter in Envoy are using this.
+The grpc-gateway is a generator that generates a Go implementation of a JSON/HTTP-gRPC reverse proxy based on annotations in your proto file, while [grpc-httpjson-transcoding](https://github.com/grpc-ecosystem/grpc-httpjson-transcoding) library doesn't require the generation step, it uses protobuf descriptors as config. It can be used as a component of an existing proxy. Google Cloud Endpoints and the gRPC-JSON transcoder filter in Envoy are using this.
 
 ## What the difference between grpc-gateway and gRPC HTTP API?
 
 The biggest difference between grpc-gateway and gRPC HTTP API is grpc-gateway uses code generation to create a reverse-proxy server. The reverse-proxy translates RESTful calls into gRPC and then sends them on to the gRPC service.
 
-## What the difference between grpc-gateway and grpc-web?
+Read more about gRPC HTTP API on this [https://docs.microsoft.com/en-us/aspnet/core/grpc/httpapi?view=aspnetcore-5.0#grpc-http-api](https://docs.microsoft.com/en-us/aspnet/core/grpc/httpapi?view=aspnetcore-5.0#grpc-http-api).
 
-If we talk about usage:
-grpc-gateway, we will create a reverse-proxy using the built-in protobuf definition. On the front-end, we call directly through REST APIs.
+## What is the difference between the grpc-gateway and grpc-web?
 
-As for [gRPC-Web](https://github.com/grpc/grpc-web), we must code directly in the front-end.
+### Usage
 
-If we talk about performance:
-grpc-gateway uses a reverse proxy to parsing JSON to binary, then it uses the parsing message to send our gRPC service, and when the service response, it takes more time to parse step. As you can see, there are too many parsing costs here, which will have a negative impact on performance.
+In the grpc-gateway, we generate a reverse-proxy from the proto file annotations. In the front-end, we call directly through REST APIs. We can generate an OpenAPI v2 specification that may further be used to generate the frontend client from using `protoc-gen-openapiv2`.
 
-As for [gRPC-Web](https://github.com/grpc/grpc-web), the message is sent in binary format so the transmission cost will be less. When it comes to the proxy, there is no cost for parsing because the message is in its correct format.
+In grpc-web, the client code is generated directly from the proto files and can be used in the frontend.
 
-If we talk about maintenance:
-With grpc-gateway, if your API specification change in the proto file, we have to run the tool to recreate the gateway code. And if you have previously made modifications to the gateway’s code, this requires you to find a way, to sum up, the old and new code. At this point, we must change the code to at least 2 locations, front-end and grpc-gateway.
+### Performance
 
-As for [gRPC-Web](https://github.com/grpc/grpc-web), the front-end codebase need to change.
+The grpc-gateway parses JSON to the protobuf binary format before sending it to the gRPC server. It then has to parse the reply back from the protobuf binary format to JSON again. The parsing overhead has a negative impact on performance.
+
+In grpc-web, the message is sent in the protobuf binary format already, so there is no additional parsing cost on the proxy side.
+
+### Maintenance
+
+With the grpc-gateway, if your proto file changes, we have to regenerate the gateway reverse proxy code. If you are using the HTTP/JSON interface you probably have to change the front-end too, which means making changes in two places.
+
+In grpc-web, regenerating the files from the proto file will automatically update the front-end client.
