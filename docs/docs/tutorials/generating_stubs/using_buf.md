@@ -8,11 +8,11 @@ nav_order: 1
 
 # Generating stubs using buf
 
-[Buf](https://github.com/bufbuild/buf) is a tool that provides various protobuf utilities such as linting, breaking change detection and generation. Please find installation instructions on [https://docs.buf.build/installation/](https://docs.buf.build/installation/)].
+[Buf](https://github.com/bufbuild/buf) is a tool that provides various protobuf utilities such as linting, breaking change detection and generation. Please find installation instructions on [https://docs.buf.build/installation/](https://docs.buf.build/installation/).
 
 It is configured through a `buf.yaml` file that should be checked in to the root of your repository. Buf will automatically read this file if present. Configuration can also be provided via the command-line flag `--config`, which accepts a path to a `.json` or `.yaml` file, or direct JSON or YAML data.
 
-All Buf operations that use your local `.proto` files as input rely on a valid build configuration. This configuration tells Buf where to search for `.proto` files, and how to handle imports. As opposed to protoc, where all `.proto` files are manually specified on the command-line, buf operates by recursively discovering all `.proto` files under configuration and building them.
+All Buf operations that use your local `.proto` files as input rely on a valid build configuration. This configuration tells Buf where to search for `.proto` files, and how to handle imports. As opposed to `protoc`, where all `.proto` files are manually specified on the command-line, buf operates by recursively discovering all `.proto` files under configuration and building them.
 
 The following is an example of a valid configuration, assuming you have your `.proto` files rooted in the `proto` folder relative to the root of your repository.
 

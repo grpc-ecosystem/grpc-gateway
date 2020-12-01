@@ -11,7 +11,7 @@ Now that we've got a working Go gRPC server, we need to add the grpc-gateway ann
 
 The annotations define how gRPC services map to the JSON request and response. When using protocol buffers, each RPC must define the HTTP method and path using the `google.api.http` annotation.
 
-So you will need to add `import "google/api/http.proto";` to the gRPC proto file.
+So we will need to add the `google/api/http.proto` import to the proto file. We also need to add the HTTP->gRPC mapping we want. In this case, we're mapping `POST /v1/example/echo` to our `SayHello` rpc.
 
 ```proto
 syntax = "proto3";
@@ -42,9 +42,7 @@ message HelloReply {
 }
 ```
 
-HttpRule is typically specified as an `google.api.http` annotation on the gRPC method. Each mapping specifies a URL path template and an HTTP method.
-
-Also, See [a_bit_of_everything.proto](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/a_bit_of_everything.proto) for examples of more annotations you can add to customize gateway behavior and generated OpenAPI output.
+See [a_bit_of_everything.proto](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/a_bit_of_everything.proto) for examples of more annotations you can add to customize gateway behavior.
 
 ## Generating the grpc-gateway stubs
 
@@ -102,73 +100,77 @@ $ protoc -I ./proto \
 
 This should generate a `*.gw.pb.go` file.
 
-Usage examples can be found on this [Usage](https://github.com/grpc-ecosystem/grpc-gateway#usage)
-
-### In addition to the main.go
+We also need to add and serve the gRPC-gateway mux in our `main.go` file.
 
 ```go
-package gateway
-
+package main
 import (
 	"context"
-	"fmt"
-	"net/http"
+	"io/ioutil"
+	"net"
 	"os"
-	"strings"
-
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	helloworldpb "github.com/iamrajiv/helloworld/proto/helloworld"
-	"github.com/prometheus/common/log"
+	"log"
 	"google.golang.org/grpc"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	helloworldpb "github.com/myuser/myrepo/proto/helloworld"
 )
-
-// Run runs the gRPC-Gateway, dialling the provided address.
-func Run(dialAddr string) error {
+type server struct{}
+func NewServer() *server {
+	return &server{}
+}
+func (s *server) SayHello(ctx context.Context, in *helloworldpb.HelloRequest) (*helloworldpb.HelloReply, error) {
+	return &helloworldpb.HelloReply{Message: in.Name + " World"}, nil
+}
+func main() {
+	lis, err := net.Listen("tcp", ":8080")
+	if err != nil {
+		log.Fatalln("Failed to listen:", err)
+	}
+	s := grpc.NewServer()
+	helloworldpb.RegisterGreeterServer(s, &server{})
+	// Serve gRPC Server
+	log.Println("Serving gRPC on 0.0.0.0:8080")
+	go func() {
+		log.Fatalln(s.Serve(lis))
+	}()
 	// Create a client connection to the gRPC Server we just started.
 	// This is where the gRPC-Gateway proxies the requests.
 	conn, err := grpc.DialContext(
 		context.Background(),
-		dialAddr,
+		"0.0.0.0:8080",
 		grpc.WithBlock(),
 	)
 	if err != nil {
-		return fmt.Errorf("failed to dial server: %w", err)
+		log.Fatalln("Failed to dial server:", err)
 	}
-
 	gwmux := runtime.NewServeMux()
 	err = helloworldpb.RegisterGreeterHandler(context.Background(), gwmux, conn)
 	if err != nil {
-		return fmt.Errorf("failed to register gateway: %w", err)
+		log.Fatalln("Failed to register gateway:", err)
 	}
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "11000"
-	}
-	gatewayAddr := "0.0.0.0:" + port
 	gwServer := &http.Server{
-		Addr: gatewayAddr,
-		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if strings.HasPrefix(r.URL.Path, "") {
-				gwmux.ServeHTTP(w, r)
-				return
-			}
-		}),
+		Addr: ":8090",
+		Handler: gwmux,
 	}
-	log.Info("Serving gRPC-Gateway and OpenAPI Documentation on http://", gatewayAddr)
-	return fmt.Errorf("serving gRPC-Gateway server: %w", gwServer.ListenAndServe())
+	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
+	log.Fatalln(gwServer.ListenAndServe())
 }
 ```
 
-For more refer to this boilerplate repository [grpc-gateway-boilerplate
-](https://github.com/johanbrandhorst/grpc-gateway-boilerplate)
+For more examples, please refer to [our boilerplate repository](https://github.com/johanbrandhorst/grpc-gateway-boilerplate).
 
 ## Testing the gRPC-Gateway
 
-Then we use curl to send HTTP requests:
+Now we can start the server:
 
 ```sh
-$ curl -X POST -k http://localhost:8080/v1/example/echo -d '{"name": " Hello"}'
+$ go run main.go
+```
+
+Then we use cURL to send HTTP requests:
+
+```sh
+$ curl -X POST -k http://localhost:8090/v1/example/echo -d '{"name": " Hello"}'
 ```
 
 ```
@@ -177,8 +179,6 @@ $ curl -X POST -k http://localhost:8080/v1/example/echo -d '{"name": " Hello"}'
 
 The process is as follows:
 
-`curl` sends a request to the gateway with the post, gateway as proxy forwards the request to greeter_server through grpc, greeter_server returns the result through grpc, the gateway receives the result, and JSON returns to the front end.
-
-In this way, the transformation process from HTTP JSON to internal grpc is completed through gRPC-Gateway.
+Hopefully, that gives a bit of understanding of how to use the gRPC-Gateway.
 
 [Next](learn_more.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
