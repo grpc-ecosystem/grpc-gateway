@@ -9,9 +9,7 @@ nav_order: 6
 
 ## How it works
 
-After we use cURL to send HTTP requests `curl` sends a request to the gateway with the post, gateway as proxy forwards the request to `GreeterServer` through gRPC, `GreeterServer` returns the result through gRPC, the gateway receives the result, and JSON returns to the front end.
-
-In this way, the transformation process from HTTP JSON to internal gRPC is completed through gRPC-Gateway.
+When the HTTP request arrives at the gRPC-gateway, it parses the JSON data into a protobuf message. It then makes a normal Go gRPC client request using the parsed protobuf message. The Go gRPC client encodes the protobuf structure into the protobuf binary format and sends it to the gRPC server. The gRPC Server handles the request and returns the response in the protobuf binary format. The Go gRPC client parses it into a protobuf message and returns it to the gRPC-gateway, which encodes the protobuf message to JSON and returns it to the original client.
 
 ## google.api.http
 
