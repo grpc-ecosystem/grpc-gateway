@@ -1,13 +1,19 @@
-# grpc-gateway
+<div align="center">
+<h1>gRPC-Gateway</h1>
+<p>grpc-gateway
+gRPC to JSON proxy generator following the gRPC HTTP spec
+</p>
+<a href="https://circleci.com/gh/grpc-ecosystem/grpc-gateway"><img src="https://img.shields.io/circleci/build/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=circleci&logoColor=ffffff&style=flat-square"/></a>
+<a href="https://codecov.io/gh/grpc-ecosystem/grpc-gateway"><img src="https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=codecov&logoColor=ffffff&style=flat-square"/></a>
+<a href="https://app.slack.com/client/T029RQSE6/CBATURP1D"><img src="https://img.shields.io/badge/slack-grpc--gateway-379c9c?logo=slack&logoColor=ffffff&style=flat-square"/></a>
+<a href="https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt"><img src="https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square"/></a>
+<a href="https://github.com/grpc-ecosystem/grpc-gateway/releases"><img src="https://img.shields.io/github/v/release/grpc-ecosystem/grpc-gateway?color=379c9c&logoColor=ffffff&style=flat-square"/></a>
+<a href="https://github.com/grpc-ecosystem/grpc-gateway/stargazers"><img src="https://img.shields.io/github/stars/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square"/></a>
+</div>
 
-[![circleci](https://img.shields.io/circleci/build/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=circleci&logoColor=ffffff&style=flat-square)](https://circleci.com/gh/grpc-ecosystem/grpc-gateway)
-[![codecov](https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=codecov&logoColor=ffffff&style=flat-square)](https://codecov.io/gh/grpc-ecosystem/grpc-gateway)
-[![slack](https://img.shields.io/badge/slack-grpc--gateway-379c9c?logo=slack&logoColor=ffffff&style=flat-square)](https://app.slack.com/client/T029RQSE6/CBATURP1D)
-[![license](https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt)
-[![release](https://img.shields.io/github/v/release/grpc-ecosystem/grpc-gateway?color=379c9c&logoColor=ffffff&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/releases)
-[![stars](https://img.shields.io/github/stars/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square)](https://github.com/grpc-ecosystem/grpc-gateway/stargazers)
+## About
 
-The grpc-gateway is a plugin of the Google protocol buffers compiler
+The gRPC-Gateway is a plugin of the Google protocol buffers compiler
 [protoc](https://github.com/protocolbuffers/protobuf).
 It reads protobuf service definitions and generates a reverse-proxy server which
 translates a RESTful HTTP API into gRPC. This server is generated according to the
@@ -23,12 +29,10 @@ This helps you provide your APIs in both gRPC and RESTful style at the same time
 ## Testimonials
 
 > We use the gRPC-Gateway to serve millions of API requests per day,
-> and have been since 2018, and through all of that,
+> and have been since 2018 and through all of that,
 > we have never had any issues with it.
 >
 > _- William Mill, [Ad Hoc](http://adhocteam.us/)_
-
-## Check out our [documentation](https://grpc-ecosystem.github.io/grpc-gateway/)!
 
 ## Background
 
@@ -46,7 +50,7 @@ that's needed to generate a reverse-proxy with this library.
 
 ## Installation
 
-The grpc-gateway requires a local installation of the Google protocol buffers
+The gRPC-Gateway requires a local installation of the Google protocol buffers
 compiler `protoc` v3.0.0 or above. Please install this via your local package
 manager or by downloading one of the releases from the official repository:
 
@@ -151,7 +155,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
    1. Using the default mapping
 
-   This requires no additional modification to the `.proto` file, but does require enabling a specific option when executing the plugin.
+   This requires no additional modification to the `.proto` file but does require enabling a specific option when executing the plugin.
    The `generate_unbound_methods` should be enabled.
 
    Here's what a `protoc` execution might look like with this option enabled:
@@ -213,7 +217,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    ```
 
    3. External configuration
-      If you do not want to (or cannot) modify the proto file for use with grpc-gateway you can
+      If you do not want to (or cannot) modify the proto file for use with gRPC-Gateway you can
       alternatively use an external
       [gRPC Service Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file.
       [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/grpcapiconfiguration.html)
@@ -292,15 +296,15 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
 This GopherCon UK 2019 presentation from our maintainer
 [@JohanBrandhorst](https://github.com/johanbrandhorst) provides a good intro to
-using the grpc-gateway. It uses the following boilerplate repo as a base:
+using the gRPC-Gateway. It uses the following boilerplate repo as a base:
 https://github.com/johanbrandhorst/grpc-gateway-boilerplate.
 
 [![gRPC-Gateway presentation](https://img.youtube.com/vi/Pq1paKC-fXk/0.jpg)](https://www.youtube.com/watch?v=Pq1paKC-fXk)
 
 ## Parameters and flags
 
-During code generation with `protoc`, flags to grpc-gateway tools must be passed
-through protoc using one of 2 patterns:
+During code generation with `protoc`, flags to gRPC-Gateway tools must be passed
+through `protoc` using one of 2 patterns:
 
 - as part of the `--<tool_suffix>_out` `protoc` parameter: `--<tool_suffix>_out=<flags>:<path>`
 
@@ -325,12 +329,12 @@ through protoc using one of 2 patterns:
 Golang import paths. They are compatible with
 [the parameters with the same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
 
-In addition we also support the `request_context` parameter in order to use the
+In addition, we also support the `request_context` parameter in order to use the
 `http.Request`'s Context (only for Go 1.7 and above). This parameter can be
 useful to pass the request-scoped context between the gateway and the gRPC service.
 
 `protoc-gen-grpc-gateway` also supports some more command line flags to control
-logging. You can give these flags together with parameters above. Run
+logging. You can give these flags together with the parameters above. Run
 `protoc-gen-grpc-gateway --help` for more details about the flags.
 
 Similarly, `protoc-gen-openapiv2` supports command-line flags to control OpenAPI
@@ -342,9 +346,9 @@ files with options from
 [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
 for examples.
 
-## More Examples
+## More examples
 
-More examples are available under `examples` directory.
+More examples are available under the `examples` directory.
 
 - `proto/examplepb/echo_service.proto`, `proto/examplepb/a_bit_of_everything.proto`, `proto/examplepb/unannotated_echo_service.proto`: service definition
   - `proto/examplepb/echo_service.pb.go`, `proto/examplepb/a_bit_of_everything.pb.go`, `proto/examplepb/unannotated_echo_service.pb.go`: [generated] stub of the service
@@ -365,7 +369,7 @@ gRPC-gateway, and a gRPC server, see
 - Generating JSON API handlers.
 - Method parameters in the request body.
 - Method parameters in the request path.
-- Method parameters in query string.
+- Method parameters in the query string.
 - Enum fields in the path parameter (including repeated enum fields).
 - Mapping streaming APIs to newline-delimited JSON streams.
 - Mapping HTTP headers with `Grpc-Metadata-` prefix to gRPC metadata (prefixed with `grpcgateway-`)
@@ -381,14 +385,14 @@ gRPC-gateway, and a gRPC server, see
 
 ### No plan to support
 
-But patch is welcome.
+But the patch is welcome.
 
 - Method parameters in HTTP headers.
 - Handling trailer metadata.
 - Encoding request/response body in XML.
 - True bi-directional streaming.
 
-# Mapping gRPC to HTTP
+## Mapping gRPC to HTTP
 
 - [How gRPC error codes map to HTTP status codes in the response](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/errors.go#L15).
 - HTTP request source IP is added as `X-Forwarded-For` gRPC request header.
@@ -400,15 +404,15 @@ But patch is welcome.
   header.
 - HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata
   (prefixed with `grpcgateway-`).
-- While configurable, the default {un,}marshaling uses
+- While configurable, the default unmarshalling uses
   [jsonpb](https://pkg.go.dev/github.com/golang/protobuf/jsonpb) with
   `OrigName: true`.
 
-# Contribution
+## Contribution
 
 See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md).
 
-# License
+## License
 
-grpc-gateway is licensed under the BSD 3-Clause License.
+gRPC-Gateway is licensed under the BSD 3-Clause License.
 See [LICENSE.txt](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt) for more details.

@@ -1,6 +1,6 @@
 # How to contribute
 
-Thank you for your contribution to grpc-gateway.
+Thank you for your contribution to gRPC-Gateway.
 Here's the recommended process of contribution.
 
 1. `go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway`
@@ -16,13 +16,13 @@ Here's the recommended process of contribution.
 When you work on a larger contribution, it is also recommended that you get in touch
 with us through the issue tracker.
 
-### Code reviews
+## Code reviews
 
 All submissions, including submissions by project members, require review.
 
-### I want to regenerate the files after making changes
+## I want to regenerate the files after making changes
 
-#### Using Docker
+### Using Docker
 
 It should be as simple as this (run from the root of the repository):
 
@@ -42,7 +42,7 @@ docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --r
 You may need to authenticate with GitHub to pull `docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env`.
 You can do this by following the steps on the [GitHub Package docs](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-docker-for-use-with-github-packages#authenticating-to-github-packages).
 
-#### Using Visual Studio Code dev containers
+### Using Visual Studio Code dev containers
 
 This repo contains a `devcontainer.json` configuration that sets up the build environment in a container using
 [VS Code dev containers](https://code.visualstudio.com/docs/remote/containers). If you're using the dev container,
@@ -58,22 +58,22 @@ $ bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bz
     bazel run :buildifier
 ```
 
-Note that the above listed docker commands will not work in the dev container, since volume mounts from
-nested docker container are not possible.
+Note that the above-listed docker commands will not work in the dev container, since volume mounts from
+nested docker container is not possible.
 
 If this has resulted in some file changes in the repo, please ensure you check those in with your merge request.
 
-### Making a release
+## Making a release
 
 To make a release, follow these steps:
 
 1. Decide on a release version. The `gorelease` job can
-    recommend whether the new release should be a patch or minor release.
-    See [CircleCI](https://app.circleci.com/pipelines/github/grpc-ecosystem/grpc-gateway/126/workflows/255a8a04-de9c-46a9-a66b-f107d2b39439/jobs/6428)
-    for an example.
+   recommend whether the new release should be a patch or minor release.
+   See [CircleCI](https://app.circleci.com/pipelines/github/grpc-ecosystem/grpc-gateway/126/workflows/255a8a04-de9c-46a9-a66b-f107d2b39439/jobs/6428)
+   for an example.
 1. Generate a GitHub token with `repo` access.
 1. Create a new branch and edit the Makefile `changelog` job, settings
-    the `future-release=` variable to the name of the version you plan to release
+   the `future-release=` variable to the name of the version you plan to release
 1. Run `CHANGELOG_GITHUB_TOKEN=<yourtoken> make changelog`
 1. Commit the `Makefile` and `CHANGELOG.md` changes.
 1. Open a PR and check that everything looks right.
