@@ -1,8 +1,8 @@
 ---
 layout: default
 title: Creating main.go
+nav_order: 3
 parent: Tutorials
-nav_order: 4
 ---
 
 # Creating main.go

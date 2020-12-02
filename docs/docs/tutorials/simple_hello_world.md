@@ -1,8 +1,8 @@
 ---
 layout: default
 title: Creating a simple hello world with gRPC
+nav_order: 1
 parent: Tutorials
-nav_order: 2
 ---
 
 # Creating a simple hello world with gRPC
@@ -15,7 +15,7 @@ Before we create a gRPC service, we should create a proto file to define what we
 
 The gRPC service is defined using [Google Protocol Buffers](https://developers.google.com/protocol-buffers). To learn more about how to define a service in a `.proto` file see their [Basics tutorial](https://grpc.io/docs/languages/go/basics/). For now, all you need to know is that both the server and the client stub have a `SayHello()` RPC method that takes a `HelloRequest` parameter from the client and returns a `HelloReply` from the server, and that the method is defined like this:
 
-```proto
+```protobuf
 syntax = "proto3";
 
 package helloworld;

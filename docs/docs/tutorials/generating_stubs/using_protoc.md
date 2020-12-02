@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Generating stubs using protoc
+nav_order: 1
 parent: Generating stubs
 grand_parent: Tutorials
-nav_order: 2
 ---
 
 # Generating stubs using protoc

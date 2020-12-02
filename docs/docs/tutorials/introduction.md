@@ -1,8 +1,8 @@
 ---
 layout: default
 title: Introduction to the gRPC-Gateway
+nav_order: 0
 parent: Tutorials
-nav_order: 1
 ---
 
 # Introduction to the gRPC-Gateway
@@ -13,11 +13,13 @@ So is there any way to code just once, but provide APIs in both gRPC and HTTP/JS
 
 The answer is Yes.
 
-The grpc-gateway is a plugin of the Google protocol buffers compiler [protoc](https://github.com/protocolbuffers/protobuf). It reads protobuf service definitions and generates a reverse-proxy server which translates a RESTful HTTP API into gRPC. This server is generated according to the [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46) annotations in your service definitions.
+The gRPC-Gateway is a plugin of the Google protocol buffers compiler [protoc](https://github.com/protocolbuffers/protobuf). It reads protobuf service definitions and generates a reverse-proxy server which translates a RESTful HTTP API into gRPC. This server is generated according to the [`google.api.http`](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L46) annotations in your service definitions.
 
 This helps you provide your APIs in both gRPC and HTTP/JSON format at the same time.
 
-![architecture introduction diagram](https://docs.google.com/drawings/d/12hp4CPqrNPFhattL_cIoJptFvlAqm5wLQ0ggqI5mkCg/pub?w=749&h=370)
+<div align="center">
+<img src="../../../assets/images/architecture_introduction_diagram.svg" />
+</div>
 
 ## Prerequisites
 
@@ -33,7 +35,8 @@ $ go get google.golang.org/protobuf/cmd/protoc-gen-go
 $ go get google.golang.org/grpc/cmd/protoc-gen-go-grpc
 ```
 
-This installs the protoc generator plugins we need to generate the stubs. Make sure to add `$GOPATH/bin` to your `$PATH` so that executables installed via `go get` are available on your `$PATH`.
+This installs the `protoc` generator plugins we need to generate the stubs. Make sure to add `$GOPATH/bin` to your `$PATH` so that executables installed via `go get` are available on your `$PATH`.
+
 We will be working in a new module for this tutorial, so go ahead and create that in a folder of your choosing now:
 
 ### Creating go.mod file
