@@ -17,4 +17,4 @@ Read more about `google.api.http` on [google.api.http](https://github.com/google
 
 ## HTTP and gRPC Transcoding
 
-Read more about HTTP and gRPC Transcoding on [https://google.aip.dev/127](https://google.aip.dev/127).
+Read more about HTTP and gRPC Transcoding on [API 127](https://google.aip.dev/127).

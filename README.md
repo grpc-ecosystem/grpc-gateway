@@ -385,7 +385,7 @@ gRPC-gateway, and a gRPC server, see
 
 ### No plan to support
 
-But the patch is welcome.
+But patches are welcome.
 
 - Method parameters in HTTP headers.
 - Handling trailer metadata.
@@ -404,7 +404,7 @@ But the patch is welcome.
   header.
 - HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata
   (prefixed with `grpcgateway-`).
-- While configurable, the default unmarshalling uses
+- While configurable, the default {un,}marshaling uses
   [jsonpb](https://pkg.go.dev/github.com/golang/protobuf/jsonpb) with
   `OrigName: true`.
 
