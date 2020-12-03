@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Generating stubs using buf
+nav_order: 0
 parent: Generating stubs
 grand_parent: Tutorials
-nav_order: 1
 ---
 
 # Generating stubs using buf
@@ -16,7 +16,7 @@ All Buf operations that use your local `.proto` files as input rely on a valid b
 
 The following is an example of a valid configuration, assuming you have your `.proto` files rooted in the `proto` folder relative to the root of your repository.
 
-```yml
+```yaml
 version: v1beta1
 build:
   roots:
@@ -25,7 +25,7 @@ build:
 
 To generate type and gRPC stubs for Go, create the file `buf.gen.yaml` at the root of the repository:
 
-```yml
+```yaml
 version: v1beta1
 plugins:
   - name: go

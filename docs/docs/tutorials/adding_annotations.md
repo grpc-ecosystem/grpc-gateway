@@ -1,19 +1,19 @@
 ---
 layout: default
-title: Adding the grpc-gateway annotations to an existing protobuf file
+title: Adding gRPC-Gateway annotations to an existing proto file
+nav_order: 4
 parent: Tutorials
-nav_order: 5
 ---
 
-# Adding the grpc-gateway annotations to an existing protobuf file
+# Adding gRPC-Gateway annotations to an existing proto file
 
-Now that we've got a working Go gRPC server, we need to add the grpc-gateway annotations.
+Now that we've got a working Go gRPC server, we need to add the gRPC-Gateway annotations.
 
 The annotations define how gRPC services map to the JSON request and response. When using protocol buffers, each RPC must define the HTTP method and path using the `google.api.http` annotation.
 
-So we will need to add the `google/api/http.proto` import to the proto file. We also need to add the HTTP->gRPC mapping we want. In this case, we're mapping `POST /v1/example/echo` to our `SayHello` rpc.
+So we will need to add the `google/api/http.proto` import to the proto file. We also need to add the HTTP->gRPC mapping we want. In this case, we're mapping `POST /v1/example/echo` to our `SayHello` RPC.
 
-```proto
+```protobuf
 syntax = "proto3";
 
 package helloworld;
@@ -44,11 +44,11 @@ message HelloReply {
 
 See [a_bit_of_everything.proto](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/a_bit_of_everything.proto) for examples of more annotations you can add to customize gateway behavior.
 
-## Generating the grpc-gateway stubs
+## Generating the gRPC-Gateway stubs
 
-Now that we've got the grpc-gateway annotations added to the proto file, we need to use the grpc-gateway generator to generate the stubs.
+Now that we've got the gRPC-Gateway annotations added to the proto file, we need to use the gRPC-Gateway generator to generate the stubs.
 
-Before we can do that, we need to copy some dependencies into our protofile structure. Copy the `third_party/googleapis` folder from the grpc-gateway repository to your local protofile structure. It should look like this afterwards:
+Before we can do that, we need to copy some dependencies into our proto file structure. Copy the `third_party/googleapis` folder from the gRPC-Gateway repository to your local proto file structure. It should look like this afterwards:
 
 ```
 proto
@@ -62,9 +62,9 @@ proto
 
 ### Using buf
 
-We'll need to add the grpc-gateway generator to the generation configuration:
+We'll need to add the gRPC-Gateway generator to the generation configuration:
 
-```yml
+```yaml
 version: v1beta1
 plugins:
   - name: go
@@ -86,9 +86,9 @@ $ buf generate
 
 It should produce a `*.gw.pb.go` file.
 
-### Using protoc
+### Using `protoc`
 
-Now we need to add the grpc-gateway generator to the protoc invocation:
+Now we need to add the gRPC-Gateway generator to the `protoc` invocation:
 
 ```sh
 $ protoc -I ./proto \
@@ -100,7 +100,7 @@ $ protoc -I ./proto \
 
 This should generate a `*.gw.pb.go` file.
 
-We also need to add and serve the gRPC-gateway mux in our `main.go` file.
+We also need to add and serve the gRPC-Gateway mux in our `main.go` file.
 
 ```go
 package main
