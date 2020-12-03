@@ -77,7 +77,7 @@ gh_edit_link: true # show or hide edit this page link
 gh_edit_link_text: "Edit this page on GitHub"
 gh_edit_repository: "https://github.com/grpc-ecosystem/grpc-gateway" # the github URL for your repo
 gh_edit_branch: "master" # the branch that your docs is served from
-# gh_edit_source: docs # the source that your files originate from
+gh_edit_source: docs # the source that your files originate from
 gh_edit_view_mode: "tree" # "tree" or "edit" if you want the user to jump into the editor immediately
 
 # Color scheme currently only supports "dark", "light"/nil (default), or a custom scheme that you define
@@ -85,9 +85,9 @@ color_scheme: nil
 
 # Disqus Comments
 # disqus:
-  # Leave shortname blank to disable comments site-wide.
-  # Enable comments for any post by adding `comments: true` to that post's YAML Front Matter.
-  # shortname:
+# Leave shortname blank to disable comments site-wide.
+# Enable comments for any post by adding `comments: true` to that post's YAML Front Matter.
+# shortname:
 
 # Google Analytics Tracking
 # e.g, UA-1234567-89
