@@ -13,8 +13,8 @@ When the HTTP request arrives at the gRPC-Gateway, it parses the JSON data into 
 
 ## google.api.http
 
-Read more about `google.api.http` on [google.api.http](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto).
+Read more about `google.api.http` in [the source file documentation](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto).
 
 ## HTTP and gRPC Transcoding
 
-Read more about HTTP and gRPC Transcoding on [API 127](https://google.aip.dev/127).
+Read more about HTTP and gRPC Transcoding on [AIP 127](https://google.aip.dev/127).
