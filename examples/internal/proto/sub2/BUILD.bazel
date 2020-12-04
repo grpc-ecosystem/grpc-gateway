@@ -4,6 +4,11 @@ package(default_visibility = ["//visibility:public"])
 
 go_library(
     name = "go_default_library",
-    embed = [":sub2_go_proto"],
+    srcs = ["message.pb.go"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2",
+    deps = [
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
+        "@org_golang_google_protobuf//runtime/protoimpl:go_default_library",
+    ],
 )
