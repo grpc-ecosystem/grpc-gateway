@@ -1,5 +1,4 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
-load("@grpc_ecosystem_grpc_gateway//protoc-gen-openapiv2:defs.bzl", "protoc_gen_openapiv2")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -79,19 +78,19 @@ go_library(
     ],
 )
 
-protoc_gen_openapiv2(
-    name = "examplepb_protoc_gen_openapiv2",
-    proto = ":examplepb_proto",
-)
+# protoc_gen_openapiv2(
+#     name = "examplepb_protoc_gen_openapiv2",
+#     proto = ":examplepb_proto",
+# )
 
-protoc_gen_openapiv2(
-    name = "examplepb_protoc_gen_openapiv2_merged",
-    proto = ":examplepb_proto",
-    single_output = True,  # Outputs a single swagger.json file.
-)
+# protoc_gen_openapiv2(
+#     name = "examplepb_protoc_gen_openapiv2_merged",
+#     proto = ":examplepb_proto",
+#     single_output = True,  # Outputs a single swagger.json file.
+# )
 
-protoc_gen_openapiv2(
-    name = "examplepb_openapi_merge",
-    proto = ":openapi_merge_proto",
-    single_output = True,  # Outputs a single swagger.json file.
-)
+# protoc_gen_openapiv2(
+#     name = "examplepb_openapi_merge",
+#     proto = ":openapi_merge_proto",
+#     single_output = True,  # Outputs a single swagger.json file.
+# )
