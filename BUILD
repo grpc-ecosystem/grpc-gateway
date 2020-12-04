@@ -16,6 +16,7 @@ buildifier(
 # gazelle:prefix github.com/grpc-ecosystem/grpc-gateway/v2
 # gazelle:go_proto_compilers //:go_apiv2
 # gazelle:go_grpc_compilers //:go_apiv2, //:go_grpc
+# gazelle:proto disable_global
 
 gazelle(name = "gazelle")
 
