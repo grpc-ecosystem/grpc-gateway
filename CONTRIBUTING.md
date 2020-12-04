@@ -34,7 +34,7 @@ docker run -v $(pwd):/src/grpc-gateway --rm docker.pkg.github.com/grpc-ecosystem
         make testproto'
 docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
     l.gcr.io/google/bazel -c '\
-        bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories && \
+        bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories --build_file_proto_mode=disable_global && \
         bazel run :gazelle && \
         bazel run :buildifier'
 ```
@@ -53,7 +53,7 @@ $ make realclean && make examples && make testproto
 ```
 
 ```shell
-$ bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories && \
+$ bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories --build_file_proto_mode=disable_global && \
     bazel run :gazelle && \
     bazel run :buildifier
 ```
