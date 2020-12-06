@@ -1,13 +1,15 @@
 ---
 layout: default
-title: Customizing OpenAPI Ouptut
+title: Customizing OpenAPI Output
+nav_order: 4
 parent: Mapping
-nav_order: 5
 ---
 
 {% raw %}
 
-# In proto comments
+# Customizing OpenAPI Output
+
+## In proto comments
 
 You can provide comments directly in your Protocol Buffer defintions and they will be translated into comments in the generated OpenAPI definitions:
 
@@ -18,7 +20,7 @@ message MyMessage {
 }
 ```
 
-# Using proto options
+## Using proto options
 
 You can define options on your Protocol Buffer services, operations, messages, and field definitions to customize your Open API output. For instance, to customize the [OpenAPI Schema Object](https://swagger.io/specification/v2/#schemaObject) for messages and fields:
 
@@ -76,9 +78,9 @@ service ABitOfEverythingService {
 }
 ```
 
-Please see this [example](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/a_bit_of_everything.proto) for examples of the options being used.
+Please see this [a_bit_of_everything.proto](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/a_bit_of_everything.proto) for examples of the options being used.
 
-# Using google.api.field_behavior
+## Using google.api.field_behavior
 
 Google provides an [field option](https://github.com/googleapis/googleapis/blob/master/google/api/field_behavior.proto) for defining the behavior of fields that is also supported:
 
@@ -92,22 +94,18 @@ message MyMessage {
 
 The following options are used in the Open API output:
 
-* `REQUIRED` - marks a field as required
-* `OUTPUT_ONLY` - marks a field as readonly
+- `REQUIRED` - marks a field as required
+- `OUTPUT_ONLY` - marks a field as readonly
 
-Google defines a couple other options - `OPTIONAL`, `IMMUTABLE`, `INPUT_ONLY` -
+Google defines a couple of other options - `OPTIONAL`, `IMMUTABLE`, `INPUT_ONLY` -
 that are not currently used. `OPTIONAL` support is currently under discussion
 in [this issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/669).
-For `IMMUTABLE` and `INPUT_ONLY` fields, there is an
-[open issue](https://github.com/OAI/OpenAPI-Specification/issues/1497)
-in the Open API specification for adding functionality for write once or
-immutable fields to the spec.
 
-# Using go templates in protofile comments
+For `IMMUTABLE` and `INPUT_ONLY` fields, there is an [open issue](https://github.com/OAI/OpenAPI-Specification/issues/1497) in the Open API specification for adding functionality for write-once or immutable fields to the spec.
 
-Use [Go templates](https://golang.org/pkg/text/template/)
-in your protofile comments to allow more advanced documentation such
-as:
+## Using go templates in proto file comments
+
+Use [Go templates](https://golang.org/pkg/text/template/) in your proto file comments to allow more advanced documentation such as:
 
 - Documentation about fields in the proto objects.
 - Import the content of external files (such as
@@ -115,16 +113,15 @@ as:
 
 ## How to use it
 
-By default this function is turned off, so if you want to use it you
-have to add the `use_go_templates` option:
+By default this function is turned off, so if you want to use it you have to add the `use_go_templates` option:
 
-```shell
+```sh
 --openapiv2_out . --openapiv2_opt use_go_templates=true
 ```
 
 or:
 
-```shell
+```sh
 --openapiv2_out=use_go_templates=true:.
 ```
 
@@ -132,7 +129,7 @@ or:
 
 Example of a bash script with the `use_go_templates` flag set to true:
 
-```shell
+```sh
 $ protoc -I. \
     --go_out . --go-grpc_out . \
     --grpc-gateway_out . --grpc-gateway_opt logtostderr=true \
@@ -144,7 +141,7 @@ $ protoc -I. \
 
 ### Example proto file
 
-Example of a protofile with Go templates. This proto file imports documentation from another file, `tables.md`:
+Example of a proto file with Go templates. This proto file imports documentation from another file, `tables.md`:
 
 ```protobuf
 service LoginService {
@@ -179,31 +176,32 @@ The content of `tables.md`:
 
 ```markdown
 ## {{.RequestType.Name}}
-| Field ID    | Name      | Type                                                       | Description                  |
-| ----------- | --------- | ---------------------------------------------------------  | ---------------------------- | {{range .RequestType.Fields}}
-| {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}  
- 
+
+| Field ID | Name | Type | Description |
+| ----------- | --------- | --------------------------------------------------------- | ---------------------------- | {{range .RequestType.Fields}}
+| {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+
 ## {{.ResponseType.Name}}
-| Field ID    | Name      | Type                                                       | Description                  |
+
+| Field ID | Name | Type | Description |
 | ----------- | --------- | ---------------------------------------------------------- | ---------------------------- | {{range .ResponseType.Fields}}
-| {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}  
+| {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 ```
 
 ## OpenAPI output
 
 ### SwaggerUI
 
-This is how the OpenAPI file would be rendered in [Swagger UI](https://swagger.io/tools/swagger-ui/)
+This is how the OpenAPI file would be rendered in [Swagger UI](https://swagger.io/tools/swagger-ui/).
 
 ![Screenshot OpenAPI file in SwaggerUI](../../assets/images/gotemplates/swaggerui.png)
 
 ### Postman
 
-This is how the OpenAPI file would be rendered in [Postman](https://www.getpostman.com/)
+This is how the OpenAPI file would be rendered in [Postman](https://www.getpostman.com/).
 
 ![Screenshot OpenAPI file in Postman](../../assets/images/gotemplates/postman.png)
 
-For a more detailed example of a protofile that has Go templates enabled,
-[see the examples](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/use_go_template.proto).
+For a more detailed example of a proto file that has Go, templates enabled, [see the examples](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/use_go_template.proto).
 
 {% endraw %}

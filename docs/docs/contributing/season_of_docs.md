@@ -1,30 +1,32 @@
 ---
 layout: default
-title: 2020 Season of Docs
+title: Season of Docs
+nav_order: 1
 parent: Contributing
 ---
 
-# 2020 Season of Docs
+# Season of Docs
 
-![Google Season of Docs](https://developers.google.com/season-of-docs/images/logo/SeasonofDocs_Logo_SecondaryGrey_300ppi.png "Season of Docs")
+<div align="center">
+<img src="https://developers.google.com/season-of-docs/images/logo/SeasonofDocs_Logo_SecondaryGrey_300ppi.png" />
+</div>
 
-This year the gRPC-Gateway is participating in the [Google Season of Docs](https://g.co/seasonofdocs).
-We're excited to see what contributions this will bring to our documentation.
+This year the gRPC-Gateway is participating in the [Google Season of Docs](https://g.co/seasonofdocs). We're excited to see what contributions this will bring to our documentation.
 
 ## Project details
 
 - Organization name: **gRPC-Gateway**
 - Organization description: The gRPC-Gateway brings the power and safety of designing APIs with Protobuf and gRPC to the JSON/HTTP API world. It has several
   common use cases:
-  - When a user wants to migrate an API to gRPC, but needs to expose a JSON/HTTP API
+  - When a user wants to migrate an API to gRPC but needs to expose a JSON/HTTP API
     to old users.
   - When a user wants to expose an existing gRPC API to a JSON/HTTP API audience.
   - When quickly iterating on a JSON/HTTP API design.
 - Website: https://grpc-ecosystem.github.io/grpc-gateway
 - Repo: https://github.com/grpc-ecosystem/grpc-gateway
 - Project administrators and mentors:
-  - Johan Brandhorst (@johanbrandhorst)
-  - Andrew Z Allen (@achew22)
+  - Johan Brandhorst [@johanbrandhorst](https://github.com/johanbrandhorst)
+  - Andrew Z Allen [@achew22](https://github.com/achew22)
 
 ## Project Ideas
 
@@ -47,8 +49,7 @@ Material:
 - [The current site](https://grpc-ecosystem.github.io/grpc-gateway/)
 - [Jekyll](https://jekyllrb.com/) which powers the site now.
 - [The source code](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/docs) for the site today.
-- [The project README](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/README.md) which
-  contains an intro to the project.
+- [The project README](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/README.md) which contains an intro to the project.
 
 ### Rewrite the README with a better intro and examples
 
@@ -75,7 +76,7 @@ The ones mentioned in the project details are the primary use cases we advertise
 - When a user wants to migrate an API to gRPC, but needs to expose a JSON/HTTP API
   to old users.
 - When a user wants to expose an existing gRPC API to a JSON/HTTP API audience.
-- When quickly iterating on an JSON/HTTP API design.
+- When quickly iterating on a JSON/HTTP API design.
 
 It could be a single or several blog posts on our docs site, or another site, like Medium.
 
@@ -88,7 +89,7 @@ a bit better. Maybe it could be rewritten as a FAQ that details solutions to com
 
 Material:
 
-- [The customize your gateway page](https://grpc-ecosystem.github.io/grpc-gateway/docs/customizingyourgateway.html)
+- [Customizing your gateway](https://grpc-ecosystem.github.io/grpc-gateway/docs/customizing_your_gateway.html)
 
 ### Improve the contributor's guide
 

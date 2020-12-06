@@ -57,7 +57,7 @@ type Registry struct {
 
 	// useJSONNamesForFields if true json tag name is used for generating fields in OpenAPI definitions,
 	// otherwise the original proto name is used. It's helpful for synchronizing the OpenAPI definition
-	// with grpc-gateway response, if it uses json tags for marshaling.
+	// with gRPC-Gateway response, if it uses json tags for marshaling.
 	useJSONNamesForFields bool
 
 	// useFQNForOpenAPIName if true OpenAPI names will use the full qualified name (FQN) from proto definition,
