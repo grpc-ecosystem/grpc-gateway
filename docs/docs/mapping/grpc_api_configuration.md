@@ -1,23 +1,22 @@
 ---
 layout: default
 title: gRPC API Configuration
+nav_order: 3
 parent: Mapping
-nav_order: 4
 ---
 
 # gRPC API Configuration
 
-In some situations annotating the .proto file of a service is not an option. For example, you might not have control over the .proto file, or you might want to expose the same gRPC API multiple times in completely different ways.
+In some situations annotating the proto file of service is not an option. For example, you might not have control over the proto file, or you might want to expose the same gRPC API multiple times in completely different ways.
 
-`grpc-gateway` supports 2 ways of dealing with these situations:
+gRPC-Gateway supports 2 ways of dealing with these situations:
 
 - [use the `generate_unbound_methods` option](#generate_unbound_methods)
 - [provide an external configuration file](#using-an-external-configuration-file) (gRPC API Configuration)
 
 ## `generate_unbound_methods`
 
-Providing this parameter to the protoc plugin will make it produce the HTTP mapping even for methods without any `HttpRule` annotation.
-This is similar to how [Cloud Endpoints behaves](https://cloud.google.com/endpoints/docs/grpc/transcoding#where_to_configure_transcoding) and uses the way [gRPC itself](https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md) maps to HTTP/2:
+Providing this parameter to the `protoc` plugin will make it produce the HTTP mapping even for methods without any `HttpRule` annotation. This is similar to how [Cloud Endpoints behaves](https://cloud.google.com/endpoints/docs/grpc/transcoding#where_to_configure_transcoding) and uses the way [gRPC itself](https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md) maps to HTTP/2:
 
 - HTTP method is `POST`
 - URI path is built from the service's name and method: `/<fully qualified service name>/<method name>` (e.g.: `/my.package.EchoService/Echo`)
@@ -28,29 +27,16 @@ NOTE: the same option is also supported by the `gen-openapiv2` plugin.
 ## Using an external configuration file
 
 Google Cloud Platform offers a way to do this for services
-hosted with them called
-["gRPC API Configuration"](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config).
-It can be used to define the behavior of a gRPC API service
-without modifications to the service itself in the form of
-[YAML](https://en.wikipedia.org/wiki/YAML) configuration files.
+hosted with them called ["gRPC API Configuration"](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config). It can be used to define the behavior of a gRPC API service without modifications to the service itself in the form of [YAML](https://en.wikipedia.org/wiki/YAML) configuration files.
 
-grpc-gateway generators implement the
-[HTTP rules part](https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#httprule)
-of this specification. This allows you to take a completely
-unannotated service proto file, add a YAML file describing
-its HTTP endpoints and use them together like a annotated
-proto file with the grpc-gateway generators.
+gRPC-Gateway generators implement the [HTTP rules part](https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#httprule) of this specification. This allows you to take a completely unannotated service proto file, add a YAML file describing its HTTP endpoints and use them together like an annotated proto file with the gRPC-Gateway generators.
 
-OpenAPI options may also be configured via
-["OpenAPI Configuration"](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/internal/descriptor/openapiconfig/openapiconfig.proto) in the form of YAML configuration files.
+OpenAPI options may also be configured via ["OpenAPI Configuration"](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/internal/descriptor/openapiconfig/openapiconfig.proto) in the form of YAML configuration files.
 
 ### Usage of gRPC API Configuration YAML files
 
-The following is equivalent to the basic
-[`README.md`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/README.md#usage)
-example but without direct
-annotation for grpc-gateway in the .proto file. Only some steps require minor
-changes to use a gRPC API Configuration YAML file instead:
+The following is equivalent to the basic [`README.md`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/README.md#usage) example but without direct
+annotation for gRPC-Gateway in the proto file. Only some steps require minor changes to use a gRPC API Configuration YAML file instead:
 
 1. Define your service in gRPC as usual
 
@@ -69,7 +55,7 @@ changes to use a gRPC API Configuration YAML file instead:
    }
    ```
 
-2. Instead of annotating the .proto file in this step leave it untouched
+2. Instead of annotating the proto file in this step leave it untouched
    and create a `your_service.yaml` with the following content:
 
    ```yaml
@@ -101,7 +87,7 @@ It will generate a stub file with path `./gen/go/your/service/v1/your_service.pb
 4. Implement your service in gRPC as usual
 
 5. Generate the reverse-proxy. Here we have to pass the path to
-   the `your_service.yaml` in addition to the .proto file:
+   the `your_service.yaml` in addition to the proto file:
 
    ```sh
    protoc -I . \
@@ -139,4 +125,4 @@ It will generate a stub file with path `./gen/go/your/service/v1/your_service.pb
      your/service/v1/your_service.proto
    ```
 
-All other steps work as before. If you want you can remove the googleapis include path in step 3 and 4 as the unannotated proto no longer requires them.
+All other steps work as before. If you want you can remove the `googleapis` include path in step 3 and 4 as the unannotated proto no longer requires them.

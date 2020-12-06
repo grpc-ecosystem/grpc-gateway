@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Developing
+title: Development
 nav_order: 4
 has_children: true
 ---

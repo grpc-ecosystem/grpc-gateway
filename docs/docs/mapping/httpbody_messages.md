@@ -1,13 +1,13 @@
 ---
 layout: default
-title: HttpBody messages
+title: HttpBody Messages
+nav_order: 1
 parent: Mapping
-nav_order: 2
 ---
 
-# HttpBody messages
+# HttpBody Messages
 
-The [HTTP Body](https://github.com/googleapis/googleapis/blob/master/google/api/httpbody.proto) messages allows a response message to be specified with custom data content and a custom content type header. The values included in the HTTPBody response will be used verbatim in the returned message from the gateway. Make sure you format your response carefully!
+The [HTTPBody](https://github.com/googleapis/googleapis/blob/master/google/api/httpbody.proto) messages allow a response message to be specified with custom data content and a custom content-type header. The values included in the HTTPBody response will be used verbatim in the returned message from the gateway. Make sure you format your response carefully!
 
 ## Example Usage
 

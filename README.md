@@ -1,6 +1,6 @@
 <div align="center">
 <h1>gRPC-Gateway</h1>
-<p>grpc-gateway
+<p>
 gRPC to JSON proxy generator following the gRPC HTTP spec
 </p>
 <a href="https://circleci.com/gh/grpc-ecosystem/grpc-gateway"><img src="https://img.shields.io/circleci/build/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=circleci&logoColor=ffffff&style=flat-square"/></a>
@@ -294,12 +294,13 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
 ## Video intro
 
-This GopherCon UK 2019 presentation from our maintainer
-[@JohanBrandhorst](https://github.com/johanbrandhorst) provides a good intro to
-using the gRPC-Gateway. It uses the following boilerplate repo as a base:
-https://github.com/johanbrandhorst/grpc-gateway-boilerplate.
+This GopherCon UK 2019 presentation from our maintainer [@JohanBrandhorst](https://github.com/johanbrandhorst) provides a good intro to using the gRPC-Gateway. It uses the following boilerplate repo as a base: https://github.com/johanbrandhorst/grpc-gateway-boilerplate.
 
-[![gRPC-Gateway presentation](https://img.youtube.com/vi/Pq1paKC-fXk/0.jpg)](https://www.youtube.com/watch?v=Pq1paKC-fXk)
+<div align="center">
+<a href="https://www.youtube.com/watch?v=Pq1paKC-fXk">
+<img src="https://img.youtube.com/vi/Pq1paKC-fXk/0.jpg" />
+</a>
+</div>
 
 ## Parameters and flags
 
@@ -358,7 +359,7 @@ More examples are available under the `examples` directory.
 - `main.go`: entrypoint of the generated reverse proxy
 
 To use the same port for custom HTTP handlers (e.g. serving `swagger.json`),
-gRPC-gateway, and a gRPC server, see
+gRPC-Gateway, and a gRPC server, see
 [this example by CoreOS](https://github.com/philips/grpc-gateway-example/blob/master/cmd/serve.go)
 (and its accompanying [blog post](https://coreos.com/blog/grpc-protobufs-swagger.html)).
 

@@ -1,13 +1,13 @@
 ---
 layout: default
 title: Adding custom routes to the mux
+nav_order: 0
 parent: Operations
-nav_order: 2
 ---
 
 # Adding custom routes to the mux
 
-The gRPC-gateway allows you to add custom routes to the serve mux, for example if you want to support a use case that isn't supported by the grpc-gateway, like file uploads.
+The gRPC-Gateway allows you to add custom routes to the serve mux, for example, if you want to support a use case that isn't supported by the gRPC-Gateway, like file uploads.
 
 ## Example
 
@@ -39,7 +39,6 @@ func main() {
 	}
 	http.ListenAndServe(":8080", mux)
 }
-
 
 // GreeterServer is the server API for Greeter service.
 type GreeterServer struct {

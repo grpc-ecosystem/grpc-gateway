@@ -70,7 +70,7 @@ var file_protoc_gen_openapiv2_options_annotations_proto_extTypes = []protoimpl.E
 
 // Extension fields to descriptor.FileOptions.
 var (
-	// ID assigned by protobuf-global-extension-registry@google.com for grpc-gateway project.
+	// ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
 	//
 	// All IDs are the same, as assigned. It is okay that they are the same, as they extend
 	// different descriptor messages.
@@ -81,7 +81,7 @@ var (
 
 // Extension fields to descriptor.MethodOptions.
 var (
-	// ID assigned by protobuf-global-extension-registry@google.com for grpc-gateway project.
+	// ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
 	//
 	// All IDs are the same, as assigned. It is okay that they are the same, as they extend
 	// different descriptor messages.
@@ -92,7 +92,7 @@ var (
 
 // Extension fields to descriptor.MessageOptions.
 var (
-	// ID assigned by protobuf-global-extension-registry@google.com for grpc-gateway project.
+	// ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
 	//
 	// All IDs are the same, as assigned. It is okay that they are the same, as they extend
 	// different descriptor messages.
@@ -103,7 +103,7 @@ var (
 
 // Extension fields to descriptor.ServiceOptions.
 var (
-	// ID assigned by protobuf-global-extension-registry@google.com for grpc-gateway project.
+	// ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
 	//
 	// All IDs are the same, as assigned. It is okay that they are the same, as they extend
 	// different descriptor messages.
@@ -114,7 +114,7 @@ var (
 
 // Extension fields to descriptor.FieldOptions.
 var (
-	// ID assigned by protobuf-global-extension-registry@google.com for grpc-gateway project.
+	// ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
 	//
 	// All IDs are the same, as assigned. It is okay that they are the same, as they extend
 	// different descriptor messages.

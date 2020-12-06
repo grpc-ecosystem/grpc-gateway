@@ -1,15 +1,16 @@
 ---
 layout: default
-title: AWS Gateway Integration
+title: AWS gateway integration
+nav_order: 3
 parent: Operations
-nav_order: 5
 ---
 
-# AWS
+# AWS gateway integration
 
 ## Import OpenAPI documentation into AWS API Gateway
 
-The AWS API gateway service allows importing of an OpenAPI specification to create a REST API. The process is very straightforward and can be found [here](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-import-api.html).
+The AWS API Gateway service allows importing of an OpenAPI specification to create a REST API. The process is very straightforward and can be found [here](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-import-api.html).
+
 Here are some tips to consider when importing the documentation:
 
 1. Remove any circular dependencies (these aren't supported by the parser).

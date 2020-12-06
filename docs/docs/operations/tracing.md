@@ -1,15 +1,15 @@
 ---
 layout: default
 title: Tracing
+nav_order: 2
 parent: Operations
-nav_order: 4
 ---
 
 # Tracing
 
-## With [OpenCensus.io](https://opencenus.io) and [AWS X-ray](https://aws.amazon.com/xray/)
+## With [OpenCensus.io](https://opencensus.io/) and [AWS X-ray](https://aws.amazon.com/xray/)
 
-#### Adding tracing using AWS-Xray as the exporter
+### Adding tracing using AWS-Xray as the exporter
 
 This example uses the AWS-Xray exporter with a global trace setting. Note that AWS X-ray exporter does not handle any metrics only tracing.
 
@@ -48,7 +48,7 @@ trace.RegisterExporter(xrayExporter)
 trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
 ```
 
-4. Add `ocgrpc.ClientHandler` for tracing the grpc client calls
+4. Add `ocgrpc.ClientHandler` for tracing the gRPC client calls
 
 ```go
 // Example using DialContext
@@ -75,13 +75,13 @@ gwServer := &http.Server{
 }
 ```
 
-#### Without a global configuration
+### Without a global configuration
 
-In this example we have added the [GRPC Health Checking Protocol](https://github.com/grpc/grpc/blob/master/doc/health-checking.md) and we do not wish to trace any health checks.
+In this example we have added the [gRPC Health Checking Protocol](https://github.com/grpc/grpc/blob/master/doc/health-checking.md) and we do not wish to trace any health checks.
 
-1. Follow step `1`, `2` and `4` from the previous section
+1. Follow step `1`, `2` and `4` from the previous section.
 
-2. Since we are not using a global configuration we can decide what paths we want to trace
+2. Since we are not using a global configuration we can decide what paths we want to trace.
 
 ```go
 gwmux := runtime.NewServeMux()
@@ -99,9 +99,9 @@ openCensusHandler := &ochttp.Handler{
 }
 ```
 
-4. No global configuration means we have to use the [per span sampler](https://opencensus.io/tracing/sampling/#per-span-sampler)
+4. No global configuration means we have to use the [per span sampler](https://opencensus.io/tracing/sampling/#per-span-sampler).
 
-##### A method we want to trace
+#### A method we want to trace
 
 ```go
 func (s *service) Name(ctx context.Context, req *pb.Request) (*pb.Response, error) {
@@ -114,7 +114,7 @@ func (s *service) Name(ctx context.Context, req *pb.Request) (*pb.Response, erro
 }
 ```
 
-##### A method we do not wish to trace
+#### A method we do not wish to trace
 
 ```go
 func (s *service) Check(ctx context.Context, in *health.HealthCheckRequest) (*health.HealthCheckResponse, error) {
