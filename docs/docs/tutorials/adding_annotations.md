@@ -124,7 +124,7 @@ func NewServer() *server {
 }
 
 func (s *server) SayHello(ctx context.Context, in *helloworldpb.HelloRequest) (*helloworldpb.HelloReply, error) {
-	return &helloworldpb.HelloReply{Message: in.Name + " World"}, nil
+	return &helloworldpb.HelloReply{Message: in.Name + " world"}, nil
 }
 
 func main() {
@@ -186,11 +186,11 @@ $ go run main.go
 Then we use cURL to send HTTP requests:
 
 ```sh
-$ curl -X POST -k http://localhost:8090/v1/example/echo -d '{"name": " Hello"}'
+$ curl -X POST -k http://localhost:8090/v1/example/echo -d '{"name": " hello"}'
 ```
 
 ```
-{"message":"Hello World"}
+{"message":"hello world"}
 ```
 
 Hopefully, that gives a bit of understanding of how to use the gRPC-Gateway.
