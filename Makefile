@@ -1,7 +1,7 @@
 # This is a Makefile which maintains files automatically generated but to be
 # shipped together with other files.
 # You don't have to rebuild these targets by yourself unless you develop
-# grpc-gateway itself.
+# gRPC-Gateway itself.
 
 GO_PLUGIN=bin/protoc-gen-go
 GO_PLUGIN_PKG=google.golang.org/protobuf/cmd/protoc-gen-go

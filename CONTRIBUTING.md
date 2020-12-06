@@ -48,11 +48,11 @@ This repo contains a `devcontainer.json` configuration that sets up the build en
 [VS Code dev containers](https://code.visualstudio.com/docs/remote/containers). If you're using the dev container,
 you can run the commands directly in your terminal:
 
-```shell
+```sh
 $ make realclean && make examples && make testproto
 ```
 
-```shell
+```sh
 $ bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories && \
     bazel run :gazelle && \
     bazel run :buildifier

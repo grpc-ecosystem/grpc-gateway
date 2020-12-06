@@ -25,7 +25,7 @@ type Options struct {
 	// serves OpenAPI specs.
 	OpenAPIDir string
 
-	// Mux is a list of options to be passed to the grpc-gateway multiplexer
+	// Mux is a list of options to be passed to the gRPC-Gateway multiplexer
 	Mux []gwruntime.ServeMuxOption
 }
 

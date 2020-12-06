@@ -3,7 +3,7 @@ Thank you for sending the PR! We appreciate you spending the time to work on the
 
 Help us understand your motivation by explaining why you decided to make this change.
 
-You can learn more about contributing to grpc-gateway here: https://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md
+You can learn more about contributing to gRPC-Gateway here: https://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md
 
 Happy contributing!
 

@@ -124,7 +124,7 @@ func NewServer() *server {
 }
 
 func (s *server) SayHello(ctx context.Context, in *helloworldpb.HelloRequest) (*helloworldpb.HelloReply, error) {
-	return &helloworldpb.HelloReply{Message: in.Name + " World"}, nil
+	return &helloworldpb.HelloReply{Message: in.Name + " world"}, nil
 }
 
 func main() {
@@ -138,13 +138,13 @@ func main() {
 	s := grpc.NewServer()
 	// Attach the Greeter service to the server
 	helloworldpb.RegisterGreeterServer(s, &server{})
-	// Serve gRPC Server
+	// Serve gRPC server
 	log.Println("Serving gRPC on 0.0.0.0:8080")
 	go func() {
 		log.Fatalln(s.Serve(lis))
 	}()
 
-	// Create a client connection to the gRPC Server we just started
+	// Create a client connection to the gRPC server we just started
 	// This is where the gRPC-Gateway proxies the requests
 	conn, err := grpc.DialContext(
 		context.Background(),
@@ -186,15 +186,15 @@ $ go run main.go
 Then we use cURL to send HTTP requests:
 
 ```sh
-$ curl -X POST -k http://localhost:8090/v1/example/echo -d '{"name": " Hello"}'
+$ curl -X POST -k http://localhost:8090/v1/example/echo -d '{"name": " hello"}'
 ```
 
 ```
-{"message":"Hello  World"}
+{"message":"hello world"}
 ```
 
 Hopefully, that gives a bit of understanding of how to use the gRPC-Gateway.
 
-Full source code of hello world can be found here [helloworld-grpc-gateway](https://github.com/iamrajiv/helloworld-grpc-gateway)
+Full source code of hello world program can be found here [helloworld-grpc-gateway](https://github.com/iamrajiv/helloworld-grpc-gateway).
 
 [Next](learn_more.md){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
