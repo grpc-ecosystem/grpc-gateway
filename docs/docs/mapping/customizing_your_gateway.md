@@ -275,7 +275,7 @@ So the function must return a `*runtime.StreamError`. The handler can choose to 
 
 Here's an example custom handler:
 
-````go
+```go
 // handleStreamError overrides default behavior for computing an error
 // message for a server stream.
 //
