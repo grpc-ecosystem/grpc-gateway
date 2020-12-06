@@ -3,7 +3,7 @@
 This directory contains an example use of gRPC-Gateway with web browsers.
 The following commands automatically runs integration tests with phantomjs.
 
-```sh-session
+```shell-session
 $ npm install -g gulp-cli
 $ npm install
 $ gulp
@@ -15,7 +15,7 @@ $ gulp
 
 Run
 
-```sh-session
+```shell-session
 $ gulp bower
 $ gulp backends
 ```
@@ -26,7 +26,7 @@ then, open `index.html`.
 
 Run
 
-```sh-session
+```shell-session
 $ gulp serve
 ```
 

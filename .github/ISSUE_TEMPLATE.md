@@ -6,8 +6,7 @@
   ```sh
   go get github.com/grpc-ecosystem/grpc-gateway/v2@latest
   ```
-- [ ] Delete the `protoc-gen-grpc-gateway` and `protoc-gen-openapiv2` binary from your `PATH`,
-      and reinstall the latest versions:
+- [ ] Delete the `protoc-gen-grpc-gateway` and `protoc-gen-openapiv2` binary from your `PATH`, and reinstall the latest versions:
 
   ```sh
   go get github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway

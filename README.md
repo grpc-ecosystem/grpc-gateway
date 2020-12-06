@@ -1,6 +1,7 @@
 <div align="center">
 <h1>gRPC-Gateway</h1>
-<p>gRPC to JSON proxy generator following the gRPC HTTP spec
+<p>
+gRPC to JSON proxy generator following the gRPC HTTP spec
 </p>
 <a href="https://circleci.com/gh/grpc-ecosystem/grpc-gateway"><img src="https://img.shields.io/circleci/build/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=circleci&logoColor=ffffff&style=flat-square"/></a>
 <a href="https://codecov.io/gh/grpc-ecosystem/grpc-gateway"><img src="https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=codecov&logoColor=ffffff&style=flat-square"/></a>
