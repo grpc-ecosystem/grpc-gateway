@@ -114,7 +114,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 
-	helloworldpb "github.com/iamrajiv/helloworld-grpc-gateway/proto/helloworld"
+	helloworldpb "github.com/myuser/myrepo/proto/helloworld"
 )
 
 type server struct{}
