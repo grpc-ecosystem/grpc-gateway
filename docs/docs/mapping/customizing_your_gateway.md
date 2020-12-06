@@ -22,7 +22,7 @@ You might want to serialize request/response messages in MessagePack instead of 
    ```go
    var m your.MsgPackMarshaler
    mux := runtime.NewServeMux(
-    runtime.WithMarshalerOption("application/x-msgpack", m),
+   	runtime.WithMarshalerOption("application/x-msgpack", m),
    )
    ```
 
