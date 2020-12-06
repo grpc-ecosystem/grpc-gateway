@@ -114,7 +114,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 
-	helloworldpb "github.com/myuser/myrepo/proto/helloworld"
+	helloworldpb "github.com/iamrajiv/helloworld-grpc-gateway/proto/helloworld"
 )
 
 type server struct{}
@@ -138,13 +138,13 @@ func main() {
 	s := grpc.NewServer()
 	// Attach the Greeter service to the server
 	helloworldpb.RegisterGreeterServer(s, &server{})
-	// Serve gRPC Server
+	// Serve gRPC server
 	log.Println("Serving gRPC on 0.0.0.0:8080")
 	go func() {
 		log.Fatalln(s.Serve(lis))
 	}()
 
-	// Create a client connection to the gRPC Server we just started
+	// Create a client connection to the gRPC server we just started
 	// This is where the gRPC-Gateway proxies the requests
 	conn, err := grpc.DialContext(
 		context.Background(),
@@ -190,7 +190,7 @@ $ curl -X POST -k http://localhost:8090/v1/example/echo -d '{"name": " Hello"}'
 ```
 
 ```
-{"message":"Hello  World"}
+{"message":"Hello World"}
 ```
 
 Hopefully, that gives a bit of understanding of how to use the gRPC-Gateway.
