@@ -35,14 +35,14 @@ If you want to use the exact case used in the proto files, set `UseProtoNames: t
 
 ```go
 mux := runtime.NewServeMux(
-    runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
-        MarshalOptions: protojson.MarshalOptions{
-            UseProtoNames: true,
-        },
-        UnmarshalOptions: protojson.UnmarshalOptions{
-            DiscardUnknown: true,
-        },
-    }),
+	runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
+		MarshalOptions: protojson.MarshalOptions{
+			UseProtoNames: true,
+		},
+		UnmarshalOptions: protojson.UnmarshalOptions{
+			DiscardUnknown: true,
+		},
+	}),
 )
 ```
 
@@ -58,25 +58,25 @@ For example:
 
 ```go
 mux := runtime.NewServeMux(
-    runtime.WithMarshalerOption("application/json+pretty", &runtime.JSONPb{
-        MarshalOptions: protojson.MarshalOptions{
-            Indent: "  ",
-            Multiline: true, // Optional, implied by presence of "Indent".
-        },
-        UnmarshalOptions: protojson.UnmarshalOptions{
-            DiscardUnknown: true,
-        },
-    }),
+	runtime.WithMarshalerOption("application/json+pretty", &runtime.JSONPb{
+		MarshalOptions: protojson.MarshalOptions{
+			Indent: "  ",
+			Multiline: true, // Optional, implied by presence of "Indent".
+		},
+		UnmarshalOptions: protojson.UnmarshalOptions{
+			DiscardUnknown: true,
+		},
+	}),
 )
 prettier := func(h http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        // checking Values as map[string][]string also catches ?pretty and ?pretty=
-        // r.URL.Query().Get("pretty") would not.
-        if _, ok := r.URL.Query()["pretty"]; ok {
-            r.Header.Set("Accept", "application/json+pretty")
-        }
-        h.ServeHTTP(w, r)
-    })
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// checking Values as map[string][]string also catches ?pretty and ?pretty=
+		// r.URL.Query().Get("pretty") would not.
+		if _, ok := r.URL.Query()["pretty"]; ok {
+			r.Header.Set("Accept", "application/json+pretty")
+		}
+		h.ServeHTTP(w, r)
+	})
 }
 http.ListenAndServe(":8080", prettier(mux))
 ```
@@ -91,11 +91,11 @@ Having different unmarshaling options per Content-Type is as easy as configuring
 
 ```go
 mux := runtime.NewServeMux(
-    runtime.WithMarshalerOption("application/json+strict", &runtime.JSONPb{
-        UnmarshalOptions: &protojson.UnmarshalOptions{
-            DiscardUnknown: false, // explicit "false", &protojson.UnmarshalOptions{} would have the same effect
-        },
-    }),
+	runtime.WithMarshalerOption("application/json+strict", &runtime.JSONPb{
+		UnmarshalOptions: &protojson.UnmarshalOptions{
+			DiscardUnknown: false, // explicit "false", &protojson.UnmarshalOptions{} would have the same effect
+		},
+	}),
 )
 ```
 
@@ -111,18 +111,18 @@ You might not like [the default mapping rule](https://pkg.go.dev/github.com/grpc
 
    ```go
    func CustomMatcher(key string) (string, bool) {
-    switch key {
-    case "X-Custom-Header1":
-        return key, true
-    case "X-Custom-Header2":
-        return "custom-header2", true
-    default:
-        return key, false
-    }
+   	switch key {
+   	case "X-Custom-Header1":
+   		return key, true
+   	case "X-Custom-Header2":
+   		return "custom-header2", true
+   	default:
+   		return key, false
+   	}
    }
 
    mux := runtime.NewServeMux(
-    runtime.WithIncomingHeaderMatcher(CustomMatcher),
+   	runtime.WithIncomingHeaderMatcher(CustomMatcher),
    )
    ```
 
@@ -130,12 +130,12 @@ To keep the [the default mapping rule](https://pkg.go.dev/github.com/grpc-ecosys
 
 ```go
 func CustomMatcher(key string) (string, bool) {
-    switch key {
-    case "X-User-Id":
-        return key, true
-    default:
-        return runtime.DefaultHeaderMatcher(key)
-    }
+	switch key {
+	case "X-User-Id":
+		return key, true
+	default:
+		return runtime.DefaultHeaderMatcher(key)
+	}
 }
 ```
 
@@ -156,9 +156,9 @@ To access this header on gRPC server side use:
 ```go
 userID := ""
 if md, ok := metadata.FromIncomingContext(ctx); ok {
-    if uID, ok := md["x-user-id"]; ok {
-        userID = strings.Join(uID, ",")
-    }
+	if uID, ok := md["x-user-id"]; ok {
+		userID = strings.Join(uID, ",")
+	}
 }
 ```
 
@@ -168,9 +168,9 @@ Use [`WithOutgoingHeaderMatcher`](https://pkg.go.dev/github.com/grpc-ecosystem/g
 
 ```go
 if appendCustomHeader {
-    grpc.SendHeader(ctx, metadata.New(map[string]string{
-        "x-custom-header1": "value",
-    }))
+	grpc.SendHeader(ctx, metadata.New(map[string]string{
+		"x-custom-header1": "value",
+	}))
 }
 ```
 
@@ -184,12 +184,12 @@ You might want to return a subset of response fields as HTTP response headers; Y
 
 ```go
 func myFilter(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
-    t, ok := resp.(*externalpb.Tokenizer)
-    if ok {
-        w.Header().Set("X-My-Tracking-Token", t.Token)
-        t.Token = ""
-    }
-    return nil
+	t, ok := resp.(*externalpb.Tokenizer)
+	if ok {
+		w.Header().Set("X-My-Tracking-Token", t.Token)
+		t.Token = ""
+	}
+	return nil
 }
 ```
 
@@ -199,7 +199,7 @@ e.g.
 
 ```go
 mux := runtime.NewServeMux(
-    runtime.WithForwardResponseOption(myFilter),
+	runtime.WithForwardResponseOption(myFilter),
 )
 ```
 
@@ -220,24 +220,24 @@ The function looks like this:
 
 ```go
 func httpResponseModifier(ctx context.Context, w http.ResponseWriter, p proto.Message) error {
-    md, ok := runtime.ServerMetadataFromContext(ctx)
-    if !ok {
-        return nil
-    }
+	md, ok := runtime.ServerMetadataFromContext(ctx)
+	if !ok {
+		return nil
+	}
 
-    // set http status code
-    if vals := md.HeaderMD.Get("x-http-code"); len(vals) > 0 {
-        code, err := strconv.Atoi(vals[0])
-        if err != nil {
-            return err
-        }
-        w.WriteHeader(code)
-    // delete the headers to not expose any grpc-metadata in http response
-        delete(md.HeaderMD, "x-http-code")
-        delete(w.Header(), "Grpc-Metadata-X-Http-Code")
-    }
+	// set http status code
+	if vals := md.HeaderMD.Get("x-http-code"); len(vals) > 0 {
+		code, err := strconv.Atoi(vals[0])
+		if err != nil {
+			return err
+		}
+		w.WriteHeader(code)
+	// delete the headers to not expose any grpc-metadata in http response
+		delete(md.HeaderMD, "x-http-code")
+		delete(w.Header(), "Grpc-Metadata-X-Http-Code")
+	}
 
-    return nil
+	return nil
 }
 ```
 
@@ -245,7 +245,7 @@ And it gets hooked into the gRPC-Gateway with:
 
 ```go
 gwMux := runtime.NewServeMux(
-    runtime.WithForwardResponseOption(httpResponseModifier),
+	runtime.WithForwardResponseOption(httpResponseModifier),
 )
 ```
 
@@ -265,7 +265,7 @@ Because of the way the errors are included in the response body, the other error
 
 ```go
 mux := runtime.NewServeMux(
-    runtime.WithStreamErrorHandler(handleStreamError),
+	runtime.WithStreamErrorHandler(handleStreamError),
 )
 ```
 
@@ -275,7 +275,7 @@ So the function must return a `*runtime.StreamError`. The handler can choose to 
 
 Here's an example custom handler:
 
-```go
+````go
 // handleStreamError overrides default behavior for computing an error
 // message for a server stream.
 //
@@ -283,22 +283,22 @@ Here's an example custom handler:
 // messages and does not set the details field (so it will
 // be omitted from the resulting JSON object that is sent to client).
 func handleStreamError(ctx context.Context, err error) *status.Status {
-    code := codes.Internal
-    msg := "unexpected error"
-    if s, ok := status.FromError(err); ok {
-        code = s.Code()
-        // default message, based on the gRPC status
-        msg = s.Message()
-        // see if error details include "safe" message to send
-        // to external callers
-        for _, msg := range s.Details() {
-            if safe, ok := msg.(*SafeMessage); ok {
-                msg = safe.Text
-                break
-            }
-        }
-    }
-    return status.Errorf(code, msg)
+	code := codes.Internal
+	msg := "unexpected error"
+	if s, ok := status.FromError(err); ok {
+		code = s.Code()
+		// default message, based on the gRPC status
+		msg = s.Message()
+		// see if error details include "safe" message to send
+		// to external callers
+		for _, msg := range s.Details() {
+			if safe, ok := msg.(*SafeMessage); ok {
+				msg = safe.Text
+				break
+			}
+		}
+	}
+	return status.Errorf(code, msg)
 }
 ```
 
