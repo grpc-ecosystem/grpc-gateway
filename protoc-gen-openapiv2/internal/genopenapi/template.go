@@ -1223,8 +1223,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	// and create entries for all of them.
 	// Also adds custom user specified references to second map.
 	requestResponseRefs, customRefs := refMap{}, refMap{}
-	err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages)
-	if err != nil {
+	if err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
 		panic(err)
 	}
 	s.Tags = append(s.Tags, renderServiceTags(p.Services)...)
