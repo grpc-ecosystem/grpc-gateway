@@ -4,6 +4,7 @@
     "title": "examples/internal/proto/examplepb/response_body_service.proto",
     "version": "version not set"
   },
+  "tags": null,
   "consumes": [
     "application/json"
   ],

@@ -5,6 +5,7 @@
     "description": "Generate Unannotated Methods Echo Service\nSimilar to echo_service.proto but without annotations and without external configuration.\n\nGenerate Unannotated Methods Echo Service API consists of a single service which returns\na message.",
     "version": "version not set"
   },
+  "tags": null,
   "consumes": [
     "application/json"
   ],

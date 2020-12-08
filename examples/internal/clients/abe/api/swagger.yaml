@@ -11,6 +11,13 @@ info:
     name: "BSD 3-Clause License"
     url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt"
   x-something-something: "yadda"
+tags:
+- name: "ABitOfEverythingService"
+  description: "ABitOfEverythingService description -- which should not be used in\
+    \ place of the documentation comment!"
+  externalDocs:
+    description: "Find out more about EchoService"
+    url: "https://github.com/grpc-ecosystem/grpc-gateway"
 schemes:
 - "http"
 - "https"

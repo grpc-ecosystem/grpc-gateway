@@ -15,6 +15,7 @@
     },
     "x-something-something": "yadda"
   },
+  "tags": null,
   "schemes": [
     "http",
     "https",
