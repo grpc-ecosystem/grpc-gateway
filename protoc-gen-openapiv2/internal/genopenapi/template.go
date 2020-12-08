@@ -25,6 +25,7 @@ import (
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
@@ -782,15 +783,87 @@ func isResourceName(prefix string) bool {
 	return field == "parent" || field == "name"
 }
 
-func renderServices(services []*descriptor.Service, paths openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
+func renderServiceTag(svc *descriptor.Service) []openapiTagObject {
+
+	tag := openapiTagObject{Name: *svc.Name}
+
+	svc.Options.ProtoReflect().Range(func(desc protoreflect.FieldDescriptor, value protoreflect.Value) bool {
+
+		if desc.FullName() == "grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag" {
+
+			if desc.Kind() != protoreflect.MessageKind {
+				glog.Errorf("Expected message type for %s\n", desc.FullName())
+				return true
+			}
+
+			tagMsg := value.Message()
+			tagMsg.Range(func(tdesc protoreflect.FieldDescriptor, tvalue protoreflect.Value) bool {
+
+				if tdesc.FullName() == "grpc.gateway.protoc_gen_openapiv2.options.Tag.external_docs" {
+					if tdesc.Kind() != protoreflect.MessageKind {
+						glog.Errorf("Expected message type for %s\n", tdesc.FullName())
+					} else {
+						tag.ExternalDocs = new(openapiExternalDocumentationObject)
+						extDocsMsg := tvalue.Message()
+						extDocsMsg.Range(func(edesc protoreflect.FieldDescriptor, evalue protoreflect.Value) bool {
+
+							if edesc.FullName() == "grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation.description" {
+								if edesc.Kind() != protoreflect.StringKind {
+									glog.Errorf("Expected string type for %s\n", edesc.FullName())
+								} else {
+									tag.ExternalDocs.Description = evalue.String()
+								}
+							}
+							if edesc.FullName() == "grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation.url" {
+								if edesc.Kind() != protoreflect.StringKind {
+									glog.Errorf("Expected string type for %s\n", edesc.FullName())
+								} else {
+									tag.ExternalDocs.URL = evalue.String()
+								}
+							}
+
+							return true
+
+						})
+					}
+
+				}
+				if tdesc.FullName() == "grpc.gateway.protoc_gen_openapiv2.options.Tag.description" {
+					if tdesc.Kind() != protoreflect.StringKind {
+						glog.Errorf("Expected string type for %s\n", tdesc.FullName())
+					} else {
+						tag.Description = tvalue.String()
+					}
+
+				}
+				return true
+			})
+
+			return false
+		}
+		return true
+	})
+
+	if tag.Description != "" {
+		return []openapiTagObject{tag}
+	}
+	return nil
+
+}
+
+func renderServices(services []*descriptor.Service, paths openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) ([]openapiTagObject, error) {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	svcBaseIdx := 0
 	var lastFile *descriptor.File = nil
+	var tags []openapiTagObject
 	for svcIdx, svc := range services {
 		if svc.File != lastFile {
 			lastFile = svc.File
 			svcBaseIdx = svcIdx
 		}
+
+		tags = append(tags, renderServiceTag(svc)...)
+
 		for methIdx, meth := range svc.Methods {
 			for bIdx, b := range meth.Bindings {
 				// Iterate over all the OpenAPI parameters
@@ -805,7 +878,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					case descriptorpb.FieldDescriptorProto_TYPE_GROUP, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE:
 						if descriptor.IsWellKnownType(parameter.Target.GetTypeName()) {
 							if parameter.IsRepeated() {
-								return fmt.Errorf("only primitive and enum types are allowed in repeated path parameters")
+								return nil, fmt.Errorf("only primitive and enum types are allowed in repeated path parameters")
 							}
 							schema := schemaOfField(parameter.Target, reg, customRefs)
 							paramType = schema.Type
@@ -813,12 +886,12 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							desc = schema.Description
 							defaultValue = schema.Default
 						} else {
-							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
+							return nil, fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
 					case descriptorpb.FieldDescriptorProto_TYPE_ENUM:
 						enum, err := reg.LookupEnum("", parameter.Target.GetTypeName())
 						if err != nil {
-							return err
+							return nil, err
 						}
 						paramType = "string"
 						paramFormat = ""
@@ -835,7 +908,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
 						if !ok {
-							return fmt.Errorf("unknown field type %v", pt)
+							return nil, fmt.Errorf("unknown field type %v", pt)
 						}
 
 						schema := schemaOfField(parameter.Target, reg, customRefs)
@@ -894,7 +967,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						if !isWkn {
 							err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg)
 							if err != nil {
-								return err
+								return nil, err
 							}
 						} else {
 							schema.schemaCore = wknSchemaCore
@@ -927,14 +1000,14 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					// add the parameters to the query string
 					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
 					if err != nil {
-						return err
+						return nil, err
 					}
 					parameters = append(parameters, queryParams...)
 				} else if b.HTTPMethod == "GET" || b.HTTPMethod == "DELETE" {
 					// add the parameters to the query string
 					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
 					if err != nil {
-						return err
+						return nil, err
 					}
 					parameters = append(parameters, queryParams...)
 				}
@@ -961,7 +1034,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					if !isWkn {
 						err := responseSchema.setRefFromFQN(meth.ResponseType.FQMN(), reg)
 						if err != nil {
-							return err
+							return nil, err
 						}
 					} else {
 						responseSchema.schemaCore = wknSchemaCore
@@ -1123,14 +1196,14 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							if resp.Headers != nil {
 								hdrs, err := processHeaders(resp.Headers)
 								if err != nil {
-									return err
+									return nil, err
 								}
 								respObj.Headers = hdrs
 							}
 							if resp.Extensions != nil {
 								exts, err := processExtensions(resp.Extensions)
 								if err != nil {
-									return err
+									return nil, err
 								}
 								respObj.extensions = exts
 							}
@@ -1141,7 +1214,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					if opts.Extensions != nil {
 						exts, err := processExtensions(opts.Extensions)
 						if err != nil {
-							return err
+							return nil, err
 						}
 						operationObject.extensions = exts
 					}
@@ -1172,7 +1245,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 	}
 
 	// Success! return nil on the error object
-	return nil
+	return tags, nil
 }
 
 // This function is called with a param which contains the entire definition of a method.
@@ -1196,9 +1269,11 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	// and create entries for all of them.
 	// Also adds custom user specified references to second map.
 	requestResponseRefs, customRefs := refMap{}, refMap{}
-	if err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
+	tags, err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages)
+	if err != nil {
 		panic(err)
 	}
+	s.Tags = append(s.Tags, tags...)
 
 	messages := messageMap{}
 	streamingMessages := messageMap{}
