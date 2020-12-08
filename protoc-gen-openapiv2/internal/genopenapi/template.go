@@ -25,7 +25,6 @@ import (
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
@@ -785,68 +784,27 @@ func isResourceName(prefix string) bool {
 
 func renderServiceTag(svc *descriptor.Service) []openapiTagObject {
 
-	tag := openapiTagObject{Name: *svc.Name}
-
-	svc.Options.ProtoReflect().Range(func(desc protoreflect.FieldDescriptor, value protoreflect.Value) bool {
-
-		if desc.FullName() == "grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag" {
-
-			if desc.Kind() != protoreflect.MessageKind {
-				glog.Errorf("Expected message type for %s\n", desc.FullName())
-				return true
-			}
-
-			tagMsg := value.Message()
-			tagMsg.Range(func(tdesc protoreflect.FieldDescriptor, tvalue protoreflect.Value) bool {
-
-				if tdesc.FullName() == "grpc.gateway.protoc_gen_openapiv2.options.Tag.external_docs" {
-					if tdesc.Kind() != protoreflect.MessageKind {
-						glog.Errorf("Expected message type for %s\n", tdesc.FullName())
-					} else {
-						tag.ExternalDocs = new(openapiExternalDocumentationObject)
-						extDocsMsg := tvalue.Message()
-						extDocsMsg.Range(func(edesc protoreflect.FieldDescriptor, evalue protoreflect.Value) bool {
-
-							if edesc.FullName() == "grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation.description" {
-								if edesc.Kind() != protoreflect.StringKind {
-									glog.Errorf("Expected string type for %s\n", edesc.FullName())
-								} else {
-									tag.ExternalDocs.Description = evalue.String()
-								}
-							}
-							if edesc.FullName() == "grpc.gateway.protoc_gen_openapiv2.options.ExternalDocumentation.url" {
-								if edesc.Kind() != protoreflect.StringKind {
-									glog.Errorf("Expected string type for %s\n", edesc.FullName())
-								} else {
-									tag.ExternalDocs.URL = evalue.String()
-								}
-							}
-
-							return true
-
-						})
-					}
-
-				}
-				if tdesc.FullName() == "grpc.gateway.protoc_gen_openapiv2.options.Tag.description" {
-					if tdesc.Kind() != protoreflect.StringKind {
-						glog.Errorf("Expected string type for %s\n", tdesc.FullName())
-					} else {
-						tag.Description = tvalue.String()
-					}
-
-				}
-				return true
-			})
-
-			return false
+	if proto.HasExtension(svc.Options, openapi_options.E_Openapiv2Tag) {
+		ext := proto.GetExtension(svc.Options, openapi_options.E_Openapiv2Tag)
+		opts, ok := ext.(*openapi_options.Tag)
+		if !ok {
+			glog.Errorf("extension is %T; want an OpenAPI Tag object", ext)
+			return nil
 		}
-		return true
-	})
 
-	if tag.Description != "" {
+		tag := openapiTagObject{
+			Name:        *svc.Name,
+			Description: opts.Description,
+		}
+		if opts.ExternalDocs != nil {
+			tag.ExternalDocs = &openapiExternalDocumentationObject{
+				Description: opts.ExternalDocs.Description,
+				URL:         opts.ExternalDocs.Url,
+			}
+		}
 		return []openapiTagObject{tag}
 	}
+
 	return nil
 
 }
