@@ -15,7 +15,11 @@
     },
     "x-something-something": "yadda"
   },
-  "tags": null,
+  "tags": [
+    {
+      "name": "UnannotatedEchoService"
+    }
+  ],
   "schemes": [
     "http",
     "https",

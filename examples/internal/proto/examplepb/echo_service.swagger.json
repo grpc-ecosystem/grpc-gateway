@@ -5,7 +5,11 @@
     "description": "Echo Service API consists of a single service which returns\na message.",
     "version": "version not set"
   },
-  "tags": null,
+  "tags": [
+    {
+      "name": "EchoService"
+    }
+  ],
   "consumes": [
     "application/json"
   ],

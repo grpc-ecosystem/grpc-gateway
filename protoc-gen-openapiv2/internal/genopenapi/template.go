@@ -782,45 +782,42 @@ func isResourceName(prefix string) bool {
 	return field == "parent" || field == "name"
 }
 
-func renderServiceTag(svc *descriptor.Service) []openapiTagObject {
-
-	if proto.HasExtension(svc.Options, openapi_options.E_Openapiv2Tag) {
-		ext := proto.GetExtension(svc.Options, openapi_options.E_Openapiv2Tag)
-		opts, ok := ext.(*openapi_options.Tag)
-		if !ok {
-			glog.Errorf("extension is %T; want an OpenAPI Tag object", ext)
-			return nil
-		}
-
+func renderServiceTags(services []*descriptor.Service) []openapiTagObject {
+	var tags []openapiTagObject
+	for _, svc := range services {
 		tag := openapiTagObject{
-			Name:        *svc.Name,
-			Description: opts.Description,
+			Name: *svc.Name,
 		}
-		if opts.ExternalDocs != nil {
-			tag.ExternalDocs = &openapiExternalDocumentationObject{
-				Description: opts.ExternalDocs.Description,
-				URL:         opts.ExternalDocs.Url,
+		if proto.HasExtension(svc.Options, openapi_options.E_Openapiv2Tag) {
+			ext := proto.GetExtension(svc.Options, openapi_options.E_Openapiv2Tag)
+			opts, ok := ext.(*openapi_options.Tag)
+			if !ok {
+				glog.Errorf("extension is %T; want an OpenAPI Tag object", ext)
+				return nil
+			}
+
+			tag.Description = opts.Description
+			if opts.ExternalDocs != nil {
+				tag.ExternalDocs = &openapiExternalDocumentationObject{
+					Description: opts.ExternalDocs.Description,
+					URL:         opts.ExternalDocs.Url,
+				}
 			}
 		}
-		return []openapiTagObject{tag}
+		tags = append(tags, tag)
 	}
-
-	return nil
-
+	return tags
 }
 
-func renderServices(services []*descriptor.Service, paths openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) ([]openapiTagObject, error) {
+func renderServices(services []*descriptor.Service, paths openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	svcBaseIdx := 0
 	var lastFile *descriptor.File = nil
-	var tags []openapiTagObject
 	for svcIdx, svc := range services {
 		if svc.File != lastFile {
 			lastFile = svc.File
 			svcBaseIdx = svcIdx
 		}
-
-		tags = append(tags, renderServiceTag(svc)...)
 
 		for methIdx, meth := range svc.Methods {
 			for bIdx, b := range meth.Bindings {
@@ -836,7 +833,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					case descriptorpb.FieldDescriptorProto_TYPE_GROUP, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE:
 						if descriptor.IsWellKnownType(parameter.Target.GetTypeName()) {
 							if parameter.IsRepeated() {
-								return nil, fmt.Errorf("only primitive and enum types are allowed in repeated path parameters")
+								return fmt.Errorf("only primitive and enum types are allowed in repeated path parameters")
 							}
 							schema := schemaOfField(parameter.Target, reg, customRefs)
 							paramType = schema.Type
@@ -844,12 +841,12 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							desc = schema.Description
 							defaultValue = schema.Default
 						} else {
-							return nil, fmt.Errorf("only primitive and well-known types are allowed in path parameters")
+							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
 					case descriptorpb.FieldDescriptorProto_TYPE_ENUM:
 						enum, err := reg.LookupEnum("", parameter.Target.GetTypeName())
 						if err != nil {
-							return nil, err
+							return err
 						}
 						paramType = "string"
 						paramFormat = ""
@@ -866,7 +863,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
 						if !ok {
-							return nil, fmt.Errorf("unknown field type %v", pt)
+							return fmt.Errorf("unknown field type %v", pt)
 						}
 
 						schema := schemaOfField(parameter.Target, reg, customRefs)
@@ -925,7 +922,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						if !isWkn {
 							err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg)
 							if err != nil {
-								return nil, err
+								return err
 							}
 						} else {
 							schema.schemaCore = wknSchemaCore
@@ -958,14 +955,14 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					// add the parameters to the query string
 					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
 					if err != nil {
-						return nil, err
+						return err
 					}
 					parameters = append(parameters, queryParams...)
 				} else if b.HTTPMethod == "GET" || b.HTTPMethod == "DELETE" {
 					// add the parameters to the query string
 					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
 					if err != nil {
-						return nil, err
+						return err
 					}
 					parameters = append(parameters, queryParams...)
 				}
@@ -992,7 +989,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					if !isWkn {
 						err := responseSchema.setRefFromFQN(meth.ResponseType.FQMN(), reg)
 						if err != nil {
-							return nil, err
+							return err
 						}
 					} else {
 						responseSchema.schemaCore = wknSchemaCore
@@ -1154,14 +1151,14 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							if resp.Headers != nil {
 								hdrs, err := processHeaders(resp.Headers)
 								if err != nil {
-									return nil, err
+									return err
 								}
 								respObj.Headers = hdrs
 							}
 							if resp.Extensions != nil {
 								exts, err := processExtensions(resp.Extensions)
 								if err != nil {
-									return nil, err
+									return err
 								}
 								respObj.extensions = exts
 							}
@@ -1172,7 +1169,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					if opts.Extensions != nil {
 						exts, err := processExtensions(opts.Extensions)
 						if err != nil {
-							return nil, err
+							return err
 						}
 						operationObject.extensions = exts
 					}
@@ -1203,7 +1200,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 	}
 
 	// Success! return nil on the error object
-	return tags, nil
+	return nil
 }
 
 // This function is called with a param which contains the entire definition of a method.
@@ -1227,11 +1224,11 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	// and create entries for all of them.
 	// Also adds custom user specified references to second map.
 	requestResponseRefs, customRefs := refMap{}, refMap{}
-	tags, err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages)
+	err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages)
 	if err != nil {
 		panic(err)
 	}
-	s.Tags = append(s.Tags, tags...)
+	s.Tags = append(s.Tags, renderServiceTags(p.Services)...)
 
 	messages := messageMap{}
 	streamingMessages := messageMap{}

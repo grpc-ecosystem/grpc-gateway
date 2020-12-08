@@ -4,7 +4,11 @@
     "title": "examples/internal/proto/examplepb/wrappers.proto",
     "version": "version not set"
   },
-  "tags": null,
+  "tags": [
+    {
+      "name": "WrappersService"
+    }
+  ],
   "consumes": [
     "application/json"
   ],

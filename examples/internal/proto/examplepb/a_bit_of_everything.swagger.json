@@ -22,6 +22,12 @@
         "description": "Find out more about EchoService",
         "url": "https://github.com/grpc-ecosystem/grpc-gateway"
       }
+    },
+    {
+      "name": "camelCaseServiceName"
+    },
+    {
+      "name": "AnotherServiceWithNoBindings"
     }
   ],
   "schemes": [

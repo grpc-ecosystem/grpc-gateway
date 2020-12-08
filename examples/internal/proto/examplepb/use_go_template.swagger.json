@@ -4,7 +4,11 @@
     "title": "examples/internal/proto/examplepb/use_go_template.proto",
     "version": "version not set"
   },
-  "tags": null,
+  "tags": [
+    {
+      "name": "LoginService"
+    }
+  ],
   "consumes": [
     "application/json"
   ],
