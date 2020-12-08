@@ -818,7 +818,6 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 			lastFile = svc.File
 			svcBaseIdx = svcIdx
 		}
-
 		for methIdx, meth := range svc.Methods {
 			for bIdx, b := range meth.Bindings {
 				// Iterate over all the OpenAPI parameters
