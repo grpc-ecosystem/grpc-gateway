@@ -4,6 +4,11 @@
     "title": "examples/internal/proto/examplepb/stream.proto",
     "version": "version not set"
   },
+  "tags": [
+    {
+      "name": "StreamService"
+    }
+  ],
   "consumes": [
     "application/json"
   ],

@@ -5,6 +5,17 @@
     "description": "This is an example of merging two proto files.",
     "version": "version not set"
   },
+  "tags": [
+    {
+      "name": "ServiceA"
+    },
+    {
+      "name": "ServiceC"
+    },
+    {
+      "name": "ServiceB"
+    }
+  ],
   "consumes": [
     "application/json"
   ],
