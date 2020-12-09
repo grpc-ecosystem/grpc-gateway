@@ -782,6 +782,33 @@ func isResourceName(prefix string) bool {
 	return field == "parent" || field == "name"
 }
 
+func renderServiceTags(services []*descriptor.Service) []openapiTagObject {
+	var tags []openapiTagObject
+	for _, svc := range services {
+		tag := openapiTagObject{
+			Name: *svc.Name,
+		}
+		if proto.HasExtension(svc.Options, openapi_options.E_Openapiv2Tag) {
+			ext := proto.GetExtension(svc.Options, openapi_options.E_Openapiv2Tag)
+			opts, ok := ext.(*openapi_options.Tag)
+			if !ok {
+				glog.Errorf("extension is %T; want an OpenAPI Tag object", ext)
+				return nil
+			}
+
+			tag.Description = opts.Description
+			if opts.ExternalDocs != nil {
+				tag.ExternalDocs = &openapiExternalDocumentationObject{
+					Description: opts.ExternalDocs.Description,
+					URL:         opts.ExternalDocs.Url,
+				}
+			}
+		}
+		tags = append(tags, tag)
+	}
+	return tags
+}
+
 func renderServices(services []*descriptor.Service, paths openapiPathsObject, reg *descriptor.Registry, requestResponseRefs, customRefs refMap, msgs []*descriptor.Message) error {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	svcBaseIdx := 0
@@ -1199,6 +1226,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	if err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
 		panic(err)
 	}
+	s.Tags = append(s.Tags, renderServiceTags(p.Services)...)
 
 	messages := messageMap{}
 	streamingMessages := messageMap{}

@@ -26,6 +26,13 @@ type openapiInfoObject struct {
 	extensions []extension
 }
 
+// https://swagger.io/specification/#tagObject
+type openapiTagObject struct {
+	Name         string                              `json:"name"`
+	Description  string                              `json:"description,omitempty"`
+	ExternalDocs *openapiExternalDocumentationObject `json:"externalDocs,omitempty"`
+}
+
 // http://swagger.io/specification/#contactObject
 type openapiContactObject struct {
 	Name  string `json:"name,omitempty"`
@@ -54,6 +61,7 @@ type extension struct {
 type openapiSwaggerObject struct {
 	Swagger             string                              `json:"swagger"`
 	Info                openapiInfoObject                   `json:"info"`
+	Tags                []openapiTagObject                  `json:"tags,omitempty"`
 	Host                string                              `json:"host,omitempty"`
 	BasePath            string                              `json:"basePath,omitempty"`
 	Schemes             []string                            `json:"schemes,omitempty"`

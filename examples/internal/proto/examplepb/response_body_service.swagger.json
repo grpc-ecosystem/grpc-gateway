@@ -4,6 +4,11 @@
     "title": "examples/internal/proto/examplepb/response_body_service.proto",
     "version": "version not set"
   },
+  "tags": [
+    {
+      "name": "ResponseBodyService"
+    }
+  ],
   "consumes": [
     "application/json"
   ],
