@@ -220,7 +220,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
       If you do not want to (or cannot) modify the proto file for use with gRPC-Gateway you can
       alternatively use an external
       [gRPC Service Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file.
-      [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/grpcapiconfiguration.html)
+      [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/grpc_api_configuration/)
       for more information.
 
    Here's what a `protoc` execution might look like with this option enabled:
