@@ -381,7 +381,7 @@ gRPC-Gateway, and a gRPC server, see
 - Partial support for [gRPC API Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config)
   files as an alternative to annotation.
 - Automatically translating PATCH requests into Field Mask gRPC requests. See
-  [the docs](https://grpc-ecosystem.github.io/grpc-gateway/docs/patch.html)
+  [the docs](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/patch_feature/)
   for more information.
 
 ### No plan to support
