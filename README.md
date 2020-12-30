@@ -26,6 +26,12 @@ This helps you provide your APIs in both gRPC and RESTful style at the same time
 <img src="docs/assets/images/architecture_introduction_diagram.svg" />
 </div>
 
+## Docs
+
+You can read our docs at:
+
+- https://grpc-ecosystem.github.io/grpc-gateway/
+
 ## Testimonials
 
 > We use the gRPC-Gateway to serve millions of API requests per day,
