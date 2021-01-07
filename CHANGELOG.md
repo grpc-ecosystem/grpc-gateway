@@ -1,5 +1,124 @@
 # Change Log
 
+## [v2.1.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.1.0) (2021-01-07)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.16.0...v2.1.0)
+
+**Implemented enhancements:**
+
+- protoc-gen-grpc-gateway: can't generate gateway stubs for multiple packages in one go [\#1612](https://github.com/grpc-ecosystem/grpc-gateway/issues/1612)
+- Addition of Prettier GitHub action to prettified the markdown files [\#1575](https://github.com/grpc-ecosystem/grpc-gateway/issues/1575)
+- add support for field\_behavior options on swagger plugin [\#1806](https://github.com/grpc-ecosystem/grpc-gateway/pull/1806) ([ewhauser](https://github.com/ewhauser))
+
+**Fixed bugs:**
+
+- The "Use go templates" page is missing its actual go templates [\#1773](https://github.com/grpc-ecosystem/grpc-gateway/issues/1773)
+- FieldMask Generation causes a 400 when a google.protobuf.Struct field has populated values [\#1570](https://github.com/grpc-ecosystem/grpc-gateway/issues/1570)
+- Support openapiv2\_tag option in swagger generator [\#690](https://github.com/grpc-ecosystem/grpc-gateway/issues/690)
+
+**Closed issues:**
+
+- Ignore some fields in HTTP Response and OpenAPI [\#1886](https://github.com/grpc-ecosystem/grpc-gateway/issues/1886)
+- Using runtime.WithMarshalerOption\(\) breaks swagger docs [\#1882](https://github.com/grpc-ecosystem/grpc-gateway/issues/1882)
+- Data is Getting Encoded while returning response  as HTML [\#1880](https://github.com/grpc-ecosystem/grpc-gateway/issues/1880)
+- jsonPB is not supporting in grpc gateway v2 migration [\#1878](https://github.com/grpc-ecosystem/grpc-gateway/issues/1878)
+- Move generator and descriptor packages into the public API [\#1877](https://github.com/grpc-ecosystem/grpc-gateway/issues/1877)
+- Add -module flag to protoc-gen-openapiv2 plugin [\#1876](https://github.com/grpc-ecosystem/grpc-gateway/issues/1876)
+- Load Balancing with multiple instances of a grpc-server. [\#1875](https://github.com/grpc-ecosystem/grpc-gateway/issues/1875)
+- Building with Bazel not compatible when using Gazelle and disable\_global [\#1847](https://github.com/grpc-ecosystem/grpc-gateway/issues/1847)
+- Unexpected response on /v2/example/errorwithdetails [\#1842](https://github.com/grpc-ecosystem/grpc-gateway/issues/1842)
+- openapi\_configuration option in protoc\_gen\_openapiv2 Bazel rule fails. [\#1838](https://github.com/grpc-ecosystem/grpc-gateway/issues/1838)
+- Link to v2 migration guide broken [\#1836](https://github.com/grpc-ecosystem/grpc-gateway/issues/1836)
+- add header in http.Handler,but not take effect [\#1835](https://github.com/grpc-ecosystem/grpc-gateway/issues/1835)
+- `protoc-gen-openapiv2 ` rule should expose all of the relevant flags available [\#1831](https://github.com/grpc-ecosystem/grpc-gateway/issues/1831)
+- if there a flag set the metadata first letter not change to uppower [\#1830](https://github.com/grpc-ecosystem/grpc-gateway/issues/1830)
+- Clarification about return Access-Control-Allow-Origin header  [\#1827](https://github.com/grpc-ecosystem/grpc-gateway/issues/1827)
+- `generate\_unbound\_methods` option and FieldMask fields don't work together. [\#1816](https://github.com/grpc-ecosystem/grpc-gateway/issues/1816)
+- openapiv2: panic when SecurityRequirement is missing a value [\#1811](https://github.com/grpc-ecosystem/grpc-gateway/issues/1811)
+- Cannot resolve import 'google/api/http.proto' [\#1809](https://github.com/grpc-ecosystem/grpc-gateway/issues/1809)
+- add version information at compile-time [\#1803](https://github.com/grpc-ecosystem/grpc-gateway/issues/1803)
+- 🚀 `protoc\_gen\_openapiv2` should allow to pass `generate\_unbound\_methods` option [\#1792](https://github.com/grpc-ecosystem/grpc-gateway/issues/1792)
+- Can't generate python client [\#1785](https://github.com/grpc-ecosystem/grpc-gateway/issues/1785)
+- Issue with converting to the bytes data type [\#1781](https://github.com/grpc-ecosystem/grpc-gateway/issues/1781)
+- Possible way to access request header key,value  [\#1780](https://github.com/grpc-ecosystem/grpc-gateway/issues/1780)
+- Run demo failed! [\#1777](https://github.com/grpc-ecosystem/grpc-gateway/issues/1777)
+- protoc-gen-swagger: Implement Response Header\(s\) object, Implement Field Enum,Example&Format attributes [\#1729](https://github.com/grpc-ecosystem/grpc-gateway/issues/1729)
+
+**Merged pull requests:**
+
+- Update google.golang.org/genproto commit hash to 07624b5 \(master\) [\#1885](https://github.com/grpc-ecosystem/grpc-gateway/pull/1885) ([renovate[bot]](https://github.com/apps/renovate))
+- Add a \#\# Docs section to highlight the docs URL [\#1884](https://github.com/grpc-ecosystem/grpc-gateway/pull/1884) ([VinGarcia](https://github.com/VinGarcia))
+- Fix broken 'Field Mask' documentation link [\#1883](https://github.com/grpc-ecosystem/grpc-gateway/pull/1883) ([adolfo](https://github.com/adolfo))
+- Update google.golang.org/genproto commit hash to 8c77b98 \(master\) [\#1874](https://github.com/grpc-ecosystem/grpc-gateway/pull/1874) ([renovate[bot]](https://github.com/apps/renovate))
+- Fix link to "gRPC API configuration" in README [\#1873](https://github.com/grpc-ecosystem/grpc-gateway/pull/1873) ([alpire](https://github.com/alpire))
+- Update google.golang.org/genproto commit hash to 40ec1c2 \(master\) [\#1872](https://github.com/grpc-ecosystem/grpc-gateway/pull/1872) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to e3217be \(master\) [\#1870](https://github.com/grpc-ecosystem/grpc-gateway/pull/1870) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to f927205 \(master\) [\#1869](https://github.com/grpc-ecosystem/grpc-gateway/pull/1869) ([renovate[bot]](https://github.com/apps/renovate))
+- Update golang.org/x/oauth2 commit hash to 08078c5 \(master\) [\#1867](https://github.com/grpc-ecosystem/grpc-gateway/pull/1867) ([renovate[bot]](https://github.com/apps/renovate))
+- protoc-gen-openapiv2: Add openapiv2\_tag support [\#1866](https://github.com/grpc-ecosystem/grpc-gateway/pull/1866) ([rcgoodfellow](https://github.com/rcgoodfellow))
+- Update golang.org/x/oauth2 commit hash to 9317641 \(master\) [\#1864](https://github.com/grpc-ecosystem/grpc-gateway/pull/1864) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 9ee31aa \(master\) [\#1862](https://github.com/grpc-ecosystem/grpc-gateway/pull/1862) ([renovate[bot]](https://github.com/apps/renovate))
+- Update Season of Docs page [\#1861](https://github.com/grpc-ecosystem/grpc-gateway/pull/1861) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Refactored the documentation files of gRPC-Gateway [\#1860](https://github.com/grpc-ecosystem/grpc-gateway/pull/1860) ([iamrajiv](https://github.com/iamrajiv))
+- Update google.golang.org/genproto commit hash to 06b3db8 \(master\) [\#1858](https://github.com/grpc-ecosystem/grpc-gateway/pull/1858) ([renovate[bot]](https://github.com/apps/renovate))
+- Update golang Docker tag to v1.15.6 \(master\) [\#1857](https://github.com/grpc-ecosystem/grpc-gateway/pull/1857) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 6486ece \(master\) [\#1854](https://github.com/grpc-ecosystem/grpc-gateway/pull/1854) ([renovate[bot]](https://github.com/apps/renovate))
+- Update golang.org/x/oauth2 commit hash to 0b49973 \(master\) [\#1853](https://github.com/grpc-ecosystem/grpc-gateway/pull/1853) ([renovate[bot]](https://github.com/apps/renovate))
+- Update module google.golang.org/grpc to v1.34.0 \(master\) [\#1852](https://github.com/grpc-ecosystem/grpc-gateway/pull/1852) ([renovate[bot]](https://github.com/apps/renovate))
+- \[GSoD\] Refactored the documentation files of gRPC-Gateway [\#1851](https://github.com/grpc-ecosystem/grpc-gateway/pull/1851) ([iamrajiv](https://github.com/iamrajiv))
+- Update google.golang.org/genproto commit hash to 55d61f9 \(master\) [\#1850](https://github.com/grpc-ecosystem/grpc-gateway/pull/1850) ([renovate[bot]](https://github.com/apps/renovate))
+- Update rules\_proto commit hash to 84ba6ec \(master\) [\#1849](https://github.com/grpc-ecosystem/grpc-gateway/pull/1849) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to b05cb90 \(master\) [\#1846](https://github.com/grpc-ecosystem/grpc-gateway/pull/1846) ([renovate[bot]](https://github.com/apps/renovate))
+- \[GSoD\] Added new architecture introduction diagram for gRPC-Gateway [\#1845](https://github.com/grpc-ecosystem/grpc-gateway/pull/1845) ([iamrajiv](https://github.com/iamrajiv))
+- \[GSoD\] Added more faq for gRPC-Gateway [\#1844](https://github.com/grpc-ecosystem/grpc-gateway/pull/1844) ([iamrajiv](https://github.com/iamrajiv))
+- Fix broken example [\#1843](https://github.com/grpc-ecosystem/grpc-gateway/pull/1843) ([isbang](https://github.com/isbang))
+- Feature/implement response headers v2 [\#1841](https://github.com/grpc-ecosystem/grpc-gateway/pull/1841) ([elijah-roberts](https://github.com/elijah-roberts))
+- Update module google/go-cmp to v0.5.4 \(master\) [\#1840](https://github.com/grpc-ecosystem/grpc-gateway/pull/1840) ([renovate[bot]](https://github.com/apps/renovate))
+- Fix some broken docs links [\#1839](https://github.com/grpc-ecosystem/grpc-gateway/pull/1839) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Sets proper context property for openapi\_configuration  option [\#1837](https://github.com/grpc-ecosystem/grpc-gateway/pull/1837) ([zoido](https://github.com/zoido))
+- Adjust protoc-gen-openapiv2/main.go flags docs as suggested during \#1832 review [\#1833](https://github.com/grpc-ecosystem/grpc-gateway/pull/1833) ([zoido](https://github.com/zoido))
+- Rest protoc-gen-openapiv2 flags as rule attrs [\#1832](https://github.com/grpc-ecosystem/grpc-gateway/pull/1832) ([zoido](https://github.com/zoido))
+- \[GSoD\]  Added tutorials directory on gRPC-Gateway [\#1829](https://github.com/grpc-ecosystem/grpc-gateway/pull/1829) ([iamrajiv](https://github.com/iamrajiv))
+- Update google.golang.org/genproto commit hash to 9b1e624 \(master\) [\#1828](https://github.com/grpc-ecosystem/grpc-gateway/pull/1828) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 62d171c \(master\) [\#1825](https://github.com/grpc-ecosystem/grpc-gateway/pull/1825) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 79184cf \(master\) [\#1824](https://github.com/grpc-ecosystem/grpc-gateway/pull/1824) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to bf037d7 \(master\) [\#1823](https://github.com/grpc-ecosystem/grpc-gateway/pull/1823) ([renovate[bot]](https://github.com/apps/renovate))
+- reorganize docs; add page for customizing gateway output [\#1822](https://github.com/grpc-ecosystem/grpc-gateway/pull/1822) ([ewhauser](https://github.com/ewhauser))
+- Change FieldMask OpenAPI type to string. [\#1820](https://github.com/grpc-ecosystem/grpc-gateway/pull/1820) ([zoido](https://github.com/zoido))
+- Update google.golang.org/genproto commit hash to ce600e9 \(master\) [\#1819](https://github.com/grpc-ecosystem/grpc-gateway/pull/1819) ([renovate[bot]](https://github.com/apps/renovate))
+- Fix openapiv2 panic [\#1818](https://github.com/grpc-ecosystem/grpc-gateway/pull/1818) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Add ci linter [\#1817](https://github.com/grpc-ecosystem/grpc-gateway/pull/1817) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Update golang Docker tag to v1.15.5 \(master\) [\#1814](https://github.com/grpc-ecosystem/grpc-gateway/pull/1814) ([renovate[bot]](https://github.com/apps/renovate))
+- Update module google/go-cmp to v0.5.3 \(master\) [\#1812](https://github.com/grpc-ecosystem/grpc-gateway/pull/1812) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 2985b7a \(master\) [\#1810](https://github.com/grpc-ecosystem/grpc-gateway/pull/1810) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to ac7456d \(master\) [\#1808](https://github.com/grpc-ecosystem/grpc-gateway/pull/1808) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 8816d57 \(master\) [\#1807](https://github.com/grpc-ecosystem/grpc-gateway/pull/1807) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 2640f1f \(master\) [\#1805](https://github.com/grpc-ecosystem/grpc-gateway/pull/1805) ([renovate[bot]](https://github.com/apps/renovate))
+- Update golang.org/x/oauth2 commit hash to 9fd6049 \(master\) [\#1804](https://github.com/grpc-ecosystem/grpc-gateway/pull/1804) ([renovate[bot]](https://github.com/apps/renovate))
+- Disable gRPC updates on v1 [\#1802](https://github.com/grpc-ecosystem/grpc-gateway/pull/1802) ([johanbrandhorst](https://github.com/johanbrandhorst))
+- Update module google.golang.org/grpc to v1.33.2 \(master\) [\#1800](https://github.com/grpc-ecosystem/grpc-gateway/pull/1800) ([renovate[bot]](https://github.com/apps/renovate))
+- Update golang Docker tag to v1.15.4 \(master\) [\#1799](https://github.com/grpc-ecosystem/grpc-gateway/pull/1799) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to f9bfe23 \(master\) [\#1796](https://github.com/grpc-ecosystem/grpc-gateway/pull/1796) ([renovate[bot]](https://github.com/apps/renovate))
+- Fix typo in flag name for Bazel [\#1795](https://github.com/grpc-ecosystem/grpc-gateway/pull/1795) ([achew22](https://github.com/achew22))
+- Update google.golang.org/genproto commit hash to 9d023cd \(master\) [\#1794](https://github.com/grpc-ecosystem/grpc-gateway/pull/1794) ([renovate[bot]](https://github.com/apps/renovate))
+- Exposes `generate\_unbound\_methods` as `protoc\_gen\_openapiv2` rule attr [\#1793](https://github.com/grpc-ecosystem/grpc-gateway/pull/1793) ([zoido](https://github.com/zoido))
+- Update google.golang.org/genproto commit hash to 2e45c02 \(master\) [\#1789](https://github.com/grpc-ecosystem/grpc-gateway/pull/1789) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 415bd0c \(master\) [\#1788](https://github.com/grpc-ecosystem/grpc-gateway/pull/1788) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 715cce7 \(master\) [\#1787](https://github.com/grpc-ecosystem/grpc-gateway/pull/1787) ([renovate[bot]](https://github.com/apps/renovate))
+- \[GSoD\] Added new documentation website for gRPC-Gateway [\#1786](https://github.com/grpc-ecosystem/grpc-gateway/pull/1786) ([iamrajiv](https://github.com/iamrajiv))
+- Update google.golang.org/genproto commit hash to 24207fd \(master\) [\#1784](https://github.com/grpc-ecosystem/grpc-gateway/pull/1784) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 8ce4113 \(master\) [\#1782](https://github.com/grpc-ecosystem/grpc-gateway/pull/1782) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to c77dae4 \(master\) [\#1778](https://github.com/grpc-ecosystem/grpc-gateway/pull/1778) ([renovate[bot]](https://github.com/apps/renovate))
+
+## [v1.16.0](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.16.0) (2020-10-28)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.15.1...v1.16.0)
+
+**Merged pull requests:**
+
+- Update dependency io\_bazel\_rules\_go to v0.24.5 \(master\) [\#1775](https://github.com/grpc-ecosystem/grpc-gateway/pull/1775) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to d4b8fe4 \(master\) [\#1774](https://github.com/grpc-ecosystem/grpc-gateway/pull/1774) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 0ff5f38 \(master\) [\#1772](https://github.com/grpc-ecosystem/grpc-gateway/pull/1772) ([renovate[bot]](https://github.com/apps/renovate))
+- Update google.golang.org/genproto commit hash to 0d71844 \(master\) [\#1771](https://github.com/grpc-ecosystem/grpc-gateway/pull/1771) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [v2.0.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.1) (2020-10-21)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0...v2.0.1)
 
@@ -11,6 +130,7 @@
 
 **Merged pull requests:**
 
+- Generate changelog for v2.0.1 [\#1770](https://github.com/grpc-ecosystem/grpc-gateway/pull/1770) ([johanbrandhorst](https://github.com/johanbrandhorst))
 - Update module google.golang.org/grpc to v1.33.1 \(master\) [\#1768](https://github.com/grpc-ecosystem/grpc-gateway/pull/1768) ([renovate[bot]](https://github.com/apps/renovate))
 - Update google.golang.org/genproto commit hash to 1ed22bb \(master\) [\#1764](https://github.com/grpc-ecosystem/grpc-gateway/pull/1764) ([renovate[bot]](https://github.com/apps/renovate))
 - Update dependency io\_bazel\_rules\_go to v0.24.4 \(master\) [\#1762](https://github.com/grpc-ecosystem/grpc-gateway/pull/1762) ([renovate[bot]](https://github.com/apps/renovate))
@@ -224,13 +344,13 @@
 - Adding docs about controlling http response status codes [\#1391](https://github.com/grpc-ecosystem/grpc-gateway/pull/1391) ([zhughes3](https://github.com/zhughes3))
 
 ## [v2.0.0-beta.3](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.0-beta.3) (2020-05-25)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.6...v2.0.0-beta.3)
-
-## [v1.14.6](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.6) (2020-05-25)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0-beta.2...v1.14.6)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0-beta.2...v2.0.0-beta.3)
 
 ## [v2.0.0-beta.2](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.0-beta.2) (2020-05-25)
-[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0-beta.1...v2.0.0-beta.2)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.6...v2.0.0-beta.2)
+
+## [v1.14.6](https://github.com/grpc-ecosystem/grpc-gateway/tree/v1.14.6) (2020-05-25)
+[Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v2.0.0-beta.1...v1.14.6)
 
 ## [v2.0.0-beta.1](https://github.com/grpc-ecosystem/grpc-gateway/tree/v2.0.0-beta.1) (2020-05-25)
 [Full Changelog](https://github.com/grpc-ecosystem/grpc-gateway/compare/v1.14.5...v2.0.0-beta.1)
