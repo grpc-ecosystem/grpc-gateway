@@ -248,7 +248,7 @@ func (r *Registry) newParam(meth *Method, path string) (Parameter, error) {
 		if IsWellKnownType(*target.TypeName) {
 			glog.V(2).Infoln("found well known aggregate type:", target)
 		} else {
-			return Parameter{}, fmt.Errorf("aggregate type %s in parameter of %s.%s: %s", target.Type, meth.Service.GetName(), meth.GetName(), path)
+			return Parameter{}, fmt.Errorf("%s.%s: %s is a protobuf message type. Protobuf message types cannot be used as path parameters, use a scalar value type (such as string) instead", meth.Service.GetName(), meth.GetName(), path)
 		}
 	}
 	return Parameter{
