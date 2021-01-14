@@ -12,7 +12,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20210113205817-d3ed898aa8a3
 	google.golang.org/genproto v0.0.0-20210113195801-ae06605f4595
 	google.golang.org/grpc v1.35.0
-	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.0.0
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.35.0
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/yaml.v2 v2.2.3 // indirect
 )
