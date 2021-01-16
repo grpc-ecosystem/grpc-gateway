@@ -11,7 +11,7 @@ parent: Mapping
 
 ## In proto comments
 
-You can provide comments directly in your Protocol Buffer defintions and they will be translated into comments in the generated OpenAPI definitions:
+You can provide comments directly in your Protocol Buffer definitions and they will be translated into comments in the generated OpenAPI definitions:
 
 ```protobuf
 message MyMessage {
