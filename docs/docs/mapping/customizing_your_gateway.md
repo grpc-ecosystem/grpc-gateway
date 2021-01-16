@@ -210,7 +210,7 @@ To have the most control over the HTTP response status codes, you can use custom
 While handling the rpc, set the intended status code:
 
 ```go
-grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "401"))
+_ = grpc.SetHeader(ctx, metadata.Pairs("x-http-code", "401"))
 ```
 
 Now, before sending the HTTP response, we need to check for this metadata pair and explicitly set the status code for the response if found.
@@ -231,10 +231,10 @@ func httpResponseModifier(ctx context.Context, w http.ResponseWriter, p proto.Me
 		if err != nil {
 			return err
 		}
-		w.WriteHeader(code)
-	// delete the headers to not expose any grpc-metadata in http response
+		// delete the headers to not expose any grpc-metadata in http response
 		delete(md.HeaderMD, "x-http-code")
 		delete(w.Header(), "Grpc-Metadata-X-Http-Code")
+		w.WriteHeader(code)
 	}
 
 	return nil
@@ -247,6 +247,47 @@ And it gets hooked into the gRPC-Gateway with:
 gwMux := runtime.NewServeMux(
 	runtime.WithForwardResponseOption(httpResponseModifier),
 )
+```
+
+Additional responses can be added to the Protocol Buffer definitions to match the new status codes:
+
+```protobuf
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply) {
+    option (google.api.http) = {
+      post: "/v1/example/echo"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      responses: {
+        key: "201"
+        value: {
+          description: "A successful response."
+          schema: {
+            json_schema: {
+              ref: ".mypackage.HelloReply"
+            }
+          }
+        }
+      }
+    };
+  }
+
+  rpc SayGoodbye (GoodbyeRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/example/echo/{id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      responses: {
+        key: "204"
+        value: {
+          description: "A successful response."
+          schema: {}
+        }
+      }
+    };
+  }
+}
 ```
 
 ## Error handler
