@@ -1347,3 +1347,52 @@ func TestExtractServicesWithDeleteBody(t *testing.T) {
 		t.Log(err)
 	}
 }
+
+func TestCauseErrorWithPathParam(t *testing.T) {
+	src := `
+		name: "path/to/example.proto",
+		package: "example"
+		message_type <
+			name: "TypeMessage"
+			field <
+					name: "message"
+					type: TYPE_MESSAGE
+					type_name: 'ExampleMessage'
+					number: 1,
+					label: LABEL_OPTIONAL
+				>
+		>
+		service <
+			name: "ExampleService"
+			method <
+				name: "Echo"
+				input_type: "TypeMessage"
+				output_type: "TypeMessage"
+				options <
+					[google.api.http] <
+						get: "/v1/example/echo/{message=*}"
+					>
+				>
+			>
+		>
+	`
+	var fd descriptorpb.FileDescriptorProto
+	if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
+		t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
+	}
+	target := "path/to/example.proto"
+	reg := NewRegistry()
+	input := []*descriptorpb.FileDescriptorProto{&fd}
+	reg.loadFile(fd.GetName(), &protogen.File{
+		Proto: &fd,
+	})
+	// switch this field to see the error
+	wantErr := true
+	err := reg.loadServices(reg.files[target])
+	if got, want := err != nil, wantErr; got != want {
+		if want {
+			t.Errorf("loadServices(%q, %q) succeeded; want an error", target, input)
+		}
+		t.Errorf("loadServices(%q, %q) failed with %v; want success", target, input, err)
+	}
+}
