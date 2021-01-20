@@ -36,10 +36,10 @@ commands:
 executors:
   build-env:
     environment:
-    ## Split key to avoid github from revoking it
-      password0: '99544cdcb19ad4e3fd64'
-      password1: '3ec86b2e5a431be2d72c'
-      GLOG_logtostderr: '1'
+      ## Split key to avoid github from revoking it
+      password0: "99544cdcb19ad4e3fd64"
+      password1: "3ec86b2e5a431be2d72c"
+      GLOG_logtostderr: "1"
     docker:
       - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.15
         auth:
@@ -86,14 +86,6 @@ jobs:
       - checkout
       - run: go get golang.org/x/lint/golint
       - run: make lint
-  fuzzit:
-    docker:
-      - image: fuzzitdev/fuzzit:golang1.12-stretch-llvm9
-    working_directory: /src/grpc-gateway
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: ./fuzzit.sh
   bazel:
     executor: build-env
     working_directory: /src/grpc-gateway
@@ -167,7 +159,6 @@ workflows:
     jobs:
       - build
       - test
-      - fuzzit
       - node_test
       - generate
       - lint
@@ -195,4 +186,3 @@ workflows:
               only: /renovate\/master-.+/
             tags:
               ignore: /.*/
-
