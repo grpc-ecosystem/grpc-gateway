@@ -180,6 +180,10 @@ func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 // HandlePath allows users to configure custom path handlers.
 // refer: https://grpc-ecosystem.github.io/grpc-gateway/docs/inject_router.html
 func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) error {
+	if pathPattern == "/" {
+		index, _ := NewPattern(1, []int{2,0}, []string{""}, "")
+		s.Handle(meth, index, h)
+	}
 	compiler, err := httprule.Parse(pathPattern)
 	if err != nil {
 		return fmt.Errorf("parsing path pattern: %w", err)
