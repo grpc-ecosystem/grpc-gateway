@@ -420,6 +420,12 @@ var defaultRouteMatcherTests = []struct {
 		"v1/b/:name/do",
 		false,
 	},
+	{
+		"Test route /",
+		"GET",
+		"/",
+		true,
+	},
 }
 
 func TestServeMux_HandlePath(t *testing.T) {

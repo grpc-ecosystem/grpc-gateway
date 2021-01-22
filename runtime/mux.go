@@ -183,6 +183,7 @@ func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) er
 	if pathPattern == "/" {
 		index, _ := NewPattern(1, []int{2,0}, []string{""}, "")
 		s.Handle(meth, index, h)
+		return nil
 	}
 	compiler, err := httprule.Parse(pathPattern)
 	if err != nil {
