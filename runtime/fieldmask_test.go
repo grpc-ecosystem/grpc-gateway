@@ -186,7 +186,7 @@ func TestFieldMaskRepeatedFieldsLast(t *testing.T) {
 			expected: &field_mask.FieldMask{
 				Paths: []string{
 					"mapped_string_value",
-					"uuid"
+					"uuid",
 				},
 			},
 		},
