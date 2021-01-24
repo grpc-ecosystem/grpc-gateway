@@ -88,7 +88,7 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 			fm.Paths = append(fm.Paths, item.path)
 		}
 	}
-	
+
 	return fm, nil
 }
 
