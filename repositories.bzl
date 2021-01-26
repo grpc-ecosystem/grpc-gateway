@@ -428,8 +428,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_oauth2",
         importpath = "golang.org/x/oauth2",
-        sum = "h1:w0u30BeG/TALEc6xVf1Klaz2+etRR4K6jxhRkWCqt4g=",
-        version = "v0.0.0-20210125201302-af13f521f196",
+        sum = "h1:55H5j7lotzuFCEOKDsMch+fRNUQ9DgtyHOUP31FNqKc=",
+        version = "v0.0.0-20210126194326-f9ce19ea3013",
     )
     go_repository(
         name = "org_golang_x_sync",
