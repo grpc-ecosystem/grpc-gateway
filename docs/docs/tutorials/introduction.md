@@ -30,7 +30,7 @@ We will be using a Go gRPC server in the examples, so please install Go first fr
 After installing Go, use `go get` to download the following packages:
 
 ```sh
-$ go get github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+$ go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 $ go get google.golang.org/protobuf/cmd/protoc-gen-go
 $ go get google.golang.org/grpc/cmd/protoc-gen-go-grpc
 ```
