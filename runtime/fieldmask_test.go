@@ -182,11 +182,12 @@ func TestFieldMaskRepeatedFieldsLast(t *testing.T) {
 	}{
 		{
 			name:  "map",
-			input: `{"mapped_string_value": {"a": "x"}, "uuid":"1234"}`,
+			input: `{"mapped_string_value": {"a": "x"}, "repeated_string_value": {"b": "y"}, "uuid":"1234"}`,
 			expected: &field_mask.FieldMask{
 				Paths: []string{
-					"uuid",
 					"mapped_string_value",
+					"repeated_string_value",
+					"uuid",
 				},
 			},
 		},
@@ -204,12 +205,23 @@ func TestFieldMaskRepeatedFieldsLast(t *testing.T) {
 						"amount": 20
 					}
 				],
+				"nested_annotation": [
+					{
+						"name": "foo",
+						"amount": 100
+					},
+					{
+						"name": "widget",
+						"amount": 200
+					}
+				],
 				"uuid":"1234"
 			}`,
 			expected: &field_mask.FieldMask{
 				Paths: []string{
-					"uuid",
 					"nested",
+					"nested_annotation",
+					"uuid",
 				},
 			},
 		},
