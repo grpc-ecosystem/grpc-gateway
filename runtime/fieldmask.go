@@ -32,7 +32,6 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 	}
 
 	queue := []fieldMaskPathItem{{node: root, msg: msg.ProtoReflect()}}
-	var repeatedChild *fieldMaskPathItem
 	for len(queue) > 0 {
 		// dequeue an item
 		item := queue[0]
@@ -74,14 +73,9 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 
 				switch {
 				case fd.IsList(), fd.IsMap():
-					if repeatedChild != nil {
-						// This is implied by the rule that any repeated fields must be
-						// last in the paths.
-						// Ref: https://github.com/protocolbuffers/protobuf/blob/6b0ff74ecf63e26c7315f6745de36aff66deb59d/src/google/protobuf/field_mask.proto#L85-L86
-						return nil, fmt.Errorf("only one repeated value is allowed per field_mask")
-					}
-					repeatedChild = &child
-					// Don't add to paths until the end
+					// As per: https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/field_mask.proto#L85-L86
+					// Do not recurse into repeated fields. The repeated field goes on the end of the path and we stop.
+					fm.Paths = append(fm.Paths, child.path)
 				case fd.Message() != nil:
 					child.msg = item.msg.Get(fd).Message()
 					fallthrough
@@ -93,12 +87,6 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 			// otherwise, it's a leaf node so print its path
 			fm.Paths = append(fm.Paths, item.path)
 		}
-	}
-
-	// Add any repeated fields last, as per
-	// https://github.com/protocolbuffers/protobuf/blob/6b0ff74ecf63e26c7315f6745de36aff66deb59d/src/google/protobuf/field_mask.proto#L85-L86
-	if repeatedChild != nil {
-		fm.Paths = append(fm.Paths, repeatedChild.path)
 	}
 
 	return fm, nil
