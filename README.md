@@ -422,3 +422,9 @@ See [CONTRIBUTING.md](http://github.com/grpc-ecosystem/grpc-gateway/blob/master/
 
 gRPC-Gateway is licensed under the BSD 3-Clause License.
 See [LICENSE.txt](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt) for more details.
+
+## Related projects
+
+Non-official implementations for other languages and related projects from the community.
+
+- TypeScript / JavaScript - https://www.npmjs.com/package/rest2grpc
