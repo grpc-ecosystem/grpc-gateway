@@ -2168,6 +2168,10 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 }
 
 func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotations.FieldBehavior, field *descriptor.Field) {
+	if s.Ref != "" {
+		return
+	}
+
 	for _, fb := range j {
 		switch fb {
 		case annotations.FieldBehavior_REQUIRED:

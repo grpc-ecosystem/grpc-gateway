@@ -3,7 +3,9 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal
 package grpc.gateway.examples.internal.proto.examplepb;
 
 import "google/api/annotations.proto";
+import "google/api/client.proto";
 import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
@@ -386,6 +388,11 @@ message UpdateV2Request {
 //
 // See: https://google.aip.dev/123
 message Book {
+	option (google.api.resource) = {
+		type: "library.googleapis.com/Book"
+		pattern: "publishers/{publisher}/books/{book}"
+	};
+
 	// The resource name of the book.
 	//
 	// Format: `publishers/{publisher}/books/{book}`
@@ -422,6 +429,25 @@ message CreateBookRequest {
 	string book_id = 3;
 }
 
+// A standard Update message from AIP-134
+//
+// See: https://google.aip.dev/134#request-message
+message UpdateBookRequest {
+	// The book to update.
+	//
+	// The book's `name` field is used to identify the book to be updated.
+	// Format: publishers/{publisher}/books/{book}
+	Book book = 1 [(google.api.field_behavior) = REQUIRED];
+  
+	// The list of fields to be updated.
+	google.protobuf.FieldMask update_mask = 2;
+
+	// If set to true, and the book is not found, a new book will be created.
+	// In this situation, `update_mask` is ignored.
+	bool allow_missing = 3;
+	
+}
+
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
 service ABitOfEverythingService {
@@ -454,6 +480,13 @@ service ABitOfEverythingService {
 			post: "/v1/{parent=publishers/*}/books"
 			body: "book"
 		};
+	}
+	rpc UpdateBook(UpdateBookRequest) returns (Book) {
+		option (google.api.http) = {
+		  patch: "/v1/{book.name=publishers/*/books/*}"
+		  body: "book"
+		};
+		option (google.api.method_signature) = "book,update_mask";
 	}
 	rpc Lookup(grpc.gateway.examples.internal.proto.sub2.IdMessage) returns (ABitOfEverything) {
 		option (google.api.http) = {
