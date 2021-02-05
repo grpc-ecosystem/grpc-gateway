@@ -26,14 +26,7 @@ On the other hand, you can still add whatever you want as a middleware which wra
 As of now, No. But it should not be a big issue because the reverse-proxy which gRPC-Gateway generates usually works as an independent process and communicates with your gRPC server over TCP or a Unix domain sockets (Unix systems only).
 
 If you do insist that your gateway should be written in the same language
-as your server, there are a few projects that will help with this:
-
-* NodeJS:
-  * [grps-dynamic-gateway](https://github.com/konsumer/grpc-dynamic-gateway)
-* TypeScript / Javascript
-  * Not a direct analog, but [rest2grpc](https://www.npmjs.com/package/rest2grpc) is similar.
-* Other languages
-  * Please add any references to other language implementations here.
+as your server, there are a few projects that will help with this in [related projects](related_projects.md).
 
 ## Why are the models in the OpenAPI specification prefixed with the last part of the proto package name?
 
