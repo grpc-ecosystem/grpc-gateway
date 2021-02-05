@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"sort"
 
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
@@ -88,6 +89,10 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 			fm.Paths = append(fm.Paths, item.path)
 		}
 	}
+
+	// Sort for deterministic output in the presence
+	// of repeated fields.
+	sort.Strings(fm.Paths)
 
 	return fm, nil
 }
