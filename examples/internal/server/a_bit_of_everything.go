@@ -71,6 +71,10 @@ func (s *_ABitOfEverythingServer) CreateBook(ctx context.Context, req *examples.
 	return &examples.Book{}, nil
 }
 
+func (s *_ABitOfEverythingServer) UpdateBook(ctx context.Context, req *examples.UpdateBookRequest) (*examples.Book, error) {
+	return &examples.Book{}, nil
+}
+
 func (s *_ABitOfEverythingServer) BulkCreate(stream examples.StreamService_BulkCreateServer) error {
 	ctx := stream.Context()
 
