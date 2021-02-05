@@ -1905,6 +1905,68 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
+  /v1/{book.name=publishers/*/books/*}:
+    patch:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_UpdateBook"
+      parameters:
+      - name: "book.name"
+        in: "path"
+        description: "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\
+          \nExample: `publishers/1257894000000000000/books/my-book`"
+        required: true
+        type: "string"
+        x-exportParamName: "BookName"
+      - in: "body"
+        name: "body"
+        description: "The book to update.\n\nThe book's `name` field is used to identify\
+          \ the book to be updated.\nFormat: publishers/{publisher}/books/{book}"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbBook"
+        x-exportParamName: "Body"
+      - name: "updateMask"
+        in: "query"
+        description: "The list of fields to be updated."
+        required: false
+        type: "string"
+        x-exportParamName: "UpdateMask"
+        x-optionalDataType: "String"
+      - name: "allowMissing"
+        in: "query"
+        description: "If set to true, and the book is not found, a new book will be\
+          \ created.\nIn this situation, `update_mask` is ignored."
+        required: false
+        type: "boolean"
+        x-exportParamName: "AllowMissing"
+        x-optionalDataType: "Bool"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbBook"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
   /v1/{parent=publishers/*}/books:
     post:
       tags:

@@ -2168,6 +2168,12 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 }
 
 func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotations.FieldBehavior, field *descriptor.Field) {
+	// Per the JSON Reference syntax: Any members other than "$ref" in a JSON Reference object SHALL be ignored.
+	// https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03#section-3
+	if s.Ref != "" {
+		return
+	}
+
 	for _, fb := range j {
 		switch fb {
 		case annotations.FieldBehavior_REQUIRED:
