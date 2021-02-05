@@ -495,6 +495,12 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "optionalString",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -835,6 +841,12 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "optionalString",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -1161,6 +1173,12 @@
           {
             "name": "outputOnlyStringViaFieldBehaviorAnnotation",
             "description": "mark a field as readonly in Open API definition.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "optionalString",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1508,6 +1526,12 @@
           {
             "name": "outputOnlyStringViaFieldBehaviorAnnotation",
             "description": "mark a field as readonly in Open API definition.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "optionalString",
             "in": "query",
             "required": false,
             "type": "string"
@@ -3307,6 +3331,9 @@
           "type": "string",
           "title": "mark a field as readonly in Open API definition",
           "readOnly": true
+        },
+        "optionalString": {
+          "type": "string"
         }
       },
       "description": "Intentionaly complicated message type to cover many features of Protobuf.",
