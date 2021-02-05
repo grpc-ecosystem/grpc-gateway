@@ -3,9 +3,7 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal
 package grpc.gateway.examples.internal.proto.examplepb;
 
 import "google/api/annotations.proto";
-import "google/api/client.proto";
 import "google/api/field_behavior.proto";
-import "google/api/resource.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
@@ -388,11 +386,6 @@ message UpdateV2Request {
 //
 // See: https://google.aip.dev/123
 message Book {
-	option (google.api.resource) = {
-		type: "library.googleapis.com/Book"
-		pattern: "publishers/{publisher}/books/{book}"
-	};
-
 	// The resource name of the book.
 	//
 	// Format: `publishers/{publisher}/books/{book}`
@@ -486,7 +479,6 @@ service ABitOfEverythingService {
 		  patch: "/v1/{book.name=publishers/*/books/*}"
 		  body: "book"
 		};
-		option (google.api.method_signature) = "book,update_mask";
 	}
 	rpc Lookup(grpc.gateway.examples.internal.proto.sub2.IdMessage) returns (ABitOfEverything) {
 		option (google.api.http) = {
