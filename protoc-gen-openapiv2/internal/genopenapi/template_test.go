@@ -3497,6 +3497,22 @@ func TestSchemaOfField(t *testing.T) {
 				ReadOnly: true,
 			},
 		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("message_field"),
+					TypeName: proto.String(".example.Message"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					Options:  requiredFieldOptions,
+				},
+			},
+			refs: refMap{".example.Message": struct{}{}},
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Ref: "#/definitions/exampleMessage",
+				},
+			},
+		},
 	}
 	for _, test := range tests {
 		reg := descriptor.NewRegistry()
