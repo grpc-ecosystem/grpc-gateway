@@ -273,6 +273,9 @@
           "type": "string",
           "title": "mark a field as readonly in Open API definition",
           "readOnly": true
+        },
+        "optionalString": {
+          "type": "string"
         }
       },
       "description": "Intentionaly complicated message type to cover many features of Protobuf.",

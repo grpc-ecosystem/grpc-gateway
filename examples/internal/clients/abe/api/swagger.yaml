@@ -403,6 +403,12 @@ paths:
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
         x-optionalDataType: "String"
+      - name: "optionalString"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalString"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -714,6 +720,12 @@ paths:
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
         x-optionalDataType: "String"
+      - name: "optionalString"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalString"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -1011,6 +1023,12 @@ paths:
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalString"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalString"
         x-optionalDataType: "String"
       responses:
         200:
@@ -1329,6 +1347,12 @@ paths:
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalString"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalString"
         x-optionalDataType: "String"
       responses:
         200:
@@ -2698,6 +2722,8 @@ definitions:
         type: "string"
         title: "mark a field as readonly in Open API definition"
         readOnly: true
+      optionalString:
+        type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
