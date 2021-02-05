@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
@@ -142,6 +143,10 @@ func (r *Registry) Load(req *pluginpb.CodeGeneratorRequest) error {
 	if err != nil {
 		return err
 	}
+	// Note: keep in mind that this might be not enough because
+	// protogen.Plugin is used only to load files here.
+	// The support for features must be set on the pluginpb.CodeGeneratorResponse.
+	codegenerator.SetSupportedFeaturesOnPluginGen(gen)
 	return r.load(gen)
 }
 
