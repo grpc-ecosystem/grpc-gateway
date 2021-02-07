@@ -93,14 +93,14 @@ func TestTokenize(t *testing.T) {
 			verb: "a",
 		},
 		{
-			src: "v1/a/{endpoint}:a:b",
+			src: "v1/a/{endpoint}:b:c",
 			tokens: []string{
 				"v1", "/",
 				"a", "/",
 				"{", "endpoint", "}",
 				eof,
 			},
-			verb: "a:b",
+			verb: "b:c",
 		},
 	} {
 		tokens, verb := tokenize(spec.src)
