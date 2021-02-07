@@ -780,6 +780,9 @@ func assertStringSlice(t *testing.T, message string, got, want []string) {
 	}
 }
 
+// TestVariableVerbparsing is a higher-level test than at the parser level of
+// the special logic around ensuring verbs are correctly parsed if the last
+// segment is a variable.
 func TestVariableVerbParsing(t *testing.T) {
 	reg := NewRegistry()
 	fd := loadFile(t, reg, `
