@@ -779,3 +779,33 @@ func assertStringSlice(t *testing.T, message string, got, want []string) {
 		}
 	}
 }
+
+func TestVariableVerbParsing(t *testing.T) {
+	reg := NewRegistry()
+	fd := loadFile(t, reg, `
+		name: 'example.proto'
+		package: 'example'
+		message_type <
+			name: 'B'
+			field <
+				name: 'name'
+				label: LABEL_OPTIONAL
+				type: TYPE_STRING
+				number: 1
+			>
+		>
+		service <
+			name: "BService"
+			method <
+				name: "Meth"
+				input_type: "B"
+				output_type: "B"
+				options <
+					[google.api.http] < post: "/v1/b/{name}:foo:bar" body: "*" >
+				>
+			>
+		>
+	`)
+
+	_ = fd
+}
