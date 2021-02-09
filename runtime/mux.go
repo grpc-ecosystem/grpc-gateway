@@ -205,18 +205,6 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	components := strings.Split(path[1:], "/")
-	l := len(components)
-	var verb string
-	idx := strings.LastIndex(components[l-1], ":")
-	if idx == 0 {
-		_, outboundMarshaler := MarshalerForRequest(s, r)
-		s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusNotFound)
-		return
-	}
-	if idx > 0 {
-		c := components[l-1]
-		components[l-1], verb = c[:idx], c[idx+1:]
-	}
 
 	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && s.isPathLengthFallback(r) {
 		r.Method = strings.ToUpper(override)
@@ -227,7 +215,35 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+
+	// Verb out here is to memoize for the fallback case below
+	var verb string
+
 	for _, h := range s.handlers[r.Method] {
+		// If the pattern has a verb, explicitly look for a suffix in the last
+		// component that matches a colon plus the verb. This allows us to
+		// handle some cases that otherwise can't be correctly handled by the
+		// former LastIndex case, such as when the verb literal itself contains
+		// a colon. This should work for all cases that have run through the
+		// parser because we know what verb we're looking for, however, there
+		// are still some cases that the parser itself cannot disambiguate. See
+		// the comment there if interested.
+		patVerb := h.pat.Verb()
+		l := len(components)
+		lastComponent := components[l-1]
+		var idx int = -1
+		if patVerb != "" && strings.HasSuffix(lastComponent, ":"+patVerb) {
+			idx = len(lastComponent) - len(patVerb) - 1
+		}
+		if idx == 0 {
+			_, outboundMarshaler := MarshalerForRequest(s, r)
+			s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusNotFound)
+			return
+		}
+		if idx > 0 {
+			components[l-1], verb = lastComponent[:idx], lastComponent[idx+1:]
+		}
+
 		pathParams, err := h.pat.Match(components, verb)
 		if err != nil {
 			continue
