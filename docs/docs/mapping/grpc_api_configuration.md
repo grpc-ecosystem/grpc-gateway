@@ -11,8 +11,10 @@ In some situations annotating the proto file of service is not an option. For ex
 
 gRPC-Gateway supports 2 ways of dealing with these situations:
 
-- [use the `generate_unbound_methods` option](#generate_unbound_methods)
-- [provide an external configuration file](#using-an-external-configuration-file) (gRPC API Configuration)
+- [gRPC API Configuration](#grpc-api-configuration)
+  - [`generate_unbound_methods`](#generate_unbound_methods)
+  - [Using an external configuration file](#using-an-external-configuration-file)
+    - [Usage of gRPC API Configuration YAML files](#usage-of-grpc-api-configuration-yaml-files)
 
 ## `generate_unbound_methods`
 
@@ -99,6 +101,18 @@ It will generate a stub file with path `./gen/go/your/service/v1/your_service.pb
    ```
 
    This will generate a reverse proxy `gen/go/your/service/v1/your_service.pb.gw.go` that is identical to the one produced for the annotated proto.
+
+   In situations where you only need the reverse-proxy you can use the `standalone=true` option when generating the code. This will ensure the `types` used within `your_service.pb.gw.go` reference the external source appropriately.
+
+   ```
+   protoc -I . \
+     --grpc-gateway_out ./gen/go \
+     --grpc-gateway_opt logtostderr=true \
+     --grpc-gateway_opt paths=source_relative \
+     --grpc-gateway_opt standalone=true \
+     --grpc-gateway_opt grpc_api_configuration=path/to/your_service.yaml \
+     your/service/v1/your_service.proto
+   ```
 
 6. Generate the optional your_service.swagger.json
 
