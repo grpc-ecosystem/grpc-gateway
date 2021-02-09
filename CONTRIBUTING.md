@@ -83,5 +83,6 @@ To make a release, follow these steps:
       UI](https://github.com/grpc-ecosystem/grpc-gateway/releases/new).
    1. If you create a release using the web UI you can publish it as a draft and have it
       reviewed by another maintainer.
+   1. Update the release description with the generated changelog.
 1. (Optional) Delete your GitHub token again.
 1. (Required) Sit back and pat yourself on the back for a job well done :clap:.
