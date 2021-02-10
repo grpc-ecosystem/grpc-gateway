@@ -66,6 +66,8 @@ type Registry struct {
 	// all the elements of the FQN without any separator
 	useFQNForOpenAPIName bool
 
+	openAPINamingStrategy string
+
 	// useGoTemplate determines whether you want to use GO templates
 	// in your protofile comments
 	useGoTemplate bool
@@ -118,12 +120,13 @@ type repeatedFieldSeparator struct {
 // NewRegistry returns a new Registry.
 func NewRegistry() *Registry {
 	return &Registry{
-		msgs:              make(map[string]*Message),
-		enums:             make(map[string]*Enum),
-		files:             make(map[string]*File),
-		pkgMap:            make(map[string]string),
-		pkgAliases:        make(map[string]string),
-		externalHTTPRules: make(map[string][]*annotations.HttpRule),
+		msgs:                  make(map[string]*Message),
+		enums:                 make(map[string]*Enum),
+		files:                 make(map[string]*File),
+		pkgMap:                make(map[string]string),
+		pkgAliases:            make(map[string]string),
+		openAPINamingStrategy: "legacy",
+		externalHTTPRules:     make(map[string][]*annotations.HttpRule),
 		repeatedPathParamSeparator: repeatedFieldSeparator{
 			name: "csv",
 			sep:  ',',
@@ -474,14 +477,26 @@ func (r *Registry) GetUseJSONNamesForFields() bool {
 	return r.useJSONNamesForFields
 }
 
-// SetUseFQNForOpenAPIName sets useFQNForOpenAPIName
-func (r *Registry) SetUseFQNForOpenAPIName(use bool) {
-	r.useFQNForOpenAPIName = use
+// SetOpenAPINamingStrategy sets the naming strategy to be used.
+func (r *Registry) SetOpenAPINamingStrategy(strategy string) {
+	r.openAPINamingStrategy = strategy
 }
 
-// GetUseFQNForOpenAPIName returns useFQNForOpenAPIName
+// GetOpenAPINamingStrategy retrieves the naming strategy that is in use.
+func (r *Registry) GetOpenAPINamingStrategy() string {
+	return r.openAPINamingStrategy
+}
+
+// SetUseFQNForOpenAPIName sets useFQNForOpenAPIName
+// Deprecated: use SetOpenAPINamingStrategy instead.
+func (r *Registry) SetUseFQNForOpenAPIName(use bool) {
+	r.openAPINamingStrategy = "fqn"
+}
+
+// GetUseFQNForOpenAPIName returns useFQNForOpenAPIName.
+// Deprecated: Use GetOpenAPINamingStrategy().
 func (r *Registry) GetUseFQNForOpenAPIName() bool {
-	return r.useFQNForOpenAPIName
+	return r.openAPINamingStrategy == "fqn"
 }
 
 // GetMergeFileName return the target merge OpenAPI file name

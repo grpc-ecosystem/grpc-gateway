@@ -2854,10 +2854,10 @@ func BenchmarkTemplateToOpenAPIPath(b *testing.B) {
 
 func TestResolveFullyQualifiedNameToOpenAPIName(t *testing.T) {
 	var tests = []struct {
-		input                string
-		output               string
-		listOfFQMNs          []string
-		useFQNForOpenAPIName bool
+		input          string
+		output         string
+		listOfFQMNs    []string
+		namingStrategy string
 	}{
 		{
 			".a.b.C",
@@ -2865,7 +2865,15 @@ func TestResolveFullyQualifiedNameToOpenAPIName(t *testing.T) {
 			[]string{
 				".a.b.C",
 			},
-			false,
+			"legacy",
+		},
+		{
+			".a.b.C",
+			"C",
+			[]string{
+				".a.b.C",
+			},
+			"simple",
 		},
 		{
 			".a.b.C",
@@ -2874,7 +2882,16 @@ func TestResolveFullyQualifiedNameToOpenAPIName(t *testing.T) {
 				".a.C",
 				".a.b.C",
 			},
-			false,
+			"legacy",
+		},
+		{
+			".a.b.C",
+			"b.C",
+			[]string{
+				".a.C",
+				".a.b.C",
+			},
+			"simple",
 		},
 		{
 			".a.b.C",
@@ -2884,7 +2901,17 @@ func TestResolveFullyQualifiedNameToOpenAPIName(t *testing.T) {
 				".a.C",
 				".a.b.C",
 			},
-			false,
+			"legacy",
+		},
+		{
+			".a.b.C",
+			"b.C",
+			[]string{
+				".C",
+				".a.C",
+				".a.b.C",
+			},
+			"simple",
 		},
 		{
 			".a.b.C",
@@ -2894,16 +2921,16 @@ func TestResolveFullyQualifiedNameToOpenAPIName(t *testing.T) {
 				".a.C",
 				".a.b.C",
 			},
-			true,
+			"fqn",
 		},
 	}
 
 	for _, data := range tests {
-		names := resolveFullyQualifiedNameToOpenAPINames(data.listOfFQMNs, data.useFQNForOpenAPIName)
+		names := resolveFullyQualifiedNameToOpenAPINames(data.listOfFQMNs, data.namingStrategy)
 		output := names[data.input]
 		if output != data.output {
-			t.Errorf("Expected fullyQualifiedNameToOpenAPIName(%v) to be %s but got %s",
-				data.input, data.output, output)
+			t.Errorf("Expected fullyQualifiedNameToOpenAPIName(%v, %s) to be %s but got %s",
+				data.input, data.namingStrategy, data.output, output)
 		}
 	}
 }

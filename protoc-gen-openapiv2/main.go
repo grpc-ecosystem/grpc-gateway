@@ -27,6 +27,7 @@ var (
 	allowRepeatedFieldsInBody  = flag.Bool("allow_repeated_fields_in_body", false, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option")
 	includePackageInTags       = flag.Bool("include_package_in_tags", false, "if unset, the gRPC service name is added to the `Tags` field of each operation. If set and the `package` directive is shown in the proto file, the package name will be prepended to the service name")
 	useFQNForOpenAPIName       = flag.Bool("fqn_for_openapi_name", false, "if set, the object's OpenAPI names will use the fully qualified names from the proto definition (ie my.package.MyMessage.MyInnerMessage")
+	openAPINamingStrategy      = flag.String("openapi_naming_strategy", "", "use the given OpenAPI naming strategy. Allowed values are `legacy`, `fqn`, `simple`. If unset, either `legacy` or `fqn` are selected, depending on the value of the `fqn_for_openapi_name` flag")
 	useGoTemplate              = flag.Bool("use_go_templates", false, "if set, you can use Go templates in protofile comments")
 	disableDefaultErrors       = flag.Bool("disable_default_errors", false, "if set, disables generation of default errors. This is useful if you have defined custom error handling")
 	enumsAsInts                = flag.Bool("enums_as_ints", false, "whether to render enum values as integers, as opposed to string values")
@@ -83,7 +84,25 @@ func main() {
 	reg.SetUseJSONNamesForFields(*useJSONNamesForFields)
 	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
 	reg.SetIncludePackageInTags(*includePackageInTags)
-	reg.SetUseFQNForOpenAPIName(*useFQNForOpenAPIName)
+
+	legacyNamingStrategy := "legacy"
+	if *useFQNForOpenAPIName {
+		glog.Warning("The `fqn_for_openapi_name` flag is deprecated. Please use `-openapi_naming_strategy=fqn` instead.")
+		legacyNamingStrategy = "fqn"
+	}
+	namingStrategy := *openAPINamingStrategy
+	if namingStrategy == "" {
+		namingStrategy = legacyNamingStrategy
+	} else if namingStrategy != legacyNamingStrategy {
+		// this means that *useFQNForOpenAPIName is true, and *openAPINamingStrategy was set to
+		// a value other than "fqn".
+		glog.Fatal("The `openapi_naming_strategy` flag must be set to `fqn` or remain unset if `fqn_for_openapi_name` is set.")
+	}
+	if strategyFn := genopenapi.LookupNamingStrategy(namingStrategy); strategyFn == nil {
+		emitError(fmt.Errorf("invalid naming strategy %q", namingStrategy))
+		return
+	}
+	reg.SetOpenAPINamingStrategy(namingStrategy)
 	reg.SetUseGoTemplate(*useGoTemplate)
 	reg.SetEnumsAsInts(*enumsAsInts)
 	reg.SetDisableDefaultErrors(*disableDefaultErrors)
