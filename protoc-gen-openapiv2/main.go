@@ -85,18 +85,15 @@ func main() {
 	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
 	reg.SetIncludePackageInTags(*includePackageInTags)
 
-	legacyNamingStrategy := "legacy"
-	if *useFQNForOpenAPIName {
-		glog.Warning("The `fqn_for_openapi_name` flag is deprecated. Please use `-openapi_naming_strategy=fqn` instead.")
-		legacyNamingStrategy = "fqn"
-	}
 	namingStrategy := *openAPINamingStrategy
-	if namingStrategy == "" {
-		namingStrategy = legacyNamingStrategy
-	} else if namingStrategy != legacyNamingStrategy {
-		// this means that *useFQNForOpenAPIName is true, and *openAPINamingStrategy was set to
-		// a value other than "fqn".
-		glog.Fatal("The `openapi_naming_strategy` flag must be set to `fqn` or remain unset if `fqn_for_openapi_name` is set.")
+	if *useFQNForOpenAPIName {
+		if namingStrategy != "" {
+			glog.Fatal("The deprecated `fqn_for_openapi_name` flag must remain unset if `openapi_naming_strategy` is set.")
+		}
+		glog.Warning("The `fqn_for_openapi_name` flag is deprecated. Please use `openapi_naming_strategy=fqn` instead.")
+		namingStrategy = "fqn"
+	} else if namingStrategy == "" {
+		namingStrategy = "legacy"
 	}
 	if strategyFn := genopenapi.LookupNamingStrategy(namingStrategy); strategyFn == nil {
 		emitError(fmt.Errorf("invalid naming strategy %q", namingStrategy))
