@@ -403,11 +403,11 @@ paths:
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
         x-optionalDataType: "String"
-      - name: "optionalString"
+      - name: "optionalStringValue"
         in: "query"
         required: false
         type: "string"
-        x-exportParamName: "OptionalString"
+        x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
       responses:
         200:
@@ -720,11 +720,11 @@ paths:
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
         x-optionalDataType: "String"
-      - name: "optionalString"
+      - name: "optionalStringValue"
         in: "query"
         required: false
         type: "string"
-        x-exportParamName: "OptionalString"
+        x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
       responses:
         200:
@@ -1024,11 +1024,11 @@ paths:
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
         x-optionalDataType: "String"
-      - name: "optionalString"
+      - name: "optionalStringValue"
         in: "query"
         required: false
         type: "string"
-        x-exportParamName: "OptionalString"
+        x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
       responses:
         200:
@@ -1348,11 +1348,11 @@ paths:
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
         x-optionalDataType: "String"
-      - name: "optionalString"
+      - name: "optionalStringValue"
         in: "query"
         required: false
         type: "string"
-        x-exportParamName: "OptionalString"
+        x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
       responses:
         200:
@@ -1384,7 +1384,7 @@ paths:
         description: "Find out more about GetQuery"
         url: "https://github.com/grpc-ecosystem/grpc-gateway"
       deprecated: true
-  ? /v1/example/a_bit_of_everything/{floatValue}/{doubleValue}/{int64Value}/separator/{uint64Value}/{int32Value}/{fixed64Value}/{fixed32Value}/{boolValue}/{stringValue}/{uint32Value}/{sfixed32Value}/{sfixed64Value}/{sint32Value}/{sint64Value}/{nonConventionalNameValue}/{enumValue}/{pathEnumValue}/{nestedPathEnumValue}/{enumValueAnnotation}
+  ? /v1/example/a_bit_of_everything/{floatValue}/{doubleValue}/{int64Value}/separator/{uint64Value}/{int32Value}/{fixed64Value}/{fixed32Value}/{boolValue}/{stringValue}/{uint32Value}/{sfixed32Value}/{sfixed64Value}/{sint32Value}/{sint64Value}/{nonConventionalNameValue}/{enumValue}/{pathEnumValue}/{nestedPathEnumValue}/{enumValueAnnotation}/{optionalStringValue}
   : post:
       tags:
       - "ABitOfEverythingService"
@@ -1514,6 +1514,11 @@ paths:
         - "ZERO"
         - "ONE"
         x-exportParamName: "EnumValueAnnotation"
+      - name: "optionalStringValue"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
       responses:
         200:
           description: "A successful response."
@@ -2722,7 +2727,7 @@ definitions:
         type: "string"
         title: "mark a field as readonly in Open API definition"
         readOnly: true
-      optionalString:
+      optionalStringValue:
         type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
