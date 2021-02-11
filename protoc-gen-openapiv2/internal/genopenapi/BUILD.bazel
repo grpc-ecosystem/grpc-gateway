@@ -9,6 +9,7 @@ go_library(
         "generator.go",
         "helpers.go",
         "helpers_go111_old.go",
+        "naming.go",
         "template.go",
         "types.go",
     ],
@@ -34,7 +35,10 @@ go_library(
 go_test(
     name = "go_default_test",
     size = "small",
-    srcs = ["template_test.go"],
+    srcs = [
+        "naming_test.go",
+        "template_test.go",
+    ],
     embed = [":go_default_library"],
     deps = [
         "//internal/descriptor:go_default_library",

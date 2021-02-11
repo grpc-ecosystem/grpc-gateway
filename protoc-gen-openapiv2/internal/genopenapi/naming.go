@@ -55,13 +55,12 @@ func resolveNamesSimple(messages []string) map[string]string {
 	return resolveNamesUniqueWithContext(messages, 0, ".")
 }
 
-// Take the names of every proto and "uniq-ify" them. The idea is to produce a
-// set of names that meet a couple of conditions. They must be stable, they
-// must be unique, and they must be shorter than the FQN.
-//
-// This likely could be made better. This will always generate the same names
-// but may not always produce optimal names. This is a reasonably close
-// approximation of what they should look like in most cases.
+// Take the names of every proto and "uniq-ify" them as follows:
+// first, separate each message name into its components by splitting at dots. Then,
+// take the shortest suffix slice from each components slice that is unique among all
+// messages, and convert it into a component name by taking extraContext additional
+// components into consideration and joining all components with componentSeparator
+// in between.
 func resolveNamesUniqueWithContext(messages []string, extraContext int, componentSeparator string) map[string]string {
 	packagesByDepth := make(map[int][][]string)
 	uniqueNames := make(map[string]string)

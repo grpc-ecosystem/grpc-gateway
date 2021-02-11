@@ -60,12 +60,14 @@ type Registry struct {
 	// with gRPC-Gateway response, if it uses json tags for marshaling.
 	useJSONNamesForFields bool
 
-	// useFQNForOpenAPIName if true OpenAPI names will use the full qualified name (FQN) from proto definition,
-	// and generate a dot-separated OpenAPI name concatenating all elements from the proto FQN.
-	// If false, the default behavior is to concat the last 2 elements of the FQN if they are unique, otherwise concat
-	// all the elements of the FQN without any separator
-	useFQNForOpenAPIName bool
-
+	// openAPINamingStrategy is the naming strategy to use for assigning OpenAPI name. This can be one of the following:
+	// - `legacy`: use the legacy naming strategy from protoc-gen-swagger, that generates unique but not necessarily
+	//             maximally concise names. Components are concatenated directly, e.g., `MyOuterMessageMyNestedMessage`.
+	// - `simple`: use a simple heuristic for generating unique and concise names. Components are concatenated using
+	//             dots as a separator, e.g., `MyOuterMesage.MyNestedMessage` (if `MyNestedMessage` alone is unique,
+	//             `MyNestedMessage` will be used as the OpenAPI name).
+	// - `fqn`:    always use the fully-qualified name of the proto message (leading dot removed) as the OpenAPI
+	//             name.
 	openAPINamingStrategy string
 
 	// useGoTemplate determines whether you want to use GO templates
@@ -125,8 +127,8 @@ func NewRegistry() *Registry {
 		files:                 make(map[string]*File),
 		pkgMap:                make(map[string]string),
 		pkgAliases:            make(map[string]string),
-		openAPINamingStrategy: "legacy",
 		externalHTTPRules:     make(map[string][]*annotations.HttpRule),
+		openAPINamingStrategy: "legacy",
 		repeatedPathParamSeparator: repeatedFieldSeparator{
 			name: "csv",
 			sep:  ',',

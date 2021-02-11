@@ -648,13 +648,7 @@ func lookupMsgAndOpenAPIName(location, name string, reg *descriptor.Registry) (*
 var registriesSeen = map[*descriptor.Registry]map[string]string{}
 var registriesSeenMutex sync.Mutex
 
-// Take the names of every proto and "uniq-ify" them. The idea is to produce a
-// set of names that meet a couple of conditions. They must be stable, they
-// must be unique, and they must be shorter than the FQN.
-//
-// This likely could be made better. This will always generate the same names
-// but may not always produce optimal names. This is a reasonably close
-// approximation of what they should look like in most cases.
+// Take the names of every proto and "uniq-ify" them, according to the given strategy.
 func resolveFullyQualifiedNameToOpenAPINames(messages []string, namingStrategy string) map[string]string {
 	strategyFn := LookupNamingStrategy(namingStrategy)
 	if strategyFn == nil {
