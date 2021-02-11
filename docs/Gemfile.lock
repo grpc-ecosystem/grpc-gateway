@@ -73,7 +73,7 @@ GEM
       liquid (= 4.0.3)
       mercenary (~> 0.3)
       minima (= 2.5.1)
-      nokogiri (>= 1.10.4, < 2.0)
+      nokogiri (>= 1.11.0, < 2.0)
       rouge (= 3.23.0)
       terminal-table (~> 1.4)
     github-pages-health-check (1.16.1)
