@@ -44,6 +44,7 @@ func BenchmarkPopulateQueryParameters(b *testing.B) {
 		"timestamp_value":        {timeStr},
 		"duration_value":         {durationStr},
 		"fieldmask_value":        {fieldmaskStr},
+		"optional_string_value":  {"optional-str"},
 		"wrapper_float_value":    {"1.5"},
 		"wrapper_double_value":   {"2.5"},
 		"wrapper_int64_value":    {"-1"},

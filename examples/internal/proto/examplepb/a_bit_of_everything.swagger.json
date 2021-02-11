@@ -497,7 +497,7 @@
             "type": "string"
           },
           {
-            "name": "optionalString",
+            "name": "optionalStringValue",
             "in": "query",
             "required": false,
             "type": "string"
@@ -843,7 +843,7 @@
             "type": "string"
           },
           {
-            "name": "optionalString",
+            "name": "optionalStringValue",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1178,7 +1178,7 @@
             "type": "string"
           },
           {
-            "name": "optionalString",
+            "name": "optionalStringValue",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1531,7 +1531,7 @@
             "type": "string"
           },
           {
-            "name": "optionalString",
+            "name": "optionalStringValue",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1548,7 +1548,7 @@
         }
       }
     },
-    "/v1/example/a_bit_of_everything/{floatValue}/{doubleValue}/{int64Value}/separator/{uint64Value}/{int32Value}/{fixed64Value}/{fixed32Value}/{boolValue}/{stringValue}/{uint32Value}/{sfixed32Value}/{sfixed64Value}/{sint32Value}/{sint64Value}/{nonConventionalNameValue}/{enumValue}/{pathEnumValue}/{nestedPathEnumValue}/{enumValueAnnotation}": {
+    "/v1/example/a_bit_of_everything/{floatValue}/{doubleValue}/{int64Value}/separator/{uint64Value}/{int32Value}/{fixed64Value}/{fixed32Value}/{boolValue}/{stringValue}/{uint32Value}/{sfixed32Value}/{sfixed64Value}/{sint32Value}/{sint64Value}/{nonConventionalNameValue}/{enumValue}/{pathEnumValue}/{nestedPathEnumValue}/{enumValueAnnotation}/{optionalStringValue}": {
       "post": {
         "summary": "Create a new ABitOfEverything",
         "description": "This API creates a new ABitOfEverything",
@@ -1735,6 +1735,12 @@
               "ZERO",
               "ONE"
             ]
+          },
+          {
+            "name": "optionalStringValue",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "tags": [
@@ -3332,7 +3338,7 @@
           "title": "mark a field as readonly in Open API definition",
           "readOnly": true
         },
-        "optionalString": {
+        "optionalStringValue": {
           "type": "string"
         }
       },
