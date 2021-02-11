@@ -401,7 +401,7 @@
           "title": "mark a field as readonly in Open API definition",
           "readOnly": true
         },
-        "optionalString": {
+        "optionalStringValue": {
           "type": "string"
         }
       },
