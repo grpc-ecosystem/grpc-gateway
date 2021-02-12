@@ -366,10 +366,10 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 	var preparations []string
 	components := msgExpr
 	for i, c := range p {
-		if c.Target.GetProto3Optional() {
-			// Continue as a proto3 optional field does not need a special treatment.
-			// This condition is required as otherwise it is matched by `c.Target.OneofIndex != nil`.
-		} else if c.Target.OneofIndex != nil { // check if it is a oneOf field
+		// We need to check if the target is not proto3_optional first.
+		// Under the hood, proto3_optional uses oneof to signal to old proto3 clients
+		// that presence is tracked for this field. This oneof is known as a "synthetic" oneof.
+		if !c.Target.GetProto3Optional() && c.Target.OneofIndex != nil {
 			index := c.Target.OneofIndex
 			msg := c.Target.Message
 			oneOfName := casing.Camel(msg.GetOneofDecl()[*index].GetName())

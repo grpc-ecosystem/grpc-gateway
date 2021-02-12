@@ -433,14 +433,14 @@ message UpdateBookRequest {
 	// The book's `name` field is used to identify the book to be updated.
 	// Format: publishers/{publisher}/books/{book}
 	Book book = 1 [(google.api.field_behavior) = REQUIRED];
-  
+
 	// The list of fields to be updated.
 	google.protobuf.FieldMask update_mask = 2;
 
 	// If set to true, and the book is not found, a new book will be created.
 	// In this situation, `update_mask` is ignored.
 	bool allow_missing = 3;
-	
+
 }
 
 // ABitOfEverything service is used to validate that APIs with complicated
@@ -460,7 +460,7 @@ service ABitOfEverythingService {
 	// This API creates a new ABitOfEverything
 	rpc Create(ABitOfEverything) returns (ABitOfEverything) {
 		option (google.api.http) = {
-			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}/{enum_value_annotation}/{optional_string_value}"
+			post: "/v1/example/a_bit_of_everything/{float_value}/{double_value}/{int64_value}/separator/{uint64_value}/{int32_value}/{fixed64_value}/{fixed32_value}/{bool_value}/{string_value=strprefix/*}/{uint32_value}/{sfixed32_value}/{sfixed64_value}/{sint32_value}/{sint64_value}/{nonConventionalNameValue}/{enum_value}/{path_enum_value}/{nested_path_enum_value}/{enum_value_annotation}"
 		};
 	}
 	rpc CreateBody(ABitOfEverything) returns (ABitOfEverything) {

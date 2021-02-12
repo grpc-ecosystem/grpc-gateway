@@ -2,6 +2,7 @@ package descriptor
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
@@ -1394,5 +1395,53 @@ func TestCauseErrorWithPathParam(t *testing.T) {
 			t.Errorf("loadServices(%q, %q) succeeded; want an error", target, input)
 		}
 		t.Errorf("loadServices(%q, %q) failed with %v; want success", target, input, err)
+	}
+}
+
+func TestOptionalProto3URLPathMappingError(t *testing.T) {
+	src := `
+		name: "path/to/example.proto"
+		package: "example"
+		message_type <
+			name: "StringMessage"
+			field <
+				name: "field1"
+				number: 1
+				type: TYPE_STRING
+				proto3_optional: true
+			>
+		>
+		service <
+			name: "ExampleService"
+			method <
+				name: "Echo"
+				input_type: "StringMessage"
+				output_type: "StringMessage"
+				options <
+					[google.api.http] <
+						get: "/v1/example/echo/{field1=*}"
+					>
+				>
+			>
+		>
+	`
+	var fd descriptorpb.FileDescriptorProto
+	if err := prototext.Unmarshal([]byte(src), &fd); err != nil {
+		t.Fatalf("proto.UnmarshalText(%s, &fd) failed with %v; want success", src, err)
+	}
+	target := "path/to/example.proto"
+	reg := NewRegistry()
+	input := []*descriptorpb.FileDescriptorProto{&fd}
+	reg.loadFile(fd.GetName(), &protogen.File{
+		Proto: &fd,
+	})
+	wantErrMsg := "field not allowed in field path: field1 in field1"
+	err := reg.loadServices(reg.files[target])
+	if err != nil {
+		if !strings.Contains(err.Error(), wantErrMsg) {
+			t.Errorf("loadServices(%q, %q) failed with %v; want %s", target, input, err, wantErrMsg)
+		}
+	} else {
+		t.Errorf("loadServices(%q, %q) expcted an error %s, got nil", target, input, wantErrMsg)
 	}
 }
