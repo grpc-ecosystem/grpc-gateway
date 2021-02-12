@@ -109,7 +109,6 @@ func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
 		want.PathEnumValue.String(),
 		want.NestedPathEnumValue.String(),
 		want.EnumValueAnnotation.String(),
-		want.OptionalStringValue,
 	)
 	if err != nil {
 		t.Fatalf("cl.Create(%#v) failed with %v; want success", want, err)
