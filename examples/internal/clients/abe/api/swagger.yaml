@@ -1384,7 +1384,7 @@ paths:
         description: "Find out more about GetQuery"
         url: "https://github.com/grpc-ecosystem/grpc-gateway"
       deprecated: true
-  ? /v1/example/a_bit_of_everything/{floatValue}/{doubleValue}/{int64Value}/separator/{uint64Value}/{int32Value}/{fixed64Value}/{fixed32Value}/{boolValue}/{stringValue}/{uint32Value}/{sfixed32Value}/{sfixed64Value}/{sint32Value}/{sint64Value}/{nonConventionalNameValue}/{enumValue}/{pathEnumValue}/{nestedPathEnumValue}/{enumValueAnnotation}/{optionalStringValue}
+  ? /v1/example/a_bit_of_everything/{floatValue}/{doubleValue}/{int64Value}/separator/{uint64Value}/{int32Value}/{fixed64Value}/{fixed32Value}/{boolValue}/{stringValue}/{uint32Value}/{sfixed32Value}/{sfixed64Value}/{sint32Value}/{sint64Value}/{nonConventionalNameValue}/{enumValue}/{pathEnumValue}/{nestedPathEnumValue}/{enumValueAnnotation}
   : post:
       tags:
       - "ABitOfEverythingService"
@@ -1514,11 +1514,6 @@ paths:
         - "ZERO"
         - "ONE"
         x-exportParamName: "EnumValueAnnotation"
-      - name: "optionalStringValue"
-        in: "path"
-        required: true
-        type: "string"
-        x-exportParamName: "OptionalStringValue"
       responses:
         200:
           description: "A successful response."
