@@ -18,6 +18,7 @@ The following is an example of a valid configuration, assuming you have your `.p
 
 ```yaml
 version: v1beta1
+name: buf.build/myuser/myrepo
 build:
   roots:
     - proto
