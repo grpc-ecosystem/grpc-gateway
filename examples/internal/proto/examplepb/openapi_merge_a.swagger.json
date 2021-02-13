@@ -1,12 +1,16 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/internal/proto/examplepb/wrappers.proto",
+    "title": "Merging Services",
+    "description": "This is an example of merging two proto files.",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "WrappersService"
+      "name": "ServiceA"
+    },
+    {
+      "name": "ServiceC"
     }
   ],
   "consumes": [
@@ -16,14 +20,16 @@
     "application/json"
   ],
   "paths": {
-    "/v1/example/wrappers": {
+    "/v1/example/a/1": {
       "post": {
-        "operationId": "WrappersService_Create",
+        "summary": "ServiceA.MethodOne receives InMessageA and returns OutMessageA",
+        "description": "Here is the detail explanation about ServiceA.MethodOne.",
+        "operationId": "ServiceA_MethodOne",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/examplepbWrappers"
+              "$ref": "#/definitions/examplepbOutMessageA"
             }
           },
           "default": {
@@ -39,23 +45,25 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/examplepbWrappers"
+              "$ref": "#/definitions/examplepbInMessageA"
             }
           }
         ],
         "tags": [
-          "WrappersService"
+          "ServiceA"
         ]
       }
     },
-    "/v1/testBool": {
+    "/v1/example/a/2": {
       "post": {
-        "operationId": "WrappersService_CreateBoolValue",
+        "summary": "ServiceA.MethodTwo receives OutMessageA and returns InMessageA",
+        "description": "Here is the detail explanation about ServiceA.MethodTwo.",
+        "operationId": "ServiceA_MethodTwo",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "boolean"
+              "$ref": "#/definitions/examplepbInMessageA"
             }
           },
           "default": {
@@ -71,24 +79,25 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "boolean"
+              "$ref": "#/definitions/examplepbOutMessageA"
             }
           }
         ],
         "tags": [
-          "WrappersService"
+          "ServiceA"
         ]
       }
     },
-    "/v1/testBytes": {
+    "/v1/example/c/1": {
       "post": {
-        "operationId": "WrappersService_CreateBytesValue",
+        "summary": "ServiceC.MethodOne receives InMessageA and returns OutMessageC",
+        "description": "Here is the detail explanation about ServiceC.MethodOne.",
+        "operationId": "ServiceC_MethodOne",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "string",
-              "format": "byte"
+              "$ref": "#/definitions/examplepbOutMessageC"
             }
           },
           "default": {
@@ -104,25 +113,25 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "byte"
+              "$ref": "#/definitions/examplepbInMessageA"
             }
           }
         ],
         "tags": [
-          "WrappersService"
+          "ServiceC"
         ]
       }
     },
-    "/v1/testDouble": {
+    "/v1/example/c/2": {
       "post": {
-        "operationId": "WrappersService_CreateDoubleValue",
+        "summary": "ServiceC.MethodTwo receives OutMessageA and returns InMessageA",
+        "description": "Here is the detail explanation about ServiceC.MethodTwo.",
+        "operationId": "ServiceC_MethodTwo",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "number",
-              "format": "double"
+              "$ref": "#/definitions/examplepbInMessageA"
             }
           },
           "default": {
@@ -138,290 +147,49 @@
             "in": "body",
             "required": true,
             "schema": {
-              "type": "number",
-              "format": "double"
+              "$ref": "#/definitions/examplepbOutMessageA"
             }
           }
         ],
         "tags": [
-          "WrappersService"
-        ]
-      }
-    },
-    "/v1/testEmpty": {
-      "post": {
-        "operationId": "WrappersService_CreateEmpty",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "properties": {}
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "properties": {}
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
-      }
-    },
-    "/v1/testFloat": {
-      "post": {
-        "operationId": "WrappersService_CreateFloatValue",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "number",
-              "format": "float"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "number",
-              "format": "float"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
-      }
-    },
-    "/v1/testInt32": {
-      "post": {
-        "operationId": "WrappersService_CreateInt32Value",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
-      }
-    },
-    "/v1/testInt64": {
-      "post": {
-        "operationId": "WrappersService_CreateInt64Value",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "string",
-              "format": "int64"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "int64"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
-      }
-    },
-    "/v1/testString": {
-      "post": {
-        "operationId": "WrappersService_CreateStringValue",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
-      }
-    },
-    "/v1/testUint32": {
-      "post": {
-        "operationId": "WrappersService_CreateUInt32Value",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
-        ]
-      }
-    },
-    "/v1/testUint64": {
-      "post": {
-        "operationId": "WrappersService_CreateUInt64Value",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "string",
-              "format": "uint64"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uint64"
-            }
-          }
-        ],
-        "tags": [
-          "WrappersService"
+          "ServiceC"
         ]
       }
     }
   },
   "definitions": {
-    "examplepbWrappers": {
+    "examplepbInMessageA": {
       "type": "object",
       "properties": {
-        "stringValue": {
-          "type": "string"
-        },
-        "int32Value": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "int64Value": {
-          "type": "string",
-          "format": "int64"
-        },
-        "floatValue": {
-          "type": "number",
-          "format": "float"
-        },
-        "doubleValue": {
-          "type": "number",
-          "format": "double"
-        },
-        "boolValue": {
-          "type": "boolean"
-        },
-        "uint32Value": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "uint64Value": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "bytesValue": {
-          "type": "string",
-          "format": "byte"
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Here is the explanation about InMessageA.values"
         }
-      }
+      },
+      "description": "InMessageA represents a message to ServiceA and ServiceC."
+    },
+    "examplepbOutMessageA": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "Here is the explanation about OutMessageA.value"
+        }
+      },
+      "description": "OutMessageA represents a message returned from ServiceA."
+    },
+    "examplepbOutMessageC": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "title": "Here is the explanation about OutMessageC.value"
+        }
+      },
+      "description": "OutMessageC represents a message returned from ServiceC."
     },
     "protobufAny": {
       "type": "object",

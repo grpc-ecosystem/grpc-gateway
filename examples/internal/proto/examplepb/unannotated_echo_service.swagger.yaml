@@ -12,33 +12,28 @@ openapiOptions:
           license:
             name: BSD 3-Clause License
             url: https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt
-          version: '1.0'
+          version: "1.0"
           extensions:
             x-something-something: yadda
         schemes:
-        - HTTP
-        - HTTPS
-        - WSS
+          - HTTP
+          - HTTPS
+          - WSS
         consumes:
-        - application/json
-        - application/x-foo-mime
+          - application/json
+          - application/x-foo-mime
         produces:
-        - application/json
-        - application/x-foo-mime
+          - application/json
+          - application/x-foo-mime
         responses:
-          '403':
+          "403":
             description: Returned when the user does not have permission to access the resource.
-          '404':
+          "404":
             description: Returned when the resource does not exist.
             schema:
               jsonSchema:
                 type:
-                - STRING
-          '418':
-            description: I'm a teapot.
-            schema:
-              jsonSchema:
-                ref: ".grpc.gateway.examples.internal.proto.examplepb.NumericEnum"
+                  - STRING
         securityDefinitions:
           security:
             ApiKeyAuth:
@@ -53,22 +48,22 @@ openapiOptions:
             BasicAuth:
               type: TYPE_BASIC
         security:
-        - securityRequirement:
-            ApiKeyAuth: {}
-            BasicAuth: {}
-        - securityRequirement:
-            ApiKeyAuth: {}
-            OAuth2:
-              scope:
-              - read
-              - write
+          - securityRequirement:
+              ApiKeyAuth: {}
+              BasicAuth: {}
+          - securityRequirement:
+              ApiKeyAuth: {}
+              OAuth2:
+                scope:
+                  - read
+                  - write
         externalDocs:
           description: More about gRPC-Gateway
           url: https://github.com/grpc-ecosystem/grpc-gateway
         extensions:
           x-grpc-gateway-baz-list:
-          - one
-          - true
+            - one
+            - true
           x-grpc-gateway-foo: bar
   service:
     - service: grpc.gateway.examples.internal.proto.examplepb.UnannotatedEchoService
@@ -86,14 +81,14 @@ openapiOptions:
           url: "https://github.com/grpc-ecosystem/grpc-gateway"
           description: "Find out more Echo"
         responses:
-          '200':
+          "200":
             examples:
               "application/json": '{"value": "the input value"}'
-          '503':
+          "503":
             description: Returned when the resource is temporarily unavailable.
             extensions:
               x-number: 100
-          '404':
+          "404":
             description: Returned when the resource does not exist.
             schema:
               jsonSchema:
@@ -108,10 +103,10 @@ openapiOptions:
         external_docs:
           url: "https://github.com/grpc-ecosystem/grpc-gateway"
           description: "Find out more about UnannotatedSimpleMessage"
-        example: "{\"id\": \"myid\"}"
+        example: '{"id": "myid"}'
   field:
     - field: grpc.gateway.examples.internal.proto.examplepb.UnannotatedSimpleMessage.num
       option:
         description: "Int value field"
         default: "42"
-        required: ['num']
+        required: ["num"]

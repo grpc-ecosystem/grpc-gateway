@@ -1,12 +1,13 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/internal/proto/examplepb/response_body_service.proto",
+    "title": "Merging Services",
+    "description": "This is an example of merging two proto files.",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "ResponseBodyService"
+      "name": "ServiceB"
     }
   ],
   "consumes": [
@@ -16,17 +17,16 @@
     "application/json"
   ],
   "paths": {
-    "/responsebodies/{data}": {
-      "get": {
-        "operationId": "ResponseBodyService_ListResponseBodies",
+    "/v1/example/b/1": {
+      "post": {
+        "summary": "ServiceB.MethodOne receives InMessageB and returns OutMessageB",
+        "description": "Here is the detail explanation about ServiceB.MethodOne.",
+        "operationId": "ServiceB_MethodOne",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/examplepbRepeatedResponseBodyOutResponse"
-              }
+              "$ref": "#/definitions/examplepbOutMessageB"
             }
           },
           "default": {
@@ -38,34 +38,29 @@
         },
         "parameters": [
           {
-            "name": "data",
-            "in": "path",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "string"
+            "schema": {
+              "$ref": "#/definitions/examplepbInMessageB"
+            }
           }
         ],
         "tags": [
-          "ResponseBodyService"
+          "ServiceB"
         ]
       }
     },
-    "/responsebody/stream/{data}": {
-      "get": {
-        "operationId": "ResponseBodyService_GetResponseBodyStream",
+    "/v1/example/b/2": {
+      "post": {
+        "summary": "ServiceB.MethodTwo receives OutMessageB and returns InMessageB",
+        "description": "Here is the detail explanation about ServiceB.MethodTwo.",
+        "operationId": "ServiceB_MethodTwo",
         "responses": {
           "200": {
-            "description": "(streaming responses)",
+            "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbResponseBodyOutResponse"
-                },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbResponseBodyOut"
+              "$ref": "#/definitions/examplepbInMessageB"
             }
           },
           "default": {
@@ -77,140 +72,43 @@
         },
         "parameters": [
           {
-            "name": "data",
-            "in": "path",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "string"
+            "schema": {
+              "$ref": "#/definitions/examplepbOutMessageB"
+            }
           }
         ],
         "tags": [
-          "ResponseBodyService"
-        ]
-      }
-    },
-    "/responsebody/{data}": {
-      "get": {
-        "operationId": "ResponseBodyService_GetResponseBody",
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/examplepbResponseBodyOutResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "data",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ResponseBodyService"
-        ]
-      }
-    },
-    "/responsestrings/{data}": {
-      "get": {
-        "operationId": "ResponseBodyService_ListResponseStrings",
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "data",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ResponseBodyService"
+          "ServiceB"
         ]
       }
     }
   },
   "definitions": {
-    "ResponseResponseType": {
-      "type": "string",
-      "enum": [
-        "UNKNOWN",
-        "A",
-        "B"
-      ],
-      "default": "UNKNOWN",
-      "title": "- UNKNOWN: UNKNOWN\n - A: A is 1\n - B: B is 2"
-    },
-    "examplepbRepeatedResponseBodyOut": {
+    "examplepbInMessageB": {
       "type": "object",
       "properties": {
-        "response": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/examplepbRepeatedResponseBodyOutResponse"
-          }
+        "value": {
+          "type": "string",
+          "title": "Here is the explanation about InMessageB.values"
         }
-      }
+      },
+      "description": "InMessageB represents a message to ServiceB."
     },
-    "examplepbRepeatedResponseBodyOutResponse": {
-      "type": "object",
-      "properties": {
-        "data": {
-          "type": "string"
-        },
-        "type": {
-          "$ref": "#/definitions/ResponseResponseType"
-        }
-      }
-    },
-    "examplepbRepeatedResponseStrings": {
+    "examplepbOutMessageB": {
       "type": "object",
       "properties": {
         "values": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "title": "Here is the explanation about OutMessageB.value"
         }
-      }
-    },
-    "examplepbResponseBodyOut": {
-      "type": "object",
-      "properties": {
-        "response": {
-          "$ref": "#/definitions/examplepbResponseBodyOutResponse"
-        }
-      }
-    },
-    "examplepbResponseBodyOutResponse": {
-      "type": "object",
-      "properties": {
-        "data": {
-          "type": "string"
-        }
-      }
+      },
+      "description": "OutMessageB represents a message returned from ServiceB."
     },
     "protobufAny": {
       "type": "object",

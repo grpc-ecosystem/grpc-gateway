@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/internal/proto/examplepb/stream.proto",
+    "title": "examples/internal/proto/examplepb/generated_input.proto",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "StreamService"
+      "name": "GeneratedService"
     }
   ],
   "consumes": [
@@ -16,40 +16,9 @@
     "application/json"
   ],
   "paths": {
-    "/v1/example/a_bit_of_everything": {
-      "get": {
-        "operationId": "StreamService_List",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbABitOfEverything"
-                },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbABitOfEverything"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "tags": [
-          "StreamService"
-        ]
-      }
-    },
-    "/v1/example/a_bit_of_everything/bulk": {
+    "/v1/example/a_bit_of_everything/generated_create": {
       "post": {
-        "operationId": "StreamService_BulkCreate",
+        "operationId": "GeneratedService_Create",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -67,7 +36,6 @@
         "parameters": [
           {
             "name": "body",
-            "description": " (streaming inputs)",
             "in": "body",
             "required": true,
             "schema": {
@@ -76,80 +44,7 @@
           }
         ],
         "tags": [
-          "StreamService"
-        ]
-      }
-    },
-    "/v1/example/a_bit_of_everything/echo": {
-      "post": {
-        "operationId": "StreamService_BulkEcho",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/subStringMessage"
-                },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of subStringMessage"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "description": " (streaming inputs)",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/subStringMessage"
-            }
-          }
-        ],
-        "tags": [
-          "StreamService"
-        ]
-      }
-    },
-    "/v1/example/download": {
-      "get": {
-        "operationId": "StreamService_Download",
-        "responses": {
-          "200": {
-            "description": "A successful response.(streaming responses)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/apiHttpBody"
-                },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of apiHttpBody"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "tags": [
-          "StreamService"
+          "GeneratedService"
         ]
       }
     }
@@ -192,28 +87,6 @@
       ],
       "default": "FALSE",
       "description": "DeepEnum is one or zero.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true."
-    },
-    "apiHttpBody": {
-      "type": "object",
-      "properties": {
-        "contentType": {
-          "type": "string",
-          "description": "The HTTP Content-Type header value specifying the content type of the body."
-        },
-        "data": {
-          "type": "string",
-          "format": "byte",
-          "description": "The HTTP request/response body as raw binary."
-        },
-        "extensions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufAny"
-          },
-          "description": "Application specific response metadata. Must be set in the first response\nfor streaming APIs."
-        }
-      },
-      "description": "Message that represents an arbitrary HTTP body. It should only be used for\npayload formats that can't be represented as JSON, such as raw binary or\nan HTML page.\n\n\nThis message can be used both in streaming and non-streaming API methods in\nthe request as well as the response.\n\nIt can be used as a top-level request field, which is convenient if one\nwants to extract parameters from either the URL or HTTP template into the\nrequest fields and also want access to the raw HTTP body.\n\nExample:\n\n    message GetResourceRequest {\n      // A unique request id.\n      string request_id = 1;\n\n      // The raw HTTP body is bound to this field.\n      google.api.HttpBody http_body = 2;\n    }\n\n    service ResourceService {\n      rpc GetResource(GetResourceRequest) returns (google.api.HttpBody);\n      rpc UpdateResource(google.api.HttpBody) returns\n      (google.protobuf.Empty);\n    }\n\nExample with streaming methods:\n\n    service CaldavService {\n      rpc GetCalendar(stream google.api.HttpBody)\n        returns (stream google.api.HttpBody);\n      rpc UpdateCalendar(stream google.api.HttpBody)\n        returns (stream google.api.HttpBody);\n    }\n\nUse of this type only changes how the request and response bodies are\nhandled, all other features will continue to work unchanged."
     },
     "examplepbABitOfEverything": {
       "type": "object",
@@ -469,14 +342,6 @@
         }
       },
       "description": "The `Status` type defines a logical error model that is suitable for\ndifferent programming environments, including REST APIs and RPC APIs. It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\nthree pieces of data: error code, error message, and error details.\n\nYou can find out more about this error model and how to work with it in the\n[API Design Guide](https://cloud.google.com/apis/design/errors)."
-    },
-    "subStringMessage": {
-      "type": "object",
-      "properties": {
-        "value": {
-          "type": "string"
-        }
-      }
     }
   }
 }

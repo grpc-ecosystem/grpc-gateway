@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/internal/proto/examplepb/response_body_service.proto",
+    "title": "examples/internal/proto/examplepb/non_standard_names.proto",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "ResponseBodyService"
+      "name": "NonStandardService"
     }
   ],
   "consumes": [
@@ -16,17 +16,15 @@
     "application/json"
   ],
   "paths": {
-    "/responsebodies/{data}": {
-      "get": {
-        "operationId": "ResponseBodyService_ListResponseBodies",
+    "/v1/example/non_standard/update": {
+      "patch": {
+        "summary": "Apply field mask to empty NonStandardMessage and return result.",
+        "operationId": "NonStandardService_Update",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/examplepbRepeatedResponseBodyOutResponse"
-              }
+              "$ref": "#/definitions/examplepbNonStandardMessage"
             }
           },
           "default": {
@@ -38,34 +36,34 @@
         },
         "parameters": [
           {
-            "name": "data",
-            "in": "path",
+            "name": "body",
+            "in": "body",
             "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessage"
+            }
+          },
+          {
+            "name": "updateMask",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
         "tags": [
-          "ResponseBodyService"
+          "NonStandardService"
         ]
       }
     },
-    "/responsebody/stream/{data}": {
-      "get": {
-        "operationId": "ResponseBodyService_GetResponseBodyStream",
+    "/v1/example/non_standard/update_with_json_names": {
+      "patch": {
+        "summary": "Apply field mask to empty NonStandardMessageWithJSONNames and return result.",
+        "operationId": "NonStandardService_UpdateWithJSONNames",
         "responses": {
           "200": {
-            "description": "(streaming responses)",
+            "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {
-                "result": {
-                  "$ref": "#/definitions/examplepbResponseBodyOutResponse"
-                },
-                "error": {
-                  "$ref": "#/definitions/rpcStatus"
-                }
-              },
-              "title": "Stream result of examplepbResponseBodyOut"
+              "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNames"
             }
           },
           "default": {
@@ -77,137 +75,123 @@
         },
         "parameters": [
           {
-            "name": "data",
-            "in": "path",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ResponseBodyService"
-        ]
-      }
-    },
-    "/responsebody/{data}": {
-      "get": {
-        "operationId": "ResponseBodyService_GetResponseBody",
-        "responses": {
-          "200": {
-            "description": "",
             "schema": {
-              "$ref": "#/definitions/examplepbResponseBodyOutResponse"
+              "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNames"
             }
           },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
           {
-            "name": "data",
-            "in": "path",
-            "required": true,
+            "name": "updateMask",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
         "tags": [
-          "ResponseBodyService"
-        ]
-      }
-    },
-    "/responsestrings/{data}": {
-      "get": {
-        "operationId": "ResponseBodyService_ListResponseStrings",
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "data",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ResponseBodyService"
+          "NonStandardService"
         ]
       }
     }
   },
   "definitions": {
-    "ResponseResponseType": {
-      "type": "string",
-      "enum": [
-        "UNKNOWN",
-        "A",
-        "B"
-      ],
-      "default": "UNKNOWN",
-      "title": "- UNKNOWN: UNKNOWN\n - A: A is 1\n - B: B is 2"
-    },
-    "examplepbRepeatedResponseBodyOut": {
+    "examplepbNonStandardMessage": {
       "type": "object",
       "properties": {
-        "response": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/examplepbRepeatedResponseBodyOutResponse"
-          }
-        }
-      }
-    },
-    "examplepbRepeatedResponseBodyOutResponse": {
-      "type": "object",
-      "properties": {
-        "data": {
+        "id": {
+          "type": "string",
+          "description": "Id represents the message identifier."
+        },
+        "Num": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lineNum": {
+          "type": "string",
+          "format": "int64"
+        },
+        "langIdent": {
           "type": "string"
         },
-        "type": {
-          "$ref": "#/definitions/ResponseResponseType"
+        "STATUS": {
+          "type": "string"
+        },
+        "enGB": {
+          "type": "string",
+          "format": "int64"
+        },
+        "no": {
+          "type": "string"
+        },
+        "thing": {
+          "$ref": "#/definitions/examplepbNonStandardMessageThing"
+        }
+      },
+      "description": "NonStandardMessage has oddly named fields."
+    },
+    "examplepbNonStandardMessageThing": {
+      "type": "object",
+      "properties": {
+        "subThing": {
+          "$ref": "#/definitions/examplepbNonStandardMessageThingSubThing"
         }
       }
     },
-    "examplepbRepeatedResponseStrings": {
+    "examplepbNonStandardMessageThingSubThing": {
       "type": "object",
       "properties": {
-        "values": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "subValue": {
+          "type": "string"
         }
       }
     },
-    "examplepbResponseBodyOut": {
+    "examplepbNonStandardMessageWithJSONNames": {
       "type": "object",
       "properties": {
-        "response": {
-          "$ref": "#/definitions/examplepbResponseBodyOutResponse"
+        "ID": {
+          "type": "string",
+          "description": "Id represents the message identifier."
+        },
+        "Num": {
+          "type": "string",
+          "format": "int64"
+        },
+        "LineNum": {
+          "type": "string",
+          "format": "int64"
+        },
+        "langIdent": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "En_GB": {
+          "type": "string",
+          "format": "int64"
+        },
+        "yes": {
+          "type": "string"
+        },
+        "Thingy": {
+          "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNamesThing"
+        }
+      },
+      "description": "NonStandardMessageWithJSONNames maps odd field names to odd JSON names for maximum confusion."
+    },
+    "examplepbNonStandardMessageWithJSONNamesThing": {
+      "type": "object",
+      "properties": {
+        "SubThing": {
+          "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNamesThingSubThing"
         }
       }
     },
-    "examplepbResponseBodyOutResponse": {
+    "examplepbNonStandardMessageWithJSONNamesThingSubThing": {
       "type": "object",
       "properties": {
-        "data": {
+        "sub_Value": {
           "type": "string"
         }
       }
