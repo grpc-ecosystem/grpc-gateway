@@ -56,12 +56,6 @@ that's needed to generate a reverse-proxy with this library.
 
 ## Installation
 
-The gRPC-Gateway requires a local installation of the Google protocol buffers
-compiler `protoc` v3.0.0 or above. Please install this via your local package
-manager or by downloading one of the releases from the official repository:
-
-https://github.com/protocolbuffers/protobuf/releases
-
 The following instructions assume you are using
 [Go Modules](https://github.com/golang/go/wiki/Modules) for dependency
 management. Use a
@@ -110,6 +104,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
     syntax = "proto3";
     package your.service.v1;
     option go_package = "github.com/yourorg/yourprotos/gen/go/your/service/v1";
+
     message StringMessage {
       string value = 1;
     }
@@ -123,29 +118,39 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
    This step generates the gRPC stubs that you can use to implement the service and consume from clients:
 
-   Here's an example of what a `protoc` command might look like to generate Go stubs:
+   Here's an example `buf.gen.yaml` you can use to generate the stubs with [buf](https://github.com/bufbuild/buf):
+
+   ```yaml
+   version: v1beta1
+   plugins:
+     - name: go
+       out: gen/go
+       opt:
+         - paths=source_relative
+     - name: go-grpc
+       out: gen/go
+       opt:
+         - paths=source_relative
+   ```
+
+   With this file in place, you can generate your files using `buf generate`.
+
+   > For a complete example of using `buf generate` to generate protobuf stubs, see
+   > [the boilerplate repo](https://github.com/johanbrandhorst/grpc-gateway-boilerplate).
+   > For more information on generating the stubs with buf, see
+   > [the official documentation](https://docs.buf.build/generate-usage).
+
+   If you are using `protoc` to generate stubs, here's an example of what a command
+   might look like:
 
    ```sh
    protoc -I . \
-      --go_out ./gen/go/ --go_opt paths=source_relative \
-      --go-grpc_out ./gen/go/ --go-grpc_opt paths=source_relative \
-      your/service/v1/your_service.proto
+       --go_out ./gen/go/ --go_opt paths=source_relative \
+       --go-grpc_out ./gen/go/ --go-grpc_opt paths=source_relative \
+       your/service/v1/your_service.proto
    ```
 
-3. Implement your service in gRPC as usual
-
-   1. (Optional) Generate gRPC stub in the [other programming languages](https://grpc.io/docs/).
-
-   For example, the following generates gRPC code for Ruby based on `your/service/v1/your_service.proto`:
-
-   ```sh
-   protoc -I . --ruby_out ./gen/ruby your/service/v1/your_service.proto
-
-   protoc -I . --grpc-ruby_out ./gen/ruby your/service/v1/your_service.proto
-   ```
-
-   2. Add the googleapis-common-protos gem (or your language equivalent) as a dependency to your project.
-   3. Implement your gRPC service stubs
+3. Implement your service in gRPC as usual.
 
 4. Generate reverse-proxy using `protoc-gen-grpc-gateway`
 
@@ -164,14 +169,34 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    This requires no additional modification to the `.proto` file but does require enabling a specific option when executing the plugin.
    The `generate_unbound_methods` should be enabled.
 
-   Here's what a `protoc` execution might look like with this option enabled:
+   Here's what a `buf.gen.yaml` file might look like with this option enabled:
+
+   ```yaml
+   version: v1beta1
+   plugins:
+     - name: go
+       out: gen/go
+       opt:
+         - paths=source_relative
+     - name: go-grpc
+       out: gen/go
+       opt:
+         - paths=source_relative
+     - name: grpc-gateway
+       out: gen/go
+       opt:
+         - paths=source_relative
+         - generate_unbound_methods=true
+   ```
+
+   With `protoc` (just the grpc-gateway stubs):
 
    ```sh
-      protoc -I . --grpc-gateway_out ./gen/go \
-        --grpc-gateway_opt logtostderr=true \
-        --grpc-gateway_opt paths=source_relative \
-        --grpc-gateway_opt generate_unbound_methods=true \
-        your/service/v1/your_service.proto
+   protoc -I . --grpc-gateway_out ./gen/go \
+       --grpc-gateway_opt logtostderr=true \
+       --grpc-gateway_opt paths=source_relative \
+       --grpc-gateway_opt generate_unbound_methods=true \
+       your/service/v1/your_service.proto
    ```
 
    2. With custom annotations
@@ -203,23 +228,61 @@ Make sure that your `$GOBIN` is in your `$PATH`.
     }
    ```
 
-   > You will need to provide the required third party protobuf files to the `protoc` compiler.
-   > They are included in this repo under the `third_party/googleapis` folder, and we recommend copying
-   > them into your `protoc` generation file structure. If you've structured your proto files according
-   > to something like [the Buf style guide](https://buf.build/docs/style-guide#files-and-packages),
-   > you could copy the files into a top-level `./google` folder.
+   > You will need to provide the required third party protobuf files to the protobuf compiler.
+   > If you are using [buf](https://github.com/buf/bufbuild), this dependency can
+   > be added to the `deps` array in your `buf.yaml` under the name
+   > `buf.build/beta/googleapis`:
+   > ```yaml
+   > version: v1beta1
+   > name: buf.build/yourorg/myprotos
+   > deps:
+   >   - buf.build/beta/googleapis
+   > ```
+   > Always run `buf beta mod update` after adding a dependency to your `buf.yaml`.
 
    See [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
    for examples of more annotations you can add to customize gateway behavior
    and generated OpenAPI output.
 
+   Here's what a `buf.gen.yaml` file might look like:
+
+   ```yaml
+   version: v1beta1
+   plugins:
+     - name: go
+       out: gen/go
+       opt:
+         - paths=source_relative
+     - name: go-grpc
+       out: gen/go
+       opt:
+         - paths=source_relative
+     - name: grpc-gateway
+       out: gen/go
+       opt:
+         - paths=source_relative
+   ```
+
+   If you are using `protoc` to generate stubs, you need to ensure the required
+   dependencies are available to the compiler at compile time. These can be found
+   by manually cloning and copying the relevant files from the
+   [googleapis repository](https://github.com/googleapis/googleapis), and providing
+   them to `protoc` when running. The files you will need are:
+
+   ```
+   google/api/annotations.proto
+   google/api/field_behaviour.proto
+   google/api/http.proto
+   google/api/httbody.proto
+   ```
+
    Here's what a `protoc` execution might look like:
 
    ```sh
-      protoc -I . --grpc-gateway_out ./gen/go \
-        --grpc-gateway_opt logtostderr=true \
-        --grpc-gateway_opt paths=source_relative \
-        your/service/v1/your_service.proto
+   protoc -I . --grpc-gateway_out ./gen/go \
+       --grpc-gateway_opt logtostderr=true \
+       --grpc-gateway_opt paths=source_relative \
+       your/service/v1/your_service.proto
    ```
 
    3. External configuration
@@ -227,16 +290,40 @@ Make sure that your `$GOBIN` is in your `$PATH`.
       alternatively use an external
       [gRPC Service Configuration](https://cloud.google.com/endpoints/docs/grpc/grpc-service-config) file.
       [Check our documentation](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/grpc_api_configuration/)
-      for more information.
+      for more information. This is best combined with the `standalone=true` option
+      to generate a file that can live in its own package, separate from the files
+      generated by the source protobuf file.
 
-   Here's what a `protoc` execution might look like with this option enabled:
+   Here's what a `buf.gen.yaml` file might look like with this option enabled:
+
+   ```yaml
+   version: v1beta1
+   plugins:
+     - name: go
+       out: gen/go
+       opt:
+         - paths=source_relative
+     - name: go-grpc
+       out: gen/go
+       opt:
+         - paths=source_relative
+     - name: grpc-gateway
+       out: gen/go
+       opt:
+         - paths=source_relative
+         - grpc_api_configuration=path/to/config.yaml
+         - standalone=true
+   ```
+
+   With `protoc` (just the grpc-gateway stubs):
 
    ```sh
-      protoc -I . --grpc-gateway_out ./gen/go \
-        --grpc-gateway_opt logtostderr=true \
-        --grpc-gateway_opt paths=source_relative \
-        --grpc-gateway_opt grpc_api_configuration=path/to/config.yaml \
-        your/service/v1/your_service.proto
+   protoc -I . --grpc-gateway_out ./gen/go \
+       --grpc-gateway_opt logtostderr=true \
+       --grpc-gateway_opt paths=source_relative \
+       --grpc-gateway_opt grpc_api_configuration=path/to/config.yaml \
+       --grpc-gateway_opt standalone=true \
+       your/service/v1/your_service.proto
    ```
 
 5. Write an entrypoint for the HTTP reverse-proxy server
@@ -292,11 +379,53 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
 6. (Optional) Generate OpenAPI definitions using `protoc-gen-openapiv2`
 
-   ```sh
-   protoc -I . --openapiv2_out ./gen/openapiv2 --openapiv2_opt logtostderr=true your/service/v1/your_service.proto
+   Here's what a `buf.gen.yaml` file might look like:
+
+   ```yaml
+   version: v1beta1
+   plugins:
+     - name: go
+       out: gen/go
+       opt:
+         - paths=source_relative
+     - name: go-grpc
+       out: gen/go
+       opt:
+         - paths=source_relative
+     - name: grpc-gateway
+       out: gen/go
+       opt:
+         - paths=source_relative
+     - name: openapiv2
+       out: gen/openapiv2
    ```
 
-   Note that this plugin also supports generating OpenAPI definitions for unannotated methods; use the `generate_unbound_methods` option to enable this.
+   To use the custom protobuf annotations supported by `protoc-gen-openapiv2`, we need
+   another dependency added to our protobuf generation step. If you are using
+   `buf`, you can add the `buf.build/grpc-ecosystem/grpc-gateway` dependency
+   to your `deps` array:
+   ```yaml
+   version: v1beta1
+   name: buf.build/yourorg/myprotos
+   deps:
+     - buf.build/beta/googleapis
+     - buf.build/grpc-ecosystem/grpc-gateway
+   ```
+
+   With `protoc` (just the swagger file):
+
+   ```sh
+   protoc -I . --openapiv2_out ./gen/openapiv2 \
+       --openapiv2_opt logtostderr=true \
+       your/service/v1/your_service.proto
+   ```
+
+   If you are using `protoc` to generate stubs, you will need to copy the protobuf
+   files from the `protoc-gen-openapiv2/options` directory of this repository,
+   and providing them to `protoc` when running.
+
+   Note that this plugin also supports generating OpenAPI definitions for unannotated methods;
+   use the `generate_unbound_methods` option to enable this.
 
 ## Video intro
 
@@ -309,6 +438,20 @@ This GopherCon UK 2019 presentation from our maintainer [@JohanBrandhorst](https
 </div>
 
 ## Parameters and flags
+
+When using `buf` to generate stubs, flags and parameters are passed through
+the `opt` field in your `buf.gen.yaml` file, for example:
+
+```yaml
+version: v1beta1
+plugins:
+  - name: grpc-gateway
+    out: gen/go
+    opt:
+      - paths=source_relative
+      - grpc_api_configuration=path/to/config.yaml
+      - standalone=true
+```
 
 During code generation with `protoc`, flags to gRPC-Gateway tools must be passed
 through `protoc` using one of 2 patterns:
@@ -326,32 +469,10 @@ through `protoc` using one of 2 patterns:
 --grpc-gateway_opt logtostderr=true,repeated_path_param_separator=ssv
 # or separately
 --grpc-gateway_opt logtostderr=true --grpc-gateway_opt repeated_path_param_separator=ssv
-
 --openapiv2_opt logtostderr=true,repeated_path_param_separator=ssv
 # or separately
 --openapiv2_opt logtostderr=true --openapiv2_opt repeated_path_param_separator=ssv
 ```
-
-`protoc-gen-grpc-gateway` supports custom mapping from Protobuf `import` to
-Golang import paths. They are compatible with
-[the parameters with the same names in `protoc-gen-go`](https://github.com/golang/protobuf#parameters).
-
-In addition, we also support the `request_context` parameter in order to use the
-`http.Request`'s Context (only for Go 1.7 and above). This parameter can be
-useful to pass the request-scoped context between the gateway and the gRPC service.
-
-`protoc-gen-grpc-gateway` also supports some more command line flags to control
-logging. You can give these flags together with the parameters above. Run
-`protoc-gen-grpc-gateway --help` for more details about the flags.
-
-Similarly, `protoc-gen-openapiv2` supports command-line flags to control OpenAPI
-output (for example, `json_names_for_fields` to output JSON names for fields
-instead of protobuf names). Run `protoc-gen-openapiv2 --help` for more flag
-details. Further OpenAPI customization is possible by annotating your `.proto`
-files with options from
-[openapiv2.proto](protoc-gen-openapiv2/options/openapiv2.proto) - see
-[a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
-for examples.
 
 ## More examples
 
