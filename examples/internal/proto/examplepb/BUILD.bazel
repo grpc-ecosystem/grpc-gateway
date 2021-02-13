@@ -108,8 +108,33 @@ go_proto_library(
 
 go_library(
     name = "go_default_library",
+    srcs = [
+        "generated_input.pb.go",
+        "generated_input.pb.gw.go",
+        "generated_input_grpc.pb.go",
+        "openapi_merge_a.pb.go",
+        "openapi_merge_a.pb.gw.go",
+        "openapi_merge_a_grpc.pb.go",
+        "openapi_merge_b.pb.go",
+        "openapi_merge_b.pb.gw.go",
+        "openapi_merge_b_grpc.pb.go",
+    ],
     embed = [":examplepb_go_proto"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
+    deps = [
+        "//runtime:go_default_library",
+        "//utilities:go_default_library",
+        "@go_googleapis//google/api:annotations_go_proto",
+        "@io_bazel_rules_go//proto/wkt:empty_go_proto",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//codes:go_default_library",
+        "@org_golang_google_grpc//grpclog:go_default_library",
+        "@org_golang_google_grpc//metadata:go_default_library",
+        "@org_golang_google_grpc//status:go_default_library",
+        "@org_golang_google_protobuf//proto:go_default_library",
+        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
+        "@org_golang_google_protobuf//runtime/protoimpl:go_default_library",
+    ],
 )
 
 protoc_gen_openapiv2(

@@ -16,9 +16,9 @@ commands:
           EOF
   generate:
     steps:
-      - run: make realclean
-      - run: make examples
-      - run: make testproto
+      - run: make install
+      - run: make clean
+      - run: make generate
       - run: go mod tidy
   renovate_git_amend_push:
     description: Git amend and push changes
@@ -123,6 +123,21 @@ jobs:
             go mod init tmp &&
             go get golang.org/x/exp/cmd/gorelease@latest
       - run: gorelease -base=v2.0.0
+  proto_lint:
+    docker:
+      - image: bufbuild/buf:0.37.0
+    steps:
+      - checkout
+      - run: buf build
+      - run: buf lint
+      - run: buf breaking --path protoc-gen-openapiv2/options/annotations.proto --path protoc-gen-openapiv2/options/openapiv2.proto --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=master'
+  proto_push:
+    docker:
+      - image: bufbuild/buf:0.37.0
+    steps:
+      - checkout
+      - run: echo -e "machine buf.build\npassword ${BUF_API_TOKEN}" >> ~/.netrc
+      - run: buf beta push
   release:
     executor: build-env
     working_directory: /src/grpc-gateway
@@ -162,6 +177,11 @@ workflows:
       - generate
       - bazel
       - gorelease
+      - proto_lint
+      - proto_push:
+          filters:
+            branches:
+              only: /^master$/
       - release:
           filters:
             branches:
