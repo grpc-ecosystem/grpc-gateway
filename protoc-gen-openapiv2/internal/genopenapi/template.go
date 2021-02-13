@@ -648,7 +648,7 @@ func lookupMsgAndOpenAPIName(location, name string, reg *descriptor.Registry) (*
 var registriesSeen = map[*descriptor.Registry]map[string]string{}
 var registriesSeenMutex sync.Mutex
 
-// Take the names of every proto and "uniq-ify" them, according to the given strategy.
+// Take the names of every proto message and generate a unique reference for each, according to the given strategy.
 func resolveFullyQualifiedNameToOpenAPINames(messages []string, namingStrategy string) map[string]string {
 	strategyFn := LookupNamingStrategy(namingStrategy)
 	if strategyFn == nil {

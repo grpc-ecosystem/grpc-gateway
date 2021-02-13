@@ -60,7 +60,7 @@ type Registry struct {
 	// with gRPC-Gateway response, if it uses json tags for marshaling.
 	useJSONNamesForFields bool
 
-	// openAPINamingStrategy is the naming strategy to use for assigning OpenAPI name. This can be one of the following:
+	// openAPINamingStrategy is the naming strategy to use for assigning OpenAPI field and parameter names. This can be one of the following:
 	// - `legacy`: use the legacy naming strategy from protoc-gen-swagger, that generates unique but not necessarily
 	//             maximally concise names. Components are concatenated directly, e.g., `MyOuterMessageMyNestedMessage`.
 	// - `simple`: use a simple heuristic for generating unique and concise names. Components are concatenated using

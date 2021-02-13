@@ -10,7 +10,7 @@ import (
 // fully-qualified proto message names, and returns a mapping from fully-qualified
 // name to OpenAPI name.
 func LookupNamingStrategy(strategyName string) func([]string) map[string]string {
-	switch strategyName {
+	switch strings.ToLower(strategyName) {
 	case "fqn":
 		return resolveNamesFQN
 	case "legacy":
@@ -32,7 +32,7 @@ func resolveNamesFQN(messages []string) map[string]string {
 	return uniqueNames
 }
 
-// resolveNamesLegacy takes the names of all protos and uniq-ifies them applying the legacy
+// resolveNamesLegacy takes the names of all proto messages and generates unique references by applying the legacy
 // heuristics for deriving unique names: starting from the bottom of the name hierarchy, it
 // determines the minimum number of components necessary to yield a unique name, adds one
 // to that number, and then concatenates those last components with no separator in between
@@ -44,7 +44,7 @@ func resolveNamesLegacy(messages []string) map[string]string {
 	return resolveNamesUniqueWithContext(messages, 1, "")
 }
 
-// resolveNamesSimple takes the names of all protos and uniq-ifies them using a simple
+// resolveNamesSimple takes the names of all proto messages and generates unique references by using a simple
 // heuristic: starting from the bottom of the name hierarchy, it determines the minimum
 // number of components necessary to yield a unique name, and then concatenates those last
 // components with a "." separator in between to form a unique name.
@@ -55,12 +55,11 @@ func resolveNamesSimple(messages []string) map[string]string {
 	return resolveNamesUniqueWithContext(messages, 0, ".")
 }
 
-// Take the names of every proto and "uniq-ify" them as follows:
-// first, separate each message name into its components by splitting at dots. Then,
+// Take the names of every proto message and generates a unique reference by:
+// first, separating each message name into its components by splitting at dots. Then,
 // take the shortest suffix slice from each components slice that is unique among all
 // messages, and convert it into a component name by taking extraContext additional
-// components into consideration and joining all components with componentSeparator
-// in between.
+// components into consideration and joining all components with componentSeparator.
 func resolveNamesUniqueWithContext(messages []string, extraContext int, componentSeparator string) map[string]string {
 	packagesByDepth := make(map[int][][]string)
 	uniqueNames := make(map[string]string)
