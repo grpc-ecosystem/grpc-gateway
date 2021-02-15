@@ -2,6 +2,14 @@ workspace(name = "grpc_ecosystem_grpc_gateway")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+# Define before rules_proto, otherwise we receive the version of com_google_protobuf from there
+http_archive(
+    name = "com_google_protobuf",
+    sha256 = "d0f5f605d0d656007ce6c8b5a82df3037e1d8fe8b121ed42e536f569dec16113",
+    strip_prefix = "protobuf-3.14.0",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.14.0.tar.gz"],
+)
+
 http_archive(
     name = "bazel_skylib",
     sha256 = "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c",
