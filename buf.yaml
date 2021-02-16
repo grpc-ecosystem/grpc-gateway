@@ -5,6 +5,8 @@ deps:
 build:
   roots:
     - .
+  excludes:
+    - bazel-grpc-gateway
 lint:
   use:
     - DEFAULT
