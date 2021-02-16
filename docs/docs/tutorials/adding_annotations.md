@@ -117,7 +117,9 @@ import (
 	helloworldpb "github.com/myuser/myrepo/proto/helloworld"
 )
 
-type server struct{}
+type server struct{
+	helloworldpb.UnimplementedGreeterServer
+}
 
 func NewServer() *server {
 	return &server{}
