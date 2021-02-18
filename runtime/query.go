@@ -233,7 +233,7 @@ func parseField(fieldDescriptor protoreflect.FieldDescriptor, value string) (pro
 	case protoreflect.StringKind:
 		return protoreflect.ValueOfString(value), nil
 	case protoreflect.BytesKind:
-		v, err := base64.StdEncoding.DecodeString(value)
+		v, err := base64.URLEncoding.DecodeString(value)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
@@ -314,7 +314,7 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 	case "google.protobuf.StringValue":
 		msg = &wrapperspb.StringValue{Value: value}
 	case "google.protobuf.BytesValue":
-		v, err := base64.StdEncoding.DecodeString(value)
+		v, err := base64.URLEncoding.DecodeString(value)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
