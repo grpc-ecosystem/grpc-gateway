@@ -3,105 +3,6 @@
 # You don't have to rebuild these targets by yourself unless you develop
 # gRPC-Gateway itself.
 
-GO_PLUGIN=bin/protoc-gen-go
-GO_PLUGIN_PKG=google.golang.org/protobuf/cmd/protoc-gen-go
-GO_GRPC_PLUGIN=bin/protoc-gen-go-grpc
-GO_GRPC_PLUGIN_PKG=google.golang.org/grpc/cmd/protoc-gen-go-grpc
-OPENAPI_PLUGIN=bin/protoc-gen-openapiv2
-OPENAPI_PLUGIN_SRC= ./utilities/doc.go \
-			./utilities/pattern.go \
-			./utilities/trie.go \
-			protoc-gen-openapiv2/internal/genopenapi/generator.go \
-			protoc-gen-openapiv2/internal/genopenapi/template.go \
-			protoc-gen-openapiv2/main.go
-OPENAPI_PLUGIN_PKG=./protoc-gen-openapiv2
-GATEWAY_PLUGIN=bin/protoc-gen-grpc-gateway
-GATEWAY_PLUGIN_PKG=./protoc-gen-grpc-gateway
-GATEWAY_PLUGIN_SRC= ./utilities/doc.go \
-			./utilities/pattern.go \
-			./utilities/trie.go \
-			./internal/descriptor \
-			./internal/descriptor/registry.go \
-			./internal/descriptor/services.go \
-			./internal/descriptor/types.go \
-			./internal/descriptor/grpc_api_configuration.go \
-			./internal/generator \
-			./internal/generator/generator.go \
-			protoc-gen-grpc-gateway \
-			protoc-gen-grpc-gateway/internal/gengateway \
-			protoc-gen-grpc-gateway/internal/gengateway/doc.go \
-			protoc-gen-grpc-gateway/internal/gengateway/generator.go \
-			protoc-gen-grpc-gateway/internal/gengateway/template.go \
-			internal/httprule \
-			internal/httprule/compile.go \
-			internal/httprule/parse.go \
-			internal/httprule/types.go \
-			protoc-gen-grpc-gateway/main.go
-GATEWAY_PLUGIN_FLAGS?=
-OPENAPI_PLUGIN_FLAGS?=
-
-GOOGLEAPIS_DIR=third_party/googleapis
-
-OPENAPIV2_PROTO=protoc-gen-openapiv2/options/openapiv2.proto protoc-gen-openapiv2/options/annotations.proto
-OPENAPIV2_GO=$(OPENAPIV2_PROTO:.proto=.pb.go)
-
-ADDITIONAL_GW_FLAGS=
-ifneq "$(GATEWAY_PLUGIN_FLAGS)" ""
-	ADDITIONAL_GW_FLAGS=,$(GATEWAY_PLUGIN_FLAGS)
-endif
-ADDITIONAL_SWG_FLAGS=
-ifneq "$(OPENAPI_PLUGIN_FLAGS)" ""
-	ADDITIONAL_SWG_FLAGS=,$(OPENAPI_PLUGIN_FLAGS)
-endif
-OPENAPI_EXAMPLES=examples/internal/proto/examplepb/echo_service.proto \
-	 examples/internal/proto/examplepb/a_bit_of_everything.proto \
-	 examples/internal/proto/examplepb/wrappers.proto \
-	 examples/internal/proto/examplepb/stream.proto \
-	 examples/internal/proto/examplepb/unannotated_echo_service.proto \
-	 examples/internal/proto/examplepb/use_go_template.proto \
-	 examples/internal/proto/examplepb/response_body_service.proto
-OPENAPIMERGE_EXAMPLES=examples/internal/proto/examplepb/openapi_merge_a.proto \
-	 examples/internal/proto/examplepb/openapi_merge_b.proto
-
-EXAMPLES=examples/internal/proto/examplepb/echo_service.proto \
-	 examples/internal/proto/examplepb/a_bit_of_everything.proto \
-	 examples/internal/proto/examplepb/stream.proto \
-	 examples/internal/proto/examplepb/flow_combination.proto \
-	 examples/internal/proto/examplepb/non_standard_names.proto \
-	 examples/internal/proto/examplepb/wrappers.proto \
-	 examples/internal/proto/examplepb/unannotated_echo_service.proto \
-	 examples/internal/proto/examplepb/use_go_template.proto \
-	 examples/internal/proto/examplepb/response_body_service.proto
-
-STANDALONE_EXAMPLES=examples/internal/proto/examplepb/unannotated_echo_service.proto
-GENERATE_UNBOUND_METHODS_EXAMPLE=examples/internal/proto/examplepb/generate_unbound_methods.proto
-
-HELLOWORLD=examples/internal/helloworld/helloworld.proto
-
-EXAMPLE_SVCSRCS=$(EXAMPLES:.proto=.pb.go)
-EXAMPLE_GWSRCS=$(EXAMPLES:.proto=.pb.gw.go)
-EXAMPLE_OPENAPISRCS=$(OPENAPI_EXAMPLES:.proto=.swagger.json)
-EXAMPLE_OPENAPIMERGESRCS=examples/internal/proto/examplepb/openapi_merge.swagger.json
-EXAMPLE_DEPS=examples/internal/proto/pathenum/path_enum.proto examples/internal/proto/sub/message.proto examples/internal/proto/sub2/message.proto
-EXAMPLE_DEPSRCS=$(EXAMPLE_DEPS:.proto=.pb.go)
-
-GENERATE_UNBOUND_METHODS_EXAMPLE_OPENAPISRCS=$(GENERATE_UNBOUND_METHODS_EXAMPLE:.proto=.swagger.json)
-GENERATE_UNBOUND_METHODS_EXAMPLE_SVCSRCS=$(GENERATE_UNBOUND_METHODS_EXAMPLE:.proto=.pb.go)
-GENERATE_UNBOUND_METHODS_EXAMPLE_GWSRCS=$(GENERATE_UNBOUND_METHODS_EXAMPLE:.proto=.pb.gw.go)
-
-HELLOWORLD_SVCSRCS=$(HELLOWORLD:.proto=.pb.go)
-HELLOWORLD_GWSRCS=$(HELLOWORLD:.proto=.pb.gw.go)
-
-RUNTIME_TEST_PROTO=runtime/internal/examplepb/example.proto \
-	runtime/internal/examplepb/proto2.proto \
-	runtime/internal/examplepb/proto3.proto \
-	runtime/internal/examplepb/non_standard_names.proto
-RUNTIME_TEST_SRCS=$(RUNTIME_TEST_PROTO:.proto=.pb.go)
-
-APICONFIG_PROTO=internal/descriptor/apiconfig/apiconfig.proto \
-	internal/descriptor/openapiconfig/openapiconfig.proto
-APICONFIG_SRCS=$(APICONFIG_PROTO:.proto=.pb.go)
-
 EXAMPLE_CLIENT_DIR=examples/internal/clients
 ECHO_EXAMPLE_SPEC=examples/internal/proto/examplepb/echo_service.swagger.json
 ECHO_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/echo/client.go \
@@ -154,65 +55,6 @@ GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS=$(EXAMPLE_CLIENT_DIR)/generateunboundmetho
 EXAMPLE_CLIENT_SRCS=$(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS)
 SWAGGER_CODEGEN=swagger-codegen
 
-PROTOC_INC_PATH=$(dir $(shell which protoc))/../include
-
-.SUFFIXES: .go .proto
-
-$(GO_PLUGIN):
-	go build -o $(GO_PLUGIN) $(GO_PLUGIN_PKG)
-
-$(GO_GRPC_PLUGIN):
-	go build -o $(GO_GRPC_PLUGIN) $(GO_GRPC_PLUGIN_PKG)
-
-$(OPENAPIV2_GO): $(OPENAPIV2_PROTO) $(GO_PLUGIN)
-	protoc -I $(PROTOC_INC_PATH) --plugin=$(GO_PLUGIN) -I. --go_out=paths=source_relative:. $(OPENAPIV2_PROTO)
-
-$(GATEWAY_PLUGIN): $(GATEWAY_PLUGIN_SRC) $(OPENAPIV2_GO)
-	go build -o $@ $(GATEWAY_PLUGIN_PKG)
-
-$(OPENAPI_PLUGIN): $(OPENAPI_PLUGIN_SRC) $(OPENAPIV2_GO)
-	go build -o $@ $(OPENAPI_PLUGIN_PKG)
-
-$(EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(EXAMPLES)
-$(EXAMPLE_DEPSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(EXAMPLE_DEPS)
-	protoc -I $(PROTOC_INC_PATH) -I. --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(@:.pb.go=.proto)
-
-$(RUNTIME_TEST_SRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(RUNTIME_TEST_PROTO)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(RUNTIME_TEST_PROTO)
-
-$(APICONFIG_SRCS): $(GO_PLUGIN) $(APICONFIG_PROTO)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --go_out=paths=source_relative:. $(APICONFIG_PROTO)
-
-$(EXAMPLE_GWSRCS): ADDITIONAL_GW_FLAGS:=$(ADDITIONAL_GW_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml
-$(EXAMPLE_GWSRCS): ADDITIONAL_SA_FLAGS:=,standalone=true,grpc_api_configuration=examples/internal/proto/examplepb/standalone_echo_service.yaml
-$(EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_SA_FLAGS):. $(STANDALONE_EXAMPLES)
-	mv examples/internal/proto/examplepb/unannotated_echo_service.pb.gw.go examples/internal/proto/standalone/
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_GW_FLAGS):. $(EXAMPLES)
-
-
-$(EXAMPLE_OPENAPISRCS): ADDITIONAL_SWG_FLAGS:=$(ADDITIONAL_SWG_FLAGS),grpc_api_configuration=examples/internal/proto/examplepb/unannotated_echo_service.yaml,openapi_configuration=examples/internal/proto/examplepb/unannotated_echo_service.swagger.yaml
-$(EXAMPLE_OPENAPISRCS): $(OPENAPI_PLUGIN) $(OPENAPI_EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true$(ADDITIONAL_SWG_FLAGS):. $(OPENAPI_EXAMPLES)
-
-$(EXAMPLE_OPENAPIMERGESRCS): $(OPENAPI_PLUGIN) $(OPENAPIMERGE_EXAMPLES)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true,allow_merge=true,merge_file_name=$(EXAMPLE_OPENAPIMERGESRCS:.swagger.json=):. $(OPENAPIMERGE_EXAMPLES)
-
-$(GENERATE_UNBOUND_METHODS_EXAMPLE_GWSRCS): $(GATEWAY_PLUGIN) $(GENERATE_UNBOUND_METHODS_EXAMPLE)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,paths=source_relative,allow_repeated_fields_in_body=true,generate_unbound_methods=true$(ADDITIONAL_GW_FLAGS):. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
-$(GENERATE_UNBOUND_METHODS_EXAMPLE_SVCSRCS): $(GO_PLUGIN) $(GENERATE_UNBOUND_METHODS_EXAMPLE)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
-$(GENERATE_UNBOUND_METHODS_EXAMPLE_OPENAPISRCS): $(OPENAPI_PLUGIN) $(GENERATE_UNBOUND_METHODS_EXAMPLE)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(OPENAPI_PLUGIN) --openapiv2_out=logtostderr=true,allow_repeated_fields_in_body=true,use_go_templates=true,generate_unbound_methods=true:. $(GENERATE_UNBOUND_METHODS_EXAMPLE)
-
-$(HELLOWORLD_SVCSRCS): $(GO_PLUGIN) $(GO_GRPC_PLUGIN) $(HELLOWORLD)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GO_PLUGIN) --plugin=$(GO_GRPC_PLUGIN) --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:. $(HELLOWORLD)
-
-$(HELLOWORLD_GWSRCS):
-$(HELLOWORLD_GWSRCS): $(GATEWAY_PLUGIN) $(HELLOWORLD)
-	protoc -I $(PROTOC_INC_PATH) -I. -I$(GOOGLEAPIS_DIR) --plugin=$(GATEWAY_PLUGIN) --grpc-gateway_out=logtostderr=true,allow_repeated_fields_in_body=true,paths=source_relative$(ADDITIONAL_GW_FLAGS):. $(HELLOWORLD)
-
 $(ECHO_EXAMPLE_SRCS): $(ECHO_EXAMPLE_SPEC)
 	$(SWAGGER_CODEGEN) generate -i $(ECHO_EXAMPLE_SPEC) \
 		-l go -o examples/internal/clients/echo --additional-properties packageName=echo
@@ -239,11 +81,49 @@ $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS): $(GENERATE_UNBOUND_METHODS_EXAMPLE_SPE
 	@rm -f $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/README.md \
 		$(EXAMPLE_CLIENT_DIR)/generateunboundmethods/git_push.sh
 
-examples: $(EXAMPLE_DEPSRCS) $(EXAMPLE_SVCSRCS) $(EXAMPLE_GWSRCS) $(EXAMPLE_OPENAPISRCS) $(EXAMPLE_OPENAPIMERGESRCS) $(EXAMPLE_CLIENT_SRCS) $(HELLOWORLD_SVCSRCS) $(HELLOWORLD_GWSRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_GWSRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SVCSRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_OPENAPISRCS)
-testproto: $(RUNTIME_TEST_SRCS) $(APICONFIG_SRCS)
-test: examples testproto
+install:
+	go install \
+		google.golang.org/grpc/cmd/protoc-gen-go-grpc \
+		google.golang.org/protobuf/cmd/protoc-gen-go \
+		github.com/bufbuild/buf/cmd/buf \
+		./protoc-gen-openapiv2 \
+		./protoc-gen-grpc-gateway
+
+proto:
+	# These generation steps are run in order so that later steps can
+	# overwrite files produced by previous steps, if necessary.
+	buf generate
+	# Remove generated gateway in runtime tests, causes import cycle
+	rm ./runtime/internal/examplepb/non_standard_names.pb.gw.go
+	# Remove generated_input.proto files, bazel genrule relies on these
+	# *not* being generated (to avoid conflicts).
+	rm ./examples/internal/proto/examplepb/generated_input.pb.go
+	rm ./examples/internal/proto/examplepb/generated_input_grpc.pb.go
+	rm ./examples/internal/proto/examplepb/generated_input.pb.gw.go
+	buf generate \
+		--template ./examples/internal/proto/examplepb/openapi_merge.buf.gen.yaml \
+		--path ./examples/internal/proto/examplepb/openapi_merge_a.proto \
+		--path ./examples/internal/proto/examplepb/openapi_merge_b.proto
+	buf generate \
+		--template ./examples/internal/proto/examplepb/standalone_echo_service.buf.gen.yaml \
+		--path examples/internal/proto/examplepb/unannotated_echo_service.proto
+	mv examples/internal/proto/examplepb/unannotated_echo_service.pb.gw.go examples/internal/proto/standalone/
+	buf generate \
+		--template ./examples/internal/proto/examplepb/unannotated_echo_service.buf.gen.yaml \
+		--path examples/internal/proto/examplepb/unannotated_echo_service.proto
+	buf generate \
+		--template ./examples/internal/proto/examplepb/generate_unbound_methods.buf.gen.yaml \
+		--path examples/internal/proto/examplepb/generate_unbound_methods.proto
+	buf generate \
+		--template ./examples/internal/proto/examplepb/use_go_template.buf.gen.yaml \
+		--path examples/internal/proto/examplepb/use_go_template.proto
+
+generate: proto $(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS)
+
+test: proto
 	go test -short -race ./...
 	go test -race ./examples/internal/integration -args -network=unix -endpoint=test.sock
+
 changelog:
 	docker run --rm \
 		--interactive \
@@ -261,20 +141,9 @@ changelog:
 				--future-release=v2.2.0
 
 clean:
-	rm -f $(GATEWAY_PLUGIN) $(OPENAPI_PLUGIN)
-distclean: clean
-	rm -f $(GO_PLUGIN)
-realclean: distclean
-	rm -f $(EXAMPLE_SVCSRCS) $(EXAMPLE_DEPSRCS)
-	rm -f $(EXAMPLE_GWSRCS)
-	rm -f $(EXAMPLE_OPENAPISRCS)
+	find . -type f -name '*.pb.go' -delete
+	find . -type f -name '*.swagger.json' -delete
+	find . -type f -name '*.pb.gw.go' -delete
 	rm -f $(EXAMPLE_CLIENT_SRCS)
-	rm -f $(GENERATE_UNBOUND_METHODS_EXAMPLE_GWSRCS)
-	rm -f $(GENERATE_UNBOUND_METHODS_EXAMPLE_SVCSRCS)
-	rm -f $(GENERATE_UNBOUND_METHODS_EXAMPLE_OPENAPISRCS)
-	rm -f $(HELLOWORLD_SVCSRCS)
-	rm -f $(HELLOWORLD_GWSRCS)
-	rm -f $(OPENAPIV2_GO)
-	rm -f $(RUNTIME_TEST_SRCS)
 
-.PHONY: generate examples test lint clean distclean realclean
+.PHONY: generate test clean proto install
