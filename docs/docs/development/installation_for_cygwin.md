@@ -66,9 +66,9 @@ Follow the [instructions](https://github.com/grpc-ecosystem/grpc-gateway#usage) 
 
 Adjust steps 3, 5 and 7 like this. `protoc` expects native Windows paths.
 
-    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --go_out=. --go-grpc_out=. ./path/to/your_service.proto
-    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --grpc-gateway_out=logtostderr=true:. ./path/to/your_service.proto
-    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis --openapiv2_out=logtostderr=true:. ./path/to/your_service.proto
+    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src --go_out=. --go-grpc_out=. ./path/to/your_service.proto
+    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src --grpc-gateway_out=logtostderr=true:. ./path/to/your_service.proto
+    protoc -I. -I$(cygpath -w /usr/local/include) -I${GOPATH}/src --openapiv2_out=logtostderr=true:. ./path/to/your_service.proto
 
 Then `cd` into the directory where your entry-point `main.go` file is located and run:
 

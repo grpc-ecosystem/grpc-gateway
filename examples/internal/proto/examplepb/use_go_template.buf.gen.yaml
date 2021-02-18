@@ -1,0 +1,6 @@
+version: v1beta1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - use_go_templates=true

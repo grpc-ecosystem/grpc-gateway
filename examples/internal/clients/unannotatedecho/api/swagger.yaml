@@ -66,10 +66,6 @@ paths:
           schema:
             type: "integer"
             format: "integer"
-        418:
-          description: "I'm a teapot."
-          schema:
-            $ref: "#/definitions/examplepbNumericEnum"
         503:
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
@@ -172,10 +168,6 @@ paths:
           schema:
             type: "integer"
             format: "integer"
-        418:
-          description: "I'm a teapot."
-          schema:
-            $ref: "#/definitions/examplepbNumericEnum"
         503:
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
@@ -214,10 +206,6 @@ paths:
           schema:
             type: "string"
             format: "string"
-        418:
-          description: "I'm a teapot."
-          schema:
-            $ref: "#/definitions/examplepbNumericEnum"
         default:
           description: "An unexpected error response."
           schema:
@@ -310,10 +298,6 @@ paths:
           schema:
             type: "string"
             format: "string"
-        418:
-          description: "I'm a teapot."
-          schema:
-            $ref: "#/definitions/examplepbNumericEnum"
         default:
           description: "An unexpected error response."
           schema:
@@ -330,14 +314,6 @@ securityDefinitions:
   BasicAuth:
     type: "basic"
 definitions:
-  examplepbNumericEnum:
-    type: "string"
-    description: "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE\
-      \ means 1"
-    enum:
-    - "ZERO"
-    - "ONE"
-    default: "ZERO"
   examplepbUnannotatedEmbedded:
     type: "object"
     properties:
@@ -387,110 +363,22 @@ definitions:
     properties:
       typeUrl:
         type: "string"
-        description: "A URL/resource name that uniquely identifies the type of the\
-          \ serialized\nprotocol buffer message. This string must contain at least\n\
-          one \"/\" character. The last segment of the URL's path must represent\n\
-          the fully qualified name of the type (as in\n`path/google.protobuf.Duration`).\
-          \ The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\
-          \nIn practice, teams usually precompile into the binary all types that they\n\
-          expect it to use in the context of Any. However, for URLs which use the\n\
-          scheme `http`, `https`, or no scheme, one can optionally set up a type\n\
-          server that maps type URLs to message definitions as follows:\n\n* If no\
-          \ scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must\
-          \ yield a [google.protobuf.Type][]\n  value in binary format, or produce\
-          \ an error.\n* Applications are allowed to cache lookup results based on\
-          \ the\n  URL, or have them precompiled into a binary to avoid any\n  lookup.\
-          \ Therefore, binary compatibility needs to be preserved\n  on changes to\
-          \ types. (Use versioned type names to manage\n  breaking changes.)\n\nNote:\
-          \ this functionality is not currently available in the official\nprotobuf\
-          \ release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\
-          \nSchemes other than `http`, `https` (or the empty scheme) might be\nused\
-          \ with implementation specific semantics."
       value:
         type: "string"
         format: "byte"
-        description: "Must be a valid serialized protocol buffer of the above specified\
-          \ type."
         pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
-    description: "`Any` contains an arbitrary serialized protocol buffer message along\
-      \ with a\nURL that describes the type of the serialized message.\n\nProtobuf\
-      \ library provides support to pack/unpack Any values in the form\nof utility\
-      \ functions or additional generated methods of the Any type.\n\nExample 1: Pack\
-      \ and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n\
-      \    ...\n    if (any.UnpackTo(&foo)) {\n      ...\n    }\n\nExample 2: Pack\
-      \ and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n\
-      \    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n\
-      \    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n\
-      \    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n\
-      \      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in\
-      \ Go\n\n     foo := &pb.Foo{...}\n     any, err := ptypes.MarshalAny(foo)\n\
-      \     ...\n     foo := &pb.Foo{}\n     if err := ptypes.UnmarshalAny(any, foo);\
-      \ err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf\
-      \ library will by default use\n'type.googleapis.com/full.type.name' as the type\
-      \ URL and the unpack\nmethods only use the fully qualified type name after the\
-      \ last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\n\
-      name \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses\
-      \ the regular\nrepresentation of the deserialized, embedded message, with an\n\
-      additional field `@type` which contains the type URL. Example:\n\n    package\
-      \ google.profile;\n    message Person {\n      string first_name = 1;\n    \
-      \  string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\"\
-      ,\n      \"firstName\": <string>,\n      \"lastName\": <string>\n    }\n\nIf\
-      \ the embedded message type is well-known and has a custom JSON\nrepresentation,\
-      \ that representation will be embedded adding a field\n`value` which holds the\
-      \ custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\
-      \n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n\
-      \      \"value\": \"1.212s\"\n    }"
   rpcStatus:
     type: "object"
     properties:
       code:
         type: "integer"
         format: "int32"
-        description: "The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code]."
       message:
         type: "string"
-        description: "A developer-facing error message, which should be in English.\
-          \ Any\nuser-facing error message should be localized and sent in the\n[google.rpc.Status.details][google.rpc.Status.details]\
-          \ field, or localized by the client."
       details:
         type: "array"
-        description: "A list of messages that carry the error details.  There is a\
-          \ common set of\nmessage types for APIs to use."
         items:
           $ref: "#/definitions/protobufAny"
-    title: "The `Status` type defines a logical error model that is suitable for different\n\
-      programming environments, including REST APIs and RPC APIs. It is used by\n\
-      [gRPC](https://github.com/grpc). The error model is designed to be:"
-    description: "- Simple to use and understand for most users\n- Flexible enough\
-      \ to meet unexpected needs\n\n# Overview\n\nThe `Status` message contains three\
-      \ pieces of data: error code, error message,\nand error details. The error code\
-      \ should be an enum value of\n[google.rpc.Code][google.rpc.Code], but it may\
-      \ accept additional error codes if needed.  The\nerror message should be a developer-facing\
-      \ English message that helps\ndevelopers *understand* and *resolve* the error.\
-      \ If a localized user-facing\nerror message is needed, put the localized message\
-      \ in the error details or\nlocalize it in the client. The optional error details\
-      \ may contain arbitrary\ninformation about the error. There is a predefined\
-      \ set of error detail types\nin the package `google.rpc` that can be used for\
-      \ common error conditions.\n\n# Language mapping\n\nThe `Status` message is\
-      \ the logical representation of the error model, but it\nis not necessarily\
-      \ the actual wire format. When the `Status` message is\nexposed in different\
-      \ client libraries and different wire protocols, it can be\nmapped differently.\
-      \ For example, it will likely be mapped to some exceptions\nin Java, but more\
-      \ likely mapped to some error codes in C.\n\n# Other uses\n\nThe error model\
-      \ and the `Status` message can be used in a variety of\nenvironments, either\
-      \ with or without APIs, to provide a\nconsistent developer experience across\
-      \ different environments.\n\nExample uses of this error model include:\n\n-\
-      \ Partial errors. If a service needs to return partial errors to the client,\n\
-      \    it may embed the `Status` in the normal response to indicate the partial\n\
-      \    errors.\n\n- Workflow errors. A typical workflow has multiple steps. Each\
-      \ step may\n    have a `Status` message for error reporting.\n\n- Batch operations.\
-      \ If a client uses batch request and batch response, the\n    `Status` message\
-      \ should be used directly inside batch response, one for\n    each error sub-response.\n\
-      \n- Asynchronous operations. If an API call embeds asynchronous operation\n\
-      \    results in its response, the status of those operations should be\n   \
-      \ represented directly using the `Status` message.\n\n- Logging. If some API\
-      \ errors are stored in logs, the message `Status` could\n    be used directly\
-      \ after any stripping needed for security/privacy reasons."
 externalDocs:
   description: "More about gRPC-Gateway"
   url: "https://github.com/grpc-ecosystem/grpc-gateway"

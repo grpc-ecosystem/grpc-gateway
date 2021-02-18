@@ -48,18 +48,6 @@ See [a_bit_of_everything.proto](https://github.com/grpc-ecosystem/grpc-gateway/b
 
 Now that we've got the gRPC-Gateway annotations added to the proto file, we need to use the gRPC-Gateway generator to generate the stubs.
 
-Before we can do that, we need to copy some dependencies into our proto file structure. Copy the `third_party/googleapis` folder from the gRPC-Gateway repository to your local proto file structure. It should look like this afterwards:
-
-```
-proto
-├── google
-│   └── api
-│       ├── annotations.proto
-│       └── http.proto
-└── helloworld
-    └── hello_world.proto
-```
-
 ### Using buf
 
 We'll need to add the gRPC-Gateway generator to the generation configuration:
@@ -78,6 +66,20 @@ plugins:
     opt: paths=source_relative
 ```
 
+We'll also need to add the `googleapis` dependency to our `buf.yaml` file:
+
+```yaml
+version: v1beta1
+name: buf.build/myuser/myrepo
+deps:
+  - buf.build/beta/googleapis
+build:
+  roots:
+    - proto
+```
+
+Then we need to run `buf beta mod update` to select a version of the dependency to use.
+
 And that's it! Now if you run:
 
 ```sh
@@ -87,6 +89,19 @@ $ buf generate
 It should produce a `*.gw.pb.go` file.
 
 ### Using `protoc`
+
+Before we can generate the stubs with `protoc`, we need to copy some dependencies into our proto file structure. Copy a subset of the `googleapis`
+from the [official repository](https://github.com/googleapis/googleapis) to your local proto file structure. It should look like this afterwards:
+
+```
+proto
+├── google
+│   └── api
+│       ├── annotations.proto
+│       └── http.proto
+└── helloworld
+    └── hello_world.proto
+```
 
 Now we need to add the gRPC-Gateway generator to the `protoc` invocation:
 
