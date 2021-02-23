@@ -125,7 +125,7 @@ jobs:
       - run: gorelease -base=v2.0.0
   proto_lint:
     docker:
-      - image: bufbuild/buf:0.37.0
+      - image: bufbuild/buf:0.37.1
     steps:
       - checkout
       - run: buf build
@@ -133,7 +133,7 @@ jobs:
       - run: buf breaking --path protoc-gen-openapiv2/options/annotations.proto --path protoc-gen-openapiv2/options/openapiv2.proto --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=master'
   proto_push:
     docker:
-      - image: bufbuild/buf:0.37.0
+      - image: bufbuild/buf:0.37.1
     steps:
       - checkout
       - run: echo -e "machine buf.build\npassword ${BUF_API_TOKEN}" >> ~/.netrc
