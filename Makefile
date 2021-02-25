@@ -138,7 +138,7 @@ changelog:
 				--github-site=https://github.com \
 				--unreleased-label "**Next release**" \
 				--release-branch=master \
-				--future-release=v2.2.0
+				--future-release=v2.3.0
 
 clean:
 	find . -type f -name '*.pb.go' -delete
