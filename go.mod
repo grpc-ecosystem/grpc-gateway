@@ -11,7 +11,7 @@ require (
 	github.com/google/go-cmp v0.5.4
 	github.com/rogpeppe/fastuuid v1.2.0
 	golang.org/x/oauth2 v0.0.0-20210220000619-9bb904979d93
-	google.golang.org/genproto v0.0.0-20210224155714-063164c882e6
+	google.golang.org/genproto v0.0.0-20210225212918-ad91960f0274
 	google.golang.org/grpc v1.36.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.0.0
 	google.golang.org/protobuf v1.25.1-0.20201208041424-160c7477e0e8
