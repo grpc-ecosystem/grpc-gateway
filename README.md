@@ -229,7 +229,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    ```
 
    > You will need to provide the required third party protobuf files to the protobuf compiler.
-   > If you are using [buf](https://github.com/buf/bufbuild), this dependency can
+   > If you are using [buf](https://github.com/bufbuild/buf), this dependency can
    > be added to the `deps` array in your `buf.yaml` under the name
    > `buf.build/beta/googleapis`:
    > ```yaml
