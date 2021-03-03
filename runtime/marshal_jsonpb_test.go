@@ -49,6 +49,11 @@ func TestJSONPbMarshal(t *testing.T) {
 		RepeatedStringAnnotation: []string{},
 		RepeatedNestedAnnotation: []*examplepb.ABitOfEverything_Nested{},
 		NestedAnnotation:         &examplepb.ABitOfEverything_Nested{},
+		MimicString: &examplepb.MimicObjectHidden{
+			HiddenValueOne: "foo",
+			HiddenValueTwo: "baz",
+			HiddenEnum:     examplepb.MimicObjectHidden_VALUE_TWO,
+		},
 	}
 
 	for i, spec := range []struct {
@@ -272,6 +277,11 @@ func TestJSONPbEncoder(t *testing.T) {
 		RepeatedStringAnnotation: []string{},
 		RepeatedNestedAnnotation: []*examplepb.ABitOfEverything_Nested{},
 		NestedAnnotation:         &examplepb.ABitOfEverything_Nested{},
+		MimicString: &examplepb.MimicObjectHidden{
+			HiddenValueOne: "foo",
+			HiddenValueTwo: "baz",
+			HiddenEnum:     examplepb.MimicObjectHidden_VALUE_TWO,
+		},
 	}
 
 	for i, spec := range []struct {
