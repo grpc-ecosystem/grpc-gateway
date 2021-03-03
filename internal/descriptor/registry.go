@@ -43,6 +43,15 @@ type Registry struct {
 	// allowMerge generation one OpenAPI file out of multiple protos
 	allowMerge bool
 
+	// atlasPatch ...
+	atlasPatch bool
+
+	//withPrivateOperations if true exclude all operations with tag "private"
+	withPrivateOperations bool
+
+	// withCustomAnnotations this flag provide you possibility to use custom annotations
+	withCustomAnnotations bool
+
 	// mergeFileName target OpenAPI file name after merge
 	mergeFileName string
 

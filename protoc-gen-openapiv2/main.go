@@ -89,6 +89,7 @@ func main() {
 	reg.SetDisableDefaultErrors(*disableDefaultErrors)
 	reg.SetSimpleOperationIDs(*simpleOperationIDs)
 	reg.SetGenerateUnboundMethods(*generateUnboundMethods)
+	atlasFlags(reg)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
 		return
