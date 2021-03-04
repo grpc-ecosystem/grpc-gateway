@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/antihax/optional v1.0.0
-	github.com/bufbuild/buf v0.37.0
+	github.com/bufbuild/buf v0.39.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/golang/protobuf v1.4.3
