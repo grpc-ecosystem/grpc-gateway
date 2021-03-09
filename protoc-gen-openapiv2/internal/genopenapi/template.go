@@ -135,7 +135,6 @@ func queryParams(message *descriptor.Message, field *descriptor.Field, prefix st
 }
 
 type cycleChecker struct {
-	mu    sync.RWMutex
 	m     map[string]int
 	count int
 }
@@ -150,11 +149,9 @@ func newCycleChecker(recursive int) *cycleChecker {
 // Check returns whether name is still within recursion
 // toleration
 func (c *cycleChecker) Check(name string) bool {
-	c.mu.RLock()
 	count, ok := c.m[name]
 	count = count + 1
 	isCycle := count > c.count
-	c.mu.RUnlock()
 
 	if isCycle {
 		return false
@@ -162,15 +159,11 @@ func (c *cycleChecker) Check(name string) bool {
 
 	// provision map entry if not available
 	if !ok {
-		c.mu.Lock()
 		c.m[name] = 1
-		c.mu.Unlock()
 		return true
 	}
 
-	c.mu.Lock()
 	c.m[name] = count
-	c.mu.Unlock()
 
 	return true
 }
@@ -181,11 +174,9 @@ func (c *cycleChecker) Branch() *cycleChecker {
 		m:     map[string]int{},
 	}
 
-	c.mu.RLock()
 	for k, v := range c.m {
 		copy.m[k] = v
 	}
-	c.mu.RUnlock()
 
 	return copy
 }
@@ -306,7 +297,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 	// Check for cyclical message reference:
 	isOK := cycle.Check(*msg.Name)
 	if !isOK {
-		return nil, fmt.Errorf("recursive types are not allowed for query parameters, cycle found on %q", fieldType)
+		return nil, fmt.Errorf("exceeded recursive count (%d) for query parameter %q", cycle.count, fieldType)
 	}
 
 	// Construct a new map with the message name so a cycle further down the recursive path can be detected.

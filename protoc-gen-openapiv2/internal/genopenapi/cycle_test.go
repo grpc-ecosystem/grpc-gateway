@@ -5,7 +5,6 @@ import (
 )
 
 func TestCycle(t *testing.T) {
-
 	for _, tt := range []struct {
 		max     int
 		attempt int
@@ -39,5 +38,4 @@ func TestCycle(t *testing.T) {
 			t.Errorf("got: %t wanted: %t", final, tt.e)
 		}
 	}
-
 }
