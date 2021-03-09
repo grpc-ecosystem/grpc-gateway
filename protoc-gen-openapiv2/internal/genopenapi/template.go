@@ -120,7 +120,7 @@ func getEnumDefault(enum *descriptor.Enum) string {
 // messageToQueryParameters converts a message to a list of OpenAPI query parameters.
 func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body) (params []openapiParameterObject, err error) {
 	for _, field := range message.Fields {
-		p, err := queryParams(message, field, "", reg, pathParams, body)
+		p, err := queryParams(message, field, "", reg, pathParams, body, reg.GetRecursiveDepth())
 		if err != nil {
 			return nil, err
 		}
@@ -130,17 +130,73 @@ func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Regis
 }
 
 // queryParams converts a field to a list of OpenAPI query parameters recursively through the use of nestedQueryParams.
-func queryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body) (params []openapiParameterObject, err error) {
-	return nestedQueryParams(message, field, prefix, reg, pathParams, body, map[string]bool{})
+func queryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body, recursiveCount int) (params []openapiParameterObject, err error) {
+	return nestedQueryParams(message, field, prefix, reg, pathParams, body, newCycleChecker(recursiveCount))
+}
+
+type cycleChecker struct {
+	mu    sync.RWMutex
+	m     map[string]int
+	count int
+}
+
+func newCycleChecker(recursive int) *cycleChecker {
+	return &cycleChecker{
+		m:     make(map[string]int),
+		count: recursive,
+	}
+}
+
+// Check returns whether name is still within recursion
+// toleration
+func (c *cycleChecker) Check(name string) bool {
+	c.mu.RLock()
+	count, ok := c.m[name]
+	count = count + 1
+	isCycle := count > c.count
+	c.mu.RUnlock()
+
+	if isCycle {
+		return false
+	}
+
+	// provision map entry if not available
+	if !ok {
+		c.mu.Lock()
+		c.m[name] = 1
+		c.mu.Unlock()
+		return true
+	}
+
+	c.mu.Lock()
+	c.m[name] = count
+	c.mu.Unlock()
+
+	return true
+}
+
+func (c *cycleChecker) Branch() *cycleChecker {
+	copy := &cycleChecker{
+		count: c.count,
+		m:     map[string]int{},
+	}
+
+	c.mu.RLock()
+	for k, v := range c.m {
+		copy.m[k] = v
+	}
+	c.mu.RUnlock()
+
+	return copy
 }
 
 // nestedQueryParams converts a field to a list of OpenAPI query parameters recursively.
 // This function is a helper function for queryParams, that keeps track of cyclical message references
 //  through the use of
-//      touched map[string]bool
-// If a cycle is discovered, an error is returned, as cyclical data structures aren't allowed
+//      touched map[string]int
+// If a cycle is discovered, an error is returned, as cyclical data structures are dangerous
 //  in query parameters.
-func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body, touchedIn map[string]bool) (params []openapiParameterObject, err error) {
+func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body, cycle *cycleChecker) (params []openapiParameterObject, err error) {
 	// make sure the parameter is not already listed as a path parameter
 	for _, pathParam := range pathParams {
 		if pathParam.Target == field {
@@ -248,19 +304,15 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 	}
 
 	// Check for cyclical message reference:
-	isCycle := touchedIn[*msg.Name]
-	if isCycle {
+	isOK := cycle.Check(*msg.Name)
+	if !isOK {
 		return nil, fmt.Errorf("recursive types are not allowed for query parameters, cycle found on %q", fieldType)
 	}
 
 	// Construct a new map with the message name so a cycle further down the recursive path can be detected.
 	// Do not keep anything in the original touched reference and do not pass that reference along.  This will
 	// prevent clobbering adjacent records while recursing.
-	touchedOut := make(map[string]bool)
-	for k, v := range touchedIn {
-		touchedOut[k] = v
-	}
-	touchedOut[*msg.Name] = true
+	touchedOut := cycle.Branch()
 
 	for _, nestedField := range msg.Fields {
 		var fieldName string

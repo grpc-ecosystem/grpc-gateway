@@ -109,6 +109,9 @@ type Registry struct {
 
 	// omitPackageDoc, if false, causes a package comment to be included in the generated code.
 	omitPackageDoc bool
+
+	// recursiveDepth sets the maximum depth of a field parameter
+	recursiveDepth int
 }
 
 type repeatedFieldSeparator struct {
@@ -134,6 +137,7 @@ func NewRegistry() *Registry {
 		messageOptions: make(map[string]*options.Schema),
 		serviceOptions: make(map[string]*options.Tag),
 		fieldOptions:   make(map[string]*options.JSONSchema),
+		recursiveDepth: 1000,
 	}
 }
 
@@ -354,6 +358,16 @@ func (r *Registry) SetPrefix(prefix string) {
 // SetStandalone registers standalone flag to control package prefix
 func (r *Registry) SetStandalone(standalone bool) {
 	r.standalone = standalone
+}
+
+// SetRecursiveDepth records the max recursion count
+func (r *Registry) SetRecursiveDepth(count int) {
+	r.recursiveDepth = count
+}
+
+// GetRecursiveDepth returns the max recursion count
+func (r *Registry) GetRecursiveDepth() int {
+	return r.recursiveDepth
 }
 
 // ReserveGoPackageAlias reserves the unique alias of go package.
