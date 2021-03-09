@@ -34,7 +34,10 @@ go_library(
 go_test(
     name = "go_default_test",
     size = "small",
-    srcs = ["template_test.go"],
+    srcs = [
+        "cycle_test.go",
+        "template_test.go",
+    ],
     embed = [":go_default_library"],
     deps = [
         "//internal/descriptor:go_default_library",

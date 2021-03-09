@@ -33,6 +33,7 @@ var (
 	simpleOperationIDs         = flag.Bool("simple_operation_ids", false, "whether to remove the service prefix in the operationID generation. Can introduce duplicate operationIDs, use with caution.")
 	openAPIConfiguration       = flag.String("openapi_configuration", "", "path to file which describes the OpenAPI Configuration in YAML format")
 	generateUnboundMethods     = flag.Bool("generate_unbound_methods", false, "generate swagger metadata even for RPC methods that have no HttpRule annotation")
+	recursiveDepth             = flag.Int("recursive-depth", 1000, "maximum recursion count allowed for a field type")
 )
 
 // Variables set by goreleaser at build time
@@ -89,6 +90,7 @@ func main() {
 	reg.SetDisableDefaultErrors(*disableDefaultErrors)
 	reg.SetSimpleOperationIDs(*simpleOperationIDs)
 	reg.SetGenerateUnboundMethods(*generateUnboundMethods)
+	reg.SetRecursiveDepth(*recursiveDepth)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
 		return

@@ -36,6 +36,11 @@ type wrapper struct {
 	swagger  *openapiSwaggerObject
 }
 
+type GeneratorOptions struct {
+	Registry       *descriptor.Registry
+	RecursiveDepth int
+}
+
 // New returns a new generator which generates grpc gateway files.
 func New(reg *descriptor.Registry) gen.Generator {
 	return &generator{reg: reg}
