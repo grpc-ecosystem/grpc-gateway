@@ -7,8 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/protobuf/ptypes"
-	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
@@ -16,6 +14,9 @@ import (
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func BenchmarkPopulateQueryParameters(b *testing.B) {
@@ -86,14 +87,11 @@ func BenchmarkPopulateQueryParameters(b *testing.B) {
 func TestPopulateParameters(t *testing.T) {
 	timeT := time.Date(2016, time.December, 15, 12, 23, 32, 49, time.UTC)
 	timeStr := timeT.Format(time.RFC3339Nano)
-	timePb, err := ptypes.TimestampProto(timeT)
-	if err != nil {
-		t.Fatalf("Couldn't setup timestamp in Protobuf format: %v", err)
-	}
+	timePb := timestamppb.New(timeT)
 
 	durationT := 13 * time.Hour
 	durationStr := durationT.String()
-	durationPb := ptypes.DurationProto(durationT)
+	durationPb := durationpb.New(durationT)
 
 	fieldmaskStr := "float_value,double_value"
 	fieldmaskPb := &field_mask.FieldMask{Paths: []string{"float_value", "double_value"}}

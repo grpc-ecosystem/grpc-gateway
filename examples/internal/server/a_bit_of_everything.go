@@ -8,9 +8,6 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	durationpb "github.com/golang/protobuf/ptypes/duration"
-	emptypb "github.com/golang/protobuf/ptypes/empty"
-	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
 	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
@@ -23,6 +20,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 // Implements of ABitOfEverythingServiceServer
