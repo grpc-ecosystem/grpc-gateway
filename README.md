@@ -273,7 +273,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    google/api/annotations.proto
    google/api/field_behaviour.proto
    google/api/http.proto
-   google/api/httbody.proto
+   google/api/httpbody.proto
    ```
 
    Here's what a `protoc` execution might look like:
