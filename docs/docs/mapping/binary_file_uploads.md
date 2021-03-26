@@ -42,6 +42,7 @@ func handleBinaryFileUpload(w http.ResponseWriter, rq *http.Request, params map[
 	f, header, err := rq.FormFile("attachment")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to get file 'attachment': %s", err.Error()), http.StatusBadRequest)
+		return
 	}
 	defer f.Close()
 
