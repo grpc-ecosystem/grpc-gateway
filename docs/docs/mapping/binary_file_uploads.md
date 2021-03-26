@@ -55,7 +55,7 @@ func handleBinaryFileUpload(w http.ResponseWriter, rq *http.Request, params map[
 	}
 
 	//
-	// Now do something with the bytes in the `buffer`
+	// Now do something with the io.Reader in `f`, i.e. read it into a buffer or stream it to a gRPC client side stream.
 	//
 
 	w.WriteHeader(http.StatusOK)
