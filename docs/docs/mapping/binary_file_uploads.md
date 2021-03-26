@@ -36,7 +36,8 @@ func handleBinaryFileUpload(w http.ResponseWriter, rq *http.Request, params map[
   
 	err := r.ParseForm()
 	if err != nil {
-		panic(err)
+		http.Error(w, fmt.Sprintf("failed to parse form: %s", err.Error()), http.StatusBadRequest)
+		return
 	}
 
 	f, header, err := rq.FormFile("attachment")
