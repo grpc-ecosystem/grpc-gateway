@@ -33,7 +33,6 @@ And then in your handler you can do something like:
 
 ```go
 func handleBinaryFileUpload(w http.ResponseWriter, rq *http.Request, params map[string]string) {
-  
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to parse form: %s", err.Error()), http.StatusBadRequest)
@@ -42,22 +41,13 @@ func handleBinaryFileUpload(w http.ResponseWriter, rq *http.Request, params map[
 
 	f, header, err := rq.FormFile("attachment")
 	if err != nil {
-		panic(err)
+		http.Error(w, fmt.Sprintf("failed to get file 'attachment': %s", err.Error()), http.StatusBadRequest)
 	}
 	defer f.Close()
 
-	// header contains filename etc if you need this
-
-	var buffer bytes.Buffer
-	_, err = io.Copy(buffer, f)
-	if err != nil {
-		panic(err)
-	}
-
 	//
 	// Now do something with the io.Reader in `f`, i.e. read it into a buffer or stream it to a gRPC client side stream.
+	// Also `header` will contain the filename, size etc of the original file.
 	//
-
-	w.WriteHeader(http.StatusOK)
 }
 ```
