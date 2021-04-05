@@ -3341,7 +3341,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmptyBody(ctx context.Context, name string, body ExamplepbBody) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmptyBody(ctx context.Context, name string, body interface{}) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -3654,7 +3654,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx context.Context, uuid string, body ExamplepbABitOfEverything) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx context.Context, uuid string, body ABitOfEverything) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}

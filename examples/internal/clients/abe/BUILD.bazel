@@ -11,6 +11,7 @@ go_library(
         "client.go",
         "configuration.go",
         "enum_helper.go",
+        "model_a_bit_of_everything.go",
         "model_a_bit_of_everything_nested.go",
         "model_examplepb_a_bit_of_everything.go",
         "model_examplepb_a_bit_of_everything_repeated.go",
