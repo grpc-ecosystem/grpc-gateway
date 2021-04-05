@@ -3337,11 +3337,10 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceOverwriteResp
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param name
- * @param body
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmptyBody(ctx context.Context, name string, body interface{}) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmptyBody(ctx context.Context, name string) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -3375,8 +3374,6 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmpty
 	if localVarHttpHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
-	// body params
-	localVarPostBody = &body
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
