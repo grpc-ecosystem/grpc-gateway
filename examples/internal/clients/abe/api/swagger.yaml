@@ -2725,7 +2725,8 @@ definitions:
     description: "Intentionaly complicated message type to cover many features of\
       \ Protobuf."
     example:
-      uuid: "0cf361e1-4b44-483d-a159-54dabdf7e814"
+      int64_value: 12
+      double_value: 12.3
   examplepbABitOfEverythingRepeated:
     type: "object"
     properties:
@@ -3149,7 +3150,8 @@ definitions:
     description: "Intentionaly complicated message type to cover many features of\
       \ Protobuf."
     example:
-      uuid: "0cf361e1-4b44-483d-a159-54dabdf7e814"
+      int64_value: 12
+      double_value: 12.3
 externalDocs:
   description: "More about gRPC-Gateway"
   url: "https://github.com/grpc-ecosystem/grpc-gateway"
