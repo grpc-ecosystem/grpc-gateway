@@ -986,11 +986,10 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 								}
 							}
 							if len(bodyExcludedFields) != 0 {
-								msgDef := renderMessageAsDefinition(meth.RequestType, reg, customRefs, bodyExcludedFields)
-								if msgDef.Properties == nil || len(*msgDef.Properties) == 0 {
-									return fmt.Errorf("not possible to create a schema for object with 0 properties for message: %s", *meth.RequestType)
+								schema = renderMessageAsDefinition(meth.RequestType, reg, customRefs, bodyExcludedFields)
+								if schema.Properties == nil || len(*schema.Properties) == 0 {
+									glog.Errorf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
 								}
-								schema = msgDef
 							} else {
 								err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg)
 								if err != nil {

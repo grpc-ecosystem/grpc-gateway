@@ -2349,6 +2349,12 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "Name"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+        x-exportParamName: "Body"
       responses:
         200:
           description: "A successful response."

@@ -641,7 +641,8 @@ service ABitOfEverythingService {
 	}
 	rpc PostWithEmptyBody(Body) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
-			post: "/v2/example/postwithemptybody/{name}"
+			post: "/v2/example/postwithemptybody/{name}",
+			body: "*"
 		};
 	}
 	rpc CheckGetQueryParams(ABitOfEverything) returns (ABitOfEverything) {
