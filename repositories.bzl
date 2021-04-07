@@ -191,8 +191,8 @@ def go_repositories():
     go_repository(
         name = "com_github_envoyproxy_go_control_plane",
         importpath = "github.com/envoyproxy/go-control-plane",
-        sum = "h1:EmNYJhPYy0pOFjCx2PrgtaBXmee0iUX9hLlxE1xHOJE=",
-        version = "v0.9.9-0.20201210154907-fd9021fe5dad",
+        sum = "h1:QyzYnTnPE15SQyUeqU6qLbWxMkwyAyu+vGksa0b7j00=",
+        version = "v0.9.9-0.20210217033140-668b12f5399d",
     )
     go_repository(
         name = "com_github_envoyproxy_protoc_gen_validate",
@@ -1055,8 +1055,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_grpc",
         importpath = "google.golang.org/grpc",
-        sum = "h1:cmUfbeGKnz9+2DD/UYsMQXeqbHZqZDs4eQwW0sFOpBY=",
-        version = "v1.36.1",
+        sum = "h1:uSZWeQJX5j11bIQ4AJoj+McDBo29cY1MCoC1wO3ts+c=",
+        version = "v1.37.0",
     )
 
     go_repository(
