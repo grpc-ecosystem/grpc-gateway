@@ -118,14 +118,14 @@ func DefaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marsh
 		w.Header().Set("Transfer-Encoding", "chunked")
 	}
 
+	if wantsTrailers {
+		handleForwardResponseTrailer(w, md)
+	}
+
 	st := HTTPStatusFromCode(s.Code())
 	w.WriteHeader(st)
 	if _, err := w.Write(buf); err != nil {
 		grpclog.Infof("Failed to write response: %v", err)
-	}
-
-	if wantsTrailers {
-		handleForwardResponseTrailer(w, md)
 	}
 }
 

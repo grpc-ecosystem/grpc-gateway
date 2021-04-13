@@ -159,11 +159,10 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		return
 	}
 
+	handleForwardResponseTrailer(w, md)
 	if _, err = w.Write(buf); err != nil {
 		grpclog.Infof("Failed to write response: %v", err)
 	}
-
-	handleForwardResponseTrailer(w, md)
 }
 
 func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, resp proto.Message, opts []func(context.Context, http.ResponseWriter, proto.Message) error) error {
