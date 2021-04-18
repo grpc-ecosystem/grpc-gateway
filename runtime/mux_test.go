@@ -339,7 +339,7 @@ func TestMuxServeHTTP(t *testing.T) {
 			mux := runtime.NewServeMux(opts...)
 			for _, p := range spec.patterns {
 				func(p stubPattern) {
-					pat, err := runtime.NewPattern(1, p.ops, p.pool, p.verb)
+					pat, err := runtime.NewPattern(1, p.ops, p.pool, p.verb, false)
 					if err != nil {
 						t.Fatalf("runtime.NewPattern(1, %#v, %#v, %q) failed with %v; want success", p.ops, p.pool, p.verb, err)
 					}

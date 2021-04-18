@@ -19,6 +19,7 @@ func TestNewPattern(t *testing.T) {
 		ops  []int
 		pool []string
 		verb string
+		caseSensitive bool
 
 		stackSizeWant, tailLenWant int
 	}{
@@ -109,7 +110,7 @@ func TestNewPattern(t *testing.T) {
 			tailLenWant:   0,
 		},
 	} {
-		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
+		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb, spec.caseSensitive)
 		if err != nil {
 			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, spec.verb, err)
 			continue
@@ -176,7 +177,7 @@ func TestNewPatternWithWrongOp(t *testing.T) {
 			pool: []string{"abc"},
 		},
 	} {
-		_, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
+		_, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb, false)
 		if err == nil {
 			t.Errorf("NewPattern(%d, %v, %q, %q) succeeded; want failure with %v", validVersion, spec.ops, spec.pool, spec.verb, ErrInvalidPattern)
 			continue
@@ -202,7 +203,7 @@ func TestNewPatternWithStackUnderflow(t *testing.T) {
 			pool: []string{"abc"},
 		},
 	} {
-		_, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
+		_, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb, false)
 		if err == nil {
 			t.Errorf("NewPattern(%d, %v, %q, %q) succeeded; want failure with %v", validVersion, spec.ops, spec.pool, spec.verb, ErrInvalidPattern)
 			continue
@@ -335,7 +336,7 @@ func TestMatch(t *testing.T) {
 			notMatch: []string{"v1", "LOCK"},
 		},
 	} {
-		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
+		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb, false)
 		if err != nil {
 			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, spec.verb, err)
 			continue
@@ -478,7 +479,7 @@ func TestMatchWithBinding(t *testing.T) {
 			},
 		},
 	} {
-		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
+		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb, false)
 		if err != nil {
 			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, spec.verb, err)
 			continue
@@ -568,7 +569,7 @@ func TestPatternString(t *testing.T) {
 			want: "/v1/{bucket_name=buckets/*}/{name=objects/**/.ext}/tail",
 		},
 	} {
-		p, err := NewPattern(validVersion, spec.ops, spec.pool, "")
+		p, err := NewPattern(validVersion, spec.ops, spec.pool, "", false)
 		if err != nil {
 			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, "", err)
 			continue
@@ -578,7 +579,7 @@ func TestPatternString(t *testing.T) {
 		}
 
 		verb := "LOCK"
-		p, err = NewPattern(validVersion, spec.ops, spec.pool, verb)
+		p, err = NewPattern(validVersion, spec.ops, spec.pool, verb, false)
 		if err != nil {
 			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, verb, err)
 			continue

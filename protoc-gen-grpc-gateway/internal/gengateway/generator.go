@@ -24,11 +24,12 @@ type generator struct {
 	registerFuncSuffix string
 	allowPatchFeature  bool
 	standalone         bool
+	ignoreCase         bool
 }
 
 // New returns a new generator which generates grpc gateway files.
 func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix string,
-	allowPatchFeature, standalone bool) gen.Generator {
+	allowPatchFeature, standalone bool, ignoreCase bool) gen.Generator {
 	var imports []descriptor.GoPackage
 	for _, pkgpath := range []string{
 		"context",
@@ -67,6 +68,7 @@ func New(reg *descriptor.Registry, useRequestContext bool, registerFuncSuffix st
 		registerFuncSuffix: registerFuncSuffix,
 		allowPatchFeature:  allowPatchFeature,
 		standalone:         standalone,
+		ignoreCase:         ignoreCase,
 	}
 }
 

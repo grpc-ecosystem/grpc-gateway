@@ -236,9 +236,9 @@ func RegisterServiceBHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 }
 
 var (
-	pattern_ServiceB_MethodOne_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "b", "1"}, ""))
+	pattern_ServiceB_MethodOne_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "b", "1"}, "", false))
 
-	pattern_ServiceB_MethodTwo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "b", "2"}, ""))
+	pattern_ServiceB_MethodTwo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "b", "2"}, "", false))
 )
 
 var (

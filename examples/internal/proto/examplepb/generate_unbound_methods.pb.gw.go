@@ -313,11 +313,11 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerClient(ctx context.Context,
 }
 
 var (
-	pattern_GenerateUnboundMethodsEchoService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService", "Echo"}, ""))
+	pattern_GenerateUnboundMethodsEchoService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService", "Echo"}, "", false))
 
-	pattern_GenerateUnboundMethodsEchoService_EchoBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService", "EchoBody"}, ""))
+	pattern_GenerateUnboundMethodsEchoService_EchoBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService", "EchoBody"}, "", false))
 
-	pattern_GenerateUnboundMethodsEchoService_EchoDelete_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService", "EchoDelete"}, ""))
+	pattern_GenerateUnboundMethodsEchoService_EchoDelete_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService", "EchoDelete"}, "", false))
 )
 
 var (

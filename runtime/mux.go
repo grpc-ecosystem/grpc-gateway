@@ -185,7 +185,7 @@ func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) er
 		return fmt.Errorf("parsing path pattern: %w", err)
 	}
 	tp := compiler.Compile()
-	pattern, err := NewPattern(tp.Version, tp.OpCodes, tp.Pool, tp.Verb)
+	pattern, err := NewPattern(tp.Version, tp.OpCodes, tp.Pool, tp.Verb, false)
 	if err != nil {
 		return fmt.Errorf("creating new pattern: %w", err)
 	}

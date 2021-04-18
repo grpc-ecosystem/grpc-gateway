@@ -300,9 +300,9 @@ func RegisterNonStandardServiceHandlerClient(ctx context.Context, mux *runtime.S
 }
 
 var (
-	pattern_NonStandardService_Update_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "non_standard", "update"}, ""))
+	pattern_NonStandardService_Update_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "non_standard", "update"}, "", false))
 
-	pattern_NonStandardService_UpdateWithJSONNames_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "non_standard", "update_with_json_names"}, ""))
+	pattern_NonStandardService_UpdateWithJSONNames_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "non_standard", "update_with_json_names"}, "", false))
 )
 
 var (

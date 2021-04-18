@@ -931,27 +931,27 @@ func RegisterWrappersServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 }
 
 var (
-	pattern_WrappersService_Create_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "wrappers"}, ""))
+	pattern_WrappersService_Create_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "wrappers"}, "", false))
 
-	pattern_WrappersService_CreateStringValue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testString"}, ""))
+	pattern_WrappersService_CreateStringValue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testString"}, "", false))
 
-	pattern_WrappersService_CreateInt32Value_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testInt32"}, ""))
+	pattern_WrappersService_CreateInt32Value_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testInt32"}, "", false))
 
-	pattern_WrappersService_CreateInt64Value_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testInt64"}, ""))
+	pattern_WrappersService_CreateInt64Value_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testInt64"}, "", false))
 
-	pattern_WrappersService_CreateFloatValue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testFloat"}, ""))
+	pattern_WrappersService_CreateFloatValue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testFloat"}, "", false))
 
-	pattern_WrappersService_CreateDoubleValue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testDouble"}, ""))
+	pattern_WrappersService_CreateDoubleValue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testDouble"}, "", false))
 
-	pattern_WrappersService_CreateBoolValue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testBool"}, ""))
+	pattern_WrappersService_CreateBoolValue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testBool"}, "", false))
 
-	pattern_WrappersService_CreateUInt32Value_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testUint32"}, ""))
+	pattern_WrappersService_CreateUInt32Value_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testUint32"}, "", false))
 
-	pattern_WrappersService_CreateUInt64Value_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testUint64"}, ""))
+	pattern_WrappersService_CreateUInt64Value_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testUint64"}, "", false))
 
-	pattern_WrappersService_CreateBytesValue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testBytes"}, ""))
+	pattern_WrappersService_CreateBytesValue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testBytes"}, "", false))
 
-	pattern_WrappersService_CreateEmpty_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testEmpty"}, ""))
+	pattern_WrappersService_CreateEmpty_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "testEmpty"}, "", false))
 )
 
 var (

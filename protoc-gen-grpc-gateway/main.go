@@ -34,6 +34,7 @@ var (
 	versionFlag                = flag.Bool("version", false, "print the current version")
 	warnOnUnboundMethods       = flag.Bool("warn_on_unbound_methods", false, "emit a warning message if an RPC method has no HttpRule annotation")
 	generateUnboundMethods     = flag.Bool("generate_unbound_methods", false, "generate proxy methods even for RPC methods that have no HttpRule annotation")
+	ignoreCase                 = flag.Bool("ignore_case", false, "ignore case in route pattern matching")
 )
 
 // Variables set by goreleaser at build time
@@ -64,7 +65,7 @@ func main() {
 
 		codegenerator.SetSupportedFeaturesOnPluginGen(gen)
 
-		generator := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *allowPatchFeature, *standalone)
+		generator := gengateway.New(reg, *useRequestContext, *registerFuncSuffix, *allowPatchFeature, *standalone, *ignoreCase)
 
 		glog.V(1).Infof("Parsing code generator request")
 

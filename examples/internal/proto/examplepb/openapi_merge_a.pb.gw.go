@@ -359,9 +359,9 @@ func RegisterServiceAHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 }
 
 var (
-	pattern_ServiceA_MethodOne_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a", "1"}, ""))
+	pattern_ServiceA_MethodOne_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a", "1"}, "", false))
 
-	pattern_ServiceA_MethodTwo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a", "2"}, ""))
+	pattern_ServiceA_MethodTwo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "a", "2"}, "", false))
 )
 
 var (
@@ -452,9 +452,9 @@ func RegisterServiceCHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 }
 
 var (
-	pattern_ServiceC_MethodOne_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "c", "1"}, ""))
+	pattern_ServiceC_MethodOne_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "c", "1"}, "", false))
 
-	pattern_ServiceC_MethodTwo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "c", "2"}, ""))
+	pattern_ServiceC_MethodTwo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "example", "c", "2"}, "", false))
 )
 
 var (

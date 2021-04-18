@@ -2396,57 +2396,57 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 }
 
 var (
-	pattern_FlowCombination_RpcEmptyRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "empty"}, ""))
+	pattern_FlowCombination_RpcEmptyRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "empty"}, "", false))
 
-	pattern_FlowCombination_RpcEmptyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "empty", "stream"}, ""))
+	pattern_FlowCombination_RpcEmptyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "empty", "stream"}, "", false))
 
-	pattern_FlowCombination_StreamEmptyRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"stream", "empty", "rpc"}, ""))
+	pattern_FlowCombination_StreamEmptyRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"stream", "empty", "rpc"}, "", false))
 
-	pattern_FlowCombination_StreamEmptyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"stream", "empty"}, ""))
+	pattern_FlowCombination_StreamEmptyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"stream", "empty"}, "", false))
 
-	pattern_FlowCombination_RpcBodyRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "body"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "body"}, "", false))
 
-	pattern_FlowCombination_RpcBodyRpc_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 0}, []string{"rpc", "path", "a", "b", "c"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 0}, []string{"rpc", "path", "a", "b", "c"}, "", false))
 
-	pattern_FlowCombination_RpcBodyRpc_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "query"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 0}, []string{"rpc", "query"}, "", false))
 
-	pattern_FlowCombination_RpcBodyRpc_3 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 0}, []string{"rpc", "body", "path", "a", "b"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_3 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 0}, []string{"rpc", "body", "path", "a", "b"}, "", false))
 
-	pattern_FlowCombination_RpcBodyRpc_4 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0}, []string{"rpc", "body", "query"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_4 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 0}, []string{"rpc", "body", "query"}, "", false))
 
-	pattern_FlowCombination_RpcBodyRpc_5 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 0}, []string{"rpc", "body", "path", "a", "query"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_5 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 0}, []string{"rpc", "body", "path", "a", "query"}, "", false))
 
-	pattern_FlowCombination_RpcBodyRpc_6 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 0}, []string{"rpc", "path", "a", "query"}, ""))
+	pattern_FlowCombination_RpcBodyRpc_6 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 0}, []string{"rpc", "path", "a", "query"}, "", false))
 
-	pattern_FlowCombination_RpcPathSingleNestedRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested", "a.str"}, ""))
+	pattern_FlowCombination_RpcPathSingleNestedRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested", "a.str"}, "", false))
 
-	pattern_FlowCombination_RpcPathNestedRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 2, 0}, []string{"rpc", "path-nested", "a.str", "b"}, ""))
+	pattern_FlowCombination_RpcPathNestedRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 2, 0}, []string{"rpc", "path-nested", "a.str", "b"}, "", false))
 
-	pattern_FlowCombination_RpcPathNestedRpc_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested", "a.str"}, ""))
+	pattern_FlowCombination_RpcPathNestedRpc_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested", "a.str"}, "", false))
 
-	pattern_FlowCombination_RpcPathNestedRpc_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested", "a.str"}, ""))
+	pattern_FlowCombination_RpcPathNestedRpc_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested", "a.str"}, "", false))
 
-	pattern_FlowCombination_RpcBodyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "body", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "body", "stream"}, "", false))
 
-	pattern_FlowCombination_RpcBodyStream_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"rpc", "path", "a", "b", "c", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"rpc", "path", "a", "b", "c", "stream"}, "", false))
 
-	pattern_FlowCombination_RpcBodyStream_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "query", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "query", "stream"}, "", false))
 
-	pattern_FlowCombination_RpcBodyStream_3 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"rpc", "body", "path", "a", "b", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_3 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"rpc", "body", "path", "a", "b", "stream"}, "", false))
 
-	pattern_FlowCombination_RpcBodyStream_4 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"rpc", "body", "query", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_4 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"rpc", "body", "query", "stream"}, "", false))
 
-	pattern_FlowCombination_RpcBodyStream_5 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5}, []string{"rpc", "body", "path", "a", "query", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_5 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 2, 5}, []string{"rpc", "body", "path", "a", "query", "stream"}, "", false))
 
-	pattern_FlowCombination_RpcBodyStream_6 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"rpc", "path", "a", "query", "stream"}, ""))
+	pattern_FlowCombination_RpcBodyStream_6 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"rpc", "path", "a", "query", "stream"}, "", false))
 
-	pattern_FlowCombination_RpcPathSingleNestedStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested", "a.str", "stream"}, ""))
+	pattern_FlowCombination_RpcPathSingleNestedStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested", "a.str", "stream"}, "", false))
 
-	pattern_FlowCombination_RpcPathNestedStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"rpc", "path-nested", "a.str", "b", "stream"}, ""))
+	pattern_FlowCombination_RpcPathNestedStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"rpc", "path-nested", "a.str", "b", "stream"}, "", false))
 
-	pattern_FlowCombination_RpcPathNestedStream_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested", "a.str", "stream"}, ""))
+	pattern_FlowCombination_RpcPathNestedStream_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested", "a.str", "stream"}, "", false))
 
-	pattern_FlowCombination_RpcPathNestedStream_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested", "a.str", "stream"}, ""))
+	pattern_FlowCombination_RpcPathNestedStream_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested", "a.str", "stream"}, "", false))
 )
 
 var (

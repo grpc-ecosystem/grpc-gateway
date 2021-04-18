@@ -36,6 +36,8 @@ type Pattern struct {
 	tailLen int
 	// verb is the VERB part of the path pattern. It is empty if the pattern does not have VERB part.
 	verb string
+	// caseSensitive defines whether the pattern matching is caseSensitive or not
+	caseSensitive bool
 }
 
 // NewPattern returns a new Pattern from the given definition values.
@@ -43,7 +45,7 @@ type Pattern struct {
 // "verb" is the verb part of the pattern. It is empty if the pattern does not have the part.
 // "version" must be 1 for now.
 // It returns an error if the given definition is invalid.
-func NewPattern(version int, ops []int, pool []string, verb string) (Pattern, error) {
+func NewPattern(version int, ops []int, pool []string, verb string, caseSensitive bool) (Pattern, error) {
 	if version != 1 {
 		grpclog.Infof("unsupported version: %d", version)
 		return Pattern{}, ErrInvalidPattern
@@ -129,6 +131,7 @@ func NewPattern(version int, ops []int, pool []string, verb string) (Pattern, er
 		stacksize: maxstack,
 		tailLen:   tailLen,
 		verb:      verb,
+		caseSensitive: caseSensitive,
 	}, nil
 }
 
