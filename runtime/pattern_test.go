@@ -19,7 +19,7 @@ func TestNewPattern(t *testing.T) {
 		ops  []int
 		pool []string
 		verb string
-		caseSensitive bool
+		ignoreCase bool
 
 		stackSizeWant, tailLenWant int
 	}{
@@ -110,7 +110,7 @@ func TestNewPattern(t *testing.T) {
 			tailLenWant:   0,
 		},
 	} {
-		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb, spec.caseSensitive)
+		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb, spec.ignoreCase)
 		if err != nil {
 			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, spec.verb, err)
 			continue
@@ -220,6 +220,7 @@ func TestMatch(t *testing.T) {
 		ops  []int
 		pool []string
 		verb string
+		ignoreCase bool
 
 		match    []string
 		notMatch []string
@@ -326,6 +327,39 @@ func TestMatch(t *testing.T) {
 				"v2/b",
 				"v2/b/my-bucket",
 				"v2/b/my-bucket/o",
+				// case sensitive
+				"V2/b/my-bucket/o/obj",
+				"v2/b/our-bucket/O/obj",
+			},
+		},
+		{
+			ignoreCase: true,
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpLitPush), 1,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 2,
+				int(utilities.OpCapture), 2,
+				int(utilities.OpLitPush), 3,
+				int(utilities.OpPush), anything,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 4,
+			},
+			pool: []string{"v2", "b", "name", "o", "oname"},
+			match: []string{
+				"v2/b/my-bucket/o/obj",
+				"v2/b/our-bucket/o/obj",
+				"V2/b/my-bucket/O/obj",
+				"V2/b/my-bucket/O/dir",
+			},
+			notMatch: []string{
+				"",
+				"v2",
+				"v2/b",
+				"v2/b/my-bucket",
+				"v2/b/my-bucket/o",
+				"V2/b/my-bucket",
+				"V2/b/my-bucket/o",
 			},
 		},
 		{
@@ -336,7 +370,7 @@ func TestMatch(t *testing.T) {
 			notMatch: []string{"v1", "LOCK"},
 		},
 	} {
-		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb, false)
+		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb, spec.ignoreCase)
 		if err != nil {
 			t.Errorf("NewPattern(%d, %v, %q, %q) failed with %v; want success", validVersion, spec.ops, spec.pool, spec.verb, err)
 			continue

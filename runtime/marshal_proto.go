@@ -1,9 +1,8 @@
 package runtime
 
 import (
-	"io"
-
 	"errors"
+	"io"
 	"io/ioutil"
 
 	"google.golang.org/protobuf/proto"
