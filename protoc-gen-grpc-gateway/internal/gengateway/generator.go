@@ -131,6 +131,7 @@ func (g *generator) generate(file *descriptor.File) (string, error) {
 		UseRequestContext:  g.useRequestContext,
 		RegisterFuncSuffix: g.registerFuncSuffix,
 		AllowPatchFeature:  g.allowPatchFeature,
+		IgnoreCase:         g.ignoreCase,
 	}
 	if g.reg != nil {
 		params.OmitPackageDoc = g.reg.GetOmitPackageDoc()

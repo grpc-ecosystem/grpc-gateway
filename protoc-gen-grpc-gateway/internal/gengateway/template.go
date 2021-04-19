@@ -20,6 +20,7 @@ type param struct {
 	RegisterFuncSuffix string
 	AllowPatchFeature  bool
 	OmitPackageDoc     bool
+	IgnoreCase         bool
 }
 
 type binding struct {
@@ -146,6 +147,7 @@ type trailerParams struct {
 	Services           []*descriptor.Service
 	UseRequestContext  bool
 	RegisterFuncSuffix string
+	IgnoreCase         bool
 }
 
 func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
@@ -201,6 +203,7 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 		Services:           targetServices,
 		UseRequestContext:  p.UseRequestContext,
 		RegisterFuncSuffix: p.RegisterFuncSuffix,
+		IgnoreCase: p.IgnoreCase,
 	}
 	// Local
 	if err := localTrailerTemplate.Execute(w, tp); err != nil {
@@ -628,6 +631,7 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context,
 
 	trailerTemplate = template.Must(template.New("trailer").Parse(`
 {{$UseRequestContext := .UseRequestContext}}
+{{$IgnoreCase := .IgnoreCase}}
 {{range $svc := .Services}}
 // Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}FromEndpoint is same as Register{{$svc.GetName}}{{$.RegisterFuncSuffix}} but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
@@ -727,7 +731,7 @@ func (m response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}) XXX_ResponseBody(
 var (
 	{{range $m := $svc.Methods}}
 	{{range $b := $m.Bindings}}
-	pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} = runtime.MustPattern(runtime.NewPattern({{$b.PathTmpl.Version}}, {{$b.PathTmpl.OpCodes | printf "%#v"}}, {{$b.PathTmpl.Pool | printf "%#v"}}, {{$b.PathTmpl.Verb | printf "%q"}}, false))
+	pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} = runtime.MustPattern(runtime.NewPattern({{$b.PathTmpl.Version}}, {{$b.PathTmpl.OpCodes | printf "%#v"}}, {{$b.PathTmpl.Pool | printf "%#v"}}, {{$b.PathTmpl.Verb | printf "%q"}}, {{$IgnoreCase}}))
 	{{end}}
 	{{end}}
 )
