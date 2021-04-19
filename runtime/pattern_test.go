@@ -16,9 +16,9 @@ const (
 
 func TestNewPattern(t *testing.T) {
 	for _, spec := range []struct {
-		ops  []int
-		pool []string
-		verb string
+		ops        []int
+		pool       []string
+		verb       string
 		ignoreCase bool
 
 		stackSizeWant, tailLenWant int
@@ -217,9 +217,9 @@ func TestNewPatternWithStackUnderflow(t *testing.T) {
 
 func TestMatch(t *testing.T) {
 	for _, spec := range []struct {
-		ops  []int
-		pool []string
-		verb string
+		ops        []int
+		pool       []string
+		verb       string
 		ignoreCase bool
 
 		match    []string

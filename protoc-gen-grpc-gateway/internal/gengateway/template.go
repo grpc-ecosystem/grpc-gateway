@@ -203,7 +203,7 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 		Services:           targetServices,
 		UseRequestContext:  p.UseRequestContext,
 		RegisterFuncSuffix: p.RegisterFuncSuffix,
-		IgnoreCase: p.IgnoreCase,
+		IgnoreCase:         p.IgnoreCase,
 	}
 	// Local
 	if err := localTrailerTemplate.Execute(w, tp); err != nil {

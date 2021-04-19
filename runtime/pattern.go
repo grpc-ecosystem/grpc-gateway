@@ -125,12 +125,12 @@ func NewPattern(version int, ops []int, pool []string, verb string, ignoreCase b
 		typedOps = append(typedOps, op)
 	}
 	return Pattern{
-		ops:       typedOps,
-		pool:      pool,
-		vars:      vars,
-		stacksize: maxstack,
-		tailLen:   tailLen,
-		verb:      verb,
+		ops:        typedOps,
+		pool:       pool,
+		vars:       vars,
+		stacksize:  maxstack,
+		tailLen:    tailLen,
+		verb:       verb,
 		ignoreCase: ignoreCase,
 	}, nil
 }
