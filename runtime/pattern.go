@@ -173,7 +173,7 @@ func (p Pattern) Match(components []string, verb string) (map[string]string, err
 			}
 			c := components[pos]
 			if op.code == utilities.OpLitPush {
-				if lit := p.pool[op.operand]; p.literalEqual(c, lit) {
+				if lit := p.pool[op.operand]; !p.literalEqual(c, lit) {
 					return nil, ErrNotMatch
 				}
 			}
