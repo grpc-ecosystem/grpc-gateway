@@ -3,6 +3,7 @@ package runtime
 import (
 	"bytes"
 	"fmt"
+	"google.golang.org/protobuf/types/known/anypb"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -158,6 +159,13 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 				"nested_annotation.amount",
 				"nested",
 			),
+		},
+
+		{
+			name:     "protobuf-any",
+			msg:      &anypb.Any{},
+			input:    `{"@type": "xx.xx/examplepb.NestedOuter", "one":{"two":{"three":{"a":true, "b":false}}}}`,
+			expected: newFieldMask("type_url", "value"),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
