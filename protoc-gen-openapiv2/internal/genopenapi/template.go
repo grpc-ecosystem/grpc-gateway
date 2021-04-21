@@ -250,11 +250,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			param.CollectionFormat = "multi"
 		}
 
-		if reg.GetUseJSONNamesForFields() {
-			param.Name = prefix + field.GetJsonName()
-		} else {
-			param.Name = prefix + field.GetName()
-		}
+		param.Name = prefix + reg.FieldName(field)
 
 		if isEnum {
 			enum, err := reg.LookupEnum("", fieldType)
@@ -306,12 +302,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 	touchedOut := cycle.Branch()
 
 	for _, nestedField := range msg.Fields {
-		var fieldName string
-		if reg.GetUseJSONNamesForFields() {
-			fieldName = field.GetJsonName()
-		} else {
-			fieldName = field.GetName()
-		}
+		fieldName := reg.FieldName(field)
 		p, err := nestedQueryParams(msg, nestedField, prefix+fieldName+".", reg, pathParams, body, touchedOut)
 		if err != nil {
 			return nil, err
@@ -384,7 +375,92 @@ func skipRenderingRef(refName string) bool {
 	return ok
 }
 
-func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject, reg *descriptor.Registry, customRefs refMap) {
+func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) openapiSchemaObject {
+	schema := openapiSchemaObject{
+		schemaCore: schemaCore{
+			Type: "object",
+		},
+	}
+	msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
+	if err := updateOpenAPIDataFromComments(reg, &schema, msg, msgComments, false); err != nil {
+		panic(err)
+	}
+	opts, err := getMessageOpenAPIOption(reg, msg)
+	if err != nil {
+		panic(err)
+	}
+	if opts != nil {
+		protoSchema := openapiSchemaFromProtoSchema(opts, reg, customRefs, msg)
+
+		// Warning: Make sure not to overwrite any fields already set on the schema type.
+		schema.ExternalDocs = protoSchema.ExternalDocs
+		schema.ReadOnly = protoSchema.ReadOnly
+		schema.MultipleOf = protoSchema.MultipleOf
+		schema.Maximum = protoSchema.Maximum
+		schema.ExclusiveMaximum = protoSchema.ExclusiveMaximum
+		schema.Minimum = protoSchema.Minimum
+		schema.ExclusiveMinimum = protoSchema.ExclusiveMinimum
+		schema.MaxLength = protoSchema.MaxLength
+		schema.MinLength = protoSchema.MinLength
+		schema.Pattern = protoSchema.Pattern
+		schema.Default = protoSchema.Default
+		schema.MaxItems = protoSchema.MaxItems
+		schema.MinItems = protoSchema.MinItems
+		schema.UniqueItems = protoSchema.UniqueItems
+		schema.MaxProperties = protoSchema.MaxProperties
+		schema.MinProperties = protoSchema.MinProperties
+		schema.Required = protoSchema.Required
+		if protoSchema.schemaCore.Type != "" || protoSchema.schemaCore.Ref != "" {
+			schema.schemaCore = protoSchema.schemaCore
+		}
+		if protoSchema.Title != "" {
+			schema.Title = protoSchema.Title
+		}
+		if protoSchema.Description != "" {
+			schema.Description = protoSchema.Description
+		}
+		if protoSchema.Example != nil {
+			schema.Example = protoSchema.Example
+		}
+	}
+
+	schema.Required = filterOutExcludedFields(schema.Required, excludeFields, reg)
+
+	for _, f := range msg.Fields {
+		if shouldExcludeField(reg.FieldName(f), excludeFields, reg) {
+			continue
+		}
+		fieldValue := schemaOfField(f, reg, customRefs)
+		comments := fieldProtoComments(reg, msg, f)
+		if err := updateOpenAPIDataFromComments(reg, &fieldValue, f, comments, false); err != nil {
+			panic(err)
+		}
+
+		if requiredIdx := find(schema.Required, *f.Name); requiredIdx != -1 && reg.GetUseJSONNamesForFields() {
+			schema.Required[requiredIdx] = f.GetJsonName()
+		}
+
+		if fieldValue.Required != nil {
+			for _, req := range fieldValue.Required {
+				if reg.GetUseJSONNamesForFields() {
+					schema.Required = append(schema.Required, f.GetJsonName())
+				} else {
+					schema.Required = append(schema.Required, req)
+				}
+			}
+		}
+
+		kv := keyVal{Value: fieldValue}
+		kv.Key = reg.FieldName(f)
+		if schema.Properties == nil {
+			schema.Properties = &openapiSchemaObjectProperties{}
+		}
+		*schema.Properties = append(*schema.Properties, kv)
+	}
+	return schema
+}
+
+func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) {
 	for name, msg := range messages {
 		swgName, ok := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
 		if !ok {
@@ -397,88 +473,26 @@ func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject,
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			continue
 		}
-		schema := openapiSchemaObject{
-			schemaCore: schemaCore{
-				Type: "object",
-			},
-		}
-		msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
-		if err := updateOpenAPIDataFromComments(reg, &schema, msg, msgComments, false); err != nil {
-			panic(err)
-		}
-		opts, err := getMessageOpenAPIOption(reg, msg)
-		if err != nil {
-			panic(err)
-		}
-		if opts != nil {
-			protoSchema := openapiSchemaFromProtoSchema(opts, reg, customRefs, msg)
-
-			// Warning: Make sure not to overwrite any fields already set on the schema type.
-			schema.ExternalDocs = protoSchema.ExternalDocs
-			schema.ReadOnly = protoSchema.ReadOnly
-			schema.MultipleOf = protoSchema.MultipleOf
-			schema.Maximum = protoSchema.Maximum
-			schema.ExclusiveMaximum = protoSchema.ExclusiveMaximum
-			schema.Minimum = protoSchema.Minimum
-			schema.ExclusiveMinimum = protoSchema.ExclusiveMinimum
-			schema.MaxLength = protoSchema.MaxLength
-			schema.MinLength = protoSchema.MinLength
-			schema.Pattern = protoSchema.Pattern
-			schema.Default = protoSchema.Default
-			schema.MaxItems = protoSchema.MaxItems
-			schema.MinItems = protoSchema.MinItems
-			schema.UniqueItems = protoSchema.UniqueItems
-			schema.MaxProperties = protoSchema.MaxProperties
-			schema.MinProperties = protoSchema.MinProperties
-			schema.Required = protoSchema.Required
-			if protoSchema.schemaCore.Type != "" || protoSchema.schemaCore.Ref != "" {
-				schema.schemaCore = protoSchema.schemaCore
-			}
-			if protoSchema.Title != "" {
-				schema.Title = protoSchema.Title
-			}
-			if protoSchema.Description != "" {
-				schema.Description = protoSchema.Description
-			}
-			if protoSchema.Example != nil {
-				schema.Example = protoSchema.Example
-			}
-		}
-
-		for _, f := range msg.Fields {
-			fieldValue := schemaOfField(f, reg, customRefs)
-			comments := fieldProtoComments(reg, msg, f)
-			if err := updateOpenAPIDataFromComments(reg, &fieldValue, f, comments, false); err != nil {
-				panic(err)
-			}
-
-			if requiredIdx := find(schema.Required, *f.Name); requiredIdx != -1 && reg.GetUseJSONNamesForFields() {
-				schema.Required[requiredIdx] = f.GetJsonName()
-			}
-
-			if fieldValue.Required != nil {
-				for _, req := range fieldValue.Required {
-					if reg.GetUseJSONNamesForFields() {
-						schema.Required = append(schema.Required, f.GetJsonName())
-					} else {
-						schema.Required = append(schema.Required, req)
-					}
-				}
-			}
-
-			kv := keyVal{Value: fieldValue}
-			if reg.GetUseJSONNamesForFields() {
-				kv.Key = f.GetJsonName()
-			} else {
-				kv.Key = f.GetName()
-			}
-			if schema.Properties == nil {
-				schema.Properties = &openapiSchemaObjectProperties{}
-			}
-			*schema.Properties = append(*schema.Properties, kv)
-		}
-		d[swgName] = schema
+		d[swgName] = renderMessageAsDefinition(msg, reg, customRefs, excludeFields)
 	}
+}
+
+func shouldExcludeField(name string, excluded []*descriptor.Field, reg *descriptor.Registry) bool {
+	for _, f := range excluded {
+		if name == reg.FieldName(f) {
+			return true
+		}
+	}
+	return false
+}
+func filterOutExcludedFields(fields []string, excluded []*descriptor.Field, reg *descriptor.Registry) []string {
+	var filtered []string
+	for _, f := range fields {
+		if !shouldExcludeField(f, excluded, reg) {
+			filtered = append(filtered, f)
+		}
+	}
+	return filtered
 }
 
 // schemaOfField returns a OpenAPI Schema Object for a protobuf field.
@@ -962,9 +976,25 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 
 						wknSchemaCore, isWkn := wktSchemas[meth.RequestType.FQMN()]
 						if !isWkn {
-							err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg)
-							if err != nil {
-								return err
+							var bodyExcludedFields []*descriptor.Field
+							if len(b.PathParams) != 0 {
+								for _, p := range b.PathParams {
+									// We only support excluding top-level fields captured by path parameters.
+									if len(p.FieldPath) == 1 {
+										bodyExcludedFields = append(bodyExcludedFields, p.FieldPath[0].Target)
+									}
+								}
+							}
+							if len(bodyExcludedFields) != 0 {
+								schema = renderMessageAsDefinition(meth.RequestType, reg, customRefs, bodyExcludedFields)
+								if schema.Properties == nil || len(*schema.Properties) == 0 {
+									glog.Errorf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
+								}
+							} else {
+								err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg)
+								if err != nil {
+									return err
+								}
 							}
 						} else {
 							schema.schemaCore = wknSchemaCore
@@ -1289,7 +1319,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	// Find all the service's messages and enumerations that are defined (recursively)
 	// and write request, response and other custom (but referenced) types out as definition objects.
 	findServicesMessagesAndEnumerations(p.Services, p.reg, messages, streamingMessages, enums, requestResponseRefs)
-	renderMessagesAsDefinition(messages, s.Definitions, p.reg, customRefs)
+	renderMessagesAsDefinition(messages, s.Definitions, p.reg, customRefs, nil)
 	renderEnumerationsAsDefinition(enums, s.Definitions, p.reg)
 
 	// File itself might have some comments and metadata.
@@ -2346,7 +2376,7 @@ func addCustomRefs(d openapiDefinitionsObject, reg *descriptor.Registry, refs re
 
 		// ?? Should be either enum or msg
 	}
-	renderMessagesAsDefinition(msgMap, d, reg, refs)
+	renderMessagesAsDefinition(msgMap, d, reg, refs, nil)
 	renderEnumerationsAsDefinition(enumMap, d, reg)
 
 	// Run again in case any new refs were added
