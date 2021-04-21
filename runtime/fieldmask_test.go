@@ -163,7 +163,7 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 		{
 			name:     "protobuf-any",
 			msg:      &examplepb.ABitOfEverything{},
-			input:    `{anytype:{"@type": "xx.xx/examplepb.NestedOuter", "one":{"two":{"three":{"a":true, "b":false}}}}}`,
+			input:    `{"anytype":{"@type": "xx.xx/examplepb.NestedOuter", "one":{"two":{"three":{"a":true, "b":false}}}}}`,
 			expected: newFieldMask("anytype"), //going deeper makes no sense
 		},
 	} {
