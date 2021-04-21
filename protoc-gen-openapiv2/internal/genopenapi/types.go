@@ -26,6 +26,13 @@ type openapiInfoObject struct {
 	extensions []extension
 }
 
+// https://swagger.io/specification/#tagObject
+type openapiTagObject struct {
+	Name         string                              `json:"name"`
+	Description  string                              `json:"description,omitempty"`
+	ExternalDocs *openapiExternalDocumentationObject `json:"externalDocs,omitempty"`
+}
+
 // http://swagger.io/specification/#contactObject
 type openapiContactObject struct {
 	Name  string `json:"name,omitempty"`
@@ -54,6 +61,7 @@ type extension struct {
 type openapiSwaggerObject struct {
 	Swagger             string                              `json:"swagger"`
 	Info                openapiInfoObject                   `json:"info"`
+	Tags                []openapiTagObject                  `json:"tags,omitempty"`
 	Host                string                              `json:"host,omitempty"`
 	BasePath            string                              `json:"basePath,omitempty"`
 	Schemes             []string                            `json:"schemes,omitempty"`
@@ -177,8 +185,20 @@ type openapiResponseObject struct {
 	Description string                 `json:"description"`
 	Schema      openapiSchemaObject    `json:"schema"`
 	Examples    map[string]interface{} `json:"examples,omitempty"`
+	Headers     openapiHeadersObject   `json:"headers,omitempty"`
 
 	extensions []extension
+}
+
+type openapiHeadersObject map[string]openapiHeaderObject
+
+// http://swagger.io/specification/#headerObject
+type openapiHeaderObject struct {
+	Description string          `json:"description,omitempty"`
+	Type        string          `json:"type,omitempty"`
+	Format      string          `json:"format,omitempty"`
+	Default     json.RawMessage `json:"default,omitempty"`
+	Pattern     string          `json:"pattern,omitempty"`
 }
 
 type keyVal struct {

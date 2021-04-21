@@ -18,7 +18,6 @@ import (
 	"testing"
 	"time"
 
-	emptypb "github.com/golang/protobuf/ptypes/empty"
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
@@ -30,6 +29,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -62,15 +62,13 @@ func TestEchoPatch(t *testing.T) {
 
 	sent := examplepb.DynamicMessage{
 		StructField: &structpb.Struct{Fields: map[string]*structpb.Value{
-		"struct_key": {Kind: &structpb.Value_StructValue{
-			StructValue: &structpb.Struct{Fields: map[string]*structpb.Value{
-				"layered_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "struct_val"}},
-			}},
-		}}}},
-		ValueField: &structpb.Value{Kind: &structpb.Value_StructValue{StructValue:
-			&structpb.Struct{Fields: map[string]*structpb.Value{
-				"value_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "value_struct_val"},
-			}}},
+			"struct_key": {Kind: &structpb.Value_StructValue{
+				StructValue: &structpb.Struct{Fields: map[string]*structpb.Value{
+					"layered_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "struct_val"}},
+				}},
+			}}}},
+		ValueField: &structpb.Value{Kind: &structpb.Value_StructValue{StructValue: &structpb.Struct{Fields: map[string]*structpb.Value{
+			"value_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "value_struct_val"}}}},
 		}},
 	}
 	payload, err := protojson.MarshalOptions{UseProtoNames: true}.Marshal(&sent)
@@ -406,6 +404,7 @@ func testABECreate(t *testing.T, port int) {
 }
 
 func testABECreateBody(t *testing.T, port int) {
+	optionalStrVal := "optional-str"
 	want := &examplepb.ABitOfEverything{
 		FloatValue:               1.5,
 		DoubleValue:              2.5,
@@ -475,6 +474,7 @@ func testABECreateBody(t *testing.T, port int) {
 			Name:   "hoge",
 			Amount: 10,
 		},
+		OptionalStringValue: &optionalStrVal,
 	}
 	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
 	payload, err := marshaler.Marshal(want)
@@ -525,6 +525,7 @@ func testABEBulkCreate(t *testing.T, port int) {
 		for _, val := range []string{
 			"foo", "bar", "baz", "qux", "quux",
 		} {
+			strVal := fmt.Sprintf("strprefix/%s", val)
 			want := &examplepb.ABitOfEverything{
 				FloatValue:               1.5,
 				DoubleValue:              2.5,
@@ -534,7 +535,7 @@ func testABEBulkCreate(t *testing.T, port int) {
 				Fixed64Value:             9223372036854775807,
 				Fixed32Value:             4294967295,
 				BoolValue:                true,
-				StringValue:              fmt.Sprintf("strprefix/%s", val),
+				StringValue:              strVal,
 				Uint32Value:              4294967295,
 				Sfixed32Value:            2147483647,
 				Sfixed64Value:            -4611686018427387904,
@@ -578,6 +579,7 @@ func testABEBulkCreate(t *testing.T, port int) {
 					Name:   "hoge",
 					Amount: 10,
 				},
+				OptionalStringValue: &strVal,
 			}
 			out, err := marshaler.Marshal(want)
 			if err != nil {
@@ -1837,6 +1839,7 @@ func testRequestQueryParams(t *testing.T, port int) {
 	formValues.Set("string_value", "hello-world")
 	formValues.Add("repeated_string_value", "demo1")
 	formValues.Add("repeated_string_value", "demo2")
+	formValues.Add("optional_string_value", "optional-val")
 
 	testCases := []struct {
 		name           string
@@ -1900,6 +1903,10 @@ func testRequestQueryParams(t *testing.T, port int) {
 				BoolValue:           true,
 				StringValue:         "hello-world",
 				RepeatedStringValue: []string{"demo1", "demo2"},
+				OptionalStringValue: func() *string {
+					val := formValues.Get("optional_string_value")
+					return &val
+				}(),
 			},
 			requestContent: strings.NewReader(formValues.Encode()),
 		},

@@ -20,9 +20,9 @@ type ExamplepbABitOfEverything struct {
 	Uuid string `json:"uuid"`
 	Nested []ABitOfEverythingNested `json:"nested,omitempty"`
 	// Float value field
-	FloatValue float32 `json:"floatValue,omitempty"`
-	DoubleValue float64 `json:"doubleValue,omitempty"`
-	Int64Value string `json:"int64Value,omitempty"`
+	FloatValue float32 `json:"floatValue"`
+	DoubleValue float64 `json:"doubleValue"`
+	Int64Value string `json:"int64Value"`
 	Uint64Value string `json:"uint64Value,omitempty"`
 	Int32Value int32 `json:"int32Value,omitempty"`
 	Fixed64Value string `json:"fixed64Value,omitempty"`
@@ -58,4 +58,7 @@ type ExamplepbABitOfEverything struct {
 	// Nested object description.
 	NestedAnnotation *ABitOfEverythingNested `json:"nestedAnnotation,omitempty"`
 	Int64OverrideType int64 `json:"int64OverrideType,omitempty"`
+	RequiredStringViaFieldBehaviorAnnotation string `json:"requiredStringViaFieldBehaviorAnnotation"`
+	OutputOnlyStringViaFieldBehaviorAnnotation string `json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
+	OptionalStringValue string `json:"optionalStringValue,omitempty"`
 }

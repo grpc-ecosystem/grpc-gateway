@@ -22,7 +22,7 @@ type GoPackage struct {
 	Path string
 	// Name is the package name of the package
 	Name string
-	// Alias is an alias of the package unique within the current invocation of grpc-gateway generator.
+	// Alias is an alias of the package unique within the current invocation of gRPC-Gateway generator.
 	Alias string
 }
 
@@ -280,6 +280,8 @@ func (p Parameter) ConvertFuncExpr() (string, error) {
 	tbl := proto3ConvertFuncs
 	if !p.IsProto2() && p.IsRepeated() {
 		tbl = proto3RepeatedConvertFuncs
+	} else if !p.IsProto2() && p.IsOptionalProto3() {
+		tbl = proto3OptionalConvertFuncs
 	} else if p.IsProto2() && !p.IsRepeated() {
 		tbl = proto2ConvertFuncs
 	} else if p.IsProto2() && p.IsRepeated() {
@@ -345,6 +347,14 @@ func (p FieldPath) IsNestedProto3() bool {
 	return false
 }
 
+// IsOptionalProto3 indicates whether the FieldPath is a proto3 optional field.
+func (p FieldPath) IsOptionalProto3() bool {
+	if len(p) == 0 {
+		return false
+	}
+	return p[0].Target.GetProto3Optional()
+}
+
 // AssignableExpr is an assignable expression in Go to be used to assign a value to the target field.
 // It starts with "msgExpr", which is the go expression of the method request object.
 func (p FieldPath) AssignableExpr(msgExpr string) string {
@@ -356,8 +366,10 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 	var preparations []string
 	components := msgExpr
 	for i, c := range p {
-		// Check if it is a oneOf field.
-		if c.Target.OneofIndex != nil {
+		// We need to check if the target is not proto3_optional first.
+		// Under the hood, proto3_optional uses oneof to signal to old proto3 clients
+		// that presence is tracked for this field. This oneof is known as a "synthetic" oneof.
+		if !c.Target.GetProto3Optional() && c.Target.OneofIndex != nil {
 			index := c.Target.OneofIndex
 			msg := c.Target.Message
 			oneOfName := casing.Camel(msg.GetOneofDecl()[*index].GetName())
@@ -433,6 +445,18 @@ var (
 		descriptorpb.FieldDescriptorProto_TYPE_SINT64:   "runtime.Int64",
 	}
 
+	proto3OptionalConvertFuncs = func() map[descriptorpb.FieldDescriptorProto_Type]string {
+		result := make(map[descriptorpb.FieldDescriptorProto_Type]string)
+		for typ, converter := range proto3ConvertFuncs {
+			// TODO: this will use convert functions from proto2.
+			//       The converters returning pointers should be moved
+			//       to a more generic file.
+			result[typ] = converter + "P"
+		}
+		return result
+	}()
+
+	// TODO: replace it with a IIFE
 	proto3RepeatedConvertFuncs = map[descriptorpb.FieldDescriptorProto_Type]string{
 		descriptorpb.FieldDescriptorProto_TYPE_DOUBLE:  "runtime.Float64Slice",
 		descriptorpb.FieldDescriptorProto_TYPE_FLOAT:   "runtime.Float32Slice",

@@ -7,7 +7,7 @@ bazel-genfiles
 bazel-grpc-gateway
 bazel-out
 bazel-testlogs
-.bazelrc
+/.bazelrc
 
 # Go vendor directory
 vendor

@@ -19,7 +19,7 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
 
-	//lint:ignore SA1019 known issue, will be replaced when possible
+	//nolint:staticcheck // Known issue, will be replaced when possible
 	legacydescriptor "github.com/golang/protobuf/descriptor"
 )
 
@@ -34,6 +34,11 @@ type generator struct {
 type wrapper struct {
 	fileName string
 	swagger  *openapiSwaggerObject
+}
+
+type GeneratorOptions struct {
+	Registry       *descriptor.Registry
+	RecursiveDepth int
 }
 
 // New returns a new generator which generates grpc gateway files.

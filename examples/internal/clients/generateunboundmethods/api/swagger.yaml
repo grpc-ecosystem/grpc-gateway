@@ -6,6 +6,8 @@ info:
     \ Methods Echo Service API consists of a single service which returns\na message."
   version: "version not set"
   title: "examples/internal/proto/examplepb/generate_unbound_methods.proto"
+tags:
+- name: "GenerateUnboundMethodsEchoService"
 consumes:
 - "application/json"
 produces:

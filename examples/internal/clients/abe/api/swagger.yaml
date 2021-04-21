@@ -11,6 +11,15 @@ info:
     name: "BSD 3-Clause License"
     url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt"
   x-something-something: "yadda"
+tags:
+- name: "ABitOfEverythingService"
+  description: "ABitOfEverythingService description -- which should not be used in\
+    \ place of the documentation comment!"
+  externalDocs:
+    description: "Find out more about EchoService"
+    url: "https://github.com/grpc-ecosystem/grpc-gateway"
+- name: "camelCaseServiceName"
+- name: "AnotherServiceWithNoBindings"
 schemes:
 - "http"
 - "https"
@@ -59,6 +68,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -97,6 +110,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         503:
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
@@ -373,6 +390,25 @@ paths:
         format: "int64"
         x-exportParamName: "Int64OverrideType"
         x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition."
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition."
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -391,6 +427,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -667,6 +707,25 @@ paths:
         format: "int64"
         x-exportParamName: "Int64OverrideType"
         x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition."
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition."
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -685,6 +744,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -948,6 +1011,25 @@ paths:
         format: "int64"
         x-exportParamName: "Int64OverrideType"
         x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition."
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition."
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -966,6 +1048,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1249,6 +1335,25 @@ paths:
         format: "int64"
         x-exportParamName: "Int64OverrideType"
         x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition."
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition."
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -1266,6 +1371,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1423,6 +1532,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1456,6 +1569,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1474,7 +1591,7 @@ paths:
         name: "body"
         required: true
         schema:
-          $ref: "#/definitions/examplepbABitOfEverything"
+          $ref: "#/definitions/A bit of everything"
         x-exportParamName: "Body"
       responses:
         200:
@@ -1493,6 +1610,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1524,6 +1645,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1720,6 +1845,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1748,6 +1877,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1788,6 +1921,72 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+  /v1/{book.name=publishers/*/books/*}:
+    patch:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_UpdateBook"
+      parameters:
+      - name: "book.name"
+        in: "path"
+        description: "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\
+          \nExample: `publishers/1257894000000000000/books/my-book`"
+        required: true
+        type: "string"
+        x-exportParamName: "BookName"
+      - in: "body"
+        name: "body"
+        description: "The book to update.\n\nThe book's `name` field is used to identify\
+          \ the book to be updated.\nFormat: publishers/{publisher}/books/{book}"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbBook"
+        x-exportParamName: "Body"
+      - name: "updateMask"
+        in: "query"
+        description: "The list of fields to be updated."
+        required: false
+        type: "string"
+        x-exportParamName: "UpdateMask"
+        x-optionalDataType: "String"
+      - name: "allowMissing"
+        in: "query"
+        description: "If set to true, and the book is not found, a new book will be\
+          \ created.\nIn this situation, `update_mask` is ignored."
+        required: false
+        type: "boolean"
+        x-exportParamName: "AllowMissing"
+        x-optionalDataType: "Bool"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbBook"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1839,6 +2038,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1864,11 +2067,9 @@ paths:
         in: "query"
         description: "The paths to update."
         required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
+        type: "string"
         x-exportParamName: "UpdateMask"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -1886,6 +2087,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1910,11 +2115,9 @@ paths:
         in: "query"
         description: "The paths to update."
         required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
+        type: "string"
         x-exportParamName: "UpdateMask"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -1932,6 +2135,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -1971,6 +2178,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         503:
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
@@ -2016,6 +2227,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         503:
           description: "Returned when the resource is temporarily unavailable."
           schema: {}
@@ -2050,6 +2265,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2077,6 +2296,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2107,6 +2330,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2126,7 +2353,7 @@ paths:
         name: "body"
         required: true
         schema:
-          $ref: "#/definitions/examplepbBody"
+          type: "object"
         x-exportParamName: "Body"
       responses:
         200:
@@ -2145,6 +2372,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2172,6 +2403,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2210,6 +2445,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2245,6 +2484,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2283,6 +2526,10 @@ paths:
           description: "I'm a teapot."
           schema:
             $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
         default:
           description: "An unexpected error response."
           schema:
@@ -2340,6 +2587,10 @@ definitions:
   examplepbABitOfEverything:
     type: "object"
     required:
+    - "doubleValue"
+    - "floatValue"
+    - "int64Value"
+    - "requiredStringViaFieldBehaviorAnnotation"
     - "uuid"
     properties:
       singleNested:
@@ -2464,6 +2715,15 @@ definitions:
       int64OverrideType:
         type: "integer"
         format: "int64"
+      requiredStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as required in Open API definition"
+      outputOnlyStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as readonly in Open API definition"
+        readOnly: true
+      optionalStringValue:
+        type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -2471,7 +2731,8 @@ definitions:
     description: "Intentionaly complicated message type to cover many features of\
       \ Protobuf."
     example:
-      uuid: "0cf361e1-4b44-483d-a159-54dabdf7e814"
+      int64_value: 12
+      double_value: 12.3
   examplepbABitOfEverythingRepeated:
     type: "object"
     properties:
@@ -2606,6 +2867,31 @@ definitions:
         - typeUrl: "typeUrl"
           value: "value"
         message: "message"
+  examplepbErrorObject:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "integer"
+        description: "Response code"
+        title: "code"
+      message:
+        type: "string"
+        description: "Response message"
+        title: "message"
+        pattern: "^[a-zA-Z0-9]{1, 32}$"
+  examplepbErrorResponse:
+    type: "object"
+    properties:
+      correlationId:
+        type: "string"
+        format: "uuid"
+        example: "2438ac3c-37eb-4902-adef-ed16b4431030"
+        description: "Unique event identifier for server requests"
+        title: "x-correlation-id"
+        pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+      error:
+        $ref: "#/definitions/examplepbErrorObject"
   examplepbNumericEnum:
     type: "string"
     description: "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE\
@@ -2620,10 +2906,8 @@ definitions:
       abe:
         $ref: "#/definitions/examplepbABitOfEverything"
       updateMask:
-        type: "array"
+        type: "string"
         description: "The paths to update."
-        items:
-          type: "string"
     title: "UpdateV2Request request for update includes the message and the update\
       \ mask"
   pathenumPathEnum:
@@ -2711,39 +2995,12 @@ definitions:
           \ common set of\nmessage types for APIs to use."
         items:
           $ref: "#/definitions/protobufAny"
-    title: "The `Status` type defines a logical error model that is suitable for different\n\
-      programming environments, including REST APIs and RPC APIs. It is used by\n\
-      [gRPC](https://github.com/grpc). The error model is designed to be:"
-    description: "- Simple to use and understand for most users\n- Flexible enough\
-      \ to meet unexpected needs\n\n# Overview\n\nThe `Status` message contains three\
-      \ pieces of data: error code, error message,\nand error details. The error code\
-      \ should be an enum value of\n[google.rpc.Code][google.rpc.Code], but it may\
-      \ accept additional error codes if needed.  The\nerror message should be a developer-facing\
-      \ English message that helps\ndevelopers *understand* and *resolve* the error.\
-      \ If a localized user-facing\nerror message is needed, put the localized message\
-      \ in the error details or\nlocalize it in the client. The optional error details\
-      \ may contain arbitrary\ninformation about the error. There is a predefined\
-      \ set of error detail types\nin the package `google.rpc` that can be used for\
-      \ common error conditions.\n\n# Language mapping\n\nThe `Status` message is\
-      \ the logical representation of the error model, but it\nis not necessarily\
-      \ the actual wire format. When the `Status` message is\nexposed in different\
-      \ client libraries and different wire protocols, it can be\nmapped differently.\
-      \ For example, it will likely be mapped to some exceptions\nin Java, but more\
-      \ likely mapped to some error codes in C.\n\n# Other uses\n\nThe error model\
-      \ and the `Status` message can be used in a variety of\nenvironments, either\
-      \ with or without APIs, to provide a\nconsistent developer experience across\
-      \ different environments.\n\nExample uses of this error model include:\n\n-\
-      \ Partial errors. If a service needs to return partial errors to the client,\n\
-      \    it may embed the `Status` in the normal response to indicate the partial\n\
-      \    errors.\n\n- Workflow errors. A typical workflow has multiple steps. Each\
-      \ step may\n    have a `Status` message for error reporting.\n\n- Batch operations.\
-      \ If a client uses batch request and batch response, the\n    `Status` message\
-      \ should be used directly inside batch response, one for\n    each error sub-response.\n\
-      \n- Asynchronous operations. If an API call embeds asynchronous operation\n\
-      \    results in its response, the status of those operations should be\n   \
-      \ represented directly using the `Status` message.\n\n- Logging. If some API\
-      \ errors are stored in logs, the message `Status` could\n    be used directly\
-      \ after any stripping needed for security/privacy reasons."
+    description: "The `Status` type defines a logical error model that is suitable\
+      \ for\ndifferent programming environments, including REST APIs and RPC APIs.\
+      \ It is\nused by [gRPC](https://github.com/grpc). Each `Status` message contains\n\
+      three pieces of data: error code, error message, and error details.\n\nYou can\
+      \ find out more about this error model and how to work with it in the\n[API\
+      \ Design Guide](https://cloud.google.com/apis/design/errors)."
     example:
       code: 0
       details:
@@ -2757,6 +3014,150 @@ definitions:
     properties:
       value:
         type: "string"
+  A bit of everything:
+    type: "object"
+    required:
+    - "doubleValue"
+    - "floatValue"
+    - "int64Value"
+    - "requiredStringViaFieldBehaviorAnnotation"
+    properties:
+      singleNested:
+        $ref: "#/definitions/ABitOfEverythingNested"
+      nested:
+        type: "array"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      floatValue:
+        type: "number"
+        format: "float"
+        description: "Float value field"
+        default: 0.2
+      doubleValue:
+        type: "number"
+        format: "double"
+      int64Value:
+        type: "string"
+        format: "int64"
+      uint64Value:
+        type: "string"
+        format: "uint64"
+      int32Value:
+        type: "integer"
+        format: "int32"
+      fixed64Value:
+        type: "string"
+        format: "uint64"
+      fixed32Value:
+        type: "integer"
+        format: "int64"
+      boolValue:
+        type: "boolean"
+      stringValue:
+        type: "string"
+      bytesValue:
+        type: "string"
+        format: "byte"
+        pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+      uint32Value:
+        type: "integer"
+        format: "int64"
+      enumValue:
+        $ref: "#/definitions/examplepbNumericEnum"
+      pathEnumValue:
+        $ref: "#/definitions/pathenumPathEnum"
+      nestedPathEnumValue:
+        $ref: "#/definitions/MessagePathEnumNestedPathEnum"
+      sfixed32Value:
+        type: "integer"
+        format: "int32"
+      sfixed64Value:
+        type: "string"
+        format: "int64"
+      sint32Value:
+        type: "integer"
+        format: "int32"
+      sint64Value:
+        type: "string"
+        format: "int64"
+      repeatedStringValue:
+        type: "array"
+        items:
+          type: "string"
+      oneofEmpty:
+        type: "object"
+        properties: {}
+      oneofString:
+        type: "string"
+      mapValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/examplepbNumericEnum"
+      mappedStringValue:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      mappedNestedValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nonConventionalNameValue:
+        type: "string"
+      timestampValue:
+        type: "string"
+        format: "date-time"
+      repeatedEnumValue:
+        type: "array"
+        title: "repeated enum value. it is comma-separated in query"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      repeatedEnumAnnotation:
+        type: "array"
+        description: "Repeated numeric enum description."
+        title: "Repeated numeric enum title"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
+        $ref: "#/definitions/examplepbNumericEnum"
+      repeatedStringAnnotation:
+        type: "array"
+        description: "Repeated string description."
+        title: "Repeated string title"
+        items:
+          type: "string"
+      repeatedNestedAnnotation:
+        type: "array"
+        description: "Repeated nested object description."
+        title: "Repeated nested object title"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
+        $ref: "#/definitions/ABitOfEverythingNested"
+      int64OverrideType:
+        type: "integer"
+        format: "int64"
+      requiredStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as required in Open API definition"
+      outputOnlyStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as readonly in Open API definition"
+        readOnly: true
+      optionalStringValue:
+        type: "string"
+    externalDocs:
+      description: "Find out more about ABitOfEverything"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    title: "A bit of everything"
+    description: "Intentionaly complicated message type to cover many features of\
+      \ Protobuf."
+    example:
+      int64_value: 12
+      double_value: 12.3
 externalDocs:
   description: "More about gRPC-Gateway"
   url: "https://github.com/grpc-ecosystem/grpc-gateway"

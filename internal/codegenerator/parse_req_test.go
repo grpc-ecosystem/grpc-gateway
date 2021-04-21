@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"reflect"
 	"strings"
 	"testing"
 
@@ -16,28 +15,28 @@ import (
 )
 
 var parseReqTests = []struct {
-	name string
-	in   io.Reader
-	out  *pluginpb.CodeGeneratorRequest
-	err  error
+	name      string
+	in        io.Reader
+	out       *pluginpb.CodeGeneratorRequest
+	expectErr bool
 }{
 	{
 		"Empty input should produce empty output",
 		mustGetReader(&pluginpb.CodeGeneratorRequest{}),
 		&pluginpb.CodeGeneratorRequest{},
-		nil,
+		false,
 	},
 	{
 		"Invalid reader should produce error",
 		&invalidReader{},
 		nil,
-		fmt.Errorf("failed to read code generator request: invalid reader"),
+		true,
 	},
 	{
 		"Invalid proto message should produce error",
 		strings.NewReader("{}"),
 		nil,
-		fmt.Errorf("failed to unmarshal code generator request: unexpected EOF"),
+		true,
 	},
 }
 
@@ -45,8 +44,8 @@ func TestParseRequest(t *testing.T) {
 	for _, tt := range parseReqTests {
 		t.Run(tt.name, func(t *testing.T) {
 			out, err := codegenerator.ParseRequest(tt.in)
-			if !reflect.DeepEqual(err, tt.err) {
-				t.Errorf("got %v, want %v", err, tt.err)
+			if tt.expectErr && err == nil {
+				t.Error("did not error as expected")
 			}
 			if diff := cmp.Diff(out, tt.out, protocmp.Transform()); diff != "" {
 				t.Errorf(diff)

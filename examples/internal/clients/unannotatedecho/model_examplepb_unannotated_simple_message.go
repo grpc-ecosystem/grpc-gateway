@@ -15,7 +15,7 @@ type ExamplepbUnannotatedSimpleMessage struct {
 	// Id represents the message identifier.
 	Id string `json:"id"`
 	// Int value field
-	Num string `json:"num,omitempty"`
+	Num string `json:"num"`
 	Duration string `json:"duration,omitempty"`
 	LineNum string `json:"lineNum,omitempty"`
 	Lang string `json:"lang,omitempty"`

@@ -3,6 +3,7 @@ option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal
 package grpc.gateway.examples.internal.proto.examplepb;
 
 import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
@@ -161,6 +162,27 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 			}
 		}
 	}
+	responses: {
+		key: "500";
+		value: {
+			description: "Server error";
+			headers: {
+				key: "X-Correlation-Id"
+				value: {
+					description: "Unique event identifier for server requests"
+					type: "string"
+					format: "uuid"
+					default: "\"2438ac3c-37eb-4902-adef-ed16b4431030\""
+					pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
+				}
+			};
+			schema: {
+				json_schema: {
+					ref: ".grpc.gateway.examples.internal.proto.examplepb.ErrorResponse";
+				}
+			}
+		}
+	}
 	extensions: {
 		key: "x-grpc-gateway-foo";
 		value {
@@ -182,6 +204,31 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 	}
 };
 
+message ErrorResponse{
+	string correlationId = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+		pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$",
+		title: "x-correlation-id",
+		description: "Unique event identifier for server requests",
+		format: "uuid",
+		example: "\"2438ac3c-37eb-4902-adef-ed16b4431030\""
+	}];
+	ErrorObject error = 2;
+}
+
+message ErrorObject{
+	int32 code = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+		pattern: "^[0-9]$",
+		title: "code",
+		description: "Response code",
+		format: "integer"
+	}];
+	string message = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+		pattern: "^[a-zA-Z0-9]{1, 32}$",
+		title: "message",
+		description: "Response message"
+	}];
+}
+
 
 // Intentionally complicated message type to cover many features of Protobuf.
 message ABitOfEverything {
@@ -195,7 +242,7 @@ message ABitOfEverything {
 			url: "https://github.com/grpc-ecosystem/grpc-gateway";
 			description: "Find out more about ABitOfEverything";
 		}
-		example: "{\"uuid\": \"0cf361e1-4b44-483d-a159-54dabdf7e814\"}"
+		example: "{\"int64_value\": 12, \"double_value\": 12.3}"
 	};
 
 	// Nested is nested type.
@@ -272,6 +319,14 @@ message ABitOfEverything {
 	Nested nested_annotation = 36 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {title: "Nested object title", description: "Nested object description."}];
 
 	int64 int64_override_type = 37 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {type: INTEGER}];
+
+	// mark a field as required in Open API definition
+	string required_string_via_field_behavior_annotation = 38 [(google.api.field_behavior) = REQUIRED];
+
+	// mark a field as readonly in Open API definition
+	string output_only_string_via_field_behavior_annotation = 39 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+	optional string optional_string_value = 40;
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality
@@ -369,6 +424,25 @@ message CreateBookRequest {
 	string book_id = 3;
 }
 
+// A standard Update message from AIP-134
+//
+// See: https://google.aip.dev/134#request-message
+message UpdateBookRequest {
+	// The book to update.
+	//
+	// The book's `name` field is used to identify the book to be updated.
+	// Format: publishers/{publisher}/books/{book}
+	Book book = 1 [(google.api.field_behavior) = REQUIRED];
+
+	// The list of fields to be updated.
+	google.protobuf.FieldMask update_mask = 2;
+
+	// If set to true, and the book is not found, a new book will be created.
+	// In this situation, `update_mask` is ignored.
+	bool allow_missing = 3;
+
+}
+
 // ABitOfEverything service is used to validate that APIs with complicated
 // proto messages and URL templates are still processed correctly.
 service ABitOfEverythingService {
@@ -400,6 +474,12 @@ service ABitOfEverythingService {
 		option (google.api.http) = {
 			post: "/v1/{parent=publishers/*}/books"
 			body: "book"
+		};
+	}
+	rpc UpdateBook(UpdateBookRequest) returns (Book) {
+		option (google.api.http) = {
+		  patch: "/v1/{book.name=publishers/*/books/*}"
+		  body: "book"
 		};
 	}
 	rpc Lookup(grpc.gateway.examples.internal.proto.sub2.IdMessage) returns (ABitOfEverything) {

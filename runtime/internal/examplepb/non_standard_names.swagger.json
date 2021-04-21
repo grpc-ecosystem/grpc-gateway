@@ -1,0 +1,250 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "runtime/internal/examplepb/non_standard_names.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "NonStandardService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/example/non_standard/update": {
+      "patch": {
+        "summary": "Apply field mask to empty NonStandardMessage and return result.",
+        "operationId": "NonStandardService_Update",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessage"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessage"
+            }
+          },
+          {
+            "name": "updateMask",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "NonStandardService"
+        ]
+      }
+    },
+    "/v1/example/non_standard/update_with_json_names": {
+      "patch": {
+        "summary": "Apply field mask to empty NonStandardMessageWithJSONNames and return result.",
+        "operationId": "NonStandardService_UpdateWithJSONNames",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNames"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNames"
+            }
+          },
+          {
+            "name": "updateMask",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "NonStandardService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "examplepbNonStandardMessage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Id represents the message identifier."
+        },
+        "Num": {
+          "type": "string",
+          "format": "int64"
+        },
+        "lineNum": {
+          "type": "string",
+          "format": "int64"
+        },
+        "langIdent": {
+          "type": "string"
+        },
+        "STATUS": {
+          "type": "string"
+        },
+        "enGB": {
+          "type": "string",
+          "format": "int64"
+        },
+        "no": {
+          "type": "string"
+        },
+        "thing": {
+          "$ref": "#/definitions/examplepbNonStandardMessageThing"
+        },
+        "structField": {
+          "type": "object"
+        },
+        "valueField": {
+          "type": "object"
+        }
+      },
+      "description": "NonStandardMessage has oddly named fields."
+    },
+    "examplepbNonStandardMessageThing": {
+      "type": "object",
+      "properties": {
+        "subThing": {
+          "$ref": "#/definitions/examplepbNonStandardMessageThingSubThing"
+        }
+      }
+    },
+    "examplepbNonStandardMessageThingSubThing": {
+      "type": "object",
+      "properties": {
+        "subValue": {
+          "type": "string"
+        }
+      }
+    },
+    "examplepbNonStandardMessageWithJSONNames": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string",
+          "description": "Id represents the message identifier."
+        },
+        "Num": {
+          "type": "string",
+          "format": "int64"
+        },
+        "LineNum": {
+          "type": "string",
+          "format": "int64"
+        },
+        "langIdent": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "En_GB": {
+          "type": "string",
+          "format": "int64"
+        },
+        "yes": {
+          "type": "string"
+        },
+        "Thingy": {
+          "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNamesThing"
+        },
+        "StructField": {
+          "type": "object"
+        },
+        "ValueField": {
+          "type": "object"
+        }
+      },
+      "description": "NonStandardMessageWithJSONNames maps odd field names to odd JSON names for maximum confusion."
+    },
+    "examplepbNonStandardMessageWithJSONNamesThing": {
+      "type": "object",
+      "properties": {
+        "SubThing": {
+          "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNamesThingSubThing"
+        }
+      }
+    },
+    "examplepbNonStandardMessageWithJSONNamesThingSubThing": {
+      "type": "object",
+      "properties": {
+        "sub_Value": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "protobufNullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

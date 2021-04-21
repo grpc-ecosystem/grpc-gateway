@@ -933,13 +933,13 @@ EchoServiceApiService EchoPatch method receives a NonStandardUpdateRequest and r
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body
  * @param optional nil or *EchoServiceEchoPatchOpts - Optional Parameters:
-     * @param "UpdateMask" (optional.Interface of []string) - 
+     * @param "UpdateMask" (optional.String) - 
 
 @return ExamplepbDynamicMessageUpdate
 */
 
 type EchoServiceEchoPatchOpts struct { 
-	UpdateMask optional.Interface
+	UpdateMask optional.String
 }
 
 func (a *EchoServiceApiService) EchoServiceEchoPatch(ctx context.Context, body ExamplepbDynamicMessage, localVarOptionals *EchoServiceEchoPatchOpts) (ExamplepbDynamicMessageUpdate, *http.Response, error) {
@@ -959,7 +959,7 @@ func (a *EchoServiceApiService) EchoServiceEchoPatch(ctx context.Context, body E
 	localVarFormParams := url.Values{}
 
 	if localVarOptionals != nil && localVarOptionals.UpdateMask.IsSet() {
-		localVarQueryParams.Add("updateMask", parameterToString(localVarOptionals.UpdateMask.Value(), "multi"))
+		localVarQueryParams.Add("updateMask", parameterToString(localVarOptionals.UpdateMask.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json"}

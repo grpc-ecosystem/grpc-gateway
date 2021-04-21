@@ -1,6 +1,6 @@
 # Browser example
 
-This directory contains an example use of grpc-gateway with web browsers.
+This directory contains an example use of gRPC-Gateway with web browsers.
 The following commands automatically runs integration tests with phantomjs.
 
 ```shell-session
@@ -12,7 +12,9 @@ $ gulp
 ## Other examples
 
 ### Very simple example
+
 Run
+
 ```shell-session
 $ gulp bower
 $ gulp backends
@@ -20,10 +22,10 @@ $ gulp backends
 
 then, open `index.html`.
 
-
 ### Integration test with your browser
 
 Run
+
 ```shell-session
 $ gulp serve
 ```

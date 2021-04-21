@@ -30,6 +30,7 @@ type ABitOfEverythingServiceClient interface {
 	CreateBody(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	// Create a book.
 	CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*Book, error)
+	UpdateBook(ctx context.Context, in *UpdateBookRequest, opts ...grpc.CallOption) (*Book, error)
 	Lookup(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	Update(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*empty.Empty, error)
 	UpdateV2(ctx context.Context, in *UpdateV2Request, opts ...grpc.CallOption) (*empty.Empty, error)
@@ -88,6 +89,15 @@ func (c *aBitOfEverythingServiceClient) CreateBody(ctx context.Context, in *ABit
 func (c *aBitOfEverythingServiceClient) CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*Book, error) {
 	out := new(Book)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CreateBook", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) UpdateBook(ctx context.Context, in *UpdateBookRequest, opts ...grpc.CallOption) (*Book, error) {
+	out := new(Book)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/UpdateBook", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -285,6 +295,7 @@ type ABitOfEverythingServiceServer interface {
 	CreateBody(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	// Create a book.
 	CreateBook(context.Context, *CreateBookRequest) (*Book, error)
+	UpdateBook(context.Context, *UpdateBookRequest) (*Book, error)
 	Lookup(context.Context, *sub2.IdMessage) (*ABitOfEverything, error)
 	Update(context.Context, *ABitOfEverything) (*empty.Empty, error)
 	UpdateV2(context.Context, *UpdateV2Request) (*empty.Empty, error)
@@ -326,6 +337,9 @@ func (UnimplementedABitOfEverythingServiceServer) CreateBody(context.Context, *A
 }
 func (UnimplementedABitOfEverythingServiceServer) CreateBook(context.Context, *CreateBookRequest) (*Book, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBook not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) UpdateBook(context.Context, *UpdateBookRequest) (*Book, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBook not implemented")
 }
 func (UnimplementedABitOfEverythingServiceServer) Lookup(context.Context, *sub2.IdMessage) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Lookup not implemented")
@@ -449,6 +463,24 @@ func _ABitOfEverythingService_CreateBook_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ABitOfEverythingServiceServer).CreateBook(ctx, req.(*CreateBookRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_UpdateBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateBookRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).UpdateBook(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/UpdateBook",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).UpdateBook(ctx, req.(*UpdateBookRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -828,6 +860,10 @@ var _ABitOfEverythingService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateBook",
 			Handler:    _ABitOfEverythingService_CreateBook_Handler,
+		},
+		{
+			MethodName: "UpdateBook",
+			Handler:    _ABitOfEverythingService_UpdateBook_Handler,
 		},
 		{
 			MethodName: "Lookup",

@@ -1,6 +1,7 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 load("@io_bazel_rules_go//proto:compiler.bzl", "go_proto_compiler")
+load("@io_bazel_rules_go//proto/wkt:well_known_types.bzl", "PROTO_RUNTIME_DEPS", "WELL_KNOWN_TYPES_APIV2")
 
 buildifier(
     name = "buildifier",
@@ -11,7 +12,6 @@ buildifier(
     mode = "check",
 )
 
-# gazelle:exclude third_party
 # gazelle:exclude _output
 # gazelle:prefix github.com/grpc-ecosystem/grpc-gateway/v2
 # gazelle:go_proto_compilers //:go_apiv2
@@ -35,23 +35,7 @@ go_proto_compiler(
     plugin = "@org_golang_google_protobuf//cmd/protoc-gen-go",
     suffix = ".pb.go",
     visibility = ["//visibility:public"],
-    deps = [
-        "@com_github_golang_protobuf//proto:go_default_library",
-        "@io_bazel_rules_go//proto/wkt:any_go_proto",
-        "@io_bazel_rules_go//proto/wkt:api_go_proto",
-        "@io_bazel_rules_go//proto/wkt:compiler_plugin_go_proto",
-        "@io_bazel_rules_go//proto/wkt:descriptor_go_proto",
-        "@io_bazel_rules_go//proto/wkt:duration_go_proto",
-        "@io_bazel_rules_go//proto/wkt:empty_go_proto",
-        "@io_bazel_rules_go//proto/wkt:field_mask_go_proto",
-        "@io_bazel_rules_go//proto/wkt:source_context_go_proto",
-        "@io_bazel_rules_go//proto/wkt:struct_go_proto",
-        "@io_bazel_rules_go//proto/wkt:timestamp_go_proto",
-        "@io_bazel_rules_go//proto/wkt:type_go_proto",
-        "@io_bazel_rules_go//proto/wkt:wrappers_go_proto",
-        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
-        "@org_golang_google_protobuf//runtime/protoimpl:go_default_library",
-    ],
+    deps = PROTO_RUNTIME_DEPS + WELL_KNOWN_TYPES_APIV2,
 )
 
 go_proto_compiler(
@@ -63,19 +47,7 @@ go_proto_compiler(
     plugin = "@org_golang_google_grpc_cmd_protoc_gen_go_grpc//:protoc-gen-go-grpc",
     suffix = "_grpc.pb.go",
     visibility = ["//visibility:public"],
-    deps = [
-        "@io_bazel_rules_go//proto/wkt:any_go_proto",
-        "@io_bazel_rules_go//proto/wkt:api_go_proto",
-        "@io_bazel_rules_go//proto/wkt:compiler_plugin_go_proto",
-        "@io_bazel_rules_go//proto/wkt:descriptor_go_proto",
-        "@io_bazel_rules_go//proto/wkt:duration_go_proto",
-        "@io_bazel_rules_go//proto/wkt:empty_go_proto",
-        "@io_bazel_rules_go//proto/wkt:field_mask_go_proto",
-        "@io_bazel_rules_go//proto/wkt:source_context_go_proto",
-        "@io_bazel_rules_go//proto/wkt:struct_go_proto",
-        "@io_bazel_rules_go//proto/wkt:timestamp_go_proto",
-        "@io_bazel_rules_go//proto/wkt:type_go_proto",
-        "@io_bazel_rules_go//proto/wkt:wrappers_go_proto",
+    deps = PROTO_RUNTIME_DEPS + [
         "@org_golang_google_grpc//:go_default_library",
         "@org_golang_google_grpc//codes:go_default_library",
         "@org_golang_google_grpc//status:go_default_library",

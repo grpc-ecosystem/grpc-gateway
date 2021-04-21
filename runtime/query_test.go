@@ -7,8 +7,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/protobuf/ptypes"
-	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
@@ -16,6 +14,9 @@ import (
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func BenchmarkPopulateQueryParameters(b *testing.B) {
@@ -44,6 +45,7 @@ func BenchmarkPopulateQueryParameters(b *testing.B) {
 		"timestamp_value":        {timeStr},
 		"duration_value":         {durationStr},
 		"fieldmask_value":        {fieldmaskStr},
+		"optional_string_value":  {"optional-str"},
 		"wrapper_float_value":    {"1.5"},
 		"wrapper_double_value":   {"2.5"},
 		"wrapper_int64_value":    {"-1"},
@@ -85,14 +87,11 @@ func BenchmarkPopulateQueryParameters(b *testing.B) {
 func TestPopulateParameters(t *testing.T) {
 	timeT := time.Date(2016, time.December, 15, 12, 23, 32, 49, time.UTC)
 	timeStr := timeT.Format(time.RFC3339Nano)
-	timePb, err := ptypes.TimestampProto(timeT)
-	if err != nil {
-		t.Fatalf("Couldn't setup timestamp in Protobuf format: %v", err)
-	}
+	timePb := timestamppb.New(timeT)
 
 	durationT := 13 * time.Hour
 	durationStr := durationT.String()
-	durationPb := ptypes.DurationProto(durationT)
+	durationPb := durationpb.New(durationT)
 
 	fieldmaskStr := "float_value,double_value"
 	fieldmaskPb := &field_mask.FieldMask{Paths: []string{"float_value", "double_value"}}
@@ -113,7 +112,7 @@ func TestPopulateParameters(t *testing.T) {
 				"uint32_value":           {"4"},
 				"bool_value":             {"true"},
 				"string_value":           {"str"},
-				"bytes_value":            {"Ynl0ZXM="},
+				"bytes_value":            {"YWJjMTIzIT8kKiYoKSctPUB-"},
 				"repeated_value":         {"a", "b", "c"},
 				"repeated_message":       {"1", "2", "3"},
 				"enum_value":             {"1"},
@@ -129,7 +128,7 @@ func TestPopulateParameters(t *testing.T) {
 				"wrapper_u_int32_value":  {"4"},
 				"wrapper_bool_value":     {"true"},
 				"wrapper_string_value":   {"str"},
-				"wrapper_bytes_value":    {"Ynl0ZXM="},
+				"wrapper_bytes_value":    {"YWJjMTIzIT8kKiYoKSctPUB-"},
 				"map_value[key]":         {"value"},
 				"map_value[second]":      {"bar"},
 				"map_value[third]":       {"zzz"},
@@ -161,7 +160,7 @@ func TestPopulateParameters(t *testing.T) {
 				Uint32Value:        4,
 				BoolValue:          true,
 				StringValue:        "str",
-				BytesValue:         []byte("bytes"),
+				BytesValue:         []byte("abc123!?$*&()'-=@~"),
 				RepeatedValue:      []string{"a", "b", "c"},
 				RepeatedMessage:    []*wrapperspb.UInt64Value{{Value: 1}, {Value: 2}, {Value: 3}},
 				EnumValue:          examplepb.EnumValue_Y,
@@ -177,7 +176,7 @@ func TestPopulateParameters(t *testing.T) {
 				WrapperUInt32Value: &wrapperspb.UInt32Value{Value: 4},
 				WrapperBoolValue:   &wrapperspb.BoolValue{Value: true},
 				WrapperStringValue: &wrapperspb.StringValue{Value: "str"},
-				WrapperBytesValue:  &wrapperspb.BytesValue{Value: []byte("bytes")},
+				WrapperBytesValue:  &wrapperspb.BytesValue{Value: []byte("abc123!?$*&()'-=@~")},
 				MapValue: map[string]string{
 					"key":         "value",
 					"second":      "bar",

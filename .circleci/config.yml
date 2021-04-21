@@ -16,9 +16,9 @@ commands:
           EOF
   generate:
     steps:
-      - run: make realclean
-      - run: make examples
-      - run: make testproto
+      - run: make install
+      - run: make clean
+      - run: make generate
       - run: go mod tidy
   renovate_git_amend_push:
     description: Git amend and push changes
@@ -36,12 +36,12 @@ commands:
 executors:
   build-env:
     environment:
-    ## Split key to avoid github revoking it
-      password0: '99544cdcb19ad4e3fd64'
-      password1: '3ec86b2e5a431be2d72c'
-      GLOG_logtostderr: '1'
+      ## Split key to avoid github revoking it
+      password0: "99544cdcb19ad4e3fd64"
+      password1: "3ec86b2e5a431be2d72c"
+      GLOG_logtostderr: "1"
     docker:
-      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.15
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.16
         auth:
           username: gateway-ci-user
           password: ${password0}${password1}
@@ -79,35 +79,6 @@ jobs:
       - checkout
       - generate
       - run: git diff --exit-code
-  lint:
-    executor: build-env
-    working_directory: /src/grpc-gateway
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-staticcheck-cache-{{ checksum "go.sum" }}
-            - v1-staticcheck-cache-
-      - run:
-          name: Install staticcheck outside local module
-          command: |
-            cd $(mktemp -d) &&
-            go mod init tmp &&
-            go get honnef.co/go/tools/cmd/staticcheck
-      - run: staticcheck ./...
-      - save_cache:
-          key: v1-staticcheck-cache-{{ checksum "go.sum" }}
-          paths:
-            - /root/.cache/go-build
-            - /root/.cache/staticcheck
-  fuzzit:
-    docker:
-      - image: fuzzitdev/fuzzit:golang1.12-stretch-llvm9
-    working_directory: /src/grpc-gateway
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: ./fuzzit.sh
   bazel:
     executor: build-env
     working_directory: /src/grpc-gateway
@@ -151,7 +122,22 @@ jobs:
             cd $(mktemp -d) &&
             go mod init tmp &&
             go get golang.org/x/exp/cmd/gorelease@latest
-      - run: gorelease -base=v2.0.0
+      - run: gorelease -base=v2.3.0
+  proto_lint:
+    docker:
+      - image: bufbuild/buf:0.41.0
+    steps:
+      - checkout
+      - run: buf build
+      - run: buf lint
+      - run: buf breaking --path protoc-gen-openapiv2/options/annotations.proto --path protoc-gen-openapiv2/options/openapiv2.proto --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=master'
+  proto_push:
+    docker:
+      - image: bufbuild/buf:0.41.0
+    steps:
+      - checkout
+      - run: echo -e "machine buf.build\npassword ${BUF_API_TOKEN}" >> ~/.netrc
+      - run: buf beta push
   release:
     executor: build-env
     working_directory: /src/grpc-gateway
@@ -187,12 +173,15 @@ workflows:
     jobs:
       - build
       - test
-      - fuzzit
       - node_test
       - generate
-      - lint
       - bazel
       - gorelease
+      - proto_lint
+      - proto_push:
+          filters:
+            branches:
+              only: /^master$/
       - release:
           filters:
             branches:
@@ -215,4 +204,3 @@ workflows:
               only: /renovate\/master-.+/
             tags:
               ignore: /.*/
-

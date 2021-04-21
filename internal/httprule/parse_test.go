@@ -13,6 +13,7 @@ func TestTokenize(t *testing.T) {
 	for _, spec := range []struct {
 		src    string
 		tokens []string
+		verb   string
 	}{
 		{
 			src:    "",
@@ -81,28 +82,60 @@ func TestTokenize(t *testing.T) {
 				eof,
 			},
 		},
+		{
+			src: "v1/a/{endpoint}:a",
+			tokens: []string{
+				"v1", "/",
+				"a", "/",
+				"{", "endpoint", "}",
+				eof,
+			},
+			verb: "a",
+		},
+		{
+			src: "v1/a/{endpoint}:b:c",
+			tokens: []string{
+				"v1", "/",
+				"a", "/",
+				"{", "endpoint", "}",
+				eof,
+			},
+			verb: "b:c",
+		},
 	} {
 		tokens, verb := tokenize(spec.src)
 		if got, want := tokens, spec.tokens; !reflect.DeepEqual(got, want) {
 			t.Errorf("tokenize(%q) = %q, _; want %q, _", spec.src, got, want)
 		}
-		if got, want := verb, ""; got != want {
-			t.Errorf("tokenize(%q) = _, %q; want _, %q", spec.src, got, want)
-		}
 
-		src := fmt.Sprintf("%s:%s", spec.src, "LOCK")
-		tokens, verb = tokenize(src)
-		if got, want := tokens, spec.tokens; !reflect.DeepEqual(got, want) {
-			t.Errorf("tokenize(%q) = %q, _; want %q, _", src, got, want)
-		}
-		if got, want := verb, "LOCK"; got != want {
-			t.Errorf("tokenize(%q) = _, %q; want _, %q", src, got, want)
+		switch {
+		case spec.verb != "":
+			if got, want := verb, spec.verb; !reflect.DeepEqual(got, want) {
+				t.Errorf("tokenize(%q) = %q, _; want %q, _", spec.src, got, want)
+			}
+
+		default:
+			if got, want := verb, ""; got != want {
+				t.Errorf("tokenize(%q) = _, %q; want _, %q", spec.src, got, want)
+			}
+
+			src := fmt.Sprintf("%s:%s", spec.src, "LOCK")
+			tokens, verb = tokenize(src)
+			if got, want := tokens, spec.tokens; !reflect.DeepEqual(got, want) {
+				t.Errorf("tokenize(%q) = %q, _; want %q, _", src, got, want)
+			}
+			if got, want := verb, "LOCK"; got != want {
+				t.Errorf("tokenize(%q) = _, %q; want _, %q", src, got, want)
+			}
 		}
 	}
 }
 
 func TestParseSegments(t *testing.T) {
-	flag.Set("v", "3")
+	err := flag.Set("v", "3")
+	if err != nil {
+		t.Fatalf("failed to set flag: %v", err)
+	}
 	for _, spec := range []struct {
 		tokens []string
 		want   []segment
@@ -206,7 +239,8 @@ func TestParseSegments(t *testing.T) {
 				"a", "/", "b", "/", "*", "/", "c",
 				"}", "/",
 				"**",
-				eof},
+				eof,
+			},
 			want: []segment{
 				literal("v1"),
 				variable{
@@ -247,7 +281,10 @@ func TestParseSegments(t *testing.T) {
 }
 
 func TestParseSegmentsWithErrors(t *testing.T) {
-	flag.Set("v", "3")
+	err := flag.Set("v", "3")
+	if err != nil {
+		t.Fatalf("failed to set flag: %v", err)
+	}
 	for _, spec := range []struct {
 		tokens []string
 	}{

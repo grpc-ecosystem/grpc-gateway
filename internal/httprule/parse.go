@@ -45,9 +45,7 @@ func tokenize(path string) (tokens []string, verb string) {
 		field
 		nested
 	)
-	var (
-		st = init
-	)
+	st := init
 	for path != "" {
 		var idx int
 		switch st {
@@ -80,8 +78,30 @@ func tokenize(path string) (tokens []string, verb string) {
 	}
 
 	l := len(tokens)
+	// See
+	// https://github.com/grpc-ecosystem/grpc-gateway/pull/1947#issuecomment-774523693 ;
+	// although normal and backwards-compat logic here is to use the last index
+	// of a colon, if the final segment is a variable followed by a colon, the
+	// part following the colon must be a verb. Hence if the previous token is
+	// an end var marker, we switch the index we're looking for to Index instead
+	// of LastIndex, so that we correctly grab the remaining part of the path as
+	// the verb.
+	var penultimateTokenIsEndVar bool
+	switch l {
+	case 0, 1:
+		// Not enough to be variable so skip this logic and don't result in an
+		// invalid index
+	default:
+		penultimateTokenIsEndVar = tokens[l-2] == "}"
+	}
 	t := tokens[l-1]
-	if idx := strings.LastIndex(t, ":"); idx == 0 {
+	var idx int
+	if penultimateTokenIsEndVar {
+		idx = strings.Index(t, ":")
+	} else {
+		idx = strings.LastIndex(t, ":")
+	}
+	if idx == 0 {
 		tokens, verb = tokens[:l-1], t[1:]
 	} else if idx > 0 {
 		tokens[l-1], verb = t[:idx], t[idx+1:]

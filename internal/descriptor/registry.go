@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
@@ -57,7 +58,7 @@ type Registry struct {
 
 	// useJSONNamesForFields if true json tag name is used for generating fields in OpenAPI definitions,
 	// otherwise the original proto name is used. It's helpful for synchronizing the OpenAPI definition
-	// with grpc-gateway response, if it uses json tags for marshaling.
+	// with gRPC-Gateway response, if it uses json tags for marshaling.
 	useJSONNamesForFields bool
 
 	// useFQNForOpenAPIName if true OpenAPI names will use the full qualified name (FQN) from proto definition,
@@ -108,6 +109,9 @@ type Registry struct {
 
 	// omitPackageDoc, if false, causes a package comment to be included in the generated code.
 	omitPackageDoc bool
+
+	// recursiveDepth sets the maximum depth of a field parameter
+	recursiveDepth int
 }
 
 type repeatedFieldSeparator struct {
@@ -133,6 +137,7 @@ func NewRegistry() *Registry {
 		messageOptions: make(map[string]*options.Schema),
 		serviceOptions: make(map[string]*options.Tag),
 		fieldOptions:   make(map[string]*options.JSONSchema),
+		recursiveDepth: 1000,
 	}
 }
 
@@ -142,6 +147,10 @@ func (r *Registry) Load(req *pluginpb.CodeGeneratorRequest) error {
 	if err != nil {
 		return err
 	}
+	// Note: keep in mind that this might be not enough because
+	// protogen.Plugin is used only to load files here.
+	// The support for features must be set on the pluginpb.CodeGeneratorResponse.
+	codegenerator.SetSupportedFeaturesOnPluginGen(gen)
 	return r.load(gen)
 }
 
@@ -349,6 +358,16 @@ func (r *Registry) SetPrefix(prefix string) {
 // SetStandalone registers standalone flag to control package prefix
 func (r *Registry) SetStandalone(standalone bool) {
 	r.standalone = standalone
+}
+
+// SetRecursiveDepth records the max recursion count
+func (r *Registry) SetRecursiveDepth(count int) {
+	r.recursiveDepth = count
+}
+
+// GetRecursiveDepth returns the max recursion count
+func (r *Registry) GetRecursiveDepth() int {
+	return r.recursiveDepth
 }
 
 // ReserveGoPackageAlias reserves the unique alias of go package.
@@ -643,4 +662,11 @@ func (r *Registry) GetOpenAPIServiceOption(qualifiedService string) (*options.Ta
 func (r *Registry) GetOpenAPIFieldOption(qualifiedField string) (*options.JSONSchema, bool) {
 	opt, ok := r.fieldOptions[qualifiedField]
 	return opt, ok
+}
+
+func (r *Registry) FieldName(f *Field) string {
+	if r.useJSONNamesForFields {
+		return f.GetJsonName()
+	}
+	return f.GetName()
 }

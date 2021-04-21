@@ -10,14 +10,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/golang/protobuf/ptypes"
-	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 var valuesKeyRegexp = regexp.MustCompile(`^(.*)\[(.*)\]$`)
@@ -233,7 +234,7 @@ func parseField(fieldDescriptor protoreflect.FieldDescriptor, value string) (pro
 	case protoreflect.StringKind:
 		return protoreflect.ValueOfString(value), nil
 	case protoreflect.BytesKind:
-		v, err := base64.StdEncoding.DecodeString(value)
+		v, err := base64.URLEncoding.DecodeString(value)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
@@ -256,10 +257,7 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
-		msg, err = ptypes.TimestampProto(t)
-		if err != nil {
-			return protoreflect.Value{}, err
-		}
+		msg = timestamppb.New(t)
 	case "google.protobuf.Duration":
 		if value == "null" {
 			break
@@ -268,7 +266,7 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
-		msg = ptypes.DurationProto(d)
+		msg = durationpb.New(d)
 	case "google.protobuf.DoubleValue":
 		v, err := strconv.ParseFloat(value, 64)
 		if err != nil {
@@ -314,7 +312,7 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 	case "google.protobuf.StringValue":
 		msg = &wrapperspb.StringValue{Value: value}
 	case "google.protobuf.BytesValue":
-		v, err := base64.StdEncoding.DecodeString(value)
+		v, err := base64.URLEncoding.DecodeString(value)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}

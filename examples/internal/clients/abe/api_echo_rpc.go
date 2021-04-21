@@ -156,6 +156,17 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho(ctx context.Context, val
 				return localVarReturnValue, localVarHttpResponse, newErr
 		}
 		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
 		if localVarHttpResponse.StatusCode == 503 {
 			var v interface{}
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
@@ -305,6 +316,17 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho2(ctx context.Context, bo
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -470,6 +492,17 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho3(ctx context.Context, lo
 		
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()

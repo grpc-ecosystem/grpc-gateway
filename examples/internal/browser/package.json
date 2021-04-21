@@ -1,7 +1,7 @@
 {
   "name": "grpc-gateway-example",
   "version": "1.0.0",
-  "description": "Example use of grpc-gateway from browser",
+  "description": "Example use of gRPC-Gateway from browser",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
