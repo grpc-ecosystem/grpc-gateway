@@ -5,6 +5,7 @@ package grpc.gateway.runtime.internal.examplepb;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/any.proto";
 
 // SimpleMessage represents a simple message sent to the Echo service.
 message SimpleMessage {
@@ -72,6 +73,7 @@ message ABitOfEverything {
   // nested object comments (This comment is overridden by the field annotation)
   Nested nested_annotation = 36;
   int64 int64_override_type = 37;
+  google.protobuf.Any anytype = 38;
 }
 
 // NumericEnum is one or zero.
