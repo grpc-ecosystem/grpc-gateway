@@ -107,7 +107,7 @@ func TestMuxServeHTTP(t *testing.T) {
 			},
 			reqMethod:  "DELETE",
 			reqPath:    "/foo",
-			respStatus: http.StatusNotImplemented,
+			respStatus: http.StatusMethodNotAllowed,
 		},
 		{
 			patterns: []stubPattern{
@@ -138,7 +138,7 @@ func TestMuxServeHTTP(t *testing.T) {
 			headers: map[string]string{
 				"Content-Type": "application/x-www-form-urlencoded",
 			},
-			respStatus:                http.StatusNotImplemented,
+			respStatus:                http.StatusMethodNotAllowed,
 			disablePathLengthFallback: true,
 		},
 		{
@@ -198,7 +198,7 @@ func TestMuxServeHTTP(t *testing.T) {
 			headers: map[string]string{
 				"Content-Type": "application/json",
 			},
-			respStatus: http.StatusNotImplemented,
+			respStatus: http.StatusMethodNotAllowed,
 		},
 		{
 			patterns: []stubPattern{

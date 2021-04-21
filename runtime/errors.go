@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/http"
 	"strings"
@@ -19,6 +20,17 @@ type StreamErrorHandlerFunc func(context.Context, error) *status.Status
 
 // RoutingErrorHandlerFunc is the signature used to configure error handling for routing errors.
 type RoutingErrorHandlerFunc func(context.Context, *ServeMux, Marshaler, http.ResponseWriter, *http.Request, int)
+
+// StatusHTTPError is the error to use when needing to provide a different status code for an error
+// passed to the DefaultRoutingErrorHandler
+type StatusHTTPError struct {
+	Status int
+	Err    error
+}
+
+func (e *StatusHTTPError) Error() string {
+	return e.Err.Error()
+}
 
 // HTTPStatusFromCode converts a gRPC error code into the corresponding HTTP response status.
 // See: https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
@@ -79,6 +91,12 @@ func DefaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marsh
 	// return Internal when Marshal failed
 	const fallback = `{"code": 13, "message": "failed to marshal error message"}`
 
+	var customStatus *StatusHTTPError
+
+	if errors.As(err, &customStatus) {
+		err = customStatus.Err
+	}
+
 	s := status.Convert(err)
 	pb := s.Proto()
 
@@ -119,6 +137,10 @@ func DefaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marsh
 	}
 
 	st := HTTPStatusFromCode(s.Code())
+	if customStatus != nil {
+		st = customStatus.Status
+	}
+
 	w.WriteHeader(st)
 	if _, err := w.Write(buf); err != nil {
 		grpclog.Infof("Failed to write response: %v", err)
@@ -145,7 +167,10 @@ func DefaultRoutingErrorHandler(ctx context.Context, mux *ServeMux, marshaler Ma
 	case http.StatusBadRequest:
 		sterr = status.Error(codes.InvalidArgument, http.StatusText(httpStatus))
 	case http.StatusMethodNotAllowed:
-		sterr = status.Error(codes.Unimplemented, http.StatusText(httpStatus))
+		sterr = &StatusHTTPError{
+			Status: http.StatusMethodNotAllowed,
+			Err:    status.Error(codes.Unimplemented, http.StatusText(httpStatus)),
+		}
 	case http.StatusNotFound:
 		sterr = status.Error(codes.NotFound, http.StatusText(httpStatus))
 	}
