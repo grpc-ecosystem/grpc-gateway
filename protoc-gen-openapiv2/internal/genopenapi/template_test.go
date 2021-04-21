@@ -3663,6 +3663,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 		schema         map[string]openapi_options.Schema // per-message schema to add
 		defs           openapiDefinitionsObject
 		openAPIOptions *openapiconfig.OpenAPIOptions
+		excludedFields []*descriptor.Field
 	}{
 		{
 			descr: "no OpenAPI options",
@@ -3893,6 +3894,66 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			},
 		},
 		{
+			descr: "JSONSchema with excluded fields",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:    proto.String("aRequiredField"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(1),
+							Options: requiredField,
+						},
+						{
+							Name:   proto.String("anExcludedField"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(2),
+						},
+					},
+				},
+			},
+			schema: map[string]openapi_options.Schema{
+				"Message": {
+					JsonSchema: &openapi_options.JSONSchema{
+						Title:       "title",
+						Description: "desc",
+						Required:    []string{"req"},
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"Message": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "title",
+					Description: "desc",
+					Required:    []string{"req", "aRequiredField"},
+					Properties: &openapiSchemaObjectProperties{
+						{
+							Key: "aRequiredField",
+							Value: openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
+								Description: "field description",
+								Title:       "field title",
+								Required:    []string{"aRequiredField"},
+							},
+						},
+					},
+				},
+			},
+			excludedFields: []*descriptor.Field{
+				{
+					FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+						Name: strPtr("anExcludedField"),
+					},
+				},
+			},
+		},
+		{
 			descr: "JSONSchema with required properties via field_behavior",
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{
@@ -4009,13 +4070,17 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 
 			refs := make(refMap)
 			actual := make(openapiDefinitionsObject)
-			renderMessagesAsDefinition(msgMap, actual, reg, refs)
+			renderMessagesAsDefinition(msgMap, actual, reg, refs, test.excludedFields)
 
 			if !reflect.DeepEqual(actual, test.defs) {
 				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
 			}
 		})
 	}
+}
+
+func strPtr(s string) *string {
+	return &s
 }
 
 func TestUpdateOpenAPIDataFromComments(t *testing.T) {
@@ -4346,7 +4411,7 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 
 			refs := make(refMap)
 			actual := make(openapiDefinitionsObject)
-			renderMessagesAsDefinition(msgMap, actual, reg, refs)
+			renderMessagesAsDefinition(msgMap, actual, reg, refs, nil)
 
 			if !reflect.DeepEqual(actual, test.defs) {
 				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)

@@ -663,3 +663,10 @@ func (r *Registry) GetOpenAPIFieldOption(qualifiedField string) (*options.JSONSc
 	opt, ok := r.fieldOptions[qualifiedField]
 	return opt, ok
 }
+
+func (r *Registry) FieldName(f *Field) string {
+	if r.useJSONNamesForFields {
+		return f.GetJsonName()
+	}
+	return f.GetName()
+}
