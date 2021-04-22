@@ -63,6 +63,17 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 					continue
 				}
 
+				if isProtobufAnyMessage(fd.Message()) {
+					_, hasTypeField := v.(map[string]interface{})["@type"]
+					if hasTypeField {
+						queue = append(queue, fieldMaskPathItem{path: k})
+						continue
+					} else {
+						return nil, fmt.Errorf("could not find field @type in %q in message %q", k, item.msg.Descriptor().FullName())
+					}
+
+				}
+
 				child := fieldMaskPathItem{
 					node: v,
 				}
@@ -95,6 +106,10 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 	sort.Strings(fm.Paths)
 
 	return fm, nil
+}
+
+func isProtobufAnyMessage(md protoreflect.MessageDescriptor) bool {
+	return md != nil && (md.FullName() == "google.protobuf.Any")
 }
 
 func isDynamicProtoMessage(md protoreflect.MessageDescriptor) bool {
