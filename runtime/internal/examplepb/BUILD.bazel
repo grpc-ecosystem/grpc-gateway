@@ -15,6 +15,7 @@ proto_library(
         "proto3.proto",
     ],
     deps = [
+        "@com_google_protobuf//:any_proto",
         "@com_google_protobuf//:duration_proto",
         "@com_google_protobuf//:empty_proto",
         "@com_google_protobuf//:field_mask_proto",
