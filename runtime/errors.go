@@ -21,14 +21,14 @@ type StreamErrorHandlerFunc func(context.Context, error) *status.Status
 // RoutingErrorHandlerFunc is the signature used to configure error handling for routing errors.
 type RoutingErrorHandlerFunc func(context.Context, *ServeMux, Marshaler, http.ResponseWriter, *http.Request, int)
 
-// StatusHTTP is the error to use when needing to provide a different HTTP status code for an error
+// HTTPStatus is the error to use when needing to provide a different HTTP status code for an error
 // passed to the DefaultRoutingErrorHandler.
-type StatusHTTP struct {
+type HTTPStatus struct {
 	Status int
 	Err    error
 }
 
-func (e *StatusHTTP) Error() string {
+func (e *HTTPStatus) Error() string {
 	return e.Err.Error()
 }
 
@@ -95,7 +95,7 @@ func DefaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marsh
 	// return Internal when Marshal failed
 	const fallback = `{"code": 13, "message": "failed to marshal error message"}`
 
-	var customStatus *StatusHTTP
+	var customStatus *HTTPStatus
 
 	if errors.As(err, &customStatus) {
 		err = customStatus.Err
