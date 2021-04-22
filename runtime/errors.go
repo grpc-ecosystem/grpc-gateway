@@ -21,14 +21,14 @@ type StreamErrorHandlerFunc func(context.Context, error) *status.Status
 // RoutingErrorHandlerFunc is the signature used to configure error handling for routing errors.
 type RoutingErrorHandlerFunc func(context.Context, *ServeMux, Marshaler, http.ResponseWriter, *http.Request, int)
 
-// StatusHTTPError is the error to use when needing to provide a different status code for an error
-// passed to the DefaultRoutingErrorHandler
-type StatusHTTPError struct {
+// StatusHTTP is the error to use when needing to provide a different HTTP status code for an error
+// passed to the DefaultRoutingErrorHandler.
+type StatusHTTP struct {
 	Status int
 	Err    error
 }
 
-func (e *StatusHTTPError) Error() string {
+func (e *StatusHTTP) Error() string {
 	return e.Err.Error()
 }
 
@@ -84,6 +84,10 @@ func HTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.R
 
 // DefaultHTTPErrorHandler is the default error handler.
 // If "err" is a gRPC Status, the function replies with the status code mapped by HTTPStatusFromCode.
+// If "err" is a HTTPStatus, the function replies with the status code provide by that struct. This is
+// intended to allow passing through of specific statuses via the function set via WithRoutingErrorHandler
+// for the ServeMux constructor to handle edge cases which the standard mappings in HTTPStatusFromCode
+// are insufficient.
 // If otherwise, it replies with http.StatusInternalServerError.
 //
 // The response body written by this function is a Status message marshaled by the Marshaler.
@@ -91,7 +95,7 @@ func DefaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marsh
 	// return Internal when Marshal failed
 	const fallback = `{"code": 13, "message": "failed to marshal error message"}`
 
-	var customStatus *StatusHTTPError
+	var customStatus *StatusHTTP
 
 	if errors.As(err, &customStatus) {
 		err = customStatus.Err
@@ -167,10 +171,7 @@ func DefaultRoutingErrorHandler(ctx context.Context, mux *ServeMux, marshaler Ma
 	case http.StatusBadRequest:
 		sterr = status.Error(codes.InvalidArgument, http.StatusText(httpStatus))
 	case http.StatusMethodNotAllowed:
-		sterr = &StatusHTTPError{
-			Status: http.StatusMethodNotAllowed,
-			Err:    status.Error(codes.Unimplemented, http.StatusText(httpStatus)),
-		}
+		sterr = status.Error(codes.Unimplemented, http.StatusText(httpStatus))
 	case http.StatusNotFound:
 		sterr = status.Error(codes.NotFound, http.StatusText(httpStatus))
 	}

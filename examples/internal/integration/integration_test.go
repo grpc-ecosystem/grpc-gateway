@@ -1528,7 +1528,7 @@ func TestNotImplemented(t *testing.T) {
 		return
 	}
 
-	if got, want := resp.StatusCode, http.StatusMethodNotAllowed; got != want {
+	if got, want := resp.StatusCode, http.StatusNotImplemented; got != want {
 		t.Errorf("resp.StatusCode = %d; want %d", got, want)
 		t.Logf("%s", buf)
 	}
