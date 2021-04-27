@@ -61,9 +61,9 @@ func TestDefaultHTTPError(t *testing.T) {
 			msg:         "example error",
 		},
 		{
-			err: &runtime.HTTPStatus{
-				Status: http.StatusMethodNotAllowed,
-				Err:    status.Error(codes.Unimplemented, http.StatusText(http.StatusMethodNotAllowed)),
+			err: &runtime.HTTPStatusError{
+				HTTPStatus: http.StatusMethodNotAllowed,
+				Err:        status.Error(codes.Unimplemented, http.StatusText(http.StatusMethodNotAllowed)),
 			},
 			status:      http.StatusMethodNotAllowed,
 			marshaler:   &runtime.JSONPb{},
