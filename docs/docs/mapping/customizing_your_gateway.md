@@ -365,21 +365,19 @@ If you want to retain HTTP `405 Method Not Allowed` instead of allowing it to be
 
 ```go
 func handleRoutingError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, r *http.Request, httpStatus int) {
-	var stderr error
-
-	switch httpStatus {
-	case http.StatusMethodNotAllowed:
-		sterr = HTTPStatusError{
-			HTTPStatus: httpStatus
-			Err:        status.Error(codes.Unimplemented, http.StatusText(httpStatus))
-		}
-	default:
+	if httpStatus != http.StatusMethodNotAllowed {
 		runtime.DefaultRoutingErrorHandler(ctx, mux, marshaler, writer, request, httpStatus)
 
 		return
 	}
 
-	runtime.DefaultHTTPErrorHandler(ctx, mux, marshaler, w , r, stderr)
+	// Use HTTPStatusError to customize the DefaultHTTPErrorHandler status code
+	err := &HTTPStatusError{
+		HTTPStatus: httpStatus
+		Err:        status.Error(codes.Unimplemented, http.StatusText(httpStatus))
+	}
+
+	runtime.DefaultHTTPErrorHandler(ctx, mux, marshaler, w , r, err)
 }
 ```
 
