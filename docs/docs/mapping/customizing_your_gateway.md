@@ -367,7 +367,6 @@ If you want to retain HTTP `405 Method Not Allowed` instead of allowing it to be
 func handleRoutingError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, r *http.Request, httpStatus int) {
 	if httpStatus != http.StatusMethodNotAllowed {
 		runtime.DefaultRoutingErrorHandler(ctx, mux, marshaler, writer, request, httpStatus)
-
 		return
 	}
 
