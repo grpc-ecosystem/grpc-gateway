@@ -71,18 +71,11 @@ To make a release, follow these steps:
    recommend whether the new release should be a patch or minor release.
    See [CircleCI](https://app.circleci.com/pipelines/github/grpc-ecosystem/grpc-gateway/126/workflows/255a8a04-de9c-46a9-a66b-f107d2b39439/jobs/6428)
    for an example.
-1. Generate a GitHub token with `repo` access.
-1. Create a new branch and edit the Makefile `changelog` job, settings
-   the `future-release=` variable to the name of the version you plan to release
-1. Run `CHANGELOG_GITHUB_TOKEN=<yourtoken> make changelog`
-1. Commit the `Makefile` and `CHANGELOG.md` changes.
-1. Open a PR and check that everything looks right.
-1. Merge the PR.
-1. Tag the release on `master`, the tag should be made against the commit you just merged.
+1. Tag the release on `master`.
    1. The release can be created using the command line, or also through GitHub's [releases
       UI](https://github.com/grpc-ecosystem/grpc-gateway/releases/new).
    1. If you create a release using the web UI you can publish it as a draft and have it
       reviewed by another maintainer.
-   1. Update the release description with the generated changelog.
-1. (Optional) Delete your GitHub token again.
-1. (Required) Sit back and pat yourself on the back for a job well done :clap:.
+   1. Update the release description. Try to include some of the highlights of this release,
+      ideally with links to the PRs and crediting the contributors.
+1. Sit back and pat yourself on the back for a job well done :clap:.
