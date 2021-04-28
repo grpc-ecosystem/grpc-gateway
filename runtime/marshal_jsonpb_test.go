@@ -648,6 +648,24 @@ var (
 	}
 )
 
+func TestJSONPbUnmarshalNullField(t *testing.T) {
+	var out map[string]interface{}
+
+	const json = `{"foo": null}`
+	marshaler := &runtime.JSONPb{}
+	if err := marshaler.Unmarshal([]byte(json), &out); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	value, hasKey := out["foo"]
+	if !hasKey {
+		t.Fatalf("unmarshaled map did not have key 'foo'")
+	}
+	if value != nil {
+		t.Fatalf("unexpected value: %v", value)
+	}
+}
+
 func TestJSONPbMarshalResponseBodies(t *testing.T) {
 	marshaler := &runtime.JSONPb{}
 	for i, spec := range []struct {
