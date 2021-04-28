@@ -124,22 +124,6 @@ test: proto
 	go test -short -race ./...
 	go test -race ./examples/internal/integration -args -network=unix -endpoint=test.sock
 
-changelog:
-	docker run --rm \
-		--interactive \
-		--tty \
-		-e "CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN}" \
-		-v "$(PWD):/usr/local/src/your-app" \
-		ferrarimarco/github-changelog-generator:1.14.3 \
-				-u grpc-ecosystem \
-				-p grpc-gateway \
-				--author \
-				--compare-link \
-				--github-site=https://github.com \
-				--unreleased-label "**Next release**" \
-				--release-branch=master \
-				--future-release=v2.3.0
-
 clean:
 	find . -type f -name '*.pb.go' -delete
 	find . -type f -name '*.swagger.json' -delete
