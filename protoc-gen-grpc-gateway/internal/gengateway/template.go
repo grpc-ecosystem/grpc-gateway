@@ -225,9 +225,10 @@ It translates gRPC into RESTful JSON APIs.
 */{{end}}
 package {{.GoPkg.Name}}
 import (
-	{{range $i := .Imports}}{{if $i.Standard}}{{$i | printf "%s\n"}}{{end}}{{end}}
-
-	{{range $i := .Imports}}{{if not $i.Standard}}{{$i | printf "%s\n"}}{{end}}{{end}}
+	github_com_prysmaticlabs_eth2_types "github.com/prysmaticlabs/eth2-types"
+	emptypb "github.com/golang/protobuf/ptypes/empty"
+	"github.com/golang/protobuf/ptypes/empty"
+	{{range $i := .Imports}}{{if $i | printf "%q" | ne "github.com/golang/protobuf/ptypes/empty"}}{{$i | printf "%s\n"}}{{end}}{{end}}
 )
 
 // Suppress "imported and not used" errors
@@ -237,6 +238,9 @@ var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
+var _ = github_com_prysmaticlabs_eth2_types.Epoch(0)
+var _ = emptypb.Empty{}
+var _ = empty.Empty{}
 `))
 
 	handlerTemplate = template.Must(template.New("handler").Parse(`
