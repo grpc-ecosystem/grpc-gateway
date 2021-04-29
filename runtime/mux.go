@@ -57,6 +57,15 @@ func SetQueryParameterParser(queryParameterParser QueryParameterParser) ServeMux
 	}
 }
 
+// SetQueryParameterParser sets the query parameter parser, used to populate message from query parameters.
+// Configuring this will mean the generated OpenAPI output is no longer correct, and it should be
+// done with careful consideration.
+func SetPathParameterParser(pathParameterParser PathParameterParser) ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		currentPathParser = pathParameterParser
+	}
+}
+
 // HeaderMatcherFunc checks whether a header key should be forwarded to/from gRPC context.
 type HeaderMatcherFunc func(string) (string, bool)
 

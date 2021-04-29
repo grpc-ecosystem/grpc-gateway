@@ -4,15 +4,12 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"net/url"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/genproto/protobuf/field_mask"
-	"google.golang.org/grpc/grpclog"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
@@ -21,50 +18,53 @@ import (
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
-var valuesKeyRegexp = regexp.MustCompile(`^(.*)\[(.*)\]$`)
+var currentPathParser PathParameterParser = &defaultPathParser{}
 
-var currentQueryParser QueryParameterParser = &defaultQueryParser{}
-
-// QueryParameterParser defines interface for all query parameter parsers
-type QueryParameterParser interface {
-	Parse(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error
+// PathParameterParser defines interface for all path parameter parsers
+type PathParameterParser interface {
+	Parse(msg proto.Message, pathParams map[string]string, filter *utilities.DoubleArray) error
 }
 
-// PopulateQueryParameters parses query parameters
-// into "msg" using current query parser
-func PopulateQueryParameters(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error {
-	return currentQueryParser.Parse(msg, values, filter)
+// PopulatePathParameters parses path parameters
+// into "msg" using current path parser
+func PopulatePathParameters(msg proto.Message, pathParams map[string]string, filter *utilities.DoubleArray) error {
+	return currentPathParser.Parse(msg, pathParams, filter)
 }
 
-type defaultQueryParser struct{}
+type defaultPathParser struct{}
 
 // Parse populates "values" into "msg".
 // A value is ignored if its key starts with one of the elements in "filter".
-func (*defaultQueryParser) Parse(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error {
-	for key, values := range values {
+func (*defaultPathParser) Parse(msg proto.Message, values map[string]string, filter *utilities.DoubleArray) error {
+	fmt.Println(values)
+	for key, value := range values {
+		fmt.Printf("\t%s\n", value)
+		fmt.Printf("\t%s\n", value)
+
 		match := valuesKeyRegexp.FindStringSubmatch(key)
 		if len(match) == 3 {
-			key = match[1]
-			values = append([]string{match[2]}, values...)
+			fmt.Println(match)
+			//key = match[1]
+			//values = append([]string{match[2]}, values...)
 		}
 		fieldPath := strings.Split(key, ".")
 		if filter.HasCommonPrefix(fieldPath) {
 			continue
 		}
-		if err := populateFieldValueFromFieldPath(msg.ProtoReflect(), fieldPath, values); err != nil {
+		if err := populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, []string{value}); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// PopulateFieldFromPath sets a value in a nested Protobuf structure.
-func PopulateFieldFromPath(msg proto.Message, fieldPathString string, value string) error {
+// PopulateFieldFromPathParam sets a value in a nested Protobuf structure.
+func PopulateFieldFromPathParam(msg proto.Message, fieldPathString string, value string) error {
 	fieldPath := strings.Split(fieldPathString, ".")
-	return populateFieldValueFromFieldPath(msg.ProtoReflect(), fieldPath, []string{value})
+	return populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, []string{value})
 }
 
-func populateFieldValueFromFieldPath(msgValue protoreflect.Message, fieldPath []string, values []string) error {
+func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []string, values []string) error {
 	if len(fieldPath) < 1 {
 		return errors.New("no field path")
 	}
@@ -83,7 +83,7 @@ func populateFieldValueFromFieldPath(msgValue protoreflect.Message, fieldPath []
 			if fieldDescriptor == nil {
 				// We're not returning an error here because this could just be
 				// an extra query parameter that isn't part of the request.
-				grpclog.Infof("field not found in %q: %q", msgValue.Descriptor().FullName(), strings.Join(fieldPath, "."))
+				//grpclog.Infof("field not found in %q: %q", msgValue.Descriptor().FullName(), strings.Join(fieldPath, "."))
 				return nil
 			}
 		}
@@ -111,20 +111,20 @@ func populateFieldValueFromFieldPath(msgValue protoreflect.Message, fieldPath []
 
 	switch {
 	case fieldDescriptor.IsList():
-		return populateRepeatedField(fieldDescriptor, msgValue.Mutable(fieldDescriptor).List(), values)
+		return populateRepeatedPathField(fieldDescriptor, msgValue.Mutable(fieldDescriptor).List(), values)
 	case fieldDescriptor.IsMap():
-		return populateMapField(fieldDescriptor, msgValue.Mutable(fieldDescriptor).Map(), values)
+		return populateMapPathField(fieldDescriptor, msgValue.Mutable(fieldDescriptor).Map(), values)
 	}
 
 	if len(values) > 1 {
 		return fmt.Errorf("too many values for field %q: %s", fieldDescriptor.FullName().Name(), strings.Join(values, ", "))
 	}
 
-	return populateField(fieldDescriptor, msgValue, values[0])
+	return populatePathField(fieldDescriptor, msgValue, values[0])
 }
 
-func populateField(fieldDescriptor protoreflect.FieldDescriptor, msgValue protoreflect.Message, value string) error {
-	v, err := parseField(fieldDescriptor, value)
+func populatePathField(fieldDescriptor protoreflect.FieldDescriptor, msgValue protoreflect.Message, value string) error {
+	v, err := parsePathField(fieldDescriptor, value)
 	if err != nil {
 		return fmt.Errorf("parsing field %q: %w", fieldDescriptor.FullName().Name(), err)
 	}
@@ -133,9 +133,9 @@ func populateField(fieldDescriptor protoreflect.FieldDescriptor, msgValue protor
 	return nil
 }
 
-func populateRepeatedField(fieldDescriptor protoreflect.FieldDescriptor, list protoreflect.List, values []string) error {
+func populateRepeatedPathField(fieldDescriptor protoreflect.FieldDescriptor, list protoreflect.List, values []string) error {
 	for _, value := range values {
-		v, err := parseField(fieldDescriptor, value)
+		v, err := parsePathField(fieldDescriptor, value)
 		if err != nil {
 			return fmt.Errorf("parsing list %q: %w", fieldDescriptor.FullName().Name(), err)
 		}
@@ -145,17 +145,17 @@ func populateRepeatedField(fieldDescriptor protoreflect.FieldDescriptor, list pr
 	return nil
 }
 
-func populateMapField(fieldDescriptor protoreflect.FieldDescriptor, mp protoreflect.Map, values []string) error {
+func populateMapPathField(fieldDescriptor protoreflect.FieldDescriptor, mp protoreflect.Map, values []string) error {
 	if len(values) != 2 {
 		return fmt.Errorf("more than one value provided for key %q in map %q", values[0], fieldDescriptor.FullName())
 	}
 
-	key, err := parseField(fieldDescriptor.MapKey(), values[0])
+	key, err := parsePathField(fieldDescriptor.MapKey(), values[0])
 	if err != nil {
 		return fmt.Errorf("parsing map key %q: %w", fieldDescriptor.FullName().Name(), err)
 	}
 
-	value, err := parseField(fieldDescriptor.MapValue(), values[1])
+	value, err := parsePathField(fieldDescriptor.MapValue(), values[1])
 	if err != nil {
 		return fmt.Errorf("parsing map value %q: %w", fieldDescriptor.FullName().Name(), err)
 	}
@@ -165,7 +165,7 @@ func populateMapField(fieldDescriptor protoreflect.FieldDescriptor, mp protorefl
 	return nil
 }
 
-func parseField(fieldDescriptor protoreflect.FieldDescriptor, value string) (protoreflect.Value, error) {
+func parsePathField(fieldDescriptor protoreflect.FieldDescriptor, value string) (protoreflect.Value, error) {
 	switch fieldDescriptor.Kind() {
 	case protoreflect.BoolKind:
 		v, err := strconv.ParseBool(value)
@@ -240,13 +240,13 @@ func parseField(fieldDescriptor protoreflect.FieldDescriptor, value string) (pro
 		}
 		return protoreflect.ValueOfBytes(v), nil
 	case protoreflect.MessageKind, protoreflect.GroupKind:
-		return parseMessage(fieldDescriptor.Message(), value)
+		return parsePathMessage(fieldDescriptor.Message(), value)
 	default:
 		panic(fmt.Sprintf("unknown field kind: %v", fieldDescriptor.Kind()))
 	}
 }
 
-func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (protoreflect.Value, error) {
+func parsePathMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (protoreflect.Value, error) {
 	var msg proto.Message
 	switch msgDescriptor.FullName() {
 	case "google.protobuf.Timestamp":
