@@ -122,7 +122,7 @@ jobs:
             cd $(mktemp -d) &&
             go mod init tmp &&
             go get golang.org/x/exp/cmd/gorelease@latest
-      - run: gorelease -base=$(git describe --abbrev=0)
+      - run: gorelease -base=v2.4.0
   proto_lint:
     docker:
       - image: bufbuild/buf:0.41.0
