@@ -78,4 +78,5 @@ To make a release, follow these steps:
       reviewed by another maintainer.
    1. Update the release description. Try to include some of the highlights of this release,
       ideally with links to the PRs and crediting the contributors.
+1. Update the gorelease job in .circleci/config.yaml to point to the new release version.
 1. Sit back and pat yourself on the back for a job well done :clap:.
