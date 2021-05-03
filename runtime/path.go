@@ -33,19 +33,11 @@ func PopulatePathParameters(msg proto.Message, pathParams map[string]string) err
 type defaultPathParser struct{}
 
 // Parse populates "values" into "msg".
-// A value is ignored if its key starts with one of the elements in "filter".
+// This is mainly similar to the query parser except support for maps and proto messages
+// is removed. Repeated fields (comma separated) are supported, but any unsupported field types
+// will just be skipped to let the query parser handle.
 func (*defaultPathParser) Parse(msg proto.Message, values map[string]string) error {
-	fmt.Println(values)
 	for key, value := range values {
-		fmt.Printf("\t%s\n", value)
-		fmt.Printf("\t%s\n", value)
-
-		match := valuesKeyRegexp.FindStringSubmatch(key)
-		if len(match) == 3 {
-			fmt.Println(match)
-			//key = match[1]
-			//values = append([]string{match[2]}, values...)
-		}
 		fieldPath := strings.Split(key, ".")
 		if err := populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, value); err != nil {
 			return err
