@@ -339,13 +339,13 @@ var (
 		val string
 		ok bool
 		err error
-		_ = err
+		_, _, _ = val, ok, err
 	)
 	{{$binding := .}}
 	{{range $param := .PathParams}}
 	{{$enum := $binding.LookupEnum $param}}
 	if err := runtime.PopulatePathParameters(&protoReq, pathParams); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "failed to populate path parameters: %v", err)
 	}
 {{if $param.IsNestedProto3}}
 	if err := runtime.PopulatePathParameters(&protoReq, pathParams); err != nil {
@@ -355,8 +355,7 @@ var (
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", {{$param | printf "%q"}})
 	}
-	err = runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val)
-	if err != nil {
+	if err := runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
 {{else}}
