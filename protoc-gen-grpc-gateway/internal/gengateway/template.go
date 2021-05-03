@@ -225,11 +225,9 @@ It translates gRPC into RESTful JSON APIs.
 */{{end}}
 package {{.GoPkg.Name}}
 import (
-	emptypb "github.com/golang/protobuf/ptypes/empty"
-	"github.com/golang/protobuf/ptypes/empty"
-	{{range $i := .Imports}}{{if $i | printf "%q" | ne "github.com/golang/protobuf/ptypes/empty"}}{{$i | printf "%s\n"}}{{end}}{{end}}
+	{{range $i := .Imports}}{{if $i.Standard}}{{$i | printf "%s\n"}}{{end}}{{end}}
+	{{range $i := .Imports}}{{if not $i.Standard}}{{$i | printf "%s\n"}}{{end}}{{end}}
 )
-
 // Suppress "imported and not used" errors
 var _ codes.Code
 var _ io.Reader
@@ -237,8 +235,6 @@ var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
-var _ = emptypb.Empty{}
-var _ = empty.Empty{}
 `))
 
 	handlerTemplate = template.Must(template.New("handler").Parse(`
