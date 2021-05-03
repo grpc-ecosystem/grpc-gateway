@@ -516,7 +516,7 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
 {{else}}
-	val, ok = _, _
+	_, _ = val, ok
 {{end}}
 	{{end}}
 {{end}}
