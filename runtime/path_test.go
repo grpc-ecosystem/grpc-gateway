@@ -37,6 +37,7 @@ func BenchmarkPopulatePathParameters(b *testing.B) {
 		"string_value":           "str",
 		"bytes_value":            "Ynl0ZXM=",
 		"repeated_value":         "a,b,c",
+		"repeated_message":       "1,2,3",
 		"enum_value":             "1",
 		"repeated_enum":          "1,2,0",
 		"timestamp_value":        timeStr,
@@ -52,25 +53,6 @@ func BenchmarkPopulatePathParameters(b *testing.B) {
 		"wrapper_bool_value":     "true",
 		"wrapper_string_value":   "str",
 		"wrapper_bytes_value":    "Ynl0ZXM=",
-		"map_value[key]":         "value",
-		"map_value[second]":      "bar",
-		"map_value[third]":       "zzz",
-		"map_value[fourth]":      "",
-		`map_value[~!@#$%^&*()]`: "value",
-		"map_value2[key]":        "-2",
-		"map_value3[-2]":         "value",
-		"map_value4[key]":        "-1",
-		"map_value5[-1]":         "value",
-		"map_value6[key]":        "3",
-		"map_value7[3]":          "value",
-		"map_value8[key]":        "4",
-		"map_value9[4]":          "value",
-		"map_value10[key]":       "1.5",
-		"map_value11[1.5]":       "value",
-		"map_value12[key]":       "2.5",
-		"map_value13[2.5]":       "value",
-		"map_value14[key]":       "true",
-		"map_value15[true]":      "value",
 	}
 
 	for i := 0; i < b.N; i++ {
@@ -107,6 +89,7 @@ func TestPopulatePathParameters(t *testing.T) {
 				"string_value":           "str",
 				"bytes_value":            "YWJjMTIzIT8kKiYoKSctPUB-",
 				"repeated_value":         "a,b,c",
+				"repeated_message":       "1,2,3",
 				"enum_value":             "1",
 				"repeated_enum":          "1,2,0",
 				"timestamp_value":        timeStr,
@@ -133,6 +116,7 @@ func TestPopulatePathParameters(t *testing.T) {
 				StringValue:        "str",
 				BytesValue:         []byte("abc123!?$*&()'-=@~"),
 				RepeatedValue:      []string{"a", "b", "c"},
+				RepeatedMessage:    []*wrapperspb.UInt64Value{{Value: 1}, {Value: 2}, {Value: 3}},
 				EnumValue:          examplepb.EnumValue_Y,
 				RepeatedEnum:       []examplepb.EnumValue{examplepb.EnumValue_Y, examplepb.EnumValue_Z, examplepb.EnumValue_X},
 				TimestampValue:     timePb,
@@ -170,185 +154,89 @@ func TestPopulatePathParameters(t *testing.T) {
 		})
 	}
 }
-//
-//func TestPopulatePathParametersWithFilters(t *testing.T) {
-//	for _, spec := range []struct {
-//		values url.Values
-//		filter *utilities.DoubleArray
-//		want   proto.Message
-//	}{
-//		{
-//			values: url.Values{
-//				"bool_value":     {"true"},
-//				"string_value":   {"str"},
-//				"repeated_value": {"a", "b", "c"},
-//			},
-//			filter: utilities.NewDoubleArray([][]string{
-//				{"bool_value"}, {"repeated_value"},
-//			}),
-//			want: &examplepb.Proto3Message{
-//				StringValue: "str",
-//			},
-//		},
-//		{
-//			values: url.Values{
-//				"nested.nested.bool_value":   {"true"},
-//				"nested.nested.string_value": {"str"},
-//				"nested.string_value":        {"str"},
-//				"string_value":               {"str"},
-//			},
-//			filter: utilities.NewDoubleArray([][]string{
-//				{"nested"},
-//			}),
-//			want: &examplepb.Proto3Message{
-//				StringValue: "str",
-//			},
-//		},
-//		{
-//			values: url.Values{
-//				"nested.nested.bool_value":   {"true"},
-//				"nested.nested.string_value": {"str"},
-//				"nested.string_value":        {"str"},
-//				"string_value":               {"str"},
-//			},
-//			filter: utilities.NewDoubleArray([][]string{
-//				{"nested", "nested"},
-//			}),
-//			want: &examplepb.Proto3Message{
-//				Nested: &examplepb.Proto3Message{
-//					StringValue: "str",
-//				},
-//				StringValue: "str",
-//			},
-//		},
-//		{
-//			values: url.Values{
-//				"nested.nested.bool_value":   {"true"},
-//				"nested.nested.string_value": {"str"},
-//				"nested.string_value":        {"str"},
-//				"string_value":               {"str"},
-//			},
-//			filter: utilities.NewDoubleArray([][]string{
-//				{"nested", "nested", "string_value"},
-//			}),
-//			want: &examplepb.Proto3Message{
-//				Nested: &examplepb.Proto3Message{
-//					StringValue: "str",
-//					Nested: &examplepb.Proto3Message{
-//						BoolValue: true,
-//					},
-//				},
-//				StringValue: "str",
-//			},
-//		},
-//	} {
-//		msg := spec.want.ProtoReflect().New().Interface()
-//		err := runtime.PopulatePathParameters(msg, spec.values, spec.filter)
-//		if err != nil {
-//			t.Errorf("runtime.PoplatePathParameters(msg, %v, %v) failed with %v; want success", spec.values, spec.filter, err)
-//			continue
-//		}
-//		if got, want := msg, spec.want; !proto.Equal(got, want) {
-//			t.Errorf("runtime.PopulatePathParameters(msg, %v, %v = %v; want %v", spec.values, spec.filter, got, want)
-//		}
-//	}
-//}
-//
-//func TestPopulatePathParametersWithInvalidNestedParameters(t *testing.T) {
-//	for _, spec := range []struct {
-//		msg    proto.Message
-//		values url.Values
-//		filter *utilities.DoubleArray
-//	}{
-//		{
-//			msg: &examplepb.Proto3Message{},
-//			values: url.Values{
-//				"float_value.nested": {"test"},
-//			},
-//			filter: utilities.NewDoubleArray(nil),
-//		},
-//		{
-//			msg: &examplepb.Proto3Message{},
-//			values: url.Values{
-//				"double_value.nested": {"test"},
-//			},
-//			filter: utilities.NewDoubleArray(nil),
-//		},
-//		{
-//			msg: &examplepb.Proto3Message{},
-//			values: url.Values{
-//				"int64_value.nested": {"test"},
-//			},
-//			filter: utilities.NewDoubleArray(nil),
-//		},
-//		{
-//			msg: &examplepb.Proto3Message{},
-//			values: url.Values{
-//				"int32_value.nested": {"test"},
-//			},
-//			filter: utilities.NewDoubleArray(nil),
-//		},
-//		{
-//			msg: &examplepb.Proto3Message{},
-//			values: url.Values{
-//				"uint64_value.nested": {"test"},
-//			},
-//			filter: utilities.NewDoubleArray(nil),
-//		},
-//		{
-//			msg: &examplepb.Proto3Message{},
-//			values: url.Values{
-//				"uint32_value.nested": {"test"},
-//			},
-//			filter: utilities.NewDoubleArray(nil),
-//		},
-//		{
-//			msg: &examplepb.Proto3Message{},
-//			values: url.Values{
-//				"bool_value.nested": {"test"},
-//			},
-//			filter: utilities.NewDoubleArray(nil),
-//		},
-//		{
-//			msg: &examplepb.Proto3Message{},
-//			values: url.Values{
-//				"string_value.nested": {"test"},
-//			},
-//			filter: utilities.NewDoubleArray(nil),
-//		},
-//		{
-//			msg: &examplepb.Proto3Message{},
-//			values: url.Values{
-//				"repeated_value.nested": {"test"},
-//			},
-//			filter: utilities.NewDoubleArray(nil),
-//		},
-//		{
-//			msg: &examplepb.Proto3Message{},
-//			values: url.Values{
-//				"enum_value.nested": {"test"},
-//			},
-//			filter: utilities.NewDoubleArray(nil),
-//		},
-//		{
-//			msg: &examplepb.Proto3Message{},
-//			values: url.Values{
-//				"enum_value.nested": {"test"},
-//			},
-//			filter: utilities.NewDoubleArray(nil),
-//		},
-//		{
-//			msg: &examplepb.Proto3Message{},
-//			values: url.Values{
-//				"repeated_enum.nested": {"test"},
-//			},
-//			filter: utilities.NewDoubleArray(nil),
-//		},
-//	} {
-//		spec.msg = spec.msg.ProtoReflect().New().Interface()
-//		err := runtime.PopulatePathParameters(spec.msg, spec.values, spec.filter)
-//		if err == nil {
-//			t.Errorf("runtime.PopulatePathParameters(msg, %v, %v) did not fail; want error", spec.values, spec.filter)
-//		}
-//	}
-//}
+
+func TestPopulatePathParametersWithInvalidNestedParameters(t *testing.T) {
+	for _, spec := range []struct {
+		msg    proto.Message
+		values map[string]string
+	}{
+		{
+			msg: &examplepb.Proto3Message{},
+			values: map[string]string{
+				"float_value.nested": "test",
+			},
+		},
+		{
+			msg: &examplepb.Proto3Message{},
+			values: map[string]string{
+				"double_value.nested": "test",
+			},
+		},
+		{
+			msg: &examplepb.Proto3Message{},
+			values: map[string]string{
+				"int64_value.nested": "test",
+			},
+		},
+		{
+			msg: &examplepb.Proto3Message{},
+			values: map[string]string{
+				"int32_value.nested": "test",
+			},
+		},
+		{
+			msg: &examplepb.Proto3Message{},
+			values: map[string]string{
+				"uint64_value.nested": "test",
+			},
+		},
+		{
+			msg: &examplepb.Proto3Message{},
+			values: map[string]string{
+				"uint32_value.nested": "test",
+			},
+		},
+		{
+			msg: &examplepb.Proto3Message{},
+			values: map[string]string{
+				"bool_value.nested": "test",
+			},
+		},
+		{
+			msg: &examplepb.Proto3Message{},
+			values: map[string]string{
+				"string_value.nested": "test",
+			},
+		},
+		{
+			msg: &examplepb.Proto3Message{},
+			values: map[string]string{
+				"repeated_value.nested": "test",
+			},
+		},
+		{
+			msg: &examplepb.Proto3Message{},
+			values: map[string]string{
+				"enum_value.nested": "test",
+			},
+		},
+		{
+			msg: &examplepb.Proto3Message{},
+			values: map[string]string{
+				"enum_value.nested": "test",
+			},
+		},
+		{
+			msg: &examplepb.Proto3Message{},
+			values: map[string]string{
+				"repeated_enum.nested": "test",
+			},
+		},
+	} {
+		spec.msg = spec.msg.ProtoReflect().New().Interface()
+		err := runtime.PopulatePathParameters(spec.msg, spec.values)
+		if err == nil {
+			t.Errorf("runtime.PopulatePathParameters(msg, %v) did not fail; want error", spec.values)
+		}
+	}
+}

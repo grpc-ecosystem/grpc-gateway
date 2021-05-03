@@ -99,11 +99,17 @@ func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []strin
 
 	switch {
 	case fieldDescriptor.IsList():
-		// Error here instead of pass forward?
 		return populateRepeatedPathField(fieldDescriptor, msgValue.Mutable(fieldDescriptor).List(), value)
 	case fieldDescriptor.IsMap():
-		return errors.New("cannot parse maps in path parameters")
+		// Don't continue further if it is a proto message. We shouldn't be handling these.
+		return nil
+		//case fieldDescriptor.Kind() == protoreflect.MessageKind:
+		//	// Don't continue further if it is a proto message. We shouldn't be handling these.
+		//	return nil
+		//case fieldDescriptor.Kind() == protoreflect.GroupKind:
+		//	return nil
 	}
+
 
 	return populatePathField(fieldDescriptor, msgValue, value)
 }
@@ -204,8 +210,8 @@ func parsePathField(fieldDescriptor protoreflect.FieldDescriptor, value string) 
 			return protoreflect.Value{}, err
 		}
 		return protoreflect.ValueOfBytes(v), nil
-	//case protoreflect.MessageKind, protoreflect.GroupKind:
-	// Skip for now
+	case protoreflect.MessageKind, protoreflect.GroupKind:
+		return parsePathMessage(fieldDescriptor.Message(), value)
 	default:
 		panic(fmt.Sprintf("unknown field kind: %v", fieldDescriptor.Kind()))
 	}
