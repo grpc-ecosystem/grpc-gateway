@@ -73,12 +73,9 @@ func BenchmarkPopulatePathParameters(b *testing.B) {
 		"map_value14[key]":       "true",
 		"map_value15[true]":      "value",
 	}
-	filter := utilities.NewDoubleArray([][]string{
-		{"bool_value"}, {"repeated_value"},
-	})
 
 	for i := 0; i < b.N; i++ {
-		_ = runtime.PopulatePathParameters(msg, values, filter)
+		_ = runtime.PopulatePathParameters(msg, values)
 	}
 }
 
@@ -96,7 +93,6 @@ func TestPopulatePathParameters(t *testing.T) {
 
 	for i, spec := range []struct {
 		values  map[string]string
-		filter  *utilities.DoubleArray
 		want    proto.Message
 		wanterr error
 	}{
@@ -111,10 +107,7 @@ func TestPopulatePathParameters(t *testing.T) {
 				"bool_value":             "true",
 				"string_value":           "str",
 				"bytes_value":            "YWJjMTIzIT8kKiYoKSctPUB-",
-				//"repeated_value":         "a,b,c",
-				//"repeated_message":       "1,2,3",
 				"enum_value":             "1",
-				//"repeated_enum":          "1,2,0",
 				"timestamp_value":        timeStr,
 				"duration_value":         durationStr,
 				"fieldmask_value":        fieldmaskStr,
@@ -127,28 +120,7 @@ func TestPopulatePathParameters(t *testing.T) {
 				"wrapper_bool_value":     "true",
 				"wrapper_string_value":   "str",
 				"wrapper_bytes_value":    "YWJjMTIzIT8kKiYoKSctPUB-",
-				//"map_value[key]":         "value",
-				//"map_value[second]":      "bar",
-				//"map_value[third]":       "zzz",
-				//"map_value[fourth]":      "",
-				//`map_value[~!@#$%^&*()]`: "value",
-				//"map_value2[key]":        "-2",
-				//"map_value3[-2]":         "value",
-				//"map_value4[key]":        "-1",
-				//"map_value5[-1]":         "value",
-				//"map_value6[key]":        "3",
-				//"map_value7[3]":          "value",
-				//"map_value8[key]":        "4",
-				//"map_value9[4]":          "value",
-				//"map_value10[key]":       "1.5",
-				//"map_value11[1.5]":       "value",
-				//"map_value12[key]":       "2.5",
-				//"map_value13[2.5]":       "value",
-				//"map_value14[key]":       "true",
-				//"map_value15[true]":      "value",
-				//"map_value16[key]":       "2",
 			},
-			filter: utilities.NewDoubleArray(nil),
 			want: &examplepb.Proto3Message{
 				FloatValue:         1.5,
 				DoubleValue:        2.5,
@@ -159,10 +131,7 @@ func TestPopulatePathParameters(t *testing.T) {
 				BoolValue:          true,
 				StringValue:        "str",
 				BytesValue:         []byte("abc123!?$*&()'-=@~"),
-				//RepeatedValue:      []string{"a", "b", "c"},
-				//RepeatedMessage:    []*wrapperspb.UInt64Value{{Value: 1}, {Value: 2}, {Value: 3}},
 				EnumValue:          examplepb.EnumValue_Y,
-				//RepeatedEnum:       []examplepb.EnumValue{examplepb.EnumValue_Y, examplepb.EnumValue_Z, examplepb.EnumValue_X},
 				TimestampValue:     timePb,
 				DurationValue:      durationPb,
 				FieldmaskValue:     fieldmaskPb,
@@ -175,32 +144,12 @@ func TestPopulatePathParameters(t *testing.T) {
 				WrapperBoolValue:   &wrapperspb.BoolValue{Value: true},
 				WrapperStringValue: &wrapperspb.StringValue{Value: "str"},
 				WrapperBytesValue:  &wrapperspb.BytesValue{Value: []byte("abc123!?$*&()'-=@~")},
-				//MapValue: map[string]string{
-				//	"key":         "value",
-				//	"second":      "bar",
-				//	"third":       "zzz",
-				//	"fourth":      "",
-				//	`~!@#$%^&*()`: "value",
-				//},
-				//MapValue2:  map[string]int32{"key": -2},
-				//MapValue3:  map[int32]string{-2: "value"},
-				//MapValue4:  map[string]int64{"key": -1},
-				//MapValue5:  map[int64]string{-1: "value"},
-				//MapValue6:  map[string]uint32{"key": 3},
-				//MapValue7:  map[uint32]string{3: "value"},
-				//MapValue8:  map[string]uint64{"key": 4},
-				//MapValue9:  map[uint64]string{4: "value"},
-				//MapValue10: map[string]float32{"key": 1.5},
-				//MapValue12: map[string]float64{"key": 2.5},
-				//MapValue14: map[string]bool{"key": true},
-				//MapValue15: map[bool]string{true: "value"},
-				//MapValue16: map[string]*wrapperspb.UInt64Value{"key": {Value: 2}},
 			},
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			msg := spec.want.ProtoReflect().New().Interface()
-			err := runtime.PopulatePathParameters(msg, spec.values, spec.filter)
+			err := runtime.PopulatePathParameters(msg, spec.values)
 			if spec.wanterr != nil {
 				if err == nil || err.Error() != spec.wanterr.Error() {
 					t.Errorf("runtime.PopulatePathParameters(msg, %v, %v) failed with %q; want error %q", spec.values, spec.filter, err, spec.wanterr)

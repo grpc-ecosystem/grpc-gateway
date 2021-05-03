@@ -376,7 +376,7 @@ var (
 	}
 {{else}}
 	_, _ = val, ok
-	if err := runtime.PopulatePathParameters(&protoReq, pathParams,  filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}); err != nil {
+	if err := runtime.PopulatePathParameters(&protoReq, pathParams); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 {{end}}
@@ -550,7 +550,7 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 	}
 {{else}}
 	_, _ = val, ok
-	if err := runtime.PopulatePathParameters(&protoReq, pathParams, filter_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}); err != nil {
+	if err := runtime.PopulatePathParameters(&protoReq, pathParams); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 {{end}}

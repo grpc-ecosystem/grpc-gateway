@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -22,20 +21,20 @@ var currentPathParser PathParameterParser = &defaultPathParser{}
 
 // PathParameterParser defines interface for all path parameter parsers
 type PathParameterParser interface {
-	Parse(msg proto.Message, pathParams map[string]string, filter *utilities.DoubleArray) error
+	Parse(msg proto.Message, pathParams map[string]string) error
 }
 
 // PopulatePathParameters parses path parameters
 // into "msg" using current path parser
-func PopulatePathParameters(msg proto.Message, pathParams map[string]string, filter *utilities.DoubleArray) error {
-	return currentPathParser.Parse(msg, pathParams, filter)
+func PopulatePathParameters(msg proto.Message, pathParams map[string]string) error {
+	return currentPathParser.Parse(msg, pathParams)
 }
 
 type defaultPathParser struct{}
 
 // Parse populates "values" into "msg".
 // A value is ignored if its key starts with one of the elements in "filter".
-func (*defaultPathParser) Parse(msg proto.Message, values map[string]string, filter *utilities.DoubleArray) error {
+func (*defaultPathParser) Parse(msg proto.Message, values map[string]string) error {
 	fmt.Println(values)
 	for key, value := range values {
 		fmt.Printf("\t%s\n", value)
@@ -48,9 +47,6 @@ func (*defaultPathParser) Parse(msg proto.Message, values map[string]string, fil
 			//values = append([]string{match[2]}, values...)
 		}
 		fieldPath := strings.Split(key, ".")
-		if filter.HasCommonPrefix(fieldPath) {
-			continue
-		}
 		if err := populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, []string{value}); err != nil {
 			return err
 		}
@@ -130,18 +126,6 @@ func populatePathField(fieldDescriptor protoreflect.FieldDescriptor, msgValue pr
 	}
 
 	msgValue.Set(fieldDescriptor, v)
-	return nil
-}
-
-func populateRepeatedPathField(fieldDescriptor protoreflect.FieldDescriptor, list protoreflect.List, values []string) error {
-	for _, value := range values {
-		v, err := parsePathField(fieldDescriptor, value)
-		if err != nil {
-			return fmt.Errorf("parsing list %q: %w", fieldDescriptor.FullName().Name(), err)
-		}
-		list.Append(v)
-	}
-
 	return nil
 }
 
