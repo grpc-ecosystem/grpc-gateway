@@ -8,7 +8,6 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
@@ -107,7 +106,9 @@ func TestPopulatePathParameters(t *testing.T) {
 				"bool_value":             "true",
 				"string_value":           "str",
 				"bytes_value":            "YWJjMTIzIT8kKiYoKSctPUB-",
+				"repeated_value":         "a,b,c",
 				"enum_value":             "1",
+				"repeated_enum":          "1,2,0",
 				"timestamp_value":        timeStr,
 				"duration_value":         durationStr,
 				"fieldmask_value":        fieldmaskStr,
@@ -131,7 +132,9 @@ func TestPopulatePathParameters(t *testing.T) {
 				BoolValue:          true,
 				StringValue:        "str",
 				BytesValue:         []byte("abc123!?$*&()'-=@~"),
+				RepeatedValue:      []string{"a", "b", "c"},
 				EnumValue:          examplepb.EnumValue_Y,
+				RepeatedEnum:       []examplepb.EnumValue{examplepb.EnumValue_Y, examplepb.EnumValue_Z, examplepb.EnumValue_X},
 				TimestampValue:     timePb,
 				DurationValue:      durationPb,
 				FieldmaskValue:     fieldmaskPb,
@@ -152,17 +155,17 @@ func TestPopulatePathParameters(t *testing.T) {
 			err := runtime.PopulatePathParameters(msg, spec.values)
 			if spec.wanterr != nil {
 				if err == nil || err.Error() != spec.wanterr.Error() {
-					t.Errorf("runtime.PopulatePathParameters(msg, %v, %v) failed with %q; want error %q", spec.values, spec.filter, err, spec.wanterr)
+					t.Errorf("runtime.PopulatePathParameters(msg, %v) failed with %q; want error %q", spec.values, err, spec.wanterr)
 				}
 				return
 			}
 
 			if err != nil {
-				t.Errorf("runtime.PopulatePathParameters(msg, %v, %v) failed with %v; want success", spec.values, spec.filter, err)
+				t.Errorf("runtime.PopulatePathParameters(msg, %v) failed with %v; want success", spec.values, err)
 				return
 			}
 			if diff := cmp.Diff(spec.want, msg, protocmp.Transform()); diff != "" {
-				t.Errorf("runtime.PopulatePathParameters(msg, %v, %v): %s", spec.values, spec.filter, diff)
+				t.Errorf("runtime.PopulatePathParameters(msg, %v): %s", spec.values, diff)
 			}
 		})
 	}

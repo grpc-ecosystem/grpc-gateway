@@ -47,7 +47,7 @@ func (*defaultPathParser) Parse(msg proto.Message, values map[string]string) err
 			//values = append([]string{match[2]}, values...)
 		}
 		fieldPath := strings.Split(key, ".")
-		if err := populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, []string{value}); err != nil {
+		if err := populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, value); err != nil {
 			return err
 		}
 	}
@@ -57,14 +57,14 @@ func (*defaultPathParser) Parse(msg proto.Message, values map[string]string) err
 // PopulateFieldFromPathParam sets a value in a nested Protobuf structure.
 func PopulateFieldFromPathParam(msg proto.Message, fieldPathString string, value string) error {
 	fieldPath := strings.Split(fieldPathString, ".")
-	return populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, []string{value})
+	return populateFieldValueFromPath(msg.ProtoReflect(), fieldPath, value)
 }
 
-func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []string, values []string) error {
+func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []string, value string) error {
 	if len(fieldPath) < 1 {
 		return errors.New("no field path")
 	}
-	if len(values) < 1 {
+	if value == "" {
 		return errors.New("no value provided")
 	}
 
@@ -107,16 +107,13 @@ func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []strin
 
 	switch {
 	case fieldDescriptor.IsList():
-		return errors.New("lists cannot be used as path params")
+		// Error here instead of pass forward?
+		return populateRepeatedPathField(fieldDescriptor, msgValue.Mutable(fieldDescriptor).List(), value)
 	case fieldDescriptor.IsMap():
-		return errors.New("maps cannot be used as path params")
+		return errors.New("cannot parse maps in path parameters")
 	}
 
-	if len(values) > 1 {
-		return fmt.Errorf("too many values for field %q: %s", fieldDescriptor.FullName().Name(), strings.Join(values, ", "))
-	}
-
-	return populatePathField(fieldDescriptor, msgValue, values[0])
+	return populatePathField(fieldDescriptor, msgValue, value)
 }
 
 func populatePathField(fieldDescriptor protoreflect.FieldDescriptor, msgValue protoreflect.Message, value string) error {
@@ -126,6 +123,18 @@ func populatePathField(fieldDescriptor protoreflect.FieldDescriptor, msgValue pr
 	}
 
 	msgValue.Set(fieldDescriptor, v)
+	return nil
+}
+
+func populateRepeatedPathField(fieldDescriptor protoreflect.FieldDescriptor, list protoreflect.List, value string) error {
+	for _, value := range strings.Split(value, ",") {
+		v, err := parsePathField(fieldDescriptor, value)
+		if err != nil {
+			return fmt.Errorf("parsing list %q: %w", fieldDescriptor.FullName().Name(), err)
+		}
+		list.Append(v)
+	}
+
 	return nil
 }
 
@@ -203,8 +212,8 @@ func parsePathField(fieldDescriptor protoreflect.FieldDescriptor, value string) 
 			return protoreflect.Value{}, err
 		}
 		return protoreflect.ValueOfBytes(v), nil
-	case protoreflect.MessageKind, protoreflect.GroupKind:
-		return parsePathMessage(fieldDescriptor.Message(), value)
+	//case protoreflect.MessageKind, protoreflect.GroupKind:
+	// Skip for now
 	default:
 		panic(fmt.Sprintf("unknown field kind: %v", fieldDescriptor.Kind()))
 	}
