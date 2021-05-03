@@ -226,8 +226,10 @@ It translates gRPC into RESTful JSON APIs.
 package {{.GoPkg.Name}}
 import (
 	{{range $i := .Imports}}{{if $i.Standard}}{{$i | printf "%s\n"}}{{end}}{{end}}
+
 	{{range $i := .Imports}}{{if not $i.Standard}}{{$i | printf "%s\n"}}{{end}}{{end}}
 )
+
 // Suppress "imported and not used" errors
 var _ codes.Code
 var _ io.Reader
