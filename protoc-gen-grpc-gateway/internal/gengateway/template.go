@@ -337,12 +337,6 @@ var (
 {{if .PathParams}}
 	var (
 		val string
-{{- if .HasEnumPathParam}}
-		e int32
-{{- end}}
-{{- if .HasRepeatedEnumPathParam}}
-		es []int32
-{{- end}}
 		ok bool
 		err error
 		_ = err
