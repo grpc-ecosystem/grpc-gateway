@@ -482,6 +482,7 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 		err error
 		_, _, _ = val, ok, err
 	)
+
 	if err := runtime.PopulatePathParameters(&protoReq, pathParams); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "failed to populate path parameters: %v", err)
 	}
