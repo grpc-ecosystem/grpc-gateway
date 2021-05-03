@@ -101,13 +101,8 @@ func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []strin
 	case fieldDescriptor.IsList():
 		return populateRepeatedPathField(fieldDescriptor, msgValue.Mutable(fieldDescriptor).List(), value)
 	case fieldDescriptor.IsMap():
-		// Don't continue further if it is a proto message. We shouldn't be handling these.
+		// Don't continue further if it is a map. We shouldn't be handling these.
 		return nil
-		//case fieldDescriptor.Kind() == protoreflect.MessageKind:
-		//	// Don't continue further if it is a proto message. We shouldn't be handling these.
-		//	return nil
-		//case fieldDescriptor.Kind() == protoreflect.GroupKind:
-		//	return nil
 	}
 
 
