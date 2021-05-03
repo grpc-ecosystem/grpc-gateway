@@ -350,13 +350,28 @@ var (
 	{{$binding := .}}
 	{{range $param := .PathParams}}
 	{{$enum := $binding.LookupEnum $param}}
-
-	_, _ = val, ok
+	val, ok = pathParams[{{$param | printf "%q"}}]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", {{$param | printf "%q"}})
+	}
 {{if $param.IsNestedProto3}}
-	_, _ = val, ok
+	err = runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
+	}
+	{{if $enum}}
+		e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GoType $param.Method.Service.File.GoPkg.Path}}_value)
+		if err != nil {
+			return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
+		}
+	{{end}}
 {{else if $enum}}
-	_, _ = val, ok
+	e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GoType $param.Method.Service.File.GoPkg.Path}}_value)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
+	}
 {{else}}
+	_, _ = val, ok
 	if err := runtime.PopulatePathParameters(&protoReq, pathParams, &utilities.DoubleArray{}); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -505,13 +520,28 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 	{{$binding := .}}
 	{{range $param := .PathParams}}
 	{{$enum := $binding.LookupEnum $param}}
-
-	_, _ = val, ok
+	val, ok = pathParams[{{$param | printf "%q"}}]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", {{$param | printf "%q"}})
+	}
 {{if $param.IsNestedProto3}}
-	_, _ = val, ok
+	err = runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
+	}
+	{{if $enum}}
+		e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GoType $param.Method.Service.File.GoPkg.Path}}_value)
+		if err != nil {
+			return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
+		}
+	{{end}}
 {{else if $enum}}
-	_, _ = val, ok
+	e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GoType $param.Method.Service.File.GoPkg.Path}}_value)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
+	}
 {{else}}
+	_, _ = val, ok
 	if err := runtime.PopulatePathParameters(&protoReq, pathParams, &utilities.DoubleArray{}); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}

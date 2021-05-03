@@ -111,9 +111,9 @@ func populateFieldValueFromPath(msgValue protoreflect.Message, fieldPath []strin
 
 	switch {
 	case fieldDescriptor.IsList():
-		return populateRepeatedPathField(fieldDescriptor, msgValue.Mutable(fieldDescriptor).List(), values)
+		return errors.New("lists cannot be used as path params")
 	case fieldDescriptor.IsMap():
-		return populateMapPathField(fieldDescriptor, msgValue.Mutable(fieldDescriptor).Map(), values)
+		return errors.New("maps cannot be used as path params")
 	}
 
 	if len(values) > 1 {
@@ -141,26 +141,6 @@ func populateRepeatedPathField(fieldDescriptor protoreflect.FieldDescriptor, lis
 		}
 		list.Append(v)
 	}
-
-	return nil
-}
-
-func populateMapPathField(fieldDescriptor protoreflect.FieldDescriptor, mp protoreflect.Map, values []string) error {
-	if len(values) != 2 {
-		return fmt.Errorf("more than one value provided for key %q in map %q", values[0], fieldDescriptor.FullName())
-	}
-
-	key, err := parsePathField(fieldDescriptor.MapKey(), values[0])
-	if err != nil {
-		return fmt.Errorf("parsing map key %q: %w", fieldDescriptor.FullName().Name(), err)
-	}
-
-	value, err := parsePathField(fieldDescriptor.MapValue(), values[1])
-	if err != nil {
-		return fmt.Errorf("parsing map value %q: %w", fieldDescriptor.FullName().Name(), err)
-	}
-
-	mp.Set(key.MapKey(), value)
 
 	return nil
 }
