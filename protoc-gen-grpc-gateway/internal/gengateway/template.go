@@ -341,16 +341,13 @@ var (
 		err error
 		_, _, _ = val, ok, err
 	)
-	{{$binding := .}}
-	{{range $param := .PathParams}}
-	{{$enum := $binding.LookupEnum $param}}
 	if err := runtime.PopulatePathParameters(&protoReq, pathParams); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "failed to populate path parameters: %v", err)
 	}
+	{{$binding := .}}
+	{{range $param := .PathParams}}
+	{{$enum := $binding.LookupEnum $param}}
 {{if $param.IsNestedProto3}}
-	if err := runtime.PopulatePathParameters(&protoReq, pathParams); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
 	val, ok = pathParams[{{$param | printf "%q"}}]
 	if !ok {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", {{$param | printf "%q"}})
@@ -358,8 +355,6 @@ var (
 	if err := runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
-{{else}}
-	_, _ = val, ok
 {{end}}
 	{{end}}
 {{end}}
@@ -483,22 +478,16 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 {{if .PathParams}}
 	var (
 		val string
-{{- if .HasEnumPathParam}}
-		e int32
-{{- end}}
-{{- if .HasRepeatedEnumPathParam}}
-		es []int32
-{{- end}}
 		ok bool
 		err error
-		_ = err
+		_, _, _ = val, ok, err
 	)
+	if err := runtime.PopulatePathParameters(&protoReq, pathParams); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "failed to populate path parameters: %v", err)
+	}
 	{{$binding := .}}
 	{{range $param := .PathParams}}
 	{{$enum := $binding.LookupEnum $param}}
-	if err := runtime.PopulatePathParameters(&protoReq, pathParams); err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
 {{if $param.IsNestedProto3}}
 	val, ok = pathParams[{{$param | printf "%q"}}]
 	if !ok {
