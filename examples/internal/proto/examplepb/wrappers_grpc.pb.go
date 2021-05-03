@@ -4,15 +4,16 @@ package examplepb
 
 import (
 	context "context"
-	empty "github.com/golang/protobuf/ptypes/empty"
-	wrappers "github.com/golang/protobuf/ptypes/wrappers"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // WrappersServiceClient is the client API for WrappersService service.
@@ -20,16 +21,16 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type WrappersServiceClient interface {
 	Create(ctx context.Context, in *Wrappers, opts ...grpc.CallOption) (*Wrappers, error)
-	CreateStringValue(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*wrappers.StringValue, error)
-	CreateInt32Value(ctx context.Context, in *wrappers.Int32Value, opts ...grpc.CallOption) (*wrappers.Int32Value, error)
-	CreateInt64Value(ctx context.Context, in *wrappers.Int64Value, opts ...grpc.CallOption) (*wrappers.Int64Value, error)
-	CreateFloatValue(ctx context.Context, in *wrappers.FloatValue, opts ...grpc.CallOption) (*wrappers.FloatValue, error)
-	CreateDoubleValue(ctx context.Context, in *wrappers.DoubleValue, opts ...grpc.CallOption) (*wrappers.DoubleValue, error)
-	CreateBoolValue(ctx context.Context, in *wrappers.BoolValue, opts ...grpc.CallOption) (*wrappers.BoolValue, error)
-	CreateUInt32Value(ctx context.Context, in *wrappers.UInt32Value, opts ...grpc.CallOption) (*wrappers.UInt32Value, error)
-	CreateUInt64Value(ctx context.Context, in *wrappers.UInt64Value, opts ...grpc.CallOption) (*wrappers.UInt64Value, error)
-	CreateBytesValue(ctx context.Context, in *wrappers.BytesValue, opts ...grpc.CallOption) (*wrappers.BytesValue, error)
-	CreateEmpty(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*empty.Empty, error)
+	CreateStringValue(ctx context.Context, in *wrapperspb.StringValue, opts ...grpc.CallOption) (*wrapperspb.StringValue, error)
+	CreateInt32Value(ctx context.Context, in *wrapperspb.Int32Value, opts ...grpc.CallOption) (*wrapperspb.Int32Value, error)
+	CreateInt64Value(ctx context.Context, in *wrapperspb.Int64Value, opts ...grpc.CallOption) (*wrapperspb.Int64Value, error)
+	CreateFloatValue(ctx context.Context, in *wrapperspb.FloatValue, opts ...grpc.CallOption) (*wrapperspb.FloatValue, error)
+	CreateDoubleValue(ctx context.Context, in *wrapperspb.DoubleValue, opts ...grpc.CallOption) (*wrapperspb.DoubleValue, error)
+	CreateBoolValue(ctx context.Context, in *wrapperspb.BoolValue, opts ...grpc.CallOption) (*wrapperspb.BoolValue, error)
+	CreateUInt32Value(ctx context.Context, in *wrapperspb.UInt32Value, opts ...grpc.CallOption) (*wrapperspb.UInt32Value, error)
+	CreateUInt64Value(ctx context.Context, in *wrapperspb.UInt64Value, opts ...grpc.CallOption) (*wrapperspb.UInt64Value, error)
+	CreateBytesValue(ctx context.Context, in *wrapperspb.BytesValue, opts ...grpc.CallOption) (*wrapperspb.BytesValue, error)
+	CreateEmpty(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type wrappersServiceClient struct {
@@ -49,8 +50,8 @@ func (c *wrappersServiceClient) Create(ctx context.Context, in *Wrappers, opts .
 	return out, nil
 }
 
-func (c *wrappersServiceClient) CreateStringValue(ctx context.Context, in *wrappers.StringValue, opts ...grpc.CallOption) (*wrappers.StringValue, error) {
-	out := new(wrappers.StringValue)
+func (c *wrappersServiceClient) CreateStringValue(ctx context.Context, in *wrapperspb.StringValue, opts ...grpc.CallOption) (*wrapperspb.StringValue, error) {
+	out := new(wrapperspb.StringValue)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateStringValue", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -58,8 +59,8 @@ func (c *wrappersServiceClient) CreateStringValue(ctx context.Context, in *wrapp
 	return out, nil
 }
 
-func (c *wrappersServiceClient) CreateInt32Value(ctx context.Context, in *wrappers.Int32Value, opts ...grpc.CallOption) (*wrappers.Int32Value, error) {
-	out := new(wrappers.Int32Value)
+func (c *wrappersServiceClient) CreateInt32Value(ctx context.Context, in *wrapperspb.Int32Value, opts ...grpc.CallOption) (*wrapperspb.Int32Value, error) {
+	out := new(wrapperspb.Int32Value)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateInt32Value", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -67,8 +68,8 @@ func (c *wrappersServiceClient) CreateInt32Value(ctx context.Context, in *wrappe
 	return out, nil
 }
 
-func (c *wrappersServiceClient) CreateInt64Value(ctx context.Context, in *wrappers.Int64Value, opts ...grpc.CallOption) (*wrappers.Int64Value, error) {
-	out := new(wrappers.Int64Value)
+func (c *wrappersServiceClient) CreateInt64Value(ctx context.Context, in *wrapperspb.Int64Value, opts ...grpc.CallOption) (*wrapperspb.Int64Value, error) {
+	out := new(wrapperspb.Int64Value)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateInt64Value", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -76,8 +77,8 @@ func (c *wrappersServiceClient) CreateInt64Value(ctx context.Context, in *wrappe
 	return out, nil
 }
 
-func (c *wrappersServiceClient) CreateFloatValue(ctx context.Context, in *wrappers.FloatValue, opts ...grpc.CallOption) (*wrappers.FloatValue, error) {
-	out := new(wrappers.FloatValue)
+func (c *wrappersServiceClient) CreateFloatValue(ctx context.Context, in *wrapperspb.FloatValue, opts ...grpc.CallOption) (*wrapperspb.FloatValue, error) {
+	out := new(wrapperspb.FloatValue)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateFloatValue", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -85,8 +86,8 @@ func (c *wrappersServiceClient) CreateFloatValue(ctx context.Context, in *wrappe
 	return out, nil
 }
 
-func (c *wrappersServiceClient) CreateDoubleValue(ctx context.Context, in *wrappers.DoubleValue, opts ...grpc.CallOption) (*wrappers.DoubleValue, error) {
-	out := new(wrappers.DoubleValue)
+func (c *wrappersServiceClient) CreateDoubleValue(ctx context.Context, in *wrapperspb.DoubleValue, opts ...grpc.CallOption) (*wrapperspb.DoubleValue, error) {
+	out := new(wrapperspb.DoubleValue)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateDoubleValue", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -94,8 +95,8 @@ func (c *wrappersServiceClient) CreateDoubleValue(ctx context.Context, in *wrapp
 	return out, nil
 }
 
-func (c *wrappersServiceClient) CreateBoolValue(ctx context.Context, in *wrappers.BoolValue, opts ...grpc.CallOption) (*wrappers.BoolValue, error) {
-	out := new(wrappers.BoolValue)
+func (c *wrappersServiceClient) CreateBoolValue(ctx context.Context, in *wrapperspb.BoolValue, opts ...grpc.CallOption) (*wrapperspb.BoolValue, error) {
+	out := new(wrapperspb.BoolValue)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateBoolValue", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -103,8 +104,8 @@ func (c *wrappersServiceClient) CreateBoolValue(ctx context.Context, in *wrapper
 	return out, nil
 }
 
-func (c *wrappersServiceClient) CreateUInt32Value(ctx context.Context, in *wrappers.UInt32Value, opts ...grpc.CallOption) (*wrappers.UInt32Value, error) {
-	out := new(wrappers.UInt32Value)
+func (c *wrappersServiceClient) CreateUInt32Value(ctx context.Context, in *wrapperspb.UInt32Value, opts ...grpc.CallOption) (*wrapperspb.UInt32Value, error) {
+	out := new(wrapperspb.UInt32Value)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateUInt32Value", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -112,8 +113,8 @@ func (c *wrappersServiceClient) CreateUInt32Value(ctx context.Context, in *wrapp
 	return out, nil
 }
 
-func (c *wrappersServiceClient) CreateUInt64Value(ctx context.Context, in *wrappers.UInt64Value, opts ...grpc.CallOption) (*wrappers.UInt64Value, error) {
-	out := new(wrappers.UInt64Value)
+func (c *wrappersServiceClient) CreateUInt64Value(ctx context.Context, in *wrapperspb.UInt64Value, opts ...grpc.CallOption) (*wrapperspb.UInt64Value, error) {
+	out := new(wrapperspb.UInt64Value)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateUInt64Value", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -121,8 +122,8 @@ func (c *wrappersServiceClient) CreateUInt64Value(ctx context.Context, in *wrapp
 	return out, nil
 }
 
-func (c *wrappersServiceClient) CreateBytesValue(ctx context.Context, in *wrappers.BytesValue, opts ...grpc.CallOption) (*wrappers.BytesValue, error) {
-	out := new(wrappers.BytesValue)
+func (c *wrappersServiceClient) CreateBytesValue(ctx context.Context, in *wrapperspb.BytesValue, opts ...grpc.CallOption) (*wrapperspb.BytesValue, error) {
+	out := new(wrapperspb.BytesValue)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateBytesValue", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -130,8 +131,8 @@ func (c *wrappersServiceClient) CreateBytesValue(ctx context.Context, in *wrappe
 	return out, nil
 }
 
-func (c *wrappersServiceClient) CreateEmpty(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
+func (c *wrappersServiceClient) CreateEmpty(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateEmpty", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -144,16 +145,16 @@ func (c *wrappersServiceClient) CreateEmpty(ctx context.Context, in *empty.Empty
 // for forward compatibility
 type WrappersServiceServer interface {
 	Create(context.Context, *Wrappers) (*Wrappers, error)
-	CreateStringValue(context.Context, *wrappers.StringValue) (*wrappers.StringValue, error)
-	CreateInt32Value(context.Context, *wrappers.Int32Value) (*wrappers.Int32Value, error)
-	CreateInt64Value(context.Context, *wrappers.Int64Value) (*wrappers.Int64Value, error)
-	CreateFloatValue(context.Context, *wrappers.FloatValue) (*wrappers.FloatValue, error)
-	CreateDoubleValue(context.Context, *wrappers.DoubleValue) (*wrappers.DoubleValue, error)
-	CreateBoolValue(context.Context, *wrappers.BoolValue) (*wrappers.BoolValue, error)
-	CreateUInt32Value(context.Context, *wrappers.UInt32Value) (*wrappers.UInt32Value, error)
-	CreateUInt64Value(context.Context, *wrappers.UInt64Value) (*wrappers.UInt64Value, error)
-	CreateBytesValue(context.Context, *wrappers.BytesValue) (*wrappers.BytesValue, error)
-	CreateEmpty(context.Context, *empty.Empty) (*empty.Empty, error)
+	CreateStringValue(context.Context, *wrapperspb.StringValue) (*wrapperspb.StringValue, error)
+	CreateInt32Value(context.Context, *wrapperspb.Int32Value) (*wrapperspb.Int32Value, error)
+	CreateInt64Value(context.Context, *wrapperspb.Int64Value) (*wrapperspb.Int64Value, error)
+	CreateFloatValue(context.Context, *wrapperspb.FloatValue) (*wrapperspb.FloatValue, error)
+	CreateDoubleValue(context.Context, *wrapperspb.DoubleValue) (*wrapperspb.DoubleValue, error)
+	CreateBoolValue(context.Context, *wrapperspb.BoolValue) (*wrapperspb.BoolValue, error)
+	CreateUInt32Value(context.Context, *wrapperspb.UInt32Value) (*wrapperspb.UInt32Value, error)
+	CreateUInt64Value(context.Context, *wrapperspb.UInt64Value) (*wrapperspb.UInt64Value, error)
+	CreateBytesValue(context.Context, *wrapperspb.BytesValue) (*wrapperspb.BytesValue, error)
+	CreateEmpty(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 }
 
 // UnimplementedWrappersServiceServer should be embedded to have forward compatible implementations.
@@ -163,34 +164,34 @@ type UnimplementedWrappersServiceServer struct {
 func (UnimplementedWrappersServiceServer) Create(context.Context, *Wrappers) (*Wrappers, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedWrappersServiceServer) CreateStringValue(context.Context, *wrappers.StringValue) (*wrappers.StringValue, error) {
+func (UnimplementedWrappersServiceServer) CreateStringValue(context.Context, *wrapperspb.StringValue) (*wrapperspb.StringValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateStringValue not implemented")
 }
-func (UnimplementedWrappersServiceServer) CreateInt32Value(context.Context, *wrappers.Int32Value) (*wrappers.Int32Value, error) {
+func (UnimplementedWrappersServiceServer) CreateInt32Value(context.Context, *wrapperspb.Int32Value) (*wrapperspb.Int32Value, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateInt32Value not implemented")
 }
-func (UnimplementedWrappersServiceServer) CreateInt64Value(context.Context, *wrappers.Int64Value) (*wrappers.Int64Value, error) {
+func (UnimplementedWrappersServiceServer) CreateInt64Value(context.Context, *wrapperspb.Int64Value) (*wrapperspb.Int64Value, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateInt64Value not implemented")
 }
-func (UnimplementedWrappersServiceServer) CreateFloatValue(context.Context, *wrappers.FloatValue) (*wrappers.FloatValue, error) {
+func (UnimplementedWrappersServiceServer) CreateFloatValue(context.Context, *wrapperspb.FloatValue) (*wrapperspb.FloatValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateFloatValue not implemented")
 }
-func (UnimplementedWrappersServiceServer) CreateDoubleValue(context.Context, *wrappers.DoubleValue) (*wrappers.DoubleValue, error) {
+func (UnimplementedWrappersServiceServer) CreateDoubleValue(context.Context, *wrapperspb.DoubleValue) (*wrapperspb.DoubleValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateDoubleValue not implemented")
 }
-func (UnimplementedWrappersServiceServer) CreateBoolValue(context.Context, *wrappers.BoolValue) (*wrappers.BoolValue, error) {
+func (UnimplementedWrappersServiceServer) CreateBoolValue(context.Context, *wrapperspb.BoolValue) (*wrapperspb.BoolValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBoolValue not implemented")
 }
-func (UnimplementedWrappersServiceServer) CreateUInt32Value(context.Context, *wrappers.UInt32Value) (*wrappers.UInt32Value, error) {
+func (UnimplementedWrappersServiceServer) CreateUInt32Value(context.Context, *wrapperspb.UInt32Value) (*wrapperspb.UInt32Value, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUInt32Value not implemented")
 }
-func (UnimplementedWrappersServiceServer) CreateUInt64Value(context.Context, *wrappers.UInt64Value) (*wrappers.UInt64Value, error) {
+func (UnimplementedWrappersServiceServer) CreateUInt64Value(context.Context, *wrapperspb.UInt64Value) (*wrapperspb.UInt64Value, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUInt64Value not implemented")
 }
-func (UnimplementedWrappersServiceServer) CreateBytesValue(context.Context, *wrappers.BytesValue) (*wrappers.BytesValue, error) {
+func (UnimplementedWrappersServiceServer) CreateBytesValue(context.Context, *wrapperspb.BytesValue) (*wrapperspb.BytesValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateBytesValue not implemented")
 }
-func (UnimplementedWrappersServiceServer) CreateEmpty(context.Context, *empty.Empty) (*empty.Empty, error) {
+func (UnimplementedWrappersServiceServer) CreateEmpty(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateEmpty not implemented")
 }
 
@@ -201,8 +202,8 @@ type UnsafeWrappersServiceServer interface {
 	mustEmbedUnimplementedWrappersServiceServer()
 }
 
-func RegisterWrappersServiceServer(s *grpc.Server, srv WrappersServiceServer) {
-	s.RegisterService(&_WrappersService_serviceDesc, srv)
+func RegisterWrappersServiceServer(s grpc.ServiceRegistrar, srv WrappersServiceServer) {
+	s.RegisterService(&WrappersService_ServiceDesc, srv)
 }
 
 func _WrappersService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -224,7 +225,7 @@ func _WrappersService_Create_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _WrappersService_CreateStringValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(wrappers.StringValue)
+	in := new(wrapperspb.StringValue)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -236,13 +237,13 @@ func _WrappersService_CreateStringValue_Handler(srv interface{}, ctx context.Con
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateStringValue",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WrappersServiceServer).CreateStringValue(ctx, req.(*wrappers.StringValue))
+		return srv.(WrappersServiceServer).CreateStringValue(ctx, req.(*wrapperspb.StringValue))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _WrappersService_CreateInt32Value_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(wrappers.Int32Value)
+	in := new(wrapperspb.Int32Value)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -254,13 +255,13 @@ func _WrappersService_CreateInt32Value_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateInt32Value",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WrappersServiceServer).CreateInt32Value(ctx, req.(*wrappers.Int32Value))
+		return srv.(WrappersServiceServer).CreateInt32Value(ctx, req.(*wrapperspb.Int32Value))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _WrappersService_CreateInt64Value_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(wrappers.Int64Value)
+	in := new(wrapperspb.Int64Value)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -272,13 +273,13 @@ func _WrappersService_CreateInt64Value_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateInt64Value",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WrappersServiceServer).CreateInt64Value(ctx, req.(*wrappers.Int64Value))
+		return srv.(WrappersServiceServer).CreateInt64Value(ctx, req.(*wrapperspb.Int64Value))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _WrappersService_CreateFloatValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(wrappers.FloatValue)
+	in := new(wrapperspb.FloatValue)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -290,13 +291,13 @@ func _WrappersService_CreateFloatValue_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateFloatValue",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WrappersServiceServer).CreateFloatValue(ctx, req.(*wrappers.FloatValue))
+		return srv.(WrappersServiceServer).CreateFloatValue(ctx, req.(*wrapperspb.FloatValue))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _WrappersService_CreateDoubleValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(wrappers.DoubleValue)
+	in := new(wrapperspb.DoubleValue)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -308,13 +309,13 @@ func _WrappersService_CreateDoubleValue_Handler(srv interface{}, ctx context.Con
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateDoubleValue",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WrappersServiceServer).CreateDoubleValue(ctx, req.(*wrappers.DoubleValue))
+		return srv.(WrappersServiceServer).CreateDoubleValue(ctx, req.(*wrapperspb.DoubleValue))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _WrappersService_CreateBoolValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(wrappers.BoolValue)
+	in := new(wrapperspb.BoolValue)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -326,13 +327,13 @@ func _WrappersService_CreateBoolValue_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateBoolValue",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WrappersServiceServer).CreateBoolValue(ctx, req.(*wrappers.BoolValue))
+		return srv.(WrappersServiceServer).CreateBoolValue(ctx, req.(*wrapperspb.BoolValue))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _WrappersService_CreateUInt32Value_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(wrappers.UInt32Value)
+	in := new(wrapperspb.UInt32Value)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -344,13 +345,13 @@ func _WrappersService_CreateUInt32Value_Handler(srv interface{}, ctx context.Con
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateUInt32Value",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WrappersServiceServer).CreateUInt32Value(ctx, req.(*wrappers.UInt32Value))
+		return srv.(WrappersServiceServer).CreateUInt32Value(ctx, req.(*wrapperspb.UInt32Value))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _WrappersService_CreateUInt64Value_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(wrappers.UInt64Value)
+	in := new(wrapperspb.UInt64Value)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -362,13 +363,13 @@ func _WrappersService_CreateUInt64Value_Handler(srv interface{}, ctx context.Con
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateUInt64Value",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WrappersServiceServer).CreateUInt64Value(ctx, req.(*wrappers.UInt64Value))
+		return srv.(WrappersServiceServer).CreateUInt64Value(ctx, req.(*wrapperspb.UInt64Value))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _WrappersService_CreateBytesValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(wrappers.BytesValue)
+	in := new(wrapperspb.BytesValue)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -380,13 +381,13 @@ func _WrappersService_CreateBytesValue_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateBytesValue",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WrappersServiceServer).CreateBytesValue(ctx, req.(*wrappers.BytesValue))
+		return srv.(WrappersServiceServer).CreateBytesValue(ctx, req.(*wrapperspb.BytesValue))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _WrappersService_CreateEmpty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(empty.Empty)
+	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -398,12 +399,15 @@ func _WrappersService_CreateEmpty_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.WrappersService/CreateEmpty",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WrappersServiceServer).CreateEmpty(ctx, req.(*empty.Empty))
+		return srv.(WrappersServiceServer).CreateEmpty(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _WrappersService_serviceDesc = grpc.ServiceDesc{
+// WrappersService_ServiceDesc is the grpc.ServiceDesc for WrappersService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var WrappersService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.WrappersService",
 	HandlerType: (*WrappersServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
