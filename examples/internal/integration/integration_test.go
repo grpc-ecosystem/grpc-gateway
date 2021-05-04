@@ -286,9 +286,17 @@ func testEchoBody(t *testing.T, port int, apiPrefix string) {
 	}
 
 	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo_body", port, apiPrefix)
-	resp, err := http.Post(apiURL, "", bytes.NewReader(payload))
+
+	client := &http.Client{}
+	req, err := http.NewRequest("POST", apiURL, bytes.NewReader(payload))
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+	req.Header.Set("TE", "trailers")
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("client.Do(%v) failed with %v; want success", req, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -598,11 +606,21 @@ func testABEBulkCreate(t *testing.T, port int) {
 		}
 	}(w)
 	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/bulk", port)
-	resp, err := http.Post(apiURL, "application/json", r)
+
+	client := &http.Client{}
+	req, err := http.NewRequest("POST", apiURL, r)
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
 		return
 	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("TE", "trailers")
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Errorf("client.Do(%v) failed with %v; want success", req, err)
+		return
+	}
+
 	defer resp.Body.Close()
 	buf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
