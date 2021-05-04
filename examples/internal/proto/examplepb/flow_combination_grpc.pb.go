@@ -11,6 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // FlowCombinationClient is the client API for FlowCombination service.
@@ -47,7 +48,7 @@ func (c *flowCombinationClient) RpcEmptyRpc(ctx context.Context, in *EmptyProto,
 }
 
 func (c *flowCombinationClient) RpcEmptyStream(ctx context.Context, in *EmptyProto, opts ...grpc.CallOption) (FlowCombination_RpcEmptyStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_FlowCombination_serviceDesc.Streams[0], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcEmptyStream", opts...)
+	stream, err := c.cc.NewStream(ctx, &FlowCombination_ServiceDesc.Streams[0], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcEmptyStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +80,7 @@ func (x *flowCombinationRpcEmptyStreamClient) Recv() (*EmptyProto, error) {
 }
 
 func (c *flowCombinationClient) StreamEmptyRpc(ctx context.Context, opts ...grpc.CallOption) (FlowCombination_StreamEmptyRpcClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_FlowCombination_serviceDesc.Streams[1], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/StreamEmptyRpc", opts...)
+	stream, err := c.cc.NewStream(ctx, &FlowCombination_ServiceDesc.Streams[1], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/StreamEmptyRpc", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +114,7 @@ func (x *flowCombinationStreamEmptyRpcClient) CloseAndRecv() (*EmptyProto, error
 }
 
 func (c *flowCombinationClient) StreamEmptyStream(ctx context.Context, opts ...grpc.CallOption) (FlowCombination_StreamEmptyStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_FlowCombination_serviceDesc.Streams[2], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/StreamEmptyStream", opts...)
+	stream, err := c.cc.NewStream(ctx, &FlowCombination_ServiceDesc.Streams[2], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/StreamEmptyStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +172,7 @@ func (c *flowCombinationClient) RpcPathNestedRpc(ctx context.Context, in *Nested
 }
 
 func (c *flowCombinationClient) RpcBodyStream(ctx context.Context, in *NonEmptyProto, opts ...grpc.CallOption) (FlowCombination_RpcBodyStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_FlowCombination_serviceDesc.Streams[3], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", opts...)
+	stream, err := c.cc.NewStream(ctx, &FlowCombination_ServiceDesc.Streams[3], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcBodyStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +204,7 @@ func (x *flowCombinationRpcBodyStreamClient) Recv() (*EmptyProto, error) {
 }
 
 func (c *flowCombinationClient) RpcPathSingleNestedStream(ctx context.Context, in *SingleNestedProto, opts ...grpc.CallOption) (FlowCombination_RpcPathSingleNestedStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_FlowCombination_serviceDesc.Streams[4], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathSingleNestedStream", opts...)
+	stream, err := c.cc.NewStream(ctx, &FlowCombination_ServiceDesc.Streams[4], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathSingleNestedStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -235,7 +236,7 @@ func (x *flowCombinationRpcPathSingleNestedStreamClient) Recv() (*EmptyProto, er
 }
 
 func (c *flowCombinationClient) RpcPathNestedStream(ctx context.Context, in *NestedProto, opts ...grpc.CallOption) (FlowCombination_RpcPathNestedStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_FlowCombination_serviceDesc.Streams[5], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", opts...)
+	stream, err := c.cc.NewStream(ctx, &FlowCombination_ServiceDesc.Streams[5], "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -324,8 +325,8 @@ type UnsafeFlowCombinationServer interface {
 	mustEmbedUnimplementedFlowCombinationServer()
 }
 
-func RegisterFlowCombinationServer(s *grpc.Server, srv FlowCombinationServer) {
-	s.RegisterService(&_FlowCombination_serviceDesc, srv)
+func RegisterFlowCombinationServer(s grpc.ServiceRegistrar, srv FlowCombinationServer) {
+	s.RegisterService(&FlowCombination_ServiceDesc, srv)
 }
 
 func _FlowCombination_RpcEmptyRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -536,7 +537,10 @@ func (x *flowCombinationRpcPathNestedStreamServer) Send(m *EmptyProto) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-var _FlowCombination_serviceDesc = grpc.ServiceDesc{
+// FlowCombination_ServiceDesc is the grpc.ServiceDesc for FlowCombination service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var FlowCombination_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.FlowCombination",
 	HandlerType: (*FlowCombinationServer)(nil),
 	Methods: []grpc.MethodDesc{

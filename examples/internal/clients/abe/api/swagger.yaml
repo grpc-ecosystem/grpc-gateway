@@ -2957,17 +2957,17 @@ definitions:
       \    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n\
       \    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n\
       \      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in\
-      \ Go\n\n     foo := &pb.Foo{...}\n     any, err := ptypes.MarshalAny(foo)\n\
-      \     ...\n     foo := &pb.Foo{}\n     if err := ptypes.UnmarshalAny(any, foo);\
-      \ err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf\
-      \ library will by default use\n'type.googleapis.com/full.type.name' as the type\
-      \ URL and the unpack\nmethods only use the fully qualified type name after the\
-      \ last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\n\
-      name \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses\
-      \ the regular\nrepresentation of the deserialized, embedded message, with an\n\
-      additional field `@type` which contains the type URL. Example:\n\n    package\
-      \ google.profile;\n    message Person {\n      string first_name = 1;\n    \
-      \  string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\"\
+      \ Go\n\n     foo := &pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err\
+      \ != nil {\n       ...\n     }\n     ...\n     foo := &pb.Foo{}\n     if err\
+      \ := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods\
+      \ provided by protobuf library will by default use\n'type.googleapis.com/full.type.name'\
+      \ as the type URL and the unpack\nmethods only use the fully qualified type\
+      \ name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\"\
+      \ will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of\
+      \ an `Any` value uses the regular\nrepresentation of the deserialized, embedded\
+      \ message, with an\nadditional field `@type` which contains the type URL. Example:\n\
+      \n    package google.profile;\n    message Person {\n      string first_name\
+      \ = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\"\
       ,\n      \"firstName\": <string>,\n      \"lastName\": <string>\n    }\n\nIf\
       \ the embedded message type is well-known and has a custom JSON\nrepresentation,\
       \ that representation will be embedded adding a field\n`value` which holds the\

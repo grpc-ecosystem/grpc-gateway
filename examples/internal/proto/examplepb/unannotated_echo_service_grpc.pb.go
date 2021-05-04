@@ -11,6 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // UnannotatedEchoServiceClient is the client API for UnannotatedEchoService service.
@@ -99,8 +100,8 @@ type UnsafeUnannotatedEchoServiceServer interface {
 	mustEmbedUnimplementedUnannotatedEchoServiceServer()
 }
 
-func RegisterUnannotatedEchoServiceServer(s *grpc.Server, srv UnannotatedEchoServiceServer) {
-	s.RegisterService(&_UnannotatedEchoService_serviceDesc, srv)
+func RegisterUnannotatedEchoServiceServer(s grpc.ServiceRegistrar, srv UnannotatedEchoServiceServer) {
+	s.RegisterService(&UnannotatedEchoService_ServiceDesc, srv)
 }
 
 func _UnannotatedEchoService_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -157,7 +158,10 @@ func _UnannotatedEchoService_EchoDelete_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
-var _UnannotatedEchoService_serviceDesc = grpc.ServiceDesc{
+// UnannotatedEchoService_ServiceDesc is the grpc.ServiceDesc for UnannotatedEchoService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var UnannotatedEchoService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.UnannotatedEchoService",
 	HandlerType: (*UnannotatedEchoServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
