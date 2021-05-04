@@ -11,6 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // NonStandardServiceClient is the client API for NonStandardService service.
@@ -77,8 +78,8 @@ type UnsafeNonStandardServiceServer interface {
 	mustEmbedUnimplementedNonStandardServiceServer()
 }
 
-func RegisterNonStandardServiceServer(s *grpc.Server, srv NonStandardServiceServer) {
-	s.RegisterService(&_NonStandardService_serviceDesc, srv)
+func RegisterNonStandardServiceServer(s grpc.ServiceRegistrar, srv NonStandardServiceServer) {
+	s.RegisterService(&NonStandardService_ServiceDesc, srv)
 }
 
 func _NonStandardService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -117,7 +118,10 @@ func _NonStandardService_UpdateWithJSONNames_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
-var _NonStandardService_serviceDesc = grpc.ServiceDesc{
+// NonStandardService_ServiceDesc is the grpc.ServiceDesc for NonStandardService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var NonStandardService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.NonStandardService",
 	HandlerType: (*NonStandardServiceServer)(nil),
 	Methods: []grpc.MethodDesc{

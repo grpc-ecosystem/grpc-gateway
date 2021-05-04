@@ -11,6 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // ServiceAClient is the client API for ServiceA service.
@@ -85,8 +86,8 @@ type UnsafeServiceAServer interface {
 	mustEmbedUnimplementedServiceAServer()
 }
 
-func RegisterServiceAServer(s *grpc.Server, srv ServiceAServer) {
-	s.RegisterService(&_ServiceA_serviceDesc, srv)
+func RegisterServiceAServer(s grpc.ServiceRegistrar, srv ServiceAServer) {
+	s.RegisterService(&ServiceA_ServiceDesc, srv)
 }
 
 func _ServiceA_MethodOne_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -125,7 +126,10 @@ func _ServiceA_MethodTwo_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-var _ServiceA_serviceDesc = grpc.ServiceDesc{
+// ServiceA_ServiceDesc is the grpc.ServiceDesc for ServiceA service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ServiceA_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "grpc.gateway.examples.internal.examplepb.ServiceA",
 	HandlerType: (*ServiceAServer)(nil),
 	Methods: []grpc.MethodDesc{
@@ -214,8 +218,8 @@ type UnsafeServiceCServer interface {
 	mustEmbedUnimplementedServiceCServer()
 }
 
-func RegisterServiceCServer(s *grpc.Server, srv ServiceCServer) {
-	s.RegisterService(&_ServiceC_serviceDesc, srv)
+func RegisterServiceCServer(s grpc.ServiceRegistrar, srv ServiceCServer) {
+	s.RegisterService(&ServiceC_ServiceDesc, srv)
 }
 
 func _ServiceC_MethodOne_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -254,7 +258,10 @@ func _ServiceC_MethodTwo_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-var _ServiceC_serviceDesc = grpc.ServiceDesc{
+// ServiceC_ServiceDesc is the grpc.ServiceDesc for ServiceC service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ServiceC_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "grpc.gateway.examples.internal.examplepb.ServiceC",
 	HandlerType: (*ServiceCServer)(nil),
 	Methods: []grpc.MethodDesc{
