@@ -144,10 +144,9 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 	// is acceptable, as described in Section 4.3, a server SHOULD NOT
 	// generate trailer fields that it believes are necessary for the user
 	// agent to receive.
-	var wantsTrailers bool
+	doForwardTrailers := requestAcceptsTrailers(req)
 
-	if te := req.Header.Get("TE"); strings.Contains(strings.ToLower(te), "trailers") {
-		wantsTrailers = true
+	if doForwardTrailers {
 		handleForwardResponseTrailerHeader(w, md)
 		w.Header().Set("Transfer-Encoding", "chunked")
 	}
@@ -178,9 +177,14 @@ func ForwardResponseMessage(ctx context.Context, mux *ServeMux, marshaler Marsha
 		grpclog.Infof("Failed to write response: %v", err)
 	}
 
-	if wantsTrailers {
+	if doForwardTrailers {
 		handleForwardResponseTrailer(w, md)
 	}
+}
+
+func requestAcceptsTrailers(req *http.Request) bool {
+	te := req.Header.Get("TE")
+	return strings.Contains(strings.ToLower(te), "trailers")
 }
 
 func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, resp proto.Message, opts []func(context.Context, http.ResponseWriter, proto.Message) error) error {
