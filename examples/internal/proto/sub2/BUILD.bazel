@@ -17,7 +17,13 @@ go_proto_library(
 )
 
 go_library(
-    name = "go_default_library",
+    name = "sub2",
     embed = [":sub2_go_proto"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2",
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":sub2",
+    visibility = ["//examples:__subpackages__"],
 )

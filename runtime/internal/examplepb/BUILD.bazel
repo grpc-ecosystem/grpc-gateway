@@ -38,7 +38,13 @@ go_proto_library(
 )
 
 go_library(
-    name = "go_default_library",
+    name = "examplepb",
     embed = [":examplepb_go_proto"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb",
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":examplepb",
+    visibility = ["//runtime:__subpackages__"],
 )
