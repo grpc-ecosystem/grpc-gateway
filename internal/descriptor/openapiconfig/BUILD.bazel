@@ -15,12 +15,18 @@ go_proto_library(
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig",
     proto = ":openapiconfig_proto",
     visibility = ["//:__subpackages__"],
-    deps = ["//protoc-gen-openapiv2/options:go_default_library"],
+    deps = ["//protoc-gen-openapiv2/options"],
 )
 
 go_library(
-    name = "go_default_library",
+    name = "openapiconfig",
     embed = [":openapiconfig_go_proto"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig",
+    visibility = ["//:__subpackages__"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":openapiconfig",
     visibility = ["//:__subpackages__"],
 )
