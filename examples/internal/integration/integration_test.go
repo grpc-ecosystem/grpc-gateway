@@ -47,9 +47,11 @@ func TestEcho(t *testing.T) {
 			testEchoOneof(t, 8088, apiPrefix, "application/json")
 			testEchoOneof1(t, 8088, apiPrefix, "application/json")
 			testEchoOneof2(t, 8088, apiPrefix, "application/json")
-			testEchoBody(t, 8088, apiPrefix)
+			testEchoBody(t, 8088, apiPrefix, true)
+			testEchoBody(t, 8088, apiPrefix, false)
 			// Use SendHeader/SetTrailer without gRPC server https://github.com/grpc-ecosystem/grpc-gateway/issues/517#issuecomment-684625645
-			testEchoBody(t, 8089, apiPrefix)
+			testEchoBody(t, 8089, apiPrefix, true)
+			testEchoBody(t, 8089, apiPrefix, false)
 		})
 	}
 }
@@ -278,7 +280,7 @@ func testEchoOneof2(t *testing.T, port int, apiPrefix string, contentType string
 	}
 }
 
-func testEchoBody(t *testing.T, port int, apiPrefix string) {
+func testEchoBody(t *testing.T, port int, apiPrefix string, useTrailers bool) {
 	sent := examplepb.UnannotatedSimpleMessage{Id: "example"}
 	payload, err := marshaler.Marshal(&sent)
 	if err != nil {
@@ -286,9 +288,19 @@ func testEchoBody(t *testing.T, port int, apiPrefix string) {
 	}
 
 	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo_body", port, apiPrefix)
-	resp, err := http.Post(apiURL, "", bytes.NewReader(payload))
+
+	req, err := http.NewRequest("POST", apiURL, bytes.NewReader(payload))
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+	if useTrailers {
+		req.Header.Set("TE", "trailers")
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("client.Do(%v) failed with %v; want success", req, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -319,11 +331,18 @@ func testEchoBody(t *testing.T, port int, apiPrefix string) {
 		t.Errorf("Grpc-Metadata-Bar was %q, wanted %q", got, want)
 	}
 
-	if got, want := resp.Trailer.Get("Grpc-Trailer-Foo"), "foo2"; got != want {
-		t.Errorf("Grpc-Trailer-Foo was %q, wanted %q", got, want)
+	wantedTrailers := map[bool]map[string]string{
+		true: {
+			"Grpc-Trailer-Foo": "foo2",
+			"Grpc-Trailer-Bar": "bar2",
+		},
+		false: {},
 	}
-	if got, want := resp.Trailer.Get("Grpc-Trailer-Bar"), "bar2"; got != want {
-		t.Errorf("Grpc-Trailer-Bar was %q, wanted %q", got, want)
+
+	for trailer, want := range wantedTrailers[useTrailers] {
+		if got := resp.Trailer.Get(trailer); got != want {
+			t.Errorf("%s was %q, wanted %q", trailer, got, want)
+		}
 	}
 }
 
@@ -335,7 +354,8 @@ func TestABE(t *testing.T) {
 
 	testABECreate(t, 8088)
 	testABECreateBody(t, 8088)
-	testABEBulkCreate(t, 8088)
+	testABEBulkCreate(t, 8088, true)
+	testABEBulkCreate(t, 8088, false)
 	testABEBulkCreateWithError(t, 8088)
 	testABELookup(t, 8088)
 	testABELookupNotFound(t, 8088, true)
@@ -513,7 +533,7 @@ func testABECreateBody(t *testing.T, port int) {
 	}
 }
 
-func testABEBulkCreate(t *testing.T, port int) {
+func testABEBulkCreate(t *testing.T, port int, useTrailers bool) {
 	count := 0
 	r, w := io.Pipe()
 	go func(w io.WriteCloser) {
@@ -598,11 +618,24 @@ func testABEBulkCreate(t *testing.T, port int) {
 		}
 	}(w)
 	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/bulk", port)
-	resp, err := http.Post(apiURL, "application/json", r)
+
+	req, err := http.NewRequest("POST", apiURL, r)
 	if err != nil {
-		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
 		return
 	}
+	req.Header.Set("Content-Type", "application/json")
+
+	if useTrailers {
+		req.Header.Set("TE", "trailers")
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("client.Do(%v) failed with %v; want success", req, err)
+		return
+	}
+
 	defer resp.Body.Close()
 	buf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -625,11 +658,18 @@ func testABEBulkCreate(t *testing.T, port int) {
 		t.Errorf("Grpc-Metadata-Count was %q, wanted %q", got, want)
 	}
 
-	if got, want := resp.Trailer.Get("Grpc-Trailer-Foo"), "foo2"; got != want {
-		t.Errorf("Grpc-Trailer-Foo was %q, wanted %q", got, want)
+	wantedTrailers := map[bool]map[string]string{
+		true: {
+			"Grpc-Trailer-Foo": "foo2",
+			"Grpc-Trailer-Bar": "bar2",
+		},
+		false: {},
 	}
-	if got, want := resp.Trailer.Get("Grpc-Trailer-Bar"), "bar2"; got != want {
-		t.Errorf("Grpc-Trailer-Bar was %q, wanted %q", got, want)
+
+	for trailer, want := range wantedTrailers[useTrailers] {
+		if got := resp.Trailer.Get(trailer); got != want {
+			t.Errorf("%s was %q, wanted %q", trailer, got, want)
+		}
 	}
 }
 
@@ -994,7 +1034,6 @@ func testABELookupNotFound(t *testing.T, port int, useTrailers bool) {
 	uuid := "not_exist"
 	apiURL = fmt.Sprintf("%s/%s", apiURL, uuid)
 
-	client := &http.Client{}
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
 		t.Errorf("http.NewRequest() failed with %v; want success", err)
@@ -1005,7 +1044,7 @@ func testABELookupNotFound(t *testing.T, port int, useTrailers bool) {
 		req.Header.Set("TE", "trailers")
 	}
 
-	resp, err := client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		t.Errorf("client.Do(%v) failed with %v; want success", req, err)
 		return
