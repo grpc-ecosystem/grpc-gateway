@@ -14,7 +14,12 @@ plugins:
     opt:
       - paths=source_relative
       - allow_repeated_fields_in_body=true
-  - name: openapiv2
+#  - name: openapiv2
+#    out: .
+#    opt:
+#      - allow_repeated_fields_in_body=true
+  - name: openapiv3
     out: .
     opt:
       - allow_repeated_fields_in_body=true
+      - output_format=yaml
