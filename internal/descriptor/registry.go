@@ -5,13 +5,15 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	optionsv3 "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 )
 
 // Registry is a registry of information extracted from pluginpb.CodeGeneratorRequest.
@@ -95,20 +97,25 @@ type Registry struct {
 	proto3OptionalNullable bool
 
 	// fileOptions is a mapping of file name to additional OpenAPI file options
-	fileOptions map[string]*options.Swagger
+	fileOptions   map[string]*options.Swagger
+	fileOptionsv3 map[string]*optionsv3.Document
 
 	// methodOptions is a mapping of fully-qualified method name to additional OpenAPI method options
-	methodOptions map[string]*options.Operation
+	methodOptions   map[string]*options.Operation
+	methodOptionsv3 map[string]*optionsv3.Operation
 
 	// messageOptions is a mapping of fully-qualified message name to additional OpenAPI message options
-	messageOptions map[string]*options.Schema
+	messageOptions   map[string]*options.Schema
+	messageOptionsv3 map[string]*optionsv3.Schema
 
 	//serviceOptions is a mapping of fully-qualified service name to additional OpenAPI service options
-	serviceOptions map[string]*options.Tag
+	serviceOptions   map[string]*options.Tag
+	serviceOptionsv3 map[string]*optionsv3.Tag
 
 	// fieldOptions is a mapping of the fully-qualified name of the parent message concat
 	// field name and a period to additional OpenAPI field options
-	fieldOptions map[string]*options.JSONSchema
+	fieldOptions   map[string]*options.JSONSchema
+	fieldOptionsv3 map[string]*optionsv3.Schema
 
 	// generateUnboundMethods causes the registry to generate proxy methods even for
 	// RPC methods that have no HttpRule annotation.
@@ -149,10 +156,15 @@ func NewRegistry() *Registry {
 			sep:  ',',
 		},
 		fileOptions:    make(map[string]*options.Swagger),
+		fileOptionsv3:    make(map[string]*optionsv3.Document),
 		methodOptions:  make(map[string]*options.Operation),
+		methodOptionsv3:  make(map[string]*optionsv3.Operation),
 		messageOptions: make(map[string]*options.Schema),
+		messageOptionsv3: make(map[string]*optionsv3.Schema),
 		serviceOptions: make(map[string]*options.Tag),
+		serviceOptionsv3: make(map[string]*optionsv3.Tag),
 		fieldOptions:   make(map[string]*options.JSONSchema),
+		fieldOptionsv3:   make(map[string]*optionsv3.Schema),
 		annotationMap:  make(map[annotationIdentifier]struct{}),
 		recursiveDepth: 1000,
 	}
@@ -682,6 +694,12 @@ func (r *Registry) GetOpenAPIFileOption(file string) (*options.Swagger, bool) {
 // GetOpenAPIMethodOption returns a registered OpenAPI option for a method
 func (r *Registry) GetOpenAPIMethodOption(qualifiedMethod string) (*options.Operation, bool) {
 	opt, ok := r.methodOptions[qualifiedMethod]
+	return opt, ok
+}
+
+// GetOpenAPIMethodOptionV3 returns a registered OpenAPI option for a method
+func (r *Registry) GetOpenAPIMethodOptionV3(qualifiedMethod string) (*optionsv3.Operation, bool) {
+	opt, ok := r.methodOptionsv3[qualifiedMethod]
 	return opt, ok
 }
 
