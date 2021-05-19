@@ -47,7 +47,7 @@ type generator struct {
 
 type wrapper struct {
 	fileName string
-	swagger  *Openapi
+	openapi  *Openapi
 }
 
 type param struct {
@@ -75,19 +75,19 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 		if mergedTarget == nil {
 			mergedTarget = &wrapper{
 				fileName: mergeFileName,
-				swagger:  f.swagger,
+				openapi:  f.openapi,
 			}
 		} else {
-			for k, v := range f.swagger.Definitions {
-				mergedTarget.swagger.Definitions[k] = v
+			for k, v := range f.openapi.Components.Schemas {
+				mergedTarget.openapi.Components.Schemas[k] = v
 			}
-			for k, v := range f.swagger.Paths {
-				mergedTarget.swagger.Paths[k] = v
+			for k, v := range f.openapi.Paths {
+				mergedTarget.openapi.Paths[k] = v
 			}
-			for k, v := range f.swagger.SecurityDefinitions {
-				mergedTarget.swagger.SecurityDefinitions[k] = v
+			for k, v := range f.openapi.Tags {
+				mergedTarget.openapi.Tags[k] = v
 			}
-			mergedTarget.swagger.Security = append(mergedTarget.swagger.Security, f.swagger.Security...)
+			mergedTarget.openapi.Security = append(mergedTarget.openapi.Security, f.openapi.Security...)
 		}
 	}
 	return mergedTarget
@@ -102,32 +102,33 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 //    on them. See http://choly.ca/post/go-json-marshalling/ (or, if it ever
 //    goes away, use
 //    https://web.archive.org/web/20190806073003/http://choly.ca/post/go-json-marshalling/.
-func (so openapiSwaggerObject) MarshalJSON() ([]byte, error) {
-	type alias openapiSwaggerObject
-	return extensionMarshalJSON(alias(so), so.extensions)
+func (so Openapi) MarshalJSON() ([]byte, error) {
+	type alias Openapi
+	return extensionMarshalJSON(alias(so), so.Extensions)
 }
 
-func (so openapiInfoObject) MarshalJSON() ([]byte, error) {
-	type alias openapiInfoObject
-	return extensionMarshalJSON(alias(so), so.extensions)
+func (so Info) MarshalJSON() ([]byte, error) {
+	type alias Info
+	return extensionMarshalJSON(alias(so), so.Extensions)
 }
 
-func (so openapiSecuritySchemeObject) MarshalJSON() ([]byte, error) {
-	type alias openapiSecuritySchemeObject
-	return extensionMarshalJSON(alias(so), so.extensions)
+func (so SecurityScheme) MarshalJSON() ([]byte, error) {
+	type alias SecurityScheme
+	return extensionMarshalJSON(alias(so), so.Extensions)
 }
 
-func (so openapiOperationObject) MarshalJSON() ([]byte, error) {
-	type alias openapiOperationObject
-	return extensionMarshalJSON(alias(so), so.extensions)
+func (so Operation) MarshalJSON() ([]byte, error) {
+	type alias Operation
+	return extensionMarshalJSON(alias(so), so.Extensions)
 }
 
-func (so openapiResponseObject) MarshalJSON() ([]byte, error) {
-	type alias openapiResponseObject
-	return extensionMarshalJSON(alias(so), so.extensions)
+func (so Response) MarshalJSON() ([]byte, error) {
+	type alias Response
+	return extensionMarshalJSON(alias(so), so.Extensions)
 }
 
-func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error) {
+func extensionMarshalJSON(so interface{}, extensions map[string]interface{}) ([]byte, error) {
+	// TODO(anjmao): May need to sort extensions by key for predictable output.
 	// To append arbitrary keys to the struct we'll render into json,
 	// we're creating another struct that embeds the original one, and
 	// its extra fields:
@@ -147,19 +148,19 @@ func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error
 			Anonymous: true,
 		},
 	}
-	for _, ext := range extensions {
+	for key, value := range extensions {
 		fields = append(fields, reflect.StructField{
-			Name: fieldName(ext.key),
-			Type: reflect.TypeOf(ext.value),
-			Tag:  reflect.StructTag(fmt.Sprintf("json:\"%s\"", ext.key)),
+			Name: fieldName(key),
+			Type: reflect.TypeOf(value),
+			Tag:  reflect.StructTag(fmt.Sprintf("json:\"%s\"", key)),
 		})
 	}
 
 	t := reflect.StructOf(fields)
 	s := reflect.New(t).Elem()
 	s.Field(0).Set(reflect.ValueOf(so))
-	for _, ext := range extensions {
-		s.FieldByName(fieldName(ext.key)).Set(reflect.ValueOf(ext.value))
+	for key, value := range extensions {
+		s.FieldByName(fieldName(key)).Set(reflect.ValueOf(value))
 	}
 	return json.Marshal(s.Interface())
 }
@@ -181,13 +182,13 @@ func encodeOpenAPIJSON(file *wrapper) (*descriptor.ResponseFile, error) {
 	var formatted bytes.Buffer
 	enc := json.NewEncoder(&formatted)
 	enc.SetIndent("", "  ")
-	if err := enc.Encode(*file.swagger); err != nil {
+	if err := enc.Encode(*file.openapi); err != nil {
 		return nil, err
 	}
 	name := file.fileName
 	ext := filepath.Ext(name)
 	base := strings.TrimSuffix(name, ext)
-	output := fmt.Sprintf("%s.swagger.json", base)
+	output := fmt.Sprintf("%s.openapi.json", base)
 	return &descriptor.ResponseFile{
 		CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
 			Name:    proto.String(output),
@@ -198,14 +199,14 @@ func encodeOpenAPIJSON(file *wrapper) (*descriptor.ResponseFile, error) {
 
 // encodeOpenAPIYAML converts OpenAPI file obj to pluginpb.CodeGeneratorResponse_File in YAML format.
 func encodeOpenAPIJYAML(file *wrapper) (*descriptor.ResponseFile, error) {
-	formatted, err := yaml.Marshal(file.swagger)
+	formatted, err := yaml.Marshal(file.openapi)
 	if err != nil {
 		return nil, err
 	}
 	name := file.fileName
 	ext := filepath.Ext(name)
 	base := strings.TrimSuffix(name, ext)
-	output := fmt.Sprintf("%s.swagger.yaml", base)
+	output := fmt.Sprintf("%s.openapi.yaml", base)
 	return &descriptor.ResponseFile{
 		CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
 			Name:    proto.String(output),
@@ -220,7 +221,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		var mergedTarget *descriptor.File
 		// try to find proto leader
 		for _, f := range targets {
-			if proto.HasExtension(f.Options, openapi_options.E_Openapiv3Swagger) {
+			if proto.HasExtension(f.Options, openapi_options.E_Openapiv3Document) {
 				mergedTarget = f
 				break
 			}
@@ -253,7 +254,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		}
 		openapis = append(openapis, &wrapper{
 			fileName: file.GetName(),
-			swagger:  swagger,
+			openapi:  swagger,
 		})
 	}
 
