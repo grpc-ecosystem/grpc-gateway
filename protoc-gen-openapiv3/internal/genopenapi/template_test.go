@@ -4070,10 +4070,10 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 
 			refs := make(refMap)
 			actual := make(openapiDefinitionsObject)
-			renderMessagesAsDefinition(msgMap, actual, reg, refs, test.excludedFields)
+			renderMessagesToComponentsSchemas(msgMap, actual, reg, refs, test.excludedFields)
 
 			if !reflect.DeepEqual(actual, test.defs) {
-				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
+				t.Errorf("Expected renderMessagesToComponentsSchemas() to add defs %+v, not %+v", test.defs, actual)
 			}
 		})
 	}
@@ -4411,10 +4411,10 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 
 			refs := make(refMap)
 			actual := make(openapiDefinitionsObject)
-			renderMessagesAsDefinition(msgMap, actual, reg, refs, nil)
+			renderMessagesToComponentsSchemas(msgMap, actual, reg, refs, nil)
 
 			if !reflect.DeepEqual(actual, test.defs) {
-				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
+				t.Errorf("Expected renderMessagesToComponentsSchemas() to add defs %+v, not %+v", test.defs, actual)
 			}
 		})
 	}

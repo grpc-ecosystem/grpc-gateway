@@ -40,11 +40,6 @@ type Config struct {
 	OutputFormat OutputFormat
 }
 
-type generator struct {
-	cfg Config
-	reg *descriptor.Registry
-}
-
 type wrapper struct {
 	fileName string
 	openapi  *Openapi
@@ -67,6 +62,76 @@ func New(reg *descriptor.Registry, cfg Config) gen.Generator {
 		cfg: cfg,
 	}
 }
+
+type generator struct {
+	cfg Config
+	reg *descriptor.Registry
+}
+
+func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.ResponseFile, error) {
+	var files []*descriptor.ResponseFile
+	if g.reg.IsAllowMerge() {
+		var mergedTarget *descriptor.File
+		// try to find proto leader
+		for _, f := range targets {
+			if proto.HasExtension(f.Options, openapi_options.E_Openapiv3Document) {
+				mergedTarget = f
+				break
+			}
+		}
+		// merge protos to leader
+		for _, f := range targets {
+			if mergedTarget == nil {
+				mergedTarget = f
+			} else if mergedTarget != f {
+				mergedTarget.Enums = append(mergedTarget.Enums, f.Enums...)
+				mergedTarget.Messages = append(mergedTarget.Messages, f.Messages...)
+				mergedTarget.Services = append(mergedTarget.Services, f.Services...)
+			}
+		}
+
+		targets = nil
+		targets = append(targets, mergedTarget)
+	}
+
+	var openapis []*wrapper
+	for _, file := range targets {
+		glog.V(1).Infof("Processing %s", file.GetName())
+		openapi, err := applyTemplate(param{File: file, reg: g.reg})
+		if err == errNoTargetService {
+			glog.V(1).Infof("%s: %v", file.GetName(), err)
+			continue
+		}
+		if err != nil {
+			return nil, err
+		}
+		openapis = append(openapis, &wrapper{
+			fileName: file.GetName(),
+			openapi:  openapi,
+		})
+	}
+
+	if g.reg.IsAllowMerge() {
+		targetOpenAPI := mergeTargetFile(openapis, g.reg.GetMergeFileName())
+		f, err := encodeOpenAPI(targetOpenAPI, g.cfg.OutputFormat)
+		if err != nil {
+			return nil, fmt.Errorf("failed to encode OpenAPI for %s: %s", g.reg.GetMergeFileName(), err)
+		}
+		files = append(files, f)
+		glog.V(1).Infof("New OpenAPI file will emit")
+	} else {
+		for _, file := range openapis {
+			f, err := encodeOpenAPI(file, g.cfg.OutputFormat)
+			if err != nil {
+				return nil, fmt.Errorf("failed to encode OpenAPI for %s: %s", file.fileName, err)
+			}
+			files = append(files, f)
+			glog.V(1).Infof("New OpenAPI file will emit")
+		}
+	}
+	return files, nil
+}
+
 
 // Merge a lot of OpenAPI file (wrapper) to single one OpenAPI file
 func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
@@ -213,70 +278,6 @@ func encodeOpenAPIJYAML(file *wrapper) (*descriptor.ResponseFile, error) {
 			Content: proto.String(string(formatted)),
 		},
 	}, nil
-}
-
-func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.ResponseFile, error) {
-	var files []*descriptor.ResponseFile
-	if g.reg.IsAllowMerge() {
-		var mergedTarget *descriptor.File
-		// try to find proto leader
-		for _, f := range targets {
-			if proto.HasExtension(f.Options, openapi_options.E_Openapiv3Document) {
-				mergedTarget = f
-				break
-			}
-		}
-		// merge protos to leader
-		for _, f := range targets {
-			if mergedTarget == nil {
-				mergedTarget = f
-			} else if mergedTarget != f {
-				mergedTarget.Enums = append(mergedTarget.Enums, f.Enums...)
-				mergedTarget.Messages = append(mergedTarget.Messages, f.Messages...)
-				mergedTarget.Services = append(mergedTarget.Services, f.Services...)
-			}
-		}
-
-		targets = nil
-		targets = append(targets, mergedTarget)
-	}
-
-	var openapis []*wrapper
-	for _, file := range targets {
-		glog.V(1).Infof("Processing %s", file.GetName())
-		swagger, err := applyTemplate(param{File: file, reg: g.reg})
-		if err == errNoTargetService {
-			glog.V(1).Infof("%s: %v", file.GetName(), err)
-			continue
-		}
-		if err != nil {
-			return nil, err
-		}
-		openapis = append(openapis, &wrapper{
-			fileName: file.GetName(),
-			openapi:  swagger,
-		})
-	}
-
-	if g.reg.IsAllowMerge() {
-		targetOpenAPI := mergeTargetFile(openapis, g.reg.GetMergeFileName())
-		f, err := encodeOpenAPI(targetOpenAPI, g.cfg.OutputFormat)
-		if err != nil {
-			return nil, fmt.Errorf("failed to encode OpenAPI for %s: %s", g.reg.GetMergeFileName(), err)
-		}
-		files = append(files, f)
-		glog.V(1).Infof("New OpenAPI file will emit")
-	} else {
-		for _, file := range openapis {
-			f, err := encodeOpenAPI(file, g.cfg.OutputFormat)
-			if err != nil {
-				return nil, fmt.Errorf("failed to encode OpenAPI for %s: %s", file.fileName, err)
-			}
-			files = append(files, f)
-			glog.V(1).Infof("New OpenAPI file will emit")
-		}
-	}
-	return files, nil
 }
 
 // AddErrorDefs Adds google.rpc.Status and google.protobuf.Any

@@ -6,11 +6,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math"
-	"net/textproto"
 	"os"
 	"reflect"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -86,13 +84,303 @@ var wktSchemas = map[string]Schema{
 	},
 	".google.protobuf.ListValue": {
 		Type: "array",
-		Items: (*openapiItemsObject)(&schemaCore{
-			Type: "object",
-		}),
+		Items: &SchemaRef{
+			Value: &Schema{
+				Type: "object",
+			},
+		},
 	},
 	".google.protobuf.NullValue": {
 		Type: "string",
 	},
+}
+
+// This function is called with a param which contains the entire definition of a method.
+func applyTemplate(p param) (*Openapi, error) {
+	// Create the basic template object. This is the object that everything is
+	// defined off of.
+	s := Openapi{
+		// OpenAPI 3.0 is the version of this document
+		OpenAPI: "3.0",
+		Components: Components{
+			Schemas:         make(Schemas),
+			Parameters:      make(ParametersMap),
+			Headers:         make(Headers),
+			RequestBodies:   make(RequestBodies),
+			Responses:       make(Responses),
+			SecuritySchemes: make(SecuritySchemes),
+			Examples:        make(Examples),
+			Links:           make(Links),
+			Callbacks:       make(Callbacks),
+		},
+		Info: &Info{
+			Title:   *p.File.Name,
+			Version: "version not set",
+		},
+		Paths:        make(Paths),
+		Security:     nil,
+		Servers:      nil,
+		Tags:         nil,
+		ExternalDocs: nil,
+	}
+
+	// Loops through all the services and their exposed GET/POST/PUT/DELETE definitions
+	// and create entries for all of them.
+	// Also adds custom user specified references to second map.
+	requestResponseRefs, customRefs := refMap{}, refMap{}
+	if err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
+		return nil, err
+	}
+	s.Tags = append(s.Tags, renderServiceTags(p.Services)...)
+
+	messages := messageMap{}
+	streamingMessages := messageMap{}
+	enums := enumMap{}
+
+	if !p.reg.GetDisableDefaultErrors() {
+		// Add the error type to the message map
+		runtimeError, swgRef, err := lookupMsgAndOpenAPIName("google.rpc", "Status", p.reg)
+		if err == nil {
+			messages[swgRef] = runtimeError
+		} else {
+			return nil, err
+		}
+	}
+
+	// Find all the service's messages and enumerations that are defined (recursively)
+	// and write request, response and other custom (but referenced) types out as definition objects.
+	findServicesMessagesAndEnumerations(p.Services, p.reg, messages, streamingMessages, enums, requestResponseRefs)
+
+	renderMessagesToComponentsSchemas(messages, s.Components, p.reg, customRefs, nil)
+	renderEnumerationsAsDefinition(enums, s.Components, p.reg)
+
+	// File itself might have some comments and metadata.
+	packageProtoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Package")
+	packageComments := protoComments(p.reg, p.File, nil, "Package", packageProtoPath)
+	if err := updateOpenAPIDataFromComments(p.reg, &s, p, packageComments, true); err != nil {
+		panic(err)
+	}
+
+	// There may be additional options in the OpenAPI option in the proto.
+	spb, err := getFileOpenAPIOption(p.reg, p.File)
+	if err != nil {
+		return nil, err
+	}
+	if spb != nil {
+		if spb.Openapi != "" {
+			s.OpenAPI = spb.Openapi
+		}
+		if spb.Info != nil {
+			if spb.Info.Title != "" {
+				s.Info.Title = spb.Info.Title
+			}
+			if spb.Info.Description != "" {
+				s.Info.Description = spb.Info.Description
+			}
+			if spb.Info.TermsOfService != "" {
+				s.Info.TermsOfService = spb.Info.TermsOfService
+			}
+			if spb.Info.Version != "" {
+				s.Info.Version = spb.Info.Version
+			}
+			if spb.Info.Contact != nil {
+				if s.Info.Contact == nil {
+					s.Info.Contact = &Contact{}
+				}
+				if spb.Info.Contact.Name != "" {
+					s.Info.Contact.Name = spb.Info.Contact.Name
+				}
+				if spb.Info.Contact.Url != "" {
+					s.Info.Contact.URL = spb.Info.Contact.Url
+				}
+				if spb.Info.Contact.Email != "" {
+					s.Info.Contact.Email = spb.Info.Contact.Email
+				}
+			}
+			if spb.Info.License != nil {
+				if s.Info.License == nil {
+					s.Info.License = &License{}
+				}
+				if spb.Info.License.Name != "" {
+					s.Info.License.Name = spb.Info.License.Name
+				}
+				if spb.Info.License.Url != "" {
+					s.Info.License.URL = spb.Info.License.Url
+				}
+			}
+		}
+		for _, pbServer := range spb.Servers {
+			vars := make(map[string]*ServerVariable)
+			if pbServer.Variables != nil && len(pbServer.Variables.AdditionalProperties) > 0 {
+				for _, prop := range pbServer.Variables.AdditionalProperties {
+					vars[prop.Name] = &ServerVariable{
+						Enum:        prop.Value.Enum,
+						Default:     prop.Value.Default,
+						Description: prop.Value.Description,
+					}
+				}
+			}
+			s.Servers = append(s.Servers, &Server{
+				URL:         pbServer.Url,
+				Description: pbServer.Description,
+				Variables:   vars,
+			})
+		}
+
+		// TODO(anjmao): Map all these fields.
+		//if len(spb.Schemes) > 0 {
+		//	s.Schemes = make([]string, len(spb.Schemes))
+		//	for i, scheme := range spb.Schemes {
+		//		s.Schemes[i] = strings.ToLower(scheme.String())
+		//	}
+		//}
+		//
+		//if spb.SecurityDefinitions != nil && spb.SecurityDefinitions.Security != nil {
+		//	if s.SecurityDefinitions == nil {
+		//		s.SecurityDefinitions = openapiSecurityDefinitionsObject{}
+		//	}
+		//	for secDefKey, secDefValue := range spb.SecurityDefinitions.Security {
+		//		var newSecDefValue openapiSecuritySchemeObject
+		//		if oldSecDefValue, ok := s.SecurityDefinitions[secDefKey]; !ok {
+		//			newSecDefValue = openapiSecuritySchemeObject{}
+		//		} else {
+		//			newSecDefValue = oldSecDefValue
+		//		}
+		//		if secDefValue.Type != openapi_options.SecurityScheme_TYPE_INVALID {
+		//			switch secDefValue.Type {
+		//			case openapi_options.SecurityScheme_TYPE_BASIC:
+		//				newSecDefValue.Type = "basic"
+		//			case openapi_options.SecurityScheme_TYPE_API_KEY:
+		//				newSecDefValue.Type = "apiKey"
+		//			case openapi_options.SecurityScheme_TYPE_OAUTH2:
+		//				newSecDefValue.Type = "oauth2"
+		//			}
+		//		}
+		//		if secDefValue.Description != "" {
+		//			newSecDefValue.Description = secDefValue.Description
+		//		}
+		//		if secDefValue.Name != "" {
+		//			newSecDefValue.Name = secDefValue.Name
+		//		}
+		//		if secDefValue.In != openapi_options.SecurityScheme_IN_INVALID {
+		//			switch secDefValue.In {
+		//			case openapi_options.SecurityScheme_IN_QUERY:
+		//				newSecDefValue.In = "query"
+		//			case openapi_options.SecurityScheme_IN_HEADER:
+		//				newSecDefValue.In = "header"
+		//			}
+		//		}
+		//		if secDefValue.Flow != openapi_options.SecurityScheme_FLOW_INVALID {
+		//			switch secDefValue.Flow {
+		//			case openapi_options.SecurityScheme_FLOW_IMPLICIT:
+		//				newSecDefValue.Flow = "implicit"
+		//			case openapi_options.SecurityScheme_FLOW_PASSWORD:
+		//				newSecDefValue.Flow = "password"
+		//			case openapi_options.SecurityScheme_FLOW_APPLICATION:
+		//				newSecDefValue.Flow = "application"
+		//			case openapi_options.SecurityScheme_FLOW_ACCESS_CODE:
+		//				newSecDefValue.Flow = "accessCode"
+		//			}
+		//		}
+		//		if secDefValue.AuthorizationUrl != "" {
+		//			newSecDefValue.AuthorizationURL = secDefValue.AuthorizationUrl
+		//		}
+		//		if secDefValue.TokenUrl != "" {
+		//			newSecDefValue.TokenURL = secDefValue.TokenUrl
+		//		}
+		//		if secDefValue.Scopes != nil {
+		//			if newSecDefValue.Scopes == nil {
+		//				newSecDefValue.Scopes = openapiScopesObject{}
+		//			}
+		//			for scopeKey, scopeDesc := range secDefValue.Scopes.Scope {
+		//				newSecDefValue.Scopes[scopeKey] = scopeDesc
+		//			}
+		//		}
+		//		if secDefValue.Extensions != nil {
+		//			exts, err := processExtensions(secDefValue.Extensions)
+		//			if err != nil {
+		//				return nil, err
+		//			}
+		//			newSecDefValue.extensions = exts
+		//		}
+		//		s.SecurityDefinitions[secDefKey] = newSecDefValue
+		//	}
+		//}
+		//if spb.Security != nil {
+		//	var newSecurity []openapiSecurityRequirementObject
+		//	if s.Security != nil {
+		//		newSecurity = s.Security
+		//	}
+		//	for _, secReq := range spb.Security {
+		//		newSecReq := openapiSecurityRequirementObject{}
+		//		for secReqKey, secReqValue := range secReq.SecurityRequirement {
+		//			if secReqValue == nil {
+		//				return nil, fmt.Errorf("malformed security requirement spec for key %q; value is required", secReqKey)
+		//			}
+		//			newSecReqValue := make([]string, len(secReqValue.Scope))
+		//			copy(newSecReqValue, secReqValue.Scope)
+		//			newSecReq[secReqKey] = newSecReqValue
+		//		}
+		//		newSecurity = append(newSecurity, newSecReq)
+		//	}
+		//	s.Security = newSecurity
+		//}
+		//s.ExternalDocs = protoExternalDocumentationToOpenAPIExternalDocumentation(spb.ExternalDocs, p.reg, spb)
+		//// Populate all Paths with Responses set at top level,
+		//// preferring Responses already set over those at the top level.
+		//if spb.Responses != nil {
+		//	for _, verbs := range s.Paths {
+		//		var maps []openapiResponsesObject
+		//		if verbs.Delete != nil {
+		//			maps = append(maps, verbs.Delete.Responses)
+		//		}
+		//		if verbs.Get != nil {
+		//			maps = append(maps, verbs.Get.Responses)
+		//		}
+		//		if verbs.Post != nil {
+		//			maps = append(maps, verbs.Post.Responses)
+		//		}
+		//		if verbs.Put != nil {
+		//			maps = append(maps, verbs.Put.Responses)
+		//		}
+		//		if verbs.Patch != nil {
+		//			maps = append(maps, verbs.Patch.Responses)
+		//		}
+		//
+		//		for k, v := range spb.Responses {
+		//			for _, respMap := range maps {
+		//				if _, ok := respMap[k]; ok {
+		//					// Don't overwrite already existing Responses
+		//					continue
+		//				}
+		//				respMap[k] = openapiResponseObject{
+		//					Description: v.Description,
+		//					Schema:      openapiSchemaFromProtoSchema(v.Schema, p.reg, customRefs, nil),
+		//					Examples:    openapiExamplesFromProtoExamples(v.Examples),
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
+		//
+		//if spb.Extensions != nil {
+		//	exts, err := processExtensions(spb.Extensions)
+		//	if err != nil {
+		//		return nil, err
+		//	}
+		//	s.extensions = exts
+		//}
+
+		// Additional fields on the OpenAPI v2 spec's "OpenAPI" object
+		// should be added here, once supported in the proto.
+	}
+
+	// Finally add any references added by users that aren't
+	// otherwise rendered.
+	// TODO(anjmao): Add custom defs.
+	//addCustomRefs(s.Definitions, p.reg, customRefs)
+
+	return &s, nil
 }
 
 func listEnumNames(enum *descriptor.Enum) (names []string) {
@@ -221,7 +509,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		if schema.Type == "object" {
 			return nil, nil // TODO: currently, mapping object in query parameter is not supported
 		}
-		if items != nil && (items.Type == "" || items.Type == "object") && !isEnum {
+		if items != nil && items.Value != nil && (items.Value.Type == "" || items.Value.Type == "object") && !isEnum {
 			return nil, nil // TODO: currently, mapping object in query parameter is not supported
 		}
 		desc := schema.Description
@@ -239,49 +527,56 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		}
 
 		param := Parameter{
-			Description: desc,
-			In:          "query",
-			Default:     schema.Default,
-			Type:        schema.Type,
-			Items:       schema.Items,
-			Format:      schema.Format,
-			Required:    required,
+			Name:            "",
+			In:              "query",
+			Description:     desc,
+			Style:           "",
+			Explode:         nil,
+			AllowEmptyValue: false,
+			AllowReserved:   false,
+			Deprecated:      false,
+			Required:        required,
+			Schema:          nil,
+			Example:         nil,
+			Examples:        nil,
+			Content:         nil,
 		}
-		if param.Type == "array" {
-			param.CollectionFormat = "multi"
-		}
-
-		param.Name = prefix + reg.FieldName(field)
-
-		if isEnum {
-			enum, err := reg.LookupEnum("", fieldType)
-			if err != nil {
-				return nil, fmt.Errorf("unknown enum type %s", fieldType)
-			}
-			if items != nil { // array
-				param.Items = &openapiItemsObject{
-					Type: "string",
-					Enum: listEnumNames(enum),
-				}
-				if reg.GetEnumsAsInts() {
-					param.Items.Type = "integer"
-					param.Items.Enum = listEnumNumbers(enum)
-				}
-			} else {
-				param.Type = "string"
-				param.Enum = listEnumNames(enum)
-				param.Default = getEnumDefault(enum)
-				if reg.GetEnumsAsInts() {
-					param.Type = "integer"
-					param.Enum = listEnumNumbers(enum)
-					param.Default = "0"
-				}
-			}
-			valueComments := enumValueProtoComments(reg, enum)
-			if valueComments != "" {
-				param.Description = strings.TrimLeft(param.Description+"\n\n "+valueComments, "\n")
-			}
-		}
+		// TODO(anjmao): Handle array and enums.
+		//if param.Type == "array" {
+		//	param.CollectionFormat = "multi"
+		//}
+		//
+		//param.Name = prefix + reg.FieldName(field)
+		//
+		//if isEnum {
+		//	enum, err := reg.LookupEnum("", fieldType)
+		//	if err != nil {
+		//		return nil, fmt.Errorf("unknown enum type %s", fieldType)
+		//	}
+		//	if items != nil { // array
+		//		param.Items = &openapiItemsObject{
+		//			Type: "string",
+		//			Enum: listEnumNames(enum),
+		//		}
+		//		if reg.GetEnumsAsInts() {
+		//			param.Items.Type = "integer"
+		//			param.Items.Enum = listEnumNumbers(enum)
+		//		}
+		//	} else {
+		//		param.Type = "string"
+		//		param.Enum = listEnumNames(enum)
+		//		param.Default = getEnumDefault(enum)
+		//		if reg.GetEnumsAsInts() {
+		//			param.Type = "integer"
+		//			param.Enum = listEnumNumbers(enum)
+		//			param.Default = "0"
+		//		}
+		//	}
+		//	valueComments := enumValueProtoComments(reg, enum)
+		//	if valueComments != "" {
+		//		param.Description = strings.TrimLeft(param.Description+"\n\n "+valueComments, "\n")
+		//	}
+		//}
 		return []Parameter{param}, nil
 	}
 
@@ -376,7 +671,7 @@ func skipRenderingRef(refName string) bool {
 	return ok
 }
 
-func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) Schema {
+func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) *SchemaRef {
 	schema := Schema{
 		Type: "object",
 	}
@@ -395,10 +690,10 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		schema.ExternalDocs = protoSchema.ExternalDocs
 		schema.ReadOnly = protoSchema.ReadOnly
 		schema.MultipleOf = protoSchema.MultipleOf
-		schema.Maximum = protoSchema.Maximum
-		schema.ExclusiveMaximum = protoSchema.ExclusiveMaximum
-		schema.Minimum = protoSchema.Minimum
-		schema.ExclusiveMinimum = protoSchema.ExclusiveMinimum
+		schema.Max = protoSchema.Max
+		schema.ExclusiveMax = protoSchema.ExclusiveMax
+		schema.Min = protoSchema.Min
+		schema.ExclusiveMin = protoSchema.ExclusiveMin
 		schema.MaxLength = protoSchema.MaxLength
 		schema.MinLength = protoSchema.MinLength
 		schema.Pattern = protoSchema.Pattern
@@ -406,12 +701,10 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		schema.MaxItems = protoSchema.MaxItems
 		schema.MinItems = protoSchema.MinItems
 		schema.UniqueItems = protoSchema.UniqueItems
-		schema.MaxProperties = protoSchema.MaxProperties
-		schema.MinProperties = protoSchema.MinProperties
+		schema.MaxProps = protoSchema.MaxProps
+		schema.MinProps = protoSchema.MinProps
 		schema.Required = protoSchema.Required
-		if protoSchema.schemaCore.Type != "" || protoSchema.schemaCore.Ref != "" {
-			schema.schemaCore = protoSchema.schemaCore
-		}
+
 		if protoSchema.Title != "" {
 			schema.Title = protoSchema.Title
 		}
@@ -449,17 +742,17 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 			}
 		}
 
-		kv := keyVal{Value: fieldValue}
-		kv.Key = reg.FieldName(f)
 		if schema.Properties == nil {
-			schema.Properties = &openapiSchemaObjectProperties{}
+			schema.Properties = make(Schemas)
 		}
-		*schema.Properties = append(*schema.Properties, kv)
+		schema.Properties[reg.FieldName(f)] = &SchemaRef{Value: &fieldValue}
 	}
-	return schema
+	return &SchemaRef{
+		Value: &schema,
+	}
 }
 
-func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) {
+func renderMessagesToComponentsSchemas(messages messageMap, c Components, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) {
 	for name, msg := range messages {
 		swgName, ok := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
 		if !ok {
@@ -472,7 +765,7 @@ func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject,
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			continue
 		}
-		d[swgName] = renderMessageAsDefinition(msg, reg, customRefs, excludeFields)
+		c.Schemas[swgName] = renderMessageAsSchema(msg, reg, customRefs, excludeFields)
 	}
 }
 
@@ -495,14 +788,14 @@ func filterOutExcludedFields(fields []string, excluded []*descriptor.Field, reg 
 }
 
 // schemaOfField returns a OpenAPI Schema Object for a protobuf field.
-func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) Schema {
+func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) SchemaRef {
 	const (
 		singular = 0
 		array    = 1
 		object   = 2
 	)
 	var (
-		core      Schema
+		core      SchemaRef
 		aggregate int
 	)
 
@@ -517,22 +810,20 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) S
 		aggregate = array
 	}
 
-	var props *openapiSchemaObjectProperties
-
 	switch ft := fd.GetType(); ft {
 	case descriptorpb.FieldDescriptorProto_TYPE_ENUM, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, descriptorpb.FieldDescriptorProto_TYPE_GROUP:
 		if wktSchema, ok := wktSchemas[fd.GetTypeName()]; ok {
-			core = wktSchema
+			core = SchemaRef{Value: &wktSchema}
 
 			if fd.GetTypeName() == ".google.protobuf.Empty" {
-				props = &openapiSchemaObjectProperties{}
+				core.Value.Properties = make(Schemas)
 			}
 		} else {
 			swgRef, ok := fullyQualifiedNameToOpenAPIName(fd.GetTypeName(), reg)
 			if !ok {
 				panic(fmt.Sprintf("can't resolve OpenAPI ref from typename '%v'", fd.GetTypeName()))
 			}
-			core = schemaCore{
+			core = SchemaRef{
 				Ref: "#/definitions/" + swgRef,
 			}
 			if refs != nil {
@@ -542,38 +833,53 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) S
 	default:
 		ftype, format, ok := primitiveSchema(ft)
 		if ok {
-			core = schemaCore{Type: ftype, Format: format}
+			core = SchemaRef{
+				Value: &Schema{
+					Type: ftype,
+					Format: format,
+				},
+			}
 		} else {
-			core = schemaCore{Type: ft.String(), Format: "UNKNOWN"}
+			core = SchemaRef{
+				Value: &Schema{
+					Type: ft.String(),
+					Format: "UNKNOWN",
+				},
+			}
 		}
 	}
 
-	ret := Schema{}
+	ret := SchemaRef{}
 
 	switch aggregate {
 	case array:
-		ret = Schema{
-			Type:  "array",
-			Items: (*SchemaRef)(&core),
+		ret = SchemaRef{
+			Value: &Schema{
+				Type:  "array",
+				Items: &core,
+			},
 		}
 	case object:
-		ret = Schema{
-			Type: "object",
-			AdditionalProperties: &SchemaRef{Properties: props, schemaCore: core},
+		ret = SchemaRef{
+			Value: &Schema{
+				Type:                 "object",
+				AdditionalProperties: &SchemaRef{
+					Value: core.Value,
+				},
+			},
 		}
 	default:
-		ret = Schema{
-			schemaCore: core,
-			Properties: props,
+		ret = SchemaRef{
+			Value: core.Value,
 		}
 	}
 
 	if j, err := getFieldOpenAPIOption(reg, f); err == nil {
-		updateswaggerObjectFromJSONSchema(&ret, j, reg, f)
+		updateswaggerObjectFromJSONSchema(ret.Value, j, reg, f)
 	}
 
 	if j, err := getFieldBehaviorOption(reg, f); err == nil {
-		updateSwaggerObjectFromFieldBehavior(&ret, j, f)
+		updateSwaggerObjectFromFieldBehavior(ret.Value, j, f)
 	}
 
 	return ret
@@ -630,7 +936,7 @@ func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format st
 }
 
 // renderEnumerationsAsDefinition inserts enums into the definitions object.
-func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, reg *descriptor.Registry) {
+func renderEnumerationsAsDefinition(enums enumMap, d Components, reg *descriptor.Registry) {
 	for _, enum := range enums {
 		swgName, ok := fullyQualifiedNameToOpenAPIName(enum.FQEN(), reg)
 		if !ok {
@@ -645,12 +951,10 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 		if valueComments != "" {
 			enumComments = strings.TrimLeft(enumComments+"\n\n "+valueComments, "\n")
 		}
-		enumSchemaObject := openapiSchemaObject{
-			schemaCore: schemaCore{
-				Type:    "string",
-				Enum:    enumNames,
-				Default: defaultValue,
-			},
+		enumSchemaObject := Schema{
+			Type:    "string",
+			Enum:    enumNames,
+			Default: defaultValue,
 		}
 		if reg.GetEnumsAsInts() {
 			enumSchemaObject.Type = "integer"
@@ -662,7 +966,7 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 			panic(err)
 		}
 
-		d[swgName] = enumSchemaObject
+		d.Schemas[swgName] = &SchemaRef{Value: &enumSchemaObject}
 	}
 }
 
@@ -834,10 +1138,10 @@ func isResourceName(prefix string) bool {
 	return field == "parent" || field == "name"
 }
 
-func renderServiceTags(services []*descriptor.Service) []Tag {
-	var tags []Tag
+func renderServiceTags(services []*descriptor.Service) []*Tag {
+	var tags []*Tag
 	for _, svc := range services {
-		tag := Tag{
+		tag := &Tag{
 			Name: *svc.Name,
 		}
 		if proto.HasExtension(svc.Options, openapi_options.E_Openapiv3Tag) {
@@ -890,7 +1194,9 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 							paramType = schema.Type
 							paramFormat = schema.Format
 							desc = schema.Description
-							defaultValue = schema.Default
+							if s, ok := schema.Default.(string); ok {
+								defaultValue = s
+							}
 						} else {
 							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
@@ -909,7 +1215,9 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 						}
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
-						defaultValue = schema.Default
+						if s, ok := schema.Default.(string); ok {
+							defaultValue = s
+						}
 					default:
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
@@ -919,7 +1227,9 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
-						defaultValue = schema.Default
+						if s, ok := schema.Default.(string); ok {
+							defaultValue = s
+						}
 					}
 
 					if parameter.IsRepeated() {
@@ -950,24 +1260,25 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 							Description: desc,
 							In:          "path",
 							Required:    true,
-							Default:     defaultValue,
-							// Parameters in gRPC-Gateway can only be strings?
-							Type:             paramType,
-							Format:           paramFormat,
-							Enum:             enumNames,
-							Items:            items,
-							CollectionFormat: collectionFormat,
-							MinItems:         minItems,
+							// TODO(anjmao): Check these parameters.
+							//Default:     defaultValue,
+							//// Parameters in gRPC-Gateway can only be strings?
+							//Type:             paramType,
+							//Format:           paramFormat,
+							//Enum:             enumNames,
+							//Items:            items,
+							//CollectionFormat: collectionFormat,
+							//MinItems:         minItems,
 						},
 					})
 				}
 				// Now check if there is a body parameter
 				if b.Body != nil {
-					var schema Schema
+					var schemaRef *SchemaRef
 					desc := ""
 
 					if len(b.Body.FieldPath) == 0 {
-						schema = Schema{
+						schemaRef = &SchemaRef{
 						}
 
 						wknSchemaCore, isWkn := wktSchemas[meth.RequestType.FQMN()]
@@ -982,70 +1293,78 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 								}
 							}
 							if len(bodyExcludedFields) != 0 {
-								schema = renderMessageAsDefinition(meth.RequestType, reg, customRefs, bodyExcludedFields)
-								if schema.Properties == nil || len(*schema.Properties) == 0 {
+								schemaRef = renderMessageAsSchema(meth.RequestType, reg, customRefs, bodyExcludedFields)
+								// TODO(anjmao): Check if this validation error message make sense.
+								if schemaRef.Value.Properties == nil || len(schemaRef.Value.Properties) == 0 {
 									glog.Errorf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
 								}
 							} else {
-								err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg)
+								err := schemaRef.setRefFromFQN(meth.RequestType.FQMN(), reg)
 								if err != nil {
 									return err
 								}
 							}
 						} else {
-							schema.schemaCore = wknSchemaCore
+							schemaRef.Value = &wknSchemaCore
 
 							// Special workaround for Empty: it's well-known type but wknSchemas only returns schema.schemaCore; but we need to set schema.Properties which is a level higher.
 							if meth.RequestType.FQMN() == ".google.protobuf.Empty" {
-								schema.Properties = &openapiSchemaObjectProperties{}
+								schemaRef.Value.Properties = map[string]*SchemaRef{}
 							}
 						}
 					} else {
 						lastField := b.Body.FieldPath[len(b.Body.FieldPath)-1]
-						schema = schemaOfField(lastField.Target, reg, customRefs)
+						schema := schemaOfField(lastField.Target, reg, customRefs)
 						if schema.Description != "" {
 							desc = schema.Description
 						} else {
 							desc = fieldProtoComments(reg, lastField.Target.Message, lastField.Target)
 						}
+						schemaRef.Value = &schema
 					}
 
 					if meth.GetClientStreaming() {
 						desc += " (streaming inputs)"
 					}
-					parameters = append(parameters, openapiParameterObject{
-						Name:        "body",
-						Description: desc,
-						In:          "body",
-						Required:    true,
-						Schema:      &schema,
+					parameters = append(parameters, &ParameterRef{
+						Value: &Parameter{
+							Name:        "body",
+							Description: desc,
+							In:          "body",
+							Required:    true,
+							Schema:      schemaRef,
+						},
 					})
 					// add the parameters to the query string
 					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
 					if err != nil {
 						return err
 					}
-					parameters = append(parameters, queryParams...)
+					for _, queryParam := range queryParams {
+						parameters = append(parameters, &ParameterRef{Value: &queryParam})
+					}
 				} else if b.HTTPMethod == "GET" || b.HTTPMethod == "DELETE" {
 					// add the parameters to the query string
 					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
 					if err != nil {
 						return err
 					}
-					parameters = append(parameters, queryParams...)
+					for _, queryParam := range queryParams {
+						parameters = append(parameters, &ParameterRef{Value: &queryParam})
+					}
 				}
 
 				pathItemObject, ok := paths[templateToOpenAPIPath(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)]
 				if !ok {
-					pathItemObject = openapiPathItemObject{}
+					pathItemObject = &PathItem{}
 				}
 
 				methProtoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.ServiceDescriptorProto)(nil)), "Method")
 				desc := "A successful response."
-				var responseSchema Schema
+				var responseSchemaRef *SchemaRef
 
 				if b.ResponseBody == nil || len(b.ResponseBody.FieldPath) == 0 {
-					responseSchema = Schema{
+					responseSchemaRef = &SchemaRef{
 					}
 
 					// Don't link to a full definition for
@@ -1054,56 +1373,49 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 					// well, without a definition
 					wknSchemaCore, isWkn := wktSchemas[meth.ResponseType.FQMN()]
 					if !isWkn {
-						err := responseSchema.setRefFromFQN(meth.ResponseType.FQMN(), reg)
+						err := responseSchemaRef.setRefFromFQN(meth.ResponseType.FQMN(), reg)
 						if err != nil {
 							return err
 						}
 					} else {
-						responseSchema.schemaCore = wknSchemaCore
+						responseSchemaRef.Value = &wknSchemaCore
 
 						// Special workaround for Empty: it's well-known type but wknSchemas only returns schema.schemaCore; but we need to set schema.Properties which is a level higher.
 						if meth.ResponseType.FQMN() == ".google.protobuf.Empty" {
-							responseSchema.Properties = &openapiSchemaObjectProperties{}
+							responseSchemaRef.Value.Properties = Schemas{}
 						}
 					}
 				} else {
 					// This is resolving the value of response_body in the google.api.HttpRule
 					lastField := b.ResponseBody.FieldPath[len(b.ResponseBody.FieldPath)-1]
-					responseSchema = schemaOfField(lastField.Target, reg, customRefs)
-					if responseSchema.Description != "" {
-						desc = responseSchema.Description
+					schema := schemaOfField(lastField.Target, reg, customRefs)
+					if schema.Description != "" {
+						desc = schema.Description
 					} else {
 						desc = fieldProtoComments(reg, lastField.Target.Message, lastField.Target)
 					}
+					responseSchemaRef.Value = &schema
 				}
 				if meth.GetServerStreaming() {
 					desc += "(streaming responses)"
-					responseSchema.Type = "object"
+					responseSchemaRef.Value.Type = "object"
 					swgRef, _ := fullyQualifiedNameToOpenAPIName(meth.ResponseType.FQMN(), reg)
-					responseSchema.Title = "Stream result of " + swgRef
+					responseSchemaRef.Value.Title = "Stream result of " + swgRef
 
-					props := openapiSchemaObjectProperties{
-						keyVal{
-							Key: "result",
-							Value: Schema{
-								schemaCore: schemaCore{
-									Ref: responseSchema.Ref,
-								},
-							},
+					props := Schemas{
+						"result": &SchemaRef{
+							Ref: responseSchemaRef.Ref,
 						},
 					}
 					statusDef, hasStatus := fullyQualifiedNameToOpenAPIName(".google.rpc.Status", reg)
 					if hasStatus {
-						props = append(props, keyVal{
-							Key: "error",
-							Value: openapiSchemaObject{
-								schemaCore: schemaCore{
-									Ref: fmt.Sprintf("#/definitions/%s", statusDef)},
-							},
-						})
+						props["error"] = &SchemaRef{
+							// TODO(anjmao): Definitions should be changed to components.
+							Ref: fmt.Sprintf("#/definitions/%s", statusDef),
+						}
 					}
-					responseSchema.Properties = &props
-					responseSchema.Ref = ""
+					responseSchemaRef.Value.Properties = props
+					responseSchemaRef.Ref = ""
 				}
 
 				tag := svc.GetName()
@@ -1115,10 +1427,17 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 					Tags:       []string{tag},
 					Parameters: parameters,
 					Responses: Responses{
-						"200": Response{
-							Description: desc,
-							Schema:      responseSchema,
-							Headers:     openapiHeadersObject{},
+						// TODO(anjmao): Check why this is 200 by default?
+						"200": &ResponseRef{
+							Value: &Response{
+								Description: &desc,
+								Content:     Content{
+									"application/json": {
+										Schema: &SchemaRef{},
+									},
+								},
+								Headers:     Headers{},
+							},
 						},
 					},
 				}
@@ -1126,11 +1445,16 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 					errDef, hasErrDef := fullyQualifiedNameToOpenAPIName(".google.rpc.Status", reg)
 					if hasErrDef {
 						// https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#responses-object
-						operationObject.Responses["default"] = openapiResponseObject{
-							Description: "An unexpected error response.",
-							Schema: openapiSchemaObject{
-								schemaCore: schemaCore{
-									Ref: fmt.Sprintf("#/definitions/%s", errDef),
+						desc := "An unexpected error response."
+						operationObject.Responses["default"] = &ResponseRef{
+							Value: &Response{
+								Description: &desc,
+								Content: map[string]*MediaType{
+									"application/json": {
+										Schema: &SchemaRef{
+											Ref: fmt.Sprintf("#/definitions/%s", errDef),
+										},
+									},
 								},
 							},
 						}
@@ -1147,8 +1471,8 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 
 				// Fill reference map with referenced request messages
 				for _, param := range operationObject.Parameters {
-					if param.Schema != nil && param.Schema.Ref != "" {
-						requestResponseRefs[param.Schema.Ref] = struct{}{}
+					if param.Value != nil && param.Value.Schema.Ref != "" {
+						requestResponseRefs[param.Value.Schema.Ref] = struct{}{}
 					}
 				}
 
@@ -1180,20 +1504,20 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 						operationObject.OperationID = opts.OperationId
 					}
 					if opts.Security != nil {
-						newSecurity := []openapiSecurityRequirementObject{}
+						newSecurity := SecurityRequirements{}
 						if operationObject.Security != nil {
 							newSecurity = *operationObject.Security
 						}
 						for _, secReq := range opts.Security {
-							newSecReq := openapiSecurityRequirementObject{}
-							for secReqKey, secReqValue := range secReq.SecurityRequirement {
+							newSecReq := SecurityRequirement{}
+							for _, secReqValue := range secReq.AdditionalProperties {
 								if secReqValue == nil {
 									continue
 								}
 
-								newSecReqValue := make([]string, len(secReqValue.Scope))
-								copy(newSecReqValue, secReqValue.Scope)
-								newSecReq[secReqKey] = newSecReqValue
+								newSecReqValue := make([]string, len(secReqValue.Value.Value))
+								copy(newSecReqValue, secReqValue.Value.Value)
+								newSecReq[secReqValue.Name] = newSecReqValue
 							}
 
 							if len(newSecReq) > 0 {
@@ -1203,48 +1527,52 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 						operationObject.Security = &newSecurity
 					}
 					if opts.Responses != nil {
-						for name, resp := range opts.Responses {
+						for _, respOrRef := range opts.Responses.ResponseOrReference {
+							if respOrRef.Value.GetResponse() == nil {
+								continue
+							}
+
+							resp := respOrRef.Value.GetResponse()
 							// Merge response data into default response if available.
-							respObj := operationObject.Responses[name]
+							respObj := operationObject.Responses[respOrRef.Name]
 							if resp.Description != "" {
-								respObj.Description = resp.Description
+								respObj.Value.Description = &resp.Description
 							}
-							if resp.Schema != nil {
-								respObj.Schema = openapiSchemaFromProtoSchema(resp.Schema, reg, customRefs, meth)
-							}
-							if resp.Examples != nil {
-								respObj.Examples = openapiExamplesFromProtoExamples(resp.Examples)
-							}
-							if resp.Headers != nil {
-								hdrs, err := processHeaders(resp.Headers)
-								if err != nil {
-									return err
-								}
-								respObj.Headers = hdrs
-							}
-							if resp.Extensions != nil {
-								exts, err := processExtensions(resp.Extensions)
-								if err != nil {
-									return err
-								}
-								respObj.extensions = exts
-							}
-							operationObject.Responses[name] = respObj
+							// TODO(anjmao): Add response mapping.
+							//if resp.Schema != nil {
+							//	respObj.Schema = openapiSchemaFromProtoSchema(resp.Schema, reg, customRefs, meth)
+							//}
+							//if resp.Examples != nil {
+							//	respObj.Examples = openapiExamplesFromProtoExamples(resp.Examples)
+							//}
+							//if resp.Headers != nil {
+							//	hdrs, err := processHeaders(resp.Headers)
+							//	if err != nil {
+							//		return err
+							//	}
+							//	respObj.Headers = hdrs
+							//}
+							// TODO(anjmao): Handle extensions..
+							//if resp.Extensions != nil {
+							//	exts, err := processExtensions(resp.Extensions)
+							//	if err != nil {
+							//		return err
+							//	}
+							//	respObj.extensions = exts
+							//}
+							//operationObject.Responses[name] = respObj
 						}
 					}
 
-					if opts.Extensions != nil {
-						exts, err := processExtensions(opts.Extensions)
-						if err != nil {
-							return err
-						}
-						operationObject.extensions = exts
-					}
+					// TODO(anjmao): Handle extensions..
+					//if opts.Extensions != nil {
+					//	exts, err := processExtensions(opts.Extensions)
+					//	if err != nil {
+					//		return err
+					//	}
+					//	operationObject.extensions = exts
+					//}
 
-					if len(opts.Produces) > 0 {
-						operationObject.Produces = make([]string, len(opts.Produces))
-						copy(operationObject.Produces, opts.Produces)
-					}
 
 					// TODO(ivucica): add remaining fields of operation object
 				}
@@ -1270,284 +1598,8 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 	return nil
 }
 
-// This function is called with a param which contains the entire definition of a method.
-func applyTemplate(p param) (*Openapi, error) {
-	// Create the basic template object. This is the object that everything is
-	// defined off of.
-	s := Openapi{
-		// OpenAPI 3.0 is the version of this document
-		OpenAPI:     "3.0",
-		Consumes:    []string{"application/json"},
-		Produces:    []string{"application/json"},
-		Paths:       make(openapiPathsObject),
-		Definitions: make(openapiDefinitionsObject),
-		Info: Info{
-			Title:   *p.File.Name,
-			Version: "version not set",
-		},
-	}
-
-	// Loops through all the services and their exposed GET/POST/PUT/DELETE definitions
-	// and create entries for all of them.
-	// Also adds custom user specified references to second map.
-	requestResponseRefs, customRefs := refMap{}, refMap{}
-	if err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
-		panic(err)
-	}
-	s.Tags = append(s.Tags, renderServiceTags(p.Services)...)
-
-	messages := messageMap{}
-	streamingMessages := messageMap{}
-	enums := enumMap{}
-
-	if !p.reg.GetDisableDefaultErrors() {
-		// Add the error type to the message map
-		runtimeError, swgRef, err := lookupMsgAndOpenAPIName("google.rpc", "Status", p.reg)
-		if err == nil {
-			messages[swgRef] = runtimeError
-		} else {
-			// just in case there is an error looking up runtimeError
-			glog.Error(err)
-		}
-	}
-
-	// Find all the service's messages and enumerations that are defined (recursively)
-	// and write request, response and other custom (but referenced) types out as definition objects.
-	findServicesMessagesAndEnumerations(p.Services, p.reg, messages, streamingMessages, enums, requestResponseRefs)
-	renderMessagesAsDefinition(messages, s.Definitions, p.reg, customRefs, nil)
-	renderEnumerationsAsDefinition(enums, s.Definitions, p.reg)
-
-	// File itself might have some comments and metadata.
-	packageProtoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Package")
-	packageComments := protoComments(p.reg, p.File, nil, "Package", packageProtoPath)
-	if err := updateOpenAPIDataFromComments(p.reg, &s, p, packageComments, true); err != nil {
-		panic(err)
-	}
-
-	// There may be additional options in the OpenAPI option in the proto.
-	spb, err := getFileOpenAPIOption(p.reg, p.File)
-	if err != nil {
-		panic(err)
-	}
-	if spb != nil {
-		if spb.Swagger != "" {
-			s.Openapi = spb.Swagger
-		}
-		if spb.Info != nil {
-			if spb.Info.Title != "" {
-				s.Info.Title = spb.Info.Title
-			}
-			if spb.Info.Description != "" {
-				s.Info.Description = spb.Info.Description
-			}
-			if spb.Info.TermsOfService != "" {
-				s.Info.TermsOfService = spb.Info.TermsOfService
-			}
-			if spb.Info.Version != "" {
-				s.Info.Version = spb.Info.Version
-			}
-			if spb.Info.Contact != nil {
-				if s.Info.Contact == nil {
-					s.Info.Contact = &openapiContactObject{}
-				}
-				if spb.Info.Contact.Name != "" {
-					s.Info.Contact.Name = spb.Info.Contact.Name
-				}
-				if spb.Info.Contact.Url != "" {
-					s.Info.Contact.URL = spb.Info.Contact.Url
-				}
-				if spb.Info.Contact.Email != "" {
-					s.Info.Contact.Email = spb.Info.Contact.Email
-				}
-			}
-			if spb.Info.License != nil {
-				if s.Info.License == nil {
-					s.Info.License = &openapiLicenseObject{}
-				}
-				if spb.Info.License.Name != "" {
-					s.Info.License.Name = spb.Info.License.Name
-				}
-				if spb.Info.License.Url != "" {
-					s.Info.License.URL = spb.Info.License.Url
-				}
-			}
-			if spb.Info.Extensions != nil {
-				exts, err := processExtensions(spb.Info.Extensions)
-				if err != nil {
-					return nil, err
-				}
-				s.Info.extensions = exts
-			}
-		}
-		if spb.Host != "" {
-			s.Host = spb.Host
-		}
-		if spb.BasePath != "" {
-			s.BasePath = spb.BasePath
-		}
-		if len(spb.Schemes) > 0 {
-			s.Schemes = make([]string, len(spb.Schemes))
-			for i, scheme := range spb.Schemes {
-				s.Schemes[i] = strings.ToLower(scheme.String())
-			}
-		}
-		if len(spb.Consumes) > 0 {
-			s.Consumes = make([]string, len(spb.Consumes))
-			copy(s.Consumes, spb.Consumes)
-		}
-		if len(spb.Produces) > 0 {
-			s.Produces = make([]string, len(spb.Produces))
-			copy(s.Produces, spb.Produces)
-		}
-		if spb.SecurityDefinitions != nil && spb.SecurityDefinitions.Security != nil {
-			if s.SecurityDefinitions == nil {
-				s.SecurityDefinitions = openapiSecurityDefinitionsObject{}
-			}
-			for secDefKey, secDefValue := range spb.SecurityDefinitions.Security {
-				var newSecDefValue openapiSecuritySchemeObject
-				if oldSecDefValue, ok := s.SecurityDefinitions[secDefKey]; !ok {
-					newSecDefValue = openapiSecuritySchemeObject{}
-				} else {
-					newSecDefValue = oldSecDefValue
-				}
-				if secDefValue.Type != openapi_options.SecurityScheme_TYPE_INVALID {
-					switch secDefValue.Type {
-					case openapi_options.SecurityScheme_TYPE_BASIC:
-						newSecDefValue.Type = "basic"
-					case openapi_options.SecurityScheme_TYPE_API_KEY:
-						newSecDefValue.Type = "apiKey"
-					case openapi_options.SecurityScheme_TYPE_OAUTH2:
-						newSecDefValue.Type = "oauth2"
-					}
-				}
-				if secDefValue.Description != "" {
-					newSecDefValue.Description = secDefValue.Description
-				}
-				if secDefValue.Name != "" {
-					newSecDefValue.Name = secDefValue.Name
-				}
-				if secDefValue.In != openapi_options.SecurityScheme_IN_INVALID {
-					switch secDefValue.In {
-					case openapi_options.SecurityScheme_IN_QUERY:
-						newSecDefValue.In = "query"
-					case openapi_options.SecurityScheme_IN_HEADER:
-						newSecDefValue.In = "header"
-					}
-				}
-				if secDefValue.Flow != openapi_options.SecurityScheme_FLOW_INVALID {
-					switch secDefValue.Flow {
-					case openapi_options.SecurityScheme_FLOW_IMPLICIT:
-						newSecDefValue.Flow = "implicit"
-					case openapi_options.SecurityScheme_FLOW_PASSWORD:
-						newSecDefValue.Flow = "password"
-					case openapi_options.SecurityScheme_FLOW_APPLICATION:
-						newSecDefValue.Flow = "application"
-					case openapi_options.SecurityScheme_FLOW_ACCESS_CODE:
-						newSecDefValue.Flow = "accessCode"
-					}
-				}
-				if secDefValue.AuthorizationUrl != "" {
-					newSecDefValue.AuthorizationURL = secDefValue.AuthorizationUrl
-				}
-				if secDefValue.TokenUrl != "" {
-					newSecDefValue.TokenURL = secDefValue.TokenUrl
-				}
-				if secDefValue.Scopes != nil {
-					if newSecDefValue.Scopes == nil {
-						newSecDefValue.Scopes = openapiScopesObject{}
-					}
-					for scopeKey, scopeDesc := range secDefValue.Scopes.Scope {
-						newSecDefValue.Scopes[scopeKey] = scopeDesc
-					}
-				}
-				if secDefValue.Extensions != nil {
-					exts, err := processExtensions(secDefValue.Extensions)
-					if err != nil {
-						return nil, err
-					}
-					newSecDefValue.extensions = exts
-				}
-				s.SecurityDefinitions[secDefKey] = newSecDefValue
-			}
-		}
-		if spb.Security != nil {
-			var newSecurity []openapiSecurityRequirementObject
-			if s.Security != nil {
-				newSecurity = s.Security
-			}
-			for _, secReq := range spb.Security {
-				newSecReq := openapiSecurityRequirementObject{}
-				for secReqKey, secReqValue := range secReq.SecurityRequirement {
-					if secReqValue == nil {
-						return nil, fmt.Errorf("malformed security requirement spec for key %q; value is required", secReqKey)
-					}
-					newSecReqValue := make([]string, len(secReqValue.Scope))
-					copy(newSecReqValue, secReqValue.Scope)
-					newSecReq[secReqKey] = newSecReqValue
-				}
-				newSecurity = append(newSecurity, newSecReq)
-			}
-			s.Security = newSecurity
-		}
-		s.ExternalDocs = protoExternalDocumentationToOpenAPIExternalDocumentation(spb.ExternalDocs, p.reg, spb)
-		// Populate all Paths with Responses set at top level,
-		// preferring Responses already set over those at the top level.
-		if spb.Responses != nil {
-			for _, verbs := range s.Paths {
-				var maps []openapiResponsesObject
-				if verbs.Delete != nil {
-					maps = append(maps, verbs.Delete.Responses)
-				}
-				if verbs.Get != nil {
-					maps = append(maps, verbs.Get.Responses)
-				}
-				if verbs.Post != nil {
-					maps = append(maps, verbs.Post.Responses)
-				}
-				if verbs.Put != nil {
-					maps = append(maps, verbs.Put.Responses)
-				}
-				if verbs.Patch != nil {
-					maps = append(maps, verbs.Patch.Responses)
-				}
-
-				for k, v := range spb.Responses {
-					for _, respMap := range maps {
-						if _, ok := respMap[k]; ok {
-							// Don't overwrite already existing Responses
-							continue
-						}
-						respMap[k] = openapiResponseObject{
-							Description: v.Description,
-							Schema:      openapiSchemaFromProtoSchema(v.Schema, p.reg, customRefs, nil),
-							Examples:    openapiExamplesFromProtoExamples(v.Examples),
-						}
-					}
-				}
-			}
-		}
-
-		if spb.Extensions != nil {
-			exts, err := processExtensions(spb.Extensions)
-			if err != nil {
-				return nil, err
-			}
-			s.extensions = exts
-		}
-
-		// Additional fields on the OpenAPI v2 spec's "OpenAPI" object
-		// should be added here, once supported in the proto.
-	}
-
-	// Finally add any references added by users that aren't
-	// otherwise rendered.
-	addCustomRefs(s.Definitions, p.reg, customRefs)
-
-	return &s, nil
-}
-
-func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error) {
-	exts := []extension{}
+func processExtensions(inputExts map[string]*structpb.Value) (map[string]interface{}, error) {
+	exts := make(map[string]interface{})
 	for k, v := range inputExts {
 		if !strings.HasPrefix(k, "x-") {
 			return nil, fmt.Errorf("extension keys need to start with \"x-\": %q", k)
@@ -1556,9 +1608,8 @@ func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error
 		if err != nil {
 			return nil, err
 		}
-		exts = append(exts, extension{key: k, value: json.RawMessage(ext)})
+		exts[k] = json.RawMessage(ext)
 	}
-	sort.Slice(exts, func(i, j int) bool { return exts[i].key < exts[j].key })
 	return exts, nil
 }
 
@@ -1710,31 +1761,32 @@ func isBool(s string) bool {
 	return s == "true" || s == "false"
 }
 
-func processHeaders(inputHdrs map[string]*openapi_options.Header) (Headers, error) {
-	hdrs := map[string]Header{}
-	for k, v := range inputHdrs {
-		header := textproto.CanonicalMIMEHeaderKey(k)
-		ret := Header{
-			Description: v.Description,
-			Format:      v.Format,
-			Pattern:     v.Pattern,
-		}
-		err := validateHeaderTypeAndFormat(v.Type, v.Format)
-		if err != nil {
-			return nil, err
-		}
-		ret.Type = v.Type
-		if v.Default != "" {
-			err := validateDefaultValueTypeAndFormat(v.Type, v.Default, v.Format)
-			if err != nil {
-				return nil, err
-			}
-			ret.Default = json.RawMessage(v.Default)
-		}
-		hdrs[header] = ret
-	}
-	return hdrs, nil
-}
+// TODO(anjmao): Delete if not used.
+//func processHeaders(inputHdrs map[string]*openapi_options.Header) (Headers, error) {
+//	hdrs := map[string]Header{}
+//	for k, v := range inputHdrs {
+//		header := textproto.CanonicalMIMEHeaderKey(k)
+//		ret := Header{
+//			Description: v.Description,
+//			Format:      v.Format,
+//			Pattern:     v.Pattern,
+//		}
+//		err := validateHeaderTypeAndFormat(v.Type, v.Format)
+//		if err != nil {
+//			return nil, err
+//		}
+//		ret.Type = v.Type
+//		if v.Default != "" {
+//			err := validateDefaultValueTypeAndFormat(v.Type, v.Default, v.Format)
+//			if err != nil {
+//				return nil, err
+//			}
+//			ret.Default = json.RawMessage(v.Default)
+//		}
+//		hdrs[header] = ret
+//	}
+//	return hdrs, nil
+//}
 
 // updateOpenAPIDataFromComments updates a OpenAPI object based on a comment
 // from the proto file.
@@ -2181,26 +2233,31 @@ func getFieldBehaviorOption(reg *descriptor.Registry, fd *descriptor.Field) ([]a
 	return opts, nil
 }
 
-func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.Schema, reg *descriptor.Registry, refs refMap) schemaCore {
-	ret := schemaCore{}
+func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.SchemaOrReference, reg *descriptor.Registry, refs refMap) *SchemaRef {
+	ret := SchemaRef{}
 
-	if j.GetRef() != "" {
-		openapiName, ok := fullyQualifiedNameToOpenAPIName(j.GetRef(), reg)
+	if ref := j.GetReference(); ref != nil {
+		openapiName, ok := fullyQualifiedNameToOpenAPIName(ref.GetXRef(), reg)
 		if ok {
 			ret.Ref = "#/definitions/" + openapiName
 			if refs != nil {
-				refs[j.GetRef()] = struct{}{}
+				refs[ref.GetXRef()] = struct{}{}
 			}
 		} else {
-			ret.Ref += j.GetRef()
+			// TODO(anjmao): Check this case.
+			// ret.Ref += j.GetRef()
 		}
 	} else {
-		f, t := protoJSONSchemaTypeToFormat(j.GetType())
-		ret.Format = f
-		ret.Type = t
+		// TODO(anjmao): Fill schema
+		//f, t := protoJSONSchemaTypeToFormat(j.GetSchema())
+		//ret.Format = f
+		//ret.Type = t
+		ret.Value = &Schema{
+
+		}
 	}
 
-	return ret
+	return &ret
 }
 
 func updateswaggerObjectFromJSONSchema(s *Schema, j *openapi_options.Schema, reg *descriptor.Registry, data interface{}) {
@@ -2212,13 +2269,13 @@ func updateswaggerObjectFromJSONSchema(s *Schema, j *openapi_options.Schema, reg
 	}
 
 	s.ReadOnly = j.GetReadOnly()
-	s.MultipleOf = j.GetMultipleOf()
-	s.Maximum = j.GetMaximum()
-	s.ExclusiveMaximum = j.GetExclusiveMaximum()
-	s.Minimum = j.GetMinimum()
-	s.ExclusiveMinimum = j.GetExclusiveMinimum()
-	s.MaxLength = j.GetMaxLength()
-	s.MinLength = j.GetMinLength()
+	s.MultipleOf = &j.MultipleOf
+	s.Max = &j.Maximum
+	s.ExclusiveMin = j.GetExclusiveMaximum()
+	s.Min = &j.Minimum
+	s.ExclusiveMax = j.GetExclusiveMinimum()
+	s.MaxLength = &uint64(j.MaxLength)
+	s.MinLength = &j.MinLength
 	s.Pattern = j.GetPattern()
 	s.Default = j.GetDefault()
 	s.MaxItems = j.GetMaxItems()
@@ -2375,7 +2432,7 @@ func addCustomRefs(d openapiDefinitionsObject, reg *descriptor.Registry, refs re
 
 		// ?? Should be either enum or msg
 	}
-	renderMessagesAsDefinition(msgMap, d, reg, refs, nil)
+	renderMessagesToComponentsSchemas(msgMap, d, reg, refs, nil)
 	renderEnumerationsAsDefinition(enumMap, d, reg)
 
 	// Run again in case any new refs were added

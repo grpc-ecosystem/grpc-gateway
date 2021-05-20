@@ -1,9 +1,6 @@
 package genopenapi
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"regexp"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
@@ -64,6 +61,7 @@ type License struct {
 
 type Paths map[string]*PathItem
 
+// https://swagger.io/specification/#path-item-object
 type PathItem struct {
 	ExtensionProps
 	Ref         string     `json:"$ref,omitempty" yaml:"$ref,omitempty"`
@@ -82,6 +80,7 @@ type PathItem struct {
 	Parameters  Parameters `json:"parameters,omitempty" yaml:"parameters,omitempty"`
 }
 
+// https://swagger.io/specification/#operation-object
 type Operation struct {
 	ExtensionProps
 
@@ -308,6 +307,14 @@ type RequestBodyRef struct {
 	Value *RequestBody
 }
 
+func (value *RequestBodyRef) MarshalJSON() ([]byte, error) {
+	return marshalRef(value.Ref, value.Value)
+}
+
+func (value *RequestBodyRef) UnmarshalJSON(data []byte) error {
+	return unmarshalRef(data, &value.Ref, &value.Value)
+}
+
 // https://swagger.io/specification/#request-body-object
 type RequestBody struct {
 	ExtensionProps
@@ -418,64 +425,36 @@ type Parameter struct {
 	Content         Content     `json:"content,omitempty" yaml:"content,omitempty"`
 }
 
-// core part of schema, which is common to itemsObject and schemaObject.
-// http://swagger.io/specification/#itemsObject
-type schemaCore struct {
-	Type    string          `json:"type,omitempty"`
-	Format  string          `json:"format,omitempty"`
-	Ref     string          `json:"$ref,omitempty"`
-	Example json.RawMessage `json:"example,omitempty"`
-
-	Items *openapiItemsObject `json:"items,omitempty"`
-
-	// If the item is an enumeration include a list of all the *NAMES* of the
-	// enum values.  I'm not sure how well this will work but assuming all enums
-	// start from 0 index it will be great. I don't think that is a good assumption.
-	Enum    []string `json:"enum,omitempty"`
-	Default string   `json:"default,omitempty"`
-}
-
-func (s *schemaCore) setRefFromFQN(ref string, reg *descriptor.Registry) error {
-	name, ok := fullyQualifiedNameToOpenAPIName(ref, reg)
-	if !ok {
-		return fmt.Errorf("setRefFromFQN: can't resolve OpenAPI name from '%v'", ref)
-	}
-	s.Ref = fmt.Sprintf("#/definitions/%s", name)
-	return nil
-}
-
-type openapiItemsObject schemaCore
-
 type keyVal struct {
 	Key   string
 	Value interface{}
 }
 
-type openapiSchemaObjectProperties []keyVal
-
-func (op openapiSchemaObjectProperties) MarshalJSON() ([]byte, error) {
-	var buf bytes.Buffer
-	buf.WriteString("{")
-	for i, kv := range op {
-		if i != 0 {
-			buf.WriteString(",")
-		}
-		key, err := json.Marshal(kv.Key)
-		if err != nil {
-			return nil, err
-		}
-		buf.Write(key)
-		buf.WriteString(":")
-		val, err := json.Marshal(kv.Value)
-		if err != nil {
-			return nil, err
-		}
-		buf.Write(val)
-	}
-
-	buf.WriteString("}")
-	return buf.Bytes(), nil
-}
+//type openapiSchemaObjectProperties []keyVal
+//
+//func (op openapiSchemaObjectProperties) MarshalJSON() ([]byte, error) {
+//	var buf bytes.Buffer
+//	buf.WriteString("{")
+//	for i, kv := range op {
+//		if i != 0 {
+//			buf.WriteString(",")
+//		}
+//		key, err := json.Marshal(kv.Key)
+//		if err != nil {
+//			return nil, err
+//		}
+//		buf.Write(key)
+//		buf.WriteString(":")
+//		val, err := json.Marshal(kv.Value)
+//		if err != nil {
+//			return nil, err
+//		}
+//		buf.Write(val)
+//	}
+//
+//	buf.WriteString("}")
+//	return buf.Bytes(), nil
+//}
 
 // Internal type mapping from FQMN to descriptor.Message. Used as a set by the
 // findServiceMessages function.
