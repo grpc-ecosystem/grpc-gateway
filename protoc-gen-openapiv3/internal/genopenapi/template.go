@@ -3,6 +3,7 @@ package genopenapi
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math"
@@ -151,14 +152,16 @@ func applyTemplate(p param) (*Openapi, error) {
 	// and write request, response and other custom (but referenced) types out as definition objects.
 	findServicesMessagesAndEnumerations(p.Services, p.reg, messages, streamingMessages, enums, services.requestResponseRefs)
 
-	renderMessagesToComponentsSchemas(messages, s.Components, p.reg, services.customRefs, nil)
+	if err := renderMessagesToComponentsSchemas(messages, s.Components, p.reg, services.customRefs, nil); err != nil {
+		return nil, err
+	}
 	renderEnumerationsAsDefinition(enums, s.Components, p.reg)
 
 	// File itself might have some comments and metadata.
 	packageProtoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Package")
 	packageComments := protoComments(p.reg, p.File, nil, "Package", packageProtoPath)
 	if err := updateOpenAPIDataFromComments(p.reg, &s, p, packageComments, true); err != nil {
-		panic(err)
+		return nil, fmt.Errorf("updating openapi data from comments")
 	}
 
 	// There may be additional options in the OpenAPI option in the proto.
@@ -411,7 +414,7 @@ func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Regis
 	for _, field := range message.Fields {
 		p, err := queryParams(message, field, "", reg, pathParams, body, reg.GetRecursiveDepth())
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("handling query params: %w", err)
 		}
 		params = append(params, p...)
 	}
@@ -533,56 +536,57 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		}
 
 		param := Parameter{
-			Name:            "",
-			In:              "query",
-			Description:     desc,
-			Style:           "",
-			Explode:         nil,
-			AllowEmptyValue: false,
-			AllowReserved:   false,
-			Deprecated:      false,
-			Required:        required,
-			Schema:          nil,
-			Example:         nil,
-			Examples:        nil,
-			Content:         nil,
+			Description: desc,
+			In:          "query",
+			Schema: &SchemaRef{
+				Value: &Schema{
+					Default: schema.Default,
+					Type: schema.Type,
+					Items: schema.Items,
+					Format: schema.Format,
+				},
+			},
+			Required:    required,
 		}
+
 		// TODO(anjmao): Handle array and enums.
 		//if param.Type == "array" {
 		//	param.CollectionFormat = "multi"
 		//}
-		//
-		//param.Name = prefix + reg.FieldName(field)
-		//
-		//if isEnum {
-		//	enum, err := reg.LookupEnum("", fieldType)
-		//	if err != nil {
-		//		return nil, fmt.Errorf("unknown enum type %s", fieldType)
-		//	}
-		//	if items != nil { // array
-		//		param.Items = &openapiItemsObject{
-		//			Type: "string",
-		//			Enum: listEnumNames(enum),
-		//		}
-		//		if reg.GetEnumsAsInts() {
-		//			param.Items.Type = "integer"
-		//			param.Items.Enum = listEnumNumbers(enum)
-		//		}
-		//	} else {
-		//		param.Type = "string"
-		//		param.Enum = listEnumNames(enum)
-		//		param.Default = getEnumDefault(enum)
-		//		if reg.GetEnumsAsInts() {
-		//			param.Type = "integer"
-		//			param.Enum = listEnumNumbers(enum)
-		//			param.Default = "0"
-		//		}
-		//	}
-		//	valueComments := enumValueProtoComments(reg, enum)
-		//	if valueComments != "" {
-		//		param.Description = strings.TrimLeft(param.Description+"\n\n "+valueComments, "\n")
-		//	}
-		//}
+
+		param.Name = prefix + reg.FieldName(field)
+
+		if isEnum {
+			enum, err := reg.LookupEnum("", fieldType)
+			if err != nil {
+				return nil, fmt.Errorf("unknown enum type %s", fieldType)
+			}
+			if items != nil { // array
+				param.Schema.Value.Items = &SchemaRef{
+					Value: &Schema{
+						Type: "string",
+						Enum: listEnumNames(enum),
+					},
+				}
+				if reg.GetEnumsAsInts() {
+					param.Schema.Value.Type = "integer"
+					param.Schema.Value.Enum = listEnumNumbers(enum)
+				}
+			} else {
+				param.Schema.Value.Type = "string"
+				param.Schema.Value.Enum = listEnumNames(enum)
+				param.Schema.Value.Default = getEnumDefault(enum)
+				if reg.GetEnumsAsInts() {
+					param.Schema.Value.Type = "integer"
+					param.Schema.Value.Enum = listEnumNumbers(enum)
+					param.Schema.Value.Default = "0"
+				}
+			}
+			valueComments := enumValueProtoComments(reg, enum)
+			if valueComments != "" {
+				param.Description = strings.TrimLeft(param.Description+"\n\n "+valueComments, "\n")
+			}
+		}
 		return []Parameter{param}, nil
 	}
 
@@ -607,7 +611,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		fieldName := reg.FieldName(field)
 		p, err := nestedQueryParams(msg, nestedField, prefix+fieldName+".", reg, pathParams, body, touchedOut)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("handling nested query params: %w", err)
 		}
 		params = append(params, p...)
 	}
@@ -677,7 +681,7 @@ func skipRenderingRef(refName string) bool {
 	return ok
 }
 
-func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) *SchemaRef {
+func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) (*SchemaRef, error) {
 	schema := Schema{
 		Type: "object",
 	}
@@ -731,7 +735,7 @@ func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, cu
 		fieldValue := schemaOfField(f, reg, customRefs)
 		comments := fieldProtoComments(reg, msg, f)
 		if err := updateOpenAPIDataFromComments(reg, &fieldValue, f, comments, false); err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		if requiredIdx := find(schema.Required, *f.Name); requiredIdx != -1 && reg.GetUseJSONNamesForFields() {
@@ -755,10 +759,10 @@ func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, cu
 	}
 	return &SchemaRef{
 		Value: &schema,
-	}
+	}, nil
 }
 
-func renderMessagesToComponentsSchemas(messages messageMap, c Components, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) {
+func renderMessagesToComponentsSchemas(messages messageMap, c Components, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) error {
 	for name, msg := range messages {
 		swgName, ok := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
 		if !ok {
@@ -771,8 +775,13 @@ func renderMessagesToComponentsSchemas(messages messageMap, c Components, reg *d
 		if opt := msg.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			continue
 		}
-		c.Schemas[swgName] = renderMessageAsSchema(msg, reg, customRefs, excludeFields)
+		schema, err := renderMessageAsSchema(msg, reg, customRefs, excludeFields)
+		if err != nil {
+			return err
+		}
+		c.Schemas[swgName] = schema
 	}
+	return nil
 }
 
 func shouldExcludeField(name string, excluded []*descriptor.Field, reg *descriptor.Registry) bool {
@@ -1314,7 +1323,11 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 								}
 							}
 							if len(bodyExcludedFields) != 0 {
-								schemaRef = renderMessageAsSchema(meth.RequestType, reg, customRefs, bodyExcludedFields)
+								schema, err := renderMessageAsSchema(meth.RequestType, reg, customRefs, bodyExcludedFields)
+								if err != nil {
+									return nil, err
+								}
+								schemaRef = schema
 								// TODO(anjmao): Check if this validation error message make sense.
 								if schemaRef.Value.Properties == nil || len(schemaRef.Value.Properties) == 0 {
 									glog.Errorf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
@@ -1337,12 +1350,11 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 						lastField := b.Body.FieldPath[len(b.Body.FieldPath)-1]
 						schemaRef := schemaOfField(lastField.Target, reg, customRefs)
 						schema := schemaRef.Value
-						if schema.Description != "" {
+						if schema != nil && schema.Description != "" {
 							desc = schema.Description
 						} else {
 							desc = fieldProtoComments(reg, lastField.Target.Message, lastField.Target)
 						}
-						schemaRef.Value = schema
 					}
 
 					if meth.GetClientStreaming() {
@@ -1369,7 +1381,7 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 					// add the parameters to the query string
 					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
 					if err != nil {
-						return nil, err
+						return nil, fmt.Errorf("query params for GET and DELETE: %w", err)
 					}
 					for _, queryParam := range queryParams {
 						parameters = append(parameters, &ParameterRef{Value: &queryParam})
@@ -1494,7 +1506,7 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 
 				// Fill reference map with referenced request messages
 				for _, param := range operationObject.Parameters {
-					if param.Value != nil && param.Value.Schema.Ref != "" {
+					if param.Value != nil && param.Value.Schema != nil && param.Value.Schema.Ref != "" {
 						requestResponseRefs[param.Value.Schema.Ref] = struct{}{}
 					}
 				}
@@ -1895,7 +1907,10 @@ func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject inter
 		return nil
 	}
 
-	return fmt.Errorf("no description nor summary property")
+	return nil
+	// TODO(anjmao): handle this error
+
+	// return fmt.Errorf("no description nor summary property")
 }
 
 func fieldProtoComments(reg *descriptor.Registry, msg *descriptor.Message, field *descriptor.Field) string {
@@ -2239,6 +2254,7 @@ func getFieldOpenAPIOption(reg *descriptor.Registry, fd *descriptor.Field) (*ope
 	if opts != nil {
 		return opts, nil
 	}
+	return nil, errors.New("no options")
 	// TODO(anjmao): Support from registry if yaml spec is passed.
 	//opts, ok := reg.GetOpenAPIFieldOption(fd.FQFN())
 	//if !ok {

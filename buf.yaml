@@ -4,9 +4,7 @@ deps:
   - buf.build/beta/googleapis
 build:
   roots:
-    - .
-  excludes:
-    - bazel-grpc-gateway
+    - examples/internal/proto/openapiv3
 lint:
   use:
     - DEFAULT
