@@ -1,14 +1,19 @@
 package genopenapi
 
 import (
+	"reflect"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
+	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv3/options"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
@@ -17,7 +22,7 @@ var marshaler = &runtime.JSONPb{}
 func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 	it := require.New(t)
 	type test struct {
-		Name string
+		Name     string
 		MsgDescs []*descriptorpb.DescriptorProto
 		Message  string
 		Params   []Parameter
@@ -81,7 +86,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 							Type: "array",
 							Items: &SchemaRef{
 								Value: &Schema{
-									Type:   "string",
+									Type: "string",
 								},
 							},
 						},
@@ -896,338 +901,302 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 //	}
 //}
 //
-//func TestApplyTemplateSimple(t *testing.T) {
-//	msgdesc := &descriptorpb.DescriptorProto{
-//		Name: proto.String("ExampleMessage"),
-//	}
-//	meth := &descriptorpb.MethodDescriptorProto{
-//		Name:       proto.String("Example"),
-//		InputType:  proto.String("ExampleMessage"),
-//		OutputType: proto.String("ExampleMessage"),
-//	}
-//	svc := &descriptorpb.ServiceDescriptorProto{
-//		Name:   proto.String("ExampleService"),
-//		Method: []*descriptorpb.MethodDescriptorProto{meth},
-//	}
-//	msg := &descriptor.Message{
-//		DescriptorProto: msgdesc,
-//	}
-//	file := descriptor.File{
-//		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
-//			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
-//			Name:           proto.String("example.proto"),
-//			Package:        proto.String("example"),
-//			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
-//			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
-//			Options: &descriptorpb.FileOptions{
-//				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
-//			},
-//		},
-//		GoPkg: descriptor.GoPackage{
-//			Path: "example.com/path/to/example/example.pb",
-//			Name: "example_pb",
-//		},
-//		Messages: []*descriptor.Message{msg},
-//		Services: []*descriptor.Service{
-//			{
-//				ServiceDescriptorProto: svc,
-//				Methods: []*descriptor.Method{
-//					{
-//						MethodDescriptorProto: meth,
-//						RequestType:           msg,
-//						ResponseType:          msg,
-//						Bindings: []*descriptor.Binding{
-//							{
-//								HTTPMethod: "GET",
-//								Body:       &descriptor.Body{FieldPath: nil},
-//								PathTmpl: httprule.Template{
-//									Version:  1,
-//									OpCodes:  []int{0, 0},
-//									Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
-//								},
-//							},
-//						},
-//					},
-//				},
-//			},
-//		},
-//	}
-//	reg := descriptor.NewRegistry()
-//	if err := AddErrorDefs(reg); err != nil {
-//		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
-//		return
-//	}
-//	fileCL := crossLinkFixture(&file)
-//	err := reg.Load(reqFromFile(fileCL))
-//	if err != nil {
-//		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
-//		return
-//	}
-//	result, err := applyTemplate(param{File: fileCL, reg: reg})
-//	if err != nil {
-//		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
-//		return
-//	}
-//	if want, is, name := "2.0", result.Openapi, "Openapi"; !reflect.DeepEqual(is, want) {
-//		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
-//	}
-//	if want, is, name := "", result.BasePath, "BasePath"; !reflect.DeepEqual(is, want) {
-//		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
-//	}
-//	if want, is, name := ([]string)(nil), result.Schemes, "Schemes"; !reflect.DeepEqual(is, want) {
-//		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
-//	}
-//	if want, is, name := []string{"application/json"}, result.Consumes, "Consumes"; !reflect.DeepEqual(is, want) {
-//		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
-//	}
-//	if want, is, name := []string{"application/json"}, result.Produces, "Produces"; !reflect.DeepEqual(is, want) {
-//		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
-//	}
-//
-//	// If there was a failure, print out the input and the json result for debugging.
-//	if t.Failed() {
-//		t.Errorf("had: %s", file)
-//		t.Errorf("got: %s", fmt.Sprint(result))
-//	}
-//}
-//
-//func TestApplyTemplateMultiService(t *testing.T) {
-//	msgdesc := &descriptorpb.DescriptorProto{
-//		Name: proto.String("ExampleMessage"),
-//	}
-//	meth := &descriptorpb.MethodDescriptorProto{
-//		Name:       proto.String("Example"),
-//		InputType:  proto.String("ExampleMessage"),
-//		OutputType: proto.String("ExampleMessage"),
-//	}
-//
-//	// Create two services that have the same method name. We will test that the
-//	// operation IDs are different
-//	svc := &descriptorpb.ServiceDescriptorProto{
-//		Name:   proto.String("ExampleService"),
-//		Method: []*descriptorpb.MethodDescriptorProto{meth},
-//	}
-//	svc2 := &descriptorpb.ServiceDescriptorProto{
-//		Name:   proto.String("OtherService"),
-//		Method: []*descriptorpb.MethodDescriptorProto{meth},
-//	}
-//
-//	msg := &descriptor.Message{
-//		DescriptorProto: msgdesc,
-//	}
-//	file := descriptor.File{
-//		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
-//			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
-//			Name:           proto.String("example.proto"),
-//			Package:        proto.String("example"),
-//			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
-//			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
-//			Options: &descriptorpb.FileOptions{
-//				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
-//			},
-//		},
-//		GoPkg: descriptor.GoPackage{
-//			Path: "example.com/path/to/example/example.pb",
-//			Name: "example_pb",
-//		},
-//		Messages: []*descriptor.Message{msg},
-//		Services: []*descriptor.Service{
-//			{
-//				ServiceDescriptorProto: svc,
-//				Methods: []*descriptor.Method{
-//					{
-//						MethodDescriptorProto: meth,
-//						RequestType:           msg,
-//						ResponseType:          msg,
-//						Bindings: []*descriptor.Binding{
-//							{
-//								HTTPMethod: "GET",
-//								Body:       &descriptor.Body{FieldPath: nil},
-//								PathTmpl: httprule.Template{
-//									Version:  1,
-//									OpCodes:  []int{0, 0},
-//									Template: "/v1/echo",
-//								},
-//							},
-//						},
-//					},
-//				},
-//			},
-//			{
-//				ServiceDescriptorProto: svc2,
-//				Methods: []*descriptor.Method{
-//					{
-//						MethodDescriptorProto: meth,
-//						RequestType:           msg,
-//						ResponseType:          msg,
-//						Bindings: []*descriptor.Binding{
-//							{
-//								HTTPMethod: "GET",
-//								Body:       &descriptor.Body{FieldPath: nil},
-//								PathTmpl: httprule.Template{
-//									Version:  1,
-//									OpCodes:  []int{0, 0},
-//									Template: "/v1/ping",
-//								},
-//							},
-//						},
-//					},
-//				},
-//			},
-//		},
-//	}
-//	reg := descriptor.NewRegistry()
-//	if err := AddErrorDefs(reg); err != nil {
-//		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
-//		return
-//	}
-//	fileCL := crossLinkFixture(&file)
-//	err := reg.Load(reqFromFile(fileCL))
-//	if err != nil {
-//		t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
-//		return
-//	}
-//	result, err := applyTemplate(param{File: fileCL, reg: reg})
-//	if err != nil {
-//		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
-//		return
-//	}
-//
-//	// Check that the two services have unique operation IDs even though they
-//	// have the same method name.
-//	if want, is := "ExampleService_Example", result.Paths["/v1/echo"].Get.OperationID; !reflect.DeepEqual(is, want) {
-//		t.Errorf("applyTemplate(%#v).Paths[0].Get.OperationID = %s want to be %s", file, is, want)
-//	}
-//	if want, is := "OtherService_Example", result.Paths["/v1/ping"].Get.OperationID; !reflect.DeepEqual(is, want) {
-//		t.Errorf("applyTemplate(%#v).Paths[0].Get.OperationID = %s want to be %s", file, is, want)
-//	}
-//
-//	// If there was a failure, print out the input and the json result for debugging.
-//	if t.Failed() {
-//		t.Errorf("had: %s", file)
-//		t.Errorf("got: %s", fmt.Sprint(result))
-//	}
-//}
-//
-//func TestApplyTemplateOverrideOperationID(t *testing.T) {
-//	newFile := func() *descriptor.File {
-//		msgdesc := &descriptorpb.DescriptorProto{
-//			Name: proto.String("ExampleMessage"),
-//		}
-//		meth := &descriptorpb.MethodDescriptorProto{
-//			Name:       proto.String("Example"),
-//			InputType:  proto.String("ExampleMessage"),
-//			OutputType: proto.String("ExampleMessage"),
-//			Options:    &descriptorpb.MethodOptions{},
-//		}
-//		svc := &descriptorpb.ServiceDescriptorProto{
-//			Name:   proto.String("ExampleService"),
-//			Method: []*descriptorpb.MethodDescriptorProto{meth},
-//		}
-//		msg := &descriptor.Message{
-//			DescriptorProto: msgdesc,
-//		}
-//		return &descriptor.File{
-//			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
-//				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
-//				Name:           proto.String("example.proto"),
-//				Package:        proto.String("example"),
-//				MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
-//				Service:        []*descriptorpb.ServiceDescriptorProto{svc},
-//				Options: &descriptorpb.FileOptions{
-//					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
-//				},
-//			},
-//			GoPkg: descriptor.GoPackage{
-//				Path: "example.com/path/to/example/example.pb",
-//				Name: "example_pb",
-//			},
-//			Messages: []*descriptor.Message{msg},
-//			Services: []*descriptor.Service{
-//				{
-//					ServiceDescriptorProto: svc,
-//					Methods: []*descriptor.Method{
-//						{
-//							MethodDescriptorProto: meth,
-//							RequestType:           msg,
-//							ResponseType:          msg,
-//							Bindings: []*descriptor.Binding{
-//								{
-//									HTTPMethod: "GET",
-//									Body:       &descriptor.Body{FieldPath: nil},
-//									PathTmpl: httprule.Template{
-//										Version:  1,
-//										OpCodes:  []int{0, 0},
-//										Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
-//									},
-//								},
-//							},
-//						},
-//					},
-//				},
-//			},
-//		}
-//	}
-//
-//	verifyTemplateFromReq := func(t *testing.T, reg *descriptor.Registry, file *descriptor.File, opts *openapiconfig.OpenAPIOptions) {
-//		if err := AddErrorDefs(reg); err != nil {
-//			t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
-//			return
-//		}
-//		fileCL := crossLinkFixture(file)
-//		err := reg.Load(reqFromFile(fileCL))
-//		if err != nil {
-//			t.Errorf("reg.Load(%#v) failed with %v; want success", *file, err)
-//			return
-//		}
-//		if opts != nil {
-//			if err := reg.RegisterOpenAPIOptions(opts); err != nil {
-//				t.Fatalf("failed to register OpenAPI options: %s", err)
-//			}
-//		}
-//		result, err := applyTemplate(param{File: fileCL, reg: reg})
-//		if err != nil {
-//			t.Errorf("applyTemplate(%#v) failed with %v; want success", *file, err)
-//			return
-//		}
-//		if want, is := "MyExample", result.Paths["/v1/echo"].Get.OperationID; !reflect.DeepEqual(is, want) {
-//			t.Errorf("applyTemplate(%#v).Paths[0].Get.OperationID = %s want to be %s", *file, is, want)
-//		}
-//
-//		// If there was a failure, print out the input and the json result for debugging.
-//		if t.Failed() {
-//			t.Errorf("had: %s", *file)
-//			t.Errorf("got: %s", fmt.Sprint(result))
-//		}
-//	}
-//
-//	openapiOperation := openapi_options.Operation{
-//		OperationId: "MyExample",
-//	}
-//
-//	t.Run("verify override via method option", func(t *testing.T) {
-//		file := newFile()
-//		proto.SetExtension(proto.Message(file.Services[0].Methods[0].MethodDescriptorProto.Options),
-//			openapi_options.E_Openapiv2Operation, &openapiOperation)
-//
-//		reg := descriptor.NewRegistry()
-//		verifyTemplateFromReq(t, reg, file, nil)
-//	})
-//
-//	t.Run("verify override options annotations", func(t *testing.T) {
-//		file := newFile()
-//		reg := descriptor.NewRegistry()
-//		opts := &openapiconfig.OpenAPIOptions{
-//			Method: []*openapiconfig.OpenAPIMethodOption{
-//				{
-//					Method: "example.ExampleService.Example",
-//					Option: &openapiOperation,
-//				},
-//			},
-//		}
-//		verifyTemplateFromReq(t, reg, file, opts)
-//	})
-//}
+func TestApplyTemplateSimple(t *testing.T) {
+	it := require.New(t)
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+	}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	err := AddErrorDefs(reg)
+	it.NoError(err)
+	fileCL := crossLinkFixture(&file)
+	err = reg.Load(reqFromFile(fileCL))
+	it.NoError(err)
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	it.NoError(err)
+
+	it.Equal("3.0", result.OpenAPI)
+
+	spew.Dump(result.Components)
+
+	it.Equal(&Info{
+		Title:          "example.proto",
+		Description:    "",
+		TermsOfService: "",
+		Contact:        nil,
+		License:        nil,
+		Version:        "version not set",
+	}, result.Info)
+	it.Equal(&SchemaRef{
+		Value: &Schema{
+			Type: "object",
+		},
+	}, result.Components.Schemas["exampleExampleMessage"])
+}
+
+func TestApplyTemplateMultiService(t *testing.T) {
+	it := require.New(t)
+
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+	}
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+
+	// Create two services that have the same method name. We will test that the
+	// operation IDs are different
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	svc2 := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("OtherService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo",
+								},
+							},
+						},
+					},
+				},
+			},
+			{
+				ServiceDescriptorProto: svc2,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								Body:       &descriptor.Body{FieldPath: nil},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/ping",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	err := AddErrorDefs(reg);
+	it.NoError(err)
+
+	fileCL := crossLinkFixture(&file)
+	err = reg.Load(reqFromFile(fileCL))
+	it.NoError(err)
+
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	it.NoError(err)
+
+	// Check that the two services have unique operation IDs even though they
+	// have the same method name.
+	it.Equal("ExampleService_Example", result.Paths["/v1/echo"].Get.OperationID)
+	it.Equal("OtherService_Example", result.Paths["/v1/ping"].Get.OperationID)
+}
+
+func TestApplyTemplateOverrideOperationID(t *testing.T) {
+	it := require.New(t)
+
+	newFile := func() *descriptor.File {
+		msgdesc := &descriptorpb.DescriptorProto{
+			Name: proto.String("ExampleMessage"),
+		}
+		meth := &descriptorpb.MethodDescriptorProto{
+			Name:       proto.String("Example"),
+			InputType:  proto.String("ExampleMessage"),
+			OutputType: proto.String("ExampleMessage"),
+			Options:    &descriptorpb.MethodOptions{},
+		}
+		svc := &descriptorpb.ServiceDescriptorProto{
+			Name:   proto.String("ExampleService"),
+			Method: []*descriptorpb.MethodDescriptorProto{meth},
+		}
+		msg := &descriptor.Message{
+			DescriptorProto: msgdesc,
+		}
+		return &descriptor.File{
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+				Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+				},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: []*descriptor.Message{msg},
+			Services: []*descriptor.Service{
+				{
+					ServiceDescriptorProto: svc,
+					Methods: []*descriptor.Method{
+						{
+							MethodDescriptorProto: meth,
+							RequestType:           msg,
+							ResponseType:          msg,
+							Bindings: []*descriptor.Binding{
+								{
+									HTTPMethod: "GET",
+									Body:       &descriptor.Body{FieldPath: nil},
+									PathTmpl: httprule.Template{
+										Version:  1,
+										OpCodes:  []int{0, 0},
+										Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+	}
+
+	verifyTemplateFromReq := func(t *testing.T, reg *descriptor.Registry, file *descriptor.File, opts *openapiconfig.OpenAPIOptions) {
+		if err := AddErrorDefs(reg); err != nil {
+			t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+			return
+		}
+		fileCL := crossLinkFixture(file)
+		err := reg.Load(reqFromFile(fileCL))
+		it.NoError(err)
+		if opts != nil {
+			err = reg.RegisterOpenAPIOptions(opts)
+			it.NoError(err)
+		}
+		result, err := applyTemplate(param{File: fileCL, reg: reg})
+		it.NoError(err)
+		it.Equal("MyExample", result.Paths["/v1/echo"].Get.OperationID)
+	}
+
+	openapiOperation := openapi_options.Operation{
+		OperationId: "MyExample",
+	}
+
+	t.Run("verify override via method option", func(t *testing.T) {
+		file := newFile()
+		proto.SetExtension(proto.Message(file.Services[0].Methods[0].MethodDescriptorProto.Options),
+			openapi_options.E_Openapiv3Operation, &openapiOperation)
+
+		reg := descriptor.NewRegistry()
+		verifyTemplateFromReq(t, reg, file, nil)
+	})
+
+	// TODO(anjmao): This one is hard. It requires touching internal/descriptor pkg which imports openapiv2.
+	//t.Run("verify override options annotations", func(t *testing.T) {
+	//	file := newFile()
+	//	reg := descriptor.NewRegistry()
+	//	opts := &openapiconfig.OpenAPIOptions{
+	//		Method: []*openapiconfig.OpenAPIMethodOption{
+	//			{
+	//				Method: "example.ExampleService.Example",
+	//				Option: &openapiOperation,
+	//			},
+	//		},
+	//	}
+	//	verifyTemplateFromReq(t, reg, file, opts)
+	//})
+}
 //
 //func TestApplyTemplateExtensions(t *testing.T) {
 //	newFile := func() *descriptor.File {
@@ -1441,168 +1410,274 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 //	})
 //}
 //
-//func TestApplyTemplateHeaders(t *testing.T) {
-//	newFile := func() *descriptor.File {
-//		msgdesc := &descriptorpb.DescriptorProto{
-//			Name: proto.String("ExampleMessage"),
-//		}
-//		meth := &descriptorpb.MethodDescriptorProto{
-//			Name:       proto.String("Example"),
-//			InputType:  proto.String("ExampleMessage"),
-//			OutputType: proto.String("ExampleMessage"),
-//			Options:    &descriptorpb.MethodOptions{},
-//		}
-//		svc := &descriptorpb.ServiceDescriptorProto{
-//			Name:   proto.String("ExampleService"),
-//			Method: []*descriptorpb.MethodDescriptorProto{meth},
-//		}
-//		msg := &descriptor.Message{
-//			DescriptorProto: msgdesc,
-//		}
-//		return &descriptor.File{
-//			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
-//				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
-//				Name:           proto.String("example.proto"),
-//				Package:        proto.String("example"),
-//				MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
-//				Service:        []*descriptorpb.ServiceDescriptorProto{svc},
-//				Options: &descriptorpb.FileOptions{
-//					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
-//				},
-//			},
-//			GoPkg: descriptor.GoPackage{
-//				Path: "example.com/path/to/example/example.pb",
-//				Name: "example_pb",
-//			},
-//			Messages: []*descriptor.Message{msg},
-//			Services: []*descriptor.Service{
-//				{
-//					ServiceDescriptorProto: svc,
-//					Methods: []*descriptor.Method{
-//						{
-//							MethodDescriptorProto: meth,
-//							RequestType:           msg,
-//							ResponseType:          msg,
-//							Bindings: []*descriptor.Binding{
-//								{
-//									HTTPMethod: "GET",
-//									Body:       &descriptor.Body{FieldPath: nil},
-//									PathTmpl: httprule.Template{
-//										Version:  1,
-//										OpCodes:  []int{0, 0},
-//										Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
-//									},
-//								},
-//							},
-//						},
-//					},
-//				},
-//			},
-//		}
-//	}
-//	openapiOperation := openapi_options.Operation{
-//		Responses: map[string]*openapi_options.Response{
-//			"200": &openapi_options.Response{
-//				Description: "Testing Headers",
-//				Headers: map[string]*openapi_options.Header{
-//					"string": {
-//						Description: "string header description",
-//						Type:        "string",
-//						Format:      "uuid",
-//						Pattern:     "",
-//					},
-//					"boolean": {
-//						Description: "boolean header description",
-//						Type:        "boolean",
-//						Default:     "true",
-//						Pattern:     "^true|false$",
-//					},
-//					"integer": {
-//						Description: "integer header description",
-//						Type:        "integer",
-//						Default:     "0",
-//						Pattern:     "^[0-9]$",
-//					},
-//					"number": {
-//						Description: "number header description",
-//						Type:        "number",
-//						Default:     "1.2",
-//						Pattern:     "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
-//					},
-//				},
-//			},
-//		},
-//	}
-//	verifyTemplateHeaders := func(t *testing.T, reg *descriptor.Registry, file *descriptor.File,
-//		opts *openapiconfig.OpenAPIOptions) {
-//		if err := AddErrorDefs(reg); err != nil {
-//			t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
-//			return
-//		}
-//		fileCL := crossLinkFixture(file)
-//		err := reg.Load(reqFromFile(fileCL))
-//		if err != nil {
-//			t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
-//			return
-//		}
-//		if opts != nil {
-//			if err := reg.RegisterOpenAPIOptions(opts); err != nil {
-//				t.Fatalf("failed to register OpenAPI annotations: %s", err)
-//			}
-//		}
-//		result, err := applyTemplate(param{File: fileCL, reg: reg})
-//		if err != nil {
-//			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
-//			return
-//		}
-//		if want, is, name := "2.0", result.Openapi, "Openapi"; !reflect.DeepEqual(is, want) {
-//			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
-//		}
-//
-//		var response openapiResponseObject
-//		for _, v := range result.Paths {
-//			response = v.Get.Responses["200"]
-//		}
-//		if want, is, name := []openapiHeadersObject{
-//			{
-//				"String": openapiHeaderObject{
-//					Description: "string header description",
-//					Type:        "string",
-//					Format:      "uuid",
-//					Pattern:     "",
-//				},
-//				"Boolean": openapiHeaderObject{
-//					Description: "boolean header description",
-//					Type:        "boolean",
-//					Default:     json.RawMessage("true"),
-//					Pattern:     "^true|false$",
-//				},
-//				"Integer": openapiHeaderObject{
-//					Description: "integer header description",
-//					Type:        "integer",
-//					Default:     json.RawMessage("0"),
-//					Pattern:     "^[0-9]$",
-//				},
-//				"Number": openapiHeaderObject{
-//					Description: "number header description",
-//					Type:        "number",
-//					Default:     json.RawMessage("1.2"),
-//					Pattern:     "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
-//				},
-//			},
-//		}[0], response.Headers, "response.Headers"; !reflect.DeepEqual(is, want) {
-//			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
-//		}
-//
-//	}
-//	t.Run("verify template options set via proto options", func(t *testing.T) {
-//		file := newFile()
-//		proto.SetExtension(proto.Message(file.Services[0].Methods[0].Options), openapi_options.E_Openapiv2Operation, &openapiOperation)
-//		reg := descriptor.NewRegistry()
-//		verifyTemplateHeaders(t, reg, file, nil)
-//	})
-//}
-//
+func TestApplyTemplateHeaders(t *testing.T) {
+	it := require.New(t)
+	newFile := func() *descriptor.File {
+		msgdesc := &descriptorpb.DescriptorProto{
+			Name: proto.String("ExampleMessage"),
+		}
+		meth := &descriptorpb.MethodDescriptorProto{
+			Name:       proto.String("Example"),
+			InputType:  proto.String("ExampleMessage"),
+			OutputType: proto.String("ExampleMessage"),
+			Options:    &descriptorpb.MethodOptions{},
+		}
+		svc := &descriptorpb.ServiceDescriptorProto{
+			Name:   proto.String("ExampleService"),
+			Method: []*descriptorpb.MethodDescriptorProto{meth},
+		}
+		msg := &descriptor.Message{
+			DescriptorProto: msgdesc,
+		}
+		return &descriptor.File{
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+				Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+				},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: []*descriptor.Message{msg},
+			Services: []*descriptor.Service{
+				{
+					ServiceDescriptorProto: svc,
+					Methods: []*descriptor.Method{
+						{
+							MethodDescriptorProto: meth,
+							RequestType:           msg,
+							ResponseType:          msg,
+							Bindings: []*descriptor.Binding{
+								{
+									HTTPMethod: "GET",
+									Body:       &descriptor.Body{FieldPath: nil},
+									PathTmpl: httprule.Template{
+										Version:  1,
+										OpCodes:  []int{0, 0},
+										Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+	}
+
+	openapiOperation := openapi_options.Operation{
+		Responses: &openapi_options.Responses{
+			ResponseOrReference: []*openapi_options.NamedResponseOrReference{
+				{
+					Name:  "200",
+					Value: &openapi_options.ResponseOrReference{
+						Oneof: &openapi_options.ResponseOrReference_Response{
+							Response: &openapi_options.Response{
+								Headers: &openapi_options.HeadersOrReferences{
+									AdditionalProperties: []*openapi_options.NamedHeaderOrReference{
+										{
+											Name: "String",
+											Value: &openapi_options.HeaderOrReference{
+												Oneof: &openapi_options.HeaderOrReference_Header{
+													Header: &openapi_options.Header{
+														Description:            "string header description",
+														Schema:                 &openapi_options.SchemaOrReference{
+															Oneof: &openapi_options.SchemaOrReference_Schema{
+																Schema: &openapi_options.Schema{
+																	Type: "string",
+																	Format: "uuid",
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+										{
+											Name: "Boolean",
+											Value: &openapi_options.HeaderOrReference{
+												Oneof: &openapi_options.HeaderOrReference_Header{
+													Header: &openapi_options.Header{
+														Description:            "boolean header description",
+														Schema:                 &openapi_options.SchemaOrReference{
+															Oneof: &openapi_options.SchemaOrReference_Schema{
+																Schema: &openapi_options.Schema{
+																	Type: "boolean",
+																	Default: &openapi_options.DefaultType{
+																		Oneof: &openapi_options.DefaultType_Boolean{
+																			Boolean: true,
+																		},
+																	},
+																	Pattern: "^true|false$",
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+										{
+											Name: "Integer",
+											Value: &openapi_options.HeaderOrReference{
+												Oneof: &openapi_options.HeaderOrReference_Header{
+													Header: &openapi_options.Header{
+														Description:            "integer header description",
+														Schema:                 &openapi_options.SchemaOrReference{
+															Oneof: &openapi_options.SchemaOrReference_Schema{
+																Schema: &openapi_options.Schema{
+																	Type: "integer",
+																	Default: &openapi_options.DefaultType{
+																		Oneof: &openapi_options.DefaultType_Number{
+																			Number: 0,
+																		},
+																	},
+																	Pattern: "^[0-9]$",
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+										{
+											Name: "Number",
+											Value: &openapi_options.HeaderOrReference{
+												Oneof: &openapi_options.HeaderOrReference_Header{
+													Header: &openapi_options.Header{
+														Description:            "number header description",
+														Schema:                 &openapi_options.SchemaOrReference{
+															Oneof: &openapi_options.SchemaOrReference_Schema{
+																Schema: &openapi_options.Schema{
+																	Type: "number",
+																	Default: &openapi_options.DefaultType{
+																		Oneof: &openapi_options.DefaultType_Number{
+																			Number: 1.2,
+																		},
+																	},
+																	Pattern: "^[-+]?[0-9]*\\\\.?[0-9]+([eE][-+]?[0-9]+)?$",
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	verifyTemplateHeaders := func(t *testing.T, reg *descriptor.Registry, file *descriptor.File, opts *openapiconfig.OpenAPIOptions) {
+		if err := AddErrorDefs(reg); err != nil {
+			t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+			return
+		}
+		fileCL := crossLinkFixture(file)
+		err := reg.Load(reqFromFile(fileCL))
+		if err != nil {
+			t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
+			return
+		}
+		if opts != nil {
+			// TODO(anjmao): This one registers v2 options.
+			if err := reg.RegisterOpenAPIOptions(opts); err != nil {
+				t.Fatalf("failed to register OpenAPI annotations: %s", err)
+			}
+		}
+		result, err := applyTemplate(param{File: fileCL, reg: reg})
+		if err != nil {
+			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+			return
+		}
+		if want, is, name := "3.0", result.OpenAPI, "Openapi"; !reflect.DeepEqual(is, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+		}
+
+		expectedHeaders := Headers{
+			"String": &HeaderRef{
+				Value: &Header{
+					Description: "string header description",
+					Schema: &SchemaRef{
+						Value: &Schema{
+							Type: "string",
+							Format: "uuid",
+							Pattern: "",
+						},
+					},
+				},
+			},
+			"Boolean": &HeaderRef{
+				Value: &Header{
+					Description: "boolean header description",
+					Schema: &SchemaRef{
+						Value: &Schema{
+							Type: "boolean",
+							Default: true,
+							Pattern: "^true|false$",
+						},
+					},
+				},
+			},
+			"Integer": &HeaderRef{
+				Value: &Header{
+					Description: "integer header description",
+					Schema: &SchemaRef{
+						Value: &Schema{
+							Type: "integer",
+							Default: float64(0),
+							Pattern: "^[0-9]$",
+						},
+					},
+				},
+			},
+			"Number": &HeaderRef{
+				Value: &Header{
+					Description: "number header description",
+					Schema: &SchemaRef{
+						Value: &Schema{
+							Type: "number",
+							Default: float64(1.2),
+							Pattern: `^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$`,
+						},
+					},
+				},
+			},
+		}
+
+		verifyHeader := func(a, b *Header) {
+			s1, s2 := a.Schema.Value, b.Schema.Value
+			it.Equal(s1.Type, s2.Type)
+			it.Equal(s1.Default, s2.Default)
+			it.Equal(s1.Pattern, s2.Pattern)
+			it.Equal(s1.Format, s2.Format)
+		}
+
+		actualHeaders := result.Paths["/v1/echo"].Get.Responses["200"].Value.Headers
+		verifyHeader(expectedHeaders["String"].Value, actualHeaders["String"].Value)
+		verifyHeader(expectedHeaders["Boolean"].Value, actualHeaders["Boolean"].Value)
+		verifyHeader(expectedHeaders["Integer"].Value, actualHeaders["Integer"].Value)
+		verifyHeader(expectedHeaders["Number"].Value, actualHeaders["Number"].Value)
+	}
+
+	t.Run("verify template options set via proto options", func(t *testing.T) {
+		file := newFile()
+		proto.SetExtension(proto.Message(file.Services[0].Methods[0].Options), openapi_options.E_Openapiv3Operation, &openapiOperation)
+		reg := descriptor.NewRegistry()
+		verifyTemplateHeaders(t, reg, file, nil)
+	})
+}
+
 //func TestValidateHeaderType(t *testing.T) {
 //	type test struct {
 //		Type          string

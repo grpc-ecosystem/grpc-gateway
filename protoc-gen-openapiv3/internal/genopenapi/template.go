@@ -128,11 +128,12 @@ func applyTemplate(p param) (*Openapi, error) {
 	// Loops through all the services and their exposed GET/POST/PUT/DELETE definitions
 	// and create entries for all of them.
 	// Also adds custom user specified references to second map.
-	services, err := renderServices(p.Services, s.Paths, p.reg, p.Messages)
+	services, err := renderServices(p.Services, p.reg, p.Messages)
 	if err != nil {
 		return nil, err
 	}
 	s.Tags = append(s.Tags, renderServiceTags(p.Services)...)
+	s.Paths = services.paths
 
 	messages := messageMap{}
 	streamingMessages := messageMap{}
@@ -694,8 +695,8 @@ func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, cu
 		panic(err)
 	}
 	if opts != nil {
-		protoSchema := openapiSchemaFromProtoSchema(opts, reg, customRefs, msg)
-
+		protoSchemaRef := openapiSchemaFromProtoSchema(opts, reg, customRefs, msg)
+		protoSchema := protoSchemaRef.Value
 		// Warning: Make sure not to overwrite any fields already set on the schema type.
 		schema.ExternalDocs = protoSchema.ExternalDocs
 		schema.ReadOnly = protoSchema.ReadOnly
@@ -1182,13 +1183,15 @@ func renderServiceTags(services []*descriptor.Service) []*Tag {
 
 type renderedServices struct {
 	requestResponseRefs, customRefs refMap
+	paths Paths
 }
 
 // TODO(anjamo): Rewrite this method to return and not mutate.
-func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor.Registry, msgs []*descriptor.Message) (*renderedServices, error) {
+func renderServices(services []*descriptor.Service, reg *descriptor.Registry, msgs []*descriptor.Message) (*renderedServices, error) {
 	// Correctness of svcIdx and methIdx depends on 'services' containing the services in the same order as the 'file.Service' array.
 	requestResponseRefs := make(refMap)
 	customRefs := make(refMap)
+	paths := make(Paths)
 	svcBaseIdx := 0
 	var lastFile *descriptor.File = nil
 	for svcIdx, svc := range services {
@@ -1476,6 +1479,7 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 						},
 					},
 				}
+
 				if !reg.GetDisableDefaultErrors() {
 					errDef, hasErrDef := fullyQualifiedNameToOpenAPIName(".google.rpc.Status", reg)
 					if hasErrDef {
@@ -1538,6 +1542,7 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 					if opts.OperationId != "" {
 						operationObject.OperationID = opts.OperationId
 					}
+
 					if opts.Security != nil {
 						newSecurity := SecurityRequirements{}
 						if operationObject.Security != nil {
@@ -1561,6 +1566,7 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 						}
 						operationObject.Security = &newSecurity
 					}
+
 					if opts.Responses != nil {
 						for _, respOrRef := range opts.Responses.ResponseOrReference {
 							if respOrRef.Value.GetResponse() == nil {
@@ -1573,19 +1579,44 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 							if resp.Description != "" {
 								respObj.Value.Description = &resp.Description
 							}
+							for _, header := range resp.Headers.AdditionalProperties {
+								headerVal := header.Value.GetHeader()
+								if headerVal == nil {
+									continue
+								}
+
+								headerSchema := headerVal.Schema.GetSchema()
+								if headerSchema == nil {
+									continue
+								}
+
+								respObj.Value.Headers[header.Name] = &HeaderRef{
+									Value: &Header{
+										Description:    headerVal.Description,
+										Deprecated:     headerVal.Deprecated,
+										Required:       headerVal.Required,
+										Schema:         openapiSchemaFromProtoSchema(headerVal.Schema.GetSchema(), reg, customRefs, nil),
+										//Schema: &SchemaRef{
+										//	Value: &Schema{
+										//		Type: headerSchema.Type,
+										//		Default: headerSchema.Default,
+										//		Pattern: headerSchema.Pattern,
+										//		Format: headerSchema.Format,
+										//	},
+										//},
+										Example:        headerVal.Example,
+										Examples:       nil,
+										Content:        nil,
+									},
+								}
+							}
+
 							// TODO(anjmao): Add response mapping.
 							//if resp.Schema != nil {
 							//	respObj.Schema = openapiSchemaFromProtoSchema(resp.Schema, reg, customRefs, meth)
 							//}
 							//if resp.Examples != nil {
 							//	respObj.Examples = openapiExamplesFromProtoExamples(resp.Examples)
-							//}
-							//if resp.Headers != nil {
-							//	hdrs, err := processHeaders(resp.Headers)
-							//	if err != nil {
-							//		return err
-							//	}
-							//	respObj.Headers = hdrs
 							//}
 							// TODO(anjmao): Handle extensions..
 							//if resp.Extensions != nil {
@@ -1632,6 +1663,7 @@ func renderServices(services []*descriptor.Service, paths Paths, reg *descriptor
 	return &renderedServices{
 		requestResponseRefs: requestResponseRefs,
 		customRefs:          customRefs,
+		paths: paths,
 	}, nil
 }
 
@@ -2235,9 +2267,6 @@ func getFileOpenAPIOption(reg *descriptor.Registry, file *descriptor.File) (*ope
 	if err != nil {
 		return nil, err
 	}
-	if opts != nil {
-		return opts, nil
-	}
 	// TODO(anjmao): Support from registry if yaml spec is passed.
 	//opts, ok := reg.GetOpenAPIFileOption(*file.Name)
 	//if !ok {
@@ -2318,7 +2347,6 @@ func updateswaggerObjectFromJSONSchema(s *Schema, j *openapi_options.Schema, reg
 	s.MaxLength = uint64ptr(uint64(j.MaxLength))
 	s.MinLength = uint64(j.MinLength)
 	s.Pattern = j.GetPattern()
-	s.Default = j.GetDefault()
 	s.MaxItems = uint64ptr(uint64(j.GetMaxItems()))
 	s.MinItems = uint64(j.GetMinItems())
 	s.UniqueItems = j.GetUniqueItems()
@@ -2333,6 +2361,19 @@ func updateswaggerObjectFromJSONSchema(s *Schema, j *openapi_options.Schema, reg
 	if j != nil && j.GetFormat() != "" {
 		s.Format = j.GetFormat()
 	}
+
+	if d := j.GetDefault(); d != nil {
+		if v, ok := d.Oneof.(*openapi_options.DefaultType_Number); ok {
+			s.Default = v.Number
+		}
+		if v, ok := d.Oneof.(*openapi_options.DefaultType_Boolean); ok {
+			s.Default = v.Boolean
+		}
+		if v, ok := d.Oneof.(*openapi_options.DefaultType_String_); ok {
+			s.Default = v.String_
+		}
+	}
+
 }
 
 func uint64ptr(i uint64) *uint64  {
@@ -2371,7 +2412,7 @@ func updateSwaggerObjectFromFieldBehavior(s *SchemaRef, j []annotations.FieldBeh
 	}
 }
 
-func openapiSchemaFromProtoSchema(s *openapi_options.Schema, reg *descriptor.Registry, refs refMap, data interface{}) Schema {
+func openapiSchemaFromProtoSchema(s *openapi_options.Schema, reg *descriptor.Registry, refs refMap, data interface{}) *SchemaRef {
 	ret := Schema{
 		ExternalDocs: protoExternalDocumentationToOpenAPIExternalDocumentation(s.GetExternalDocs(), reg, data),
 	}
@@ -2384,7 +2425,9 @@ func openapiSchemaFromProtoSchema(s *openapi_options.Schema, reg *descriptor.Reg
 		ret.Example = json.RawMessage(s.Example.Value.Value)
 	}
 
-	return ret
+	return &SchemaRef{
+		Value: &ret,
+	}
 }
 
 func openapiExamplesFromProtoExamples(in map[string]string) map[string]interface{} {
