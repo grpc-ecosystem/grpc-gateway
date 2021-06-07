@@ -3,6 +3,8 @@ load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 load("@io_bazel_rules_go//proto:compiler.bzl", "go_proto_compiler")
 load("@io_bazel_rules_go//proto/wkt:well_known_types.bzl", "PROTO_RUNTIME_DEPS", "WELL_KNOWN_TYPES_APIV2")
 
+exports_files(["LICENSE.txt"])
+
 buildifier(
     name = "buildifier",
 )
