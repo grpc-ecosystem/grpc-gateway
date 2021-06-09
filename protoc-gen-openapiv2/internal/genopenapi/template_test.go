@@ -495,7 +495,7 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 					Field: []*descriptorpb.FieldDescriptorProto{
 						{
 							Name: proto.String("field"),
-							//Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+							// Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
 							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
 							Number: proto.Int32(1),
 						},
@@ -3873,23 +3873,23 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 				"Message": {
 					schemaCore: schemaCore{
 						Type: "object",
+						Properties: &openapiSchemaObjectProperties{
+							{
+								Key: "aRequiredField",
+								Value: openapiSchemaObject{
+									schemaCore: schemaCore{
+										Type: "string",
+									},
+									Description: "field description",
+									Title:       "field title",
+									Required:    []string{"aRequiredField"},
+								},
+							},
+						},
 					},
 					Title:       "title",
 					Description: "desc",
 					Required:    []string{"req", "aRequiredField"},
-					Properties: &openapiSchemaObjectProperties{
-						{
-							Key: "aRequiredField",
-							Value: openapiSchemaObject{
-								schemaCore: schemaCore{
-									Type: "string",
-								},
-								Description: "field description",
-								Title:       "field title",
-								Required:    []string{"aRequiredField"},
-							},
-						},
-					},
 				},
 			},
 		},
@@ -3926,23 +3926,23 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 				"Message": {
 					schemaCore: schemaCore{
 						Type: "object",
+						Properties: &openapiSchemaObjectProperties{
+							{
+								Key: "aRequiredField",
+								Value: openapiSchemaObject{
+									schemaCore: schemaCore{
+										Type: "string",
+									},
+									Description: "field description",
+									Title:       "field title",
+									Required:    []string{"aRequiredField"},
+								},
+							},
+						},
 					},
 					Title:       "title",
 					Description: "desc",
 					Required:    []string{"req", "aRequiredField"},
-					Properties: &openapiSchemaObjectProperties{
-						{
-							Key: "aRequiredField",
-							Value: openapiSchemaObject{
-								schemaCore: schemaCore{
-									Type: "string",
-								},
-								Description: "field description",
-								Title:       "field title",
-								Required:    []string{"aRequiredField"},
-							},
-						},
-					},
 				},
 			},
 			excludedFields: []*descriptor.Field{
@@ -3987,30 +3987,30 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 				"Message": {
 					schemaCore: schemaCore{
 						Type: "object",
+						Properties: &openapiSchemaObjectProperties{
+							{
+								Key: "aRequiredField",
+								Value: openapiSchemaObject{
+									schemaCore: schemaCore{
+										Type: "string",
+									},
+									Required: []string{"aRequiredField"},
+								},
+							},
+							{
+								Key: "aOutputOnlyField",
+								Value: openapiSchemaObject{
+									schemaCore: schemaCore{
+										Type: "string",
+									},
+									ReadOnly: true,
+								},
+							},
+						},
 					},
 					Title:       "title",
 					Description: "desc",
 					Required:    []string{"req", "aRequiredField"},
-					Properties: &openapiSchemaObjectProperties{
-						{
-							Key: "aRequiredField",
-							Value: openapiSchemaObject{
-								schemaCore: schemaCore{
-									Type: "string",
-								},
-								Required: []string{"aRequiredField"},
-							},
-						},
-						{
-							Key: "aOutputOnlyField",
-							Value: openapiSchemaObject{
-								schemaCore: schemaCore{
-									Type: "string",
-								},
-								ReadOnly: true,
-							},
-						},
-					},
 				},
 			},
 		},

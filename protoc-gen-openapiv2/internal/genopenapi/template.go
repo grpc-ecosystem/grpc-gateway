@@ -92,6 +92,23 @@ var wktSchemas = map[string]schemaCore{
 	".google.protobuf.NullValue": {
 		Type: "string",
 	},
+	".google.protobuf.Any": {
+		Ref: "#/definitions/protobufAny",
+	},
+}
+
+var wktReferencedSchemas = map[string]schemaCore{
+	".google.protobuf.Any": {
+		Type: "object",
+		Properties: (*openapiSchemaObjectProperties)(&[]keyVal{
+			{
+				Key: "@type",
+				Value: &schemaCore{
+					Type: "string",
+				},
+			},
+		}),
+	},
 }
 
 func listEnumNames(enum *descriptor.Enum) (names []string) {
@@ -376,6 +393,15 @@ func skipRenderingRef(refName string) bool {
 }
 
 func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) openapiSchemaObject {
+	if _, ok := customRefs[msg.FQMN()]; ok {
+		// this msg is a custom ref, if it exists in wktReferencedSchemas then use this as the schema
+		if value, ok := wktReferencedSchemas[msg.FQMN()]; ok {
+			return openapiSchemaObject{
+				schemaCore: value,
+			}
+		}
+	}
+
 	schema := openapiSchemaObject{
 		schemaCore: schemaCore{
 			Type: "object",
@@ -526,6 +552,11 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 		if wktSchema, ok := wktSchemas[fd.GetTypeName()]; ok {
 			core = wktSchema
 
+			// if wfkSchema is a reference to another known type, add it to refs to be processed later
+			if core.Ref != "" {
+				refs[fd.GetTypeName()] = struct{}{}
+			}
+
 			if fd.GetTypeName() == ".google.protobuf.Empty" {
 				props = &openapiSchemaObjectProperties{}
 			}
@@ -564,13 +595,13 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 		ret = openapiSchemaObject{
 			schemaCore: schemaCore{
 				Type: "object",
+				Properties: props,
 			},
-			AdditionalProperties: &openapiSchemaObject{Properties: props, schemaCore: core},
+			AdditionalProperties: &openapiSchemaObject{schemaCore: core},
 		}
 	default:
 		ret = openapiSchemaObject{
 			schemaCore: core,
-			Properties: props,
 		}
 	}
 
