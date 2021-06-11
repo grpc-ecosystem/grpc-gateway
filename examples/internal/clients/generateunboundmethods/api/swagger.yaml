@@ -103,6 +103,7 @@ definitions:
     properties:
       '@type':
         type: "string"
+    additionalProperties: {}
   rpcStatus:
     type: "object"
     properties:

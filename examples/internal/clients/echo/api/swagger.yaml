@@ -572,6 +572,7 @@ definitions:
       \ custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\
       \n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n\
       \      \"value\": \"1.212s\"\n    }"
+    additionalProperties: {}
   protobufNullValue:
     type: "string"
     description: "`NullValue` is a singleton enumeration to represent the null value\

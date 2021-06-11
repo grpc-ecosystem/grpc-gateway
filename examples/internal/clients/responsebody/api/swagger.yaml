@@ -199,6 +199,7 @@ definitions:
       \      \"value\": \"1.212s\"\n    }"
     example:
       '@type': "@type"
+    additionalProperties: {}
   rpcStatus:
     type: "object"
     properties:

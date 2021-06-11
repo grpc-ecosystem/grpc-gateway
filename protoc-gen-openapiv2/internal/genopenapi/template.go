@@ -484,8 +484,9 @@ func transformAnyForJSON(schema *openapiSchemaObject, useJSONNames bool) {
 
 	for _, property := range *schema.Properties {
 		if property.Key == typeFieldName {
+			schema.AdditionalProperties = &openapiSchemaObject{}
 			schema.Properties = &openapiSchemaObjectProperties{keyVal{
-				Key: "@type",
+				Key:   "@type",
 				Value: property.Value,
 			}}
 			break
@@ -596,7 +597,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	case object:
 		ret = openapiSchemaObject{
 			schemaCore: schemaCore{
-				Type: "object",
+				Type:       "object",
 				Properties: props,
 			},
 			AdditionalProperties: &openapiSchemaObject{schemaCore: core},

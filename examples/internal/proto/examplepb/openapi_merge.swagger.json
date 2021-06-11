@@ -291,7 +291,8 @@
         "@type": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": {}
     },
     "rpcStatus": {
       "type": "object",
