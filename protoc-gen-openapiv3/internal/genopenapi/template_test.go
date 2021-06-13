@@ -1,11 +1,16 @@
 package genopenapi
 
 import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"math"
 	"reflect"
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
+	anypb "github.com/golang/protobuf/ptypes/any"
 	"github.com/stretchr/testify/require"
+	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/pluginpb"
@@ -967,11 +972,9 @@ func TestApplyTemplateSimple(t *testing.T) {
 	result, err := applyTemplate(param{File: fileCL, reg: reg})
 	it.NoError(err)
 
-	it.Equal("3.0", result.OpenAPI)
+	it.Equal("3.1", result.OpenAPI)
 
-	spew.Dump(result.Components)
-
-	it.Equal(&Info{
+	it.Equal(Info{
 		Title:          "example.proto",
 		Description:    "",
 		TermsOfService: "",
@@ -1074,7 +1077,7 @@ func TestApplyTemplateMultiService(t *testing.T) {
 		},
 	}
 	reg := descriptor.NewRegistry()
-	err := AddErrorDefs(reg);
+	err := AddErrorDefs(reg)
 	it.NoError(err)
 
 	fileCL := crossLinkFixture(&file)
@@ -1197,6 +1200,7 @@ func TestApplyTemplateOverrideOperationID(t *testing.T) {
 	//	verifyTemplateFromReq(t, reg, file, opts)
 	//})
 }
+
 //
 //func TestApplyTemplateExtensions(t *testing.T) {
 //	newFile := func() *descriptor.File {
@@ -1475,7 +1479,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 		Responses: &openapi_options.Responses{
 			ResponseOrReference: []*openapi_options.NamedResponseOrReference{
 				{
-					Name:  "200",
+					Name: "200",
 					Value: &openapi_options.ResponseOrReference{
 						Oneof: &openapi_options.ResponseOrReference_Response{
 							Response: &openapi_options.Response{
@@ -1486,11 +1490,11 @@ func TestApplyTemplateHeaders(t *testing.T) {
 											Value: &openapi_options.HeaderOrReference{
 												Oneof: &openapi_options.HeaderOrReference_Header{
 													Header: &openapi_options.Header{
-														Description:            "string header description",
-														Schema:                 &openapi_options.SchemaOrReference{
+														Description: "string header description",
+														Schema: &openapi_options.SchemaOrReference{
 															Oneof: &openapi_options.SchemaOrReference_Schema{
 																Schema: &openapi_options.Schema{
-																	Type: "string",
+																	Type:   "string",
 																	Format: "uuid",
 																},
 															},
@@ -1504,8 +1508,8 @@ func TestApplyTemplateHeaders(t *testing.T) {
 											Value: &openapi_options.HeaderOrReference{
 												Oneof: &openapi_options.HeaderOrReference_Header{
 													Header: &openapi_options.Header{
-														Description:            "boolean header description",
-														Schema:                 &openapi_options.SchemaOrReference{
+														Description: "boolean header description",
+														Schema: &openapi_options.SchemaOrReference{
 															Oneof: &openapi_options.SchemaOrReference_Schema{
 																Schema: &openapi_options.Schema{
 																	Type: "boolean",
@@ -1527,8 +1531,8 @@ func TestApplyTemplateHeaders(t *testing.T) {
 											Value: &openapi_options.HeaderOrReference{
 												Oneof: &openapi_options.HeaderOrReference_Header{
 													Header: &openapi_options.Header{
-														Description:            "integer header description",
-														Schema:                 &openapi_options.SchemaOrReference{
+														Description: "integer header description",
+														Schema: &openapi_options.SchemaOrReference{
 															Oneof: &openapi_options.SchemaOrReference_Schema{
 																Schema: &openapi_options.Schema{
 																	Type: "integer",
@@ -1550,8 +1554,8 @@ func TestApplyTemplateHeaders(t *testing.T) {
 											Value: &openapi_options.HeaderOrReference{
 												Oneof: &openapi_options.HeaderOrReference_Header{
 													Header: &openapi_options.Header{
-														Description:            "number header description",
-														Schema:                 &openapi_options.SchemaOrReference{
+														Description: "number header description",
+														Schema: &openapi_options.SchemaOrReference{
 															Oneof: &openapi_options.SchemaOrReference_Schema{
 																Schema: &openapi_options.Schema{
 																	Type: "number",
@@ -1600,7 +1604,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 			return
 		}
-		if want, is, name := "3.0", result.OpenAPI, "Openapi"; !reflect.DeepEqual(is, want) {
+		if want, is, name := "3.1", result.OpenAPI, "Openapi"; !reflect.DeepEqual(is, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 		}
 
@@ -1610,8 +1614,8 @@ func TestApplyTemplateHeaders(t *testing.T) {
 					Description: "string header description",
 					Schema: &SchemaRef{
 						Value: &Schema{
-							Type: "string",
-							Format: "uuid",
+							Type:    "string",
+							Format:  "uuid",
 							Pattern: "",
 						},
 					},
@@ -1622,7 +1626,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 					Description: "boolean header description",
 					Schema: &SchemaRef{
 						Value: &Schema{
-							Type: "boolean",
+							Type:    "boolean",
 							Default: true,
 							Pattern: "^true|false$",
 						},
@@ -1634,7 +1638,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 					Description: "integer header description",
 					Schema: &SchemaRef{
 						Value: &Schema{
-							Type: "integer",
+							Type:    "integer",
 							Default: float64(0),
 							Pattern: "^[0-9]$",
 						},
@@ -1646,7 +1650,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 					Description: "number header description",
 					Schema: &SchemaRef{
 						Value: &Schema{
-							Type: "number",
+							Type:    "number",
 							Default: float64(1.2),
 							Pattern: `^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$`,
 						},
@@ -1678,408 +1682,408 @@ func TestApplyTemplateHeaders(t *testing.T) {
 	})
 }
 
-//func TestValidateHeaderType(t *testing.T) {
-//	type test struct {
-//		Type          string
-//		Format        string
-//		expectedError error
-//	}
-//	tests := []test{
-//		{
-//			"string",
-//			"date-time",
-//			nil,
-//		},
-//		{
-//			"boolean",
-//			"",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"uint",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"uint8",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"uint16",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"uint32",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"uint64",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"int",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"int8",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"int16",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"int32",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"int64",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"float64",
-//			errors.New("the provided format \"float64\" is not a valid extension of the type \"integer\""),
-//		},
-//		{
-//			"integer",
-//			"uuid",
-//			errors.New("the provided format \"uuid\" is not a valid extension of the type \"integer\""),
-//		},
-//		{
-//			"number",
-//			"uint",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"uint8",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"uint16",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"uint32",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"uint64",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"int",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"int8",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"int16",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"int32",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"int64",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"float",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"float32",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"float64",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"complex64",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"complex128",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"double",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"byte",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"rune",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"uintptr",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"date",
-//			errors.New("the provided format \"date\" is not a valid extension of the type \"number\""),
-//		},
-//		{
-//			"array",
-//			"",
-//			errors.New("the provided header type \"array\" is not supported"),
-//		},
-//		{
-//			"foo",
-//			"",
-//			errors.New("the provided header type \"foo\" is not supported"),
-//		},
-//	}
-//	for _, v := range tests {
-//		err := validateHeaderTypeAndFormat(v.Type, v.Format)
-//
-//		if v.expectedError == nil {
-//			if err != nil {
-//				t.Errorf("unexpected error %v", err)
-//			}
-//		} else {
-//			if err == nil {
-//				t.Fatal("expected header error not returned")
-//			}
-//			if err.Error() != v.expectedError.Error() {
-//				t.Errorf("expected error malformed, expected %q, got %q", v.expectedError.Error(), err.Error())
-//			}
-//		}
-//	}
-//
-//}
-//
-//func TestValidateDefaultValueType(t *testing.T) {
-//	type test struct {
-//		Type          string
-//		Value         string
-//		Format        string
-//		expectedError error
-//	}
-//	tests := []test{
-//		{
-//			"string",
-//			`"string"`,
-//			"",
-//			nil,
-//		},
-//		{
-//			"string",
-//			"\"2012-11-01T22:08:41+00:00\"",
-//			"date-time",
-//			nil,
-//		},
-//		{
-//			"string",
-//			"\"2012-11-01\"",
-//			"date",
-//			nil,
-//		},
-//		{
-//			"string",
-//			"0",
-//			"",
-//			errors.New("the provided default value \"0\" does not match provider type \"string\", or is not properly quoted with escaped quotations"),
-//		},
-//		{
-//			"string",
-//			"false",
-//			"",
-//			errors.New("the provided default value \"false\" does not match provider type \"string\", or is not properly quoted with escaped quotations"),
-//		},
-//		{
-//			"boolean",
-//			"true",
-//			"",
-//			nil,
-//		},
-//		{
-//			"boolean",
-//			"0",
-//			"",
-//			errors.New("the provided default value \"0\" does not match provider type \"boolean\""),
-//		},
-//		{
-//			"boolean",
-//			`"string"`,
-//			"",
-//			errors.New("the provided default value \"\\\"string\\\"\" does not match provider type \"boolean\""),
-//		},
-//		{
-//			"number",
-//			"1.2",
-//			"",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"123",
-//			"",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"nan",
-//			"",
-//			errors.New("the provided number \"nan\" is not a valid JSON number"),
-//		},
-//		{
-//			"number",
-//			"NaN",
-//			"",
-//			errors.New("the provided number \"NaN\" is not a valid JSON number"),
-//		},
-//		{
-//			"number",
-//			"-459.67",
-//			"",
-//			nil,
-//		},
-//		{
-//			"number",
-//			"inf",
-//			"",
-//			errors.New("the provided number \"inf\" is not a valid JSON number"),
-//		},
-//		{
-//			"number",
-//			"infinity",
-//			"",
-//			errors.New("the provided number \"infinity\" is not a valid JSON number"),
-//		},
-//		{
-//			"number",
-//			"Inf",
-//			"",
-//			errors.New("the provided number \"Inf\" is not a valid JSON number"),
-//		},
-//		{
-//			"number",
-//			"Infinity",
-//			"",
-//			errors.New("the provided number \"Infinity\" is not a valid JSON number"),
-//		},
-//		{
-//			"number",
-//			"false",
-//			"",
-//			errors.New("the provided default value \"false\" does not match provider type \"number\""),
-//		},
-//		{
-//			"number",
-//			`"string"`,
-//			"",
-//			errors.New("the provided default value \"\\\"string\\\"\" does not match provider type \"number\""),
-//		},
-//		{
-//			"integer",
-//			"2",
-//			"",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			fmt.Sprint(math.MaxInt32),
-//			"int32",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			fmt.Sprint(math.MaxInt32 + 1),
-//			"int32",
-//			errors.New("the provided default value \"2147483648\" does not match provided format \"int32\""),
-//		},
-//		{
-//			"integer",
-//			fmt.Sprint(math.MaxInt64),
-//			"int64",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"9223372036854775808",
-//			"int64",
-//			errors.New("the provided default value \"9223372036854775808\" does not match provided format \"int64\""),
-//		},
-//		{
-//			"integer",
-//			"18446744073709551615",
-//			"uint64",
-//			nil,
-//		},
-//		{
-//			"integer",
-//			"false",
-//			"",
-//			errors.New("the provided default value \"false\" does not match provided type \"integer\""),
-//		},
-//		{
-//			"integer",
-//			"1.2",
-//			"",
-//			errors.New("the provided default value \"1.2\" does not match provided type \"integer\""),
-//		},
-//		{
-//			"integer",
-//			`"string"`,
-//			"",
-//			errors.New("the provided default value \"\\\"string\\\"\" does not match provided type \"integer\""),
-//		},
-//	}
-//	for _, v := range tests {
-//		err := validateDefaultValueTypeAndFormat(v.Type, v.Value, v.Format)
-//
-//		if v.expectedError == nil {
-//			if err != nil {
-//				t.Errorf("unexpected error '%v'", err)
-//			}
-//		} else {
-//			if err == nil {
-//				t.Error("expected update error not returned")
-//			}
-//			if err.Error() != v.expectedError.Error() {
-//				t.Errorf("expected error malformed, expected %q, got %q", v.expectedError.Error(), err.Error())
-//			}
-//		}
-//	}
-//
-//}
+func TestValidateHeaderType(t *testing.T) {
+	type test struct {
+		Type          string
+		Format        string
+		expectedError error
+	}
+	tests := []test{
+		{
+			"string",
+			"date-time",
+			nil,
+		},
+		{
+			"boolean",
+			"",
+			nil,
+		},
+		{
+			"integer",
+			"uint",
+			nil,
+		},
+		{
+			"integer",
+			"uint8",
+			nil,
+		},
+		{
+			"integer",
+			"uint16",
+			nil,
+		},
+		{
+			"integer",
+			"uint32",
+			nil,
+		},
+		{
+			"integer",
+			"uint64",
+			nil,
+		},
+		{
+			"integer",
+			"int",
+			nil,
+		},
+		{
+			"integer",
+			"int8",
+			nil,
+		},
+		{
+			"integer",
+			"int16",
+			nil,
+		},
+		{
+			"integer",
+			"int32",
+			nil,
+		},
+		{
+			"integer",
+			"int64",
+			nil,
+		},
+		{
+			"integer",
+			"float64",
+			errors.New("the provided format \"float64\" is not a valid extension of the type \"integer\""),
+		},
+		{
+			"integer",
+			"uuid",
+			errors.New("the provided format \"uuid\" is not a valid extension of the type \"integer\""),
+		},
+		{
+			"number",
+			"uint",
+			nil,
+		},
+		{
+			"number",
+			"uint8",
+			nil,
+		},
+		{
+			"number",
+			"uint16",
+			nil,
+		},
+		{
+			"number",
+			"uint32",
+			nil,
+		},
+		{
+			"number",
+			"uint64",
+			nil,
+		},
+		{
+			"number",
+			"int",
+			nil,
+		},
+		{
+			"number",
+			"int8",
+			nil,
+		},
+		{
+			"number",
+			"int16",
+			nil,
+		},
+		{
+			"number",
+			"int32",
+			nil,
+		},
+		{
+			"number",
+			"int64",
+			nil,
+		},
+		{
+			"number",
+			"float",
+			nil,
+		},
+		{
+			"number",
+			"float32",
+			nil,
+		},
+		{
+			"number",
+			"float64",
+			nil,
+		},
+		{
+			"number",
+			"complex64",
+			nil,
+		},
+		{
+			"number",
+			"complex128",
+			nil,
+		},
+		{
+			"number",
+			"double",
+			nil,
+		},
+		{
+			"number",
+			"byte",
+			nil,
+		},
+		{
+			"number",
+			"rune",
+			nil,
+		},
+		{
+			"number",
+			"uintptr",
+			nil,
+		},
+		{
+			"number",
+			"date",
+			errors.New("the provided format \"date\" is not a valid extension of the type \"number\""),
+		},
+		{
+			"array",
+			"",
+			errors.New("the provided header type \"array\" is not supported"),
+		},
+		{
+			"foo",
+			"",
+			errors.New("the provided header type \"foo\" is not supported"),
+		},
+	}
+	for _, v := range tests {
+		err := validateHeaderTypeAndFormat(v.Type, v.Format)
+
+		if v.expectedError == nil {
+			if err != nil {
+				t.Errorf("unexpected error %v", err)
+			}
+		} else {
+			if err == nil {
+				t.Fatal("expected header error not returned")
+			}
+			if err.Error() != v.expectedError.Error() {
+				t.Errorf("expected error malformed, expected %q, got %q", v.expectedError.Error(), err.Error())
+			}
+		}
+	}
+
+}
+
+func TestValidateDefaultValueType(t *testing.T) {
+	type test struct {
+		Type          string
+		Value         string
+		Format        string
+		expectedError error
+	}
+	tests := []test{
+		{
+			"string",
+			`"string"`,
+			"",
+			nil,
+		},
+		{
+			"string",
+			"\"2012-11-01T22:08:41+00:00\"",
+			"date-time",
+			nil,
+		},
+		{
+			"string",
+			"\"2012-11-01\"",
+			"date",
+			nil,
+		},
+		{
+			"string",
+			"0",
+			"",
+			errors.New("the provided default value \"0\" does not match provider type \"string\", or is not properly quoted with escaped quotations"),
+		},
+		{
+			"string",
+			"false",
+			"",
+			errors.New("the provided default value \"false\" does not match provider type \"string\", or is not properly quoted with escaped quotations"),
+		},
+		{
+			"boolean",
+			"true",
+			"",
+			nil,
+		},
+		{
+			"boolean",
+			"0",
+			"",
+			errors.New("the provided default value \"0\" does not match provider type \"boolean\""),
+		},
+		{
+			"boolean",
+			`"string"`,
+			"",
+			errors.New("the provided default value \"\\\"string\\\"\" does not match provider type \"boolean\""),
+		},
+		{
+			"number",
+			"1.2",
+			"",
+			nil,
+		},
+		{
+			"number",
+			"123",
+			"",
+			nil,
+		},
+		{
+			"number",
+			"nan",
+			"",
+			errors.New("the provided number \"nan\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"NaN",
+			"",
+			errors.New("the provided number \"NaN\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"-459.67",
+			"",
+			nil,
+		},
+		{
+			"number",
+			"inf",
+			"",
+			errors.New("the provided number \"inf\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"infinity",
+			"",
+			errors.New("the provided number \"infinity\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"Inf",
+			"",
+			errors.New("the provided number \"Inf\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"Infinity",
+			"",
+			errors.New("the provided number \"Infinity\" is not a valid JSON number"),
+		},
+		{
+			"number",
+			"false",
+			"",
+			errors.New("the provided default value \"false\" does not match provider type \"number\""),
+		},
+		{
+			"number",
+			`"string"`,
+			"",
+			errors.New("the provided default value \"\\\"string\\\"\" does not match provider type \"number\""),
+		},
+		{
+			"integer",
+			"2",
+			"",
+			nil,
+		},
+		{
+			"integer",
+			fmt.Sprint(math.MaxInt32),
+			"int32",
+			nil,
+		},
+		{
+			"integer",
+			fmt.Sprint(math.MaxInt32 + 1),
+			"int32",
+			errors.New("the provided default value \"2147483648\" does not match provided format \"int32\""),
+		},
+		{
+			"integer",
+			fmt.Sprint(math.MaxInt64),
+			"int64",
+			nil,
+		},
+		{
+			"integer",
+			"9223372036854775808",
+			"int64",
+			errors.New("the provided default value \"9223372036854775808\" does not match provided format \"int64\""),
+		},
+		{
+			"integer",
+			"18446744073709551615",
+			"uint64",
+			nil,
+		},
+		{
+			"integer",
+			"false",
+			"",
+			errors.New("the provided default value \"false\" does not match provided type \"integer\""),
+		},
+		{
+			"integer",
+			"1.2",
+			"",
+			errors.New("the provided default value \"1.2\" does not match provided type \"integer\""),
+		},
+		{
+			"integer",
+			`"string"`,
+			"",
+			errors.New("the provided default value \"\\\"string\\\"\" does not match provided type \"integer\""),
+		},
+	}
+	for _, v := range tests {
+		err := validateDefaultValueTypeAndFormat(v.Type, v.Value, v.Format)
+
+		if v.expectedError == nil {
+			if err != nil {
+				t.Errorf("unexpected error '%v'", err)
+			}
+		} else {
+			if err == nil {
+				t.Error("expected update error not returned")
+			}
+			if err.Error() != v.expectedError.Error() {
+				t.Errorf("expected error malformed, expected %q, got %q", v.expectedError.Error(), err.Error())
+			}
+		}
+	}
+}
+
 //
 //func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 //	msgdesc := &descriptorpb.DescriptorProto{
@@ -3698,446 +3702,522 @@ func TestApplyTemplateHeaders(t *testing.T) {
 //	}
 //}
 //
-//func TestRenderMessagesAsDefinition(t *testing.T) {
-//	jsonSchema := &openapi_options.JSONSchema{
-//		Title:       "field title",
-//		Description: "field description",
-//		Required:    []string{"aRequiredField"},
-//	}
-//
-//	var requiredField = new(descriptorpb.FieldOptions)
-//	proto.SetExtension(requiredField, openapi_options.E_Openapiv2Field, jsonSchema)
-//
-//	var fieldBehaviorRequired = []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
-//	var requiredFieldOptions = new(descriptorpb.FieldOptions)
-//	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, fieldBehaviorRequired)
-//
-//	var fieldBehaviorOutputOnlyField = []annotations.FieldBehavior{annotations.FieldBehavior_OUTPUT_ONLY}
-//	var fieldBehaviorOutputOnlyOptions = new(descriptorpb.FieldOptions)
-//	proto.SetExtension(fieldBehaviorOutputOnlyOptions, annotations.E_FieldBehavior, fieldBehaviorOutputOnlyField)
-//
-//	tests := []struct {
-//		descr          string
-//		msgDescs       []*descriptorpb.DescriptorProto
-//		schema         map[string]openapi_options.Schema // per-message schema to add
-//		defs           openapiDefinitionsObject
-//		openAPIOptions *openapiconfig.OpenAPIOptions
-//		excludedFields []*descriptor.Field
-//	}{
-//		{
-//			descr: "no OpenAPI options",
-//			msgDescs: []*descriptorpb.DescriptorProto{
-//				{Name: proto.String("Message")},
-//			},
-//			schema: map[string]openapi_options.Schema{},
-//			defs: map[string]openapiSchemaObject{
-//				"Message": {schemaCore: schemaCore{Type: "object"}},
-//			},
-//		},
-//		{
-//			descr: "example option",
-//			msgDescs: []*descriptorpb.DescriptorProto{
-//				{Name: proto.String("Message")},
-//			},
-//			schema: map[string]openapi_options.Schema{
-//				"Message": {
-//					Example: `{"foo":"bar"}`,
-//				},
-//			},
-//			defs: map[string]openapiSchemaObject{
-//				"Message": {schemaCore: schemaCore{
-//					Type:    "object",
-//					Example: json.RawMessage(`{"foo":"bar"}`),
-//				}},
-//			},
-//		},
-//		{
-//			descr: "example option with something non-json",
-//			msgDescs: []*descriptorpb.DescriptorProto{
-//				{Name: proto.String("Message")},
-//			},
-//			schema: map[string]openapi_options.Schema{
-//				"Message": {
-//					Example: `XXXX anything goes XXXX`,
-//				},
-//			},
-//			defs: map[string]openapiSchemaObject{
-//				"Message": {schemaCore: schemaCore{
-//					Type:    "object",
-//					Example: json.RawMessage(`XXXX anything goes XXXX`),
-//				}},
-//			},
-//		},
-//		{
-//			descr: "external docs option",
-//			msgDescs: []*descriptorpb.DescriptorProto{
-//				{Name: proto.String("Message")},
-//			},
-//			schema: map[string]openapi_options.Schema{
-//				"Message": {
-//					ExternalDocs: &openapi_options.ExternalDocumentation{
-//						Description: "glorious docs",
-//						Url:         "https://nada",
-//					},
-//				},
-//			},
-//			defs: map[string]openapiSchemaObject{
-//				"Message": {
-//					schemaCore: schemaCore{
-//						Type: "object",
-//					},
-//					ExternalDocs: &openapiExternalDocumentationObject{
-//						Description: "glorious docs",
-//						URL:         "https://nada",
-//					},
-//				},
-//			},
-//		},
-//		{
-//			descr: "JSONSchema options",
-//			msgDescs: []*descriptorpb.DescriptorProto{
-//				{Name: proto.String("Message")},
-//			},
-//			schema: map[string]openapi_options.Schema{
-//				"Message": {
-//					JsonSchema: &openapi_options.JSONSchema{
-//						Title:            "title",
-//						Description:      "desc",
-//						MultipleOf:       100,
-//						Maximum:          101,
-//						ExclusiveMaximum: true,
-//						Minimum:          1,
-//						ExclusiveMinimum: true,
-//						MaxLength:        10,
-//						MinLength:        3,
-//						Pattern:          "[a-z]+",
-//						MaxItems:         20,
-//						MinItems:         2,
-//						UniqueItems:      true,
-//						MaxProperties:    33,
-//						MinProperties:    22,
-//						Required:         []string{"req"},
-//						ReadOnly:         true,
-//					},
-//				},
-//			},
-//			defs: map[string]openapiSchemaObject{
-//				"Message": {
-//					schemaCore: schemaCore{
-//						Type: "object",
-//					},
-//					Title:            "title",
-//					Description:      "desc",
-//					MultipleOf:       100,
-//					Maximum:          101,
-//					ExclusiveMaximum: true,
-//					Minimum:          1,
-//					ExclusiveMinimum: true,
-//					MaxLength:        10,
-//					MinLength:        3,
-//					Pattern:          "[a-z]+",
-//					MaxItems:         20,
-//					MinItems:         2,
-//					UniqueItems:      true,
-//					MaxProperties:    33,
-//					MinProperties:    22,
-//					Required:         []string{"req"},
-//					ReadOnly:         true,
-//				},
-//			},
-//		},
-//		{
-//			descr: "JSONSchema options from registry",
-//			msgDescs: []*descriptorpb.DescriptorProto{
-//				{Name: proto.String("Message")},
-//			},
-//			openAPIOptions: &openapiconfig.OpenAPIOptions{
-//				Message: []*openapiconfig.OpenAPIMessageOption{
-//					{
-//						Message: "example.Message",
-//						Option: &openapi_options.Schema{
-//							JsonSchema: &openapi_options.JSONSchema{
-//								Title:            "title",
-//								Description:      "desc",
-//								MultipleOf:       100,
-//								Maximum:          101,
-//								ExclusiveMaximum: true,
-//								Minimum:          1,
-//								ExclusiveMinimum: true,
-//								MaxLength:        10,
-//								MinLength:        3,
-//								Pattern:          "[a-z]+",
-//								MaxItems:         20,
-//								MinItems:         2,
-//								UniqueItems:      true,
-//								MaxProperties:    33,
-//								MinProperties:    22,
-//								Required:         []string{"req"},
-//								ReadOnly:         true,
-//							},
-//						},
-//					},
-//				},
-//			},
-//			defs: map[string]openapiSchemaObject{
-//				"Message": {
-//					schemaCore: schemaCore{
-//						Type: "object",
-//					},
-//					Title:            "title",
-//					Description:      "desc",
-//					MultipleOf:       100,
-//					Maximum:          101,
-//					ExclusiveMaximum: true,
-//					Minimum:          1,
-//					ExclusiveMinimum: true,
-//					MaxLength:        10,
-//					MinLength:        3,
-//					Pattern:          "[a-z]+",
-//					MaxItems:         20,
-//					MinItems:         2,
-//					UniqueItems:      true,
-//					MaxProperties:    33,
-//					MinProperties:    22,
-//					Required:         []string{"req"},
-//					ReadOnly:         true,
-//				},
-//			},
-//		},
-//		{
-//			descr: "JSONSchema with required properties",
-//			msgDescs: []*descriptorpb.DescriptorProto{
-//				{
-//					Name: proto.String("Message"),
-//					Field: []*descriptorpb.FieldDescriptorProto{
-//						{
-//							Name:    proto.String("aRequiredField"),
-//							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-//							Number:  proto.Int32(1),
-//							Options: requiredField,
-//						},
-//					},
-//				},
-//			},
-//			schema: map[string]openapi_options.Schema{
-//				"Message": {
-//					JsonSchema: &openapi_options.JSONSchema{
-//						Title:       "title",
-//						Description: "desc",
-//						Required:    []string{"req"},
-//					},
-//				},
-//			},
-//			defs: map[string]openapiSchemaObject{
-//				"Message": {
-//					schemaCore: schemaCore{
-//						Type: "object",
-//					},
-//					Title:       "title",
-//					Description: "desc",
-//					Required:    []string{"req", "aRequiredField"},
-//					Properties: &openapiSchemaObjectProperties{
-//						{
-//							Key: "aRequiredField",
-//							Value: openapiSchemaObject{
-//								schemaCore: schemaCore{
-//									Type: "string",
-//								},
-//								Description: "field description",
-//								Title:       "field title",
-//								Required:    []string{"aRequiredField"},
-//							},
-//						},
-//					},
-//				},
-//			},
-//		},
-//		{
-//			descr: "JSONSchema with excluded fields",
-//			msgDescs: []*descriptorpb.DescriptorProto{
-//				{
-//					Name: proto.String("Message"),
-//					Field: []*descriptorpb.FieldDescriptorProto{
-//						{
-//							Name:    proto.String("aRequiredField"),
-//							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-//							Number:  proto.Int32(1),
-//							Options: requiredField,
-//						},
-//						{
-//							Name:   proto.String("anExcludedField"),
-//							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-//							Number: proto.Int32(2),
-//						},
-//					},
-//				},
-//			},
-//			schema: map[string]openapi_options.Schema{
-//				"Message": {
-//					JsonSchema: &openapi_options.JSONSchema{
-//						Title:       "title",
-//						Description: "desc",
-//						Required:    []string{"req"},
-//					},
-//				},
-//			},
-//			defs: map[string]openapiSchemaObject{
-//				"Message": {
-//					schemaCore: schemaCore{
-//						Type: "object",
-//					},
-//					Title:       "title",
-//					Description: "desc",
-//					Required:    []string{"req", "aRequiredField"},
-//					Properties: &openapiSchemaObjectProperties{
-//						{
-//							Key: "aRequiredField",
-//							Value: openapiSchemaObject{
-//								schemaCore: schemaCore{
-//									Type: "string",
-//								},
-//								Description: "field description",
-//								Title:       "field title",
-//								Required:    []string{"aRequiredField"},
-//							},
-//						},
-//					},
-//				},
-//			},
-//			excludedFields: []*descriptor.Field{
-//				{
-//					FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-//						Name: strPtr("anExcludedField"),
-//					},
-//				},
-//			},
-//		},
-//		{
-//			descr: "JSONSchema with required properties via field_behavior",
-//			msgDescs: []*descriptorpb.DescriptorProto{
-//				{
-//					Name: proto.String("Message"),
-//					Field: []*descriptorpb.FieldDescriptorProto{
-//						{
-//							Name:    proto.String("aRequiredField"),
-//							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-//							Number:  proto.Int32(1),
-//							Options: requiredFieldOptions,
-//						},
-//						{
-//							Name:    proto.String("aOutputOnlyField"),
-//							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-//							Number:  proto.Int32(2),
-//							Options: fieldBehaviorOutputOnlyOptions,
-//						},
-//					},
-//				},
-//			},
-//			schema: map[string]openapi_options.Schema{
-//				"Message": {
-//					JsonSchema: &openapi_options.JSONSchema{
-//						Title:       "title",
-//						Description: "desc",
-//						Required:    []string{"req"},
-//					},
-//				},
-//			},
-//			defs: map[string]openapiSchemaObject{
-//				"Message": {
-//					schemaCore: schemaCore{
-//						Type: "object",
-//					},
-//					Title:       "title",
-//					Description: "desc",
-//					Required:    []string{"req", "aRequiredField"},
-//					Properties: &openapiSchemaObjectProperties{
-//						{
-//							Key: "aRequiredField",
-//							Value: openapiSchemaObject{
-//								schemaCore: schemaCore{
-//									Type: "string",
-//								},
-//								Required: []string{"aRequiredField"},
-//							},
-//						},
-//						{
-//							Key: "aOutputOnlyField",
-//							Value: openapiSchemaObject{
-//								schemaCore: schemaCore{
-//									Type: "string",
-//								},
-//								ReadOnly: true,
-//							},
-//						},
-//					},
-//				},
-//			},
-//		},
-//	}
-//
-//	for _, test := range tests {
-//		t.Run(test.descr, func(t *testing.T) {
-//
-//			msgs := []*descriptor.Message{}
-//			for _, msgdesc := range test.msgDescs {
-//				msgdesc.Options = &descriptorpb.MessageOptions{}
-//				msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
-//			}
-//
-//			reg := descriptor.NewRegistry()
-//			file := descriptor.File{
-//				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
-//					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
-//					Name:           proto.String("example.proto"),
-//					Package:        proto.String("example"),
-//					Dependency:     []string{},
-//					MessageType:    test.msgDescs,
-//					EnumType:       []*descriptorpb.EnumDescriptorProto{},
-//					Service:        []*descriptorpb.ServiceDescriptorProto{},
-//					Options: &descriptorpb.FileOptions{
-//						GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
-//					},
-//				},
-//				Messages: msgs,
-//			}
-//			err := reg.Load(&pluginpb.CodeGeneratorRequest{
-//				ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
-//			})
-//			if err != nil {
-//				t.Fatalf("failed to load code generator request: %v", err)
-//			}
-//
-//			msgMap := map[string]*descriptor.Message{}
-//			for _, d := range test.msgDescs {
-//				name := d.GetName()
-//				msg, err := reg.LookupMsg("example", name)
-//				if err != nil {
-//					t.Fatalf("lookup message %v: %v", name, err)
-//				}
-//				msgMap[msg.FQMN()] = msg
-//
-//				if schema, ok := test.schema[name]; ok {
-//					proto.SetExtension(d.Options, openapi_options.E_Openapiv2Schema, &schema)
-//				}
-//			}
-//
-//			if test.openAPIOptions != nil {
-//				if err := reg.RegisterOpenAPIOptions(test.openAPIOptions); err != nil {
-//					t.Fatalf("failed to register OpenAPI options: %s", err)
-//				}
-//			}
-//
-//			refs := make(refMap)
-//			actual := make(openapiDefinitionsObject)
-//			renderMessagesToComponentsSchemas(msgMap, actual, reg, refs, test.excludedFields)
-//
-//			if !reflect.DeepEqual(actual, test.defs) {
-//				t.Errorf("Expected renderMessagesToComponentsSchemas() to add defs %+v, not %+v", test.defs, actual)
-//			}
-//		})
-//	}
-//}
-//
+
+func TestRenderMessagesAsComponentSchemas(t *testing.T) {
+	it := require.New(t)
+	requiredFieldSchema := &openapi_options.Schema{
+		Title:       "field title",
+		Description: "field description",
+		Required:    []string{"aRequiredField"},
+	}
+	var requiredField = new(descriptorpb.FieldOptions)
+	proto.SetExtension(requiredField, openapi_options.E_Openapiv3Field, requiredFieldSchema)
+
+	var fieldBehaviorRequired = []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
+	var requiredFieldOptions = new(descriptorpb.FieldOptions)
+	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, fieldBehaviorRequired)
+
+	var fieldBehaviorOutputOnlyField = []annotations.FieldBehavior{annotations.FieldBehavior_OUTPUT_ONLY}
+	var fieldBehaviorOutputOnlyOptions = new(descriptorpb.FieldOptions)
+	proto.SetExtension(fieldBehaviorOutputOnlyOptions, annotations.E_FieldBehavior, fieldBehaviorOutputOnlyField)
+
+	tests := []struct {
+		descr           string
+		msgDescs        []*descriptorpb.DescriptorProto
+		schema          map[string]openapi_options.Schema // per-message schema to add
+		expectedSchemas Schemas
+		openAPIOptions  *openapiconfig.OpenAPIOptions
+		excludedFields  []*descriptor.Field
+	}{
+		{
+			descr: "no OpenAPI options",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{Name: proto.String("Message")},
+			},
+			schema: map[string]openapi_options.Schema{},
+			expectedSchemas: map[string]*SchemaRef{
+				"Message": {
+					Value: &Schema{
+						Type: "object",
+					},
+				},
+			},
+		},
+		{
+			descr: "example option",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{Name: proto.String("Message")},
+			},
+			schema: map[string]openapi_options.Schema{
+				"Message": {
+					Example: &openapi_options.Any{
+						Value: &anypb.Any{
+							Value: []byte(`{"foo":"bar"}`),
+						},
+					},
+				},
+			},
+			expectedSchemas: map[string]*SchemaRef{
+				"Message": {
+					Value: &Schema{
+						Type:    "object",
+						Example: json.RawMessage(`{"foo":"bar"}`),
+					},
+				},
+			},
+		},
+		{
+			descr: "example option with something non-json",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{Name: proto.String("Message")},
+			},
+			schema: map[string]openapi_options.Schema{
+				"Message": {
+					Example: &openapi_options.Any{
+						Value: &anypb.Any{
+							Value: []byte(`XXXX anything goes XXXX`),
+						},
+					},
+				},
+			},
+			expectedSchemas: map[string]*SchemaRef{
+				"Message": {
+					Value: &Schema{
+						Type:    "object",
+						Example: json.RawMessage((`XXXX anything goes XXXX`)),
+					},
+				},
+			},
+		},
+		{
+			descr: "external docs option",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{Name: proto.String("Message")},
+			},
+			schema: map[string]openapi_options.Schema{
+				"Message": {
+					ExternalDocs: &openapi_options.ExternalDocs{
+						Description: "glorious docs",
+						Url:         "https://nada",
+					},
+				},
+			},
+			expectedSchemas: map[string]*SchemaRef{
+				"Message": {
+					Value: &Schema{
+						Type: "object",
+						ExternalDocs: &ExternalDocs{
+							Description: "glorious docs",
+							URL:         "https://nada",
+						},
+					},
+				},
+			},
+		},
+		{
+			descr: "JSONSchema options",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{Name: proto.String("Message")},
+			},
+			schema: map[string]openapi_options.Schema{
+				"Message": {
+					Title:            "title",
+					Description:      "desc",
+					MultipleOf:       100,
+					Maximum:          101,
+					ExclusiveMaximum: true,
+					Minimum:          1,
+					ExclusiveMinimum: true,
+					MaxLength:        10,
+					MinLength:        3,
+					Pattern:          "[a-z]+",
+					MaxItems:         20,
+					MinItems:         2,
+					UniqueItems:      true,
+					MaxProperties:    33,
+					MinProperties:    22,
+					Required:         []string{"req"},
+					ReadOnly:         true,
+				},
+			},
+			expectedSchemas: map[string]*SchemaRef{
+				"Message": {
+					Value: &Schema{
+						Type:             "object",
+						Title:            "title",
+						Description:      "desc",
+						MultipleOf:       100,
+						Maximum:          101,
+						ExclusiveMaximum: true,
+						Minimum:          1,
+						ExclusiveMinimum: true,
+						MaxLength:        10,
+						MinLength:        3,
+						Pattern:          "[a-z]+",
+						MaxItems:         20,
+						MinItems:         2,
+						UniqueItems:      true,
+						MaxProperties:    33,
+						MinProperties:    22,
+						Required:         []string{"req"},
+						ReadOnly:         true,
+					},
+				},
+			},
+		},
+		//{
+		//	descr: "JSONSchema options from registry",
+		//	msgDescs: []*descriptorpb.DescriptorProto{
+		//		{Name: proto.String("Message")},
+		//	},
+		//	openAPIOptions: &openapiconfig.OpenAPIOptions{
+		//		Message: []*openapiconfig.OpenAPIMessageOption{
+		//			{
+		//				Message: "example.Message",
+		//				Option: &openapi_options.Schema{
+		//					JsonSchema: &openapi_options.JSONSchema{
+		//						Title:            "title",
+		//						Description:      "desc",
+		//						MultipleOf:       100,
+		//						Maximum:          101,
+		//						ExclusiveMaximum: true,
+		//						Minimum:          1,
+		//						ExclusiveMinimum: true,
+		//						MaxLength:        10,
+		//						MinLength:        3,
+		//						Pattern:          "[a-z]+",
+		//						MaxItems:         20,
+		//						MinItems:         2,
+		//						UniqueItems:      true,
+		//						MaxProperties:    33,
+		//						MinProperties:    22,
+		//						Required:         []string{"req"},
+		//						ReadOnly:         true,
+		//					},
+		//				},
+		//			},
+		//		},
+		//	},
+		//	expectedSchemas: map[string]openapiSchemaObject{
+		//		"Message": {
+		//			schemaCore: schemaCore{
+		//				Type: "object",
+		//			},
+		//			Title:            "title",
+		//			Description:      "desc",
+		//			MultipleOf:       100,
+		//			Maximum:          101,
+		//			ExclusiveMaximum: true,
+		//			Minimum:          1,
+		//			ExclusiveMinimum: true,
+		//			MaxLength:        10,
+		//			MinLength:        3,
+		//			Pattern:          "[a-z]+",
+		//			MaxItems:         20,
+		//			MinItems:         2,
+		//			UniqueItems:      true,
+		//			MaxProperties:    33,
+		//			MinProperties:    22,
+		//			Required:         []string{"req"},
+		//			ReadOnly:         true,
+		//		},
+		//	},
+		//},
+		{
+			descr: "JSONSchema with required properties",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:    proto.String("aRequiredField"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(1),
+							Options: requiredField,
+						},
+					},
+				},
+			},
+			schema: map[string]openapi_options.Schema{
+				"Message": {
+					Title:       "title",
+					Description: "desc",
+					Required:    []string{"req"},
+				},
+			},
+			expectedSchemas: map[string]*SchemaRef{
+				"Message": {
+					Value: &Schema{
+						Type:        "object",
+						Title:       "title",
+						Description: "desc",
+						Required:    []string{"req", "aRequiredField"},
+						Properties: Schemas{
+							"aRequiredField": &SchemaRef{
+								Value: &Schema{
+									Type:        "string",
+									Description: "field description",
+									Title:       "field title",
+									Required:    []string{"aRequiredField"},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			descr: "JSONSchema with excluded fields",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:    proto.String("aRequiredField"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(1),
+							Options: requiredField,
+						},
+						{
+							Name:   proto.String("anExcludedField"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(2),
+						},
+					},
+				},
+			},
+			schema: map[string]openapi_options.Schema{
+				"Message": {
+					Title:       "title",
+					Description: "desc",
+					Required:    []string{"req"},
+				},
+			},
+			expectedSchemas: map[string]*SchemaRef{
+				"Message": {
+					Value: &Schema{
+						Type:        "object",
+						Title:       "title",
+						Description: "desc",
+						Required:    []string{"req", "aRequiredField"},
+						Properties: Schemas{
+							"aRequiredField": &SchemaRef{
+								Value: &Schema{
+
+									Type:        "string",
+									Description: "field description",
+									Title:       "field title",
+									Required:    []string{"aRequiredField"},
+								},
+							},
+						},
+					},
+				},
+			},
+			excludedFields: []*descriptor.Field{
+				{
+					FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+						Name: strPtr("anExcludedField"),
+					},
+				},
+			},
+		},
+		/*
+			(*descriptor.Message)(0xc000369270)(
+			name:"SimpleMessage"
+			field:{name:"id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"id"}
+			field:{name:"num" number:2 label:LABEL_OPTIONAL type:TYPE_INT64 json_name:"num"}
+			field:{name:"line_num" number:3 label:LABEL_OPTIONAL type:TYPE_INT64 oneof_index:0 json_name:"lineNum"}
+			field:{name:"lang" number:4 label:LABEL_OPTIONAL type:TYPE_STRING oneof_index:0 json_name:"lang"}
+			field:{name:"status" number:5 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".grpc.gateway.examples.internal.proto.openapiv3.Embedded" json_name:"status"}
+			field:{name:"en" number:6 label:LABEL_OPTIONAL type:TYPE_INT64 oneof_index:1 json_name:"en"}
+			field:{name:"no" number:7 label:LABEL_OPTIONAL type:TYPE_MESSAGE
+			type_name:".grpc.gateway.examples.internal.proto.openapiv3.Embedded" oneof_index:1 json_name:"no"}
+			oneof_decl:{name:"code"}
+			oneof_decl:{name:"ext"})
+		*/
+		{
+			descr: "JSONSchema with one of fields",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:       proto.String("line_num"),
+							Type:       descriptorpb.FieldDescriptorProto_TYPE_INT64.Enum(),
+							Number:     proto.Int32(1),
+							OneofIndex: proto.Int32(0),
+						},
+						{
+							Name:       proto.String("lang"),
+							Type:       descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:     proto.Int32(2),
+							OneofIndex: proto.Int32(0),
+						},
+					},
+					OneofDecl: []*descriptorpb.OneofDescriptorProto{
+						{
+							Name: proto.String("code"),
+						},
+					},
+				},
+			},
+			schema: map[string]openapi_options.Schema{
+				"Message": {
+					Title:       "title",
+					Description: "desc",
+				},
+			},
+			expectedSchemas: map[string]*SchemaRef{
+				"Message": {
+					Value: &Schema{
+						Type:        "object",
+						Title:       "title",
+						Description: "desc",
+						Properties: Schemas{
+							"line_num": &SchemaRef{
+								Value: &Schema{
+									Type:   "string",
+									Format: "int64",
+								},
+							},
+							"lang": &SchemaRef{
+								Value: &Schema{
+									Type: "string",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		//{
+		//	descr: "JSONSchema with required properties via field_behavior",
+		//	msgDescs: []*descriptorpb.DescriptorProto{
+		//		{
+		//			Name: proto.String("Message"),
+		//			Field: []*descriptorpb.FieldDescriptorProto{
+		//				{
+		//					Name:    proto.String("aRequiredField"),
+		//					Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+		//					Number:  proto.Int32(1),
+		//					Options: requiredFieldOptions,
+		//				},
+		//				{
+		//					Name:    proto.String("aOutputOnlyField"),
+		//					Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+		//					Number:  proto.Int32(2),
+		//					Options: fieldBehaviorOutputOnlyOptions,
+		//				},
+		//			},
+		//		},
+		//	},
+		//	schema: map[string]openapi_options.Schema{
+		//		"Message": {
+		//			JsonSchema: &openapi_options.JSONSchema{
+		//				Title:       "title",
+		//				Description: "desc",
+		//				Required:    []string{"req"},
+		//			},
+		//		},
+		//	},
+		//	expectedSchemas: map[string]openapiSchemaObject{
+		//		"Message": {
+		//			schemaCore: schemaCore{
+		//				Type: "object",
+		//			},
+		//			Title:       "title",
+		//			Description: "desc",
+		//			Required:    []string{"req", "aRequiredField"},
+		//			Properties: &openapiSchemaObjectProperties{
+		//				{
+		//					Key: "aRequiredField",
+		//					Value: openapiSchemaObject{
+		//						schemaCore: schemaCore{
+		//							Type: "string",
+		//						},
+		//						Required: []string{"aRequiredField"},
+		//					},
+		//				},
+		//				{
+		//					Key: "aOutputOnlyField",
+		//					Value: openapiSchemaObject{
+		//						schemaCore: schemaCore{
+		//							Type: "string",
+		//						},
+		//						ReadOnly: true,
+		//					},
+		//				},
+		//			},
+		//		},
+		//	},
+		//},
+	}
+
+	for _, test := range tests {
+		t.Run(test.descr, func(t *testing.T) {
+
+			msgs := []*descriptor.Message{}
+			for _, msgdesc := range test.msgDescs {
+				msgdesc.Options = &descriptorpb.MessageOptions{}
+				msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+			}
+
+			reg := descriptor.NewRegistry()
+			file := descriptor.File{
+				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+					Name:           proto.String("example.proto"),
+					Package:        proto.String("example"),
+					Dependency:     []string{},
+					MessageType:    test.msgDescs,
+					EnumType:       []*descriptorpb.EnumDescriptorProto{},
+					Service:        []*descriptorpb.ServiceDescriptorProto{},
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+					},
+				},
+				Messages: msgs,
+			}
+			err := reg.Load(&pluginpb.CodeGeneratorRequest{
+				ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+			})
+			if err != nil {
+				t.Fatalf("failed to load code generator request: %v", err)
+			}
+
+			msgMap := map[string]*descriptor.Message{}
+			for _, d := range test.msgDescs {
+				name := d.GetName()
+				msg, err := reg.LookupMsg("example", name)
+				if err != nil {
+					t.Fatalf("lookup message %v: %v", name, err)
+				}
+				msgMap[msg.FQMN()] = msg
+
+				if schema, ok := test.schema[name]; ok {
+					proto.SetExtension(d.Options, openapi_options.E_Openapiv3Schema, &schema)
+				}
+			}
+
+			if test.openAPIOptions != nil {
+				if err := reg.RegisterOpenAPIOptions(test.openAPIOptions); err != nil {
+					t.Fatalf("failed to register OpenAPI options: %s", err)
+				}
+			}
+
+			refs := make(refMap)
+			actual := Components{
+				Schemas: make(Schemas),
+			}
+			err = renderMessagesToComponentsSchemas(msgMap, actual, reg, refs, test.excludedFields)
+			it.NoError(err)
+
+			it.Equal(test.expectedSchemas, actual.Schemas)
+		})
+	}
+}
+
 //func TestUpdateOpenAPIDataFromComments(t *testing.T) {
 //
 //	tests := []struct {
@@ -4310,7 +4390,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 //		descr          string
 //		msgDescs       []*descriptorpb.DescriptorProto
 //		schema         map[string]openapi_options.Schema // per-message schema to add
-//		defs           openapiDefinitionsObject
+//		expectedSchemas           openapiDefinitionsObject
 //		openAPIOptions *openapiconfig.OpenAPIOptions
 //		useGoTemplate  bool
 //	}{
@@ -4330,7 +4410,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 //					},
 //				},
 //			},
-//			defs: map[string]openapiSchemaObject{
+//			expectedSchemas: map[string]openapiSchemaObject{
 //				"Message": {
 //					schemaCore: schemaCore{
 //						Type: "object",
@@ -4360,7 +4440,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 //					},
 //				},
 //			},
-//			defs: map[string]openapiSchemaObject{
+//			expectedSchemas: map[string]openapiSchemaObject{
 //				"Message": {
 //					schemaCore: schemaCore{
 //						Type: "object",
@@ -4395,7 +4475,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 //					},
 //				},
 //			},
-//			defs: map[string]openapiSchemaObject{
+//			expectedSchemas: map[string]openapiSchemaObject{
 //				"Message": {
 //					schemaCore: schemaCore{
 //						Type: "object",
@@ -4468,8 +4548,8 @@ func TestApplyTemplateHeaders(t *testing.T) {
 //			actual := make(openapiDefinitionsObject)
 //			renderMessagesToComponentsSchemas(msgMap, actual, reg, refs, nil)
 //
-//			if !reflect.DeepEqual(actual, test.defs) {
-//				t.Errorf("Expected renderMessagesToComponentsSchemas() to add defs %+v, not %+v", test.defs, actual)
+//			if !reflect.DeepEqual(actual, test.expectedSchemas) {
+//				t.Errorf("Expected renderMessagesToComponentsSchemas() to add expectedSchemas %+v, not %+v", test.expectedSchemas, actual)
 //			}
 //		})
 //	}

@@ -11,7 +11,7 @@ type Openapi struct {
 	ExtensionProps
 	OpenAPI      string               `json:"openapi" yaml:"openapi"` // Required
 	Components   Components           `json:"components,omitempty" yaml:"components,omitempty"`
-	Info         *Info                `json:"info" yaml:"info"`   // Required
+	Info         Info                `json:"info" yaml:"info"`   // Required
 	Paths        Paths                `json:"paths" yaml:"paths"` // Required
 	Security     SecurityRequirements `json:"security,omitempty" yaml:"security,omitempty"`
 	Servers      Servers              `json:"servers,omitempty" yaml:"servers,omitempty"`
@@ -196,6 +196,14 @@ type SchemaRef struct {
 	Value *Schema
 }
 
+func (value *SchemaRef) MarshalJSON() ([]byte, error) {
+	return marshalRef(value.Ref, value.Value)
+}
+
+func (value *SchemaRef) UnmarshalJSON(data []byte) error {
+	return unmarshalRef(data, &value.Ref, &value.Value)
+}
+
 type SchemaRefs []*SchemaRef
 
 // https://swagger.io/specification/#schema-object
@@ -220,8 +228,8 @@ type Schema struct {
 	// Array-related, here for struct compactness
 	UniqueItems bool `json:"uniqueItems,omitempty" yaml:"uniqueItems,omitempty"`
 	// Number-related, here for struct compactness
-	ExclusiveMin bool `json:"exclusiveMinimum,omitempty" yaml:"exclusiveMinimum,omitempty"`
-	ExclusiveMax bool `json:"exclusiveMaximum,omitempty" yaml:"exclusiveMaximum,omitempty"`
+	ExclusiveMinimum bool `json:"exclusiveMinimum,omitempty" yaml:"exclusiveMinimum,omitempty"`
+	ExclusiveMaximum bool `json:"exclusiveMaximum,omitempty" yaml:"exclusiveMaximum,omitempty"`
 	// Properties
 	Nullable        bool        `json:"nullable,omitempty" yaml:"nullable,omitempty"`
 	ReadOnly        bool        `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`
@@ -231,26 +239,26 @@ type Schema struct {
 	Deprecated      bool        `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
 
 	// Number
-	Min        *float64 `json:"minimum,omitempty" yaml:"minimum,omitempty"`
-	Max        *float64 `json:"maximum,omitempty" yaml:"maximum,omitempty"`
-	MultipleOf *float64 `json:"multipleOf,omitempty" yaml:"multipleOf,omitempty"`
+	Minimum    float64 `json:"minimum,omitempty" yaml:"minimum,omitempty"`
+	Maximum    float64 `json:"maximum,omitempty" yaml:"maximum,omitempty"`
+	MultipleOf float64 `json:"multipleOf,omitempty" yaml:"multipleOf,omitempty"`
 
 	// String
 	MinLength       uint64  `json:"minLength,omitempty" yaml:"minLength,omitempty"`
-	MaxLength       *uint64 `json:"maxLength,omitempty" yaml:"maxLength,omitempty"`
+	MaxLength       uint64 `json:"maxLength,omitempty" yaml:"maxLength,omitempty"`
 	Pattern         string  `json:"pattern,omitempty" yaml:"pattern,omitempty"`
 	compiledPattern *regexp.Regexp
 
 	// Array
 	MinItems uint64     `json:"minItems,omitempty" yaml:"minItems,omitempty"`
-	MaxItems *uint64    `json:"maxItems,omitempty" yaml:"maxItems,omitempty"`
+	MaxItems uint64    `json:"maxItems,omitempty" yaml:"maxItems,omitempty"`
 	Items    *SchemaRef `json:"items,omitempty" yaml:"items,omitempty"`
 
 	// Object
 	Required             []string       `json:"required,omitempty" yaml:"required,omitempty"`
 	Properties           Schemas        `json:"properties,omitempty" yaml:"properties,omitempty"`
-	MinProps             uint64         `json:"minProperties,omitempty" yaml:"minProperties,omitempty"`
-	MaxProps             *uint64        `json:"maxProperties,omitempty" yaml:"maxProperties,omitempty"`
+	MinProperties        uint64         `json:"minProperties,omitempty" yaml:"minProperties,omitempty"`
+	MaxProperties        uint64         `json:"maxProperties,omitempty" yaml:"maxProperties,omitempty"`
 	AdditionalProperties *SchemaRef     `json:"-" multijson:"additionalProperties,omitempty" yaml:"-"`
 	Discriminator        *Discriminator `json:"discriminator,omitempty" yaml:"discriminator,omitempty"`
 }
@@ -279,11 +287,27 @@ type ParameterRef struct {
 	Value *Parameter
 }
 
+func (value *ParameterRef) MarshalJSON() ([]byte, error) {
+	return marshalRef(value.Ref, value.Value)
+}
+
+func (value *ParameterRef) UnmarshalJSON(data []byte) error {
+	return unmarshalRef(data, &value.Ref, &value.Value)
+}
+
 type Headers map[string]*HeaderRef
 
 type HeaderRef struct {
 	Ref   string
 	Value *Header
+}
+
+func (value *HeaderRef) MarshalJSON() ([]byte, error) {
+	return marshalRef(value.Ref, value.Value)
+}
+
+func (value *HeaderRef) UnmarshalJSON(data []byte) error {
+	return unmarshalRef(data, &value.Ref, &value.Value)
 }
 
 // https://swagger.io/specification/#header-object
@@ -330,6 +354,14 @@ type ResponseRef struct {
 	Value *Response
 }
 
+func (value *ResponseRef) MarshalJSON() ([]byte, error) {
+	return marshalRef(value.Ref, value.Value)
+}
+
+func (value *ResponseRef) UnmarshalJSON(data []byte) error {
+	return unmarshalRef(data, &value.Ref, &value.Value)
+}
+
 // https://swagger.io/specification/#responses-object
 type Response struct {
 	ExtensionProps
@@ -344,6 +376,14 @@ type Links map[string]*LinkRef
 type LinkRef struct {
 	Ref   string
 	Value *Link
+}
+
+func (value *LinkRef) MarshalJSON() ([]byte, error) {
+	return marshalRef(value.Ref, value.Value)
+}
+
+func (value *LinkRef) UnmarshalJSON(data []byte) error {
+	return unmarshalRef(data, &value.Ref, &value.Value)
 }
 
 // https://swagger.io/specification/#link-object
@@ -424,37 +464,6 @@ type Parameter struct {
 	Examples        Examples    `json:"examples,omitempty" yaml:"examples,omitempty"`
 	Content         Content     `json:"content,omitempty" yaml:"content,omitempty"`
 }
-
-type keyVal struct {
-	Key   string
-	Value interface{}
-}
-
-//type openapiSchemaObjectProperties []keyVal
-//
-//func (op openapiSchemaObjectProperties) MarshalJSON() ([]byte, error) {
-//	var buf bytes.Buffer
-//	buf.WriteString("{")
-//	for i, kv := range op {
-//		if i != 0 {
-//			buf.WriteString(",")
-//		}
-//		key, err := json.Marshal(kv.Key)
-//		if err != nil {
-//			return nil, err
-//		}
-//		buf.Write(key)
-//		buf.WriteString(":")
-//		val, err := json.Marshal(kv.Value)
-//		if err != nil {
-//			return nil, err
-//		}
-//		buf.Write(val)
-//	}
-//
-//	buf.WriteString("}")
-//	return buf.Bytes(), nil
-//}
 
 // Internal type mapping from FQMN to descriptor.Message. Used as a set by the
 // findServiceMessages function.

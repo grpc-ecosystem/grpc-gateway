@@ -37,6 +37,6 @@ func (s *SchemaRef) setRefFromFQN(ref string, reg *descriptor.Registry) error {
 	if !ok {
 		return fmt.Errorf("setRefFromFQN: can't resolve OpenAPI name from '%v'", ref)
 	}
-	s.Ref = fmt.Sprintf("#/definitions/%s", name)
+	s.Ref = fmt.Sprintf("#/components/schemas/%s", name)
 	return nil
 }

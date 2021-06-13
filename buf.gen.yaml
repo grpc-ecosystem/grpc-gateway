@@ -22,4 +22,4 @@ plugins:
     out: .
     opt:
       - allow_repeated_fields_in_body=true
-      - output_format=yaml
+      - output_format=json

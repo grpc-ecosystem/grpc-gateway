@@ -101,8 +101,8 @@ func applyTemplate(p param) (*Openapi, error) {
 	// Create the basic template object. This is the object that everything is
 	// defined off of.
 	s := Openapi{
-		// OpenAPI 3.0 is the version of this document
-		OpenAPI: "3.0",
+		// OpenAPI 3.1 is the version of this document
+		OpenAPI: "3.1",
 		Components: Components{
 			Schemas:         make(Schemas),
 			Parameters:      make(ParametersMap),
@@ -114,7 +114,7 @@ func applyTemplate(p param) (*Openapi, error) {
 			Links:           make(Links),
 			Callbacks:       make(Callbacks),
 		},
-		Info: &Info{
+		Info: Info{
 			Title:   *p.File.Name,
 			Version: "version not set",
 		},
@@ -630,7 +630,7 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 					glog.Errorf("couldn't resolve OpenAPI name for FQMN '%v'", meth.RequestType.FQMN())
 					continue
 				}
-				if _, ok := refs[fmt.Sprintf("#/definitions/%s", swgReqName)]; ok {
+				if _, ok := refs[fmt.Sprintf("#/components/schemas%s", swgReqName)]; ok {
 					if !skipRenderingRef(meth.RequestType.FQMN()) {
 						m[swgReqName] = meth.RequestType
 					}
@@ -701,10 +701,10 @@ func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, cu
 		schema.ExternalDocs = protoSchema.ExternalDocs
 		schema.ReadOnly = protoSchema.ReadOnly
 		schema.MultipleOf = protoSchema.MultipleOf
-		schema.Max = protoSchema.Max
-		schema.ExclusiveMax = protoSchema.ExclusiveMax
-		schema.Min = protoSchema.Min
-		schema.ExclusiveMin = protoSchema.ExclusiveMin
+		schema.Maximum = protoSchema.Maximum
+		schema.ExclusiveMaximum = protoSchema.ExclusiveMaximum
+		schema.Minimum = protoSchema.Minimum
+		schema.ExclusiveMinimum = protoSchema.ExclusiveMinimum
 		schema.MaxLength = protoSchema.MaxLength
 		schema.MinLength = protoSchema.MinLength
 		schema.Pattern = protoSchema.Pattern
@@ -712,8 +712,8 @@ func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, cu
 		schema.MaxItems = protoSchema.MaxItems
 		schema.MinItems = protoSchema.MinItems
 		schema.UniqueItems = protoSchema.UniqueItems
-		schema.MaxProps = protoSchema.MaxProps
-		schema.MinProps = protoSchema.MinProps
+		schema.MaxProperties = protoSchema.MaxProperties
+		schema.MinProperties = protoSchema.MinProperties
 		schema.Required = protoSchema.Required
 
 		if protoSchema.Title != "" {
@@ -734,6 +734,10 @@ func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, cu
 			continue
 		}
 		fieldValue := schemaOfField(f, reg, customRefs)
+		// TODO(anjmao): In such case field is proto uses oneof. Handle this with oneof open api schema.
+		if fieldValue.Ref == "" && fieldValue.Value == nil {
+			continue
+		}
 		comments := fieldProtoComments(reg, msg, f)
 		if err := updateOpenAPIDataFromComments(reg, &fieldValue, f, comments, false); err != nil {
 			return nil, err
@@ -840,7 +844,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) S
 				panic(fmt.Sprintf("can't resolve OpenAPI ref from typename '%v'", fd.GetTypeName()))
 			}
 			core = SchemaRef{
-				Ref: "#/definitions/" + swgRef,
+				Ref: "#/components/schemas" + swgRef,
 			}
 			if refs != nil {
 				refs[fd.GetTypeName()] = struct{}{}
@@ -865,18 +869,18 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) S
 		}
 	}
 
-	ret := SchemaRef{}
+	ref := SchemaRef{}
 
 	switch aggregate {
 	case array:
-		ret = SchemaRef{
+		ref = SchemaRef{
 			Value: &Schema{
 				Type:  "array",
 				Items: &core,
 			},
 		}
 	case object:
-		ret = SchemaRef{
+		ref = SchemaRef{
 			Value: &Schema{
 				Type: "object",
 				AdditionalProperties: &SchemaRef{
@@ -885,20 +889,20 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) S
 			},
 		}
 	default:
-		ret = SchemaRef{
+		ref = SchemaRef{
 			Value: core.Value,
 		}
 	}
 
 	if j, err := getFieldOpenAPIOption(reg, f); err == nil {
-		updateswaggerObjectFromJSONSchema(ret.Value, j, reg, f)
+		updateswaggerObjectFromJSONSchema(ref.Value, j, reg, f)
 	}
 
 	if j, err := getFieldBehaviorOption(reg, f); err == nil {
-		updateSwaggerObjectFromFieldBehavior(&ret, j, f)
+		updateSwaggerObjectFromFieldBehavior(&ref, j, f)
 	}
 
-	return ret
+	return ref
 }
 
 // primitiveSchema returns a pair of "Type" and "Format" in JSON Schema for
@@ -1449,7 +1453,7 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 					if hasStatus {
 						props["error"] = &SchemaRef{
 							// TODO(anjmao): Definitions should be changed to components.
-							Ref: fmt.Sprintf("#/definitions/%s", statusDef),
+							Ref: fmt.Sprintf("#/components/schemas/%s", statusDef),
 						}
 					}
 					responseSchemaRef.Value.Properties = props
@@ -1491,7 +1495,7 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 								Content: map[string]*MediaType{
 									"application/json": {
 										Schema: &SchemaRef{
-											Ref: fmt.Sprintf("#/definitions/%s", errDef),
+											Ref: fmt.Sprintf("#/components/schemas%s", errDef),
 										},
 									},
 								},
@@ -1889,46 +1893,9 @@ func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject inter
 	}
 
 	// Figure out which properties to update.
-	summaryValue := infoObjectValue.FieldByName("Summary")
 	descriptionValue := infoObjectValue.FieldByName("Description")
-	readOnlyValue := infoObjectValue.FieldByName("ReadOnly")
-
-	if readOnlyValue.Kind() == reflect.Bool && readOnlyValue.CanSet() && strings.Contains(comment, "Output only.") {
-		readOnlyValue.Set(reflect.ValueOf(true))
-	}
-
-	usingTitle := false
-	if !summaryValue.CanSet() {
-		summaryValue = infoObjectValue.FieldByName("Title")
-		usingTitle = true
-	}
 
 	paragraphs := strings.Split(comment, "\n\n")
-
-	// If there is a summary (or summary-equivalent) and it's empty, use the first
-	// paragraph as summary, and the rest as description.
-	if summaryValue.CanSet() {
-		summary := strings.TrimSpace(paragraphs[0])
-		description := strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
-		if !usingTitle || (len(summary) > 0 && summary[len(summary)-1] != '.') {
-			// overrides the schema value only if it's empty
-			// keep the comment precedence when updating the package definition
-			if summaryValue.Len() == 0 || isPackageObject {
-				summaryValue.Set(reflect.ValueOf(summary))
-			}
-			if len(description) > 0 {
-				if !descriptionValue.CanSet() {
-					return fmt.Errorf("encountered object type with a summary, but no description")
-				}
-				// overrides the schema value only if it's empty
-				// keep the comment precedence when updating the package definition
-				if descriptionValue.Len() == 0 || isPackageObject {
-					descriptionValue.Set(reflect.ValueOf(description))
-				}
-			}
-			return nil
-		}
-	}
 
 	// There was no summary field on the swaggerObject. Try to apply the
 	// whole comment into description if the OpenAPI object description is empty.
@@ -2289,7 +2256,6 @@ func getFieldOpenAPIOption(reg *descriptor.Registry, fd *descriptor.Field) (*ope
 	//if !ok {
 	//	return nil, nil
 	//}
-	return opts, nil
 }
 
 func getFieldBehaviorOption(reg *descriptor.Registry, fd *descriptor.Field) ([]annotations.FieldBehavior, error) {
@@ -2309,7 +2275,7 @@ func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.SchemaOrReference, re
 	if ref := j.GetReference(); ref != nil {
 		openapiName, ok := fullyQualifiedNameToOpenAPIName(ref.GetXRef(), reg)
 		if ok {
-			ret.Ref = "#/definitions/" + openapiName
+			ret.Ref = "#/components/schemas" + openapiName
 			if refs != nil {
 				refs[ref.GetXRef()] = struct{}{}
 			}
@@ -2339,22 +2305,24 @@ func updateswaggerObjectFromJSONSchema(s *Schema, j *openapi_options.Schema, reg
 	}
 
 	s.ReadOnly = j.GetReadOnly()
-	s.MultipleOf = &j.MultipleOf
-	s.Max = &j.Maximum
-	s.ExclusiveMin = j.GetExclusiveMaximum()
-	s.Min = &j.Minimum
-	s.ExclusiveMax = j.GetExclusiveMinimum()
-	s.MaxLength = uint64ptr(uint64(j.MaxLength))
+	s.MultipleOf = j.MultipleOf
+	s.Maximum = j.Maximum
+	s.ExclusiveMinimum = j.GetExclusiveMaximum()
+	s.Minimum = j.Minimum
+	s.ExclusiveMaximum = j.GetExclusiveMinimum()
+	s.MaxLength = uint64(j.MaxLength)
 	s.MinLength = uint64(j.MinLength)
 	s.Pattern = j.GetPattern()
-	s.MaxItems = uint64ptr(uint64(j.GetMaxItems()))
+	s.MaxItems = uint64(j.GetMaxItems())
 	s.MinItems = uint64(j.GetMinItems())
 	s.UniqueItems = j.GetUniqueItems()
-	s.MaxProps = uint64ptr(uint64(j.GetMaxProperties()))
-	s.MinProps = uint64(j.GetMinProperties())
+	s.MaxProperties = uint64(j.GetMaxProperties())
+	s.MinProperties = uint64(j.GetMinProperties())
 	s.Required = j.GetRequired()
 	s.Enum = enums(j.GetEnum())
-	s.Type = strings.ToLower(j.GetType())
+	if overrideType := j.GetType(); len(overrideType) > 0 {
+		s.Type = strings.ToLower(overrideType)
+	}
 	if j != nil && j.GetExample() != nil {
 		s.Example = json.RawMessage(j.GetExample().Value.Value)
 	}
@@ -2382,7 +2350,7 @@ func uint64ptr(i uint64) *uint64  {
 
 // TODO(anjmao): Check if this is correct. Probably not.
 func enums(any []*openapi_options.Any) []interface{}  {
-	out := make([]interface{}, 0, len(any))
+	var out []interface{}
 	for _, v := range any {
 		out = append(out, string(v.Value.Value))
 	}
