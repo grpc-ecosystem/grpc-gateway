@@ -25,7 +25,7 @@ func TestAnnotateContext_WorksWithEmpty(t *testing.T) {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
 	}
 	request.Header.Add("Some-Irrelevant-Header", "some value")
-	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName, runtime.WithPattern(expectedHTTPPathPattern))
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName, runtime.WithHTTPPathPattern(expectedHTTPPathPattern))
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -49,7 +49,7 @@ func TestAnnotateContext_ForwardsGrpcMetadata(t *testing.T) {
 	request.Header.Add("Grpc-Metadata-Foo-BAZ", "Value2")
 	request.Header.Add("Grpc-Metadata-foo-bAz", "Value3")
 	request.Header.Add("Authorization", "Token 1234567890")
-	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName, runtime.WithPattern(expectedHTTPPathPattern))
+	annotated, err := runtime.AnnotateContext(ctx, runtime.NewServeMux(), request, expectedRPCName, runtime.WithHTTPPathPattern(expectedHTTPPathPattern))
 	if err != nil {
 		t.Errorf("runtime.AnnotateContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -263,7 +263,7 @@ func TestAnnotateIncomingContext_WorksWithEmpty(t *testing.T) {
 		t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", "GET", "http://www.example.com", err)
 	}
 	request.Header.Add("Some-Irrelevant-Header", "some value")
-	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName, runtime.WithPattern(expectedHTTPPathPattern))
+	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName, runtime.WithHTTPPathPattern(expectedHTTPPathPattern))
 	if err != nil {
 		t.Errorf("runtime.AnnotateIncomingContext(ctx, %#v) failed with %v; want success", request, err)
 		return
@@ -292,7 +292,7 @@ func TestAnnotateIncomingContext_ForwardsGrpcMetadata(t *testing.T) {
 	request.Header.Add("Grpc-Metadata-Foo-BAZ", "Value2")
 	request.Header.Add("Grpc-Metadata-foo-bAz", "Value3")
 	request.Header.Add("Authorization", "Token 1234567890")
-	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName, runtime.WithPattern(expectedHTTPPathPattern))
+	annotated, err := runtime.AnnotateIncomingContext(ctx, runtime.NewServeMux(), request, expectedRPCName, runtime.WithHTTPPathPattern(expectedHTTPPathPattern))
 	if err != nil {
 		t.Errorf("runtime.AnnotateIncomingContext(ctx, %#v) failed with %v; want success", request, err)
 		return

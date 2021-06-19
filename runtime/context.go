@@ -52,7 +52,7 @@ type (
 	AnnotateOption func(ao *annotateOptions)
 )
 
-func WithPattern(pattern string) AnnotateOption {
+func WithHTTPPathPattern(pattern string) AnnotateOption {
 	return func(ao *annotateOptions) {
 		ao.httpPath = pattern
 	}
