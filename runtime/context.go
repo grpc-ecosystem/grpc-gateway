@@ -45,16 +45,12 @@ type (
 	rpcMethodKey       struct{}
 	httpPathPatternKey struct{}
 
-	annotateOptions struct {
-		httpPath string
-	}
-
-	AnnotateOption func(ao *annotateOptions)
+	AnnotateContextOption func(ctx context.Context) context.Context
 )
 
-func WithHTTPPathPattern(pattern string) AnnotateOption {
-	return func(ao *annotateOptions) {
-		ao.httpPath = pattern
+func WithHTTPPathPattern(pattern string) AnnotateContextOption {
+	return func(ctx context.Context) context.Context {
+		return withHTTPPathPattern(ctx, pattern)
 	}
 }
 
@@ -73,7 +69,7 @@ At a minimum, the RemoteAddr is included in the fashion of "X-Forwarded-For",
 except that the forwarded destination is not another HTTP service but rather
 a gRPC service.
 */
-func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string, options ...AnnotateOption) (context.Context, error) {
+func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string, options ...AnnotateContextOption) (context.Context, error) {
 	ctx, md, err := annotateContext(ctx, mux, req, rpcMethodName, options...)
 	if err != nil {
 		return nil, err
@@ -87,7 +83,7 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 
 // AnnotateIncomingContext adds context information such as metadata from the request.
 // Attach metadata as incoming context.
-func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string, options ...AnnotateOption) (context.Context, error) {
+func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string, options ...AnnotateContextOption) (context.Context, error) {
 	ctx, md, err := annotateContext(ctx, mux, req, rpcMethodName, options...)
 	if err != nil {
 		return nil, err
@@ -99,14 +95,10 @@ func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Reque
 	return metadata.NewIncomingContext(ctx, md), nil
 }
 
-func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string, options ...AnnotateOption) (context.Context, metadata.MD, error) {
+func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string, options ...AnnotateContextOption) (context.Context, metadata.MD, error) {
 	ctx = withRPCMethod(ctx, rpcMethodName)
-	aos := &annotateOptions{}
 	for _, o := range options {
-		o(aos)
-	}
-	if aos.httpPath != "" {
-		ctx = withHTTPPathPattern(ctx, aos.httpPath)
+		ctx = o(ctx)
 	}
 	var pairs []string
 	timeout := DefaultContextTimeout
