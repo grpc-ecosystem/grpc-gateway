@@ -334,8 +334,8 @@ func withRPCMethod(ctx context.Context, rpcMethodName string) context.Context {
 	return context.WithValue(ctx, rpcMethodKey{}, rpcMethodName)
 }
 
-// HTTPPathPattern returns the http path pattern string for the server context. The returned
-// string is defined in api path template google.api.http option
+// HTTPPathPattern returns the HTTP path pattern string relating to the HTTP handler, if one exists.
+// The format of the returned string is defined by the google.api.http path template type.
 func HTTPPathPattern(ctx context.Context) (string, bool) {
 	m := ctx.Value(httpPathPatternKey{})
 	if m == nil {
