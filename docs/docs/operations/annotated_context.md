@@ -8,7 +8,7 @@ parent: Operations
 # AnnotatedContext
 
 ## Get HTTP Path pattern
-1. Define HTTP path in proto file like below.
+1. Define HTTP path in proto option like below, following template ```google.api.http```.
 
 ```proto
 syntax = "proto3";
@@ -31,8 +31,8 @@ message LoginRequest {}
 message LoginReply {}
 ```
 
-2. Get Values from annotated context e.g. in WithMetadata function.
-You can pass data by adding them to metadata or push to metrics server.
+2. Get values from annotated context e.g. in WithMetadata function.
+You can pass data by adding them to metadata or push them to metrics server.
 ```go
 mux := runtime.NewServeMux(
 	runtime.WithMetadata(func(ctx context.Context, r *http.Request) metadata.MD {
