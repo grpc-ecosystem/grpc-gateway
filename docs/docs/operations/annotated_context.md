@@ -32,7 +32,7 @@ message LoginReply {}
 ```
 
 2. Get values from annotated context e.g. in WithMetadata function.
-You can pass data by adding them to metadata or push them to metrics server.
+You can pass data to backend by adding them to metadata or push them to metrics server.
 ```go
 mux := runtime.NewServeMux(
 	runtime.WithMetadata(func(ctx context.Context, r *http.Request) metadata.MD {
