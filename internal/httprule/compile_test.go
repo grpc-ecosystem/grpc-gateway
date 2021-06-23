@@ -23,6 +23,13 @@ func TestCompile(t *testing.T) {
 		{},
 		{
 			segs: []segment{
+				literal(eof),
+			},
+			ops:  []int{int(utilities.OpLitPush), 0},
+			pool: []string{""},
+		},
+		{
+			segs: []segment{
 				wildcard{},
 			},
 			ops: []int{int(utilities.OpPush), operandFiller},
