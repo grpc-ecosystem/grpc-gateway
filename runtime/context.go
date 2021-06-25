@@ -41,7 +41,18 @@ var (
 	DefaultContextTimeout = 0 * time.Second
 )
 
-type rpcMethodKey struct{}
+type (
+	rpcMethodKey       struct{}
+	httpPathPatternKey struct{}
+
+	AnnotateContextOption func(ctx context.Context) context.Context
+)
+
+func WithHTTPPathPattern(pattern string) AnnotateContextOption {
+	return func(ctx context.Context) context.Context {
+		return withHTTPPathPattern(ctx, pattern)
+	}
+}
 
 func decodeBinHeader(v string) ([]byte, error) {
 	if len(v)%4 == 0 {
@@ -58,8 +69,8 @@ At a minimum, the RemoteAddr is included in the fashion of "X-Forwarded-For",
 except that the forwarded destination is not another HTTP service but rather
 a gRPC service.
 */
-func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string) (context.Context, error) {
-	ctx, md, err := annotateContext(ctx, mux, req, rpcMethodName)
+func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string, options ...AnnotateContextOption) (context.Context, error) {
+	ctx, md, err := annotateContext(ctx, mux, req, rpcMethodName, options...)
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +83,8 @@ func AnnotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 
 // AnnotateIncomingContext adds context information such as metadata from the request.
 // Attach metadata as incoming context.
-func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string) (context.Context, error) {
-	ctx, md, err := annotateContext(ctx, mux, req, rpcMethodName)
+func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string, options ...AnnotateContextOption) (context.Context, error) {
+	ctx, md, err := annotateContext(ctx, mux, req, rpcMethodName, options...)
 	if err != nil {
 		return nil, err
 	}
@@ -84,8 +95,11 @@ func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Reque
 	return metadata.NewIncomingContext(ctx, md), nil
 }
 
-func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string) (context.Context, metadata.MD, error) {
+func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string, options ...AnnotateContextOption) (context.Context, metadata.MD, error) {
 	ctx = withRPCMethod(ctx, rpcMethodName)
+	for _, o := range options {
+		ctx = o(ctx)
+	}
 	var pairs []string
 	timeout := DefaultContextTimeout
 	if tm := req.Header.Get(metadataGrpcTimeout); tm != "" {
@@ -310,4 +324,22 @@ func RPCMethod(ctx context.Context) (string, bool) {
 
 func withRPCMethod(ctx context.Context, rpcMethodName string) context.Context {
 	return context.WithValue(ctx, rpcMethodKey{}, rpcMethodName)
+}
+
+// HTTPPathPattern returns the HTTP path pattern string relating to the HTTP handler, if one exists.
+// The format of the returned string is defined by the google.api.http path template type.
+func HTTPPathPattern(ctx context.Context) (string, bool) {
+	m := ctx.Value(httpPathPatternKey{})
+	if m == nil {
+		return "", false
+	}
+	ms, ok := m.(string)
+	if !ok {
+		return "", false
+	}
+	return ms, true
+}
+
+func withHTTPPathPattern(ctx context.Context, httpPathPattern string) context.Context {
+	return context.WithValue(ctx, httpPathPatternKey{}, httpPathPattern)
 }

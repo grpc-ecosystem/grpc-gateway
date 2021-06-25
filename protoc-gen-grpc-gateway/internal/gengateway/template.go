@@ -28,7 +28,7 @@ type binding struct {
 	AllowPatchFeature bool
 }
 
-// GetBodyFieldPath returns the binding body's fieldpath.
+// GetBodyFieldPath returns the binding body's field path.
 func (b binding) GetBodyFieldPath() string {
 	if b.Body != nil && len(b.Body.FieldPath) != 0 {
 		return b.Body.FieldPath.String()
@@ -36,7 +36,7 @@ func (b binding) GetBodyFieldPath() string {
 	return "*"
 }
 
-// GetBodyFieldPath returns the binding body's struct field name.
+// GetBodyFieldStructName returns the binding body's struct field name.
 func (b binding) GetBodyFieldStructName() (string, error) {
 	if b.Body != nil && len(b.Body.FieldPath) != 0 {
 		return casing.Camel(b.Body.FieldPath.String()), nil
@@ -600,7 +600,11 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context,
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		{{- if $b.PathTmpl }}
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}", runtime.WithHTTPPathPattern("{{$b.PathTmpl.Template}}"))
+		{{- else -}}
 		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}")
+		{{- end }}
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -676,7 +680,11 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context,
 	{{- end }}
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		{{- if $b.PathTmpl }}
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}", runtime.WithHTTPPathPattern("{{$b.PathTmpl.Template}}"))
+		{{- else -}}
 		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}")
+		{{- end }}
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

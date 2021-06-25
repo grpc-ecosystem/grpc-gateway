@@ -1049,8 +1049,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:M9c2dapWGIISuWaz5vr/RUk5Qn2Hs8DZ9CJb5aH266Q=",
-        version = "v0.0.0-20210611144927-798beca9d670",
+        sum = "h1:R1r5J0u6Cx+RNl/6mezTw6oA14cmKC96FeUwL6A9bd4=",
+        version = "v0.0.0-20210624195500-8bfb893ecb84",
     )
     go_repository(
         name = "org_golang_google_grpc",
@@ -1118,8 +1118,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_oauth2",
         importpath = "golang.org/x/oauth2",
-        sum = "h1:pkQiBZBvdos9qq4wBAHqlzuZHEXo07pqV06ef90u1WI=",
-        version = "v0.0.0-20210514164344-f6687ab2804c",
+        sum = "h1:pERGha6IgvMUdN6oJbwjZTt1ai5/O855Qmv1Bsc0v18=",
+        version = "v0.0.0-20210622215436-a8dc77f794b6",
     )
     go_repository(
         name = "org_golang_x_sync",
@@ -1156,8 +1156,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_tools",
         importpath = "golang.org/x/tools",
-        sum = "h1:kRBLX7v7Af8W7Gdbbc908OJcdgtK8bOz9Uaj8/F1ACA=",
-        version = "v0.1.2",
+        sum = "h1:L69ShwSZEyCsLKoAxDKeMvLDZkumEe8gXUZAjab0tX8=",
+        version = "v0.1.3",
     )
 
     go_repository(
