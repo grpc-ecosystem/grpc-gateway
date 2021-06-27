@@ -118,6 +118,10 @@ type parser struct {
 
 // topLevelSegments is the target of this parser.
 func (p *parser) topLevelSegments() ([]segment, error) {
+	if _, err := p.accept(typeEOF); err == nil {
+		p.tokens = p.tokens[:0]
+		return []segment{literal(eof)}, nil
+	}
 	segs, err := p.segments()
 	if err != nil {
 		return nil, err

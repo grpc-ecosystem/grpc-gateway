@@ -419,6 +419,12 @@ var defaultRouteMatcherTests = []struct {
 	valid  bool
 }{
 	{
+		"Test route /",
+		"GET",
+		"/",
+		true,
+	},
+	{
 		"Simple Endpoint",
 		"GET",
 		"/v1/{bucket}/do:action",
