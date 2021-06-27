@@ -96,6 +96,10 @@ func (t template) Compile() Template {
 		if op.str == "" {
 			ops = append(ops, op.num)
 		} else {
+			// eof segment literal represents the "/" path pattern
+			if op.str == eof {
+				op.str = ""
+			}
 			if _, ok := consts[op.str]; !ok {
 				consts[op.str] = len(pool)
 				pool = append(pool, op.str)
