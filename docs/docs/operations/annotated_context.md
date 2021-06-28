@@ -1,14 +1,16 @@
 ---
 layout: default
-title: AnnotatedContext
+title: Extracting the HTTP path pattern for a request
 nav_order: 4
 parent: Operations
 ---
 
-# AnnotatedContext
+# Extracting the HTTP path pattern for a request
+
+It is often interesting to know what [HTTP path pattern](https://github.com/googleapis/googleapis/blob/869d32e2f0af2748ab530646053b23a2b80d9ca5/google/api/http.proto#L61-L87) was matched for a specific request, for example for metrics. This article explains how to extract the HTTP path pattern from the request context.
 
 ## Get HTTP Path pattern
-1. Define HTTP path in proto option like below, following template ```google.api.http```.
+1. Define the HTTP path in the proto annotation. For example:
 
 ```proto
 syntax = "proto3";
@@ -31,8 +33,9 @@ message LoginRequest {}
 message LoginReply {}
 ```
 
-2. Get values from annotated context e.g. in WithMetadata function.
-You can pass data to backend by adding them to metadata or push them to metrics server.
+2. At runtime, get the HTTP path pattern from the annotated context, for example using the `WithMetadata` function.
+You can pass data to your backend by adding them to the gRPC metadata or push them to a metrics server.
+
 ```go
 mux := runtime.NewServeMux(
 	runtime.WithMetadata(func(ctx context.Context, r *http.Request) metadata.MD {
