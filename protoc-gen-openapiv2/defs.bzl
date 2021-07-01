@@ -62,6 +62,7 @@ def _run_proto_gen_openapi(
         disable_default_errors,
         enums_as_ints,
         simple_operation_ids,
+        optional_nullable,
         openapi_configuration,
         generate_unbound_methods):
     args = actions.args()
@@ -106,6 +107,9 @@ def _run_proto_gen_openapi(
 
     if enums_as_ints:
         args.add("--openapiv2_opt", "enums_as_ints=true")
+
+    if optional_nullable:
+        args.add("--openapiv2_opt", "optional_nullable=true")
 
     args.add("--openapiv2_opt", "repeated_path_param_separator=%s" % repeated_path_param_separator)
 
@@ -201,6 +205,7 @@ def _proto_gen_openapi_impl(ctx):
                     disable_default_errors = ctx.attr.disable_default_errors,
                     enums_as_ints = ctx.attr.enums_as_ints,
                     simple_operation_ids = ctx.attr.simple_operation_ids,
+                    optional_nullable = ctx.attr.optional_nullable,
                     openapi_configuration = ctx.file.openapi_configuration,
                     generate_unbound_methods = ctx.attr.generate_unbound_methods,
                 ),
@@ -278,6 +283,11 @@ protoc_gen_openapiv2 = rule(
             doc = "whether to remove the service prefix in the operationID" +
                   " generation. Can introduce duplicate operationIDs, use with caution.",
         ),
+        "optional_nullable": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "whether Proto3 Optional fields should be marked as x-nullable",
+        )
         "openapi_configuration": attr.label(
             allow_single_file = True,
             mandatory = False,
