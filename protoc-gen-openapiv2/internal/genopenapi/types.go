@@ -150,12 +150,18 @@ type openapiParameterObject struct {
 }
 
 // core part of schema, which is common to itemsObject and schemaObject.
-// http://swagger.io/specification/#itemsObject
+// http://swagger.io/specification/v2/#itemsObject
+// The OAS3 spec (https://swagger.io/specification/#schemaObject) defines the
+// `nullable` field as part of a Schema Object. This behavior has been
+// "back-ported" to OAS2 as the Specification Extension `x-nullable`, and is
+// supported by generation tools such as swagger-codegen and go-swagger.
+// For protoc-gen-openapiv3, we'd want to add `nullable` instead.
 type schemaCore struct {
-	Type    string          `json:"type,omitempty"`
-	Format  string          `json:"format,omitempty"`
-	Ref     string          `json:"$ref,omitempty"`
-	Example json.RawMessage `json:"example,omitempty"`
+	Type      string          `json:"type,omitempty"`
+	Format    string          `json:"format,omitempty"`
+	Ref       string          `json:"$ref,omitempty"`
+	XNullable bool            `json:"x-nullable,omitempty"`
+	Example   json.RawMessage `json:"example,omitempty"`
 
 	Items *openapiItemsObject `json:"items,omitempty"`
 
