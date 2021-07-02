@@ -410,7 +410,7 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		schema.MaxProperties = protoSchema.MaxProperties
 		schema.MinProperties = protoSchema.MinProperties
 		schema.Required = protoSchema.Required
-		schema.Nullable = protoSchema.Nullable
+		schema.XNullable = protoSchema.XNullable
 		if protoSchema.schemaCore.Type != "" || protoSchema.schemaCore.Ref != "" {
 			schema.schemaCore = protoSchema.schemaCore
 		}
@@ -583,7 +583,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	}
 
 	if reg.GetProto3OptionalNullable() && f.GetProto3Optional() {
-		ret.Nullable = true
+		ret.XNullable = true
 	}
 
 	return ret
