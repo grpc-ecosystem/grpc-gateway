@@ -87,8 +87,8 @@ type Registry struct {
 	// has no HttpRule annotation.
 	warnOnUnboundMethods bool
 
-	// optionalNullable specifies whether Proto3 Optional fields should be marked as x-nullable.
-	optionalNullable bool
+	// proto3OptionalNullable specifies whether Proto3 Optional fields should be marked as x-nullable.
+	proto3OptionalNullable bool
 
 	// fileOptions is a mapping of file name to additional OpenAPI file options
 	fileOptions map[string]*options.Swagger
@@ -571,14 +571,14 @@ func (r *Registry) GetOmitPackageDoc() bool {
 	return r.omitPackageDoc
 }
 
-// SetOptionalNullable set optionalNullable
-func (r *Registry) SetOptionalNullable(optionalNullable bool) {
-	r.optionalNullable = optionalNullable
+// SetProto3OptionalNullable set proto3OtionalNullable
+func (r *Registry) SetProto3OptionalNullable(proto3OtionalNullable bool) {
+	r.proto3OptionalNullable = proto3OtionalNullable
 }
 
-// GetOptionalNullable returns optionalNullable
-func (r *Registry) GetOptionalNullable() bool {
-	return r.optionalNullable
+// GetProto3OptionalNullable returns proto3OtionalNullable
+func (r *Registry) GetProto3OptionalNullable() bool {
+	return r.proto3OptionalNullable
 }
 
 // RegisterOpenAPIOptions registers OpenAPI options

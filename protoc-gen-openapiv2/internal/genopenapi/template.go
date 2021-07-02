@@ -582,7 +582,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 		updateSwaggerObjectFromFieldBehavior(&ret, j, f)
 	}
 
-	if reg.GetOptionalNullable() && f.Proto3Optional != nil && *f.Proto3Optional {
+	if reg.GetProto3OptionalNullable() && f.GetProto3Optional() {
 		ret.Nullable = true
 	}
 
