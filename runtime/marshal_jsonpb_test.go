@@ -138,13 +138,31 @@ func TestJSONPbMarshalFields(t *testing.T) {
 		}
 	}
 
+	nums := []examplepb.NumericEnum{examplepb.NumericEnum_ZERO, examplepb.NumericEnum_ONE}
+
+	buf, err := m.Marshal(nums)
+	if err != nil {
+		t.Errorf("m.Marshal(%#v) failed with %v; want success", nums, err)
+	}
+	if got, want := string(buf), `[0,1]`; got != want {
+		t.Errorf("m.Marshal(%#v) = %q; want %q", nums, got, want)
+	}
+
 	m.EnumsAsInts = false
-	buf, err := m.Marshal(examplepb.NumericEnum_ONE)
+	buf, err = m.Marshal(examplepb.NumericEnum_ONE)
 	if err != nil {
 		t.Errorf("m.Marshal(%#v) failed with %v; want success", examplepb.NumericEnum_ONE, err)
 	}
 	if got, want := string(buf), `"ONE"`; got != want {
 		t.Errorf("m.Marshal(%#v) = %q; want %q", examplepb.NumericEnum_ONE, got, want)
+	}
+
+	buf, err = m.Marshal(nums)
+	if err != nil {
+		t.Errorf("m.Marshal(%#v) failed with %v; want success", nums, err)
+	}
+	if got, want := string(buf), `["ZERO","ONE"]`; got != want {
+		t.Errorf("m.Marshal(%#v) = %q; want %q", nums, got, want)
 	}
 }
 
