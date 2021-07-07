@@ -313,7 +313,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 }
 
 // findServicesMessagesAndEnumerations discovers all messages and enums defined in the RPC methods of the service.
-func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, ms messageMap, e enumMap, refs refMap) {
+func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m, ms messageMap, e enumMap, refs refMap) {
 	for _, svc := range s {
 		for _, meth := range svc.Methods {
 			// Request may be fully included in query
@@ -1572,7 +1572,7 @@ func processExtensions(inputExts map[string]*structpb.Value) ([]extension, error
 	return exts, nil
 }
 
-func validateHeaderTypeAndFormat(headerType string, format string) error {
+func validateHeaderTypeAndFormat(headerType, format string) error {
 	// The type of the object. The value MUST be one of "string", "number", "integer", "boolean", or "array"
 	// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#headerObject
 	// Note: currently not implementing array as we are only implementing this in the operation response context
@@ -1631,7 +1631,7 @@ func validateHeaderTypeAndFormat(headerType string, format string) error {
 	return fmt.Errorf("the provided header type %q is not supported", headerType)
 }
 
-func validateDefaultValueTypeAndFormat(headerType string, defaultValue string, format string) error {
+func validateDefaultValueTypeAndFormat(headerType, defaultValue, format string) error {
 	switch headerType {
 	case "string":
 		if !isQuotedString(defaultValue) {
@@ -1699,7 +1699,7 @@ func isQuotedString(s string) bool {
 	return len(s) >= 2 && s[0] == '"' && s[len(s)-1] == '"'
 }
 
-func isJSONNumber(s string, t string) error {
+func isJSONNumber(s, t string) error {
 	val, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		return fmt.Errorf("the provided default value %q does not match provider type %q", s, t)
@@ -1758,7 +1758,7 @@ func processHeaders(inputHdrs map[string]*openapi_options.Header) (openapiHeader
 //
 // If there is no 'Summary', the same behavior will be attempted on 'Title',
 // but only if the last character is not a period.
-func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject interface{}, data interface{}, comment string, isPackageObject bool) error {
+func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject, data interface{}, comment string, isPackageObject bool) error {
 	if len(comment) == 0 {
 		return nil
 	}
@@ -1938,7 +1938,7 @@ var packageProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescript
 var serviceProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Service")
 var methodProtoPath = protoPathIndex(reflect.TypeOf((*descriptorpb.ServiceDescriptorProto)(nil)), "Method")
 
-func isProtoPathMatches(paths []int32, outerPaths []int32, typeName string, typeIndex int32, fieldPaths []int32) bool {
+func isProtoPathMatches(paths, outerPaths []int32, typeName string, typeIndex int32, fieldPaths []int32) bool {
 	if typeName == "Package" && typeIndex == packageProtoPath {
 		// path for package comments is just [2], and all the other processing
 		// is too complex for it.

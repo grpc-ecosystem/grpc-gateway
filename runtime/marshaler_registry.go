@@ -35,7 +35,7 @@ var (
 // If there are multiple Content-Type headers set, choose the first one that it can
 // exactly match in the registry.
 // Otherwise, it follows the above logic for "*"/InboundMarshaler/OutboundMarshaler.
-func MarshalerForRequest(mux *ServeMux, r *http.Request) (inbound Marshaler, outbound Marshaler) {
+func MarshalerForRequest(mux *ServeMux, r *http.Request) (inbound, outbound Marshaler) {
 	for _, acceptVal := range r.Header[acceptHeader] {
 		if m, ok := mux.marshalers.mimeMap[acceptVal]; ok {
 			outbound = m

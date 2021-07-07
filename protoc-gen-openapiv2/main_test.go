@@ -148,7 +148,7 @@ func TestParseReqParam(t *testing.T) {
 
 }
 
-func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV, includePackageInTagsV bool, useFQNForOpenAPINameV bool, fileV, importPathV, mergeFileNameV string, t *testing.T, tid int) {
+func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV, includePackageInTagsV, useFQNForOpenAPINameV bool, fileV, importPathV, mergeFileNameV string, t *testing.T, tid int) {
 	if *importPrefix != importPathV {
 		t.Errorf("Test %v: import_prefix misparsed, expected '%v', got '%v'", tid, importPathV, *importPrefix)
 	}

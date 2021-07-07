@@ -148,7 +148,7 @@ func TestForwardResponseOption(t *testing.T) {
 	testEcho(t, port, "v1", "application/vnd.docker.plugins.v1.1+json")
 }
 
-func testEcho(t *testing.T, port int, apiPrefix string, contentType string) {
+func testEcho(t *testing.T, port int, apiPrefix, contentType string) {
 	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo/myid", port, apiPrefix)
 	resp, err := http.Post(apiURL, "application/json", strings.NewReader("{}"))
 	if err != nil {
@@ -181,7 +181,7 @@ func testEcho(t *testing.T, port int, apiPrefix string, contentType string) {
 	}
 }
 
-func testEchoOneof(t *testing.T, port int, apiPrefix string, contentType string) {
+func testEchoOneof(t *testing.T, port int, apiPrefix, contentType string) {
 	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo/myid/10/golang", port, apiPrefix)
 	resp, err := http.Get(apiURL)
 	if err != nil {
@@ -214,7 +214,7 @@ func testEchoOneof(t *testing.T, port int, apiPrefix string, contentType string)
 	}
 }
 
-func testEchoOneof1(t *testing.T, port int, apiPrefix string, contentType string) {
+func testEchoOneof1(t *testing.T, port int, apiPrefix, contentType string) {
 	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo1/myid/10/golang", port, apiPrefix)
 	resp, err := http.Get(apiURL)
 	if err != nil {
@@ -247,7 +247,7 @@ func testEchoOneof1(t *testing.T, port int, apiPrefix string, contentType string
 	}
 }
 
-func testEchoOneof2(t *testing.T, port int, apiPrefix string, contentType string) {
+func testEchoOneof2(t *testing.T, port int, apiPrefix, contentType string) {
 	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo2/golang", port, apiPrefix)
 	resp, err := http.Get(apiURL)
 	if err != nil {
@@ -2185,7 +2185,7 @@ func TestNonStandardNames(t *testing.T) {
 	}
 }
 
-func testNonStandardNames(t *testing.T, port int, method string, jsonBody string, want proto.Message) {
+func testNonStandardNames(t *testing.T, port int, method, jsonBody string, want proto.Message) {
 	req, err := http.NewRequest(
 		http.MethodPatch,
 		fmt.Sprintf("http://localhost:%d/v1/example/non_standard/%s", port, method),

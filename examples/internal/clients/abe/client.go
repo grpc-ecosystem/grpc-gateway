@@ -115,7 +115,7 @@ func contains(haystack []string, needle string) bool {
 }
 
 // Verify optional parameters are of the correct type.
-func typeCheckParameter(obj interface{}, expected string, name string) error {
+func typeCheckParameter(obj interface{}, expected, name string) error {
 	// Make sure there is an object.
 	if obj == nil {
 		return nil
@@ -307,17 +307,17 @@ func (c *APIClient) prepareRequest(
 }
 
 func (c *APIClient) decode(v interface{}, b []byte, contentType string) (err error) {
-		if strings.Contains(contentType, "application/xml") {
-			if err = xml.Unmarshal(b, v); err != nil {
-				return err
-			}
-			return nil
-		} else if strings.Contains(contentType, "application/json") {
-			if err = json.Unmarshal(b, v); err != nil {
-				return err
-			}
-			return nil
+	if strings.Contains(contentType, "application/xml") {
+		if err = xml.Unmarshal(b, v); err != nil {
+			return err
 		}
+		return nil
+	} else if strings.Contains(contentType, "application/json") {
+		if err = json.Unmarshal(b, v); err != nil {
+			return err
+		}
+		return nil
+	}
 	return errors.New("undefined response type")
 }
 

@@ -68,6 +68,6 @@ func NewConfiguration() *Configuration {
 	return cfg
 }
 
-func (c *Configuration) AddDefaultHeader(key string, value string) {
+func (c *Configuration) AddDefaultHeader(key, value string) {
 	c.DefaultHeader[key] = value
 }
