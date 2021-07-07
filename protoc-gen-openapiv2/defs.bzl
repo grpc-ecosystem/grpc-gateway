@@ -27,12 +27,12 @@ def _direct_source_infos(proto_info, provided_sources = []):
 
     source_root = proto_info.proto_source_root
     if "." == source_root:
-        return [struct(file = src, import_path = src.path) for src in proto_info.direct_sources]
+        return [struct(file = src, import_path = src.path) for src in proto_info.check_deps_sources.to_list()]
 
     offset = len(source_root) + 1  # + '/'.
 
     infos = []
-    for src in proto_info.direct_sources:
+    for src in proto_info.check_deps_sources.to_list():
         # TODO(yannic): Remove this hack when we drop support for Bazel < 1.0.
         local_offset = offset
         if src.root.path and not source_root.startswith(src.root.path):
