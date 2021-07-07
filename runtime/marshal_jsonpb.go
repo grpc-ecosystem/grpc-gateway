@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"reflect"
+	"strconv"
 
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
@@ -94,6 +95,36 @@ func (j *JSONPb) marshalNonProtoField(v interface{}) ([]byte, error) {
 					}
 				}
 				if err = (*jsonpb.Marshaler)(j).Marshal(&buf, rv.Index(i).Interface().(proto.Message)); err != nil {
+					return nil, err
+				}
+			}
+			err = buf.WriteByte(']')
+			if err != nil {
+				return nil, err
+			}
+
+			return buf.Bytes(), nil
+		}
+
+		if rv.Type().Elem().Implements(typeProtoEnum) {
+			var buf bytes.Buffer
+			err := buf.WriteByte('[')
+			if err != nil {
+				return nil, err
+			}
+			for i := 0; i < rv.Len(); i++ {
+				if i != 0 {
+					err = buf.WriteByte(',')
+					if err != nil {
+						return nil, err
+					}
+				}
+				if j.EnumsAsInts {
+					_, err = buf.WriteString(strconv.FormatInt(rv.Index(i).Int(), 10))
+				} else {
+					_, err = buf.WriteString("\"" + rv.Index(i).Interface().(protoEnum).String() + "\"")
+				}
+				if err != nil {
 					return nil, err
 				}
 			}
@@ -241,6 +272,8 @@ type protoEnum interface {
 	fmt.Stringer
 	EnumDescriptor() ([]byte, []int)
 }
+
+var typeProtoEnum = reflect.TypeOf((*protoEnum)(nil)).Elem()
 
 var typeProtoMessage = reflect.TypeOf((*proto.Message)(nil)).Elem()
 
