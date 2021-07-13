@@ -915,6 +915,7 @@ func TestApplyTemplateSimple(t *testing.T) {
 		Name:       proto.String("Example"),
 		InputType:  proto.String("ExampleMessage"),
 		OutputType: proto.String("ExampleMessage"),
+		Options:    &descriptorpb.MethodOptions{},
 	}
 	svc := &descriptorpb.ServiceDescriptorProto{
 		Name:   proto.String("ExampleService"),
@@ -954,8 +955,9 @@ func TestApplyTemplateSimple(t *testing.T) {
 								PathTmpl: httprule.Template{
 									Version:  1,
 									OpCodes:  []int{0, 0},
-									Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
+									Template: "/v1/echo",
 								},
+								ResponseBody: &descriptor.Body{FieldPath: nil},
 							},
 						},
 					},
@@ -964,6 +966,7 @@ func TestApplyTemplateSimple(t *testing.T) {
 		},
 	}
 	reg := descriptor.NewRegistry()
+	reg.SetDisableDefaultErrors(true)
 	err := AddErrorDefs(reg)
 	it.NoError(err)
 	fileCL := crossLinkFixture(&file)
@@ -987,6 +990,47 @@ func TestApplyTemplateSimple(t *testing.T) {
 			Type: "object",
 		},
 	}, result.Components.Schemas["exampleExampleMessage"])
+
+	it.Equal(&PathItem{
+		Ref:         "",
+		Summary:     "",
+		Description: "",
+		Get: &Operation{
+			Tags:        []string{"ExampleService"},
+			Summary:     "",
+			Description: "",
+			OperationID: "ExampleService_Example",
+			Parameters: []*ParameterRef{
+				{
+					Value: &Parameter{
+						Name:     "body",
+						In:       "body",
+						Required: true,
+						Schema: &SchemaRef{
+							Ref: "#/components/schemas/exampleExampleMessage",
+						},
+					},
+				},
+			},
+			Responses: map[string]*ResponseRef{
+				"200": {
+					Ref: "",
+					Value: &Response{
+						Description: strPtr("A successful response."),
+						Headers:     Headers{},
+						Content: Content{
+							"application/json": &MediaType{
+								Schema: &SchemaRef{
+									Ref: "#/components/schemas/exampleExampleMessage",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Parameters: nil,
+	}, result.Paths["/v1/echo"])
 }
 
 func TestApplyTemplateMultiService(t *testing.T) {

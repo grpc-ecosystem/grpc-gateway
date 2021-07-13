@@ -101,8 +101,7 @@ func applyTemplate(p param) (*Openapi, error) {
 	// Create the basic template object. This is the object that everything is
 	// defined off of.
 	s := Openapi{
-		// OpenAPI 3.1 is the version of this document
-		OpenAPI: "3.1",
+		OpenAPI: "3.0.3",
 		Components: Components{
 			Schemas:         make(Schemas),
 			Parameters:      make(ParametersMap),
@@ -136,7 +135,6 @@ func applyTemplate(p param) (*Openapi, error) {
 	s.Paths = services.paths
 
 	messages := messageMap{}
-	streamingMessages := messageMap{}
 	enums := enumMap{}
 
 	if !p.reg.GetDisableDefaultErrors() {
@@ -151,7 +149,7 @@ func applyTemplate(p param) (*Openapi, error) {
 
 	// Find all the service's messages and enumerations that are defined (recursively)
 	// and write request, response and other custom (but referenced) types out as definition objects.
-	findServicesMessagesAndEnumerations(p.Services, p.reg, messages, streamingMessages, enums, services.requestResponseRefs)
+	findServicesMessagesAndEnumerations(p.Services, p.reg, messages, enums, services.requestResponseRefs)
 
 	if err := renderMessagesToComponentsSchemas(messages, s.Components, p.reg, services.customRefs, nil); err != nil {
 		return nil, err
@@ -542,12 +540,12 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			Schema: &SchemaRef{
 				Value: &Schema{
 					Default: schema.Default,
-					Type: schema.Type,
-					Items: schema.Items,
-					Format: schema.Format,
+					Type:    schema.Type,
+					Items:   schema.Items,
+					Format:  schema.Format,
 				},
 			},
-			Required:    required,
+			Required: required,
 		}
 
 		// TODO(anjmao): Handle array and enums.
@@ -620,7 +618,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 }
 
 // findServicesMessagesAndEnumerations discovers all messages and enums defined in the RPC methods of the service.
-func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, ms messageMap, e enumMap, refs refMap) {
+func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, e enumMap, refs refMap) {
 	for _, svc := range s {
 		for _, meth := range svc.Methods {
 			// Request may be fully included in query
@@ -1187,7 +1185,7 @@ func renderServiceTags(services []*descriptor.Service) []*Tag {
 
 type renderedServices struct {
 	requestResponseRefs, customRefs refMap
-	paths Paths
+	paths                           Paths
 }
 
 // TODO(anjamo): Rewrite this method to return and not mutate.
@@ -1315,8 +1313,7 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 					desc := ""
 
 					if len(b.Body.FieldPath) == 0 {
-						schemaRef = &SchemaRef{
-						}
+						schemaRef = &SchemaRef{}
 
 						wknSchemaCore, isWkn := wktSchemas[meth.RequestType.FQMN()]
 						if !isWkn {
@@ -1405,8 +1402,7 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 				var responseSchemaRef *SchemaRef
 
 				if b.ResponseBody == nil || len(b.ResponseBody.FieldPath) == 0 {
-					responseSchemaRef = &SchemaRef{
-					}
+					responseSchemaRef = &SchemaRef{}
 
 					// Don't link to a full definition for
 					// empty; it's overly verbose.
@@ -1475,7 +1471,7 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 								Description: &desc,
 								Content: Content{
 									"application/json": {
-										Schema: &SchemaRef{},
+										Schema: responseSchemaRef,
 									},
 								},
 								Headers: Headers{},
@@ -1525,9 +1521,10 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 				}
 
 				opts, err := getMethodOpenAPIOption(reg, meth)
+
 				if opts != nil {
 					if err != nil {
-						panic(err)
+						return nil, err
 					}
 					operationObject.ExternalDocs = protoExternalDocumentationToOpenAPIExternalDocumentation(opts.ExternalDocs, reg, meth)
 					// TODO(ivucica): this would be better supported by looking whether the method is deprecated in the proto file
@@ -1596,10 +1593,10 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 
 								respObj.Value.Headers[header.Name] = &HeaderRef{
 									Value: &Header{
-										Description:    headerVal.Description,
-										Deprecated:     headerVal.Deprecated,
-										Required:       headerVal.Required,
-										Schema:         openapiSchemaFromProtoSchema(headerVal.Schema.GetSchema(), reg, customRefs, nil),
+										Description: headerVal.Description,
+										Deprecated:  headerVal.Deprecated,
+										Required:    headerVal.Required,
+										Schema:      openapiSchemaFromProtoSchema(headerVal.Schema.GetSchema(), reg, customRefs, nil),
 										//Schema: &SchemaRef{
 										//	Value: &Schema{
 										//		Type: headerSchema.Type,
@@ -1608,9 +1605,9 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 										//		Format: headerSchema.Format,
 										//	},
 										//},
-										Example:        headerVal.Example,
-										Examples:       nil,
-										Content:        nil,
+										Example:  headerVal.Example,
+										Examples: nil,
+										Content:  nil,
 									},
 								}
 							}
@@ -1667,7 +1664,7 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 	return &renderedServices{
 		requestResponseRefs: requestResponseRefs,
 		customRefs:          customRefs,
-		paths: paths,
+		paths:               paths,
 	}, nil
 }
 
@@ -2205,11 +2202,10 @@ func getMethodOpenAPIOption(reg *descriptor.Registry, meth *descriptor.Method) (
 	if opts != nil {
 		return opts, nil
 	}
-	// TODO(anjmao): Support from registry if yaml spec is passed.
-	//opts, ok := reg.GetOpenAPIMethodOption(meth.FQMN())
-	//if !ok {
-	//	return nil, nil
-	//}
+	opts, ok := reg.GetOpenAPIMethodOptionV3(meth.FQMN())
+	if !ok {
+		return nil, nil
+	}
 	return opts, nil
 }
 
@@ -2288,9 +2284,7 @@ func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.SchemaOrReference, re
 		//f, t := protoJSONSchemaTypeToFormat(j.GetSchema())
 		//ret.Format = f
 		//ret.Type = t
-		ret.Value = &Schema{
-
-		}
+		ret.Value = &Schema{}
 	}
 
 	return &ret
@@ -2344,12 +2338,12 @@ func updateswaggerObjectFromJSONSchema(s *Schema, j *openapi_options.Schema, reg
 
 }
 
-func uint64ptr(i uint64) *uint64  {
+func uint64ptr(i uint64) *uint64 {
 	return &i
 }
 
 // TODO(anjmao): Check if this is correct. Probably not.
-func enums(any []*openapi_options.Any) []interface{}  {
+func enums(any []*openapi_options.Any) []interface{} {
 	var out []interface{}
 	for _, v := range any {
 		out = append(out, string(v.Value.Value))
