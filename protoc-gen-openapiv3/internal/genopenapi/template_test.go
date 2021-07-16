@@ -238,191 +238,190 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 	}
 }
 
-//func TestMessageToQueryParameters(t *testing.T) {
-//	type test struct {
-//		MsgDescs []*descriptorpb.DescriptorProto
-//		Message  string
-//		Params   []openapiParameterObject
-//	}
-//
-//	tests := []test{
-//		{
-//			MsgDescs: []*descriptorpb.DescriptorProto{
-//				{
-//					Name: proto.String("ExampleMessage"),
-//					Field: []*descriptorpb.FieldDescriptorProto{
-//						{
-//							Name:   proto.String("a"),
-//							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-//							Number: proto.Int32(1),
-//						},
-//						{
-//							Name:   proto.String("b"),
-//							Type:   descriptorpb.FieldDescriptorProto_TYPE_DOUBLE.Enum(),
-//							Number: proto.Int32(2),
-//						},
-//						{
-//							Name:   proto.String("c"),
-//							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-//							Label:  descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
-//							Number: proto.Int32(3),
-//						},
-//					},
-//				},
-//			},
-//			Message: "ExampleMessage",
-//			Params: []openapiParameterObject{
-//				{
-//					Name:     "a",
-//					In:       "query",
-//					Required: false,
-//					Type:     "string",
-//				},
-//				{
-//					Name:     "b",
-//					In:       "query",
-//					Required: false,
-//					Type:     "number",
-//					Format:   "double",
-//				},
-//				{
-//					Name:             "c",
-//					In:               "query",
-//					Required:         false,
-//					Type:             "array",
-//					CollectionFormat: "multi",
-//				},
-//			},
-//		},
-//		{
-//			MsgDescs: []*descriptorpb.DescriptorProto{
-//				{
-//					Name: proto.String("ExampleMessage"),
-//					Field: []*descriptorpb.FieldDescriptorProto{
-//						{
-//							Name:     proto.String("nested"),
-//							Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-//							TypeName: proto.String(".example.Nested"),
-//							Number:   proto.Int32(1),
-//						},
-//					},
-//				},
-//				{
-//					Name: proto.String("Nested"),
-//					Field: []*descriptorpb.FieldDescriptorProto{
-//						{
-//							Name:   proto.String("a"),
-//							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-//							Number: proto.Int32(1),
-//						},
-//						{
-//							Name:     proto.String("deep"),
-//							Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-//							TypeName: proto.String(".example.Nested.DeepNested"),
-//							Number:   proto.Int32(2),
-//						},
-//					},
-//					NestedType: []*descriptorpb.DescriptorProto{{
-//						Name: proto.String("DeepNested"),
-//						Field: []*descriptorpb.FieldDescriptorProto{
-//							{
-//								Name:   proto.String("b"),
-//								Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-//								Number: proto.Int32(1),
-//							},
-//							{
-//								Name:     proto.String("c"),
-//								Type:     descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum(),
-//								TypeName: proto.String(".example.Nested.DeepNested.DeepEnum"),
-//								Number:   proto.Int32(2),
-//							},
-//						},
-//						EnumType: []*descriptorpb.EnumDescriptorProto{
-//							{
-//								Name: proto.String("DeepEnum"),
-//								Value: []*descriptorpb.EnumValueDescriptorProto{
-//									{Name: proto.String("FALSE"), Number: proto.Int32(0)},
-//									{Name: proto.String("TRUE"), Number: proto.Int32(1)},
-//								},
-//							},
-//						},
-//					}},
-//				},
-//			},
-//			Message: "ExampleMessage",
-//			Params: []openapiParameterObject{
-//				{
-//					Name:     "nested.a",
-//					In:       "query",
-//					Required: false,
-//					Type:     "string",
-//				},
-//				{
-//					Name:     "nested.deep.b",
-//					In:       "query",
-//					Required: false,
-//					Type:     "string",
-//				},
-//				{
-//					Name:     "nested.deep.c",
-//					In:       "query",
-//					Required: false,
-//					Type:     "string",
-//					Enum:     []string{"FALSE", "TRUE"},
-//					Default:  "FALSE",
-//				},
-//			},
-//		},
-//	}
-//
-//	for _, test := range tests {
-//		reg := descriptor.NewRegistry()
-//		msgs := []*descriptor.Message{}
-//		for _, msgdesc := range test.MsgDescs {
-//			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
-//		}
-//		file := descriptor.File{
-//			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
-//				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
-//				Name:           proto.String("example.proto"),
-//				Package:        proto.String("example"),
-//				Dependency:     []string{},
-//				MessageType:    test.MsgDescs,
-//				Service:        []*descriptorpb.ServiceDescriptorProto{},
-//				Options: &descriptorpb.FileOptions{
-//					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
-//				},
-//			},
-//			GoPkg: descriptor.GoPackage{
-//				Path: "example.com/path/to/example/example.pb",
-//				Name: "example_pb",
-//			},
-//			Messages: msgs,
-//		}
-//		err := reg.Load(&pluginpb.CodeGeneratorRequest{
-//			ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
-//		})
-//		if err != nil {
-//			t.Fatalf("failed to load code generator request: %v", err)
-//		}
-//
-//		message, err := reg.LookupMsg("", ".example."+test.Message)
-//		if err != nil {
-//			t.Fatalf("failed to lookup message: %s", err)
-//		}
-//		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
-//		if err != nil {
-//			t.Fatalf("failed to convert message to query parameters: %s", err)
-//		}
-//		// avoid checking Items for array types
-//		for i := range params {
-//			params[i].Items = nil
-//		}
-//		if !reflect.DeepEqual(params, test.Params) {
-//			t.Errorf("expected %v, got %v", test.Params, params)
-//		}
-//	}
-//}
+func TestMessageToQueryParameters(t *testing.T) {
+	it := require.New(t)
+	type test struct {
+		MsgDescs       []*descriptorpb.DescriptorProto
+		Message        string
+		ExpectedParams []Parameter
+	}
+
+	tests := []test{
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:   proto.String("a"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+						},
+						{
+							Name:   proto.String("b"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_DOUBLE.Enum(),
+							Number: proto.Int32(2),
+						},
+						{
+							Name:   proto.String("c"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Label:  descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+							Number: proto.Int32(3),
+						},
+					},
+				},
+			},
+			Message: "ExampleMessage",
+			ExpectedParams: []Parameter{
+				{
+					Name:     "a",
+					In:       "query",
+					Required: false,
+					Schema:   &SchemaRef{Value: &Schema{Type: "string"}},
+				},
+				{
+					Name:     "b",
+					In:       "query",
+					Required: false,
+					Schema:   &SchemaRef{Value: &Schema{Type: "number", Format: "double"}},
+				},
+				{
+					Name:     "c",
+					In:       "query",
+					Required: false,
+					Schema:   &SchemaRef{Value: &Schema{Type: "array", Format: "multi"}},
+				},
+			},
+		},
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:     proto.String("nested"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.Nested"),
+							Number:   proto.Int32(1),
+						},
+					},
+				},
+				{
+					Name: proto.String("Nested"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:   proto.String("a"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+						},
+						{
+							Name:     proto.String("deep"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.Nested.DeepNested"),
+							Number:   proto.Int32(2),
+						},
+					},
+					NestedType: []*descriptorpb.DescriptorProto{{
+						Name: proto.String("DeepNested"),
+						Field: []*descriptorpb.FieldDescriptorProto{
+							{
+								Name:   proto.String("b"),
+								Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+								Number: proto.Int32(1),
+							},
+							{
+								Name:     proto.String("c"),
+								Type:     descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum(),
+								TypeName: proto.String(".example.Nested.DeepNested.DeepEnum"),
+								Number:   proto.Int32(2),
+							},
+						},
+						EnumType: []*descriptorpb.EnumDescriptorProto{
+							{
+								Name: proto.String("DeepEnum"),
+								Value: []*descriptorpb.EnumValueDescriptorProto{
+									{Name: proto.String("FALSE"), Number: proto.Int32(0)},
+									{Name: proto.String("TRUE"), Number: proto.Int32(1)},
+								},
+							},
+						},
+					}},
+				},
+			},
+			Message: "ExampleMessage",
+			ExpectedParams: []Parameter{
+				{
+					Name:     "nested.a",
+					In:       "query",
+					Required: false,
+					Schema:   &SchemaRef{Value: &Schema{Type: "string"}},
+				},
+				{
+					Name:     "nested.deep.b",
+					In:       "query",
+					Required: false,
+					Schema:   &SchemaRef{Value: &Schema{Type: "string"}},
+				},
+				{
+					Name:     "nested.deep.c",
+					In:       "query",
+					Required: false,
+					Schema: &SchemaRef{
+						Value: &Schema{
+							Type:    "string",
+							Enum:    []interface{}{"FALSE", "TRUE"},
+							Default: "FALSE",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		test := test
+		t.Run(test.Message, func(t *testing.T) {
+			reg := descriptor.NewRegistry()
+			msgs := []*descriptor.Message{}
+			for _, msgdesc := range test.MsgDescs {
+				msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+			}
+			file := descriptor.File{
+				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+					Name:           proto.String("example.proto"),
+					Package:        proto.String("example"),
+					Dependency:     []string{},
+					MessageType:    test.MsgDescs,
+					Service:        []*descriptorpb.ServiceDescriptorProto{},
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+					},
+				},
+				GoPkg: descriptor.GoPackage{
+					Path: "example.com/path/to/example/example.pb",
+					Name: "example_pb",
+				},
+				Messages: msgs,
+			}
+			err := reg.Load(&pluginpb.CodeGeneratorRequest{
+				ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+			})
+			it.NoError(err)
+
+			message, err := reg.LookupMsg("", ".example."+test.Message)
+			it.NoError(err)
+			params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
+			it.NoError(err)
+			// avoid checking Items for array types
+			for i := range params {
+				params[i].Schema.Value.Items = nil
+			}
+			it.Equal(test.ExpectedParams, params)
+		})
+	}
+}
+
 //
 //// TestMessagetoQueryParametersNoRecursive, is a check that cyclical references between messages
 ////  are not falsely detected given previous known edge-cases.
@@ -671,7 +670,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 //	type test struct {
 //		MsgDescs []*descriptorpb.DescriptorProto
 //		Message  string
-//		Params   []openapiParameterObject
+//		ExpectedParams   []openapiParameterObject
 //	}
 //
 //	tests := []test{
@@ -690,7 +689,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 //				},
 //			},
 //			Message: "ExampleMessage",
-//			Params: []openapiParameterObject{
+//			ExpectedParams: []openapiParameterObject{
 //				{
 //					Name:     "testFieldA",
 //					In:       "query",
@@ -726,7 +725,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 //				},
 //			},
 //			Message: "ExampleMessage",
-//			Params: []openapiParameterObject{
+//			ExpectedParams: []openapiParameterObject{
 //				{
 //					Name:     "subMessage.testFieldA",
 //					In:       "query",
@@ -777,8 +776,8 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 //		if err != nil {
 //			t.Fatalf("failed to convert message to query parameters: %s", err)
 //		}
-//		if !reflect.DeepEqual(params, test.Params) {
-//			t.Errorf("expected %v, got %v", test.Params, params)
+//		if !reflect.DeepEqual(params, test.ExpectedParams) {
+//			t.Errorf("expected %v, got %v", test.ExpectedParams, params)
 //		}
 //	}
 //}
@@ -788,7 +787,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 //		MsgDescs          []*descriptorpb.DescriptorProto
 //		WellKnownMsgDescs []*descriptorpb.DescriptorProto
 //		Message           string
-//		Params            []openapiParameterObject
+//		ExpectedParams            []openapiParameterObject
 //	}
 //
 //	tests := []test{
@@ -841,7 +840,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 //				},
 //			},
 //			Message: "ExampleMessage",
-//			Params: []openapiParameterObject{
+//			ExpectedParams: []openapiParameterObject{
 //				{
 //					Name:     "a_field_mask",
 //					In:       "query",
@@ -900,140 +899,14 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 //		if err != nil {
 //			t.Fatalf("failed to convert message to query parameters: %s", err)
 //		}
-//		if !reflect.DeepEqual(params, test.Params) {
-//			t.Errorf("expected %v, got %v", test.Params, params)
+//		if !reflect.DeepEqual(params, test.ExpectedParams) {
+//			t.Errorf("expected %v, got %v", test.ExpectedParams, params)
 //		}
 //	}
 //}
 //
-func TestApplyTemplateSimple(t *testing.T) {
-	it := require.New(t)
-	msgdesc := &descriptorpb.DescriptorProto{
-		Name: proto.String("ExampleMessage"),
-	}
-	meth := &descriptorpb.MethodDescriptorProto{
-		Name:       proto.String("Example"),
-		InputType:  proto.String("ExampleMessage"),
-		OutputType: proto.String("ExampleMessage"),
-		Options:    &descriptorpb.MethodOptions{},
-	}
-	svc := &descriptorpb.ServiceDescriptorProto{
-		Name:   proto.String("ExampleService"),
-		Method: []*descriptorpb.MethodDescriptorProto{meth},
-	}
-	msg := &descriptor.Message{
-		DescriptorProto: msgdesc,
-	}
-	file := descriptor.File{
-		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
-			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
-			Name:           proto.String("example.proto"),
-			Package:        proto.String("example"),
-			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
-			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
-			Options: &descriptorpb.FileOptions{
-				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
-			},
-		},
-		GoPkg: descriptor.GoPackage{
-			Path: "example.com/path/to/example/example.pb",
-			Name: "example_pb",
-		},
-		Messages: []*descriptor.Message{msg},
-		Services: []*descriptor.Service{
-			{
-				ServiceDescriptorProto: svc,
-				Methods: []*descriptor.Method{
-					{
-						MethodDescriptorProto: meth,
-						RequestType:           msg,
-						ResponseType:          msg,
-						Bindings: []*descriptor.Binding{
-							{
-								HTTPMethod: "GET",
-								Body:       &descriptor.Body{FieldPath: nil},
-								PathTmpl: httprule.Template{
-									Version:  1,
-									OpCodes:  []int{0, 0},
-									Template: "/v1/echo",
-								},
-								ResponseBody: &descriptor.Body{FieldPath: nil},
-							},
-						},
-					},
-				},
-			},
-		},
-	}
-	reg := descriptor.NewRegistry()
-	reg.SetDisableDefaultErrors(true)
-	err := AddErrorDefs(reg)
-	it.NoError(err)
-	fileCL := crossLinkFixture(&file)
-	err = reg.Load(reqFromFile(fileCL))
-	it.NoError(err)
-	result, err := applyTemplate(param{File: fileCL, reg: reg})
-	it.NoError(err)
 
-	it.Equal("3.1", result.OpenAPI)
-
-	it.Equal(Info{
-		Title:          "example.proto",
-		Description:    "",
-		TermsOfService: "",
-		Contact:        nil,
-		License:        nil,
-		Version:        "version not set",
-	}, result.Info)
-	it.Equal(&SchemaRef{
-		Value: &Schema{
-			Type: "object",
-		},
-	}, result.Components.Schemas["exampleExampleMessage"])
-
-	it.Equal(&PathItem{
-		Ref:         "",
-		Summary:     "",
-		Description: "",
-		Get: &Operation{
-			Tags:        []string{"ExampleService"},
-			Summary:     "",
-			Description: "",
-			OperationID: "ExampleService_Example",
-			Parameters: []*ParameterRef{
-				{
-					Value: &Parameter{
-						Name:     "body",
-						In:       "body",
-						Required: true,
-						Schema: &SchemaRef{
-							Ref: "#/components/schemas/exampleExampleMessage",
-						},
-					},
-				},
-			},
-			Responses: map[string]*ResponseRef{
-				"200": {
-					Ref: "",
-					Value: &Response{
-						Description: strPtr("A successful response."),
-						Headers:     Headers{},
-						Content: Content{
-							"application/json": &MediaType{
-								Schema: &SchemaRef{
-									Ref: "#/components/schemas/exampleExampleMessage",
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-		Parameters: nil,
-	}, result.Paths["/v1/echo"])
-}
-
-func TestApplyTemplateMultiService(t *testing.T) {
+func TestApplyTemplate(t *testing.T) {
 	it := require.New(t)
 
 	msgdesc := &descriptorpb.DescriptorProto{
@@ -1106,7 +979,7 @@ func TestApplyTemplateMultiService(t *testing.T) {
 						ResponseType:          msg,
 						Bindings: []*descriptor.Binding{
 							{
-								HTTPMethod: "GET",
+								HTTPMethod: "POST",
 								Body:       &descriptor.Body{FieldPath: nil},
 								PathTmpl: httprule.Template{
 									Version:  1,
@@ -1120,7 +993,9 @@ func TestApplyTemplateMultiService(t *testing.T) {
 			},
 		},
 	}
+
 	reg := descriptor.NewRegistry()
+	reg.SetDisableDefaultErrors(true)
 	err := AddErrorDefs(reg)
 	it.NoError(err)
 
@@ -1134,7 +1009,82 @@ func TestApplyTemplateMultiService(t *testing.T) {
 	// Check that the two services have unique operation IDs even though they
 	// have the same method name.
 	it.Equal("ExampleService_Example", result.Paths["/v1/echo"].Get.OperationID)
-	it.Equal("OtherService_Example", result.Paths["/v1/ping"].Get.OperationID)
+	it.Equal("OtherService_Example", result.Paths["/v1/ping"].Post.OperationID)
+	it.Equal(&PathItem{
+		Get: &Operation{
+			Tags:        []string{"ExampleService"},
+			Summary:     "",
+			Description: "",
+			OperationID: "ExampleService_Example",
+			Parameters: []*ParameterRef{
+				{
+					Value: &Parameter{
+						Name:     "body",
+						In:       "body",
+						Required: true,
+						Schema: &SchemaRef{
+							Ref: "#/components/schemas/exampleExampleMessage",
+						},
+					},
+				},
+			},
+			Responses: map[string]*ResponseRef{
+				"200": {
+					Ref: "",
+					Value: &Response{
+						Description: strPtr("A successful response."),
+						Headers:     Headers{},
+						Content: Content{
+							"application/json": &MediaType{
+								Schema: &SchemaRef{
+									Ref: "#/components/schemas/exampleExampleMessage",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Parameters: nil,
+	}, result.Paths["/v1/echo"])
+
+	it.Equal(&PathItem{
+		Post: &Operation{
+			Tags:        []string{"OtherService"},
+			Summary:     "",
+			Description: "",
+			OperationID: "OtherService_Example",
+			Parameters: []*ParameterRef{
+				{
+					Value: &Parameter{
+						Name:     "body",
+						In:       "body",
+						Required: true,
+						Schema: &SchemaRef{
+							Ref: "#/components/schemas/exampleExampleMessage",
+						},
+					},
+				},
+			},
+			Responses: map[string]*ResponseRef{
+				"200": {
+					Ref: "",
+					Value: &Response{
+						Description: strPtr("A successful response."),
+						Headers:     Headers{},
+						Content: Content{
+							"application/json": &MediaType{
+								Schema: &SchemaRef{
+									Ref: "#/components/schemas/exampleExampleMessage",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		Parameters: nil,
+	}, result.Paths["/v1/ping"])
 }
 
 func TestApplyTemplateOverrideOperationID(t *testing.T) {

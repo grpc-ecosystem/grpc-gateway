@@ -506,14 +506,17 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 	}
 
 	// TODO(anjmao): Handle schema ref? Query params probably should not have this.
-	if schemaRef.Value == nil {
-		return params, err
-	}
+	//if schemaRef.Value == nil {
+	//	return params, err
+	//}
 
 	isEnum := field.GetType() == descriptorpb.FieldDescriptorProto_TYPE_ENUM
 	schema := schemaRef.Value
-	items := schema.Items
+	if schema == nil {
+		schema = &Schema{}
+	}
 	if schema.Type != "" || isEnum {
+		items := schema.Items
 		if schema.Type == "object" {
 			return nil, nil // TODO: currently, mapping object in query parameter is not supported
 		}
@@ -548,10 +551,9 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			Required: required,
 		}
 
-		// TODO(anjmao): Handle array and enums.
-		//if param.Type == "array" {
-		//	param.CollectionFormat = "multi"
-		//}
+		if param.Schema.Value.Type == "array" {
+			param.Schema.Value.Format = "multi"
+		}
 
 		param.Name = prefix + reg.FieldName(field)
 
@@ -733,7 +735,7 @@ func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, cu
 		}
 		fieldValue := schemaOfField(f, reg, customRefs)
 		// TODO(anjmao): In such case field is proto uses oneof. Handle this with oneof open api schema.
-		if fieldValue.Ref == "" && fieldValue.Value == nil {
+		if fieldValue.Ref == "" || fieldValue.Value == nil {
 			continue
 		}
 		comments := fieldProtoComments(reg, msg, f)
@@ -888,6 +890,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) S
 		}
 	default:
 		ref = SchemaRef{
+			Ref:   core.Ref,
 			Value: core.Value,
 		}
 	}
