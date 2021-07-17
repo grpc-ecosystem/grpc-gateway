@@ -1440,6 +1440,7 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 					}
 					responseSchemaRef.Value = schema
 				}
+
 				if meth.GetServerStreaming() {
 					desc += "(streaming responses)"
 					responseSchemaRef.Value.Type = "object"
@@ -1454,7 +1455,6 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 					statusDef, hasStatus := fullyQualifiedNameToOpenAPIName(".google.rpc.Status", reg)
 					if hasStatus {
 						props["error"] = &SchemaRef{
-							// TODO(anjmao): Definitions should be changed to components.
 							Ref: fmt.Sprintf("#/components/schemas/%s", statusDef),
 						}
 					}
@@ -1471,7 +1471,6 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 					Tags:       []string{tag},
 					Parameters: parameters,
 					Responses: Responses{
-						// TODO(anjmao): Check why this is 200 by default?
 						"200": &ResponseRef{
 							Value: &Response{
 								Description: &desc,

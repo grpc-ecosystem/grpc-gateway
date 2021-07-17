@@ -248,6 +248,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 func TestMessageToQueryParameters(t *testing.T) {
 	it := require.New(t)
 	type test struct {
+		Name string
 		MsgDescs       []*descriptorpb.DescriptorProto
 		Message        string
 		ExpectedParams []Parameter
@@ -255,6 +256,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 
 	tests := []test{
 		{
+			Name: "basic",
 			MsgDescs: []*descriptorpb.DescriptorProto{
 				{
 					Name: proto.String("ExampleMessage"),
@@ -301,6 +303,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 			},
 		},
 		{
+			Name: "nested",
 			MsgDescs: []*descriptorpb.DescriptorProto{
 				{
 					Name: proto.String("ExampleMessage"),
@@ -383,11 +386,108 @@ func TestMessageToQueryParameters(t *testing.T) {
 				},
 			},
 		},
+		/*
+		message Embedded {
+			oneof mark {
+				int64 progress = 1;
+				string note = 2;
+			}
+		}
+
+		// SimpleMessage represents a simple message sent to the Echo service.
+		message SimpleMessage {
+			// Id represents the message identifier.
+			string id = 1;
+			oneof ext {
+				int64 en = 6;
+				Embedded no = 7;
+			}
+		}
+		 */
+		{
+			Name: "one of",
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Embedded"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:       proto.String("progress"),
+							Type:       descriptorpb.FieldDescriptorProto_TYPE_INT64.Enum(),
+							Number:     proto.Int32(1),
+							OneofIndex: proto.Int32(0),
+						},
+						{
+							Name:       proto.String("note"),
+							Type:       descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:     proto.Int32(2),
+							OneofIndex: proto.Int32(0),
+						},
+					},
+					OneofDecl: []*descriptorpb.OneofDescriptorProto{
+						{
+							Name: proto.String("mark"),
+						},
+					},
+				},
+				{
+					Name: proto.String("SimpleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:       proto.String("id"),
+							Type:       descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:     proto.Int32(1),
+							JsonName: strPtr("id"),
+						},
+						{
+							Name:           proto.String("en"),
+							Number:         proto.Int32(2),
+							Type:           descriptorpb.FieldDescriptorProto_TYPE_INT64.Enum(),
+							OneofIndex:     proto.Int32(0),
+							JsonName: strPtr("en"),
+						},
+						{
+							Name:           proto.String("no"),
+							Number:         proto.Int32(3),
+							Type:           descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							OneofIndex:     proto.Int32(0),
+							TypeName: strPtr(".example.Embedded"),
+							JsonName: strPtr("no"),
+						},
+					},
+					OneofDecl: []*descriptorpb.OneofDescriptorProto{
+						{
+							Name: proto.String("ext"),
+						},
+					},
+				},
+			},
+			Message: "SimpleMessage",
+			ExpectedParams: []Parameter{
+				{
+					Name:     "a",
+					In:       "query",
+					Required: false,
+					Schema:   &SchemaRef{Value: &Schema{Type: "string"}},
+				},
+				{
+					Name:     "b",
+					In:       "query",
+					Required: false,
+					Schema:   &SchemaRef{Value: &Schema{Type: "number", Format: "double"}},
+				},
+				{
+					Name:     "c",
+					In:       "query",
+					Required: false,
+					Schema:   &SchemaRef{Value: &Schema{Type: "array", Format: "multi"}},
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {
 		test := test
-		t.Run(test.Message, func(t *testing.T) {
+		t.Run(test.Name, func(t *testing.T) {
 			reg := descriptor.NewRegistry()
 			msgs := []*descriptor.Message{}
 			for _, msgdesc := range test.MsgDescs {
@@ -3952,20 +4052,6 @@ func TestRenderMessagesAsComponentSchemas(t *testing.T) {
 				},
 			},
 		},
-		/*
-			(*descriptor.Message)(0xc000369270)(
-			name:"SimpleMessage"
-			field:{name:"id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"id"}
-			field:{name:"num" number:2 label:LABEL_OPTIONAL type:TYPE_INT64 json_name:"num"}
-			field:{name:"line_num" number:3 label:LABEL_OPTIONAL type:TYPE_INT64 oneof_index:0 json_name:"lineNum"}
-			field:{name:"lang" number:4 label:LABEL_OPTIONAL type:TYPE_STRING oneof_index:0 json_name:"lang"}
-			field:{name:"status" number:5 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".grpc.gateway.examples.internal.proto.openapiv3.Embedded" json_name:"status"}
-			field:{name:"en" number:6 label:LABEL_OPTIONAL type:TYPE_INT64 oneof_index:1 json_name:"en"}
-			field:{name:"no" number:7 label:LABEL_OPTIONAL type:TYPE_MESSAGE
-			type_name:".grpc.gateway.examples.internal.proto.openapiv3.Embedded" oneof_index:1 json_name:"no"}
-			oneof_decl:{name:"code"}
-			oneof_decl:{name:"ext"})
-		*/
 		{
 			descr: "JSONSchema with one of fields",
 			msgDescs: []*descriptorpb.DescriptorProto{
