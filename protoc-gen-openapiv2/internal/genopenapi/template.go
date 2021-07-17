@@ -1758,6 +1758,9 @@ func processHeaders(inputHdrs map[string]*openapi_options.Header) (openapiHeader
 //
 // If there is no 'Summary', the same behavior will be attempted on 'Title',
 // but only if the last character is not a period.
+//
+// If there is a comment line that starts with 'Tags:' it will it will insert that
+// as the OpenAPI Tags field
 func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject interface{}, data interface{}, comment string, isPackageObject bool) error {
 	if len(comment) == 0 {
 		return nil
@@ -1780,6 +1783,7 @@ func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject inter
 	// Figure out which properties to update.
 	summaryValue := infoObjectValue.FieldByName("Summary")
 	descriptionValue := infoObjectValue.FieldByName("Description")
+	tagValue := infoObjectValue.FieldByName("Tags")
 	readOnlyValue := infoObjectValue.FieldByName("ReadOnly")
 
 	if readOnlyValue.Kind() == reflect.Bool && readOnlyValue.CanSet() && strings.Contains(comment, "Output only.") {
@@ -1798,6 +1802,25 @@ func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject inter
 	// paragraph as summary, and the rest as description.
 	if summaryValue.CanSet() {
 		summary := strings.TrimSpace(paragraphs[0])
+		var tags []string
+		for i := 1; i < len(paragraphs); i++ {
+			r, _ := regexp.Compile("(?i)tag:(.*)")
+			tagCheck := r.FindStringSubmatch(paragraphs[i])
+			if tagCheck != nil {
+				tags = strings.Split(tagCheck[1], ",")
+				// Make sure its not just an empty string as as tag
+				// Tag:
+				if len(tags[0]) > 0 {
+					for ii := range tags {
+						tags[ii] = strings.TrimSpace(tags[ii])
+					}
+				} else {
+					tags = nil
+				}
+				// Remove line from description
+				paragraphs[i] = ""
+			}
+		}
 		description := strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
 		if !usingTitle || (len(summary) > 0 && summary[len(summary)-1] != '.') {
 			// overrides the schema value only if it's empty
@@ -1813,6 +1836,15 @@ func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject inter
 				// keep the comment precedence when updating the package definition
 				if descriptionValue.Len() == 0 || isPackageObject {
 					descriptionValue.Set(reflect.ValueOf(description))
+				}
+			}
+			if len(tags) > 0 {
+				if tagValue.CanSet() {
+					// overrides the schema value only if it's empty
+					// keep the comment precedence when updating the package definition
+					if tagValue.Len() == 0 || isPackageObject {
+						tagValue.Set(reflect.ValueOf(tags))
+					}
 				}
 			}
 			return nil
