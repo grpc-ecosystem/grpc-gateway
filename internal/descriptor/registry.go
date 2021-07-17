@@ -664,6 +664,11 @@ func (r *Registry) GetOpenAPIFileOption(file string) (*options.Swagger, bool) {
 	return opt, ok
 }
 
+func (r *Registry) GetOpenAPIMethodOption(qualifiedMethod string) (*options.Operation, bool) {
+	opt, ok := r.methodOptions[qualifiedMethod]
+	return opt, ok
+}
+
 // GetOpenAPIMethodOptionV3 returns a registered OpenAPI option for a method
 func (r *Registry) GetOpenAPIMethodOptionV3(qualifiedMethod string) (*optionsv3.Operation, bool) {
 	opt, ok := r.methodOptionsv3[qualifiedMethod]

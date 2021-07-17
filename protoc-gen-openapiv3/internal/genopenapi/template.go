@@ -129,7 +129,7 @@ func applyTemplate(p param) (*Openapi, error) {
 	// Also adds custom user specified references to second map.
 	services, err := renderServices(p.Services, p.reg, p.Messages)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("rendering services: %w", err)
 	}
 	s.Tags = append(s.Tags, renderServiceTags(p.Services)...)
 	s.Paths = services.paths
@@ -143,7 +143,7 @@ func applyTemplate(p param) (*Openapi, error) {
 		if err == nil {
 			messages[swgRef] = runtimeError
 		} else {
-			return nil, err
+			return nil, fmt.Errorf("default errors status message not found: %w", err)
 		}
 	}
 
@@ -151,10 +151,10 @@ func applyTemplate(p param) (*Openapi, error) {
 	// and write request, response and other custom (but referenced) types out as definition objects.
 	findServicesMessagesAndEnumerations(p.Services, p.reg, messages, enums, services.requestResponseRefs)
 
-	if err := renderMessagesToComponentsSchemas(messages, s.Components, p.reg, services.customRefs, nil); err != nil {
+	if err := renderMessagesToComponentsSchemas(messages, &s.Components, p.reg, services.customRefs, nil); err != nil {
 		return nil, err
 	}
-	renderEnumerationsAsDefinition(enums, s.Components, p.reg)
+	renderEnumerationsAsDefinition(enums, &s.Components, p.reg)
 
 	// File itself might have some comments and metadata.
 	packageProtoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.FileDescriptorProto)(nil)), "Package")
@@ -380,7 +380,9 @@ func applyTemplate(p param) (*Openapi, error) {
 	// Finally add any references added by users that aren't
 	// otherwise rendered.
 	// TODO(anjmao): Add custom defs.
-	//addCustomRefs(s.Definitions, p.reg, customRefs)
+	if err := addCustomRefs(&s.Components, p.reg, refMap{}); err != nil {
+		return nil, err
+	}
 
 	return &s, nil
 }
@@ -630,7 +632,7 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 					glog.Errorf("couldn't resolve OpenAPI name for FQMN '%v'", meth.RequestType.FQMN())
 					continue
 				}
-				if _, ok := refs[fmt.Sprintf("#/components/schemas%s", swgReqName)]; ok {
+				if _, ok := refs[fmt.Sprintf("#/components/schemas/%s", swgReqName)]; ok {
 					if !skipRenderingRef(meth.RequestType.FQMN()) {
 						m[swgReqName] = meth.RequestType
 					}
@@ -688,11 +690,11 @@ func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, cu
 	}
 	msgComments := protoComments(reg, msg.File, msg.Outers, "MessageType", int32(msg.Index))
 	if err := updateOpenAPIDataFromComments(reg, &schema, msg, msgComments, false); err != nil {
-		panic(err)
+		return nil, err
 	}
 	opts, err := getMessageOpenAPIOption(reg, msg)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	if opts != nil {
 		protoSchemaRef := openapiSchemaFromProtoSchema(opts, reg, customRefs, msg)
@@ -767,7 +769,7 @@ func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, cu
 	}, nil
 }
 
-func renderMessagesToComponentsSchemas(messages messageMap, c Components, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) error {
+func renderMessagesToComponentsSchemas(messages messageMap, c *Components, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) error {
 	for name, msg := range messages {
 		swgName, ok := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
 		if !ok {
@@ -844,7 +846,8 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) S
 				panic(fmt.Sprintf("can't resolve OpenAPI ref from typename '%v'", fd.GetTypeName()))
 			}
 			core = SchemaRef{
-				Ref: "#/components/schemas" + swgRef,
+				Value: &Schema{},
+				Ref: "#/components/schemas/" + swgRef,
 			}
 			if refs != nil {
 				refs[fd.GetTypeName()] = struct{}{}
@@ -957,7 +960,7 @@ func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format st
 }
 
 // renderEnumerationsAsDefinition inserts enums into the definitions object.
-func renderEnumerationsAsDefinition(enums enumMap, d Components, reg *descriptor.Registry) {
+func renderEnumerationsAsDefinition(enums enumMap, d *Components, reg *descriptor.Registry) {
 	for _, enum := range enums {
 		swgName, ok := fullyQualifiedNameToOpenAPIName(enum.FQEN(), reg)
 		if !ok {
@@ -1494,7 +1497,7 @@ func renderServices(services []*descriptor.Service, reg *descriptor.Registry, ms
 								Content: map[string]*MediaType{
 									"application/json": {
 										Schema: &SchemaRef{
-											Ref: fmt.Sprintf("#/components/schemas%s", errDef),
+											Ref: fmt.Sprintf("#/components/schemas/%s", errDef),
 										},
 									},
 								},
@@ -2268,31 +2271,6 @@ func getFieldBehaviorOption(reg *descriptor.Registry, fd *descriptor.Field) ([]a
 	return opts, nil
 }
 
-func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.SchemaOrReference, reg *descriptor.Registry, refs refMap) *SchemaRef {
-	ret := SchemaRef{}
-
-	if ref := j.GetReference(); ref != nil {
-		openapiName, ok := fullyQualifiedNameToOpenAPIName(ref.GetXRef(), reg)
-		if ok {
-			ret.Ref = "#/components/schemas" + openapiName
-			if refs != nil {
-				refs[ref.GetXRef()] = struct{}{}
-			}
-		} else {
-			// TODO(anjmao): Check this case.
-			// ret.Ref += j.GetRef()
-		}
-	} else {
-		// TODO(anjmao): Fill schema
-		//f, t := protoJSONSchemaTypeToFormat(j.GetSchema())
-		//ret.Format = f
-		//ret.Type = t
-		ret.Value = &Schema{}
-	}
-
-	return &ret
-}
-
 func updateswaggerObjectFromJSONSchema(s *Schema, j *openapi_options.Schema, reg *descriptor.Registry, data interface{}) {
 	s.Title = j.GetTitle()
 	s.Description = j.GetDescription()
@@ -2465,43 +2443,44 @@ func protoExternalDocumentationToOpenAPIExternalDocumentation(in *openapi_option
 	}
 }
 
-// TODO(anjmao): Fix this.
-//func addCustomRefs(d openapiDefinitionsObject, reg *descriptor.Registry, refs refMap) {
-//	if len(refs) == 0 {
-//		return
-//	}
-//	msgMap := make(messageMap)
-//	enumMap := make(enumMap)
-//	for ref := range refs {
-//		swgName, swgOk := fullyQualifiedNameToOpenAPIName(ref, reg)
-//		if !swgOk {
-//			glog.Errorf("can't resolve OpenAPI name from CustomRef '%v'", ref)
-//			continue
-//		}
-//		if _, ok := d[swgName]; ok {
-//			// Skip already existing definitions
-//			delete(refs, ref)
-//			continue
-//		}
-//		msg, err := reg.LookupMsg("", ref)
-//		if err == nil {
-//			msgMap[swgName] = msg
-//			continue
-//		}
-//		enum, err := reg.LookupEnum("", ref)
-//		if err == nil {
-//			enumMap[swgName] = enum
-//			continue
-//		}
-//
-//		// ?? Should be either enum or msg
-//	}
-//	renderMessagesToComponentsSchemas(msgMap, d, reg, refs, nil)
-//	renderEnumerationsAsDefinition(enumMap, d, reg)
-//
-//	// Run again in case any new refs were added
-//	addCustomRefs(d, reg, refs)
-//}
+func addCustomRefs(c *Components, reg *descriptor.Registry, refs refMap) error {
+	if len(refs) == 0 {
+		return nil
+	}
+	msgMap := make(messageMap)
+	enumMap := make(enumMap)
+	for ref := range refs {
+		swgName, swgOk := fullyQualifiedNameToOpenAPIName(ref, reg)
+		if !swgOk {
+			glog.Errorf("can't resolve OpenAPI name from CustomRef '%v'", ref)
+			continue
+		}
+		if _, ok := c.Schemas[swgName]; ok {
+			// Skip already existing definitions
+			delete(refs, ref)
+			continue
+		}
+		msg, err := reg.LookupMsg("", ref)
+		if err == nil {
+			msgMap[swgName] = msg
+			continue
+		}
+		enum, err := reg.LookupEnum("", ref)
+		if err == nil {
+			enumMap[swgName] = enum
+			continue
+		}
+
+		// ?? Should be either enum or msg
+	}
+	if err := renderMessagesToComponentsSchemas(msgMap, c, reg, refs, nil); err != nil {
+		return err
+	}
+	renderEnumerationsAsDefinition(enumMap, c, reg)
+
+	// Run again in case any new refs were added
+	return addCustomRefs(c, reg, refs)
+}
 
 func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descriptor.Message) string {
 	for _, oneField := range fields {
