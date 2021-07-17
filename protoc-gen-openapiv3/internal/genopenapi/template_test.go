@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"reflect"
 	"testing"
 
 	anypb "github.com/golang/protobuf/ptypes/any"
@@ -94,6 +93,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 									Type: "string",
 								},
 							},
+							Format: "multi",
 						},
 					},
 				},
@@ -1577,30 +1577,19 @@ func TestApplyTemplateHeaders(t *testing.T) {
 	}
 
 	verifyTemplateHeaders := func(t *testing.T, reg *descriptor.Registry, file *descriptor.File, opts *openapiconfig.OpenAPIOptions) {
-		if err := AddErrorDefs(reg); err != nil {
-			t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
-			return
-		}
+		err := AddErrorDefs(reg)
+		it.NoError(err)
 		fileCL := crossLinkFixture(file)
-		err := reg.Load(reqFromFile(fileCL))
-		if err != nil {
-			t.Errorf("reg.Load(%#v) failed with %v; want success", file, err)
-			return
-		}
+		err = reg.Load(reqFromFile(fileCL))
+		it.NoError(err)
 		if opts != nil {
 			// TODO(anjmao): This one registers v2 options.
-			if err := reg.RegisterOpenAPIOptions(opts); err != nil {
-				t.Fatalf("failed to register OpenAPI annotations: %s", err)
-			}
+			err = reg.RegisterOpenAPIOptions(opts)
+			it.NoError(err)
 		}
 		result, err := applyTemplate(param{File: fileCL, reg: reg})
-		if err != nil {
-			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
-			return
-		}
-		if want, is, name := "3.1", result.OpenAPI, "Openapi"; !reflect.DeepEqual(is, want) {
-			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
-		}
+		it.NoError(err)
+		it.Equal("3.0.3", result.OpenAPI)
 
 		expectedHeaders := Headers{
 			"String": &HeaderRef{

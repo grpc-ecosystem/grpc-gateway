@@ -735,7 +735,7 @@ func renderMessageAsSchema(msg *descriptor.Message, reg *descriptor.Registry, cu
 		}
 		fieldValue := schemaOfField(f, reg, customRefs)
 		// TODO(anjmao): In such case field is proto uses oneof. Handle this with oneof open api schema.
-		if fieldValue.Ref == "" || fieldValue.Value == nil {
+		if fieldValue.Value == nil {
 			continue
 		}
 		comments := fieldProtoComments(reg, msg, f)
