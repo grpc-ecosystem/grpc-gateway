@@ -56,14 +56,25 @@ that's needed to generate a reverse-proxy with this library.
 
 ## Installation
 
-The following instructions assume you are using
-[Go Modules](https://github.com/golang/go/wiki/Modules) for dependency
-management. Use a
-[tool dependency](https://github.com/golang/go/wiki/Modules#how-can-i-track-tool-dependencies-for-a-module)
-to track the versions of the following executable packages:
+The easiest standalone way to install these tools is to create a new one file project in a new directory.
+
+```sh
+~
+$ mkdir -p Projects/tools
+
+~
+$ cd Projects/tools
+
+~/Projects/tools
+$ go mod init tools
+
+~/Projects/tools
+$ touch tools.go
+```
+Open the `tools.go` file in your editor and add this as content:
 
 ```go
-// +build tools
+//go:generate go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 google.golang.org/protobuf/cmd/protoc-gen-go google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
 package tools
 
@@ -75,14 +86,15 @@ import (
 )
 ```
 
-Run `go mod tidy` to resolve the versions. Install by running
-
+Then in the command line do the following:
+```
+~/Projects/tools
+$ go mod tidy
+```
+and
 ```sh
-$ go install \
-    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
-    github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
-    google.golang.org/protobuf/cmd/protoc-gen-go \
-    google.golang.org/grpc/cmd/protoc-gen-go-grpc
+~/Projects/tools
+$ go generate tools.go
 ```
 
 This will place four binaries in your `$GOBIN`;
@@ -93,6 +105,43 @@ This will place four binaries in your `$GOBIN`;
 - `protoc-gen-go-grpc`
 
 Make sure that your `$GOBIN` is in your `$PATH`.
+
+You can delete the `tools` folder as you don't need it any more.
+
+We need a new project with go modules initialized so go will autodetect the GO111MODULES support. The name of the project does not matter.
+
+`go mod tidy` will pull in the files for each of these tools into `$GOPATH/src` as regular modules.
+
+`go generate tools.go` will run the `//go:generate` command in the file itself which will install the binaries for these tools based on the source files that `go mod tidy` pulled in.
+
+You can also add these imports into an existing project and generate them as tools by using the `// +build tools` flag, for example:
+
+```go
+// +build tools
+
+package tools
+
+import (
+    _ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway"
+    _ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-openapiv2"
+    _ "google.golang.org/grpc/cmd/protoc-gen-go-grpc"
+    _ "google.golang.org/protobuf/cmd/protoc-gen-go"
+)
+```
+
+For more information, see documentation on [Go Modules](https://github.com/golang/go/wiki/Modules), [tool dependencies](https://github.com/golang/go/wiki/Modules#how-can-i-track-tool-dependencies-for-a-module).
+
+Please note that you should be in `GO111MODULES=auto` or `on` modes as `GOPATH` support is planned to be dropped in Go 1.17. See [the changes to go modules in 1.16](https://blog.golang.org/go116-module-changes) .
+
+If you'd rather not use the `go:generate` comment, you can install the tools manually by running the following command after `go mod tidy`:
+
+```sh
+$ go install \
+    github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway \
+    github.com/grpc-ecosystem/grpc-gateway/protoc-gen-openapiv2 \
+    google.golang.org/protobuf/cmd/protoc-gen-go \
+    google.golang.org/grpc/cmd/protoc-gen-go-grpc
+```
 
 ## Usage
 
