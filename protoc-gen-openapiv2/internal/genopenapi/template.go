@@ -370,6 +370,21 @@ func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descrip
 	}
 }
 
+// findMessagesOutsideServices discovers all messages defined outside of services
+func findMessagesOutsideServices(allMessages []*descriptor.Message, reg *descriptor.Registry, m messageMap) {
+	for _, msg := range allMessages {
+		swgName, swgOk := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
+		if !swgOk {
+			glog.Errorf("can't resolve OpenAPI name for '%v'", msg)
+			continue
+		}
+		_, present := m[swgName]
+		if !present {
+			m[swgName] = msg
+		}
+	}
+}
+
 func skipRenderingRef(refName string) bool {
 	_, ok := wktSchemas[refName]
 	return ok
@@ -1324,6 +1339,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	// Find all the service's messages and enumerations that are defined (recursively)
 	// and write request, response and other custom (but referenced) types out as definition objects.
 	findServicesMessagesAndEnumerations(p.Services, p.reg, messages, streamingMessages, enums, requestResponseRefs)
+	findMessagesOutsideServices(p.Messages, p.reg, messages)
 	renderMessagesAsDefinition(messages, s.Definitions, p.reg, customRefs, nil)
 	renderEnumerationsAsDefinition(enums, s.Definitions, p.reg)
 
