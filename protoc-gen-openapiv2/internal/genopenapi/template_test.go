@@ -4181,6 +4181,38 @@ func TestUpdateOpenAPIDataFromComments(t *testing.T) {
 			expectedError: nil,
 		},
 		{
+			descr:                "multi line comment with tag",
+			openapiSwaggerObject: &openapiOperationObject{},
+			expectedOpenAPIObject: &openapiOperationObject{
+				Summary:     "First line",
+				Description: "Second line",
+				Tags:        []string{"tag1"},
+			},
+			comments:      "First line\n\nSecond line\n\nTag: tag1",
+			expectedError: nil,
+		},
+		{
+			descr:                "multi line comment with multiple tags",
+			openapiSwaggerObject: &openapiOperationObject{},
+			expectedOpenAPIObject: &openapiOperationObject{
+				Summary:     "First line",
+				Description: "Second line",
+				Tags:        []string{"tag1", "tag2"},
+			},
+			comments:      "First line\n\nSecond line\n\nTag: tag1, tag2",
+			expectedError: nil,
+		},
+		{
+			descr:                "multi line comment with empty tag",
+			openapiSwaggerObject: &openapiOperationObject{},
+			expectedOpenAPIObject: &openapiOperationObject{
+				Summary:     "First line",
+				Description: "Second line",
+			},
+			comments:      "First line\n\nSecond line\n\nTag:",
+			expectedError: nil,
+		},
+		{
 			descr:                 "multi line comment with summary no dot",
 			openapiSwaggerObject:  &schemaCore{},
 			expectedOpenAPIObject: &schemaCore{},
