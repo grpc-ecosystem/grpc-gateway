@@ -11,6 +11,5 @@
 package unannotatedecho
 
 type ProtobufAny struct {
-	TypeUrl string `json:"typeUrl,omitempty"`
-	Value string `json:"value,omitempty"`
+	Type_ string `json:"@type,omitempty"`
 }

@@ -76,7 +76,9 @@ var wktSchemas = map[string]schemaCore{
 	".google.protobuf.BoolValue": {
 		Type: "boolean",
 	},
-	".google.protobuf.Empty": {},
+	".google.protobuf.Empty": {
+		Properties: &openapiSchemaObjectProperties{},
+	},
 	".google.protobuf.Struct": {
 		Type: "object",
 	},
@@ -91,6 +93,9 @@ var wktSchemas = map[string]schemaCore{
 	},
 	".google.protobuf.NullValue": {
 		Type: "string",
+	},
+	".google.protobuf.Any": {
+		Ref: "#/definitions/protobufAny",
 	},
 }
 
@@ -458,7 +463,35 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		}
 		*schema.Properties = append(*schema.Properties, kv)
 	}
+
+	if msg.FQMN() == ".google.protobuf.Any" {
+		transformAnyForJSON(&schema, reg.GetUseJSONNamesForFields())
+	}
+
 	return schema
+}
+
+// transformAnyForJSON should be called when the schema object represents a google.protobuf.Any, and will replace the
+// Properties slice with a single value for '@type'. We reuse the incorrectly named field so that we inherit the same
+// documentation as specified on the original field in the protobuf descriptors.
+func transformAnyForJSON(schema *openapiSchemaObject, useJSONNames bool) {
+	var typeFieldName string
+	if useJSONNames {
+		typeFieldName = "typeUrl"
+	} else {
+		typeFieldName = "type_url"
+	}
+
+	for _, property := range *schema.Properties {
+		if property.Key == typeFieldName {
+			schema.AdditionalProperties = &openapiSchemaObject{}
+			schema.Properties = &openapiSchemaObjectProperties{keyVal{
+				Key:   "@type",
+				Value: property.Value,
+			}}
+			break
+		}
+	}
 }
 
 func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) {
@@ -526,8 +559,9 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 		if wktSchema, ok := wktSchemas[fd.GetTypeName()]; ok {
 			core = wktSchema
 
-			if fd.GetTypeName() == ".google.protobuf.Empty" {
-				props = &openapiSchemaObjectProperties{}
+			// if wfkSchema is a reference to another known type, add it to refs to be processed later
+			if core.Ref != "" {
+				refs[fd.GetTypeName()] = struct{}{}
 			}
 		} else {
 			swgRef, ok := fullyQualifiedNameToOpenAPIName(fd.GetTypeName(), reg)
@@ -563,14 +597,14 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	case object:
 		ret = openapiSchemaObject{
 			schemaCore: schemaCore{
-				Type: "object",
+				Type:       "object",
+				Properties: props,
 			},
-			AdditionalProperties: &openapiSchemaObject{Properties: props, schemaCore: core},
+			AdditionalProperties: &openapiSchemaObject{schemaCore: core},
 		}
 	default:
 		ret = openapiSchemaObject{
 			schemaCore: core,
-			Properties: props,
 		}
 	}
 
