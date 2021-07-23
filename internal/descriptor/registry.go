@@ -115,11 +115,19 @@ type Registry struct {
 
 	// recursiveDepth sets the maximum depth of a field parameter
 	recursiveDepth int
+
+	// annotationMap is used to check for duplicate HTTP annotations
+	annotationMap map[annotationIdentifier]bool
 }
 
 type repeatedFieldSeparator struct {
 	name string
 	sep  rune
+}
+
+type annotationIdentifier struct {
+	method       string
+	pathTemplate string
 }
 
 // NewRegistry returns a new Registry.
@@ -140,6 +148,7 @@ func NewRegistry() *Registry {
 		messageOptions: make(map[string]*options.Schema),
 		serviceOptions: make(map[string]*options.Tag),
 		fieldOptions:   make(map[string]*options.JSONSchema),
+		annotationMap:  make(map[annotationIdentifier]bool),
 		recursiveDepth: 1000,
 	}
 }
@@ -682,4 +691,14 @@ func (r *Registry) FieldName(f *Field) string {
 		return f.GetJsonName()
 	}
 	return f.GetName()
+}
+
+func (r *Registry) CheckDuplicateAnnotation(httpMethod string, httpTemplate string) error {
+	a := annotationIdentifier{method: httpMethod, pathTemplate: httpTemplate}
+	_, ok := r.annotationMap[a]
+	if ok {
+		return fmt.Errorf("duplicate annotation: method=%s, template=%s", httpMethod, httpTemplate)
+	}
+	r.annotationMap[a] = true
+	return nil
 }
