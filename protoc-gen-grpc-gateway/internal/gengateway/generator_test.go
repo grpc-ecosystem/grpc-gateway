@@ -77,6 +77,7 @@ func newExampleFileDescriptorWithGoPkg(gp *descriptor.GoPackage, filenamePrefix 
 
 func TestGenerator_Generate(t *testing.T) {
 	g := new(generator)
+	g.reg = descriptor.NewRegistry()
 	result, err := g.Generate([]*descriptor.File{
 		crossLinkFixture(newExampleFileDescriptorWithGoPkg(&descriptor.GoPackage{
 			Path: "example.com/path/to/example",
