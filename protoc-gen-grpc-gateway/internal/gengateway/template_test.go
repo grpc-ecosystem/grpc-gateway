@@ -683,7 +683,7 @@ func TestIdentifierCapitalization(t *testing.T) {
 		OutputType: proto.String("example_response"),
 	}
 	meth2 := &descriptorpb.MethodDescriptorProto{
-		Name:       proto.String("Exampl_eGet"),
+		Name:       proto.String("Exampl_ePost"),
 		InputType:  proto.String("Exam_pleRequest"),
 		OutputType: proto.String("example_response"),
 	}
@@ -736,7 +736,7 @@ func TestIdentifierCapitalization(t *testing.T) {
 						ResponseType:          msg2,
 						Bindings: []*descriptor.Binding{
 							{
-								HTTPMethod: "GET",
+								HTTPMethod: "POST",
 								Body:       &descriptor.Body{FieldPath: nil},
 							},
 						},
@@ -754,7 +754,7 @@ func TestIdentifierCapitalization(t *testing.T) {
 	if want := `msg, err := client.ExampleGe2T(ctx, &protoReq, grpc.Header(&metadata.HeaderMD)`; !strings.Contains(got, want) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
-	if want := `msg, err := client.ExamplEGet(ctx, &protoReq, grpc.Header(&metadata.HeaderMD)`; !strings.Contains(got, want) {
+	if want := `msg, err := client.ExamplEPost(ctx, &protoReq, grpc.Header(&metadata.HeaderMD)`; !strings.Contains(got, want) {
 		t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 	}
 	if want := `var protoReq ExamPleRequest`; !strings.Contains(got, want) {
