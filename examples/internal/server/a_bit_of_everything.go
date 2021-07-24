@@ -308,7 +308,7 @@ func (s *_ABitOfEverythingServer) NoBindings(ctx context.Context, msg *durationp
 
 func (s *_ABitOfEverythingServer) Timeout(ctx context.Context, msg *emptypb.Empty) (*emptypb.Empty, error) {
 	<-ctx.Done()
-	return nil, ctx.Err()
+	return nil, status.FromContextError(ctx.Err()).Err()
 }
 
 func (s *_ABitOfEverythingServer) ErrorWithDetails(ctx context.Context, msg *emptypb.Empty) (*emptypb.Empty, error) {
