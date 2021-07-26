@@ -117,7 +117,7 @@ type Registry struct {
 	recursiveDepth int
 
 	// annotationMap is used to check for duplicate HTTP annotations
-	annotationMap map[annotationIdentifier]bool
+	annotationMap map[annotationIdentifier]struct{}
 }
 
 type repeatedFieldSeparator struct {
@@ -148,7 +148,7 @@ func NewRegistry() *Registry {
 		messageOptions: make(map[string]*options.Schema),
 		serviceOptions: make(map[string]*options.Tag),
 		fieldOptions:   make(map[string]*options.JSONSchema),
-		annotationMap:  make(map[annotationIdentifier]bool),
+		annotationMap:  make(map[annotationIdentifier]struct{}),
 		recursiveDepth: 1000,
 	}
 }
@@ -699,6 +699,6 @@ func (r *Registry) CheckDuplicateAnnotation(httpMethod string, httpTemplate stri
 	if ok {
 		return fmt.Errorf("duplicate annotation: method=%s, template=%s", httpMethod, httpTemplate)
 	}
-	r.annotationMap[a] = true
+	r.annotationMap[a] = struct{}{}
 	return nil
 }
