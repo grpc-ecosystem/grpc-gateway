@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/textproto"
+	"net/url"
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
@@ -197,14 +198,48 @@ func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) er
 func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	path := r.URL.Path
+	path := r.URL.EscapedPath()
 	if !strings.HasPrefix(path, "/") {
 		_, outboundMarshaler := MarshalerForRequest(s, r)
 		s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusBadRequest)
 		return
 	}
 
-	components := strings.Split(path[1:], "/")
+	pathParts := strings.Split(path[1:], "/")
+	components := make([]string, len(pathParts))
+	for i, comp := range pathParts {
+		comp, err := url.PathUnescape(comp)
+		if err != nil {
+			if s.errorHandler != nil {
+				_, outboundMarshaler := MarshalerForRequest(s, r)
+				sterr := status.Error(codes.InvalidArgument, err.Error())
+				s.errorHandler(ctx, s, outboundMarshaler, w, r, sterr)
+			} else {
+				_, outboundMarshaler := MarshalerForRequest(s, r)
+				s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusBadRequest)
+			}
+			return
+		}
+		components[i] = comp
+	}
+	l := len(components)
+
+	// Verb out here is to memoize for the fallback case below
+	var verb string
+
+	if idx := strings.LastIndex(components[l-1], ":"); idx == 0 {
+		if s.errorHandler != nil {
+			_, outboundMarshaler := MarshalerForRequest(s, r)
+			s.errorHandler(ctx, s, outboundMarshaler, w, r, fmt.Errorf("unknown URI"))
+		} else {
+			_, outboundMarshaler := MarshalerForRequest(s, r)
+			s.routingErrorHandler(ctx, s, outboundMarshaler,  w, r, http.StatusNotFound)
+		}
+		return
+	} else if idx > 0 {
+		c := components[l-1]
+		components[l-1], verb = c[:idx], c[idx+1:]
+	}
 
 	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && s.isPathLengthFallback(r) {
 		r.Method = strings.ToUpper(override)
@@ -215,9 +250,6 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-
-	// Verb out here is to memoize for the fallback case below
-	var verb string
 
 	for _, h := range s.handlers[r.Method] {
 		// If the pattern has a verb, explicitly look for a suffix in the last
