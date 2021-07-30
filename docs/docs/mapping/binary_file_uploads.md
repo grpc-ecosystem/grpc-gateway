@@ -32,14 +32,14 @@ mux.HandlePath("POST", "/v1/files", handleBinaryFileUpload)
 And then in your handler you can do something like:
 
 ```go
-func handleBinaryFileUpload(w http.ResponseWriter, rq *http.Request, params map[string]string) {
+func handleBinaryFileUpload(w http.ResponseWriter, r *http.Request, params map[string]string) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to parse form: %s", err.Error()), http.StatusBadRequest)
 		return
 	}
 
-	f, header, err := rq.FormFile("attachment")
+	f, header, err := r.FormFile("attachment")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to get file 'attachment': %s", err.Error()), http.StatusBadRequest)
 		return
