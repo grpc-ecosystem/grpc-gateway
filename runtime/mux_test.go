@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway/httprule"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 )

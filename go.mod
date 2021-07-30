@@ -8,7 +8,6 @@ require (
 	github.com/golang/glog v0.0.0-20210429001901-424d2337a529
 	github.com/golang/protobuf v1.5.2
 	github.com/google/go-cmp v0.5.6
-	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/rogpeppe/fastuuid v1.2.0
 	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
 	google.golang.org/genproto v0.0.0-20210728212813-7823e685a01f
