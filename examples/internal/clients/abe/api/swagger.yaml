@@ -2457,15 +2457,15 @@ paths:
     get:
       tags:
       - "ABitOfEverythingService"
-      operationId: "ABitOfEverythingService_CheckExternalNestedPathEnum"
+      operationId: "ABitOfEverythingService_CheckExternalPathEnum"
       parameters:
       - name: "value"
         in: "path"
         required: true
         type: "string"
         enum:
-        - "GHI"
-        - "JKL"
+        - "ABC"
+        - "DEF"
         x-exportParamName: "Value"
       responses:
         200:
@@ -2509,6 +2509,45 @@ paths:
         schema:
           $ref: "#/definitions/examplepbUpdateV2Request"
         x-exportParamName: "Body"
+      responses:
+        200:
+          description: "A successful response."
+          schema: {}
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+  /v3/{value}:check:
+    get:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_CheckExternalNestedPathEnum"
+      parameters:
+      - name: "value"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "GHI"
+        - "JKL"
+        x-exportParamName: "Value"
       responses:
         200:
           description: "A successful response."
