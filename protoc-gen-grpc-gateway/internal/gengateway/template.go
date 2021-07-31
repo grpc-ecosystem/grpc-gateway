@@ -251,7 +251,7 @@ var _ = metadata.Join
 
 	_ = template.Must(handlerTemplate.New("request-func-signature").Parse(strings.Replace(`
 {{if .Method.GetServerStreaming}}
-func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.InstanceName}}Client, req *http.Request, pathParams map[string]string) ({{.Method.Service.InstanceName}}_{{.Method.GetName}}Client, runtime.ServerMetadata, error)
+func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.InstanceName}}Client, req *http.Request, pathParams map[string]string) (*errorable_{{.Method.Service.InstanceName}}_{{.Method.GetName}}Client, runtime.ServerMetadata, error)
 {{else}}
 func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.InstanceName}}Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error)
 {{end}}`, "\n", "", -1)))
@@ -411,6 +411,12 @@ var (
 }`))
 
 	_ = template.Must(handlerTemplate.New("bidi-streaming-request-func").Parse(`
+
+type errorable_{{.Method.Service.InstanceName}}_{{.Method.GetName}}Client struct {
+	internalError error
+	{{.Method.Service.InstanceName}}_{{.Method.GetName}}Client
+}
+
 {{template "request-func-signature" .}} {
 	var metadata runtime.ServerMetadata
 	stream, err := client.{{.Method.GetName}}(ctx)
@@ -418,6 +424,7 @@ var (
 		grpclog.Infof("Failed to start streaming: %v", err)
 		return nil, metadata, err
 	}
+	e := errorable_{{.Method.Service.InstanceName}}_{{.Method.GetName}}Client{nil, stream}
 	dec := marshaler.NewDecoder(req.Body)
 	handleSend := func() error {
 		var protoReq {{.Method.RequestType.GoType .Method.Service.File.GoPkg.Path}}
@@ -427,10 +434,12 @@ var (
 		}
 		if err != nil {
 			grpclog.Infof("Failed to decode request: %v", err)
+			e.internalError = err
 			return err
 		}
 		if err := stream.Send(&protoReq); err != nil {
 			grpclog.Infof("Failed to send request: %v", err)
+			e.internalError = err
 			return err
 		}
 		return nil
@@ -451,7 +460,7 @@ var (
 		return nil, metadata, err
 	}
 	metadata.HeaderMD = header
-	return stream, metadata, nil
+	return &e, metadata, nil
 }
 `))
 
@@ -693,7 +702,13 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context,
 			return response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}{res}, err
 		}, mux.GetForwardResponseOptions()...)
 		{{ else }}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) {
+			res, err := resp.Recv()
+            if resp.internalError != nil {
+				return res, resp.internalError
+            }
+			return res, err
+        }, mux.GetForwardResponseOptions()...)
 		{{end}}
 		{{else}}
 		{{ if $b.ResponseBody }}
