@@ -435,7 +435,7 @@
     },
     "/rpc/path-nested/{a.str}/rpc": {
       "post": {
-        "operationId": "FlowCombination_RpcPathNestedRpc3",
+        "operationId": "FlowCombination_RpcPathSingleNestedRpc",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -456,20 +456,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [
@@ -479,7 +465,7 @@
     },
     "/rpc/path-nested/{a.str}/stream": {
       "post": {
-        "operationId": "FlowCombination_RpcPathNestedStream3",
+        "operationId": "FlowCombination_RpcPathSingleNestedStream",
         "responses": {
           "200": {
             "description": "A successful response.(streaming responses)",
@@ -508,20 +494,6 @@
             "name": "a.str",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "b",
-            "in": "query",
-            "required": false,
             "type": "string"
           }
         ],
@@ -620,6 +592,172 @@
             "schema": {
               "type": "string"
             }
+          }
+        ],
+        "tags": [
+          "FlowCombination"
+        ]
+      }
+    },
+    "/rpc/path-nested1/{a.str}/rpc": {
+      "post": {
+        "operationId": "FlowCombination_RpcPathNestedRpc2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbEmptyProto"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "a.str",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "FlowCombination"
+        ]
+      }
+    },
+    "/rpc/path-nested1/{a.str}/stream": {
+      "post": {
+        "operationId": "FlowCombination_RpcPathNestedStream2",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/examplepbEmptyProto"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of examplepbEmptyProto"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "a.str",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "FlowCombination"
+        ]
+      }
+    },
+    "/rpc/path-nested2/{a.str}/rpc": {
+      "post": {
+        "operationId": "FlowCombination_RpcPathNestedRpc3",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbEmptyProto"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "a.str",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "b",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "FlowCombination"
+        ]
+      }
+    },
+    "/rpc/path-nested2/{a.str}/stream": {
+      "post": {
+        "operationId": "FlowCombination_RpcPathNestedStream3",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/examplepbEmptyProto"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of examplepbEmptyProto"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "a.str",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "b",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [

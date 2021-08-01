@@ -97,11 +97,11 @@ service FlowCombination {
 
 			// w/o body; w/ path (IsNestedProto3); w/ query
 			additional_bindings {
-				post: "/rpc/path-nested/{a.str}/rpc"
+				post: "/rpc/path-nested1/{a.str}/rpc"
 			}
 			// w/ body; w/ path (IsNestedProto3); w/ query
 			additional_bindings {
-				post: "/rpc/path-nested/{a.str}/rpc"
+				post: "/rpc/path-nested2/{a.str}/rpc"
 				body: "c"
 			}
 		};
@@ -156,11 +156,11 @@ service FlowCombination {
 
 			// w/o body; w/ path (IsNestedProto3); w/ query
 			additional_bindings {
-				post: "/rpc/path-nested/{a.str}/stream"
+				post: "/rpc/path-nested1/{a.str}/stream"
 			}
 			// w/ body; w/ path (IsNestedProto3); w/ query
 			additional_bindings {
-				post: "/rpc/path-nested/{a.str}/stream"
+				post: "/rpc/path-nested2/{a.str}/stream"
 				body: "c"
 			}
 		};
