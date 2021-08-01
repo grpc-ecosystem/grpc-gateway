@@ -1705,7 +1705,7 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/rpc"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested1/{a.str}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -1728,7 +1728,7 @@ func RegisterFlowCombinationHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/rpc"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested2/{a.str}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2127,7 +2127,7 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/rpc"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested1/{a.str}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2147,7 +2147,7 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/rpc"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedRpc", runtime.WithHTTPPathPattern("/rpc/path-nested2/{a.str}/rpc"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2347,7 +2347,7 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/stream"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", runtime.WithHTTPPathPattern("/rpc/path-nested1/{a.str}/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2367,7 +2367,7 @@ func RegisterFlowCombinationHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", runtime.WithHTTPPathPattern("/rpc/path-nested/{a.str}/stream"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.FlowCombination/RpcPathNestedStream", runtime.WithHTTPPathPattern("/rpc/path-nested2/{a.str}/stream"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -2413,9 +2413,9 @@ var (
 
 	pattern_FlowCombination_RpcPathNestedRpc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 2, 0}, []string{"rpc", "path-nested", "a.str", "b"}, ""))
 
-	pattern_FlowCombination_RpcPathNestedRpc_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested", "a.str"}, ""))
+	pattern_FlowCombination_RpcPathNestedRpc_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested1", "a.str"}, ""))
 
-	pattern_FlowCombination_RpcPathNestedRpc_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested", "a.str"}, ""))
+	pattern_FlowCombination_RpcPathNestedRpc_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 0}, []string{"rpc", "path-nested2", "a.str"}, ""))
 
 	pattern_FlowCombination_RpcBodyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"rpc", "body", "stream"}, ""))
 
@@ -2435,9 +2435,9 @@ var (
 
 	pattern_FlowCombination_RpcPathNestedStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"rpc", "path-nested", "a.str", "b", "stream"}, ""))
 
-	pattern_FlowCombination_RpcPathNestedStream_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested", "a.str", "stream"}, ""))
+	pattern_FlowCombination_RpcPathNestedStream_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested1", "a.str", "stream"}, ""))
 
-	pattern_FlowCombination_RpcPathNestedStream_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested", "a.str", "stream"}, ""))
+	pattern_FlowCombination_RpcPathNestedStream_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"rpc", "path-nested2", "a.str", "stream"}, ""))
 )
 
 var (
