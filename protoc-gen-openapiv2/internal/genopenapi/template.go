@@ -18,14 +18,15 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/structpb"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 )
 
 // wktSchemas are the schemas of well-known-types.
@@ -765,7 +766,32 @@ func resolveFullyQualifiedNameToOpenAPINames(messages []string, useFQNForOpenAPI
 	return uniqueNames
 }
 
-var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*).*}")
+var pathParamTemplateRegex = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*)=([a-zA-Z][a-zA-Z0-9_./\\*]*)}(.*)")
+
+func pathTemplateToOpenAPIParameterNames(path string, parameterName string) []string {
+	parameterRegex := regexp.MustCompile(fmt.Sprintf("{%s=([a-zA-Z][a-zA-Z0-9_./\\*]*)}.*", parameterName))
+	if !parameterRegex.MatchString(path) {
+		return []string{parameterName}
+	}
+
+	submatch := parameterRegex.FindStringSubmatch(path)
+	paramTemplate := submatch[1]
+	if strings.Count(paramTemplate, "*") <= 1 {
+		return []string{parameterName}
+	}
+
+	templateParts := strings.Split(paramTemplate, "/")
+	var parameterNames []string
+	var previousPart string
+	for _, templatePart := range templateParts {
+		if templatePart == "*" {
+			parameterNames = append(parameterNames, fmt.Sprintf("%s.%s", parameterName, previousPart))
+		} else {
+			previousPart = templatePart
+		}
+	}
+	return parameterNames
+}
 
 // OpenAPI expects paths of the form /path/{string_value} but gRPC-Gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
 func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) string {
@@ -824,24 +850,36 @@ func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*desc
 	// syntax for this subsection CAN be handled by a regexp since it has no
 	// memory.
 	for index, part := range parts {
-		// If part is a resource name such as "parent", "name", "user.name", the format info must be retained.
-		prefix := canRegexp.ReplaceAllString(part, "$1")
-		if isResourceName(prefix) {
+		if !pathParamTemplateRegex.MatchString(part) {
 			continue
 		}
-		parts[index] = canRegexp.ReplaceAllString(part, "{$1}")
+
+		if !(strings.HasPrefix(part, "{") && strings.Contains(part, "=") && strings.Contains(part, "}")) {
+			continue
+		}
+
+		submatch := pathParamTemplateRegex.FindStringSubmatch(part)
+		paramName := submatch[1]
+		paramTemplate := submatch[2]
+		rest := submatch[3]
+
+		if strings.Count(paramTemplate, "*") <= 1 {
+			parts[index] = strings.Replace(paramTemplate, "*", fmt.Sprintf("{%s}", paramName), 1) + rest
+		} else {
+			templateParts := strings.Split(paramTemplate, "/")
+			var previousPart string
+			for i, templatePart := range templateParts {
+				if templatePart == "*" {
+					templateParts[i] = fmt.Sprintf("{%s.%s}", paramName, previousPart)
+				} else {
+					previousPart = templatePart
+				}
+			}
+			parts[index] = strings.Join(templateParts, "/") + rest
+		}
 	}
 
 	return strings.Join(parts, "/")
-}
-
-func isResourceName(prefix string) bool {
-	words := strings.Split(prefix, ".")
-	l := len(words)
-	field := words[l-1]
-	words = strings.Split(field, ":")
-	field = words[0]
-	return field == "parent" || field == "name"
 }
 
 func renderServiceTags(services []*descriptor.Service) []openapiTagObject {
@@ -950,24 +988,27 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					if desc == "" {
 						desc = fieldProtoComments(reg, parameter.Target.Message, parameter.Target)
 					}
-					parameterString := parameter.String()
-					if reg.GetUseJSONNamesForFields() {
-						parameterString = lowerCamelCase(parameterString, meth.RequestType.Fields, msgs)
+
+					parameterStrings := pathTemplateToOpenAPIParameterNames(b.PathTmpl.Template, parameter.String())
+					for _, parameterString := range parameterStrings {
+						if reg.GetUseJSONNamesForFields() {
+							parameterString = lowerCamelCase(parameterString, meth.RequestType.Fields, msgs)
+						}
+						parameters = append(parameters, openapiParameterObject{
+							Name:        parameterString,
+							Description: desc,
+							In:          "path",
+							Required:    true,
+							Default:     defaultValue,
+							// Parameters in gRPC-Gateway can only be strings?
+							Type:             paramType,
+							Format:           paramFormat,
+							Enum:             enumNames,
+							Items:            items,
+							CollectionFormat: collectionFormat,
+							MinItems:         minItems,
+						})
 					}
-					parameters = append(parameters, openapiParameterObject{
-						Name:        parameterString,
-						Description: desc,
-						In:          "path",
-						Required:    true,
-						Default:     defaultValue,
-						// Parameters in gRPC-Gateway can only be strings?
-						Type:             paramType,
-						Format:           paramFormat,
-						Enum:             enumNames,
-						Items:            items,
-						CollectionFormat: collectionFormat,
-						MinItems:         minItems,
-					})
 				}
 				// Now check if there is a body parameter
 				if b.Body != nil {

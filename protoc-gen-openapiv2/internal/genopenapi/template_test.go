@@ -10,11 +10,6 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
-	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
@@ -25,6 +20,12 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 	"google.golang.org/protobuf/types/pluginpb"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
+	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
 var marshaler = &runtime.JSONPb{}
@@ -2616,7 +2617,7 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 								PathTmpl: httprule.Template{
 									Version:  1,
 									OpCodes:  []int{0, 0},
-									Template: "/v1/{parent=publishers/*}/books",
+									Template: "/v1/publishers/{parent}/books",
 								},
 								PathParams: []descriptor.Parameter{
 									{
@@ -2660,10 +2661,10 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 		return
 	}
 
-	if _, ok := result.Paths["/v1/{parent=publishers/*}/books"].Post.Responses["200"]; !ok {
-		t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", file, `result.Paths["/v1/{parent=publishers/*}/books"].Post.Responses["200"]`)
+	if _, ok := result.Paths["/v1/publishers/{parent}/books"].Post.Responses["200"]; !ok {
+		t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", file, `result.Paths["/v1/publishers/{parent}/books"].Post.Responses["200"]`)
 	} else {
-		if want, got, name := 3, len(result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters), `len(result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters)`; !reflect.DeepEqual(got, want) {
+		if want, got, name := 3, len(result.Paths["/v1/publishers/{parent}/books"].Post.Parameters), `len(result.Paths["/v1/publishers/{parent}/books"].Post.Parameters)`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
 		}
 
@@ -2673,16 +2674,16 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 			Required bool
 		}
 
-		p0 := result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[0]
-		if want, got, name := (param{"parent", "path", true}), (param{p0.Name, p0.In, p0.Required}), `result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[0]`; !reflect.DeepEqual(got, want) {
+		p0 := result.Paths["/v1/publishers/{parent}/books"].Post.Parameters[0]
+		if want, got, name := (param{"parent", "path", true}), (param{p0.Name, p0.In, p0.Required}), `result.Paths["/v1/publishers/{parent}/books"].Post.Parameters[0]`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, got, want)
 		}
-		p1 := result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[1]
-		if want, got, name := (param{"body", "body", true}), (param{p1.Name, p1.In, p1.Required}), `result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[1]`; !reflect.DeepEqual(got, want) {
+		p1 := result.Paths["/v1/publishers/{parent}/books"].Post.Parameters[1]
+		if want, got, name := (param{"body", "body", true}), (param{p1.Name, p1.In, p1.Required}), `result.Paths["/v1/publishers/{parent}/books"].Post.Parameters[1]`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, got, want)
 		}
-		p2 := result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[2]
-		if want, got, name := (param{"book_id", "query", false}), (param{p2.Name, p2.In, p2.Required}), `result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[1]`; !reflect.DeepEqual(got, want) {
+		p2 := result.Paths["/v1/publishers/{parent}/books"].Post.Parameters[2]
+		if want, got, name := (param{"book_id", "query", false}), (param{p2.Name, p2.In, p2.Required}), `result.Paths["/v1/publishers/{parent}/books"].Post.Parameters[1]`; !reflect.DeepEqual(got, want) {
 			t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, got, want)
 		}
 	}
@@ -2798,20 +2799,20 @@ func TestTemplateToOpenAPIPath(t *testing.T) {
 	}{
 		{"/test", "/test"},
 		{"/{test}", "/{test}"},
-		{"/{test=prefix/*}", "/{test}"},
-		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/{test}"},
+		{"/{test=prefix/*}", "/prefix/{test}"},
+		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/prefix/that/has/multiple/parts/to/it/{test}"},
 		{"/{test1}/{test2}", "/{test1}/{test2}"},
 		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
-		{"/{name=prefix/*}", "/{name=prefix/*}"},
-		{"/{name=prefix1/*/prefix2/*}", "/{name=prefix1/*/prefix2/*}"},
-		{"/{user.name=prefix/*}", "/{user.name=prefix/*}"},
-		{"/{user.name=prefix1/*/prefix2/*}", "/{user.name=prefix1/*/prefix2/*}"},
-		{"/{parent=prefix/*}/children", "/{parent=prefix/*}/children"},
-		{"/{name=prefix/*}:customMethod", "/{name=prefix/*}:customMethod"},
-		{"/{name=prefix1/*/prefix2/*}:customMethod", "/{name=prefix1/*/prefix2/*}:customMethod"},
-		{"/{user.name=prefix/*}:customMethod", "/{user.name=prefix/*}:customMethod"},
-		{"/{user.name=prefix1/*/prefix2/*}:customMethod", "/{user.name=prefix1/*/prefix2/*}:customMethod"},
-		{"/{parent=prefix/*}/children:customMethod", "/{parent=prefix/*}/children:customMethod"},
+		{"/{name=prefix/*}", "/prefix/{name}"},
+		{"/{name=prefix1/*/prefix2/*}", "/prefix1/{name.prefix1}/prefix2/{name.prefix2}"},
+		{"/{user.name=prefix/*}", "/prefix/{user.name}"},
+		{"/{user.name=prefix1/*/prefix2/*}", "/prefix1/{user.name.prefix1}/prefix2/{user.name.prefix2}"},
+		{"/{parent=prefix/*}/children", "/prefix/{parent}/children"},
+		{"/{name=prefix/*}:customMethod", "/prefix/{name}:customMethod"},
+		{"/{name=prefix1/*/prefix2/*}:customMethod", "/prefix1/{name.prefix1}/prefix2/{name.prefix2}:customMethod"},
+		{"/{user.name=prefix/*}:customMethod", "/prefix/{user.name}:customMethod"},
+		{"/{user.name=prefix1/*/prefix2/*}:customMethod", "/prefix1/{user.name.prefix1}/prefix2/{user.name.prefix2}:customMethod"},
+		{"/{parent=prefix/*}/children:customMethod", "/prefix/{parent}/children:customMethod"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
@@ -2915,8 +2916,8 @@ func TestFQMNtoOpenAPIName(t *testing.T) {
 	}{
 		{"/test", "/test"},
 		{"/{test}", "/{test}"},
-		{"/{test=prefix/*}", "/{test}"},
-		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/{test}"},
+		{"/{test=prefix/*}", "/prefix/{test}"},
+		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/prefix/that/has/multiple/parts/to/it/{test}"},
 		{"/{test1}/{test2}", "/{test1}/{test2}"},
 		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
 	}
