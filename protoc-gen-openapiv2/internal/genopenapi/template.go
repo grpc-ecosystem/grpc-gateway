@@ -769,7 +769,10 @@ func resolveFullyQualifiedNameToOpenAPINames(messages []string, useFQNForOpenAPI
 var pathParamTemplateRegex = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*)=([a-zA-Z][a-zA-Z0-9_./\\*]*)}(.*)")
 
 func pathTemplateToOpenAPIParameterNames(path string, parameterName string) []string {
-	parameterRegex := regexp.MustCompile(fmt.Sprintf("{%s=([a-zA-Z][a-zA-Z0-9_./\\*]*)}.*", parameterName))
+	parameterRegex, err := regexp.Compile(fmt.Sprintf("{%s=([a-zA-Z][a-zA-Z0-9_./\\*]*)}.*", parameterName))
+	if err != nil {
+		return []string{parameterName}
+	}
 	if !parameterRegex.MatchString(path) {
 		return []string{parameterName}
 	}
