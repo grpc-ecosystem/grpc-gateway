@@ -2617,7 +2617,7 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 								PathTmpl: httprule.Template{
 									Version:  1,
 									OpCodes:  []int{0, 0},
-									Template: "/v1/publishers/{parent}/books",
+									Template: "/v1/{parent=publishers/*}/books",
 								},
 								PathParams: []descriptor.Parameter{
 									{
