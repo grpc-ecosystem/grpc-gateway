@@ -789,9 +789,9 @@ func pathTemplateToOpenAPIParameterNames(path string, parameterName string) []st
 	for _, templatePart := range templateParts {
 		if templatePart == "*" {
 			parameterNames = append(parameterNames, fmt.Sprintf("%s.%s", parameterName, previousPart))
-		} else {
-			previousPart = templatePart
+			continue
 		}
+		previousPart = templatePart
 	}
 	return parameterNames
 }
@@ -868,18 +868,18 @@ func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*desc
 
 		if strings.Count(paramTemplate, "*") <= 1 {
 			parts[index] = strings.Replace(paramTemplate, "*", fmt.Sprintf("{%s}", paramName), 1) + rest
-		} else {
-			templateParts := strings.Split(paramTemplate, "/")
-			var previousPart string
-			for i, templatePart := range templateParts {
-				if templatePart == "*" {
-					templateParts[i] = fmt.Sprintf("{%s.%s}", paramName, previousPart)
-				} else {
-					previousPart = templatePart
-				}
-			}
-			parts[index] = strings.Join(templateParts, "/") + rest
+			continue
 		}
+		templateParts := strings.Split(paramTemplate, "/")
+		var previousPart string
+		for i, templatePart := range templateParts {
+			if templatePart == "*" {
+				templateParts[i] = fmt.Sprintf("{%s.%s}", paramName, previousPart)
+				continue
+			}
+			previousPart = templatePart
+		}
+		parts[index] = strings.Join(templateParts, "/") + rest
 	}
 
 	return strings.Join(parts, "/")
