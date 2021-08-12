@@ -766,8 +766,12 @@ func resolveFullyQualifiedNameToOpenAPINames(messages []string, useFQNForOpenAPI
 	return uniqueNames
 }
 
-var pathParamTemplateRegex = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*)=([a-zA-Z][a-zA-Z0-9_./\\*]*)}(.*)")
-
+// For gRPC-Gateway paths of the form /path/{param=x/*/y/*} which translate to an OpenAPI path with multiple parameters,
+// create an openapiParameterObject for each. This helper provides the OpenAPI parameter names for the given parameterName
+// by parsing the path templates in the given path. In most simple cases or if it bumps into errors, it returns a slice
+// with one element which is the given parameterName itself. Only in cases where the path template for the given parameterName
+// contains multiple `*`, it creates a new parameter name for each `*` with the given parameterName, followed by a dot,
+// followed by the path template part before the given `*`.
 func pathTemplateToOpenAPIParameterNames(path string, parameterName string) []string {
 	parameterRegex, err := regexp.Compile(fmt.Sprintf("{%s=([a-zA-Z][a-zA-Z0-9_./\\*]*)}.*", parameterName))
 	if err != nil {
@@ -795,6 +799,15 @@ func pathTemplateToOpenAPIParameterNames(path string, parameterName string) []st
 	}
 	return parameterNames
 }
+
+// regex to match and split into submatches the parts of a gRPC-Gatewat template path part
+// e.g. {name=orgs/*/projects*}:customMethod can be split into
+//   - name (parameter name)
+//   - orgs/*/projects* (template)
+//   - :customMethod (the rest)
+// These parts are useful when building a valid OpenAPI path parameter which doesn't support the template bit, which
+// has to be broken up into separate parameters, or to have the parameter name substituted in.
+var pathParamTemplateRegex = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*)=([a-zA-Z][a-zA-Z0-9_./\\*]*)}(.*)")
 
 // OpenAPI expects paths of the form /path/{string_value} but gRPC-Gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
 func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) string {
