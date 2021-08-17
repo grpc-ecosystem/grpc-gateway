@@ -136,8 +136,8 @@ jobs:
       - image: bufbuild/buf:0.51.1
     steps:
       - checkout
-      - run: echo -e "machine buf.build\npassword ${BUF_API_TOKEN}" >> ~/.netrc
-      - run: buf beta push
+      - run: echo "${BUF_API_TOKEN}" | buf login --username grpcgatewaybot --token-stdin
+      - run: buf push --tag "$CIRCLE_SHA1"
   release:
     executor: build-env
     working_directory: /src/grpc-gateway

@@ -1,7 +1,7 @@
 version: v1beta1
 name: buf.build/grpc-ecosystem/grpc-gateway
 deps:
-  - buf.build/beta/googleapis
+  - buf.build/googleapis/googleapis
 build:
   roots:
     - .
