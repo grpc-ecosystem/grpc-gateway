@@ -231,14 +231,14 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    > You will need to provide the required third party protobuf files to the protobuf compiler.
    > If you are using [buf](https://github.com/bufbuild/buf), this dependency can
    > be added to the `deps` array in your `buf.yaml` under the name
-   > `buf.build/beta/googleapis`:
+   > `buf.build/googleapis/googleapis`:
    > ```yaml
    > version: v1beta1
    > name: buf.build/yourorg/myprotos
    > deps:
-   >   - buf.build/beta/googleapis
+   >   - buf.build/googleapis/googleapis
    > ```
-   > Always run `buf beta mod update` after adding a dependency to your `buf.yaml`.
+   > Always run `buf mod update` after adding a dependency to your `buf.yaml`.
 
    See [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
    for examples of more annotations you can add to customize gateway behavior
@@ -408,7 +408,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    version: v1beta1
    name: buf.build/yourorg/myprotos
    deps:
-     - buf.build/beta/googleapis
+     - buf.build/googleapis/googleapis
      - buf.build/grpc-ecosystem/grpc-gateway
    ```
 

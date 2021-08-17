@@ -72,13 +72,13 @@ We'll also need to add the `googleapis` dependency to our `buf.yaml` file:
 version: v1beta1
 name: buf.build/myuser/myrepo
 deps:
-  - buf.build/beta/googleapis
+  - buf.build/googleapis/googleapis
 build:
   roots:
     - proto
 ```
 
-Then we need to run `buf beta mod update` to select a version of the dependency to use.
+Then we need to run `buf mod update` to select a version of the dependency to use.
 
 And that's it! Now if you run:
 
