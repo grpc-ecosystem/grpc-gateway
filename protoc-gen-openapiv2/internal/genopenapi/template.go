@@ -458,7 +458,35 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		}
 		*schema.Properties = append(*schema.Properties, kv)
 	}
+
+	if msg.FQMN() == ".google.protobuf.Any" {
+		transformAnyForJSON(&schema, reg.GetUseJSONNamesForFields())
+	}
+
 	return schema
+}
+
+// transformAnyForJSON should be called when the schema object represents a google.protobuf.Any, and will replace the
+// Properties slice with a single value for '@type'. We mutate the incorrectly named field so that we inherit the same
+// documentation as specified on the original field in the protobuf descriptors.
+func transformAnyForJSON(schema *openapiSchemaObject, useJSONNames bool) {
+	var typeFieldName string
+	if useJSONNames {
+		typeFieldName = "typeUrl"
+	} else {
+		typeFieldName = "type_url"
+	}
+
+	for _, property := range *schema.Properties {
+		if property.Key == typeFieldName {
+			schema.AdditionalProperties = &openapiSchemaObject{}
+			schema.Properties = &openapiSchemaObjectProperties{keyVal{
+				Key:   "@type",
+				Value: property.Value,
+			}}
+			break
+		}
+	}
 }
 
 func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject, reg *descriptor.Registry, customRefs refMap, excludeFields []*descriptor.Field) {
