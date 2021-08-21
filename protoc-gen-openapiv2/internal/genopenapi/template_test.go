@@ -20,6 +20,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/durationpb"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -2691,6 +2692,214 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 	if t.Failed() {
 		t.Errorf("had: %s", file)
 		t.Errorf("got: %s", fmt.Sprint(result))
+	}
+}
+
+// TestApplyTemplateProtobufAny tests that the protobufAny definition is correctly rendered with the @type field and
+// allowing additional properties.
+func TestApplyTemplateProtobufAny(t *testing.T) {
+	// checkProtobufAnyFormat verifies the only property should be @type and additional properties are allowed
+	checkProtobufAnyFormat := func(t *testing.T, protobufAny openapiSchemaObject) {
+		anyPropsJSON, err := protobufAny.Properties.MarshalJSON()
+		if err != nil {
+			t.Errorf("protobufAny.Properties.MarshalJSON(), got error = %v", err)
+		}
+		var anyPropsMap map[string]interface{}
+		if err := json.Unmarshal(anyPropsJSON, &anyPropsMap); err != nil {
+			t.Errorf("json.Unmarshal(), got error = %v", err)
+		}
+
+		// @type should exist
+		if _, ok := anyPropsMap["@type"]; !ok {
+			t.Errorf("protobufAny.Properties missing key, \"@type\". got = %#v", anyPropsMap)
+		}
+
+		// and @type should be the only property
+		if len(anyPropsMap) > 1 {
+			t.Errorf("len(protobufAny.Properties) = %v, want = %v", len(anyPropsMap), 1)
+		}
+
+		// protobufAny should have additionalProperties allowed
+		if protobufAny.AdditionalProperties == nil {
+			t.Errorf("protobufAny.AdditionalProperties = nil, want not-nil")
+		}
+	}
+
+	type args struct {
+		regConfig      func(registry *descriptor.Registry)
+		msgContainsAny bool
+	}
+	tests := []struct {
+		name               string
+		args               args
+		wantNumDefinitions int
+	}{
+		{
+			// our proto schema doesn't directly use protobufAny, but it is implicitly used by rpcStatus being
+			// automatically rendered
+			name: "default_protobufAny_from_rpcStatus",
+			args: args{
+				msgContainsAny: false,
+			},
+			wantNumDefinitions: 4,
+		},
+		{
+			// we have a protobufAny in a message, it should contain a ref inside the custom message
+			name: "protobufAny_referenced_in_message",
+			args: args{
+				msgContainsAny: true,
+			},
+			wantNumDefinitions: 4,
+		},
+		{
+			// we have a protobufAny in a message but with automatic rendering of rpcStatus disabled
+			name: "protobufAny_referenced_in_message_with_default_errors_disabled",
+			args: args{
+				msgContainsAny: true,
+				regConfig: func(reg *descriptor.Registry) {
+					reg.SetDisableDefaultErrors(true)
+				},
+			},
+			wantNumDefinitions: 3,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			reqdesc := &descriptorpb.DescriptorProto{
+				Name: proto.String("ExampleMessage"),
+				Field: []*descriptorpb.FieldDescriptorProto{
+					{
+						Name:   proto.String("name"),
+						Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+						Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+						Number: proto.Int32(1),
+					},
+				},
+			}
+			respdesc := &descriptorpb.DescriptorProto{
+				Name: proto.String("EmptyMessage"),
+			}
+			meth := &descriptorpb.MethodDescriptorProto{
+				Name:            proto.String("Example"),
+				InputType:       proto.String("ExampleMessage"),
+				OutputType:      proto.String("EmptyMessage"),
+				ClientStreaming: proto.Bool(false),
+				ServerStreaming: proto.Bool(false),
+			}
+			svc := &descriptorpb.ServiceDescriptorProto{
+				Name:   proto.String("ExampleService"),
+				Method: []*descriptorpb.MethodDescriptorProto{meth},
+			}
+
+			req := &descriptor.Message{
+				DescriptorProto: reqdesc,
+			}
+			resp := &descriptor.Message{
+				DescriptorProto: respdesc,
+			}
+			file := descriptor.File{
+				FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+					SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+					Name:           proto.String("example.proto"),
+					Package:        proto.String("example"),
+					MessageType:    []*descriptorpb.DescriptorProto{reqdesc, respdesc},
+					Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+					Options: &descriptorpb.FileOptions{
+						GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+					},
+				},
+				GoPkg: descriptor.GoPackage{
+					Path: "example.com/path/to/example/example.pb",
+					Name: "example_pb",
+				},
+				Messages: []*descriptor.Message{req, resp},
+				Services: []*descriptor.Service{
+					{
+						ServiceDescriptorProto: svc,
+						Methods: []*descriptor.Method{
+							{
+								MethodDescriptorProto: meth,
+								RequestType:           req,
+								ResponseType:          resp,
+							},
+						},
+					},
+				},
+			}
+
+			reg := descriptor.NewRegistry()
+			reg.SetGenerateUnboundMethods(true)
+
+			if tt.args.regConfig != nil {
+				tt.args.regConfig(reg)
+			}
+
+			if err := AddErrorDefs(reg); err != nil {
+				t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+				return
+			}
+
+			protoFiles := []*descriptorpb.FileDescriptorProto{
+				file.FileDescriptorProto,
+			}
+
+			if tt.args.msgContainsAny {
+				// add an Any field to the request message
+				reqdesc.Field = append(reqdesc.Field, &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("any_value"),
+					Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					TypeName: proto.String(".google.protobuf.Any"),
+					Number:   proto.Int32(2),
+				})
+
+				// update the dependencies to import it
+				file.Dependency = append(file.Dependency, "google/protobuf/any.proto")
+
+				anyDescriptorProto := protodesc.ToFileDescriptorProto((&anypb.Any{}).ProtoReflect().Descriptor().ParentFile())
+				anyDescriptorProto.SourceCodeInfo = &descriptorpb.SourceCodeInfo{}
+
+				// prepend the anyDescriptorProto to the protoFiles slice so that the dependency can be resolved
+				protoFiles = append(append(make([]*descriptorpb.FileDescriptorProto, 0, len(protoFiles)+1), anyDescriptorProto), protoFiles[0:]...)
+			}
+
+			err := reg.Load(&pluginpb.CodeGeneratorRequest{
+				ProtoFile:      protoFiles,
+				FileToGenerate: []string{file.GetName()},
+			})
+			if err != nil {
+				t.Fatalf("failed to load code generator request: %v", err)
+			}
+
+			target, err := reg.LookupFile(file.GetName())
+			if err != nil {
+				t.Fatalf("failed to lookup file from reg: %v", err)
+			}
+			result, err := applyTemplate(param{File: crossLinkFixture(target), reg: reg})
+			if err != nil {
+				t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+				return
+			}
+
+			if want, got, name := tt.wantNumDefinitions, len(result.Definitions), "len(Definitions)"; !reflect.DeepEqual(got, want) {
+				t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
+			}
+
+			protobufAny, ok := result.Definitions["protobufAny"]
+			if !ok {
+				t.Error("expecting Definitions to contain protobufAny")
+			}
+
+			checkProtobufAnyFormat(t, protobufAny)
+
+			// If there was a failure, print out the input and the json result for debugging.
+			if t.Failed() {
+				t.Errorf("had: %s", file)
+				resultJSON, _ := json.Marshal(result)
+				t.Errorf("got: %s", resultJSON)
+			}
+		})
 	}
 }
 
