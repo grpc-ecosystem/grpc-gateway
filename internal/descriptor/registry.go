@@ -61,11 +61,15 @@ type Registry struct {
 	// with gRPC-Gateway response, if it uses json tags for marshaling.
 	useJSONNamesForFields bool
 
-	// useFQNForOpenAPIName if true OpenAPI names will use the full qualified name (FQN) from proto definition,
-	// and generate a dot-separated OpenAPI name concatenating all elements from the proto FQN.
-	// If false, the default behavior is to concat the last 2 elements of the FQN if they are unique, otherwise concat
-	// all the elements of the FQN without any separator
-	useFQNForOpenAPIName bool
+	// openAPINamingStrategy is the naming strategy to use for assigning OpenAPI field and parameter names. This can be one of the following:
+	// - `legacy`: use the legacy naming strategy from protoc-gen-swagger, that generates unique but not necessarily
+	//             maximally concise names. Components are concatenated directly, e.g., `MyOuterMessageMyNestedMessage`.
+	// - `simple`: use a simple heuristic for generating unique and concise names. Components are concatenated using
+	//             dots as a separator, e.g., `MyOuterMesage.MyNestedMessage` (if `MyNestedMessage` alone is unique,
+	//             `MyNestedMessage` will be used as the OpenAPI name).
+	// - `fqn`:    always use the fully-qualified name of the proto message (leading dot removed) as the OpenAPI
+	//             name.
+	openAPINamingStrategy string
 
 	// useGoTemplate determines whether you want to use GO templates
 	// in your protofile comments
@@ -133,12 +137,13 @@ type annotationIdentifier struct {
 // NewRegistry returns a new Registry.
 func NewRegistry() *Registry {
 	return &Registry{
-		msgs:              make(map[string]*Message),
-		enums:             make(map[string]*Enum),
-		files:             make(map[string]*File),
-		pkgMap:            make(map[string]string),
-		pkgAliases:        make(map[string]string),
-		externalHTTPRules: make(map[string][]*annotations.HttpRule),
+		msgs:                  make(map[string]*Message),
+		enums:                 make(map[string]*Enum),
+		files:                 make(map[string]*File),
+		pkgMap:                make(map[string]string),
+		pkgAliases:            make(map[string]string),
+		externalHTTPRules:     make(map[string][]*annotations.HttpRule),
+		openAPINamingStrategy: "legacy",
 		repeatedPathParamSeparator: repeatedFieldSeparator{
 			name: "csv",
 			sep:  ',',
@@ -506,18 +511,30 @@ func (r *Registry) GetUseJSONNamesForFields() bool {
 }
 
 // SetUseFQNForOpenAPIName sets useFQNForOpenAPIName
+// Deprecated: use SetOpenAPINamingStrategy instead.
 func (r *Registry) SetUseFQNForOpenAPIName(use bool) {
-	r.useFQNForOpenAPIName = use
+	r.openAPINamingStrategy = "fqn"
 }
 
 // GetUseFQNForOpenAPIName returns useFQNForOpenAPIName
+// Deprecated: Use GetOpenAPINamingStrategy().
 func (r *Registry) GetUseFQNForOpenAPIName() bool {
-	return r.useFQNForOpenAPIName
+	return r.openAPINamingStrategy == "fqn"
 }
 
 // GetMergeFileName return the target merge OpenAPI file name
 func (r *Registry) GetMergeFileName() string {
 	return r.mergeFileName
+}
+
+// SetOpenAPINamingStrategy sets the naming strategy to be used.
+func (r *Registry) SetOpenAPINamingStrategy(strategy string) {
+	r.openAPINamingStrategy = strategy
+}
+
+// GetOpenAPINamingStrategy retrieves the naming strategy that is in use.
+func (r *Registry) GetOpenAPINamingStrategy() string {
+	return r.openAPINamingStrategy
 }
 
 // SetUseGoTemplate sets useGoTemplate

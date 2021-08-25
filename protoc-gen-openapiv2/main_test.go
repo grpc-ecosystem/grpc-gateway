@@ -22,6 +22,7 @@ func TestParseReqParam(t *testing.T) {
 		importPathV                string
 		mergeFileNameV             string
 		useFQNForOpenAPINameV      bool
+		openAPINamingStrategyV     string
 	}{
 		{
 			// this one must be first - with no leading clearFlags call it
@@ -52,14 +53,14 @@ func TestParseReqParam(t *testing.T) {
 			expected:         map[string]string{"a/b/c.proto": "github.com/x/y/z", "f/g/h.proto": "github.com/1/2/3/"},
 			request:          "allow_delete_body=false,allow_merge=false,Ma/b/c.proto=github.com/x/y/z,Mf/g/h.proto=github.com/1/2/3/",
 			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false,
-			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+			fileV: "-", importPathV: "", mergeFileNameV: "apidocs",
 		},
 		{
 			name:             "Test 4",
 			expected:         map[string]string{},
 			request:          "",
 			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false,
-			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+			fileV: "-", importPathV: "", mergeFileNameV: "apidocs",
 		},
 		{
 			name:             "Test 5",
@@ -67,7 +68,7 @@ func TestParseReqParam(t *testing.T) {
 			request:          "unknown_param=17",
 			expectedError:    errors.New("cannot set flag unknown_param=17: no such flag -unknown_param"),
 			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false,
-			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+			fileV: "-", importPathV: "", mergeFileNameV: "apidocs",
 		},
 		{
 			name:             "Test 6",
@@ -75,7 +76,7 @@ func TestParseReqParam(t *testing.T) {
 			request:          "Mfoo",
 			expectedError:    errors.New("cannot set flag Mfoo: no such flag -Mfoo"),
 			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false,
-			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+			fileV: "-", importPathV: "", mergeFileNameV: "apidocs",
 		},
 		{
 			name:             "Test 7",
@@ -98,7 +99,7 @@ func TestParseReqParam(t *testing.T) {
 			request:          "include_package_in_tags=3",
 			expectedError:    errors.New(`cannot set flag include_package_in_tags=3: parse error`),
 			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false,
-			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+			fileV: "-", importPathV: "", mergeFileNameV: "apidocs",
 		},
 		{
 			name:             "Test 10",
@@ -106,14 +107,21 @@ func TestParseReqParam(t *testing.T) {
 			request:          "fqn_for_openapi_name=3",
 			expectedError:    errors.New(`cannot set flag fqn_for_openapi_name=3: parse error`),
 			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false, useFQNForOpenAPINameV: false,
-			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+			fileV: "-", importPathV: "", mergeFileNameV: "apidocs",
 		},
 		{
 			name:             "Test 11",
 			expected:         map[string]string{},
 			request:          "fqn_for_openapi_name=true",
 			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false, useFQNForOpenAPINameV: true,
-			fileV: "stdin", importPathV: "", mergeFileNameV: "apidocs",
+			fileV: "-", importPathV: "", mergeFileNameV: "apidocs",
+		},
+		{
+			name:             "Test 12",
+			expected:         map[string]string{},
+			request:          "openapi_naming_strategy=simple",
+			allowDeleteBodyV: false, allowMergeV: false, allowRepeatedFieldsInBodyV: false, includePackageInTagsV: false, useFQNForOpenAPINameV: false, openAPINamingStrategyV: "simple",
+			fileV: "-", importPathV: "", mergeFileNameV: "apidocs",
 		},
 	}
 
@@ -140,15 +148,14 @@ func TestParseReqParam(t *testing.T) {
 					tt.Errorf("expected error malformed, expected %q, got %q", tc.expectedError.Error(), err.Error())
 				}
 			}
-			checkFlags(tc.allowDeleteBodyV, tc.allowMergeV, tc.allowRepeatedFieldsInBodyV, tc.includePackageInTagsV, tc.useFQNForOpenAPINameV, tc.fileV, tc.importPathV, tc.mergeFileNameV, tt, i)
-
-			clearFlags()
+			checkFlags(tc.allowDeleteBodyV, tc.allowMergeV, tc.allowRepeatedFieldsInBodyV, tc.includePackageInTagsV, tc.useFQNForOpenAPINameV, tc.openAPINamingStrategyV, tc.fileV, tc.importPathV, tc.mergeFileNameV, tt, i)
+			
+			clearFlags(tt, f)
 		})
 	}
-
 }
 
-func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV, includePackageInTagsV bool, useFQNForOpenAPINameV bool, fileV, importPathV, mergeFileNameV string, t *testing.T, tid int) {
+func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV, includePackageInTagsV bool, useFQNForOpenAPINameV bool, openAPINamingStrategyV, fileV, importPathV, mergeFileNameV string, t *testing.T, tid int) {
 	if *importPrefix != importPathV {
 		t.Errorf("Test %v: import_prefix misparsed, expected '%v', got '%v'", tid, importPathV, *importPrefix)
 	}
@@ -173,14 +180,15 @@ func checkFlags(allowDeleteV, allowMergeV, allowRepeatedFieldsInBodyV, includePa
 	if *useFQNForOpenAPIName != useFQNForOpenAPINameV {
 		t.Errorf("Test %v: fqn_for_openapi_name misparsed, expected '%v', got '%v'", tid, useFQNForOpenAPINameV, *useFQNForOpenAPIName)
 	}
+	if *openAPINamingStrategy != openAPINamingStrategyV {
+		t.Errorf("Test %v: openapi_naming_strategy misparsed, expected '%v', got '%v'", tid, openAPINamingStrategyV, *openAPINamingStrategy)
+	}
 }
 
-func clearFlags() {
-	*importPrefix = ""
-	*file = "stdin"
-	*allowDeleteBody = false
-	*allowMerge = false
-	*allowRepeatedFieldsInBody = false
-	*includePackageInTags = false
-	*mergeFileName = "apidocs"
+func clearFlags(t *testing.T, f *flag.FlagSet) {
+	f.Visit(func(flg *flag.Flag) {
+		if err := flg.Value.Set(flg.DefValue); err != nil {
+			t.Errorf("Error resetting flag %s: %v", flg.Name, err)
+		}
+	})
 }
