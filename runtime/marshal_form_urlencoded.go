@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/protobuf/proto"
 	"io"
@@ -13,12 +12,7 @@ import (
 	"strconv"
 )
 
-// FormUrlencoded is a Marshaler which marshals/unmarshals into/from JSON
-// with the "google.golang.org/protobuf/encoding/protojson" marshaler.
-// It supports the full functionality of protobuf unlike JSONBuiltin.
-//
-// The NewDecoder method returns a Decoder, so the underlying
-// *json.Decoder methods can be used.
+// FormUrlencoded is a Marshaler for application/x-www-form-urlencoded
 type FormUrlencoded JSONPb
 
 // ContentType always returns "application/json".
@@ -57,11 +51,6 @@ func (f *FormUrlencoded) marshalTo(w io.Writer, v interface{}) error {
 	_, err = w.Write(b)
 	return err
 }
-
-//var (
-//	// protoMessageType is stored to prevent constant lookup of the same type at runtime.
-//	protoMessageType = reflect.TypeOf((*proto.Message)(nil)).Elem()
-//)
 
 // marshalNonProto marshals a non-message field of a protobuf message.
 // This function does not correctly marshal arbitrary data structures into JSON,
@@ -169,7 +158,7 @@ func (f *FormUrlencoded) Unmarshal(data []byte, v interface{}) error {
 	return unmarshalJSONPb(data, f.UnmarshalOptions, v)
 }
 
-// Delimiter for newline encoded JSON streams.
+// Delimiter just returns a blank byte
 func (f *FormUrlencoded) Delimiter() []byte {
 	return []byte("")
 }
@@ -178,14 +167,14 @@ type FormDecoder struct {
 	reader io.Reader
 }
 
-// NewDecoder returns a Decoder which reads JSON stream from "r".
-func (f *FormUrlencoded) NewDecoder(r io.Reader) runtime.Decoder {
+// NewDecoder returns a Decoder which reads form data from "r".
+func (f *FormUrlencoded) NewDecoder(r io.Reader) Decoder {
 	return FormDecoder{reader: r}
 }
 
 // NewEncoder returns an Encoder which writes JSON stream into "w".
-func (f *FormUrlencoded) NewEncoder(w io.Writer) runtime.Encoder {
-	return runtime.EncoderFunc(func(v interface{}) error {
+func (f *FormUrlencoded) NewEncoder(w io.Writer) Encoder {
+	return EncoderFunc(func(v interface{}) error {
 		return f.marshalTo(w, v)
 	})
 }
@@ -211,6 +200,7 @@ func (d FormDecoder) Decode(v interface{}) error {
 	return err
 }
 
+// decodeSingleFormField decodes a single field from the form data
 func decodeSingleFormField(values url.Values, v interface{}) error {
 	if len(values) == 0 {
 		return fmt.Errorf("no form field found")
