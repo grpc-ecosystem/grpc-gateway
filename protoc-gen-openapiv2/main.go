@@ -87,6 +87,7 @@ func main() {
 	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
 	reg.SetIncludePackageInTags(*includePackageInTags)
 
+	reg.SetUseFQNForOpenAPIName(*useFQNForOpenAPIName)
 	// Set the naming strategy either directly from the flag, or via the value of the legacy fqn_for_openapi_name
 	// flag.
 	namingStrategy := *openAPINamingStrategy
