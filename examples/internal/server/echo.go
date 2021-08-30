@@ -6,7 +6,9 @@ import (
 	"github.com/golang/glog"
 	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
 
 // Implements of EchoServiceServer
@@ -43,4 +45,9 @@ func (s *echoServer) EchoDelete(ctx context.Context, msg *examples.SimpleMessage
 func (s *echoServer) EchoPatch(ctx context.Context, msg *examples.DynamicMessageUpdate) (*examples.DynamicMessageUpdate, error) {
 	glog.Info(msg)
 	return msg, nil
+}
+
+func (s *echoServer) EchoUnauthorized(ctx context.Context, msg *examples.SimpleMessage) (*examples.SimpleMessage, error) {
+	glog.Info(msg)
+	return nil, status.Error(codes.Unauthenticated, "unauthorized err")
 }
