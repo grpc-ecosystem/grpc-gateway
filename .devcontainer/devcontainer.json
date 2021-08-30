@@ -4,8 +4,7 @@
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
 		"editor.formatOnSave": true,
-		"terminal.integrated.shell.linux": "/bin/bash",
-		"go.useGoProxyToCheckForToolUpdates": true,
+		"go.toolsManagement.autoUpdate": true,
 		"go.useLanguageServer": true,
 		"go.gopath": "/go",
 		"go.goroot": "/usr/local/go",
