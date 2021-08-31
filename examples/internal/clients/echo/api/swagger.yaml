@@ -1,9 +1,10 @@
 ---
 swagger: "2.0"
 info:
-  description: "Echo Service API consists of a single service which returns\na message."
+  description: "Echo Service\r\n\r\nEcho Service API consists of a single service\
+    \ which returns\r\na message."
   version: "version not set"
-  title: "Echo Service"
+  title: "examples/internal/proto/examplepb/echo_service.proto"
 tags:
 - name: "EchoService"
 consumes:
@@ -15,8 +16,8 @@ paths:
     post:
       tags:
       - "EchoService"
-      summary: "Echo method receives a simple message and returns it."
-      description: "The message posted as the id parameter will also be\nreturned."
+      summary: "Echo method receives a simple message and returns it.\r\n\r\nThe message\
+        \ posted as the id parameter will also be\r\nreturned."
       operationId: "EchoService_Echo"
       parameters:
       - name: "id"
@@ -38,8 +39,8 @@ paths:
     get:
       tags:
       - "EchoService"
-      summary: "Echo method receives a simple message and returns it."
-      description: "The message posted as the id parameter will also be\nreturned."
+      summary: "Echo method receives a simple message and returns it.\r\n\r\nThe message\
+        \ posted as the id parameter will also be\r\nreturned."
       operationId: "EchoService_Echo2"
       parameters:
       - name: "id"
@@ -113,8 +114,8 @@ paths:
     get:
       tags:
       - "EchoService"
-      summary: "Echo method receives a simple message and returns it."
-      description: "The message posted as the id parameter will also be\nreturned."
+      summary: "Echo method receives a simple message and returns it.\r\n\r\nThe message\
+        \ posted as the id parameter will also be\r\nreturned."
       operationId: "EchoService_Echo3"
       parameters:
       - name: "id"
@@ -187,8 +188,8 @@ paths:
     get:
       tags:
       - "EchoService"
-      summary: "Echo method receives a simple message and returns it."
-      description: "The message posted as the id parameter will also be\nreturned."
+      summary: "Echo method receives a simple message and returns it.\r\n\r\nThe message\
+        \ posted as the id parameter will also be\r\nreturned."
       operationId: "EchoService_Echo4"
       parameters:
       - name: "id"
@@ -255,8 +256,8 @@ paths:
     get:
       tags:
       - "EchoService"
-      summary: "Echo method receives a simple message and returns it."
-      description: "The message posted as the id parameter will also be\nreturned."
+      summary: "Echo method receives a simple message and returns it.\r\n\r\nThe message\
+        \ posted as the id parameter will also be\r\nreturned."
       operationId: "EchoService_Echo5"
       parameters:
       - name: "no.note"
@@ -457,8 +458,8 @@ definitions:
       valueField:
         type: "object"
         properties: {}
-    description: "DynamicMessage represents a message which can have its structure\n\
-      built dynamically using Struct and Values."
+    description: "DynamicMessage represents a message which can have its structure\r\
+      \nbuilt dynamically using Struct and Values."
     example:
       structField: "{}"
       valueField: "{}"

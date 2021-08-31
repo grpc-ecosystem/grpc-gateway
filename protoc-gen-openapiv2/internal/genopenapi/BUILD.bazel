@@ -37,8 +37,8 @@ go_test(
     size = "small",
     srcs = [
         "cycle_test.go",
-        "template_test.go",
         "naming_test.go",
+        "template_test.go",
     ],
     embed = [":genopenapi"],
     deps = [

@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Merging Services",
-    "description": "This is an example of merging two proto files.",
+    "title": "examples/internal/proto/examplepb/openapi_merge_b.proto",
+    "description": "Merging Services\r\n\r\nThis is an example of merging two proto files.",
     "version": "version not set"
   },
   "tags": [
@@ -19,8 +19,7 @@
   "paths": {
     "/v1/example/b/1": {
       "post": {
-        "summary": "ServiceB.MethodOne receives InMessageB and returns OutMessageB",
-        "description": "Here is the detail explanation about ServiceB.MethodOne.",
+        "summary": "ServiceB.MethodOne receives InMessageB and returns OutMessageB\r\n\r\nHere is the detail explanation about ServiceB.MethodOne.",
         "operationId": "ServiceB_MethodOne",
         "responses": {
           "200": {
@@ -53,8 +52,7 @@
     },
     "/v1/example/b/2": {
       "post": {
-        "summary": "ServiceB.MethodTwo receives OutMessageB and returns InMessageB",
-        "description": "Here is the detail explanation about ServiceB.MethodTwo.",
+        "summary": "ServiceB.MethodTwo receives OutMessageB and returns InMessageB\r\n\r\nHere is the detail explanation about ServiceB.MethodTwo.",
         "operationId": "ServiceB_MethodTwo",
         "responses": {
           "200": {

@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Echo Service",
-    "description": "Echo Service API consists of a single service which returns\na message.",
+    "title": "examples/internal/proto/examplepb/echo_service.proto",
+    "description": "Echo Service\r\n\r\nEcho Service API consists of a single service which returns\r\na message.",
     "version": "version not set"
   },
   "tags": [
@@ -19,8 +19,7 @@
   "paths": {
     "/v1/example/echo/{id}": {
       "post": {
-        "summary": "Echo method receives a simple message and returns it.",
-        "description": "The message posted as the id parameter will also be\nreturned.",
+        "summary": "Echo method receives a simple message and returns it.\r\n\r\nThe message posted as the id parameter will also be\r\nreturned.",
         "operationId": "EchoService_Echo",
         "responses": {
           "200": {
@@ -52,8 +51,7 @@
     },
     "/v1/example/echo/{id}/{num}": {
       "get": {
-        "summary": "Echo method receives a simple message and returns it.",
-        "description": "The message posted as the id parameter will also be\nreturned.",
+        "summary": "Echo method receives a simple message and returns it.\r\n\r\nThe message posted as the id parameter will also be\r\nreturned.",
         "operationId": "EchoService_Echo2",
         "responses": {
           "200": {
@@ -138,8 +136,7 @@
     },
     "/v1/example/echo/{id}/{num}/{lang}": {
       "get": {
-        "summary": "Echo method receives a simple message and returns it.",
-        "description": "The message posted as the id parameter will also be\nreturned.",
+        "summary": "Echo method receives a simple message and returns it.\r\n\r\nThe message posted as the id parameter will also be\r\nreturned.",
         "operationId": "EchoService_Echo3",
         "responses": {
           "200": {
@@ -224,8 +221,7 @@
     },
     "/v1/example/echo1/{id}/{lineNum}/{status.note}": {
       "get": {
-        "summary": "Echo method receives a simple message and returns it.",
-        "description": "The message posted as the id parameter will also be\nreturned.",
+        "summary": "Echo method receives a simple message and returns it.\r\n\r\nThe message posted as the id parameter will also be\r\nreturned.",
         "operationId": "EchoService_Echo4",
         "responses": {
           "200": {
@@ -304,8 +300,7 @@
     },
     "/v1/example/echo2/{no.note}": {
       "get": {
-        "summary": "Echo method receives a simple message and returns it.",
-        "description": "The message posted as the id parameter will also be\nreturned.",
+        "summary": "Echo method receives a simple message and returns it.\r\n\r\nThe message posted as the id parameter will also be\r\nreturned.",
         "operationId": "EchoService_Echo5",
         "responses": {
           "200": {
@@ -551,7 +546,7 @@
           "type": "object"
         }
       },
-      "description": "DynamicMessage represents a message which can have its structure\nbuilt dynamically using Struct and Values."
+      "description": "DynamicMessage represents a message which can have its structure\r\nbuilt dynamically using Struct and Values."
     },
     "examplepbDynamicMessageUpdate": {
       "type": "object",

@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "examples/internal/proto/examplepb/generate_unbound_methods.proto",
-    "description": "Generate Unannotated Methods Echo Service\nSimilar to echo_service.proto but without annotations and without external configuration.\n\nGenerate Unannotated Methods Echo Service API consists of a single service which returns\na message.",
+    "description": "Generate Unannotated Methods Echo Service\r\nSimilar to echo_service.proto but without annotations and without external configuration.\r\n\r\nGenerate Unannotated Methods Echo Service API consists of a single service which returns\r\na message.",
     "version": "version not set"
   },
   "tags": [
@@ -19,8 +19,7 @@
   "paths": {
     "/grpc.gateway.examples.internal.proto.examplepb.GenerateUnboundMethodsEchoService/Echo": {
       "post": {
-        "summary": "Echo method receives a simple message and returns it.",
-        "description": "The message posted as the id parameter will also be\nreturned.",
+        "summary": "Echo method receives a simple message and returns it.\r\n\r\nThe message posted as the id parameter will also be\r\nreturned.",
         "operationId": "GenerateUnboundMethodsEchoService_Echo",
         "responses": {
           "200": {
