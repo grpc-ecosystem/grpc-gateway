@@ -1,5 +1,8 @@
 ---
-layout: default title: Health check nav_order: 1 parent: Operations
+layout: default
+title: Health
+check nav_order: 1
+parent: Operations
 ---
 
 # Health check

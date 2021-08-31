@@ -9,13 +9,11 @@ import (
 	"regexp"
 	"strings"
 
-	"google.golang.org/grpc/health/grpc_health_v1"
-
-	"google.golang.org/grpc"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
