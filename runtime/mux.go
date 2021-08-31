@@ -208,13 +208,13 @@ func WithDisablePathLengthFallback() ServeMuxOption {
 	}
 }
 
-// WithHealthCheckEnabled returns a ServeMuxOption that will add a /healthz endpoint to the created ServeMux.
+// WithHealthzEndpoint returns a ServeMuxOption that will add a /healthz endpoint to the created ServeMux.
 // When called the handler will forward the request to the upstream grpc service health check (defined in the
 // gRPC Health Checking Protocol).
 // See here https://grpc-ecosystem.github.io/grpc-gateway/docs/operations/health_check/ for more information on how
 // to setup the protocol in the grpc server.
 // If you define a service as query parameter, this will also be forwarded as service in the HealthCheckRequest.
-func WithHealthCheckEnabled(conn grpc.ClientConnInterface) ServeMuxOption {
+func WithHealthzEndpoint(conn grpc.ClientConnInterface) ServeMuxOption {
 	healthCheckClient := grpc_health_v1.NewHealthClient(conn)
 
 	return func(s *ServeMux) {

@@ -649,7 +649,7 @@ var healthCheckTests = []struct {
 	},
 }
 
-func TestWithHealthCheckEnabled_codes(t *testing.T) {
+func TestWithHealthzEndpoint_codes(t *testing.T) {
 	for _, tt := range healthCheckTests {
 		t.Run(tt.name, func(t *testing.T) {
 			conn, err := dummyGrpcServer(tt.status, tt.code)
@@ -657,7 +657,7 @@ func TestWithHealthCheckEnabled_codes(t *testing.T) {
 				t.Errorf("connection to dummy grpc server failed: %v", err)
 			}
 
-			mux := runtime.NewServeMux(runtime.WithHealthCheckEnabled(conn))
+			mux := runtime.NewServeMux(runtime.WithHealthzEndpoint(conn))
 
 			r := httptest.NewRequest(http.MethodGet, "/healthz", nil)
 			rr := httptest.NewRecorder()
@@ -674,7 +674,7 @@ func TestWithHealthCheckEnabled_codes(t *testing.T) {
 	}
 }
 
-func TestWithHealthCheckEnabled_serviceParam(t *testing.T) {
+func TestWithHealthzEndpoint_serviceParam(t *testing.T) {
 	service := "test"
 
 	// set codes.UNKNOWN to trigger error response with service in msg
@@ -683,7 +683,7 @@ func TestWithHealthCheckEnabled_serviceParam(t *testing.T) {
 		t.Errorf("connection to dummy grpc server failed: %v", err)
 	}
 
-	mux := runtime.NewServeMux(runtime.WithHealthCheckEnabled(conn))
+	mux := runtime.NewServeMux(runtime.WithHealthzEndpoint(conn))
 
 	r := httptest.NewRequest(http.MethodGet, "/healthz?service="+service, nil)
 	rr := httptest.NewRecorder()
