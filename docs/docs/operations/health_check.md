@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Health check 
+title: Health check
 nav_order: 1
 parent: Operations
 ---
