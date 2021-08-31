@@ -9,6 +9,10 @@ import (
 	"regexp"
 	"strings"
 
+	"google.golang.org/grpc/health/grpc_health_v1"
+
+	"google.golang.org/grpc"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
@@ -201,6 +205,56 @@ func WithRoutingErrorHandler(fn RoutingErrorHandlerFunc) ServeMuxOption {
 func WithDisablePathLengthFallback() ServeMuxOption {
 	return func(serveMux *ServeMux) {
 		serveMux.disablePathLengthFallback = true
+	}
+}
+
+// WithHealthCheckEnabled returns a ServeMuxOption that will add a /healthz endpoint to the created ServeMux.
+// When called the handler will forward the request to the upstream grpc service health check (defined in the
+// gRPC Health Checking Protocol).
+// See here https://grpc-ecosystem.github.io/grpc-gateway/docs/operations/health_check/ for more information on how
+// to setup the protocol in the grpc server.
+// If you define a service as query parameter, this will also be forwarded as service in the HealthCheckRequest.
+// TODO: refine reponses
+// TODO: add test cases
+func WithHealthCheckEnabled(conn grpc.ClientConnInterface) ServeMuxOption {
+	healthCheckClient := grpc_health_v1.NewHealthClient(conn)
+
+	return func(serveMux *ServeMux) {
+		// error can be ignored since pattern is definitely valid
+		_ = serveMux.HandlePath(
+			http.MethodGet, "/healthz", func(w http.ResponseWriter, r *http.Request, _ map[string]string,
+			) {
+				serviceQueryParam := r.URL.Query().Get("service")
+				resp, err := healthCheckClient.Check(r.Context(), &grpc_health_v1.HealthCheckRequest{
+					Service: serviceQueryParam,
+				})
+
+				if err != nil {
+					if stat, ok := status.FromError(err); ok {
+						switch stat.Code() {
+						case codes.Unimplemented:
+							http.Error(w, err.Error(), http.StatusNotImplemented)
+						case codes.DeadlineExceeded:
+							http.Error(w, err.Error(), http.StatusBadGateway)
+						case codes.NotFound:
+							http.Error(w, err.Error(), http.StatusNotFound)
+						default:
+						}
+					}
+
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				switch resp.GetStatus() {
+				case grpc_health_v1.HealthCheckResponse_SERVING:
+					_, _ = fmt.Fprintf(w, "%v", resp)
+				case grpc_health_v1.HealthCheckResponse_NOT_SERVING, grpc_health_v1.HealthCheckResponse_UNKNOWN:
+					http.Error(w, fmt.Sprintf("%v", resp), http.StatusBadGateway)
+				case grpc_health_v1.HealthCheckResponse_SERVICE_UNKNOWN:
+					http.Error(w, fmt.Sprintf("%v", resp), http.StatusNotFound)
+				}
+			})
 	}
 }
 

@@ -2,12 +2,24 @@ package runtime_test
 
 import (
 	"bytes"
+	"context"
 	"fmt"
+	"log"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"strconv"
+	"strings"
 	"testing"
+
+	"google.golang.org/grpc/status"
+
+	"google.golang.org/grpc/codes"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/health/grpc_health_v1"
+	"google.golang.org/grpc/test/bufconn"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
@@ -597,4 +609,145 @@ func TestServeMux_HandlePath(t *testing.T) {
 			}
 		})
 	}
+}
+
+var healthCheckTests = []struct {
+	name           string
+	code           codes.Code
+	status         grpc_health_v1.HealthCheckResponse_ServingStatus
+	httpStatusCode int
+}{
+	{
+		"Test codes.Unimplemented",
+		codes.Unimplemented,
+		grpc_health_v1.HealthCheckResponse_UNKNOWN,
+		http.StatusNotImplemented,
+	},
+	{
+		"Test codes.DeadlineExceeded",
+		codes.DeadlineExceeded,
+		grpc_health_v1.HealthCheckResponse_UNKNOWN,
+		http.StatusBadGateway,
+	},
+	{
+		"Test codes.NotFound",
+		codes.NotFound,
+		grpc_health_v1.HealthCheckResponse_UNKNOWN,
+		http.StatusNotFound,
+	},
+	{
+		"Test any other code",
+		codes.Canceled,
+		grpc_health_v1.HealthCheckResponse_UNKNOWN,
+		http.StatusInternalServerError,
+	},
+	{
+		"Test HealthCheckResponse_SERVING",
+		codes.OK,
+		grpc_health_v1.HealthCheckResponse_SERVING,
+		http.StatusOK,
+	},
+	{
+		"Test HealthCheckResponse_NOT_SERVING",
+		codes.OK,
+		grpc_health_v1.HealthCheckResponse_NOT_SERVING,
+		http.StatusBadGateway,
+	},
+	{
+		"Test HealthCheckResponse_UNKNOWN",
+		codes.OK,
+		grpc_health_v1.HealthCheckResponse_UNKNOWN,
+		http.StatusBadGateway,
+	},
+	{
+		"Test HealthCheckResponse_SERVICE_UNKNOWN",
+		codes.OK,
+		grpc_health_v1.HealthCheckResponse_SERVICE_UNKNOWN,
+		http.StatusNotFound,
+	},
+}
+
+func TestWithHealthCheckEnabled_codes(t *testing.T) {
+	for _, tt := range healthCheckTests {
+		t.Run(tt.name, func(t *testing.T) {
+			conn, err := dummyGrpcServer(tt.status, tt.code)
+			if err != nil {
+				t.Errorf("connection to dummy grpc server failed: %v", err)
+			}
+
+			mux := runtime.NewServeMux(runtime.WithHealthCheckEnabled(conn))
+
+			r := httptest.NewRequest(http.MethodGet, "/healthz", nil)
+			rr := httptest.NewRecorder()
+
+			mux.ServeHTTP(rr, r)
+
+			if rr.Code != tt.httpStatusCode {
+				t.Errorf(
+					"result http status code for grpc code %q and status %q should be %d, got %d",
+					tt.code, tt.status, tt.httpStatusCode, rr.Code,
+				)
+			}
+		})
+	}
+}
+
+func TestWithHealthCheckEnabled_serviceParam(t *testing.T) {
+	service := "test"
+
+	// set codes.UNKNOWN to trigger error response with service in msg
+	conn, err := dummyGrpcServer(grpc_health_v1.HealthCheckResponse_UNKNOWN, codes.Unknown)
+	if err != nil {
+		t.Errorf("connection to dummy grpc server failed: %v", err)
+	}
+
+	mux := runtime.NewServeMux(runtime.WithHealthCheckEnabled(conn))
+
+	r := httptest.NewRequest(http.MethodGet, "/healthz?service="+service, nil)
+	rr := httptest.NewRecorder()
+
+	mux.ServeHTTP(rr, r)
+
+	if !strings.Contains(rr.Body.String(), service) {
+		t.Errorf(
+			"service query parameter should be translated to HealthCheckRequest: expected %s to contain %s",
+			rr.Body.String(), service,
+		)
+	}
+}
+
+type grpcServer struct {
+	status grpc_health_v1.HealthCheckResponse_ServingStatus
+	code   codes.Code
+}
+
+func (g *grpcServer) Check(ctx context.Context, r *grpc_health_v1.HealthCheckRequest) (*grpc_health_v1.HealthCheckResponse, error) {
+	if g.code != codes.OK {
+		return nil, status.Error(g.code, r.GetService())
+	}
+
+	return &grpc_health_v1.HealthCheckResponse{Status: g.status}, nil
+}
+
+func (g *grpcServer) Watch(r *grpc_health_v1.HealthCheckRequest, s grpc_health_v1.Health_WatchServer) error {
+	panic("implement me")
+}
+
+func dummyGrpcServer(status grpc_health_v1.HealthCheckResponse_ServingStatus, code codes.Code) (grpc.ClientConnInterface, error) {
+	s := grpc.NewServer()
+	grpc_health_v1.RegisterHealthServer(s, &grpcServer{status: status, code: code})
+
+	ctx := context.Background()
+	lis := bufconn.Listen(1024 * 1024)
+	go func() {
+		if err := s.Serve(lis); err != nil {
+			log.Fatalf("Server exited with error: %v", err)
+		}
+	}()
+
+	return grpc.DialContext(ctx,
+		"bufnet",
+		grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) { return lis.Dial() }),
+		grpc.WithInsecure(),
+	)
 }
