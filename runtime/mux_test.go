@@ -618,28 +618,10 @@ var healthCheckTests = []struct {
 	httpStatusCode int
 }{
 	{
-		"Test codes.Unimplemented",
-		codes.Unimplemented,
-		grpc_health_v1.HealthCheckResponse_UNKNOWN,
-		http.StatusNotImplemented,
-	},
-	{
-		"Test codes.DeadlineExceeded",
-		codes.DeadlineExceeded,
-		grpc_health_v1.HealthCheckResponse_UNKNOWN,
-		http.StatusBadGateway,
-	},
-	{
-		"Test codes.NotFound",
+		"Test grpc error code",
 		codes.NotFound,
 		grpc_health_v1.HealthCheckResponse_UNKNOWN,
 		http.StatusNotFound,
-	},
-	{
-		"Test any other code",
-		codes.Canceled,
-		grpc_health_v1.HealthCheckResponse_UNKNOWN,
-		http.StatusInternalServerError,
 	},
 	{
 		"Test HealthCheckResponse_SERVING",
@@ -651,13 +633,13 @@ var healthCheckTests = []struct {
 		"Test HealthCheckResponse_NOT_SERVING",
 		codes.OK,
 		grpc_health_v1.HealthCheckResponse_NOT_SERVING,
-		http.StatusBadGateway,
+		http.StatusServiceUnavailable,
 	},
 	{
 		"Test HealthCheckResponse_UNKNOWN",
 		codes.OK,
 		grpc_health_v1.HealthCheckResponse_UNKNOWN,
-		http.StatusBadGateway,
+		http.StatusServiceUnavailable,
 	},
 	{
 		"Test HealthCheckResponse_SERVICE_UNKNOWN",
