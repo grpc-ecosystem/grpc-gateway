@@ -709,7 +709,7 @@ func (g *grpcServer) Check(ctx context.Context, r *grpc_health_v1.HealthCheckReq
 }
 
 func (g *grpcServer) Watch(r *grpc_health_v1.HealthCheckRequest, s grpc_health_v1.Health_WatchServer) error {
-	panic("implement me")
+	return status.Error(codes.Unimplemented, "unimplemented")
 }
 
 func dummyGrpcServer(status grpc_health_v1.HealthCheckResponse_ServingStatus, code codes.Code) (grpc.ClientConnInterface, error) {
