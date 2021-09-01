@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "examples/internal/proto/examplepb/openapi_merge_a.proto",
-    "description": "Merging Services\r\n\r\nThis is an example of merging two proto files.",
+    "title": "Merging Services",
+    "description": "This is an example of merging two proto files.",
     "version": "version not set"
   },
   "tags": [
@@ -22,7 +22,8 @@
   "paths": {
     "/v1/example/a/1": {
       "post": {
-        "summary": "ServiceA.MethodOne receives InMessageA and returns OutMessageA\r\n\r\nHere is the detail explanation about ServiceA.MethodOne.",
+        "summary": "ServiceA.MethodOne receives InMessageA and returns OutMessageA",
+        "description": "Here is the detail explanation about ServiceA.MethodOne.",
         "operationId": "ServiceA_MethodOne",
         "responses": {
           "200": {
@@ -55,7 +56,8 @@
     },
     "/v1/example/a/2": {
       "post": {
-        "summary": "ServiceA.MethodTwo receives OutMessageA and returns InMessageA\r\n\r\nHere is the detail explanation about ServiceA.MethodTwo.",
+        "summary": "ServiceA.MethodTwo receives OutMessageA and returns InMessageA",
+        "description": "Here is the detail explanation about ServiceA.MethodTwo.",
         "operationId": "ServiceA_MethodTwo",
         "responses": {
           "200": {
@@ -88,7 +90,8 @@
     },
     "/v1/example/c/1": {
       "post": {
-        "summary": "ServiceC.MethodOne receives InMessageA and returns OutMessageC\r\n\r\nHere is the detail explanation about ServiceC.MethodOne.",
+        "summary": "ServiceC.MethodOne receives InMessageA and returns OutMessageC",
+        "description": "Here is the detail explanation about ServiceC.MethodOne.",
         "operationId": "ServiceC_MethodOne",
         "responses": {
           "200": {
@@ -121,7 +124,8 @@
     },
     "/v1/example/c/2": {
       "post": {
-        "summary": "ServiceC.MethodTwo receives OutMessageA and returns InMessageA\r\n\r\nHere is the detail explanation about ServiceC.MethodTwo.",
+        "summary": "ServiceC.MethodTwo receives OutMessageA and returns InMessageA",
+        "description": "Here is the detail explanation about ServiceC.MethodTwo.",
         "operationId": "ServiceC_MethodTwo",
         "responses": {
           "200": {

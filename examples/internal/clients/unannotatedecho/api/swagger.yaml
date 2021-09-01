@@ -1,10 +1,10 @@
 ---
 swagger: "2.0"
 info:
-  description: "Unannotated Echo Service\r\nSimilar to echo_service.proto but without\
-    \ annotations. See\r\nunannotated_echo_service.yaml for the equivalent of the\
-    \ annotations in\r\ngRPC API configuration format.\r\n\r\nEcho Service API consists\
-    \ of a single service which returns\r\na message."
+  description: "Unannotated Echo Service\nSimilar to echo_service.proto but without\
+    \ annotations. See\nunannotated_echo_service.yaml for the equivalent of the annotations\
+    \ in\ngRPC API configuration format.\n\nEcho Service API consists of a single\
+    \ service which returns\na message."
   version: "1.0"
   title: "Unannotated Echo"
   contact:

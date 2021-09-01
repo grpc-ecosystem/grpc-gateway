@@ -1,10 +1,9 @@
 ---
 swagger: "2.0"
 info:
-  description: "Generate Unannotated Methods Echo Service\r\nSimilar to echo_service.proto\
-    \ but without annotations and without external configuration.\r\n\r\nGenerate\
-    \ Unannotated Methods Echo Service API consists of a single service which returns\r\
-    \na message."
+  description: "Generate Unannotated Methods Echo Service\nSimilar to echo_service.proto\
+    \ but without annotations and without external configuration.\n\nGenerate Unannotated\
+    \ Methods Echo Service API consists of a single service which returns\na message."
   version: "version not set"
   title: "examples/internal/proto/examplepb/generate_unbound_methods.proto"
 tags:
@@ -18,8 +17,8 @@ paths:
     post:
       tags:
       - "GenerateUnboundMethodsEchoService"
-      summary: "Echo method receives a simple message and returns it.\r\n\r\nThe message\
-        \ posted as the id parameter will also be\r\nreturned."
+      summary: "Echo method receives a simple message and returns it."
+      description: "The message posted as the id parameter will also be\nreturned."
       operationId: "GenerateUnboundMethodsEchoService_Echo"
       parameters:
       - in: "body"

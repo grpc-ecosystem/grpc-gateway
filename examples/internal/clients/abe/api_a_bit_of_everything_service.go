@@ -1477,7 +1477,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckStatus(c
 }
 
 /* 
-ABitOfEverythingServiceApiService Create a new ABitOfEverything    This API creates a new ABitOfEverything
+ABitOfEverythingServiceApiService Create a new ABitOfEverything
+This API creates a new ABitOfEverything
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param floatValue Float value field
  * @param doubleValue
@@ -1828,10 +1829,10 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ct
 /* 
 ABitOfEverythingServiceApiService Create a book.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param parent The publisher in which to create the book.    Format: &#x60;publishers/{publisher}&#x60;    Example: &#x60;publishers/1257894000000000000&#x60;
+ * @param parent The publisher in which to create the book.  Format: &#x60;publishers/{publisher}&#x60;  Example: &#x60;publishers/1257894000000000000&#x60;
  * @param body The book to create.
  * @param optional nil or *ABitOfEverythingServiceCreateBookOpts - Optional Parameters:
-     * @param "BookId" (optional.String) -  The ID to use for the book.    This must start with an alphanumeric character.
+     * @param "BookId" (optional.String) -  The ID to use for the book.  This must start with an alphanumeric character.
 
 @return ExamplepbBook
 */
@@ -3963,11 +3964,11 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx co
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param bookName The resource name of the book.    Format: &#x60;publishers/{publisher}/books/{book}&#x60;    Example: &#x60;publishers/1257894000000000000/books/my-book&#x60;
- * @param body The book to update.    The book&#39;s &#x60;name&#x60; field is used to identify the book to be updated.  Format: publishers/{publisher}/books/{book}
+ * @param bookName The resource name of the book.  Format: &#x60;publishers/{publisher}/books/{book}&#x60;  Example: &#x60;publishers/1257894000000000000/books/my-book&#x60;
+ * @param body The book to update.  The book&#39;s &#x60;name&#x60; field is used to identify the book to be updated. Format: publishers/{publisher}/books/{book}
  * @param optional nil or *ABitOfEverythingServiceUpdateBookOpts - Optional Parameters:
      * @param "UpdateMask" (optional.String) -  The list of fields to be updated.
-     * @param "AllowMissing" (optional.Bool) -  If set to true, and the book is not found, a new book will be created.  In this situation, &#x60;update_mask&#x60; is ignored.
+     * @param "AllowMissing" (optional.Bool) -  If set to true, and the book is not found, a new book will be created. In this situation, &#x60;update_mask&#x60; is ignored.
 
 @return ExamplepbBook
 */
