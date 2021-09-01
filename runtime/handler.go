@@ -202,10 +202,12 @@ func handleForwardResponseOptions(ctx context.Context, w http.ResponseWriter, re
 
 func handleForwardResponseStreamError(ctx context.Context, wroteHeader bool, marshaler Marshaler, w http.ResponseWriter, req *http.Request, mux *ServeMux, err error) {
 	st := mux.streamErrorHandler(ctx, err)
+	msg := errorChunk(st)
 	if !wroteHeader {
+		w.Header().Set("Content-Type", marshaler.ContentType(msg))
 		w.WriteHeader(HTTPStatusFromCode(st.Code()))
 	}
-	buf, merr := marshaler.Marshal(errorChunk(st))
+	buf, merr := marshaler.Marshal(msg)
 	if merr != nil {
 		grpclog.Infof("Failed to marshal an error: %v", merr)
 		return
