@@ -67,7 +67,6 @@ jobs:
       - checkout
       - run: go mod vendor
       - run: >
-          . $HOME/.nvm/nvm.sh &&
           cd examples/internal/browser &&
           npm install gulp-cli &&
           npm install &&
