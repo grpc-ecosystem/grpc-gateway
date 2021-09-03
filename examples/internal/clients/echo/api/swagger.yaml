@@ -447,6 +447,84 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
+  /v1/example/echo_unauthorized:
+    get:
+      tags:
+      - "EchoService"
+      summary: "EchoUnauthorized method receives a simple message and returns it.\
+        \ It must\nalways return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP\
+        \ Status code\nof 401."
+      operationId: "EchoService_EchoUnauthorized"
+      parameters:
+      - name: "id"
+        in: "query"
+        description: "Id represents the message identifier."
+        required: false
+        type: "string"
+        x-exportParamName: "Id"
+        x-optionalDataType: "String"
+      - name: "num"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Num"
+        x-optionalDataType: "String"
+      - name: "lineNum"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "LineNum"
+        x-optionalDataType: "String"
+      - name: "lang"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      - name: "status.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "StatusProgress"
+        x-optionalDataType: "String"
+      - name: "status.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StatusNote"
+        x-optionalDataType: "String"
+      - name: "en"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "En"
+        x-optionalDataType: "String"
+      - name: "no.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "NoProgress"
+        x-optionalDataType: "String"
+      - name: "no.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NoNote"
+        x-optionalDataType: "String"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
 definitions:
   examplepbDynamicMessage:
     type: "object"

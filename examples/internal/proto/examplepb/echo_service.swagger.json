@@ -541,7 +541,7 @@
     },
     "/v1/example/echo_unauthorized": {
       "get": {
-        "summary": "EchoUnauthorized method receives a simple message and returns it.",
+        "summary": "EchoUnauthorized method receives a simple message and returns it. It must\nalways return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code\nof 401.",
         "operationId": "EchoService_EchoUnauthorized",
         "responses": {
           "200": {

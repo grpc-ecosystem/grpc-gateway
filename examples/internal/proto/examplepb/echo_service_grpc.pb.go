@@ -29,7 +29,9 @@ type EchoServiceClient interface {
 	EchoDelete(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
 	// EchoPatch method receives a NonStandardUpdateRequest and returns it.
 	EchoPatch(ctx context.Context, in *DynamicMessageUpdate, opts ...grpc.CallOption) (*DynamicMessageUpdate, error)
-	// EchoUnauthorized method receives a simple message and returns it.
+	// EchoUnauthorized method receives a simple message and returns it. It must
+	// always return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code
+	// of 401.
 	EchoUnauthorized(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
 }
 
@@ -101,7 +103,9 @@ type EchoServiceServer interface {
 	EchoDelete(context.Context, *SimpleMessage) (*SimpleMessage, error)
 	// EchoPatch method receives a NonStandardUpdateRequest and returns it.
 	EchoPatch(context.Context, *DynamicMessageUpdate) (*DynamicMessageUpdate, error)
-	// EchoUnauthorized method receives a simple message and returns it.
+	// EchoUnauthorized method receives a simple message and returns it. It must
+	// always return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code
+	// of 401.
 	EchoUnauthorized(context.Context, *SimpleMessage) (*SimpleMessage, error)
 }
 
