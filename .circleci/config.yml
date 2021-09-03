@@ -85,8 +85,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-bazel-cache-{{ checksum "repositories.bzl" }}
-            - v2-bazel-cache-
+            - v3-bazel-cache-{{ checksum "repositories.bzl" }}
+            - v3-bazel-cache-
       - configure_bazel
       - run:
           name: Check that Bazel BUILD files are up-to-date
@@ -107,7 +107,7 @@ jobs:
           name: Run tests with Bazel
           command: bazel test //...
       - save_cache:
-          key: v2-bazel-cache-{{ checksum "repositories.bzl" }}
+          key: v3-bazel-cache-{{ checksum "repositories.bzl" }}
           paths:
             - /root/.cache/_grpc_gateway_bazel
   gorelease:
@@ -151,8 +151,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-bazel-cache-{{ checksum "repositories.bzl" }}
-            - v2-bazel-cache-
+            - v3-bazel-cache-{{ checksum "repositories.bzl" }}
+            - v3-bazel-cache-
       - configure_bazel
       - run:
           name: Update repositories.bzl
