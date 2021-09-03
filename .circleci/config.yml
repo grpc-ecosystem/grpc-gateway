@@ -49,20 +49,20 @@ executors:
 jobs:
   build:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - run: go build ./...
   test:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - run: go test -race -coverprofile=coverage.txt ./...
       - run: bash <(curl -s https://codecov.io/bash)
   node_test:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - run: go mod vendor
@@ -73,14 +73,14 @@ jobs:
           ./node_modules/.bin/gulp
   generate:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - generate
       - run: git diff --exit-code
   bazel:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - restore_cache:
@@ -112,7 +112,7 @@ jobs:
             - /root/.cache/_grpc_gateway_bazel
   gorelease:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - run:
@@ -139,14 +139,14 @@ jobs:
       - run: buf push --tag "$CIRCLE_SHA1"
   release:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - run: go mod vendor
       - run: curl -sL https://git.io/goreleaser | bash
   update-repositoriesbzl:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - restore_cache:
@@ -161,7 +161,7 @@ jobs:
       - renovate_git_amend_push
   regenerate:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - generate
