@@ -122,6 +122,21 @@ jobs:
             go mod init tmp &&
             go get golang.org/x/exp/cmd/gorelease@latest
       - run: gorelease -base=v2.5.0
+  push_bsr_plugins:
+    docker:
+      - image: circleci/golang
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run: echo "${BUF_API_TOKEN}" | docker login --username grpcgatewaybot --password-stdin plugins.buf.build
+      - run: |
+          cd .circleci/plugins/protoc-gen-grpc-gateway &&
+          docker build -t plugins.buf.build/grpc-ecosystem/grpc-gateway:${CIRCLE_TAG}-1 --build-arg=RELEASE_VERSION=${CIRCLE_TAG} . &&
+          docker push plugins.buf.build/grpc-ecosystem/grpc-gateway:${CIRCLE_TAG}-1
+      - run: |
+          cd .circleci/plugins/protoc-gen-openapiv2 &&
+          docker build -t plugins.buf.build/grpc-ecosystem/openapiv2:${CIRCLE_TAG}-1 --build-arg=RELEASE_VERSION=${CIRCLE_TAG} . &&
+          docker push plugins.buf.build/grpc-ecosystem/openapiv2:${CIRCLE_TAG}-1
   proto_lint:
     docker:
       - image: bufbuild/buf:0.54.1
@@ -182,6 +197,12 @@ workflows:
             branches:
               only: /^master$/
       - release:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*(-.*)*/
+      - push_bsr_plugins:
           filters:
             branches:
               ignore: /.*/
