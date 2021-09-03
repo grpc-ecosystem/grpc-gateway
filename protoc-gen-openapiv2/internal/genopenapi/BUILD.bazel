@@ -9,6 +9,7 @@ go_library(
         "generator.go",
         "helpers.go",
         "helpers_go111_old.go",
+        "naming.go",
         "template.go",
         "types.go",
     ],
@@ -36,6 +37,7 @@ go_test(
     size = "small",
     srcs = [
         "cycle_test.go",
+        "naming_test.go",
         "template_test.go",
     ],
     embed = [":genopenapi"],
