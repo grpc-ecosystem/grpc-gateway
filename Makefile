@@ -81,14 +81,10 @@ $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS): $(GENERATE_UNBOUND_METHODS_EXAMPLE_SPE
 	@rm -f $(EXAMPLE_CLIENT_DIR)/generateunboundmethods/README.md \
 		$(EXAMPLE_CLIENT_DIR)/generateunboundmethods/git_push.sh
 
-TMP_INSTALL_DIR := $(shell mktemp -d)
 install:
-	@mkdir -p ${TMP_INSTALL_DIR}
-	cd ${TMP_INSTALL_DIR} && go get \
-		google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1.0 \
-		google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1 \
-		github.com/bufbuild/buf/cmd/buf@v0.51.1
-	@rmdir ${TMP_INSTALL_DIR}
+	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1.0
+	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
+	go install github.com/bufbuild/buf/cmd/buf@v0.51.1
 
 	go install \
 		./protoc-gen-openapiv2 \

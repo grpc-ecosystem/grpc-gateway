@@ -1,21 +1,5 @@
 # How to contribute
 
-Thank you for your contribution to gRPC-Gateway.
-Here's the recommended process of contribution.
-
-1. `go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway`
-1. `cd $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway`
-1. hack, hack, hack...
-1. Make sure that your change follows best practices in Go
-   - [Effective Go](https://golang.org/doc/effective_go.html)
-   - [Go Code Review Comments](https://golang.org/wiki/CodeReviewComments)
-1. Make sure that `go test ./...` passes.
-1. Sign [a Contributor License Agreement](https://cla.developers.google.com/clas)
-1. Open a pull request in GitHub
-
-When you work on a larger contribution, it is also recommended that you get in touch
-with us through the issue tracker.
-
 ## Code reviews
 
 All submissions, including submissions by project members, require review.
@@ -27,9 +11,8 @@ All submissions, including submissions by project members, require review.
 It should be as simple as this (run from the root of the repository):
 
 ```bash
-docker run -v $(pwd):/src/grpc-gateway --rm docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.16 \
-    /bin/bash -c 'cd /src/grpc-gateway && \
-        make install && \
+docker run -v $(pwd):/grpc-gateway -w /grpc-gateway --rm ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.16 \
+    /bin/bash -c 'make install && \
         make clean && \
         make generate'
 docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
