@@ -6,7 +6,7 @@ commands:
     steps:
       - run: |
           cat > .bazelrc \<< EOF
-          startup --output_base /root/.cache/_grpc_gateway_bazel
+          startup --output_base /home/vscode/.cache/_grpc_gateway_bazel
           build --test_output errors
           build --features race
           # Workaround https://github.com/bazelbuild/bazel/issues/3645
@@ -109,7 +109,7 @@ jobs:
       - save_cache:
           key: v3-bazel-cache-{{ checksum "repositories.bzl" }}
           paths:
-            - /root/.cache/_grpc_gateway_bazel
+            - /home/vscode/.cache/_grpc_gateway_bazel
   gorelease:
     executor: build-env
     working_directory: /home/vscode/src/grpc-gateway
