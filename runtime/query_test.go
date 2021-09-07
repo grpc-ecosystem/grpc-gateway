@@ -376,6 +376,21 @@ func TestPopulateParameters(t *testing.T) {
 			},
 		},
 		{
+			values: url.Values{
+				"nested_oneof_value_one.int64Value":   {"-1"},
+				"nested_oneof_value_one.string_value": {"foo"},
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want: &examplepb.Proto3Message{
+				NestedOneofValue: &examplepb.Proto3Message_NestedOneofValueOne{
+					NestedOneofValueOne: &examplepb.Proto3Message{
+						Int64Value:  -1,
+						StringValue: "foo",
+					},
+				},
+			},
+		},
+		{
 			// Don't allow setting a oneof more than once
 			values: url.Values{
 				"oneof_bool_value":   {"true"},

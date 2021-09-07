@@ -10,7 +10,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
 message Proto3Message {
-  // Next number: 46
+  // Next number: 47
   Proto3Message nested = 41;
   float float_value = 42;
   double double_value = 43;
@@ -31,6 +31,9 @@ message Proto3Message {
   oneof oneof_value {
     bool oneof_bool_value = 1;
     string oneof_string_value = 2;
+  }
+  oneof nested_oneof_value {
+    Proto3Message nested_oneof_value_one = 46;
   }
   google.protobuf.DoubleValue wrapper_double_value = 17;
   google.protobuf.FloatValue wrapper_float_value = 18;
