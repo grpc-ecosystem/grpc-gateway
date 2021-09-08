@@ -90,4 +90,12 @@ service EchoService {
 			body: "body"
 		};
 	}
+	// EchoUnauthorized method receives a simple message and returns it. It must
+	// always return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code
+	// of 401.
+	rpc EchoUnauthorized(SimpleMessage) returns (SimpleMessage) {
+		option (google.api.http) = {
+			get: "/v1/example/echo_unauthorized"
+		};
+	}
 }
