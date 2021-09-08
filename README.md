@@ -455,6 +455,15 @@ plugins:
     out: gen/openapiv2
 ```
 
+This requires no local installation of any plugins. Be careful to use the same
+version of the generator as the runtime library, i.e. if using `v2.6.0-1`, run
+
+```shell
+$ go get github.com/grpc-ecosystem/grpc-gateway/v2@v2.6.0
+```
+
+To get the same version of the runtime in your `go.mod`.
+
 ## Video intro
 
 This GopherCon UK 2019 presentation from our maintainer [@JohanBrandhorst](https://github.com/johanbrandhorst) provides a good intro to using the gRPC-Gateway. It uses the following boilerplate repo as a base: https://github.com/johanbrandhorst/grpc-gateway-boilerplate.
