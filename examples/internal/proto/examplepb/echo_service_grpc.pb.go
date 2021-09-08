@@ -29,6 +29,10 @@ type EchoServiceClient interface {
 	EchoDelete(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
 	// EchoPatch method receives a NonStandardUpdateRequest and returns it.
 	EchoPatch(ctx context.Context, in *DynamicMessageUpdate, opts ...grpc.CallOption) (*DynamicMessageUpdate, error)
+	// EchoUnauthorized method receives a simple message and returns it. It must
+	// always return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code
+	// of 401.
+	EchoUnauthorized(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error)
 }
 
 type echoServiceClient struct {
@@ -75,6 +79,15 @@ func (c *echoServiceClient) EchoPatch(ctx context.Context, in *DynamicMessageUpd
 	return out, nil
 }
 
+func (c *echoServiceClient) EchoUnauthorized(ctx context.Context, in *SimpleMessage, opts ...grpc.CallOption) (*SimpleMessage, error) {
+	out := new(SimpleMessage)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoUnauthorized", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EchoServiceServer is the server API for EchoService service.
 // All implementations should embed UnimplementedEchoServiceServer
 // for forward compatibility
@@ -90,6 +103,10 @@ type EchoServiceServer interface {
 	EchoDelete(context.Context, *SimpleMessage) (*SimpleMessage, error)
 	// EchoPatch method receives a NonStandardUpdateRequest and returns it.
 	EchoPatch(context.Context, *DynamicMessageUpdate) (*DynamicMessageUpdate, error)
+	// EchoUnauthorized method receives a simple message and returns it. It must
+	// always return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code
+	// of 401.
+	EchoUnauthorized(context.Context, *SimpleMessage) (*SimpleMessage, error)
 }
 
 // UnimplementedEchoServiceServer should be embedded to have forward compatible implementations.
@@ -107,6 +124,9 @@ func (UnimplementedEchoServiceServer) EchoDelete(context.Context, *SimpleMessage
 }
 func (UnimplementedEchoServiceServer) EchoPatch(context.Context, *DynamicMessageUpdate) (*DynamicMessageUpdate, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoPatch not implemented")
+}
+func (UnimplementedEchoServiceServer) EchoUnauthorized(context.Context, *SimpleMessage) (*SimpleMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EchoUnauthorized not implemented")
 }
 
 // UnsafeEchoServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -192,6 +212,24 @@ func _EchoService_EchoPatch_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EchoService_EchoUnauthorized_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SimpleMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EchoServiceServer).EchoUnauthorized(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoUnauthorized",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EchoServiceServer).EchoUnauthorized(ctx, req.(*SimpleMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EchoService_ServiceDesc is the grpc.ServiceDesc for EchoService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -214,6 +252,10 @@ var EchoService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "EchoPatch",
 			Handler:    _EchoService_EchoPatch_Handler,
+		},
+		{
+			MethodName: "EchoUnauthorized",
+			Handler:    _EchoService_EchoUnauthorized_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

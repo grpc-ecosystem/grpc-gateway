@@ -56,6 +56,38 @@ func TestEcho(t *testing.T) {
 	}
 }
 
+func TestEchoUnauthorized(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+	apiURL := "http://localhost:8088/v1/example/echo_unauthorized"
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer resp.Body.Close()
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+	msg := new(statuspb.Status)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusUnauthorized; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
+
+	if value := resp.Header.Get("WWW-Authenticate"); value == "" {
+		t.Errorf("WWW-Authenticate header should not be empty")
+	}
+}
+
 func TestEchoPatch(t *testing.T) {
 	if testing.Short() {
 		t.Skip()
@@ -1566,7 +1598,6 @@ func TestNotImplemented(t *testing.T) {
 		t.Errorf("ioutil.ReadAll(resp.Body) failed with %v; want success", err)
 		return
 	}
-
 	if got, want := resp.StatusCode, http.StatusNotImplemented; got != want {
 		t.Errorf("resp.StatusCode = %d; want %d", got, want)
 		t.Logf("%s", buf)

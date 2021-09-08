@@ -108,6 +108,10 @@ func DefaultHTTPErrorHandler(ctx context.Context, mux *ServeMux, marshaler Marsh
 	contentType := marshaler.ContentType(pb)
 	w.Header().Set("Content-Type", contentType)
 
+	if s.Code() == codes.Unauthenticated {
+		w.Header().Set("WWW-Authenticate", s.Message())
+	}
+
 	buf, merr := marshaler.Marshal(pb)
 	if merr != nil {
 		grpclog.Infof("Failed to marshal error message %q: %v", s, merr)
