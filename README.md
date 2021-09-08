@@ -94,6 +94,8 @@ This will place four binaries in your `$GOBIN`;
 
 Make sure that your `$GOBIN` is in your `$PATH`.
 
+Alternatively, see the section on remotely managed plugin versions below.
+
 ## Usage
 
 1. Define your [gRPC](https://grpc.io/docs/) service using protocol buffers
@@ -426,6 +428,32 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
    Note that this plugin also supports generating OpenAPI definitions for unannotated methods;
    use the `generate_unbound_methods` option to enable this.
+
+## Usage with remote plugins
+
+As an alternative to all of the above, you can use `buf` with
+[remote plugins](https://docs.buf.build/configuration/v1/buf-gen-yaml#name-or-remote)
+to manage plugin versions and generation. An example `buf.gen.yaml` using remote
+plugin generation looks like this:
+
+```yaml
+version: v1
+plugins:
+  - remote: buf.build/library/plugins/go:v1.27.1-1
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - remote: buf.build/library/plugins/go-grpc:v1.1.0-2
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - remote: buf.build/grpc-ecosystem/plugins/grpc-gateway:v2.6.0-1
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - remote: buf.build/grpc-ecosystem/plugins/openapiv2:v2.6.0-1
+    out: gen/openapiv2
+```
 
 ## Video intro
 
