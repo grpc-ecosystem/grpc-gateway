@@ -137,7 +137,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		},
 		{
 			serverStreaming: true,
-			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (ExampleService_EchoClient, runtime.ServerMetadata, error) {`,
+			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (*errorable_ExampleService_EchoClient, runtime.ServerMetadata, error) {`,
 		},
 	} {
 		meth.ServerStreaming = proto.Bool(spec.serverStreaming)
@@ -302,7 +302,7 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		},
 		{
 			serverStreaming: true,
-			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (ExampleService_EchoClient, runtime.ServerMetadata, error) {`,
+			sigWant:         `func request_ExampleService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, client ExampleServiceClient, req *http.Request, pathParams map[string]string) (*errorable_ExampleService_EchoClient, runtime.ServerMetadata, error) {`,
 		},
 	} {
 		meth.ServerStreaming = proto.Bool(spec.serverStreaming)
