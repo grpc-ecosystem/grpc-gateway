@@ -14,6 +14,8 @@ var (
 	ErrNotMatch = errors.New("not match to the path pattern")
 	// ErrInvalidPattern indicates that the given definition of Pattern is not valid.
 	ErrInvalidPattern = errors.New("invalid pattern")
+	// ErrMalformedSequence indicates that an escape sequence was malformed.
+	ErrMalformedSequence = errors.New("malformed escape sequence")
 )
 
 type op struct {
@@ -140,10 +142,11 @@ func MustPattern(p Pattern, err error) Pattern {
 	return p
 }
 
-// Match examines components if it matches to the Pattern.
-// If it matches, the function returns a mapping from field paths to their captured values.
-// If otherwise, the function returns an error.
-func (p Pattern) Match(components []string, verb string) (map[string]string, error) {
+// MatchAndEscape examines components if it matches to the Pattern. If it matches,
+// the function returns a mapping from field paths to their captured values while
+// applying the provided unescaping mode, returning an error if the URL encoding
+// is malformed. Otherwise, the function returns an error.
+func (p Pattern) MatchAndEscape(components []string, verb string, unescapingMode UnescapingMode) (map[string]string, error) {
 	if p.verb != verb {
 		if p.verb != "" {
 			return nil, ErrNotMatch
@@ -161,6 +164,8 @@ func (p Pattern) Match(components []string, verb string) (map[string]string, err
 	captured := make([]string, len(p.vars))
 	l := len(components)
 	for _, op := range p.ops {
+		var err error
+
 		switch op.code {
 		case utilities.OpNop:
 			continue
@@ -173,6 +178,10 @@ func (p Pattern) Match(components []string, verb string) (map[string]string, err
 				if lit := p.pool[op.operand]; c != lit {
 					return nil, ErrNotMatch
 				}
+			} else if op.code == utilities.OpPush {
+				if c, err = unescape(c, unescapingMode, false); err != nil {
+					return nil, ErrMalformedSequence
+				}
 			}
 			stack = append(stack, c)
 			pos++
@@ -182,7 +191,11 @@ func (p Pattern) Match(components []string, verb string) (map[string]string, err
 				return nil, ErrNotMatch
 			}
 			end -= p.tailLen
-			stack = append(stack, strings.Join(components[pos:end], "/"))
+			c := strings.Join(components[pos:end], "/")
+			if c, err = unescape(c, unescapingMode, true); err != nil {
+				return nil, ErrMalformedSequence
+			}
+			stack = append(stack, c)
 			pos = end
 		case utilities.OpConcatN:
 			n := op.operand
@@ -202,6 +215,15 @@ func (p Pattern) Match(components []string, verb string) (map[string]string, err
 		bindings[p.vars[i]] = val
 	}
 	return bindings, nil
+}
+
+// Match examines components if it matches to the Pattern.
+// If it matches, the function returns a mapping from field paths to their captured values.
+// If otherwise, the function returns an error.
+//
+// Deprecated: Use MatchAndEscape.
+func (p Pattern) Match(components []string, verb string) (map[string]string, error) {
+	return p.MatchAndEscape(components, verb, UnescapingModeDefault)
 }
 
 // Verb returns the verb part of the Pattern.
@@ -234,3 +256,122 @@ func (p Pattern) String() string {
 	}
 	return "/" + segs
 }
+
+/*
+ * The following code is adopted and modified from Go's standard library
+ * and carries the attached license.
+ *
+ *     Copyright 2009 The Go Authors. All rights reserved.
+ *     Use of this source code is governed by a BSD-style
+ *     license that can be found in the LICENSE file.
+ */
+
+// ishex returns whether or not the given byte is a valid hex character
+func ishex(c byte) bool {
+	switch {
+	case '0' <= c && c <= '9':
+		return true
+	case 'a' <= c && c <= 'f':
+		return true
+	case 'A' <= c && c <= 'F':
+		return true
+	}
+	return false
+}
+
+
+func isRFC6570Reserved(c byte) bool {
+	switch c {
+	case '!', '#', '$', '&', '\'', '(', ')', '*',
+		'+', ',', '/', ':', ';', '=', '?', '@', '[', ']':
+		return true
+	default:
+		return false
+	}
+}
+
+// unhex converts a hex point to the bit representation
+func unhex(c byte) byte {
+	switch {
+	case '0' <= c && c <= '9':
+		return c - '0'
+	case 'a' <= c && c <= 'f':
+		return c - 'a' + 10
+	case 'A' <= c && c <= 'F':
+		return c - 'A' + 10
+	}
+	return 0
+}
+
+// shouldUnescapeWithMode returns true if the character is escapable with the
+// given mode
+func shouldUnescapeWithMode(c byte, mode UnescapingMode) bool {
+	switch mode {
+	case UnescapingModeAllExceptReserved:
+		if isRFC6570Reserved(c) {
+			return false
+		}
+	case UnescapingModeAllExceptSlash:
+		if c == '/' {
+			return false
+		}
+	case UnescapingModeAllCharacters:
+		return true
+	}
+	return true
+}
+
+// unescape unescapes a path string using the provided mode
+func unescape(s string, mode UnescapingMode, multisegment bool) (string, error) {
+	// TODO(v3): remove UnescapingModeLegacy
+	if mode == UnescapingModeLegacy {
+		return s, nil
+	}
+
+	if !multisegment {
+		mode = UnescapingModeAllCharacters
+	}
+
+	// Count %, check that they're well-formed.
+	n := 0
+	for i := 0; i < len(s); {
+		if s[i] == '%' {
+			n++
+			if i+2 >= len(s) || !ishex(s[i+1]) || !ishex(s[i+2]) {
+				s = s[i:]
+				if len(s) > 3 {
+					s = s[:3]
+				}
+
+				return "", ErrMalformedSequence
+			}
+			i += 3
+		} else {
+			i++
+		}
+	}
+
+	if n == 0 {
+		return s, nil
+	}
+
+	var t strings.Builder
+	t.Grow(len(s))
+	for i := 0; i < len(s); i++ {
+		switch s[i] {
+		case '%':
+			c := unhex(s[i+1])<<4 | unhex(s[i+2])
+			if shouldUnescapeWithMode(c, mode) {
+				t.WriteByte(c)
+				i += 2
+				continue
+			}
+			fallthrough
+		default:
+			t.WriteByte(s[i])
+		}
+	}
+
+	return t.String(), nil
+}
+
