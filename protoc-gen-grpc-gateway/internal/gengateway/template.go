@@ -704,11 +704,11 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context,
 		{{ else }}
 		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) {
 			res, err := resp.Recv()
-            if resp.internalError != nil {
+			if resp.internalError != nil {
 				return res, resp.internalError
-            }
+			}
 			return res, err
-        }, mux.GetForwardResponseOptions()...)
+		}, mux.GetForwardResponseOptions()...)
 		{{end}}
 		{{else}}
 		{{ if $b.ResponseBody }}
