@@ -149,10 +149,10 @@ func MustPattern(p Pattern, err error) Pattern {
 	return p
 }
 
-// MatchAndEscape examines components if it matches to the Pattern. If it matches,
-// the function returns a mapping from field paths to their captured values while
-// applying the provided unescaping mode, returning an error if the URL encoding
-// is malformed. Otherwise, the function returns an error.
+// MatchAndEscape examines components to determine if they match to a Pattern.
+// MatchAndEscape will return an error if no Patterns matched or if a pattern
+// matched but contained malformed escape sequences. If successful, the function
+// returns a mapping from field paths to their captured values.
 func (p Pattern) MatchAndEscape(components []string, verb string, unescapingMode UnescapingMode) (map[string]string, error) {
 	if p.verb != verb {
 		if p.verb != "" {
@@ -224,9 +224,10 @@ func (p Pattern) MatchAndEscape(components []string, verb string, unescapingMode
 	return bindings, nil
 }
 
-// Match examines components if it matches to the Pattern.
-// If it matches, the function returns a mapping from field paths to their captured values.
-// If otherwise, the function returns an error.
+// MatchAndEscape examines components to determine if they match to a Pattern.
+// It will never perform per-component unescaping (see: UnescapingModeLegacy).
+// MatchAndEscape will return an error if no Patterns matched. If successful,
+// the function returns a mapping from field paths to their captured values.
 //
 // Deprecated: Use MatchAndEscape.
 func (p Pattern) Match(components []string, verb string) (map[string]string, error) {
@@ -285,7 +286,6 @@ func ishex(c byte) bool {
 	}
 	return false
 }
-
 
 func isRFC6570Reserved(c byte) bool {
 	switch c {
@@ -381,4 +381,3 @@ func unescape(s string, mode UnescapingMode, multisegment bool) (string, error) 
 
 	return t.String(), nil
 }
-
