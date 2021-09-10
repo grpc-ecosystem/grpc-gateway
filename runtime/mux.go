@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/textproto"
@@ -12,6 +13,31 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
+)
+
+// UnescapingMode defines the behavior of ServeMux when unescaping path parameters.
+type UnescapingMode int
+
+const (
+	// UnescapingModeLegacy is the default V2 behavior, which escapes the entire
+	// path string before doing any routing.
+	UnescapingModeLegacy UnescapingMode = iota
+
+	// EscapingTypeExceptReserved unescapes all path parameters except RFC 6570
+	// reserved characters.
+	UnescapingModeAllExceptReserved
+
+	// EscapingTypeExceptSlash unescapes URL path parameters except path
+	// seperators, which will be left as "%2F".
+	UnescapingModeAllExceptSlash
+
+	// URL path parameters will be fully decoded.
+	UnescapingModeAllCharacters
+
+	// UnescapingModeDefault is the default escaping type.
+	// TODO(v3): default this to UnescapingModeAllExceptReserved per grpc-httpjson-transcoding's
+	// reference implementation
+	UnescapingModeDefault = UnescapingModeLegacy
 )
 
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
@@ -31,6 +57,7 @@ type ServeMux struct {
 	streamErrorHandler        StreamErrorHandlerFunc
 	routingErrorHandler       RoutingErrorHandlerFunc
 	disablePathLengthFallback bool
+	unescapingMode            UnescapingMode
 }
 
 // ServeMuxOption is an option that can be given to a ServeMux on construction.
@@ -45,6 +72,14 @@ type ServeMuxOption func(*ServeMux)
 func WithForwardResponseOption(forwardResponseOption func(context.Context, http.ResponseWriter, proto.Message) error) ServeMuxOption {
 	return func(serveMux *ServeMux) {
 		serveMux.forwardResponseOptions = append(serveMux.forwardResponseOptions, forwardResponseOption)
+	}
+}
+
+// WithEscapingType sets the escaping type. See the definitions of UnescapingMode
+// for more information.
+func WithUnescapingMode(mode UnescapingMode) ServeMuxOption {
+	return func(serveMux *ServeMux) {
+		serveMux.unescapingMode = mode
 	}
 }
 
@@ -153,6 +188,7 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 		errorHandler:           DefaultHTTPErrorHandler,
 		streamErrorHandler:     DefaultStreamErrorHandler,
 		routingErrorHandler:    DefaultRoutingErrorHandler,
+		unescapingMode:         UnescapingModeDefault,
 	}
 
 	for _, opt := range opts {
@@ -204,6 +240,11 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// TODO(v3): remove UnescapingModeLegacy
+	if s.unescapingMode != UnescapingModeLegacy && r.URL.RawPath != "" {
+		path = r.URL.RawPath
+	}
+
 	components := strings.Split(path[1:], "/")
 
 	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && s.isPathLengthFallback(r) {
@@ -244,8 +285,16 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			components[l-1], verb = lastComponent[:idx], lastComponent[idx+1:]
 		}
 
-		pathParams, err := h.pat.Match(components, verb)
+		pathParams, err := h.pat.MatchAndEscape(components, verb, s.unescapingMode)
 		if err != nil {
+			var mse MalformedSequenceError
+			if ok := errors.As(err, &mse); ok {
+				_, outboundMarshaler := MarshalerForRequest(s, r)
+				s.errorHandler(ctx, s, outboundMarshaler, w, r, &HTTPStatusError{
+					HTTPStatus: http.StatusBadRequest,
+					Err:        mse,
+				})
+			}
 			continue
 		}
 		h.h(w, r, pathParams)
@@ -259,8 +308,16 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		for _, h := range handlers {
-			pathParams, err := h.pat.Match(components, verb)
+			pathParams, err := h.pat.MatchAndEscape(components, verb, s.unescapingMode)
 			if err != nil {
+				var mse MalformedSequenceError
+				if ok := errors.As(err, &mse); ok {
+					_, outboundMarshaler := MarshalerForRequest(s, r)
+					s.errorHandler(ctx, s, outboundMarshaler, w, r, &HTTPStatusError{
+						HTTPStatus: http.StatusBadRequest,
+						Err:        mse,
+					})
+				}
 				continue
 			}
 			// X-HTTP-Method-Override is optional. Always allow fallback to POST.

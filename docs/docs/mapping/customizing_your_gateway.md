@@ -345,6 +345,30 @@ func handleStreamError(ctx context.Context, err error) *status.Status {
 
 If no custom handler is provided, the default stream error handler will include any gRPC error attributes (code, message, detail messages), if the error being reported includes them. If the error does not have these attributes, a gRPC code of `Unknown` (2) is reported.
 
+## Controlling path parameter unescaping
+
+<!-- TODO(v3): Remove comments about default behavior -->
+
+By default, gRPC-Gateway unescapes the entire URL path string attempting to route a request. This causes routing errors when the path parameter contains an illegal character such as `/`.
+
+To replicate the behavior described in [google.api.http](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L224), use [runtime.WithUnescapingMode()](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithUnescapingMode) to configure the unescaping behavior, as in the example below:
+
+```go
+mux := runtime.NewServeMux(
+	runtime.WithUnescapingMode(runtime.UnescapingModeAllExceptReserved),
+)
+```
+
+For multi-segment parameters (e.g. `{id=**}`) [RFC 6570](https://tools.ietf.org/html/rfc6570) Reserved Expansion characters are left escaped and the gRPC API will need to unescape them.
+
+To replicate the default V2 escaping behavior but also allow passing pct-encoded `/` characters, the ServeMux can be configured as in the example below:
+
+```go
+mux := runtime.NewServeMux(
+	runtime.WithUnescapingMode(runtime.UnescapingModeAllCharacters),
+)
+```
+
 ## Routing Error handler
 
 To override the error behavior when `*runtime.ServeMux` was not able to serve the request due to routing issues, use the `runtime.WithRoutingErrorHandler` option.

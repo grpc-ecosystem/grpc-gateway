@@ -30,6 +30,7 @@ func TestMuxServeHTTP(t *testing.T) {
 		respContent string
 
 		disablePathLengthFallback bool
+		unescapingMode            runtime.UnescapingMode
 	}{
 		{
 			patterns:   nil,
@@ -330,11 +331,74 @@ func TestMuxServeHTTP(t *testing.T) {
 			respStatus:  http.StatusOK,
 			respContent: "POST /foo/{id=*}:verb:subverb",
 		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 1, int(utilities.OpCapture), 1, int(utilities.OpLitPush), 2},
+					pool:   []string{"foo", "id", "bar"},
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/foo/404%2fwith%2Fspace/bar",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:     http.StatusNotFound,
+			unescapingMode: runtime.UnescapingModeLegacy,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops: []int{
+						int(utilities.OpLitPush), 0,
+						int(utilities.OpPush), 0,
+						int(utilities.OpConcatN), 1,
+						int(utilities.OpCapture), 1,
+						int(utilities.OpLitPush), 2},
+					pool: []string{"foo", "id", "bar"},
+				},
+			},
+			reqMethod: "GET",
+			reqPath:   "/foo/success%2fwith%2Fspace/bar",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:     http.StatusOK,
+			unescapingMode: runtime.UnescapingModeAllExceptReserved,
+			respContent:    "GET /foo/{id=*}/bar",
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops: []int{
+						int(utilities.OpLitPush), 0,
+						int(utilities.OpPushM), 0,
+						int(utilities.OpConcatN), 1,
+						int(utilities.OpCapture), 1,
+					},
+					pool: []string{"foo", "id", "bar"},
+				},
+			},
+			reqMethod: "GET",
+			reqPath:   "/foo/success%2fwith%2Fspace",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:     http.StatusOK,
+			unescapingMode: runtime.UnescapingModeAllExceptReserved,
+			respContent:    "GET /foo/{id=**}",
+		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			var opts []runtime.ServeMuxOption
+			opts = append(opts, runtime.WithUnescapingMode(spec.unescapingMode))
 			if spec.disablePathLengthFallback {
-				opts = append(opts, runtime.WithDisablePathLengthFallback())
+				opts = append(opts,
+					runtime.WithDisablePathLengthFallback(),
+				)
 			}
 			mux := runtime.NewServeMux(opts...)
 			for _, p := range spec.patterns {
