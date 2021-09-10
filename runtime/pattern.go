@@ -3,6 +3,7 @@ package runtime
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
@@ -17,6 +18,12 @@ var (
 	// ErrMalformedSequence indicates that an escape sequence was malformed.
 	ErrMalformedSequence = errors.New("malformed escape sequence")
 )
+
+type MalformedSequenceError string
+
+func (e MalformedSequenceError) Error() string {
+	return "malformed path escape " + strconv.Quote(string(e))
+}
 
 type op struct {
 	code    utilities.OpCode
@@ -180,7 +187,7 @@ func (p Pattern) MatchAndEscape(components []string, verb string, unescapingMode
 				}
 			} else if op.code == utilities.OpPush {
 				if c, err = unescape(c, unescapingMode, false); err != nil {
-					return nil, ErrMalformedSequence
+					return nil, err
 				}
 			}
 			stack = append(stack, c)
@@ -193,7 +200,7 @@ func (p Pattern) MatchAndEscape(components []string, verb string, unescapingMode
 			end -= p.tailLen
 			c := strings.Join(components[pos:end], "/")
 			if c, err = unescape(c, unescapingMode, true); err != nil {
-				return nil, ErrMalformedSequence
+				return nil, err
 			}
 			stack = append(stack, c)
 			pos = end
@@ -343,7 +350,7 @@ func unescape(s string, mode UnescapingMode, multisegment bool) (string, error) 
 					s = s[:3]
 				}
 
-				return "", ErrMalformedSequence
+				return "", MalformedSequenceError(s)
 			}
 			i += 3
 		} else {

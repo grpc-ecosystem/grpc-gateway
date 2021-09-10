@@ -1,6 +1,7 @@
 package runtime
 
 import (
+	"errors"
 	"context"
 	"fmt"
 	"net/http"
@@ -14,7 +15,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// UnescapingMode defines the behavior of grpc-gateway for URL escaping.
+// UnescapingMode defines the behavior of ServeMux when unescaping path parameters.
 type UnescapingMode int
 
 const (
@@ -286,9 +287,13 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		pathParams, err := h.pat.MatchAndEscape(components, verb, s.unescapingMode)
 		if err != nil {
-			if err == ErrMalformedSequence {
+			var mse MalformedSequenceError
+			if ok := errors.As(err, &mse); ok {
 				_, outboundMarshaler := MarshalerForRequest(s, r)
-				s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusBadRequest)
+				s.errorHandler(ctx, s, outboundMarshaler, w, r, &HTTPStatusError{
+					HTTPStatus: http.StatusBadRequest,
+					Err:        mse,
+				})
 			}
 			continue
 		}
@@ -305,9 +310,13 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		for _, h := range handlers {
 			pathParams, err := h.pat.MatchAndEscape(components, verb, s.unescapingMode)
 			if err != nil {
-				if err == ErrMalformedSequence {
+				var mse MalformedSequenceError
+				if ok := errors.As(err, &mse); ok {
 					_, outboundMarshaler := MarshalerForRequest(s, r)
-					s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusBadRequest)
+					s.errorHandler(ctx, s, outboundMarshaler, w, r, &HTTPStatusError{
+						HTTPStatus: http.StatusBadRequest,
+						Err:        mse,
+					})
 				}
 				continue
 			}
