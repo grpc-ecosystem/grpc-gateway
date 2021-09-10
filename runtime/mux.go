@@ -286,7 +286,6 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		pathParams, err := h.pat.MatchAndEscape(components, verb, s.unescapingMode)
 		if err != nil {
-			// malformed escape sequence
 			if err == ErrMalformedSequence {
 				_, outboundMarshaler := MarshalerForRequest(s, r)
 				s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusBadRequest)
@@ -306,7 +305,6 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		for _, h := range handlers {
 			pathParams, err := h.pat.MatchAndEscape(components, verb, s.unescapingMode)
 			if err != nil {
-				// malformed escape sequence
 				if err == ErrMalformedSequence {
 					_, outboundMarshaler := MarshalerForRequest(s, r)
 					s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusBadRequest)
