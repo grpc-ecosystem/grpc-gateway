@@ -367,6 +367,7 @@ func TestMatchWithBinding(t *testing.T) {
 		pool []string
 		path string
 		verb string
+		mode UnescapingMode
 
 		want map[string]string
 	}{
@@ -477,6 +478,49 @@ func TestMatchWithBinding(t *testing.T) {
 				"oname": "obj",
 			},
 		},
+		{
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpPush), 0,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 1,
+				int(utilities.OpLitPush), 2,
+			},
+			pool: []string{"foo", "id", "bar"},
+			path: "foo/part1%2Fpart2/bar",
+			want: map[string]string{
+				"id": "part1/part2",
+			},
+			mode: UnescapingModeAllExceptReserved,
+		},
+		{
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpPushM), 0,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 1,
+			},
+			pool: []string{"foo", "id"},
+			path: "foo/test%2Fbar",
+			want: map[string]string{
+				"id": "test%2Fbar",
+			},
+			mode: UnescapingModeAllExceptReserved,
+		},
+		{
+			ops: []int{
+				int(utilities.OpLitPush), 0,
+				int(utilities.OpPushM), 0,
+				int(utilities.OpConcatN), 1,
+				int(utilities.OpCapture), 1,
+			},
+			pool: []string{"foo", "id"},
+			path: "foo/test%2Fbar",
+			want: map[string]string{
+				"id": "test/bar",
+			},
+			mode: UnescapingModeAllCharacters,
+		},
 	} {
 		pat, err := NewPattern(validVersion, spec.ops, spec.pool, spec.verb)
 		if err != nil {
@@ -484,7 +528,8 @@ func TestMatchWithBinding(t *testing.T) {
 			continue
 		}
 
-		got, err := pat.Match(segments(spec.path))
+		components, verb := segments(spec.path)
+		got, err := pat.MatchAndEscape(components, verb, spec.mode)
 		if err != nil {
 			t.Errorf("pat.Match(%q) failed with %v; want success; pattern = (%v, %q)", spec.path, err, spec.ops, spec.pool)
 		}
