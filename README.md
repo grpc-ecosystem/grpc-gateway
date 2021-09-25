@@ -123,7 +123,7 @@ Alternatively, see the section on remotely managed plugin versions below.
    Here's an example `buf.gen.yaml` you can use to generate the stubs with [buf](https://github.com/bufbuild/buf):
 
    ```yaml
-   version: v1beta1
+   version: v1
    plugins:
      - name: go
        out: gen/go
@@ -174,7 +174,7 @@ Alternatively, see the section on remotely managed plugin versions below.
    Here's what a `buf.gen.yaml` file might look like with this option enabled:
 
    ```yaml
-   version: v1beta1
+   version: v1
    plugins:
      - name: go
        out: gen/go
@@ -235,7 +235,7 @@ Alternatively, see the section on remotely managed plugin versions below.
    > be added to the `deps` array in your `buf.yaml` under the name
    > `buf.build/googleapis/googleapis`:
    > ```yaml
-   > version: v1beta1
+   > version: v1
    > name: buf.build/yourorg/myprotos
    > deps:
    >   - buf.build/googleapis/googleapis
@@ -249,7 +249,7 @@ Alternatively, see the section on remotely managed plugin versions below.
    Here's what a `buf.gen.yaml` file might look like:
 
    ```yaml
-   version: v1beta1
+   version: v1
    plugins:
      - name: go
        out: gen/go
@@ -299,7 +299,7 @@ Alternatively, see the section on remotely managed plugin versions below.
    Here's what a `buf.gen.yaml` file might look like with this option enabled:
 
    ```yaml
-   version: v1beta1
+   version: v1
    plugins:
      - name: go
        out: gen/go
@@ -384,7 +384,7 @@ Alternatively, see the section on remotely managed plugin versions below.
    Here's what a `buf.gen.yaml` file might look like:
 
    ```yaml
-   version: v1beta1
+   version: v1
    plugins:
      - name: go
        out: gen/go
@@ -407,7 +407,7 @@ Alternatively, see the section on remotely managed plugin versions below.
    `buf`, you can add the `buf.build/grpc-ecosystem/grpc-gateway` dependency
    to your `deps` array:
    ```yaml
-   version: v1beta1
+   version: v1
    name: buf.build/yourorg/myprotos
    deps:
      - buf.build/googleapis/googleapis
@@ -480,7 +480,7 @@ When using `buf` to generate stubs, flags and parameters are passed through
 the `opt` field in your `buf.gen.yaml` file, for example:
 
 ```yaml
-version: v1beta1
+version: v1
 plugins:
   - name: grpc-gateway
     out: gen/go

@@ -1,12 +1,13 @@
-version: v1beta1
+version: v1
 name: buf.build/grpc-ecosystem/grpc-gateway
 deps:
   - buf.build/googleapis/googleapis
 build:
-  roots:
-    - .
   excludes:
     - bazel-grpc-gateway
+breaking:
+  use:
+    - FILE
 lint:
   use:
     - DEFAULT
@@ -164,6 +165,3 @@ lint:
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto
-breaking:
-  use:
-    - FILE
