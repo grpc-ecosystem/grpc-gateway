@@ -82,10 +82,7 @@ $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS): $(GENERATE_UNBOUND_METHODS_EXAMPLE_SPE
 		$(EXAMPLE_CLIENT_DIR)/generateunboundmethods/git_push.sh
 
 install:
-	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1.0
-	go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.27.1
-	go install github.com/bufbuild/buf/cmd/buf@v0.51.1
-
+	go install github.com/bufbuild/buf/cmd/buf@v1.0.0-rc2
 	go install \
 		./protoc-gen-openapiv2 \
 		./protoc-gen-grpc-gateway
