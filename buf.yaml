@@ -7,7 +7,6 @@ build:
     - .
   excludes:
     - bazel-grpc-gateway
-    - protoc-gen-openapiv3
 lint:
   use:
     - DEFAULT
