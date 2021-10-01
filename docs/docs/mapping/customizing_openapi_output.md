@@ -223,8 +223,15 @@ If your protobuf definitions are spread across multiple files, the OpenAPI plugi
 
 To merge disparate `.proto` inputs into a single OpenAPI file, use the `allow_merge` and `merge_file_name` options.
 
+`opt: allow_merge=true,merge_file_name=foo` will result in a single `foo.swagger.json`. Note that you may need to set
+the [generation strategy](https://docs.buf.build/configuration/v1/buf-gen-yaml/#strategy) to `all` when merging many files:
 
-`opt: allow_merge=true,merge_file_name=foo` will result in a single `foo.swagger.json`.
+```yaml
+  - name: openapiv2
+    out: foo
+    strategy: all
+    opt: allow_merge=true,merge_file_name=foo
+```
 
 ### Enums as integers
 
