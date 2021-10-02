@@ -10,6 +10,9 @@ build:
 lint:
   use:
     - DEFAULT
+  ignore:
+    - protoc-gen-openapiv3/options/annotations.proto
+    - protoc-gen-openapiv3/options/openapiv3.proto
   ignore_only:
     DIRECTORY_SAME_PACKAGE:
       - examples/internal/proto/examplepb/a_bit_of_everything.proto
