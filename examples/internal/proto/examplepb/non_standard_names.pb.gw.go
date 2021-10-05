@@ -12,6 +12,7 @@ import (
 	"context"
 	"io"
 	"net/http"
+	"reflect"
 
 	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/proto"
@@ -28,6 +29,7 @@ import (
 var _ codes.Code
 var _ io.Reader
 var _ status.Status
+var _ reflect.Kind
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = descriptor.ForMessage
@@ -53,7 +55,9 @@ func request_NonStandardService_Update_0(ctx context.Context, marshaler runtime.
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		} else {
-			protoReq.UpdateMask = fieldMask
+			rv := reflect.ValueOf(&protoReq.UpdateMask).Elem()
+			rv.Set(reflect.New(rv.Type().Elem()))
+			protoReq.UpdateMask.Paths = fieldMask.Paths
 		}
 	}
 
@@ -85,7 +89,9 @@ func local_request_NonStandardService_Update_0(ctx context.Context, marshaler ru
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		} else {
-			protoReq.UpdateMask = fieldMask
+			rv := reflect.ValueOf(&protoReq.UpdateMask).Elem()
+			rv.Set(reflect.New(rv.Type().Elem()))
+			protoReq.UpdateMask.Paths = fieldMask.Paths
 		}
 	}
 
@@ -121,7 +127,9 @@ func request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context, marsh
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		} else {
-			protoReq.UpdateMask = fieldMask
+			rv := reflect.ValueOf(&protoReq.UpdateMask).Elem()
+			rv.Set(reflect.New(rv.Type().Elem()))
+			protoReq.UpdateMask.Paths = fieldMask.Paths
 		}
 	}
 
@@ -153,7 +161,9 @@ func local_request_NonStandardService_UpdateWithJSONNames_0(ctx context.Context,
 		if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
 			return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 		} else {
-			protoReq.UpdateMask = fieldMask
+			rv := reflect.ValueOf(&protoReq.UpdateMask).Elem()
+			rv.Set(reflect.New(rv.Type().Elem()))
+			protoReq.UpdateMask.Paths = fieldMask.Paths
 		}
 	}
 

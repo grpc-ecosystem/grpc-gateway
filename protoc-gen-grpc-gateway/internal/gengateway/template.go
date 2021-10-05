@@ -238,6 +238,7 @@ import (
 var _ codes.Code
 var _ io.Reader
 var _ status.Status
+var _ reflect.Kind
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = descriptor.ForMessage
@@ -333,7 +334,9 @@ var (
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 			} else {
-				protoReq.{{.FieldMaskField}} = fieldMask
+				rv := reflect.ValueOf(&protoReq.{{.FieldMaskField}}).Elem()
+				rv.Set(reflect.New(rv.Type().Elem()))
+				protoReq.{{.FieldMaskField}}.Paths = fieldMask.Paths
 			}
 	}
 	{{end}}
@@ -495,7 +498,9 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 			if fieldMask, err := runtime.FieldMaskFromRequestBody(newReader(), md); err != nil {
 				return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 			} else {
-				protoReq.{{.FieldMaskField}} = fieldMask
+				rv := reflect.ValueOf(&protoReq.{{.FieldMaskField}}).Elem()
+				rv.Set(reflect.New(rv.Type().Elem()))
+				protoReq.{{.FieldMaskField}}.Paths = fieldMask.Paths
 			}
 	}
 	{{end}}
