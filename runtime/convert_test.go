@@ -26,6 +26,15 @@ func TestConvertTimestamp(t *testing.T) {
 			wanterr: false,
 		},
 		{
+			name:  "a valid RFC3339 timestamp without double quotation",
+			input: "2016-05-10T10:19:13.123Z",
+			output: &timestamppb.Timestamp{
+				Seconds: 1462875553,
+				Nanos:   123000000,
+			},
+			wanterr: false,
+		},
+		{
 			name:    "invalid timestamp",
 			input:   `"05-10-2016T10:19:13.123Z"`,
 			output:  nil,
@@ -75,6 +84,15 @@ func TestConvertDuration(t *testing.T) {
 		{
 			name:  "a valid duration",
 			input: `"123.456s"`,
+			output: &durationpb.Duration{
+				Seconds: 123,
+				Nanos:   456000000,
+			},
+			wanterr: false,
+		},
+		{
+			name:  "a valid duration without double quotation",
+			input: "123.456s",
 			output: &durationpb.Duration{
 				Seconds: 123,
 				Nanos:   456000000,
