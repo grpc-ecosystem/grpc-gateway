@@ -17,7 +17,7 @@ go_test(
     name = "utilities_test",
     size = "small",
     srcs = ["trie_test.go"],
-    embed = [":utilities"],
+    deps = [":utilities"],
 )
 
 alias(
