@@ -18,7 +18,7 @@ func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.Ser
 
 	mux := gwruntime.NewServeMux(opts...)
 
-	for _, f := range []func(context.Context, *gwruntime.ServeMux, *grpc.ClientConn) error{
+	for _, f := range []func(context.Context, *gwruntime.ServeMux, grpc.ClientConnInterface) error{
 		examplepb.RegisterEchoServiceHandler,
 		standalone.RegisterUnannotatedEchoServiceHandler,
 		examplepb.RegisterStreamServiceHandler,
