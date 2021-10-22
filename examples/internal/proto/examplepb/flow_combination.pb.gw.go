@@ -1852,7 +1852,7 @@ func RegisterFlowCombinationHandlerFromEndpoint(ctx context.Context, mux *runtim
 
 // RegisterFlowCombinationHandler registers the http handlers for service FlowCombination to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterFlowCombinationHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterFlowCombinationHandlerClient(ctx, mux, NewFlowCombinationClient(conn))
 }
 

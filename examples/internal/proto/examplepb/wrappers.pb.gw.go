@@ -696,7 +696,7 @@ func RegisterWrappersServiceHandlerFromEndpoint(ctx context.Context, mux *runtim
 
 // RegisterWrappersServiceHandler registers the http handlers for service WrappersService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterWrappersServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterWrappersServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterWrappersServiceHandlerClient(ctx, mux, NewWrappersServiceClient(conn))
 }
 

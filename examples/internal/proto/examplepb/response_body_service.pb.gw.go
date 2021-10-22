@@ -333,7 +333,7 @@ func RegisterResponseBodyServiceHandlerFromEndpoint(ctx context.Context, mux *ru
 
 // RegisterResponseBodyServiceHandler registers the http handlers for service ResponseBodyService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterResponseBodyServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterResponseBodyServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterResponseBodyServiceHandlerClient(ctx, mux, NewResponseBodyServiceClient(conn))
 }
 
