@@ -102,7 +102,6 @@ that are not currently used. `OPTIONAL` support is currently under discussion
 in [this issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/669).
 
 For `IMMUTABLE` and `INPUT_ONLY` fields, there is an [open issue](https://github.com/OAI/OpenAPI-Specification/issues/1497) in the Open API specification for adding functionality for write-once or immutable fields to the spec.
-
 ## Using go templates in proto file comments
 
 Use [Go templates](https://golang.org/pkg/text/template/) in your proto file comments to allow more advanced documentation such as:
@@ -111,7 +110,7 @@ Use [Go templates](https://golang.org/pkg/text/template/) in your proto file com
 - Import the content of external files (such as
   [Markdown](https://en.wikipedia.org/wiki/Markdown)).
 
-## How to use it
+### How to use it
 
 By default this function is turned off, so if you want to use it you have to add the `use_go_templates` option:
 
@@ -125,7 +124,7 @@ or:
 --openapiv2_out=use_go_templates=true:.
 ```
 
-### Example script
+#### Example script
 
 Example of a bash script with the `use_go_templates` flag set to true:
 
@@ -139,7 +138,7 @@ $ protoc -I. \
     path/to/my/proto/v1/myproto.proto
 ```
 
-### Example proto file
+#### Example proto file
 
 Example of a proto file with Go templates. This proto file imports documentation from another file, `tables.md`:
 
@@ -186,15 +185,15 @@ The content of `tables.md`:
 | {{.Number}} | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}  
 ```
 
-## OpenAPI output
+### OpenAPI output
 
-### SwaggerUI
+#### SwaggerUI
 
 This is how the OpenAPI file would be rendered in [Swagger UI](https://swagger.io/tools/swagger-ui/).
 
 ![Screenshot OpenAPI file in SwaggerUI](../../assets/images/gotemplates/swaggerui.png)
 
-### Postman
+#### Postman
 
 This is how the OpenAPI file would be rendered in [Postman](https://www.getpostman.com/).
 
@@ -202,4 +201,57 @@ This is how the OpenAPI file would be rendered in [Postman](https://www.getpostm
 
 For a more detailed example of a proto file that has Go, templates enabled, [see the examples](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/use_go_template.proto).
 
+## Other plugin options
+
+A comprehensive list of OpenAPI plugin options can be found [here](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/protoc-gen-openapiv2/main.go). Options can be passed via `protoc` CLI:
+
+```sh
+--openapiv2_out . --openapiv2_opt bar=baz,color=red
+```
+ 
+Or, with `buf` in `buf.gen.yaml`:
+
+```yaml
+  - name: openapiv2
+    out: foo
+    opt: bar=baz,color=red
+```
+
+### Merging output
+
+If your protobuf definitions are spread across multiple files, the OpenAPI plugin will create a file for each `.proto` input. This may make sense for Go bindings, since they still share a package space, but fragmenting OpenAPI specifications across multiple files changes the schema itself.
+
+To merge disparate `.proto` inputs into a single OpenAPI file, use the `allow_merge` and `merge_file_name` options.
+
+`opt: allow_merge=true,merge_file_name=foo` will result in a single `foo.swagger.json`. Note that you may need to set
+the [generation strategy](https://docs.buf.build/configuration/v1/buf-gen-yaml/#strategy) to `all` when merging many files:
+
+```yaml
+  - name: openapiv2
+    out: foo
+    strategy: all
+    opt: allow_merge=true,merge_file_name=foo
+```
+
+### Enums as integers
+
+To generate enums as integers instead of strings, use `enums_as_ints`.
+
+`opt: enums_as_ints=true` will result in:
+
+
+```json
+{
+    "name": "enumValue",
+    "description": " - Example enums",
+    "in": "query",
+    "required": false,
+    "type": "int",
+    "enum": [
+        0,
+        1
+    ],
+    "default": 0
+},
+```
 {% endraw %}

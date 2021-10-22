@@ -975,7 +975,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							if len(bodyExcludedFields) != 0 {
 								schema = renderMessageAsDefinition(meth.RequestType, reg, customRefs, bodyExcludedFields)
 								if schema.Properties == nil || len(*schema.Properties) == 0 {
-									glog.Errorf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
+									glog.Warningf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
 								}
 							} else {
 								err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg)
