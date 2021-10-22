@@ -1011,20 +1011,14 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						Required:    true,
 						Schema:      &schema,
 					})
-					// add the parameters to the query string
-					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
-					if err != nil {
-						return err
-					}
-					parameters = append(parameters, queryParams...)
-				} else if b.HTTPMethod == "GET" || b.HTTPMethod == "DELETE" {
-					// add the parameters to the query string
-					queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
-					if err != nil {
-						return err
-					}
-					parameters = append(parameters, queryParams...)
 				}
+
+				// add the parameters to the query string
+				queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
+				if err != nil {
+					return err
+				}
+				parameters = append(parameters, queryParams...)
 
 				pathItemObject, ok := paths[templateToOpenAPIPath(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)]
 				if !ok {
