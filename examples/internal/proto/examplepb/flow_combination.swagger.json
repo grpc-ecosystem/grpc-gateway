@@ -622,6 +622,18 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "b",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "c",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -660,6 +672,18 @@
             "name": "a.str",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "b",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "c",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -788,6 +812,18 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "b",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "c",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -826,6 +862,18 @@
             "name": "a",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "b",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "c",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -944,6 +992,26 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "a",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "b",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "c",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "FlowCombination"
         ]
@@ -975,6 +1043,26 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "a",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "b",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "c",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "tags": [
           "FlowCombination"
         ]

@@ -1735,6 +1735,162 @@
               "ZERO",
               "ONE"
             ]
+          },
+          {
+            "name": "singleNested.name",
+            "description": "name is nested field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "singleNested.amount",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "singleNested.ok",
+            "description": "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "FALSE",
+              "TRUE"
+            ],
+            "default": "FALSE"
+          },
+          {
+            "name": "uuid",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "bytesValue",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          },
+          {
+            "name": "repeatedStringValue",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "oneofString",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "timestampValue",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "repeatedEnumValue",
+            "description": "repeated enum value. it is comma-separated in query.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ZERO",
+                "ONE"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "repeatedEnumAnnotation",
+            "description": "Repeated numeric enum title. Repeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ZERO",
+                "ONE"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "repeatedStringAnnotation",
+            "description": "Repeated string title. Repeated string description.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "nestedAnnotation.name",
+            "description": "name is nested field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nestedAnnotation.amount",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "nestedAnnotation.ok",
+            "description": "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "FALSE",
+              "TRUE"
+            ],
+            "default": "FALSE"
+          },
+          {
+            "name": "int64OverrideType",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "requiredStringViaFieldBehaviorAnnotation",
+            "description": "mark a field as required in Open API definition.",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "outputOnlyStringViaFieldBehaviorAnnotation",
+            "description": "mark a field as readonly in Open API definition.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "optionalStringValue",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [

@@ -49,6 +49,66 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "Id"
+      - name: "num"
+        in: "query"
+        description: "Int value field"
+        required: true
+        type: "string"
+        default: "42"
+        format: "int64"
+        x-exportParamName: "Num"
+      - name: "duration"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Duration"
+        x-optionalDataType: "String"
+      - name: "lineNum"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "LineNum"
+        x-optionalDataType: "String"
+      - name: "lang"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      - name: "status.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "StatusProgress"
+        x-optionalDataType: "String"
+      - name: "status.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StatusNote"
+        x-optionalDataType: "String"
+      - name: "en"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "En"
+        x-optionalDataType: "String"
+      - name: "no.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "NoProgress"
+        x-optionalDataType: "String"
+      - name: "no.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NoNote"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
