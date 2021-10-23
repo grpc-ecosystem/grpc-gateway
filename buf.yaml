@@ -2,9 +2,6 @@ version: v1
 name: buf.build/grpc-ecosystem/grpc-gateway
 deps:
   - buf.build/googleapis/googleapis
-build:
-  excludes:
-    - bazel-grpc-gateway
 breaking:
   use:
     - FILE
@@ -165,3 +162,8 @@ lint:
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto
+# Note: the build configuration goes last in this
+# files so we can append excludes at push time.
+build:
+  excludes:
+    - bazel-grpc-gateway
