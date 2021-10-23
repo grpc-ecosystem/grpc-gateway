@@ -144,13 +144,16 @@ jobs:
       - checkout
       - run: buf build
       - run: buf lint
-      - run: buf breaking --path protoc-gen-openapiv2/options/annotations.proto --path protoc-gen-openapiv2/options/openapiv2.proto --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=master'
+      - run: buf breaking --path protoc-gen-openapiv2/ --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=master'
   proto_push:
     docker:
       - image: bufbuild/buf:0.56.0
     steps:
       - checkout
       - run: echo "${BUF_API_TOKEN}" | buf login --username grpcgatewaybot --token-stdin
+      # Limit pushes to protoc-gen-openapiv2 files. This is a total hack.
+      # It excludes all the files that we don't want to publish, just for the push step.
+      - run: echo -e "    - examples\n    - internal\n    - runtime" >> buf.yaml
       - run: buf push --tag "$CIRCLE_SHA1"
   release:
     executor: build-env
