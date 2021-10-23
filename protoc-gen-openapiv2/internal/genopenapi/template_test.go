@@ -2588,111 +2588,145 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 
 	createMsg.Fields = []*descriptor.Field{parentField, bookField, bookIDField}
 
-	file := descriptor.File{
-		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
-			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
-			Name:           proto.String("book.proto"),
-			MessageType:    []*descriptorpb.DescriptorProto{bookDesc, createDesc},
-			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
-			Options: &descriptorpb.FileOptions{
-				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+	newFile := func() descriptor.File {
+		return descriptor.File{
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("book.proto"),
+				MessageType:    []*descriptorpb.DescriptorProto{bookDesc, createDesc},
+				Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+				},
 			},
-		},
-		GoPkg: descriptor.GoPackage{
-			Path: "example.com/path/to/book.pb",
-			Name: "book_pb",
-		},
-		Messages: []*descriptor.Message{bookMsg, createMsg},
-		Services: []*descriptor.Service{
-			{
-				ServiceDescriptorProto: svc,
-				Methods: []*descriptor.Method{
-					{
-						MethodDescriptorProto: meth,
-						RequestType:           createMsg,
-						ResponseType:          bookMsg,
-						Bindings: []*descriptor.Binding{
-							{
-								HTTPMethod: "POST",
-								PathTmpl: httprule.Template{
-									Version:  1,
-									OpCodes:  []int{0, 0},
-									Template: "/v1/{parent=publishers/*}/books",
-								},
-								PathParams: []descriptor.Parameter{
-									{
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/book.pb",
+				Name: "book_pb",
+			},
+			Messages: []*descriptor.Message{bookMsg, createMsg},
+			Services: []*descriptor.Service{
+				{
+					ServiceDescriptorProto: svc,
+					Methods: []*descriptor.Method{
+						{
+							MethodDescriptorProto: meth,
+							RequestType:           createMsg,
+							ResponseType:          bookMsg,
+							Bindings: []*descriptor.Binding{
+								{
+									HTTPMethod: "POST",
+									PathTmpl: httprule.Template{
+										Version:  1,
+										OpCodes:  []int{0, 0},
+										Template: "/v1/{parent=publishers/*}/books",
+									},
+									PathParams: []descriptor.Parameter{
+										{
+											FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+												{
+													Name:   "parent",
+													Target: parentField,
+												},
+											}),
+											Target: parentField,
+										},
+									},
+									Body: &descriptor.Body{
 										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
 											{
-												Name:   "parent",
-												Target: parentField,
+												Name:   "book",
+												Target: bookField,
 											},
 										}),
-										Target: parentField,
 									},
-								},
-								Body: &descriptor.Body{
-									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
-										{
-											Name:   "book",
-											Target: bookField,
-										},
-									}),
 								},
 							},
 						},
 					},
 				},
 			},
+		}
+	}
+	type args struct {
+		file descriptor.File
+	}
+	type paramOut struct {
+		Name     string
+		In       string
+		Required bool
+	}
+	tests := []struct {
+		name string
+		args args
+		want []paramOut
+	}{
+		{
+			name: "book_in_body",
+			args: args{file: newFile()},
+			want: []paramOut{
+				{"parent", "path", true},
+				{"body", "body", true},
+				{"book_id", "query", false},
+			},
+		},
+		{
+			name: "book_in_query",
+			args: args{file: func() descriptor.File {
+				f := newFile()
+				f.Services[0].Methods[0].Bindings[0].Body = nil
+				return f
+			}()},
+			want: []paramOut{
+				{"parent", "path", true},
+				{"book", "query", false},
+				{"book_id", "query", false},
+			},
 		},
 	}
-	reg := descriptor.NewRegistry()
-	if err := AddErrorDefs(reg); err != nil {
-		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
-		return
-	}
-	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
-	if err != nil {
-		t.Errorf("Registry.Load() failed with %v; want success", err)
-		return
-	}
-	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
-	if err != nil {
-		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
-		return
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			reg := descriptor.NewRegistry()
+			if err := AddErrorDefs(reg); err != nil {
+				t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+				return
+			}
+			err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{tt.args.file.FileDescriptorProto}})
+			if err != nil {
+				t.Errorf("Registry.Load() failed with %v; want success", err)
+				return
+			}
+			result, err := applyTemplate(param{File: crossLinkFixture(&tt.args.file), reg: reg})
+			if err != nil {
+				t.Errorf("applyTemplate(%#v) failed with %v; want success", tt.args.file, err)
+				return
+			}
+
+			if _, ok := result.Paths["/v1/{parent=publishers/*}/books"].Post.Responses["200"]; !ok {
+				t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", tt.args.file, `result.Paths["/v1/{parent=publishers/*}/books"].Post.Responses["200"]`)
+			} else {
+
+				if want, got, name := 3, len(result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters), `len(result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters)`; !reflect.DeepEqual(got, want) {
+					t.Errorf("applyTemplate(%#v).%s = %d want to be %d", tt.args.file, name, got, want)
+				}
+
+				for i, want := range tt.want {
+					p := result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[i]
+					if got, name := (paramOut{p.Name, p.In, p.Required}), `result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[0]`; !reflect.DeepEqual(got, want) {
+						t.Errorf("applyTemplate(%#v).%s = %v want to be %v", tt.args.file, name, got, want)
+					}
+				}
+
+			}
+
+			// If there was a failure, print out the input and the json result for debugging.
+			if t.Failed() {
+				t.Errorf("had: %s", tt.args.file)
+				t.Errorf("got: %s", fmt.Sprint(result))
+			}
+		})
 	}
 
-	if _, ok := result.Paths["/v1/{parent=publishers/*}/books"].Post.Responses["200"]; !ok {
-		t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", file, `result.Paths["/v1/{parent=publishers/*}/books"].Post.Responses["200"]`)
-	} else {
-		if want, got, name := 3, len(result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters), `len(result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters)`; !reflect.DeepEqual(got, want) {
-			t.Errorf("applyTemplate(%#v).%s = %d want to be %d", file, name, got, want)
-		}
-
-		type param struct {
-			Name     string
-			In       string
-			Required bool
-		}
-
-		p0 := result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[0]
-		if want, got, name := (param{"parent", "path", true}), (param{p0.Name, p0.In, p0.Required}), `result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[0]`; !reflect.DeepEqual(got, want) {
-			t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, got, want)
-		}
-		p1 := result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[1]
-		if want, got, name := (param{"body", "body", true}), (param{p1.Name, p1.In, p1.Required}), `result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[1]`; !reflect.DeepEqual(got, want) {
-			t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, got, want)
-		}
-		p2 := result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[2]
-		if want, got, name := (param{"book_id", "query", false}), (param{p2.Name, p2.In, p2.Required}), `result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[1]`; !reflect.DeepEqual(got, want) {
-			t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, got, want)
-		}
-	}
-
-	// If there was a failure, print out the input and the json result for debugging.
-	if t.Failed() {
-		t.Errorf("had: %s", file)
-		t.Errorf("got: %s", fmt.Sprint(result))
-	}
 }
 
 // TestApplyTemplateProtobufAny tests that the protobufAny definition is correctly rendered with the @type field and
