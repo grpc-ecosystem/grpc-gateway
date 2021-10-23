@@ -916,7 +916,7 @@ func RegisterEchoServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.Se
 
 // RegisterEchoServiceHandler registers the http handlers for service EchoService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterEchoServiceHandlerClient(ctx, mux, NewEchoServiceClient(conn))
 }
 

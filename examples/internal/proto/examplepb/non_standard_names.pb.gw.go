@@ -245,7 +245,7 @@ func RegisterNonStandardServiceHandlerFromEndpoint(ctx context.Context, mux *run
 
 // RegisterNonStandardServiceHandler registers the http handlers for service NonStandardService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterNonStandardServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterNonStandardServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterNonStandardServiceHandlerClient(ctx, mux, NewNonStandardServiceClient(conn))
 }
 

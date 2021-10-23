@@ -997,7 +997,7 @@ func RegisterGreeterHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeM
 
 // RegisterGreeterHandler registers the http handlers for service Greeter to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterGreeterHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterGreeterHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterGreeterHandlerClient(ctx, mux, NewGreeterClient(conn))
 }
 

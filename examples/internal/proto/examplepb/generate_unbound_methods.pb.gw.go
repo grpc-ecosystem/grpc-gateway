@@ -238,7 +238,7 @@ func RegisterGenerateUnboundMethodsEchoServiceHandlerFromEndpoint(ctx context.Co
 
 // RegisterGenerateUnboundMethodsEchoServiceHandler registers the http handlers for service GenerateUnboundMethodsEchoService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterGenerateUnboundMethodsEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterGenerateUnboundMethodsEchoServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterGenerateUnboundMethodsEchoServiceHandlerClient(ctx, mux, NewGenerateUnboundMethodsEchoServiceClient(conn))
 }
 
