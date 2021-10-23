@@ -31,10 +31,31 @@ EchoServiceApiService Echo method receives a simple message and returns it.
 The message posted as the id parameter will also be returned.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id Id represents the message identifier.
+ * @param optional nil or *EchoServiceEchoOpts - Optional Parameters:
+     * @param "Num" (optional.String) - 
+     * @param "LineNum" (optional.String) - 
+     * @param "Lang" (optional.String) - 
+     * @param "StatusProgress" (optional.String) - 
+     * @param "StatusNote" (optional.String) - 
+     * @param "En" (optional.String) - 
+     * @param "NoProgress" (optional.String) - 
+     * @param "NoNote" (optional.String) - 
 
 @return ExamplepbSimpleMessage
 */
-func (a *EchoServiceApiService) EchoServiceEcho(ctx context.Context, id string) (ExamplepbSimpleMessage, *http.Response, error) {
+
+type EchoServiceEchoOpts struct { 
+	Num optional.String
+	LineNum optional.String
+	Lang optional.String
+	StatusProgress optional.String
+	StatusNote optional.String
+	En optional.String
+	NoProgress optional.String
+	NoNote optional.String
+}
+
+func (a *EchoServiceApiService) EchoServiceEcho(ctx context.Context, id string, localVarOptionals *EchoServiceEchoOpts) (ExamplepbSimpleMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -51,6 +72,30 @@ func (a *EchoServiceApiService) EchoServiceEcho(ctx context.Context, id string) 
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if localVarOptionals != nil && localVarOptionals.Num.IsSet() {
+		localVarQueryParams.Add("num", parameterToString(localVarOptionals.Num.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.LineNum.IsSet() {
+		localVarQueryParams.Add("lineNum", parameterToString(localVarOptionals.LineNum.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Lang.IsSet() {
+		localVarQueryParams.Add("lang", parameterToString(localVarOptionals.Lang.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.StatusProgress.IsSet() {
+		localVarQueryParams.Add("status.progress", parameterToString(localVarOptionals.StatusProgress.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.StatusNote.IsSet() {
+		localVarQueryParams.Add("status.note", parameterToString(localVarOptionals.StatusNote.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.En.IsSet() {
+		localVarQueryParams.Add("en", parameterToString(localVarOptionals.En.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NoProgress.IsSet() {
+		localVarQueryParams.Add("no.progress", parameterToString(localVarOptionals.NoProgress.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NoNote.IsSet() {
+		localVarQueryParams.Add("no.note", parameterToString(localVarOptionals.NoNote.Value(), ""))
+	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json"}
 

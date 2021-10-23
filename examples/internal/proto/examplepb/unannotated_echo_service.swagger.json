@@ -81,6 +81,67 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "num",
+            "description": "Int value field",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "format": "int64",
+            "default": "42"
+          },
+          {
+            "name": "duration",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "status.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [

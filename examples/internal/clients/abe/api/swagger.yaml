@@ -1514,6 +1514,153 @@ paths:
         - "ZERO"
         - "ONE"
         x-exportParamName: "EnumValueAnnotation"
+      - name: "singleNested.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "SingleNestedName"
+        x-optionalDataType: "String"
+      - name: "singleNested.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "SingleNestedAmount"
+        x-optionalDataType: "Int64"
+      - name: "singleNested.ok"
+        in: "query"
+        description: "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE:\
+          \ TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "SingleNestedOk"
+        x-optionalDataType: "String"
+      - name: "uuid"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Uuid"
+        x-optionalDataType: "String"
+      - name: "bytesValue"
+        in: "query"
+        required: false
+        type: "string"
+        format: "byte"
+        x-exportParamName: "BytesValue"
+        x-optionalDataType: "String"
+      - name: "repeatedStringValue"
+        in: "query"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedStringValue"
+      - name: "oneofString"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OneofString"
+        x-optionalDataType: "String"
+      - name: "timestampValue"
+        in: "query"
+        required: false
+        type: "string"
+        format: "date-time"
+        x-exportParamName: "TimestampValue"
+        x-optionalDataType: "Time"
+      - name: "repeatedEnumValue"
+        in: "query"
+        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedEnumValue"
+      - name: "repeatedEnumAnnotation"
+        in: "query"
+        description: "Repeated numeric enum title. Repeated numeric enum description.\n\
+          \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedEnumAnnotation"
+      - name: "repeatedStringAnnotation"
+        in: "query"
+        description: "Repeated string title. Repeated string description."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedStringAnnotation"
+      - name: "nestedAnnotation.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "NestedAnnotationName"
+        x-optionalDataType: "String"
+      - name: "nestedAnnotation.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "NestedAnnotationAmount"
+        x-optionalDataType: "Int64"
+      - name: "nestedAnnotation.ok"
+        in: "query"
+        description: "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE:\
+          \ TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "NestedAnnotationOk"
+        x-optionalDataType: "String"
+      - name: "int64OverrideType"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Int64OverrideType"
+        x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition."
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition."
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
