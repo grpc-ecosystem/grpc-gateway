@@ -181,7 +181,7 @@ func RegisterLoginServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.S
 
 // RegisterLoginServiceHandler registers the http handlers for service LoginService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterLoginServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterLoginServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterLoginServiceHandlerClient(ctx, mux, NewLoginServiceClient(conn))
 }
 
