@@ -19,7 +19,7 @@ func TestEchoClient(t *testing.T) {
 	cfg.BasePath = "http://localhost:8088"
 
 	cl := echo.NewAPIClient(cfg)
-	resp, _, err := cl.EchoServiceApi.EchoServiceEcho(context.Background(), "foo")
+	resp, _, err := cl.EchoServiceApi.EchoServiceEcho(context.Background(), "foo", nil)
 	if err != nil {
 		t.Errorf(`cl.EchoServiceApi.Echo("foo") failed with %v; want success`, err)
 	}
@@ -109,6 +109,8 @@ func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
 		want.PathEnumValue.String(),
 		want.NestedPathEnumValue.String(),
 		want.EnumValueAnnotation.String(),
+		want.RequiredStringViaFieldBehaviorAnnotation,
+		nil,
 	)
 	if err != nil {
 		t.Fatalf("cl.Create(%#v) failed with %v; want success", want, err)
@@ -188,7 +190,7 @@ func TestUnannotatedEchoClient(t *testing.T) {
 
 	cl := unannotatedecho.NewAPIClient(cfg)
 
-	resp, _, err := cl.UnannotatedEchoServiceApi.UnannotatedEchoServiceEcho(context.Background(), "foo")
+	resp, _, err := cl.UnannotatedEchoServiceApi.UnannotatedEchoServiceEcho(context.Background(), "foo", "1", nil)
 	if err != nil {
 		t.Errorf(`cl.Echo("foo") failed with %v; want success`, err)
 	}
