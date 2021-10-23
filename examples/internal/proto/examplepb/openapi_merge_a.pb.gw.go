@@ -304,7 +304,7 @@ func RegisterServiceAHandlerFromEndpoint(ctx context.Context, mux *runtime.Serve
 
 // RegisterServiceAHandler registers the http handlers for service ServiceA to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterServiceAHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterServiceAHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterServiceAHandlerClient(ctx, mux, NewServiceAClient(conn))
 }
 
@@ -397,7 +397,7 @@ func RegisterServiceCHandlerFromEndpoint(ctx context.Context, mux *runtime.Serve
 
 // RegisterServiceCHandler registers the http handlers for service ServiceC to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterServiceCHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterServiceCHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterServiceCHandlerClient(ctx, mux, NewServiceCClient(conn))
 }
 

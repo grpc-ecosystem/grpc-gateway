@@ -218,7 +218,7 @@ func RegisterStreamServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.
 
 // RegisterStreamServiceHandler registers the http handlers for service StreamService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterStreamServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterStreamServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterStreamServiceHandlerClient(ctx, mux, NewStreamServiceClient(conn))
 }
 

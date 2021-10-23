@@ -181,7 +181,7 @@ func RegisterServiceBHandlerFromEndpoint(ctx context.Context, mux *runtime.Serve
 
 // RegisterServiceBHandler registers the http handlers for service ServiceB to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterServiceBHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterServiceBHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterServiceBHandlerClient(ctx, mux, NewServiceBClient(conn))
 }
 

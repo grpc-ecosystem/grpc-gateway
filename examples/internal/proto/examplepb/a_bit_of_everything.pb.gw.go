@@ -3028,7 +3028,7 @@ func RegisterABitOfEverythingServiceHandlerFromEndpoint(ctx context.Context, mux
 
 // RegisterABitOfEverythingServiceHandler registers the http handlers for service ABitOfEverythingService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterABitOfEverythingServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterABitOfEverythingServiceHandlerClient(ctx, mux, NewABitOfEverythingServiceClient(conn))
 }
 
@@ -3721,7 +3721,7 @@ func RegisterCamelCaseServiceNameHandlerFromEndpoint(ctx context.Context, mux *r
 
 // RegisterCamelCaseServiceNameHandler registers the http handlers for service CamelCaseServiceName to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterCamelCaseServiceNameHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterCamelCaseServiceNameHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterCamelCaseServiceNameHandlerClient(ctx, mux, NewCamelCaseServiceNameClient(conn))
 }
 
