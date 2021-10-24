@@ -16,7 +16,7 @@ docker run -v $(pwd):/grpc-gateway -w /grpc-gateway --rm ghcr.io/grpc-ecosystem/
         make clean && \
         make generate'
 docker run -itv $(pwd):/grpc-gateway -w /grpc-gateway --entrypoint /bin/bash --rm \
-    l.gcr.io/google/bazel:3.5.0 -c '\
+    ghcr.io/grpc-ecosystem/grpc-gateway/build-env:1.17 -c '\
         bazel run :gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories && \
         bazel run :gazelle && \
         bazel run :buildifier'
