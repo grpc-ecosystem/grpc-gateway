@@ -170,7 +170,7 @@ func applyTemplate(p param, reg *descriptor.Registry) (string, error) {
 			methName := casing.Camel(*meth.Name)
 			meth.Name = &methName
 			for _, b := range meth.Bindings {
-				if err := reg.CheckDuplicateAnnotation(b.HTTPMethod, b.PathTmpl.Template); err != nil {
+				if err := reg.CheckDuplicateAnnotation(b.HTTPMethod, b.PathTmpl.Template, svc); err != nil {
 					return "", err
 				}
 
