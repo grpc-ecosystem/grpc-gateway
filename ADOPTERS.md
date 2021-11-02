@@ -5,12 +5,15 @@ production users that have added themselves (in alphabetical order):
 
 - [Ad Hoc](http://adhocteam.us/) uses the gRPC-Gateway to serve millions of
   API requests per day.
-- [Chef](https://www.chef.io/) uses gRPC-Gateway to provide the user-facing
+- [Chef](https://www.chef.io/) uses the gRPC-Gateway to provide the user-facing
   API of [Chef Automate](https://automate.chef.io/). Furthermore, the generated
   OpenAPI data serves as the basis for its [API documentation](https://automate.chef.io/docs/api/).
   The code is Open Source, [see `github.com/chef/automate`](https://github.com/chef/automate).
 - [Scaleway](https://www.scaleway.com/en/) uses the gRPC-Gateway since 2018 to
   serve millions of API requests per day [1].
+- [SpiceDB](https://github.com/authzed/spicedb) uses the gRPC-Gateway to handle
+  requests for security-critical permissions checks in environments where gRPC
+  is unavailable.
 
 If you have adopted the gRPC-Gateway and would like to be included in this list,
 feel free to submit a PR.
