@@ -132,6 +132,7 @@ type repeatedFieldSeparator struct {
 type annotationIdentifier struct {
 	method       string
 	pathTemplate string
+	service      *Service
 }
 
 // NewRegistry returns a new Registry.
@@ -710,8 +711,8 @@ func (r *Registry) FieldName(f *Field) string {
 	return f.GetName()
 }
 
-func (r *Registry) CheckDuplicateAnnotation(httpMethod string, httpTemplate string) error {
-	a := annotationIdentifier{method: httpMethod, pathTemplate: httpTemplate}
+func (r *Registry) CheckDuplicateAnnotation(httpMethod string, httpTemplate string, svc *Service) error {
+	a := annotationIdentifier{method: httpMethod, pathTemplate: httpTemplate, service: svc}
 	_, ok := r.annotationMap[a]
 	if ok {
 		return fmt.Errorf("duplicate annotation: method=%s, template=%s", httpMethod, httpTemplate)
