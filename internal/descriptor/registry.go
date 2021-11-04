@@ -132,7 +132,7 @@ type repeatedFieldSeparator struct {
 type annotationIdentifier struct {
 	method       string
 	pathTemplate string
-	service *Service
+	service      *Service
 }
 
 // NewRegistry returns a new Registry.
