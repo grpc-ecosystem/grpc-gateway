@@ -260,38 +260,18 @@ func (s *_ABitOfEverythingServer) Echo(ctx context.Context, msg *sub.StringMessa
 }
 
 func (s *_ABitOfEverythingServer) BulkEcho(stream examples.StreamService_BulkEchoServer) error {
-	var msgs []*sub.StringMessage
 	for {
-		msg, err := stream.Recv()
-		if err == io.EOF {
-			break
-		}
+		in, err := stream.Recv()
 		if err != nil {
-			return err
+			if err != io.EOF {
+				return status.Errorf(codes.Unknown, "unexpected error receiving from stream: %s", err)
+			}
 		}
-		msgs = append(msgs, msg)
-	}
-
-	hmd := metadata.New(map[string]string{
-		"foo": "foo1",
-		"bar": "bar1",
-	})
-	if err := stream.SendHeader(hmd); err != nil {
-		return err
-	}
-
-	for _, msg := range msgs {
-		glog.Info(msg)
-		if err := stream.Send(msg); err != nil {
-			return err
+		err = stream.Send(in)
+		if err != nil {
+			return status.Errorf(codes.Internal, "unexpected error sending to stream: %s", err)
 		}
 	}
-
-	stream.SetTrailer(metadata.New(map[string]string{
-		"foo": "foo2",
-		"bar": "bar2",
-	}))
-	return nil
 }
 
 func (s *_ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
