@@ -22,7 +22,12 @@ import (
 	helloworldpb "github.com/myuser/myrepo/proto/helloworld"
 )
 
-type server struct{}
+type server struct{
+	// GreeterServer is the server API for Greeter service.
+	// All implementations must embed UnimplementedGreeterServer
+	// for forward compatibility
+	helloworldpb.UnimplementedGreeterServer
+}
 
 func NewServer() *server {
 	return &server{}
