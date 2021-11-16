@@ -266,12 +266,14 @@ func (s *_ABitOfEverythingServer) BulkEcho(stream examples.StreamService_BulkEch
 			if err != io.EOF {
 				return status.Errorf(codes.Unknown, "unexpected error receiving from stream: %s", err)
 			}
+			break
 		}
 		err = stream.Send(in)
 		if err != nil {
 			return status.Errorf(codes.Internal, "unexpected error sending to stream: %s", err)
 		}
 	}
+	return nil
 }
 
 func (s *_ABitOfEverythingServer) DeepPathEcho(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
