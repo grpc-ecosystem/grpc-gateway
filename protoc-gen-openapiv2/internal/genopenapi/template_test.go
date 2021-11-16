@@ -1467,35 +1467,6 @@ func TestApplyTemplateExtensions(t *testing.T) {
 	newFile := func() *descriptor.File {
 		msgdesc := &descriptorpb.DescriptorProto{
 			Name: proto.String("ExampleMessage"),
-			Field: []*descriptorpb.FieldDescriptorProto{
-				{
-					Name:     proto.String("nested"),
-					Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-					TypeName: proto.String("NestedMessage"),
-					Number:   proto.Int32(1),
-				},
-			},
-			Options: &descriptorpb.MessageOptions{},
-		}
-		nesteddesc := &descriptorpb.DescriptorProto{
-			Name: proto.String("NestedMessage"),
-			Field: []*descriptorpb.FieldDescriptorProto{
-				{
-					Name:    proto.String("int32"),
-					Label:   descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-					Type:    descriptorpb.FieldDescriptorProto_TYPE_INT32.Enum(),
-					Number:  proto.Int32(1),
-					Options: &descriptorpb.FieldOptions{},
-				},
-				{
-					Name:    proto.String("bool"),
-					Label:   descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-					Type:    descriptorpb.FieldDescriptorProto_TYPE_BOOL.Enum(),
-					Number:  proto.Int32(2),
-					Options: &descriptorpb.FieldOptions{},
-				},
-			},
 		}
 		meth := &descriptorpb.MethodDescriptorProto{
 			Name:       proto.String("Example"),
@@ -1507,43 +1478,25 @@ func TestApplyTemplateExtensions(t *testing.T) {
 			Name:   proto.String("ExampleService"),
 			Method: []*descriptorpb.MethodDescriptorProto{meth},
 		}
-		fileDesc := &descriptorpb.FileDescriptorProto{
-			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
-			Name:           proto.String("example.proto"),
-			Package:        proto.String("example"),
-			MessageType:    []*descriptorpb.DescriptorProto{msgdesc, nesteddesc},
-			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
-			Options: &descriptorpb.FileOptions{
-				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
-			},
-		}
 		msg := &descriptor.Message{
 			DescriptorProto: msgdesc,
-			File: &descriptor.File{
-				FileDescriptorProto: fileDesc,
-			},
-		}
-		nested := &descriptor.Message{
-			DescriptorProto: nesteddesc,
-			File: &descriptor.File{
-				FileDescriptorProto: fileDesc,
-			},
-		}
-		nestedField := &descriptor.Field{
-			Message:              msg,
-			FieldDescriptorProto: msg.GetField()[0],
-		}
-		intField := &descriptor.Field{
-			Message:              nested,
-			FieldDescriptorProto: nested.GetField()[0],
 		}
 		return &descriptor.File{
-			FileDescriptorProto: fileDesc,
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+				Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+				},
+			},
 			GoPkg: descriptor.GoPackage{
 				Path: "example.com/path/to/example/example.pb",
 				Name: "example_pb",
 			},
-			Messages: []*descriptor.Message{msg, nested},
+			Messages: []*descriptor.Message{msg},
 			Services: []*descriptor.Service{
 				{
 					ServiceDescriptorProto: svc,
@@ -1555,20 +1508,11 @@ func TestApplyTemplateExtensions(t *testing.T) {
 							Bindings: []*descriptor.Binding{
 								{
 									HTTPMethod: "GET",
-									PathParams: []descriptor.Parameter{
-										{
-											FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
-												{
-													Name:   "nested",
-													Target: nestedField,
-												},
-												{
-													Name:   "int32",
-													Target: intField,
-												},
-											}),
-											Target: intField,
-										},
+									Body:       &descriptor.Body{FieldPath: nil},
+									PathTmpl: httprule.Template{
+										Version:  1,
+										OpCodes:  []int{0, 0},
+										Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
 									},
 								},
 							},
@@ -1613,18 +1557,6 @@ func TestApplyTemplateExtensions(t *testing.T) {
 			"x-op-foo": {Kind: &structpb.Value_StringValue{StringValue: "baz"}},
 		},
 	}
-	openapiJSONSchema := openapi_options.JSONSchema{
-		Title:       "field title",
-		Description: "field description",
-		Extensions: map[string]*structpb.Value{
-			"x-jsonschema-foo": {Kind: &structpb.Value_StringValue{StringValue: "bar"}},
-		},
-	}
-	openapiSchema := openapi_options.Schema{
-		Extensions: map[string]*structpb.Value{
-			"x-schema-foo": {Kind: &structpb.Value_StringValue{StringValue: "baz"}},
-		},
-	}
 	verifyTemplateExtensions := func(t *testing.T, reg *descriptor.Registry, file *descriptor.File,
 		opts *openapiconfig.OpenAPIOptions) {
 		if err := AddErrorDefs(reg); err != nil {
@@ -1647,32 +1579,6 @@ func TestApplyTemplateExtensions(t *testing.T) {
 			t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
 			return
 		}
-
-		definition, ok := result.Definitions["exampleExampleMessage"]
-		if !ok {
-			t.Errorf("applyTemplate(%#v).%s = expected exampleExampleMessage to be defined", file, `result.Definitions["exampleExampleMessage"]`)
-			return
-		}
-		if got, want := len(definition.extensions), 1; got != want {
-			t.Errorf(`len(applyTemplate(%#v).Definitions["exampleExampleMessage"].extensions) = %d want to be %d`, file, got, want)
-			return
-		}
-		if got, want := definition.extensions[0].key, "x-schema-foo"; got != want {
-			t.Errorf(`applyTemplate(%#v).Definitions["exampleExampleMessage"].extensions[0].key = %s want to be %s`, file, got, want)
-			return
-		}
-		{
-			var got string
-			err = marshaler.Unmarshal(definition.extensions[0].value, &got)
-			if err != nil {
-				t.Fatalf("marshaler.Unmarshal failed: %v", err)
-			}
-			want := "baz"
-			if diff := cmp.Diff(got, want); diff != "" {
-				t.Errorf(diff)
-			}
-		}
-
 		if want, is, name := "2.0", result.Swagger, "Swagger"; !reflect.DeepEqual(is, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 		}
@@ -1735,13 +1641,6 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		}, operation.extensions, "operation.Extensions"; !reflect.DeepEqual(is, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 		}
-
-		if want, is, name := []extension{
-			{key: "x-jsonschema-foo", value: json.RawMessage("\"bar\"")},
-		}, operation.Parameters[0].extensions, "operation.Parameters[0].extensions"; !reflect.DeepEqual(is, want) {
-			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
-		}
-
 		if want, is, name := []extension{
 			{key: "x-resp-id", value: json.RawMessage("\"resp1000\"")},
 		}, response.extensions, "response.Extensions"; !reflect.DeepEqual(is, want) {
@@ -1752,9 +1651,6 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		file := newFile()
 		proto.SetExtension(proto.Message(file.FileDescriptorProto.Options), openapi_options.E_Openapiv2Swagger, &swagger)
 		proto.SetExtension(proto.Message(file.Services[0].Methods[0].Options), openapi_options.E_Openapiv2Operation, &openapiOperation)
-		params := file.Services[0].Methods[0].Bindings[0].PathParams[0]
-		proto.SetExtension(proto.Message(params.FieldPath[0].Target.Message.Options), openapi_options.E_Openapiv2Schema, &openapiSchema)
-		proto.SetExtension(proto.Message(params.FieldPath[1].Target.FieldDescriptorProto.Options), openapi_options.E_Openapiv2Field, &openapiJSONSchema)
 		reg := descriptor.NewRegistry()
 		verifyTemplateExtensions(t, reg, file, nil)
 	})
@@ -1771,18 +1667,6 @@ func TestApplyTemplateExtensions(t *testing.T) {
 				{
 					Method: "example.ExampleService.Example",
 					Option: &openapiOperation,
-				},
-			},
-			Message: []*openapiconfig.OpenAPIMessageOption{
-				{
-					Message: "example.ExampleMessage",
-					Option:  &openapiSchema,
-				},
-			},
-			Field: []*openapiconfig.OpenAPIFieldOption{
-				{
-					Field:  "example.NestedMessage.int32",
-					Option: &openapiJSONSchema,
 				},
 			},
 		}

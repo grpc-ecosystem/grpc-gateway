@@ -237,18 +237,18 @@ message ABitOfEverything {
 			title: "A bit of everything"
 			description: "Intentionally complicated message type to cover many features of Protobuf."
 			required: ["uuid", "int64_value", "double_value"]
+			extensions: {
+				key: "x-a-bit-of-everything-foo";
+				value {
+					string_value: "bar";
+				}
+			}
 		}
 		external_docs: {
 			url: "https://github.com/grpc-ecosystem/grpc-gateway";
 			description: "Find out more about ABitOfEverything";
 		}
 		example: "{\"int64_value\": 12, \"double_value\": 12.3}"
-		extensions: {
-            key: "x-a-bit-of-everything-foo";
-            value {
-                string_value: "bar";
-            }
-        }
 	};
 
 	// Nested is nested type.

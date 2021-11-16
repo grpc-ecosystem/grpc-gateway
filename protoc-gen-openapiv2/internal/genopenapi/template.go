@@ -2590,14 +2590,6 @@ func openapiSchemaFromProtoSchema(s *openapi_options.Schema, reg *descriptor.Reg
 		ret.Example = RawExample(s.Example)
 	}
 
-	if s != nil && s.Extensions != nil {
-		exts, err := processExtensions(s.Extensions)
-		if err != nil {
-			panic(err)
-		}
-		ret.extensions = exts
-	}
-
 	return ret
 }
 
