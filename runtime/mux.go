@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"google.golang.org/grpc/grpclog"
 	"net/http"
 	"net/textproto"
 	"strings"
@@ -113,6 +114,14 @@ func DefaultHeaderMatcher(key string) (string, bool) {
 // This matcher will be called with each header in http.Request. If matcher returns true, that header will be
 // passed to gRPC context. To transform the header before passing to gRPC context, matcher should return modified header.
 func WithIncomingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
+
+	for hdr := range malformedHTTPHeaders {
+		out, accept := fn(hdr)
+		if accept && isMalformedHTTPHeaders(out) {
+			grpclog.Warningf("malformed HTTP header %s would be sent to grpc server", out)
+		}
+	}
+
 	return func(mux *ServeMux) {
 		mux.incomingHeaderMatcher = fn
 	}

@@ -41,6 +41,13 @@ var (
 	DefaultContextTimeout = 0 * time.Second
 )
 
+// malformedHTTPHeaders are headers would be considered malformed and be rejected by grpc server
+// Connection: https://github.com/grpc/grpc-go/pull/4803
+var malformedHTTPHeaders = map[string]struct{}{
+	"Connection": {},
+	"connection": {},
+}
+
 type (
 	rpcMethodKey       struct{}
 	httpPathPatternKey struct{}
@@ -306,6 +313,13 @@ func isPermanentHTTPHeader(hdr string) bool {
 		return true
 	}
 	return false
+}
+
+// isMalformedHTTPHeaders checks whether hdr belongs to the list of
+// "malformed headers" and would be rejected by grpc server
+func isMalformedHTTPHeaders(hdr string) bool {
+	_, isMalFormed := malformedHTTPHeaders[hdr]
+	return isMalFormed
 }
 
 // RPCMethod returns the method string for the server context. The returned
