@@ -115,16 +115,28 @@ func DefaultHeaderMatcher(key string) (string, bool) {
 // passed to gRPC context. To transform the header before passing to gRPC context, matcher should return modified header.
 func WithIncomingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
 
-	for hdr := range malformedHTTPHeaders {
-		out, accept := fn(hdr)
-		if accept && isMalformedHTTPHeaders(out) {
-			grpclog.Warningf("malformed HTTP header %s would be sent to grpc server", out)
-		}
+	for _, hdr := range fn.forwardingMalformedHdr() {
+		grpclog.Warningf("malformed HTTP header %s would be sent to grpc server", hdr)
 	}
 
 	return func(mux *ServeMux) {
 		mux.incomingHeaderMatcher = fn
 	}
+}
+
+// forwardingMalformedHdr returns malformed headers that would be forward to grpc server
+func (fn HeaderMatcherFunc) forwardingMalformedHdr() []string {
+	if fn == nil {
+		return nil
+	}
+	hdrs := make([]string, 0)
+	for hdr := range malformedHTTPHeaders {
+		out, accept := fn(hdr)
+		if accept && isMalformedHTTPHeaders(out) {
+			hdrs = append(hdrs, out)
+		}
+	}
+	return hdrs
 }
 
 // WithOutgoingHeaderMatcher returns a ServeMuxOption representing a headerMatcher for outgoing response from gateway.
