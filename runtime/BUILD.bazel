@@ -56,6 +56,7 @@ go_test(
         "marshal_jsonpb_test.go",
         "marshal_proto_test.go",
         "marshaler_registry_test.go",
+        "mux_internal_test.go",
         "mux_test.go",
         "pattern_test.go",
         "query_test.go",
