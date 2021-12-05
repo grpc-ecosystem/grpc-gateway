@@ -114,8 +114,8 @@ func DefaultHeaderMatcher(key string) (string, bool) {
 // This matcher will be called with each header in http.Request. If matcher returns true, that header will be
 // passed to gRPC context. To transform the header before passing to gRPC context, matcher should return modified header.
 func WithIncomingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
-	for _, hdr := range fn.forwardingMalformedHdr() {
-		grpclog.Warningf("malformed HTTP header %s would be sent to grpc server", hdr)
+	for _, header := range fn.forwardingMalformedHdr() {
+		grpclog.Warningf("The configured forwarding filter would allow %q to be sent to the gRPC server, which will likely cause errors. See https://github.com/grpc/grpc-go/pull/4803#issuecomment-986093310 for more information.", header)
 	}
 
 	return func(mux *ServeMux) {
