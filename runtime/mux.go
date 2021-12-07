@@ -10,6 +10,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
@@ -113,9 +114,28 @@ func DefaultHeaderMatcher(key string) (string, bool) {
 // This matcher will be called with each header in http.Request. If matcher returns true, that header will be
 // passed to gRPC context. To transform the header before passing to gRPC context, matcher should return modified header.
 func WithIncomingHeaderMatcher(fn HeaderMatcherFunc) ServeMuxOption {
+	for _, header := range fn.matchedMalformedHeaders() {
+		grpclog.Warningf("The configured forwarding filter would allow %q to be sent to the gRPC server, which will likely cause errors. See https://github.com/grpc/grpc-go/pull/4803#issuecomment-986093310 for more information.", header)
+	}
+
 	return func(mux *ServeMux) {
 		mux.incomingHeaderMatcher = fn
 	}
+}
+
+// matchedMalformedHeaders returns the malformed headers that would be forwarded to gRPC server.
+func (fn HeaderMatcherFunc) matchedMalformedHeaders() []string {
+	if fn == nil {
+		return nil
+	}
+	headers := make([]string, 0)
+	for header := range malformedHTTPHeaders {
+		out, accept := fn(header)
+		if accept && isMalformedHTTPHeader(out) {
+			headers = append(headers, out)
+		}
+	}
+	return headers
 }
 
 // WithOutgoingHeaderMatcher returns a ServeMuxOption representing a headerMatcher for outgoing response from gateway.
