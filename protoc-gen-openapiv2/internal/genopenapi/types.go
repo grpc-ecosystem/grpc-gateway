@@ -143,6 +143,7 @@ type openapiParameterObject struct {
 	CollectionFormat string              `json:"collectionFormat,omitempty"`
 	Default          string              `json:"default,omitempty"`
 	MinItems         *int                `json:"minItems,omitempty"`
+	Pattern          string              `json:"pattern,omitempty"`
 
 	// Or you can explicitly refer to another type. If this is defined all
 	// other fields should be empty

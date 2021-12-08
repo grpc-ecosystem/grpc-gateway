@@ -30,6 +30,12 @@ import (
 
 var marshaler = &runtime.JSONPb{}
 
+func assertEqual(t *testing.T, testName string, a interface{}, b interface{}) {
+	if a != b {
+		t.Fatalf("%s : %s != %s", testName, a, b)
+	}
+}
+
 func crossLinkFixture(f *descriptor.File) *descriptor.File {
 	for _, m := range f.Messages {
 		m.File = f
@@ -198,7 +204,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 	for _, test := range tests {
 		reg := descriptor.NewRegistry()
 		reg.SetEnumsAsInts(true)
-		msgs := []*descriptor.Message{}
+		var msgs []*descriptor.Message
 		for _, msgdesc := range test.MsgDescs {
 			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
 		}
@@ -1519,7 +1525,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 	}
 	openapiOperation := openapi_options.Operation{
 		Responses: map[string]*openapi_options.Response{
-			"200": &openapi_options.Response{
+			"200": {
 				Description: "Testing Headers",
 				Headers: map[string]*openapi_options.Header{
 					"string": {
@@ -3178,6 +3184,38 @@ func TestResolveFullyQualifiedNameToOpenAPIName(t *testing.T) {
 	}
 }
 
+func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) string {
+	return partsToOpenAPIPath(templateToParts(path, reg, fields, msgs))
+}
+
+func templateToRegexpMap(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) map[string]string {
+	return partsToRegexpMap(templateToParts(path, reg, fields, msgs))
+}
+
+func TestFQMNToRegexpMap(t *testing.T) {
+	var tests = []struct {
+		input    string
+		expected map[string]string
+	}{
+		{"/test", map[string]string{}},
+		{"/{test}", map[string]string{}},
+		{"/{test" + pathParamUniqueSuffixDeliminator + "1=prefix/*}", map[string]string{"test" + pathParamUniqueSuffixDeliminator + "1": "prefix/[^/]+"}},
+		{"/{test=prefix/that/has/multiple/parts/to/it/**}", map[string]string{"test": "prefix/that/has/multiple/parts/to/it/.+"}},
+		{"/{test1=organizations/*}/{test2=divisions/*}", map[string]string{
+			"test1": "organizations/[^/]+",
+			"test2": "divisions/[^/]+",
+		}},
+		{"/v1/{name=projects/*/topics/*}:delete", map[string]string{"name": "projects/[^/]+/topics/[^/]+"}},
+	}
+	reg := descriptor.NewRegistry()
+	for _, data := range tests {
+		actual := templateToRegexpMap(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		if !reflect.DeepEqual(data.expected, actual) {
+			t.Errorf("Expected partsToRegexpMap(%v) = %v, actual: %v", data.input, data.expected, actual)
+		}
+	}
+}
+
 func TestFQMNtoOpenAPIName(t *testing.T) {
 	var tests = []struct {
 		input    string
@@ -3189,6 +3227,7 @@ func TestFQMNtoOpenAPIName(t *testing.T) {
 		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/{test}"},
 		{"/{test1}/{test2}", "/{test1}/{test2}"},
 		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
+		{"/v1/{name=tests/*}/tests", "/v1/{name}/tests"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
@@ -4777,6 +4816,394 @@ func TestTemplateWithoutErrorDefinition(t *testing.T) {
 	if _, ok := result.Definitions[refName]; !ok {
 		t.Errorf("default Error response with reflink '%v', but its definition was not found", refName)
 	}
+}
+
+func TestTemplateWithInvalidDuplicateOperations(t *testing.T) {
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name:  proto.String("ExampleMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{},
+	}
+	meth1 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Method1"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	meth2 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Method2"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc1 := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("Service1"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth1, meth2},
+	}
+
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("service1.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc1},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc1,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth1,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=organizations/*}/roles",
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+					{
+						MethodDescriptorProto: meth2,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=users/*}/roles",
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Errorf("failed to reg.Load(): %v", err)
+		return
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			var ok bool
+			err, ok := r.(error)
+			if ok {
+				if err.Error() != "Duplicate mapping for path GET /v1/{name}/roles" {
+					t.Error(err)
+				}
+			} else {
+				t.Errorf("pkg: %v", r)
+			}
+		}
+
+	}()
+	_, _ = applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+
+	t.Errorf("applyTemplate(%#v) succeeded without panicing", file)
+}
+
+func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
+	fieldType := descriptorpb.FieldDescriptorProto_TYPE_STRING
+	field1 := &descriptorpb.FieldDescriptorProto{
+		Name:   proto.String("name"),
+		Number: proto.Int32(1),
+		Type:   &fieldType,
+	}
+	field2 := &descriptorpb.FieldDescriptorProto{
+		Name:   proto.String("role"),
+		Number: proto.Int32(2),
+		Type:   &fieldType,
+	}
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			field1,
+			field2,
+		},
+	}
+	meth1 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Method1"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	meth2 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Method2"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc1 := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("Service1"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth1, meth2},
+	}
+	meth3 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Method3"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	meth4 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Method4"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc2 := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("Service2"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth3, meth4},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("service1.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc1, svc2},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc1,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth1,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=organizations/*}/{role=roles/*}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field2,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "role",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+					{
+						MethodDescriptorProto: meth2,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=users/*}/{role=roles/*}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field2,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "role",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+				},
+			},
+			{
+				ServiceDescriptorProto: svc2,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth3,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=users/*}/roles",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+					{
+						MethodDescriptorProto: meth4,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=groups/*}/{role=roles/*}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field2,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "role",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Errorf("failed to reg.Load(): %v", err)
+		return
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+
+	assertEqual(t, "Results paths length", len(result.Paths), 4)
+
+	firstOp := result.Paths["/v1/{name}/{role}"].Get
+	assertEqual(t, "First operation id", firstOp.OperationID, "Service1_Method1")
+	assertEqual(t, "First operation params length", len(firstOp.Parameters), 3)
+	assertEqual(t, "First operation first param name", firstOp.Parameters[0].Name, "name")
+	assertEqual(t, "First operation second param name", firstOp.Parameters[1].Name, "role")
+	assertEqual(t, "First operation third param in", firstOp.Parameters[2].In, "body")
+
+	secondOp := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"1}/{role}"].Get
+	assertEqual(t, "Second operation id", secondOp.OperationID, "Service1_Method2")
+	assertEqual(t, "Second operation params length", len(secondOp.Parameters), 3)
+	assertEqual(t, "Second operation first param name", secondOp.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"1")
+	assertEqual(t, "Second operation second param name", secondOp.Parameters[1].Name, "role")
+	assertEqual(t, "Second operation third param in", secondOp.Parameters[2].In, "body")
+
+	thirdOp := result.Paths["/v1/{name}/roles"].Get
+	assertEqual(t, "Third operation id", thirdOp.OperationID, "Service2_Method3")
+	assertEqual(t, "Third operation params length", len(thirdOp.Parameters), 2)
+	assertEqual(t, "Third operation first param name", thirdOp.Parameters[0].Name, "name")
+	assertEqual(t, "Third operation second param in", thirdOp.Parameters[1].In, "body")
+
+	forthOp := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"2}/{role}"].Get
+	assertEqual(t, "Fourth operation id", forthOp.OperationID, "Service2_Method4")
+	assertEqual(t, "Fourth operation params length", len(forthOp.Parameters), 3)
+	assertEqual(t, "Fourth operation first param name", forthOp.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"2")
+	assertEqual(t, "Fourth operation second param name", forthOp.Parameters[1].Name, "role")
+	assertEqual(t, "Fourth operation third param in", forthOp.Parameters[2].In, "body")
 }
 
 func Test_getReservedJsonName(t *testing.T) {
