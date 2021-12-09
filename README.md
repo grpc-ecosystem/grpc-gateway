@@ -429,6 +429,19 @@ Alternatively, see the section on remotely managed plugin versions below.
    Note that this plugin also supports generating OpenAPI definitions for unannotated methods;
    use the `generate_unbound_methods` option to enable this.
 
+   It is possible with the HTTP mapping for a gRPC service method to create duplicate mappings 
+   with the only difference being constraints on the path parameter.
+
+   `/v1/{name=projects/*}` and `/v1/{name=organizations/*}` both become `/v1/{name}`.  When 
+   this occurs the plugin will rename the path parameter with a "_1" (or "_2" etc) suffix
+   to differentiate the different operations. So in the above example, the 2nd path would become
+   `/v1/{name_1=organizations/*}`.  This can also cause OpenAPI clients to URL encode the "/" that is
+   part of the path parameter as that is what OpenAPI defines in the specification.  To allow gRPC gateway to  
+   accept the URL encoded slash and still route the request, use the UnescapingModeAllCharacters or  
+   UnescapingModeLegacy (which is the default currently). See 
+   [Customizing Your Gateway](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_your_gateway/) 
+   for more information.
+
 ## Usage with remote plugins
 
 As an alternative to all of the above, you can use `buf` with
@@ -571,6 +584,8 @@ But patches are welcome.
   (prefixed with `grpcgateway-`).
 - While configurable, the default {un,}marshaling uses
   [protojson](https://pkg.go.dev/google.golang.org/protobuf/encoding/protojson).
+- The path template used to map gRPC service methods to HTTP endpoints supports the [RFC 6570](https://tools.ietf.org/html/rfc6570)
+  path template syntax. For example, `/api/v1/{name=projects/*/topics/*}` or `/prefix/{path=organizations/**}`. 
 
 ## Contribution
 
