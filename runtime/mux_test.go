@@ -437,7 +437,7 @@ func TestMuxServeHTTP(t *testing.T) {
 			},
 			respStatus:                http.StatusOK,
 			encodedSlashInPathAllowed: true,
-			unescapingMode:            runtime.UnescapingModeDefault,
+			unescapingMode:            runtime.UnescapingModeAllCharacters,
 			respContent:               "POST /api/v1/{name=organizations/*}:action",
 		},
 	} {

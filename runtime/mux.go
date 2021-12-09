@@ -271,7 +271,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var components []string
-	if s.unescapingMode != UnescapingModeAllExceptReserved && s.unescapingMode != UnescapingModeAllExceptSlash {
+	if s.unescapingMode == UnescapingModeAllCharacters || s.unescapingMode == UnescapingModeLegacy {
 		components = EncodedPathSplitter.Split(path[1:], -1)
 	} else {
 		components = strings.Split(path[1:], "/")
