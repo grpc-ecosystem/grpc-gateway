@@ -31,7 +31,6 @@ func TestMuxServeHTTP(t *testing.T) {
 		respContent string
 
 		disablePathLengthFallback bool
-		encodedSlashInPathAllowed bool
 		unescapingMode            runtime.UnescapingMode
 	}{
 		{
@@ -435,10 +434,9 @@ func TestMuxServeHTTP(t *testing.T) {
 			headers: map[string]string{
 				"Content-Type": "application/json",
 			},
-			respStatus:                http.StatusOK,
-			encodedSlashInPathAllowed: true,
-			unescapingMode:            runtime.UnescapingModeAllCharacters,
-			respContent:               "POST /api/v1/{name=organizations/*}:action",
+			respStatus:     http.StatusOK,
+			unescapingMode: runtime.UnescapingModeAllCharacters,
+			respContent:    "POST /api/v1/{name=organizations/*}:action",
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
