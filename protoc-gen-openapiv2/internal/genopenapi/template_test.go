@@ -2708,17 +2708,17 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 				return
 			}
 
-			if _, ok := result.Paths["/v1/{parent=publishers/*}/books"].Post.Responses["200"]; !ok {
-				t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", tt.args.file, `result.Paths["/v1/{parent=publishers/*}/books"].Post.Responses["200"]`)
+			if _, ok := result.Paths["/v1/{parent}/books"].Post.Responses["200"]; !ok {
+				t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", tt.args.file, `result.Paths["/v1/{parent}/books"].Post.Responses["200"]`)
 			} else {
 
-				if want, got, name := 3, len(result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters), `len(result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters)`; !reflect.DeepEqual(got, want) {
+				if want, got, name := 3, len(result.Paths["/v1/{parent}/books"].Post.Parameters), `len(result.Paths["/v1/{parent}/books"].Post.Parameters)`; !reflect.DeepEqual(got, want) {
 					t.Errorf("applyTemplate(%#v).%s = %d want to be %d", tt.args.file, name, got, want)
 				}
 
 				for i, want := range tt.want {
-					p := result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[i]
-					if got, name := (paramOut{p.Name, p.In, p.Required}), `result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[0]`; !reflect.DeepEqual(got, want) {
+					p := result.Paths["/v1/{parent}/books"].Post.Parameters[i]
+					if got, name := (paramOut{p.Name, p.In, p.Required}), `result.Paths["/v1/{parent}/books"].Post.Parameters[0]`; !reflect.DeepEqual(got, want) {
 						t.Errorf("applyTemplate(%#v).%s = %v want to be %v", tt.args.file, name, got, want)
 					}
 				}
