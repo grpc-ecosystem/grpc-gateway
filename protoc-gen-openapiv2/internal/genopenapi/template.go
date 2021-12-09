@@ -846,15 +846,6 @@ func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor
 	return parts
 }
 
-func isResourceName(prefix string) bool {
-	words := strings.Split(prefix, ".")
-	l := len(words)
-	field := words[l-1]
-	words = strings.Split(field, ":")
-	field = words[0]
-	return field == "parent" || field == "name"
-}
-
 func renderServiceTags(services []*descriptor.Service) []openapiTagObject {
 	var tags []openapiTagObject
 	for _, svc := range services {
