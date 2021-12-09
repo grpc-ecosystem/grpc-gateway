@@ -778,7 +778,7 @@ func partsToOpenAPIPath(parts []string) string {
 func partsToRegexpMap(parts []string) map[string]string {
 	regExps := make(map[string]string)
 	for _, part := range parts {
-		if submatch := canRegexp.FindStringSubmatch(part); submatch != nil && len(submatch) > 2 {
+		if submatch := canRegexp.FindStringSubmatch(part); len(submatch) > 2 {
 			if strings.HasPrefix(submatch[2], "=") { // this matches the standard and should be made into a regular expression
 				// assume the string's characters other than "**" and "*" are literals (not necessarily a good assumption 100% of the times, but it will support most use cases)
 				regex := submatch[2][1:]
