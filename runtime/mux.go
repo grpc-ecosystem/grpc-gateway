@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/textproto"
+	"regexp"
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
@@ -39,6 +40,10 @@ const (
 	// TODO(v3): default this to UnescapingModeAllExceptReserved per grpc-httpjson-transcoding's
 	// reference implementation
 	UnescapingModeDefault = UnescapingModeLegacy
+)
+
+var (
+	EncodedPathSplitter = regexp.MustCompile("(/|%2F)")
 )
 
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
@@ -265,7 +270,12 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		path = r.URL.RawPath
 	}
 
-	components := strings.Split(path[1:], "/")
+	var components []string
+	if s.unescapingMode != UnescapingModeAllExceptReserved && s.unescapingMode != UnescapingModeAllExceptSlash {
+		components = EncodedPathSplitter.Split(path[1:], -1)
+	} else {
+		components = strings.Split(path[1:], "/")
+	}
 
 	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && s.isPathLengthFallback(r) {
 		r.Method = strings.ToUpper(override)

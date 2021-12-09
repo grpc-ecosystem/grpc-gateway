@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strconv"
 	"testing"
 
@@ -30,6 +31,7 @@ func TestMuxServeHTTP(t *testing.T) {
 		respContent string
 
 		disablePathLengthFallback bool
+		encodedSlashInPathAllowed bool
 		unescapingMode            runtime.UnescapingMode
 	}{
 		{
@@ -390,6 +392,54 @@ func TestMuxServeHTTP(t *testing.T) {
 			respStatus:     http.StatusOK,
 			unescapingMode: runtime.UnescapingModeAllExceptReserved,
 			respContent:    "GET /foo/{id=**}",
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops: []int{
+						int(utilities.OpLitPush), 0,
+						int(utilities.OpPushM), 0,
+						int(utilities.OpConcatN), 1,
+						int(utilities.OpCapture), 1,
+					},
+					pool: []string{"foo", "id", "bar"},
+				},
+			},
+			reqMethod: "GET",
+			reqPath:   "/foo/success%2fwith%2Fspace",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:     http.StatusOK,
+			unescapingMode: runtime.UnescapingModeAllExceptReserved,
+			respContent:    "GET /foo/{id=**}",
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "POST",
+					ops: []int{
+						int(utilities.OpLitPush), 0,
+						int(utilities.OpLitPush), 1,
+						int(utilities.OpLitPush), 2,
+						int(utilities.OpPush), 0,
+						int(utilities.OpConcatN), 2,
+						int(utilities.OpCapture), 3,
+					},
+					pool: []string{"api", "v1", "organizations", "name"},
+					verb: "action",
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/api/v1/" + url.QueryEscape("organizations/foo") +":action",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:     http.StatusOK,
+			encodedSlashInPathAllowed: true,
+			unescapingMode: runtime.UnescapingModeDefault,
+			respContent:    "POST /api/v1/{name=organizations/*}:action",
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
