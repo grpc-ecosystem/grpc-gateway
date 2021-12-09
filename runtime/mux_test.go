@@ -432,14 +432,14 @@ func TestMuxServeHTTP(t *testing.T) {
 				},
 			},
 			reqMethod: "POST",
-			reqPath:   "/api/v1/" + url.QueryEscape("organizations/foo") +":action",
+			reqPath:   "/api/v1/" + url.QueryEscape("organizations/foo") + ":action",
 			headers: map[string]string{
 				"Content-Type": "application/json",
 			},
-			respStatus:     http.StatusOK,
+			respStatus:                http.StatusOK,
 			encodedSlashInPathAllowed: true,
-			unescapingMode: runtime.UnescapingModeDefault,
-			respContent:    "POST /api/v1/{name=organizations/*}:action",
+			unescapingMode:            runtime.UnescapingModeDefault,
+			respContent:               "POST /api/v1/{name=organizations/*}:action",
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
