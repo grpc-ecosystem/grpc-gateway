@@ -238,7 +238,8 @@
             "name": "uuid",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
           },
           {
             "name": "floatValue",
@@ -579,7 +580,8 @@
             "name": "uuid",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
           },
           {
             "name": "floatValue",
@@ -913,7 +915,8 @@
             "name": "uuid",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
           },
           {
             "name": "floatValue",
@@ -1652,7 +1655,8 @@
             "name": "stringValue",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "strprefix/[^/]+"
           },
           {
             "name": "uint32Value",
@@ -1766,7 +1770,8 @@
             "name": "uuid",
             "in": "query",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
           },
           {
             "name": "bytesValue",
@@ -2615,7 +2620,7 @@
         ]
       }
     },
-    "/v1/{book.name=publishers/*/books/*}": {
+    "/v1/{book.name}": {
       "patch": {
         "operationId": "ABitOfEverythingService_UpdateBook",
         "responses": {
@@ -2661,7 +2666,8 @@
             "description": "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\nExample: `publishers/1257894000000000000/books/my-book`",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "publishers/[^/]+/books/[^/]+"
           },
           {
             "name": "body",
@@ -2692,7 +2698,7 @@
         ]
       }
     },
-    "/v1/{parent=publishers/*}/books": {
+    "/v1/{parent}/books": {
       "post": {
         "summary": "Create a book.",
         "operationId": "ABitOfEverythingService_CreateBook",
@@ -2739,7 +2745,8 @@
             "description": "The publisher in which to create the book.\n\nFormat: `publishers/{publisher}`\n\nExample: `publishers/1257894000000000000`",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "pattern": "publishers/[^/]+"
           },
           {
             "name": "body",

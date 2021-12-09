@@ -158,6 +158,7 @@ paths:
         in: "query"
         required: false
         type: "string"
+        pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-exportParamName: "Uuid"
         x-optionalDataType: "String"
       - name: "floatValue"
@@ -470,6 +471,7 @@ paths:
         in: "query"
         required: false
         type: "string"
+        pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-exportParamName: "Uuid"
         x-optionalDataType: "String"
       - name: "floatValue"
@@ -773,6 +775,7 @@ paths:
         in: "query"
         required: false
         type: "string"
+        pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-exportParamName: "Uuid"
         x-optionalDataType: "String"
       - name: "floatValue"
@@ -1445,6 +1448,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        pattern: "strprefix/[^/]+"
         x-exportParamName: "StringValue"
       - name: "uint32Value"
         in: "path"
@@ -1544,6 +1548,7 @@ paths:
         in: "query"
         required: false
         type: "string"
+        pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-exportParamName: "Uuid"
         x-optionalDataType: "String"
       - name: "bytesValue"
@@ -2076,7 +2081,7 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-  /v1/{book.name=publishers/*/books/*}:
+  /v1/{book.name}:
     patch:
       tags:
       - "ABitOfEverythingService"
@@ -2088,6 +2093,7 @@ paths:
           \nExample: `publishers/1257894000000000000/books/my-book`"
         required: true
         type: "string"
+        pattern: "publishers/[^/]+/books/[^/]+"
         x-exportParamName: "BookName"
       - in: "body"
         name: "body"
@@ -2138,7 +2144,7 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-  /v1/{parent=publishers/*}/books:
+  /v1/{parent}/books:
     post:
       tags:
       - "ABitOfEverythingService"
@@ -2151,6 +2157,7 @@ paths:
           \nExample: `publishers/1257894000000000000`"
         required: true
         type: "string"
+        pattern: "publishers/[^/]+"
         x-exportParamName: "Parent"
       - in: "body"
         name: "body"
