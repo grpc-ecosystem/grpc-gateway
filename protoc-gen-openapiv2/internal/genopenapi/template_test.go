@@ -5182,27 +5182,34 @@ func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
 	assertEqual(t, "First operation id", firstOp.OperationID, "Service1_Method1")
 	assertEqual(t, "First operation params length", len(firstOp.Parameters), 3)
 	assertEqual(t, "First operation first param name", firstOp.Parameters[0].Name, "name")
+	assertEqual(t, "First operation first param pattern", firstOp.Parameters[0].Pattern, "organizations/[^/]+")
 	assertEqual(t, "First operation second param name", firstOp.Parameters[1].Name, "role")
+	assertEqual(t, "First operation first param pattern", firstOp.Parameters[1].Pattern, "roles/[^/]+")
 	assertEqual(t, "First operation third param in", firstOp.Parameters[2].In, "body")
 
 	secondOp := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"1}/{role}"].Get
 	assertEqual(t, "Second operation id", secondOp.OperationID, "Service1_Method2")
 	assertEqual(t, "Second operation params length", len(secondOp.Parameters), 3)
 	assertEqual(t, "Second operation first param name", secondOp.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"1")
+	assertEqual(t, "Second operation first param pattern", secondOp.Parameters[0].Pattern, "users/[^/]+")
 	assertEqual(t, "Second operation second param name", secondOp.Parameters[1].Name, "role")
+	assertEqual(t, "Second operation first param pattern", secondOp.Parameters[1].Pattern, "roles/[^/]+")
 	assertEqual(t, "Second operation third param in", secondOp.Parameters[2].In, "body")
 
 	thirdOp := result.Paths["/v1/{name}/roles"].Get
 	assertEqual(t, "Third operation id", thirdOp.OperationID, "Service2_Method3")
 	assertEqual(t, "Third operation params length", len(thirdOp.Parameters), 2)
 	assertEqual(t, "Third operation first param name", thirdOp.Parameters[0].Name, "name")
+	assertEqual(t, "Third operation first param pattern", thirdOp.Parameters[0].Pattern, "users/[^/]+")
 	assertEqual(t, "Third operation second param in", thirdOp.Parameters[1].In, "body")
 
 	forthOp := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"2}/{role}"].Get
 	assertEqual(t, "Fourth operation id", forthOp.OperationID, "Service2_Method4")
 	assertEqual(t, "Fourth operation params length", len(forthOp.Parameters), 3)
 	assertEqual(t, "Fourth operation first param name", forthOp.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"2")
+	assertEqual(t, "Fourth operation first param pattern", forthOp.Parameters[0].Pattern, "groups/[^/]+")
 	assertEqual(t, "Fourth operation second param name", forthOp.Parameters[1].Name, "role")
+	assertEqual(t, "Fourth operation second param pattern", forthOp.Parameters[1].Pattern, "roles/[^/]+")
 	assertEqual(t, "Fourth operation third param in", forthOp.Parameters[2].In, "body")
 }
 
