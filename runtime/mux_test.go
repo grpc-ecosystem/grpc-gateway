@@ -455,15 +455,15 @@ func TestMuxServeHTTP(t *testing.T) {
 						t.Fatalf("runtime.NewPattern(1, %#v, %#v, %q) failed with %v; want success", p.ops, p.pool, p.verb, err)
 					}
 					mux.Handle(p.method, pat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-						fmt.Fprintf(w, "%s %s", p.method, pat.String())
+						_, _ = fmt.Fprintf(w, "%s %s", p.method, pat.String())
 					})
 				}(p)
 			}
 
-			url := fmt.Sprintf("http://host.example%s", spec.reqPath)
-			r, err := http.NewRequest(spec.reqMethod, url, bytes.NewReader(nil))
+			reqUrl := fmt.Sprintf("https://host.example%s", spec.reqPath)
+			r, err := http.NewRequest(spec.reqMethod, reqUrl, bytes.NewReader(nil))
 			if err != nil {
-				t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", spec.reqMethod, url, err)
+				t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", spec.reqMethod, reqUrl, err)
 			}
 			for name, value := range spec.headers {
 				r.Header.Set(name, value)
