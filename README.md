@@ -437,8 +437,7 @@ Alternatively, see the section on remotely managed plugin versions below.
    to differentiate the different operations. So in the above example, the 2nd path would become
    `/v1/{name_1=organizations/*}`.  This can also cause OpenAPI clients to URL encode the "/" that is
    part of the path parameter as that is what OpenAPI defines in the specification.  To allow gRPC gateway to  
-   accept the URL encoded slash and still route the request, use the UnescapingModeAllCharacters or  
-   UnescapingModeLegacy (which is the default currently). See 
+   accept the URL encoded slash and still route the request, use the UnescapingModeAllCharacters. See 
    [Customizing Your Gateway](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_your_gateway/) 
    for more information.
 
@@ -577,15 +576,15 @@ But patches are welcome.
 - HTTP request host is added as `X-Forwarded-Host` gRPC request header.
 - HTTP `Authorization` header is added as `authorization` gRPC request header.
 - Remaining Permanent HTTP header keys (as specified by the IANA
-  [here](http://www.iana.org/assignments/message-headers/message-headers.xhtml)
+  [here](http://www.iana.org/assignments/message-headers/message-headers.xhtml))
   are prefixed with `grpcgateway-` and added with their values to gRPC request
   header.
 - HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata
   (prefixed with `grpcgateway-`).
 - While configurable, the default {un,}marshaling uses
   [protojson](https://pkg.go.dev/google.golang.org/protobuf/encoding/protojson).
-- The path template used to map gRPC service methods to HTTP endpoints supports the [RFC 6570](https://tools.ietf.org/html/rfc6570)
-  path template syntax. For example, `/api/v1/{name=projects/*/topics/*}` or `/prefix/{path=organizations/**}`. 
+- The path template used to map gRPC service methods to HTTP endpoints supports the [google.api.http](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto)
+  path template syntax. For example, `/api/v1/{name=projects/*/topics/*}` or `/prefix/{path=organizations/**}`.
 
 ## Contribution
 

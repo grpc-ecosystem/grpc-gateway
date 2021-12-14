@@ -25,15 +25,15 @@ const (
 	// path string before doing any routing.
 	UnescapingModeLegacy UnescapingMode = iota
 
-	// EscapingTypeExceptReserved unescapes all path parameters except RFC 6570
+	// UnescapingModeAllExceptReserved unescapes all path parameters except RFC 6570
 	// reserved characters.
 	UnescapingModeAllExceptReserved
 
-	// EscapingTypeExceptSlash unescapes URL path parameters except path
-	// seperators, which will be left as "%2F".
+	// UnescapingModeAllExceptSlash unescapes URL path parameters except path
+	// separators, which will be left as "%2F".
 	UnescapingModeAllExceptSlash
 
-	// URL path parameters will be fully decoded.
+	// UnescapingModeAllCharacters unescapes all URL path parameters.
 	UnescapingModeAllCharacters
 
 	// UnescapingModeDefault is the default escaping type.
@@ -43,7 +43,7 @@ const (
 )
 
 var (
-	EncodedPathSplitter = regexp.MustCompile("(/|%2F)")
+	encodedPathSplitter = regexp.MustCompile("(/|%2F)")
 )
 
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
@@ -271,8 +271,9 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var components []string
-	if s.unescapingMode == UnescapingModeAllCharacters || s.unescapingMode == UnescapingModeLegacy {
-		components = EncodedPathSplitter.Split(path[1:], -1)
+	// this maintains the legacy behavior of only splitting on unencoded "/" without specifying UnescapeModeAllCharacters
+	if s.unescapingMode == UnescapingModeAllCharacters {
+		components = encodedPathSplitter.Split(path[1:], -1)
 	} else {
 		components = strings.Split(path[1:], "/")
 	}

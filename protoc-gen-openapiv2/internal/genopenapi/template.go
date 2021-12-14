@@ -3,7 +3,6 @@ package genopenapi
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"math"
@@ -760,37 +759,8 @@ func resolveFullyQualifiedNameToOpenAPINames(messages []string, namingStrategy s
 
 var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*)([^}]*)}")
 
-// OpenAPI expects paths of the form /path/{string_value} but gRPC-Gateway paths are expected to be of the form
-// /path/{string_value=strprefix/*} (based on RFC 6570). This should reformat it correctly.
-func partsToOpenAPIPath(parts []string) string {
-	// Parts is now an array of segments of the path. Interestingly, since the
-	// syntax for this subsection CAN be handled by a regexp since it has no
-	// memory.
-	for index, part := range parts {
-		parts[index] = canRegexp.ReplaceAllString(part, "{$1}")
-	}
-	return strings.Join(parts, "/")
-}
-
-// Return a map of parameter name to ECMA patterns
-// which is what the "pattern" field on an OpenAPI parameter uses.
-// Based on expressions defined by RFC 6570
-func partsToRegexpMap(parts []string) map[string]string {
-	regExps := make(map[string]string)
-	for _, part := range parts {
-		if submatch := canRegexp.FindStringSubmatch(part); len(submatch) > 2 {
-			if strings.HasPrefix(submatch[2], "=") { // this matches the standard and should be made into a regular expression
-				// assume the string's characters other than "**" and "*" are literals (not necessarily a good assumption 100% of the times, but it will support most use cases)
-				regex := submatch[2][1:]
-				regex = strings.ReplaceAll(regex, "**", ".+")   // ** implies any character including "/"
-				regex = strings.ReplaceAll(regex, "*", "[^/]+") // * implies any character except "/"
-				regExps[submatch[1]] = regex
-			}
-		}
-	}
-	return regExps
-}
-
+// templateToParts will split a URL template as defined by https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
+// into a string slice with each part as an element of the slice for use by `partsToOpenAPIPath` and `partsToRegexpMap`.
 func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) []string {
 	// It seems like the right thing to do here is to just use
 	// strings.Split(path, "/") but that breaks badly when you hit a url like
@@ -844,6 +814,50 @@ func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor
 	parts = append(parts, buffer)
 
 	return parts
+}
+
+// partsToOpenAPIPath converts each path part of the form /path/{string_value=strprefix/*} which is defined in
+// https://github.com/googleapis/googleapis/blob/master/google/api/http.proto to the OpenAPI expected form /path/{string_value}.
+// For example this would replace the path segment of "{foo=bar/*}" with "{foo}" or "prefix{bang=bash/**}" with "prefix{bang}".
+// OpenAPI 2 only allows simple path parameters with the constraints on that parameter specified in the OpenAPI
+// schema's "pattern" instead of in the path parameter itself.
+func partsToOpenAPIPath(parts []string) string {
+	for index, part := range parts {
+		parts[index] = canRegexp.ReplaceAllString(part, "{$1}")
+	}
+	return strings.Join(parts, "/")
+}
+
+// partsToRegexpMap returns a map of parameter name to ECMA 262 patterns
+// which is what the "pattern" field on an OpenAPI parameter expects.
+// See https://swagger.io/specification/v2/ (Parameter Object) and
+// https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.2.3.
+// The expression is generated based on expressions defined by https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
+// "Path Template Syntax" section which allow for a "param_name=foobar/*/bang/**" style expressions inside
+// the path parameter placeholders that indicate constraints on the values of those parameters.
+// This function will scan the split parts of a path template for parameters and
+// outputs a map of the name of the parameter to a ECMA regular expression.  See the http.proto file for descriptions
+// of the supported syntax. This function will ignore any path parameters that don't contain a "=" after the
+// parameter name.  For supported parameters, we assume "*" represent all characters except "/" as it's
+// intended to match a single path element and we assume "**" matches any character as it's intended to match multiple
+// path elements.
+// For example "{name=organizations/*/roles/*}" would produce the regular expression for the "name" parameter of
+// "organizations/[^/]+/roles/[^/]+" or "{bar=bing/*/bang/**}" would produce the regular expression for the "bar"
+// parameter of "bing/[^/]+/bang/.+".
+func partsToRegexpMap(parts []string) map[string]string {
+	regExps := make(map[string]string)
+	for _, part := range parts {
+		if submatch := canRegexp.FindStringSubmatch(part); len(submatch) > 2 {
+			if strings.HasPrefix(submatch[2], "=") { // this part matches the standard and should be made into a regular expression
+				// assume the string's characters other than "**" and "*" are literals (not necessarily a good assumption 100% of the times, but it will support most use cases)
+				regex := submatch[2][1:]
+				regex = strings.ReplaceAll(regex, "**", ".+")   // ** implies any character including "/"
+				regex = strings.ReplaceAll(regex, "*", "[^/]+") // * implies any character except "/"
+				regExps[submatch[1]] = regex
+			}
+		}
+	}
+	return regExps
 }
 
 func renderServiceTags(services []*descriptor.Service) []openapiTagObject {
@@ -1069,31 +1083,30 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						}
 						if firstPathParameter == nil {
 							// Without a path parameter, there is nothing to vary to support multiple mappings of the same path/method.
-							// Previously, we would overwrite the prior mapping (i.e. last in wins), but I think it's
-							// more appropriate to return an error as the spec is no longer representative of the proto files
-							// maybe this should be a config parameter of the plugin so the old behavior lasts?
-							return errors.New("Duplicate mapping for path " + b.HTTPMethod + " " + path)
-						}
-
-						newPathCount := 0
-						var newPath string
-						var newPathElement string
-						// Iterate until there is not an existing operation that matches the same escaped path.
-						// Most of the time this will only be a single iteration, but a large API could technically have
-						// a pretty large amount of these if it used similar patterns for all its functions.
-						for existingOperationObject != nil {
-							newPathCount += 1
-							newPathElement = firstPathParameter.Name + pathParamUniqueSuffixDeliminator + strconv.Itoa(newPathCount)
-							newPath = strings.ReplaceAll(path, "{"+firstPathParameter.Name+"}", "{"+newPathElement+"}")
-							if newPathItemObject, ok := paths[newPath]; ok {
-								existingOperationObject = operationFunc(&newPathItemObject)
-							} else {
-								existingOperationObject = nil
+							// Previously this did not log an error and only overwrote the mapping, we now log the error but
+							// still overwrite the mapping
+							glog.Errorf("Duplicate mapping for path %s %s", b.HTTPMethod, path)
+						} else {
+							newPathCount := 0
+							var newPath string
+							var newPathElement string
+							// Iterate until there is not an existing operation that matches the same escaped path.
+							// Most of the time this will only be a single iteration, but a large API could technically have
+							// a pretty large amount of these if it used similar patterns for all its functions.
+							for existingOperationObject != nil {
+								newPathCount += 1
+								newPathElement = firstPathParameter.Name + pathParamUniqueSuffixDeliminator + strconv.Itoa(newPathCount)
+								newPath = strings.ReplaceAll(path, "{"+firstPathParameter.Name+"}", "{"+newPathElement+"}")
+								if newPathItemObject, ok := paths[newPath]; ok {
+									existingOperationObject = operationFunc(&newPathItemObject)
+								} else {
+									existingOperationObject = nil
+								}
 							}
+							firstPathParameter.Name = newPathElement
+							path = newPath
+							parameters[firstParamIndex] = *firstPathParameter
 						}
-						firstPathParameter.Name = newPathElement
-						path = newPath
-						parameters[firstParamIndex] = *firstPathParameter
 					}
 				}
 

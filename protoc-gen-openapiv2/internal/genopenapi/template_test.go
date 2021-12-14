@@ -1,10 +1,13 @@
 package genopenapi
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"math"
+	"os"
 	"reflect"
 	"strings"
 	"testing"
@@ -29,12 +32,6 @@ import (
 )
 
 var marshaler = &runtime.JSONPb{}
-
-func assertEqual(t *testing.T, testName string, a interface{}, b interface{}) {
-	if a != b {
-		t.Fatalf("%s : %s != %s", testName, a, b)
-	}
-}
 
 func crossLinkFixture(f *descriptor.File) *descriptor.File {
 	for _, m := range f.Messages {
@@ -62,6 +59,33 @@ func reqFromFile(f *descriptor.File) *pluginpb.CodeGeneratorRequest {
 		},
 		FileToGenerate: []string{f.GetName()},
 	}
+}
+
+// captureStderr executes the given function and returns the full string of what
+// was written to os.Stderr during execution and any error the function may have returned
+func captureStderr(f func() error) (string, error) {
+	old := os.Stderr // keep backup of the real stderr
+	r, w, err := os.Pipe()
+	if err != nil {
+		return "", err
+	}
+	os.Stderr = w
+
+	outC := make(chan string)
+	// copy the output in a separate goroutine so printing can't block indefinitely
+	go func() {
+		var buf bytes.Buffer
+		_, _ = io.Copy(&buf, r)
+		outC <- buf.String()
+	}()
+
+	// calling function which stderr we are going to capture:
+	err = f()
+
+	// back to normal state
+	_ = w.Close()
+	os.Stderr = old // restoring the real stderr
+	return <-outC, err
 }
 
 func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
@@ -4908,23 +4932,17 @@ func TestTemplateWithInvalidDuplicateOperations(t *testing.T) {
 		t.Errorf("failed to reg.Load(): %v", err)
 		return
 	}
-	defer func() {
-		if r := recover(); r != nil {
-			var ok bool
-			err, ok := r.(error)
-			if ok {
-				if err.Error() != "Duplicate mapping for path GET /v1/{name}/roles" {
-					t.Error(err)
-				}
-			} else {
-				t.Errorf("pkg: %v", r)
-			}
+	if stdErr, err := captureStderr(func() error {
+		swagger, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+		if opid := swagger.Paths["/v1/{name}/roles"].Get.OperationID; opid != "Service1_Method2" {
+			t.Errorf("Swagger should use last in wins for the service methods: %s", opid)
 		}
-
-	}()
-	_, _ = applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
-
-	t.Errorf("applyTemplate(%#v) succeeded without panicing", file)
+		return err
+	}); !strings.Contains(stdErr, "Duplicate mapping for path GET /v1/{name}/roles") {
+		t.Errorf("Error for duplicate mapping was incorrect: %s", stdErr)
+	} else if err != nil {
+		t.Error(err)
+	}
 }
 
 func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
@@ -5167,50 +5185,102 @@ func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
 	if err != nil {
-		t.Errorf("failed to reg.Load(): %v", err)
-		return
+		t.Fatalf("failed to reg.Load(): %v", err)
 	}
 	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
 	if err != nil {
-		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
-		return
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
 	}
 
-	assertEqual(t, "Results paths length", len(result.Paths), 4)
+	if got, want := len(result.Paths), 4; got != want {
+		t.Fatalf("Results path length differed, got %d want %d", got, want)
+	}
 
 	firstOp := result.Paths["/v1/{name}/{role}"].Get
-	assertEqual(t, "First operation id", firstOp.OperationID, "Service1_Method1")
-	assertEqual(t, "First operation params length", len(firstOp.Parameters), 3)
-	assertEqual(t, "First operation first param name", firstOp.Parameters[0].Name, "name")
-	assertEqual(t, "First operation first param pattern", firstOp.Parameters[0].Pattern, "organizations/[^/]+")
-	assertEqual(t, "First operation second param name", firstOp.Parameters[1].Name, "role")
-	assertEqual(t, "First operation first param pattern", firstOp.Parameters[1].Pattern, "roles/[^/]+")
-	assertEqual(t, "First operation third param in", firstOp.Parameters[2].In, "body")
+	if got, want := firstOp.OperationID, "Service1_Method1"; got != want {
+		t.Fatalf("First operation id differed, got %s want %s", got, want)
+	}
+	if got, want := len(firstOp.Parameters), 3; got != want {
+		t.Fatalf("First operation params length differed, got %d want %d", got, want)
+	}
+	if got, want := firstOp.Parameters[0].Name, "name"; got != want {
+		t.Fatalf("First operation first param name differed, got %s want %s", got, want)
+	}
+	if got, want := firstOp.Parameters[0].Pattern, "organizations/[^/]+"; got != want {
+		t.Fatalf("First operation first param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := firstOp.Parameters[1].Name, "role"; got != want {
+		t.Fatalf("First operation second param name differed, got %s want %s", got, want)
+	}
+	if got, want := firstOp.Parameters[1].Pattern, "roles/[^/]+"; got != want {
+		t.Fatalf("First operation second param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := firstOp.Parameters[2].In, "body"; got != want {
+		t.Fatalf("First operation third param 'in' differed, got %s want %s", got, want)
+	}
 
 	secondOp := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"1}/{role}"].Get
-	assertEqual(t, "Second operation id", secondOp.OperationID, "Service1_Method2")
-	assertEqual(t, "Second operation params length", len(secondOp.Parameters), 3)
-	assertEqual(t, "Second operation first param name", secondOp.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"1")
-	assertEqual(t, "Second operation first param pattern", secondOp.Parameters[0].Pattern, "users/[^/]+")
-	assertEqual(t, "Second operation second param name", secondOp.Parameters[1].Name, "role")
-	assertEqual(t, "Second operation first param pattern", secondOp.Parameters[1].Pattern, "roles/[^/]+")
-	assertEqual(t, "Second operation third param in", secondOp.Parameters[2].In, "body")
+	if got, want := secondOp.OperationID, "Service1_Method2"; got != want {
+		t.Fatalf("Second operation id differed, got %s want %s", got, want)
+	}
+	if got, want := len(secondOp.Parameters), 3; got != want {
+		t.Fatalf("Second operation params length differed, got %d want %d", got, want)
+	}
+	if got, want := secondOp.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"1"; got != want {
+		t.Fatalf("Second operation first param name differed, got %s want %s", got, want)
+	}
+	if got, want := secondOp.Parameters[0].Pattern, "users/[^/]+"; got != want {
+		t.Fatalf("Second operation first param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := secondOp.Parameters[1].Name, "role"; got != want {
+		t.Fatalf("Second operation second param name differed, got %s want %s", got, want)
+	}
+	if got, want := secondOp.Parameters[1].Pattern, "roles/[^/]+"; got != want {
+		t.Fatalf("Second operation second param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := secondOp.Parameters[2].In, "body"; got != want {
+		t.Fatalf("Second operation third param 'in' differed, got %s want %s", got, want)
+	}
 
 	thirdOp := result.Paths["/v1/{name}/roles"].Get
-	assertEqual(t, "Third operation id", thirdOp.OperationID, "Service2_Method3")
-	assertEqual(t, "Third operation params length", len(thirdOp.Parameters), 2)
-	assertEqual(t, "Third operation first param name", thirdOp.Parameters[0].Name, "name")
-	assertEqual(t, "Third operation first param pattern", thirdOp.Parameters[0].Pattern, "users/[^/]+")
-	assertEqual(t, "Third operation second param in", thirdOp.Parameters[1].In, "body")
+	if got, want := thirdOp.OperationID, "Service2_Method3"; got != want {
+		t.Fatalf("Third operation id differed, got %s want %s", got, want)
+	}
+	if got, want := len(thirdOp.Parameters), 2; got != want {
+		t.Fatalf("Third operation params length differed, got %d want %d", got, want)
+	}
+	if got, want := thirdOp.Parameters[0].Name, "name"; got != want {
+		t.Fatalf("Third operation first param name differed, got %s want %s", got, want)
+	}
+	if got, want := thirdOp.Parameters[0].Pattern, "users/[^/]+"; got != want {
+		t.Fatalf("Third operation first param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := thirdOp.Parameters[1].In, "body"; got != want {
+		t.Fatalf("Third operation second param 'in' differed, got %s want %s", got, want)
+	}
 
 	forthOp := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"2}/{role}"].Get
-	assertEqual(t, "Fourth operation id", forthOp.OperationID, "Service2_Method4")
-	assertEqual(t, "Fourth operation params length", len(forthOp.Parameters), 3)
-	assertEqual(t, "Fourth operation first param name", forthOp.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"2")
-	assertEqual(t, "Fourth operation first param pattern", forthOp.Parameters[0].Pattern, "groups/[^/]+")
-	assertEqual(t, "Fourth operation second param name", forthOp.Parameters[1].Name, "role")
-	assertEqual(t, "Fourth operation second param pattern", forthOp.Parameters[1].Pattern, "roles/[^/]+")
-	assertEqual(t, "Fourth operation third param in", forthOp.Parameters[2].In, "body")
+	if got, want := forthOp.OperationID, "Service2_Method4"; got != want {
+		t.Fatalf("Fourth operation id differed, got %s want %s", got, want)
+	}
+	if got, want := len(forthOp.Parameters), 3; got != want {
+		t.Fatalf("Fourth operation params length differed, got %d want %d", got, want)
+	}
+	if got, want := forthOp.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"2"; got != want {
+		t.Fatalf("Fourth operation first param name differed, got %s want %s", got, want)
+	}
+	if got, want := forthOp.Parameters[0].Pattern, "groups/[^/]+"; got != want {
+		t.Fatalf("Fourth operation first param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := forthOp.Parameters[1].Name, "role"; got != want {
+		t.Fatalf("Fourth operation second param name differed, got %s want %s", got, want)
+	}
+	if got, want := forthOp.Parameters[1].Pattern, "roles/[^/]+"; got != want {
+		t.Fatalf("Fourth operation second param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := forthOp.Parameters[2].In, "body"; got != want {
+		t.Fatalf("Fourth operation second param 'in' differed, got %s want %s", got, want)
+	}
 }
 
 func Test_getReservedJsonName(t *testing.T) {
