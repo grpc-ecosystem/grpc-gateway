@@ -271,7 +271,10 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var components []string
-	// this maintains the legacy behavior of only splitting on unencoded "/" without specifying UnescapeModeAllCharacters
+	// since in UnescapeModeLegacy, the URL will already have been fully unescaped, if we also split on "%2F"
+	// in this escaping mode we would be double unescaping but in UnescapingModeAllCharacters, we still do as the
+	// path is the RawPath (i.e. unescaped). That does mean that the behavior of this function will change its default
+	// behavior when the UnescapingModeDefault gets changed from UnescapingModeLegacy to UnescapingModeAllExceptReserved
 	if s.unescapingMode == UnescapingModeAllCharacters {
 		components = encodedPathSplitter.Split(path[1:], -1)
 	} else {

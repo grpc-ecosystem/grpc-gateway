@@ -437,7 +437,8 @@ Alternatively, see the section on remotely managed plugin versions below.
    to differentiate the different operations. So in the above example, the 2nd path would become
    `/v1/{name_1=organizations/*}`.  This can also cause OpenAPI clients to URL encode the "/" that is
    part of the path parameter as that is what OpenAPI defines in the specification.  To allow gRPC gateway to  
-   accept the URL encoded slash and still route the request, use the UnescapingModeAllCharacters. See 
+   accept the URL encoded slash and still route the request, use the UnescapingModeAllCharacters or  
+   UnescapingModeLegacy (which is the default currently though may change in future versions). See 
    [Customizing Your Gateway](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_your_gateway/) 
    for more information.
 
