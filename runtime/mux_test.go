@@ -397,6 +397,27 @@ func TestMuxServeHTTP(t *testing.T) {
 					method: "GET",
 					ops: []int{
 						int(utilities.OpLitPush), 0,
+						int(utilities.OpPush), 0,
+						int(utilities.OpConcatN), 1,
+						int(utilities.OpCapture), 1,
+						int(utilities.OpLitPush), 2},
+					pool: []string{"foo", "id", "bar"},
+				},
+			},
+			reqMethod: "GET",
+			reqPath:   "/foo/success%2fwith%2Fspace/bar",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:     http.StatusNotFound,
+			unescapingMode: runtime.UnescapingModeLegacy,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops: []int{
+						int(utilities.OpLitPush), 0,
 						int(utilities.OpPushM), 0,
 						int(utilities.OpConcatN), 1,
 						int(utilities.OpCapture), 1,
