@@ -1,10 +1,13 @@
 package genopenapi
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"math"
+	"os"
 	"reflect"
 	"strings"
 	"testing"
@@ -56,6 +59,33 @@ func reqFromFile(f *descriptor.File) *pluginpb.CodeGeneratorRequest {
 		},
 		FileToGenerate: []string{f.GetName()},
 	}
+}
+
+// captureStderr executes the given function and returns the full string of what
+// was written to os.Stderr during execution and any error the function may have returned
+func captureStderr(f func() error) (string, error) {
+	old := os.Stderr // keep backup of the real stderr
+	r, w, err := os.Pipe()
+	if err != nil {
+		return "", err
+	}
+	os.Stderr = w
+
+	outC := make(chan string)
+	// copy the output in a separate goroutine so printing can't block indefinitely
+	go func() {
+		var buf bytes.Buffer
+		_, _ = io.Copy(&buf, r)
+		outC <- buf.String()
+	}()
+
+	// calling function which stderr we are going to capture:
+	err = f()
+
+	// back to normal state
+	_ = w.Close()
+	os.Stderr = old // restoring the real stderr
+	return <-outC, err
 }
 
 func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
@@ -198,7 +228,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 	for _, test := range tests {
 		reg := descriptor.NewRegistry()
 		reg.SetEnumsAsInts(true)
-		msgs := []*descriptor.Message{}
+		var msgs []*descriptor.Message
 		for _, msgdesc := range test.MsgDescs {
 			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
 		}
@@ -1519,7 +1549,7 @@ func TestApplyTemplateHeaders(t *testing.T) {
 	}
 	openapiOperation := openapi_options.Operation{
 		Responses: map[string]*openapi_options.Response{
-			"200": &openapi_options.Response{
+			"200": {
 				Description: "Testing Headers",
 				Headers: map[string]*openapi_options.Header{
 					"string": {
@@ -2702,17 +2732,17 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 				return
 			}
 
-			if _, ok := result.Paths["/v1/{parent=publishers/*}/books"].Post.Responses["200"]; !ok {
-				t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", tt.args.file, `result.Paths["/v1/{parent=publishers/*}/books"].Post.Responses["200"]`)
+			if _, ok := result.Paths["/v1/{parent}/books"].Post.Responses["200"]; !ok {
+				t.Errorf("applyTemplate(%#v).%s = expected 200 response to be defined", tt.args.file, `result.Paths["/v1/{parent}/books"].Post.Responses["200"]`)
 			} else {
 
-				if want, got, name := 3, len(result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters), `len(result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters)`; !reflect.DeepEqual(got, want) {
+				if want, got, name := 3, len(result.Paths["/v1/{parent}/books"].Post.Parameters), `len(result.Paths["/v1/{parent}/books"].Post.Parameters)`; !reflect.DeepEqual(got, want) {
 					t.Errorf("applyTemplate(%#v).%s = %d want to be %d", tt.args.file, name, got, want)
 				}
 
 				for i, want := range tt.want {
-					p := result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[i]
-					if got, name := (paramOut{p.Name, p.In, p.Required}), `result.Paths["/v1/{parent=publishers/*}/books"].Post.Parameters[0]`; !reflect.DeepEqual(got, want) {
+					p := result.Paths["/v1/{parent}/books"].Post.Parameters[i]
+					if got, name := (paramOut{p.Name, p.In, p.Required}), `result.Paths["/v1/{parent}/books"].Post.Parameters[0]`; !reflect.DeepEqual(got, want) {
 						t.Errorf("applyTemplate(%#v).%s = %v want to be %v", tt.args.file, name, got, want)
 					}
 				}
@@ -3045,16 +3075,16 @@ func TestTemplateToOpenAPIPath(t *testing.T) {
 		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/{test}"},
 		{"/{test1}/{test2}", "/{test1}/{test2}"},
 		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
-		{"/{name=prefix/*}", "/{name=prefix/*}"},
-		{"/{name=prefix1/*/prefix2/*}", "/{name=prefix1/*/prefix2/*}"},
-		{"/{user.name=prefix/*}", "/{user.name=prefix/*}"},
-		{"/{user.name=prefix1/*/prefix2/*}", "/{user.name=prefix1/*/prefix2/*}"},
-		{"/{parent=prefix/*}/children", "/{parent=prefix/*}/children"},
-		{"/{name=prefix/*}:customMethod", "/{name=prefix/*}:customMethod"},
-		{"/{name=prefix1/*/prefix2/*}:customMethod", "/{name=prefix1/*/prefix2/*}:customMethod"},
-		{"/{user.name=prefix/*}:customMethod", "/{user.name=prefix/*}:customMethod"},
-		{"/{user.name=prefix1/*/prefix2/*}:customMethod", "/{user.name=prefix1/*/prefix2/*}:customMethod"},
-		{"/{parent=prefix/*}/children:customMethod", "/{parent=prefix/*}/children:customMethod"},
+		{"/{name=prefix/*}", "/{name}"},
+		{"/{name=prefix1/*/prefix2/*}", "/{name}"},
+		{"/{user.name=prefix/*}", "/{user.name}"},
+		{"/{user.name=prefix1/*/prefix2/*}", "/{user.name}"},
+		{"/{parent=prefix/*}/children", "/{parent}/children"},
+		{"/{name=prefix/*}:customMethod", "/{name}:customMethod"},
+		{"/{name=prefix1/*/prefix2/*}:customMethod", "/{name}:customMethod"},
+		{"/{user.name=prefix/*}:customMethod", "/{user.name}:customMethod"},
+		{"/{user.name=prefix1/*/prefix2/*}:customMethod", "/{user.name}:customMethod"},
+		{"/{parent=prefix/*}/children:customMethod", "/{parent}/children:customMethod"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
@@ -3178,6 +3208,38 @@ func TestResolveFullyQualifiedNameToOpenAPIName(t *testing.T) {
 	}
 }
 
+func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) string {
+	return partsToOpenAPIPath(templateToParts(path, reg, fields, msgs))
+}
+
+func templateToRegexpMap(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) map[string]string {
+	return partsToRegexpMap(templateToParts(path, reg, fields, msgs))
+}
+
+func TestFQMNToRegexpMap(t *testing.T) {
+	var tests = []struct {
+		input    string
+		expected map[string]string
+	}{
+		{"/test", map[string]string{}},
+		{"/{test}", map[string]string{}},
+		{"/{test" + pathParamUniqueSuffixDeliminator + "1=prefix/*}", map[string]string{"test" + pathParamUniqueSuffixDeliminator + "1": "prefix/[^/]+"}},
+		{"/{test=prefix/that/has/multiple/parts/to/it/**}", map[string]string{"test": "prefix/that/has/multiple/parts/to/it/.+"}},
+		{"/{test1=organizations/*}/{test2=divisions/*}", map[string]string{
+			"test1": "organizations/[^/]+",
+			"test2": "divisions/[^/]+",
+		}},
+		{"/v1/{name=projects/*/topics/*}:delete", map[string]string{"name": "projects/[^/]+/topics/[^/]+"}},
+	}
+	reg := descriptor.NewRegistry()
+	for _, data := range tests {
+		actual := templateToRegexpMap(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		if !reflect.DeepEqual(data.expected, actual) {
+			t.Errorf("Expected partsToRegexpMap(%v) = %v, actual: %v", data.input, data.expected, actual)
+		}
+	}
+}
+
 func TestFQMNtoOpenAPIName(t *testing.T) {
 	var tests = []struct {
 		input    string
@@ -3189,6 +3251,7 @@ func TestFQMNtoOpenAPIName(t *testing.T) {
 		{"/{test=prefix/that/has/multiple/parts/to/it/*}", "/{test}"},
 		{"/{test1}/{test2}", "/{test1}/{test2}"},
 		{"/{test1}/{test2}/", "/{test1}/{test2}/"},
+		{"/v1/{name=tests/*}/tests", "/v1/{name}/tests"},
 	}
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
@@ -4776,6 +4839,447 @@ func TestTemplateWithoutErrorDefinition(t *testing.T) {
 
 	if _, ok := result.Definitions[refName]; !ok {
 		t.Errorf("default Error response with reflink '%v', but its definition was not found", refName)
+	}
+}
+
+func TestTemplateWithInvalidDuplicateOperations(t *testing.T) {
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name:  proto.String("ExampleMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{},
+	}
+	meth1 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Method1"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	meth2 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Method2"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc1 := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("Service1"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth1, meth2},
+	}
+
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("service1.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc1},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc1,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth1,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=organizations/*}/roles",
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+					{
+						MethodDescriptorProto: meth2,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=users/*}/roles",
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Errorf("failed to reg.Load(): %v", err)
+		return
+	}
+	if stdErr, err := captureStderr(func() error {
+		swagger, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+		if opid := swagger.Paths["/v1/{name}/roles"].Get.OperationID; opid != "Service1_Method2" {
+			t.Errorf("Swagger should use last in wins for the service methods: %s", opid)
+		}
+		return err
+	}); !strings.Contains(stdErr, "Duplicate mapping for path GET /v1/{name}/roles") {
+		t.Errorf("Error for duplicate mapping was incorrect: %s", stdErr)
+	} else if err != nil {
+		t.Error(err)
+	}
+}
+
+func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
+	fieldType := descriptorpb.FieldDescriptorProto_TYPE_STRING
+	field1 := &descriptorpb.FieldDescriptorProto{
+		Name:   proto.String("name"),
+		Number: proto.Int32(1),
+		Type:   &fieldType,
+	}
+	field2 := &descriptorpb.FieldDescriptorProto{
+		Name:   proto.String("role"),
+		Number: proto.Int32(2),
+		Type:   &fieldType,
+	}
+	msgdesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			field1,
+			field2,
+		},
+	}
+	meth1 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Method1"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	meth2 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Method2"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc1 := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("Service1"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth1, meth2},
+	}
+	meth3 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Method3"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	meth4 := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Method4"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("ExampleMessage"),
+	}
+	svc2 := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("Service2"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth3, meth4},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgdesc,
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("service1.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgdesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc1, svc2},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc1,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth1,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=organizations/*}/{role=roles/*}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field2,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "role",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+					{
+						MethodDescriptorProto: meth2,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=users/*}/{role=roles/*}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field2,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "role",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+				},
+			},
+			{
+				ServiceDescriptorProto: svc2,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth3,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=users/*}/roles",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+					{
+						MethodDescriptorProto: meth4,
+						RequestType:           msg,
+						ResponseType:          msg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=groups/*}/{role=roles/*}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field2,
+											Message:              msg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "role",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Fatalf("failed to reg.Load(): %v", err)
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	if got, want := len(result.Paths), 4; got != want {
+		t.Fatalf("Results path length differed, got %d want %d", got, want)
+	}
+
+	firstOp := result.Paths["/v1/{name}/{role}"].Get
+	if got, want := firstOp.OperationID, "Service1_Method1"; got != want {
+		t.Fatalf("First operation id differed, got %s want %s", got, want)
+	}
+	if got, want := len(firstOp.Parameters), 3; got != want {
+		t.Fatalf("First operation params length differed, got %d want %d", got, want)
+	}
+	if got, want := firstOp.Parameters[0].Name, "name"; got != want {
+		t.Fatalf("First operation first param name differed, got %s want %s", got, want)
+	}
+	if got, want := firstOp.Parameters[0].Pattern, "organizations/[^/]+"; got != want {
+		t.Fatalf("First operation first param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := firstOp.Parameters[1].Name, "role"; got != want {
+		t.Fatalf("First operation second param name differed, got %s want %s", got, want)
+	}
+	if got, want := firstOp.Parameters[1].Pattern, "roles/[^/]+"; got != want {
+		t.Fatalf("First operation second param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := firstOp.Parameters[2].In, "body"; got != want {
+		t.Fatalf("First operation third param 'in' differed, got %s want %s", got, want)
+	}
+
+	secondOp := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"1}/{role}"].Get
+	if got, want := secondOp.OperationID, "Service1_Method2"; got != want {
+		t.Fatalf("Second operation id differed, got %s want %s", got, want)
+	}
+	if got, want := len(secondOp.Parameters), 3; got != want {
+		t.Fatalf("Second operation params length differed, got %d want %d", got, want)
+	}
+	if got, want := secondOp.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"1"; got != want {
+		t.Fatalf("Second operation first param name differed, got %s want %s", got, want)
+	}
+	if got, want := secondOp.Parameters[0].Pattern, "users/[^/]+"; got != want {
+		t.Fatalf("Second operation first param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := secondOp.Parameters[1].Name, "role"; got != want {
+		t.Fatalf("Second operation second param name differed, got %s want %s", got, want)
+	}
+	if got, want := secondOp.Parameters[1].Pattern, "roles/[^/]+"; got != want {
+		t.Fatalf("Second operation second param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := secondOp.Parameters[2].In, "body"; got != want {
+		t.Fatalf("Second operation third param 'in' differed, got %s want %s", got, want)
+	}
+
+	thirdOp := result.Paths["/v1/{name}/roles"].Get
+	if got, want := thirdOp.OperationID, "Service2_Method3"; got != want {
+		t.Fatalf("Third operation id differed, got %s want %s", got, want)
+	}
+	if got, want := len(thirdOp.Parameters), 2; got != want {
+		t.Fatalf("Third operation params length differed, got %d want %d", got, want)
+	}
+	if got, want := thirdOp.Parameters[0].Name, "name"; got != want {
+		t.Fatalf("Third operation first param name differed, got %s want %s", got, want)
+	}
+	if got, want := thirdOp.Parameters[0].Pattern, "users/[^/]+"; got != want {
+		t.Fatalf("Third operation first param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := thirdOp.Parameters[1].In, "body"; got != want {
+		t.Fatalf("Third operation second param 'in' differed, got %s want %s", got, want)
+	}
+
+	forthOp := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"2}/{role}"].Get
+	if got, want := forthOp.OperationID, "Service2_Method4"; got != want {
+		t.Fatalf("Fourth operation id differed, got %s want %s", got, want)
+	}
+	if got, want := len(forthOp.Parameters), 3; got != want {
+		t.Fatalf("Fourth operation params length differed, got %d want %d", got, want)
+	}
+	if got, want := forthOp.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"2"; got != want {
+		t.Fatalf("Fourth operation first param name differed, got %s want %s", got, want)
+	}
+	if got, want := forthOp.Parameters[0].Pattern, "groups/[^/]+"; got != want {
+		t.Fatalf("Fourth operation first param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := forthOp.Parameters[1].Name, "role"; got != want {
+		t.Fatalf("Fourth operation second param name differed, got %s want %s", got, want)
+	}
+	if got, want := forthOp.Parameters[1].Pattern, "roles/[^/]+"; got != want {
+		t.Fatalf("Fourth operation second param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := forthOp.Parameters[2].In, "body"; got != want {
+		t.Fatalf("Fourth operation second param 'in' differed, got %s want %s", got, want)
 	}
 }
 

@@ -28,6 +28,15 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
+//  The OpenAPI specification does not allow for more than one endpoint with the same HTTP method and path.
+//  This prevents multiple gRPC service methods from sharing the same stripped version of the path and method.
+//  For example: `GET /v1/{name=organizations/*}/roles` and `GET /v1/{name=users/*}/roles` both get stripped to `GET /v1/{name}/roles`.
+//  We must make the URL unique by adding a suffix and an incrementing index to each path parameter
+//  to differentiate the endpoints.
+//  Since path parameter names do not affect the request contents (i.e. they're replaced in the path)
+//  this will be hidden from the real grpc gateway consumer.
+const pathParamUniqueSuffixDeliminator = "_"
+
 // wktSchemas are the schemas of well-known-types.
 // The schemas must match with the behavior of the JSON unmarshaler in
 // https://github.com/protocolbuffers/protobuf-go/blob/v1.25.0/encoding/protojson/well_known_types.go
@@ -244,6 +253,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			Type:        schema.Type,
 			Items:       schema.Items,
 			Format:      schema.Format,
+			Pattern:     schema.Pattern,
 			Required:    required,
 		}
 		if param.Type == "array" {
@@ -747,10 +757,11 @@ func resolveFullyQualifiedNameToOpenAPINames(messages []string, namingStrategy s
 	return strategyFn(messages)
 }
 
-var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*).*}")
+var canRegexp = regexp.MustCompile("{([a-zA-Z][a-zA-Z0-9_.]*)([^}]*)}")
 
-// OpenAPI expects paths of the form /path/{string_value} but gRPC-Gateway paths are expected to be of the form /path/{string_value=strprefix/*}. This should reformat it correctly.
-func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) string {
+// templateToParts will split a URL template as defined by https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
+// into a string slice with each part as an element of the slice for use by `partsToOpenAPIPath` and `partsToRegexpMap`.
+func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) []string {
 	// It seems like the right thing to do here is to just use
 	// strings.Split(path, "/") but that breaks badly when you hit a url like
 	// /{my_field=prefix/*}/ and end up with 2 sections representing my_field.
@@ -802,28 +813,51 @@ func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*desc
 	// Now append the last element to parts
 	parts = append(parts, buffer)
 
-	// Parts is now an array of segments of the path. Interestingly, since the
-	// syntax for this subsection CAN be handled by a regexp since it has no
-	// memory.
+	return parts
+}
+
+// partsToOpenAPIPath converts each path part of the form /path/{string_value=strprefix/*} which is defined in
+// https://github.com/googleapis/googleapis/blob/master/google/api/http.proto to the OpenAPI expected form /path/{string_value}.
+// For example this would replace the path segment of "{foo=bar/*}" with "{foo}" or "prefix{bang=bash/**}" with "prefix{bang}".
+// OpenAPI 2 only allows simple path parameters with the constraints on that parameter specified in the OpenAPI
+// schema's "pattern" instead of in the path parameter itself.
+func partsToOpenAPIPath(parts []string) string {
 	for index, part := range parts {
-		// If part is a resource name such as "parent", "name", "user.name", the format info must be retained.
-		prefix := canRegexp.ReplaceAllString(part, "$1")
-		if isResourceName(prefix) {
-			continue
-		}
 		parts[index] = canRegexp.ReplaceAllString(part, "{$1}")
 	}
-
 	return strings.Join(parts, "/")
 }
 
-func isResourceName(prefix string) bool {
-	words := strings.Split(prefix, ".")
-	l := len(words)
-	field := words[l-1]
-	words = strings.Split(field, ":")
-	field = words[0]
-	return field == "parent" || field == "name"
+// partsToRegexpMap returns a map of parameter name to ECMA 262 patterns
+// which is what the "pattern" field on an OpenAPI parameter expects.
+// See https://swagger.io/specification/v2/ (Parameter Object) and
+// https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.2.3.
+// The expression is generated based on expressions defined by https://github.com/googleapis/googleapis/blob/master/google/api/http.proto
+// "Path Template Syntax" section which allow for a "param_name=foobar/*/bang/**" style expressions inside
+// the path parameter placeholders that indicate constraints on the values of those parameters.
+// This function will scan the split parts of a path template for parameters and
+// outputs a map of the name of the parameter to a ECMA regular expression.  See the http.proto file for descriptions
+// of the supported syntax. This function will ignore any path parameters that don't contain a "=" after the
+// parameter name.  For supported parameters, we assume "*" represent all characters except "/" as it's
+// intended to match a single path element and we assume "**" matches any character as it's intended to match multiple
+// path elements.
+// For example "{name=organizations/*/roles/*}" would produce the regular expression for the "name" parameter of
+// "organizations/[^/]+/roles/[^/]+" or "{bar=bing/*/bang/**}" would produce the regular expression for the "bar"
+// parameter of "bing/[^/]+/bang/.+".
+func partsToRegexpMap(parts []string) map[string]string {
+	regExps := make(map[string]string)
+	for _, part := range parts {
+		if submatch := canRegexp.FindStringSubmatch(part); len(submatch) > 2 {
+			if strings.HasPrefix(submatch[2], "=") { // this part matches the standard and should be made into a regular expression
+				// assume the string's characters other than "**" and "*" are literals (not necessarily a good assumption 100% of the times, but it will support most use cases)
+				regex := submatch[2][1:]
+				regex = strings.ReplaceAll(regex, "**", ".+")   // ** implies any character including "/"
+				regex = strings.ReplaceAll(regex, "*", "[^/]+") // * implies any character except "/"
+				regExps[submatch[1]] = regex
+			}
+		}
+	}
+	return regExps
 }
 
 func renderServiceTags(services []*descriptor.Service) []openapiTagObject {
@@ -864,8 +898,13 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 		}
 		for methIdx, meth := range svc.Methods {
 			for bIdx, b := range meth.Bindings {
+				operationFunc := operationForMethod(b.HTTPMethod)
 				// Iterate over all the OpenAPI parameters
 				parameters := openapiParametersObject{}
+				// split the path template into its parts
+				parts := templateToParts(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)
+				// extract any constraints specified in the path placeholders into ECMA regular expressions
+				pathParamRegexpMap := partsToRegexpMap(parts)
 				for _, parameter := range b.PathParams {
 
 					var paramType, paramFormat, desc, collectionFormat, defaultValue string
@@ -936,6 +975,10 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					if reg.GetUseJSONNamesForFields() {
 						parameterString = lowerCamelCase(parameterString, meth.RequestType.Fields, msgs)
 					}
+					var pattern string
+					if regExp, ok := pathParamRegexpMap[parameterString]; ok {
+						pattern = regExp
+					}
 					parameters = append(parameters, openapiParameterObject{
 						Name:        parameterString,
 						Description: desc,
@@ -949,6 +992,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						Items:            items,
 						CollectionFormat: collectionFormat,
 						MinItems:         minItems,
+						Pattern:          pattern,
 					})
 				}
 				// Now check if there is a body parameter
@@ -1020,9 +1064,50 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 				}
 				parameters = append(parameters, queryParams...)
 
-				pathItemObject, ok := paths[templateToOpenAPIPath(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)]
+				path := partsToOpenAPIPath(parts)
+				pathItemObject, ok := paths[path]
 				if !ok {
 					pathItemObject = openapiPathItemObject{}
+				} else {
+					// handle case where we have an existing mapping for the same path and method
+					existingOperationObject := operationFunc(&pathItemObject)
+					if existingOperationObject != nil {
+						var firstPathParameter *openapiParameterObject
+						var firstParamIndex int
+						for index, param := range parameters {
+							if param.In == "path" {
+								firstPathParameter = &param
+								firstParamIndex = index
+								break
+							}
+						}
+						if firstPathParameter == nil {
+							// Without a path parameter, there is nothing to vary to support multiple mappings of the same path/method.
+							// Previously this did not log an error and only overwrote the mapping, we now log the error but
+							// still overwrite the mapping
+							glog.Errorf("Duplicate mapping for path %s %s", b.HTTPMethod, path)
+						} else {
+							newPathCount := 0
+							var newPath string
+							var newPathElement string
+							// Iterate until there is not an existing operation that matches the same escaped path.
+							// Most of the time this will only be a single iteration, but a large API could technically have
+							// a pretty large amount of these if it used similar patterns for all its functions.
+							for existingOperationObject != nil {
+								newPathCount += 1
+								newPathElement = firstPathParameter.Name + pathParamUniqueSuffixDeliminator + strconv.Itoa(newPathCount)
+								newPath = strings.ReplaceAll(path, "{"+firstPathParameter.Name+"}", "{"+newPathElement+"}")
+								if newPathItemObject, ok := paths[newPath]; ok {
+									existingOperationObject = operationFunc(&newPathItemObject)
+								} else {
+									existingOperationObject = nil
+								}
+							}
+							firstPathParameter.Name = newPathElement
+							path = newPath
+							parameters[firstParamIndex] = *firstPathParameter
+						}
+					}
 				}
 
 				methProtoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.ServiceDescriptorProto)(nil)), "Method")
@@ -1247,13 +1332,30 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 				case "PATCH":
 					pathItemObject.Patch = operationObject
 				}
-				paths[templateToOpenAPIPath(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)] = pathItemObject
+				paths[path] = pathItemObject
 			}
 		}
 	}
 
 	// Success! return nil on the error object
 	return nil
+}
+
+func operationForMethod(httpMethod string) func(*openapiPathItemObject) *openapiOperationObject {
+	switch httpMethod {
+	case "GET":
+		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Get }
+	case "POST":
+		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Post }
+	case "PUT":
+		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Put }
+	case "DELETE":
+		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Delete }
+	case "PATCH":
+		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Patch }
+	default:
+		return nil
+	}
 }
 
 // This function is called with a param which contains the entire definition of a method.

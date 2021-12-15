@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/textproto"
+	"regexp"
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
@@ -24,21 +25,25 @@ const (
 	// path string before doing any routing.
 	UnescapingModeLegacy UnescapingMode = iota
 
-	// EscapingTypeExceptReserved unescapes all path parameters except RFC 6570
+	// UnescapingModeAllExceptReserved unescapes all path parameters except RFC 6570
 	// reserved characters.
 	UnescapingModeAllExceptReserved
 
-	// EscapingTypeExceptSlash unescapes URL path parameters except path
-	// seperators, which will be left as "%2F".
+	// UnescapingModeAllExceptSlash unescapes URL path parameters except path
+	// separators, which will be left as "%2F".
 	UnescapingModeAllExceptSlash
 
-	// URL path parameters will be fully decoded.
+	// UnescapingModeAllCharacters unescapes all URL path parameters.
 	UnescapingModeAllCharacters
 
 	// UnescapingModeDefault is the default escaping type.
 	// TODO(v3): default this to UnescapingModeAllExceptReserved per grpc-httpjson-transcoding's
 	// reference implementation
 	UnescapingModeDefault = UnescapingModeLegacy
+)
+
+var (
+	encodedPathSplitter = regexp.MustCompile("(/|%2F)")
 )
 
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
@@ -265,7 +270,16 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		path = r.URL.RawPath
 	}
 
-	components := strings.Split(path[1:], "/")
+	var components []string
+	// since in UnescapeModeLegacy, the URL will already have been fully unescaped, if we also split on "%2F"
+	// in this escaping mode we would be double unescaping but in UnescapingModeAllCharacters, we still do as the
+	// path is the RawPath (i.e. unescaped). That does mean that the behavior of this function will change its default
+	// behavior when the UnescapingModeDefault gets changed from UnescapingModeLegacy to UnescapingModeAllExceptReserved
+	if s.unescapingMode == UnescapingModeAllCharacters {
+		components = encodedPathSplitter.Split(path[1:], -1)
+	} else {
+		components = strings.Split(path[1:], "/")
+	}
 
 	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && s.isPathLengthFallback(r) {
 		r.Method = strings.ToUpper(override)
