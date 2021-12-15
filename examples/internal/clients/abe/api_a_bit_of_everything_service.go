@@ -1943,7 +1943,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ct
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/{parent=publishers/*}/books"
+	localVarPath := a.client.cfg.BasePath + "/v1/{parent}/books"
 	localVarPath = strings.Replace(localVarPath, "{"+"parent"+"}", fmt.Sprintf("%v", parent), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -4080,7 +4080,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ct
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/{book.name=publishers/*/books/*}"
+	localVarPath := a.client.cfg.BasePath + "/v1/{book.name}"
 	localVarPath = strings.Replace(localVarPath, "{"+"book.name"+"}", fmt.Sprintf("%v", bookName), -1)
 
 	localVarHeaderParams := make(map[string]string)

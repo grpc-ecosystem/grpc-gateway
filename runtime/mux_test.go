@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strconv"
 	"testing"
 
@@ -375,6 +376,48 @@ func TestMuxServeHTTP(t *testing.T) {
 					method: "GET",
 					ops: []int{
 						int(utilities.OpLitPush), 0,
+						int(utilities.OpPush), 0,
+						int(utilities.OpConcatN), 1,
+						int(utilities.OpCapture), 1,
+						int(utilities.OpLitPush), 2},
+					pool: []string{"foo", "id", "bar"},
+				},
+			},
+			reqMethod: "GET",
+			reqPath:   "/foo/success%2fwith%2Fspace/bar",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:     http.StatusNotFound,
+			unescapingMode: runtime.UnescapingModeAllCharacters,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops: []int{
+						int(utilities.OpLitPush), 0,
+						int(utilities.OpPush), 0,
+						int(utilities.OpConcatN), 1,
+						int(utilities.OpCapture), 1,
+						int(utilities.OpLitPush), 2},
+					pool: []string{"foo", "id", "bar"},
+				},
+			},
+			reqMethod: "GET",
+			reqPath:   "/foo/success%2fwith%2Fspace/bar",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:     http.StatusNotFound,
+			unescapingMode: runtime.UnescapingModeLegacy,
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "GET",
+					ops: []int{
+						int(utilities.OpLitPush), 0,
 						int(utilities.OpPushM), 0,
 						int(utilities.OpConcatN), 1,
 						int(utilities.OpCapture), 1,
@@ -390,6 +433,31 @@ func TestMuxServeHTTP(t *testing.T) {
 			respStatus:     http.StatusOK,
 			unescapingMode: runtime.UnescapingModeAllExceptReserved,
 			respContent:    "GET /foo/{id=**}",
+		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "POST",
+					ops: []int{
+						int(utilities.OpLitPush), 0,
+						int(utilities.OpLitPush), 1,
+						int(utilities.OpLitPush), 2,
+						int(utilities.OpPush), 0,
+						int(utilities.OpConcatN), 2,
+						int(utilities.OpCapture), 3,
+					},
+					pool: []string{"api", "v1", "organizations", "name"},
+					verb: "action",
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/api/v1/" + url.QueryEscape("organizations/foo") + ":action",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:     http.StatusOK,
+			unescapingMode: runtime.UnescapingModeAllCharacters,
+			respContent:    "POST /api/v1/{name=organizations/*}:action",
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
@@ -408,15 +476,15 @@ func TestMuxServeHTTP(t *testing.T) {
 						t.Fatalf("runtime.NewPattern(1, %#v, %#v, %q) failed with %v; want success", p.ops, p.pool, p.verb, err)
 					}
 					mux.Handle(p.method, pat, func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
-						fmt.Fprintf(w, "%s %s", p.method, pat.String())
+						_, _ = fmt.Fprintf(w, "%s %s", p.method, pat.String())
 					})
 				}(p)
 			}
 
-			url := fmt.Sprintf("http://host.example%s", spec.reqPath)
-			r, err := http.NewRequest(spec.reqMethod, url, bytes.NewReader(nil))
+			reqUrl := fmt.Sprintf("https://host.example%s", spec.reqPath)
+			r, err := http.NewRequest(spec.reqMethod, reqUrl, bytes.NewReader(nil))
 			if err != nil {
-				t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", spec.reqMethod, url, err)
+				t.Fatalf("http.NewRequest(%q, %q, nil) failed with %v; want success", spec.reqMethod, reqUrl, err)
 			}
 			for name, value := range spec.headers {
 				r.Header.Set(name, value)
