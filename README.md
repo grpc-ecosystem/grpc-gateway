@@ -273,7 +273,7 @@ Alternatively, see the section on remotely managed plugin versions below.
 
    ```
    google/api/annotations.proto
-   google/api/field_behaviour.proto
+   google/api/field_behavior.proto
    google/api/http.proto
    google/api/httpbody.proto
    ```
