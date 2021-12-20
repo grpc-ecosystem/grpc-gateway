@@ -341,6 +341,7 @@ Alternatively, see the section on remotely managed plugin versions below.
      "github.com/golang/glog"
      "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
      "google.golang.org/grpc"
+     "google.golang.org/grpc/credentials/insecure"
 
      gw "github.com/yourorg/yourrepo/proto/gen/go/your/service/v1/your_service"  // Update
    )
@@ -359,7 +360,7 @@ Alternatively, see the section on remotely managed plugin versions below.
      // Register gRPC server endpoint
      // Note: Make sure the gRPC server is running properly and accessible
      mux := runtime.NewServeMux()
-     opts := []grpc.DialOption{grpc.WithInsecure()}
+     opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
      err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)
      if err != nil {
        return err
