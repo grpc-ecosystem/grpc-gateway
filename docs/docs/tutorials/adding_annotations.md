@@ -125,6 +125,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	helloworldpb "github.com/myuser/myrepo/proto/helloworld"
 )
@@ -164,7 +165,7 @@ func main() {
 		context.Background(),
 		"0.0.0.0:8080",
 		grpc.WithBlock(),
-		grpc.WithInsecure(),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
 		log.Fatalln("Failed to dial server:", err)
