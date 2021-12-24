@@ -9,7 +9,7 @@ parent: Mapping
 
 The HTTP PATCH method allows a resource to be partially updated.
 
-If a binding is mapped to patch and the request message has exactly one FieldMask message in it, additional code is rendered for the gateway handler that will populate the FieldMask based on the request body.
+If a binding is mapped to patch and the request message has exactly one FieldMask message in it, additional code is rendered for the gateway handler that will populate the FieldMask based on the request body. FieldMask is treated as a regular field by the gateway if the request method is not PATCH, or if the HttpRule body is `"*"`
 
 There are two scenarios:
 
