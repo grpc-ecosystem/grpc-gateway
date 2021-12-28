@@ -254,7 +254,7 @@ func (s *ServeMux) HandlePath(meth string, pathPattern string, h HandlerFunc) er
 	return nil
 }
 
-// ServeHTTP dispatches the request to the first handler whose pattern matches to r.Method and r.Path.
+// ServeHTTP dispatches the request to the first handler whose pattern matches to r.Method and r.URL.Path.
 func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
