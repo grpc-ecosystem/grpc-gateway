@@ -62,6 +62,7 @@ def _run_proto_gen_openapi(
         use_go_templates,
         disable_default_errors,
         enums_as_ints,
+        omit_enum_default_value,
         simple_operation_ids,
         proto3_optional_nullable,
         openapi_configuration,
@@ -111,6 +112,9 @@ def _run_proto_gen_openapi(
 
     if enums_as_ints:
         args.add("--openapiv2_opt", "enums_as_ints=true")
+
+    if omit_enum_default_value:
+        args.add("--openapiv2_opt", "omit_enum_default_value=true")
 
     if proto3_optional_nullable:
         args.add("--openapiv2_opt", "proto3_optional_nullable=true")
@@ -209,6 +213,7 @@ def _proto_gen_openapi_impl(ctx):
                     use_go_templates = ctx.attr.use_go_templates,
                     disable_default_errors = ctx.attr.disable_default_errors,
                     enums_as_ints = ctx.attr.enums_as_ints,
+                    omit_enum_default_value = ctx.attr.omit_enum_default_value,
                     simple_operation_ids = ctx.attr.simple_operation_ids,
                     proto3_optional_nullable = ctx.attr.proto3_optional_nullable,
                     openapi_configuration = ctx.file.openapi_configuration,
@@ -290,6 +295,11 @@ protoc_gen_openapiv2 = rule(
             default = False,
             mandatory = False,
             doc = "whether to render enum values as integers, as opposed to string values",
+        ),
+        "omit_enum_default_value": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, omit default enum value",
         ),
         "simple_operation_ids": attr.bool(
             default = False,
