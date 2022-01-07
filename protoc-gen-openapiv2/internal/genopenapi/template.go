@@ -103,24 +103,32 @@ var wktSchemas = map[string]schemaCore{
 	},
 }
 
-func listEnumNames(enum *descriptor.Enum) (names []string) {
+func listEnumNames(reg *descriptor.Registry, enum *descriptor.Enum) (names []string) {
 	for _, value := range enum.GetValue() {
+		if reg.GetOmitEnumDefaultValue() && value.GetNumber() == 0 {
+			continue
+		}
 		names = append(names, value.GetName())
 	}
 	return names
 }
 
-func listEnumNumbers(enum *descriptor.Enum) (numbers []string) {
+func listEnumNumbers(reg *descriptor.Registry, enum *descriptor.Enum) (numbers []string) {
 	for _, value := range enum.GetValue() {
+		if reg.GetOmitEnumDefaultValue() && value.GetNumber() == 0 {
+			continue
+		}
 		numbers = append(numbers, strconv.Itoa(int(value.GetNumber())))
 	}
 	return
 }
 
-func getEnumDefault(enum *descriptor.Enum) string {
-	for _, value := range enum.GetValue() {
-		if value.GetNumber() == 0 {
-			return value.GetName()
+func getEnumDefault(reg *descriptor.Registry, enum *descriptor.Enum) string {
+	if !reg.GetOmitEnumDefaultValue() {
+		for _, value := range enum.GetValue() {
+			if value.GetNumber() == 0 {
+				return value.GetName()
+			}
 		}
 	}
 	return ""
@@ -270,20 +278,22 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			if items != nil { // array
 				param.Items = &openapiItemsObject{
 					Type: "string",
-					Enum: listEnumNames(enum),
+					Enum: listEnumNames(reg, enum),
 				}
 				if reg.GetEnumsAsInts() {
 					param.Items.Type = "integer"
-					param.Items.Enum = listEnumNumbers(enum)
+					param.Items.Enum = listEnumNumbers(reg, enum)
 				}
 			} else {
 				param.Type = "string"
-				param.Enum = listEnumNames(enum)
-				param.Default = getEnumDefault(enum)
+				param.Enum = listEnumNames(reg, enum)
+				param.Default = getEnumDefault(reg, enum)
 				if reg.GetEnumsAsInts() {
 					param.Type = "integer"
-					param.Enum = listEnumNumbers(enum)
-					param.Default = "0"
+					param.Enum = listEnumNumbers(reg, enum)
+					if !reg.GetOmitEnumDefaultValue() {
+						param.Default = "0"
+					}
 				}
 			}
 			valueComments := enumValueProtoComments(reg, enum)
@@ -687,8 +697,8 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 		enumComments := protoComments(reg, enum.File, enum.Outers, "EnumType", int32(enum.Index))
 
 		// it may be necessary to sort the result of the GetValue function.
-		enumNames := listEnumNames(enum)
-		defaultValue := getEnumDefault(enum)
+		enumNames := listEnumNames(reg, enum)
+		defaultValue := getEnumDefault(reg, enum)
 		valueComments := enumValueProtoComments(reg, enum)
 		if valueComments != "" {
 			enumComments = strings.TrimLeft(enumComments+"\n\n "+valueComments, "\n")
@@ -704,7 +714,7 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 			enumSchemaObject.Type = "integer"
 			enumSchemaObject.Format = "int32"
 			enumSchemaObject.Default = "0"
-			enumSchemaObject.Enum = listEnumNumbers(enum)
+			enumSchemaObject.Enum = listEnumNumbers(reg, enum)
 		}
 		if err := updateOpenAPIDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
 			panic(err)
@@ -932,11 +942,11 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						}
 						paramType = "string"
 						paramFormat = ""
-						enumNames = listEnumNames(enum)
+						enumNames = listEnumNames(reg, enum)
 						if reg.GetEnumsAsInts() {
 							paramType = "integer"
 							paramFormat = ""
-							enumNames = listEnumNumbers(enum)
+							enumNames = listEnumNumbers(reg, enum)
 						}
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
