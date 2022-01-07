@@ -78,6 +78,9 @@ type Registry struct {
 	// enumsAsInts render enum as integer, as opposed to string
 	enumsAsInts bool
 
+	// omitEnumDefaultValue omits default value of enum
+	omitEnumDefaultValue bool
+
 	// disableDefaultErrors disables the generation of the default error types.
 	// This is useful for users who have defined custom error handling.
 	disableDefaultErrors bool
@@ -556,6 +559,16 @@ func (r *Registry) SetEnumsAsInts(enumsAsInts bool) {
 // GetEnumsAsInts returns enumsAsInts
 func (r *Registry) GetEnumsAsInts() bool {
 	return r.enumsAsInts
+}
+
+// SetOmitEnumDefaultValue sets omitEnumDefaultValue
+func (r *Registry) SetOmitEnumDefaultValue(omit bool) {
+	r.omitEnumDefaultValue = omit
+}
+
+// GetOmitEnumDefaultValue returns omitEnumDefaultValue
+func (r *Registry) GetOmitEnumDefaultValue() bool {
+	return r.omitEnumDefaultValue
 }
 
 // SetDisableDefaultErrors sets disableDefaultErrors
