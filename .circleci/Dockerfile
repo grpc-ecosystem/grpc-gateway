@@ -1,4 +1,4 @@
-FROM golang:1.17.5
+FROM golang:1.17.6
 
 # Warm apt cache and install dependencies
 # bzip2 is required by the node_tests (to extract its dependencies).
