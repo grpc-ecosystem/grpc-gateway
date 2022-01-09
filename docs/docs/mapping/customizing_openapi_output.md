@@ -254,4 +254,33 @@ To generate enums as integers instead of strings, use `enums_as_ints`.
     "default": 0
 },
 ```
+
+### Omitting the default value of enums
+
+If you define enum types with non default value such as declaring 0 value with UNKNOWN and want to omit the default value from generated swagger file, use `omit_enum_default_value`.
+This option also applies if enums_as_ints option is enalbled to generate enums as integer.
+
+`opt: omit_enum_default_value=true` will result in:
+
+Input Example:
+```
+enum enumValue {
+    UNKNOWN = 0;
+    FOO = 1;
+}
+```
+
+Output json:
+```json
+{
+    "name": "enumValue",
+    "description": " - Example enums",
+    "in": "query",
+    "required": false,
+    "type": "string",
+    "enum": [
+        "FOO"
+    ]
+},
+```
 {% endraw %}
