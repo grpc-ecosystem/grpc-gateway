@@ -1107,9 +1107,11 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 								newPathCount += 1
 								newPathElement = firstPathParameter.Name + pathParamUniqueSuffixDeliminator + strconv.Itoa(newPathCount)
 								newPath = strings.ReplaceAll(path, "{"+firstPathParameter.Name+"}", "{"+newPathElement+"}")
-								if newPathItemObject, ok := paths[newPath]; ok {
+								if newPathItemObject, ok := paths[newPath]; ok &&
+									firstPathParameter.Pattern == existingOperationObject.Parameters[firstParamIndex].Pattern {
 									existingOperationObject = operationFunc(&newPathItemObject)
 								} else {
+									pathItemObject = newPathItemObject
 									existingOperationObject = nil
 								}
 							}
