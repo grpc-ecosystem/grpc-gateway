@@ -1113,6 +1113,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 									existingOperationObject = nil
 								}
 							}
+							// update the pathItemObject we are adding to with the new path
 							pathItemObject = paths[newPath]
 							firstPathParameter.Name = newPathElement
 							path = newPath
