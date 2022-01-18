@@ -5130,6 +5130,314 @@ func TestTemplateWithInvalidDuplicateOperations(t *testing.T) {
 		t.Error(err)
 	}
 }
+func TestSingleServiceTemplateWithDuplicateHttp1Operations(t *testing.T) {
+	fieldType := descriptorpb.FieldDescriptorProto_TYPE_STRING
+	field1 := &descriptorpb.FieldDescriptorProto{
+		Name:   proto.String("name"),
+		Number: proto.Int32(1),
+		Type:   &fieldType,
+	}
+
+	getFooMsgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("GetFooRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			field1,
+		},
+	}
+	getFooMsg := &descriptor.Message{
+		DescriptorProto: getFooMsgDesc,
+	}
+	deleteFooMsgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("DeleteFooRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			field1,
+		},
+	}
+	deleteFooMsg := &descriptor.Message{
+		DescriptorProto: deleteFooMsgDesc,
+	}
+	getFoo := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("GetFoo"),
+		InputType:  proto.String("GetFooRequest"),
+		OutputType: proto.String("EmptyMessage"),
+	}
+	deleteFoo := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("DeleteFoo"),
+		InputType:  proto.String("DeleteFooRequest"),
+		OutputType: proto.String("EmptyMessage"),
+	}
+
+	getBarMsgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("GetBarRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			field1,
+		},
+	}
+	getBarMsg := &descriptor.Message{
+		DescriptorProto: getBarMsgDesc,
+	}
+	deleteBarMsgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("DeleteBarRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			field1,
+		},
+	}
+	deleteBarMsg := &descriptor.Message{
+		DescriptorProto: deleteBarMsgDesc,
+	}
+	getBar := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("GetBar"),
+		InputType:  proto.String("GetBarRequest"),
+		OutputType: proto.String("EmptyMessage"),
+	}
+	deleteBar := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("DeleteBar"),
+		InputType:  proto.String("DeleteBarRequest"),
+		OutputType: proto.String("EmptyMessage"),
+	}
+
+	svc1 := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("Service1"),
+		Method: []*descriptorpb.MethodDescriptorProto{getFoo, deleteFoo, getBar, deleteBar},
+	}
+
+	emptyMsgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("EmptyMessage"),
+	}
+	emptyMsg := &descriptor.Message{
+		DescriptorProto: emptyMsgDesc,
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("service1.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{getBarMsgDesc, deleteBarMsgDesc, getFooMsgDesc, deleteFooMsgDesc, emptyMsgDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc1},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{getFooMsg, deleteFooMsg, getBarMsg, deleteBarMsg, emptyMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc1,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: getFoo,
+						RequestType:           getFooMsg,
+						ResponseType:          getFooMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=foos/*}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              getFooMsg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+					{
+						MethodDescriptorProto: deleteFoo,
+						RequestType:           deleteFooMsg,
+						ResponseType:          emptyMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "DELETE",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=foos/*}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              deleteFooMsg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+					{
+						MethodDescriptorProto: getBar,
+						RequestType:           getBarMsg,
+						ResponseType:          getBarMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "GET",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=bars/*}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              getBarMsg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+					{
+						MethodDescriptorProto: deleteBar,
+						RequestType:           deleteBarMsg,
+						ResponseType:          emptyMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "DELETE",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=bars/*}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              deleteBarMsg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Fatalf("failed to reg.Load(): %v", err)
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	if got, want := len(result.Paths), 2; got != want {
+		t.Fatalf("Results path length differed, got %d want %d", got, want)
+	}
+
+	firstOpGet := result.Paths["/v1/{name}"].Get
+	if got, want := firstOpGet.OperationID, "Service1_GetFoo"; got != want {
+		t.Fatalf("First operation GET id differed, got %s want %s", got, want)
+	}
+	if got, want := len(firstOpGet.Parameters), 2; got != want {
+		t.Fatalf("First operation GET params length differed, got %d want %d", got, want)
+	}
+	if got, want := firstOpGet.Parameters[0].Name, "name"; got != want {
+		t.Fatalf("First operation GET first param name differed, got %s want %s", got, want)
+	}
+	if got, want := firstOpGet.Parameters[0].Pattern, "foos/[^/]+"; got != want {
+		t.Fatalf("First operation GET first param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := firstOpGet.Parameters[1].In, "body"; got != want {
+		t.Fatalf("First operation GET second param 'in' differed, got %s want %s", got, want)
+	}
+
+	firstOpDelete := result.Paths["/v1/{name}"].Delete
+	if got, want := firstOpDelete.OperationID, "Service1_DeleteFoo"; got != want {
+		t.Fatalf("First operation id DELETE differed, got %s want %s", got, want)
+	}
+	if got, want := len(firstOpDelete.Parameters), 2; got != want {
+		t.Fatalf("First operation DELETE params length differed, got %d want %d", got, want)
+	}
+	if got, want := firstOpDelete.Parameters[0].Name, "name"; got != want {
+		t.Fatalf("First operation DELETE first param name differed, got %s want %s", got, want)
+	}
+	if got, want := firstOpDelete.Parameters[0].Pattern, "foos/[^/]+"; got != want {
+		t.Fatalf("First operation DELETE first param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := firstOpDelete.Parameters[1].In, "body"; got != want {
+		t.Fatalf("First operation DELETE second param 'in' differed, got %s want %s", got, want)
+	}
+
+	secondOpGet := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"1}"].Get
+	if got, want := secondOpGet.OperationID, "Service1_GetBar"; got != want {
+		t.Fatalf("Second operation id GET differed, got %s want %s", got, want)
+	}
+	if got, want := len(secondOpGet.Parameters), 2; got != want {
+		t.Fatalf("Second operation GET params length differed, got %d want %d", got, want)
+	}
+	if got, want := secondOpGet.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"1"; got != want {
+		t.Fatalf("Second operation GET first param name differed, got %s want %s", got, want)
+	}
+	if got, want := secondOpGet.Parameters[0].Pattern, "bars/[^/]+"; got != want {
+		t.Fatalf("Second operation GET first param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := secondOpGet.Parameters[1].In, "body"; got != want {
+		t.Fatalf("Second operation GET second param 'in' differed, got %s want %s", got, want)
+	}
+
+	secondOpDelete := result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"1}"].Delete
+	if got, want := secondOpDelete.OperationID, "Service1_DeleteBar"; got != want {
+		t.Fatalf("Second operation id differed, got %s want %s", got, want)
+	}
+	if got, want := len(secondOpDelete.Parameters), 2; got != want {
+		t.Fatalf("Second operation params length differed, got %d want %d", got, want)
+	}
+	if got, want := secondOpDelete.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"1"; got != want {
+		t.Fatalf("Second operation first param name differed, got %s want %s", got, want)
+	}
+	if got, want := secondOpDelete.Parameters[0].Pattern, "bars/[^/]+"; got != want {
+		t.Fatalf("Second operation first param pattern differed, got %s want %s", got, want)
+	}
+	if got, want := secondOpDelete.Parameters[1].In, "body"; got != want {
+		t.Fatalf("Second operation third param 'in' differed, got %s want %s", got, want)
+	}
+}
 
 func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
 	fieldType := descriptorpb.FieldDescriptorProto_TYPE_STRING
