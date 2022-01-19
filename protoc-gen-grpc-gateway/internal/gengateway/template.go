@@ -576,49 +576,53 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}FromEndpoint instead.
 func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Server(ctx context.Context, mux *runtime.ServeMux, server {{$svc.InstanceName}}Server) error {
 	{{range $m := $svc.Methods}}
+	{{- if $m.GetServerStreaming}}{{ $Forward := "runtime.ForwardResponseStream" }}{{else}}{{ $Forward := "runtime.ForwardResponseMessage" }}{{end -}}
 	{{range $b := $m.Bindings}}
-	{{if or $m.GetClientStreaming $m.GetServerStreaming}}
-	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
-		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-		return
-	})
-	{{else}}
-	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-	{{- if $UseRequestContext }}
-		ctx, cancel := context.WithCancel(req.Context())
-	{{- else -}}
-		ctx, cancel := context.WithCancel(ctx)
-	{{- end }}
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		{{- if $b.PathTmpl }}
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}", runtime.WithHTTPPathPattern("{{$b.PathTmpl.Template}}"))
+	{
+		pattern := runtime.MustPattern(runtime.NewPattern({{$b.PathTmpl.Version}}, {{$b.PathTmpl.OpCodes | printf "%#v"}}, {{$b.PathTmpl.Pool | printf "%#v"}}, {{$b.PathTmpl.Verb | printf "%q"}}))
+		{{if or $m.GetClientStreaming $m.GetServerStreaming}}
+		mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+			err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+			_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		})
+		{{else}}
+		mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		{{- if $UseRequestContext }}
+			ctx, cancel := context.WithCancel(req.Context())
 		{{- else -}}
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}")
+			ctx, cancel := context.WithCancel(ctx)
 		{{- end }}
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(rctx, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
+			defer cancel()
+			var stream runtime.ServerTransportStream
+			ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+			inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+			{{- if $b.PathTmpl }}
+			rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}", runtime.WithHTTPPathPattern("{{$b.PathTmpl.Template}}"))
+			{{- else -}}
+			rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}")
+			{{- end }}
+			if err != nil {
+				runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+				return
+			}
+			resp, md, err := local_request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(rctx, inboundMarshaler, server, req, pathParams)
+			md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+			ctx = runtime.NewServerMetadataContext(ctx, md)
+			if err != nil {
+				runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+				return
+			}
 
-		{{ if $b.ResponseBody }}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}{resp}, mux.GetForwardResponseOptions()...)
-		{{ else }}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+			{{ if $b.ResponseBody }}
+			{{$Forward}}(ctx, mux, outboundMarshaler, w, req, response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}{resp}, mux.GetForwardResponseOptions()...)
+			{{ else }}
+			{{$Forward}}(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+			{{end}}
+		})
 		{{end}}
-	})
-	{{end}}
+	}
 	{{end}}
 	{{end}}
 	return nil
@@ -666,47 +670,51 @@ func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}(ctx context.Context, mux *
 // "{{$svc.InstanceName}}Client" to call the correct interceptors.
 func Register{{$svc.GetName}}{{$.RegisterFuncSuffix}}Client(ctx context.Context, mux *runtime.ServeMux, client {{$svc.InstanceName}}Client) error {
 	{{range $m := $svc.Methods}}
+	{{- if $m.GetServerStreaming}}{{ $Forward := "runtime.ForwardResponseStream" }}{{else}}{{ $Forward := "runtime.ForwardResponseMessage" }}{{end -}}
 	{{range $b := $m.Bindings}}
-	mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-	{{- if $UseRequestContext }}
-		ctx, cancel := context.WithCancel(req.Context())
-	{{- else -}}
-		ctx, cancel := context.WithCancel(ctx)
-	{{- end }}
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		{{- if $b.PathTmpl }}
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}", runtime.WithHTTPPathPattern("{{$b.PathTmpl.Template}}"))
+	{
+		pattern := runtime.MustPattern(runtime.NewPattern({{$b.PathTmpl.Version}}, {{$b.PathTmpl.OpCodes | printf "%#v"}}, {{$b.PathTmpl.Pool | printf "%#v"}}, {{$b.PathTmpl.Verb | printf "%q"}}))
+		mux.Handle({{$b.HTTPMethod | printf "%q"}}, pattern, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		{{- if $UseRequestContext }}
+			ctx, cancel := context.WithCancel(req.Context())
 		{{- else -}}
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}")
+			ctx, cancel := context.WithCancel(ctx)
 		{{- end }}
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		{{if $m.GetServerStreaming}}
-		{{ if $b.ResponseBody }}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) {
-			res, err := resp.Recv()
-			return response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}{res}, err
-		}, mux.GetForwardResponseOptions()...)
-		{{ else }}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
-		{{end}}
-		{{else}}
-		{{ if $b.ResponseBody }}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}{resp}, mux.GetForwardResponseOptions()...)
-		{{ else }}
-		forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-		{{end}}
-		{{end}}
-	})
+			defer cancel()
+			inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+			{{- if $b.PathTmpl }}
+			rctx, err := runtime.AnnotateContext(ctx, mux, req, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}", runtime.WithHTTPPathPattern("{{$b.PathTmpl.Template}}"))
+			{{- else -}}
+			rctx, err := runtime.AnnotateContext(ctx, mux, req, "/{{$svc.File.GetPackage}}.{{$svc.GetName}}/{{$m.GetName}}")
+			{{- end }}
+			if err != nil {
+				runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+				return
+			}
+			resp, md, err := request_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}(rctx, inboundMarshaler, client, req, pathParams)
+			ctx = runtime.NewServerMetadataContext(ctx, md)
+			if err != nil {
+				runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+				return
+			}
+			{{if $m.GetServerStreaming}}
+			{{ if $b.ResponseBody }}
+			{{$Forward}}(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) {
+				res, err := resp.Recv()
+				return response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}{res}, err
+			}, mux.GetForwardResponseOptions()...)
+			{{ else }}
+			{{$Forward}}(ctx, mux, outboundMarshaler, w, req, func() (proto.Message, error) { return resp.Recv() }, mux.GetForwardResponseOptions()...)
+			{{end}}
+			{{else}}
+			{{ if $b.ResponseBody }}
+			{{$Forward}}(ctx, mux, outboundMarshaler, w, req, response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}{resp}, mux.GetForwardResponseOptions()...)
+			{{ else }}
+			{{$Forward}}(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+			{{end}}
+			{{end}}
+		})
+	}
 	{{end}}
 	{{end}}
 	return nil
@@ -726,21 +734,5 @@ func (m response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}) XXX_ResponseBody(
 {{end}}
 {{end}}
 {{end}}
-
-var (
-	{{range $m := $svc.Methods}}
-	{{range $b := $m.Bindings}}
-	pattern_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} = runtime.MustPattern(runtime.NewPattern({{$b.PathTmpl.Version}}, {{$b.PathTmpl.OpCodes | printf "%#v"}}, {{$b.PathTmpl.Pool | printf "%#v"}}, {{$b.PathTmpl.Verb | printf "%q"}}))
-	{{end}}
-	{{end}}
-)
-
-var (
-	{{range $m := $svc.Methods}}
-	{{range $b := $m.Bindings}}
-	forward_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} = {{if $m.GetServerStreaming}}runtime.ForwardResponseStream{{else}}runtime.ForwardResponseMessage{{end}}
-	{{end}}
-	{{end}}
-)
 {{end}}`))
 )
