@@ -25,11 +25,11 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_proto",
-    sha256 = "56309d96254234b216195ddb6fd41ee3e5f38acfc3184814c1878581d5cc1bef",
-    strip_prefix = "rules_proto-244e0b64fdc6a89df8b1750eada7b909b3cbc459",
+    sha256 = "b9e1268c5bce4bb01ef31730300b8a4f562dc1211088f125c39af716f6f65f60",
+    strip_prefix = "rules_proto-e507ccded37c389186afaeb2b836ec576dc875dc",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/244e0b64fdc6a89df8b1750eada7b909b3cbc459.tar.gz",
-        "https://github.com/bazelbuild/rules_proto/archive/244e0b64fdc6a89df8b1750eada7b909b3cbc459.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/e507ccded37c389186afaeb2b836ec576dc875dc.tar.gz",
+        "https://github.com/bazelbuild/rules_proto/archive/e507ccded37c389186afaeb2b836ec576dc875dc.tar.gz",
     ],
 )
 
