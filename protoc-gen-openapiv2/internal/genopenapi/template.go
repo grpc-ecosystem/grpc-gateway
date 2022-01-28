@@ -870,11 +870,16 @@ func partsToRegexpMap(parts []string) map[string]string {
 	return regExps
 }
 
-func renderServiceTags(services []*descriptor.Service) []openapiTagObject {
+func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry) []openapiTagObject {
 	var tags []openapiTagObject
 	for _, svc := range services {
+		tagName := svc.GetName()
+		if pkg := svc.File.GetPackage(); pkg != "" && reg.IsIncludePackageInTags() {
+			tagName = pkg + "." + tagName
+		}
+
 		tag := openapiTagObject{
-			Name: *svc.Name,
+			Name: tagName,
 		}
 		if proto.HasExtension(svc.Options, openapi_options.E_Openapiv2Tag) {
 			ext := proto.GetExtension(svc.Options, openapi_options.E_Openapiv2Tag)
@@ -1394,7 +1399,7 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	if err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
 		panic(err)
 	}
-	s.Tags = append(s.Tags, renderServiceTags(p.Services)...)
+	s.Tags = append(s.Tags, renderServiceTags(p.Services, p.reg)...)
 
 	messages := messageMap{}
 	streamingMessages := messageMap{}
