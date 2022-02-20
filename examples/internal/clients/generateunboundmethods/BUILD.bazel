@@ -1,7 +1,7 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "go_default_library",
+    name = "generateunboundmethods",
     srcs = [
         "api_generate_unbound_methods_echo_service.go",
         "client.go",
@@ -14,5 +14,11 @@ go_library(
     ],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/generateunboundmethods",
     visibility = ["//examples:__subpackages__"],
-    deps = ["@org_golang_x_oauth2//:go_default_library"],
+    deps = ["@org_golang_x_oauth2//:oauth2"],
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":generateunboundmethods",
+    visibility = ["//examples:__subpackages__"],
 )

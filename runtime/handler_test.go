@@ -109,6 +109,9 @@ func TestForwardResponseStream(t *testing.T) {
 				t.Errorf("Failed to read response body with %v", err)
 			}
 			w.Body.Close()
+			if len(body) > 0 && w.Header.Get("Content-Type") != "application/json" {
+				t.Errorf("Content-Type %s want application/json", w.Header.Get("Content-Type"))
+			}
 
 			var want []byte
 			for i, msg := range tt.msgs {
@@ -239,6 +242,9 @@ func TestForwardResponseStreamCustomMarshaler(t *testing.T) {
 				t.Errorf("Failed to read response body with %v", err)
 			}
 			w.Body.Close()
+			if len(body) > 0 && w.Header.Get("Content-Type") != "Custom-Content-Type" {
+				t.Errorf("Content-Type %s want Custom-Content-Type", w.Header.Get("Content-Type"))
+			}
 
 			var want []byte
 			for _, msg := range tt.msgs {

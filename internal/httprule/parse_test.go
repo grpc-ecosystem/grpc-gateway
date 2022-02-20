@@ -141,6 +141,20 @@ func TestParseSegments(t *testing.T) {
 		want   []segment
 	}{
 		{
+			tokens: []string{eof},
+			want: []segment{
+				literal(eof),
+			},
+		},
+		{
+			// Note: this case will never arise as tokenize() will never return such a sequence of tokens
+			// and even if it does it will be treated as [eof]
+			tokens: []string{eof, "v1", eof},
+			want: []segment{
+				literal(eof),
+			},
+		},
+		{
 			tokens: []string{"v1", eof},
 			want: []segment{
 				literal("v1"),
@@ -307,10 +321,6 @@ func TestParseSegmentsWithErrors(t *testing.T) {
 		{
 			// invalid percent-encoding
 			tokens: []string{"a%2z", eof},
-		},
-		{
-			// empty segments
-			tokens: []string{eof},
 		},
 		{
 			// unterminated variable

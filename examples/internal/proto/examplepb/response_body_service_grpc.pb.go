@@ -11,6 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // ResponseBodyServiceClient is the client API for ResponseBodyService service.
@@ -59,7 +60,7 @@ func (c *responseBodyServiceClient) ListResponseStrings(ctx context.Context, in 
 }
 
 func (c *responseBodyServiceClient) GetResponseBodyStream(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (ResponseBodyService_GetResponseBodyStreamClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ResponseBodyService_serviceDesc.Streams[0], "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBodyStream", opts...)
+	stream, err := c.cc.NewStream(ctx, &ResponseBodyService_ServiceDesc.Streams[0], "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBodyStream", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -124,8 +125,8 @@ type UnsafeResponseBodyServiceServer interface {
 	mustEmbedUnimplementedResponseBodyServiceServer()
 }
 
-func RegisterResponseBodyServiceServer(s *grpc.Server, srv ResponseBodyServiceServer) {
-	s.RegisterService(&_ResponseBodyService_serviceDesc, srv)
+func RegisterResponseBodyServiceServer(s grpc.ServiceRegistrar, srv ResponseBodyServiceServer) {
+	s.RegisterService(&ResponseBodyService_ServiceDesc, srv)
 }
 
 func _ResponseBodyService_GetResponseBody_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -203,7 +204,10 @@ func (x *responseBodyServiceGetResponseBodyStreamServer) Send(m *ResponseBodyOut
 	return x.ServerStream.SendMsg(m)
 }
 
-var _ResponseBodyService_serviceDesc = grpc.ServiceDesc{
+// ResponseBodyService_ServiceDesc is the grpc.ServiceDesc for ResponseBodyService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ResponseBodyService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService",
 	HandlerType: (*ResponseBodyServiceServer)(nil),
 	Methods: []grpc.MethodDesc{

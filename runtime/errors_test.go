@@ -60,6 +60,16 @@ func TestDefaultHTTPError(t *testing.T) {
 			contentType: "Custom-Content-Type",
 			msg:         "example error",
 		},
+		{
+			err: &runtime.HTTPStatusError{
+				HTTPStatus: http.StatusMethodNotAllowed,
+				Err:        status.Error(codes.Unimplemented, http.StatusText(http.StatusMethodNotAllowed)),
+			},
+			status:      http.StatusMethodNotAllowed,
+			marshaler:   &runtime.JSONPb{},
+			contentType: "application/json",
+			msg:         "Method Not Allowed",
+		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			w := httptest.NewRecorder()

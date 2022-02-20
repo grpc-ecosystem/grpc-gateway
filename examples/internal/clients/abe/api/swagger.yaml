@@ -158,6 +158,7 @@ paths:
         in: "query"
         required: false
         type: "string"
+        pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-exportParamName: "Uuid"
         x-optionalDataType: "String"
       - name: "floatValue"
@@ -470,6 +471,7 @@ paths:
         in: "query"
         required: false
         type: "string"
+        pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-exportParamName: "Uuid"
         x-optionalDataType: "String"
       - name: "floatValue"
@@ -773,6 +775,7 @@ paths:
         in: "query"
         required: false
         type: "string"
+        pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-exportParamName: "Uuid"
         x-optionalDataType: "String"
       - name: "floatValue"
@@ -1445,6 +1448,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        pattern: "strprefix/[^/]+"
         x-exportParamName: "StringValue"
       - name: "uint32Value"
         in: "path"
@@ -1514,6 +1518,154 @@ paths:
         - "ZERO"
         - "ONE"
         x-exportParamName: "EnumValueAnnotation"
+      - name: "singleNested.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "SingleNestedName"
+        x-optionalDataType: "String"
+      - name: "singleNested.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "SingleNestedAmount"
+        x-optionalDataType: "Int64"
+      - name: "singleNested.ok"
+        in: "query"
+        description: "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE:\
+          \ TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "SingleNestedOk"
+        x-optionalDataType: "String"
+      - name: "uuid"
+        in: "query"
+        required: false
+        type: "string"
+        pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-exportParamName: "Uuid"
+        x-optionalDataType: "String"
+      - name: "bytesValue"
+        in: "query"
+        required: false
+        type: "string"
+        format: "byte"
+        x-exportParamName: "BytesValue"
+        x-optionalDataType: "String"
+      - name: "repeatedStringValue"
+        in: "query"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedStringValue"
+      - name: "oneofString"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OneofString"
+        x-optionalDataType: "String"
+      - name: "timestampValue"
+        in: "query"
+        required: false
+        type: "string"
+        format: "date-time"
+        x-exportParamName: "TimestampValue"
+        x-optionalDataType: "Time"
+      - name: "repeatedEnumValue"
+        in: "query"
+        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedEnumValue"
+      - name: "repeatedEnumAnnotation"
+        in: "query"
+        description: "Repeated numeric enum title. Repeated numeric enum description.\n\
+          \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedEnumAnnotation"
+      - name: "repeatedStringAnnotation"
+        in: "query"
+        description: "Repeated string title. Repeated string description."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedStringAnnotation"
+      - name: "nestedAnnotation.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "NestedAnnotationName"
+        x-optionalDataType: "String"
+      - name: "nestedAnnotation.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "NestedAnnotationAmount"
+        x-optionalDataType: "Int64"
+      - name: "nestedAnnotation.ok"
+        in: "query"
+        description: "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE:\
+          \ TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "NestedAnnotationOk"
+        x-optionalDataType: "String"
+      - name: "int64OverrideType"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Int64OverrideType"
+        x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition."
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition."
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -1929,7 +2081,7 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-  /v1/{book.name=publishers/*/books/*}:
+  /v1/{book.name}:
     patch:
       tags:
       - "ABitOfEverythingService"
@@ -1941,6 +2093,7 @@ paths:
           \nExample: `publishers/1257894000000000000/books/my-book`"
         required: true
         type: "string"
+        pattern: "publishers/[^/]+/books/[^/]+"
         x-exportParamName: "BookName"
       - in: "body"
         name: "body"
@@ -1991,7 +2144,7 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-  /v1/{parent=publishers/*}/books:
+  /v1/{parent}/books:
     post:
       tags:
       - "ABitOfEverythingService"
@@ -2004,6 +2157,7 @@ paths:
           \nExample: `publishers/1257894000000000000`"
         required: true
         type: "string"
+        pattern: "publishers/[^/]+"
         x-exportParamName: "Parent"
       - in: "body"
         name: "body"
@@ -2457,15 +2611,15 @@ paths:
     get:
       tags:
       - "ABitOfEverythingService"
-      operationId: "ABitOfEverythingService_CheckExternalNestedPathEnum"
+      operationId: "ABitOfEverythingService_CheckExternalPathEnum"
       parameters:
       - name: "value"
         in: "path"
         required: true
         type: "string"
         enum:
-        - "GHI"
-        - "JKL"
+        - "ABC"
+        - "DEF"
         x-exportParamName: "Value"
       responses:
         200:
@@ -2509,6 +2663,45 @@ paths:
         schema:
           $ref: "#/definitions/examplepbUpdateV2Request"
         x-exportParamName: "Body"
+      responses:
+        200:
+          description: "A successful response."
+          schema: {}
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+  /v3/{value}:check:
+    get:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_CheckExternalNestedPathEnum"
+      parameters:
+      - name: "value"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "GHI"
+        - "JKL"
+        x-exportParamName: "Value"
       responses:
         200:
           description: "A successful response."
@@ -2862,10 +3055,8 @@ definitions:
       status:
         code: 0
         details:
-        - typeUrl: "typeUrl"
-          value: "value"
-        - typeUrl: "typeUrl"
-          value: "value"
+        - '@type': "@type"
+        - '@type': "@type"
         message: "message"
   examplepbErrorObject:
     type: "object"
@@ -2919,7 +3110,7 @@ definitions:
   protobufAny:
     type: "object"
     properties:
-      typeUrl:
+      '@type':
         type: "string"
         description: "A URL/resource name that uniquely identifies the type of the\
           \ serialized\nprotocol buffer message. This string must contain at least\n\
@@ -2940,12 +3131,6 @@ definitions:
           \ release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\
           \nSchemes other than `http`, `https` (or the empty scheme) might be\nused\
           \ with implementation specific semantics."
-      value:
-        type: "string"
-        format: "byte"
-        description: "Must be a valid serialized protocol buffer of the above specified\
-          \ type."
-        pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
     description: "`Any` contains an arbitrary serialized protocol buffer message along\
       \ with a\nURL that describes the type of the serialized message.\n\nProtobuf\
       \ library provides support to pack/unpack Any values in the form\nof utility\
@@ -2957,17 +3142,17 @@ definitions:
       \    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n\
       \    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n\
       \      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in\
-      \ Go\n\n     foo := &pb.Foo{...}\n     any, err := ptypes.MarshalAny(foo)\n\
-      \     ...\n     foo := &pb.Foo{}\n     if err := ptypes.UnmarshalAny(any, foo);\
-      \ err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf\
-      \ library will by default use\n'type.googleapis.com/full.type.name' as the type\
-      \ URL and the unpack\nmethods only use the fully qualified type name after the\
-      \ last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\n\
-      name \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses\
-      \ the regular\nrepresentation of the deserialized, embedded message, with an\n\
-      additional field `@type` which contains the type URL. Example:\n\n    package\
-      \ google.profile;\n    message Person {\n      string first_name = 1;\n    \
-      \  string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\"\
+      \ Go\n\n     foo := &pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err\
+      \ != nil {\n       ...\n     }\n     ...\n     foo := &pb.Foo{}\n     if err\
+      \ := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods\
+      \ provided by protobuf library will by default use\n'type.googleapis.com/full.type.name'\
+      \ as the type URL and the unpack\nmethods only use the fully qualified type\
+      \ name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\"\
+      \ will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of\
+      \ an `Any` value uses the regular\nrepresentation of the deserialized, embedded\
+      \ message, with an\nadditional field `@type` which contains the type URL. Example:\n\
+      \n    package google.profile;\n    message Person {\n      string first_name\
+      \ = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\"\
       ,\n      \"firstName\": <string>,\n      \"lastName\": <string>\n    }\n\nIf\
       \ the embedded message type is well-known and has a custom JSON\nrepresentation,\
       \ that representation will be embedded adding a field\n`value` which holds the\
@@ -2975,8 +3160,8 @@ definitions:
       \n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n\
       \      \"value\": \"1.212s\"\n    }"
     example:
-      typeUrl: "typeUrl"
-      value: "value"
+      '@type': "@type"
+    additionalProperties: {}
   rpcStatus:
     type: "object"
     properties:
@@ -3004,10 +3189,8 @@ definitions:
     example:
       code: 0
       details:
-      - typeUrl: "typeUrl"
-        value: "value"
-      - typeUrl: "typeUrl"
-        value: "value"
+      - '@type': "@type"
+      - '@type': "@type"
       message: "message"
   subStringMessage:
     type: "object"

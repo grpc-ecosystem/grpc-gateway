@@ -13,7 +13,7 @@ filegroup(
 )
 
 go_library(
-    name = "go_default_library",
+    name = "options",
     embed = [":options_go_proto"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options",
 )
@@ -35,4 +35,10 @@ go_proto_library(
     compilers = ["//:go_apiv2"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options",
     proto = ":options_proto",
+)
+
+alias(
+    name = "go_default_library",
+    actual = ":options",
+    visibility = ["//visibility:public"],
 )

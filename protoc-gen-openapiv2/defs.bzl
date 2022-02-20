@@ -27,12 +27,12 @@ def _direct_source_infos(proto_info, provided_sources = []):
 
     source_root = proto_info.proto_source_root
     if "." == source_root:
-        return [struct(file = src, import_path = src.path) for src in proto_info.direct_sources]
+        return [struct(file = src, import_path = src.path) for src in proto_info.check_deps_sources.to_list()]
 
     offset = len(source_root) + 1  # + '/'.
 
     infos = []
-    for src in proto_info.direct_sources:
+    for src in proto_info.check_deps_sources.to_list():
         # TODO(yannic): Remove this hack when we drop support for Bazel < 1.0.
         local_offset = offset
         if src.root.path and not source_root.startswith(src.root.path):
@@ -58,10 +58,13 @@ def _run_proto_gen_openapi(
         repeated_path_param_separator,
         include_package_in_tags,
         fqn_for_openapi_name,
+        openapi_naming_strategy,
         use_go_templates,
         disable_default_errors,
         enums_as_ints,
+        omit_enum_default_value,
         simple_operation_ids,
+        proto3_optional_nullable,
         openapi_configuration,
         generate_unbound_methods):
     args = actions.args()
@@ -86,6 +89,9 @@ def _run_proto_gen_openapi(
     if fqn_for_openapi_name:
         args.add("--openapiv2_opt", "fqn_for_openapi_name=true")
 
+    if openapi_naming_strategy:
+        args.add("--openapiv2_opt", "openapi_naming_strategy=%s" % openapi_naming_strategy)
+
     if generate_unbound_methods:
         args.add("--openapiv2_opt", "generate_unbound_methods=true")
 
@@ -106,6 +112,12 @@ def _run_proto_gen_openapi(
 
     if enums_as_ints:
         args.add("--openapiv2_opt", "enums_as_ints=true")
+
+    if omit_enum_default_value:
+        args.add("--openapiv2_opt", "omit_enum_default_value=true")
+
+    if proto3_optional_nullable:
+        args.add("--openapiv2_opt", "proto3_optional_nullable=true")
 
     args.add("--openapiv2_opt", "repeated_path_param_separator=%s" % repeated_path_param_separator)
 
@@ -197,10 +209,13 @@ def _proto_gen_openapi_impl(ctx):
                     repeated_path_param_separator = ctx.attr.repeated_path_param_separator,
                     include_package_in_tags = ctx.attr.include_package_in_tags,
                     fqn_for_openapi_name = ctx.attr.fqn_for_openapi_name,
+                    openapi_naming_strategy = ctx.attr.openapi_naming_strategy,
                     use_go_templates = ctx.attr.use_go_templates,
                     disable_default_errors = ctx.attr.disable_default_errors,
                     enums_as_ints = ctx.attr.enums_as_ints,
+                    omit_enum_default_value = ctx.attr.omit_enum_default_value,
                     simple_operation_ids = ctx.attr.simple_operation_ids,
+                    proto3_optional_nullable = ctx.attr.proto3_optional_nullable,
                     openapi_configuration = ctx.file.openapi_configuration,
                     generate_unbound_methods = ctx.attr.generate_unbound_methods,
                 ),
@@ -256,6 +271,15 @@ protoc_gen_openapiv2 = rule(
                   " qualified names from the proto definition" +
                   " (ie my.package.MyMessage.MyInnerMessage",
         ),
+        "openapi_naming_strategy": attr.string(
+            default = "",
+            mandatory = False,
+            values = ["", "simple", "legacy", "fqn"],
+            doc = "configures how OpenAPI names are determined." +
+                  " Allowed values are `` (empty), `simple`, `legacy` and `fqn`." +
+                  " If unset, either `legacy` or `fqn` are selected, depending" +
+                  " on the value of the `fqn_for_openapi_name` setting",
+        ),
         "use_go_templates": attr.bool(
             default = False,
             mandatory = False,
@@ -272,11 +296,21 @@ protoc_gen_openapiv2 = rule(
             mandatory = False,
             doc = "whether to render enum values as integers, as opposed to string values",
         ),
+        "omit_enum_default_value": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, omit default enum value",
+        ),
         "simple_operation_ids": attr.bool(
             default = False,
             mandatory = False,
             doc = "whether to remove the service prefix in the operationID" +
                   " generation. Can introduce duplicate operationIDs, use with caution.",
+        ),
+        "proto3_optional_nullable": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "whether Proto3 Optional fields should be marked as x-nullable",
         ),
         "openapi_configuration": attr.label(
             allow_single_file = True,

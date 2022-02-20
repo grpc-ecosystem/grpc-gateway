@@ -94,6 +94,8 @@ This will place four binaries in your `$GOBIN`;
 
 Make sure that your `$GOBIN` is in your `$PATH`.
 
+Alternatively, see the section on remotely managed plugin versions below.
+
 ## Usage
 
 1. Define your [gRPC](https://grpc.io/docs/) service using protocol buffers
@@ -121,7 +123,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    Here's an example `buf.gen.yaml` you can use to generate the stubs with [buf](https://github.com/bufbuild/buf):
 
    ```yaml
-   version: v1beta1
+   version: v1
    plugins:
      - name: go
        out: gen/go
@@ -172,7 +174,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    Here's what a `buf.gen.yaml` file might look like with this option enabled:
 
    ```yaml
-   version: v1beta1
+   version: v1
    plugins:
      - name: go
        out: gen/go
@@ -231,14 +233,14 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    > You will need to provide the required third party protobuf files to the protobuf compiler.
    > If you are using [buf](https://github.com/bufbuild/buf), this dependency can
    > be added to the `deps` array in your `buf.yaml` under the name
-   > `buf.build/beta/googleapis`:
+   > `buf.build/googleapis/googleapis`:
    > ```yaml
-   > version: v1beta1
+   > version: v1
    > name: buf.build/yourorg/myprotos
    > deps:
-   >   - buf.build/beta/googleapis
+   >   - buf.build/googleapis/googleapis
    > ```
-   > Always run `buf beta mod update` after adding a dependency to your `buf.yaml`.
+   > Always run `buf mod update` after adding a dependency to your `buf.yaml`.
 
    See [a_bit_of_everything.proto](examples/internal/proto/examplepb/a_bit_of_everything.proto)
    for examples of more annotations you can add to customize gateway behavior
@@ -247,7 +249,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    Here's what a `buf.gen.yaml` file might look like:
 
    ```yaml
-   version: v1beta1
+   version: v1
    plugins:
      - name: go
        out: gen/go
@@ -271,7 +273,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
 
    ```
    google/api/annotations.proto
-   google/api/field_behaviour.proto
+   google/api/field_behavior.proto
    google/api/http.proto
    google/api/httpbody.proto
    ```
@@ -297,7 +299,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    Here's what a `buf.gen.yaml` file might look like with this option enabled:
 
    ```yaml
-   version: v1beta1
+   version: v1
    plugins:
      - name: go
        out: gen/go
@@ -339,6 +341,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
      "github.com/golang/glog"
      "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
      "google.golang.org/grpc"
+     "google.golang.org/grpc/credentials/insecure"
 
      gw "github.com/yourorg/yourrepo/proto/gen/go/your/service/v1/your_service"  // Update
    )
@@ -357,7 +360,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
      // Register gRPC server endpoint
      // Note: Make sure the gRPC server is running properly and accessible
      mux := runtime.NewServeMux()
-     opts := []grpc.DialOption{grpc.WithInsecure()}
+     opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
      err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)
      if err != nil {
        return err
@@ -382,7 +385,7 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    Here's what a `buf.gen.yaml` file might look like:
 
    ```yaml
-   version: v1beta1
+   version: v1
    plugins:
      - name: go
        out: gen/go
@@ -405,10 +408,10 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    `buf`, you can add the `buf.build/grpc-ecosystem/grpc-gateway` dependency
    to your `deps` array:
    ```yaml
-   version: v1beta1
+   version: v1
    name: buf.build/yourorg/myprotos
    deps:
-     - buf.build/beta/googleapis
+     - buf.build/googleapis/googleapis
      - buf.build/grpc-ecosystem/grpc-gateway
    ```
 
@@ -427,6 +430,54 @@ Make sure that your `$GOBIN` is in your `$PATH`.
    Note that this plugin also supports generating OpenAPI definitions for unannotated methods;
    use the `generate_unbound_methods` option to enable this.
 
+   It is possible with the HTTP mapping for a gRPC service method to create duplicate mappings 
+   with the only difference being constraints on the path parameter.
+
+   `/v1/{name=projects/*}` and `/v1/{name=organizations/*}` both become `/v1/{name}`.  When 
+   this occurs the plugin will rename the path parameter with a "_1" (or "_2" etc) suffix
+   to differentiate the different operations. So in the above example, the 2nd path would become
+   `/v1/{name_1=organizations/*}`.  This can also cause OpenAPI clients to URL encode the "/" that is
+   part of the path parameter as that is what OpenAPI defines in the specification.  To allow gRPC gateway to  
+   accept the URL encoded slash and still route the request, use the UnescapingModeAllCharacters or  
+   UnescapingModeLegacy (which is the default currently though may change in future versions). See 
+   [Customizing Your Gateway](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_your_gateway/) 
+   for more information.
+
+## Usage with remote plugins
+
+As an alternative to all of the above, you can use `buf` with
+[remote plugins](https://docs.buf.build/configuration/v1/buf-gen-yaml#name-or-remote)
+to manage plugin versions and generation. An example `buf.gen.yaml` using remote
+plugin generation looks like this:
+
+```yaml
+version: v1
+plugins:
+  - remote: buf.build/library/plugins/go:v1.27.1-1
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - remote: buf.build/library/plugins/go-grpc:v1.1.0-2
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - remote: buf.build/grpc-ecosystem/plugins/grpc-gateway:v2.6.0-1
+    out: gen/go
+    opt:
+      - paths=source_relative
+  - remote: buf.build/grpc-ecosystem/plugins/openapiv2:v2.6.0-1
+    out: gen/openapiv2
+```
+
+This requires no local installation of any plugins. Be careful to use the same
+version of the generator as the runtime library, i.e. if using `v2.6.0-1`, run
+
+```shell
+$ go get github.com/grpc-ecosystem/grpc-gateway/v2@v2.6.0
+```
+
+To get the same version of the runtime in your `go.mod`.
+
 ## Video intro
 
 This GopherCon UK 2019 presentation from our maintainer [@JohanBrandhorst](https://github.com/johanbrandhorst) provides a good intro to using the gRPC-Gateway. It uses the following boilerplate repo as a base: https://github.com/johanbrandhorst/grpc-gateway-boilerplate.
@@ -443,7 +494,7 @@ When using `buf` to generate stubs, flags and parameters are passed through
 the `opt` field in your `buf.gen.yaml` file, for example:
 
 ```yaml
-version: v1beta1
+version: v1
 plugins:
   - name: grpc-gateway
     out: gen/go
@@ -527,13 +578,15 @@ But patches are welcome.
 - HTTP request host is added as `X-Forwarded-Host` gRPC request header.
 - HTTP `Authorization` header is added as `authorization` gRPC request header.
 - Remaining Permanent HTTP header keys (as specified by the IANA
-  [here](http://www.iana.org/assignments/message-headers/message-headers.xhtml)
+  [here](http://www.iana.org/assignments/message-headers/message-headers.xhtml))
   are prefixed with `grpcgateway-` and added with their values to gRPC request
   header.
 - HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata
   (prefixed with `grpcgateway-`).
 - While configurable, the default {un,}marshaling uses
   [protojson](https://pkg.go.dev/google.golang.org/protobuf/encoding/protojson).
+- The path template used to map gRPC service methods to HTTP endpoints supports the [google.api.http](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto)
+  path template syntax. For example, `/api/v1/{name=projects/*/topics/*}` or `/prefix/{path=organizations/**}`.
 
 ## Contribution
 

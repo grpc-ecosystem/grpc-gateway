@@ -82,10 +82,8 @@ $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS): $(GENERATE_UNBOUND_METHODS_EXAMPLE_SPE
 		$(EXAMPLE_CLIENT_DIR)/generateunboundmethods/git_push.sh
 
 install:
+	go install github.com/bufbuild/buf/cmd/buf@v1.0.0-rc8
 	go install \
-		google.golang.org/grpc/cmd/protoc-gen-go-grpc \
-		google.golang.org/protobuf/cmd/protoc-gen-go \
-		github.com/bufbuild/buf/cmd/buf \
 		./protoc-gen-openapiv2 \
 		./protoc-gen-grpc-gateway
 
@@ -123,22 +121,6 @@ generate: proto $(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAM
 test: proto
 	go test -short -race ./...
 	go test -race ./examples/internal/integration -args -network=unix -endpoint=test.sock
-
-changelog:
-	docker run --rm \
-		--interactive \
-		--tty \
-		-e "CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN}" \
-		-v "$(PWD):/usr/local/src/your-app" \
-		ferrarimarco/github-changelog-generator:1.14.3 \
-				-u grpc-ecosystem \
-				-p grpc-gateway \
-				--author \
-				--compare-link \
-				--github-site=https://github.com \
-				--unreleased-label "**Next release**" \
-				--release-branch=master \
-				--future-release=v2.3.0
 
 clean:
 	find . -type f -name '*.pb.go' -delete

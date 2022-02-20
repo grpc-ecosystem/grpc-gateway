@@ -345,6 +345,30 @@ func handleStreamError(ctx context.Context, err error) *status.Status {
 
 If no custom handler is provided, the default stream error handler will include any gRPC error attributes (code, message, detail messages), if the error being reported includes them. If the error does not have these attributes, a gRPC code of `Unknown` (2) is reported.
 
+## Controlling path parameter unescaping
+
+<!-- TODO(v3): Remove comments about default behavior -->
+
+By default, gRPC-Gateway unescapes the entire URL path string attempting to route a request. This causes routing errors when the path parameter contains an illegal character such as `/`.
+
+To replicate the behavior described in [google.api.http](https://github.com/googleapis/googleapis/blob/master/google/api/http.proto#L224), use [runtime.WithUnescapingMode()](https://pkg.go.dev/github.com/grpc-ecosystem/grpc-gateway/runtime?tab=doc#WithUnescapingMode) to configure the unescaping behavior, as in the example below:
+
+```go
+mux := runtime.NewServeMux(
+	runtime.WithUnescapingMode(runtime.UnescapingModeAllExceptReserved),
+)
+```
+
+For multi-segment parameters (e.g. `{id=**}`) [RFC 6570](https://tools.ietf.org/html/rfc6570) Reserved Expansion characters are left escaped and the gRPC API will need to unescape them.
+
+To replicate the default V2 escaping behavior but also allow passing pct-encoded `/` characters, the ServeMux can be configured as in the example below:
+
+```go
+mux := runtime.NewServeMux(
+	runtime.WithUnescapingMode(runtime.UnescapingModeAllCharacters),
+)
+```
+
 ## Routing Error handler
 
 To override the error behavior when `*runtime.ServeMux` was not able to serve the request due to routing issues, use the `runtime.WithRoutingErrorHandler` option.
@@ -358,3 +382,31 @@ HTTP statuses and their mappings to gRPC statuses:
 - HTTP `400 Bad Request` -> gRPC `3 INVALID_ARGUMENT`
 
 This method is not used outside of the initial routing.
+
+### Customizing Routing Errors
+
+If you want to retain HTTP `405 Method Not Allowed` instead of allowing it to be converted to the equivalent of the gRPC `12 UNIMPLEMENTED`, which is  HTTP `501 Not Implmented` you can use the following example:
+
+```go
+func handleRoutingError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w http.ResponseWriter, r *http.Request, httpStatus int) {
+	if httpStatus != http.StatusMethodNotAllowed {
+		runtime.DefaultRoutingErrorHandler(ctx, mux, marshaler, writer, request, httpStatus)
+		return
+	}
+
+	// Use HTTPStatusError to customize the DefaultHTTPErrorHandler status code
+	err := &HTTPStatusError{
+		HTTPStatus: httpStatus
+		Err:        status.Error(codes.Unimplemented, http.StatusText(httpStatus))
+	}
+
+	runtime.DefaultHTTPErrorHandler(ctx, mux, marshaler, w , r, err)
+}
+```
+
+To use this routing error handler, construct the mux as follows:
+```go
+mux := runtime.NewServeMux(
+	runtime.WithRoutingErrorHandler(handleRoutingError),
+)
+```

@@ -6,7 +6,7 @@ commands:
     steps:
       - run: |
           cat > .bazelrc \<< EOF
-          startup --output_base /root/.cache/_grpc_gateway_bazel
+          startup --output_base /home/vscode/.cache/_grpc_gateway_bazel
           build --test_output errors
           build --features race
           # Workaround https://github.com/bazelbuild/bazel/issues/3645
@@ -41,7 +41,7 @@ executors:
       password1: "3ec86b2e5a431be2d72c"
       GLOG_logtostderr: "1"
     docker:
-      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.16
+      - image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.17
         auth:
           username: gateway-ci-user
           password: ${password0}${password1}
@@ -49,45 +49,44 @@ executors:
 jobs:
   build:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - run: go build ./...
   test:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - run: go test -race -coverprofile=coverage.txt ./...
       - run: bash <(curl -s https://codecov.io/bash)
   node_test:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - run: go mod vendor
       - run: >
-          . $HOME/.nvm/nvm.sh &&
           cd examples/internal/browser &&
           npm install gulp-cli &&
           npm install &&
           ./node_modules/.bin/gulp
   generate:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - generate
       - run: git diff --exit-code
   bazel:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v2-bazel-cache-{{ checksum "repositories.bzl" }}
-            - v2-bazel-cache-
+            - v3-bazel-cache-{{ checksum "repositories.bzl" }}
+            - v3-bazel-cache-
       - configure_bazel
       - run:
           name: Check that Bazel BUILD files are up-to-date
@@ -108,12 +107,12 @@ jobs:
           name: Run tests with Bazel
           command: bazel test //...
       - save_cache:
-          key: v2-bazel-cache-{{ checksum "repositories.bzl" }}
+          key: v3-bazel-cache-{{ checksum "repositories.bzl" }}
           paths:
-            - /root/.cache/_grpc_gateway_bazel
+            - /home/vscode/.cache/_grpc_gateway_bazel
   gorelease:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - run:
@@ -122,38 +121,56 @@ jobs:
             cd $(mktemp -d) &&
             go mod init tmp &&
             go get golang.org/x/exp/cmd/gorelease@latest
-      - run: gorelease -base=v2.3.0
+      - run: gorelease -base=v2.7.3
+  push_bsr_plugins:
+    docker:
+      - image: circleci/golang
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run: echo "${BUF_API_TOKEN}" | docker login --username grpcgatewaybot --password-stdin plugins.buf.build
+      - run: |
+          cd .circleci/plugins/protoc-gen-grpc-gateway &&
+          docker build -t plugins.buf.build/grpc-ecosystem/grpc-gateway:${CIRCLE_TAG}-1 --build-arg=RELEASE_VERSION=${CIRCLE_TAG} . &&
+          docker push plugins.buf.build/grpc-ecosystem/grpc-gateway:${CIRCLE_TAG}-1
+      - run: |
+          cd .circleci/plugins/protoc-gen-openapiv2 &&
+          docker build -t plugins.buf.build/grpc-ecosystem/openapiv2:${CIRCLE_TAG}-1 --build-arg=RELEASE_VERSION=${CIRCLE_TAG} . &&
+          docker push plugins.buf.build/grpc-ecosystem/openapiv2:${CIRCLE_TAG}-1
   proto_lint:
     docker:
-      - image: bufbuild/buf:0.41.0
+      - image: bufbuild/buf:1.0.0-rc8
     steps:
       - checkout
       - run: buf build
       - run: buf lint
-      - run: buf breaking --path protoc-gen-openapiv2/options/annotations.proto --path protoc-gen-openapiv2/options/openapiv2.proto --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=master'
+      - run: buf breaking --path protoc-gen-openapiv2/ --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=master'
   proto_push:
     docker:
-      - image: bufbuild/buf:0.41.0
+      - image: bufbuild/buf:1.0.0-rc8
     steps:
       - checkout
-      - run: echo -e "machine buf.build\npassword ${BUF_API_TOKEN}" >> ~/.netrc
-      - run: buf beta push
+      - run: echo "${BUF_API_TOKEN}" | buf registry login --username grpcgatewaybot --token-stdin
+      # Limit pushes to protoc-gen-openapiv2 files. This is a total hack.
+      # It excludes all the files that we don't want to publish, just for the push step.
+      - run: echo -e "    - examples\n    - internal\n    - runtime" >> buf.yaml
+      - run: buf push --tag "$CIRCLE_SHA1"
   release:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - run: go mod vendor
       - run: curl -sL https://git.io/goreleaser | bash
   update-repositoriesbzl:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v2-bazel-cache-{{ checksum "repositories.bzl" }}
-            - v2-bazel-cache-
+            - v3-bazel-cache-{{ checksum "repositories.bzl" }}
+            - v3-bazel-cache-
       - configure_bazel
       - run:
           name: Update repositories.bzl
@@ -162,7 +179,7 @@ jobs:
       - renovate_git_amend_push
   regenerate:
     executor: build-env
-    working_directory: /src/grpc-gateway
+    working_directory: /home/vscode/src/grpc-gateway
     steps:
       - checkout
       - generate
@@ -183,6 +200,12 @@ workflows:
             branches:
               only: /^master$/
       - release:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*(-.*)*/
+      - push_bsr_plugins:
           filters:
             branches:
               ignore: /.*/

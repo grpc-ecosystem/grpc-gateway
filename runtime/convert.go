@@ -207,6 +207,7 @@ func BytesSlice(val, sep string) ([][]byte, error) {
 // Timestamp converts the given RFC3339 formatted string into a timestamp.Timestamp.
 func Timestamp(val string) (*timestamppb.Timestamp, error) {
 	var r timestamppb.Timestamp
+	val = strconv.Quote(strings.Trim(val, `"`))
 	unmarshaler := &protojson.UnmarshalOptions{}
 	err := unmarshaler.Unmarshal([]byte(val), &r)
 	if err != nil {
@@ -218,6 +219,7 @@ func Timestamp(val string) (*timestamppb.Timestamp, error) {
 // Duration converts the given string into a timestamp.Duration.
 func Duration(val string) (*durationpb.Duration, error) {
 	var r durationpb.Duration
+	val = strconv.Quote(strings.Trim(val, `"`))
 	unmarshaler := &protojson.UnmarshalOptions{}
 	err := unmarshaler.Unmarshal([]byte(val), &r)
 	if err != nil {
@@ -263,7 +265,7 @@ func EnumSlice(val, sep string, enumValMap map[string]int32) ([]int32, error) {
 }
 
 /*
-	Support fot google.protobuf.wrappers on top of primitive types
+	Support for google.protobuf.wrappers on top of primitive types
 */
 
 // StringValue well-known type support as wrapper around string type

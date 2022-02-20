@@ -39,6 +39,10 @@ When a message is added which happens to conflict with another message (e.g. by 
 
 The gRPC-Gateway is a generator that generates a Go implementation of a JSON/HTTP-gRPC reverse proxy based on annotations in your proto file, while the [grpc-httpjson-transcoding](https://github.com/grpc-ecosystem/grpc-httpjson-transcoding) library doesn't require the generation step, it uses protobuf descriptors as config. It can be used as a component of an existing proxy. Google Cloud Endpoints and the gRPC-JSON transcoder filter in Envoy are using this.
 
+<!-- TODO(v3): remove this note when default behavior matches Envoy/Cloud Endpoints -->
+**Behavior differences:**
+- By default, gRPC-Gateway does not escape path parameters in the same way. [This can be configured.](../mapping/customizing_your_gateway.md#Controlling-path-parameter-unescaping)
+
 ## What is the difference between the gRPC-Gateway and gRPC-web?
 
 ### Usage

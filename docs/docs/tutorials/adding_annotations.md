@@ -53,7 +53,7 @@ Now that we've got the gRPC-Gateway annotations added to the proto file, we need
 We'll need to add the gRPC-Gateway generator to the generation configuration:
 
 ```yaml
-version: v1beta1
+version: v1
 plugins:
   - name: go
     out: proto
@@ -69,16 +69,13 @@ plugins:
 We'll also need to add the `googleapis` dependency to our `buf.yaml` file:
 
 ```yaml
-version: v1beta1
+version: v1
 name: buf.build/myuser/myrepo
 deps:
-  - buf.build/beta/googleapis
-build:
-  roots:
-    - proto
+  - buf.build/googleapis/googleapis
 ```
 
-Then we need to run `buf beta mod update` to select a version of the dependency to use.
+Then we need to run `buf mod update` to select a version of the dependency to use.
 
 And that's it! Now if you run:
 
@@ -128,6 +125,7 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
 	helloworldpb "github.com/myuser/myrepo/proto/helloworld"
 )
@@ -167,7 +165,7 @@ func main() {
 		context.Background(),
 		"0.0.0.0:8080",
 		grpc.WithBlock(),
-		grpc.WithInsecure(),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
 		log.Fatalln("Failed to dial server:", err)
