@@ -505,6 +505,11 @@ message JSONSchema {
   reserved 43 to 45;
   // Items in `enum` must be unique https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.5.1
   repeated string enum = 46;
+  // Alternative parameter name when used as path parameter. If set, this will
+  // be used as the complete parameter name when this field is used as a path
+  // parameter. Use this to avoid having auto generated path parameter names
+  // for overlapping paths.
+  string path_param_name = 47;
 }
 
 // `Tag` is a representation of OpenAPI v2 specification's Tag object.

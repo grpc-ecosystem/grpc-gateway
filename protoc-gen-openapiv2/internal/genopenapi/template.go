@@ -909,9 +909,13 @@ func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor
 // For example this would replace the path segment of "{foo=bar/*}" with "{foo}" or "prefix{bang=bash/**}" with "prefix{bang}".
 // OpenAPI 2 only allows simple path parameters with the constraints on that parameter specified in the OpenAPI
 // schema's "pattern" instead of in the path parameter itself.
-func partsToOpenAPIPath(parts []string) string {
+func partsToOpenAPIPath(parts []string, overrides map[string]string) string {
 	for index, part := range parts {
-		parts[index] = canRegexp.ReplaceAllString(part, "{$1}")
+		part = canRegexp.ReplaceAllString(part, "{$1}")
+		if override, ok := overrides[part]; ok {
+			part = override
+		}
+		parts[index] = part
 	}
 	return strings.Join(parts, "/")
 }
@@ -1010,9 +1014,11 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 				parts := templateToParts(b.PathTmpl.Template, reg, meth.RequestType.Fields, msgs)
 				// extract any constraints specified in the path placeholders into ECMA regular expressions
 				pathParamRegexpMap := partsToRegexpMap(parts)
+				// Keep track of path parameter overrides
+				var pathParamNames = make(map[string]string)
 				for _, parameter := range b.PathParams {
 
-					var paramType, paramFormat, desc, collectionFormat, defaultValue string
+					var paramType, paramFormat, desc, collectionFormat, defaultValue, pathParamName string
 					var enumNames []string
 					var items *openapiItemsObject
 					var minItems *int
@@ -1027,6 +1033,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							paramFormat = schema.Format
 							desc = schema.Description
 							defaultValue = schema.Default
+							pathParamName = schema.PathParamName
 						} else {
 							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
@@ -1046,6 +1053,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default
+						pathParamName = schema.PathParamName
 					default:
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
@@ -1056,6 +1064,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default
+						pathParamName = schema.PathParamName
 					}
 
 					if parameter.IsRepeated() {
@@ -1083,6 +1092,10 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					var pattern string
 					if regExp, ok := pathParamRegexpMap[parameterString]; ok {
 						pattern = regExp
+					}
+					if pathParamName != "" && pathParamName != parameterString {
+						pathParamNames["{"+parameterString+"}"] = "{" + pathParamName + "}"
+						parameterString = pathParamName
 					}
 					parameters = append(parameters, openapiParameterObject{
 						Name:        parameterString,
@@ -1183,7 +1196,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 				}
 				parameters = append(parameters, queryParams...)
 
-				path := partsToOpenAPIPath(parts)
+				path := partsToOpenAPIPath(parts, pathParamNames)
 				pathItemObject, ok := paths[path]
 				if !ok {
 					pathItemObject = openapiPathItemObject{}
@@ -2514,6 +2527,7 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		}
 	}
 	s.Enum = j.GetEnum()
+	s.PathParamName = j.GetPathParamName()
 	if overrideType := j.GetType(); len(overrideType) > 0 {
 		s.Type = strings.ToLower(overrideType[0].String())
 	}
