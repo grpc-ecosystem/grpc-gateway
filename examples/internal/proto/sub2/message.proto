@@ -2,6 +2,8 @@ syntax = "proto3";
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2";
 package grpc.gateway.examples.internal.proto.sub2;
 
+import "protoc-gen-openapiv2/options/annotations.proto";
+
 message IdMessage {
-	string uuid = 1;
+	string uuid = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {pathParamName: "uuidName"}];
 }
