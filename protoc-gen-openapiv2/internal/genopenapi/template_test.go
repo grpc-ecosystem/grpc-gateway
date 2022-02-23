@@ -4182,7 +4182,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 		schema         map[string]openapi_options.Schema // per-message schema to add
 		defs           openapiDefinitionsObject
 		openAPIOptions *openapiconfig.OpenAPIOptions
-		excludedFields []*descriptor.Field
+		pathParams     []descriptor.Parameter
 	}{
 		{
 			descr: "no OpenAPI options",
@@ -4413,7 +4413,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			},
 		},
 		{
-			descr: "JSONSchema with excluded fields",
+			descr: "JSONSchema with path parameters",
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{
 					Name: proto.String("Message"),
@@ -4425,7 +4425,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 							Options: requiredField,
 						},
 						{
-							Name:   proto.String("anExcludedField"),
+							Name:   proto.String("aPathParameter"),
 							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
 							Number: proto.Int32(2),
 						},
@@ -4464,10 +4464,12 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					},
 				},
 			},
-			excludedFields: []*descriptor.Field{
+			pathParams: []descriptor.Parameter{
 				{
-					FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-						Name: strPtr("anExcludedField"),
+					FieldPath: descriptor.FieldPath{
+						descriptor.FieldPathComponent{
+							Name: ("aPathParameter"),
+						},
 					},
 				},
 			},
@@ -4589,7 +4591,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 
 			refs := make(refMap)
 			actual := make(openapiDefinitionsObject)
-			renderMessagesAsDefinition(msgMap, actual, reg, refs, test.excludedFields)
+			renderMessagesAsDefinition(msgMap, actual, reg, refs, test.pathParams)
 
 			if !reflect.DeepEqual(actual, test.defs) {
 				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
