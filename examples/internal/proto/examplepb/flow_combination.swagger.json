@@ -41,7 +41,7 @@
             "type": "string"
           },
           {
-            "name": "body",
+            "name": "c",
             "in": "body",
             "required": true,
             "schema": {
@@ -94,7 +94,7 @@
             "type": "string"
           },
           {
-            "name": "body",
+            "name": "c",
             "in": "body",
             "required": true,
             "schema": {
@@ -144,7 +144,7 @@
             "type": "string"
           },
           {
-            "name": "body",
+            "name": "c",
             "in": "body",
             "required": true,
             "schema": {
@@ -197,7 +197,7 @@
             "type": "string"
           },
           {
-            "name": "body",
+            "name": "c",
             "in": "body",
             "required": true,
             "schema": {
@@ -229,7 +229,7 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "c",
             "in": "body",
             "required": true,
             "schema": {
@@ -282,7 +282,7 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "c",
             "in": "body",
             "required": true,
             "schema": {
@@ -533,7 +533,7 @@
             "type": "string"
           },
           {
-            "name": "body",
+            "name": "c",
             "in": "body",
             "required": true,
             "schema": {
@@ -586,7 +586,7 @@
             "type": "string"
           },
           {
-            "name": "body",
+            "name": "c",
             "in": "body",
             "required": true,
             "schema": {
@@ -717,7 +717,7 @@
             "type": "string"
           },
           {
-            "name": "body",
+            "name": "c",
             "in": "body",
             "required": true,
             "schema": {
@@ -770,7 +770,7 @@
             "type": "string"
           },
           {
-            "name": "body",
+            "name": "c",
             "in": "body",
             "required": true,
             "schema": {
