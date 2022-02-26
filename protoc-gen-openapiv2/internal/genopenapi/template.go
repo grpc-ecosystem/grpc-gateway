@@ -445,7 +445,7 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		}
 	}
 
-	// TODO(wergeland): Check that schema.Required respects useJsonNames
+	// TODO(oyvindwe): Check that schema.Required respects useJsonNames
 	schema.Required = filterOutExcludedFields(schema.Required, pathParams)
 
 	for _, f := range msg.Fields {
