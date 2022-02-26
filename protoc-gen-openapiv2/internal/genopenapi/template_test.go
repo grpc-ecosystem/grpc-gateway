@@ -2297,10 +2297,6 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		Message:              nested,
 		FieldDescriptorProto: nested.GetField()[0],
 	}
-	boolField := &descriptor.Field{
-		Message:              nested,
-		FieldDescriptorProto: nested.GetField()[1],
-	}
 	file := descriptor.File{
 		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
 			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
@@ -2354,10 +2350,6 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 											Name:   "nested",
 											Target: nestedField,
 										},
-										{
-											Name:   "bool",
-											Target: boolField,
-										},
 									}),
 								},
 							},
@@ -2372,12 +2364,14 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
 		return
 	}
+	fmt.Fprintln(os.Stderr, "fd", file.FileDescriptorProto)
 	err := reg.Load(&pluginpb.CodeGeneratorRequest{
 		ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 	})
 	if err != nil {
 		t.Fatalf("failed to load code generator request: %v", err)
 	}
+	fmt.Fprintln(os.Stderr, "AllFQMNs", reg.GetAllFQMNs())
 	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
@@ -2463,10 +2457,6 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		Message:              nested,
 		FieldDescriptorProto: nested.GetField()[0],
 	}
-	boolField := &descriptor.Field{
-		Message:              nested,
-		FieldDescriptorProto: nested.GetField()[1],
-	}
 	file := descriptor.File{
 		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
 			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
@@ -2519,10 +2509,6 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 										{
 											Name:   "nested",
 											Target: nestedField,
-										},
-										{
-											Name:   "bool",
-											Target: boolField,
 										},
 									}),
 								},
@@ -2848,12 +2834,12 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 										},
 									},
 									Body: &descriptor.Body{
-										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+										FieldPath: []descriptor.FieldPathComponent{
 											{
 												Name:   "book",
 												Target: bookField,
 											},
-										}),
+										},
 									},
 								},
 							},
@@ -2881,7 +2867,7 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 			args: args{file: newFile()},
 			want: []paramOut{
 				{"parent", "path", true},
-				{"body", "body", true},
+				{"book", "body", true},
 				{"book_id", "query", false},
 			},
 		},

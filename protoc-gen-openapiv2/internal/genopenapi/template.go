@@ -492,8 +492,12 @@ func renderFieldAsDefinition(f *descriptor.Field, reg *descriptor.Registry, refs
 	if len(pathParams) == 0 {
 		return schemaOfField(f, reg, refs)
 	}
-	if msg, err := reg.LookupMsg("", f.GetTypeName()); err == nil {
-		// TODO(wergeland): Add description from field.
+	location := ""
+	if ix := strings.LastIndex(f.Message.FQMN(), "."); ix > 0 {
+		location = f.Message.FQMN()[0:ix]
+	}
+	if msg, err := reg.LookupMsg(location, f.GetTypeName()); err == nil {
+		// TODO(oyvindwe): Add description from field.
 		schema := renderMessageAsDefinition(msg, reg, refs, pathParams)
 		return schema
 	} else {
@@ -572,6 +576,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	)
 
 	fd := f.FieldDescriptorProto
+	// TODO(oyvindwe): Use location from f.Message here as well?
 	if m, err := reg.LookupMsg("", f.GetTypeName()); err == nil {
 		if opt := m.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			fd = m.GetField()[1]
@@ -1063,7 +1068,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						// "NOTE: the referred field must be present at the top-level of the request message type."
 						// Ref: https://github.com/googleapis/googleapis/blob/b3397f5febbf21dfc69b875ddabaf76bee765058/google/api/http.proto#L350-L352
 						if len(b.Body.FieldPath) > 1 {
-							return fmt.Errorf("Body of request '%s' is not a top level field: '%v'.", meth.Service.Name, b.Body.FieldPath)
+							return fmt.Errorf("Body of request '%s' is not a top level field: '%v'.", meth.Service.GetName(), b.Body.FieldPath)
 						}
 						bodyField := b.Body.FieldPath[0]
 						bodyFieldName = bodyField.Name
