@@ -1061,6 +1061,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					} else {
 						// Body field path is limited to one path component. From google.api.HttpRule.body:
 						// "NOTE: the referred field must be present at the top-level of the request message type."
+						// Ref: https://github.com/googleapis/googleapis/blob/b3397f5febbf21dfc69b875ddabaf76bee765058/google/api/http.proto#L350-L352
 						if len(b.Body.FieldPath) > 1 {
 							return fmt.Errorf("Body of request '%s' is not a top level field: '%v'.", meth.Service.Name, b.Body.FieldPath)
 						}
