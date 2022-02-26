@@ -32,6 +32,7 @@ go_library(
         "model_protobuf_any.go",
         "model_rpc_status.go",
         "model_sub_string_message.go",
+        "model_the_book_to_update_.go",
         "model_update_v2_request_request_for_update_includes_the_message_and_the_update_mask.go",
         "response.go",
     ],

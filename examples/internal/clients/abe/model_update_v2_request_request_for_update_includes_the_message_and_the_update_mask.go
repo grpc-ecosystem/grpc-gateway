@@ -11,7 +11,7 @@
 package abe
 
 type UpdateV2RequestRequestForUpdateIncludesTheMessageAndTheUpdateMask struct {
-	Abe *ABitOfEverything4 `json:"abe"`
+	Abe *ABitOfEverything2 `json:"abe"`
 	// The paths to update.
 	UpdateMask string `json:"updateMask,omitempty"`
 }

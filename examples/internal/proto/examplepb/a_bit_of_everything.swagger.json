@@ -904,12 +904,10 @@
             "type": "string"
           },
           {
-            "name": "single_nested",
+            "name": "singleNested",
             "in": "body",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/ABitOfEverythingNested"
-            }
+            "schema": {}
           },
           {
             "name": "uuid",
@@ -2873,26 +2871,10 @@
           },
           {
             "name": "book",
-            "description": "An example resource type from AIP-123 used to test the behavior described in\nthe CreateBookRequest message.\n\nSee: https://google.aip.dev/123",
+            "description": "The book's `name` field is used to identify the book to be updated.\nFormat: publishers/{publisher}/books/{book}",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "description": "Output only. The book's ID.",
-                  "readOnly": true
-                },
-                "createTime": {
-                  "type": "string",
-                  "format": "date-time",
-                  "description": "Output only. Creation time of the book.",
-                  "readOnly": true
-                }
-              },
-              "description": "An example resource type from AIP-123 used to test the behavior described in\nthe CreateBookRequest message.\n\nSee: https://google.aip.dev/123"
-            }
+            "schema": {}
           },
           {
             "name": "updateMask",
@@ -2969,9 +2951,7 @@
             "description": "The book to create.",
             "in": "body",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/examplepbBook"
-            }
+            "schema": {}
           },
           {
             "name": "bookId",
@@ -3038,205 +3018,7 @@
             "description": "Intentionaly complicated message type to cover many features of Protobuf.",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "object",
-              "example": {
-                "int64_value": 12,
-                "double_value": 12.3
-              },
-              "properties": {
-                "singleNested": {
-                  "$ref": "#/definitions/ABitOfEverythingNested"
-                },
-                "nested": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/ABitOfEverythingNested"
-                  }
-                },
-                "floatValue": {
-                  "type": "number",
-                  "format": "float",
-                  "default": "0.2",
-                  "description": "Float value field",
-                  "required": [
-                    "float_value"
-                  ]
-                },
-                "doubleValue": {
-                  "type": "number",
-                  "format": "double"
-                },
-                "int64Value": {
-                  "type": "string",
-                  "format": "int64"
-                },
-                "uint64Value": {
-                  "type": "string",
-                  "format": "uint64"
-                },
-                "int32Value": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "fixed64Value": {
-                  "type": "string",
-                  "format": "uint64"
-                },
-                "fixed32Value": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "boolValue": {
-                  "type": "boolean"
-                },
-                "stringValue": {
-                  "type": "string"
-                },
-                "bytesValue": {
-                  "type": "string",
-                  "format": "byte"
-                },
-                "uint32Value": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "enumValue": {
-                  "$ref": "#/definitions/examplepbNumericEnum"
-                },
-                "pathEnumValue": {
-                  "$ref": "#/definitions/pathenumPathEnum"
-                },
-                "nestedPathEnumValue": {
-                  "$ref": "#/definitions/MessagePathEnumNestedPathEnum"
-                },
-                "sfixed32Value": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "sfixed64Value": {
-                  "type": "string",
-                  "format": "int64"
-                },
-                "sint32Value": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "sint64Value": {
-                  "type": "string",
-                  "format": "int64"
-                },
-                "repeatedStringValue": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "oneofEmpty": {
-                  "properties": {}
-                },
-                "oneofString": {
-                  "type": "string"
-                },
-                "mapValue": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "$ref": "#/definitions/examplepbNumericEnum"
-                  }
-                },
-                "mappedStringValue": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "string"
-                  }
-                },
-                "mappedNestedValue": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "$ref": "#/definitions/ABitOfEverythingNested"
-                  }
-                },
-                "nonConventionalNameValue": {
-                  "type": "string"
-                },
-                "timestampValue": {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                "repeatedEnumValue": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/examplepbNumericEnum"
-                  },
-                  "title": "repeated enum value. it is comma-separated in query"
-                },
-                "repeatedEnumAnnotation": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/examplepbNumericEnum"
-                  },
-                  "description": "Repeated numeric enum description.",
-                  "title": "Repeated numeric enum title"
-                },
-                "enumValueAnnotation": {
-                  "$ref": "#/definitions/examplepbNumericEnum",
-                  "description": "Numeric enum description.",
-                  "title": "Numeric enum title"
-                },
-                "repeatedStringAnnotation": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "description": "Repeated string description.",
-                  "title": "Repeated string title"
-                },
-                "repeatedNestedAnnotation": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/ABitOfEverythingNested"
-                  },
-                  "description": "Repeated nested object description.",
-                  "title": "Repeated nested object title"
-                },
-                "nestedAnnotation": {
-                  "$ref": "#/definitions/ABitOfEverythingNested",
-                  "description": "Nested object description.",
-                  "title": "Nested object title"
-                },
-                "int64OverrideType": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "requiredStringViaFieldBehaviorAnnotation": {
-                  "type": "string",
-                  "title": "mark a field as required in Open API definition",
-                  "required": [
-                    "required_string_via_field_behavior_annotation"
-                  ]
-                },
-                "outputOnlyStringViaFieldBehaviorAnnotation": {
-                  "type": "string",
-                  "title": "mark a field as readonly in Open API definition",
-                  "readOnly": true
-                },
-                "optionalStringValue": {
-                  "type": "string"
-                }
-              },
-              "description": "Intentionaly complicated message type to cover many features of Protobuf.",
-              "title": "A bit of everything",
-              "externalDocs": {
-                "description": "Find out more about ABitOfEverything",
-                "url": "https://github.com/grpc-ecosystem/grpc-gateway"
-              },
-              "required": [
-                "int64Value",
-                "doubleValue",
-                "floatValue",
-                "requiredStringViaFieldBehaviorAnnotation"
-              ]
-            }
+            "schema": {}
           },
           {
             "name": "updateMask",
@@ -3301,205 +3083,7 @@
             "description": "Intentionaly complicated message type to cover many features of Protobuf.",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "object",
-              "example": {
-                "int64_value": 12,
-                "double_value": 12.3
-              },
-              "properties": {
-                "singleNested": {
-                  "$ref": "#/definitions/ABitOfEverythingNested"
-                },
-                "nested": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/ABitOfEverythingNested"
-                  }
-                },
-                "floatValue": {
-                  "type": "number",
-                  "format": "float",
-                  "default": "0.2",
-                  "description": "Float value field",
-                  "required": [
-                    "float_value"
-                  ]
-                },
-                "doubleValue": {
-                  "type": "number",
-                  "format": "double"
-                },
-                "int64Value": {
-                  "type": "string",
-                  "format": "int64"
-                },
-                "uint64Value": {
-                  "type": "string",
-                  "format": "uint64"
-                },
-                "int32Value": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "fixed64Value": {
-                  "type": "string",
-                  "format": "uint64"
-                },
-                "fixed32Value": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "boolValue": {
-                  "type": "boolean"
-                },
-                "stringValue": {
-                  "type": "string"
-                },
-                "bytesValue": {
-                  "type": "string",
-                  "format": "byte"
-                },
-                "uint32Value": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "enumValue": {
-                  "$ref": "#/definitions/examplepbNumericEnum"
-                },
-                "pathEnumValue": {
-                  "$ref": "#/definitions/pathenumPathEnum"
-                },
-                "nestedPathEnumValue": {
-                  "$ref": "#/definitions/MessagePathEnumNestedPathEnum"
-                },
-                "sfixed32Value": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "sfixed64Value": {
-                  "type": "string",
-                  "format": "int64"
-                },
-                "sint32Value": {
-                  "type": "integer",
-                  "format": "int32"
-                },
-                "sint64Value": {
-                  "type": "string",
-                  "format": "int64"
-                },
-                "repeatedStringValue": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "oneofEmpty": {
-                  "properties": {}
-                },
-                "oneofString": {
-                  "type": "string"
-                },
-                "mapValue": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "$ref": "#/definitions/examplepbNumericEnum"
-                  }
-                },
-                "mappedStringValue": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "string"
-                  }
-                },
-                "mappedNestedValue": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "$ref": "#/definitions/ABitOfEverythingNested"
-                  }
-                },
-                "nonConventionalNameValue": {
-                  "type": "string"
-                },
-                "timestampValue": {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                "repeatedEnumValue": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/examplepbNumericEnum"
-                  },
-                  "title": "repeated enum value. it is comma-separated in query"
-                },
-                "repeatedEnumAnnotation": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/examplepbNumericEnum"
-                  },
-                  "description": "Repeated numeric enum description.",
-                  "title": "Repeated numeric enum title"
-                },
-                "enumValueAnnotation": {
-                  "$ref": "#/definitions/examplepbNumericEnum",
-                  "description": "Numeric enum description.",
-                  "title": "Numeric enum title"
-                },
-                "repeatedStringAnnotation": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "description": "Repeated string description.",
-                  "title": "Repeated string title"
-                },
-                "repeatedNestedAnnotation": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/ABitOfEverythingNested"
-                  },
-                  "description": "Repeated nested object description.",
-                  "title": "Repeated nested object title"
-                },
-                "nestedAnnotation": {
-                  "$ref": "#/definitions/ABitOfEverythingNested",
-                  "description": "Nested object description.",
-                  "title": "Nested object title"
-                },
-                "int64OverrideType": {
-                  "type": "integer",
-                  "format": "int64"
-                },
-                "requiredStringViaFieldBehaviorAnnotation": {
-                  "type": "string",
-                  "title": "mark a field as required in Open API definition",
-                  "required": [
-                    "required_string_via_field_behavior_annotation"
-                  ]
-                },
-                "outputOnlyStringViaFieldBehaviorAnnotation": {
-                  "type": "string",
-                  "title": "mark a field as readonly in Open API definition",
-                  "readOnly": true
-                },
-                "optionalStringValue": {
-                  "type": "string"
-                }
-              },
-              "description": "Intentionaly complicated message type to cover many features of Protobuf.",
-              "title": "A bit of everything",
-              "externalDocs": {
-                "description": "Find out more about ABitOfEverything",
-                "url": "https://github.com/grpc-ecosystem/grpc-gateway"
-              },
-              "required": [
-                "int64Value",
-                "doubleValue",
-                "floatValue",
-                "requiredStringViaFieldBehaviorAnnotation"
-              ]
-            }
+            "schema": {}
           },
           {
             "name": "updateMask",
@@ -3638,9 +3222,7 @@
             "name": "value",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": {}
           }
         ],
         "tags": [
@@ -3947,9 +3529,7 @@
             "name": "data",
             "in": "body",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/examplepbBody"
-            }
+            "schema": {}
           }
         ],
         "tags": [

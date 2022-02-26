@@ -44,9 +44,7 @@
             "name": "c",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": {}
           },
           {
             "name": "b",
@@ -97,9 +95,7 @@
             "name": "c",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": {}
           },
           {
             "name": "b",
@@ -147,9 +143,7 @@
             "name": "c",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": {}
           }
         ],
         "tags": [
@@ -200,9 +194,7 @@
             "name": "c",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": {}
           }
         ],
         "tags": [
@@ -232,9 +224,7 @@
             "name": "c",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": {}
           },
           {
             "name": "a",
@@ -285,9 +275,7 @@
             "name": "c",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": {}
           },
           {
             "name": "a",
@@ -536,9 +524,7 @@
             "name": "c",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": {}
           }
         ],
         "tags": [
@@ -589,9 +575,7 @@
             "name": "c",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": {}
           }
         ],
         "tags": [
@@ -720,9 +704,7 @@
             "name": "c",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": {}
           },
           {
             "name": "b",
@@ -773,9 +755,7 @@
             "name": "c",
             "in": "body",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "schema": {}
           },
           {
             "name": "b",
