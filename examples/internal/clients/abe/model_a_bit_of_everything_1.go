@@ -16,7 +16,7 @@ import (
 
 // Intentionaly complicated message type to cover many features of Protobuf.
 type ABitOfEverything1 struct {
-	SingleNested *ABitOfEverythingNested `json:"singleNested,omitempty"`
+	SingleNested *V1exampledeepPathsingleNestedNameSingleNested `json:"singleNested,omitempty"`
 	Uuid string `json:"uuid"`
 	Nested []ABitOfEverythingNested `json:"nested,omitempty"`
 	// Float value field

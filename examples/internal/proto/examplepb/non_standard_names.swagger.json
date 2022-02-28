@@ -39,7 +39,9 @@
             "name": "body",
             "in": "body",
             "required": true,
-            "schema": {}
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessage"
+            }
           },
           {
             "name": "updateMask",
@@ -76,7 +78,9 @@
             "name": "body",
             "in": "body",
             "required": true,
-            "schema": {}
+            "schema": {
+              "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNames"
+            }
           },
           {
             "name": "updateMask",

@@ -248,7 +248,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		// verify if the field is required
 		required := false
 		for _, fieldName := range schema.Required {
-			if fieldName == field.GetName() {
+			if fieldName == reg.FieldName(field) {
 				required = true
 				break
 			}
@@ -445,14 +445,13 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		}
 	}
 
-	// TODO(oyvindwe): Check that schema.Required respects useJsonNames
 	schema.Required = filterOutExcludedFields(schema.Required, pathParams)
 
 	for _, f := range msg.Fields {
-		if shouldExcludeField(reg.FieldName(f), pathParams) {
+		if shouldExcludeField(f.GetName(), pathParams) {
 			continue
 		}
-		subPathParams := subPathParams(reg.FieldName(f), pathParams)
+		subPathParams := subPathParams(f.GetName(), pathParams)
 		fieldValue, err := renderFieldAsDefinition(f, reg, customRefs, subPathParams)
 		if err != nil {
 			return openapiSchemaObject{}, err
@@ -468,11 +467,7 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 
 		if fieldValue.Required != nil {
 			for _, req := range fieldValue.Required {
-				if reg.GetUseJSONNamesForFields() {
-					schema.Required = append(schema.Required, f.GetJsonName())
-				} else {
-					schema.Required = append(schema.Required, req)
-				}
+				schema.Required = append(schema.Required, req)
 			}
 		}
 
@@ -593,8 +588,12 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	)
 
 	fd := f.FieldDescriptorProto
-	// TODO(oyvindwe): Use location from f.Message here as well?
-	if m, err := reg.LookupMsg("", f.GetTypeName()); err == nil {
+	location := ""
+	if ix := strings.LastIndex(f.Message.FQMN(), "."); ix > 0 {
+		location = f.Message.FQMN()[0:ix]
+	}
+	// TODO(oyvindwe): Look into why this fails for enums, and if it has consequences.
+	if m, err := reg.LookupMsg(location, f.GetTypeName()); err == nil {
 		if opt := m.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			fd = m.GetField()[1]
 			aggregate = object
@@ -610,7 +609,6 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	case descriptorpb.FieldDescriptorProto_TYPE_ENUM, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, descriptorpb.FieldDescriptorProto_TYPE_GROUP:
 		if wktSchema, ok := wktSchemas[fd.GetTypeName()]; ok {
 			core = wktSchema
-
 			if fd.GetTypeName() == ".google.protobuf.Empty" {
 				props = &openapiSchemaObjectProperties{}
 			}
@@ -664,7 +662,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	}
 
 	if j, err := getFieldBehaviorOption(reg, f); err == nil {
-		updateSwaggerObjectFromFieldBehavior(&ret, j, f)
+		updateSwaggerObjectFromFieldBehavior(&ret, j, reg, f)
 	}
 
 	if reg.GetProto3OptionalNullable() && f.GetProto3Optional() {
@@ -1093,13 +1091,15 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						}
 						bodyField := b.Body.FieldPath[0]
 						if reg.GetUseJSONNamesForFields() {
+							// TODO(oyvindwe) What about bodyField.Target.JsonName?
 							bodyFieldName = doCamelCase(bodyField.Name)
 						} else {
 							bodyFieldName = bodyField.Name
 						}
 						// Align pathParams with body field path.
 						pathParams := subPathParams(bodyFieldName, b.PathParams)
-						schema, err := renderFieldAsDefinition(bodyField.Target, reg, customRefs, pathParams)
+						var err error
+						schema, err = renderFieldAsDefinition(bodyField.Target, reg, customRefs, pathParams)
 						if err != nil {
 							return err
 						}
@@ -2382,6 +2382,12 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 	s.MaxProperties = j.GetMaxProperties()
 	s.MinProperties = j.GetMinProperties()
 	s.Required = j.GetRequired()
+	if reg.GetUseJSONNamesForFields() {
+		for i, r := range s.Required {
+			// TODO(oyvindwe) What about bodyField.Target.JsonName?
+			s.Required[i] = doCamelCase(r)
+		}
+	}
 	s.Enum = j.GetEnum()
 	if overrideType := j.GetType(); len(overrideType) > 0 {
 		s.Type = strings.ToLower(overrideType[0].String())
@@ -2394,7 +2400,7 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 	}
 }
 
-func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotations.FieldBehavior, field *descriptor.Field) {
+func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotations.FieldBehavior, reg *descriptor.Registry, field *descriptor.Field) {
 	// Per the JSON Reference syntax: Any members other than "$ref" in a JSON Reference object SHALL be ignored.
 	// https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03#section-3
 	if s.Ref != "" {
@@ -2404,7 +2410,12 @@ func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotation
 	for _, fb := range j {
 		switch fb {
 		case annotations.FieldBehavior_REQUIRED:
-			s.Required = append(s.Required, *field.Name)
+			if reg.GetUseJSONNamesForFields() {
+				// TODO(oyvindwe) What about bodyField.Target.JsonName?
+				s.Required = append(s.Required, doCamelCase(*field.Name))
+			} else {
+				s.Required = append(s.Required, *field.Name)
+			}
 		case annotations.FieldBehavior_OUTPUT_ONLY:
 			s.ReadOnly = true
 		case annotations.FieldBehavior_FIELD_BEHAVIOR_UNSPECIFIED:

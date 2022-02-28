@@ -987,7 +987,7 @@ type EchoServiceEchoPatchOpts struct {
 	UpdateMask optional.String
 }
 
-func (a *EchoServiceApiService) EchoServiceEchoPatch(ctx context.Context, body interface{}, localVarOptionals *EchoServiceEchoPatchOpts) (ExamplepbDynamicMessageUpdate, *http.Response, error) {
+func (a *EchoServiceApiService) EchoServiceEchoPatch(ctx context.Context, body ExamplepbDynamicMessage, localVarOptionals *EchoServiceEchoPatchOpts) (ExamplepbDynamicMessageUpdate, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}

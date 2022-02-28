@@ -1076,7 +1076,7 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	OptionalStringValue optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested interface{}, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1933,7 +1933,7 @@ type ABitOfEverythingServiceCreateBookOpts struct {
 	BookId optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ctx context.Context, parent string, book interface{}, localVarOptionals *ABitOfEverythingServiceCreateBookOpts) (ExamplepbBook, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ctx context.Context, parent string, book ExamplepbBook, localVarOptionals *ABitOfEverythingServiceCreateBookOpts) (ExamplepbBook, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -2564,7 +2564,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWithBody(ctx context.Context, id string, data interface{}) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWithBody(ctx context.Context, id string, data ExamplepbBody) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -4070,7 +4070,7 @@ type ABitOfEverythingServiceUpdateBookOpts struct {
 	AllowMissing optional.Bool
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ctx context.Context, bookName string, book interface{}, localVarOptionals *ABitOfEverythingServiceUpdateBookOpts) (ExamplepbBook, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ctx context.Context, bookName string, book TheBookToUpdate_, localVarOptionals *ABitOfEverythingServiceUpdateBookOpts) (ExamplepbBook, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -4242,7 +4242,7 @@ type ABitOfEverythingServiceUpdateV2Opts struct {
 	UpdateMask optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, abeUuid string, abe interface{}, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, abeUuid string, abe ABitOfEverything2, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -4411,7 +4411,7 @@ type ABitOfEverythingServiceUpdateV22Opts struct {
 	UpdateMask optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, abeUuid string, abe interface{}, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, abeUuid string, abe ABitOfEverything3, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}

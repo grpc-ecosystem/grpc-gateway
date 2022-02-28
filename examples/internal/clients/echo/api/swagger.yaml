@@ -482,7 +482,8 @@ paths:
       - in: "body"
         name: "body"
         required: true
-        schema: {}
+        schema:
+          $ref: "#/definitions/examplepbDynamicMessage"
         x-exportParamName: "Body"
       - name: "updateMask"
         in: "query"

@@ -10,8 +10,9 @@
 
 package abe
 
-type UpdateV2RequestRequestForUpdateIncludesTheMessageAndTheUpdateMask struct {
-	Abe *ABitOfEverything4 `json:"abe,omitempty"`
-	// The paths to update.
-	UpdateMask string `json:"updateMask,omitempty"`
+// Nested is nested type.
+type V1exampledeepPathsingleNestedNameSingleNested struct {
+	Amount int64 `json:"amount,omitempty"`
+	// DeepEnum description.
+	Ok *NestedDeepEnum `json:"ok,omitempty"`
 }

@@ -576,7 +576,9 @@
             "name": "body",
             "in": "body",
             "required": true,
-            "schema": {}
+            "schema": {
+              "$ref": "#/definitions/examplepbDynamicMessage"
+            }
           },
           {
             "name": "updateMask",
