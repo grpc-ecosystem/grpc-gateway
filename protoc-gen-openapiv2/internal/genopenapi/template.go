@@ -240,10 +240,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		if items != nil && (items.Type == "" || items.Type == "object") && !isEnum {
 			return nil, nil // TODO: currently, mapping object in query parameter is not supported
 		}
-		desc := schema.Description
-		if schema.Title != "" { // merge title because title of parameter object will be ignored
-			desc = strings.TrimSpace(schema.Title + ". " + schema.Description)
-		}
+		desc := mergeDescription(schema)
 
 		// verify if the field is required
 		required := false
@@ -452,12 +449,12 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 			continue
 		}
 		subPathParams := subPathParams(f.GetName(), pathParams)
-		fieldValue, err := renderFieldAsDefinition(f, reg, customRefs, subPathParams)
+		fieldSchema, err := renderFieldAsDefinition(f, reg, customRefs, subPathParams)
 		if err != nil {
 			return openapiSchemaObject{}, err
 		}
 		comments := fieldProtoComments(reg, msg, f)
-		if err := updateOpenAPIDataFromComments(reg, &fieldValue, f, comments, false); err != nil {
+		if err := updateOpenAPIDataFromComments(reg, &fieldSchema, f, comments, false); err != nil {
 			return openapiSchemaObject{}, err
 		}
 
@@ -465,13 +462,13 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 			schema.Required[requiredIdx] = f.GetJsonName()
 		}
 
-		if fieldValue.Required != nil {
-			for _, req := range fieldValue.Required {
+		if fieldSchema.Required != nil {
+			for _, req := range fieldSchema.Required {
 				schema.Required = append(schema.Required, req)
 			}
 		}
 
-		kv := keyVal{Value: fieldValue}
+		kv := keyVal{Value: fieldSchema}
 		kv.Key = reg.FieldName(f)
 		if schema.Properties == nil {
 			schema.Properties = &openapiSchemaObjectProperties{}
@@ -504,7 +501,7 @@ func renderFieldAsDefinition(f *descriptor.Field, reg *descriptor.Registry, refs
 	}
 	comments := fieldProtoComments(reg, f.Message, f)
 	if len(comments) > 0 {
-		// Overwrite title and description
+		// Use title and description from field instead of nested message if present.
 		paragraphs := strings.Split(comments, "\n\n")
 		schema.Title = strings.TrimSpace(paragraphs[0])
 		schema.Description = strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
@@ -1103,8 +1100,8 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						if err != nil {
 							return err
 						}
-						if schema.Description != "" {
-							desc = schema.Description
+						if schema.Title != "" {
+							desc = mergeDescription(schema)
 						} else {
 							desc = fieldProtoComments(reg, bodyField.Target.Message, bodyField.Target)
 						}
@@ -1406,6 +1403,14 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 
 	// Success! return nil on the error object
 	return nil
+}
+
+func mergeDescription(schema openapiSchemaObject) string {
+	desc := schema.Description
+	if schema.Title != "" { // join title because title of parameter object will be ignored
+		desc = strings.TrimSpace(schema.Title + "\n\n" + schema.Description)
+	}
+	return desc
 }
 
 func operationForMethod(httpMethod string) func(*openapiPathItemObject) *openapiOperationObject {

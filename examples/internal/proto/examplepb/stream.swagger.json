@@ -406,7 +406,7 @@
           "type": "string"
         }
       },
-      "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+      "description": "Intentionally complicated message type to cover many features of Protobuf.",
       "title": "A bit of everything",
       "externalDocs": {
         "description": "Find out more about ABitOfEverything",

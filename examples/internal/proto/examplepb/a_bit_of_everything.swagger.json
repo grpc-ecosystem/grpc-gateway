@@ -411,7 +411,7 @@
           },
           {
             "name": "repeatedEnumValue",
-            "description": "repeated enum value. it is comma-separated in query.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "repeated enum value. it is comma-separated in query\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "array",
@@ -426,7 +426,7 @@
           },
           {
             "name": "repeatedEnumAnnotation",
-            "description": "Repeated numeric enum title. Repeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "Repeated numeric enum title\n\nRepeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "array",
@@ -441,7 +441,7 @@
           },
           {
             "name": "enumValueAnnotation",
-            "description": "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "Numeric enum title\n\nNumeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "string",
@@ -453,7 +453,7 @@
           },
           {
             "name": "repeatedStringAnnotation",
-            "description": "Repeated string title. Repeated string description.",
+            "description": "Repeated string title\n\nRepeated string description.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -485,14 +485,14 @@
           },
           {
             "name": "requiredStringViaFieldBehaviorAnnotation",
-            "description": "mark a field as required in Open API definition.",
+            "description": "mark a field as required in Open API definition",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
             "name": "outputOnlyStringViaFieldBehaviorAnnotation",
-            "description": "mark a field as readonly in Open API definition.",
+            "description": "mark a field as readonly in Open API definition",
             "in": "query",
             "required": false,
             "type": "string"
@@ -753,7 +753,7 @@
           },
           {
             "name": "repeatedEnumValue",
-            "description": "repeated enum value. it is comma-separated in query.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "repeated enum value. it is comma-separated in query\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "array",
@@ -768,7 +768,7 @@
           },
           {
             "name": "repeatedEnumAnnotation",
-            "description": "Repeated numeric enum title. Repeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "Repeated numeric enum title\n\nRepeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "array",
@@ -783,7 +783,7 @@
           },
           {
             "name": "enumValueAnnotation",
-            "description": "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "Numeric enum title\n\nNumeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "string",
@@ -795,7 +795,7 @@
           },
           {
             "name": "repeatedStringAnnotation",
-            "description": "Repeated string title. Repeated string description.",
+            "description": "Repeated string title\n\nRepeated string description.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -832,14 +832,14 @@
           },
           {
             "name": "requiredStringViaFieldBehaviorAnnotation",
-            "description": "mark a field as required in Open API definition.",
+            "description": "mark a field as required in Open API definition",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
             "name": "outputOnlyStringViaFieldBehaviorAnnotation",
-            "description": "mark a field as readonly in Open API definition.",
+            "description": "mark a field as readonly in Open API definition",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1082,7 +1082,7 @@
           },
           {
             "name": "repeatedEnumValue",
-            "description": "repeated enum value. it is comma-separated in query.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "repeated enum value. it is comma-separated in query\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1097,7 +1097,7 @@
           },
           {
             "name": "repeatedEnumAnnotation",
-            "description": "Repeated numeric enum title. Repeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "Repeated numeric enum title\n\nRepeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1112,7 +1112,7 @@
           },
           {
             "name": "enumValueAnnotation",
-            "description": "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "Numeric enum title\n\nNumeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1124,7 +1124,7 @@
           },
           {
             "name": "repeatedStringAnnotation",
-            "description": "Repeated string title. Repeated string description.",
+            "description": "Repeated string title\n\nRepeated string description.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1168,14 +1168,14 @@
           },
           {
             "name": "requiredStringViaFieldBehaviorAnnotation",
-            "description": "mark a field as required in Open API definition.",
+            "description": "mark a field as required in Open API definition",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
             "name": "outputOnlyStringViaFieldBehaviorAnnotation",
-            "description": "mark a field as readonly in Open API definition.",
+            "description": "mark a field as readonly in Open API definition",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1435,7 +1435,7 @@
           },
           {
             "name": "repeatedEnumValue",
-            "description": "repeated enum value. it is comma-separated in query.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "repeated enum value. it is comma-separated in query\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1450,7 +1450,7 @@
           },
           {
             "name": "repeatedEnumAnnotation",
-            "description": "Repeated numeric enum title. Repeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "Repeated numeric enum title\n\nRepeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1465,7 +1465,7 @@
           },
           {
             "name": "enumValueAnnotation",
-            "description": "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "Numeric enum title\n\nNumeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "string",
@@ -1477,7 +1477,7 @@
           },
           {
             "name": "repeatedStringAnnotation",
-            "description": "Repeated string title. Repeated string description.",
+            "description": "Repeated string title\n\nRepeated string description.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1521,14 +1521,14 @@
           },
           {
             "name": "requiredStringViaFieldBehaviorAnnotation",
-            "description": "mark a field as required in Open API definition.",
+            "description": "mark a field as required in Open API definition",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
             "name": "outputOnlyStringViaFieldBehaviorAnnotation",
-            "description": "mark a field as readonly in Open API definition.",
+            "description": "mark a field as readonly in Open API definition",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1805,7 +1805,7 @@
           },
           {
             "name": "repeatedEnumValue",
-            "description": "repeated enum value. it is comma-separated in query.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "repeated enum value. it is comma-separated in query\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1820,7 +1820,7 @@
           },
           {
             "name": "repeatedEnumAnnotation",
-            "description": "Repeated numeric enum title. Repeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "description": "Repeated numeric enum title\n\nRepeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1835,7 +1835,7 @@
           },
           {
             "name": "repeatedStringAnnotation",
-            "description": "Repeated string title. Repeated string description.",
+            "description": "Repeated string title\n\nRepeated string description.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1879,14 +1879,14 @@
           },
           {
             "name": "requiredStringViaFieldBehaviorAnnotation",
-            "description": "mark a field as required in Open API definition.",
+            "description": "mark a field as required in Open API definition",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
             "name": "outputOnlyStringViaFieldBehaviorAnnotation",
-            "description": "mark a field as readonly in Open API definition.",
+            "description": "mark a field as readonly in Open API definition",
             "in": "query",
             "required": false,
             "type": "string"
@@ -2252,7 +2252,7 @@
                   "type": "string"
                 }
               },
-              "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+              "description": "Intentionally complicated message type to cover many features of Protobuf.",
               "title": "A bit of everything",
               "externalDocs": {
                 "description": "Find out more about ABitOfEverything",
@@ -2815,7 +2815,7 @@
                   "type": "string"
                 }
               },
-              "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+              "description": "Intentionally complicated message type to cover many features of Protobuf.",
               "title": "A bit of everything",
               "externalDocs": {
                 "description": "Find out more about ABitOfEverything",
@@ -2887,7 +2887,7 @@
           },
           {
             "name": "book",
-            "description": "The book's `name` field is used to identify the book to be updated.\nFormat: publishers/{publisher}/books/{book}",
+            "description": "The book to update.\n\nThe book's `name` field is used to identify the book to be updated.\nFormat: publishers/{publisher}/books/{book}",
             "in": "body",
             "required": true,
             "schema": {
@@ -3050,7 +3050,7 @@
           },
           {
             "name": "abe",
-            "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+            "description": "A bit of everything\n\nIntentionally complicated message type to cover many features of Protobuf.",
             "in": "body",
             "required": true,
             "schema": {
@@ -3239,7 +3239,7 @@
                   "type": "string"
                 }
               },
-              "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+              "description": "Intentionally complicated message type to cover many features of Protobuf.",
               "title": "A bit of everything",
               "externalDocs": {
                 "description": "Find out more about ABitOfEverything",
@@ -3313,7 +3313,7 @@
           },
           {
             "name": "abe",
-            "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+            "description": "A bit of everything\n\nIntentionally complicated message type to cover many features of Protobuf.",
             "in": "body",
             "required": true,
             "schema": {
@@ -3502,7 +3502,7 @@
                   "type": "string"
                 }
               },
-              "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+              "description": "Intentionally complicated message type to cover many features of Protobuf.",
               "title": "A bit of everything",
               "externalDocs": {
                 "description": "Find out more about ABitOfEverything",
@@ -4269,7 +4269,7 @@
                       "type": "string"
                     }
                   },
-                  "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+                  "description": "Intentionally complicated message type to cover many features of Protobuf.",
                   "title": "A bit of everything",
                   "externalDocs": {
                     "description": "Find out more about ABitOfEverything",
@@ -4590,7 +4590,7 @@
           "type": "string"
         }
       },
-      "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+      "description": "Intentionally complicated message type to cover many features of Protobuf.",
       "title": "A bit of everything",
       "externalDocs": {
         "description": "Find out more about ABitOfEverything",

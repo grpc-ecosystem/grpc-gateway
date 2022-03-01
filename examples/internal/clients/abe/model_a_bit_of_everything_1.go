@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-// Intentionaly complicated message type to cover many features of Protobuf.
+// Intentionally complicated message type to cover many features of Protobuf.
 type ABitOfEverything1 struct {
 	SingleNested *V1exampledeepPathsingleNestedNameSingleNested `json:"singleNested,omitempty"`
 	Uuid string `json:"uuid"`
