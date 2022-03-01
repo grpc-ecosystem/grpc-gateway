@@ -589,7 +589,6 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	if ix := strings.LastIndex(f.Message.FQMN(), "."); ix > 0 {
 		location = f.Message.FQMN()[0:ix]
 	}
-	// TODO(oyvindwe): Look into why this fails for enums, and if it has consequences.
 	if m, err := reg.LookupMsg(location, f.GetTypeName()); err == nil {
 		if opt := m.GetOptions(); opt != nil && opt.MapEntry != nil && *opt.MapEntry {
 			fd = m.GetField()[1]
@@ -1088,8 +1087,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						}
 						bodyField := b.Body.FieldPath[0]
 						if reg.GetUseJSONNamesForFields() {
-							// TODO(oyvindwe) What about bodyField.Target.JsonName?
-							bodyFieldName = doCamelCase(bodyField.Name)
+							bodyFieldName = lowerCamelCase(bodyField.Name, meth.RequestType.Fields, msgs)
 						} else {
 							bodyFieldName = bodyField.Name
 						}
@@ -2389,7 +2387,7 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 	s.Required = j.GetRequired()
 	if reg.GetUseJSONNamesForFields() {
 		for i, r := range s.Required {
-			// TODO(oyvindwe) What about bodyField.Target.JsonName?
+			// TODO(oyvindwe): Look up field and use field.GetJsonName()?
 			s.Required[i] = doCamelCase(r)
 		}
 	}
@@ -2416,8 +2414,7 @@ func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotation
 		switch fb {
 		case annotations.FieldBehavior_REQUIRED:
 			if reg.GetUseJSONNamesForFields() {
-				// TODO(oyvindwe) What about bodyField.Target.JsonName?
-				s.Required = append(s.Required, doCamelCase(*field.Name))
+				s.Required = append(s.Required, *field.JsonName)
 			} else {
 				s.Required = append(s.Required, *field.Name)
 			}

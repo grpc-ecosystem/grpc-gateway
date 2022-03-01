@@ -5887,3 +5887,61 @@ func TestParseIncompleteSecurityRequirement(t *testing.T) {
 		return
 	}
 }
+
+func TestSubPathParams(t *testing.T) {
+	outerParams := []descriptor.Parameter{
+		{
+			FieldPath: []descriptor.FieldPathComponent{
+				{
+					Name: "prefix",
+				},
+				{
+					Name: "first",
+				},
+			},
+		},
+		{
+			FieldPath: []descriptor.FieldPathComponent{
+				{
+					Name: "prefix",
+				},
+				{
+					Name: "second",
+				},
+				{
+					Name: "deeper",
+				},
+			},
+		},
+		{
+			FieldPath: []descriptor.FieldPathComponent{
+				{
+					Name: "otherprefix",
+				},
+				{
+					Name: "third",
+				},
+			},
+		},
+	}
+	subParams := subPathParams("prefix", outerParams)
+
+	if got, want := len(subParams), 2; got != want {
+		t.Fatalf("Wrong number of path params, got %s want %s", got, want)
+	}
+	if got, want := len(subParams[0].FieldPath), 1; got != want {
+		t.Fatalf("Wrong length of path param 0, got %s want %s", got, want)
+	}
+	if got, want := subParams[0].FieldPath[0].Name, "first"; got != want {
+		t.Fatalf("Wrong path param 0, element 0, got %s want %s", got, want)
+	}
+	if got, want := len(subParams[1].FieldPath), 2; got != want {
+		t.Fatalf("Wrong length of path param 1 got %s want %s", got, want)
+	}
+	if got, want := subParams[1].FieldPath[0].Name, "second"; got != want {
+		t.Fatalf("Wrong path param 1, element 0, got %s want %s", got, want)
+	}
+	if got, want := subParams[1].FieldPath[1].Name, "deeper"; got != want {
+		t.Fatalf("Wrong path param 1, element 1, got %s want %s", got, want)
+	}
+}
