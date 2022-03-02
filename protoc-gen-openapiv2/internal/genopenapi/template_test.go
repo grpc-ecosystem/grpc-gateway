@@ -4577,17 +4577,15 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 
 			refs := make(refMap)
 			actual := make(openapiDefinitionsObject)
-			renderMessagesAsDefinition(msgMap, actual, reg, refs, test.pathParams)
+			if err := renderMessagesAsDefinition(msgMap, actual, reg, refs, test.pathParams); err != nil {
+				t.Errorf("renderMessagesAsDefinition failed with: %s", err)
+			}
 
 			if !reflect.DeepEqual(actual, test.defs) {
 				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
 			}
 		})
 	}
-}
-
-func strPtr(s string) *string {
-	return &s
 }
 
 func TestUpdateOpenAPIDataFromComments(t *testing.T) {
@@ -4918,7 +4916,9 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 
 			refs := make(refMap)
 			actual := make(openapiDefinitionsObject)
-			renderMessagesAsDefinition(msgMap, actual, reg, refs, nil)
+			if err := renderMessagesAsDefinition(msgMap, actual, reg, refs, nil); err != nil {
+				t.Errorf("renderMessagesAsDefinition failed with: %s", err)
+			}
 
 			if !reflect.DeepEqual(actual, test.defs) {
 				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)

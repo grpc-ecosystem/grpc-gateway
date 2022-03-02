@@ -463,9 +463,7 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		}
 
 		if fieldSchema.Required != nil {
-			for _, req := range fieldSchema.Required {
-				schema.Required = append(schema.Required, req)
-			}
+			schema.Required = append(schema.Required, fieldSchema.Required...)
 		}
 
 		kv := keyVal{Value: fieldSchema}
@@ -2621,9 +2619,9 @@ func subPathParams(paramName string, outerParams []descriptor.Parameter) []descr
 	for _, p := range outerParams {
 		if len(p.FieldPath) > 1 && p.FieldPath[0].Name == paramName {
 			subParam := descriptor.Parameter{
-				p.FieldPath[1:],
-				p.Target,
-				p.Method,
+				FieldPath: p.FieldPath[1:],
+				Target:    p.Target,
+				Method:    p.Method,
 			}
 			innerParams = append(innerParams, subParam)
 		}
