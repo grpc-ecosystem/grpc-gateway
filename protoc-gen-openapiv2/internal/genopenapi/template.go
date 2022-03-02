@@ -37,6 +37,8 @@ import (
 //  this will be hidden from the real grpc gateway consumer.
 const pathParamUniqueSuffixDeliminator = "_"
 
+const paragraphDeliminator = "\n\n"
+
 // wktSchemas are the schemas of well-known-types.
 // The schemas must match with the behavior of the JSON unmarshaler in
 // https://github.com/protocolbuffers/protobuf-go/blob/v1.25.0/encoding/protojson/well_known_types.go
@@ -500,9 +502,9 @@ func renderFieldAsDefinition(f *descriptor.Field, reg *descriptor.Registry, refs
 	comments := fieldProtoComments(reg, f.Message, f)
 	if len(comments) > 0 {
 		// Use title and description from field instead of nested message if present.
-		paragraphs := strings.Split(comments, "\n\n")
+		paragraphs := strings.Split(comments, paragraphDeliminator)
 		schema.Title = strings.TrimSpace(paragraphs[0])
-		schema.Description = strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
+		schema.Description = strings.TrimSpace(strings.Join(paragraphs[1:], paragraphDeliminator))
 	}
 	return schema, nil
 }
@@ -1404,7 +1406,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 func mergeDescription(schema openapiSchemaObject) string {
 	desc := schema.Description
 	if schema.Title != "" { // join title because title of parameter object will be ignored
-		desc = strings.TrimSpace(schema.Title + "\n\n" + schema.Description)
+		desc = strings.TrimSpace(schema.Title + paragraphDeliminator + schema.Description)
 	}
 	return desc
 }
@@ -1942,13 +1944,13 @@ func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject inter
 		usingTitle = true
 	}
 
-	paragraphs := strings.Split(comment, "\n\n")
+	paragraphs := strings.Split(comment, paragraphDeliminator)
 
 	// If there is a summary (or summary-equivalent) and it's empty, use the first
 	// paragraph as summary, and the rest as description.
 	if summaryValue.CanSet() {
 		summary := strings.TrimSpace(paragraphs[0])
-		description := strings.TrimSpace(strings.Join(paragraphs[1:], "\n\n"))
+		description := strings.TrimSpace(strings.Join(paragraphs[1:], paragraphDeliminator))
 		if !usingTitle || (len(summary) > 0 && summary[len(summary)-1] != '.') {
 			// overrides the schema value only if it's empty
 			// keep the comment precedence when updating the package definition
@@ -1973,7 +1975,7 @@ func updateOpenAPIDataFromComments(reg *descriptor.Registry, swaggerObject inter
 	// whole comment into description if the OpenAPI object description is empty.
 	if descriptionValue.CanSet() {
 		if descriptionValue.Len() == 0 || isPackageObject {
-			descriptionValue.Set(reflect.ValueOf(strings.Join(paragraphs, "\n\n")))
+			descriptionValue.Set(reflect.ValueOf(strings.Join(paragraphs, paragraphDeliminator)))
 		}
 		return nil
 	}
