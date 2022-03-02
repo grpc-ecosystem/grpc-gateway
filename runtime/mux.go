@@ -12,6 +12,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
@@ -201,6 +202,48 @@ func WithRoutingErrorHandler(fn RoutingErrorHandlerFunc) ServeMuxOption {
 func WithDisablePathLengthFallback() ServeMuxOption {
 	return func(serveMux *ServeMux) {
 		serveMux.disablePathLengthFallback = true
+	}
+}
+
+// WithHealthzEndpoint returns a ServeMuxOption that will add a /healthz endpoint to the created ServeMux.
+// When called the handler will forward the request to the upstream grpc service health check (defined in the
+// gRPC Health Checking Protocol).
+// See here https://grpc-ecosystem.github.io/grpc-gateway/docs/operations/health_check/ for more information on how
+// to setup the protocol in the grpc server.
+// If you define a service as query parameter, this will also be forwarded as service in the HealthCheckRequest.
+func WithHealthzEndpoint(healthCheckClient grpc_health_v1.HealthClient) ServeMuxOption {
+	return func(s *ServeMux) {
+		// error can be ignored since pattern is definitely valid
+		_ = s.HandlePath(
+			http.MethodGet, "/healthz", func(w http.ResponseWriter, r *http.Request, _ map[string]string,
+			) {
+				_, outboundMarshaler := MarshalerForRequest(s, r)
+
+				serviceQueryParam := r.URL.Query().Get("service")
+
+				resp, err := healthCheckClient.Check(r.Context(), &grpc_health_v1.HealthCheckRequest{
+					Service: serviceQueryParam,
+				})
+				if err != nil {
+					s.errorHandler(r.Context(), s, outboundMarshaler, w, r, err)
+					return
+				}
+
+				if resp.GetStatus() != grpc_health_v1.HealthCheckResponse_SERVING {
+					var err error
+					switch resp.GetStatus() {
+					case grpc_health_v1.HealthCheckResponse_NOT_SERVING, grpc_health_v1.HealthCheckResponse_UNKNOWN:
+						err = status.Error(codes.Unavailable, resp.String())
+					case grpc_health_v1.HealthCheckResponse_SERVICE_UNKNOWN:
+						err = status.Error(codes.NotFound, resp.String())
+					}
+
+					s.errorHandler(r.Context(), s, outboundMarshaler, w, r, err)
+					return
+				}
+
+				_ = outboundMarshaler.NewEncoder(w).Encode(resp)
+			})
 	}
 }
 
