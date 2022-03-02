@@ -242,7 +242,7 @@
           "default": "0.2",
           "description": "Float value field",
           "required": [
-            "float_value"
+            "floatValue"
           ]
         },
         "doubleValue": {
@@ -394,7 +394,7 @@
           "type": "string",
           "title": "mark a field as required in Open API definition",
           "required": [
-            "required_string_via_field_behavior_annotation"
+            "requiredStringViaFieldBehaviorAnnotation"
           ]
         },
         "outputOnlyStringViaFieldBehaviorAnnotation": {
@@ -406,7 +406,7 @@
           "type": "string"
         }
       },
-      "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+      "description": "Intentionally complicated message type to cover many features of Protobuf.",
       "title": "A bit of everything",
       "externalDocs": {
         "description": "Find out more about ABitOfEverything",

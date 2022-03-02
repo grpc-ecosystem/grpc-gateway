@@ -2297,10 +2297,6 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		Message:              nested,
 		FieldDescriptorProto: nested.GetField()[0],
 	}
-	boolField := &descriptor.Field{
-		Message:              nested,
-		FieldDescriptorProto: nested.GetField()[1],
-	}
 	file := descriptor.File{
 		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
 			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
@@ -2354,10 +2350,6 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 											Name:   "nested",
 											Target: nestedField,
 										},
-										{
-											Name:   "bool",
-											Target: boolField,
-										},
 									}),
 								},
 							},
@@ -2372,12 +2364,14 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
 		return
 	}
+	fmt.Fprintln(os.Stderr, "fd", file.FileDescriptorProto)
 	err := reg.Load(&pluginpb.CodeGeneratorRequest{
 		ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 	})
 	if err != nil {
 		t.Fatalf("failed to load code generator request: %v", err)
 	}
+	fmt.Fprintln(os.Stderr, "AllFQMNs", reg.GetAllFQMNs())
 	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
 	if err != nil {
 		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
@@ -2463,10 +2457,6 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 		Message:              nested,
 		FieldDescriptorProto: nested.GetField()[0],
 	}
-	boolField := &descriptor.Field{
-		Message:              nested,
-		FieldDescriptorProto: nested.GetField()[1],
-	}
 	file := descriptor.File{
 		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
 			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
@@ -2519,10 +2509,6 @@ func TestApplyTemplateRequestWithClientStreaming(t *testing.T) {
 										{
 											Name:   "nested",
 											Target: nestedField,
-										},
-										{
-											Name:   "bool",
-											Target: boolField,
 										},
 									}),
 								},
@@ -2848,12 +2834,12 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 										},
 									},
 									Body: &descriptor.Body{
-										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+										FieldPath: []descriptor.FieldPathComponent{
 											{
 												Name:   "book",
 												Target: bookField,
 											},
-										}),
+										},
 									},
 								},
 							},
@@ -2881,7 +2867,7 @@ func TestApplyTemplateRequestWithBodyQueryParameters(t *testing.T) {
 			args: args{file: newFile()},
 			want: []paramOut{
 				{"parent", "path", true},
-				{"body", "body", true},
+				{"book", "body", true},
 				{"book_id", "query", false},
 			},
 		},
@@ -4182,7 +4168,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 		schema         map[string]openapi_options.Schema // per-message schema to add
 		defs           openapiDefinitionsObject
 		openAPIOptions *openapiconfig.OpenAPIOptions
-		excludedFields []*descriptor.Field
+		pathParams     []descriptor.Parameter
 	}{
 		{
 			descr: "no OpenAPI options",
@@ -4413,7 +4399,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			},
 		},
 		{
-			descr: "JSONSchema with excluded fields",
+			descr: "JSONSchema with path parameters",
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{
 					Name: proto.String("Message"),
@@ -4425,7 +4411,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 							Options: requiredField,
 						},
 						{
-							Name:   proto.String("anExcludedField"),
+							Name:   proto.String("aPathParameter"),
 							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
 							Number: proto.Int32(2),
 						},
@@ -4464,10 +4450,12 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					},
 				},
 			},
-			excludedFields: []*descriptor.Field{
+			pathParams: []descriptor.Parameter{
 				{
-					FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-						Name: strPtr("anExcludedField"),
+					FieldPath: descriptor.FieldPath{
+						descriptor.FieldPathComponent{
+							Name: ("aPathParameter"),
+						},
 					},
 				},
 			},
@@ -4589,17 +4577,15 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 
 			refs := make(refMap)
 			actual := make(openapiDefinitionsObject)
-			renderMessagesAsDefinition(msgMap, actual, reg, refs, test.excludedFields)
+			if err := renderMessagesAsDefinition(msgMap, actual, reg, refs, test.pathParams); err != nil {
+				t.Errorf("renderMessagesAsDefinition failed with: %s", err)
+			}
 
 			if !reflect.DeepEqual(actual, test.defs) {
 				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
 			}
 		})
 	}
-}
-
-func strPtr(s string) *string {
-	return &s
 }
 
 func TestUpdateOpenAPIDataFromComments(t *testing.T) {
@@ -4930,7 +4916,9 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 
 			refs := make(refMap)
 			actual := make(openapiDefinitionsObject)
-			renderMessagesAsDefinition(msgMap, actual, reg, refs, nil)
+			if err := renderMessagesAsDefinition(msgMap, actual, reg, refs, nil); err != nil {
+				t.Errorf("renderMessagesAsDefinition failed with: %s", err)
+			}
 
 			if !reflect.DeepEqual(actual, test.defs) {
 				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
@@ -5897,5 +5885,63 @@ func TestParseIncompleteSecurityRequirement(t *testing.T) {
 	if err == nil {
 		t.Errorf("applyTemplate(%#v) did not error as expected", file)
 		return
+	}
+}
+
+func TestSubPathParams(t *testing.T) {
+	outerParams := []descriptor.Parameter{
+		{
+			FieldPath: []descriptor.FieldPathComponent{
+				{
+					Name: "prefix",
+				},
+				{
+					Name: "first",
+				},
+			},
+		},
+		{
+			FieldPath: []descriptor.FieldPathComponent{
+				{
+					Name: "prefix",
+				},
+				{
+					Name: "second",
+				},
+				{
+					Name: "deeper",
+				},
+			},
+		},
+		{
+			FieldPath: []descriptor.FieldPathComponent{
+				{
+					Name: "otherprefix",
+				},
+				{
+					Name: "third",
+				},
+			},
+		},
+	}
+	subParams := subPathParams("prefix", outerParams)
+
+	if got, want := len(subParams), 2; got != want {
+		t.Fatalf("Wrong number of path params, got %d want %d", got, want)
+	}
+	if got, want := len(subParams[0].FieldPath), 1; got != want {
+		t.Fatalf("Wrong length of path param 0, got %d want %d", got, want)
+	}
+	if got, want := subParams[0].FieldPath[0].Name, "first"; got != want {
+		t.Fatalf("Wrong path param 0, element 0, got %s want %s", got, want)
+	}
+	if got, want := len(subParams[1].FieldPath), 2; got != want {
+		t.Fatalf("Wrong length of path param 1 got %d want %d", got, want)
+	}
+	if got, want := subParams[1].FieldPath[0].Name, "second"; got != want {
+		t.Fatalf("Wrong path param 1, element 0, got %s want %s", got, want)
+	}
+	if got, want := subParams[1].FieldPath[1].Name, "deeper"; got != want {
+		t.Fatalf("Wrong path param 1, element 1, got %s want %s", got, want)
 	}
 }

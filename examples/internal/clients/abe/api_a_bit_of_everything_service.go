@@ -344,7 +344,7 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedName name is nested field.
  * @param floatValue Float value field
- * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition.
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceCheckGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
@@ -370,14 +370,14 @@ ABitOfEverythingServiceApiService
      * @param "OneofString" (optional.String) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
-     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title. Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title. Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title. Repeated string description.
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationAmount" (optional.Int64) - 
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Int64OverrideType" (optional.Int64) - 
-     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
 
 @return ExamplepbABitOfEverything
@@ -674,7 +674,7 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedOk DeepEnum description.
  * @param floatValue Float value field
- * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition.
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -700,14 +700,14 @@ ABitOfEverythingServiceApiService
      * @param "OneofString" (optional.String) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
-     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title. Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title. Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title. Repeated string description.
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
      * @param "NestedAnnotationAmount" (optional.Int64) - 
      * @param "Int64OverrideType" (optional.Int64) - 
-     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
 
 @return ExamplepbABitOfEverything
@@ -1003,9 +1003,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param stringValue
- * @param body
+ * @param singleNested
  * @param floatValue Float value field
- * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition.
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceCheckPostQueryParamsOpts - Optional Parameters:
      * @param "Uuid" (optional.String) - 
      * @param "DoubleValue" (optional.Float64) - 
@@ -1028,15 +1028,15 @@ ABitOfEverythingServiceApiService
      * @param "OneofString" (optional.String) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
-     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title. Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title. Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title. Repeated string description.
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
      * @param "NestedAnnotationAmount" (optional.Int64) - 
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Int64OverrideType" (optional.Int64) - 
-     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
 
 @return ExamplepbABitOfEverything
@@ -1076,7 +1076,7 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	OptionalStringValue optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, body ABitOfEverythingNested, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1206,7 +1206,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &singleNested
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -1499,7 +1499,7 @@ This API creates a new ABitOfEverything
  * @param pathEnumValue
  * @param nestedPathEnumValue
  * @param enumValueAnnotation Numeric enum description.
- * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition.
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceCreateOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -1509,14 +1509,14 @@ This API creates a new ABitOfEverything
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
      * @param "OneofString" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
-     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title. Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title. Repeated string description.
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
      * @param "NestedAnnotationAmount" (optional.Int64) - 
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Int64OverrideType" (optional.Int64) - 
-     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
 
 @return ExamplepbABitOfEverything
@@ -1922,7 +1922,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ct
 ABitOfEverythingServiceApiService Create a book.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param parent The publisher in which to create the book.  Format: &#x60;publishers/{publisher}&#x60;  Example: &#x60;publishers/1257894000000000000&#x60;
- * @param body The book to create.
+ * @param book The book to create.
  * @param optional nil or *ABitOfEverythingServiceCreateBookOpts - Optional Parameters:
      * @param "BookId" (optional.String) -  The ID to use for the book.  This must start with an alphanumeric character.
 
@@ -1933,7 +1933,7 @@ type ABitOfEverythingServiceCreateBookOpts struct {
 	BookId optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ctx context.Context, parent string, body ExamplepbBook, localVarOptionals *ABitOfEverythingServiceCreateBookOpts) (ExamplepbBook, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ctx context.Context, parent string, book ExamplepbBook, localVarOptionals *ABitOfEverythingServiceCreateBookOpts) (ExamplepbBook, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1971,7 +1971,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ct
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &book
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -2095,7 +2095,7 @@ ABitOfEverythingServiceApiService
 
 @return ExamplepbABitOfEverything
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(ctx context.Context, singleNestedName string, body ExamplepbABitOfEverything) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(ctx context.Context, singleNestedName string, body ABitOfEverything1) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -2560,11 +2560,11 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceErrorWithDeta
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param id
- * @param body
+ * @param data
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWithBody(ctx context.Context, id string, body ExamplepbBody) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWithBody(ctx context.Context, id string, data ExamplepbBody) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -2599,7 +2599,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWit
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &data
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -2720,7 +2720,7 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuid
  * @param floatValue Float value field
- * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition.
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceGetQueryOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -2746,15 +2746,15 @@ ABitOfEverythingServiceApiService
      * @param "OneofString" (optional.String) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
-     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title. Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title. Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title. Repeated string description.
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
      * @param "NestedAnnotationAmount" (optional.Int64) - 
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Int64OverrideType" (optional.Int64) - 
-     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
 
 @return interface{}
@@ -4057,7 +4057,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx co
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param bookName The resource name of the book.  Format: &#x60;publishers/{publisher}/books/{book}&#x60;  Example: &#x60;publishers/1257894000000000000/books/my-book&#x60;
- * @param body The book to update.  The book&#39;s &#x60;name&#x60; field is used to identify the book to be updated. Format: publishers/{publisher}/books/{book}
+ * @param book The book to update.  The book&#39;s &#x60;name&#x60; field is used to identify the book to be updated. Format: publishers/{publisher}/books/{book}
  * @param optional nil or *ABitOfEverythingServiceUpdateBookOpts - Optional Parameters:
      * @param "UpdateMask" (optional.String) -  The list of fields to be updated.
      * @param "AllowMissing" (optional.Bool) -  If set to true, and the book is not found, a new book will be created. In this situation, &#x60;update_mask&#x60; is ignored.
@@ -4070,7 +4070,7 @@ type ABitOfEverythingServiceUpdateBookOpts struct {
 	AllowMissing optional.Bool
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ctx context.Context, bookName string, body ExamplepbBook, localVarOptionals *ABitOfEverythingServiceUpdateBookOpts) (ExamplepbBook, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ctx context.Context, bookName string, book TheBookToUpdate_, localVarOptionals *ABitOfEverythingServiceUpdateBookOpts) (ExamplepbBook, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -4111,7 +4111,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ct
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &book
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -4231,7 +4231,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ct
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param abeUuid
- * @param body
+ * @param abe A bit of everything  Intentionally complicated message type to cover many features of Protobuf.
  * @param optional nil or *ABitOfEverythingServiceUpdateV2Opts - Optional Parameters:
      * @param "UpdateMask" (optional.String) -  The paths to update.
 
@@ -4242,7 +4242,7 @@ type ABitOfEverythingServiceUpdateV2Opts struct {
 	UpdateMask optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, abeUuid string, body ExamplepbABitOfEverything, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, abeUuid string, abe ABitOfEverything2, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -4280,7 +4280,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &abe
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -4400,7 +4400,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param abeUuid
- * @param body
+ * @param abe A bit of everything  Intentionally complicated message type to cover many features of Protobuf.
  * @param optional nil or *ABitOfEverythingServiceUpdateV22Opts - Optional Parameters:
      * @param "UpdateMask" (optional.String) -  The paths to update.
 
@@ -4411,7 +4411,7 @@ type ABitOfEverythingServiceUpdateV22Opts struct {
 	UpdateMask optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, abeUuid string, body ExamplepbABitOfEverything, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, abeUuid string, abe ABitOfEverything3, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -4449,7 +4449,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &abe
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -4573,7 +4573,7 @@ ABitOfEverythingServiceApiService
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx context.Context, abeUuid string, body ExamplepbUpdateV2Request) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx context.Context, abeUuid string, body UpdateV2RequestRequestForUpdateIncludesTheMessageAndTheUpdateMask) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
