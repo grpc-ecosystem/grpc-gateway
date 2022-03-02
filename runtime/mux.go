@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/health/grpc_health_v1"
@@ -212,9 +211,7 @@ func WithDisablePathLengthFallback() ServeMuxOption {
 // See here https://grpc-ecosystem.github.io/grpc-gateway/docs/operations/health_check/ for more information on how
 // to setup the protocol in the grpc server.
 // If you define a service as query parameter, this will also be forwarded as service in the HealthCheckRequest.
-func WithHealthzEndpoint(conn grpc.ClientConnInterface) ServeMuxOption {
-	healthCheckClient := grpc_health_v1.NewHealthClient(conn)
-
+func WithHealthzEndpoint(healthCheckClient grpc_health_v1.HealthClient) ServeMuxOption {
 	return func(s *ServeMux) {
 		// error can be ignored since pattern is definitely valid
 		_ = s.HandlePath(
