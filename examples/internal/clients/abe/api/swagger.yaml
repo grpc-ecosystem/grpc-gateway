@@ -325,7 +325,7 @@ paths:
         x-optionalDataType: "Time"
       - name: "repeatedEnumValue"
         in: "query"
-        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
           \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -338,7 +338,7 @@ paths:
         x-exportParamName: "RepeatedEnumValue"
       - name: "repeatedEnumAnnotation"
         in: "query"
-        description: "Repeated numeric enum title. Repeated numeric enum description.\n\
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
           \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -351,8 +351,8 @@ paths:
         x-exportParamName: "RepeatedEnumAnnotation"
       - name: "enumValueAnnotation"
         in: "query"
-        description: "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO\
-          \ means 0\n - ONE: ONE means 1"
+        description: "Numeric enum title\n\nNumeric enum description.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "string"
         default: "ZERO"
@@ -363,7 +363,7 @@ paths:
         x-optionalDataType: "String"
       - name: "repeatedStringAnnotation"
         in: "query"
-        description: "Repeated string title. Repeated string description."
+        description: "Repeated string title\n\nRepeated string description."
         required: false
         type: "array"
         items:
@@ -393,13 +393,13 @@ paths:
         x-optionalDataType: "Int64"
       - name: "requiredStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as required in Open API definition."
+        description: "mark a field as required in Open API definition"
         required: true
         type: "string"
         x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
       - name: "outputOnlyStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as readonly in Open API definition."
+        description: "mark a field as readonly in Open API definition"
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
@@ -638,7 +638,7 @@ paths:
         x-optionalDataType: "Time"
       - name: "repeatedEnumValue"
         in: "query"
-        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
           \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -651,7 +651,7 @@ paths:
         x-exportParamName: "RepeatedEnumValue"
       - name: "repeatedEnumAnnotation"
         in: "query"
-        description: "Repeated numeric enum title. Repeated numeric enum description.\n\
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
           \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -664,8 +664,8 @@ paths:
         x-exportParamName: "RepeatedEnumAnnotation"
       - name: "enumValueAnnotation"
         in: "query"
-        description: "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO\
-          \ means 0\n - ONE: ONE means 1"
+        description: "Numeric enum title\n\nNumeric enum description.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "string"
         default: "ZERO"
@@ -676,7 +676,7 @@ paths:
         x-optionalDataType: "String"
       - name: "repeatedStringAnnotation"
         in: "query"
-        description: "Repeated string title. Repeated string description."
+        description: "Repeated string title\n\nRepeated string description."
         required: false
         type: "array"
         items:
@@ -711,13 +711,13 @@ paths:
         x-optionalDataType: "Int64"
       - name: "requiredStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as required in Open API definition."
+        description: "mark a field as required in Open API definition"
         required: true
         type: "string"
         x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
       - name: "outputOnlyStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as readonly in Open API definition."
+        description: "mark a field as readonly in Open API definition"
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
@@ -766,11 +766,11 @@ paths:
         type: "string"
         x-exportParamName: "StringValue"
       - in: "body"
-        name: "body"
+        name: "singleNested"
         required: true
         schema:
           $ref: "#/definitions/ABitOfEverythingNested"
-        x-exportParamName: "Body"
+        x-exportParamName: "SingleNested"
       - name: "uuid"
         in: "query"
         required: false
@@ -936,7 +936,7 @@ paths:
         x-optionalDataType: "Time"
       - name: "repeatedEnumValue"
         in: "query"
-        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
           \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -949,7 +949,7 @@ paths:
         x-exportParamName: "RepeatedEnumValue"
       - name: "repeatedEnumAnnotation"
         in: "query"
-        description: "Repeated numeric enum title. Repeated numeric enum description.\n\
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
           \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -962,8 +962,8 @@ paths:
         x-exportParamName: "RepeatedEnumAnnotation"
       - name: "enumValueAnnotation"
         in: "query"
-        description: "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO\
-          \ means 0\n - ONE: ONE means 1"
+        description: "Numeric enum title\n\nNumeric enum description.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "string"
         default: "ZERO"
@@ -974,7 +974,7 @@ paths:
         x-optionalDataType: "String"
       - name: "repeatedStringAnnotation"
         in: "query"
-        description: "Repeated string title. Repeated string description."
+        description: "Repeated string title\n\nRepeated string description."
         required: false
         type: "array"
         items:
@@ -1016,13 +1016,13 @@ paths:
         x-optionalDataType: "Int64"
       - name: "requiredStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as required in Open API definition."
+        description: "mark a field as required in Open API definition"
         required: true
         type: "string"
         x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
       - name: "outputOnlyStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as readonly in Open API definition."
+        description: "mark a field as readonly in Open API definition"
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
@@ -1260,7 +1260,7 @@ paths:
         x-optionalDataType: "Time"
       - name: "repeatedEnumValue"
         in: "query"
-        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
           \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -1273,7 +1273,7 @@ paths:
         x-exportParamName: "RepeatedEnumValue"
       - name: "repeatedEnumAnnotation"
         in: "query"
-        description: "Repeated numeric enum title. Repeated numeric enum description.\n\
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
           \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -1286,8 +1286,8 @@ paths:
         x-exportParamName: "RepeatedEnumAnnotation"
       - name: "enumValueAnnotation"
         in: "query"
-        description: "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO\
-          \ means 0\n - ONE: ONE means 1"
+        description: "Numeric enum title\n\nNumeric enum description.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "string"
         default: "ZERO"
@@ -1298,7 +1298,7 @@ paths:
         x-optionalDataType: "String"
       - name: "repeatedStringAnnotation"
         in: "query"
-        description: "Repeated string title. Repeated string description."
+        description: "Repeated string title\n\nRepeated string description."
         required: false
         type: "array"
         items:
@@ -1340,13 +1340,13 @@ paths:
         x-optionalDataType: "Int64"
       - name: "requiredStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as required in Open API definition."
+        description: "mark a field as required in Open API definition"
         required: true
         type: "string"
         x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
       - name: "outputOnlyStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as readonly in Open API definition."
+        description: "mark a field as readonly in Open API definition"
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
@@ -1581,7 +1581,7 @@ paths:
         x-optionalDataType: "Time"
       - name: "repeatedEnumValue"
         in: "query"
-        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
           \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -1594,7 +1594,7 @@ paths:
         x-exportParamName: "RepeatedEnumValue"
       - name: "repeatedEnumAnnotation"
         in: "query"
-        description: "Repeated numeric enum title. Repeated numeric enum description.\n\
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
           \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -1607,7 +1607,7 @@ paths:
         x-exportParamName: "RepeatedEnumAnnotation"
       - name: "repeatedStringAnnotation"
         in: "query"
-        description: "Repeated string title. Repeated string description."
+        description: "Repeated string title\n\nRepeated string description."
         required: false
         type: "array"
         items:
@@ -1649,13 +1649,13 @@ paths:
         x-optionalDataType: "Int64"
       - name: "requiredStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as required in Open API definition."
+        description: "mark a field as required in Open API definition"
         required: true
         type: "string"
         x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
       - name: "outputOnlyStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as readonly in Open API definition."
+        description: "mark a field as readonly in Open API definition"
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
@@ -2053,7 +2053,7 @@ paths:
         name: "body"
         required: true
         schema:
-          $ref: "#/definitions/examplepbABitOfEverything"
+          $ref: "#/definitions/A bit of everything_1"
         x-exportParamName: "Body"
       responses:
         200:
@@ -2096,13 +2096,13 @@ paths:
         pattern: "publishers/[^/]+/books/[^/]+"
         x-exportParamName: "BookName"
       - in: "body"
-        name: "body"
+        name: "book"
         description: "The book to update.\n\nThe book's `name` field is used to identify\
           \ the book to be updated.\nFormat: publishers/{publisher}/books/{book}"
         required: true
         schema:
-          $ref: "#/definitions/examplepbBook"
-        x-exportParamName: "Body"
+          $ref: "The book to update."
+        x-exportParamName: "Book"
       - name: "updateMask"
         in: "query"
         description: "The list of fields to be updated."
@@ -2160,12 +2160,12 @@ paths:
         pattern: "publishers/[^/]+"
         x-exportParamName: "Parent"
       - in: "body"
-        name: "body"
+        name: "book"
         description: "The book to create."
         required: true
         schema:
           $ref: "#/definitions/examplepbBook"
-        x-exportParamName: "Body"
+        x-exportParamName: "Book"
       - name: "bookId"
         in: "query"
         description: "The ID to use for the book.\n\nThis must start with an alphanumeric\
@@ -2212,11 +2212,13 @@ paths:
         type: "string"
         x-exportParamName: "AbeUuid"
       - in: "body"
-        name: "body"
+        name: "abe"
+        description: "A bit of everything\n\nIntentionally complicated message type\
+          \ to cover many features of Protobuf."
         required: true
         schema:
-          $ref: "#/definitions/examplepbABitOfEverything"
-        x-exportParamName: "Body"
+          $ref: "#/definitions/A bit of everything_2"
+        x-exportParamName: "Abe"
       - name: "updateMask"
         in: "query"
         description: "The paths to update."
@@ -2260,11 +2262,13 @@ paths:
         type: "string"
         x-exportParamName: "AbeUuid"
       - in: "body"
-        name: "body"
+        name: "abe"
+        description: "A bit of everything\n\nIntentionally complicated message type\
+          \ to cover many features of Protobuf."
         required: true
         schema:
-          $ref: "#/definitions/examplepbABitOfEverything"
-        x-exportParamName: "Body"
+          $ref: "#/definitions/A bit of everything_3"
+        x-exportParamName: "Abe"
       - name: "updateMask"
         in: "query"
         description: "The paths to update."
@@ -2355,11 +2359,11 @@ paths:
       operationId: "ABitOfEverythingService_Echo2"
       parameters:
       - in: "body"
-        name: "body"
+        name: "value"
         required: true
         schema:
           type: "string"
-        x-exportParamName: "Body"
+        x-exportParamName: "Value"
       responses:
         200:
           description: "A successful response."
@@ -2577,11 +2581,11 @@ paths:
         type: "string"
         x-exportParamName: "Id"
       - in: "body"
-        name: "body"
+        name: "data"
         required: true
         schema:
           $ref: "#/definitions/examplepbBody"
-        x-exportParamName: "Body"
+        x-exportParamName: "Data"
       responses:
         200:
           description: "A successful response."
@@ -2661,7 +2665,8 @@ paths:
         name: "body"
         required: true
         schema:
-          $ref: "#/definitions/examplepbUpdateV2Request"
+          $ref: "#/definitions/UpdateV2Request request for update includes the message\
+            \ and the update mask"
         x-exportParamName: "Body"
       responses:
         200:
@@ -2921,7 +2926,7 @@ definitions:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
     title: "A bit of everything"
-    description: "Intentionaly complicated message type to cover many features of\
+    description: "Intentionally complicated message type to cover many features of\
       \ Protobuf."
     example:
       int64_value: 12
@@ -3091,16 +3096,6 @@ definitions:
     - "ZERO"
     - "ONE"
     default: "ZERO"
-  examplepbUpdateV2Request:
-    type: "object"
-    properties:
-      abe:
-        $ref: "#/definitions/examplepbABitOfEverything"
-      updateMask:
-        type: "string"
-        description: "The paths to update."
-    title: "UpdateV2Request request for update includes the message and the update\
-      \ mask"
   pathenumPathEnum:
     type: "string"
     enum:
@@ -3336,11 +3331,620 @@ definitions:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
     title: "A bit of everything"
-    description: "Intentionaly complicated message type to cover many features of\
+    description: "Intentionally complicated message type to cover many features of\
       \ Protobuf."
     example:
       int64_value: 12
       double_value: 12.3
+  v1exampledeep_pathsingleNested.name_singleNested:
+    properties:
+      amount:
+        type: "integer"
+        format: "int64"
+      ok:
+        description: "DeepEnum description."
+        $ref: "#/definitions/NestedDeepEnum"
+    description: "Nested is nested type."
+    example: "{\"ok\":\"TRUE\"}"
+  A bit of everything_1:
+    type: "object"
+    required:
+    - "doubleValue"
+    - "floatValue"
+    - "int64Value"
+    - "requiredStringViaFieldBehaviorAnnotation"
+    - "uuid"
+    properties:
+      singleNested:
+        $ref: "v1exampledeep_pathsingleNested.name_singleNested"
+      uuid:
+        type: "string"
+        minLength: 1
+        pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+      nested:
+        type: "array"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      floatValue:
+        type: "number"
+        format: "float"
+        description: "Float value field"
+        default: 0.2
+      doubleValue:
+        type: "number"
+        format: "double"
+      int64Value:
+        type: "string"
+        format: "int64"
+      uint64Value:
+        type: "string"
+        format: "uint64"
+      int32Value:
+        type: "integer"
+        format: "int32"
+      fixed64Value:
+        type: "string"
+        format: "uint64"
+      fixed32Value:
+        type: "integer"
+        format: "int64"
+      boolValue:
+        type: "boolean"
+      stringValue:
+        type: "string"
+      bytesValue:
+        type: "string"
+        format: "byte"
+        pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+      uint32Value:
+        type: "integer"
+        format: "int64"
+      enumValue:
+        $ref: "#/definitions/examplepbNumericEnum"
+      pathEnumValue:
+        $ref: "#/definitions/pathenumPathEnum"
+      nestedPathEnumValue:
+        $ref: "#/definitions/MessagePathEnumNestedPathEnum"
+      sfixed32Value:
+        type: "integer"
+        format: "int32"
+      sfixed64Value:
+        type: "string"
+        format: "int64"
+      sint32Value:
+        type: "integer"
+        format: "int32"
+      sint64Value:
+        type: "string"
+        format: "int64"
+      repeatedStringValue:
+        type: "array"
+        items:
+          type: "string"
+      oneofEmpty:
+        type: "object"
+        properties: {}
+      oneofString:
+        type: "string"
+      mapValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/examplepbNumericEnum"
+      mappedStringValue:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      mappedNestedValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nonConventionalNameValue:
+        type: "string"
+      timestampValue:
+        type: "string"
+        format: "date-time"
+      repeatedEnumValue:
+        type: "array"
+        title: "repeated enum value. it is comma-separated in query"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      repeatedEnumAnnotation:
+        type: "array"
+        description: "Repeated numeric enum description."
+        title: "Repeated numeric enum title"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
+        $ref: "#/definitions/examplepbNumericEnum"
+      repeatedStringAnnotation:
+        type: "array"
+        description: "Repeated string description."
+        title: "Repeated string title"
+        items:
+          type: "string"
+      repeatedNestedAnnotation:
+        type: "array"
+        description: "Repeated nested object description."
+        title: "Repeated nested object title"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
+        $ref: "#/definitions/ABitOfEverythingNested"
+      int64OverrideType:
+        type: "integer"
+        format: "int64"
+      requiredStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as required in Open API definition"
+      outputOnlyStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as readonly in Open API definition"
+        readOnly: true
+      optionalStringValue:
+        type: "string"
+    externalDocs:
+      description: "Find out more about ABitOfEverything"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    title: "A bit of everything"
+    description: "Intentionally complicated message type to cover many features of\
+      \ Protobuf."
+    example:
+      int64_value: 12
+      double_value: 12.3
+  The book to update.:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Output only. The book's ID."
+        readOnly: true
+      createTime:
+        type: "string"
+        format: "date-time"
+        description: "Output only. Creation time of the book."
+        readOnly: true
+    title: "The book to update."
+    description: "The book's `name` field is used to identify the book to be updated.\n\
+      Format: publishers/{publisher}/books/{book}"
+  A bit of everything_2:
+    type: "object"
+    required:
+    - "doubleValue"
+    - "floatValue"
+    - "int64Value"
+    - "requiredStringViaFieldBehaviorAnnotation"
+    properties:
+      singleNested:
+        $ref: "#/definitions/ABitOfEverythingNested"
+      nested:
+        type: "array"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      floatValue:
+        type: "number"
+        format: "float"
+        description: "Float value field"
+        default: 0.2
+      doubleValue:
+        type: "number"
+        format: "double"
+      int64Value:
+        type: "string"
+        format: "int64"
+      uint64Value:
+        type: "string"
+        format: "uint64"
+      int32Value:
+        type: "integer"
+        format: "int32"
+      fixed64Value:
+        type: "string"
+        format: "uint64"
+      fixed32Value:
+        type: "integer"
+        format: "int64"
+      boolValue:
+        type: "boolean"
+      stringValue:
+        type: "string"
+      bytesValue:
+        type: "string"
+        format: "byte"
+        pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+      uint32Value:
+        type: "integer"
+        format: "int64"
+      enumValue:
+        $ref: "#/definitions/examplepbNumericEnum"
+      pathEnumValue:
+        $ref: "#/definitions/pathenumPathEnum"
+      nestedPathEnumValue:
+        $ref: "#/definitions/MessagePathEnumNestedPathEnum"
+      sfixed32Value:
+        type: "integer"
+        format: "int32"
+      sfixed64Value:
+        type: "string"
+        format: "int64"
+      sint32Value:
+        type: "integer"
+        format: "int32"
+      sint64Value:
+        type: "string"
+        format: "int64"
+      repeatedStringValue:
+        type: "array"
+        items:
+          type: "string"
+      oneofEmpty:
+        type: "object"
+        properties: {}
+      oneofString:
+        type: "string"
+      mapValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/examplepbNumericEnum"
+      mappedStringValue:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      mappedNestedValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nonConventionalNameValue:
+        type: "string"
+      timestampValue:
+        type: "string"
+        format: "date-time"
+      repeatedEnumValue:
+        type: "array"
+        title: "repeated enum value. it is comma-separated in query"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      repeatedEnumAnnotation:
+        type: "array"
+        description: "Repeated numeric enum description."
+        title: "Repeated numeric enum title"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
+        $ref: "#/definitions/examplepbNumericEnum"
+      repeatedStringAnnotation:
+        type: "array"
+        description: "Repeated string description."
+        title: "Repeated string title"
+        items:
+          type: "string"
+      repeatedNestedAnnotation:
+        type: "array"
+        description: "Repeated nested object description."
+        title: "Repeated nested object title"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
+        $ref: "#/definitions/ABitOfEverythingNested"
+      int64OverrideType:
+        type: "integer"
+        format: "int64"
+      requiredStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as required in Open API definition"
+      outputOnlyStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as readonly in Open API definition"
+        readOnly: true
+      optionalStringValue:
+        type: "string"
+    externalDocs:
+      description: "Find out more about ABitOfEverything"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    title: "A bit of everything"
+    description: "Intentionally complicated message type to cover many features of\
+      \ Protobuf."
+    example:
+      int64_value: 12
+      double_value: 12.3
+  A bit of everything_3:
+    type: "object"
+    required:
+    - "doubleValue"
+    - "floatValue"
+    - "int64Value"
+    - "requiredStringViaFieldBehaviorAnnotation"
+    properties:
+      singleNested:
+        $ref: "#/definitions/ABitOfEverythingNested"
+      nested:
+        type: "array"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      floatValue:
+        type: "number"
+        format: "float"
+        description: "Float value field"
+        default: 0.2
+      doubleValue:
+        type: "number"
+        format: "double"
+      int64Value:
+        type: "string"
+        format: "int64"
+      uint64Value:
+        type: "string"
+        format: "uint64"
+      int32Value:
+        type: "integer"
+        format: "int32"
+      fixed64Value:
+        type: "string"
+        format: "uint64"
+      fixed32Value:
+        type: "integer"
+        format: "int64"
+      boolValue:
+        type: "boolean"
+      stringValue:
+        type: "string"
+      bytesValue:
+        type: "string"
+        format: "byte"
+        pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+      uint32Value:
+        type: "integer"
+        format: "int64"
+      enumValue:
+        $ref: "#/definitions/examplepbNumericEnum"
+      pathEnumValue:
+        $ref: "#/definitions/pathenumPathEnum"
+      nestedPathEnumValue:
+        $ref: "#/definitions/MessagePathEnumNestedPathEnum"
+      sfixed32Value:
+        type: "integer"
+        format: "int32"
+      sfixed64Value:
+        type: "string"
+        format: "int64"
+      sint32Value:
+        type: "integer"
+        format: "int32"
+      sint64Value:
+        type: "string"
+        format: "int64"
+      repeatedStringValue:
+        type: "array"
+        items:
+          type: "string"
+      oneofEmpty:
+        type: "object"
+        properties: {}
+      oneofString:
+        type: "string"
+      mapValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/examplepbNumericEnum"
+      mappedStringValue:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      mappedNestedValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nonConventionalNameValue:
+        type: "string"
+      timestampValue:
+        type: "string"
+        format: "date-time"
+      repeatedEnumValue:
+        type: "array"
+        title: "repeated enum value. it is comma-separated in query"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      repeatedEnumAnnotation:
+        type: "array"
+        description: "Repeated numeric enum description."
+        title: "Repeated numeric enum title"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
+        $ref: "#/definitions/examplepbNumericEnum"
+      repeatedStringAnnotation:
+        type: "array"
+        description: "Repeated string description."
+        title: "Repeated string title"
+        items:
+          type: "string"
+      repeatedNestedAnnotation:
+        type: "array"
+        description: "Repeated nested object description."
+        title: "Repeated nested object title"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
+        $ref: "#/definitions/ABitOfEverythingNested"
+      int64OverrideType:
+        type: "integer"
+        format: "int64"
+      requiredStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as required in Open API definition"
+      outputOnlyStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as readonly in Open API definition"
+        readOnly: true
+      optionalStringValue:
+        type: "string"
+    externalDocs:
+      description: "Find out more about ABitOfEverything"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    title: "A bit of everything"
+    description: "Intentionally complicated message type to cover many features of\
+      \ Protobuf."
+    example:
+      int64_value: 12
+      double_value: 12.3
+  A bit of everything_4:
+    required:
+    - "doubleValue"
+    - "floatValue"
+    - "int64Value"
+    - "requiredStringViaFieldBehaviorAnnotation"
+    properties:
+      singleNested:
+        $ref: "#/definitions/ABitOfEverythingNested"
+      nested:
+        type: "array"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      floatValue:
+        type: "number"
+        format: "float"
+        description: "Float value field"
+        default: 0.2
+      doubleValue:
+        type: "number"
+        format: "double"
+      int64Value:
+        type: "string"
+        format: "int64"
+      uint64Value:
+        type: "string"
+        format: "uint64"
+      int32Value:
+        type: "integer"
+        format: "int32"
+      fixed64Value:
+        type: "string"
+        format: "uint64"
+      fixed32Value:
+        type: "integer"
+        format: "int64"
+      boolValue:
+        type: "boolean"
+      stringValue:
+        type: "string"
+      bytesValue:
+        type: "string"
+        format: "byte"
+        pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+      uint32Value:
+        type: "integer"
+        format: "int64"
+      enumValue:
+        $ref: "#/definitions/examplepbNumericEnum"
+      pathEnumValue:
+        $ref: "#/definitions/pathenumPathEnum"
+      nestedPathEnumValue:
+        $ref: "#/definitions/MessagePathEnumNestedPathEnum"
+      sfixed32Value:
+        type: "integer"
+        format: "int32"
+      sfixed64Value:
+        type: "string"
+        format: "int64"
+      sint32Value:
+        type: "integer"
+        format: "int32"
+      sint64Value:
+        type: "string"
+        format: "int64"
+      repeatedStringValue:
+        type: "array"
+        items:
+          type: "string"
+      oneofEmpty:
+        type: "object"
+        properties: {}
+      oneofString:
+        type: "string"
+      mapValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/examplepbNumericEnum"
+      mappedStringValue:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      mappedNestedValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nonConventionalNameValue:
+        type: "string"
+      timestampValue:
+        type: "string"
+        format: "date-time"
+      repeatedEnumValue:
+        type: "array"
+        title: "repeated enum value. it is comma-separated in query"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      repeatedEnumAnnotation:
+        type: "array"
+        description: "Repeated numeric enum description."
+        title: "Repeated numeric enum title"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
+        $ref: "#/definitions/examplepbNumericEnum"
+      repeatedStringAnnotation:
+        type: "array"
+        description: "Repeated string description."
+        title: "Repeated string title"
+        items:
+          type: "string"
+      repeatedNestedAnnotation:
+        type: "array"
+        description: "Repeated nested object description."
+        title: "Repeated nested object title"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
+        $ref: "#/definitions/ABitOfEverythingNested"
+      int64OverrideType:
+        type: "integer"
+        format: "int64"
+      requiredStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as required in Open API definition"
+      outputOnlyStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as readonly in Open API definition"
+        readOnly: true
+      optionalStringValue:
+        type: "string"
+    description: "Intentionally complicated message type to cover many features of\
+      \ Protobuf."
+    example: "{\"int64_value\":12,\"double_value\":12.3}"
+  UpdateV2Request request for update includes the message and the update mask:
+    type: "object"
+    properties:
+      abe:
+        $ref: "#/definitions/A bit of everything_4"
+      updateMask:
+        type: "string"
+        description: "The paths to update."
+    title: "UpdateV2Request request for update includes the message and the update\
+      \ mask"
 externalDocs:
   description: "More about gRPC-Gateway"
   url: "https://github.com/grpc-ecosystem/grpc-gateway"

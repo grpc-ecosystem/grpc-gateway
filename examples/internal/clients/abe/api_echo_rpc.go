@@ -199,11 +199,11 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho(ctx context.Context, val
 EchoRpcApiService Summary: Echo rpc
 Description Echo
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param value
 
 @return SubStringMessage
 */
-func (a *EchoRpcApiService) ABitOfEverythingServiceEcho2(ctx context.Context, body string) (SubStringMessage, *http.Response, error) {
+func (a *EchoRpcApiService) ABitOfEverythingServiceEcho2(ctx context.Context, value string) (SubStringMessage, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -237,7 +237,7 @@ func (a *EchoRpcApiService) ABitOfEverythingServiceEcho2(ctx context.Context, bo
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &value
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
