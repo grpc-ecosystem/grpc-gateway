@@ -22,6 +22,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"google.golang.org/genproto/googleapis/api/annotations"
+	"google.golang.org/genproto/googleapis/api/visibility"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -447,6 +448,13 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 	schema.Required = filterOutExcludedFields(schema.Required, pathParams)
 
 	for _, f := range msg.Fields {
+		if j, err := getFieldVisibilityOption(reg, f); err == nil {
+			if !checkVisibility(j, reg) {
+				fmt.Println(f.GetName())
+				continue
+			}
+		}
+
 		if shouldExcludeField(f.GetName(), pathParams) {
 			continue
 		}
@@ -552,6 +560,26 @@ func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject,
 		}
 	}
 	return nil
+}
+
+func checkVisibility(r *visibility.VisibilityRule, reg *descriptor.Registry) bool {
+	isVisible := true
+
+	if r != nil {
+		restrictions := strings.Split(strings.TrimSpace(r.Restriction), ",")
+
+		if len(restrictions) != 0 {
+			isVisible = false
+		}
+		for _, restriction := range restrictions {
+			if reg.GetVisibilityRestrictionSelectorsMap()[strings.TrimSpace(restriction)] {
+				isVisible = true
+				break
+			}
+		}
+	}
+
+	return isVisible
 }
 
 func shouldExcludeField(name string, excluded []descriptor.Parameter) bool {
@@ -2268,6 +2296,21 @@ func extractFieldBehaviorFromFieldDescriptor(fd *descriptorpb.FieldDescriptorPro
 	return opts, nil
 }
 
+func extractFieldVisibilityFromFieldDescriptor(fd *descriptorpb.FieldDescriptorProto) (*visibility.VisibilityRule, error) {
+	if fd.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(fd.Options, visibility.E_FieldVisibility) {
+		return nil, nil
+	}
+	ext := proto.GetExtension(fd.Options, visibility.E_FieldVisibility)
+	opts, ok := ext.(*visibility.VisibilityRule)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want a *VisibilityRule object", ext)
+	}
+	return opts, nil
+}
+
 func getMethodOpenAPIOption(reg *descriptor.Registry, meth *descriptor.Method) (*openapi_options.Operation, error) {
 	opts, err := extractOperationOptionFromMethodDescriptor(meth.MethodDescriptorProto)
 	if err != nil {
@@ -2330,6 +2373,17 @@ func getFieldOpenAPIOption(reg *descriptor.Registry, fd *descriptor.Field) (*ope
 
 func getFieldBehaviorOption(reg *descriptor.Registry, fd *descriptor.Field) ([]annotations.FieldBehavior, error) {
 	opts, err := extractFieldBehaviorFromFieldDescriptor(fd.FieldDescriptorProto)
+	if err != nil {
+		return nil, err
+	}
+	if opts != nil {
+		return opts, nil
+	}
+	return opts, nil
+}
+
+func getFieldVisibilityOption(reg *descriptor.Registry, fd *descriptor.Field) (*visibility.VisibilityRule, error) {
+	opts, err := extractFieldVisibilityFromFieldDescriptor(fd.FieldDescriptorProto)
 	if err != nil {
 		return nil, err
 	}
@@ -2426,6 +2480,14 @@ func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotation
 			// OpenAPI v3 supports a writeOnly property, but this is not supported in Open API v2
 		case annotations.FieldBehavior_IMMUTABLE:
 		}
+	}
+}
+
+func updateSwaggerObjectFromFieldVisibility(s *openapiSchemaObject, j []visibility.VisibilityRule, reg *descriptor.Registry, field *descriptor.Field) {
+	// Per the JSON Reference syntax: Any members other than "$ref" in a JSON Reference object SHALL be ignored.
+	// https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03#section-3
+	if s.Ref != "" {
+		return
 	}
 }
 

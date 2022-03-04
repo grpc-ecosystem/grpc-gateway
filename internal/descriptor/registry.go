@@ -71,6 +71,9 @@ type Registry struct {
 	//             name.
 	openAPINamingStrategy string
 
+	// visibilityRestrictionSelectors is a map of selectors for `google.api.VisibilityRule`s that will be included in the OpenAPI output.
+	visibilityRestrictionSelectorsMap map[string]bool
+
 	// useGoTemplate determines whether you want to use GO templates
 	// in your protofile comments
 	useGoTemplate bool
@@ -141,13 +144,14 @@ type annotationIdentifier struct {
 // NewRegistry returns a new Registry.
 func NewRegistry() *Registry {
 	return &Registry{
-		msgs:                  make(map[string]*Message),
-		enums:                 make(map[string]*Enum),
-		files:                 make(map[string]*File),
-		pkgMap:                make(map[string]string),
-		pkgAliases:            make(map[string]string),
-		externalHTTPRules:     make(map[string][]*annotations.HttpRule),
-		openAPINamingStrategy: "legacy",
+		msgs:                              make(map[string]*Message),
+		enums:                             make(map[string]*Enum),
+		files:                             make(map[string]*File),
+		pkgMap:                            make(map[string]string),
+		pkgAliases:                        make(map[string]string),
+		externalHTTPRules:                 make(map[string][]*annotations.HttpRule),
+		openAPINamingStrategy:             "legacy",
+		visibilityRestrictionSelectorsMap: make(map[string]bool),
 		repeatedPathParamSeparator: repeatedFieldSeparator{
 			name: "csv",
 			sep:  ',',
@@ -539,6 +543,19 @@ func (r *Registry) SetOpenAPINamingStrategy(strategy string) {
 // GetOpenAPINamingStrategy retrieves the naming strategy that is in use.
 func (r *Registry) GetOpenAPINamingStrategy() string {
 	return r.openAPINamingStrategy
+}
+
+// SetVisibilityRestrictionSelectors sets the visibility restriction selectors.
+func (r *Registry) SetVisibilityRestrictionSelectors(selectors string) {
+	r.visibilityRestrictionSelectorsMap = make(map[string]bool)
+	for _, selector := range strings.Split(selectors, ",") {
+		r.visibilityRestrictionSelectorsMap[strings.TrimSpace(selector)] = true
+	}
+}
+
+// GetVisibilityRestrictionSelectors retrieves he visibility restriction selectors.
+func (r *Registry) GetVisibilityRestrictionSelectorsMap() map[string]bool {
+	return r.visibilityRestrictionSelectorsMap
 }
 
 // SetUseGoTemplate sets useGoTemplate
