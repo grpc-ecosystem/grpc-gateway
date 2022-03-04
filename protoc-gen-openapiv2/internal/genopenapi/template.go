@@ -108,6 +108,11 @@ var wktSchemas = map[string]schemaCore{
 
 func listEnumNames(reg *descriptor.Registry, enum *descriptor.Enum) (names []string) {
 	for _, value := range enum.GetValue() {
+		if v, err := getEnumValueVisibilityOption(value); err != nil {
+			if !checkVisibility(v, reg) {
+				continue
+			}
+		}
 		if reg.GetOmitEnumDefaultValue() && value.GetNumber() == 0 {
 			continue
 		}
@@ -448,9 +453,8 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 	schema.Required = filterOutExcludedFields(schema.Required, pathParams)
 
 	for _, f := range msg.Fields {
-		if j, err := getFieldVisibilityOption(reg, f); err == nil {
-			if !checkVisibility(j, reg) {
-				fmt.Println(f.GetName())
+		if v, err := getFieldVisibilityOption(f); err == nil {
+			if !checkVisibility(v, reg) {
 				continue
 			}
 		}
@@ -970,7 +974,20 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 			lastFile = svc.File
 			svcBaseIdx = svcIdx
 		}
+
+		if v, err := getServiceVisibilityOption(svc); err == nil {
+			if !checkVisibility(v, reg) {
+				continue
+			}
+		}
+
 		for methIdx, meth := range svc.Methods {
+			if v, err := getMethodVisibilityOption(meth); err == nil {
+				if !checkVisibility(v, reg) {
+					continue
+				}
+			}
+
 			for bIdx, b := range meth.Bindings {
 				operationFunc := operationForMethod(b.HTTPMethod)
 				// Iterate over all the OpenAPI parameters
@@ -2296,7 +2313,7 @@ func extractFieldBehaviorFromFieldDescriptor(fd *descriptorpb.FieldDescriptorPro
 	return opts, nil
 }
 
-func extractFieldVisibilityFromFieldDescriptor(fd *descriptorpb.FieldDescriptorProto) (*visibility.VisibilityRule, error) {
+func getFieldVisibilityOption(fd *descriptor.Field) (*visibility.VisibilityRule, error) {
 	if fd.Options == nil {
 		return nil, nil
 	}
@@ -2304,6 +2321,51 @@ func extractFieldVisibilityFromFieldDescriptor(fd *descriptorpb.FieldDescriptorP
 		return nil, nil
 	}
 	ext := proto.GetExtension(fd.Options, visibility.E_FieldVisibility)
+	opts, ok := ext.(*visibility.VisibilityRule)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want a *VisibilityRule object", ext)
+	}
+	return opts, nil
+}
+
+func getServiceVisibilityOption(fd *descriptor.Service) (*visibility.VisibilityRule, error) {
+	if fd.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(fd.Options, visibility.E_ApiVisibility) {
+		return nil, nil
+	}
+	ext := proto.GetExtension(fd.Options, visibility.E_ApiVisibility)
+	opts, ok := ext.(*visibility.VisibilityRule)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want a *VisibilityRule object", ext)
+	}
+	return opts, nil
+}
+
+func getMethodVisibilityOption(fd *descriptor.Method) (*visibility.VisibilityRule, error) {
+	if fd.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(fd.Options, visibility.E_MethodVisibility) {
+		return nil, nil
+	}
+	ext := proto.GetExtension(fd.Options, visibility.E_MethodVisibility)
+	opts, ok := ext.(*visibility.VisibilityRule)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want a *VisibilityRule object", ext)
+	}
+	return opts, nil
+}
+
+func getEnumValueVisibilityOption(fd *descriptorpb.EnumValueDescriptorProto) (*visibility.VisibilityRule, error) {
+	if fd.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(fd.Options, visibility.E_ValueVisibility) {
+		return nil, nil
+	}
+	ext := proto.GetExtension(fd.Options, visibility.E_ValueVisibility)
 	opts, ok := ext.(*visibility.VisibilityRule)
 	if !ok {
 		return nil, fmt.Errorf("extension is %T; want a *VisibilityRule object", ext)
@@ -2373,17 +2435,6 @@ func getFieldOpenAPIOption(reg *descriptor.Registry, fd *descriptor.Field) (*ope
 
 func getFieldBehaviorOption(reg *descriptor.Registry, fd *descriptor.Field) ([]annotations.FieldBehavior, error) {
 	opts, err := extractFieldBehaviorFromFieldDescriptor(fd.FieldDescriptorProto)
-	if err != nil {
-		return nil, err
-	}
-	if opts != nil {
-		return opts, nil
-	}
-	return opts, nil
-}
-
-func getFieldVisibilityOption(reg *descriptor.Registry, fd *descriptor.Field) (*visibility.VisibilityRule, error) {
-	opts, err := extractFieldVisibilityFromFieldDescriptor(fd.FieldDescriptorProto)
 	if err != nil {
 		return nil, err
 	}
@@ -2480,14 +2531,6 @@ func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotation
 			// OpenAPI v3 supports a writeOnly property, but this is not supported in Open API v2
 		case annotations.FieldBehavior_IMMUTABLE:
 		}
-	}
-}
-
-func updateSwaggerObjectFromFieldVisibility(s *openapiSchemaObject, j []visibility.VisibilityRule, reg *descriptor.Registry, field *descriptor.Field) {
-	// Per the JSON Reference syntax: Any members other than "$ref" in a JSON Reference object SHALL be ignored.
-	// https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03#section-3
-	if s.Ref != "" {
-		return
 	}
 }
 
