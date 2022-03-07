@@ -1,4 +1,4 @@
-module github.com/grpc-ecosystem/grpc-gateway/v2
+module github.com/SafetyCulture/grpc-gateway/v2
 
 go 1.17
 
