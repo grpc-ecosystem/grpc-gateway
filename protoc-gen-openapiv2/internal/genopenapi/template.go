@@ -145,6 +145,12 @@ func getEnumDefault(reg *descriptor.Registry, enum *descriptor.Enum) string {
 // messageToQueryParameters converts a message to a list of OpenAPI query parameters.
 func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body) (params []openapiParameterObject, err error) {
 	for _, field := range message.Fields {
+		if v, err := getFieldVisibilityOption(field); err == nil {
+			if !checkVisibility(v, reg) {
+				continue
+			}
+		}
+
 		p, err := queryParams(message, field, "", reg, pathParams, body, reg.GetRecursiveDepth())
 		if err != nil {
 			return nil, err
@@ -327,6 +333,12 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 	touchedOut := cycle.Branch()
 
 	for _, nestedField := range msg.Fields {
+		if v, err := getFieldVisibilityOption(nestedField); err == nil {
+			if !checkVisibility(v, reg) {
+				continue
+			}
+		}
+
 		fieldName := reg.FieldName(field)
 		p, err := nestedQueryParams(msg, nestedField, prefix+fieldName+".", reg, pathParams, body, touchedOut)
 		if err != nil {
@@ -375,6 +387,12 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descriptor.Registry, m messageMap, e enumMap) {
 	// Iterate over all the fields that
 	for _, t := range message.Fields {
+		if v, err := getFieldVisibilityOption(t); err == nil {
+			if !checkVisibility(v, reg) {
+				continue
+			}
+		}
+
 		fieldType := t.GetTypeName()
 		// If the type is an empty string then it is a proto primitive
 		if fieldType != "" {
