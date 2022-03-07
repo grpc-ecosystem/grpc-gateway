@@ -108,10 +108,8 @@ var wktSchemas = map[string]schemaCore{
 
 func listEnumNames(reg *descriptor.Registry, enum *descriptor.Enum) (names []string) {
 	for _, value := range enum.GetValue() {
-		if v, err := getEnumValueVisibilityOption(value); err != nil {
-			if !checkVisibility(v, reg) {
-				continue
-			}
+		if v, err := getEnumValueVisibilityOption(value); err != nil && !checkVisibility(v, reg) {
+			continue
 		}
 		if reg.GetOmitEnumDefaultValue() && value.GetNumber() == 0 {
 			continue
@@ -145,10 +143,8 @@ func getEnumDefault(reg *descriptor.Registry, enum *descriptor.Enum) string {
 // messageToQueryParameters converts a message to a list of OpenAPI query parameters.
 func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body) (params []openapiParameterObject, err error) {
 	for _, field := range message.Fields {
-		if v, err := getFieldVisibilityOption(field); err == nil {
-			if !checkVisibility(v, reg) {
-				continue
-			}
+		if v, err := getFieldVisibilityOption(field); err == nil && !checkVisibility(v, reg) {
+			continue
 		}
 
 		p, err := queryParams(message, field, "", reg, pathParams, body, reg.GetRecursiveDepth())
@@ -333,10 +329,8 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 	touchedOut := cycle.Branch()
 
 	for _, nestedField := range msg.Fields {
-		if v, err := getFieldVisibilityOption(nestedField); err == nil {
-			if !checkVisibility(v, reg) {
-				continue
-			}
+		if v, err := getFieldVisibilityOption(nestedField); err == nil && !checkVisibility(v, reg) {
+			continue
 		}
 
 		fieldName := reg.FieldName(field)
@@ -387,10 +381,8 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 func findNestedMessagesAndEnumerations(message *descriptor.Message, reg *descriptor.Registry, m messageMap, e enumMap) {
 	// Iterate over all the fields that
 	for _, t := range message.Fields {
-		if v, err := getFieldVisibilityOption(t); err == nil {
-			if !checkVisibility(v, reg) {
-				continue
-			}
+		if v, err := getFieldVisibilityOption(t); err == nil && !checkVisibility(v, reg) {
+			continue
 		}
 
 		fieldType := t.GetTypeName()
@@ -471,10 +463,8 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 	schema.Required = filterOutExcludedFields(schema.Required, pathParams)
 
 	for _, f := range msg.Fields {
-		if v, err := getFieldVisibilityOption(f); err == nil {
-			if !checkVisibility(v, reg) {
-				continue
-			}
+		if v, err := getFieldVisibilityOption(f); err == nil && !checkVisibility(v, reg) {
+			continue
 		}
 
 		if shouldExcludeField(f.GetName(), pathParams) {
@@ -993,17 +983,13 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 			svcBaseIdx = svcIdx
 		}
 
-		if v, err := getServiceVisibilityOption(svc); err == nil {
-			if !checkVisibility(v, reg) {
-				continue
-			}
+		if v, err := getServiceVisibilityOption(svc); err == nil && !checkVisibility(v, reg) {
+			continue
 		}
 
 		for methIdx, meth := range svc.Methods {
-			if v, err := getMethodVisibilityOption(meth); err == nil {
-				if !checkVisibility(v, reg) {
-					continue
-				}
+			if v, err := getMethodVisibilityOption(meth); err == nil && !checkVisibility(v, reg) {
+				continue
 			}
 
 			for bIdx, b := range meth.Bindings {
