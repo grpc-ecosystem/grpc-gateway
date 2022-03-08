@@ -27,7 +27,6 @@ var (
 	allowRepeatedFieldsInBody      = flag.Bool("allow_repeated_fields_in_body", false, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option")
 	includePackageInTags           = flag.Bool("include_package_in_tags", false, "if unset, the gRPC service name is added to the `Tags` field of each operation. If set and the `package` directive is shown in the proto file, the package name will be prepended to the service name")
 	useFQNForOpenAPIName           = flag.Bool("fqn_for_openapi_name", false, "if set, the object's OpenAPI names will use the fully qualified names from the proto definition (ie my.package.MyMessage.MyInnerMessage). DEPRECATED: prefer `openapi_naming_strategy=fqn`")
-	visibilityRestrictionSelectors = flag.String("visibility_restriction_selectors", "", "use to included services, methods, fields, enums and enum values that are restricted using `google.api.VisibilityRule`s")
 	openAPINamingStrategy          = flag.String("openapi_naming_strategy", "", "use the given OpenAPI naming strategy. Allowed values are `legacy`, `fqn`, `simple`. If unset, either `legacy` or `fqn` are selected, depending on the value of the `fqn_for_openapi_name` flag")
 	useGoTemplate                  = flag.Bool("use_go_templates", false, "if set, you can use Go templates in protofile comments")
 	disableDefaultErrors           = flag.Bool("disable_default_errors", false, "if set, disables generation of default errors. This is useful if you have defined custom error handling")
@@ -38,6 +37,7 @@ var (
 	generateUnboundMethods         = flag.Bool("generate_unbound_methods", false, "generate swagger metadata even for RPC methods that have no HttpRule annotation")
 	recursiveDepth                 = flag.Int("recursive-depth", 1000, "maximum recursion count allowed for a field type")
 	omitEnumDefaultValue           = flag.Bool("omit_enum_default_value", false, "if set, omit default enum value")
+	visibilityRestrictionSelectors = flag.String("visibility_restriction_selectors", "", "comma seperated list of `google.api.VisibilityRule`s to include in output generation. If no Visibility annoations are provided, they will always be included in outputs.")
 )
 
 // Variables set by goreleaser at build time
@@ -115,6 +115,7 @@ func main() {
 	reg.SetGenerateUnboundMethods(*generateUnboundMethods)
 	reg.SetRecursiveDepth(*recursiveDepth)
 	reg.SetOmitEnumDefaultValue(*omitEnumDefaultValue)
+	reg.SetVisibilityRestrictionSelectors(*visibilityRestrictionSelectors)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
 		return

@@ -545,19 +545,6 @@ func (r *Registry) GetOpenAPINamingStrategy() string {
 	return r.openAPINamingStrategy
 }
 
-// SetVisibilityRestrictionSelectors sets the visibility restriction selectors.
-func (r *Registry) SetVisibilityRestrictionSelectors(selectors string) {
-	r.visibilityRestrictionSelectorsMap = make(map[string]bool)
-	for _, selector := range strings.Split(selectors, ",") {
-		r.visibilityRestrictionSelectorsMap[strings.TrimSpace(selector)] = true
-	}
-}
-
-// GetVisibilityRestrictionSelectors retrieves he visibility restriction selectors.
-func (r *Registry) GetVisibilityRestrictionSelectorsMap() map[string]bool {
-	return r.visibilityRestrictionSelectorsMap
-}
-
 // SetUseGoTemplate sets useGoTemplate
 func (r *Registry) SetUseGoTemplate(use bool) {
 	r.useGoTemplate = use
@@ -586,6 +573,19 @@ func (r *Registry) SetOmitEnumDefaultValue(omit bool) {
 // GetOmitEnumDefaultValue returns omitEnumDefaultValue
 func (r *Registry) GetOmitEnumDefaultValue() bool {
 	return r.omitEnumDefaultValue
+}
+
+// SetVisibilityRestrictionSelectors sets the visibility restriction selectors.
+func (r *Registry) SetVisibilityRestrictionSelectors(selectors string) {
+	r.visibilityRestrictionSelectorsMap = make(map[string]bool)
+	for _, selector := range strings.Split(selectors, ",") {
+		r.visibilityRestrictionSelectorsMap[strings.TrimSpace(selector)] = true
+	}
+}
+
+// GetVisibilityRestrictionSelectors retrieves he visibility restriction selectors.
+func (r *Registry) GetVisibilityRestrictionSelectorsMap() map[string]bool {
+	return r.visibilityRestrictionSelectorsMap
 }
 
 // SetDisableDefaultErrors sets disableDefaultErrors

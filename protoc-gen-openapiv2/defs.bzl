@@ -66,7 +66,8 @@ def _run_proto_gen_openapi(
         simple_operation_ids,
         proto3_optional_nullable,
         openapi_configuration,
-        generate_unbound_methods):
+        generate_unbound_methods,
+        visibility_restriction_selectors):
     args = actions.args()
 
     args.add("--plugin", "protoc-gen-openapiv2=%s" % protoc_gen_openapiv2.path)
@@ -118,6 +119,9 @@ def _run_proto_gen_openapi(
 
     if proto3_optional_nullable:
         args.add("--openapiv2_opt", "proto3_optional_nullable=true")
+
+    if visibility_restriction_selectors:
+        args.add("--openapiv2_opt", "visibility_restriction_selectors=true")
 
     args.add("--openapiv2_opt", "repeated_path_param_separator=%s" % repeated_path_param_separator)
 
@@ -218,6 +222,7 @@ def _proto_gen_openapi_impl(ctx):
                     proto3_optional_nullable = ctx.attr.proto3_optional_nullable,
                     openapi_configuration = ctx.file.openapi_configuration,
                     generate_unbound_methods = ctx.attr.generate_unbound_methods,
+                    visibility_restriction_selectors = ctx.attr.visibility_restriction_selectors,
                 ),
             ),
         ),
@@ -322,6 +327,12 @@ protoc_gen_openapiv2 = rule(
             mandatory = False,
             doc = "generate swagger metadata even for RPC methods that have" +
                   " no HttpRule annotation",
+        ),
+        "visibility_restriction_selectors": attr.string(
+            default = False,
+            mandatory = False,
+            doc = "comma seperated list of `google.api.VisibilityRule`s to include in output generation." +
+                  " If no Visibility annoations are provided, they will always be included in outputs.",
         ),
         "_protoc": attr.label(
             default = "@com_google_protobuf//:protoc",
