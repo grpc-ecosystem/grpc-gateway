@@ -1,0 +1,102 @@
+syntax = "proto3";
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb;examplepb";
+
+// Visibility Rule Echo Service
+// Similar to echo_service.proto but with annoations to change visibilty
+// of services, methods, fields and enum values.
+//
+// Echo Service API consists of a two services which return
+// a message.
+package grpc.gateway.examples.internal.proto.examplepb;
+
+import "google/api/annotations.proto";
+import "google/api/visibility.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/struct.proto";
+
+// Embedded represents a message embedded in SimpleMessage.
+message VisibilityRuleEmbedded {
+	oneof mark {
+		int64 progress = 1;
+		string note = 2;
+		string internal_field = 3 [(google.api.field_visibility).restriction = "INTERNAL"];
+		string preview_field = 4 [(google.api.field_visibility).restriction = "INTERNAL,PREVIEW"];
+	}
+}
+
+// SimpleMessage represents a simple message sent to the Echo service.
+message VisibilityRuleSimpleMessage {
+	enum VisibilityEnum {
+		UNSPECIFIED = 0;
+		VISIBLE = 1;
+		INTERNAL = 2 [(google.api.value_visibility).restriction = "INTERNAL"];
+		PREVIEW = 3 [(google.api.value_visibility).restriction = "INTERNAL,PREVIEW"];
+	}
+
+	// Id represents the message identifier.
+	string id = 1;
+	int64 num = 2;
+	oneof code {
+		int64 line_num = 3;
+		string lang = 4;
+	}
+	VisibilityRuleEmbedded status = 5;
+	oneof ext {
+		int64 en = 6;
+		VisibilityRuleEmbedded no = 7;
+	}
+	string internal_field = 8 [(google.api.field_visibility).restriction = "INTERNAL"];
+	string preview_field = 9 [(google.api.field_visibility).restriction = "INTERNAL,PREVIEW"];
+	VisibilityEnum an_enum = 10;
+}
+
+// VisibilityRuleEchoService service responds to incoming echo requests.
+// Different services will be available in the swagger documentation depending
+// based on `google.api.VisibilityRule`s and the set `visibility_restriction_selectors`
+// flag when calling protoc-gen-openapiv2.
+service VisibilityRuleEchoService {
+	// Echo method receives a simple message and returns it.
+	// It should be visible in the open API output.
+	rpc Echo(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
+		option (google.api.http) = {
+			post: "/v1/example/echo/{id}"
+		};
+	}
+	// EchoInternal is an internal API that should not be visibile in the OpenAPI spec.
+	rpc EchoInternal(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
+		option (google.api.method_visibility).restriction = "INTERNAL";
+		option (google.api.http) = {
+			get: "/v1/example/echo_internal"
+		};
+	}
+	// EchoPreview is a preview API that should be visibile in the OpenAPI spec.
+	rpc EchoPreview(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
+		option (google.api.method_visibility).restriction = "PREVIEW";
+		option (google.api.http) = {
+			get: "/v1/example/echo_preview"
+		};
+	}
+	// EchoInternalAndPreview is a internal and preview API that should be visibile in the OpenAPI spec.
+	rpc EchoInternalAndPreview(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
+		option (google.api.method_visibility).restriction = "INTERNAL,PREVIEW";
+		option (google.api.http) = {
+			get: "/v1/example/echo_internal_and_preview"
+		};
+	}
+}
+
+// VisibilityRuleInternalEchoService service responds to incoming echo requests.
+// Different services will be available in the swagger documentation depending
+// based on `google.api.VisibilityRule`s and the set `visibility_restriction_selectors`
+// flag when calling protoc-gen-openapiv2.
+service VisibilityRuleInternalEchoService {
+	option (google.api.api_visibility).restriction = "INTERNAL";
+
+	// Echo method receives a simple message and returns it.
+	// It should not be visible in the open API output.
+	rpc Echo(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
+		option (google.api.http) = {
+			post: "/v1/example/internal/echo/{id}"
+		};
+	}
+}

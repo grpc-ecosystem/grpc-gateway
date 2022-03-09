@@ -108,7 +108,7 @@ var wktSchemas = map[string]schemaCore{
 
 func listEnumNames(reg *descriptor.Registry, enum *descriptor.Enum) (names []string) {
 	for _, value := range enum.GetValue() {
-		if v, err := getEnumValueVisibilityOption(value); err != nil && !checkVisibility(v, reg) {
+		if v, err := getEnumValueVisibilityOption(value); err == nil && !checkVisibility(v, reg) {
 			continue
 		}
 		if reg.GetOmitEnumDefaultValue() && value.GetNumber() == 0 {
@@ -122,6 +122,9 @@ func listEnumNames(reg *descriptor.Registry, enum *descriptor.Enum) (names []str
 func listEnumNumbers(reg *descriptor.Registry, enum *descriptor.Enum) (numbers []string) {
 	for _, value := range enum.GetValue() {
 		if reg.GetOmitEnumDefaultValue() && value.GetNumber() == 0 {
+			continue
+		}
+		if v, err := getEnumValueVisibilityOption(value); err == nil && !checkVisibility(v, reg) {
 			continue
 		}
 		numbers = append(numbers, strconv.Itoa(int(value.GetNumber())))
@@ -579,7 +582,6 @@ func checkVisibility(r *visibility.VisibilityRule, reg *descriptor.Registry) boo
 
 	if r != nil {
 		restrictions := strings.Split(strings.TrimSpace(r.Restriction), ",")
-
 		if len(restrictions) != 0 {
 			isVisible = false
 		}
@@ -944,6 +946,9 @@ func partsToRegexpMap(parts []string) map[string]string {
 func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry) []openapiTagObject {
 	var tags []openapiTagObject
 	for _, svc := range services {
+		if v, err := getServiceVisibilityOption(svc); err == nil && !checkVisibility(v, reg) {
+			continue
+		}
 		tagName := svc.GetName()
 		if pkg := svc.File.GetPackage(); pkg != "" && reg.IsIncludePackageInTags() {
 			tagName = pkg + "." + tagName
@@ -2046,6 +2051,9 @@ func enumValueProtoComments(reg *descriptor.Registry, enum *descriptor.Enum) str
 	protoPath := protoPathIndex(reflect.TypeOf((*descriptorpb.EnumDescriptorProto)(nil)), "Value")
 	var comments []string
 	for idx, value := range enum.GetValue() {
+		if v, err := getEnumValueVisibilityOption(value); err == nil && !checkVisibility(v, reg) {
+			continue
+		}
 		name := value.GetName()
 		if reg.GetEnumsAsInts() {
 			name = strconv.Itoa(int(value.GetNumber()))

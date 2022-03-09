@@ -115,6 +115,9 @@ proto:
 	buf generate \
 		--template ./examples/internal/proto/examplepb/use_go_template.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/use_go_template.proto
+	buf generate \
+		--template ./examples/internal/proto/examplepb/visibility_rule_echo_service.buf.gen.yaml \
+		--path examples/internal/proto/examplepb/visibility_rule_echo_service.proto
 
 generate: proto $(ECHO_EXAMPLE_SRCS) $(ABE_EXAMPLE_SRCS) $(UNANNOTATED_ECHO_EXAMPLE_SRCS) $(RESPONSE_BODY_EXAMPLE_SRCS) $(GENERATE_UNBOUND_METHODS_EXAMPLE_SRCS)
 
