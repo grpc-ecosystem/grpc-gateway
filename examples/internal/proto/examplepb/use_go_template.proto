@@ -80,6 +80,6 @@ message LogoutRequest {
 
 message LogoutReply {
     // Message that tells you whether your
-    // logout was succesful or not
+    // logout was successful or not
     string message = 1;
 }

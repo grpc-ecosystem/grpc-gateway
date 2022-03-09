@@ -37,7 +37,7 @@ def _direct_source_infos(proto_info, provided_sources = []):
         local_offset = offset
         if src.root.path and not source_root.startswith(src.root.path):
             # Before Bazel 1.0, `proto_source_root` wasn't guaranteed to be a
-            # prefix of `src.path`. This could happend, e.g., if `file` was
+            # prefix of `src.path`. This could happened, e.g., if `file` was
             # generated (https://github.com/bazelbuild/bazel/issues/9215).
             local_offset += len(src.root.path) + 1  # + '/'.
         infos.append(struct(file = src, import_path = src.path[local_offset:]))
