@@ -578,22 +578,23 @@ func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject,
 }
 
 func checkVisibility(r *visibility.VisibilityRule, reg *descriptor.Registry) bool {
-	isVisible := true
+	if r == nil {
+		return true
+	}
 
-	if r != nil {
-		restrictions := strings.Split(strings.TrimSpace(r.Restriction), ",")
-		if len(restrictions) != 0 {
-			isVisible = false
-		}
-		for _, restriction := range restrictions {
-			if reg.GetVisibilityRestrictionSelectorsMap()[strings.TrimSpace(restriction)] {
-				isVisible = true
-				break
-			}
+	restrictions := strings.Split(strings.TrimSpace(r.Restriction), ",")
+	// No restrictions results in the element always being visible
+	if len(restrictions) == 0 {
+		return true
+	}
+
+	for _, restriction := range restrictions {
+		if reg.GetVisibilityRestrictionSelectorsMap()[strings.TrimSpace(restriction)] {
+			return true
 		}
 	}
 
-	return isVisible
+	return false
 }
 
 func shouldExcludeField(name string, excluded []descriptor.Parameter) bool {
