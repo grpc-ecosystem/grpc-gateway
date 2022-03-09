@@ -284,3 +284,96 @@ Output json:
 },
 ```
 {% endraw %}
+
+### Hiding fields, methods, services and enum values
+
+If you require internal or unreleased fields and APIs to be hidden from your API documentation, [`google.api.VisibilityRule`](https://github.com/googleapis/googleapis/blob/master/google/api/visibility.proto#L89) annotations can be added customize where they are generated. Combind with the option `visibility_restriction_selectors` overlapping rules will appear in the OpenAPI output. 
+
+Fields and APIs without `google.api.VisibilityRule` annotations will always appear in the generated output.
+
+Note: Annotations on Messages and Enums are not currently supported.
+
+`opt: visibility_restriction_selectors=PREVIEW` will result in:
+
+Input Example:
+```proto3
+service Echo {
+    rpc EchoInternal(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
+        option (google.api.method_visibility).restriction = "INTERNAL";
+        option (google.api.http) = {
+            get: "/v1/example/echo_internal"
+        };
+    }
+    rpc EchoInternalAndPreview(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
+        option (google.api.method_visibility).restriction = "INTERNAL,PREVIEW";
+        option (google.api.http) = {
+            get: "/v1/example/echo_internal_and_preview"
+        };
+    }
+}
+
+message VisibilityRuleSimpleMessage {
+     enum VisibilityEnum {
+          UNSPECIFIED = 0;
+          VISIBLE = 1;
+          INTERNAL = 2 [(google.api.value_visibility).restriction = "INTERNAL"];
+          PREVIEW = 3 [(google.api.value_visibility).restriction = "INTERNAL,PREVIEW"];
+     }
+     
+     string internal_field = 1 [(google.api.field_visibility).restriction = "INTERNAL"];
+     string preview_field = 2 [(google.api.field_visibility).restriction = "INTERNAL,PREVIEW"];
+     VisibilityEnum an_enum = 3;
+}
+```
+
+Output json:
+```json
+{
+    "paths": {
+        "/v1/example/echo_internal_and_preview": {
+            "get": {
+                "summary": "EchoInternalAndPreview is a internal and preview API that should be visibile in the OpenAPI spec.",
+                "operationId": "VisibilityRuleEchoService_EchoInternalAndPreview",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                        "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "previewField",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "anEnum",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "UNSPECIFIED",
+                            "VISIBLE",
+                            "PREVIEW"
+                        ],
+                        "default": "UNSPECIFIED"
+                    }
+                ],
+                "tags": [
+                    "VisibilityRuleEchoService"
+                ]
+            }
+        }
+    }
+}
+```
+{% endraw %}
