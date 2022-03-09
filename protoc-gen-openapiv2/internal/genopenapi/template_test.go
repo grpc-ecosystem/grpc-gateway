@@ -4167,9 +4167,9 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 	var fieldVisibilityInternalOption = new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldVisibilityInternalOption, visibility.E_FieldVisibility, fieldVisibilityFieldInternal)
 
-	var fieldVisibilityFieldGA = &visibility.VisibilityRule{Restriction: "INTERNAL,PREVIEW"}
+	var fieldVisibilityFieldPreview = &visibility.VisibilityRule{Restriction: "INTERNAL,PREVIEW"}
 	var fieldVisibilityPreviewOption = new(descriptorpb.FieldOptions)
-	proto.SetExtension(fieldVisibilityPreviewOption, visibility.E_FieldVisibility, fieldVisibilityFieldGA)
+	proto.SetExtension(fieldVisibilityPreviewOption, visibility.E_FieldVisibility, fieldVisibilityFieldPreview)
 
 	tests := []struct {
 		descr          string
