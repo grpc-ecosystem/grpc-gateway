@@ -28,7 +28,8 @@ var (
 )
 
 type generator struct {
-	reg *descriptor.Registry
+	reg    *descriptor.Registry
+	format Format
 }
 
 type wrapper struct {
@@ -42,8 +43,11 @@ type GeneratorOptions struct {
 }
 
 // New returns a new generator which generates grpc gateway files.
-func New(reg *descriptor.Registry) gen.Generator {
-	return &generator{reg: reg}
+func New(reg *descriptor.Registry, format Format) gen.Generator {
+	return &generator{
+		reg:    reg,
+		format: format,
+	}
 }
 
 // Merge a lot of OpenAPI file (wrapper) to single one OpenAPI file
@@ -143,21 +147,34 @@ func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error
 }
 
 // encodeOpenAPI converts OpenAPI file obj to pluginpb.CodeGeneratorResponse_File
-func encodeOpenAPI(file *wrapper) (*descriptor.ResponseFile, error) {
-	var formatted bytes.Buffer
-	enc := json.NewEncoder(&formatted)
-	enc.SetIndent("", "  ")
-	if err := enc.Encode(*file.swagger); err != nil {
+func encodeOpenAPI(file *wrapper, format Format) (*descriptor.ResponseFile, error) {
+	// file.swagger depends on JSON pretty much, because of tags and
+	// extensions, so do the trick, always encode and decode JSON and
+	// only then use selected encoder.
+
+	var contentBuf bytes.Buffer
+	if err := json.NewEncoder(&contentBuf).Encode(*file.swagger); err != nil {
 		return nil, err
 	}
+
+	var data map[string]interface{}
+	if err := json.NewDecoder(&contentBuf).Decode(&data); err != nil {
+		return nil, err
+	}
+
+	contentBuf.Reset()
+	if err := format.NewEncoder(&contentBuf).Encode(data); err != nil {
+		return nil, err
+	}
+
 	name := file.fileName
 	ext := filepath.Ext(name)
 	base := strings.TrimSuffix(name, ext)
-	output := fmt.Sprintf("%s.swagger.json", base)
+	output := fmt.Sprintf("%s.swagger."+string(format), base)
 	return &descriptor.ResponseFile{
 		CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
 			Name:    proto.String(output),
-			Content: proto.String(formatted.String()),
+			Content: proto.String(contentBuf.String()),
 		},
 	}, nil
 }
@@ -207,7 +224,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 
 	if g.reg.IsAllowMerge() {
 		targetOpenAPI := mergeTargetFile(openapis, g.reg.GetMergeFileName())
-		f, err := encodeOpenAPI(targetOpenAPI)
+		f, err := encodeOpenAPI(targetOpenAPI, g.format)
 		if err != nil {
 			return nil, fmt.Errorf("failed to encode OpenAPI for %s: %s", g.reg.GetMergeFileName(), err)
 		}
@@ -215,7 +232,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		glog.V(1).Infof("New OpenAPI file will emit")
 	} else {
 		for _, file := range openapis {
-			f, err := encodeOpenAPI(file)
+			f, err := encodeOpenAPI(file, g.format)
 			if err != nil {
 				return nil, fmt.Errorf("failed to encode OpenAPI for %s: %s", file.fileName, err)
 			}
