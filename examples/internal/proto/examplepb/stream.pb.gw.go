@@ -233,12 +233,13 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkCreate", runtime.WithHTTPPathPattern("/v1/example/a_bit_of_everything/bulk"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkCreate", runtime.WithHTTPPathPattern("/v1/example/a_bit_of_everything/bulk"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StreamService_BulkCreate_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StreamService_BulkCreate_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -253,12 +254,13 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/List", runtime.WithHTTPPathPattern("/v1/example/a_bit_of_everything"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/List", runtime.WithHTTPPathPattern("/v1/example/a_bit_of_everything"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StreamService_List_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StreamService_List_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -273,12 +275,13 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkEcho", runtime.WithHTTPPathPattern("/v1/example/a_bit_of_everything/echo"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/BulkEcho", runtime.WithHTTPPathPattern("/v1/example/a_bit_of_everything/echo"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StreamService_BulkEcho_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StreamService_BulkEcho_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -293,12 +296,13 @@ func RegisterStreamServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/Download", runtime.WithHTTPPathPattern("/v1/example/download"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.StreamService/Download", runtime.WithHTTPPathPattern("/v1/example/download"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StreamService_Download_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StreamService_Download_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

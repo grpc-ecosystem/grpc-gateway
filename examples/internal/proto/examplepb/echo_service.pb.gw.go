@@ -685,12 +685,13 @@ func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_EchoService_Echo_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_EchoService_Echo_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -708,12 +709,13 @@ func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}/{num}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}/{num}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_EchoService_Echo_1(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_EchoService_Echo_1(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -731,12 +733,13 @@ func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}/{num}/{lang}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}/{num}/{lang}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_EchoService_Echo_2(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_EchoService_Echo_2(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -754,12 +757,13 @@ func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo1/{id}/{line_num}/{status.note}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo1/{id}/{line_num}/{status.note}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_EchoService_Echo_3(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_EchoService_Echo_3(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -777,12 +781,13 @@ func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo2/{no.note}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo2/{no.note}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_EchoService_Echo_4(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_EchoService_Echo_4(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -800,12 +805,13 @@ func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoBody", runtime.WithHTTPPathPattern("/v1/example/echo_body"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoBody", runtime.WithHTTPPathPattern("/v1/example/echo_body"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_EchoService_EchoBody_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_EchoService_EchoBody_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -823,12 +829,13 @@ func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoDelete", runtime.WithHTTPPathPattern("/v1/example/echo_delete"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoDelete", runtime.WithHTTPPathPattern("/v1/example/echo_delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_EchoService_EchoDelete_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_EchoService_EchoDelete_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -846,12 +853,13 @@ func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoPatch", runtime.WithHTTPPathPattern("/v1/example/echo_patch"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoPatch", runtime.WithHTTPPathPattern("/v1/example/echo_patch"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_EchoService_EchoPatch_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_EchoService_EchoPatch_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -869,12 +877,13 @@ func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoUnauthorized", runtime.WithHTTPPathPattern("/v1/example/echo_unauthorized"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoUnauthorized", runtime.WithHTTPPathPattern("/v1/example/echo_unauthorized"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_EchoService_EchoUnauthorized_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_EchoService_EchoUnauthorized_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -931,12 +940,13 @@ func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_EchoService_Echo_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_EchoService_Echo_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -951,12 +961,13 @@ func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}/{num}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}/{num}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_EchoService_Echo_1(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_EchoService_Echo_1(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -971,12 +982,13 @@ func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}/{num}/{lang}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}/{num}/{lang}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_EchoService_Echo_2(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_EchoService_Echo_2(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -991,12 +1003,13 @@ func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo1/{id}/{line_num}/{status.note}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo1/{id}/{line_num}/{status.note}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_EchoService_Echo_3(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_EchoService_Echo_3(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1011,12 +1024,13 @@ func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo2/{no.note}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo2/{no.note}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_EchoService_Echo_4(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_EchoService_Echo_4(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1031,12 +1045,13 @@ func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoBody", runtime.WithHTTPPathPattern("/v1/example/echo_body"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoBody", runtime.WithHTTPPathPattern("/v1/example/echo_body"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_EchoService_EchoBody_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_EchoService_EchoBody_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1051,12 +1066,13 @@ func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoDelete", runtime.WithHTTPPathPattern("/v1/example/echo_delete"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoDelete", runtime.WithHTTPPathPattern("/v1/example/echo_delete"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_EchoService_EchoDelete_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_EchoService_EchoDelete_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1071,12 +1087,13 @@ func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoPatch", runtime.WithHTTPPathPattern("/v1/example/echo_patch"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoPatch", runtime.WithHTTPPathPattern("/v1/example/echo_patch"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_EchoService_EchoPatch_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_EchoService_EchoPatch_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1091,12 +1108,13 @@ func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoUnauthorized", runtime.WithHTTPPathPattern("/v1/example/echo_unauthorized"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoUnauthorized", runtime.WithHTTPPathPattern("/v1/example/echo_unauthorized"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_EchoService_EchoUnauthorized_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_EchoService_EchoUnauthorized_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

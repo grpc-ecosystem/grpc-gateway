@@ -743,12 +743,13 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/{name}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/{name}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Greeter_SayHello_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Greeter_SayHello_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -766,12 +767,13 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/strval/{strVal}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/strval/{strVal}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Greeter_SayHello_1(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Greeter_SayHello_1(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -789,12 +791,13 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/floatval/{floatVal}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/floatval/{floatVal}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Greeter_SayHello_2(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Greeter_SayHello_2(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -812,12 +815,13 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/doubleval/{doubleVal}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/doubleval/{doubleVal}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Greeter_SayHello_3(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Greeter_SayHello_3(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -835,12 +839,13 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/boolval/{boolVal}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/boolval/{boolVal}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Greeter_SayHello_4(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Greeter_SayHello_4(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -858,12 +863,13 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/bytesval/{bytesVal}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/bytesval/{bytesVal}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Greeter_SayHello_5(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Greeter_SayHello_5(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -881,12 +887,13 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/int32val/{int32Val}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/int32val/{int32Val}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Greeter_SayHello_6(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Greeter_SayHello_6(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -904,12 +911,13 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/uint32val/{uint32Val}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/uint32val/{uint32Val}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Greeter_SayHello_7(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Greeter_SayHello_7(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -927,12 +935,13 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/int64val/{int64Val}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/int64val/{int64Val}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Greeter_SayHello_8(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Greeter_SayHello_8(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -950,12 +959,13 @@ func RegisterGreeterHandlerServer(ctx context.Context, mux *runtime.ServeMux, se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/uint64val/{uint64Val}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/uint64val/{uint64Val}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Greeter_SayHello_9(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Greeter_SayHello_9(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -1012,12 +1022,13 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/{name}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/{name}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Greeter_SayHello_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Greeter_SayHello_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1032,12 +1043,13 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/strval/{strVal}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/strval/{strVal}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Greeter_SayHello_1(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Greeter_SayHello_1(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1052,12 +1064,13 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/floatval/{floatVal}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/floatval/{floatVal}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Greeter_SayHello_2(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Greeter_SayHello_2(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1072,12 +1085,13 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/doubleval/{doubleVal}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/doubleval/{doubleVal}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Greeter_SayHello_3(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Greeter_SayHello_3(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1092,12 +1106,13 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/boolval/{boolVal}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/boolval/{boolVal}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Greeter_SayHello_4(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Greeter_SayHello_4(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1112,12 +1127,13 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/bytesval/{bytesVal}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/bytesval/{bytesVal}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Greeter_SayHello_5(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Greeter_SayHello_5(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1132,12 +1148,13 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/int32val/{int32Val}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/int32val/{int32Val}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Greeter_SayHello_6(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Greeter_SayHello_6(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1152,12 +1169,13 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/uint32val/{uint32Val}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/uint32val/{uint32Val}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Greeter_SayHello_7(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Greeter_SayHello_7(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1172,12 +1190,13 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/int64val/{int64Val}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/int64val/{int64Val}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Greeter_SayHello_8(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Greeter_SayHello_8(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -1192,12 +1211,13 @@ func RegisterGreeterHandlerClient(ctx context.Context, mux *runtime.ServeMux, cl
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/uint64val/{uint64Val}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.helloworld.Greeter/SayHello", runtime.WithHTTPPathPattern("/say/uint64val/{uint64Val}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Greeter_SayHello_9(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Greeter_SayHello_9(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
