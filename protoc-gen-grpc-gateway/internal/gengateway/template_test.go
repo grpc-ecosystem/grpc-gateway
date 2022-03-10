@@ -254,7 +254,7 @@ func TestApplyTemplateRequestWithoutClientStreaming(t *testing.T) {
 		if want := `pattern_ExampleService_Echo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{0, 0}, []string(nil), ""))`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
-		if want := `rctx, err := runtime.AnnotateContext(ctx, mux, req, "/example.ExampleService/Echo", runtime.WithHTTPPathPattern("/v1"))`; !strings.Contains(got, want) {
+		if want := `ctx, err = runtime.AnnotateContext(ctx, mux, req, "/example.ExampleService/Echo", runtime.WithHTTPPathPattern("/v1"))`; !strings.Contains(got, want) {
 			t.Errorf("applyTemplate(%#v) = %s; want to contain %s", file, got, want)
 		}
 	}
@@ -462,7 +462,7 @@ func TestApplyTemplateInProcess(t *testing.T) {
 			serverStreaming: false,
 			sigWant: []string{
 				`func local_request_ExampleService_Echo_0(ctx context.Context, marshaler runtime.Marshaler, server ExampleServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {`,
-				`resp, md, err := local_request_ExampleService_Echo_0(rctx, inboundMarshaler, server, req, pathParams)`,
+				`resp, md, err := local_request_ExampleService_Echo_0(ctx, inboundMarshaler, server, req, pathParams)`,
 			},
 		},
 		{
