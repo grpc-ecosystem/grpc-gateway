@@ -148,27 +148,13 @@ func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error
 
 // encodeOpenAPI converts OpenAPI file obj to pluginpb.CodeGeneratorResponse_File
 func encodeOpenAPI(file *wrapper, format Format) (*descriptor.ResponseFile, error) {
-	// file.swagger depends on JSON pretty much, because of tags and
-	// extensions, so do the trick, always encode and decode JSON and
-	// only then use selected encoder.
-
 	var contentBuf bytes.Buffer
-	if err := json.NewEncoder(&contentBuf).Encode(*file.swagger); err != nil {
-		return nil, err
-	}
-
-	var data map[string]interface{}
-	if err := json.NewDecoder(&contentBuf).Decode(&data); err != nil {
-		return nil, err
-	}
-
-	contentBuf.Reset()
 	enc, err := format.NewEncoder(&contentBuf)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := enc.Encode(data); err != nil {
+	if err := enc.Encode(*file.swagger); err != nil {
 		return nil, err
 	}
 
