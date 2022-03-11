@@ -59,7 +59,6 @@ proto_library(
         "//examples/internal/proto/pathenum:pathenum_proto",
         "//examples/internal/proto/sub:sub_proto",
         "//examples/internal/proto/sub2:sub2_proto",
-        "//google/api:api_proto",
         "//protoc-gen-openapiv2/options:options_proto",
         "@com_google_protobuf//:duration_proto",
         "@com_google_protobuf//:empty_proto",
@@ -69,6 +68,7 @@ proto_library(
         "@com_google_protobuf//:wrappers_proto",
         "@go_googleapis//google/api:annotations_proto",
         "@go_googleapis//google/api:httpbody_proto",
+        "@go_googleapis//google/api:visibility_proto",
         "@go_googleapis//google/rpc:status_proto",
     ],
 )
@@ -99,11 +99,11 @@ go_proto_library(
         "//examples/internal/proto/pathenum",
         "//examples/internal/proto/sub",
         "//examples/internal/proto/sub2",
-        "//google/api:visibility_proto",
         "//protoc-gen-openapiv2/options",
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",  # keep
         "@go_googleapis//google/api:annotations_go_proto",
         "@go_googleapis//google/api:httpbody_go_proto",
+        "@go_googleapis//google/api:visibility_go_proto",
         "@go_googleapis//google/rpc:status_go_proto",
         "@org_golang_google_protobuf//proto:go_default_library",  # keep
     ],
