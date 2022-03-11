@@ -120,11 +120,11 @@
             "required": false,
             "type": "string",
             "enum": [
-              "UNSPECIFIED",
-              "VISIBLE",
-              "PREVIEW"
+              "VISIBILITY_ENUM_UNSPECIFIED",
+              "VISIBILITY_ENUM_VISIBLE",
+              "VISIBILITY_ENUM_PREVIEW"
             ],
-            "default": "UNSPECIFIED"
+            "default": "VISIBILITY_ENUM_UNSPECIFIED"
           }
         ],
         "tags": [
@@ -235,11 +235,11 @@
             "required": false,
             "type": "string",
             "enum": [
-              "UNSPECIFIED",
-              "VISIBLE",
-              "PREVIEW"
+              "VISIBILITY_ENUM_UNSPECIFIED",
+              "VISIBILITY_ENUM_VISIBLE",
+              "VISIBILITY_ENUM_PREVIEW"
             ],
-            "default": "UNSPECIFIED"
+            "default": "VISIBILITY_ENUM_UNSPECIFIED"
           }
         ],
         "tags": [
@@ -350,11 +350,11 @@
             "required": false,
             "type": "string",
             "enum": [
-              "UNSPECIFIED",
-              "VISIBLE",
-              "PREVIEW"
+              "VISIBILITY_ENUM_UNSPECIFIED",
+              "VISIBILITY_ENUM_VISIBLE",
+              "VISIBILITY_ENUM_PREVIEW"
             ],
-            "default": "UNSPECIFIED"
+            "default": "VISIBILITY_ENUM_UNSPECIFIED"
           }
         ],
         "tags": [
@@ -367,11 +367,11 @@
     "VisibilityRuleSimpleMessageVisibilityEnum": {
       "type": "string",
       "enum": [
-        "UNSPECIFIED",
-        "VISIBLE",
-        "PREVIEW"
+        "VISIBILITY_ENUM_UNSPECIFIED",
+        "VISIBILITY_ENUM_VISIBLE",
+        "VISIBILITY_ENUM_PREVIEW"
       ],
-      "default": "UNSPECIFIED"
+      "default": "VISIBILITY_ENUM_UNSPECIFIED"
     },
     "examplepbVisibilityRuleEmbedded": {
       "type": "object",

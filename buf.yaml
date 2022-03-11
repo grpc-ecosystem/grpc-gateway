@@ -126,6 +126,7 @@ lint:
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
+      - examples/internal/proto/examplepb/visibility_rule_echo_service.proto
       - examples/internal/proto/examplepb/wrappers.proto
     RPC_REQUEST_STANDARD_NAME:
       - examples/internal/helloworld/helloworld.proto

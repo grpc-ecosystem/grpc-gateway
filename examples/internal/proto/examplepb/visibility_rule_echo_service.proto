@@ -11,8 +11,6 @@ package grpc.gateway.examples.internal.proto.examplepb;
 
 import "google/api/annotations.proto";
 import "google/api/visibility.proto";
-import "google/protobuf/field_mask.proto";
-import "google/protobuf/struct.proto";
 
 // Embedded represents a message embedded in SimpleMessage.
 message VisibilityRuleEmbedded {
@@ -27,10 +25,10 @@ message VisibilityRuleEmbedded {
 // SimpleMessage represents a simple message sent to the Echo service.
 message VisibilityRuleSimpleMessage {
 	enum VisibilityEnum {
-		UNSPECIFIED = 0;
-		VISIBLE = 1;
-		INTERNAL = 2 [(google.api.value_visibility).restriction = "INTERNAL"];
-		PREVIEW = 3 [(google.api.value_visibility).restriction = "INTERNAL,PREVIEW"];
+		VISIBILITY_ENUM_UNSPECIFIED = 0;
+		VISIBILITY_ENUM_VISIBLE = 1;
+		VISIBILITY_ENUM_INTERNAL = 2 [(google.api.value_visibility).restriction = "INTERNAL"];
+		VISIBILITY_ENUM_PREVIEW = 3 [(google.api.value_visibility).restriction = "INTERNAL,PREVIEW"];
 	}
 
 	// Id represents the message identifier.
