@@ -329,7 +329,6 @@ protoc_gen_openapiv2 = rule(
                   " no HttpRule annotation",
         ),
         "visibility_restriction_selectors": attr.string(
-            default = False,
             mandatory = False,
             doc = "comma seperated list of `google.api.VisibilityRule`s to include in output generation." +
                   " If no Visibility annoations are provided, they will always be included in outputs.",
