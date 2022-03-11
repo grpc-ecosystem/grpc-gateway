@@ -295,7 +295,7 @@ These restrictions and selectors are completely arbitrary and you can define wha
 
 Note: Annotations are only supported on Services, Methods, Fields and Enum Values.
 
-`opt: visibility_restriction_selectors=PREVIEW,GA` will result in:
+`opt: visibility_restriction_selectors=PREVIEW` will result in:
 
 Input Example:
 ```proto3
@@ -378,4 +378,10 @@ Output json:
     }
 }
 ```
+
+For a more in depth example see [visibility_rule_echo_service.proto](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_echo_service.proto) and the following output files for different values of `visibility_restriction_selectors`:
+- [`visibility_restriction_selectors=PREVIEW`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_preview_echo_service.swagger.json)
+- [`visibility_restriction_selectors=INTERNAL`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_internal_echo_service.swagger.json)
+- [Not set](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_none_echo_service.swagger.json)
+
 {% endraw %}
