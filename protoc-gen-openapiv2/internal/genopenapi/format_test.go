@@ -81,7 +81,12 @@ func TestFormatEncode(t *testing.T) {
 			}
 
 			var buf bytes.Buffer
-			err := tc.Format.NewEncoder(&buf).Encode(expParams)
+			enc, err := tc.Format.NewEncoder(&buf)
+			if err != nil {
+				t.Fatalf("expect no encoder creating error, got: %s", err)
+			}
+
+			err = enc.Encode(expParams)
 			if err != nil {
 				t.Fatalf("expect no encoding error, got: %s", err)
 			}

@@ -163,7 +163,12 @@ func encodeOpenAPI(file *wrapper, format Format) (*descriptor.ResponseFile, erro
 	}
 
 	contentBuf.Reset()
-	if err := format.NewEncoder(&contentBuf).Encode(data); err != nil {
+	enc, err := format.NewEncoder(&contentBuf)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := enc.Encode(data); err != nil {
 		return nil, err
 	}
 

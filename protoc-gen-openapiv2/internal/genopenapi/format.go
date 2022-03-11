@@ -28,16 +28,16 @@ func (f Format) Validate() error {
 	}
 }
 
-func (f Format) NewEncoder(w io.Writer) ContentEncoder {
+func (f Format) NewEncoder(w io.Writer) (ContentEncoder, error) {
 	switch f {
 	case FormatYAML:
-		return yaml.NewEncoder(w)
+		return yaml.NewEncoder(w), nil
 	case FormatJSON:
-		fallthrough
-	default:
 		enc := json.NewEncoder(w)
 		enc.SetIndent("", "  ")
 
-		return enc
+		return enc, nil
+	default:
+		return nil, errors.New("unknown format: " + string(f))
 	}
 }
