@@ -37,7 +37,7 @@ var (
 	generateUnboundMethods     = flag.Bool("generate_unbound_methods", false, "generate swagger metadata even for RPC methods that have no HttpRule annotation")
 	recursiveDepth             = flag.Int("recursive-depth", 1000, "maximum recursion count allowed for a field type")
 	omitEnumDefaultValue       = flag.Bool("omit_enum_default_value", false, "if set, omit default enum value")
-	outputFormat               = flag.String("output_format", string(genopenapi.FormatJSON), "output content format")
+	outputFormat               = flag.String("output_format", string(genopenapi.FormatJSON), fmt.Sprintf("output content format. Allowed values are: `%s`, `%s`", genopenapi.FormatJSON, genopenapi.FormatYAML))
 )
 
 // Variables set by goreleaser at build time
