@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"gopkg.in/yaml.v2"
 )
 
 type param struct {
@@ -53,8 +54,8 @@ type openapiExternalDocumentationObject struct {
 }
 
 type extension struct {
-	key   string
-	value json.RawMessage
+	key   string          `json:"-" yaml:"-"`
+	value json.RawMessage `json:"-" yaml:"-"`
 }
 
 // http://swagger.io/specification/#swaggerObject
@@ -90,7 +91,7 @@ type openapiSecuritySchemeObject struct {
 	TokenURL         string              `json:"tokenUrl,omitempty" yaml:"tokenUrl,omitempty"`
 	Scopes           openapiScopesObject `json:"scopes,omitempty" yaml:"scopes,omitempty"`
 
-	extensions []extension
+	extensions []extension `json:"-" yaml:"-"`
 }
 
 // http://swagger.io/specification/#scopesObject
@@ -158,11 +159,11 @@ type openapiParameterObject struct {
 // supported by generation tools such as swagger-codegen and go-swagger.
 // For protoc-gen-openapiv3, we'd want to add `nullable` instead.
 type schemaCore struct {
-	Type      string          `json:"type,omitempty" yaml:"type,omitempty"`
-	Format    string          `json:"format,omitempty" yaml:"format,omitempty"`
-	Ref       string          `json:"$ref,omitempty" yaml:"$ref,omitempty"`
-	XNullable bool            `json:"x-nullable,omitempty" yaml:"x-nullable,omitempty"`
-	Example   json.RawMessage `json:"example,omitempty" yaml:"example,omitempty"`
+	Type      string     `json:"type,omitempty" yaml:"type,omitempty"`
+	Format    string     `json:"format,omitempty" yaml:"format,omitempty"`
+	Ref       string     `json:"$ref,omitempty" yaml:"$ref,omitempty"`
+	XNullable bool       `json:"x-nullable,omitempty" yaml:"x-nullable,omitempty"`
+	Example   RawExample `json:"example,omitempty" yaml:"example,omitempty"`
 
 	Items *openapiItemsObject `json:"items,omitempty" yaml:"items,omitempty"`
 
@@ -171,6 +172,25 @@ type schemaCore struct {
 	// start from 0 index it will be great. I don't think that is a good assumption.
 	Enum    []string `json:"enum,omitempty" yaml:"enum,omitempty"`
 	Default string   `json:"default,omitempty" yaml:"default,omitempty"`
+}
+
+type RawExample json.RawMessage
+
+func (m RawExample) MarshalJSON() ([]byte, error) {
+	return (json.RawMessage)(m).MarshalJSON()
+}
+
+func (m *RawExample) UnmarshalJSON(data []byte) error {
+	return (*json.RawMessage)(m).UnmarshalJSON(data)
+}
+
+func (e RawExample) MarshalYAML() (interface{}, error) {
+	var data interface{}
+	if err := json.Unmarshal(e, &data); err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
 
 func (s *schemaCore) setRefFromFQN(ref string, reg *descriptor.Registry) error {
@@ -201,11 +221,11 @@ type openapiHeadersObject map[string]openapiHeaderObject
 
 // http://swagger.io/specification/#headerObject
 type openapiHeaderObject struct {
-	Description string          `json:"description,omitempty" yaml:"description,omitempty"`
-	Type        string          `json:"type,omitempty" yaml:"type,omitempty"`
-	Format      string          `json:"format,omitempty" yaml:"format,omitempty"`
-	Default     json.RawMessage `json:"default,omitempty" yaml:"default,omitempty"`
-	Pattern     string          `json:"pattern,omitempty" yaml:"pattern,omitempty"`
+	Description string     `json:"description,omitempty" yaml:"description,omitempty"`
+	Type        string     `json:"type,omitempty" yaml:"type,omitempty"`
+	Format      string     `json:"format,omitempty" yaml:"format,omitempty"`
+	Default     RawExample `json:"default,omitempty" yaml:"default,omitempty"`
+	Pattern     string     `json:"pattern,omitempty" yaml:"pattern,omitempty"`
 }
 
 type keyVal struct {
@@ -214,6 +234,19 @@ type keyVal struct {
 }
 
 type openapiSchemaObjectProperties []keyVal
+
+func (p openapiSchemaObjectProperties) MarshalYAML() (interface{}, error) {
+	ms := make(yaml.MapSlice, len(p))
+
+	for i, v := range p {
+		ms[i] = yaml.MapItem{
+			Key:   v.Key,
+			Value: v.Value,
+		}
+	}
+
+	return ms, nil
+}
 
 func (op openapiSchemaObjectProperties) MarshalJSON() ([]byte, error) {
 	var buf bytes.Buffer
@@ -241,7 +274,7 @@ func (op openapiSchemaObjectProperties) MarshalJSON() ([]byte, error) {
 
 // http://swagger.io/specification/#schemaObject
 type openapiSchemaObject struct {
-	schemaCore
+	schemaCore `yaml:",inline"`
 	// Properties can be recursively defined
 	Properties           *openapiSchemaObjectProperties `json:"properties,omitempty" yaml:"properties,omitempty"`
 	AdditionalProperties *openapiSchemaObject           `json:"additionalProperties,omitempty" yaml:"additionalProperties,omitempty"`

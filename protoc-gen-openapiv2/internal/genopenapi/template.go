@@ -1891,7 +1891,7 @@ func processHeaders(inputHdrs map[string]*openapi_options.Header) (openapiHeader
 			if err != nil {
 				return nil, err
 			}
-			ret.Default = json.RawMessage(v.Default)
+			ret.Default = RawExample(v.Default)
 		}
 		hdrs[header] = ret
 	}
@@ -2396,7 +2396,7 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		s.Type = strings.ToLower(overrideType[0].String())
 	}
 	if j != nil && j.GetExample() != "" {
-		s.Example = json.RawMessage(j.GetExample())
+		s.Example = RawExample(j.GetExample())
 	}
 	if j != nil && j.GetFormat() != "" {
 		s.Format = j.GetFormat()
@@ -2438,7 +2438,7 @@ func openapiSchemaFromProtoSchema(s *openapi_options.Schema, reg *descriptor.Reg
 	updateswaggerObjectFromJSONSchema(&ret, s.GetJsonSchema(), reg, data)
 
 	if s != nil && s.Example != "" {
-		ret.Example = json.RawMessage(s.Example)
+		ret.Example = RawExample(s.Example)
 	}
 
 	return ret
