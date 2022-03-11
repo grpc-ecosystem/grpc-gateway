@@ -37,7 +37,7 @@ var (
 	generateUnboundMethods         = flag.Bool("generate_unbound_methods", false, "generate swagger metadata even for RPC methods that have no HttpRule annotation")
 	recursiveDepth                 = flag.Int("recursive-depth", 1000, "maximum recursion count allowed for a field type")
 	omitEnumDefaultValue           = flag.Bool("omit_enum_default_value", false, "if set, omit default enum value")
-	visibilityRestrictionSelectors = flag.String("visibility_restriction_selectors", "", "comma seperated list of `google.api.VisibilityRule`s to include in output generation. If no Visibility annoations are provided, they will always be included in outputs.")
+	visibilityRestrictionSelectors = flag.String("visibility_restriction_selectors", "", "comma separated list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Elements without visibility annotations are unaffected by this setting.")
 )
 
 // Variables set by goreleaser at build time

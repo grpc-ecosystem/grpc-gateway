@@ -5,11 +5,15 @@
 // source: examples/internal/proto/examplepb/visibility_rule_echo_service.proto
 
 // Visibility Rule Echo Service
-// Similar to echo_service.proto but with annoations to change visibilty
+// Similar to echo_service.proto but with annotations to change visibility
 // of services, methods, fields and enum values.
 //
-// Echo Service API consists of a two services which return
-// a message.
+// `google.api.VisibilityRule` annotations are added to customize where they are generated.
+// Combined with the option `visibility_restriction_selectors` overlapping rules will appear in the OpenAPI output.
+// Elements without `google.api.VisibilityRule` annotations will appear as usual in the generated output.
+//
+// These restrictions and selectors are completely arbitrary and you can define whatever values or hierarchies you want.
+// In this example `INTERNAL`, `PREVIEW` are used, but `INTERNAL`, `ALPHA`, `BETA`, `RELEASED`, or anything else could be used if you wish.
 
 package examplepb
 

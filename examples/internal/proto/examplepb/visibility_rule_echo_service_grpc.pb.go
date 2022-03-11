@@ -19,13 +19,16 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type VisibilityRuleEchoServiceClient interface {
 	// Echo method receives a simple message and returns it.
-	// It should be visible in the open API output.
+	// It should always be visible in the open API output.
 	Echo(ctx context.Context, in *VisibilityRuleSimpleMessage, opts ...grpc.CallOption) (*VisibilityRuleSimpleMessage, error)
-	// EchoInternal is an internal API that should not be visibile in the OpenAPI spec.
+	// EchoInternal is an internal API that should only be visible in the OpenAPI spec
+	// if `visibility_restriction_selectors` includes "INTERNAL".
 	EchoInternal(ctx context.Context, in *VisibilityRuleSimpleMessage, opts ...grpc.CallOption) (*VisibilityRuleSimpleMessage, error)
-	// EchoPreview is a preview API that should be visibile in the OpenAPI spec.
+	// EchoPreview is a preview API that should only be visible in the OpenAPI spec
+	// if `visibility_restriction_selectors` includes "PREVIEW".
 	EchoPreview(ctx context.Context, in *VisibilityRuleSimpleMessage, opts ...grpc.CallOption) (*VisibilityRuleSimpleMessage, error)
-	// EchoInternalAndPreview is a internal and preview API that should be visibile in the OpenAPI spec.
+	// EchoInternalAndPreview is a internal and preview API that should only be visible in the OpenAPI spec
+	// if `visibility_restriction_selectors` includes "PREVIEW" or "INTERNAL".
 	EchoInternalAndPreview(ctx context.Context, in *VisibilityRuleSimpleMessage, opts ...grpc.CallOption) (*VisibilityRuleSimpleMessage, error)
 }
 
@@ -78,13 +81,16 @@ func (c *visibilityRuleEchoServiceClient) EchoInternalAndPreview(ctx context.Con
 // for forward compatibility
 type VisibilityRuleEchoServiceServer interface {
 	// Echo method receives a simple message and returns it.
-	// It should be visible in the open API output.
+	// It should always be visible in the open API output.
 	Echo(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleSimpleMessage, error)
-	// EchoInternal is an internal API that should not be visibile in the OpenAPI spec.
+	// EchoInternal is an internal API that should only be visible in the OpenAPI spec
+	// if `visibility_restriction_selectors` includes "INTERNAL".
 	EchoInternal(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleSimpleMessage, error)
-	// EchoPreview is a preview API that should be visibile in the OpenAPI spec.
+	// EchoPreview is a preview API that should only be visible in the OpenAPI spec
+	// if `visibility_restriction_selectors` includes "PREVIEW".
 	EchoPreview(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleSimpleMessage, error)
-	// EchoInternalAndPreview is a internal and preview API that should be visibile in the OpenAPI spec.
+	// EchoInternalAndPreview is a internal and preview API that should only be visible in the OpenAPI spec
+	// if `visibility_restriction_selectors` includes "PREVIEW" or "INTERNAL".
 	EchoInternalAndPreview(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleSimpleMessage, error)
 }
 

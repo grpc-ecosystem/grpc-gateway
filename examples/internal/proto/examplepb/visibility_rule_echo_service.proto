@@ -2,11 +2,15 @@ syntax = "proto3";
 option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb;examplepb";
 
 // Visibility Rule Echo Service
-// Similar to echo_service.proto but with annoations to change visibilty
+// Similar to echo_service.proto but with annotations to change visibility
 // of services, methods, fields and enum values.
 //
-// Echo Service API consists of a two services which return
-// a message.
+// `google.api.VisibilityRule` annotations are added to customize where they are generated.
+// Combined with the option `visibility_restriction_selectors` overlapping rules will appear in the OpenAPI output.
+// Elements without `google.api.VisibilityRule` annotations will appear as usual in the generated output.
+//
+// These restrictions and selectors are completely arbitrary and you can define whatever values or hierarchies you want.
+// In this example `INTERNAL`, `PREVIEW` are used, but `INTERNAL`, `ALPHA`, `BETA`, `RELEASED`, or anything else could be used if you wish.
 package grpc.gateway.examples.internal.proto.examplepb;
 
 import "google/api/annotations.proto";
@@ -54,27 +58,30 @@ message VisibilityRuleSimpleMessage {
 // flag when calling protoc-gen-openapiv2.
 service VisibilityRuleEchoService {
 	// Echo method receives a simple message and returns it.
-	// It should be visible in the open API output.
+	// It should always be visible in the open API output.
 	rpc Echo(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
 		option (google.api.http) = {
 			post: "/v1/example/echo/{id}"
 		};
 	}
-	// EchoInternal is an internal API that should not be visibile in the OpenAPI spec.
+	// EchoInternal is an internal API that should only be visible in the OpenAPI spec
+	// if `visibility_restriction_selectors` includes "INTERNAL".
 	rpc EchoInternal(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
 		option (google.api.method_visibility).restriction = "INTERNAL";
 		option (google.api.http) = {
 			get: "/v1/example/echo_internal"
 		};
 	}
-	// EchoPreview is a preview API that should be visibile in the OpenAPI spec.
+	// EchoPreview is a preview API that should only be visible in the OpenAPI spec
+	// if `visibility_restriction_selectors` includes "PREVIEW".
 	rpc EchoPreview(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
 		option (google.api.method_visibility).restriction = "PREVIEW";
 		option (google.api.http) = {
 			get: "/v1/example/echo_preview"
 		};
 	}
-	// EchoInternalAndPreview is a internal and preview API that should be visibile in the OpenAPI spec.
+	// EchoInternalAndPreview is a internal and preview API that should only be visible in the OpenAPI spec
+	// if `visibility_restriction_selectors` includes "PREVIEW" or "INTERNAL".
 	rpc EchoInternalAndPreview(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
 		option (google.api.method_visibility).restriction = "INTERNAL,PREVIEW";
 		option (google.api.http) = {
@@ -84,9 +91,7 @@ service VisibilityRuleEchoService {
 }
 
 // VisibilityRuleInternalEchoService service responds to incoming echo requests.
-// Different services will be available in the swagger documentation depending
-// based on `google.api.VisibilityRule`s and the set `visibility_restriction_selectors`
-// flag when calling protoc-gen-openapiv2.
+// It should only be visible in the OpenAPI spec if `visibility_restriction_selectors` includes "INTERNAL".
 service VisibilityRuleInternalEchoService {
 	option (google.api.api_visibility).restriction = "INTERNAL";
 

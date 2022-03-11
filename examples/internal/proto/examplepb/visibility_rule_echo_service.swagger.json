@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "examples/internal/proto/examplepb/visibility_rule_echo_service.proto",
-    "description": "Visibility Rule Echo Service\nSimilar to echo_service.proto but with annoations to change visibilty\nof services, methods, fields and enum values.\n\nEcho Service API consists of a two services which return\na message.",
+    "description": "Visibility Rule Echo Service\nSimilar to echo_service.proto but with annotations to change visibility\nof services, methods, fields and enum values.\n\n`google.api.VisibilityRule` annotations are added to customize where they are generated.\nCombined with the option `visibility_restriction_selectors` overlapping rules will appear in the OpenAPI output.\nElements without `google.api.VisibilityRule` annotations will appear as usual in the generated output.\n\nThese restrictions and selectors are completely arbitrary and you can define whatever values or hierarchies you want.\nIn this example `INTERNAL`, `PREVIEW` are used, but `INTERNAL`, `ALPHA`, `BETA`, `RELEASED`, or anything else could be used if you wish.",
     "version": "version not set"
   },
   "tags": [
@@ -19,7 +19,7 @@
   "paths": {
     "/v1/example/echo/{id}": {
       "post": {
-        "summary": "Echo method receives a simple message and returns it.\nIt should be visible in the open API output.",
+        "summary": "Echo method receives a simple message and returns it.\nIt should always be visible in the open API output.",
         "operationId": "VisibilityRuleEchoService_Echo",
         "responses": {
           "200": {
@@ -134,7 +134,7 @@
     },
     "/v1/example/echo_internal_and_preview": {
       "get": {
-        "summary": "EchoInternalAndPreview is a internal and preview API that should be visibile in the OpenAPI spec.",
+        "summary": "EchoInternalAndPreview is a internal and preview API that should only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"PREVIEW\" or \"INTERNAL\".",
         "operationId": "VisibilityRuleEchoService_EchoInternalAndPreview",
         "responses": {
           "200": {
@@ -249,7 +249,7 @@
     },
     "/v1/example/echo_preview": {
       "get": {
-        "summary": "EchoPreview is a preview API that should be visibile in the OpenAPI spec.",
+        "summary": "EchoPreview is a preview API that should only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"PREVIEW\".",
         "operationId": "VisibilityRuleEchoService_EchoPreview",
         "responses": {
           "200": {

@@ -287,13 +287,15 @@ Output json:
 
 ### Hiding fields, methods, services and enum values
 
-If you require internal or unreleased fields and APIs to be hidden from your API documentation, [`google.api.VisibilityRule`](https://github.com/googleapis/googleapis/blob/master/google/api/visibility.proto#L89) annotations can be added customize where they are generated. Combind with the option `visibility_restriction_selectors` overlapping rules will appear in the OpenAPI output. 
+If you require internal or unreleased fields and APIs to be hidden from your API documentation, [`google.api.VisibilityRule`](https://github.com/googleapis/googleapis/blob/9916192ab15e3507e41ba2c5165182fec06120d0/google/api/visibility.proto#L89) annotations can be added customize where they are generated. Combined with the option `visibility_restriction_selectors` overlapping rules will appear in the OpenAPI output. 
 
-Fields and APIs without `google.api.VisibilityRule` annotations will always appear in the generated output.
+Elements without `google.api.VisibilityRule` annotations will appear as usual in the generated output.
 
-Note: Annotations on Messages and Enums are not currently supported.
+These restrictions and selectors are completely arbitrary and you can define whatever values or hierarchies you want. In the example `INTERNAL`, `PREVIEW` are used, but `INTERNAL`, `ALPHA`, `BETA`, `RELEASED`, or anything else could be used if you wish.
 
-`opt: visibility_restriction_selectors=PREVIEW` will result in:
+Note: Annotations are only supported on Services, Methods, Fields and Enum Values.
+
+`opt: visibility_restriction_selectors=PREVIEW,GA` will result in:
 
 Input Example:
 ```proto3
@@ -332,7 +334,7 @@ Output json:
     "paths": {
         "/v1/example/echo_internal_and_preview": {
             "get": {
-                "summary": "EchoInternalAndPreview is a internal and preview API that should be visibile in the OpenAPI spec.",
+                "summary": "EchoInternalAndPreview is a internal and preview API that should be visible in the OpenAPI spec.",
                 "operationId": "VisibilityRuleEchoService_EchoInternalAndPreview",
                 "responses": {
                     "200": {

@@ -121,7 +121,7 @@ def _run_proto_gen_openapi(
         args.add("--openapiv2_opt", "proto3_optional_nullable=true")
 
     if visibility_restriction_selectors:
-        args.add("--openapiv2_opt", "visibility_restriction_selectors=true")
+        args.add("--openapiv2_opt", "visibility_restriction_selectors=%s" % visibility_restriction_selectors)
 
     args.add("--openapiv2_opt", "repeated_path_param_separator=%s" % repeated_path_param_separator)
 
@@ -330,8 +330,9 @@ protoc_gen_openapiv2 = rule(
         ),
         "visibility_restriction_selectors": attr.string(
             mandatory = False,
-            doc = "comma seperated list of `google.api.VisibilityRule`s to include in output generation." +
-                  " If no Visibility annoations are provided, they will always be included in outputs.",
+            doc = "comma separated list of `google.api.VisibilityRule` visibility labels to include" +
+                  " in the generated output when a visibility annotation is defined. Elements without" +
+                  " visibility annotations are unaffected by this setting.",
         ),
         "_protoc": attr.label(
             default = "@com_google_protobuf//:protoc",
