@@ -26,8 +26,10 @@ func TestRawExample(t *testing.T) {
 		Exp: `"1"`,
 	}, {
 		In: RawExample(`{"hello":"worldr"}`),
-		Exp: "hello:\n" +
-			"  worldr\n",
+		Exp: `
+			hello:
+				worldr
+		`,
 	}}
 
 	sr := newSpaceReplacer()
@@ -77,9 +79,11 @@ func TestOpenapiSchemaObjectProperties(t *testing.T) {
 	t.Run("yaml", func(t *testing.T) {
 		t.Parallel()
 
-		const exp = "example:\n" +
-			"  test1: 1\n" +
-			"  test2: 2\n"
+		const exp = `
+			example:
+				test1: 1
+				test2: 2
+			`
 
 		sr := newSpaceReplacer()
 

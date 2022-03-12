@@ -184,7 +184,22 @@ func (m *RawExample) UnmarshalJSON(data []byte) error {
 	return (*json.RawMessage)(m).UnmarshalJSON(data)
 }
 
+// MarshalYAML implements yaml.Marshaler interface.
+//
+// It converts RawExample to one of yaml-supported types and returns it.
+//
+// From yaml.Marshaler docs: The Marshaler interface may be implemented
+// by types to customize their behavior when being marshaled into a YAML
+// document. The returned value is marshaled in place of the original
+// value implementing Marshaler.
 func (e RawExample) MarshalYAML() (interface{}, error) {
+	// From docs, json.Unmarshal will store one of next types to data:
+	// - bool, for JSON booleans;
+	// - float64, for JSON numbers;
+	// - string, for JSON strings;
+	// - []interface{}, for JSON arrays;
+	// - map[string]interface{}, for JSON objects;
+	// - nil for JSON null.
 	var data interface{}
 	if err := json.Unmarshal(e, &data); err != nil {
 		return nil, err
