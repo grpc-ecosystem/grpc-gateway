@@ -139,7 +139,7 @@ jobs:
           docker push plugins.buf.build/grpc-ecosystem/openapiv2:${CIRCLE_TAG}-1
   proto_lint:
     docker:
-      - image: bufbuild/buf:1.0.0-rc8
+      - image: bufbuild/buf:1.1.0
     steps:
       - checkout
       - run: buf build
@@ -147,7 +147,7 @@ jobs:
       - run: buf breaking --path protoc-gen-openapiv2/ --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=master'
   proto_push:
     docker:
-      - image: bufbuild/buf:1.0.0-rc8
+      - image: bufbuild/buf:1.1.0
     steps:
       - checkout
       - run: echo "${BUF_API_TOKEN}" | buf registry login --username grpcgatewaybot --token-stdin
