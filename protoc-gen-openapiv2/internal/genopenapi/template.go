@@ -579,7 +579,7 @@ func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject,
 
 // isVisible checks if a field/RPC is visible based on the visibility restriction
 // combined with the `visibility_restriction_selectors`.
-// Elements with an overlap on `visibility_restriction_selectors`, those without are not visible.
+// Elements with an overlap on `visibility_restriction_selectors` are visible, those without are not visible.
 // Elements without `google.api.VisibilityRule` annotations entirely are always visible.
 func isVisible(r *visibility.VisibilityRule, reg *descriptor.Registry) bool {
 	if r == nil {
