@@ -2340,7 +2340,6 @@ func getFieldVisibilityOption(fd *descriptor.Field) *visibility.VisibilityRule {
 	ext := proto.GetExtension(fd.Options, visibility.E_FieldVisibility)
 	opts, ok := ext.(*visibility.VisibilityRule)
 	if !ok {
-		fmt.Fprintf(os.Stderr, "%s: extension is %T; want a *VisibilityRule object", fd.FQFN(), ext)
 		return nil
 	}
 	return opts
@@ -2356,7 +2355,6 @@ func getServiceVisibilityOption(fd *descriptor.Service) *visibility.VisibilityRu
 	ext := proto.GetExtension(fd.Options, visibility.E_ApiVisibility)
 	opts, ok := ext.(*visibility.VisibilityRule)
 	if !ok {
-		fmt.Fprintf(os.Stderr, "%s: extension is %T; want a *VisibilityRule object", *fd.Name, ext)
 		return nil
 	}
 	return opts
@@ -2372,7 +2370,6 @@ func getMethodVisibilityOption(fd *descriptor.Method) *visibility.VisibilityRule
 	ext := proto.GetExtension(fd.Options, visibility.E_MethodVisibility)
 	opts, ok := ext.(*visibility.VisibilityRule)
 	if !ok {
-		fmt.Fprintf(os.Stderr, "%s: extension is %T; want a *VisibilityRule object", fd.FQMN(), ext)
 		return nil
 	}
 	return opts
@@ -2388,7 +2385,6 @@ func getEnumValueVisibilityOption(fd *descriptorpb.EnumValueDescriptorProto) *vi
 	ext := proto.GetExtension(fd.Options, visibility.E_ValueVisibility)
 	opts, ok := ext.(*visibility.VisibilityRule)
 	if !ok {
-		fmt.Fprintf(os.Stderr, "%s: extension is %T; want a *VisibilityRule object", fd.Name, ext)
 		return nil
 	}
 	return opts
