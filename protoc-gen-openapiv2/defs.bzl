@@ -116,7 +116,7 @@ def _run_proto_gen_openapi(
 
     if omit_enum_default_value:
         args.add("--openapiv2_opt", "omit_enum_default_value=true")
-    
+
     if output_format:
         args.add("--openapiv2_opt", "output_format=%s" % output_format)
 
