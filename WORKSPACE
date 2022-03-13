@@ -1,6 +1,7 @@
 workspace(name = "grpc_ecosystem_grpc_gateway")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 # Define before rules_proto, otherwise we receive the version of com_google_protobuf from there
 http_archive(
@@ -48,13 +49,11 @@ http_archive(
     ],
 )
 
-http_archive(
+git_repository(
     name = "bazel_gazelle",
-    sha256 = "de69a09dc70417580aabf20a28619bb3ef60d038470c7cf8442fafcf627c21cb",
-    urls = [
-        "https://storage.googleapis.com/bazel-mirror/github.com/bazelbuild/bazel-gazelle/releases/download/v0.24.0/bazel-gazelle-v0.24.0.tar.gz",
-        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.24.0/bazel-gazelle-v0.24.0.tar.gz",
-    ],
+    commit = "4a1aeae7cab962fd8088f42038d3a477cdca91a5",
+    remote = "https://github.com/johanbrandhorst/bazel-gazelle",
+    shallow_since = "1647116890 +0000",
 )
 
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
