@@ -289,6 +289,9 @@ Output json:
 
 If you require internal or unreleased fields and APIs to be hidden from your API documentation, [`google.api.VisibilityRule`](https://github.com/googleapis/googleapis/blob/9916192ab15e3507e41ba2c5165182fec06120d0/google/api/visibility.proto#L89) annotations can be added customize where they are generated. Combined with the option `visibility_restriction_selectors` overlapping rules will appear in the OpenAPI output. 
 
+`visibility_restriction_selectors` can be declared multiple times as an option to include multiple visibility restrictions in the output. 
+e.g. `opt: visibility_restriction_selectors=PREVIEW,visibility_restriction_selectors=INTERNAL`.
+
 Elements without `google.api.VisibilityRule` annotations will appear as usual in the generated output.
 
 These restrictions and selectors are completely arbitrary and you can define whatever values or hierarchies you want. In the example `INTERNAL`, `PREVIEW` are used, but `INTERNAL`, `ALPHA`, `BETA`, `RELEASED`, or anything else could be used if you wish.
@@ -382,6 +385,7 @@ Output json:
 For a more in depth example see [visibility_rule_echo_service.proto](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_echo_service.proto) and the following output files for different values of `visibility_restriction_selectors`:
 - [`visibility_restriction_selectors=PREVIEW`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_preview_echo_service.swagger.json)
 - [`visibility_restriction_selectors=INTERNAL`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_internal_echo_service.swagger.json)
+- [`visibility_restriction_selectors=INTERNAL,visibility_restriction_selectors=PREVIEW`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_preview_and_internal_echo_service.swagger.json)
 - [Not set](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_none_echo_service.swagger.json)
 
 {% endraw %}

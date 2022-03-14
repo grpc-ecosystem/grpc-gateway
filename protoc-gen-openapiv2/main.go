@@ -10,6 +10,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/internal/genopenapi"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
 )
@@ -37,7 +38,7 @@ var (
 	generateUnboundMethods         = flag.Bool("generate_unbound_methods", false, "generate swagger metadata even for RPC methods that have no HttpRule annotation")
 	recursiveDepth                 = flag.Int("recursive-depth", 1000, "maximum recursion count allowed for a field type")
 	omitEnumDefaultValue           = flag.Bool("omit_enum_default_value", false, "if set, omit default enum value")
-	visibilityRestrictionSelectors = flag.String("visibility_restriction_selectors", "", "comma separated list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Elements without visibility annotations are unaffected by this setting.")
+	visibilityRestrictionSelectors = utilities.StringArrayFlag(flag.CommandLine, "visibility_restriction_selectors", "list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Repeat this option to supply multiple values. Elements without visibility annotations are unaffected by this setting.")
 )
 
 // Variables set by goreleaser at build time

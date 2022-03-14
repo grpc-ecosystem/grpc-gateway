@@ -576,9 +576,9 @@ func (r *Registry) GetOmitEnumDefaultValue() bool {
 }
 
 // SetVisibilityRestrictionSelectors sets the visibility restriction selectors.
-func (r *Registry) SetVisibilityRestrictionSelectors(selectors string) {
+func (r *Registry) SetVisibilityRestrictionSelectors(selectors []string) {
 	r.visibilityRestrictionSelectors = make(map[string]bool)
-	for _, selector := range strings.Split(selectors, ",") {
+	for _, selector := range selectors {
 		r.visibilityRestrictionSelectors[strings.TrimSpace(selector)] = true
 	}
 }

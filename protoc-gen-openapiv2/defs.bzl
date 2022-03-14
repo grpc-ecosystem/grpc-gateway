@@ -330,8 +330,9 @@ protoc_gen_openapiv2 = rule(
         ),
         "visibility_restriction_selectors": attr.string(
             mandatory = False,
-            doc = "comma separated list of `google.api.VisibilityRule` visibility labels to include" +
-                  " in the generated output when a visibility annotation is defined. Elements without" +
+            doc = "list of `google.api.VisibilityRule` visibility labels to include" +
+                  " in the generated output when a visibility annotation is defined." +
+                  " Repeat this option to supply multiple values. Elements without" +
                   " visibility annotations are unaffected by this setting.",
         ),
         "_protoc": attr.label(

@@ -4624,7 +4624,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			err := reg.Load(&pluginpb.CodeGeneratorRequest{
 				ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 			})
-			reg.SetVisibilityRestrictionSelectors("PREVIEW")
+			reg.SetVisibilityRestrictionSelectors([]string{"PREVIEW"})
 			if err != nil {
 				t.Fatalf("failed to load code generator request: %v", err)
 			}
