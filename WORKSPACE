@@ -49,6 +49,8 @@ http_archive(
     ],
 )
 
+# TODO: Revert https://github.com/grpc-ecosystem/grpc-gateway/pull/2578/commits/fb9b59be7f2408767657c83c5002bf700ac7c460 once
+# https://github.com/bazelbuild/bazel-gazelle/pull/1194 is merged
 git_repository(
     name = "bazel_gazelle",
     commit = "4a1aeae7cab962fd8088f42038d3a477cdca91a5",
