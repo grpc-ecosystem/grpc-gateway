@@ -2,7 +2,6 @@ package utilities
 
 import (
 	"flag"
-	"fmt"
 	"strings"
 )
 
@@ -29,7 +28,6 @@ func (i *StringArrayFlags) String() string {
 
 // Set appends a value to `StringArrayFlags`
 func (i *StringArrayFlags) Set(value string) error {
-	fmt.Println(value)
 	*i = append(*i, value)
 	return nil
 }

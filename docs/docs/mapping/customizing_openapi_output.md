@@ -287,14 +287,30 @@ Output json:
 
 ### Hiding fields, methods, services and enum values
 
-If you require internal or unreleased fields and APIs to be hidden from your API documentation, [`google.api.VisibilityRule`](https://github.com/googleapis/googleapis/blob/9916192ab15e3507e41ba2c5165182fec06120d0/google/api/visibility.proto#L89) annotations can be added customize where they are generated. Combined with the option `visibility_restriction_selectors` overlapping rules will appear in the OpenAPI output. 
+If you require internal or unreleased fields and APIs to be hidden from your API documentation, [`google.api.VisibilityRule`](https://github.com/googleapis/googleapis/blob/9916192ab15e3507e41ba2c5165182fec06120d0/google/api/visibility.proto#L89) annotations can be added to customize where they are generated. Combined with the option `visibility_restriction_selectors`, overlapping rules will appear in the OpenAPI output. 
 
 `visibility_restriction_selectors` can be declared multiple times as an option to include multiple visibility restrictions in the output. 
-e.g. `opt: visibility_restriction_selectors=PREVIEW,visibility_restriction_selectors=INTERNAL`.
+e.g. if you are using `buf`:
+
+```yaml
+version: v1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - visibility_restriction_selectors=PREVIEW
+      - visibility_restriction_selectors=INTERNAL
+```
+
+or with `protoc`
+
+```sh
+protoc --openapiv2_out=. --openapiv2_opt=visibility_restriction_selectors=PREVIEW --openapiv2_opt=visibility_restriction_selectors=INTERNAL ./path/to/file.proto
+```
 
 Elements without `google.api.VisibilityRule` annotations will appear as usual in the generated output.
 
-These restrictions and selectors are completely arbitrary and you can define whatever values or hierarchies you want. In the example `INTERNAL`, `PREVIEW` are used, but `INTERNAL`, `ALPHA`, `BETA`, `RELEASED`, or anything else could be used if you wish.
+These restrictions and selectors are completely arbitrary and you can define whatever values or hierarchies you want. In this example we use `INTERNAL` and `PREVIEW`, but `INTERNAL`, `ALPHA`, `BETA`, `RELEASED`, or anything else could be used if you wish.
 
 Note: Annotations are only supported on Services, Methods, Fields and Enum Values.
 
