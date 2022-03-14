@@ -1808,19 +1808,19 @@ func TestApplyTemplateHeaders(t *testing.T) {
 				"Boolean": openapiHeaderObject{
 					Description: "boolean header description",
 					Type:        "boolean",
-					Default:     json.RawMessage("true"),
+					Default:     RawExample("true"),
 					Pattern:     "^true|false$",
 				},
 				"Integer": openapiHeaderObject{
 					Description: "integer header description",
 					Type:        "integer",
-					Default:     json.RawMessage("0"),
+					Default:     RawExample("0"),
 					Pattern:     "^[0-9]$",
 				},
 				"Number": openapiHeaderObject{
 					Description: "number header description",
 					Type:        "number",
-					Default:     json.RawMessage("1.2"),
+					Default:     RawExample("1.2"),
 					Pattern:     "^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$",
 				},
 			},
@@ -4202,7 +4202,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			defs: map[string]openapiSchemaObject{
 				"Message": {schemaCore: schemaCore{
 					Type:    "object",
-					Example: json.RawMessage(`{"foo":"bar"}`),
+					Example: RawExample(`{"foo":"bar"}`),
 				}},
 			},
 		},
@@ -4219,7 +4219,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			defs: map[string]openapiSchemaObject{
 				"Message": {schemaCore: schemaCore{
 					Type:    "object",
-					Example: json.RawMessage(`XXXX anything goes XXXX`),
+					Example: RawExample(`XXXX anything goes XXXX`),
 				}},
 			},
 		},

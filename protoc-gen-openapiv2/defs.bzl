@@ -63,6 +63,7 @@ def _run_proto_gen_openapi(
         disable_default_errors,
         enums_as_ints,
         omit_enum_default_value,
+        output_format,
         simple_operation_ids,
         proto3_optional_nullable,
         openapi_configuration,
@@ -116,6 +117,9 @@ def _run_proto_gen_openapi(
 
     if omit_enum_default_value:
         args.add("--openapiv2_opt", "omit_enum_default_value=true")
+
+    if output_format:
+        args.add("--openapiv2_opt", "output_format=%s" % output_format)
 
     if proto3_optional_nullable:
         args.add("--openapiv2_opt", "proto3_optional_nullable=true")
@@ -218,6 +222,7 @@ def _proto_gen_openapi_impl(ctx):
                     disable_default_errors = ctx.attr.disable_default_errors,
                     enums_as_ints = ctx.attr.enums_as_ints,
                     omit_enum_default_value = ctx.attr.omit_enum_default_value,
+                    output_format = ctx.attr.output_format,
                     simple_operation_ids = ctx.attr.simple_operation_ids,
                     proto3_optional_nullable = ctx.attr.proto3_optional_nullable,
                     openapi_configuration = ctx.file.openapi_configuration,
@@ -305,6 +310,12 @@ protoc_gen_openapiv2 = rule(
             default = False,
             mandatory = False,
             doc = "if set, omit default enum value",
+        ),
+        "output_format": attr.string(
+            default = "json",
+            mandatory = False,
+            values = ["json", "yaml"],
+            doc = "output content format. Allowed values are: `json`, `yaml`",
         ),
         "simple_operation_ids": attr.bool(
             default = False,

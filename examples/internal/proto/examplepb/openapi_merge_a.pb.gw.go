@@ -179,12 +179,13 @@ func RegisterServiceAHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceA/MethodOne", runtime.WithHTTPPathPattern("/v1/example/a/1"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceA/MethodOne", runtime.WithHTTPPathPattern("/v1/example/a/1"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ServiceA_MethodOne_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ServiceA_MethodOne_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -202,12 +203,13 @@ func RegisterServiceAHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceA/MethodTwo", runtime.WithHTTPPathPattern("/v1/example/a/2"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceA/MethodTwo", runtime.WithHTTPPathPattern("/v1/example/a/2"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ServiceA_MethodTwo_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ServiceA_MethodTwo_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -234,12 +236,13 @@ func RegisterServiceCHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceC/MethodOne", runtime.WithHTTPPathPattern("/v1/example/c/1"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceC/MethodOne", runtime.WithHTTPPathPattern("/v1/example/c/1"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ServiceC_MethodOne_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ServiceC_MethodOne_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -257,12 +260,13 @@ func RegisterServiceCHandlerServer(ctx context.Context, mux *runtime.ServeMux, s
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceC/MethodTwo", runtime.WithHTTPPathPattern("/v1/example/c/2"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceC/MethodTwo", runtime.WithHTTPPathPattern("/v1/example/c/2"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ServiceC_MethodTwo_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ServiceC_MethodTwo_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -319,12 +323,13 @@ func RegisterServiceAHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceA/MethodOne", runtime.WithHTTPPathPattern("/v1/example/a/1"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceA/MethodOne", runtime.WithHTTPPathPattern("/v1/example/a/1"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ServiceA_MethodOne_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ServiceA_MethodOne_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -339,12 +344,13 @@ func RegisterServiceAHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceA/MethodTwo", runtime.WithHTTPPathPattern("/v1/example/a/2"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceA/MethodTwo", runtime.WithHTTPPathPattern("/v1/example/a/2"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ServiceA_MethodTwo_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ServiceA_MethodTwo_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -412,12 +418,13 @@ func RegisterServiceCHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceC/MethodOne", runtime.WithHTTPPathPattern("/v1/example/c/1"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceC/MethodOne", runtime.WithHTTPPathPattern("/v1/example/c/1"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ServiceC_MethodOne_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ServiceC_MethodOne_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -432,12 +439,13 @@ func RegisterServiceCHandlerClient(ctx context.Context, mux *runtime.ServeMux, c
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceC/MethodTwo", runtime.WithHTTPPathPattern("/v1/example/c/2"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.examplepb.ServiceC/MethodTwo", runtime.WithHTTPPathPattern("/v1/example/c/2"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ServiceC_MethodTwo_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ServiceC_MethodTwo_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

@@ -100,9 +100,12 @@ func TestEchoPatch(t *testing.T) {
 				StructValue: &structpb.Struct{Fields: map[string]*structpb.Value{
 					"layered_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "struct_val"}},
 				}},
-			}}}},
-		ValueField: &structpb.Value{Kind: &structpb.Value_StructValue{StructValue: &structpb.Struct{Fields: map[string]*structpb.Value{
-			"value_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "value_struct_val"}}}},
+			}},
+		}},
+		ValueField: &structpb.Value{Kind: &structpb.Value_StructValue{
+			StructValue: &structpb.Struct{Fields: map[string]*structpb.Value{
+				"value_struct_key": {Kind: &structpb.Value_StringValue{StringValue: "value_struct_val"}},
+			}},
 		}},
 	}
 	payload, err := protojson.MarshalOptions{UseProtoNames: true}.Marshal(&sent)
@@ -178,6 +181,39 @@ func TestForwardResponseOption(t *testing.T) {
 		t.Errorf("waitForGateway(ctx, %d) failed with %v; want success", port, err)
 	}
 	testEcho(t, port, "v1", "application/vnd.docker.plugins.v1.1+json")
+}
+
+func TestForwardResponseOptionHTTPPathPattern(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	port := 7080
+	go func() {
+		if err := runGateway(
+			ctx,
+			fmt.Sprintf(":%d", port),
+			runtime.WithForwardResponseOption(
+				func(ctx context.Context, w http.ResponseWriter, _ proto.Message) error {
+					path, _ := runtime.HTTPPathPattern(ctx)
+					w.Header().Set("Content-Type", path)
+					return nil
+				},
+			),
+		); err != nil {
+			t.Errorf("runGateway() failed with %v; want success", err)
+			return
+		}
+	}()
+	if err := waitForGateway(ctx, uint16(port)); err != nil {
+		t.Errorf("waitForGateway(ctx, %d) failed with %v; want success", port, err)
+	}
+	testEcho(t, port, "v1", "/v1/example/echo/{id}")
 }
 
 func testEcho(t *testing.T, port int, apiPrefix string, contentType string) {
@@ -1115,7 +1151,7 @@ func testABELookupNotFound(t *testing.T, port int, useTrailers bool) {
 		t.Errorf("Grpc-Metadata-Uuid was %s, wanted %s", got, want)
 	}
 
-	var trailers = map[bool]map[string]string{
+	trailers := map[bool]map[string]string{
 		true: {
 			"Grpc-Trailer-Foo": "foo2",
 			"Grpc-Trailer-Bar": "bar2",
@@ -1542,7 +1578,6 @@ func TestPostWithEmptyBody(t *testing.T) {
 
 	apiURL := "http://localhost:8088/v2/example/postwithemptybody/name"
 	rep, err := http.Post(apiURL, "application/json", nil)
-
 	if err != nil {
 		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
 		return
@@ -1888,7 +1923,6 @@ func testResponseStrings(t *testing.T, port int) {
 			t.Errorf(diff)
 		}
 	})
-
 }
 
 func TestRequestQueryParams(t *testing.T) {
