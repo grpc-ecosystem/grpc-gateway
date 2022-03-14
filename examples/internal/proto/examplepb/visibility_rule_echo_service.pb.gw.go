@@ -291,12 +291,13 @@ func RegisterVisibilityRuleEchoServiceHandlerServer(ctx context.Context, mux *ru
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_VisibilityRuleEchoService_Echo_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_VisibilityRuleEchoService_Echo_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -314,12 +315,13 @@ func RegisterVisibilityRuleEchoServiceHandlerServer(ctx context.Context, mux *ru
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoInternal", runtime.WithHTTPPathPattern("/v1/example/echo_internal"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoInternal", runtime.WithHTTPPathPattern("/v1/example/echo_internal"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_VisibilityRuleEchoService_EchoInternal_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_VisibilityRuleEchoService_EchoInternal_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -337,12 +339,13 @@ func RegisterVisibilityRuleEchoServiceHandlerServer(ctx context.Context, mux *ru
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoPreview", runtime.WithHTTPPathPattern("/v1/example/echo_preview"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoPreview", runtime.WithHTTPPathPattern("/v1/example/echo_preview"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_VisibilityRuleEchoService_EchoPreview_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_VisibilityRuleEchoService_EchoPreview_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -360,12 +363,13 @@ func RegisterVisibilityRuleEchoServiceHandlerServer(ctx context.Context, mux *ru
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoInternalAndPreview", runtime.WithHTTPPathPattern("/v1/example/echo_internal_and_preview"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoInternalAndPreview", runtime.WithHTTPPathPattern("/v1/example/echo_internal_and_preview"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_VisibilityRuleEchoService_EchoInternalAndPreview_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_VisibilityRuleEchoService_EchoInternalAndPreview_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -392,12 +396,13 @@ func RegisterVisibilityRuleInternalEchoServiceHandlerServer(ctx context.Context,
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleInternalEchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/internal/echo/{id}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleInternalEchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/internal/echo/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_VisibilityRuleInternalEchoService_Echo_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_VisibilityRuleInternalEchoService_Echo_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -454,12 +459,13 @@ func RegisterVisibilityRuleEchoServiceHandlerClient(ctx context.Context, mux *ru
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/echo/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_VisibilityRuleEchoService_Echo_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_VisibilityRuleEchoService_Echo_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -474,12 +480,13 @@ func RegisterVisibilityRuleEchoServiceHandlerClient(ctx context.Context, mux *ru
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoInternal", runtime.WithHTTPPathPattern("/v1/example/echo_internal"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoInternal", runtime.WithHTTPPathPattern("/v1/example/echo_internal"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_VisibilityRuleEchoService_EchoInternal_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_VisibilityRuleEchoService_EchoInternal_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -494,12 +501,13 @@ func RegisterVisibilityRuleEchoServiceHandlerClient(ctx context.Context, mux *ru
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoPreview", runtime.WithHTTPPathPattern("/v1/example/echo_preview"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoPreview", runtime.WithHTTPPathPattern("/v1/example/echo_preview"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_VisibilityRuleEchoService_EchoPreview_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_VisibilityRuleEchoService_EchoPreview_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -514,12 +522,13 @@ func RegisterVisibilityRuleEchoServiceHandlerClient(ctx context.Context, mux *ru
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoInternalAndPreview", runtime.WithHTTPPathPattern("/v1/example/echo_internal_and_preview"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoInternalAndPreview", runtime.WithHTTPPathPattern("/v1/example/echo_internal_and_preview"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_VisibilityRuleEchoService_EchoInternalAndPreview_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_VisibilityRuleEchoService_EchoInternalAndPreview_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -595,12 +604,13 @@ func RegisterVisibilityRuleInternalEchoServiceHandlerClient(ctx context.Context,
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleInternalEchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/internal/echo/{id}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleInternalEchoService/Echo", runtime.WithHTTPPathPattern("/v1/example/internal/echo/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_VisibilityRuleInternalEchoService_Echo_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_VisibilityRuleInternalEchoService_Echo_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
