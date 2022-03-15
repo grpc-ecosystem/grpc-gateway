@@ -406,7 +406,7 @@ For a more in depth example see [visibility_rule_echo_service.proto](https://git
 
 ### Output format
 
-By default output format is JSON, but it is possible to configure it. For this, there is an option `output_format`. Allowed values are: `json`, `yaml`. The output format will also change an extension of the output files.
+By default the output format is JSON, but it is possible to configure it using the `output_format` option. Allowed values are: `json`, `yaml`. The output format will also change the extension of the output files.
 
 Example definition in the `buf.gen.yaml`:
 ```yaml
@@ -416,7 +416,7 @@ Example definition in the `buf.gen.yaml`:
 ```
 
 Input example:
-```proto3
+```protobuf
 syntax = "proto3";
 
 package helloproto.v1;
@@ -441,7 +441,7 @@ message HelloResp {
 }
 ```
 
-Output yaml (`opt: output_format=yaml`):
+Output:
 ```yaml
 swagger: "2.0"
 info:
@@ -497,97 +497,6 @@ definitions:
     properties:
       message:
         type: string
-```
-
-Output json (`opt: output_format=json`):
-```json
-{
-  "swagger": "2.0",
-  "info": {
-    "title": "autherproto/v1/example.proto",
-    "version": "version not set"
-  },
-  "tags": [
-    {
-      "name": "EchoService"
-    }
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-  "paths": {
-    "/api/hello": {
-      "get": {
-        "operationId": "EchoService_Hello",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1HelloResp"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "name",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "EchoService"
-        ]
-      }
-    }
-  },
-  "definitions": {
-    "protobufAny": {
-      "type": "object",
-      "properties": {
-        "@type": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": {}
-    },
-    "rpcStatus": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufAny"
-          }
-        }
-      }
-    },
-    "v1HelloResp": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string"
-        }
-      }
-    }
-  }
-}
 ```
 
 {% endraw %}
