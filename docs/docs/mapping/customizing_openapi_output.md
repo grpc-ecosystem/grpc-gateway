@@ -408,7 +408,7 @@ For a more in depth example see [visibility_rule_echo_service.proto](https://git
 
 By default the output format is JSON, but it is possible to configure it using the `output_format` option. Allowed values are: `json`, `yaml`. The output format will also change the extension of the output files.
 
-Example definition in the `buf.gen.yaml`:
+For example, if using `buf`:
 ```yaml
   - name: openapiv2
     out: pkg
