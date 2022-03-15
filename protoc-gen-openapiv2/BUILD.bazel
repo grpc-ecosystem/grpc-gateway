@@ -10,6 +10,7 @@ go_library(
         "//internal/codegenerator",
         "//internal/descriptor",
         "//protoc-gen-openapiv2/internal/genopenapi",
+        "//utilities",
         "@com_github_golang_glog//:glog",
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//types/pluginpb",

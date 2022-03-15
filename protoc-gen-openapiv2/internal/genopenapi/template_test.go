@@ -19,6 +19,7 @@ import (
 	openapi_options "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/genproto/googleapis/api/annotations"
+	"google.golang.org/genproto/googleapis/api/visibility"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
@@ -4162,6 +4163,14 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 	var fieldBehaviorOutputOnlyOptions = new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldBehaviorOutputOnlyOptions, annotations.E_FieldBehavior, fieldBehaviorOutputOnlyField)
 
+	var fieldVisibilityFieldInternal = &visibility.VisibilityRule{Restriction: "INTERNAL"}
+	var fieldVisibilityInternalOption = new(descriptorpb.FieldOptions)
+	proto.SetExtension(fieldVisibilityInternalOption, visibility.E_FieldVisibility, fieldVisibilityFieldInternal)
+
+	var fieldVisibilityFieldPreview = &visibility.VisibilityRule{Restriction: "INTERNAL,PREVIEW"}
+	var fieldVisibilityPreviewOption = new(descriptorpb.FieldOptions)
+	proto.SetExtension(fieldVisibilityPreviewOption, visibility.E_FieldVisibility, fieldVisibilityFieldPreview)
+
 	tests := []struct {
 		descr          string
 		msgDescs       []*descriptorpb.DescriptorProto
@@ -4399,6 +4408,70 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			},
 		},
 		{
+			descr: "JSONSchema with hidden properties",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:    proto.String("aInternalField"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(1),
+							Options: fieldVisibilityInternalOption,
+						},
+						{
+							Name:    proto.String("aPreviewField"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(2),
+							Options: fieldVisibilityPreviewOption,
+						},
+						{
+							Name:   proto.String("aVisibleField"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(3),
+						},
+					},
+				},
+			},
+			schema: map[string]openapi_options.Schema{
+				"Message": {
+					JsonSchema: &openapi_options.JSONSchema{
+						Title:       "title",
+						Description: "desc",
+						Required:    []string{"req"},
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"Message": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "title",
+					Description: "desc",
+					Required:    []string{"req"},
+					Properties: &openapiSchemaObjectProperties{
+						{
+							Key: "aPreviewField",
+							Value: openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
+							},
+						},
+						{
+							Key: "aVisibleField",
+							Value: openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
 			descr: "JSONSchema with path parameters",
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{
@@ -4551,6 +4624,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			err := reg.Load(&pluginpb.CodeGeneratorRequest{
 				ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 			})
+			reg.SetVisibilityRestrictionSelectors([]string{"PREVIEW"})
 			if err != nil {
 				t.Fatalf("failed to load code generator request: %v", err)
 			}

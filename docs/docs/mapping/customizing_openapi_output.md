@@ -284,3 +284,124 @@ Output json:
 },
 ```
 {% endraw %}
+
+### Hiding fields, methods, services and enum values
+
+If you require internal or unreleased fields and APIs to be hidden from your API documentation, [`google.api.VisibilityRule`](https://github.com/googleapis/googleapis/blob/9916192ab15e3507e41ba2c5165182fec06120d0/google/api/visibility.proto#L89) annotations can be added to customize where they are generated. Combined with the option `visibility_restriction_selectors`, overlapping rules will appear in the OpenAPI output. 
+
+`visibility_restriction_selectors` can be declared multiple times as an option to include multiple visibility restrictions in the output. 
+e.g. if you are using `buf`:
+
+```yaml
+version: v1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - visibility_restriction_selectors=PREVIEW
+      - visibility_restriction_selectors=INTERNAL
+```
+
+or with `protoc`
+
+```sh
+protoc --openapiv2_out=. --openapiv2_opt=visibility_restriction_selectors=PREVIEW --openapiv2_opt=visibility_restriction_selectors=INTERNAL ./path/to/file.proto
+```
+
+Elements without `google.api.VisibilityRule` annotations will appear as usual in the generated output.
+
+These restrictions and selectors are completely arbitrary and you can define whatever values or hierarchies you want. In this example we use `INTERNAL` and `PREVIEW`, but `INTERNAL`, `ALPHA`, `BETA`, `RELEASED`, or anything else could be used if you wish.
+
+Note: Annotations are only supported on Services, Methods, Fields and Enum Values.
+
+`opt: visibility_restriction_selectors=PREVIEW` will result in:
+
+Input Example:
+```proto3
+service Echo {
+    rpc EchoInternal(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
+        option (google.api.method_visibility).restriction = "INTERNAL";
+        option (google.api.http) = {
+            get: "/v1/example/echo_internal"
+        };
+    }
+    rpc EchoInternalAndPreview(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
+        option (google.api.method_visibility).restriction = "INTERNAL,PREVIEW";
+        option (google.api.http) = {
+            get: "/v1/example/echo_internal_and_preview"
+        };
+    }
+}
+
+message VisibilityRuleSimpleMessage {
+     enum VisibilityEnum {
+          UNSPECIFIED = 0;
+          VISIBLE = 1;
+          INTERNAL = 2 [(google.api.value_visibility).restriction = "INTERNAL"];
+          PREVIEW = 3 [(google.api.value_visibility).restriction = "INTERNAL,PREVIEW"];
+     }
+     
+     string internal_field = 1 [(google.api.field_visibility).restriction = "INTERNAL"];
+     string preview_field = 2 [(google.api.field_visibility).restriction = "INTERNAL,PREVIEW"];
+     VisibilityEnum an_enum = 3;
+}
+```
+
+Output json:
+```json
+{
+    "paths": {
+        "/v1/example/echo_internal_and_preview": {
+            "get": {
+                "summary": "EchoInternalAndPreview is a internal and preview API that should be visible in the OpenAPI spec.",
+                "operationId": "VisibilityRuleEchoService_EchoInternalAndPreview",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                        "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "previewField",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "anEnum",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "UNSPECIFIED",
+                            "VISIBLE",
+                            "PREVIEW"
+                        ],
+                        "default": "UNSPECIFIED"
+                    }
+                ],
+                "tags": [
+                    "VisibilityRuleEchoService"
+                ]
+            }
+        }
+    }
+}
+```
+
+For a more in depth example see [visibility_rule_echo_service.proto](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_echo_service.proto) and the following output files for different values of `visibility_restriction_selectors`:
+- [`visibility_restriction_selectors=PREVIEW`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_preview_echo_service.swagger.json)
+- [`visibility_restriction_selectors=INTERNAL`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_internal_echo_service.swagger.json)
+- [`visibility_restriction_selectors=INTERNAL,visibility_restriction_selectors=PREVIEW`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_preview_and_internal_echo_service.swagger.json)
+- [Not set](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_none_echo_service.swagger.json)
+
+{% endraw %}
