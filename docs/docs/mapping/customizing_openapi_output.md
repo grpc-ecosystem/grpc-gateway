@@ -283,7 +283,6 @@ Output json:
     ]
 },
 ```
-{% endraw %}
 
 ### Hiding fields, methods, services and enum values
 
