@@ -205,7 +205,7 @@ func WithDisablePathLengthFallback() ServeMuxOption {
 	}
 }
 
-// WithHealthEndpointAt returns a ServeMuxOption that will add an {endpointPath} endpoint to the created ServeMux.
+// WithHealthEndpointAt returns a ServeMuxOption that will add an endpoint to the created ServeMux at the path specified by endpointPath.
 // When called the handler will forward the request to the upstream grpc service health check (defined in the
 // gRPC Health Checking Protocol).
 //
