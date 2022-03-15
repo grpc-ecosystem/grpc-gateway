@@ -54,3 +54,7 @@ to `/healthz` will result in the following:
 If you've implemented multiple services in your server you can target specific services with the `?service=<service>`
 query parameter. This will then be added to the `health.HealthCheckRequest` in the `Service` property. With that you can
 write your own logic to handle that in the health checking methods.
+
+Analogously, to register an `{/endpoint/path}` endpoint in your `ServeMux` with a user-defined endpoint path, you can use
+the `ServeMuxOption` `WithHealthEndpointAt`, which accepts a connection to your registered gRPC server
+together with a custom `endpointPath string` parameter.

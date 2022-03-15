@@ -663,6 +663,42 @@ func TestWithHealthzEndpoint_codes(t *testing.T) {
 	}
 }
 
+func TestWithHealthEndpointAt_consistentWithHealthz(t *testing.T) {
+	const endpointPath = "/healthz"
+
+	r := httptest.NewRequest(http.MethodGet, endpointPath, nil)
+
+	for _, tt := range healthCheckTests {
+		tt := tt
+
+		t.Run(tt.name, func(t *testing.T) {
+			client := &dummyHealthCheckClient{
+				status: tt.status,
+				code:   tt.code,
+			}
+
+			w := httptest.NewRecorder()
+
+			runtime.NewServeMux(
+				runtime.WithHealthEndpointAt(client, endpointPath),
+			).ServeHTTP(w, r)
+
+			refW := httptest.NewRecorder()
+
+			runtime.NewServeMux(
+				runtime.WithHealthzEndpoint(client),
+			).ServeHTTP(refW, r)
+
+			if w.Code != refW.Code {
+				t.Errorf(
+					"result http status code for grpc code %q and status %q should be equal to %d, but got %d",
+					tt.code, tt.status, refW.Code, w.Code,
+				)
+			}
+		})
+	}
+}
+
 func TestWithHealthzEndpoint_serviceParam(t *testing.T) {
 	service := "test"
 
