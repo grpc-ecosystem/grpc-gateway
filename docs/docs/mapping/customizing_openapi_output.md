@@ -416,7 +416,7 @@ Example definition in the `buf.gen.yaml`:
 ```
 
 Input example:
-```proto
+```proto3
 syntax = "proto3";
 
 package helloproto.v1;
