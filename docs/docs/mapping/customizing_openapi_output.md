@@ -316,7 +316,7 @@ Note: Annotations are only supported on Services, Methods, Fields and Enum Value
 `opt: visibility_restriction_selectors=PREVIEW` will result in:
 
 Input Example:
-```
+```proto
 service Echo {
     rpc EchoInternal(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
         option (google.api.method_visibility).restriction = "INTERNAL";
