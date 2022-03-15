@@ -404,4 +404,99 @@ For a more in depth example see [visibility_rule_echo_service.proto](https://git
 - [`visibility_restriction_selectors=INTERNAL,visibility_restriction_selectors=PREVIEW`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_preview_and_internal_echo_service.swagger.json)
 - [Not set](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_none_echo_service.swagger.json)
 
+### Output format
+
+By default the output format is JSON, but it is possible to configure it using the `output_format` option. Allowed values are: `json`, `yaml`. The output format will also change the extension of the output files.
+
+For example, if using `buf`:
+```yaml
+  - name: openapiv2
+    out: pkg
+    opt: output_format=yaml
+```
+
+Input example:
+```protobuf
+syntax = "proto3";
+
+package helloproto.v1;
+option go_package = "helloproto/v1;helloproto";
+
+import "google/api/annotations.proto";
+
+service EchoService {
+    rpc Hello(HelloReq) returns (HelloResp) {
+        option (google.api.http) = {
+            get: "/api/hello"
+        };
+    }
+}
+
+message HelloReq {
+    string name = 1;
+}
+
+message HelloResp {
+    string message = 1;
+}
+```
+
+Output:
+```yaml
+swagger: "2.0"
+info:
+  title: helloproto/v1/example.proto
+  version: version not set
+tags:
+- name: EchoService
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /api/hello:
+    get:
+      operationId: EchoService_Hello
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1HelloResp'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+      - name: name
+        in: query
+        required: false
+        type: string
+      tags:
+      - EchoService
+definitions:
+  protobufAny:
+    type: object
+    properties:
+      '@type':
+        type: string
+    additionalProperties: {}
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/protobufAny'
+  v1HelloResp:
+    type: object
+    properties:
+      message:
+        type: string
+```
+
 {% endraw %}
