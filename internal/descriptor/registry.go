@@ -71,6 +71,9 @@ type Registry struct {
 	//             name.
 	openAPINamingStrategy string
 
+	// visibilityRestrictionSelectors is a map of selectors for `google.api.VisibilityRule`s that will be included in the OpenAPI output.
+	visibilityRestrictionSelectors map[string]bool
+
 	// useGoTemplate determines whether you want to use GO templates
 	// in your protofile comments
 	useGoTemplate bool
@@ -141,13 +144,14 @@ type annotationIdentifier struct {
 // NewRegistry returns a new Registry.
 func NewRegistry() *Registry {
 	return &Registry{
-		msgs:                  make(map[string]*Message),
-		enums:                 make(map[string]*Enum),
-		files:                 make(map[string]*File),
-		pkgMap:                make(map[string]string),
-		pkgAliases:            make(map[string]string),
-		externalHTTPRules:     make(map[string][]*annotations.HttpRule),
-		openAPINamingStrategy: "legacy",
+		msgs:                           make(map[string]*Message),
+		enums:                          make(map[string]*Enum),
+		files:                          make(map[string]*File),
+		pkgMap:                         make(map[string]string),
+		pkgAliases:                     make(map[string]string),
+		externalHTTPRules:              make(map[string][]*annotations.HttpRule),
+		openAPINamingStrategy:          "legacy",
+		visibilityRestrictionSelectors: make(map[string]bool),
 		repeatedPathParamSeparator: repeatedFieldSeparator{
 			name: "csv",
 			sep:  ',',
@@ -569,6 +573,19 @@ func (r *Registry) SetOmitEnumDefaultValue(omit bool) {
 // GetOmitEnumDefaultValue returns omitEnumDefaultValue
 func (r *Registry) GetOmitEnumDefaultValue() bool {
 	return r.omitEnumDefaultValue
+}
+
+// SetVisibilityRestrictionSelectors sets the visibility restriction selectors.
+func (r *Registry) SetVisibilityRestrictionSelectors(selectors []string) {
+	r.visibilityRestrictionSelectors = make(map[string]bool)
+	for _, selector := range selectors {
+		r.visibilityRestrictionSelectors[strings.TrimSpace(selector)] = true
+	}
+}
+
+// GetVisibilityRestrictionSelectors retrieves he visibility restriction selectors.
+func (r *Registry) GetVisibilityRestrictionSelectors() map[string]bool {
+	return r.visibilityRestrictionSelectors
 }
 
 // SetDisableDefaultErrors sets disableDefaultErrors
