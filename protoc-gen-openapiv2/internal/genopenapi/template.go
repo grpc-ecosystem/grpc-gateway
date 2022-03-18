@@ -2527,7 +2527,7 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		}
 	}
 	s.Enum = j.GetEnum()
-	s.PathParamName = j.GetPathParamName()
+	s.PathParamName = j.GetFieldConfiguration().GetPathParamName()
 	if overrideType := j.GetType(); len(overrideType) > 0 {
 		s.Type = strings.ToLower(overrideType[0].String())
 	}
