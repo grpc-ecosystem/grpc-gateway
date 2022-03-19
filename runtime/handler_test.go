@@ -120,6 +120,7 @@ func TestForwardResponseStream(t *testing.T) {
 						// Skip non-stream errors
 						t.Skip("checking error encodings")
 					}
+					delimiter := marshaler.Delimiter()
 					st := status.Convert(msg.err)
 					b, err := marshaler.Marshal(map[string]proto.Message{
 						"error": st.Proto(),
@@ -128,7 +129,7 @@ func TestForwardResponseStream(t *testing.T) {
 						t.Errorf("marshaler.Marshal() failed %v", err)
 					}
 					errBytes := body[len(want):]
-					if string(errBytes) != string(b) {
+					if string(errBytes) != string(b)+string(delimiter) {
 						t.Errorf("ForwardResponseStream() = \"%s\" want \"%s\"", errBytes, b)
 					}
 
