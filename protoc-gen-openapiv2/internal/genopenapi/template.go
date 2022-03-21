@@ -1164,7 +1164,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							bodyFieldName = bodyField.Name
 						}
 						// Align pathParams with body field path.
-						pathParams := subPathParams(bodyFieldName, b.PathParams)
+						pathParams := subPathParams(bodyField.Name, b.PathParams)
 						var err error
 						schema, err = renderFieldAsDefinition(bodyField.Target, reg, customRefs, pathParams)
 						if err != nil {
@@ -2523,7 +2523,7 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 	if reg.GetUseJSONNamesForFields() {
 		for i, r := range s.Required {
 			// TODO(oyvindwe): Look up field and use field.GetJsonName()?
-			s.Required[i] = doCamelCase(r)
+			s.Required[i] = casing.JSONCamelCase(r)
 		}
 	}
 	s.Enum = j.GetEnum()
@@ -2707,7 +2707,7 @@ func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descri
 		fieldNames := strings.Split(fieldName, ".")
 		fieldNamesWithCamelCase := make([]string, 0)
 		for i := 0; i < len(fieldNames)-1; i++ {
-			fieldNamesWithCamelCase = append(fieldNamesWithCamelCase, doCamelCase(string(fieldNames[i])))
+			fieldNamesWithCamelCase = append(fieldNamesWithCamelCase, casing.JSONCamelCase(string(fieldNames[i])))
 		}
 		prefix := strings.Join(fieldNamesWithCamelCase, ".")
 		reservedJSONName := getReservedJSONName(fieldName, messageNameToFieldsToJSONName, fieldNameToType)
@@ -2715,15 +2715,7 @@ func lowerCamelCase(fieldName string, fields []*descriptor.Field, msgs []*descri
 			return prefix + "." + reservedJSONName
 		}
 	}
-	return doCamelCase(fieldName)
-}
-
-func doCamelCase(input string) string {
-	parameterString := casing.Camel(input)
-	builder := &strings.Builder{}
-	builder.WriteString(strings.ToLower(string(parameterString[0])))
-	builder.WriteString(parameterString[1:])
-	return builder.String()
+	return casing.JSONCamelCase(fieldName)
 }
 
 func getReservedJSONName(fieldName string, messageNameToFieldsToJSONName map[string]map[string]string, fieldNameToType map[string]string) string {
