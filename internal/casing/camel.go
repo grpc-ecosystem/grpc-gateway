@@ -50,6 +50,24 @@ func Camel(s string) string {
 	return string(t)
 }
 
+// JSONCamelCase converts a snake_case identifier to a camelCase identifier,
+// according to the protobuf JSON specification.
+func JSONCamelCase(s string) string {
+	var b []byte
+	var wasUnderscore bool
+	for i := 0; i < len(s); i++ { // proto identifiers are always ASCII
+		c := s[i]
+		if c != '_' {
+			if wasUnderscore && isASCIILower(c) {
+				c -= 'a' - 'A' // convert to uppercase
+			}
+			b = append(b, c)
+		}
+		wasUnderscore = c == '_'
+	}
+	return string(b)
+}
+
 // And now lots of helper functions.
 
 // Is c an ASCII lower-case letter?
