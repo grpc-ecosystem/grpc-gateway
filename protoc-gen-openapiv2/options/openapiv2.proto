@@ -44,32 +44,32 @@ enum Scheme {
 //
 message Swagger {
   // Specifies the OpenAPI Specification version being used. It can be
-  // used by the OpenAPI UI and other clients to interpret the API listing. The 
+  // used by the OpenAPI UI and other clients to interpret the API listing. The
   // value MUST be "2.0".
   string swagger = 1;
-  // Provides metadata about the API. The metadata can be used by the 
+  // Provides metadata about the API. The metadata can be used by the
   // clients if needed.
   Info info = 2;
-  // The host (name or ip) serving the API. This MUST be the host only and does 
+  // The host (name or ip) serving the API. This MUST be the host only and does
   // not include the scheme nor sub-paths. It MAY include a port. If the host is
   // not included, the host serving the documentation is to be used (including
   // the port). The host does not support path templating.
   string host = 3;
   // The base path on which the API is served, which is relative to the host. If
-  // it is not included, the API is served directly under the host. The value 
+  // it is not included, the API is served directly under the host. The value
   // MUST start with a leading slash (/). The basePath does not support path
   // templating.
-  // Note that using `base_path` does not change the endpoint paths that are 
+  // Note that using `base_path` does not change the endpoint paths that are
   // generated in the resulting OpenAPI file. If you wish to use `base_path`
-  // with relatively generated OpenAPI paths, the `base_path` prefix must be 
-  // manually removed from your `google.api.http` paths and your code changed to 
+  // with relatively generated OpenAPI paths, the `base_path` prefix must be
+  // manually removed from your `google.api.http` paths and your code changed to
   // serve the API from the `base_path`.
   string base_path = 4;
   // The transfer protocol of the API. Values MUST be from the list: "http",
   // "https", "ws", "wss". If the schemes is not included, the default scheme to
   // be used is the one used to access the OpenAPI definition itself.
   repeated Scheme schemes = 5;
-  // A list of MIME types the APIs can consume. This is global to all APIs but 
+  // A list of MIME types the APIs can consume. This is global to all APIs but
   // can be overridden on specific API calls. Value MUST be as described under
   // Mime Types.
   repeated string consumes = 6;
@@ -88,8 +88,8 @@ message Swagger {
   // Security scheme definitions that can be used across the specification.
   SecurityDefinitions security_definitions = 11;
   // A declaration of which security schemes are applied for the API as a whole.
-  // The list of values describes alternative security schemes that can be used 
-  // (that is, there is a logical OR between the security requirements). 
+  // The list of values describes alternative security schemes that can be used
+  // (that is, there is a logical OR between the security requirements).
   // Individual operations can override this definition.
   repeated SecurityRequirement security = 12;
   // field 13 is reserved for 'tags', which are supposed to be exposed as and
@@ -440,12 +440,12 @@ message JSONSchema {
   // This property is the same for 2.0 and 3.0.0 https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/3.0.0.md#schemaObject  https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#schemaObject
   string example = 9;
   double multiple_of = 10;
-  // Maximum represents an inclusive upper limit for a numeric instance. The 
-  // value of MUST be a number, 
+  // Maximum represents an inclusive upper limit for a numeric instance. The
+  // value of MUST be a number,
   double maximum = 11;
   bool exclusive_maximum = 12;
-  // minimum represents an inclusive lower limit for a numeric instance. The 
-  // value of MUST be a number, 
+  // minimum represents an inclusive lower limit for a numeric instance. The
+  // value of MUST be a number,
   double minimum = 13;
   bool exclusive_minimum = 14;
   uint64 max_length = 15;
@@ -493,7 +493,7 @@ message JSONSchema {
   repeated JSONSchemaSimpleTypes type = 35;
   // `Format`
   string format = 36;
-  // following fields are reserved, as the properties have been omitted from 
+  // following fields are reserved, as the properties have been omitted from
   // OpenAPI v2: contentMediaType, contentEncoding, if, then, else
   reserved 37 to 41;
   // field 42 is reserved for 'allOf', but in OpenAPI-specific way.
@@ -505,6 +505,19 @@ message JSONSchema {
   reserved 43 to 45;
   // Items in `enum` must be unique https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.5.1
   repeated string enum = 46;
+
+  // Additional field level properties used when generating the OpenAPI v2 file.
+  FieldConfiguration field_configuration = 1001;
+
+  // 'FieldConfiguration' provides additional field level properties used when generating the OpenAPI v2 file.
+  // These properties are not defined by OpenAPIv2, but they are used to control the generation.
+  message FieldConfiguration {
+    // Alternative parameter name when used as path parameter. If set, this will
+    // be used as the complete parameter name when this field is used as a path
+    // parameter. Use this to avoid having auto generated path parameter names
+    // for overlapping paths.
+    string path_param_name = 47;
+  }
 }
 
 // `Tag` is a representation of OpenAPI v2 specification's Tag object.
@@ -521,7 +534,7 @@ message Tag {
   // global Tag object, then use that name to reference the tag throughout the
   // OpenAPI file.
   reserved 1;
-  // A short description for the tag. GFM syntax can be used for rich text 
+  // A short description for the tag. GFM syntax can be used for rich text
   // representation.
   string description = 2;
   // Additional external documentation for this tag.

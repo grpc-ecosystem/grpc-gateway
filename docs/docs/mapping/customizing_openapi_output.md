@@ -403,6 +403,52 @@ For a more in depth example see [visibility_rule_echo_service.proto](https://git
 - [`visibility_restriction_selectors=INTERNAL,visibility_restriction_selectors=PREVIEW`](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_preview_and_internal_echo_service.swagger.json)
 - [Not set](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/visibility_rule_none_echo_service.swagger.json)
 
+### Path parameters
+
+When defining HTTP bindings with path parameters that contain multiple path segments, as suggested by the [Google AIPs](https://google.aip.dev/), the path parameter names are numbered to avoid generating duplicate paths in the OpenAPI file.
+
+For example, consider:
+```protobuf
+service LibraryService {
+  rpc GetShelf(GetShelfRequest) returns (Shelf) {
+    option (google.api.http) = {
+      get: "/v1/{name=shelves/*}"
+    };
+  }
+  rpc GetBook(GetBookRequest) returns (Book) {
+    option (google.api.http) = {
+      get: "/v1/{name=shelves/*/books/*}"
+    };
+  }
+}
+
+message GetShelfRequest {
+  string name = 1;
+}
+
+message GetBookRequest {
+  string name = 1;
+}
+```
+
+This will generate the following paths:
+- `/v1/{name}`
+- `/v1/{name_1}`
+
+To override the path parameter names, annotate the field used as path parameter:
+```protobuf
+message GetShelfRequest {
+  string name = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "shelfName"}}];
+}
+message GetBookRequest {
+  string name = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {field_configuration: {path_param_name: "bookName"}}];
+}
+```
+
+This will instead generate the following paths:
+- `/v1/{shelfName}`
+- `/v1/{bookName}`
+
 ### Output format
 
 By default the output format is JSON, but it is possible to configure it using the `output_format` option. Allowed values are: `json`, `yaml`. The output format will also change the extension of the output files.

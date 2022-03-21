@@ -2718,7 +2718,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWit
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param uuid
+ * @param uuidName
  * @param floatValue Float value field
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceGetQueryOpts - Optional Parameters:
@@ -2797,7 +2797,7 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	OptionalStringValue optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuid string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -2807,8 +2807,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/query/{uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"uuid"+"}", fmt.Sprintf("%v", uuid), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/query/{uuidName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3897,12 +3897,12 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceTimeout(ctx c
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param uuid
+ * @param uuidName
  * @param body
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx context.Context, uuid string, body ABitOfEverything) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx context.Context, uuidName string, body ABitOfEverything) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -3912,8 +3912,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx co
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"uuid"+"}", fmt.Sprintf("%v", uuid), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{uuidName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4230,7 +4230,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ct
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param abeUuid
+ * @param uuidName
  * @param abe A bit of everything  Intentionally complicated message type to cover many features of Protobuf.
  * @param optional nil or *ABitOfEverythingServiceUpdateV2Opts - Optional Parameters:
      * @param "UpdateMask" (optional.String) -  The paths to update.
@@ -4242,7 +4242,7 @@ type ABitOfEverythingServiceUpdateV2Opts struct {
 	UpdateMask optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, abeUuid string, abe ABitOfEverything2, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, uuidName string, abe ABitOfEverything2, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -4252,8 +4252,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v2/example/a_bit_of_everything/{abe.uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"abe.uuid"+"}", fmt.Sprintf("%v", abeUuid), -1)
+	localVarPath := a.client.cfg.BasePath + "/v2/example/a_bit_of_everything/{uuidName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4399,7 +4399,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param abeUuid
+ * @param uuidName
  * @param abe A bit of everything  Intentionally complicated message type to cover many features of Protobuf.
  * @param optional nil or *ABitOfEverythingServiceUpdateV22Opts - Optional Parameters:
      * @param "UpdateMask" (optional.String) -  The paths to update.
@@ -4411,7 +4411,7 @@ type ABitOfEverythingServiceUpdateV22Opts struct {
 	UpdateMask optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, abeUuid string, abe ABitOfEverything3, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, uuidName string, abe ABitOfEverything3, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -4421,8 +4421,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v2/example/a_bit_of_everything/{abe.uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"abe.uuid"+"}", fmt.Sprintf("%v", abeUuid), -1)
+	localVarPath := a.client.cfg.BasePath + "/v2/example/a_bit_of_everything/{uuidName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4568,12 +4568,12 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param abeUuid
+ * @param uuidName
  * @param body
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx context.Context, abeUuid string, body UpdateV2RequestRequestForUpdateIncludesTheMessageAndTheUpdateMask) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx context.Context, uuidName string, body UpdateV2RequestRequestForUpdateIncludesTheMessageAndTheUpdateMask) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -4583,8 +4583,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v2a/example/a_bit_of_everything/{abe.uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"abe.uuid"+"}", fmt.Sprintf("%v", abeUuid), -1)
+	localVarPath := a.client.cfg.BasePath + "/v2a/example/a_bit_of_everything/{uuidName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

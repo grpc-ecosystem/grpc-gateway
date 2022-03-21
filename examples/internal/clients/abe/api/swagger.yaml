@@ -1059,17 +1059,17 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-  /v1/example/a_bit_of_everything/query/{uuid}:
+  /v1/example/a_bit_of_everything/query/{uuidName}:
     get:
       tags:
       - "ABitOfEverythingService"
       operationId: "ABitOfEverythingService_GetQuery"
       parameters:
-      - name: "uuid"
+      - name: "uuidName"
         in: "path"
         required: true
         type: "string"
-        x-exportParamName: "Uuid"
+        x-exportParamName: "UuidName"
       - name: "singleNested.name"
         in: "query"
         description: "name is nested field."
@@ -1692,22 +1692,27 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-  /v1/example/a_bit_of_everything/{uuid}:
-    get:
+  /v1/example/a_bit_of_everything/{uuidName}:
+    put:
       tags:
       - "ABitOfEverythingService"
-      operationId: "ABitOfEverythingService_Lookup"
+      operationId: "ABitOfEverythingService_Update"
       parameters:
-      - name: "uuid"
+      - name: "uuidName"
         in: "path"
         required: true
         type: "string"
-        x-exportParamName: "Uuid"
+        x-exportParamName: "UuidName"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/A bit of everything"
+        x-exportParamName: "Body"
       responses:
         200:
           description: "A successful response."
-          schema:
-            $ref: "#/definitions/examplepbABitOfEverything"
+          schema: {}
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -1729,26 +1734,22 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-    put:
+  /v1/example/a_bit_of_everything/{uuid}:
+    get:
       tags:
       - "ABitOfEverythingService"
-      operationId: "ABitOfEverythingService_Update"
+      operationId: "ABitOfEverythingService_Lookup"
       parameters:
       - name: "uuid"
         in: "path"
         required: true
         type: "string"
         x-exportParamName: "Uuid"
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          $ref: "#/definitions/A bit of everything"
-        x-exportParamName: "Body"
       responses:
         200:
           description: "A successful response."
-          schema: {}
+          schema:
+            $ref: "#/definitions/examplepbABitOfEverything"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2200,17 +2201,17 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-  /v2/example/a_bit_of_everything/{abe.uuid}:
+  /v2/example/a_bit_of_everything/{uuidName}:
     put:
       tags:
       - "ABitOfEverythingService"
       operationId: "ABitOfEverythingService_UpdateV2"
       parameters:
-      - name: "abe.uuid"
+      - name: "uuidName"
         in: "path"
         required: true
         type: "string"
-        x-exportParamName: "AbeUuid"
+        x-exportParamName: "UuidName"
       - in: "body"
         name: "abe"
         description: "A bit of everything\n\nIntentionally complicated message type\
@@ -2256,11 +2257,11 @@ paths:
       - "ABitOfEverythingService"
       operationId: "ABitOfEverythingService_UpdateV22"
       parameters:
-      - name: "abe.uuid"
+      - name: "uuidName"
         in: "path"
         required: true
         type: "string"
-        x-exportParamName: "AbeUuid"
+        x-exportParamName: "UuidName"
       - in: "body"
         name: "abe"
         description: "A bit of everything\n\nIntentionally complicated message type\
@@ -2650,17 +2651,17 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-  /v2a/example/a_bit_of_everything/{abe.uuid}:
+  /v2a/example/a_bit_of_everything/{uuidName}:
     patch:
       tags:
       - "ABitOfEverythingService"
       operationId: "ABitOfEverythingService_UpdateV23"
       parameters:
-      - name: "abe.uuid"
+      - name: "uuidName"
         in: "path"
         required: true
         type: "string"
-        x-exportParamName: "AbeUuid"
+        x-exportParamName: "UuidName"
       - in: "body"
         name: "body"
         required: true
