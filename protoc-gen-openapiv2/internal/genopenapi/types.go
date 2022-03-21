@@ -315,7 +315,7 @@ type openapiSchemaObject struct {
 	MinProperties    uint64   `json:"minProperties,omitempty" yaml:"minProperties,omitempty"`
 	Required         []string `json:"required,omitempty" yaml:"required,omitempty"`
 
-	FieldConfiguration *fieldConfiguration `json:"-" yaml:"-"`
+	FieldConfiguration fieldConfiguration `json:"-" yaml:"-"`
 }
 
 // http://swagger.io/specification/#definitionsObject

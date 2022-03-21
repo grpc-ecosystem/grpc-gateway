@@ -2527,15 +2527,16 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		}
 	}
 	s.Enum = j.GetEnum()
-	fc := fieldConfiguration{PathParamName: j.GetFieldConfiguration().GetPathParamName()}
-	s.FieldConfiguration = &fc
+	s.FieldConfiguration = fieldConfiguration{
+		PathParamName: j.GetFieldConfiguration().GetPathParamName(),
+	}
 	if overrideType := j.GetType(); len(overrideType) > 0 {
 		s.Type = strings.ToLower(overrideType[0].String())
 	}
-	if j != nil && j.GetExample() != "" {
+	if j.GetExample() != "" {
 		s.Example = RawExample(j.GetExample())
 	}
-	if j != nil && j.GetFormat() != "" {
+	if j.GetFormat() != "" {
 		s.Format = j.GetFormat()
 	}
 }
