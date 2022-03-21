@@ -1171,7 +1171,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							bodyFieldName = bodyField.Name
 						}
 						// Align pathParams with body field path.
-						pathParams := subPathParams(bodyFieldName, b.PathParams)
+						pathParams := subPathParams(bodyField.Name, b.PathParams)
 						var err error
 						schema, err = renderFieldAsDefinition(bodyField.Target, reg, customRefs, pathParams)
 						if err != nil {
