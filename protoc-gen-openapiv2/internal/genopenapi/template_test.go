@@ -3202,7 +3202,7 @@ func TestTemplateWithJsonCamelCase(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(true)
 	for _, data := range tests {
-		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), make(map[string]string))
 		if data.expected != actual {
 			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
@@ -3230,7 +3230,7 @@ func TestTemplateWithoutJsonCamelCase(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
 	for _, data := range tests {
-		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), make(map[string]string))
 		if data.expected != actual {
 			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
@@ -3262,14 +3262,14 @@ func TestTemplateToOpenAPIPath(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
 	for _, data := range tests {
-		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), make(map[string]string))
 		if data.expected != actual {
 			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
 	}
 	reg.SetUseJSONNamesForFields(true)
 	for _, data := range tests {
-		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), make(map[string]string))
 		if data.expected != actual {
 			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
@@ -3284,7 +3284,7 @@ func BenchmarkTemplateToOpenAPIPath(b *testing.B) {
 		reg.SetUseJSONNamesForFields(false)
 
 		for i := 0; i < b.N; i++ {
-			_ = templateToOpenAPIPath(input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+			_ = templateToOpenAPIPath(input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), make(map[string]string))
 		}
 	})
 
@@ -3293,7 +3293,7 @@ func BenchmarkTemplateToOpenAPIPath(b *testing.B) {
 		reg.SetUseJSONNamesForFields(true)
 
 		for i := 0; i < b.N; i++ {
-			_ = templateToOpenAPIPath(input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+			_ = templateToOpenAPIPath(input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), make(map[string]string))
 		}
 	})
 }
@@ -3381,8 +3381,8 @@ func TestResolveFullyQualifiedNameToOpenAPIName(t *testing.T) {
 	}
 }
 
-func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) string {
-	return partsToOpenAPIPath(templateToParts(path, reg, fields, msgs))
+func templateToOpenAPIPath(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message, pathParamNames map[string]string) string {
+	return partsToOpenAPIPath(templateToParts(path, reg, fields, msgs), pathParamNames)
 }
 
 func templateToRegexpMap(path string, reg *descriptor.Registry, fields []*descriptor.Field, msgs []*descriptor.Message) map[string]string {
@@ -3429,14 +3429,14 @@ func TestFQMNtoOpenAPIName(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	reg.SetUseJSONNamesForFields(false)
 	for _, data := range tests {
-		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), make(map[string]string))
 		if data.expected != actual {
 			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}
 	}
 	reg.SetUseJSONNamesForFields(true)
 	for _, data := range tests {
-		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName())
+		actual := templateToOpenAPIPath(data.input, reg, generateFieldsForJSONReservedName(), generateMsgsForJSONReservedName(), make(map[string]string))
 		if data.expected != actual {
 			t.Errorf("Expected templateToOpenAPIPath(%v) = %v, actual: %v", data.input, data.expected, actual)
 		}

@@ -1192,7 +1192,7 @@
         ]
       }
     },
-    "/v1/example/a_bit_of_everything/query/{uuid}": {
+    "/v1/example/a_bit_of_everything/query/{uuidName}": {
       "get": {
         "operationId": "ABitOfEverythingService_GetQuery",
         "responses": {
@@ -1234,7 +1234,7 @@
         },
         "parameters": [
           {
-            "name": "uuid",
+            "name": "uuidName",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1903,119 +1903,7 @@
         ]
       }
     },
-    "/v1/example/a_bit_of_everything/{uuid}": {
-      "get": {
-        "operationId": "ABitOfEverythingService_Lookup",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbABitOfEverything"
-            }
-          },
-          "403": {
-            "description": "Returned when the user does not have permission to access the resource.",
-            "schema": {}
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {
-              "type": "string",
-              "format": "string"
-            }
-          },
-          "418": {
-            "description": "I'm a teapot.",
-            "schema": {
-              "$ref": "#/definitions/examplepbNumericEnum"
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "schema": {
-              "$ref": "#/definitions/examplepbErrorResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "uuid",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ABitOfEverythingService"
-        ]
-      },
-      "delete": {
-        "operationId": "ABitOfEverythingService_Delete",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "properties": {}
-            }
-          },
-          "403": {
-            "description": "Returned when the user does not have permission to access the resource.",
-            "schema": {}
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {
-              "type": "string",
-              "format": "string"
-            }
-          },
-          "418": {
-            "description": "I'm a teapot.",
-            "schema": {
-              "$ref": "#/definitions/examplepbNumericEnum"
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "schema": {
-              "$ref": "#/definitions/examplepbErrorResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "uuid",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ABitOfEverythingService"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": [],
-            "OAuth2": [
-              "read",
-              "write"
-            ]
-          }
-        ],
-        "x-irreversible": true
-      },
+    "/v1/example/a_bit_of_everything/{uuidName}": {
       "put": {
         "operationId": "ABitOfEverythingService_Update",
         "responses": {
@@ -2057,7 +1945,7 @@
         },
         "parameters": [
           {
-            "name": "uuid",
+            "name": "uuidName",
             "in": "path",
             "required": true,
             "type": "string"
@@ -2270,6 +2158,120 @@
         "tags": [
           "ABitOfEverythingService"
         ]
+      }
+    },
+    "/v1/example/a_bit_of_everything/{uuid}": {
+      "get": {
+        "operationId": "ABitOfEverythingService_Lookup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      },
+      "delete": {
+        "operationId": "ABitOfEverythingService_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": [],
+            "OAuth2": [
+              "read",
+              "write"
+            ]
+          }
+        ],
+        "x-irreversible": true
       }
     },
     "/v1/example/a_bit_of_everything_repeated/{pathRepeatedFloatValue}/{pathRepeatedDoubleValue}/{pathRepeatedInt64Value}/{pathRepeatedUint64Value}/{pathRepeatedInt32Value}/{pathRepeatedFixed64Value}/{pathRepeatedFixed32Value}/{pathRepeatedBoolValue}/{pathRepeatedStringValue}/{pathRepeatedBytesValue}/{pathRepeatedUint32Value}/{pathRepeatedEnumValue}/{pathRepeatedSfixed32Value}/{pathRepeatedSfixed64Value}/{pathRepeatedSint32Value}/{pathRepeatedSint64Value}": {
@@ -3001,7 +3003,7 @@
         ]
       }
     },
-    "/v2/example/a_bit_of_everything/{abe.uuid}": {
+    "/v2/example/a_bit_of_everything/{uuidName}": {
       "put": {
         "operationId": "ABitOfEverythingService_UpdateV2",
         "responses": {
@@ -3043,7 +3045,7 @@
         },
         "parameters": [
           {
-            "name": "abe.uuid",
+            "name": "uuidName",
             "in": "path",
             "required": true,
             "type": "string"
@@ -3306,7 +3308,7 @@
         },
         "parameters": [
           {
-            "name": "abe.uuid",
+            "name": "uuidName",
             "in": "path",
             "required": true,
             "type": "string"
@@ -4029,7 +4031,7 @@
         ]
       }
     },
-    "/v2a/example/a_bit_of_everything/{abe.uuid}": {
+    "/v2a/example/a_bit_of_everything/{uuidName}": {
       "patch": {
         "operationId": "ABitOfEverythingService_UpdateV23",
         "responses": {
@@ -4071,7 +4073,7 @@
         },
         "parameters": [
           {
-            "name": "abe.uuid",
+            "name": "uuidName",
             "in": "path",
             "required": true,
             "type": "string"
