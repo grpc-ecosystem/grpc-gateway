@@ -1033,7 +1033,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							paramFormat = schema.Format
 							desc = schema.Description
 							defaultValue = schema.Default
-							pathParamName = schema.PathParamName
+							pathParamName = schema.FieldConfiguration.PathParamName
 						} else {
 							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
@@ -1053,7 +1053,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default
-						pathParamName = schema.PathParamName
+						pathParamName = schema.FieldConfiguration.PathParamName
 					default:
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
@@ -1064,7 +1064,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default
-						pathParamName = schema.PathParamName
+						pathParamName = schema.FieldConfiguration.PathParamName
 					}
 
 					if parameter.IsRepeated() {
@@ -2527,7 +2527,8 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		}
 	}
 	s.Enum = j.GetEnum()
-	s.PathParamName = j.GetFieldConfiguration().GetPathParamName()
+	fc := fieldConfiguration{PathParamName: j.GetFieldConfiguration().GetPathParamName()}
+	s.FieldConfiguration = &fc
 	if overrideType := j.GetType(); len(overrideType) > 0 {
 		s.Type = strings.ToLower(overrideType[0].String())
 	}

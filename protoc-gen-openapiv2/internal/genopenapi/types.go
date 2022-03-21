@@ -315,7 +315,7 @@ type openapiSchemaObject struct {
 	MinProperties    uint64   `json:"minProperties,omitempty" yaml:"minProperties,omitempty"`
 	Required         []string `json:"required,omitempty" yaml:"required,omitempty"`
 
-	PathParamName string `json:"-" yaml:"-"`
+	FieldConfiguration *fieldConfiguration `json:"-" yaml:"-"`
 }
 
 // http://swagger.io/specification/#definitionsObject
@@ -331,3 +331,8 @@ type enumMap map[string]*descriptor.Enum
 
 // Internal type to store used references.
 type refMap map[string]struct{}
+
+// Internal type to store field configuration.
+type fieldConfiguration struct {
+	PathParamName string
+}
