@@ -1018,7 +1018,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 				var pathParamNames = make(map[string]string)
 				for _, parameter := range b.PathParams {
 
-					var paramType, paramFormat, desc, collectionFormat, defaultValue, pathParamName string
+					var paramType, paramFormat, desc, collectionFormat, defaultValue string
 					var enumNames []string
 					var items *openapiItemsObject
 					var minItems *int
@@ -1033,7 +1033,6 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							paramFormat = schema.Format
 							desc = schema.Description
 							defaultValue = schema.Default
-							pathParamName = schema.FieldConfiguration.PathParamName
 						} else {
 							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
@@ -1053,7 +1052,6 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default
-						pathParamName = schema.FieldConfiguration.PathParamName
 					default:
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
@@ -1064,7 +1062,6 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default
-						pathParamName = schema.FieldConfiguration.PathParamName
 					}
 
 					if parameter.IsRepeated() {
@@ -1093,9 +1090,12 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					if regExp, ok := pathParamRegexpMap[parameterString]; ok {
 						pattern = regExp
 					}
-					if pathParamName != "" && pathParamName != parameterString {
-						pathParamNames["{"+parameterString+"}"] = "{" + pathParamName + "}"
-						parameterString = pathParamName
+					if fc := getFieldConfiguration(reg, parameter.Target); fc != nil {
+						pathParamName := fc.GetPathParamName()
+						if pathParamName != "" && pathParamName != parameterString {
+							pathParamNames["{"+parameterString+"}"] = "{" + pathParamName + "}"
+							parameterString = pathParamName
+						}
 					}
 					parameters = append(parameters, openapiParameterObject{
 						Name:        parameterString,
@@ -2527,9 +2527,6 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		}
 	}
 	s.Enum = j.GetEnum()
-	s.FieldConfiguration = fieldConfiguration{
-		PathParamName: j.GetFieldConfiguration().GetPathParamName(),
-	}
 	if overrideType := j.GetType(); len(overrideType) > 0 {
 		s.Type = strings.ToLower(overrideType[0].String())
 	}
@@ -2767,4 +2764,11 @@ func subPathParams(paramName string, outerParams []descriptor.Parameter) []descr
 		}
 	}
 	return innerParams
+}
+
+func getFieldConfiguration(reg *descriptor.Registry, fd *descriptor.Field) *openapi_options.JSONSchema_FieldConfiguration {
+	if j, err := getFieldOpenAPIOption(reg, fd); err == nil {
+		return j.GetFieldConfiguration()
+	}
+	return nil
 }
