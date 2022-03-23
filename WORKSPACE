@@ -49,13 +49,11 @@ http_archive(
     ],
 )
 
-# TODO: Revert https://github.com/grpc-ecosystem/grpc-gateway/pull/2578/commits/fb9b59be7f2408767657c83c5002bf700ac7c460 once
-# https://github.com/bazelbuild/bazel-gazelle/pull/1194 is merged
 git_repository(
     name = "bazel_gazelle",
-    commit = "4a1aeae7cab962fd8088f42038d3a477cdca91a5",
-    remote = "https://github.com/johanbrandhorst/bazel-gazelle",
-    shallow_since = "1647116890 +0000",
+    commit = "f377e6eff8e24508feb1a34b1e5e681982482a9f",
+    remote = "https://github.com/bazelbuild/bazel-gazelle",
+    shallow_since = "1648046534 -0400",
 )
 
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
