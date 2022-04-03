@@ -61,6 +61,12 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 			expected: newFieldMask("struct_field.name.first", "struct_field.amount"),
 		},
 		{
+			name:     "NonStandardMessageWithJSONNamesForStruct",
+			msg:      &examplepb.NonStandardMessage{},
+			input:    `{"lineNum": 123, "structField": {"name":"bob"}}`,
+			expected: newFieldMask("line_num", "struct_field.name"),
+		},
+		{
 			name:     "value",
 			msg:      &examplepb.NonStandardMessage{},
 			input:    `{"value_field": {"name":{"first": "bob"}, "amount": 2}}`,
