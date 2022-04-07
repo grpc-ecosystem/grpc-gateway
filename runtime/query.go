@@ -323,16 +323,12 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		fm.Paths = append(fm.Paths, strings.Split(value, ",")...)
 		msg = fm
 	case "google.protobuf.Value":
-		var x interface{}
-		err := json.Unmarshal([]byte(value), &x)
+		var v structpb.Value
+		err := protojson.Unmarshal([]byte(value), &v)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
-		v, err := structpb.NewValue(x)
-		if err != nil {
-			return protoreflect.Value{}, err
-		}
-		msg = v
+		msg = &v
 	default:
 		return protoreflect.Value{}, fmt.Errorf("unsupported message type: %q", string(msgDescriptor.FullName()))
 	}
