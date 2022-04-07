@@ -97,13 +97,22 @@ func TestPopulateParameters(t *testing.T) {
 	fieldmaskStr := "float_value,double_value"
 	fieldmaskPb := &field_mask.FieldMask{Paths: []string{"float_value", "double_value"}}
 
-	jsonStr := []string{`{"a": {"b": 1}}`, `""`, "{}", "[]", "true", "0"}
-	structValueValues := make([]*structpb.Value, len(jsonStr))
+	structValueJsonStrings := []string{`{"a":{"b":1}}`, `""`, "{}", "[]", "true", "0"}
+	structValueValues := make([]*structpb.Value, len(structValueJsonStrings))
 	for i := range structValueValues {
 		structValueValues[i] = &structpb.Value{}
-		err := structValueValues[i].UnmarshalJSON([]byte(jsonStr[i]))
+		err := structValueValues[i].UnmarshalJSON([]byte(structValueJsonStrings[i]))
 		if err != nil {
 			t.Errorf("build struct.Value value failed: %s", err.Error())
+		}
+	}
+	structJsonStrings := []string{`{"a":{"b":1}}`, "{}", `{"c":[1,2],"d":[{"e":1,"f":{}}]}`}
+	structValues := make([]*structpb.Struct, len(structJsonStrings))
+	for i := range structValues {
+		structValues[i] = &structpb.Struct{}
+		err := structValues[i].UnmarshalJSON([]byte(structJsonStrings[i]))
+		if err != nil {
+			t.Errorf("build struct.Struct value failed: %s", err.Error())
 		}
 	}
 
@@ -160,7 +169,8 @@ func TestPopulateParameters(t *testing.T) {
 				"map_value14[key]":       {"true"},
 				"map_value15[true]":      {"value"},
 				"map_value16[key]":       {"2"},
-				"struct_value_value":     {jsonStr[0]},
+				"struct_value_value":     {structValueJsonStrings[0]},
+				"struct_value":           {structJsonStrings[0]},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &examplepb.Proto3Message{
@@ -210,6 +220,7 @@ func TestPopulateParameters(t *testing.T) {
 				MapValue15:       map[bool]string{true: "value"},
 				MapValue16:       map[string]*wrapperspb.UInt64Value{"key": {Value: 2}},
 				StructValueValue: structValueValues[0],
+				StructValue:      structValues[0],
 			},
 		},
 		{
@@ -238,7 +249,8 @@ func TestPopulateParameters(t *testing.T) {
 				"wrapperBoolValue":   {"true"},
 				"wrapperStringValue": {"str"},
 				"wrapperBytesValue":  {"Ynl0ZXM="},
-				"struct_value_value": {jsonStr[1]},
+				"struct_value_value": {structValueJsonStrings[1]},
+				"struct_value":       {structJsonStrings[1]},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &examplepb.Proto3Message{
@@ -267,24 +279,27 @@ func TestPopulateParameters(t *testing.T) {
 				WrapperStringValue: &wrapperspb.StringValue{Value: "str"},
 				WrapperBytesValue:  &wrapperspb.BytesValue{Value: []byte("bytes")},
 				StructValueValue:   structValueValues[1],
+				StructValue:        structValues[1],
 			},
 		},
 		{
 			values: url.Values{
 				"enum_value":         {"Z"},
 				"repeated_enum":      {"X", "2", "0"},
-				"struct_value_value": {jsonStr[2]},
+				"struct_value_value": {structValueJsonStrings[2]},
+				"struct_value":       {structJsonStrings[2]},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &examplepb.Proto3Message{
 				EnumValue:        examplepb.EnumValue_Z,
 				RepeatedEnum:     []examplepb.EnumValue{examplepb.EnumValue_X, examplepb.EnumValue_Z, examplepb.EnumValue_X},
 				StructValueValue: structValueValues[2],
+				StructValue:      structValues[2],
 			},
 		},
 		{
 			values: url.Values{
-				"struct_value_value": {jsonStr[3]},
+				"struct_value_value": {structValueJsonStrings[3]},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &examplepb.Proto3Message{
@@ -293,7 +308,7 @@ func TestPopulateParameters(t *testing.T) {
 		},
 		{
 			values: url.Values{
-				"struct_value_value": {jsonStr[4]},
+				"struct_value_value": {structValueJsonStrings[4]},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &examplepb.Proto3Message{
@@ -302,7 +317,7 @@ func TestPopulateParameters(t *testing.T) {
 		},
 		{
 			values: url.Values{
-				"struct_value_value": {jsonStr[5]},
+				"struct_value_value": {structValueJsonStrings[5]},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &examplepb.Proto3Message{

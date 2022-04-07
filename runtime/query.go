@@ -9,11 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"google.golang.org/protobuf/encoding/protojson"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
@@ -325,6 +324,13 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		msg = fm
 	case "google.protobuf.Value":
 		var v structpb.Value
+		err := protojson.Unmarshal([]byte(value), &v)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		msg = &v
+	case "google.protobuf.Struct":
+		var v structpb.Struct
 		err := protojson.Unmarshal([]byte(value), &v)
 		if err != nil {
 			return protoreflect.Value{}, err
