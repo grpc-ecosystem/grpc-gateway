@@ -36,7 +36,6 @@ go_library(
         "@org_golang_google_protobuf//reflect/protoreflect",
         "@org_golang_google_protobuf//types/known/durationpb",
         "@org_golang_google_protobuf//types/known/emptypb",
-        "@org_golang_google_protobuf//types/known/structpb",
         "@org_golang_google_protobuf//types/known/wrapperspb",
     ],
 )
