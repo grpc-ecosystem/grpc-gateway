@@ -15,6 +15,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/testing/protocmp"
 	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
@@ -96,6 +97,16 @@ func TestPopulateParameters(t *testing.T) {
 	fieldmaskStr := "float_value,double_value"
 	fieldmaskPb := &field_mask.FieldMask{Paths: []string{"float_value", "double_value"}}
 
+	jsonStr := []string{`{"a": {"b": 1}}`, `""`, "{}", "[]", "true", "0"}
+	structValueValues := make([]*structpb.Value, len(jsonStr))
+	for i := range structValueValues {
+		structValueValues[i] = &structpb.Value{}
+		err := structValueValues[i].UnmarshalJSON([]byte(jsonStr[i]))
+		if err != nil {
+			t.Errorf("build struct.Value value failed: %s", err.Error())
+		}
+	}
+
 	for i, spec := range []struct {
 		values  url.Values
 		filter  *utilities.DoubleArray
@@ -149,6 +160,7 @@ func TestPopulateParameters(t *testing.T) {
 				"map_value14[key]":       {"true"},
 				"map_value15[true]":      {"value"},
 				"map_value16[key]":       {"2"},
+				"struct_value_value":     {jsonStr[0]},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &examplepb.Proto3Message{
@@ -184,19 +196,20 @@ func TestPopulateParameters(t *testing.T) {
 					"fourth":      "",
 					`~!@#$%^&*()`: "value",
 				},
-				MapValue2:  map[string]int32{"key": -2},
-				MapValue3:  map[int32]string{-2: "value"},
-				MapValue4:  map[string]int64{"key": -1},
-				MapValue5:  map[int64]string{-1: "value"},
-				MapValue6:  map[string]uint32{"key": 3},
-				MapValue7:  map[uint32]string{3: "value"},
-				MapValue8:  map[string]uint64{"key": 4},
-				MapValue9:  map[uint64]string{4: "value"},
-				MapValue10: map[string]float32{"key": 1.5},
-				MapValue12: map[string]float64{"key": 2.5},
-				MapValue14: map[string]bool{"key": true},
-				MapValue15: map[bool]string{true: "value"},
-				MapValue16: map[string]*wrapperspb.UInt64Value{"key": {Value: 2}},
+				MapValue2:        map[string]int32{"key": -2},
+				MapValue3:        map[int32]string{-2: "value"},
+				MapValue4:        map[string]int64{"key": -1},
+				MapValue5:        map[int64]string{-1: "value"},
+				MapValue6:        map[string]uint32{"key": 3},
+				MapValue7:        map[uint32]string{3: "value"},
+				MapValue8:        map[string]uint64{"key": 4},
+				MapValue9:        map[uint64]string{4: "value"},
+				MapValue10:       map[string]float32{"key": 1.5},
+				MapValue12:       map[string]float64{"key": 2.5},
+				MapValue14:       map[string]bool{"key": true},
+				MapValue15:       map[bool]string{true: "value"},
+				MapValue16:       map[string]*wrapperspb.UInt64Value{"key": {Value: 2}},
+				StructValueValue: structValueValues[0],
 			},
 		},
 		{
@@ -225,6 +238,7 @@ func TestPopulateParameters(t *testing.T) {
 				"wrapperBoolValue":   {"true"},
 				"wrapperStringValue": {"str"},
 				"wrapperBytesValue":  {"Ynl0ZXM="},
+				"struct_value_value": {jsonStr[1]},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &examplepb.Proto3Message{
@@ -252,17 +266,47 @@ func TestPopulateParameters(t *testing.T) {
 				WrapperBoolValue:   &wrapperspb.BoolValue{Value: true},
 				WrapperStringValue: &wrapperspb.StringValue{Value: "str"},
 				WrapperBytesValue:  &wrapperspb.BytesValue{Value: []byte("bytes")},
+				StructValueValue:   structValueValues[1],
 			},
 		},
 		{
 			values: url.Values{
-				"enum_value":    {"Z"},
-				"repeated_enum": {"X", "2", "0"},
+				"enum_value":         {"Z"},
+				"repeated_enum":      {"X", "2", "0"},
+				"struct_value_value": {jsonStr[2]},
 			},
 			filter: utilities.NewDoubleArray(nil),
 			want: &examplepb.Proto3Message{
-				EnumValue:    examplepb.EnumValue_Z,
-				RepeatedEnum: []examplepb.EnumValue{examplepb.EnumValue_X, examplepb.EnumValue_Z, examplepb.EnumValue_X},
+				EnumValue:        examplepb.EnumValue_Z,
+				RepeatedEnum:     []examplepb.EnumValue{examplepb.EnumValue_X, examplepb.EnumValue_Z, examplepb.EnumValue_X},
+				StructValueValue: structValueValues[2],
+			},
+		},
+		{
+			values: url.Values{
+				"struct_value_value": {jsonStr[3]},
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want: &examplepb.Proto3Message{
+				StructValueValue: structValueValues[3],
+			},
+		},
+		{
+			values: url.Values{
+				"struct_value_value": {jsonStr[4]},
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want: &examplepb.Proto3Message{
+				StructValueValue: structValueValues[4],
+			},
+		},
+		{
+			values: url.Values{
+				"struct_value_value": {jsonStr[5]},
+			},
+			filter: utilities.NewDoubleArray(nil),
+			want: &examplepb.Proto3Message{
+				StructValueValue: structValueValues[5],
 			},
 		},
 		{

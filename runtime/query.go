@@ -1,7 +1,6 @@
 package runtime
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/url"
@@ -9,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"google.golang.org/protobuf/encoding/protojson"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/genproto/protobuf/field_mask"
