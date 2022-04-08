@@ -4174,7 +4174,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 	tests := []struct {
 		descr          string
 		msgDescs       []*descriptorpb.DescriptorProto
-		schema         map[string]openapi_options.Schema // per-message schema to add
+		schema         map[string]*openapi_options.Schema // per-message schema to add
 		defs           openapiDefinitionsObject
 		openAPIOptions *openapiconfig.OpenAPIOptions
 		pathParams     []descriptor.Parameter
@@ -4184,7 +4184,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]openapi_options.Schema{},
+			schema: map[string]*openapi_options.Schema{},
 			defs: map[string]openapiSchemaObject{
 				"Message": {schemaCore: schemaCore{Type: "object"}},
 			},
@@ -4194,7 +4194,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]openapi_options.Schema{
+			schema: map[string]*openapi_options.Schema{
 				"Message": {
 					Example: `{"foo":"bar"}`,
 				},
@@ -4211,7 +4211,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]openapi_options.Schema{
+			schema: map[string]*openapi_options.Schema{
 				"Message": {
 					Example: `XXXX anything goes XXXX`,
 				},
@@ -4228,7 +4228,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]openapi_options.Schema{
+			schema: map[string]*openapi_options.Schema{
 				"Message": {
 					ExternalDocs: &openapi_options.ExternalDocumentation{
 						Description: "glorious docs",
@@ -4253,7 +4253,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]openapi_options.Schema{
+			schema: map[string]*openapi_options.Schema{
 				"Message": {
 					JsonSchema: &openapi_options.JSONSchema{
 						Title:            "title",
@@ -4374,7 +4374,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					},
 				},
 			},
-			schema: map[string]openapi_options.Schema{
+			schema: map[string]*openapi_options.Schema{
 				"Message": {
 					JsonSchema: &openapi_options.JSONSchema{
 						Title:       "title",
@@ -4433,7 +4433,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					},
 				},
 			},
-			schema: map[string]openapi_options.Schema{
+			schema: map[string]*openapi_options.Schema{
 				"Message": {
 					JsonSchema: &openapi_options.JSONSchema{
 						Title:       "title",
@@ -4491,7 +4491,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					},
 				},
 			},
-			schema: map[string]openapi_options.Schema{
+			schema: map[string]*openapi_options.Schema{
 				"Message": {
 					JsonSchema: &openapi_options.JSONSchema{
 						Title:       "title",
@@ -4554,7 +4554,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					},
 				},
 			},
-			schema: map[string]openapi_options.Schema{
+			schema: map[string]*openapi_options.Schema{
 				"Message": {
 					JsonSchema: &openapi_options.JSONSchema{
 						Title:       "title",
@@ -4639,7 +4639,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 				msgMap[msg.FQMN()] = msg
 
 				if schema, ok := test.schema[name]; ok {
-					proto.SetExtension(d.Options, openapi_options.E_Openapiv2Schema, &schema)
+					proto.SetExtension(d.Options, openapi_options.E_Openapiv2Schema, schema)
 				}
 			}
 
@@ -4833,7 +4833,7 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 	tests := []struct {
 		descr          string
 		msgDescs       []*descriptorpb.DescriptorProto
-		schema         map[string]openapi_options.Schema // per-message schema to add
+		schema         map[string]*openapi_options.Schema // per-message schema to add
 		defs           openapiDefinitionsObject
 		openAPIOptions *openapiconfig.OpenAPIOptions
 		useGoTemplate  bool
@@ -4843,7 +4843,7 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]openapi_options.Schema{
+			schema: map[string]*openapi_options.Schema{
 				"Message": {
 					JsonSchema: &openapi_options.JSONSchema{
 						Title:       "{{.Name}}",
@@ -4873,7 +4873,7 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 			msgDescs: []*descriptorpb.DescriptorProto{
 				{Name: proto.String("Message")},
 			},
-			schema: map[string]openapi_options.Schema{
+			schema: map[string]*openapi_options.Schema{
 				"Message": {
 					JsonSchema: &openapi_options.JSONSchema{
 						Title:       "{{.Name}}",
@@ -4978,7 +4978,7 @@ func TestMessageOptionsWithGoTemplate(t *testing.T) {
 				msgMap[msg.FQMN()] = msg
 
 				if schema, ok := test.schema[name]; ok {
-					proto.SetExtension(d.Options, openapi_options.E_Openapiv2Schema, &schema)
+					proto.SetExtension(d.Options, openapi_options.E_Openapiv2Schema, schema)
 				}
 			}
 
