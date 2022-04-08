@@ -8,6 +8,8 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/codegenerator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -210,7 +212,7 @@ func (r *Registry) loadFile(filePath string, file *protogen.File) {
 		Name: string(file.GoPackageName),
 	}
 	if r.standalone {
-		pkg.Alias = "ext" + strings.Title(pkg.Name)
+		pkg.Alias = "ext" + cases.Title(language.AmericanEnglish).String(pkg.Name)
 	}
 
 	if err := r.ReserveGoPackageAlias(pkg.Name, pkg.Path); err != nil {
