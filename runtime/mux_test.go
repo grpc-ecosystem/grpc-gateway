@@ -719,6 +719,34 @@ func TestWithHealthzEndpoint_serviceParam(t *testing.T) {
 	}
 }
 
+func TestWithHealthzEndpoint_header(t *testing.T) {
+	for _, tt := range healthCheckTests {
+		t.Run(tt.name, func(t *testing.T) {
+			mux := runtime.NewServeMux(runtime.WithHealthzEndpoint(&dummyHealthCheckClient{status: tt.status, code: tt.code}))
+
+			r := httptest.NewRequest(http.MethodGet, "/healthz", nil)
+			rr := httptest.NewRecorder()
+
+			mux.ServeHTTP(rr, r)
+
+			// Expected header values in the HTTP response
+			expectedHeaderValue := map[string]string{
+				"Content-Type": "application/json",
+				//"Grpc-Metadata-Content-Type": "application/grpc",
+			}
+
+			for header, value := range expectedHeaderValue {
+				if actualHeader := rr.Header().Get(header); actualHeader != value {
+					t.Errorf(
+						"result http header \"%s\" for grpc code %q and status %q should be %s, got %s",
+						header, tt.code, tt.status, value, actualHeader,
+					)
+				}
+			}
+		})
+	}
+}
+
 var _ grpc_health_v1.HealthClient = (*dummyHealthCheckClient)(nil)
 
 type dummyHealthCheckClient struct {
