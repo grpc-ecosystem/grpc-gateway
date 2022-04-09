@@ -15,5 +15,5 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
         with:
-          version: v1.32
+          version: v1.45
           args: --enable goimports
