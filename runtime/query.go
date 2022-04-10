@@ -12,10 +12,12 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/grpclog"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
@@ -320,6 +322,20 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 		fm := &field_mask.FieldMask{}
 		fm.Paths = append(fm.Paths, strings.Split(value, ",")...)
 		msg = fm
+	case "google.protobuf.Value":
+		var v structpb.Value
+		err := protojson.Unmarshal([]byte(value), &v)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		msg = &v
+	case "google.protobuf.Struct":
+		var v structpb.Struct
+		err := protojson.Unmarshal([]byte(value), &v)
+		if err != nil {
+			return protoreflect.Value{}, err
+		}
+		msg = &v
 	default:
 		return protoreflect.Value{}, fmt.Errorf("unsupported message type: %q", string(msgDescriptor.FullName()))
 	}
