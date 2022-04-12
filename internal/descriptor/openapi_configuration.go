@@ -22,7 +22,7 @@ func loadOpenAPIConfigFromYAML(yamlFileContents []byte, yamlSourceLogName string
 
 	openapiConfiguration := openapiconfig.OpenAPIConfig{}
 	if err := unmarshaler.Unmarshal(jsonContents, &openapiConfiguration); err != nil {
-		return nil, fmt.Errorf("failed to parse gRPC API Configuration from YAML in '%v': %v", yamlSourceLogName, err)
+		return nil, fmt.Errorf("failed to parse OpenAPI Configuration from YAML in '%v': %v", yamlSourceLogName, err)
 	}
 
 	return &openapiConfiguration, nil
@@ -46,7 +46,7 @@ func registerOpenAPIOptions(registry *Registry, openAPIConfig *openapiconfig.Ope
 func (r *Registry) LoadOpenAPIConfigFromYAML(yamlFile string) error {
 	yamlFileContents, err := ioutil.ReadFile(yamlFile)
 	if err != nil {
-		return fmt.Errorf("failed to read gRPC API Configuration description from '%v': %v", yamlFile, err)
+		return fmt.Errorf("failed to read OpenAPI Configuration description from '%v': %v", yamlFile, err)
 	}
 
 	config, err := loadOpenAPIConfigFromYAML(yamlFileContents, yamlFile)
