@@ -243,6 +243,12 @@ message ABitOfEverything {
 			description: "Find out more about ABitOfEverything";
 		}
 		example: "{\"int64_value\": 12, \"double_value\": 12.3}"
+		extensions: {
+            key: "x-a-bit-of-everything-foo";
+            value {
+                string_value: "bar";
+            }
+        }
 	};
 
 	// Nested is nested type.
@@ -266,7 +272,12 @@ message ABitOfEverything {
 	}
 	Nested single_nested = 25;
 
-	string uuid = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}", min_length: 1, field_configuration: {path_param_name: "uuidName"}}];
+	string uuid = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+		pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+		min_length: 1,
+		field_configuration: {path_param_name: "uuidName"},
+		extensions: {key: "x-internal"; value {bool_value: true}}
+	}];
 	repeated Nested nested = 2;
 	float float_value = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "Float value field", default: "0.2", required: ['float_value']}];
 	double double_value = 4;

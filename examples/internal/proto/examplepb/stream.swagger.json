@@ -228,7 +228,8 @@
         "uuid": {
           "type": "string",
           "minLength": 1,
-          "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+          "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+          "x-internal": true
         },
         "nested": {
           "type": "array",
@@ -418,7 +419,8 @@
         "doubleValue",
         "floatValue",
         "requiredStringViaFieldBehaviorAnnotation"
-      ]
+      ],
+      "x-a-bit-of-everything-foo": "bar"
     },
     "examplepbNumericEnum": {
       "type": "string",

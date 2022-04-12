@@ -385,6 +385,7 @@ message Schema {
   // A free-form property to include an example of an instance for this schema in JSON.
   // This is copied verbatim to the output.
   string example = 6;
+  map<string, google.protobuf.Value> extensions = 7;
 }
 
 // `JSONSchema` represents properties from JSON Schema taken, and as used, in
@@ -518,6 +519,7 @@ message JSONSchema {
     // for overlapping paths.
     string path_param_name = 47;
   }
+  map<string, google.protobuf.Value> extensions = 48;
 }
 
 // `Tag` is a representation of OpenAPI v2 specification's Tag object.
