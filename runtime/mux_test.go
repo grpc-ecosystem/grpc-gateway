@@ -732,7 +732,6 @@ func TestWithHealthzEndpoint_header(t *testing.T) {
 			// Expected header values in the HTTP response
 			expectedHeaderValue := map[string]string{
 				"Content-Type": "application/json",
-				//"Grpc-Metadata-Content-Type": "application/grpc",
 			}
 
 			for header, value := range expectedHeaderValue {
