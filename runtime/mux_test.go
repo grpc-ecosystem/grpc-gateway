@@ -729,18 +729,11 @@ func TestWithHealthzEndpoint_header(t *testing.T) {
 
 			mux.ServeHTTP(rr, r)
 
-			// Expected header values in the HTTP response
-			expectedHeaderValue := map[string]string{
-				"Content-Type": "application/json",
-			}
-
-			for header, value := range expectedHeaderValue {
-				if actualHeader := rr.Header().Get(header); actualHeader != value {
-					t.Errorf(
-						"result http header \"%s\" for grpc code %q and status %q should be %s, got %s",
-						header, tt.code, tt.status, value, actualHeader,
-					)
-				}
+			if actualHeader := rr.Header().Get("Content-Type"); actualHeader != "application/json" {
+				t.Errorf(
+					"result http header Content-Type for grpc code %q and status %q should be application/json, got %s",
+					tt.code, tt.status, actualHeader,
+				)
 			}
 		})
 	}
