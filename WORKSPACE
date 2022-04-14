@@ -81,9 +81,9 @@ protobuf_deps()
 
 http_archive(
     name = "com_github_bazelbuild_buildtools",
-    sha256 = "7f43df3cca7bb4ea443b4159edd7a204c8d771890a69a50a190dc9543760ca21",
-    strip_prefix = "buildtools-5.0.1",
-    urls = ["https://github.com/bazelbuild/buildtools/archive/5.0.1.tar.gz"],
+    sha256 = "e3bb0dc8b0274ea1aca75f1f8c0c835adbe589708ea89bf698069d0790701ea3",
+    strip_prefix = "buildtools-5.1.0",
+    urls = ["https://github.com/bazelbuild/buildtools/archive/5.1.0.tar.gz"],
 )
 
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")
