@@ -273,6 +273,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			Format:      schema.Format,
 			Pattern:     schema.Pattern,
 			Required:    required,
+			extensions:  schema.extensions,
 		}
 		if param.Type == "array" {
 			param.CollectionFormat = "multi"
@@ -449,6 +450,7 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		schema.MinProperties = protoSchema.MinProperties
 		schema.Required = protoSchema.Required
 		schema.XNullable = protoSchema.XNullable
+		schema.extensions = protoSchema.extensions
 		if protoSchema.schemaCore.Type != "" || protoSchema.schemaCore.Ref != "" {
 			schema.schemaCore = protoSchema.schemaCore
 		}
@@ -1022,6 +1024,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					var enumNames []string
 					var items *openapiItemsObject
 					var minItems *int
+					var extensions []extension
 					switch pt := parameter.Target.GetType(); pt {
 					case descriptorpb.FieldDescriptorProto_TYPE_GROUP, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE:
 						if descriptor.IsWellKnownType(parameter.Target.GetTypeName()) {
@@ -1033,6 +1036,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							paramFormat = schema.Format
 							desc = schema.Description
 							defaultValue = schema.Default
+							extensions = schema.extensions
 						} else {
 							return fmt.Errorf("only primitive and well-known types are allowed in path parameters")
 						}
@@ -1052,6 +1056,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default
+						extensions = schema.extensions
 					default:
 						var ok bool
 						paramType, paramFormat, ok = primitiveSchema(pt)
@@ -1062,6 +1067,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default
+						extensions = schema.extensions
 					}
 
 					if parameter.IsRepeated() {
@@ -1111,6 +1117,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						CollectionFormat: collectionFormat,
 						MinItems:         minItems,
 						Pattern:          pattern,
+						extensions:       extensions,
 					})
 				}
 				// Now check if there is a body parameter
@@ -2527,6 +2534,13 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		}
 	}
 	s.Enum = j.GetEnum()
+	if j.GetExtensions() != nil {
+		exts, err := processExtensions(j.GetExtensions())
+		if err != nil {
+			panic(err)
+		}
+		s.extensions = exts
+	}
 	if overrideType := j.GetType(); len(overrideType) > 0 {
 		s.Type = strings.ToLower(overrideType[0].String())
 	}

@@ -518,6 +518,7 @@ message JSONSchema {
     // for overlapping paths.
     string path_param_name = 47;
   }
+  map<string, google.protobuf.Value> extensions = 48;
 }
 
 // `Tag` is a representation of OpenAPI v2 specification's Tag object.

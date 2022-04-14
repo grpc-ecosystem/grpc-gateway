@@ -39,6 +39,12 @@ message ABitOfEverything {
             description: "Find out more about ABitOfEverything";
         }
         example: "{\"uuid\": \"0cf361e1-4b44-483d-a159-54dabdf7e814\"}"
+        extensions: {
+            key: "x-irreversible";
+            value {
+                bool_value: true;
+            }
+        }
     };
 
     string uuid = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The UUID field."}];
@@ -75,6 +81,29 @@ service ABitOfEverythingService {
             }
         };
     }
+}
+```
+
+[Swagger Extensions](https://swagger.io/docs/specification/2-0/swagger-extensions/) can be added as key-value pairs to the options. Keys must begin with `x-` and values can be of any type listed [here](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#value). For example:
+```
+extensions: {
+  key: "x-amazon-apigateway-authorizer";
+  value {
+    struct_value {
+      fields {
+        key: "type";
+        value {
+          string_value: "token";
+        }
+      }
+      fields {
+        key: "authorizerResultTtlInSeconds";
+        value {
+          number_value: 60;
+        }
+      }
+    }
+  }
 }
 ```
 

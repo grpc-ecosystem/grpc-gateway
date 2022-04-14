@@ -159,6 +159,7 @@ paths:
         required: false
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-internal: true
         x-exportParamName: "Uuid"
         x-optionalDataType: "String"
       - name: "floatValue"
@@ -472,6 +473,7 @@ paths:
         required: false
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-internal: true
         x-exportParamName: "Uuid"
         x-optionalDataType: "String"
       - name: "floatValue"
@@ -776,6 +778,7 @@ paths:
         required: false
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-internal: true
         x-exportParamName: "Uuid"
         x-optionalDataType: "String"
       - name: "floatValue"
@@ -1069,6 +1072,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        x-internal: true
         x-exportParamName: "UuidName"
       - name: "singleNested.name"
         in: "query"
@@ -1549,6 +1553,7 @@ paths:
         required: false
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-internal: true
         x-exportParamName: "Uuid"
         x-optionalDataType: "String"
       - name: "bytesValue"
@@ -1702,6 +1707,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        x-internal: true
         x-exportParamName: "UuidName"
       - in: "body"
         name: "body"
@@ -2211,6 +2217,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        x-internal: true
         x-exportParamName: "UuidName"
       - in: "body"
         name: "abe"
@@ -2261,6 +2268,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        x-internal: true
         x-exportParamName: "UuidName"
       - in: "body"
         name: "abe"
@@ -2661,6 +2669,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        x-internal: true
         x-exportParamName: "UuidName"
       - in: "body"
         name: "body"
@@ -2798,6 +2807,7 @@ definitions:
         type: "string"
         minLength: 1
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-internal: true
       nested:
         type: "array"
         items:
@@ -2932,6 +2942,7 @@ definitions:
     example:
       int64_value: 12
       double_value: 12.3
+    x-a-bit-of-everything-foo: "bar"
   examplepbABitOfEverythingRepeated:
     type: "object"
     properties:
@@ -3337,6 +3348,7 @@ definitions:
     example:
       int64_value: 12
       double_value: 12.3
+    x-a-bit-of-everything-foo: "bar"
   v1exampledeep_pathsingleNested.name_singleNested:
     properties:
       amount:
@@ -3362,6 +3374,7 @@ definitions:
         type: "string"
         minLength: 1
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-internal: true
       nested:
         type: "array"
         items:
@@ -3496,6 +3509,7 @@ definitions:
     example:
       int64_value: 12
       double_value: 12.3
+    x-a-bit-of-everything-foo: "bar"
   The book to update.:
     type: "object"
     properties:
@@ -3655,6 +3669,7 @@ definitions:
     example:
       int64_value: 12
       double_value: 12.3
+    x-a-bit-of-everything-foo: "bar"
   A bit of everything_3:
     type: "object"
     required:
@@ -3799,6 +3814,7 @@ definitions:
     example:
       int64_value: 12
       double_value: 12.3
+    x-a-bit-of-everything-foo: "bar"
   A bit of everything_4:
     required:
     - "doubleValue"
