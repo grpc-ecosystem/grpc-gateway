@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package grpc.gateway.runtime.internal.examplepb;
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb";
-
 import "google/protobuf/duration.proto";
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
-import "google/protobuf/struct.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb";
 
 message Proto3Message {
   // Next number: 49

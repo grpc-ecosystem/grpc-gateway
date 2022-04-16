@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package grpc.gateway.examples.internal.helloworld;
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/helloworld";
-
 import "google/api/annotations.proto";
 import "google/protobuf/wrappers.proto";
 
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/helloworld";
+
 service Greeter {
-  rpc SayHello (HelloRequest) returns (HelloReply) {
+  rpc SayHello(HelloRequest) returns (HelloReply) {
     option (google.api.http) = {
       get: "/say/{name}"
       additional_bindings: {

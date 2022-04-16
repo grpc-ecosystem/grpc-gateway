@@ -144,6 +144,7 @@ jobs:
       - checkout
       - run: buf build
       - run: buf lint
+      - run: buf format -w && git diff --exit-code
       - run: buf breaking --path protoc-gen-openapiv2/ --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=master'
   proto_push:
     docker:
