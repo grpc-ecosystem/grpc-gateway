@@ -13,9 +13,9 @@ Examples are available under `examples/internal` directory.
   protobuf service definitions.
 - [`proto/examplepb/echo_service.pb.go`](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/echo_service.pb.go), [`proto/examplepb/a_bit_of_everything.pb.go`](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/a_bit_of_everything.pb.go), [`proto/examplepb/unannotated_echo_service.pb.go`](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/unannotated_echo_service.pb.go):
   generated Go service stubs and types.
-- [`proto/examplepb/echo_service.pb.gw.go`](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/echo_service.pb.gw.go), [`proto/examplepb/a_bit_of_everything.pb.gw.go`](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/a_bit_of_everything.pb.gw.go), [`proto/examplepb/uannotated_echo_service.pb.gw.go`](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/uannotated_echo_service.pb.gw.go):
+- [`proto/examplepb/echo_service.pb.gw.go`](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/echo_service.pb.gw.go), [`proto/examplepb/a_bit_of_everything.pb.gw.go`](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/a_bit_of_everything.pb.gw.go), [`proto/examplepb/unannotated_echo_service.pb.gw.go`](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/unannotated_echo_service.pb.gw.go):
   generated gRPC-Gateway clients.
-- [`proto/examplepb/unannotated_echo_service.yaml`](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/uannotated_echo_service.yaml):
+- [`proto/examplepb/unannotated_echo_service.yaml`](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/proto/examplepb/unannotated_echo_service.yaml):
   gRPC API Configuration for `unannotated_echo_service.proto`.
 - [`server/main.go`](https://github.com/grpc-ecosystem/grpc-gateway/tree/master/examples/internal/server/main.go):
   service implementation.
