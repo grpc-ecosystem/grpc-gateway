@@ -219,7 +219,7 @@ func (s *schemaCore) setRefFromFQN(ref string, reg *descriptor.Registry) error {
 	return nil
 }
 
-type openapiItemsObject schemaCore
+type openapiItemsObject openapiSchemaObject
 
 // http://swagger.io/specification/#responsesObject
 type openapiResponsesObject map[string]openapiResponseObject
