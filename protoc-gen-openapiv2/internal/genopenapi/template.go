@@ -97,9 +97,10 @@ var wktSchemas = map[string]schemaCore{
 	},
 	".google.protobuf.ListValue": {
 		Type: "array",
-		Items: (*openapiItemsObject)(&openapiSchemaObject{schemaCore: schemaCore{
-			Type: "object",
-		}}),
+		Items: (*openapiItemsObject)(&openapiSchemaObject{
+			schemaCore: schemaCore{
+				Type: "object",
+			}}),
 	},
 	".google.protobuf.NullValue": {
 		Type: "string",
@@ -288,7 +289,8 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			}
 			if items != nil { // array
 				param.Items = &openapiItemsObject{
-					schemaCore: schemaCore{Type: "string",
+					schemaCore: schemaCore{
+						Type: "string",
 						Enum: listEnumNames(reg, enum),
 					},
 				}
@@ -685,9 +687,8 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	case array:
 		ret = openapiSchemaObject{
 			schemaCore: schemaCore{
-				Type: "array",
-				Items: (*openapiItemsObject)(&openapiSchemaObject{
-					schemaCore: core}),
+				Type:  "array",
+				Items: (*openapiItemsObject)(&openapiSchemaObject{schemaCore: core}),
 			},
 		}
 	case object:
