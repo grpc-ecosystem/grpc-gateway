@@ -503,6 +503,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Only digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -851,6 +865,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Only digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -1188,6 +1216,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Only digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -1542,6 +1584,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Only digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -1557,8 +1613,7 @@
     },
     "/v1/example/a_bit_of_everything/{floatValue}/{doubleValue}/{int64Value}/separator/{uint64Value}/{int32Value}/{fixed64Value}/{fixed32Value}/{boolValue}/{stringValue}/{uint32Value}/{sfixed32Value}/{sfixed64Value}/{sint32Value}/{sint64Value}/{nonConventionalNameValue}/{enumValue}/{pathEnumValue}/{nestedPathEnumValue}/{enumValueAnnotation}": {
       "post": {
-        "summary": "Create a new ABitOfEverything",
-        "description": "This API creates a new ABitOfEverything",
+        "summary": "Create a new ABitOfEverything\r\n\r\nThis API creates a new ABitOfEverything",
         "operationId": "ABitOfEverythingService_Create",
         "responses": {
           "200": {
@@ -1901,6 +1956,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Only digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -2144,6 +2213,16 @@
                 },
                 "optionalStringValue": {
                   "type": "string"
+                },
+                "productId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "maxLength": 19,
+                    "minLength": 1,
+                    "pattern": "^[0-9]+$"
+                  },
+                  "description": "Only digits are allowed."
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -2823,6 +2902,16 @@
                 },
                 "optionalStringValue": {
                   "type": "string"
+                },
+                "productId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "maxLength": 19,
+                    "minLength": 1,
+                    "pattern": "^[0-9]+$"
+                  },
+                  "description": "Only digits are allowed."
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -2890,7 +2979,7 @@
         "parameters": [
           {
             "name": "book.name",
-            "description": "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\nExample: `publishers/1257894000000000000/books/my-book`",
+            "description": "The resource name of the book.\r\n\r\nFormat: `publishers/{publisher}/books/{book}`\r\n\r\nExample: `publishers/1257894000000000000/books/my-book`",
             "in": "path",
             "required": true,
             "type": "string",
@@ -2898,7 +2987,7 @@
           },
           {
             "name": "book",
-            "description": "The book to update.\n\nThe book's `name` field is used to identify the book to be updated.\nFormat: publishers/{publisher}/books/{book}",
+            "description": "The book to update.\r\n\r\nThe book's `name` field is used to identify the book to be updated.\r\nFormat: publishers/{publisher}/books/{book}",
             "in": "body",
             "required": true,
             "schema": {
@@ -2916,8 +3005,7 @@
                   "readOnly": true
                 }
               },
-              "description": "The book's `name` field is used to identify the book to be updated.\nFormat: publishers/{publisher}/books/{book}",
-              "title": "The book to update."
+              "title": "The book to update.\r\n\r\nThe book's `name` field is used to identify the book to be updated.\r\nFormat: publishers/{publisher}/books/{book}"
             }
           },
           {
@@ -2929,7 +3017,7 @@
           },
           {
             "name": "allowMissing",
-            "description": "If set to true, and the book is not found, a new book will be created.\nIn this situation, `update_mask` is ignored.",
+            "description": "If set to true, and the book is not found, a new book will be created.\r\nIn this situation, `update_mask` is ignored.",
             "in": "query",
             "required": false,
             "type": "boolean"
@@ -2984,7 +3072,7 @@
         "parameters": [
           {
             "name": "parent",
-            "description": "The publisher in which to create the book.\n\nFormat: `publishers/{publisher}`\n\nExample: `publishers/1257894000000000000`",
+            "description": "The publisher in which to create the book.\r\n\r\nFormat: `publishers/{publisher}`\r\n\r\nExample: `publishers/1257894000000000000`",
             "in": "path",
             "required": true,
             "type": "string",
@@ -3001,7 +3089,7 @@
           },
           {
             "name": "bookId",
-            "description": "The ID to use for the book.\n\nThis must start with an alphanumeric character.",
+            "description": "The ID to use for the book.\r\n\r\nThis must start with an alphanumeric character.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -3249,6 +3337,16 @@
                 },
                 "optionalStringValue": {
                   "type": "string"
+                },
+                "productId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "maxLength": 19,
+                    "minLength": 1,
+                    "pattern": "^[0-9]+$"
+                  },
+                  "description": "Only digits are allowed."
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -3514,6 +3612,16 @@
                 },
                 "optionalStringValue": {
                   "type": "string"
+                },
+                "productId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "maxLength": 19,
+                    "minLength": 1,
+                    "pattern": "^[0-9]+$"
+                  },
+                  "description": "Only digits are allowed."
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -4283,6 +4391,16 @@
                     },
                     "optionalStringValue": {
                       "type": "string"
+                    },
+                    "productId": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "maxLength": 19,
+                        "minLength": 1,
+                        "pattern": "^[0-9]+$"
+                      },
+                      "description": "Only digits are allowed."
                     }
                   },
                   "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -4606,6 +4724,16 @@
         },
         "optionalStringValue": {
           "type": "string"
+        },
+        "productId": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 19,
+            "minLength": 1,
+            "pattern": "^[0-9]+$"
+          },
+          "description": "Only digits are allowed."
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -4765,7 +4893,7 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\nExample: `publishers/1257894000000000000/books/my-book`"
+          "title": "The resource name of the book.\r\n\r\nFormat: `publishers/{publisher}/books/{book}`\r\n\r\nExample: `publishers/1257894000000000000/books/my-book`"
         },
         "id": {
           "type": "string",
@@ -4779,7 +4907,7 @@
           "readOnly": true
         }
       },
-      "description": "An example resource type from AIP-123 used to test the behavior described in\nthe CreateBookRequest message.\n\nSee: https://google.aip.dev/123"
+      "title": "An example resource type from AIP-123 used to test the behavior described in\r\nthe CreateBookRequest message.\r\n\r\nSee: https://google.aip.dev/123"
     },
     "examplepbCheckStatusResponse": {
       "type": "object",
