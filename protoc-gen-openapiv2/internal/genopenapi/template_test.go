@@ -3487,560 +3487,560 @@ func TestSchemaOfField(t *testing.T) {
 	proto.SetExtension(outputOnlyOptions, annotations.E_FieldBehavior, outputOnlyField)
 
 	tests := []test{
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name: proto.String("primitive_field"),
-		//            Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "string",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:  proto.String("repeated_primitive_field"),
-		//            Type:  descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-		//            Label: descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "array",
-		//            Items: &openapiItemsObject{
-		//                schemaCore: schemaCore{Type: "string"},
-		//            },
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.FieldMask"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "string",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.Timestamp"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type:   "string",
-		//            Format: "date-time",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.Duration"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "string",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.StringValue"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "string",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("repeated_wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.StringValue"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//            Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "array",
-		//            Items: &openapiItemsObject{
-		//                schemaCore: schemaCore{Type: "string"},
-		//            },
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.BytesValue"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type:   "string",
-		//            Format: "byte",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.Int32Value"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type:   "integer",
-		//            Format: "int32",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.UInt32Value"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type:   "integer",
-		//            Format: "int64",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.Int64Value"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type:   "string",
-		//            Format: "int64",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.UInt64Value"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type:   "string",
-		//            Format: "uint64",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.FloatValue"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type:   "number",
-		//            Format: "float",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.DoubleValue"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type:   "number",
-		//            Format: "double",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.BoolValue"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "boolean",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.Struct"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "object",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.Value"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "object",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.ListValue"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "array",
-		//            Items: (*openapiItemsObject)(&openapiSchemaObject{schemaCore: schemaCore{
-		//                Type: "obje0ct",
-		//            }}),
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("wrapped_field"),
-		//            TypeName: proto.String(".google.protobuf.NullValue"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum(),
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "string",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("message_field"),
-		//            TypeName: proto.String(".example.Message"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//        },
-		//    },
-		//    refs: refMap{".example.Message": struct{}{}},
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Ref: "#/definitions/exampleMessage",
-		//        },
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("map_field"),
-		//            Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//            TypeName: proto.String(".example.Message.MapFieldEntry"),
-		//            Options:  fieldOptions,
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "object",
-		//        },
-		//        AdditionalProperties: &openapiSchemaObject{
-		//            schemaCore: schemaCore{Type: "string"},
-		//        },
-		//        Title:       "field title",
-		//        Description: "field description",
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:    proto.String("array_field"),
-		//            Label:   descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
-		//            Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-		//            Options: fieldOptions,
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "array",
-		//            Items: (*openapiItemsObject)(&openapiSchemaObject{
-		//                schemaCore: schemaCore{Type: "string"}}),
-		//        },
-		//        Title:       "field title",
-		//        Description: "field description",
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:    proto.String("primitive_field"),
-		//            Label:   descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-		//            Type:    descriptorpb.FieldDescriptorProto_TYPE_INT32.Enum(),
-		//            Options: fieldOptions,
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type:   "integer",
-		//            Format: "int32",
-		//        },
-		//        Title:       "field title",
-		//        Description: "field description",
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("message_field"),
-		//            Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//            TypeName: proto.String(".example.Empty"),
-		//            Options:  fieldOptions,
-		//        },
-		//    },
-		//    refs: refMap{".example.Empty": struct{}{}},
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Ref: "#/definitions/exampleEmpty",
-		//        },
-		//        Title:       "field title",
-		//        Description: "field description",
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("map_field"), // should be called map_field_option but it's not valid map field name
-		//            Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//            TypeName: proto.String(".example.Message.MapFieldEntry"),
-		//        },
-		//    },
-		//    openAPIOptions: &openapiconfig.OpenAPIOptions{
-		//        Field: []*openapiconfig.OpenAPIFieldOption{
-		//            {
-		//                Field:  "example.Message.map_field",
-		//                Option: jsonSchema,
-		//            },
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "object",
-		//        },
-		//        AdditionalProperties: &openapiSchemaObject{
-		//            schemaCore: schemaCore{Type: "string"},
-		//        },
-		//        Title:       "field title",
-		//        Description: "field description",
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:  proto.String("array_field_option"),
-		//            Label: descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
-		//            Type:  descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-		//        },
-		//    },
-		//    openAPIOptions: &openapiconfig.OpenAPIOptions{
-		//        Field: []*openapiconfig.OpenAPIFieldOption{
-		//            {
-		//                Field:  "example.Message.array_field_option",
-		//                Option: jsonSchema,
-		//            },
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "array",
-		//            Items: (*openapiItemsObject)(&openapiSchemaObject{
-		//                schemaCore: schemaCore{
-		//                    Type: "string"}}),
-		//        },
-		//        Title:       "field title",
-		//        Description: "field description",
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:  proto.String("primitive_field_option"),
-		//            Label: descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-		//            Type:  descriptorpb.FieldDescriptorProto_TYPE_INT32.Enum(),
-		//        },
-		//    },
-		//    openAPIOptions: &openapiconfig.OpenAPIOptions{
-		//        Field: []*openapiconfig.OpenAPIFieldOption{
-		//            {
-		//                Field:  "example.Message.primitive_field_option",
-		//                Option: jsonSchema,
-		//            },
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type:   "integer",
-		//            Format: "int32",
-		//        },
-		//        Title:       "field title",
-		//        Description: "field description",
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("message_field_option"),
-		//            Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//            TypeName: proto.String(".example.Empty"),
-		//        },
-		//    },
-		//    openAPIOptions: &openapiconfig.OpenAPIOptions{
-		//        Field: []*openapiconfig.OpenAPIFieldOption{
-		//            {
-		//                Field:  "example.Message.message_field_option",
-		//                Option: jsonSchema,
-		//            },
-		//        },
-		//    },
-		//    refs: refMap{".example.Empty": struct{}{}},
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Ref: "#/definitions/exampleEmpty",
-		//        },
-		//        Title:       "field title",
-		//        Description: "field description",
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:    proto.String("required_via_field_behavior_field"),
-		//            Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-		//            Options: requiredFieldOptions,
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "string",
-		//        },
-		//        Required: []string{"required_via_field_behavior_field"},
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:    proto.String("readonly_via_field_behavior_field"),
-		//            Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-		//            Options: outputOnlyOptions,
-		//        },
-		//    },
-		//    refs: make(refMap),
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Type: "string",
-		//        },
-		//        ReadOnly: true,
-		//    },
-		//},
-		//{
-		//    field: &descriptor.Field{
-		//        FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-		//            Name:     proto.String("message_field"),
-		//            TypeName: proto.String(".example.Message"),
-		//            Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
-		//            Options:  requiredFieldOptions,
-		//        },
-		//    },
-		//    refs: refMap{".example.Message": struct{}{}},
-		//    expected: openapiSchemaObject{
-		//        schemaCore: schemaCore{
-		//            Ref: "#/definitions/exampleMessage",
-		//        },
-		//    },
-		//},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name: proto.String("primitive_field"),
+					Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:  proto.String("repeated_primitive_field"),
+					Type:  descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+					Label: descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: &openapiItemsObject{
+						schemaCore: schemaCore{Type: "string"},
+					},
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.FieldMask"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.Timestamp"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "date-time",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.Duration"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.StringValue"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("repeated_wrapped_field"),
+					TypeName: proto.String(".google.protobuf.StringValue"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: &openapiItemsObject{
+						schemaCore: schemaCore{Type: "string"},
+					},
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.BytesValue"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "byte",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.Int32Value"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "integer",
+					Format: "int32",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.UInt32Value"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "integer",
+					Format: "int64",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.Int64Value"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "int64",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.UInt64Value"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "uint64",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.FloatValue"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "number",
+					Format: "float",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.DoubleValue"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "number",
+					Format: "double",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.BoolValue"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "boolean",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.Struct"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "object",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.Value"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "object",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.ListValue"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: (*openapiItemsObject)(&openapiSchemaObject{schemaCore: schemaCore{
+						Type: "object",
+					}}),
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("wrapped_field"),
+					TypeName: proto.String(".google.protobuf.NullValue"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_ENUM.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("message_field"),
+					TypeName: proto.String(".example.Message"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: refMap{".example.Message": struct{}{}},
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Ref: "#/definitions/exampleMessage",
+				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("map_field"),
+					Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					TypeName: proto.String(".example.Message.MapFieldEntry"),
+					Options:  fieldOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "object",
+				},
+				AdditionalProperties: &openapiSchemaObject{
+					schemaCore: schemaCore{Type: "string"},
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:    proto.String("array_field"),
+					Label:   descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+					Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+					Options: fieldOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: (*openapiItemsObject)(&openapiSchemaObject{
+						schemaCore: schemaCore{Type: "string"}}),
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:    proto.String("primitive_field"),
+					Label:   descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:    descriptorpb.FieldDescriptorProto_TYPE_INT32.Enum(),
+					Options: fieldOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "integer",
+					Format: "int32",
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("message_field"),
+					Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					TypeName: proto.String(".example.Empty"),
+					Options:  fieldOptions,
+				},
+			},
+			refs: refMap{".example.Empty": struct{}{}},
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Ref: "#/definitions/exampleEmpty",
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("map_field"), // should be called map_field_option but it's not valid map field name
+					Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					TypeName: proto.String(".example.Message.MapFieldEntry"),
+				},
+			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field:  "example.Message.map_field",
+						Option: jsonSchema,
+					},
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "object",
+				},
+				AdditionalProperties: &openapiSchemaObject{
+					schemaCore: schemaCore{Type: "string"},
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:  proto.String("array_field_option"),
+					Label: descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+					Type:  descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				},
+			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field:  "example.Message.array_field_option",
+						Option: jsonSchema,
+					},
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: (*openapiItemsObject)(&openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type: "string"}}),
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:  proto.String("primitive_field_option"),
+					Label: descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:  descriptorpb.FieldDescriptorProto_TYPE_INT32.Enum(),
+				},
+			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field:  "example.Message.primitive_field_option",
+						Option: jsonSchema,
+					},
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "integer",
+					Format: "int32",
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("message_field_option"),
+					Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					TypeName: proto.String(".example.Empty"),
+				},
+			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field:  "example.Message.message_field_option",
+						Option: jsonSchema,
+					},
+				},
+			},
+			refs: refMap{".example.Empty": struct{}{}},
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Ref: "#/definitions/exampleEmpty",
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:    proto.String("required_via_field_behavior_field"),
+					Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+					Options: requiredFieldOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
+				Required: []string{"required_via_field_behavior_field"},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:    proto.String("readonly_via_field_behavior_field"),
+					Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+					Options: outputOnlyOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
+				ReadOnly: true,
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("message_field"),
+					TypeName: proto.String(".example.Message"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+					Options:  requiredFieldOptions,
+				},
+			},
+			refs: refMap{".example.Message": struct{}{}},
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Ref: "#/definitions/exampleMessage",
+				},
+			},
+		},
 		{
 			field: &descriptor.Field{
 				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
