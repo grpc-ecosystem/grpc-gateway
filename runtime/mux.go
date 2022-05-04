@@ -229,6 +229,8 @@ func WithHealthEndpointAt(healthCheckClient grpc_health_v1.HealthClient, endpoin
 					return
 				}
 
+				w.Header().Set("Content-Type", "application/json")
+
 				if resp.GetStatus() != grpc_health_v1.HealthCheckResponse_SERVING {
 					var err error
 					switch resp.GetStatus() {
