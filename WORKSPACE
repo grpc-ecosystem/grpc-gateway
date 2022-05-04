@@ -6,9 +6,9 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 # Define before rules_proto, otherwise we receive the version of com_google_protobuf from there
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "b07772d38ab07e55eca4d50f4b53da2d998bb221575c60a4f81100242d4b4889",
-    strip_prefix = "protobuf-3.20.0",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.20.0.tar.gz"],
+    sha256 = "8b28fdd45bab62d15db232ec404248901842e5340299a57765e48abe8a80d930",
+    strip_prefix = "protobuf-3.20.1",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.20.1.tar.gz"],
 )
 
 http_archive(
@@ -81,9 +81,9 @@ protobuf_deps()
 
 http_archive(
     name = "com_github_bazelbuild_buildtools",
-    sha256 = "7f43df3cca7bb4ea443b4159edd7a204c8d771890a69a50a190dc9543760ca21",
-    strip_prefix = "buildtools-5.0.1",
-    urls = ["https://github.com/bazelbuild/buildtools/archive/5.0.1.tar.gz"],
+    sha256 = "e3bb0dc8b0274ea1aca75f1f8c0c835adbe589708ea89bf698069d0790701ea3",
+    strip_prefix = "buildtools-5.1.0",
+    urls = ["https://github.com/bazelbuild/buildtools/archive/5.1.0.tar.gz"],
 )
 
 load("@com_github_bazelbuild_buildtools//buildifier:deps.bzl", "buildifier_dependencies")

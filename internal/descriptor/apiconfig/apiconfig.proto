@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package grpc.gateway.internal.descriptor.apiconfig;
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig";
-
 import "google/api/http.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig";
 
 // GrpcAPIService represents a stripped down version of google.api.Service .
 // Compare to https://github.com/googleapis/googleapis/blob/master/google/api/service.proto
@@ -16,6 +16,6 @@ import "google/api/http.proto";
 // available features google supports in their service descriptions. Thanks to backwards
 // compatibility guarantees by protobuf it is safe for us to remove the other fields.
 message GrpcAPIService {
-	// Http Rule.
-    google.api.Http http = 1;
+  // Http Rule.
+  google.api.Http http = 1;
 }

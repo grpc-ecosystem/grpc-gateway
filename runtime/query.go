@@ -24,7 +24,7 @@ import (
 
 var valuesKeyRegexp = regexp.MustCompile(`^(.*)\[(.*)\]$`)
 
-var currentQueryParser QueryParameterParser = &defaultQueryParser{}
+var currentQueryParser QueryParameterParser = &DefaultQueryParser{}
 
 // QueryParameterParser defines interface for all query parameter parsers
 type QueryParameterParser interface {
@@ -37,11 +37,15 @@ func PopulateQueryParameters(msg proto.Message, values url.Values, filter *utili
 	return currentQueryParser.Parse(msg, values, filter)
 }
 
-type defaultQueryParser struct{}
+// DefaultQueryParser is a QueryParameterParser which implements the default
+// query parameters parsing behavior.
+//
+// See https://github.com/grpc-ecosystem/grpc-gateway/issues/2632 for more context.
+type DefaultQueryParser struct{}
 
 // Parse populates "values" into "msg".
 // A value is ignored if its key starts with one of the elements in "filter".
-func (*defaultQueryParser) Parse(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error {
+func (*DefaultQueryParser) Parse(msg proto.Message, values url.Values, filter *utilities.DoubleArray) error {
 	for key, values := range values {
 		match := valuesKeyRegexp.FindStringSubmatch(key)
 		if len(match) == 3 {

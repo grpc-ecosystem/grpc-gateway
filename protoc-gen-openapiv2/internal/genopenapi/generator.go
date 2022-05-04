@@ -109,6 +109,16 @@ func (so openapiResponseObject) MarshalJSON() ([]byte, error) {
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
+func (so openapiSchemaObject) MarshalJSON() ([]byte, error) {
+	type alias openapiSchemaObject
+	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+func (so openapiParameterObject) MarshalJSON() ([]byte, error) {
+	type alias openapiParameterObject
+	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
 func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error) {
 	// To append arbitrary keys to the struct we'll render into json,
 	// we're creating another struct that embeds the original one, and

@@ -162,3 +162,7 @@ There is no workaround for this, as we considered it a correct interpretation of
 ## Error handling configuration has been overhauled
 
 `runtime.HTTPError`, `runtime.OtherErrorHandler`, `runtime.GlobalHTTPErrorHandler`, `runtime.WithProtoErrorHandler` are all gone. Error handling is rewritten around the use of gRPCs Status types. If you wish to configure how the gateway handles errors, please use `runtime.WithErrorHandler` and `runtime.WithStreamErrorHandler`. To handle routing errors (similar to the removed `runtime.OtherErrorHandler`) please use `runtime.WithRoutingErrorHandler`.
+
+## Default query parameter parsing behaviour change
+
+The default behaviour for query parameter parsing has changed to return an `InvalidArgument` (`400 Bad Request`) error when more than one of the same matching query parameters is parsed. Previously, it would log but not return an error, using the first query parameter that matched and ignoring any others. See [the original issue](https://github.com/grpc-ecosystem/grpc-gateway/issues/2632) for more information.
