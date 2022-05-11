@@ -26,7 +26,7 @@ enum Scheme {
 //    info: {
 //      title: "Echo API";
 //      version: "1.0";
-//      description: ";
+//      description: "A simple echo API service";
 //      contact: {
 //        name: "gRPC-Gateway project";
 //        url: "https://github.com/grpc-ecosystem/grpc-gateway";
@@ -37,7 +37,7 @@ enum Scheme {
 //        url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt";
 //      };
 //    };
-//    schemes: HTTPS;
+//    schemes: grpc.gateway.protoc_gen_openapiv2.options.HTTPS;
 //    consumes: "application/json";
 //    produces: "application/json";
 //  };
