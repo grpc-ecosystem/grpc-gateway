@@ -523,6 +523,8 @@ var (
 		{data: uint64(1), json: "1"},
 		{data: proto.Uint64(1), json: "1"},
 		{data: "abc", json: `"abc"`},
+		{data: []byte("abc"), json: `"YWJj"`},
+		{data: []byte{}, json: `""`},
 		{data: proto.String("abc"), json: `"abc"`},
 		{data: float32(1.5), json: "1.5"},
 		{data: proto.Float32(1.5), json: "1.5"},
