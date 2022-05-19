@@ -938,9 +938,14 @@ func partsToOpenAPIPath(parts []string, overrides map[string]string) string {
 // For example "{name=organizations/*/roles/*}" would produce the regular expression for the "name" parameter of
 // "organizations/[^/]+/roles/[^/]+" or "{bar=bing/*/bang/**}" would produce the regular expression for the "bar"
 // parameter of "bing/[^/]+/bang/.+".
+//
+// Note that OpenAPI does not actually support path parameters with "/", see https://github.com/OAI/OpenAPI-Specification/issues/892
 func partsToRegexpMap(parts []string) map[string]string {
 	regExps := make(map[string]string)
 	for _, part := range parts {
+		if strings.Contains(part, "/") {
+			glog.Warningf("Path parameter '%s' contains '/', which is not supported in OpenAPI", part)
+		}
 		if submatch := canRegexp.FindStringSubmatch(part); len(submatch) > 2 {
 			if strings.HasPrefix(submatch[2], "=") { // this part matches the standard and should be made into a regular expression
 				// assume the string's characters other than "**" and "*" are literals (not necessarily a good assumption 100% of the times, but it will support most use cases)
