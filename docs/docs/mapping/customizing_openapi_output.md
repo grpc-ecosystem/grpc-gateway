@@ -478,6 +478,11 @@ This will instead generate the following paths:
 - `/v1/{shelfName}`
 - `/v1/{bookName}`
 
+Note that path parameters in OpenAPI does not support values with `/`, as discussed in
+[Support for path parameters which can contain slashes #892](https://github.com/OAI/OpenAPI-Specification/issues/892),
+so tools as Swagger UI will URL encode any `/` provided as parameter value. A possible workaround for this is to write
+a custom post processor for your OAS file to replace any path parameter with `/` into multiple parameters.
+
 ### Output format
 
 By default the output format is JSON, but it is possible to configure it using the `output_format` option. Allowed values are: `json`, `yaml`. The output format will also change the extension of the output files.
