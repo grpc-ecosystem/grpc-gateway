@@ -197,6 +197,8 @@ var (
 		{data: "", json: `""`},
 		{data: proto.String(""), json: `""`},
 		{data: "foo", json: `"foo"`},
+		{data: []byte("foo"), json: `"Zm9v"`},
+		{data: []byte{}, json: `""`},
 		{data: proto.String("foo"), json: `"foo"`},
 		{data: int32(-1), json: "-1"},
 		{data: proto.Int32(-1), json: "-1"},
