@@ -115,7 +115,7 @@
     },
     "/v1/example/echo_hidden": {
       "get": {
-        "summary": "EchoInternalMessage method's request and response shoul only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"INTERNAL\".",
+        "summary": "EchoInternalMessage method is always visible",
         "operationId": "VisibilityRuleEchoService_EchoInternalMessage",
         "responses": {
           "200": {

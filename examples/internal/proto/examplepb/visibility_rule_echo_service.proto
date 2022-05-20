@@ -53,7 +53,8 @@ message VisibilityRuleSimpleMessage {
   VisibilityEnum an_enum = 10;
 }
 
-// Hidden message
+// Hidden message, it's defintion should only be visible in the OpenAPI spec
+// if `visibility_restriction_selectors` includes "INTERNAL".
 message HiddenMessage {
   option (google.api.message_visibility).restriction = "INTERNAL";
   string id = 1;
@@ -96,8 +97,7 @@ service VisibilityRuleEchoService {
       get: "/v1/example/echo_internal_and_preview"
     };
   }
-  // EchoInternalMessage method's request and response shoul only be visible in the OpenAPI spec
-  // if `visibility_restriction_selectors` includes "INTERNAL".
+  // EchoInternalMessage method is always visible
   rpc EchoInternalMessage(HiddenMessage) returns (HiddenMessage) {
     option (google.api.http) = {
       get: "/v1/example/echo_hidden"

@@ -365,7 +365,8 @@ func (*VisibilityRuleSimpleMessage_En) isVisibilityRuleSimpleMessage_Ext() {}
 
 func (*VisibilityRuleSimpleMessage_No) isVisibilityRuleSimpleMessage_Ext() {}
 
-// Hidden message
+// Hidden message, it's defintion should only be visible in the OpenAPI spec
+// if `visibility_restriction_selectors` includes "INTERNAL".
 type HiddenMessage struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

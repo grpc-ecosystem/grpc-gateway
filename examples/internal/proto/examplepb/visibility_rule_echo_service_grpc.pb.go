@@ -30,8 +30,7 @@ type VisibilityRuleEchoServiceClient interface {
 	// EchoInternalAndPreview is a internal and preview API that should only be visible in the OpenAPI spec
 	// if `visibility_restriction_selectors` includes "PREVIEW" or "INTERNAL".
 	EchoInternalAndPreview(ctx context.Context, in *VisibilityRuleSimpleMessage, opts ...grpc.CallOption) (*VisibilityRuleSimpleMessage, error)
-	// EchoInternalMessage method's request and response shoul only be visible in the OpenAPI spec
-	// if `visibility_restriction_selectors` includes "INTERNAL".
+	// EchoInternalMessage method is always visible
 	EchoInternalMessage(ctx context.Context, in *HiddenMessage, opts ...grpc.CallOption) (*HiddenMessage, error)
 }
 
@@ -104,8 +103,7 @@ type VisibilityRuleEchoServiceServer interface {
 	// EchoInternalAndPreview is a internal and preview API that should only be visible in the OpenAPI spec
 	// if `visibility_restriction_selectors` includes "PREVIEW" or "INTERNAL".
 	EchoInternalAndPreview(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleSimpleMessage, error)
-	// EchoInternalMessage method's request and response shoul only be visible in the OpenAPI spec
-	// if `visibility_restriction_selectors` includes "INTERNAL".
+	// EchoInternalMessage method is always visible
 	EchoInternalMessage(context.Context, *HiddenMessage) (*HiddenMessage, error)
 }
 
