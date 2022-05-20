@@ -373,6 +373,13 @@ message VisibilityRuleSimpleMessage {
      string preview_field = 2 [(google.api.field_visibility).restriction = "INTERNAL,PREVIEW"];
      VisibilityEnum an_enum = 3;
 }
+
+message HiddenMessage {
+  option (google.api.message_visibility).restriction = "INTERNAL";
+  string id = 1;
+  int64 num = 2;
+}
+
 ```
 
 Output json:
