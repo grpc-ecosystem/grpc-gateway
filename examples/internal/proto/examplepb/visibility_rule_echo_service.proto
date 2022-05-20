@@ -53,6 +53,13 @@ message VisibilityRuleSimpleMessage {
   VisibilityEnum an_enum = 10;
 }
 
+// Hidden message
+message HiddenMessage {
+  option (google.api.message_visibility).restriction = "INTERNAL";
+  string id = 1;
+  int64 num = 2;
+}
+
 // VisibilityRuleEchoService service responds to incoming echo requests.
 // Different services will be available in the swagger documentation depending
 // based on `google.api.VisibilityRule`s and the set `visibility_restriction_selectors`
@@ -87,6 +94,13 @@ service VisibilityRuleEchoService {
     option (google.api.method_visibility).restriction = "INTERNAL,PREVIEW";
     option (google.api.http) = {
       get: "/v1/example/echo_internal_and_preview"
+    };
+  }
+  // EchoInternalMessage method's request and response shoul only be visible in the OpenAPI spec
+  // if `visibility_restriction_selectors` includes "INTERNAL".
+  rpc EchoInternalMessage(HiddenMessage) returns (HiddenMessage) {
+    option (google.api.http) = {
+      get: "/v1/example/echo_hidden"
     };
   }
 }

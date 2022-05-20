@@ -559,6 +559,9 @@ func transformAnyForJSON(schema *openapiSchemaObject, useJSONNames bool) {
 
 func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject, reg *descriptor.Registry, customRefs refMap, pathParams []descriptor.Parameter) error {
 	for name, msg := range messages {
+		if !isVisible(getMessageVisibilityOption(msg), reg) {
+			continue
+		}
 		swgName, ok := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
 		if !ok {
 			return fmt.Errorf("can't resolve OpenAPI name from '%v'", msg.FQMN())
@@ -1293,6 +1296,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						desc = fieldProtoComments(reg, lastField.Target.Message, lastField.Target)
 					}
 				}
+
 				if meth.GetServerStreaming() {
 					desc += "(streaming responses)"
 					responseSchema.Type = "object"
@@ -2408,6 +2412,21 @@ func getEnumValueVisibilityOption(fd *descriptorpb.EnumValueDescriptorProto) *vi
 		return nil
 	}
 	ext := proto.GetExtension(fd.Options, visibility.E_ValueVisibility)
+	opts, ok := ext.(*visibility.VisibilityRule)
+	if !ok {
+		return nil
+	}
+	return opts
+}
+
+func getMessageVisibilityOption(fd *descriptor.Message) *visibility.VisibilityRule {
+	if fd.Options == nil {
+		return nil
+	}
+	if !proto.HasExtension(fd.Options, visibility.E_MessageVisibility) {
+		return nil
+	}
+	ext := proto.GetExtension(fd.Options, visibility.E_MessageVisibility)
 	opts, ok := ext.(*visibility.VisibilityRule)
 	if !ok {
 		return nil

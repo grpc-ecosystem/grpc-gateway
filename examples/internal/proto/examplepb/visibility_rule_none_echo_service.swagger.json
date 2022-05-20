@@ -112,6 +112,44 @@
           "VisibilityRuleEchoService"
         ]
       }
+    },
+    "/v1/example/echo_hidden": {
+      "get": {
+        "summary": "EchoInternalMessage method's request and response shoul only be visible in the OpenAPI spec\nif `visibility_restriction_selectors` includes \"INTERNAL\".",
+        "operationId": "VisibilityRuleEchoService_EchoInternalMessage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbHiddenMessage"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "VisibilityRuleEchoService"
+        ]
+      }
     }
   },
   "definitions": {
