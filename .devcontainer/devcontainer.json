@@ -2,7 +2,7 @@
 {
 	"name": "Go",
 	"build": {
-		"dockerfile": "../.circleci/Dockerfile",
+		"dockerfile": "../.github/Dockerfile",
 		"args": {
 			"NODE_VERSION": "10"
 		}

@@ -3,8 +3,8 @@
 <p>
 gRPC to JSON proxy generator following the gRPC HTTP spec
 </p>
-<a href="https://circleci.com/gh/grpc-ecosystem/grpc-gateway"><img src="https://img.shields.io/circleci/build/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=circleci&logoColor=ffffff&style=flat-square"/></a>
-<a href="https://codecov.io/gh/grpc-ecosystem/grpc-gateway"><img src="https://img.shields.io/codecov/c/github/grpc-ecosystem/grpc-gateway?color=379c9c&logo=codecov&logoColor=ffffff&style=flat-square"/></a>
+![example workflow](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+<a href="https://github.com/grpc-ecosystem/grpc-gateway/actions/workflows/ci.yml"><img src="https://img.shields.io/github/workflow/status/grpc-ecosystem/grpc-gateway/ci?color=379c9c&label=ci&logo=github&logoColor=ffffff&style=flat-square"/></a>
 <a href="https://app.slack.com/client/T029RQSE6/CBATURP1D"><img src="https://img.shields.io/badge/slack-grpc--gateway-379c9c?logo=slack&logoColor=ffffff&style=flat-square"/></a>
 <a href="https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt"><img src="https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square"/></a>
 <a href="https://github.com/grpc-ecosystem/grpc-gateway/releases"><img src="https://img.shields.io/github/v/release/grpc-ecosystem/grpc-gateway?color=379c9c&logoColor=ffffff&style=flat-square"/></a>
@@ -430,17 +430,17 @@ Alternatively, see the section on remotely managed plugin versions below.
    Note that this plugin also supports generating OpenAPI definitions for unannotated methods;
    use the `generate_unbound_methods` option to enable this.
 
-   It is possible with the HTTP mapping for a gRPC service method to create duplicate mappings 
+   It is possible with the HTTP mapping for a gRPC service method to create duplicate mappings
    with the only difference being constraints on the path parameter.
 
-   `/v1/{name=projects/*}` and `/v1/{name=organizations/*}` both become `/v1/{name}`.  When 
+   `/v1/{name=projects/*}` and `/v1/{name=organizations/*}` both become `/v1/{name}`.  When
    this occurs the plugin will rename the path parameter with a "_1" (or "_2" etc) suffix
    to differentiate the different operations. So in the above example, the 2nd path would become
    `/v1/{name_1=organizations/*}`.  This can also cause OpenAPI clients to URL encode the "/" that is
-   part of the path parameter as that is what OpenAPI defines in the specification.  To allow gRPC gateway to  
-   accept the URL encoded slash and still route the request, use the UnescapingModeAllCharacters or  
-   UnescapingModeLegacy (which is the default currently though may change in future versions). See 
-   [Customizing Your Gateway](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_your_gateway/) 
+   part of the path parameter as that is what OpenAPI defines in the specification.  To allow gRPC gateway to
+   accept the URL encoded slash and still route the request, use the UnescapingModeAllCharacters or
+   UnescapingModeLegacy (which is the default currently though may change in future versions). See
+   [Customizing Your Gateway](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_your_gateway/)
    for more information.
 
 ## Usage with remote plugins
