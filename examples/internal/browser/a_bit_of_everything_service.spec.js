@@ -2,226 +2,257 @@
 
 var SwaggerClient = require('swagger-client');
 
-describe('ABitOfEverythingService', function() {
+describe('ABitOfEverythingService', function () {
   var client;
 
-  beforeEach(function(done) {
+  beforeEach(function (done) {
     new SwaggerClient({
       url: "http://localhost:8080/openapiv2/a_bit_of_everything.swagger.json",
       usePromise: true,
-    }).then(function(c) {
+    }).then(function (c) {
       client = c;
-    }).catch(function(err) {
+    }).catch(function (err) {
       done.fail(err);
     }).then(done);
   });
 
-  describe('Create', function() {
+  describe('Create', function () {
     var created;
     var expected = {
-      float_value: 1.5,
-      double_value: 2.5,
-      int64_value: "4294967296",
-      uint64_value: "9223372036854775807",
-      int32_value: -2147483648,
-      fixed64_value: "9223372036854775807",
-      fixed32_value: 4294967295,
-      bool_value: true,
-      string_value: "strprefix/foo",
-      uint32_value: 4294967295,
-      sfixed32_value: 2147483647,
-      sfixed64_value: "-4611686018427387904",
-      sint32_value: 2147483647,
-      sint64_value: "4611686018427387903",
+      floatValue: 1.5,
+      doubleValue: 2.5,
+      int64Value: "4294967296",
+      uint64Value: "9223372036854775807",
+      int32Value: -2147483648,
+      fixed64Value: "9223372036854775807",
+      fixed32Value: 4294967295,
+      boolValue: true,
+      stringValue: "strprefix/foo",
+      uint32Value: 4294967295,
+      sfixed32Value: 2147483647,
+      sfixed64Value: "-4611686018427387904",
+      sint32Value: 2147483647,
+      sint64Value: "4611686018427387903",
       nonConventionalNameValue: "camelCase",
-      enum_value: "ONE",
-      path_enum_value: "DEF",
-      nested_path_enum_value: "JKL",
-      enum_value_annotation: "ONE",
+      enumValue: "ONE",
+      pathEnumValue: "DEF",
+      nestedPathEnumValue: "JKL",
+      enumValueAnnotation: "ONE",
+      requiredStringViaFieldBehaviorAnnotation: "foo",
+      singleNested: null,
+      nested: [],
+      bytesValue: "",
+      repeatedStringValue: [],
+      mapValue: {},
+      mappedStringValue: {},
+      mappedNestedValue: {},
+      timestampValue: "2006-01-02T15:04:05Z",
+      repeatedEnumValue: [],
+      repeatedEnumAnnotation: [],
+      repeatedStringAnnotation: [],
+      repeatedNestedAnnotation: [],
+      nestedAnnotation: null,
+      int64OverrideType: "0",
+      outputOnlyStringViaFieldBehaviorAnnotation: "",
     };
 
-    beforeEach(function(done) {
-      client.ABitOfEverythingService.Create(expected).then(function(resp) {
+    beforeEach(function (done) {
+      client.ABitOfEverythingService.ABitOfEverythingService_Create(expected).then(function (resp) {
         created = resp.obj;
-      }).catch(function(err) {
+      }).catch(function (err) {
         done.fail(err);
       }).then(done);
     });
 
-    it('should assign id', function() {
+    it('should assign id', function () {
       expect(created.uuid).not.toBe("");
     });
 
-    it('should echo the request back', function() {
+    it('should echo the request back', function () {
       delete created.uuid;
       expect(created).toEqual(expected);
     });
   });
 
-  describe('CreateBody', function() {
+  describe('CreateBody', function () {
     var created;
     var expected = {
-      float_value: 1.5,
-      double_value: 2.5,
-      int64_value: "4294967296",
-      uint64_value: "9223372036854775807",
-      int32_value: -2147483648,
-      fixed64_value: "9223372036854775807",
-      fixed32_value: 4294967295,
-      bool_value: true,
-      string_value: "strprefix/foo",
-      uint32_value: 4294967295,
-      sfixed32_value: 2147483647,
-      sfixed64_value: "-4611686018427387904",
-      sint32_value: 2147483647,
-      sint64_value: "4611686018427387903",
+      floatValue: 1.5,
+      doubleValue: 2.5,
+      int64Value: "4294967296",
+      uint64Value: "9223372036854775807",
+      int32Value: -2147483648,
+      fixed64Value: "9223372036854775807",
+      fixed32Value: 4294967295,
+      boolValue: true,
+      stringValue: "strprefix/foo",
+      uint32Value: 4294967295,
+      sfixed32Value: 2147483647,
+      sfixed64Value: "-4611686018427387904",
+      sint32Value: 2147483647,
+      sint64Value: "4611686018427387903",
       nonConventionalNameValue: "camelCase",
-      enum_value: "ONE",
-      path_enum_value: "DEF",
-      nested_path_enum_value: "JKL",
-
+      enumValue: "ONE",
+      pathEnumValue: "DEF",
+      nestedPathEnumValue: "JKL",
       nested: [
-       { name: "bar", amount: 10 },
-       { name: "baz", amount: 20 },
+        { name: "bar", amount: 10 },
+        { name: "baz", amount: 20 },
       ],
-      repeated_string_value: ["a", "b", "c"],
-      oneof_string: "x",
-      map_value: { a: "ONE", b: 2 },
-      mapped_string_value: { a: "x", b: "y" },
-      mapped_nested_value: {
+      repeatedStringValue: ["a", "b", "c"],
+      oneofString: "x",
+      mapValue: { a: "ONE", b: 2 },
+      mappedStringValue: { a: "x", b: "y" },
+      mappedNestedValue: {
         a: { name: "x", amount: 1 },
         b: { name: "y", amount: 2 },
       },
+      enumValueAnnotation: "ONE",
+      requiredStringViaFieldBehaviorAnnotation: "foo",
+      singleNested: null,
+      nested: [],
+      bytesValue: "",
+      repeatedStringValue: [],
+      mapValue: {},
+      mappedStringValue: {},
+      mappedNestedValue: {},
+      timestampValue: "2006-01-02T15:04:05Z",
+      repeatedEnumValue: [],
+      repeatedEnumAnnotation: [],
+      repeatedStringAnnotation: [],
+      repeatedNestedAnnotation: [],
+      nestedAnnotation: null,
+      int64OverrideType: "0",
+      outputOnlyStringViaFieldBehaviorAnnotation: "",
     };
 
-    beforeEach(function(done) {
-      client.ABitOfEverythingService.CreateBody({
+    beforeEach(function (done) {
+      client.ABitOfEverythingService.ABitOfEverythingService_CreateBody({
         body: expected,
-      }).then(function(resp) {
+      }).then(function (resp) {
         created = resp.obj;
-      }).catch(function(err) {
+      }).catch(function (err) {
         done.fail(err);
       }).then(done);
     });
 
-    it('should assign id', function() {
+    it('should assign id', function () {
       expect(created.uuid).not.toBe("");
     });
 
-    it('should echo the request back', function() {
+    it('should echo the request back', function () {
       delete created.uuid;
       expect(created).toEqual(expected);
     });
   });
 
-  describe('lookup', function() {
+  describe('lookup', function () {
     var created;
     var expected = {
-      bool_value: true,
-      string_value: "strprefix/foo",
+      boolValue: true,
+      stringValue: "strprefix/foo",
     };
 
-    beforeEach(function(done) {
-      client.ABitOfEverythingService.CreateBody({
+    beforeEach(function (done) {
+      client.ABitOfEverythingService.ABitOfEverythingService_CreateBody({
         body: expected,
-      }).then(function(resp) {
+      }).then(function (resp) {
         created = resp.obj;
-      }).catch(function(err) {
+      }).catch(function (err) {
         fail(err);
       }).finally(done);
     });
 
-    it('should look up an object by uuid', function(done) {
-      client.ABitOfEverythingService.Lookup({
+    it('should look up an object by uuid', function (done) {
+      client.ABitOfEverythingService.ABitOfEverythingService_Lookup({
         uuid: created.uuid
-      }).then(function(resp) {
+      }).then(function (resp) {
         expect(resp.obj).toEqual(created);
-      }).catch(function(err) {
+      }).catch(function (err) {
         fail(err.errObj);
       }).finally(done);
     });
 
-    it('should fail if no such object', function(done) {
-      client.ABitOfEverythingService.Lookup({
+    it('should fail if no such object', function (done) {
+      client.ABitOfEverythingService.ABitOfEverythingService_Lookup({
         uuid: 'not_exist',
-      }).then(function(resp) {
+      }).then(function (resp) {
         fail('expected failure but succeeded');
-      }).catch(function(err) {
+      }).catch(function (err) {
         expect(err.status).toBe(404);
       }).finally(done);
     });
   });
 
-  describe('Delete', function() {
+  describe('Delete', function () {
     var created;
     var expected = {
-      bool_value: true,
-      string_value: "strprefix/foo",
+      boolValue: true,
+      stringValue: "strprefix/foo",
     };
 
-    beforeEach(function(done) {
-      client.ABitOfEverythingService.CreateBody({
+    beforeEach(function (done) {
+      client.ABitOfEverythingService.ABitOfEverythingService_CreateBody({
         body: expected,
-      }).then(function(resp) {
+      }).then(function (resp) {
         created = resp.obj;
-      }).catch(function(err) {
+      }).catch(function (err) {
         fail(err);
       }).finally(done);
     });
 
-    it('should delete an object by id', function(done) {
-      client.ABitOfEverythingService.Delete({
+    it('should delete an object by id', function (done) {
+      client.ABitOfEverythingService.ABitOfEverythingService_Delete({
         uuid: created.uuid
-      }).then(function(resp) {
+      }).then(function (resp) {
         expect(resp.obj).toEqual({});
-      }).catch(function(err) {
+      }).catch(function (err) {
         fail(err.errObj);
-      }).then(function() {
-        return client.ABitOfEverythingService.Lookup({
+      }).then(function () {
+        return client.ABitOfEverythingService.ABitOfEverythingService_Lookup({
           uuid: created.uuid
         });
-      }).then(function(resp) {
+      }).then(function (resp) {
         fail('expected failure but succeeded');
-      }). catch(function(err) {
+      }).catch(function (err) {
         expect(err.status).toBe(404);
       }).finally(done);
     });
   });
 
-  describe('GetRepeatedQuery', function() {
+  describe('GetRepeatedQuery', function () {
     var repeated;
     var expected = {
-      path_repeated_float_value: [1.5, -1.5],
-      path_repeated_double_value: [2.5, -2.5],
-      path_repeated_int64_value: ["4294967296", "-4294967296"],
-      path_repeated_uint64_value: ["0", "9223372036854775807"],
-      path_repeated_int32_value: [2147483647, -2147483648],
-      path_repeated_fixed64_value: ["0", "9223372036854775807"],
-      path_repeated_fixed32_value: [0, 4294967295],
-      path_repeated_bool_value: [true, false],
-      path_repeated_string_value: ["foo", "bar"],
-      path_repeated_bytes_value: ["AA==", "_w=="],
-      path_repeated_uint32_value: [4294967295, 0],
-      path_repeated_enum_value: ["ONE", "ONE"],
-      path_repeated_sfixed32_value: [-2147483648, 2147483647],
-      path_repeated_sfixed64_value: ["-4294967296", "4294967296"],
-      path_repeated_sint32_value: [2147483646, -2147483647],
-      path_repeated_sint64_value: ["4611686018427387903", "-4611686018427387904"]
+      pathRepeatedFloatValue: [1.5, -1.5],
+      pathRepeatedDoubleValue: [2.5, -2.5],
+      pathRepeatedInt64Value: ["4294967296", "-4294967296"],
+      pathRepeatedUint64Value: ["0", "9223372036854775807"],
+      pathRepeatedInt32Value: [2147483647, -2147483648],
+      pathRepeatedFixed64Value: ["0", "9223372036854775807"],
+      pathRepeatedFixed32Value: [0, 4294967295],
+      pathRepeatedBoolValue: [true, false],
+      pathRepeatedStringValue: ["foo", "bar"],
+      pathRepeatedBytesValue: ["AA==", "_w=="],
+      pathRepeatedUint32Value: [4294967295, 0],
+      pathRepeatedEnumValue: ["ONE", "ONE"],
+      pathRepeatedSfixed32Value: [-2147483648, 2147483647],
+      pathRepeatedSfixed64Value: ["-4294967296", "4294967296"],
+      pathRepeatedSint32Value: [2147483646, -2147483647],
+      pathRepeatedSint64Value: ["4611686018427387903", "-4611686018427387904"]
     };
 
-    beforeEach(function(done) {
-      client.ABitOfEverythingService.GetRepeatedQuery(expected).then(function(resp) {
+    beforeEach(function (done) {
+      client.ABitOfEverythingService.ABitOfEverythingService_GetRepeatedQuery(expected).then(function (resp) {
         repeated = resp.obj;
-      }).catch(function(err) {
+      }).catch(function (err) {
         done.fail(err);
       }).then(done);
     });
 
-    it('should echo the request back', function() {
+    it('should echo the request back', function () {
       // API will echo a non URL safe encoding
-      expected.path_repeated_bytes_value = ["AA==", "/w=="];
+      expected.pathRepeatedBytesValue = ["AA==", "/w=="];
       expect(repeated).toEqual(expected);
     });
   });
 });
-
