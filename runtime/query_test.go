@@ -450,6 +450,24 @@ func TestPopulateParameters(t *testing.T) {
 			},
 		},
 		{
+			// Error on "null"
+			values: url.Values{
+				"timestampValue": {"null"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New(`parsing field "timestamp_value": parsing time "null" as "2006-01-02T15:04:05.999999999Z07:00": cannot parse "null" as "2006"`),
+		},
+		{
+			// Error on "null"
+			values: url.Values{
+				"durationValue": {"null"},
+			},
+			filter:  utilities.NewDoubleArray(nil),
+			want:    &examplepb.Proto3Message{},
+			wanterr: errors.New(`parsing field "duration_value": time: invalid duration "null"`),
+		},
+		{
 			// Don't allow setting a oneof more than once
 			values: url.Values{
 				"oneof_bool_value":   {"true"},

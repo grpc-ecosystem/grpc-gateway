@@ -61,6 +61,7 @@ go_test(
         "mux_internal_test.go",
         "mux_test.go",
         "pattern_test.go",
+        "query_fuzz_test.go",
         "query_test.go",
     ],
     embed = [":runtime"],
