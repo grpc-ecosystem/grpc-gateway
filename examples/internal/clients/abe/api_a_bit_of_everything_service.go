@@ -379,6 +379,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -417,6 +418,7 @@ type ABitOfEverythingServiceCheckGetQueryParamsOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -536,6 +538,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -709,6 +714,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -747,6 +753,7 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -866,6 +873,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -1038,6 +1048,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -1074,6 +1085,7 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -1187,6 +1199,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -1518,6 +1533,7 @@ This API creates a new ABitOfEverything
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -1540,6 +1556,7 @@ type ABitOfEverythingServiceCreateOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -1628,6 +1645,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -2756,6 +2776,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Only digits are allowed.
 
 @return interface{}
 */
@@ -2795,6 +2816,7 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
@@ -2917,6 +2939,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
