@@ -719,6 +719,26 @@ func TestWithHealthzEndpoint_serviceParam(t *testing.T) {
 	}
 }
 
+func TestWithHealthzEndpoint_header(t *testing.T) {
+	for _, tt := range healthCheckTests {
+		t.Run(tt.name, func(t *testing.T) {
+			mux := runtime.NewServeMux(runtime.WithHealthzEndpoint(&dummyHealthCheckClient{status: tt.status, code: tt.code}))
+
+			r := httptest.NewRequest(http.MethodGet, "/healthz", nil)
+			rr := httptest.NewRecorder()
+
+			mux.ServeHTTP(rr, r)
+
+			if actualHeader := rr.Header().Get("Content-Type"); actualHeader != "application/json" {
+				t.Errorf(
+					"result http header Content-Type for grpc code %q and status %q should be application/json, got %s",
+					tt.code, tt.status, actualHeader,
+				)
+			}
+		})
+	}
+}
+
 var _ grpc_health_v1.HealthClient = (*dummyHealthCheckClient)(nil)
 
 type dummyHealthCheckClient struct {
