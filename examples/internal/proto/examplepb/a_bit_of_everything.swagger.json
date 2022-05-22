@@ -2980,7 +2980,7 @@
         "parameters": [
           {
             "name": "book.name",
-            "description": "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\nExample: `publishers/1257894000000000000/books/my-book`",
+            "description": "The resource name of the book.\r\n\r\nFormat: `publishers/{publisher}/books/{book}`\r\n\r\nExample: `publishers/1257894000000000000/books/my-book`",
             "in": "path",
             "required": true,
             "type": "string",
@@ -3006,8 +3006,7 @@
                   "readOnly": true
                 }
               },
-              "description": "The book's `name` field is used to identify the book to be updated.\nFormat: publishers/{publisher}/books/{book}",
-              "title": "The book to update."
+              "title": "The book to update.\r\n\r\nThe book's `name` field is used to identify the book to be updated.\r\nFormat: publishers/{publisher}/books/{book}"
             }
           },
           {
@@ -3019,7 +3018,11 @@
           },
           {
             "name": "allowMissing",
+<<<<<<< HEAD
             "description": "If set to true, and the book is not found, a new book will be created.\nIn this situation, `update_mask` is ignored.",
+=======
+            "description": "If set to true, and the book is not found, a new book will be created.\r\nIn this situation, `update_mask` is ignored.",
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
             "in": "query",
             "required": false,
             "type": "boolean"
@@ -3074,7 +3077,11 @@
         "parameters": [
           {
             "name": "parent",
+<<<<<<< HEAD
             "description": "The publisher in which to create the book.\n\nFormat: `publishers/{publisher}`\n\nExample: `publishers/1257894000000000000`",
+=======
+            "description": "The publisher in which to create the book.\r\n\r\nFormat: `publishers/{publisher}`\r\n\r\nExample: `publishers/1257894000000000000`",
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
             "in": "path",
             "required": true,
             "type": "string",
@@ -3091,7 +3098,11 @@
           },
           {
             "name": "bookId",
+<<<<<<< HEAD
             "description": "The ID to use for the book.\n\nThis must start with an alphanumeric character.",
+=======
+            "description": "The ID to use for the book.\r\n\r\nThis must start with an alphanumeric character.",
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
             "in": "query",
             "required": false,
             "type": "string"
@@ -4895,7 +4906,11 @@
       "properties": {
         "name": {
           "type": "string",
+<<<<<<< HEAD
           "description": "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\nExample: `publishers/1257894000000000000/books/my-book`"
+=======
+          "title": "The resource name of the book.\r\n\r\nFormat: `publishers/{publisher}/books/{book}`\r\n\r\nExample: `publishers/1257894000000000000/books/my-book`"
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
         },
         "id": {
           "type": "string",
@@ -4909,7 +4924,11 @@
           "readOnly": true
         }
       },
+<<<<<<< HEAD
       "description": "An example resource type from AIP-123 used to test the behavior described in\nthe CreateBookRequest message.\n\nSee: https://google.aip.dev/123"
+=======
+      "title": "An example resource type from AIP-123 used to test the behavior described in\r\nthe CreateBookRequest message.\r\n\r\nSee: https://google.aip.dev/123"
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
     },
     "examplepbCheckStatusResponse": {
       "type": "object",
@@ -5060,4 +5079,8 @@
     true
   ],
   "x-grpc-gateway-foo": "bar"
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
