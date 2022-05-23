@@ -255,18 +255,12 @@ func parseMessage(msgDescriptor protoreflect.MessageDescriptor, value string) (p
 	var msg proto.Message
 	switch msgDescriptor.FullName() {
 	case "google.protobuf.Timestamp":
-		if value == "null" {
-			break
-		}
 		t, err := time.Parse(time.RFC3339Nano, value)
 		if err != nil {
 			return protoreflect.Value{}, err
 		}
 		msg = timestamppb.New(t)
 	case "google.protobuf.Duration":
-		if value == "null" {
-			break
-		}
 		d, err := time.ParseDuration(value)
 		if err != nil {
 			return protoreflect.Value{}, err
