@@ -32,6 +32,12 @@ jobs:
           registry: plugins.buf.build
           username: grpcgatewaybot
           password: ${{ secrets.BUF_TOKEN }}
+      - name: Set protobuf-version
+        run: echo ::set-output name=version::$(go list -m -f '{{.Version}}' google.golang.org/protobuf)
+        id: protobuf-version
+      - name: Set grpc-version
+        run: echo ::set-output name=version::$(go list -m -f '{{.Version}}' google.golang.org/grpc)
+        id: grpc-version
       - uses: docker/build-push-action@v3
         with:
           push: true
@@ -40,6 +46,8 @@ jobs:
           platforms: linux/amd64
           build-args: |
             RELEASE_VERSION=${{ github.ref_name }}
+            GO_PROTOBUF_RELEASE_VERSION=${{ steps.protobuf-version.outputs.version }}
+            GO_GRPC_RELEASE_VERSION=${{ steps.grpc-version.outputs.version }}
       - uses: docker/build-push-action@v3
         with:
           push: true
