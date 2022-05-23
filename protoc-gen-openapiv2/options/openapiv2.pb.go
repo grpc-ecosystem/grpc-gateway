@@ -313,7 +313,7 @@ func (SecurityScheme_Flow) EnumDescriptor() ([]byte, []int) {
 //    info: {
 //      title: "Echo API";
 //      version: "1.0";
-//      description: ";
+//      description: "";
 //      contact: {
 //        name: "gRPC-Gateway project";
 //        url: "https://github.com/grpc-ecosystem/grpc-gateway";
@@ -880,7 +880,7 @@ func (x *Response) GetExtensions() map[string]*structpb.Value {
 //    info: {
 //      title: "Echo API";
 //      version: "1.0";
-//      description: ";
+//      description: "";
 //      contact: {
 //        name: "gRPC-Gateway project";
 //        url: "https://github.com/grpc-ecosystem/grpc-gateway";
