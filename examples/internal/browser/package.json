@@ -23,5 +23,8 @@
     "mout": "^1.1.0",
     "bower-config": "^0.6.2",
     "configstore": "^4.0.0"
+  },
+  "dependencies": {
+    "gulp-cli": "^2.3.0"
   }
 }
