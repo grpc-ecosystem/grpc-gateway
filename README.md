@@ -3,8 +3,7 @@
 <p>
 gRPC to JSON proxy generator following the gRPC HTTP spec
 </p>
-![example workflow](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
-<a href="https://github.com/grpc-ecosystem/grpc-gateway/actions/workflows/ci.yml"><img src="https://img.shields.io/github/workflow/status/grpc-ecosystem/grpc-gateway/ci?color=379c9c&label=ci&logo=github&logoColor=ffffff&style=flat-square"/></a>
+<a href="https://github.com/grpc-ecosystem/grpc-gateway/actions/workflows/master.yml"><img src="https://img.shields.io/github/workflow/status/grpc-ecosystem/grpc-gateway/master?color=379c9c&label=build&logo=github&logoColor=ffffff&style=flat-square"/></a>
 <a href="https://app.slack.com/client/T029RQSE6/CBATURP1D"><img src="https://img.shields.io/badge/slack-grpc--gateway-379c9c?logo=slack&logoColor=ffffff&style=flat-square"/></a>
 <a href="https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt"><img src="https://img.shields.io/github/license/grpc-ecosystem/grpc-gateway?color=379c9c&style=flat-square"/></a>
 <a href="https://github.com/grpc-ecosystem/grpc-gateway/releases"><img src="https://img.shields.io/github/v/release/grpc-ecosystem/grpc-gateway?color=379c9c&logoColor=ffffff&style=flat-square"/></a>
