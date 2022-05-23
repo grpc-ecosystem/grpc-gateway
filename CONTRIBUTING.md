@@ -52,8 +52,6 @@ To make a release, follow these steps:
 
 1. Decide on a release version. The `gorelease` job can
    recommend whether the new release should be a patch or minor release.
-   See [CircleCI](https://app.circleci.com/pipelines/github/grpc-ecosystem/grpc-gateway/126/workflows/255a8a04-de9c-46a9-a66b-f107d2b39439/jobs/6428)
-   for an example.
 1. Tag the release on `master`.
    1. The release can be created using the command line, or also through GitHub's [releases
       UI](https://github.com/grpc-ecosystem/grpc-gateway/releases/new).
@@ -61,5 +59,5 @@ To make a release, follow these steps:
       reviewed by another maintainer.
    1. Update the release description. Try to include some of the highlights of this release,
       ideally with links to the PRs and crediting the contributors.
-1. Update the gorelease job in .circleci/config.yaml to point to the new release version.
+1. Update the gorelease job in .github/ci.yaml to point to the new release version.
 1. Sit back and pat yourself on the back for a job well done :clap:.
