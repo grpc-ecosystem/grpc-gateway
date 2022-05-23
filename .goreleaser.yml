@@ -10,6 +10,7 @@ builds:
       - windows
     goarch:
       - amd64
+      - arm64
   - main: ./protoc-gen-openapiv2/main.go
     id: protoc-gen-openapiv2
     binary: protoc-gen-openapiv2
@@ -21,6 +22,7 @@ builds:
       - windows
     goarch:
       - amd64
+      - arm64
 archives:
   - name_template: "{{ .Binary }}-{{ .Tag }}-{{ .Os }}-{{ .Arch }}"
     format: binary
