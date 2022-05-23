@@ -38,7 +38,7 @@ func HTTPStatusFromCode(code codes.Code) int {
 	case codes.OK:
 		return http.StatusOK
 	case codes.Canceled:
-		return http.StatusRequestTimeout
+		return 499
 	case codes.Unknown:
 		return http.StatusInternalServerError
 	case codes.InvalidArgument:
