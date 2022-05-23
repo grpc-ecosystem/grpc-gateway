@@ -139,9 +139,7 @@
         "responses": {
           "200": {
             "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/examplepbHiddenMessage"
-            }
+            "schema": {}
           },
           "default": {
             "description": "An unexpected error response.",

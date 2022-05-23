@@ -1263,37 +1263,39 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 				desc := "A successful response."
 				var responseSchema openapiSchemaObject
 
-				if b.ResponseBody == nil || len(b.ResponseBody.FieldPath) == 0 {
-					responseSchema = openapiSchemaObject{
-						schemaCore: schemaCore{},
-					}
+				if isVisible(getMessageVisibilityOption(meth.ResponseType), reg) {
+					if b.ResponseBody == nil || len(b.ResponseBody.FieldPath) == 0 {
+						responseSchema = openapiSchemaObject{
+							schemaCore: schemaCore{},
+						}
 
-					// Don't link to a full definition for
-					// empty; it's overly verbose.
-					// schema.Properties{} renders it as
-					// well, without a definition
-					wknSchemaCore, isWkn := wktSchemas[meth.ResponseType.FQMN()]
-					if !isWkn {
-						err := responseSchema.setRefFromFQN(meth.ResponseType.FQMN(), reg)
-						if err != nil {
-							return err
+						// Don't link to a full definition for
+						// empty; it's overly verbose.
+						// schema.Properties{} renders it as
+						// well, without a definition
+						wknSchemaCore, isWkn := wktSchemas[meth.ResponseType.FQMN()]
+						if !isWkn {
+							err := responseSchema.setRefFromFQN(meth.ResponseType.FQMN(), reg)
+							if err != nil {
+								return err
+							}
+						} else {
+							responseSchema.schemaCore = wknSchemaCore
+
+							// Special workaround for Empty: it's well-known type but wknSchemas only returns schema.schemaCore; but we need to set schema.Properties which is a level higher.
+							if meth.ResponseType.FQMN() == ".google.protobuf.Empty" {
+								responseSchema.Properties = &openapiSchemaObjectProperties{}
+							}
 						}
 					} else {
-						responseSchema.schemaCore = wknSchemaCore
-
-						// Special workaround for Empty: it's well-known type but wknSchemas only returns schema.schemaCore; but we need to set schema.Properties which is a level higher.
-						if meth.ResponseType.FQMN() == ".google.protobuf.Empty" {
-							responseSchema.Properties = &openapiSchemaObjectProperties{}
+						// This is resolving the value of response_body in the google.api.HttpRule
+						lastField := b.ResponseBody.FieldPath[len(b.ResponseBody.FieldPath)-1]
+						responseSchema = schemaOfField(lastField.Target, reg, customRefs)
+						if responseSchema.Description != "" {
+							desc = responseSchema.Description
+						} else {
+							desc = fieldProtoComments(reg, lastField.Target.Message, lastField.Target)
 						}
-					}
-				} else {
-					// This is resolving the value of response_body in the google.api.HttpRule
-					lastField := b.ResponseBody.FieldPath[len(b.ResponseBody.FieldPath)-1]
-					responseSchema = schemaOfField(lastField.Target, reg, customRefs)
-					if responseSchema.Description != "" {
-						desc = responseSchema.Description
-					} else {
-						desc = fieldProtoComments(reg, lastField.Target.Message, lastField.Target)
 					}
 				}
 
