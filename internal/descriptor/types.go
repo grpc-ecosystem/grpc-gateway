@@ -536,3 +536,11 @@ var (
 		".google.protobuf.UInt64Value": "runtime.UInt64Value",
 	}
 )
+
+type MessageVisibility int64
+
+const (
+	MessageVisibility_NOT_SET MessageVisibility = iota
+	MessageVisibility_VISIBLE
+	MessageVisibility_INVISIBLE
+)

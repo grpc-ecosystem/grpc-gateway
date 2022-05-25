@@ -350,6 +350,9 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 // findServicesMessagesAndEnumerations discovers all messages and enums defined in the RPC methods of the service.
 func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descriptor.Registry, m messageMap, ms messageMap, e enumMap, refs refMap) {
 	for _, svc := range s {
+		if !isVisible(getServiceVisibilityOption(svc), reg) {
+			continue
+		}
 		for _, meth := range svc.Methods {
 			// Request may be fully included in query
 			{
@@ -559,6 +562,10 @@ func transformAnyForJSON(schema *openapiSchemaObject, useJSONNames bool) {
 
 func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject, reg *descriptor.Registry, customRefs refMap, pathParams []descriptor.Parameter) error {
 	for name, msg := range messages {
+		if reg.GetMessageVisibility(name) == descriptor.MessageVisibility_INVISIBLE {
+			continue
+		}
+
 		swgName, ok := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
 		if !ok {
 			return fmt.Errorf("can't resolve OpenAPI name from '%v'", msg.FQMN())
@@ -1009,9 +1016,33 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 		}
 
 		for methIdx, meth := range svc.Methods {
-			if !isVisible(getMethodVisibilityOption(meth), reg) {
+
+			swgReqName, ok := fullyQualifiedNameToOpenAPIName(meth.RequestType.FQMN(), reg)
+			if !ok {
+				glog.Errorf("couldn't resolve OpenAPI name for FQMN '%v'", meth.RequestType.FQMN())
 				continue
 			}
+
+			swgRspName, ok := fullyQualifiedNameToOpenAPIName(meth.ResponseType.FQMN(), reg)
+			if !ok && !skipRenderingRef(meth.ResponseType.FQMN()) {
+				glog.Errorf("couldn't resolve OpenAPI name for FQMN '%v'", meth.ResponseType.FQMN())
+				continue
+			}
+
+			if !isVisible(getMethodVisibilityOption(meth), reg) {
+				// Set request/response as invisible if not set
+				if reg.GetMessageVisibility(swgReqName) == descriptor.MessageVisibility_NOT_SET {
+					reg.SetMessageVisibility(swgReqName, descriptor.MessageVisibility_INVISIBLE)
+				}
+				if reg.GetMessageVisibility(swgRspName) == descriptor.MessageVisibility_NOT_SET {
+					reg.SetMessageVisibility(swgRspName, descriptor.MessageVisibility_INVISIBLE)
+				}
+				continue
+			}
+
+			// Set request/response as visible
+			reg.SetMessageVisibility(swgReqName, descriptor.MessageVisibility_VISIBLE)
+			reg.SetMessageVisibility(swgRspName, descriptor.MessageVisibility_VISIBLE)
 
 			for bIdx, b := range meth.Bindings {
 				operationFunc := operationForMethod(b.HTTPMethod)

@@ -21,6 +21,9 @@ type Registry struct {
 	// msgs is a mapping from fully-qualified message name to descriptor
 	msgs map[string]*Message
 
+	// msg_visibility is a mapping from fully-qualified message name to visibility flag, message is visible by default
+	msg_visibility map[string]MessageVisibility
+
 	// enums is a mapping from fully-qualified enum name to descriptor
 	enums map[string]*Enum
 
@@ -147,6 +150,7 @@ type annotationIdentifier struct {
 func NewRegistry() *Registry {
 	return &Registry{
 		msgs:                           make(map[string]*Message),
+		msg_visibility:                 make(map[string]MessageVisibility),
 		enums:                          make(map[string]*Enum),
 		files:                          make(map[string]*File),
 		pkgMap:                         make(map[string]string),
@@ -751,4 +755,18 @@ func (r *Registry) CheckDuplicateAnnotation(httpMethod string, httpTemplate stri
 	}
 	r.annotationMap[a] = struct{}{}
 	return nil
+}
+
+// SetMessageVisibility - sets message visibility
+func (r *Registry) SetMessageVisibility(name string, visible MessageVisibility) {
+	r.msg_visibility[name] = visible
+}
+
+// GetMessageVisibility - gets message visibility
+func (r *Registry) GetMessageVisibility(name string) MessageVisibility {
+	visibility, exists := r.msg_visibility[name]
+	if exists {
+		return visibility
+	}
+	return MessageVisibility_NOT_SET
 }
