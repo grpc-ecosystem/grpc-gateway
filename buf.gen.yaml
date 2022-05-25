@@ -1,0 +1,20 @@
+version: v1
+plugins:
+  - remote: buf.build/library/plugins/go:v1.27.1-1
+    out: .
+    opt:
+      - paths=source_relative
+  - remote: buf.build/library/plugins/go-grpc:v1.1.0-2
+    out: .
+    opt:
+      - paths=source_relative
+      - require_unimplemented_servers=false
+  - name: grpc-gateway
+    out: .
+    opt:
+      - paths=source_relative
+      - allow_repeated_fields_in_body=true
+  - name: openapiv2
+    out: .
+    opt:
+      - allow_repeated_fields_in_body=true
