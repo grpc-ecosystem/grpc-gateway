@@ -1,0 +1,25 @@
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - protoc-gen-openapiv2/options/*.proto
+permissions:
+  contents: read
+name: master
+jobs:
+  proto_push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          check-latest: true
+      - run: make install
+      # Limit pushes to protoc-gen-openapiv2 files. This is a total hack.
+      # It excludes all the files that we don't want to publish, just for the push step.
+      - run: echo -e "    - examples\n    - internal\n    - runtime" >> buf.yaml
+      - run: buf push --tag "${{ github.sha }}"
+        env:
+          BUF_TOKEN: ${{ secrets.BUF_TOKEN }}
+          PATH: $PATH:~/go/bin
