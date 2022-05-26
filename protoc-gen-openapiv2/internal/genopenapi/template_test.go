@@ -3732,9 +3732,7 @@ func TestSchemaOfField(t *testing.T) {
 			},
 			refs: make(refMap),
 			expected: openapiSchemaObject{
-				schemaCore: schemaCore{
-					Type: "object",
-				},
+				schemaCore: schemaCore{},
 			},
 		},
 		{
