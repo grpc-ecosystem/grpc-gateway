@@ -88,7 +88,9 @@ var wktSchemas = map[string]schemaCore{
 	".google.protobuf.BoolValue": {
 		Type: "boolean",
 	},
-	".google.protobuf.Empty": {},
+	".google.protobuf.Empty": {
+		Type: "object",
+	},
 	".google.protobuf.Struct": {
 		Type: "object",
 	},

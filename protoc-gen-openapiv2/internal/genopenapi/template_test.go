@@ -26,6 +26,7 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -3503,6 +3504,22 @@ func TestSchemaOfField(t *testing.T) {
 		{
 			field: &descriptor.Field{
 				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("empty_field"),
+					TypeName: proto.String(".google.protobuf.Empty"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "object",
+				},
+				Properties: &openapiSchemaObjectProperties{},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
 					Name:     proto.String("wrapped_field"),
 					TypeName: proto.String(".google.protobuf.FieldMask"),
 					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
@@ -4029,6 +4046,7 @@ func TestSchemaOfField(t *testing.T) {
 						GoPackage: proto.String("third_party/google"),
 					},
 					MessageType: []*descriptorpb.DescriptorProto{
+						protodesc.ToDescriptorProto((&emptypb.Empty{}).ProtoReflect().Descriptor()),
 						protodesc.ToDescriptorProto((&structpb.Struct{}).ProtoReflect().Descriptor()),
 						protodesc.ToDescriptorProto((&structpb.Value{}).ProtoReflect().Descriptor()),
 						protodesc.ToDescriptorProto((&structpb.ListValue{}).ProtoReflect().Descriptor()),
