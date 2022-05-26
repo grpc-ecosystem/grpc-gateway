@@ -349,16 +349,16 @@ protoc_gen_openapiv2 = rule(
         "_protoc": attr.label(
             default = "@com_google_protobuf//:protoc",
             executable = True,
-            cfg = "host",
+            cfg = "exec",
         ),
         "_well_known_protos": attr.label(
-            default = "@com_google_protobuf//:well_known_protos",
+            default = "@com_google_protobuf//:well_known_type_protos",
             allow_files = True,
         ),
         "_protoc_gen_openapi": attr.label(
             default = Label("//protoc-gen-openapiv2:protoc-gen-openapiv2"),
             executable = True,
-            cfg = "host",
+            cfg = "exec",
         ),
     },
     implementation = _proto_gen_openapi_impl,
