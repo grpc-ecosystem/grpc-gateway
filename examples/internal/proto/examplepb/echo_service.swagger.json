@@ -685,9 +685,7 @@
         "structField": {
           "type": "object"
         },
-        "valueField": {
-          "type": "object"
-        }
+        "valueField": {}
       },
       "description": "DynamicMessage represents a message which can have its structure\nbuilt dynamically using Struct and Values."
     },
