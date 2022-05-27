@@ -54,6 +54,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
+              "type": "object",
               "properties": {}
             }
           },
@@ -316,6 +317,7 @@
           }
         },
         "oneofEmpty": {
+          "type": "object",
           "properties": {}
         },
         "oneofString": {

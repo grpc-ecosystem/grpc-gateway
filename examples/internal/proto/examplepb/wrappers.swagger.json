@@ -155,6 +155,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
+              "type": "object",
               "properties": {}
             }
           },
@@ -171,6 +172,7 @@
             "in": "body",
             "required": true,
             "schema": {
+              "type": "object",
               "properties": {}
             }
           }
