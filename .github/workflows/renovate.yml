@@ -1,0 +1,76 @@
+on:
+  push:
+    branches:
+      - renovate/master-*
+permissions:
+  contents: read
+name: renovate
+jobs:
+  update_repositoriesbzl:
+    container:
+      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.17
+      options: "--user root"
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: /home/vscode/.cache/_grpc_gateway_bazel
+          key: v1-bazel-cache-${{ hashFiles('repositories.bzl') }}
+          restore-keys: v1-bazel-cache-
+      - name: Configure bazel
+        run: |
+          cat > .bazelrc << EOF
+          startup --output_base /home/vscode/.cache/_grpc_gateway_bazel
+          build --test_output errors
+          build --features race
+          # Workaround https://github.com/bazelbuild/bazel/issues/3645
+          # See https://docs.bazel.build/versions/0.23.0/command-line-reference.html
+          build --local_ram_resources=7168 # Github runners have 7G of memory
+          build --local_cpu_resources=2    # Github runners have 2 vCPU
+          EOF
+      - run: bazel run //:gazelle -- update-repos -from_file=go.mod -to_macro=repositories.bzl%go_repositories
+      - run: |
+          git add .
+          if output=$(git status --porcelain) && [ ! -z "$output" ]; then
+            git config user.name "Renovate Bot"
+            git config user.email "bot@renovateapp.com"
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/grpc-ecosystem/grpc-gateway.git
+            git commit --amend --no-edit
+            git push --force-with-lease origin ${{ github.ref_name }}
+          fi
+  regenerate:
+    container:
+      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.17
+      options: "--user root"
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs:
+      # Run after update_repositoriesbzl to avoid
+      # git conflicts
+      - update_repositoriesbzl
+    steps:
+      - uses: actions/checkout@v3
+      - run: make install
+      - run: make clean
+      - run: make generate
+      - run: go mod tidy
+      - run: |
+          git add .
+          if output=$(git status --porcelain) && [ ! -z "$output" ]; then
+            git config user.name "Renovate Bot"
+            git config user.email "bot@renovateapp.com"
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/grpc-ecosystem/grpc-gateway.git
+            git commit --amend --no-edit
+            git push --force-with-lease origin ${{ github.ref_name }}
+          fi
