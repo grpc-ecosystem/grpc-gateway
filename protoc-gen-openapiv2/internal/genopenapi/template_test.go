@@ -5533,15 +5533,13 @@ func getOperation(pathItem openapiPathItemObject, httpMethod string) *openapiOpe
 		return pathItem.Head
 	case "OPTIONS":
 		return pathItem.Options
-	case "TRACE":
-		return pathItem.Trace
 	default:
 		return nil
 	}
 }
 
 func TestSingleServiceTemplateWithDuplicateInAllSupportedHttp1Operations(t *testing.T) {
-	supportedMethods := []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS", "TRACE"}
+	supportedMethods := []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
 
 	for _, method := range supportedMethods {
 		fieldType := descriptorpb.FieldDescriptorProto_TYPE_STRING

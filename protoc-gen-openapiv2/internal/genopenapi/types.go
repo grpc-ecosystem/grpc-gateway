@@ -112,7 +112,8 @@ type openapiPathItemObject struct {
 	Patch   *openapiOperationObject `json:"patch,omitempty" yaml:"patch,omitempty"`
 	Head    *openapiOperationObject `json:"head,omitempty" yaml:"head,omitempty"`
 	Options *openapiOperationObject `json:"options,omitempty" yaml:"options,omitempty"`
-	Trace   *openapiOperationObject `json:"trace,omitempty" yaml:"trace,omitempty"`
+	// While TRACE is supported in OpenAPI v3, it is not supported in OpenAPI v2
+	// Trace   *openapiOperationObject `json:"trace,omitempty" yaml:"trace,omitempty"`
 }
 
 // http://swagger.io/specification/#operationObject

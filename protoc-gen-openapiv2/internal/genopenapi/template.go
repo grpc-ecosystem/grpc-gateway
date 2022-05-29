@@ -1481,8 +1481,6 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					pathItemObject.Head = operationObject
 				case "OPTIONS":
 					pathItemObject.Options = operationObject
-				case "TRACE":
-					pathItemObject.Trace = operationObject
 				}
 				paths[path] = pathItemObject
 			}
@@ -1517,8 +1515,6 @@ func operationForMethod(httpMethod string) func(*openapiPathItemObject) *openapi
 		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Head }
 	case "OPTIONS":
 		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Options }
-	case "TRACE":
-		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Trace }
 	default:
 		return func(obj *openapiPathItemObject) *openapiOperationObject { return nil }
 	}
