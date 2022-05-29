@@ -411,6 +411,18 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "Only digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
       responses:
         200:
           description: "A successful response."
@@ -730,6 +742,21 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+<<<<<<< HEAD
+      - name: "productId"
+        in: "query"
+        description: "Only digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+=======
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
       responses:
         200:
           description: "A successful response."
@@ -1036,6 +1063,21 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+<<<<<<< HEAD
+      - name: "productId"
+        in: "query"
+        description: "Only digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+=======
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
       responses:
         200:
           description: "A successful response."
@@ -1361,6 +1403,21 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+<<<<<<< HEAD
+      - name: "productId"
+        in: "query"
+        description: "Only digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+=======
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
       responses:
         200:
           description: "A successful response."
@@ -1672,6 +1729,21 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+<<<<<<< HEAD
+      - name: "productId"
+        in: "query"
+        description: "Only digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+=======
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
       responses:
         200:
           description: "A successful response."
@@ -2946,6 +3018,17 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+<<<<<<< HEAD
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+=======
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -3352,6 +3435,17 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+<<<<<<< HEAD
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+=======
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -3513,6 +3607,17 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+<<<<<<< HEAD
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+=======
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -3673,6 +3778,17 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+<<<<<<< HEAD
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+=======
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -3818,6 +3934,17 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+<<<<<<< HEAD
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+=======
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -3962,6 +4089,17 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+<<<<<<< HEAD
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+=======
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
     description: "Intentionally complicated message type to cover many features of\
       \ Protobuf."
     example: "{\"int64_value\":12,\"double_value\":12.3}"

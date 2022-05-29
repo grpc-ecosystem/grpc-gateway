@@ -3456,6 +3456,25 @@ func TestSchemaOfField(t *testing.T) {
 		Title:       "field title",
 		Description: "field description",
 	}
+	jsonSchemaWithOptions := &openapi_options.JSONSchema{
+		Title:            "field title",
+		Description:      "field description",
+		MultipleOf:       100,
+		Maximum:          101,
+		ExclusiveMaximum: true,
+		Minimum:          1,
+		ExclusiveMinimum: true,
+		MaxLength:        10,
+		MinLength:        3,
+		Pattern:          "[a-z]+",
+		MaxItems:         20,
+		MinItems:         2,
+		UniqueItems:      true,
+		MaxProperties:    33,
+		MinProperties:    22,
+		Required:         []string{"req"},
+		ReadOnly:         true,
+	}
 
 	var fieldOptions = new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldOptions, openapi_options.E_Openapiv2Field, jsonSchema)
@@ -3496,7 +3515,7 @@ func TestSchemaOfField(t *testing.T) {
 				schemaCore: schemaCore{
 					Type: "array",
 					Items: &openapiItemsObject{
-						Type: "string",
+						schemaCore: schemaCore{Type: "string"},
 					},
 				},
 			},
@@ -3592,7 +3611,7 @@ func TestSchemaOfField(t *testing.T) {
 				schemaCore: schemaCore{
 					Type: "array",
 					Items: &openapiItemsObject{
-						Type: "string",
+						schemaCore: schemaCore{Type: "string"},
 					},
 				},
 			},
@@ -3764,9 +3783,9 @@ func TestSchemaOfField(t *testing.T) {
 			expected: openapiSchemaObject{
 				schemaCore: schemaCore{
 					Type: "array",
-					Items: (*openapiItemsObject)(&schemaCore{
+					Items: (*openapiItemsObject)(&openapiSchemaObject{schemaCore: schemaCore{
 						Type: "object",
-					}),
+					}}),
 				},
 			},
 		},
@@ -3834,8 +3853,9 @@ func TestSchemaOfField(t *testing.T) {
 			refs: make(refMap),
 			expected: openapiSchemaObject{
 				schemaCore: schemaCore{
-					Type:  "array",
-					Items: (*openapiItemsObject)(&schemaCore{Type: "string"}),
+					Type: "array",
+					Items: (*openapiItemsObject)(&openapiSchemaObject{
+						schemaCore: schemaCore{Type: "string"}}),
 				},
 				Title:       "field title",
 				Description: "field description",
@@ -3927,8 +3947,10 @@ func TestSchemaOfField(t *testing.T) {
 			refs: make(refMap),
 			expected: openapiSchemaObject{
 				schemaCore: schemaCore{
-					Type:  "array",
-					Items: (*openapiItemsObject)(&schemaCore{Type: "string"}),
+					Type: "array",
+					Items: (*openapiItemsObject)(&openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type: "string"}}),
 				},
 				Title:       "field title",
 				Description: "field description",
@@ -4032,6 +4054,97 @@ func TestSchemaOfField(t *testing.T) {
 				schemaCore: schemaCore{
 					Ref: "#/definitions/exampleMessage",
 				},
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:  proto.String("array_field_option"),
+					Label: descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+					Type:  descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				},
+			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field:  "example.Message.array_field_option",
+						Option: jsonSchemaWithOptions,
+					},
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: &openapiItemsObject{
+						schemaCore: schemaCore{
+							Type: "string",
+						},
+						MultipleOf:       100,
+						Maximum:          101,
+						ExclusiveMaximum: true,
+						Minimum:          1,
+						ExclusiveMinimum: true,
+						MaxLength:        10,
+						MinLength:        3,
+						Pattern:          "[a-z]+",
+						UniqueItems:      true,
+						MaxProperties:    33,
+						MinProperties:    22,
+						Required:         []string{"req"},
+						ReadOnly:         true,
+					},
+				},
+				Title:       "field title",
+				Description: "field description",
+				MaxItems:    20,
+				MinItems:    2,
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:  proto.String("array_field_option"),
+					Label: descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+					Type:  descriptorpb.FieldDescriptorProto_TYPE_INT64.Enum(),
+				},
+			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field:  "example.Message.array_field_option",
+						Option: jsonSchemaWithOptions,
+					},
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "array",
+					Items: &openapiItemsObject{
+						schemaCore: schemaCore{
+							Type:   "string",
+							Format: "int64",
+						},
+						MultipleOf:       100,
+						Maximum:          101,
+						ExclusiveMaximum: true,
+						Minimum:          1,
+						ExclusiveMinimum: true,
+						MaxLength:        10,
+						MinLength:        3,
+						Pattern:          "[a-z]+",
+						UniqueItems:      true,
+						MaxProperties:    33,
+						MinProperties:    22,
+						Required:         []string{"req"},
+						ReadOnly:         true,
+					},
+				},
+				Title:       "field title",
+				Description: "field description",
+				MaxItems:    20,
+				MinItems:    2,
 			},
 		},
 	}

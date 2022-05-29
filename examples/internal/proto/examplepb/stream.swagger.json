@@ -407,6 +407,19 @@
         },
         "optionalStringValue": {
           "type": "string"
+<<<<<<< HEAD
+        },
+        "productId": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 19,
+            "minLength": 1,
+            "pattern": "^[0-9]+$"
+          },
+          "description": "Only digits are allowed."
+=======
+>>>>>>> 1442cd37a00e1d493ea4218ff2ff994211866859
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",
