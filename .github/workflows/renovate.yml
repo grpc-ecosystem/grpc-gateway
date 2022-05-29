@@ -14,8 +14,6 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v3
 
@@ -41,7 +39,7 @@ jobs:
           if output=$(git status --porcelain) && [ ! -z "$output" ]; then
             git config user.name "Renovate Bot"
             git config user.email "bot@renovateapp.com"
-            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/grpc-ecosystem/grpc-gateway.git
+            git remote set-url origin https://x-access-token:${{ secrets.GH_PUSH_TOKEN }}@github.com/grpc-ecosystem/grpc-gateway.git
             git commit --amend --no-edit
             git push --force-with-lease origin ${{ github.ref_name }}
           fi
@@ -53,8 +51,6 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     needs:
       # Run after update_repositoriesbzl to avoid
       # git conflicts
@@ -70,7 +66,7 @@ jobs:
           if output=$(git status --porcelain) && [ ! -z "$output" ]; then
             git config user.name "Renovate Bot"
             git config user.email "bot@renovateapp.com"
-            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/grpc-ecosystem/grpc-gateway.git
+            git remote set-url origin https://x-access-token:${{ secrets.GH_PUSH_TOKEN }}@github.com/grpc-ecosystem/grpc-gateway.git
             git commit --amend --no-edit
             git push --force-with-lease origin ${{ github.ref_name }}
           fi
