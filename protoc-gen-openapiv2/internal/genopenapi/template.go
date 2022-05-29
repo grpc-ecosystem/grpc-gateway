@@ -1477,6 +1477,12 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					pathItemObject.Put = operationObject
 				case "PATCH":
 					pathItemObject.Patch = operationObject
+				case "HEAD":
+					pathItemObject.Head = operationObject
+				case "OPTIONS":
+					pathItemObject.Options = operationObject
+				case "TRACE":
+					pathItemObject.Trace = operationObject
 				}
 				paths[path] = pathItemObject
 			}
@@ -1507,8 +1513,14 @@ func operationForMethod(httpMethod string) func(*openapiPathItemObject) *openapi
 		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Delete }
 	case "PATCH":
 		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Patch }
+	case "HEAD":
+		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Head }
+	case "OPTIONS":
+		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Options }
+	case "TRACE":
+		return func(obj *openapiPathItemObject) *openapiOperationObject { return obj.Trace }
 	default:
-		return nil
+		return func(obj *openapiPathItemObject) *openapiOperationObject { return nil }
 	}
 }
 

@@ -5517,6 +5517,370 @@ func TestSingleServiceTemplateWithDuplicateHttp1Operations(t *testing.T) {
 	}
 }
 
+func getOperation(pathItem openapiPathItemObject, httpMethod string) *openapiOperationObject {
+	switch httpMethod {
+	case "GET":
+		return pathItem.Get
+	case "POST":
+		return pathItem.Post
+	case "PUT":
+		return pathItem.Put
+	case "DELETE":
+		return pathItem.Delete
+	case "PATCH":
+		return pathItem.Patch
+	case "HEAD":
+		return pathItem.Head
+	case "OPTIONS":
+		return pathItem.Options
+	case "TRACE":
+		return pathItem.Trace
+	default:
+		return nil
+	}
+}
+
+func TestSingleServiceTemplateWithDuplicateInAllSupportedHttp1Operations(t *testing.T) {
+	supportedMethods := []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS", "TRACE"}
+
+	for _, method := range supportedMethods {
+		fieldType := descriptorpb.FieldDescriptorProto_TYPE_STRING
+		field1 := &descriptorpb.FieldDescriptorProto{
+			Name:   proto.String("name"),
+			Number: proto.Int32(1),
+			Type:   &fieldType,
+		}
+
+		methodFooMsgDesc := &descriptorpb.DescriptorProto{
+			Name: proto.String(method + "FooRequest"),
+			Field: []*descriptorpb.FieldDescriptorProto{
+				field1,
+			},
+		}
+		methodFooMsg := &descriptor.Message{
+			DescriptorProto: methodFooMsgDesc,
+		}
+		methodFoo := &descriptorpb.MethodDescriptorProto{
+			Name:       proto.String(method + "Foo"),
+			InputType:  proto.String(method + "FooRequest"),
+			OutputType: proto.String("EmptyMessage"),
+		}
+
+		methodBarMsgDesc := &descriptorpb.DescriptorProto{
+			Name: proto.String(method + "BarRequest"),
+			Field: []*descriptorpb.FieldDescriptorProto{
+				field1,
+			},
+		}
+		methodBarMsg := &descriptor.Message{
+			DescriptorProto: methodBarMsgDesc,
+		}
+		methodBar := &descriptorpb.MethodDescriptorProto{
+			Name:       proto.String(method + "Bar"),
+			InputType:  proto.String(method + "BarRequest"),
+			OutputType: proto.String("EmptyMessage"),
+		}
+
+		svc1 := &descriptorpb.ServiceDescriptorProto{
+			Name:   proto.String("Service1"),
+			Method: []*descriptorpb.MethodDescriptorProto{methodFoo, methodBar},
+		}
+
+		emptyMsgDesc := &descriptorpb.DescriptorProto{
+			Name: proto.String("EmptyMessage"),
+		}
+		emptyMsg := &descriptor.Message{
+			DescriptorProto: emptyMsgDesc,
+		}
+
+		file := descriptor.File{
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("service1.proto"),
+				Package:        proto.String("example"),
+				MessageType:    []*descriptorpb.DescriptorProto{methodBarMsgDesc, methodFooMsgDesc, emptyMsgDesc},
+				Service:        []*descriptorpb.ServiceDescriptorProto{svc1},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+				},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: []*descriptor.Message{methodFooMsg, methodBarMsg, emptyMsg},
+			Services: []*descriptor.Service{
+				{
+					ServiceDescriptorProto: svc1,
+					Methods: []*descriptor.Method{
+						{
+							MethodDescriptorProto: methodFoo,
+							RequestType:           methodFooMsg,
+							ResponseType:          methodFooMsg,
+							Bindings: []*descriptor.Binding{
+								{
+									HTTPMethod: method,
+									PathTmpl: httprule.Template{
+										Version:  1,
+										OpCodes:  []int{0, 0},
+										Template: "/v1/{name=foos/*}",
+									},
+									PathParams: []descriptor.Parameter{
+										{
+											Target: &descriptor.Field{
+												FieldDescriptorProto: field1,
+												Message:              methodFooMsg,
+											},
+											FieldPath: descriptor.FieldPath{
+												{
+													Name: "name",
+												},
+											},
+										},
+									},
+									Body: &descriptor.Body{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+									},
+								},
+							},
+						},
+						{
+							MethodDescriptorProto: methodBar,
+							RequestType:           methodBarMsg,
+							ResponseType:          methodBarMsg,
+							Bindings: []*descriptor.Binding{
+								{
+									HTTPMethod: method,
+									PathTmpl: httprule.Template{
+										Version:  1,
+										OpCodes:  []int{0, 0},
+										Template: "/v1/{name=bars/*}",
+									},
+									PathParams: []descriptor.Parameter{
+										{
+											Target: &descriptor.Field{
+												FieldDescriptorProto: field1,
+												Message:              methodBarMsg,
+											},
+											FieldPath: descriptor.FieldPath{
+												{
+													Name: "name",
+												},
+											},
+										},
+									},
+									Body: &descriptor.Body{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		reg := descriptor.NewRegistry()
+		err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+		if err != nil {
+			t.Fatalf("failed to reg.Load(): %v", err)
+		}
+		result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+		if err != nil {
+			t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+		}
+
+		if got, want := len(result.Paths), 2; got != want {
+			t.Fatalf("Results path length differed, got %d want %d", got, want)
+		}
+
+		firstOpMethod := getOperation(result.Paths["/v1/{name}"], method)
+		if got, want := firstOpMethod.OperationID, "Service1_"+method+"Foo"; got != want {
+			t.Fatalf("First operation %s id differed, got %s want %s", method, got, want)
+		}
+		if got, want := len(firstOpMethod.Parameters), 2; got != want {
+			t.Fatalf("First operation %s params length differed, got %d want %d", method, got, want)
+		}
+		if got, want := firstOpMethod.Parameters[0].Name, "name"; got != want {
+			t.Fatalf("First operation %s first param name differed, got %s want %s", method, got, want)
+		}
+		if got, want := firstOpMethod.Parameters[0].Pattern, "foos/[^/]+"; got != want {
+			t.Fatalf("First operation %s first param pattern differed, got %s want %s", method, got, want)
+		}
+		if got, want := firstOpMethod.Parameters[1].In, "body"; got != want {
+			t.Fatalf("First operation %s second param 'in' differed, got %s want %s", method, got, want)
+		}
+
+		secondOpMethod := getOperation(result.Paths["/v1/{name"+pathParamUniqueSuffixDeliminator+"1}"], method)
+		if got, want := secondOpMethod.OperationID, "Service1_"+method+"Bar"; got != want {
+			t.Fatalf("Second operation id %s differed, got %s want %s", method, got, want)
+		}
+		if got, want := len(secondOpMethod.Parameters), 2; got != want {
+			t.Fatalf("Second operation %s params length differed, got %d want %d", method, got, want)
+		}
+		if got, want := secondOpMethod.Parameters[0].Name, "name"+pathParamUniqueSuffixDeliminator+"1"; got != want {
+			t.Fatalf("Second operation %s first param name differed, got %s want %s", method, got, want)
+		}
+		if got, want := secondOpMethod.Parameters[0].Pattern, "bars/[^/]+"; got != want {
+			t.Fatalf("Second operation %s first param pattern differed, got %s want %s", method, got, want)
+		}
+		if got, want := secondOpMethod.Parameters[1].In, "body"; got != want {
+			t.Fatalf("Second operation %s second param 'in' differed, got %s want %s", method, got, want)
+		}
+	}
+}
+
+func TestSingleServiceTemplateWithDuplicateHttp1UnsupportedOperations(t *testing.T) {
+	fieldType := descriptorpb.FieldDescriptorProto_TYPE_STRING
+	field1 := &descriptorpb.FieldDescriptorProto{
+		Name:   proto.String("name"),
+		Number: proto.Int32(1),
+		Type:   &fieldType,
+	}
+
+	unsupportedFooMsgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("UnsupportedFooRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			field1,
+		},
+	}
+	unsupportedFooMsg := &descriptor.Message{
+		DescriptorProto: unsupportedFooMsgDesc,
+	}
+	unsupportedFoo := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("UnsupportedFoo"),
+		InputType:  proto.String("UnsupportedFooRequest"),
+		OutputType: proto.String("EmptyMessage"),
+	}
+
+	unsupportedBarMsgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("UnsupportedBarRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			field1,
+		},
+	}
+	unsupportedBarMsg := &descriptor.Message{
+		DescriptorProto: unsupportedBarMsgDesc,
+	}
+	unsupportedBar := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("UnsupportedBar"),
+		InputType:  proto.String("UnsupportedBarRequest"),
+		OutputType: proto.String("EmptyMessage"),
+	}
+
+	svc1 := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("Service1"),
+		Method: []*descriptorpb.MethodDescriptorProto{unsupportedFoo, unsupportedBar},
+	}
+
+	emptyMsgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("EmptyMessage"),
+	}
+	emptyMsg := &descriptor.Message{
+		DescriptorProto: emptyMsgDesc,
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("service1.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{unsupportedBarMsgDesc, unsupportedFooMsgDesc, emptyMsgDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc1},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{unsupportedFooMsg, unsupportedBarMsg, emptyMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc1,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: unsupportedFoo,
+						RequestType:           unsupportedFooMsg,
+						ResponseType:          unsupportedFooMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "UNSUPPORTED",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=foos/*}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              unsupportedFooMsg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+					{
+						MethodDescriptorProto: unsupportedBar,
+						RequestType:           unsupportedBarMsg,
+						ResponseType:          unsupportedBarMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "UNSUPPORTED",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/{name=bars/*}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										Target: &descriptor.Field{
+											FieldDescriptorProto: field1,
+											Message:              unsupportedBarMsg,
+										},
+										FieldPath: descriptor.FieldPath{
+											{
+												Name: "name",
+											},
+										},
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Fatalf("failed to reg.Load(): %v", err)
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	// Just should not crash, no special handling of unsupported HTTP methods
+	if got, want := len(result.Paths), 1; got != want {
+		t.Fatalf("Results path length differed, got %d want %d", got, want)
+	}
+}
+
 func TestTemplateWithDuplicateHttp1Operations(t *testing.T) {
 	fieldType := descriptorpb.FieldDescriptorProto_TYPE_STRING
 	field1 := &descriptorpb.FieldDescriptorProto{
