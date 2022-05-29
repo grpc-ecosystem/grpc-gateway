@@ -59,6 +59,9 @@ type ABitOfEverythingServiceClient interface {
 	CheckExternalPathEnum(ctx context.Context, in *pathenum.MessageWithPathEnum, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CheckExternalNestedPathEnum(ctx context.Context, in *pathenum.MessageWithNestedPathEnum, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CheckStatus(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CheckStatusResponse, error)
+	Exists(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CustomOptionsRequest(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	TraceRequest(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 }
 
 type aBitOfEverythingServiceClient struct {
@@ -285,6 +288,33 @@ func (c *aBitOfEverythingServiceClient) CheckStatus(ctx context.Context, in *emp
 	return out, nil
 }
 
+func (c *aBitOfEverythingServiceClient) Exists(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Exists", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) CustomOptionsRequest(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CustomOptionsRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) TraceRequest(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
+	out := new(ABitOfEverything)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/TraceRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ABitOfEverythingServiceServer is the server API for ABitOfEverythingService service.
 // All implementations should embed UnimplementedABitOfEverythingServiceServer
 // for forward compatibility
@@ -324,6 +354,9 @@ type ABitOfEverythingServiceServer interface {
 	CheckExternalPathEnum(context.Context, *pathenum.MessageWithPathEnum) (*emptypb.Empty, error)
 	CheckExternalNestedPathEnum(context.Context, *pathenum.MessageWithNestedPathEnum) (*emptypb.Empty, error)
 	CheckStatus(context.Context, *emptypb.Empty) (*CheckStatusResponse, error)
+	Exists(context.Context, *ABitOfEverything) (*emptypb.Empty, error)
+	CustomOptionsRequest(context.Context, *ABitOfEverything) (*emptypb.Empty, error)
+	TraceRequest(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 }
 
 // UnimplementedABitOfEverythingServiceServer should be embedded to have forward compatible implementations.
@@ -401,6 +434,15 @@ func (UnimplementedABitOfEverythingServiceServer) CheckExternalNestedPathEnum(co
 }
 func (UnimplementedABitOfEverythingServiceServer) CheckStatus(context.Context, *emptypb.Empty) (*CheckStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckStatus not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) Exists(context.Context, *ABitOfEverything) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Exists not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) CustomOptionsRequest(context.Context, *ABitOfEverything) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CustomOptionsRequest not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) TraceRequest(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TraceRequest not implemented")
 }
 
 // UnsafeABitOfEverythingServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -846,6 +888,60 @@ func _ABitOfEverythingService_CheckStatus_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ABitOfEverythingService_Exists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).Exists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Exists",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).Exists(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_CustomOptionsRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).CustomOptionsRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CustomOptionsRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).CustomOptionsRequest(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_TraceRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).TraceRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/TraceRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).TraceRequest(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ABitOfEverythingService_ServiceDesc is the grpc.ServiceDesc for ABitOfEverythingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -948,6 +1044,18 @@ var ABitOfEverythingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckStatus",
 			Handler:    _ABitOfEverythingService_CheckStatus_Handler,
+		},
+		{
+			MethodName: "Exists",
+			Handler:    _ABitOfEverythingService_Exists_Handler,
+		},
+		{
+			MethodName: "CustomOptionsRequest",
+			Handler:    _ABitOfEverythingService_CustomOptionsRequest_Handler,
+		},
+		{
+			MethodName: "TraceRequest",
+			Handler:    _ABitOfEverythingService_TraceRequest_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
