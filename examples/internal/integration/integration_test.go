@@ -434,6 +434,10 @@ func TestABE(t *testing.T) {
 	testABEBulkEchoZeroLength(t, 8088)
 	testAdditionalBindings(t, 8088)
 	testABERepeated(t, 8088)
+	testABEExists(t, 8088)
+	testABEExistsNotFound(t, 8088)
+	testABEOptions(t, 8088)
+	testABETrace(t, 8088)
 }
 
 func testABECreate(t *testing.T, port int) {
@@ -2282,5 +2286,124 @@ func testNonStandardNames(t *testing.T, port int, method string, jsonBody string
 	}
 	if diff := cmp.Diff(got, want, protocmp.Transform()); diff != "" {
 		t.Errorf(diff)
+	}
+}
+
+func testABEExists(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
+	cresp, err := http.Post(apiURL, "application/json", strings.NewReader(`
+		{"bool_value": true, "string_value": "strprefix/example"}
+	`))
+	if err != nil {
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer cresp.Body.Close()
+	buf, err := ioutil.ReadAll(cresp.Body)
+	if err != nil {
+		t.Errorf("ioutil.ReadAll(cresp.Body) failed with %v; want success", err)
+		return
+	}
+	if got, want := cresp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+		return
+	}
+
+	want := new(examplepb.ABitOfEverything)
+	if err := marshaler.Unmarshal(buf, want); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, want) failed with %v; want success", buf, err)
+		return
+	}
+
+	apiURL = fmt.Sprintf("%s/%s", apiURL, want.Uuid)
+	resp, err := http.Head(apiURL)
+	if err != nil {
+		t.Errorf("http.Head(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+}
+
+func testABEExistsNotFound(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything", port)
+	apiURL = fmt.Sprintf("%s/%s", apiURL, "not_exist")
+	resp, err := http.Head(apiURL)
+	if err != nil {
+		t.Errorf("http.Head(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if got, want := resp.StatusCode, http.StatusNotFound; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		return
+	}
+}
+
+func testABEOptions(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/test", port)
+	req, err := http.NewRequest(http.MethodOptions, apiURL, strings.NewReader(`
+		{"bool_value": true, "string_value": "strprefix/example"}
+	`))
+	req.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		t.Errorf("http.NewRequest(http.MethodTrace, %q, ...) failed with %v; want success", apiURL, err)
+		return
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+        t.Fatal(err)
+    }
+	defer resp.Body.Close()
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		return
+	}
+
+	value := resp.Header.Get("Grpc-Metadata-Allow")
+	if value != "OPTIONS, GET, HEAD, POST, PUT, TRACE" {
+		t.Errorf("Grpc-Metadata-Allow does not have the expected HTTP methods")
+		t.Logf("%s", value)
+	}
+}
+
+func testABETrace(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/a_bit_of_everything/test", port)
+	req, err := http.NewRequest(http.MethodTrace, apiURL, strings.NewReader(`
+		{"bool_value": true, "string_value": "strprefix/example"}
+	`))
+	req.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		t.Errorf("http.NewRequest(http.MethodTrace, %q, ...) failed with %v; want success", apiURL, err)
+		return
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+        t.Fatal(err)
+    }
+	defer resp.Body.Close()
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("ioutil.ReadAll(cresp.Body) failed with %v; want success", err)
+		return
+	}
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+		return
+	}
+
+	want := new(examplepb.ABitOfEverything)
+	if err := marshaler.Unmarshal(buf, want); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, want) failed with %v; want success", buf, err)
+		return
 	}
 }

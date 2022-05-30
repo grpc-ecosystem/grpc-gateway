@@ -728,6 +728,33 @@ service ABitOfEverythingService {
       get: "/v1/example/checkStatus"
     };
   }
+
+  rpc Exists(ABitOfEverything) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      custom: {
+        kind: "HEAD",
+        path: "/v1/example/a_bit_of_everything/{uuid}"
+      }
+    };
+  }
+
+  rpc CustomOptionsRequest(ABitOfEverything) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      custom: {
+        kind: "OPTIONS",
+        path: "/v1/example/a_bit_of_everything/{uuid}"
+      }
+    };
+  }
+
+  rpc TraceRequest(ABitOfEverything) returns (ABitOfEverything) {
+    option (google.api.http) = {
+      custom: {
+        kind: "TRACE",
+        path: "/v1/example/a_bit_of_everything/{uuid}"
+      }
+    };
+  }
 }
 
 // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
