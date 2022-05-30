@@ -531,6 +531,11 @@ service ABitOfEverythingService {
       get: "/v1/example/a_bit_of_everything/{uuid}"
     };
   }
+  rpc Custom(ABitOfEverything) returns (ABitOfEverything) {
+    option (google.api.http) = {
+      post: "/v1/example/a_bit_of_everything/{uuid}:custom"
+    };
+  }
   rpc Update(ABitOfEverything) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       put: "/v1/example/a_bit_of_everything/{uuid}"

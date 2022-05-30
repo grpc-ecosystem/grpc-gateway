@@ -2830,6 +2830,360 @@
         ]
       }
     },
+    "/v1/example/a_bit_of_everything/{uuidName}:custom": {
+      "post": {
+        "operationId": "ABitOfEverythingService_Custom",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbABitOfEverything"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuidName",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "x-internal": true
+          },
+          {
+            "name": "singleNested.name",
+            "description": "name is nested field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "singleNested.amount",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "singleNested.ok",
+            "description": "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "FALSE",
+              "TRUE"
+            ],
+            "default": "FALSE"
+          },
+          {
+            "name": "floatValue",
+            "description": "Float value field",
+            "in": "query",
+            "required": true,
+            "type": "number",
+            "format": "float",
+            "default": "0.2"
+          },
+          {
+            "name": "doubleValue",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "int64Value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "uint64Value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "int32Value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "fixed64Value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "fixed32Value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "boolValue",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "stringValue",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "bytesValue",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          },
+          {
+            "name": "uint32Value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "enumValue",
+            "description": " - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ZERO",
+              "ONE"
+            ],
+            "default": "ZERO"
+          },
+          {
+            "name": "pathEnumValue",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ABC",
+              "DEF"
+            ],
+            "default": "ABC"
+          },
+          {
+            "name": "nestedPathEnumValue",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "GHI",
+              "JKL"
+            ],
+            "default": "GHI"
+          },
+          {
+            "name": "sfixed32Value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "sfixed64Value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "sint32Value",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "sint64Value",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "repeatedStringValue",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "oneofString",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nonConventionalNameValue",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "timestampValue",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "repeatedEnumValue",
+            "description": "repeated enum value. it is comma-separated in query\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ZERO",
+                "ONE"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "repeatedEnumAnnotation",
+            "description": "Repeated numeric enum title\n\nRepeated numeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ZERO",
+                "ONE"
+              ]
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "enumValueAnnotation",
+            "description": "Numeric enum title\n\nNumeric enum description.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "ZERO",
+              "ONE"
+            ],
+            "default": "ZERO"
+          },
+          {
+            "name": "repeatedStringAnnotation",
+            "description": "Repeated string title\n\nRepeated string description.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "nestedAnnotation.name",
+            "description": "name is nested field.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "nestedAnnotation.amount",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "nestedAnnotation.ok",
+            "description": "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE: TRUE is true.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "FALSE",
+              "TRUE"
+            ],
+            "default": "FALSE"
+          },
+          {
+            "name": "int64OverrideType",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "requiredStringViaFieldBehaviorAnnotation",
+            "description": "mark a field as required in Open API definition",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "outputOnlyStringViaFieldBehaviorAnnotation",
+            "description": "mark a field as readonly in Open API definition",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "optionalStringValue",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v1/example/a_bit_of_everything/{uuid}": {
       "get": {
         "operationId": "ABitOfEverythingService_Lookup",
