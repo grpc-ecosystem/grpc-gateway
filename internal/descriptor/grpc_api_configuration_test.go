@@ -67,8 +67,8 @@ http:
 		t.Fatal(err)
 	}
 
-	if !strings.Contains(err.Error(), "line 7") {
-		t.Errorf("Expected yaml error to be detected in line 7. Got other error: %v", err)
+	if !strings.Contains(err.Error(), "line 6") {
+		t.Errorf("Expected yaml error to be detected in line 6. Got other error: %v", err)
 	}
 
 	if service != nil {
@@ -145,5 +145,44 @@ http:
 	}
 	if len(second.GetAdditionalBindings()) != 0 {
 		t.Errorf("some.other.service has %v additional bindings when it should not have any. Got: %v", len(second.GetAdditionalBindings()), second.GetAdditionalBindings())
+	}
+}
+
+func TestLoadGrpcAPIServiceFromYAMLUnknownKeys(t *testing.T) {
+	service, err := loadGrpcAPIServiceFromYAML([]byte(`
+type: google.api.Service
+config_version: 3
+
+very: key
+much: 1
+
+http:
+ rules:
+ - selector: some.other.service
+   delete: foo
+   invalidkey: yes
+`), "example")
+	if err != nil {
+		t.Fatalf("Failed to load service description from YAML: %v", err)
+	}
+
+	if service == nil {
+		t.Fatal("No service returned")
+	}
+
+	if service.Http == nil {
+		t.Fatal("HTTP is empty")
+	}
+
+	if len(service.Http.GetRules()) != 1 {
+		t.Fatalf("%v service(s) returned when two were expected. Got: %v", len(service.Http.GetRules()), service.Http)
+	}
+
+	first := service.Http.GetRules()[0]
+	if first.GetSelector() != "some.other.service" {
+		t.Errorf("first.selector has unexpected selector '%v'", first.GetSelector())
+	}
+	if first.GetDelete() != "foo" {
+		t.Errorf("first.selector has unexpected delete '%v'", first.GetPost())
 	}
 }

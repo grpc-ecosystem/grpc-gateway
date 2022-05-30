@@ -1,18 +1,25 @@
 package descriptor
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"google.golang.org/protobuf/encoding/protojson"
-	"sigs.k8s.io/yaml"
+	"gopkg.in/yaml.v3"
 )
 
 func loadOpenAPIConfigFromYAML(yamlFileContents []byte, yamlSourceLogName string) (*openapiconfig.OpenAPIConfig, error) {
-	jsonContents, err := yaml.YAMLToJSON(yamlFileContents)
+	var yamlContents interface{}
+	err := yaml.Unmarshal(yamlFileContents, &yamlContents)
 	if err != nil {
-		return nil, fmt.Errorf("failed to convert OpenAPI Configuration from YAML in '%v' to JSON: %v", yamlSourceLogName, err)
+		return nil, fmt.Errorf("failed to parse gRPC API Configuration from YAML in '%v': %v", yamlSourceLogName, err)
+	}
+
+	jsonContents, err := json.Marshal(yamlContents)
+	if err != nil {
+		return nil, err
 	}
 
 	// Reject unknown fields because OpenAPIConfig is only used here
