@@ -894,6 +894,15 @@ func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor
 			}
 			buffer += string(char)
 			jsonBuffer += string(char)
+		case ':':
+			// Only the last part may be a verb (":" LITERAL)
+			if depth == 0 {
+				parts = append(parts, buffer)
+				buffer = ":"
+				continue
+			}
+			buffer += string(char)
+			jsonBuffer += string(char)
 		default:
 			buffer += string(char)
 			jsonBuffer += string(char)
@@ -918,6 +927,11 @@ func partsToOpenAPIPath(parts []string, overrides map[string]string) string {
 			part = override
 		}
 		parts[index] = part
+	}
+	last := len(parts) - 1
+	if strings.HasPrefix(parts[last], ":") {
+		// Last item is a verb (":" LITERAL).
+		return strings.Join(parts[:last], "/") + parts[last]
 	}
 	return strings.Join(parts, "/")
 }
