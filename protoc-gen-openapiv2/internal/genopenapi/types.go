@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
-	"gopkg.in/yaml.v2"
 )
 
 type param struct {
@@ -257,16 +256,13 @@ type keyVal struct {
 type openapiSchemaObjectProperties []keyVal
 
 func (p openapiSchemaObjectProperties) MarshalYAML() (interface{}, error) {
-	ms := make(yaml.MapSlice, len(p))
+	m := make(map[string]interface{})
 
-	for i, v := range p {
-		ms[i] = yaml.MapItem{
-			Key:   v.Key,
-			Value: v.Value,
-		}
+	for _, v := range p {
+		m[v.Key] = v.Value
 	}
 
-	return ms, nil
+	return m, nil
 }
 
 func (op openapiSchemaObjectProperties) MarshalJSON() ([]byte, error) {

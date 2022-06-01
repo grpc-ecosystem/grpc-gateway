@@ -1,19 +1,26 @@
 package descriptor
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig"
 	"google.golang.org/protobuf/encoding/protojson"
-	"sigs.k8s.io/yaml"
+	"gopkg.in/yaml.v3"
 )
 
 func loadGrpcAPIServiceFromYAML(yamlFileContents []byte, yamlSourceLogName string) (*apiconfig.GrpcAPIService, error) {
-	jsonContents, err := yaml.YAMLToJSON(yamlFileContents)
+	var yamlContents interface{}
+	err := yaml.Unmarshal(yamlFileContents, &yamlContents)
 	if err != nil {
-		return nil, fmt.Errorf("failed to convert gRPC API Configuration from YAML in '%v' to JSON: %v", yamlSourceLogName, err)
+		return nil, fmt.Errorf("failed to parse gRPC API Configuration from YAML in '%v': %v", yamlSourceLogName, err)
+	}
+
+	jsonContents, err := json.Marshal(yamlContents)
+	if err != nil {
+		return nil, err
 	}
 
 	// As our GrpcAPIService is incomplete, accept unknown fields.
