@@ -97,7 +97,7 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           check-latest: true
-      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.10.2
+      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.10.3
   proto_lint:
     runs-on: ubuntu-latest
     steps:
