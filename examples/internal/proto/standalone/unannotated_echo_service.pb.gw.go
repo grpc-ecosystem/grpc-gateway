@@ -232,12 +232,15 @@ func request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler runtim
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "lang")
 	}
 
-	if protoReq.Code == nil {
-		protoReq.Code = &extExamplepb.UnannotatedSimpleMessage_Lang{}
-	} else if _, ok := protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_Lang); !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_Lang, but: %t\n", protoReq.Code)
-	}
-	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_Lang).Lang, err = runtime.String(val)
+	func() *extExamplepb.UnannotatedSimpleMessage_Lang {
+		msg := &protoReq
+		oneof := msg.Code
+		if _, ok := oneof.(*extExamplepb.UnannotatedSimpleMessage_Lang); oneof == nil || !ok {
+			oneof = new(extExamplepb.UnannotatedSimpleMessage_Lang)
+			msg.Code = oneof
+		}
+		return oneof.(*extExamplepb.UnannotatedSimpleMessage_Lang)
+	}().Lang, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "lang", err)
 	}
@@ -290,12 +293,15 @@ func local_request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "lang")
 	}
 
-	if protoReq.Code == nil {
-		protoReq.Code = &extExamplepb.UnannotatedSimpleMessage_Lang{}
-	} else if _, ok := protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_Lang); !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_Lang, but: %t\n", protoReq.Code)
-	}
-	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_Lang).Lang, err = runtime.String(val)
+	func() *extExamplepb.UnannotatedSimpleMessage_Lang {
+		msg := &protoReq
+		oneof := msg.Code
+		if _, ok := oneof.(*extExamplepb.UnannotatedSimpleMessage_Lang); oneof == nil || !ok {
+			oneof = new(extExamplepb.UnannotatedSimpleMessage_Lang)
+			msg.Code = oneof
+		}
+		return oneof.(*extExamplepb.UnannotatedSimpleMessage_Lang)
+	}().Lang, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "lang", err)
 	}
@@ -342,12 +348,15 @@ func request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler runtim
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "line_num")
 	}
 
-	if protoReq.Code == nil {
-		protoReq.Code = &extExamplepb.UnannotatedSimpleMessage_LineNum{}
-	} else if _, ok := protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_LineNum); !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_LineNum, but: %t\n", protoReq.Code)
-	}
-	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
+	func() *extExamplepb.UnannotatedSimpleMessage_LineNum {
+		msg := &protoReq
+		oneof := msg.Code
+		if _, ok := oneof.(*extExamplepb.UnannotatedSimpleMessage_LineNum); oneof == nil || !ok {
+			oneof = new(extExamplepb.UnannotatedSimpleMessage_LineNum)
+			msg.Code = oneof
+		}
+		return oneof.(*extExamplepb.UnannotatedSimpleMessage_LineNum)
+	}().LineNum, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "line_num", err)
 	}
@@ -400,12 +409,15 @@ func local_request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "line_num")
 	}
 
-	if protoReq.Code == nil {
-		protoReq.Code = &extExamplepb.UnannotatedSimpleMessage_LineNum{}
-	} else if _, ok := protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_LineNum); !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_LineNum, but: %t\n", protoReq.Code)
-	}
-	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
+	func() *extExamplepb.UnannotatedSimpleMessage_LineNum {
+		msg := &protoReq
+		oneof := msg.Code
+		if _, ok := oneof.(*extExamplepb.UnannotatedSimpleMessage_LineNum); oneof == nil || !ok {
+			oneof = new(extExamplepb.UnannotatedSimpleMessage_LineNum)
+			msg.Code = oneof
+		}
+		return oneof.(*extExamplepb.UnannotatedSimpleMessage_LineNum)
+	}().LineNum, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "line_num", err)
 	}
