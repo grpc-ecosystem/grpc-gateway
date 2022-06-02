@@ -231,12 +231,15 @@ func request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "lang")
 	}
 
-	if protoReq.Code == nil {
-		protoReq.Code = &SimpleMessage_Lang{}
-	} else if _, ok := protoReq.Code.(*SimpleMessage_Lang); !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_Lang, but: %t\n", protoReq.Code)
-	}
-	protoReq.Code.(*SimpleMessage_Lang).Lang, err = runtime.String(val)
+	func() *SimpleMessage_Lang {
+		msg := &protoReq
+		oneof := msg.Code
+		if _, ok := oneof.(*SimpleMessage_Lang); oneof == nil || !ok {
+			oneof = new(SimpleMessage_Lang)
+			msg.Code = oneof
+		}
+		return oneof.(*SimpleMessage_Lang)
+	}().Lang, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "lang", err)
 	}
@@ -289,12 +292,15 @@ func local_request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "lang")
 	}
 
-	if protoReq.Code == nil {
-		protoReq.Code = &SimpleMessage_Lang{}
-	} else if _, ok := protoReq.Code.(*SimpleMessage_Lang); !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_Lang, but: %t\n", protoReq.Code)
-	}
-	protoReq.Code.(*SimpleMessage_Lang).Lang, err = runtime.String(val)
+	func() *SimpleMessage_Lang {
+		msg := &protoReq
+		oneof := msg.Code
+		if _, ok := oneof.(*SimpleMessage_Lang); oneof == nil || !ok {
+			oneof = new(SimpleMessage_Lang)
+			msg.Code = oneof
+		}
+		return oneof.(*SimpleMessage_Lang)
+	}().Lang, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "lang", err)
 	}
@@ -341,12 +347,15 @@ func request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "line_num")
 	}
 
-	if protoReq.Code == nil {
-		protoReq.Code = &SimpleMessage_LineNum{}
-	} else if _, ok := protoReq.Code.(*SimpleMessage_LineNum); !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_LineNum, but: %t\n", protoReq.Code)
-	}
-	protoReq.Code.(*SimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
+	func() *SimpleMessage_LineNum {
+		msg := &protoReq
+		oneof := msg.Code
+		if _, ok := oneof.(*SimpleMessage_LineNum); oneof == nil || !ok {
+			oneof = new(SimpleMessage_LineNum)
+			msg.Code = oneof
+		}
+		return oneof.(*SimpleMessage_LineNum)
+	}().LineNum, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "line_num", err)
 	}
@@ -399,12 +408,15 @@ func local_request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "line_num")
 	}
 
-	if protoReq.Code == nil {
-		protoReq.Code = &SimpleMessage_LineNum{}
-	} else if _, ok := protoReq.Code.(*SimpleMessage_LineNum); !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_LineNum, but: %t\n", protoReq.Code)
-	}
-	protoReq.Code.(*SimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
+	func() *SimpleMessage_LineNum {
+		msg := &protoReq
+		oneof := msg.Code
+		if _, ok := oneof.(*SimpleMessage_LineNum); oneof == nil || !ok {
+			oneof = new(SimpleMessage_LineNum)
+			msg.Code = oneof
+		}
+		return oneof.(*SimpleMessage_LineNum)
+	}().LineNum, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "line_num", err)
 	}
@@ -527,6 +539,210 @@ func local_request_EchoService_EchoBody_0(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.EchoBody(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+var (
+	filter_EchoService_EchoBody_1 = &utilities.DoubleArray{Encoding: map[string]int{"no": 0, "id": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+)
+
+func request_EchoService_EchoBody_1(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq SimpleMessage
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&func() *SimpleMessage_No {
+		msg := &protoReq
+		oneof := msg.Ext
+		if _, ok := oneof.(*SimpleMessage_No); oneof == nil || !ok {
+			oneof = new(SimpleMessage_No)
+			msg.Ext = oneof
+		}
+		return oneof.(*SimpleMessage_No)
+	}().No); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+
+	protoReq.Id, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_EchoService_EchoBody_1); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.EchoBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_EchoService_EchoBody_1(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq SimpleMessage
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&func() *SimpleMessage_No {
+		msg := &protoReq
+		oneof := msg.Ext
+		if _, ok := oneof.(*SimpleMessage_No); oneof == nil || !ok {
+			oneof = new(SimpleMessage_No)
+			msg.Ext = oneof
+		}
+		return oneof.(*SimpleMessage_No)
+	}().No); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+
+	protoReq.Id, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_EchoService_EchoBody_1); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.EchoBody(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+var (
+	filter_EchoService_EchoBody_2 = &utilities.DoubleArray{Encoding: map[string]int{"en": 0, "id": 1}, Base: []int{1, 1, 2, 0, 0}, Check: []int{0, 1, 1, 2, 3}}
+)
+
+func request_EchoService_EchoBody_2(ctx context.Context, marshaler runtime.Marshaler, client EchoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq SimpleMessage
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&func() *SimpleMessage_En {
+		msg := &protoReq
+		oneof := msg.Ext
+		if _, ok := oneof.(*SimpleMessage_En); oneof == nil || !ok {
+			oneof = new(SimpleMessage_En)
+			msg.Ext = oneof
+		}
+		return oneof.(*SimpleMessage_En)
+	}().En); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+
+	protoReq.Id, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_EchoService_EchoBody_2); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.EchoBody(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_EchoService_EchoBody_2(ctx context.Context, marshaler runtime.Marshaler, server EchoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq SimpleMessage
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&func() *SimpleMessage_En {
+		msg := &protoReq
+		oneof := msg.Ext
+		if _, ok := oneof.(*SimpleMessage_En); oneof == nil || !ok {
+			oneof = new(SimpleMessage_En)
+			msg.Ext = oneof
+		}
+		return oneof.(*SimpleMessage_En)
+	}().En); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+	}
+
+	protoReq.Id, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+	}
+
+	if err := req.ParseForm(); err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_EchoService_EchoBody_2); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -823,6 +1039,54 @@ func RegisterEchoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
+	mux.Handle("PUT", pattern_EchoService_EchoBody_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoBody", runtime.WithHTTPPathPattern("/v1/example/echo_body/{id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_EchoService_EchoBody_1(ctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_EchoService_EchoBody_1(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("PATCH", pattern_EchoService_EchoBody_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoBody", runtime.WithHTTPPathPattern("/v1/example/echo_body/{id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_EchoService_EchoBody_2(ctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_EchoService_EchoBody_2(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("DELETE", pattern_EchoService_EchoDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1062,6 +1326,48 @@ func RegisterEchoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 
 	})
 
+	mux.Handle("PUT", pattern_EchoService_EchoBody_1, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoBody", runtime.WithHTTPPathPattern("/v1/example/echo_body/{id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_EchoService_EchoBody_1(ctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_EchoService_EchoBody_1(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("PATCH", pattern_EchoService_EchoBody_2, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.EchoService/EchoBody", runtime.WithHTTPPathPattern("/v1/example/echo_body/{id}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_EchoService_EchoBody_2(ctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_EchoService_EchoBody_2(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("DELETE", pattern_EchoService_EchoDelete_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1141,6 +1447,10 @@ var (
 
 	pattern_EchoService_EchoBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "echo_body"}, ""))
 
+	pattern_EchoService_EchoBody_1 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "echo_body", "id"}, ""))
+
+	pattern_EchoService_EchoBody_2 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "echo_body", "id"}, ""))
+
 	pattern_EchoService_EchoDelete_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "echo_delete"}, ""))
 
 	pattern_EchoService_EchoPatch_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "echo_patch"}, ""))
@@ -1160,6 +1470,10 @@ var (
 	forward_EchoService_Echo_4 = runtime.ForwardResponseMessage
 
 	forward_EchoService_EchoBody_0 = runtime.ForwardResponseMessage
+
+	forward_EchoService_EchoBody_1 = runtime.ForwardResponseMessage
+
+	forward_EchoService_EchoBody_2 = runtime.ForwardResponseMessage
 
 	forward_EchoService_EchoDelete_0 = runtime.ForwardResponseMessage
 
