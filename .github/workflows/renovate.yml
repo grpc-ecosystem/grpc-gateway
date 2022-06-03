@@ -17,6 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          fetch-depth: 0
           token: ${{ secrets.GH_PUSH_TOKEN }}
       - uses: actions/cache@v3
         with:
@@ -58,6 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          fetch-depth: 0
           token: ${{ secrets.GH_PUSH_TOKEN }}
       - run: make install
       - run: make clean
