@@ -358,7 +358,7 @@ func (p FieldPath) IsOptionalProto3() bool {
 }
 
 type oneofParams struct {
-	// MsgExpr is the the expresson for the message which the oneof field belongs to.
+	// MsgExpr is the expression for the message which the oneof field belongs to.
 	MsgExpr string
 	// OneofName is the name of the oneof field in the message
 	OneofName string
@@ -400,7 +400,7 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 				buf   bytes.Buffer
 			)
 
-			// TODO(yugui) Use the package which the caller tempalte is dealing with.
+			// TODO(yugui) Use the package which the caller template is dealing with.
 			// it will be necessary to correctly deal with oneof fields in messges in another packages than the service.
 			err := oneofTemplate.Execute(&buf, &oneofParams{
 				MsgExpr:   strings.Join(components, "."),
