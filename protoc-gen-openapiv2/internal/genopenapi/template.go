@@ -99,8 +99,8 @@ var wktSchemas = map[string]schemaCore{
 		Type: "array",
 		Items: (*openapiItemsObject)(&openapiSchemaObject{
 			schemaCore: schemaCore{
-			Type: "object",
-		}}),
+				Type: "object",
+			}}),
 	},
 	".google.protobuf.NullValue": {
 		Type: "string",
@@ -687,7 +687,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	case array:
 		ret = openapiSchemaObject{
 			schemaCore: schemaCore{
-				Type: "array",
+				Type:  "array",
 				Items: (*openapiItemsObject)(&openapiSchemaObject{schemaCore: core}),
 			},
 		}

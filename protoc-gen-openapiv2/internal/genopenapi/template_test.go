@@ -3476,7 +3476,6 @@ func TestSchemaOfField(t *testing.T) {
 		ReadOnly:         true,
 	}
 
-
 	var fieldOptions = new(descriptorpb.FieldOptions)
 	proto.SetExtension(fieldOptions, openapi_options.E_Openapiv2Field, jsonSchema)
 
@@ -3516,9 +3515,9 @@ func TestSchemaOfField(t *testing.T) {
 				schemaCore: schemaCore{
 					Type: "array",
 					Items: &openapiItemsObject{
-					schemaCore:schemaCore{
-						Type: "string",
-					},
+						schemaCore: schemaCore{
+							Type: "string",
+						},
 					},
 				},
 			},
@@ -3614,7 +3613,7 @@ func TestSchemaOfField(t *testing.T) {
 				schemaCore: schemaCore{
 					Type: "array",
 					Items: &openapiItemsObject{
-						schemaCore:schemaCore{
+						schemaCore: schemaCore{
 							Type: "string",
 						},
 					},
@@ -3858,7 +3857,7 @@ func TestSchemaOfField(t *testing.T) {
 			refs: make(refMap),
 			expected: openapiSchemaObject{
 				schemaCore: schemaCore{
-					Type:  "array",
+					Type: "array",
 					Items: &openapiItemsObject{schemaCore: schemaCore{
 						Type: "string",
 					}},
@@ -3953,7 +3952,7 @@ func TestSchemaOfField(t *testing.T) {
 			refs: make(refMap),
 			expected: openapiSchemaObject{
 				schemaCore: schemaCore{
-					Type:  "array",
+					Type: "array",
 					Items: &openapiItemsObject{schemaCore: schemaCore{
 						Type: "string",
 					}},
