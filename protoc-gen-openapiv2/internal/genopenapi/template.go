@@ -97,9 +97,10 @@ var wktSchemas = map[string]schemaCore{
 	".google.protobuf.Value": {},
 	".google.protobuf.ListValue": {
 		Type: "array",
-		Items: (*openapiItemsObject)(&schemaCore{
+		Items: (*openapiItemsObject)(&openapiSchemaObject{
+			schemaCore: schemaCore{
 			Type: "object",
-		}),
+		}}),
 	},
 	".google.protobuf.NullValue": {
 		Type: "string",
@@ -288,8 +289,10 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			}
 			if items != nil { // array
 				param.Items = &openapiItemsObject{
-					Type: "string",
-					Enum: listEnumNames(reg, enum),
+					schemaCore: schemaCore{
+						Type: "string",
+						Enum: listEnumNames(reg, enum),
+					},
 				}
 				if reg.GetEnumsAsInts() {
 					param.Items.Type = "integer"
@@ -684,8 +687,8 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	case array:
 		ret = openapiSchemaObject{
 			schemaCore: schemaCore{
-				Type:  "array",
-				Items: (*openapiItemsObject)(&core),
+				Type: "array",
+				Items: (*openapiItemsObject)(&openapiSchemaObject{schemaCore: core}),
 			},
 		}
 	case object:
@@ -1096,7 +1099,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							core.Enum = enumNames
 							enumNames = s
 						}
-						items = (*openapiItemsObject)(&core)
+						items = (*openapiItemsObject)(&openapiSchemaObject{schemaCore: core})
 						paramType = "array"
 						paramFormat = ""
 						collectionFormat = reg.GetRepeatedPathParamSeparatorName()
@@ -2537,23 +2540,42 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		s.Title = goTemplateComments(s.Title, data, reg)
 		s.Description = goTemplateComments(s.Description, data, reg)
 	}
-
-	s.ReadOnly = j.GetReadOnly()
-	s.MultipleOf = j.GetMultipleOf()
-	s.Maximum = j.GetMaximum()
-	s.ExclusiveMaximum = j.GetExclusiveMaximum()
-	s.Minimum = j.GetMinimum()
-	s.ExclusiveMinimum = j.GetExclusiveMinimum()
-	s.MaxLength = j.GetMaxLength()
-	s.MinLength = j.GetMinLength()
-	s.Pattern = j.GetPattern()
-	s.Default = j.GetDefault()
+	if s.Type == "array" {
+		s.Items.MaxLength = j.GetMaxLength()
+		s.Items.MinLength = j.GetMinLength()
+		s.Items.Pattern = j.GetPattern()
+		s.Items.Default = j.GetDefault()
+		s.Items.UniqueItems = j.GetUniqueItems()
+		s.Items.MaxProperties = j.GetMaxProperties()
+		s.Items.MinProperties = j.GetMinProperties()
+		s.Items.Required = j.GetRequired()
+		s.Items.Minimum = j.GetMinimum()
+		s.Items.Maximum = j.GetMaximum()
+		s.Items.ReadOnly = j.GetReadOnly()
+		s.Items.MultipleOf = j.GetMultipleOf()
+		s.Items.ExclusiveMaximum = j.GetExclusiveMaximum()
+		s.Items.ExclusiveMinimum = j.GetExclusiveMinimum()
+		s.Items.Enum = j.GetEnum()
+	} else {
+		s.MaxLength = j.GetMaxLength()
+		s.MinLength = j.GetMinLength()
+		s.Pattern = j.GetPattern()
+		s.Default = j.GetDefault()
+		s.UniqueItems = j.GetUniqueItems()
+		s.MaxProperties = j.GetMaxProperties()
+		s.MinProperties = j.GetMinProperties()
+		s.Required = j.GetRequired()
+		s.Minimum = j.GetMinimum()
+		s.Maximum = j.GetMaximum()
+		s.ReadOnly = j.GetReadOnly()
+		s.MultipleOf = j.GetMultipleOf()
+		s.ExclusiveMaximum = j.GetExclusiveMaximum()
+		s.ExclusiveMinimum = j.GetExclusiveMinimum()
+		s.Enum = j.GetEnum()
+	}
 	s.MaxItems = j.GetMaxItems()
 	s.MinItems = j.GetMinItems()
-	s.UniqueItems = j.GetUniqueItems()
-	s.MaxProperties = j.GetMaxProperties()
-	s.MinProperties = j.GetMinProperties()
-	s.Required = j.GetRequired()
+
 	if reg.GetUseJSONNamesForFields() {
 		for i, r := range s.Required {
 			// TODO(oyvindwe): Look up field and use field.GetJsonName()?
