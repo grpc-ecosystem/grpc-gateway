@@ -375,14 +375,13 @@ message ABitOfEverything {
 
   optional string optional_string_value = 40;
 
-//this field is example of openapiv2 genrating for repeated fields 
-  repeated string product_id=41[(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+  //this field is example of openapiv2 genrating for repeated fields
+  repeated string product_id = 41 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     pattern: "^[0-9]+$"
     max_length: 19
     min_length: 1
     description: "Only digits are allowed."
   }];
-  
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality
