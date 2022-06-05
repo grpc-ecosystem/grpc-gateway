@@ -379,6 +379,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -417,6 +418,7 @@ type ABitOfEverythingServiceCheckGetQueryParamsOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -536,6 +538,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -709,6 +714,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -747,6 +753,7 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -866,6 +873,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -1038,6 +1048,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -1074,6 +1085,7 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -1187,6 +1199,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -1477,8 +1492,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckStatus(c
 }
 
 /* 
-ABitOfEverythingServiceApiService Create a new ABitOfEverything
-This API creates a new ABitOfEverything
+ABitOfEverythingServiceApiService Create a new ABitOfEverything    This API creates a new ABitOfEverything
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param floatValue Float value field
  * @param doubleValue
@@ -1518,6 +1532,7 @@ This API creates a new ABitOfEverything
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -1540,6 +1555,7 @@ type ABitOfEverythingServiceCreateOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -1628,6 +1644,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -1921,10 +1940,10 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ct
 /* 
 ABitOfEverythingServiceApiService Create a book.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param parent The publisher in which to create the book.  Format: &#x60;publishers/{publisher}&#x60;  Example: &#x60;publishers/1257894000000000000&#x60;
+ * @param parent The publisher in which to create the book.    Format: &#x60;publishers/{publisher}&#x60;    Example: &#x60;publishers/1257894000000000000&#x60;
  * @param book The book to create.
  * @param optional nil or *ABitOfEverythingServiceCreateBookOpts - Optional Parameters:
-     * @param "BookId" (optional.String) -  The ID to use for the book.  This must start with an alphanumeric character.
+     * @param "BookId" (optional.String) -  The ID to use for the book.    This must start with an alphanumeric character.
 
 @return ExamplepbBook
 */
@@ -2128,6 +2147,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -2167,6 +2187,7 @@ type ABitOfEverythingServiceCustomOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -2289,6 +2310,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx co
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -2463,6 +2487,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
 
 @return interface{}
 */
@@ -2502,6 +2527,7 @@ type ABitOfEverythingServiceCustomOptionsRequestOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
@@ -2624,6 +2650,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptions
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -3223,6 +3252,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
 
 @return interface{}
 */
@@ -3262,6 +3292,7 @@ type ABitOfEverythingServiceExistsOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
@@ -3384,6 +3415,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx co
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -3673,6 +3707,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
 
 @return interface{}
 */
@@ -3712,6 +3747,7 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
@@ -3834,6 +3870,9 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -4973,11 +5012,11 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx co
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param bookName The resource name of the book.  Format: &#x60;publishers/{publisher}/books/{book}&#x60;  Example: &#x60;publishers/1257894000000000000/books/my-book&#x60;
- * @param book The book to update.  The book&#39;s &#x60;name&#x60; field is used to identify the book to be updated. Format: publishers/{publisher}/books/{book}
+ * @param bookName The resource name of the book.    Format: &#x60;publishers/{publisher}/books/{book}&#x60;    Example: &#x60;publishers/1257894000000000000/books/my-book&#x60;
+ * @param book The book to update.    The book&#39;s &#x60;name&#x60; field is used to identify the book to be updated.  Format: publishers/{publisher}/books/{book}
  * @param optional nil or *ABitOfEverythingServiceUpdateBookOpts - Optional Parameters:
      * @param "UpdateMask" (optional.String) -  The list of fields to be updated.
-     * @param "AllowMissing" (optional.Bool) -  If set to true, and the book is not found, a new book will be created. In this situation, &#x60;update_mask&#x60; is ignored.
+     * @param "AllowMissing" (optional.Bool) -  If set to true, and the book is not found, a new book will be created.  In this situation, &#x60;update_mask&#x60; is ignored.
 
 @return ExamplepbBook
 */
@@ -4987,7 +5026,7 @@ type ABitOfEverythingServiceUpdateBookOpts struct {
 	AllowMissing optional.Bool
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ctx context.Context, bookName string, book TheBookToUpdate_, localVarOptionals *ABitOfEverythingServiceUpdateBookOpts) (ExamplepbBook, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ctx context.Context, bookName string, book TheBookToUpdateTheBooksNameFieldIsUsedToIdentifyTheBookToBeUpdatedFormatPublisherspublisherbooksbook, localVarOptionals *ABitOfEverythingServiceUpdateBookOpts) (ExamplepbBook, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}

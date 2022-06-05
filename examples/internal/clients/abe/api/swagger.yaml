@@ -411,6 +411,19 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "this field is example of openapiv2 genrating for repeated fields\n\
+          \nOnly digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
       responses:
         200:
           description: "A successful response."
@@ -730,6 +743,19 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "this field is example of openapiv2 genrating for repeated fields\n\
+          \nOnly digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
       responses:
         200:
           description: "A successful response."
@@ -1036,6 +1062,19 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "this field is example of openapiv2 genrating for repeated fields\n\
+          \nOnly digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
       responses:
         200:
           description: "A successful response."
@@ -1361,6 +1400,19 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "this field is example of openapiv2 genrating for repeated fields\n\
+          \nOnly digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
       responses:
         200:
           description: "A successful response."
@@ -1396,8 +1448,7 @@ paths:
   : post:
       tags:
       - "ABitOfEverythingService"
-      summary: "Create a new ABitOfEverything"
-      description: "This API creates a new ABitOfEverything"
+      summary: "Create a new ABitOfEverything\r\n\r\nThis API creates a new ABitOfEverything"
       operationId: "ABitOfEverythingService_Create"
       parameters:
       - name: "floatValue"
@@ -1672,6 +1723,19 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "this field is example of openapiv2 genrating for repeated fields\n\
+          \nOnly digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
       responses:
         200:
           description: "A successful response."
@@ -1997,6 +2061,19 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "this field is example of openapiv2 genrating for repeated fields\n\
+          \nOnly digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
       responses:
         200:
           description: "A successful response."
@@ -2347,6 +2424,19 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "this field is example of openapiv2 genrating for repeated fields\n\
+          \nOnly digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
       responses:
         200:
           description: "A successful response."
@@ -2655,6 +2745,19 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "this field is example of openapiv2 genrating for repeated fields\n\
+          \nOnly digits are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
       responses:
         200:
           description: "A successful response."
@@ -3038,19 +3141,20 @@ paths:
       parameters:
       - name: "book.name"
         in: "path"
-        description: "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\
-          \nExample: `publishers/1257894000000000000/books/my-book`"
+        description: "The resource name of the book.\r\n\r\nFormat: `publishers/{publisher}/books/{book}`\r\
+          \n\r\nExample: `publishers/1257894000000000000/books/my-book`"
         required: true
         type: "string"
         pattern: "publishers/[^/]+/books/[^/]+"
         x-exportParamName: "BookName"
       - in: "body"
         name: "book"
-        description: "The book to update.\n\nThe book's `name` field is used to identify\
-          \ the book to be updated.\nFormat: publishers/{publisher}/books/{book}"
+        description: "The book to update.\r\n\r\nThe book's `name` field is used to\
+          \ identify the book to be updated.\r\nFormat: publishers/{publisher}/books/{book}"
         required: true
         schema:
-          $ref: "The book to update."
+          $ref: "The book to update.The books name field is used to identify the book\
+            \ to be updated.Format publisherspublisherbooksbook"
         x-exportParamName: "Book"
       - name: "updateMask"
         in: "query"
@@ -3062,7 +3166,7 @@ paths:
       - name: "allowMissing"
         in: "query"
         description: "If set to true, and the book is not found, a new book will be\
-          \ created.\nIn this situation, `update_mask` is ignored."
+          \ created.\r\nIn this situation, `update_mask` is ignored."
         required: false
         type: "boolean"
         x-exportParamName: "AllowMissing"
@@ -3102,8 +3206,8 @@ paths:
       parameters:
       - name: "parent"
         in: "path"
-        description: "The publisher in which to create the book.\n\nFormat: `publishers/{publisher}`\n\
-          \nExample: `publishers/1257894000000000000`"
+        description: "The publisher in which to create the book.\r\n\r\nFormat: `publishers/{publisher}`\r\
+          \n\r\nExample: `publishers/1257894000000000000`"
         required: true
         type: "string"
         pattern: "publishers/[^/]+"
@@ -3117,7 +3221,7 @@ paths:
         x-exportParamName: "Book"
       - name: "bookId"
         in: "query"
-        description: "The ID to use for the book.\n\nThis must start with an alphanumeric\
+        description: "The ID to use for the book.\r\n\r\nThis must start with an alphanumeric\
           \ character."
         required: false
         type: "string"
@@ -3885,6 +3989,15 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        title: "this field is example of openapiv2 genrating for repeated fields"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -3998,8 +4111,8 @@ definitions:
     properties:
       name:
         type: "string"
-        description: "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\
-          \nExample: `publishers/1257894000000000000/books/my-book`"
+        title: "The resource name of the book.\r\n\r\nFormat: `publishers/{publisher}/books/{book}`\r\
+          \n\r\nExample: `publishers/1257894000000000000/books/my-book`"
       id:
         type: "string"
         description: "Output only. The book's ID."
@@ -4009,8 +4122,8 @@ definitions:
         format: "date-time"
         description: "Output only. Creation time of the book."
         readOnly: true
-    description: "An example resource type from AIP-123 used to test the behavior\
-      \ described in\nthe CreateBookRequest message.\n\nSee: https://google.aip.dev/123"
+    title: "An example resource type from AIP-123 used to test the behavior described\
+      \ in\r\nthe CreateBookRequest message.\r\n\r\nSee: https://google.aip.dev/123"
     example:
       createTime: "2000-01-23T04:56:07.000+00:00"
       name: "name"
@@ -4291,6 +4404,15 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        title: "this field is example of openapiv2 genrating for repeated fields"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -4452,6 +4574,15 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        title: "this field is example of openapiv2 genrating for repeated fields"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -4462,7 +4593,7 @@ definitions:
       int64_value: 12
       double_value: 12.3
     x-a-bit-of-everything-foo: "bar"
-  The book to update.:
+  The book to update.The books name field is used to identify the book to be updated.Format publisherspublisherbooksbook:
     type: "object"
     properties:
       id:
@@ -4474,9 +4605,8 @@ definitions:
         format: "date-time"
         description: "Output only. Creation time of the book."
         readOnly: true
-    title: "The book to update."
-    description: "The book's `name` field is used to identify the book to be updated.\n\
-      Format: publishers/{publisher}/books/{book}"
+    title: "The book to update.\r\n\r\nThe book's `name` field is used to identify\
+      \ the book to be updated.\r\nFormat: publishers/{publisher}/books/{book}"
   A bit of everything_2:
     type: "object"
     required:
@@ -4612,6 +4742,15 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        title: "this field is example of openapiv2 genrating for repeated fields"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -4757,6 +4896,15 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        title: "this field is example of openapiv2 genrating for repeated fields"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -4901,6 +5049,15 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        title: "this field is example of openapiv2 genrating for repeated fields"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
     description: "Intentionally complicated message type to cover many features of\
       \ Protobuf."
     example: "{\"int64_value\":12,\"double_value\":12.3}"

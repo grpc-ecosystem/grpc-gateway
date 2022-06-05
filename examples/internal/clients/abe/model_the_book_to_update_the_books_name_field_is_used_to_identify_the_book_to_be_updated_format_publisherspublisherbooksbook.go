@@ -14,8 +14,7 @@ import (
 	"time"
 )
 
-type ExamplepbBook struct {
-	Name string `json:"name,omitempty"`
+type TheBookToUpdateTheBooksNameFieldIsUsedToIdentifyTheBookToBeUpdatedFormatPublisherspublisherbooksbook struct {
 	// Output only. The book's ID.
 	Id string `json:"id,omitempty"`
 	// Output only. Creation time of the book.
