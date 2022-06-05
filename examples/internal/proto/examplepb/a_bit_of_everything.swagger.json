@@ -1614,7 +1614,8 @@
     },
     "/v1/example/a_bit_of_everything/{floatValue}/{doubleValue}/{int64Value}/separator/{uint64Value}/{int32Value}/{fixed64Value}/{fixed32Value}/{boolValue}/{stringValue}/{uint32Value}/{sfixed32Value}/{sfixed64Value}/{sint32Value}/{sint64Value}/{nonConventionalNameValue}/{enumValue}/{pathEnumValue}/{nestedPathEnumValue}/{enumValueAnnotation}": {
       "post": {
-        "summary": "Create a new ABitOfEverything\r\n\r\nThis API creates a new ABitOfEverything",
+        "summary": "Create a new ABitOfEverything",
+        "description": "This API creates a new ABitOfEverything",
         "operationId": "ABitOfEverythingService_Create",
         "responses": {
           "200": {
@@ -4042,7 +4043,7 @@
         "parameters": [
           {
             "name": "book.name",
-            "description": "The resource name of the book.\r\n\r\nFormat: `publishers/{publisher}/books/{book}`\r\n\r\nExample: `publishers/1257894000000000000/books/my-book`",
+            "description": "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\nExample: `publishers/1257894000000000000/books/my-book`",
             "in": "path",
             "required": true,
             "type": "string",
@@ -4050,7 +4051,7 @@
           },
           {
             "name": "book",
-            "description": "The book to update.\r\n\r\nThe book's `name` field is used to identify the book to be updated.\r\nFormat: publishers/{publisher}/books/{book}",
+            "description": "The book to update.\n\nThe book's `name` field is used to identify the book to be updated.\nFormat: publishers/{publisher}/books/{book}",
             "in": "body",
             "required": true,
             "schema": {
@@ -4068,7 +4069,8 @@
                   "readOnly": true
                 }
               },
-              "title": "The book to update.\r\n\r\nThe book's `name` field is used to identify the book to be updated.\r\nFormat: publishers/{publisher}/books/{book}"
+              "description": "The book's `name` field is used to identify the book to be updated.\nFormat: publishers/{publisher}/books/{book}",
+              "title": "The book to update."
             }
           },
           {
@@ -4080,7 +4082,7 @@
           },
           {
             "name": "allowMissing",
-            "description": "If set to true, and the book is not found, a new book will be created.\r\nIn this situation, `update_mask` is ignored.",
+            "description": "If set to true, and the book is not found, a new book will be created.\nIn this situation, `update_mask` is ignored.",
             "in": "query",
             "required": false,
             "type": "boolean"
@@ -4135,7 +4137,7 @@
         "parameters": [
           {
             "name": "parent",
-            "description": "The publisher in which to create the book.\r\n\r\nFormat: `publishers/{publisher}`\r\n\r\nExample: `publishers/1257894000000000000`",
+            "description": "The publisher in which to create the book.\n\nFormat: `publishers/{publisher}`\n\nExample: `publishers/1257894000000000000`",
             "in": "path",
             "required": true,
             "type": "string",
@@ -4152,7 +4154,7 @@
           },
           {
             "name": "bookId",
-            "description": "The ID to use for the book.\r\n\r\nThis must start with an alphanumeric character.",
+            "description": "The ID to use for the book.\n\nThis must start with an alphanumeric character.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -5974,7 +5976,7 @@
       "properties": {
         "name": {
           "type": "string",
-          "title": "The resource name of the book.\r\n\r\nFormat: `publishers/{publisher}/books/{book}`\r\n\r\nExample: `publishers/1257894000000000000/books/my-book`"
+          "description": "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\nExample: `publishers/1257894000000000000/books/my-book`"
         },
         "id": {
           "type": "string",
@@ -5988,7 +5990,7 @@
           "readOnly": true
         }
       },
-      "title": "An example resource type from AIP-123 used to test the behavior described in\r\nthe CreateBookRequest message.\r\n\r\nSee: https://google.aip.dev/123"
+      "description": "An example resource type from AIP-123 used to test the behavior described in\nthe CreateBookRequest message.\n\nSee: https://google.aip.dev/123"
     },
     "examplepbCheckStatusResponse": {
       "type": "object",

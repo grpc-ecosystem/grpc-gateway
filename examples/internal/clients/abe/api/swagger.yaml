@@ -1448,7 +1448,8 @@ paths:
   : post:
       tags:
       - "ABitOfEverythingService"
-      summary: "Create a new ABitOfEverything\r\n\r\nThis API creates a new ABitOfEverything"
+      summary: "Create a new ABitOfEverything"
+      description: "This API creates a new ABitOfEverything"
       operationId: "ABitOfEverythingService_Create"
       parameters:
       - name: "floatValue"
@@ -3141,20 +3142,19 @@ paths:
       parameters:
       - name: "book.name"
         in: "path"
-        description: "The resource name of the book.\r\n\r\nFormat: `publishers/{publisher}/books/{book}`\r\
-          \n\r\nExample: `publishers/1257894000000000000/books/my-book`"
+        description: "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\
+          \nExample: `publishers/1257894000000000000/books/my-book`"
         required: true
         type: "string"
         pattern: "publishers/[^/]+/books/[^/]+"
         x-exportParamName: "BookName"
       - in: "body"
         name: "book"
-        description: "The book to update.\r\n\r\nThe book's `name` field is used to\
-          \ identify the book to be updated.\r\nFormat: publishers/{publisher}/books/{book}"
+        description: "The book to update.\n\nThe book's `name` field is used to identify\
+          \ the book to be updated.\nFormat: publishers/{publisher}/books/{book}"
         required: true
         schema:
-          $ref: "The book to update.The books name field is used to identify the book\
-            \ to be updated.Format publisherspublisherbooksbook"
+          $ref: "The book to update."
         x-exportParamName: "Book"
       - name: "updateMask"
         in: "query"
@@ -3166,7 +3166,7 @@ paths:
       - name: "allowMissing"
         in: "query"
         description: "If set to true, and the book is not found, a new book will be\
-          \ created.\r\nIn this situation, `update_mask` is ignored."
+          \ created.\nIn this situation, `update_mask` is ignored."
         required: false
         type: "boolean"
         x-exportParamName: "AllowMissing"
@@ -3206,8 +3206,8 @@ paths:
       parameters:
       - name: "parent"
         in: "path"
-        description: "The publisher in which to create the book.\r\n\r\nFormat: `publishers/{publisher}`\r\
-          \n\r\nExample: `publishers/1257894000000000000`"
+        description: "The publisher in which to create the book.\n\nFormat: `publishers/{publisher}`\n\
+          \nExample: `publishers/1257894000000000000`"
         required: true
         type: "string"
         pattern: "publishers/[^/]+"
@@ -3221,7 +3221,7 @@ paths:
         x-exportParamName: "Book"
       - name: "bookId"
         in: "query"
-        description: "The ID to use for the book.\r\n\r\nThis must start with an alphanumeric\
+        description: "The ID to use for the book.\n\nThis must start with an alphanumeric\
           \ character."
         required: false
         type: "string"
@@ -4111,8 +4111,8 @@ definitions:
     properties:
       name:
         type: "string"
-        title: "The resource name of the book.\r\n\r\nFormat: `publishers/{publisher}/books/{book}`\r\
-          \n\r\nExample: `publishers/1257894000000000000/books/my-book`"
+        description: "The resource name of the book.\n\nFormat: `publishers/{publisher}/books/{book}`\n\
+          \nExample: `publishers/1257894000000000000/books/my-book`"
       id:
         type: "string"
         description: "Output only. The book's ID."
@@ -4122,8 +4122,8 @@ definitions:
         format: "date-time"
         description: "Output only. Creation time of the book."
         readOnly: true
-    title: "An example resource type from AIP-123 used to test the behavior described\
-      \ in\r\nthe CreateBookRequest message.\r\n\r\nSee: https://google.aip.dev/123"
+    description: "An example resource type from AIP-123 used to test the behavior\
+      \ described in\nthe CreateBookRequest message.\n\nSee: https://google.aip.dev/123"
     example:
       createTime: "2000-01-23T04:56:07.000+00:00"
       name: "name"
@@ -4593,7 +4593,7 @@ definitions:
       int64_value: 12
       double_value: 12.3
     x-a-bit-of-everything-foo: "bar"
-  The book to update.The books name field is used to identify the book to be updated.Format publisherspublisherbooksbook:
+  The book to update.:
     type: "object"
     properties:
       id:
@@ -4605,8 +4605,9 @@ definitions:
         format: "date-time"
         description: "Output only. Creation time of the book."
         readOnly: true
-    title: "The book to update.\r\n\r\nThe book's `name` field is used to identify\
-      \ the book to be updated.\r\nFormat: publishers/{publisher}/books/{book}"
+    title: "The book to update."
+    description: "The book's `name` field is used to identify the book to be updated.\n\
+      Format: publishers/{publisher}/books/{book}"
   A bit of everything_2:
     type: "object"
     required:
