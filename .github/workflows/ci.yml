@@ -96,6 +96,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
+          go-version: 1.18
           check-latest: true
       - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.10.3
   proto_lint:
