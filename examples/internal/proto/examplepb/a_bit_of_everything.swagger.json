@@ -503,6 +503,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -851,6 +865,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -1188,6 +1216,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -1543,6 +1585,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -1902,6 +1958,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -2147,6 +2217,17 @@
                 },
                 "optionalStringValue": {
                   "type": "string"
+                },
+                "productId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "maxLength": 19,
+                    "minLength": 1,
+                    "pattern": "^[0-9]+$"
+                  },
+                  "description": "Only digits are allowed.",
+                  "title": "Test openapiv2 generation of repeated fields"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -2493,6 +2574,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -2823,6 +2918,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -3177,6 +3286,20 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "productId",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 19,
+              "minLength": 1,
+              "pattern": "^[0-9]+$"
+            },
+            "collectionFormat": "multi"
           }
         ],
         "tags": [
@@ -3842,6 +3965,17 @@
                 },
                 "optionalStringValue": {
                   "type": "string"
+                },
+                "productId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "maxLength": 19,
+                    "minLength": 1,
+                    "pattern": "^[0-9]+$"
+                  },
+                  "description": "Only digits are allowed.",
+                  "title": "Test openapiv2 generation of repeated fields"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -4270,6 +4404,17 @@
                 },
                 "optionalStringValue": {
                   "type": "string"
+                },
+                "productId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "maxLength": 19,
+                    "minLength": 1,
+                    "pattern": "^[0-9]+$"
+                  },
+                  "description": "Only digits are allowed.",
+                  "title": "Test openapiv2 generation of repeated fields"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -4537,6 +4682,17 @@
                 },
                 "optionalStringValue": {
                   "type": "string"
+                },
+                "productId": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "maxLength": 19,
+                    "minLength": 1,
+                    "pattern": "^[0-9]+$"
+                  },
+                  "description": "Only digits are allowed.",
+                  "title": "Test openapiv2 generation of repeated fields"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -5314,6 +5470,17 @@
                     },
                     "optionalStringValue": {
                       "type": "string"
+                    },
+                    "productId": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "maxLength": 19,
+                        "minLength": 1,
+                        "pattern": "^[0-9]+$"
+                      },
+                      "description": "Only digits are allowed.",
+                      "title": "Test openapiv2 generation of repeated fields"
                     }
                   },
                   "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -5639,6 +5806,17 @@
         },
         "optionalStringValue": {
           "type": "string"
+        },
+        "productId": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 19,
+            "minLength": 1,
+            "pattern": "^[0-9]+$"
+          },
+          "description": "Only digits are allowed.",
+          "title": "Test openapiv2 generation of repeated fields"
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",

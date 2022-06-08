@@ -61,4 +61,6 @@ type ExamplepbABitOfEverything struct {
 	RequiredStringViaFieldBehaviorAnnotation string `json:"requiredStringViaFieldBehaviorAnnotation"`
 	OutputOnlyStringViaFieldBehaviorAnnotation string `json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
 	OptionalStringValue string `json:"optionalStringValue,omitempty"`
+	// Only digits are allowed.
+	ProductId []string `json:"productId,omitempty"`
 }

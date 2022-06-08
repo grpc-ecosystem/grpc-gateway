@@ -280,6 +280,17 @@
         },
         "optionalStringValue": {
           "type": "string"
+        },
+        "productId": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 19,
+            "minLength": 1,
+            "pattern": "^[0-9]+$"
+          },
+          "description": "Only digits are allowed.",
+          "title": "Test openapiv2 generation of repeated fields"
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",
