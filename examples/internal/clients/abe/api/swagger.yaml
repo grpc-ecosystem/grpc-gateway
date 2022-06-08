@@ -413,8 +413,8 @@ paths:
         x-optionalDataType: "String"
       - name: "productId"
         in: "query"
-        description: "this field is example of openapiv2 genrating for repeated fields\n\
-          \nOnly digits are allowed."
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
         required: false
         type: "array"
         items:
@@ -745,8 +745,8 @@ paths:
         x-optionalDataType: "String"
       - name: "productId"
         in: "query"
-        description: "this field is example of openapiv2 genrating for repeated fields\n\
-          \nOnly digits are allowed."
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
         required: false
         type: "array"
         items:
@@ -1064,8 +1064,8 @@ paths:
         x-optionalDataType: "String"
       - name: "productId"
         in: "query"
-        description: "this field is example of openapiv2 genrating for repeated fields\n\
-          \nOnly digits are allowed."
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
         required: false
         type: "array"
         items:
@@ -1402,8 +1402,8 @@ paths:
         x-optionalDataType: "String"
       - name: "productId"
         in: "query"
-        description: "this field is example of openapiv2 genrating for repeated fields\n\
-          \nOnly digits are allowed."
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
         required: false
         type: "array"
         items:
@@ -1726,8 +1726,8 @@ paths:
         x-optionalDataType: "String"
       - name: "productId"
         in: "query"
-        description: "this field is example of openapiv2 genrating for repeated fields\n\
-          \nOnly digits are allowed."
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
         required: false
         type: "array"
         items:
@@ -2064,8 +2064,8 @@ paths:
         x-optionalDataType: "String"
       - name: "productId"
         in: "query"
-        description: "this field is example of openapiv2 genrating for repeated fields\n\
-          \nOnly digits are allowed."
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
         required: false
         type: "array"
         items:
@@ -2427,8 +2427,8 @@ paths:
         x-optionalDataType: "String"
       - name: "productId"
         in: "query"
-        description: "this field is example of openapiv2 genrating for repeated fields\n\
-          \nOnly digits are allowed."
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
         required: false
         type: "array"
         items:
@@ -2748,8 +2748,8 @@ paths:
         x-optionalDataType: "String"
       - name: "productId"
         in: "query"
-        description: "this field is example of openapiv2 genrating for repeated fields\n\
-          \nOnly digits are allowed."
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
         required: false
         type: "array"
         items:
@@ -3992,7 +3992,7 @@ definitions:
       productId:
         type: "array"
         description: "Only digits are allowed."
-        title: "this field is example of openapiv2 genrating for repeated fields"
+        title: "Test openapiv2 generation of repeated fields"
         items:
           type: "string"
           minLength: 1
@@ -4407,7 +4407,7 @@ definitions:
       productId:
         type: "array"
         description: "Only digits are allowed."
-        title: "this field is example of openapiv2 genrating for repeated fields"
+        title: "Test openapiv2 generation of repeated fields"
         items:
           type: "string"
           minLength: 1
@@ -4577,7 +4577,7 @@ definitions:
       productId:
         type: "array"
         description: "Only digits are allowed."
-        title: "this field is example of openapiv2 genrating for repeated fields"
+        title: "Test openapiv2 generation of repeated fields"
         items:
           type: "string"
           minLength: 1
@@ -4746,7 +4746,7 @@ definitions:
       productId:
         type: "array"
         description: "Only digits are allowed."
-        title: "this field is example of openapiv2 genrating for repeated fields"
+        title: "Test openapiv2 generation of repeated fields"
         items:
           type: "string"
           minLength: 1
@@ -4900,7 +4900,7 @@ definitions:
       productId:
         type: "array"
         description: "Only digits are allowed."
-        title: "this field is example of openapiv2 genrating for repeated fields"
+        title: "Test openapiv2 generation of repeated fields"
         items:
           type: "string"
           minLength: 1
@@ -5053,7 +5053,7 @@ definitions:
       productId:
         type: "array"
         description: "Only digits are allowed."
-        title: "this field is example of openapiv2 genrating for repeated fields"
+        title: "Test openapiv2 generation of repeated fields"
         items:
           type: "string"
           minLength: 1

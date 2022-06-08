@@ -506,7 +506,7 @@
           },
           {
             "name": "productId",
-            "description": "this field is example of openapiv2 genrating for repeated fields\n\nOnly digits are allowed.",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -868,7 +868,7 @@
           },
           {
             "name": "productId",
-            "description": "this field is example of openapiv2 genrating for repeated fields\n\nOnly digits are allowed.",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1219,7 +1219,7 @@
           },
           {
             "name": "productId",
-            "description": "this field is example of openapiv2 genrating for repeated fields\n\nOnly digits are allowed.",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1588,7 +1588,7 @@
           },
           {
             "name": "productId",
-            "description": "this field is example of openapiv2 genrating for repeated fields\n\nOnly digits are allowed.",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -1961,7 +1961,7 @@
           },
           {
             "name": "productId",
-            "description": "this field is example of openapiv2 genrating for repeated fields\n\nOnly digits are allowed.",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -2227,7 +2227,7 @@
                     "pattern": "^[0-9]+$"
                   },
                   "description": "Only digits are allowed.",
-                  "title": "this field is example of openapiv2 genrating for repeated fields"
+                  "title": "Test openapiv2 generation of repeated fields"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -2577,7 +2577,7 @@
           },
           {
             "name": "productId",
-            "description": "this field is example of openapiv2 genrating for repeated fields\n\nOnly digits are allowed.",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -2921,7 +2921,7 @@
           },
           {
             "name": "productId",
-            "description": "this field is example of openapiv2 genrating for repeated fields\n\nOnly digits are allowed.",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -3289,7 +3289,7 @@
           },
           {
             "name": "productId",
-            "description": "this field is example of openapiv2 genrating for repeated fields\n\nOnly digits are allowed.",
+            "description": "Test openapiv2 generation of repeated fields\n\nOnly digits are allowed.",
             "in": "query",
             "required": false,
             "type": "array",
@@ -3975,7 +3975,7 @@
                     "pattern": "^[0-9]+$"
                   },
                   "description": "Only digits are allowed.",
-                  "title": "this field is example of openapiv2 genrating for repeated fields"
+                  "title": "Test openapiv2 generation of repeated fields"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -4414,7 +4414,7 @@
                     "pattern": "^[0-9]+$"
                   },
                   "description": "Only digits are allowed.",
-                  "title": "this field is example of openapiv2 genrating for repeated fields"
+                  "title": "Test openapiv2 generation of repeated fields"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -4692,7 +4692,7 @@
                     "pattern": "^[0-9]+$"
                   },
                   "description": "Only digits are allowed.",
-                  "title": "this field is example of openapiv2 genrating for repeated fields"
+                  "title": "Test openapiv2 generation of repeated fields"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -5480,7 +5480,7 @@
                         "pattern": "^[0-9]+$"
                       },
                       "description": "Only digits are allowed.",
-                      "title": "this field is example of openapiv2 genrating for repeated fields"
+                      "title": "Test openapiv2 generation of repeated fields"
                     }
                   },
                   "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -5816,7 +5816,7 @@
             "pattern": "^[0-9]+$"
           },
           "description": "Only digits are allowed.",
-          "title": "this field is example of openapiv2 genrating for repeated fields"
+          "title": "Test openapiv2 generation of repeated fields"
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",

@@ -294,7 +294,7 @@ type ABitOfEverything struct {
 	// mark a field as readonly in Open API definition
 	OutputOnlyStringViaFieldBehaviorAnnotation string  `protobuf:"bytes,39,opt,name=output_only_string_via_field_behavior_annotation,json=outputOnlyStringViaFieldBehaviorAnnotation,proto3" json:"output_only_string_via_field_behavior_annotation,omitempty"`
 	OptionalStringValue                        *string `protobuf:"bytes,40,opt,name=optional_string_value,json=optionalStringValue,proto3,oneof" json:"optional_string_value,omitempty"`
-	//this field is example of openapiv2 genrating for repeated fields
+	// Test openapiv2 generation of repeated fields
 	ProductId []string `protobuf:"bytes,41,rep,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
 }
 

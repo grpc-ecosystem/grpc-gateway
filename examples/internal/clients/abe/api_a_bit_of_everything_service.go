@@ -379,7 +379,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
-     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -714,7 +714,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
-     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -1048,7 +1048,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
-     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -1533,7 +1533,7 @@ This API creates a new ABitOfEverything
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
-     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -2148,7 +2148,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
-     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
 
 @return ExamplepbABitOfEverything
 */
@@ -2488,7 +2488,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
-     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
 
 @return interface{}
 */
@@ -3253,7 +3253,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
-     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
 
 @return interface{}
 */
@@ -3708,7 +3708,7 @@ ABitOfEverythingServiceApiService
      * @param "Int64OverrideType" (optional.Int64) - 
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
-     * @param "ProductId" (optional.Interface of []string) -  this field is example of openapiv2 genrating for repeated fields  Only digits are allowed.
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
 
 @return interface{}
 */
