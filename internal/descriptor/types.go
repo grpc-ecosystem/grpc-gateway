@@ -327,8 +327,8 @@ func (b Body) AssignableExpr(msgExpr string) string {
 	return b.FieldPath.AssignableExpr(msgExpr)
 }
 
-// AssignableExprPrep returns an assignable expression in Go to be used to initialize method request object.
-// It starts with "msgExpr", which is the go expression of the method request object.
+// AssignableExprPrep returns preparatory statements for an assignable expression to initialize the
+// method request object.
 func (b Body) AssignableExprPrep(msgExpr string) string {
 	return b.FieldPath.AssignableExprPrep(msgExpr)
 }
@@ -362,7 +362,9 @@ func (p FieldPath) IsOptionalProto3() bool {
 }
 
 // AssignableExpr is an assignable expression in Go to be used to assign a value to the target field.
-// It starts with "msgExpr", which is the go expression of the method request object.
+// It starts with "msgExpr", which is the go expression of the method request object. Before using
+// such an expression the prep statements must be emitted first, in case the field path includes
+// a oneof. See FieldPath.AssignableExprPrep.
 func (p FieldPath) AssignableExpr(msgExpr string) string {
 	l := len(p)
 	if l == 0 {
@@ -396,8 +398,9 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 	return components
 }
 
-// AssignableExprPrep is an assignable expression in Go to be used to assign a value to the target field.
-// It starts with "msgExpr", which is the go expression of the method request object.
+// AssignableExprPrep returns preparation statements for an assignable expression to assign a value
+// to the target field. The Go expression of the method request object is "msgExpr". This is only
+// needed for field paths that contain oneofs. Otherwise, an empty string is returned.
 func (p FieldPath) AssignableExprPrep(msgExpr string) string {
 	l := len(p)
 	if l == 0 {
