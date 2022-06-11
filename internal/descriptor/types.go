@@ -1,10 +1,8 @@
 package descriptor
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
-	"text/template"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/casing"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/httprule"
@@ -329,6 +327,12 @@ func (b Body) AssignableExpr(msgExpr string) string {
 	return b.FieldPath.AssignableExpr(msgExpr)
 }
 
+// AssignableExprPrep returns an assignable expression in Go to be used to initialize method request object.
+// It starts with "msgExpr", which is the go expression of the method request object.
+func (b Body) AssignableExprPrep(msgExpr string) string {
+	return b.FieldPath.AssignableExprPrep(msgExpr)
+}
+
 // FieldPath is a path to a field from a request message.
 type FieldPath []FieldPathComponent
 
@@ -357,29 +361,6 @@ func (p FieldPath) IsOptionalProto3() bool {
 	return p[0].Target.GetProto3Optional()
 }
 
-type oneofParams struct {
-	// MsgExpr is the expression for the message which the oneof field belongs to.
-	MsgExpr string
-	// OneofName is the name of the oneof field in the message
-	OneofName string
-	// ConcreteType is the type name of the concrete struct which implements the isXXX interface
-	ConcreteType string
-}
-
-var (
-	oneofTemplate = template.Must(template.New("oneof").Parse(`
-		func() *{{.ConcreteType}} {
-			msg := &{{.MsgExpr}}
-			oneof := msg.{{.OneofName}}
-			if _, ok := oneof.(*{{.ConcreteType}}); oneof == nil || !ok {
-				oneof = new({{.ConcreteType}})
-				msg.{{.OneofName}} = oneof
-			}
-			return oneof.(*{{.ConcreteType}})
-		}()`,
-	))
-)
-
 // AssignableExpr is an assignable expression in Go to be used to assign a value to the target field.
 // It starts with "msgExpr", which is the go expression of the method request object.
 func (p FieldPath) AssignableExpr(msgExpr string) string {
@@ -388,40 +369,72 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 		return msgExpr
 	}
 
-	components := []string{msgExpr}
+	components := msgExpr
 	for i, c := range p {
 		// We need to check if the target is not proto3_optional first.
 		// Under the hood, proto3_optional uses oneof to signal to old proto3 clients
 		// that presence is tracked for this field. This oneof is known as a "synthetic" oneof.
 		if !c.Target.GetProto3Optional() && c.Target.OneofIndex != nil {
-			var (
-				index = c.Target.OneofIndex
-				msg   = c.Target.Message
-				buf   bytes.Buffer
-			)
+			index := c.Target.OneofIndex
+			msg := c.Target.Message
+			oneOfName := casing.Camel(msg.GetOneofDecl()[*index].GetName())
+			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
 
-			// TODO(yugui) Use the package which the caller template is dealing with.
-			// it will be necessary to correctly deal with oneof fields in messges in another packages than the service.
-			err := oneofTemplate.Execute(&buf, &oneofParams{
-				MsgExpr:   strings.Join(components, "."),
-				OneofName: casing.Camel(msg.GetOneofDecl()[*index].GetName()),
-				//ConcreteType: msg.GetName() + "_" + c.AssignableExpr(),
-				ConcreteType: msg.GoType(msg.File.GoPkg.Path) + "_" + c.AssignableExpr(),
-			})
-			if err != nil {
-				panic(fmt.Sprintf("cannot apply oneofTemplate: %v", err))
-			}
-			components = []string{buf.String()}
+			components = components + "." + oneOfName + ".(*" + oneofFieldName + ")"
 		}
 
 		if i == l-1 {
-			components = append(components, c.AssignableExpr())
+			components = components + "." + c.AssignableExpr()
 			continue
 		}
-		components = append(components, c.ValueExpr())
+		components = components + "." + c.ValueExpr()
+	}
+	return components
+}
+
+// AssignableExprPrep is an assignable expression in Go to be used to assign a value to the target field.
+// It starts with "msgExpr", which is the go expression of the method request object.
+func (p FieldPath) AssignableExprPrep(msgExpr string) string {
+	l := len(p)
+	if l == 0 {
+		return ""
 	}
 
-	return strings.Join(components, ".")
+	var preparations []string
+	components := msgExpr
+	for i, c := range p {
+		// We need to check if the target is not proto3_optional first.
+		// Under the hood, proto3_optional uses oneof to signal to old proto3 clients
+		// that presence is tracked for this field. This oneof is known as a "synthetic" oneof.
+		if !c.Target.GetProto3Optional() && c.Target.OneofIndex != nil {
+			index := c.Target.OneofIndex
+			msg := c.Target.Message
+			oneOfName := casing.Camel(msg.GetOneofDecl()[*index].GetName())
+			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
+
+			if c.Target.ForcePrefixedName {
+				oneofFieldName = msg.File.Pkg() + "." + oneofFieldName
+			}
+
+			components = components + "." + oneOfName
+			s := `if %s == nil {
+				%s =&%s{}
+			} else if _, ok := %s.(*%s); !ok {
+				return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *%s, but: %%t\n",%s)
+			}`
+
+			preparations = append(preparations, fmt.Sprintf(s, components, components, oneofFieldName, components, oneofFieldName, oneofFieldName, components))
+			components = components + ".(*" + oneofFieldName + ")"
+		}
+
+		if i == l-1 {
+			components = components + "." + c.AssignableExpr()
+			continue
+		}
+		components = components + "." + c.ValueExpr()
+	}
+
+	return strings.Join(preparations, "\n")
 }
 
 // FieldPathComponent is a path component in FieldPath
