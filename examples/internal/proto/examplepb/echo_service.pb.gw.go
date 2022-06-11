@@ -231,11 +231,6 @@ func request_EchoService_Echo_2(ctx context.Context, marshaler runtime.Marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "lang")
 	}
 
-	if protoReq.Code == nil {
-		protoReq.Code = &SimpleMessage_Lang{}
-	} else if _, ok := protoReq.Code.(*SimpleMessage_Lang); !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_Lang, but: %t\n", protoReq.Code)
-	}
 	protoReq.Code.(*SimpleMessage_Lang).Lang, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "lang", err)
@@ -336,11 +331,6 @@ func request_EchoService_Echo_3(ctx context.Context, marshaler runtime.Marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "line_num")
 	}
 
-	if protoReq.Code == nil {
-		protoReq.Code = &SimpleMessage_LineNum{}
-	} else if _, ok := protoReq.Code.(*SimpleMessage_LineNum); !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *SimpleMessage_LineNum, but: %t\n", protoReq.Code)
-	}
 	protoReq.Code.(*SimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "line_num", err)

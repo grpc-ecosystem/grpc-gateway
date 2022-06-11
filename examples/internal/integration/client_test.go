@@ -58,11 +58,8 @@ func TestEchoBody2Client(t *testing.T) {
 	cfg.BasePath = "http://localhost:8088"
 
 	cl := echo.NewAPIClient(cfg)
-	req := echo.ExamplepbSimpleMessage{
-		Id: "foo",
-		No: &echo.ExamplepbEmbedded{Note: "note"},
-	}
-	resp, _, err := cl.EchoServiceApi.EchoServiceEchoBody2(context.Background(), "foo", req)
+	req := echo.ExamplepbEmbedded{Note: "note"}
+	resp, _, err := cl.EchoServiceApi.EchoServiceEchoBody2(context.Background(), "foo", req, nil)
 	if err != nil {
 		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)
 	}

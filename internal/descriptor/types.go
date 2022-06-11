@@ -380,6 +380,10 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 			oneOfName := casing.Camel(msg.GetOneofDecl()[*index].GetName())
 			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
 
+			if c.Target.ForcePrefixedName {
+				oneofFieldName = msg.File.Pkg() + "." + oneofFieldName
+			}
+
 			components = components + "." + oneOfName + ".(*" + oneofFieldName + ")"
 		}
 
