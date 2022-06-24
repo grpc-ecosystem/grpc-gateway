@@ -31,7 +31,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     };
     extensions: {
       key: "x-something-something";
-      value {
+      value: {
         string_value: "yadda";
       }
     }
@@ -63,23 +63,23 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
         name: "X-API-Key";
         extensions: {
           key: "x-amazon-apigateway-authtype";
-          value {
+          value: {
             string_value: "oauth2";
           }
         }
         extensions: {
           key: "x-amazon-apigateway-authorizer";
-          value {
-            struct_value {
-              fields {
+          value: {
+            struct_value: {
+              fields: {
                 key: "type";
-                value {
+                value: {
                   string_value: "token";
                 }
               }
-              fields {
+              fields: {
                 key: "authorizerResultTtlInSeconds";
-                value {
+                value: {
                   number_value: 60;
                 }
               }
@@ -186,13 +186,13 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   }
   extensions: {
     key: "x-grpc-gateway-foo";
-    value {
+    value: {
       string_value: "bar";
     }
   }
   extensions: {
     key: "x-grpc-gateway-baz-list";
-    value {
+    value: {
       list_value: {
         values: {
           string_value: "one";
@@ -243,7 +243,7 @@ message ABitOfEverything {
       ]
       extensions: {
         key: "x-a-bit-of-everything-foo";
-        value {
+        value: {
           string_value: "bar";
         }
       }
@@ -286,7 +286,7 @@ message ABitOfEverything {
     },
     extensions: {
       key: "x-internal";
-      value {
+      value: {
         bool_value: true
       }
     }
@@ -587,7 +587,7 @@ service ABitOfEverythingService {
       }
       extensions: {
         key: "x-irreversible";
-        value {
+        value: {
           bool_value: true;
         }
       }
@@ -621,11 +621,11 @@ service ABitOfEverythingService {
   rpc Echo(grpc.gateway.examples.internal.proto.sub.StringMessage) returns (grpc.gateway.examples.internal.proto.sub.StringMessage) {
     option (google.api.http) = {
       get: "/v1/example/a_bit_of_everything/echo/{value}"
-      additional_bindings {
+      additional_bindings: {
         post: "/v2/example/echo"
         body: "value"
       }
-      additional_bindings {
+      additional_bindings: {
         get: "/v2/example/echo"
       }
     };
@@ -652,7 +652,7 @@ service ABitOfEverythingService {
           description: "Returned when the resource is temporarily unavailable.";
           extensions: {
             key: "x-number";
-            value {
+            value: {
               number_value: 100;
             }
           }
