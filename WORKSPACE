@@ -6,9 +6,9 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 # Define before rules_proto, otherwise we receive the version of com_google_protobuf from there
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "a295dd3b9551d3e2749a9969583dea110c6cdcc39d02088f7c7bb1100077e081",
-    strip_prefix = "protobuf-3.21.1",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.21.1.tar.gz"],
+    sha256 = "66e1156ac78290db81335c79d1fc5a54123ebb62a43eb2e5b42a44ca23087517",
+    strip_prefix = "protobuf-3.21.2",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.21.2.tar.gz"],
 )
 
 http_archive(
