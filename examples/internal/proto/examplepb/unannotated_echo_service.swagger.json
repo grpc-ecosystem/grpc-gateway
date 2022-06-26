@@ -449,10 +449,7 @@
           "type": "string",
           "format": "int64",
           "default": "42",
-          "description": "Int value field",
-          "required": [
-            "num"
-          ]
+          "description": "Int value field"
         },
         "duration": {
           "type": "string"

@@ -115,10 +115,7 @@
           "type": "number",
           "format": "float",
           "default": "0.2",
-          "description": "Float value field",
-          "required": [
-            "floatValue"
-          ]
+          "description": "Float value field"
         },
         "doubleValue": {
           "type": "number",
@@ -268,10 +265,7 @@
         },
         "requiredStringViaFieldBehaviorAnnotation": {
           "type": "string",
-          "title": "mark a field as required in Open API definition",
-          "required": [
-            "requiredStringViaFieldBehaviorAnnotation"
-          ]
+          "title": "mark a field as required in Open API definition"
         },
         "outputOnlyStringViaFieldBehaviorAnnotation": {
           "type": "string",
@@ -291,6 +285,16 @@
           },
           "description": "Only digits are allowed.",
           "title": "Test openapiv2 generation of repeated fields"
+        },
+        "FieldOne": {
+          "type": "string",
+          "title": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce"
+        },
+        "FieldTwo": {
+          "type": "string"
+        },
+        "FieldThree": {
+          "type": "string"
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -304,7 +308,9 @@
         "int64Value",
         "doubleValue",
         "floatValue",
-        "requiredStringViaFieldBehaviorAnnotation"
+        "requiredStringViaFieldBehaviorAnnotation",
+        "FieldTwo",
+        "FieldThree"
       ],
       "x-a-bit-of-everything-foo": "bar"
     },

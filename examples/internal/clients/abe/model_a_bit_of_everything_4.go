@@ -19,9 +19,9 @@ type ABitOfEverything4 struct {
 	SingleNested *ABitOfEverythingNested `json:"singleNested,omitempty"`
 	Nested []ABitOfEverythingNested `json:"nested,omitempty"`
 	// Float value field
-	FloatValue float32 `json:"floatValue"`
-	DoubleValue float64 `json:"doubleValue"`
-	Int64Value string `json:"int64Value"`
+	FloatValue float32 `json:"floatValue,omitempty"`
+	DoubleValue float64 `json:"doubleValue,omitempty"`
+	Int64Value string `json:"int64Value,omitempty"`
 	Uint64Value string `json:"uint64Value,omitempty"`
 	Int32Value int32 `json:"int32Value,omitempty"`
 	Fixed64Value string `json:"fixed64Value,omitempty"`
@@ -57,9 +57,12 @@ type ABitOfEverything4 struct {
 	// Nested object description.
 	NestedAnnotation *ABitOfEverythingNested `json:"nestedAnnotation,omitempty"`
 	Int64OverrideType int64 `json:"int64OverrideType,omitempty"`
-	RequiredStringViaFieldBehaviorAnnotation string `json:"requiredStringViaFieldBehaviorAnnotation"`
+	RequiredStringViaFieldBehaviorAnnotation string `json:"requiredStringViaFieldBehaviorAnnotation,omitempty"`
 	OutputOnlyStringViaFieldBehaviorAnnotation string `json:"outputOnlyStringViaFieldBehaviorAnnotation,omitempty"`
 	OptionalStringValue string `json:"optionalStringValue,omitempty"`
 	// Only digits are allowed.
 	ProductId []string `json:"productId,omitempty"`
+	FieldOne string `json:"FieldOne,omitempty"`
+	FieldTwo string `json:"FieldTwo,omitempty"`
+	FieldThree string `json:"FieldThree,omitempty"`
 }
