@@ -4500,10 +4500,21 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					Name: proto.String("Message"),
 					Field: []*descriptorpb.FieldDescriptorProto{
 						{
-							Name:    proto.String("aRequiredField"),
+							Name:   proto.String("FieldOne"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+						},
+						{
+							Name:    proto.String("FieldTwo"),
 							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
-							Number:  proto.Int32(1),
-							Options: requiredField,
+							Number:  proto.Int32(2),
+							Options: requiredFieldOptions,
+						},
+						{
+							Name:    proto.String("FieldThree"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(3),
+							Options: requiredFieldOptions,
 						},
 					},
 				},
@@ -4513,7 +4524,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					JsonSchema: &openapi_options.JSONSchema{
 						Title:       "title",
 						Description: "desc",
-						Required:    []string{"req"},
+						Required:    []string{"FieldOne", "FieldTwo"},
 					},
 				},
 			},
@@ -4524,23 +4535,125 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 					},
 					Title:       "title",
 					Description: "desc",
-					Required:    []string{"req", "aRequiredField"},
+					Required:    []string{"FieldOne", "FieldTwo", "FieldThree"},
 					Properties: &openapiSchemaObjectProperties{
 						{
-							Key: "aRequiredField",
+							Key: "FieldOne",
 							Value: openapiSchemaObject{
 								schemaCore: schemaCore{
 									Type: "string",
 								},
-								Description: "field description",
-								Title:       "field title",
-								Required:    []string{"aRequiredField"},
+							},
+						},
+						{
+							Key: "FieldTwo",
+							Value: openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
+							},
+						},
+						{
+							Key: "FieldThree",
+							Value: openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
 							},
 						},
 					},
 				},
 			},
 		},
+		{
+			descr: "JSONSchema with required properties",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:    proto.String("FieldOne"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(3),
+							Options: requiredFieldOptions,
+						},
+					},
+				},
+			},
+			schema: map[string]*openapi_options.Schema{
+				"Message": {
+					JsonSchema: &openapi_options.JSONSchema{
+						Title:       "title",
+						Description: "desc",
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"Message": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "title",
+					Description: "desc",
+					Required:    []string{"FieldOne"},
+					Properties: &openapiSchemaObjectProperties{
+						{
+							Key: "FieldOne",
+							Value: openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			descr: "JSONSchema with required properties by using annotations",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:    proto.String("FieldOne"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:  proto.Int32(2),
+							Options: requiredFieldOptions,
+						},
+					},
+				},
+			},
+			schema: map[string]*openapi_options.Schema{
+				"Message": {
+					JsonSchema: &openapi_options.JSONSchema{
+						Title:       "title",
+						Description: "desc",
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"Message": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "title",
+					Description: "desc",
+					Required:    []string{"FieldOne"},
+					Properties: &openapiSchemaObjectProperties{
+						{
+							Key: "FieldOne",
+							Value: openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+
 		{
 			descr: "JSONSchema with hidden properties",
 			msgDescs: []*descriptorpb.DescriptorProto{
@@ -4651,7 +4764,6 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 								},
 								Description: "field description",
 								Title:       "field title",
-								Required:    []string{"aRequiredField"},
 							},
 						},
 					},
@@ -4712,7 +4824,6 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 								schemaCore: schemaCore{
 									Type: "string",
 								},
-								Required: []string{"aRequiredField"},
 							},
 						},
 						{
@@ -4790,6 +4901,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			}
 
 			if !reflect.DeepEqual(actual, test.defs) {
+
 				t.Errorf("Expected renderMessagesAsDefinition() to add defs %+v, not %+v", test.defs, actual)
 			}
 		})
