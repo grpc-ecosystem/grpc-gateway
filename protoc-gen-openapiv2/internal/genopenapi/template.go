@@ -493,7 +493,9 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		}
 
 		if fieldSchema.Required != nil {
+			schema.Required = searchRequired(schema.Required, fieldSchema.Required)
 			schema.Required = append(schema.Required, fieldSchema.Required...)
+			fieldSchema.Required = nil
 		}
 
 		kv := keyVal{Value: fieldSchema}
