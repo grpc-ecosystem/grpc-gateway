@@ -13,3 +13,25 @@ import (
 func fieldName(k string) string {
 	return strings.ReplaceAll(cases.Title(language.AmericanEnglish).String(k), "-", "_")
 }
+
+//this method will filter the same fields and return the unique one
+func searchRequired(schemaFieldsRequired []string, fieldsRequired []string) []string {
+	var unique []string
+	var index *int
+
+	for _, fieldRequired := range fieldsRequired {
+		index = nil
+		for i, schemaFieldRequired := range schemaFieldsRequired {
+			if schemaFieldRequired == fieldRequired {
+				index = &i
+				break
+			}
+		}
+		if index != nil {
+			unique = append(schemaFieldsRequired[:*index], schemaFieldsRequired[*index+1:]...)
+		} else {
+			unique = schemaFieldsRequired
+		}
+	}
+	return unique
+}
