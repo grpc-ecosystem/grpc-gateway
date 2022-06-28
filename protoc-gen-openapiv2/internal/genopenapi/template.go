@@ -1163,17 +1163,18 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 								schema.Properties = &openapiSchemaObjectProperties{}
 							}
 						} else {
+							messageSchema, err := renderMessageAsDefinition(meth.RequestType, reg, customRefs, b.PathParams)
+							if err != nil {
+								return err
+							}
 							if len(b.PathParams) == 0 {
-								err := schema.setRefFromFQN(meth.RequestType.FQMN(), reg)
+								err = schema.setRefFromFQN(meth.RequestType.FQMN(), reg)
 								if err != nil {
 									return err
 								}
+								desc = messageSchema.Description
 							} else {
-								var err error
-								schema, err = renderMessageAsDefinition(meth.RequestType, reg, customRefs, b.PathParams)
-								if err != nil {
-									return err
-								}
+								schema = messageSchema
 								if schema.Properties == nil || len(*schema.Properties) == 0 {
 									glog.Warningf("created a body with 0 properties in the message, this might be unintended: %s", *meth.RequestType)
 								}
