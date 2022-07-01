@@ -248,6 +248,7 @@ paths:
       parameters:
       - in: "body"
         name: "body"
+        description: "A simple message with many types"
         required: true
         schema:
           $ref: "#/definitions/examplepbUnannotatedSimpleMessage"

@@ -20,7 +20,7 @@ The message posted as the id parameter will also be returned.
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-  **body** | [**ExamplepbGenerateUnboundMethodsSimpleMessage**](ExamplepbGenerateUnboundMethodsSimpleMessage.md)|  | 
+  **body** | [**ExamplepbGenerateUnboundMethodsSimpleMessage**](ExamplepbGenerateUnboundMethodsSimpleMessage.md)| GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service. | 
 
 ### Return type
 
@@ -46,7 +46,7 @@ EchoBody method receives a simple message and returns it.
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-  **body** | [**ExamplepbGenerateUnboundMethodsSimpleMessage**](ExamplepbGenerateUnboundMethodsSimpleMessage.md)|  | 
+  **body** | [**ExamplepbGenerateUnboundMethodsSimpleMessage**](ExamplepbGenerateUnboundMethodsSimpleMessage.md)| GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service. | 
 
 ### Return type
 
@@ -72,7 +72,7 @@ EchoDelete method receives a simple message and returns it.
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
-  **body** | [**ExamplepbGenerateUnboundMethodsSimpleMessage**](ExamplepbGenerateUnboundMethodsSimpleMessage.md)|  | 
+  **body** | [**ExamplepbGenerateUnboundMethodsSimpleMessage**](ExamplepbGenerateUnboundMethodsSimpleMessage.md)| GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service. | 
 
 ### Return type
 

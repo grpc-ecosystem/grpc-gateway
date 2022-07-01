@@ -68,7 +68,7 @@
         "parameters": [
           {
             "name": "body",
-            "description": " (streaming inputs)",
+            "description": "Intentionally complicated message type to cover many features of Protobuf. (streaming inputs)",
             "in": "body",
             "required": true,
             "schema": {

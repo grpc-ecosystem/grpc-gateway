@@ -729,7 +729,7 @@ func (a *EchoServiceApiService) EchoServiceEcho5(ctx context.Context, noNote str
 /* 
 EchoServiceApiService EchoBody method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param body SimpleMessage represents a simple message sent to the Echo service.
 
 @return ExamplepbSimpleMessage
 */
