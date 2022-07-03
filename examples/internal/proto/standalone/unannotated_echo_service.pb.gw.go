@@ -290,6 +290,11 @@ func local_request_UnannotatedEchoService_Echo_2(ctx context.Context, marshaler 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "lang")
 	}
 
+	if protoReq.Code == nil {
+		protoReq.Code = &extExamplepb.UnannotatedSimpleMessage_Lang{}
+	} else if _, ok := protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_Lang); !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_Lang, but: %t\n", protoReq.Code)
+	}
 	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_Lang).Lang, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "lang", err)
@@ -395,6 +400,11 @@ func local_request_UnannotatedEchoService_Echo_3(ctx context.Context, marshaler 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "line_num")
 	}
 
+	if protoReq.Code == nil {
+		protoReq.Code = &extExamplepb.UnannotatedSimpleMessage_LineNum{}
+	} else if _, ok := protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_LineNum); !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *extExamplepb.UnannotatedSimpleMessage_LineNum, but: %t\n", protoReq.Code)
+	}
 	protoReq.Code.(*extExamplepb.UnannotatedSimpleMessage_LineNum).LineNum, err = runtime.Int64(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "line_num", err)
@@ -500,7 +510,6 @@ func request_UnannotatedEchoService_EchoBody_0(ctx context.Context, marshaler ru
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-
 	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}

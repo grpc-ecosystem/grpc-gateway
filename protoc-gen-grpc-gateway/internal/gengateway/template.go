@@ -323,7 +323,10 @@ var (
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	{{.Body.AssignableExprPrep "protoReq"}}
+	{{- $protoReq := .Body.AssignableExprPrep "protoReq" -}}
+	{{- if ne "" $protoReq }}
+	{{printf "%s" $protoReq }}
+	{{- end}}
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -374,7 +377,10 @@ var (
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
 {{else}}
-	{{$param.AssignableExprPrep "protoReq"}}
+	{{- $protoReq := $param.AssignableExprPrep "protoReq" -}}
+	{{- if ne "" $protoReq }}
+	{{printf "%s" $protoReq }}
+	{{- end}}
 	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
@@ -486,6 +492,10 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
+	{{- $protoReq := .Body.AssignableExprPrep "protoReq" -}}
+	{{- if ne "" $protoReq }}
+	{{printf "%s" $protoReq }}
+	{{- end}}
 	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
@@ -536,6 +546,10 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
 {{else}}
+	{{- $protoReq := $param.AssignableExprPrep "protoReq" -}}
+	{{- if ne "" $protoReq }}
+	{{printf "%s" $protoReq }}
+	{{- end}}
 	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
