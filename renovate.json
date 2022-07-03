@@ -4,7 +4,6 @@
         "helpers:pinGitHubActionDigests"
     ],
     "baseBranches": [
-        "v1",
         "master"
     ],
     "postUpdateOptions": [
@@ -19,19 +18,6 @@
                 "digest"
             ],
             "automerge": true
-        },
-        {
-            "baseBranchList": [
-                "v1"
-            ],
-            "packageNames": [
-                "github.com/golang/protobuf",
-                "google.golang.org/genproto",
-                "io_bazel_rules_go",
-                "golang.org/x/oauth2",
-                "google.golang.org/grpc"
-            ],
-            "enabled": false
         },
         {
             "baseBranchList": [
