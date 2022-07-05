@@ -383,6 +383,7 @@ paths:
       parameters:
       - in: "body"
         name: "body"
+        description: "SimpleMessage represents a simple message sent to the Echo service."
         required: true
         schema:
           $ref: "#/definitions/examplepbSimpleMessage"

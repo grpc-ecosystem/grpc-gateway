@@ -1784,7 +1784,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param body Intentionally complicated message type to cover many features of Protobuf.
 
 @return ExamplepbABitOfEverything
 */

@@ -304,6 +304,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "A simple message with many types",
             "in": "body",
             "required": true,
             "schema": {
