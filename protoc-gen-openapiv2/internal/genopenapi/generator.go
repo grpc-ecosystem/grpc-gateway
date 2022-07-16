@@ -359,3 +359,13 @@ func AddErrorDefs(reg *descriptor.Registry) error {
 		},
 	})
 }
+
+func extensionsToMap(extensions []extension) map[string]interface{} {
+	m := make(map[string]interface{})
+
+	for _, v := range extensions {
+		m[v.key] = RawExample(v.value)
+	}
+
+	return m
+}
