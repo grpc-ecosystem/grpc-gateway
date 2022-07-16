@@ -26,6 +26,16 @@ type openapiInfoObject struct {
 	extensions []extension `json:"-" yaml:"-"`
 }
 
+func extensionsToMap(extensions []extension) map[string]interface{} {
+	m := make(map[string]interface{})
+
+	for _, v := range extensions {
+		m[v.key] = RawExample(v.value)
+	}
+
+	return m
+}
+
 // https://swagger.io/specification/#tagObject
 type openapiTagObject struct {
 	Name         string                              `json:"name" yaml:"name"`
