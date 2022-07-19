@@ -31,7 +31,10 @@ func (f Format) Validate() error {
 func (f Format) NewEncoder(w io.Writer) (ContentEncoder, error) {
 	switch f {
 	case FormatYAML:
-		return yaml.NewEncoder(w), nil
+		enc := yaml.NewEncoder(w)
+		enc.SetIndent(2)
+
+		return enc, nil
 	case FormatJSON:
 		enc := json.NewEncoder(w)
 		enc.SetIndent("", "  ")
