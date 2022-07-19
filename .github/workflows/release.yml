@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           check-latest: true
-      - uses: goreleaser/goreleaser-action@v2
+      - uses: goreleaser/goreleaser-action@v3
         with:
           args: release --rm-dist
         env:
