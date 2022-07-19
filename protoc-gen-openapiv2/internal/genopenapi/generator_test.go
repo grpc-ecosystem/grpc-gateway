@@ -153,3 +153,105 @@ func requireGenerate(
 
 	return resp
 }
+
+func TestGeneratedYAMLIndent(t *testing.T) {
+	// It tests https://github.com/grpc-ecosystem/grpc-gateway/issues/2745.
+	const in = `
+	file_to_generate: "exampleproto/v1/exampleproto.proto"
+	parameter: "output_format=yaml,allow_delete_body=true"
+	proto_file: {
+		name: "exampleproto/v1/exampleproto.proto"
+		package: "repro"
+		message_type: {
+			name: "RollupRequest"
+			field: {
+				name: "type"
+				number: 1
+				label: LABEL_OPTIONAL
+				type: TYPE_ENUM
+				type_name: ".repro.RollupType"
+				json_name: "type"
+			}
+		}
+		message_type: {
+			name: "RollupResponse"
+		}
+		enum_type: {
+			name: "RollupType"
+			value: {
+				name: "UNKNOWN_ROLLUP"
+				number: 0
+			}
+			value: {
+				name: "APPLE"
+				number: 1
+			}
+			value: {
+				name: "BANANA"
+				number: 2
+			}
+			value: {
+				name: "CARROT"
+				number: 3
+			}
+		}
+		service: {
+			name: "Repro"
+			method: {
+				name: "GetRollup"
+				input_type: ".repro.RollupRequest"
+				output_type: ".repro.RollupResponse"
+				options: {
+					[google.api.http]: {
+						get: "/rollup"
+					}
+				}
+			}
+		}
+		options: {
+			go_package: "repro/foobar"
+		}
+		source_code_info: {
+			location: {
+				path: 5
+				path: 0
+				path: 2
+				path: 1
+				span: 24
+				span: 4
+				span: 14
+				leading_comments: " Apples are good\n"
+			}
+			location: {
+				path: 5
+				path: 0
+				path: 2
+				path: 3
+				span: 28
+				span: 4
+				span: 15
+				leading_comments: " Carrots are mediocre\n"
+			}
+		}
+		syntax: "proto3"
+	}
+	`
+
+	var req pluginpb.CodeGeneratorRequest
+	if err := prototext.Unmarshal([]byte(in), &req); err != nil {
+		t.Fatalf("failed to marshall yaml: %s", err)
+	}
+
+	resp := requireGenerate(t, &req, genopenapi.FormatYAML)
+	if len(resp) != 1 {
+		t.Fatalf("invalid count, expected: 1, actual: %d", len(resp))
+	}
+
+	content := resp[0].GetContent()
+
+	err := yaml.Unmarshal([]byte(content), map[string]interface{}{})
+	if err != nil {
+		t.Log(content)
+		t.Fatalf("got invalid yaml: %s", err)
+	}
+}
