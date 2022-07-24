@@ -6,6 +6,8 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
 )
 
+// TODO(asnyder): These tests are covering a function parseFlags() which became unused after https://github.com/grpc-ecosystem/grpc-gateway/pull/1756. The function and tests may be deleted.
+
 func TestParseFlagsEmptyNoPanic(t *testing.T) {
 	reg := descriptor.NewRegistry()
 	parseFlags(reg, "")
@@ -13,17 +15,17 @@ func TestParseFlagsEmptyNoPanic(t *testing.T) {
 
 func TestParseFlags(t *testing.T) {
 	reg := descriptor.NewRegistry()
-	parseFlags(reg, "allow_repeated_fields_in_body=true")
-	if *allowRepeatedFieldsInBody != true {
-		t.Errorf("flag allow_repeated_fields_in_body was not set correctly, wanted true got %v", *allowRepeatedFieldsInBody)
+	parseFlags(reg, "generate_unbound_methods=true")
+	if *generateUnboundMethods != true {
+		t.Errorf("flag generate_unbound_methods was not set correctly, wanted true got %v", *generateUnboundMethods)
 	}
 }
 
 func TestParseFlagsMultiple(t *testing.T) {
 	reg := descriptor.NewRegistry()
-	parseFlags(reg, "allow_repeated_fields_in_body=true,repeated_path_param_separator=csv")
-	if *allowRepeatedFieldsInBody != true {
-		t.Errorf("flag allow_repeated_fields_in_body was not set correctly, wanted 'true' got '%v'", *allowRepeatedFieldsInBody)
+	parseFlags(reg, "generate_unbound_methods=true,repeated_path_param_separator=csv")
+	if *generateUnboundMethods != true {
+		t.Errorf("flag generate_unbound_methods was not set correctly, wanted 'true' got '%v'", *generateUnboundMethods)
 	}
 	if *repeatedPathParamSeparator != "csv" {
 		t.Errorf("flag importPrefix was not set correctly, wanted 'csv' got '%v'", *repeatedPathParamSeparator)

@@ -26,7 +26,7 @@ var (
 	useRequestContext          = flag.Bool("request_context", true, "determine whether to use http.Request's context or not")
 	allowDeleteBody            = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
 	grpcAPIConfiguration       = flag.String("grpc_api_configuration", "", "path to gRPC API Configuration in YAML format")
-	allowRepeatedFieldsInBody  = flag.Bool("allow_repeated_fields_in_body", false, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option")
+	_                          = flag.Bool("allow_repeated_fields_in_body", true, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option. DEPRECATED: the value is ignored and always behaves as `true`.")
 	repeatedPathParamSeparator = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`.")
 	allowPatchFeature          = flag.Bool("allow_patch_feature", true, "determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).")
 	omitPackageDoc             = flag.Bool("omit_package_doc", false, "if true, no package comment will be included in the generated code")
@@ -138,7 +138,13 @@ func applyFlags(reg *descriptor.Registry) error {
 	}
 	reg.SetStandalone(*standalone)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
-	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
+
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "allow_repeated_fields_in_body" {
+			glog.Warning("The `allow_repeated_fields_in_body` flag is deprecated and will always behave as `true`.")
+		}
+	})
+
 	reg.SetOmitPackageDoc(*omitPackageDoc)
 	reg.SetWarnOnUnboundMethods(*warnOnUnboundMethods)
 	reg.SetGenerateUnboundMethods(*generateUnboundMethods)
