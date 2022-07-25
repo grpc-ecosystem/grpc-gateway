@@ -101,32 +101,6 @@ func main() {
 	})
 }
 
-func parseFlags(reg *descriptor.Registry, parameter string) {
-	if parameter == "" {
-		return
-	}
-
-	for _, p := range strings.Split(parameter, ",") {
-		spec := strings.SplitN(p, "=", 2)
-		if len(spec) == 1 {
-			if err := flag.CommandLine.Set(spec[0], ""); err != nil {
-				glog.Fatalf("Cannot set flag %s", p)
-			}
-			continue
-		}
-
-		name, value := spec[0], spec[1]
-
-		if strings.HasPrefix(name, "M") {
-			reg.AddPkgMap(name[1:], value)
-			continue
-		}
-		if err := flag.CommandLine.Set(name, value); err != nil {
-			glog.Fatalf("Cannot set flag %s", p)
-		}
-	}
-}
-
 func applyFlags(reg *descriptor.Registry) error {
 	if *grpcAPIConfiguration != "" {
 		if err := reg.LoadGrpcAPIServiceFromYAML(*grpcAPIConfiguration); err != nil {
