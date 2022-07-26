@@ -25,7 +25,7 @@ var (
 	useJSONNamesForFields          = flag.Bool("json_names_for_fields", true, "if disabled, the original proto name will be used for generating OpenAPI definitions")
 	repeatedPathParamSeparator     = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`")
 	versionFlag                    = flag.Bool("version", false, "print the current version")
-	allowRepeatedFieldsInBody      = flag.Bool("allow_repeated_fields_in_body", false, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option")
+	_                              = flag.Bool("allow_repeated_fields_in_body", true, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option. DEPRECATED: the value is ignored and always behaves as `true`.")
 	includePackageInTags           = flag.Bool("include_package_in_tags", false, "if unset, the gRPC service name is added to the `Tags` field of each operation. If set and the `package` directive is shown in the proto file, the package name will be prepended to the service name")
 	useFQNForOpenAPIName           = flag.Bool("fqn_for_openapi_name", false, "if set, the object's OpenAPI names will use the fully qualified names from the proto definition (ie my.package.MyMessage.MyInnerMessage). DEPRECATED: prefer `openapi_naming_strategy=fqn`")
 	openAPINamingStrategy          = flag.String("openapi_naming_strategy", "", "use the given OpenAPI naming strategy. Allowed values are `legacy`, `fqn`, `simple`. If unset, either `legacy` or `fqn` are selected, depending on the value of the `fqn_for_openapi_name` flag")
@@ -88,7 +88,13 @@ func main() {
 	reg.SetAllowMerge(*allowMerge)
 	reg.SetMergeFileName(*mergeFileName)
 	reg.SetUseJSONNamesForFields(*useJSONNamesForFields)
-	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
+
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "allow_repeated_fields_in_body" {
+			glog.Warning("The `allow_repeated_fields_in_body` flag is deprecated and will always behave as `true`.")
+		}
+	})
+
 	reg.SetIncludePackageInTags(*includePackageInTags)
 
 	reg.SetUseFQNForOpenAPIName(*useFQNForOpenAPIName)
