@@ -46,6 +46,8 @@ paths:
       parameters:
       - in: "body"
         name: "body"
+        description: "Intentionally complicated message type to cover many features\
+          \ of Protobuf."
         required: true
         schema:
           $ref: "#/definitions/examplepbABitOfEverything"

@@ -1574,6 +1574,31 @@ func TestTimeout(t *testing.T) {
 	}
 }
 
+func TestInvalidTimeout(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	apiURL := "http://localhost:8088/v2/example/timeout"
+	req, err := http.NewRequest("GET", apiURL, nil)
+	if err != nil {
+		t.Errorf(`http.NewRequest("GET", %q, nil) failed with %v; want success`, apiURL, err)
+		return
+	}
+	req.Header.Set("Grpc-Timeout", "INVALID")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.DefaultClient.Do(%#v) failed with %v; want success", req, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if got, want := resp.StatusCode, http.StatusBadRequest; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+	}
+}
+
 func TestPostWithEmptyBody(t *testing.T) {
 	if testing.Short() {
 		t.Skip()
@@ -2359,8 +2384,8 @@ func testABEOptions(t *testing.T, port int) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-        t.Fatal(err)
-    }
+		t.Fatal(err)
+	}
 	defer resp.Body.Close()
 	if got, want := resp.StatusCode, http.StatusOK; got != want {
 		t.Errorf("resp.StatusCode = %d; want %d", got, want)
@@ -2387,8 +2412,8 @@ func testABETrace(t *testing.T, port int) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-        t.Fatal(err)
-    }
+		t.Fatal(err)
+	}
 	defer resp.Body.Close()
 	buf, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

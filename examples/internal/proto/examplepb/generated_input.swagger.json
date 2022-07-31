@@ -37,6 +37,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "Intentionally complicated message type to cover many features of Protobuf.",
             "in": "body",
             "required": true,
             "schema": {

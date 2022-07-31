@@ -23,6 +23,8 @@ paths:
       parameters:
       - in: "body"
         name: "body"
+        description: "GenerateUnboundMethodsSimpleMessage represents a simple message\
+          \ sent to the unannotated GenerateUnboundMethodsEchoService service."
         required: true
         schema:
           $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
@@ -45,6 +47,8 @@ paths:
       parameters:
       - in: "body"
         name: "body"
+        description: "GenerateUnboundMethodsSimpleMessage represents a simple message\
+          \ sent to the unannotated GenerateUnboundMethodsEchoService service."
         required: true
         schema:
           $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"
@@ -67,6 +71,8 @@ paths:
       parameters:
       - in: "body"
         name: "body"
+        description: "GenerateUnboundMethodsSimpleMessage represents a simple message\
+          \ sent to the unannotated GenerateUnboundMethodsEchoService service."
         required: true
         schema:
           $ref: "#/definitions/examplepbGenerateUnboundMethodsSimpleMessage"

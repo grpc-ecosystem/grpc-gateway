@@ -89,9 +89,46 @@ func (so openapiSwaggerObject) MarshalJSON() ([]byte, error) {
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
+// MarshalYAML implements yaml.Marshaler interface.
+//
+// It is required in order to pass extensions inline.
+//
+// Example:
+//   extensions: {x-key: x-value}
+//   type: string
+//
+// It will be rendered as:
+//   x-key: x-value
+//   type: string
+//
+// Use generics when the project will be upgraded to go 1.18+.
+func (so openapiSwaggerObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiSwaggerObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
+}
+
 func (so openapiInfoObject) MarshalJSON() ([]byte, error) {
 	type alias openapiInfoObject
 	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+func (so openapiInfoObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiInfoObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
 }
 
 func (so openapiSecuritySchemeObject) MarshalJSON() ([]byte, error) {
@@ -99,9 +136,33 @@ func (so openapiSecuritySchemeObject) MarshalJSON() ([]byte, error) {
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
+func (so openapiSecuritySchemeObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiSecuritySchemeObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
+}
+
 func (so openapiOperationObject) MarshalJSON() ([]byte, error) {
 	type alias openapiOperationObject
 	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+func (so openapiOperationObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiOperationObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
 }
 
 func (so openapiResponseObject) MarshalJSON() ([]byte, error) {
@@ -109,14 +170,50 @@ func (so openapiResponseObject) MarshalJSON() ([]byte, error) {
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
+func (so openapiResponseObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiResponseObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
+}
+
 func (so openapiSchemaObject) MarshalJSON() ([]byte, error) {
 	type alias openapiSchemaObject
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
+func (so openapiSchemaObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiSchemaObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
+}
+
 func (so openapiParameterObject) MarshalJSON() ([]byte, error) {
 	type alias openapiParameterObject
 	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+func (so openapiParameterObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiParameterObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
 }
 
 func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error) {
@@ -261,4 +358,14 @@ func AddErrorDefs(reg *descriptor.Registry) error {
 			status,
 		},
 	})
+}
+
+func extensionsToMap(extensions []extension) map[string]interface{} {
+	m := make(map[string]interface{}, len(extensions))
+
+	for _, v := range extensions {
+		m[v.key] = RawExample(v.value)
+	}
+
+	return m
 }

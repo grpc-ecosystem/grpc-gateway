@@ -39,6 +39,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.",
             "in": "body",
             "required": true,
             "schema": {
@@ -72,6 +73,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.",
             "in": "body",
             "required": true,
             "schema": {
@@ -105,6 +107,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.",
             "in": "body",
             "required": true,
             "schema": {

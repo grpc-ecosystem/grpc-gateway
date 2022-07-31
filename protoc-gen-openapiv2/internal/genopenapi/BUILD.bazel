@@ -60,6 +60,8 @@ go_test(
         "@go_googleapis//google/api:visibility_go_proto",
         "@in_gopkg_yaml_v3//:yaml_v3",
         "@io_bazel_rules_go//proto/wkt:field_mask_go_proto",
+        "@org_golang_google_protobuf//encoding/protojson",
+        "@org_golang_google_protobuf//encoding/prototext",
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protodesc",
         "@org_golang_google_protobuf//types/descriptorpb",

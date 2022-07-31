@@ -98,7 +98,7 @@ jobs:
         with:
           go-version: 1.18
           check-latest: true
-      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.10.3
+      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.11.1
   proto_lint:
     runs-on: ubuntu-latest
     steps:
@@ -117,7 +117,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: golangci/golangci-lint-action@v2
+      - uses: golangci/golangci-lint-action@v3
         with:
           version: v1.45
           args: --enable goimports
@@ -139,7 +139,7 @@ jobs:
           dry-run: false
           language: go
       - name: Upload Crash
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         if: failure() && steps.build.outcome == 'success'
         with:
           name: artifacts

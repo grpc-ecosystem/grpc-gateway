@@ -45,6 +45,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "InMessageA represents a message to ServiceA and ServiceC.",
             "in": "body",
             "required": true,
             "schema": {
@@ -79,6 +80,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "OutMessageA represents a message returned from ServiceA.",
             "in": "body",
             "required": true,
             "schema": {
@@ -113,6 +115,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "InMessageB represents a message to ServiceB.",
             "in": "body",
             "required": true,
             "schema": {
@@ -147,6 +150,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "OutMessageB represents a message returned from ServiceB.",
             "in": "body",
             "required": true,
             "schema": {
@@ -181,6 +185,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "InMessageA represents a message to ServiceA and ServiceC.",
             "in": "body",
             "required": true,
             "schema": {
@@ -215,6 +220,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "OutMessageA represents a message returned from ServiceA.",
             "in": "body",
             "required": true,
             "schema": {

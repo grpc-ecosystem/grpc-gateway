@@ -256,7 +256,7 @@ type keyVal struct {
 type openapiSchemaObjectProperties []keyVal
 
 func (p openapiSchemaObjectProperties) MarshalYAML() (interface{}, error) {
-	m := make(map[string]interface{})
+	m := make(map[string]interface{}, len(p))
 
 	for _, v := range p {
 		m[v.Key] = v.Value

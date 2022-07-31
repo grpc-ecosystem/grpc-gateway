@@ -21,6 +21,7 @@ import (
 	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/genproto/googleapis/api/visibility"
 	"google.golang.org/genproto/protobuf/field_mask"
+	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -6626,6 +6627,119 @@ func TestSubPathParams(t *testing.T) {
 	if got, want := subParams[1].FieldPath[1].Name, "deeper"; got != want {
 		t.Fatalf("Wrong path param 1, element 1, got %s want %s", got, want)
 	}
+}
+
+func TestRenderServicesParameterDescriptionNoFieldBody(t *testing.T) {
+
+	optionsRaw :=
+		`{
+			"[grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema]": {
+			  "jsonSchema": {
+				"title": "aMessage title",
+				"description": "aMessage description"
+			  }
+			}
+      	}`
+
+	options := &descriptorpb.MessageOptions{}
+	err := protojson.Unmarshal([]byte(optionsRaw), options)
+	if err != nil {
+		t.Fatalf("Error while unmarshalling options: %s", err.Error())
+	}
+
+	aMessageDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("AMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("project_id"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+			{
+				Name:   proto.String("other_field"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(2),
+			},
+		},
+		Options: options,
+	}
+	someResponseDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("SomeResponse"),
+	}
+	aMeth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("AMethod"),
+		InputType:  proto.String("AMessage"),
+		OutputType: proto.String("SomeResponse"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("Test"),
+		Method: []*descriptorpb.MethodDescriptorProto{aMeth},
+	}
+	aMessage := &descriptor.Message{
+		DescriptorProto: aMessageDesc,
+	}
+	someResponseMessage := &descriptor.Message{
+		DescriptorProto: someResponseDesc,
+	}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Package:        proto.String("api"),
+			Name:           proto.String("test.proto"),
+			MessageType:    []*descriptorpb.DescriptorProto{aMessageDesc, someResponseDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{aMessage, someResponseMessage},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: aMeth,
+						RequestType:           aMessage,
+						ResponseType:          someResponseMessage,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/projects/someotherpath",
+								},
+								Body: &descriptor.Body{},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(true)
+	err = reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto}})
+	if err != nil {
+		t.Fatalf("failed to reg.Load(): %v", err)
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	got := result.Paths["/v1/projects/someotherpath"].Post.Parameters[0].Description
+	want := "aMessage description"
+
+	if got != want {
+		t.Fatalf("Wrong description for body parameter, got %s want %s", got, want)
+	}
+
 }
 
 func TestRenderServicesWithBodyFieldNameInCamelCase(t *testing.T) {

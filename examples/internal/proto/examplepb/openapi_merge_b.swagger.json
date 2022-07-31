@@ -39,6 +39,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "InMessageB represents a message to ServiceB.",
             "in": "body",
             "required": true,
             "schema": {
@@ -73,6 +74,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "OutMessageB represents a message returned from ServiceB.",
             "in": "body",
             "required": true,
             "schema": {
