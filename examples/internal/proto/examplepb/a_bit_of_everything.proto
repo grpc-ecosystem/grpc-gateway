@@ -786,3 +786,30 @@ service camelCaseServiceName {
 service AnotherServiceWithNoBindings {
   rpc NoBindings(google.protobuf.Empty) returns (google.protobuf.Empty) {}
 }
+
+service SnakeEnum {
+
+    rpc SnakeEnum(SnakeEnumRequest) returns (SnakeEnumResponse) {
+        option (google.api.http) = {
+            get: "/v1/example/snake/{who}/{what}/{where}"
+        };
+    }
+}
+
+enum snake_case_enum {
+    value_c = 0;
+    value_d = 1;
+}
+
+enum snake_case_0_enum {
+    value_e = 0;
+    value_f = 1;
+}
+
+message SnakeEnumRequest {
+    snake_case_enum what = 1;
+    snake_case_0_enum who = 2;
+    pathenum.snake_case_for_import where = 3;
+}
+
+message SnakeEnumResponse {}
