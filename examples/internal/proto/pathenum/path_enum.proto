@@ -23,3 +23,8 @@ message MessageWithPathEnum {
 message MessageWithNestedPathEnum {
   MessagePathEnum.NestedPathEnum value = 1;
 }
+
+enum snake_case_for_import {
+    value_x = 0;
+    value_y = 1;
+}
