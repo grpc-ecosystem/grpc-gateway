@@ -264,18 +264,17 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 				break
 			}
 		}
-		if !proto.HasExtension(message.Options, openapi_options.E_Openapiv2Schema) {
-			return nil, nil
-		}
-		ext := proto.GetExtension(message.Options, openapi_options.E_Openapiv2Schema)
-		opts, ok := ext.(*openapi_options.Schema)
-		if !ok {
-			return nil, fmt.Errorf("extension is %T; want a JSONSchema object", ext)
-		}
-		for _, fieldName := range opts.GetJsonSchema().GetRequired() {
-			if fieldName == reg.FieldName(field) {
-				required = true
-				break
+		// verify if the field is required in message options
+		if proto.HasExtension(message.Options, openapi_options.E_Openapiv2Schema) {
+			ext := proto.GetExtension(message.Options, openapi_options.E_Openapiv2Schema)
+			opts, ok := ext.(*openapi_options.Schema)
+			if ok {
+				for _, fieldName := range opts.GetJsonSchema().GetRequired() {
+					if fieldName == reg.FieldName(field) {
+						required = true
+						break
+					}
+				}
 			}
 		}
 
