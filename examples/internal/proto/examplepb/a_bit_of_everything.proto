@@ -787,8 +787,7 @@ service AnotherServiceWithNoBindings {
   rpc NoBindings(google.protobuf.Empty) returns (google.protobuf.Empty) {}
 }
 
-service SnakeEnum {
-
+service SnakeEnumService {
     rpc SnakeEnum(SnakeEnumRequest) returns (SnakeEnumResponse) {
         option (google.api.http) = {
             get: "/v1/example/snake/{who}/{what}/{where}"
