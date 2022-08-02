@@ -319,6 +319,14 @@ func TestParse(t *testing.T) {
 			wantPool: []string{"v1", "name"},
 			wantVerb: "",
 		},
+		{
+			input: "/v1/{name=segment/wi:th}",
+			wantFields: []string{
+				"name",
+			},
+			wantPool: []string{"v1", "segment", "wi:th", "name"},
+			wantVerb: "",
+		},
 	} {
 		f, err := Parse(spec.input)
 		if err != nil {

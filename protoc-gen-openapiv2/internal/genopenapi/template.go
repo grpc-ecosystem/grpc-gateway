@@ -899,10 +899,15 @@ pathLoop:
 			buffer += string(char)
 			jsonBuffer += string(char)
 		case ':':
-			// As soon as we find a ":", everything following is a verb
-			parts = append(parts, buffer)
-			buffer = path[i:]
-			break pathLoop
+			if depth == 0 {
+				// As soon as we find a ":" outside a variable,
+				// everything following is a verb
+				parts = append(parts, buffer)
+				buffer = path[i:]
+				break pathLoop
+			}
+			buffer += string(char)
+			jsonBuffer += string(char)
 		default:
 			buffer += string(char)
 			jsonBuffer += string(char)
