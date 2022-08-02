@@ -57,7 +57,7 @@ func Camel(s string) string {
 
 // CamelIdentifier returns the CamelCased identifier without affecting the package name/path if any.
 func CamelIdentifier(s string) string {
-	dot := "."
+	const dot = "."
 	if !strings.Contains(s, dot) {
 		return Camel(s)
 	}
