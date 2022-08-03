@@ -34,6 +34,7 @@ type ABitOfEverythingServiceClient interface {
 	UpdateBook(ctx context.Context, in *UpdateBookRequest, opts ...grpc.CallOption) (*Book, error)
 	Lookup(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	Custom(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
+	DoubleColon(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	Update(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateV2(ctx context.Context, in *UpdateV2Request, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Delete(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -121,6 +122,15 @@ func (c *aBitOfEverythingServiceClient) Lookup(ctx context.Context, in *sub2.IdM
 func (c *aBitOfEverythingServiceClient) Custom(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
 	out := new(ABitOfEverything)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Custom", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) DoubleColon(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
+	out := new(ABitOfEverything)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/DoubleColon", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -339,6 +349,7 @@ type ABitOfEverythingServiceServer interface {
 	UpdateBook(context.Context, *UpdateBookRequest) (*Book, error)
 	Lookup(context.Context, *sub2.IdMessage) (*ABitOfEverything, error)
 	Custom(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
+	DoubleColon(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	Update(context.Context, *ABitOfEverything) (*emptypb.Empty, error)
 	UpdateV2(context.Context, *UpdateV2Request) (*emptypb.Empty, error)
 	Delete(context.Context, *sub2.IdMessage) (*emptypb.Empty, error)
@@ -391,6 +402,9 @@ func (UnimplementedABitOfEverythingServiceServer) Lookup(context.Context, *sub2.
 }
 func (UnimplementedABitOfEverythingServiceServer) Custom(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Custom not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) DoubleColon(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DoubleColon not implemented")
 }
 func (UnimplementedABitOfEverythingServiceServer) Update(context.Context, *ABitOfEverything) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
@@ -574,6 +588,24 @@ func _ABitOfEverythingService_Custom_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ABitOfEverythingServiceServer).Custom(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_DoubleColon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).DoubleColon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/DoubleColon",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).DoubleColon(ctx, req.(*ABitOfEverything))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1004,6 +1036,10 @@ var ABitOfEverythingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Custom",
 			Handler:    _ABitOfEverythingService_Custom_Handler,
+		},
+		{
+			MethodName: "DoubleColon",
+			Handler:    _ABitOfEverythingService_DoubleColon_Handler,
 		},
 		{
 			MethodName: "Update",

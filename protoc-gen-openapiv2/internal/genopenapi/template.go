@@ -864,7 +864,8 @@ func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor
 	depth := 0
 	buffer := ""
 	jsonBuffer := ""
-	for _, char := range path {
+pathLoop:
+	for i, char := range path {
 		switch char {
 		case '{':
 			// Push on the stack
@@ -898,11 +899,12 @@ func templateToParts(path string, reg *descriptor.Registry, fields []*descriptor
 			buffer += string(char)
 			jsonBuffer += string(char)
 		case ':':
-			// Only the last part may be a verb (":" LITERAL)
 			if depth == 0 {
+				// As soon as we find a ":" outside a variable,
+				// everything following is a verb
 				parts = append(parts, buffer)
-				buffer = ":"
-				continue
+				buffer = path[i:]
+				break pathLoop
 			}
 			buffer += string(char)
 			jsonBuffer += string(char)

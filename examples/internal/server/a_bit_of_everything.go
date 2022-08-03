@@ -200,6 +200,19 @@ func (s *_ABitOfEverythingServer) Custom(ctx context.Context, msg *examples.ABit
 	return msg, nil
 }
 
+func (s *_ABitOfEverythingServer) DoubleColon(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	glog.Info(msg)
+	if _, ok := s.v[msg.Uuid]; ok {
+		s.v[msg.Uuid] = msg
+	} else {
+		return nil, status.Errorf(codes.NotFound, "not found")
+	}
+	return msg, nil
+}
+
 func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABitOfEverything) (*emptypb.Empty, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
