@@ -239,7 +239,8 @@ message ABitOfEverything {
       required: [
         "uuid",
         "int64_value",
-        "double_value"
+        "double_value",
+        "FieldTwo"
       ]
       extensions: {
         key: "x-a-bit-of-everything-foo";
@@ -370,6 +371,7 @@ message ABitOfEverything {
   // mark a field as required in Open API definition
   string required_string_via_field_behavior_annotation = 38 [(google.api.field_behavior) = REQUIRED];
 
+
   // mark a field as readonly in Open API definition
   string output_only_string_via_field_behavior_annotation = 39 [(google.api.field_behavior) = OUTPUT_ONLY];
 
@@ -382,6 +384,10 @@ message ABitOfEverything {
     min_length: 1
     description: "Only digits are allowed."
   }];
+// Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+  string FieldOne = 42 ;
+  string FieldTwo = 43 [(google.api.field_behavior) = REQUIRED];
+  string FieldThree = 44 [(google.api.field_behavior) = REQUIRED];
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality
