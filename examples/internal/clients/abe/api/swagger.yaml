@@ -159,12 +159,11 @@ paths:
         x-optionalDataType: "Int64"
       - name: "uuid"
         in: "query"
-        required: false
+        required: true
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-internal: true
         x-exportParamName: "Uuid"
-        x-optionalDataType: "String"
       - name: "floatValue"
         in: "query"
         description: "Float value field"
@@ -175,18 +174,16 @@ paths:
         x-exportParamName: "FloatValue"
       - name: "doubleValue"
         in: "query"
-        required: false
+        required: true
         type: "number"
         format: "double"
         x-exportParamName: "DoubleValue"
-        x-optionalDataType: "Float64"
       - name: "int64Value"
         in: "query"
-        required: false
+        required: true
         type: "string"
         format: "int64"
         x-exportParamName: "Int64Value"
-        x-optionalDataType: "String"
       - name: "uint64Value"
         in: "query"
         required: false
@@ -486,12 +483,11 @@ paths:
         x-optionalDataType: "String"
       - name: "uuid"
         in: "query"
-        required: false
+        required: true
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-internal: true
         x-exportParamName: "Uuid"
-        x-optionalDataType: "String"
       - name: "floatValue"
         in: "query"
         description: "Float value field"
@@ -502,18 +498,16 @@ paths:
         x-exportParamName: "FloatValue"
       - name: "doubleValue"
         in: "query"
-        required: false
+        required: true
         type: "number"
         format: "double"
         x-exportParamName: "DoubleValue"
-        x-optionalDataType: "Float64"
       - name: "int64Value"
         in: "query"
-        required: false
+        required: true
         type: "string"
         format: "int64"
         x-exportParamName: "Int64Value"
-        x-optionalDataType: "String"
       - name: "uint64Value"
         in: "query"
         required: false
@@ -804,12 +798,11 @@ paths:
         x-exportParamName: "SingleNested"
       - name: "uuid"
         in: "query"
-        required: false
+        required: true
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-internal: true
         x-exportParamName: "Uuid"
-        x-optionalDataType: "String"
       - name: "floatValue"
         in: "query"
         description: "Float value field"
@@ -820,18 +813,16 @@ paths:
         x-exportParamName: "FloatValue"
       - name: "doubleValue"
         in: "query"
-        required: false
+        required: true
         type: "number"
         format: "double"
         x-exportParamName: "DoubleValue"
-        x-optionalDataType: "Float64"
       - name: "int64Value"
         in: "query"
-        required: false
+        required: true
         type: "string"
         format: "int64"
         x-exportParamName: "Int64Value"
-        x-optionalDataType: "String"
       - name: "uint64Value"
         in: "query"
         required: false
@@ -1152,18 +1143,16 @@ paths:
         x-exportParamName: "FloatValue"
       - name: "doubleValue"
         in: "query"
-        required: false
+        required: true
         type: "number"
         format: "double"
         x-exportParamName: "DoubleValue"
-        x-optionalDataType: "Float64"
       - name: "int64Value"
         in: "query"
-        required: false
+        required: true
         type: "string"
         format: "int64"
         x-exportParamName: "Int64Value"
-        x-optionalDataType: "String"
       - name: "uint64Value"
         in: "query"
         required: false
@@ -1606,12 +1595,11 @@ paths:
         x-optionalDataType: "String"
       - name: "uuid"
         in: "query"
-        required: false
+        required: true
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-internal: true
         x-exportParamName: "Uuid"
-        x-optionalDataType: "String"
       - name: "bytesValue"
         in: "query"
         required: false
@@ -1814,18 +1802,16 @@ paths:
         x-exportParamName: "FloatValue"
       - name: "doubleValue"
         in: "query"
-        required: false
+        required: true
         type: "number"
         format: "double"
         x-exportParamName: "DoubleValue"
-        x-optionalDataType: "Float64"
       - name: "int64Value"
         in: "query"
-        required: false
+        required: true
         type: "string"
         format: "int64"
         x-exportParamName: "Int64Value"
-        x-optionalDataType: "String"
       - name: "uint64Value"
         in: "query"
         required: false
@@ -2177,18 +2163,16 @@ paths:
         x-exportParamName: "FloatValue"
       - name: "doubleValue"
         in: "query"
-        required: false
+        required: true
         type: "number"
         format: "double"
         x-exportParamName: "DoubleValue"
-        x-optionalDataType: "Float64"
       - name: "int64Value"
         in: "query"
-        required: false
+        required: true
         type: "string"
         format: "int64"
         x-exportParamName: "Int64Value"
-        x-optionalDataType: "String"
       - name: "uint64Value"
         in: "query"
         required: false
@@ -2498,18 +2482,16 @@ paths:
         x-exportParamName: "FloatValue"
       - name: "doubleValue"
         in: "query"
-        required: false
+        required: true
         type: "number"
         format: "double"
         x-exportParamName: "DoubleValue"
-        x-optionalDataType: "Float64"
       - name: "int64Value"
         in: "query"
-        required: false
+        required: true
         type: "string"
         format: "int64"
         x-exportParamName: "Int64Value"
-        x-optionalDataType: "String"
       - name: "uint64Value"
         in: "query"
         required: false

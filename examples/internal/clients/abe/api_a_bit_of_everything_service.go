@@ -343,14 +343,14 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckExternal
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedName name is nested field.
+ * @param uuid
  * @param floatValue Float value field
+ * @param doubleValue
+ * @param int64Value
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceCheckGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Uuid" (optional.String) - 
-     * @param "DoubleValue" (optional.Float64) - 
-     * @param "Int64Value" (optional.String) - 
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -387,9 +387,6 @@ ABitOfEverythingServiceApiService
 type ABitOfEverythingServiceCheckGetQueryParamsOpts struct { 
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
-	Uuid optional.String
-	DoubleValue optional.Float64
-	Int64Value optional.String
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -421,7 +418,7 @@ type ABitOfEverythingServiceCheckGetQueryParamsOpts struct {
 	ProductId optional.Interface
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -444,16 +441,10 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	if localVarOptionals != nil && localVarOptionals.SingleNestedOk.IsSet() {
 		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
 	}
-	if localVarOptionals != nil && localVarOptionals.Uuid.IsSet() {
-		localVarQueryParams.Add("uuid", parameterToString(localVarOptionals.Uuid.Value(), ""))
-	}
+	localVarQueryParams.Add("uuid", parameterToString(uuid, ""))
 	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
-	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
-	}
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
 		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
@@ -678,14 +669,14 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedOk DeepEnum description.
+ * @param uuid
  * @param floatValue Float value field
+ * @param doubleValue
+ * @param int64Value
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
-     * @param "Uuid" (optional.String) - 
-     * @param "DoubleValue" (optional.Float64) - 
-     * @param "Int64Value" (optional.String) - 
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -722,9 +713,6 @@ ABitOfEverythingServiceApiService
 type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct { 
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
-	Uuid optional.String
-	DoubleValue optional.Float64
-	Int64Value optional.String
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -756,7 +744,7 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct {
 	ProductId optional.Interface
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -779,16 +767,10 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	if localVarOptionals != nil && localVarOptionals.SingleNestedAmount.IsSet() {
 		localVarQueryParams.Add("singleNested.amount", parameterToString(localVarOptionals.SingleNestedAmount.Value(), ""))
 	}
-	if localVarOptionals != nil && localVarOptionals.Uuid.IsSet() {
-		localVarQueryParams.Add("uuid", parameterToString(localVarOptionals.Uuid.Value(), ""))
-	}
+	localVarQueryParams.Add("uuid", parameterToString(uuid, ""))
 	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
-	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
-	}
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
 		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
@@ -1014,12 +996,12 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param stringValue
  * @param singleNested
+ * @param uuid
  * @param floatValue Float value field
+ * @param doubleValue
+ * @param int64Value
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceCheckPostQueryParamsOpts - Optional Parameters:
-     * @param "Uuid" (optional.String) - 
-     * @param "DoubleValue" (optional.Float64) - 
-     * @param "Int64Value" (optional.String) - 
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -1054,9 +1036,6 @@ ABitOfEverythingServiceApiService
 */
 
 type ABitOfEverythingServiceCheckPostQueryParamsOpts struct { 
-	Uuid optional.String
-	DoubleValue optional.Float64
-	Int64Value optional.String
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -1088,7 +1067,7 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	ProductId optional.Interface
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1105,16 +1084,10 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if localVarOptionals != nil && localVarOptionals.Uuid.IsSet() {
-		localVarQueryParams.Add("uuid", parameterToString(localVarOptionals.Uuid.Value(), ""))
-	}
+	localVarQueryParams.Add("uuid", parameterToString(uuid, ""))
 	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
-	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
-	}
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
 		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
@@ -1514,12 +1487,12 @@ This API creates a new ABitOfEverything
  * @param pathEnumValue
  * @param nestedPathEnumValue
  * @param enumValueAnnotation Numeric enum description.
+ * @param uuid
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceCreateOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Uuid" (optional.String) - 
      * @param "BytesValue" (optional.String) - 
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
      * @param "OneofString" (optional.String) - 
@@ -1542,7 +1515,6 @@ type ABitOfEverythingServiceCreateOpts struct {
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
-	Uuid optional.String
 	BytesValue optional.String
 	RepeatedStringValue optional.Interface
 	OneofString optional.String
@@ -1559,7 +1531,7 @@ type ABitOfEverythingServiceCreateOpts struct {
 	ProductId optional.Interface
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, uuid string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1603,9 +1575,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 	if localVarOptionals != nil && localVarOptionals.SingleNestedOk.IsSet() {
 		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
 	}
-	if localVarOptionals != nil && localVarOptionals.Uuid.IsSet() {
-		localVarQueryParams.Add("uuid", parameterToString(localVarOptionals.Uuid.Value(), ""))
-	}
+	localVarQueryParams.Add("uuid", parameterToString(uuid, ""))
 	if localVarOptionals != nil && localVarOptionals.BytesValue.IsSet() {
 		localVarQueryParams.Add("bytesValue", parameterToString(localVarOptionals.BytesValue.Value(), ""))
 	}
@@ -2112,13 +2082,13 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
  * @param floatValue Float value field
+ * @param doubleValue
+ * @param int64Value
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceCustomOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "DoubleValue" (optional.Float64) - 
-     * @param "Int64Value" (optional.String) - 
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -2157,8 +2127,6 @@ type ABitOfEverythingServiceCustomOpts struct {
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
-	DoubleValue optional.Float64
-	Int64Value optional.String
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -2191,7 +2159,7 @@ type ABitOfEverythingServiceCustomOpts struct {
 	ProductId optional.Interface
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -2218,12 +2186,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx co
 		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
 	}
 	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
-	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
-	}
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
 		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
@@ -2452,13 +2416,13 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
  * @param floatValue Float value field
+ * @param doubleValue
+ * @param int64Value
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceCustomOptionsRequestOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "DoubleValue" (optional.Float64) - 
-     * @param "Int64Value" (optional.String) - 
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -2497,8 +2461,6 @@ type ABitOfEverythingServiceCustomOptionsRequestOpts struct {
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
-	DoubleValue optional.Float64
-	Int64Value optional.String
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -2531,7 +2493,7 @@ type ABitOfEverythingServiceCustomOptionsRequestOpts struct {
 	ProductId optional.Interface
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Options")
 		localVarPostBody   interface{}
@@ -2558,12 +2520,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptions
 		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
 	}
 	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
-	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
-	}
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
 		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
@@ -3557,13 +3515,13 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
  * @param floatValue Float value field
+ * @param doubleValue
+ * @param int64Value
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceExistsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "DoubleValue" (optional.Float64) - 
-     * @param "Int64Value" (optional.String) - 
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -3602,8 +3560,6 @@ type ABitOfEverythingServiceExistsOpts struct {
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
-	DoubleValue optional.Float64
-	Int64Value optional.String
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -3636,7 +3592,7 @@ type ABitOfEverythingServiceExistsOpts struct {
 	ProductId optional.Interface
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Head")
 		localVarPostBody   interface{}
@@ -3663,12 +3619,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx co
 		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
 	}
 	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
-	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
-	}
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
 		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
@@ -4012,13 +3964,13 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
  * @param floatValue Float value field
+ * @param doubleValue
+ * @param int64Value
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceGetQueryOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "DoubleValue" (optional.Float64) - 
-     * @param "Int64Value" (optional.String) - 
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -4057,8 +4009,6 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
-	DoubleValue optional.Float64
-	Int64Value optional.String
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -4091,7 +4041,7 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	ProductId optional.Interface
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -4118,12 +4068,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
 	}
 	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
-	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
-	}
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
 		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
