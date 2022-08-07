@@ -20,6 +20,7 @@ tags:
     url: "https://github.com/grpc-ecosystem/grpc-gateway"
 - name: "camelCaseServiceName"
 - name: "AnotherServiceWithNoBindings"
+- name: "SnakeEnumService"
 schemes:
 - "http"
 - "https"
@@ -3474,6 +3475,62 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
+  /v1/example/snake/{who}/{what}/{where}:
+    get:
+      tags:
+      - "SnakeEnumService"
+      operationId: "SnakeEnumService_SnakeEnum"
+      parameters:
+      - name: "who"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "value_e"
+        - "value_f"
+        x-exportParamName: "Who"
+      - name: "what"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "value_c"
+        - "value_d"
+        x-exportParamName: "What"
+      - name: "where"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "value_x"
+        - "value_y"
+        x-exportParamName: "Where"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSnakeEnumResponse"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
   /v1/{book.name}:
     patch:
       tags:
@@ -4513,12 +4570,44 @@ definitions:
     - "ZERO"
     - "ONE"
     default: "ZERO"
+  examplepbSnakeEnumResponse:
+    type: "object"
+  examplepbsnake_case_0_enum:
+    type: "string"
+    title: "Ignoring lint warnings as this enum type exist to validate proper functionality\n\
+      for projects that don't follow these lint rules.\nbuf:lint:ignore ENUM_PASCAL_CASE"
+    description: "- value_e: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE\n - value_f:\
+      \ buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE"
+    enum:
+    - "value_e"
+    - "value_f"
+    default: "value_e"
+  examplepbsnake_case_enum:
+    type: "string"
+    title: "Ignoring lint warnings as this enum type exist to validate proper functionality\n\
+      for projects that don't follow these lint rules.\nbuf:lint:ignore ENUM_PASCAL_CASE"
+    description: "- value_c: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE\n - value_d:\
+      \ buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE"
+    enum:
+    - "value_c"
+    - "value_d"
+    default: "value_c"
   pathenumPathEnum:
     type: "string"
     enum:
     - "ABC"
     - "DEF"
     default: "ABC"
+  pathenumsnake_case_for_import:
+    type: "string"
+    title: "Ignoring lint warnings as this enum type exist to validate proper functionality\n\
+      for projects that don't follow these lint rules.\nbuf:lint:ignore ENUM_PASCAL_CASE"
+    description: "- value_x: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE\n - value_y:\
+      \ buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE"
+    enum:
+    - "value_x"
+    - "value_y"
+    default: "value_x"
   protobufAny:
     type: "object"
     properties:
