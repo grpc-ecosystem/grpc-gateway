@@ -1,5 +1,10 @@
 package casing
 
+import (
+	"path/filepath"
+	"strings"
+)
+
 // Camel returns the CamelCased name.
 //
 // This was moved from the now deprecated github.com/golang/protobuf/protoc-gen-go/generator package
@@ -48,6 +53,18 @@ func Camel(s string) string {
 		}
 	}
 	return string(t)
+}
+
+// CamelIdentifier returns the CamelCased identifier without affecting the package name/path if any.
+func CamelIdentifier(s string) string {
+	const dot = "."
+	if !strings.Contains(s, dot) {
+		return Camel(s)
+	}
+	identifier := filepath.Ext(s)
+	path := strings.TrimSuffix(s, identifier)
+	identifier = strings.TrimPrefix(identifier, dot)
+	return path + dot + Camel(identifier)
 }
 
 // JSONCamelCase converts a snake_case identifier to a camelCase identifier,

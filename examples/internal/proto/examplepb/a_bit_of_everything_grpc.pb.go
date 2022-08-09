@@ -1301,3 +1301,87 @@ var AnotherServiceWithNoBindings_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "examples/internal/proto/examplepb/a_bit_of_everything.proto",
 }
+
+// SnakeEnumServiceClient is the client API for SnakeEnumService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type SnakeEnumServiceClient interface {
+	SnakeEnum(ctx context.Context, in *SnakeEnumRequest, opts ...grpc.CallOption) (*SnakeEnumResponse, error)
+}
+
+type snakeEnumServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewSnakeEnumServiceClient(cc grpc.ClientConnInterface) SnakeEnumServiceClient {
+	return &snakeEnumServiceClient{cc}
+}
+
+func (c *snakeEnumServiceClient) SnakeEnum(ctx context.Context, in *SnakeEnumRequest, opts ...grpc.CallOption) (*SnakeEnumResponse, error) {
+	out := new(SnakeEnumResponse)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.SnakeEnumService/SnakeEnum", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// SnakeEnumServiceServer is the server API for SnakeEnumService service.
+// All implementations should embed UnimplementedSnakeEnumServiceServer
+// for forward compatibility
+type SnakeEnumServiceServer interface {
+	SnakeEnum(context.Context, *SnakeEnumRequest) (*SnakeEnumResponse, error)
+}
+
+// UnimplementedSnakeEnumServiceServer should be embedded to have forward compatible implementations.
+type UnimplementedSnakeEnumServiceServer struct {
+}
+
+func (UnimplementedSnakeEnumServiceServer) SnakeEnum(context.Context, *SnakeEnumRequest) (*SnakeEnumResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SnakeEnum not implemented")
+}
+
+// UnsafeSnakeEnumServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to SnakeEnumServiceServer will
+// result in compilation errors.
+type UnsafeSnakeEnumServiceServer interface {
+	mustEmbedUnimplementedSnakeEnumServiceServer()
+}
+
+func RegisterSnakeEnumServiceServer(s grpc.ServiceRegistrar, srv SnakeEnumServiceServer) {
+	s.RegisterService(&SnakeEnumService_ServiceDesc, srv)
+}
+
+func _SnakeEnumService_SnakeEnum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SnakeEnumRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SnakeEnumServiceServer).SnakeEnum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.SnakeEnumService/SnakeEnum",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SnakeEnumServiceServer).SnakeEnum(ctx, req.(*SnakeEnumRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// SnakeEnumService_ServiceDesc is the grpc.ServiceDesc for SnakeEnumService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var SnakeEnumService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.SnakeEnumService",
+	HandlerType: (*SnakeEnumServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SnakeEnum",
+			Handler:    _SnakeEnumService_SnakeEnum_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "examples/internal/proto/examplepb/a_bit_of_everything.proto",
+}

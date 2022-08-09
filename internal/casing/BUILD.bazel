@@ -1,4 +1,4 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "casing",
@@ -11,4 +11,10 @@ alias(
     name = "go_default_library",
     actual = ":casing",
     visibility = ["//:__subpackages__"],
+)
+
+go_test(
+    name = "casing_test",
+    srcs = ["camel_test.go"],
+    embed = [":casing"],
 )
