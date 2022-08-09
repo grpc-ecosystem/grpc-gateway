@@ -6485,12 +6485,19 @@
     },
     "examplepbNumericEnum": {
       "type": "string",
+      "example": "\"ZERO\"",
       "enum": [
         "ZERO",
         "ONE"
       ],
-      "default": "ZERO",
-      "description": "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+      "description": "NumericEnum is one or zero.",
+      "title": "NumericEnum",
+      "required": [
+        "uuid",
+        "int64Value",
+        "doubleValue"
+      ],
+      "x-a-bit-of-everything-foo": "bar"
     },
     "examplepbSnakeEnumResponse": {
       "type": "object"

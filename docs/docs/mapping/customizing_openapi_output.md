@@ -22,7 +22,7 @@ message MyMessage {
 
 ## Using proto options
 
-You can define options on your Protocol Buffer services, operations, messages, and field definitions to customize your Open API output. For instance, to customize the [OpenAPI Schema Object](https://swagger.io/specification/v2/#schemaObject) for messages and fields:
+You can define options on your Protocol Buffer services, operations, messages, enums and field definitions to customize your Open API output. For instance, to customize the [OpenAPI Schema Object](https://swagger.io/specification/v2/#schemaObject) for messages and fields:
 
 ```protobuf
 import "protoc-gen-openapiv2/options/annotations.proto";
@@ -48,6 +48,35 @@ message ABitOfEverything {
     };
 
     string uuid = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {description: "The UUID field."}];
+}
+```
+
+Enums can be customized like messages:
+
+```protobuf
+// NumericEnum is one or zero.
+enum NumericEnum {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_enum) = {
+    json_schema: {
+      title: "NumericEnum"
+      description: "NumericEnum is one or zero."
+      extensions: {
+        key: "x-a-bit-of-everything-foo";
+        value {
+          string_value: "bar";
+        }
+      }
+    }
+    external_docs: {
+      url: "https://github.com/grpc-ecosystem/grpc-gateway";
+      description: "Find out more about ABitOfEverything";
+    }
+    example: "\"ZERO\""
+  };
+  // ZERO means 0
+  ZERO = 0;
+  // ONE means 1
+  ONE = 1;
 }
 ```
 
@@ -579,3 +608,4 @@ definitions:
 ```
 
 {% endraw %}
+

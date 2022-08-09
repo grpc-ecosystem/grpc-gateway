@@ -813,6 +813,9 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 		if err := updateOpenAPIDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
 			panic(err)
 		}
+		if schema, err := getEnumSchemaOption(reg, enum.EnumDescriptorProto); err == nil {
+			updateswaggerObjectFromSchema(&enumSchemaObject, schema, reg, nil)
+		}
 
 		d[swgName] = enumSchemaObject
 	}
@@ -2394,6 +2397,21 @@ func extractFieldBehaviorFromFieldDescriptor(fd *descriptorpb.FieldDescriptorPro
 	return opts, nil
 }
 
+func extractEnumSchemaFromEnumDescriptor(enum *descriptorpb.EnumDescriptorProto) (*openapi_options.Schema, error) {
+	if enum.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(enum.Options, openapi_options.E_Openapiv2Enum) {
+		return nil, nil
+	}
+	ext := proto.GetExtension(enum.Options, openapi_options.E_Openapiv2Enum)
+	opts, ok := ext.(*openapi_options.Schema)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want a openapi_options.Schema object", ext)
+	}
+	return opts, nil
+}
+
 func getFieldVisibilityOption(fd *descriptor.Field) *visibility.VisibilityRule {
 	if fd.Options == nil {
 		return nil
@@ -2525,6 +2543,17 @@ func getFieldBehaviorOption(reg *descriptor.Registry, fd *descriptor.Field) ([]a
 	return opts, nil
 }
 
+func getEnumSchemaOption(reg *descriptor.Registry, enum *descriptorpb.EnumDescriptorProto) (*openapi_options.Schema, error) {
+	opts, err := extractEnumSchemaFromEnumDescriptor(enum)
+	if err != nil {
+		return nil, err
+	}
+	if opts != nil {
+		return opts, nil
+	}
+	return opts, nil
+}
+
 func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.JSONSchema, reg *descriptor.Registry, refs refMap) schemaCore {
 	ret := schemaCore{}
 
@@ -2549,7 +2578,9 @@ func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.JSONSchema, reg *desc
 
 func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_options.JSONSchema, reg *descriptor.Registry, data interface{}) {
 	s.Title = j.GetTitle()
-	s.Description = j.GetDescription()
+	if j.GetDescription() != "" {
+		s.Description = j.GetDescription()
+	}
 	if reg.GetUseGoTemplate() {
 		s.Title = goTemplateComments(s.Title, data, reg)
 		s.Description = goTemplateComments(s.Description, data, reg)
@@ -2585,7 +2616,6 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		s.MultipleOf = j.GetMultipleOf()
 		s.ExclusiveMaximum = j.GetExclusiveMaximum()
 		s.ExclusiveMinimum = j.GetExclusiveMinimum()
-		s.Enum = j.GetEnum()
 	}
 	s.MaxItems = j.GetMaxItems()
 	s.MinItems = j.GetMinItems()
@@ -2596,7 +2626,12 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 			s.Required[i] = casing.JSONCamelCase(r)
 		}
 	}
-	s.Enum = j.GetEnum()
+	if j.GetDefault() != "" {
+		s.Default = j.GetDefault()
+	}
+	if len(j.GetEnum()) != 0 {
+		s.Enum = j.GetEnum()
+	}
 	if j.GetExtensions() != nil {
 		exts, err := processExtensions(j.GetExtensions())
 		if err != nil {
@@ -2612,6 +2647,15 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 	}
 	if j.GetFormat() != "" {
 		s.Format = j.GetFormat()
+	}
+}
+
+func updateswaggerObjectFromSchema(s *openapiSchemaObject, j *openapi_options.Schema, reg *descriptor.Registry, data interface{}) {
+	if j.GetJsonSchema() != nil {
+		updateswaggerObjectFromJSONSchema(s, j.GetJsonSchema(), reg, data)
+	}
+	if j.GetExample() != "" { // avoid overwrite example from JsonSchema with empty string
+		s.Example = RawExample(strconv.Quote(j.GetExample()))
 	}
 }
 
@@ -2841,3 +2885,4 @@ func getFieldConfiguration(reg *descriptor.Registry, fd *descriptor.Field) *open
 	}
 	return nil
 }
+

@@ -4544,12 +4544,13 @@ definitions:
         $ref: "#/definitions/examplepbErrorObject"
   examplepbNumericEnum:
     type: "string"
-    description: "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE\
-      \ means 1"
+    title: "NumericEnum"
+    description: "NumericEnum is one or zero."
+    example: "ZERO"
     enum:
     - "ZERO"
     - "ONE"
-    default: "ZERO"
+    x-a-bit-of-everything-foo: "bar"
   examplepbSnakeEnumResponse:
     type: "object"
   examplepbsnake_case_0_enum:

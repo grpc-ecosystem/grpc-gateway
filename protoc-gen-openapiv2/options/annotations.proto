@@ -42,3 +42,10 @@ extend google.protobuf.FieldOptions {
   // different descriptor messages.
   JSONSchema openapiv2_field = 1042;
 }
+extend google.protobuf.EnumOptions {
+  // ID assigned by protobuf-global-extension-registry@google.com for gRPC-Gateway project.
+  //
+  // All IDs are the same, as assigned. It is okay that they are the same, as they extend
+  // different descriptor messages.
+  Schema openapiv2_enum = 1042;
+}

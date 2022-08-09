@@ -9,7 +9,7 @@
  */
 
 package abe
-// ExamplepbNumericEnum : NumericEnum is one or zero.   - ZERO: ZERO means 0  - ONE: ONE means 1
+// ExamplepbNumericEnum : NumericEnum is one or zero.
 type ExamplepbNumericEnum string
 
 // List of examplepbNumericEnum
