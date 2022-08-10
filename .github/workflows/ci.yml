@@ -41,7 +41,7 @@ jobs:
           ./node_modules/.bin/gulp
   generate:
     container:
-      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.17
+      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.19
       options: "--user root"
       credentials:
         username: ${{ github.actor }}
@@ -56,7 +56,7 @@ jobs:
       - run: git diff --exit-code
   bazel:
     container:
-      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.17
+      image: docker.pkg.github.com/grpc-ecosystem/grpc-gateway/build-env:1.19
       options: "--user root"
       credentials:
         username: ${{ github.actor }}
