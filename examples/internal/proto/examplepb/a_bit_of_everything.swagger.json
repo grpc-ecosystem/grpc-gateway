@@ -3397,14 +3397,14 @@
           {
             "name": "doubleValue",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "number",
             "format": "double"
           },
           {
             "name": "int64Value",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "format": "int64"
           },

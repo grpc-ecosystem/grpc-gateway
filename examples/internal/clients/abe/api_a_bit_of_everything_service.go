@@ -3021,13 +3021,13 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
  * @param floatValue Float value field
+ * @param doubleValue
+ * @param int64Value
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param optional nil or *ABitOfEverythingServiceDoubleColonOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "DoubleValue" (optional.Float64) - 
-     * @param "Int64Value" (optional.String) - 
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -3066,8 +3066,6 @@ type ABitOfEverythingServiceDoubleColonOpts struct {
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
-	DoubleValue optional.Float64
-	Int64Value optional.String
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -3100,7 +3098,7 @@ type ABitOfEverythingServiceDoubleColonOpts struct {
 	ProductId optional.Interface
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceDoubleColonOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceDoubleColonOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -3127,12 +3125,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(c
 		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
 	}
 	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
-	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
-	}
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
 		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
