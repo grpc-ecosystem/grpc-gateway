@@ -57,6 +57,7 @@ that's needed to generate a reverse-proxy with this library.
 
 ## Installation
 
+### Compile from source
 The following instructions assume you are using
 [Go Modules](https://github.com/golang/go/wiki/Modules) for dependency
 management. Use a
@@ -94,6 +95,8 @@ This will place four binaries in your `$GOBIN`;
 - `protoc-gen-go-grpc`
 
 Make sure that your `$GOBIN` is in your `$PATH`.
+
+### Download the binaries
 
 You may alternatively download the binaries from the [GitHub releases page](https://github.com/grpc-ecosystem/grpc-gateway/releases/latest).
 We generate [SLSA3 signatures](slsa.dev) using the OpenSSF's [slsa-framework/slsa-github-generator](https://github.com/slsa-framework/slsa-github-generator) during the release process. To verify a release binary:
