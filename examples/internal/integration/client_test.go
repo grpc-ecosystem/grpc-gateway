@@ -3,8 +3,9 @@ package integration_test
 import (
 	"context"
 	"fmt"
-	"github.com/rogpeppe/fastuuid"
 	"testing"
+
+	"github.com/rogpeppe/fastuuid"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/echo"
