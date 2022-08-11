@@ -265,15 +265,11 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			}
 		}
 		// verify if the field is required in message options
-		if proto.HasExtension(message.Options, openapi_options.E_Openapiv2Schema) {
-			ext := proto.GetExtension(message.Options, openapi_options.E_Openapiv2Schema)
-			opts, ok := ext.(*openapi_options.Schema)
-			if ok {
-				for _, fieldName := range opts.GetJsonSchema().GetRequired() {
-					if fieldName == reg.FieldName(field) {
-						required = true
-						break
-					}
+		if messageSchema, err := extractSchemaOptionFromMessageDescriptor(message.DescriptorProto); err == nil {
+			for _, fieldName := range messageSchema.GetJsonSchema().GetRequired() {
+				if fieldName == reg.FieldName(field) {
+					required = true
+					break
 				}
 			}
 		}
@@ -2843,3 +2839,4 @@ func getFieldConfiguration(reg *descriptor.Registry, fd *descriptor.Field) *open
 	}
 	return nil
 }
+
