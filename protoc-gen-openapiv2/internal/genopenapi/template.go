@@ -214,13 +214,12 @@ func (c *cycleChecker) Branch() *cycleChecker {
 
 // nestedQueryParams converts a field to a list of OpenAPI query parameters recursively.
 // This function is a helper function for queryParams, that keeps track of cyclical message references
+// through the use of
 //
-//	through the use of
-//	    touched map[string]int
+//	touched map[string]int
 //
 // If a cycle is discovered, an error is returned, as cyclical data structures are dangerous
-//
-//	in query parameters.
+// in query parameters.
 func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body, cycle *cycleChecker) (params []openapiParameterObject, err error) {
 	// make sure the parameter is not already listed as a path parameter
 	for _, pathParam := range pathParams {

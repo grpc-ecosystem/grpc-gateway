@@ -651,8 +651,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 }
 
 // TestMessagetoQueryParametersNoRecursive, is a check that cyclical references between messages
-//
-//	are not falsely detected given previous known edge-cases.
+// are not falsely detected given previous known edge-cases.
 func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 	type test struct {
 		MsgDescs []*descriptorpb.DescriptorProto
@@ -771,9 +770,8 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 }
 
 // TestMessagetoQueryParametersRecursive, is a check that cyclical references between messages
-//
-//	are handled gracefully. The goal is to insure that attempts to add messages with cyclical
-//	references to query-parameters returns an error message.
+// are handled gracefully. The goal is to insure that attempts to add messages with cyclical
+// references to query-parameters returns an error message.
 func TestMessageToQueryParametersRecursive(t *testing.T) {
 	type test struct {
 		MsgDescs []*descriptorpb.DescriptorProto

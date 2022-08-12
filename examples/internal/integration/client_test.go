@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/rogpeppe/fastuuid"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/echo"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/unannotatedecho"
+	"github.com/rogpeppe/fastuuid"
 )
 
 var uuidgen = fastuuid.MustNewGenerator()
