@@ -15,22 +15,20 @@ func fieldName(k string) string {
 }
 
 //this method will filter the same fields and return the unique one
-func searchRequired(schemaFieldsRequired []string, fieldsRequired []string) []string {
+func getUniqueFields(schemaFieldsRequired []string, fieldsRequired []string) []string {
 	var unique []string
 	var index *int
 
-	for _, fieldRequired := range fieldsRequired {
+	for j, schemaFieldRequired := range schemaFieldsRequired {
 		index = nil
-		for i, schemaFieldRequired := range schemaFieldsRequired {
+		for i, fieldRequired := range fieldsRequired {
 			if schemaFieldRequired == fieldRequired {
 				index = &i
 				break
 			}
 		}
-		if index != nil {
-			unique = append(schemaFieldsRequired[:*index], schemaFieldsRequired[*index+1:]...)
-		} else {
-			unique = schemaFieldsRequired
+		if index == nil {
+			unique = append(unique, schemaFieldsRequired[j])
 		}
 	}
 	return unique
