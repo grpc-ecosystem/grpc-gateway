@@ -520,20 +520,20 @@
             "collectionFormat": "multi"
           },
           {
-            "name": "FieldOne",
+            "name": "optionalStringField",
             "description": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "FieldTwo",
+            "name": "requiredStringField1",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
-            "name": "FieldThree",
+            "name": "requiredStringField2",
             "in": "query",
             "required": true,
             "type": "string"
@@ -901,20 +901,20 @@
             "collectionFormat": "multi"
           },
           {
-            "name": "FieldOne",
+            "name": "optionalStringField",
             "description": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "FieldTwo",
+            "name": "requiredStringField1",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
-            "name": "FieldThree",
+            "name": "requiredStringField2",
             "in": "query",
             "required": true,
             "type": "string"
@@ -1271,20 +1271,20 @@
             "collectionFormat": "multi"
           },
           {
-            "name": "FieldOne",
+            "name": "optionalStringField",
             "description": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "FieldTwo",
+            "name": "requiredStringField1",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
-            "name": "FieldThree",
+            "name": "requiredStringField2",
             "in": "query",
             "required": true,
             "type": "string"
@@ -1659,20 +1659,20 @@
             "collectionFormat": "multi"
           },
           {
-            "name": "FieldOne",
+            "name": "optionalStringField",
             "description": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "FieldTwo",
+            "name": "requiredStringField1",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
-            "name": "FieldThree",
+            "name": "requiredStringField2",
             "in": "query",
             "required": true,
             "type": "string"
@@ -2051,20 +2051,20 @@
             "collectionFormat": "multi"
           },
           {
-            "name": "FieldOne",
+            "name": "optionalStringField",
             "description": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "FieldTwo",
+            "name": "requiredStringField1",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
-            "name": "FieldThree",
+            "name": "requiredStringField2",
             "in": "query",
             "required": true,
             "type": "string"
@@ -2319,14 +2319,14 @@
                   "description": "Only digits are allowed.",
                   "title": "Test openapiv2 generation of repeated fields"
                 },
-                "FieldOne": {
+                "optionalStringField": {
                   "type": "string",
                   "title": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce"
                 },
-                "FieldTwo": {
+                "requiredStringField1": {
                   "type": "string"
                 },
-                "FieldThree": {
+                "requiredStringField2": {
                   "type": "string"
                 }
               },
@@ -2339,10 +2339,11 @@
               "required": [
                 "int64Value",
                 "doubleValue",
+                "FieldTwo",
                 "floatValue",
                 "requiredStringViaFieldBehaviorAnnotation",
-                "FieldTwo",
-                "FieldThree"
+                "requiredStringField1",
+                "requiredStringField2"
               ],
               "x-a-bit-of-everything-foo": "bar"
             }
@@ -2692,20 +2693,20 @@
             "collectionFormat": "multi"
           },
           {
-            "name": "FieldOne",
+            "name": "optionalStringField",
             "description": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "FieldTwo",
+            "name": "requiredStringField1",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
-            "name": "FieldThree",
+            "name": "requiredStringField2",
             "in": "query",
             "required": true,
             "type": "string"
@@ -3055,20 +3056,20 @@
             "collectionFormat": "multi"
           },
           {
-            "name": "FieldOne",
+            "name": "optionalStringField",
             "description": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "FieldTwo",
+            "name": "requiredStringField1",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
-            "name": "FieldThree",
+            "name": "requiredStringField2",
             "in": "query",
             "required": true,
             "type": "string"
@@ -3442,20 +3443,20 @@
             "collectionFormat": "multi"
           },
           {
-            "name": "FieldOne",
+            "name": "optionalStringField",
             "description": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "FieldTwo",
+            "name": "requiredStringField1",
             "in": "query",
             "required": true,
             "type": "string"
           },
           {
-            "name": "FieldThree",
+            "name": "requiredStringField2",
             "in": "query",
             "required": true,
             "type": "string"
@@ -4130,14 +4131,14 @@
                   "description": "Only digits are allowed.",
                   "title": "Test openapiv2 generation of repeated fields"
                 },
-                "FieldOne": {
+                "optionalStringField": {
                   "type": "string",
                   "title": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce"
                 },
-                "FieldTwo": {
+                "requiredStringField1": {
                   "type": "string"
                 },
-                "FieldThree": {
+                "requiredStringField2": {
                   "type": "string"
                 }
               },
@@ -4151,10 +4152,11 @@
                 "uuid",
                 "int64Value",
                 "doubleValue",
+                "FieldTwo",
                 "floatValue",
                 "requiredStringViaFieldBehaviorAnnotation",
-                "FieldTwo",
-                "FieldThree"
+                "requiredStringField1",
+                "requiredStringField2"
               ],
               "x-a-bit-of-everything-foo": "bar"
             }
@@ -4575,14 +4577,14 @@
                   "description": "Only digits are allowed.",
                   "title": "Test openapiv2 generation of repeated fields"
                 },
-                "FieldOne": {
+                "optionalStringField": {
                   "type": "string",
                   "title": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce"
                 },
-                "FieldTwo": {
+                "requiredStringField1": {
                   "type": "string"
                 },
-                "FieldThree": {
+                "requiredStringField2": {
                   "type": "string"
                 }
               },
@@ -4595,10 +4597,11 @@
               "required": [
                 "int64Value",
                 "doubleValue",
+                "FieldTwo",
                 "floatValue",
                 "requiredStringViaFieldBehaviorAnnotation",
-                "FieldTwo",
-                "FieldThree"
+                "requiredStringField1",
+                "requiredStringField2"
               ],
               "x-a-bit-of-everything-foo": "bar"
             }
@@ -4859,14 +4862,14 @@
                   "description": "Only digits are allowed.",
                   "title": "Test openapiv2 generation of repeated fields"
                 },
-                "FieldOne": {
+                "optionalStringField": {
                   "type": "string",
                   "title": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce"
                 },
-                "FieldTwo": {
+                "requiredStringField1": {
                   "type": "string"
                 },
-                "FieldThree": {
+                "requiredStringField2": {
                   "type": "string"
                 }
               },
@@ -4879,10 +4882,11 @@
               "required": [
                 "int64Value",
                 "doubleValue",
+                "FieldTwo",
                 "floatValue",
                 "requiredStringViaFieldBehaviorAnnotation",
-                "FieldTwo",
-                "FieldThree"
+                "requiredStringField1",
+                "requiredStringField2"
               ],
               "x-a-bit-of-everything-foo": "bar"
             }
@@ -5653,14 +5657,14 @@
                       "description": "Only digits are allowed.",
                       "title": "Test openapiv2 generation of repeated fields"
                     },
-                    "FieldOne": {
+                    "optionalStringField": {
                       "type": "string",
                       "title": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce"
                     },
-                    "FieldTwo": {
+                    "requiredStringField1": {
                       "type": "string"
                     },
-                    "FieldThree": {
+                    "requiredStringField2": {
                       "type": "string"
                     }
                   },
@@ -5681,10 +5685,11 @@
               "required": [
                 "int64Value",
                 "doubleValue",
+                "FieldTwo",
                 "floatValue",
                 "requiredStringViaFieldBehaviorAnnotation",
-                "FieldTwo",
-                "FieldThree"
+                "requiredStringField1",
+                "requiredStringField2"
               ]
             }
           }
@@ -5989,14 +5994,14 @@
           "description": "Only digits are allowed.",
           "title": "Test openapiv2 generation of repeated fields"
         },
-        "FieldOne": {
+        "optionalStringField": {
           "type": "string",
           "title": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce"
         },
-        "FieldTwo": {
+        "requiredStringField1": {
           "type": "string"
         },
-        "FieldThree": {
+        "requiredStringField2": {
           "type": "string"
         }
       },
@@ -6010,10 +6015,11 @@
         "uuid",
         "int64Value",
         "doubleValue",
+        "FieldTwo",
         "floatValue",
         "requiredStringViaFieldBehaviorAnnotation",
-        "FieldTwo",
-        "FieldThree"
+        "requiredStringField1",
+        "requiredStringField2"
       ],
       "x-a-bit-of-everything-foo": "bar"
     },

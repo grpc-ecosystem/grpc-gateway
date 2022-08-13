@@ -62,7 +62,7 @@ type ABitOfEverything4 struct {
 	OptionalStringValue string `json:"optionalStringValue,omitempty"`
 	// Only digits are allowed.
 	ProductId []string `json:"productId,omitempty"`
-	FieldOne string `json:"FieldOne,omitempty"`
-	FieldTwo string `json:"FieldTwo,omitempty"`
-	FieldThree string `json:"FieldThree,omitempty"`
+	OptionalStringField string `json:"optionalStringField,omitempty"`
+	RequiredStringField1 string `json:"requiredStringField1,omitempty"`
+	RequiredStringField2 string `json:"requiredStringField2,omitempty"`
 }

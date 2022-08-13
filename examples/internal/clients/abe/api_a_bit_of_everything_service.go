@@ -345,8 +345,8 @@ ABitOfEverythingServiceApiService
  * @param singleNestedName name is nested field.
  * @param floatValue Float value field
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
- * @param fieldTwo
- * @param fieldThree
+ * @param requiredStringField1
+ * @param requiredStringField2
  * @param optional nil or *ABitOfEverythingServiceCheckGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
@@ -382,7 +382,7 @@ ABitOfEverythingServiceApiService
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
-     * @param "FieldOne" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return ExamplepbABitOfEverything
 */
@@ -422,10 +422,10 @@ type ABitOfEverythingServiceCheckGetQueryParamsOpts struct {
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
 	ProductId optional.Interface
-	FieldOne optional.String
+	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, fieldTwo string, fieldThree string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -546,11 +546,11 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
 		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
-	if localVarOptionals != nil && localVarOptionals.FieldOne.IsSet() {
-		localVarQueryParams.Add("FieldOne", parameterToString(localVarOptionals.FieldOne.Value(), ""))
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
 	}
-	localVarQueryParams.Add("FieldTwo", parameterToString(fieldTwo, ""))
-	localVarQueryParams.Add("FieldThree", parameterToString(fieldThree, ""))
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -689,8 +689,8 @@ ABitOfEverythingServiceApiService
  * @param singleNestedOk DeepEnum description.
  * @param floatValue Float value field
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
- * @param fieldTwo
- * @param fieldThree
+ * @param requiredStringField1
+ * @param requiredStringField2
  * @param optional nil or *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -726,7 +726,7 @@ ABitOfEverythingServiceApiService
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
-     * @param "FieldOne" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return ExamplepbABitOfEverything
 */
@@ -766,10 +766,10 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct {
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
 	ProductId optional.Interface
-	FieldOne optional.String
+	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, fieldTwo string, fieldThree string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -890,11 +890,11 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
 		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
-	if localVarOptionals != nil && localVarOptionals.FieldOne.IsSet() {
-		localVarQueryParams.Add("FieldOne", parameterToString(localVarOptionals.FieldOne.Value(), ""))
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
 	}
-	localVarQueryParams.Add("FieldTwo", parameterToString(fieldTwo, ""))
-	localVarQueryParams.Add("FieldThree", parameterToString(fieldThree, ""))
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -1034,8 +1034,8 @@ ABitOfEverythingServiceApiService
  * @param singleNested
  * @param floatValue Float value field
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
- * @param fieldTwo
- * @param fieldThree
+ * @param requiredStringField1
+ * @param requiredStringField2
  * @param optional nil or *ABitOfEverythingServiceCheckPostQueryParamsOpts - Optional Parameters:
      * @param "Uuid" (optional.String) - 
      * @param "DoubleValue" (optional.Float64) - 
@@ -1069,7 +1069,7 @@ ABitOfEverythingServiceApiService
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
-     * @param "FieldOne" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return ExamplepbABitOfEverything
 */
@@ -1107,10 +1107,10 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
 	ProductId optional.Interface
-	FieldOne optional.String
+	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, fieldTwo string, fieldThree string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1225,11 +1225,11 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
 		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
-	if localVarOptionals != nil && localVarOptionals.FieldOne.IsSet() {
-		localVarQueryParams.Add("FieldOne", parameterToString(localVarOptionals.FieldOne.Value(), ""))
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
 	}
-	localVarQueryParams.Add("FieldTwo", parameterToString(fieldTwo, ""))
-	localVarQueryParams.Add("FieldThree", parameterToString(fieldThree, ""))
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -1542,8 +1542,8 @@ This API creates a new ABitOfEverything
  * @param nestedPathEnumValue
  * @param enumValueAnnotation Numeric enum description.
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
- * @param fieldTwo
- * @param fieldThree
+ * @param requiredStringField1
+ * @param requiredStringField2
  * @param optional nil or *ABitOfEverythingServiceCreateOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -1563,7 +1563,7 @@ This API creates a new ABitOfEverything
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
-     * @param "FieldOne" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return ExamplepbABitOfEverything
 */
@@ -1587,10 +1587,10 @@ type ABitOfEverythingServiceCreateOpts struct {
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
 	ProductId optional.Interface
-	FieldOne optional.String
+	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, requiredStringViaFieldBehaviorAnnotation string, fieldTwo string, fieldThree string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1680,11 +1680,11 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
 		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
-	if localVarOptionals != nil && localVarOptionals.FieldOne.IsSet() {
-		localVarQueryParams.Add("FieldOne", parameterToString(localVarOptionals.FieldOne.Value(), ""))
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
 	}
-	localVarQueryParams.Add("FieldTwo", parameterToString(fieldTwo, ""))
-	localVarQueryParams.Add("FieldThree", parameterToString(fieldThree, ""))
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -2149,8 +2149,8 @@ ABitOfEverythingServiceApiService
  * @param uuidName
  * @param floatValue Float value field
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
- * @param fieldTwo
- * @param fieldThree
+ * @param requiredStringField1
+ * @param requiredStringField2
  * @param optional nil or *ABitOfEverythingServiceCustomOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -2187,7 +2187,7 @@ ABitOfEverythingServiceApiService
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
-     * @param "FieldOne" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return ExamplepbABitOfEverything
 */
@@ -2228,10 +2228,10 @@ type ABitOfEverythingServiceCustomOpts struct {
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
 	ProductId optional.Interface
-	FieldOne optional.String
+	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, fieldTwo string, fieldThree string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -2355,11 +2355,11 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx co
 	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
 		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
-	if localVarOptionals != nil && localVarOptionals.FieldOne.IsSet() {
-		localVarQueryParams.Add("FieldOne", parameterToString(localVarOptionals.FieldOne.Value(), ""))
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
 	}
-	localVarQueryParams.Add("FieldTwo", parameterToString(fieldTwo, ""))
-	localVarQueryParams.Add("FieldThree", parameterToString(fieldThree, ""))
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -2498,8 +2498,8 @@ ABitOfEverythingServiceApiService
  * @param uuidName
  * @param floatValue Float value field
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
- * @param fieldTwo
- * @param fieldThree
+ * @param requiredStringField1
+ * @param requiredStringField2
  * @param optional nil or *ABitOfEverythingServiceCustomOptionsRequestOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -2536,7 +2536,7 @@ ABitOfEverythingServiceApiService
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
-     * @param "FieldOne" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return interface{}
 */
@@ -2577,10 +2577,10 @@ type ABitOfEverythingServiceCustomOptionsRequestOpts struct {
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
 	ProductId optional.Interface
-	FieldOne optional.String
+	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, fieldTwo string, fieldThree string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Options")
 		localVarPostBody   interface{}
@@ -2704,11 +2704,11 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptions
 	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
 		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
-	if localVarOptionals != nil && localVarOptionals.FieldOne.IsSet() {
-		localVarQueryParams.Add("FieldOne", parameterToString(localVarOptionals.FieldOne.Value(), ""))
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
 	}
-	localVarQueryParams.Add("FieldTwo", parameterToString(fieldTwo, ""))
-	localVarQueryParams.Add("FieldThree", parameterToString(fieldThree, ""))
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -3272,8 +3272,8 @@ ABitOfEverythingServiceApiService
  * @param uuidName
  * @param floatValue Float value field
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
- * @param fieldTwo
- * @param fieldThree
+ * @param requiredStringField1
+ * @param requiredStringField2
  * @param optional nil or *ABitOfEverythingServiceExistsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -3310,7 +3310,7 @@ ABitOfEverythingServiceApiService
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
-     * @param "FieldOne" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return interface{}
 */
@@ -3351,10 +3351,10 @@ type ABitOfEverythingServiceExistsOpts struct {
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
 	ProductId optional.Interface
-	FieldOne optional.String
+	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, fieldTwo string, fieldThree string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Head")
 		localVarPostBody   interface{}
@@ -3478,11 +3478,11 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx co
 	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
 		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
-	if localVarOptionals != nil && localVarOptionals.FieldOne.IsSet() {
-		localVarQueryParams.Add("FieldOne", parameterToString(localVarOptionals.FieldOne.Value(), ""))
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
 	}
-	localVarQueryParams.Add("FieldTwo", parameterToString(fieldTwo, ""))
-	localVarQueryParams.Add("FieldThree", parameterToString(fieldThree, ""))
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -3736,8 +3736,8 @@ ABitOfEverythingServiceApiService
  * @param uuidName
  * @param floatValue Float value field
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
- * @param fieldTwo
- * @param fieldThree
+ * @param requiredStringField1
+ * @param requiredStringField2
  * @param optional nil or *ABitOfEverythingServiceGetQueryOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -3774,7 +3774,7 @@ ABitOfEverythingServiceApiService
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
-     * @param "FieldOne" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return interface{}
 */
@@ -3815,10 +3815,10 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
 	ProductId optional.Interface
-	FieldOne optional.String
+	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, fieldTwo string, fieldThree string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -3942,11 +3942,11 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
 		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
 	}
-	if localVarOptionals != nil && localVarOptionals.FieldOne.IsSet() {
-		localVarQueryParams.Add("FieldOne", parameterToString(localVarOptionals.FieldOne.Value(), ""))
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
 	}
-	localVarQueryParams.Add("FieldTwo", parameterToString(fieldTwo, ""))
-	localVarQueryParams.Add("FieldThree", parameterToString(fieldThree, ""))
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
