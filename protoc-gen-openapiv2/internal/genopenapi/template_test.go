@@ -651,7 +651,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 }
 
 // TestMessagetoQueryParametersNoRecursive, is a check that cyclical references between messages
-//  are not falsely detected given previous known edge-cases.
+// are not falsely detected given previous known edge-cases.
 func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 	type test struct {
 		MsgDescs []*descriptorpb.DescriptorProto
@@ -770,8 +770,8 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 }
 
 // TestMessagetoQueryParametersRecursive, is a check that cyclical references between messages
-//  are handled gracefully. The goal is to insure that attempts to add messages with cyclical
-//  references to query-parameters returns an error message.
+// are handled gracefully. The goal is to insure that attempts to add messages with cyclical
+// references to query-parameters returns an error message.
 func TestMessageToQueryParametersRecursive(t *testing.T) {
 	type test struct {
 		MsgDescs []*descriptorpb.DescriptorProto
@@ -1125,6 +1125,128 @@ func TestMessageToQueryParametersWellKnownTypes(t *testing.T) {
 		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
+		}
+		if !reflect.DeepEqual(params, test.Params) {
+			t.Errorf("expected %v, got %v", test.Params, params)
+		}
+	}
+}
+
+func TestMessageToQueryParametersWithRequiredField(t *testing.T) {
+	type test struct {
+		MsgDescs []*descriptorpb.DescriptorProto
+		Message  string
+		Params   []openapiParameterObject
+	}
+
+	messageSchema := &openapi_options.Schema{
+		JsonSchema: &openapi_options.JSONSchema{
+			Required: []string{"a"},
+		},
+	}
+	messageOption := &descriptorpb.MessageOptions{}
+	proto.SetExtension(messageOption, openapi_options.E_Openapiv2Schema, messageSchema)
+
+	fieldSchema := &openapi_options.JSONSchema{Required: []string{"b"}}
+	fieldOption := &descriptorpb.FieldOptions{}
+	proto.SetExtension(fieldOption, openapi_options.E_Openapiv2Field, fieldSchema)
+
+	// TODO(makdon): is nested field's test case necessary here?
+	tests := []test{
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:   proto.String("a"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number: proto.Int32(1),
+						},
+						{
+							Name:    proto.String("b"),
+							Type:    descriptorpb.FieldDescriptorProto_TYPE_DOUBLE.Enum(),
+							Number:  proto.Int32(2),
+							Options: fieldOption,
+						},
+						{
+							Name:   proto.String("c"),
+							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Label:  descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+							Number: proto.Int32(3),
+						},
+					},
+					Options: messageOption,
+				},
+			},
+			Message: "ExampleMessage",
+			Params: []openapiParameterObject{
+				{
+					Name:     "a",
+					In:       "query",
+					Required: true,
+					Type:     "string",
+				},
+				{
+					Name:     "b",
+					In:       "query",
+					Required: true,
+					Type:     "number",
+					Format:   "double",
+				},
+				{
+					Name:             "c",
+					In:               "query",
+					Required:         false,
+					Type:             "array",
+					CollectionFormat: "multi",
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		reg := descriptor.NewRegistry()
+		msgs := []*descriptor.Message{}
+		for _, msgdesc := range test.MsgDescs {
+			msgs = append(msgs, &descriptor.Message{DescriptorProto: msgdesc})
+		}
+		file := descriptor.File{
+			FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("example.proto"),
+				Package:        proto.String("example"),
+				Dependency:     []string{},
+				MessageType:    test.MsgDescs,
+				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+				},
+			},
+			GoPkg: descriptor.GoPackage{
+				Path: "example.com/path/to/example/example.pb",
+				Name: "example_pb",
+			},
+			Messages: msgs,
+		}
+		err := reg.Load(&pluginpb.CodeGeneratorRequest{
+			ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
+		})
+		if err != nil {
+			t.Fatalf("failed to load code generator request: %v", err)
+		}
+
+		message, err := reg.LookupMsg("", ".example."+test.Message)
+		if err != nil {
+			t.Fatalf("failed to lookup message: %s", err)
+		}
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
+		if err != nil {
+			t.Fatalf("failed to convert message to query parameters: %s", err)
+		}
+		// avoid checking Items for array types
+		for i := range params {
+			params[i].Items = nil
 		}
 		if !reflect.DeepEqual(params, test.Params) {
 			t.Errorf("expected %v, got %v", test.Params, params)

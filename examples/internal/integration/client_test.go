@@ -2,12 +2,16 @@ package integration_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/echo"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/unannotatedecho"
+	"github.com/rogpeppe/fastuuid"
 )
+
+var uuidgen = fastuuid.MustNewGenerator()
 
 func TestEchoClient(t *testing.T) {
 	if testing.Short() {
@@ -107,6 +111,7 @@ func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
 		PathEnumValue:            &enumPath,
 		NestedPathEnumValue:      &messagePath,
 		EnumValueAnnotation:      &enumZero,
+		Uuid:                     fmt.Sprintf("%x", uuidgen.Next()),
 	}
 	resp, _, err := cl.ABitOfEverythingServiceApi.ABitOfEverythingServiceCreate(
 		context.Background(),
@@ -129,6 +134,7 @@ func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
 		want.PathEnumValue.String(),
 		want.NestedPathEnumValue.String(),
 		want.EnumValueAnnotation.String(),
+		want.Uuid,
 		want.RequiredStringViaFieldBehaviorAnnotation,
 		nil,
 	)

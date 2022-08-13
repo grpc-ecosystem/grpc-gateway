@@ -29,13 +29,13 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-//  The OpenAPI specification does not allow for more than one endpoint with the same HTTP method and path.
-//  This prevents multiple gRPC service methods from sharing the same stripped version of the path and method.
-//  For example: `GET /v1/{name=organizations/*}/roles` and `GET /v1/{name=users/*}/roles` both get stripped to `GET /v1/{name}/roles`.
-//  We must make the URL unique by adding a suffix and an incrementing index to each path parameter
-//  to differentiate the endpoints.
-//  Since path parameter names do not affect the request contents (i.e. they're replaced in the path)
-//  this will be hidden from the real grpc gateway consumer.
+// The OpenAPI specification does not allow for more than one endpoint with the same HTTP method and path.
+// This prevents multiple gRPC service methods from sharing the same stripped version of the path and method.
+// For example: `GET /v1/{name=organizations/*}/roles` and `GET /v1/{name=users/*}/roles` both get stripped to `GET /v1/{name}/roles`.
+// We must make the URL unique by adding a suffix and an incrementing index to each path parameter
+// to differentiate the endpoints.
+// Since path parameter names do not affect the request contents (i.e. they're replaced in the path)
+// this will be hidden from the real grpc gateway consumer.
 const pathParamUniqueSuffixDeliminator = "_"
 
 const paragraphDeliminator = "\n\n"
@@ -214,10 +214,12 @@ func (c *cycleChecker) Branch() *cycleChecker {
 
 // nestedQueryParams converts a field to a list of OpenAPI query parameters recursively.
 // This function is a helper function for queryParams, that keeps track of cyclical message references
-//  through the use of
-//      touched map[string]int
+// through the use of
+//
+//	touched map[string]int
+//
 // If a cycle is discovered, an error is returned, as cyclical data structures are dangerous
-//  in query parameters.
+// in query parameters.
 func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, prefix string, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body, cycle *cycleChecker) (params []openapiParameterObject, err error) {
 	// make sure the parameter is not already listed as a path parameter
 	for _, pathParam := range pathParams {
@@ -262,6 +264,15 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 			if fieldName == reg.FieldName(field) {
 				required = true
 				break
+			}
+		}
+		// verify if the field is required in message options
+		if messageSchema, err := extractSchemaOptionFromMessageDescriptor(message.DescriptorProto); err == nil {
+			for _, fieldName := range messageSchema.GetJsonSchema().GetRequired() {
+				if fieldName == reg.FieldName(field) {
+					required = true
+					break
+				}
 			}
 		}
 
@@ -2268,7 +2279,7 @@ func isProtoPathMatches(paths []int32, outerPaths []int32, typeName string, type
 // For example, if we are trying to locate comments related to a field named
 // `Address` in a message named `Person`, the path will be:
 //
-//	 [4, a, 2, b]
+//	[4, a, 2, b]
 //
 // While `a` gets determined by the order in which the messages appear in
 // the proto file, and `b` is the field index specified in the proto

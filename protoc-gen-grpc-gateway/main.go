@@ -3,7 +3,8 @@
 // HTTP/1 requests gRPC invocation.
 // You rarely need to run this program directly. Instead, put this program
 // into your $PATH with a name "protoc-gen-grpc-gateway" and run
-//   protoc --grpc-gateway_out=output_directory path/to/input.proto
+//
+//	protoc --grpc-gateway_out=output_directory path/to/input.proto
 //
 // See README.md for more details.
 package main

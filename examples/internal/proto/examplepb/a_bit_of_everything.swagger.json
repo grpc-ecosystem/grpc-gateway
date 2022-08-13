@@ -241,7 +241,7 @@
           {
             "name": "uuid",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
             "x-internal": true
@@ -258,14 +258,14 @@
           {
             "name": "doubleValue",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "number",
             "format": "double"
           },
           {
             "name": "int64Value",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "format": "int64"
           },
@@ -598,7 +598,7 @@
           {
             "name": "uuid",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
             "x-internal": true
@@ -615,14 +615,14 @@
           {
             "name": "doubleValue",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "number",
             "format": "double"
           },
           {
             "name": "int64Value",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "format": "int64"
           },
@@ -948,7 +948,7 @@
           {
             "name": "uuid",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
             "x-internal": true
@@ -965,14 +965,14 @@
           {
             "name": "doubleValue",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "number",
             "format": "double"
           },
           {
             "name": "int64Value",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "format": "int64"
           },
@@ -1328,14 +1328,14 @@
           {
             "name": "doubleValue",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "number",
             "format": "double"
           },
           {
             "name": "int64Value",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "format": "int64"
           },
@@ -1834,7 +1834,7 @@
           {
             "name": "uuid",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
             "x-internal": true
@@ -2317,14 +2317,14 @@
           {
             "name": "doubleValue",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "number",
             "format": "double"
           },
           {
             "name": "int64Value",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "format": "int64"
           },
@@ -2661,14 +2661,14 @@
           {
             "name": "doubleValue",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "number",
             "format": "double"
           },
           {
             "name": "int64Value",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "format": "int64"
           },
@@ -3029,14 +3029,14 @@
           {
             "name": "doubleValue",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "number",
             "format": "double"
           },
           {
             "name": "int64Value",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "format": "int64"
           },
@@ -3397,14 +3397,14 @@
           {
             "name": "doubleValue",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "number",
             "format": "double"
           },
           {
             "name": "int64Value",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "format": "int64"
           },
