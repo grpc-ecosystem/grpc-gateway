@@ -6,7 +6,6 @@ import (
 )
 
 func Test_getUniqueFields(t *testing.T) {
-
 	type args struct {
 		schemaFieldsRequired []string
 		fieldsRequired       []string
@@ -48,7 +47,6 @@ func Test_getUniqueFields(t *testing.T) {
 			},
 			want: []string{"Field_2", "Field_3", "Field_5"},
 		},
-
 		{
 			name: "test_5",
 			args: args{
