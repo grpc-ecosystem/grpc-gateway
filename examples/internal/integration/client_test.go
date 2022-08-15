@@ -130,6 +130,8 @@ func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
 		want.NestedPathEnumValue.String(),
 		want.EnumValueAnnotation.String(),
 		want.RequiredStringViaFieldBehaviorAnnotation,
+		want.StringValue,
+		want.StringValue,
 		nil,
 	)
 	if err != nil {
