@@ -382,6 +382,11 @@ message ABitOfEverything {
     min_length: 1
     description: "Only digits are allowed."
   }];
+
+  // Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+  string optional_string_field = 42;
+  string required_string_field_1 = 43 [(google.api.field_behavior) = REQUIRED];
+  string required_string_field_2 = 44 [(google.api.field_behavior) = REQUIRED];
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality

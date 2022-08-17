@@ -504,7 +504,11 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 		}
 
 		if fieldSchema.Required != nil {
+			schema.Required = getUniqueFields(schema.Required, fieldSchema.Required)
 			schema.Required = append(schema.Required, fieldSchema.Required...)
+			// To avoid populating both the field schema require and message schema require, unset the field schema require.
+			// See issue #2635.
+			fieldSchema.Required = nil
 		}
 
 		kv := keyVal{Value: fieldSchema}
