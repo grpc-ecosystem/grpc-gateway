@@ -844,4 +844,3 @@ message SnakeEnumRequest {
 }
 
 message SnakeEnumResponse {}
-
