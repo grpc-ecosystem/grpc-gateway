@@ -424,6 +424,24 @@ paths:
           pattern: "^[0-9]+$"
         collectionFormat: "multi"
         x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
       responses:
         200:
           description: "A successful response."
@@ -753,6 +771,24 @@ paths:
           pattern: "^[0-9]+$"
         collectionFormat: "multi"
         x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
       responses:
         200:
           description: "A successful response."
@@ -1069,6 +1105,24 @@ paths:
           pattern: "^[0-9]+$"
         collectionFormat: "multi"
         x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
       responses:
         200:
           description: "A successful response."
@@ -1405,6 +1459,24 @@ paths:
           pattern: "^[0-9]+$"
         collectionFormat: "multi"
         x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
       responses:
         200:
           description: "A successful response."
@@ -1728,6 +1800,24 @@ paths:
           pattern: "^[0-9]+$"
         collectionFormat: "multi"
         x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
       responses:
         200:
           description: "A successful response."
@@ -2064,6 +2154,24 @@ paths:
           pattern: "^[0-9]+$"
         collectionFormat: "multi"
         x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
       responses:
         200:
           description: "A successful response."
@@ -2425,6 +2533,24 @@ paths:
           pattern: "^[0-9]+$"
         collectionFormat: "multi"
         x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
       responses:
         200:
           description: "A successful response."
@@ -2744,6 +2870,24 @@ paths:
           pattern: "^[0-9]+$"
         collectionFormat: "multi"
         x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
       responses:
         200:
           description: "A successful response."
@@ -3080,6 +3224,24 @@ paths:
           pattern: "^[0-9]+$"
         collectionFormat: "multi"
         x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
       responses:
         200:
           description: "A successful response."
@@ -4231,6 +4393,8 @@ definitions:
     - "doubleValue"
     - "floatValue"
     - "int64Value"
+    - "requiredStringField1"
+    - "requiredStringField2"
     - "requiredStringViaFieldBehaviorAnnotation"
     - "uuid"
     properties:
@@ -4375,6 +4539,14 @@ definitions:
           minLength: 1
           maxLength: 19
           pattern: "^[0-9]+$"
+      optionalStringField:
+        type: "string"
+        title: "Test openapiv2 generation of required fields with annotation and jsonschema\
+          \ to reproduce"
+      requiredStringField1:
+        type: "string"
+      requiredStringField2:
+        type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -4684,6 +4856,8 @@ definitions:
     - "doubleValue"
     - "floatValue"
     - "int64Value"
+    - "requiredStringField1"
+    - "requiredStringField2"
     - "requiredStringViaFieldBehaviorAnnotation"
     properties:
       singleNested:
@@ -4822,6 +4996,14 @@ definitions:
           minLength: 1
           maxLength: 19
           pattern: "^[0-9]+$"
+      optionalStringField:
+        type: "string"
+        title: "Test openapiv2 generation of required fields with annotation and jsonschema\
+          \ to reproduce"
+      requiredStringField1:
+        type: "string"
+      requiredStringField2:
+        type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -4848,6 +5030,8 @@ definitions:
     - "doubleValue"
     - "floatValue"
     - "int64Value"
+    - "requiredStringField1"
+    - "requiredStringField2"
     - "requiredStringViaFieldBehaviorAnnotation"
     - "uuid"
     properties:
@@ -4992,6 +5176,14 @@ definitions:
           minLength: 1
           maxLength: 19
           pattern: "^[0-9]+$"
+      optionalStringField:
+        type: "string"
+        title: "Test openapiv2 generation of required fields with annotation and jsonschema\
+          \ to reproduce"
+      requiredStringField1:
+        type: "string"
+      requiredStringField2:
+        type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -5023,6 +5215,8 @@ definitions:
     - "doubleValue"
     - "floatValue"
     - "int64Value"
+    - "requiredStringField1"
+    - "requiredStringField2"
     - "requiredStringViaFieldBehaviorAnnotation"
     properties:
       singleNested:
@@ -5161,6 +5355,14 @@ definitions:
           minLength: 1
           maxLength: 19
           pattern: "^[0-9]+$"
+      optionalStringField:
+        type: "string"
+        title: "Test openapiv2 generation of required fields with annotation and jsonschema\
+          \ to reproduce"
+      requiredStringField1:
+        type: "string"
+      requiredStringField2:
+        type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -5177,6 +5379,8 @@ definitions:
     - "doubleValue"
     - "floatValue"
     - "int64Value"
+    - "requiredStringField1"
+    - "requiredStringField2"
     - "requiredStringViaFieldBehaviorAnnotation"
     properties:
       singleNested:
@@ -5315,6 +5519,14 @@ definitions:
           minLength: 1
           maxLength: 19
           pattern: "^[0-9]+$"
+      optionalStringField:
+        type: "string"
+        title: "Test openapiv2 generation of required fields with annotation and jsonschema\
+          \ to reproduce"
+      requiredStringField1:
+        type: "string"
+      requiredStringField2:
+        type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -5326,11 +5538,6 @@ definitions:
       double_value: 12.3
     x-a-bit-of-everything-foo: "bar"
   A bit of everything_4:
-    required:
-    - "doubleValue"
-    - "floatValue"
-    - "int64Value"
-    - "requiredStringViaFieldBehaviorAnnotation"
     properties:
       singleNested:
         $ref: "#/definitions/ABitOfEverythingNested"
@@ -5468,6 +5675,14 @@ definitions:
           minLength: 1
           maxLength: 19
           pattern: "^[0-9]+$"
+      optionalStringField:
+        type: "string"
+        title: "Test openapiv2 generation of required fields with annotation and jsonschema\
+          \ to reproduce"
+      requiredStringField1:
+        type: "string"
+      requiredStringField2:
+        type: "string"
     description: "Intentionally complicated message type to cover many features of\
       \ Protobuf."
     example: "{\"int64_value\":12,\"double_value\":12.3}"

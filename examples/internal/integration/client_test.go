@@ -136,6 +136,8 @@ func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
 		want.EnumValueAnnotation.String(),
 		want.Uuid,
 		want.RequiredStringViaFieldBehaviorAnnotation,
+		want.StringValue,
+		want.StringValue,
 		nil,
 	)
 	if err != nil {
