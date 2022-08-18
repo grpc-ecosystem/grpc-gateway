@@ -2885,4 +2885,3 @@ func getFieldConfiguration(reg *descriptor.Registry, fd *descriptor.Field) *open
 	}
 	return nil
 }
-
