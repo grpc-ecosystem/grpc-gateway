@@ -4550,6 +4550,7 @@ definitions:
     enum:
     - "ZERO"
     - "ONE"
+    default: "ZERO"
     x-a-bit-of-everything-foo: "bar"
   examplepbSnakeEnumResponse:
     type: "object"

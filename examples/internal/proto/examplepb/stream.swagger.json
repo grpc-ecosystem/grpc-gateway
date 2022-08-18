@@ -442,6 +442,7 @@
         "ZERO",
         "ONE"
       ],
+      "default": "ZERO",
       "description": "NumericEnum is one or zero.",
       "title": "NumericEnum",
       "required": [
