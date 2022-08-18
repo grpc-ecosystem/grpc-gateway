@@ -2605,7 +2605,6 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		s.MaxLength = j.GetMaxLength()
 		s.MinLength = j.GetMinLength()
 		s.Pattern = j.GetPattern()
-		s.Default = j.GetDefault()
 		s.UniqueItems = j.GetUniqueItems()
 		s.MaxProperties = j.GetMaxProperties()
 		s.MinProperties = j.GetMinProperties()
