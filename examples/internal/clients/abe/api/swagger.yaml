@@ -4544,6 +4544,9 @@ definitions:
         $ref: "#/definitions/examplepbErrorObject"
   examplepbNumericEnum:
     type: "string"
+    externalDocs:
+      description: "Find out more about ABitOfEverything"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
     title: "NumericEnum"
     description: "NumericEnum is one or zero."
     example: "ZERO"

@@ -2656,6 +2656,7 @@ func updateswaggerObjectFromSchema(s *openapiSchemaObject, j *openapi_options.Sc
 	if j.GetExample() != "" { // avoid overwrite example from JsonSchema with empty string
 		s.Example = RawExample(strconv.Quote(j.GetExample()))
 	}
+	s.ExternalDocs = protoExternalDocumentationToOpenAPIExternalDocumentation(j.GetExternalDocs(), reg, data)
 }
 
 func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotations.FieldBehavior, reg *descriptor.Registry, field *descriptor.Field) {

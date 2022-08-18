@@ -445,6 +445,10 @@
       "default": "ZERO",
       "description": "NumericEnum is one or zero.",
       "title": "NumericEnum",
+      "externalDocs": {
+        "description": "Find out more about ABitOfEverything",
+        "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+      },
       "required": [
         "uuid",
         "int64Value",
