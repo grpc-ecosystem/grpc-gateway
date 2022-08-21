@@ -1007,14 +1007,13 @@ func renderServiceTags(services []*descriptor.Service, reg *descriptor.Registry)
 		tag := openapiTagObject{
 			Name: tagName,
 		}
-		if proto.HasExtension(svc.Options, openapi_options.E_Openapiv2Tag) {
-			ext := proto.GetExtension(svc.Options, openapi_options.E_Openapiv2Tag)
-			opts, ok := ext.(*openapi_options.Tag)
-			if !ok {
-				glog.Errorf("extension is %T; want an OpenAPI Tag object", ext)
-				return nil
-			}
 
+		opts, err := getServiceOpenAPIOption(reg, svc)
+		if err != nil {
+			glog.Error(err)
+			return nil
+		}
+		if opts != nil {
 			tag.Description = opts.Description
 			if opts.ExternalDocs != nil {
 				tag.ExternalDocs = &openapiExternalDocumentationObject{
@@ -2351,6 +2350,23 @@ func extractSchemaOptionFromMessageDescriptor(msg *descriptorpb.DescriptorProto)
 	return opts, nil
 }
 
+// extractTagOptionFromServiceDescriptor extracts the tag of type
+// openapi_options.Tag from a given proto service's descriptor.
+func extractTagOptionFromServiceDescriptor(svc *descriptorpb.ServiceDescriptorProto) (*openapi_options.Tag, error) {
+	if svc.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(svc.Options, openapi_options.E_Openapiv2Tag) {
+		return nil, nil
+	}
+	ext := proto.GetExtension(svc.Options, openapi_options.E_Openapiv2Tag)
+	opts, ok := ext.(*openapi_options.Tag)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want a Tag", ext)
+	}
+	return opts, nil
+}
+
 // extractOpenAPIOptionFromFileDescriptor extracts the message of type
 // openapi_options.OpenAPI from a given proto method's descriptor.
 func extractOpenAPIOptionFromFileDescriptor(file *descriptorpb.FileDescriptorProto) (*openapi_options.Swagger, error) {
@@ -2482,6 +2498,21 @@ func getMessageOpenAPIOption(reg *descriptor.Registry, msg *descriptor.Message) 
 		return opts, nil
 	}
 	opts, ok := reg.GetOpenAPIMessageOption(msg.FQMN())
+	if !ok {
+		return nil, nil
+	}
+	return opts, nil
+}
+
+func getServiceOpenAPIOption(reg *descriptor.Registry, svc *descriptor.Service) (*openapi_options.Tag, error) {
+	opts, err := extractTagOptionFromServiceDescriptor(svc.ServiceDescriptorProto)
+	if err != nil {
+		return nil, err
+	}
+	if opts != nil {
+		return opts, nil
+	}
+	opts, ok := reg.GetOpenAPIServiceOption(svc.FQSN())
 	if !ok {
 		return nil, nil
 	}
