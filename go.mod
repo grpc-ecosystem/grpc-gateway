@@ -8,7 +8,7 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/google/go-cmp v0.5.8
 	github.com/rogpeppe/fastuuid v1.2.0
-	golang.org/x/oauth2 v0.0.0-20220808172628-8227340efae7
+	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094
 	golang.org/x/text v0.3.7
 	google.golang.org/genproto v0.0.0-20220819174105-e9f053255caa
 	google.golang.org/grpc v1.48.0
