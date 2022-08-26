@@ -36,7 +36,6 @@ jobs:
           #checksum_file=$(echo "$ARTIFACTS" | jq -r '.[] | select (.type=="Checksum") | .path')
           checksum_file=$(cat _output/artifacts.json | jq -r '.[] | select (.type=="Checksum") | .path')
           echo "::set-output name=hashes::$(cat $checksum_file | base64 -w0)"
-
   provenance:
     needs: [goreleaser]
     permissions:
