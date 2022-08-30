@@ -18,12 +18,12 @@ go_proto_library(
 
 go_library(
     name = "oneof_enum",
-    embed = [":oneof_enum_proto"],
+    embed = [":oneof_enum_go_proto"],
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/oneofenum",
 )
 
 alias(
     name = "go_default_library",
-    actual = ":oneof_enum",
+    actual = ":oneofenum",
     visibility = ["//examples:__subpackages__"],
 )
