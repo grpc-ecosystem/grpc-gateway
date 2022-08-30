@@ -4,6 +4,7 @@ package examplepb
 
 import (
 	context "context"
+	oneofenum "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/oneofenum"
 	pathenum "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
 	sub "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	sub2 "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2"
@@ -64,6 +65,7 @@ type ABitOfEverythingServiceClient interface {
 	Exists(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CustomOptionsRequest(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	TraceRequest(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
+	PostOneofEnum(ctx context.Context, in *oneofenum.OneofEnumMessage, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type aBitOfEverythingServiceClient struct {
@@ -335,6 +337,15 @@ func (c *aBitOfEverythingServiceClient) TraceRequest(ctx context.Context, in *AB
 	return out, nil
 }
 
+func (c *aBitOfEverythingServiceClient) PostOneofEnum(ctx context.Context, in *oneofenum.OneofEnumMessage, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/PostOneofEnum", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ABitOfEverythingServiceServer is the server API for ABitOfEverythingService service.
 // All implementations should embed UnimplementedABitOfEverythingServiceServer
 // for forward compatibility
@@ -379,6 +390,7 @@ type ABitOfEverythingServiceServer interface {
 	Exists(context.Context, *ABitOfEverything) (*emptypb.Empty, error)
 	CustomOptionsRequest(context.Context, *ABitOfEverything) (*emptypb.Empty, error)
 	TraceRequest(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
+	PostOneofEnum(context.Context, *oneofenum.OneofEnumMessage) (*emptypb.Empty, error)
 }
 
 // UnimplementedABitOfEverythingServiceServer should be embedded to have forward compatible implementations.
@@ -471,6 +483,9 @@ func (UnimplementedABitOfEverythingServiceServer) CustomOptionsRequest(context.C
 }
 func (UnimplementedABitOfEverythingServiceServer) TraceRequest(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TraceRequest not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) PostOneofEnum(context.Context, *oneofenum.OneofEnumMessage) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostOneofEnum not implemented")
 }
 
 // UnsafeABitOfEverythingServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -1006,6 +1021,24 @@ func _ABitOfEverythingService_TraceRequest_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ABitOfEverythingService_PostOneofEnum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(oneofenum.OneofEnumMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).PostOneofEnum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/PostOneofEnum",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).PostOneofEnum(ctx, req.(*oneofenum.OneofEnumMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ABitOfEverythingService_ServiceDesc is the grpc.ServiceDesc for ABitOfEverythingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1128,6 +1161,10 @@ var ABitOfEverythingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TraceRequest",
 			Handler:    _ABitOfEverythingService_TraceRequest_Handler,
+		},
+		{
+			MethodName: "PostOneofEnum",
+			Handler:    _ABitOfEverythingService_PostOneofEnum_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

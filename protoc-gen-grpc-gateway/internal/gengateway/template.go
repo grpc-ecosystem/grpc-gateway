@@ -327,11 +327,11 @@ var (
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	{{- $protoReq := .Body.AssignableExprPrep "protoReq" -}}
+	{{- $protoReq := .Body.AssignableExprPrep "protoReq" .Method.Service.File.GoPkg.Path -}}
 	{{- if ne "" $protoReq }}
 	{{printf "%s" $protoReq }}
 	{{- end}}
-	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
+	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- if and $AllowPatchFeature (eq (.HTTPMethod) "PATCH") (.FieldMaskField) (not (eq "*" .GetBodyFieldPath)) }}
@@ -381,11 +381,11 @@ var (
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
 {{else}}
-	{{- $protoReq := $param.AssignableExprPrep "protoReq" -}}
+	{{- $protoReq := $param.AssignableExprPrep "protoReq" $binding.Method.Service.File.GoPkg.Path -}}
 	{{- if ne "" $protoReq }}
 	{{printf "%s" $protoReq }}
 	{{- end}}
-	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
+	{{$param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
@@ -395,9 +395,9 @@ var (
 	for i, v := range es {
 		s[i] = {{$enum.GoType $param.Method.Service.File.GoPkg.Path}}(v)
 	}
-	{{$param.AssignableExpr "protoReq"}} = s
+	{{$param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path}} = s
 {{else if $enum}}
-	{{$param.AssignableExpr "protoReq"}} = {{$enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier}}(e)
+	{{$param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path}} = {{$enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier}}(e)
 {{end}}
 	{{end}}
 {{end}}
@@ -496,11 +496,11 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	{{- $protoReq := .Body.AssignableExprPrep "protoReq" -}}
+	{{- $protoReq := .Body.AssignableExprPrep "protoReq" .Method.Service.File.GoPkg.Path -}}
 	{{- if ne "" $protoReq }}
 	{{printf "%s" $protoReq }}
 	{{- end}}
-	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq"}}); err != nil && err != io.EOF  {
+	if err := marshaler.NewDecoder(newReader()).Decode(&{{.Body.AssignableExpr "protoReq" .Method.Service.File.GoPkg.Path}}); err != nil && err != io.EOF  {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 	{{- if and $AllowPatchFeature (eq (.HTTPMethod) "PATCH") (.FieldMaskField) (not (eq "*" .GetBodyFieldPath)) }}
@@ -550,11 +550,11 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
 {{else}}
-	{{- $protoReq := $param.AssignableExprPrep "protoReq" -}}
+	{{- $protoReq := $param.AssignableExprPrep "protoReq" $binding.Method.Service.File.GoPkg.Path -}}
 	{{- if ne "" $protoReq }}
 	{{printf "%s" $protoReq }}
 	{{- end}}
-	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
+	{{$param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.Registry.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 	}
@@ -565,9 +565,9 @@ func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ct
 	for i, v := range es {
 		s[i] = {{$enum.GoType $param.Method.Service.File.GoPkg.Path}}(v)
 	}
-	{{$param.AssignableExpr "protoReq"}} = s
+	{{$param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path}} = s
 {{else if $enum}}
-	{{$param.AssignableExpr "protoReq"}} = {{$enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier}}(e)
+	{{$param.AssignableExpr "protoReq" $binding.Method.Service.File.GoPkg.Path}} = {{$enum.GoType $param.Method.Service.File.GoPkg.Path | camelIdentifier}}(e)
 {{end}}
 	{{end}}
 {{end}}
@@ -745,7 +745,7 @@ type response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}} struct {
 
 func (m response_{{$svc.GetName}}_{{$m.GetName}}_{{$b.Index}}) XXX_ResponseBody() interface{} {
 	response := m.Message.(*{{$m.ResponseType.GoType $m.Service.File.GoPkg.Path}})
-	return {{$b.ResponseBody.AssignableExpr "response"}}
+	return {{$b.ResponseBody.AssignableExpr "response" $m.Service.File.GoPkg.Path}}
 }
 {{end}}
 {{end}}
