@@ -430,7 +430,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/examplepbVisibilityRuleSimpleMessage"
+              "$ref": "#/definitions/examplepbVisibilityRuleMessageInPreviewMethod"
             }
           },
           "default": {
@@ -720,6 +720,15 @@
         }
       },
       "description": "Embedded represents a message embedded in SimpleMessage."
+    },
+    "examplepbVisibilityRuleMessageInPreviewMethod": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "description": "MessageInHiddenMethod doesn't define its own visibility restrictions,\nbut is only included in a method marked as \"PREVIEW\", so it will only\nappear if `visibility_restriction_selectors` include \"PREVIEW\"."
     },
     "examplepbVisibilityRuleSimpleMessage": {
       "type": "object",

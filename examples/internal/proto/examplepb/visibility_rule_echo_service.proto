@@ -53,6 +53,13 @@ message VisibilityRuleSimpleMessage {
   VisibilityEnum an_enum = 10;
 }
 
+// MessageInHiddenMethod doesn't define its own visibility restrictions,
+// but is only included in a method marked as "PREVIEW", so it will only
+// appear if `visibility_restriction_selectors` include "PREVIEW".
+message VisibilityRuleMessageInPreviewMethod {
+  string id = 1;
+}
+
 // VisibilityRuleEchoService service responds to incoming echo requests.
 // Different services will be available in the swagger documentation depending
 // based on `google.api.VisibilityRule`s and the set `visibility_restriction_selectors`
@@ -75,7 +82,7 @@ service VisibilityRuleEchoService {
   }
   // EchoPreview is a preview API that should only be visible in the OpenAPI spec
   // if `visibility_restriction_selectors` includes "PREVIEW".
-  rpc EchoPreview(VisibilityRuleSimpleMessage) returns (VisibilityRuleSimpleMessage) {
+  rpc EchoPreview(VisibilityRuleSimpleMessage) returns (VisibilityRuleMessageInPreviewMethod) {
     option (google.api.method_visibility).restriction = "PREVIEW";
     option (google.api.http) = {
       get: "/v1/example/echo_preview"
