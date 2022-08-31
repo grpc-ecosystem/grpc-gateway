@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package grpc.gateway.examples.internal.proto.examplepb;
 
+import "examples/internal/proto/oneofenum/oneof_enum.proto";
 import "examples/internal/proto/pathenum/path_enum.proto";
 import "examples/internal/proto/sub/message.proto";
 import "examples/internal/proto/sub2/message.proto";
@@ -776,6 +777,13 @@ service ABitOfEverythingService {
         kind: "TRACE",
         path: "/v1/example/a_bit_of_everything/{uuid}"
       }
+    };
+  }
+
+  rpc PostOneofEnum(grpc.gateway.examples.internal.proto.oneofenum.OneofEnumMessage) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/example/oneofenum"
+      body: "example_enum"
     };
   }
 }

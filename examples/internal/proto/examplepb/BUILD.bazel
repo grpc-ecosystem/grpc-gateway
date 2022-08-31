@@ -58,6 +58,7 @@ proto_library(
         "wrappers.proto",
     ],
     deps = [
+        "//examples/internal/proto/oneofenum:oneofenum_proto",
         "//examples/internal/proto/pathenum:pathenum_proto",
         "//examples/internal/proto/sub:sub_proto",
         "//examples/internal/proto/sub2:sub2_proto",
@@ -98,6 +99,7 @@ go_proto_library(
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
     proto = ":examplepb_proto",
     deps = [
+        "//examples/internal/proto/oneofenum",
         "//examples/internal/proto/pathenum",
         "//examples/internal/proto/sub",
         "//examples/internal/proto/sub2",

@@ -4555,6 +4555,62 @@
         ]
       }
     },
+    "/v1/example/oneofenum": {
+      "post": {
+        "operationId": "ABitOfEverythingService_PostOneofEnum",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "418": {
+            "description": "I'm a teapot.",
+            "schema": {
+              "$ref": "#/definitions/examplepbNumericEnum"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/examplepbErrorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "exampleEnum",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/oneofenumExampleEnum"
+            }
+          }
+        ],
+        "tags": [
+          "ABitOfEverythingService"
+        ]
+      }
+    },
     "/v1/example/snake/{who}/{what}/{where}": {
       "get": {
         "operationId": "SnakeEnumService_SnakeEnum",
@@ -6715,6 +6771,14 @@
       "default": "value_c",
       "description": "- value_c: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE\n - value_d: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE",
       "title": "Ignoring lint warnings as this enum type exist to validate proper functionality\nfor projects that don't follow these lint rules.\nbuf:lint:ignore ENUM_PASCAL_CASE"
+    },
+    "oneofenumExampleEnum": {
+      "type": "string",
+      "enum": [
+        "EXAMPLE_ENUM_UNSPECIFIED",
+        "EXAMPLE_ENUM_FIRST"
+      ],
+      "default": "EXAMPLE_ENUM_UNSPECIFIED"
     },
     "pathenumPathEnum": {
       "type": "string",
