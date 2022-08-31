@@ -53,11 +53,27 @@ message VisibilityRuleSimpleMessage {
   VisibilityEnum an_enum = 10;
 }
 
-// MessageInHiddenMethod doesn't define its own visibility restrictions,
+// MessageInPreviewMethod doesn't define its own visibility restrictions,
 // but is only included in a method marked as "PREVIEW", so it will only
 // appear if `visibility_restriction_selectors` include "PREVIEW".
 message VisibilityRuleMessageInPreviewMethod {
   string id = 1;
+  VisibilityRuleSubMessageInPreviewMethod sub_message = 2;
+  VisibilityRuleEnumInPreviewMethod enum = 3;
+}
+
+// SubMessageInPreviewMethod doesn't define its own visibility restrictions,
+// but is only included in a method marked as "PREVIEW", so it will only
+// appear if `visibility_restriction_selectors` include "PREVIEW".
+message VisibilityRuleSubMessageInPreviewMethod {
+  string id = 1;
+}
+
+// EnumInPreviewMethod doesn't define its own visibility restrictions,
+// but is only included in a method marked as "PREVIEW", so it will only
+// appear if `visibility_restriction_selectors` include "PREVIEW".
+enum VisibilityRuleEnumInPreviewMethod {
+   VISIBILITY_PREVIEW_ENUM_UNSPECIFIED = 0;
 }
 
 // VisibilityRuleEchoService service responds to incoming echo requests.
