@@ -343,8 +343,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Verb out here is to memoize for the fallback case below
-	var verb string
+	lastComponent := components[len(components)-1]
 
 	for _, h := range s.handlers[r.Method] {
 		// If the pattern has a verb, explicitly look for a suffix in the last
@@ -355,10 +354,11 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// parser because we know what verb we're looking for, however, there
 		// are still some cases that the parser itself cannot disambiguate. See
 		// the comment there if interested.
+
+		var verb string
 		patVerb := h.pat.Verb()
-		l := len(components)
-		lastComponent := components[l-1]
-		var idx int = -1
+
+		idx := -1
 		if patVerb != "" && strings.HasSuffix(lastComponent, ":"+patVerb) {
 			idx = len(lastComponent) - len(patVerb) - 1
 		}
@@ -368,7 +368,7 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if idx > 0 {
-			components[l-1], verb = lastComponent[:idx], lastComponent[idx+1:]
+			components[len(components)-1], verb = lastComponent[:idx], lastComponent[idx+1:]
 		}
 
 		pathParams, err := h.pat.MatchAndEscape(components, verb, s.unescapingMode)
@@ -394,6 +394,17 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		for _, h := range handlers {
+			var verb string
+			patVerb := h.pat.Verb()
+
+			idx := -1
+			if patVerb != "" && strings.HasSuffix(lastComponent, ":"+patVerb) {
+				idx = len(lastComponent) - len(patVerb) - 1
+			}
+			if idx > 0 {
+				components[len(components)-1], verb = lastComponent[:idx], lastComponent[idx+1:]
+			}
+
 			pathParams, err := h.pat.MatchAndEscape(components, verb, s.unescapingMode)
 			if err != nil {
 				var mse MalformedSequenceError
