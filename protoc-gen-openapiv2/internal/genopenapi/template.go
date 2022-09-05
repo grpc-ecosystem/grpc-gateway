@@ -1899,7 +1899,7 @@ func validateHeaderTypeAndFormat(headerType string, format string) error {
 			"":
 			return nil
 		default:
-				return fmt.Errorf("the provided format %q is not a valid extension of the type %q", format, headerType)
+			return fmt.Errorf("the provided format %q is not a valid extension of the type %q", format, headerType)
 		}
 	case "integer":
 		switch format {
