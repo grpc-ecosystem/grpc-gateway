@@ -647,8 +647,9 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 		object   = 2
 	)
 	var (
-		core      schemaCore
-		aggregate int
+		core       schemaCore
+		aggregate  int
+		deprecated bool
 	)
 
 	fd := f.FieldDescriptorProto
@@ -668,12 +669,19 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 
 	var props *openapiSchemaObjectProperties
 
+	if opt := fd.GetOptions(); opt != nil && opt.Deprecated != nil && *opt.Deprecated {
+		deprecated = *opt.Deprecated
+	}
+
 	switch ft := fd.GetType(); ft {
 	case descriptorpb.FieldDescriptorProto_TYPE_ENUM, descriptorpb.FieldDescriptorProto_TYPE_MESSAGE, descriptorpb.FieldDescriptorProto_TYPE_GROUP:
 		if wktSchema, ok := wktSchemas[fd.GetTypeName()]; ok {
 			core = wktSchema
 			if fd.GetTypeName() == ".google.protobuf.Empty" {
 				props = &openapiSchemaObjectProperties{}
+			}
+			if deprecated {
+				core.Deprecated = deprecated
 			}
 		} else {
 			swgRef, ok := fullyQualifiedNameToOpenAPIName(fd.GetTypeName(), reg)
@@ -682,6 +690,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 			}
 			core = schemaCore{
 				Ref: "#/definitions/" + swgRef,
+				Deprecated: deprecated,
 			}
 			if refs != nil {
 				refs[fd.GetTypeName()] = struct{}{}
@@ -690,9 +699,9 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 	default:
 		ftype, format, ok := primitiveSchema(ft)
 		if ok {
-			core = schemaCore{Type: ftype, Format: format}
+			core = schemaCore{Type: ftype, Format: format, Deprecated: deprecated}
 		} else {
-			core = schemaCore{Type: ft.String(), Format: "UNKNOWN"}
+			core = schemaCore{Type: ft.String(), Format: "UNKNOWN", Deprecated: deprecated}
 		}
 	}
 
@@ -1374,6 +1383,11 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						},
 					},
 				}
+
+				if opt := meth.GetOptions(); opt != nil && opt.Deprecated != nil && *opt.Deprecated {
+					operationObject.Deprecated = *opt.Deprecated
+				}
+
 				if !reg.GetDisableDefaultErrors() {
 					errDef, hasErrDef := fullyQualifiedNameToOpenAPIName(".google.rpc.Status", reg)
 					if hasErrDef {
@@ -1885,7 +1899,7 @@ func validateHeaderTypeAndFormat(headerType string, format string) error {
 			"":
 			return nil
 		default:
-			return fmt.Errorf("the provided format %q is not a valid extension of the type %q", format, headerType)
+				return fmt.Errorf("the provided format %q is not a valid extension of the type %q", format, headerType)
 		}
 	case "integer":
 		switch format {

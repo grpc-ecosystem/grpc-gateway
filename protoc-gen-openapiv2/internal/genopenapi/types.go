@@ -170,6 +170,7 @@ type schemaCore struct {
 	XNullable bool       `json:"x-nullable,omitempty" yaml:"x-nullable,omitempty"`
 	Example   RawExample `json:"example,omitempty" yaml:"example,omitempty"`
 
+	Deprecated bool `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
 	Items *openapiItemsObject `json:"items,omitempty" yaml:"items,omitempty"`
 
 	// If the item is an enumeration include a list of all the *NAMES* of the
