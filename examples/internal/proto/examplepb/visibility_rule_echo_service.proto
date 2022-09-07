@@ -73,7 +73,7 @@ message VisibilityRuleSubMessageInPreviewMethod {
 // but is only included in a method marked as "PREVIEW", so it will only
 // appear if `visibility_restriction_selectors` include "PREVIEW".
 enum VisibilityRuleEnumInPreviewMethod {
-   VISIBILITY_PREVIEW_ENUM_UNSPECIFIED = 0;
+  VISIBILITY_RULE_ENUM_IN_PREVIEW_METHOD_UNSPECIFIED = 0;
 }
 
 // VisibilityRuleEchoService service responds to incoming echo requests.

@@ -724,9 +724,9 @@
     "examplepbVisibilityRuleEnumInPreviewMethod": {
       "type": "string",
       "enum": [
-        "VISIBILITY_PREVIEW_ENUM_UNSPECIFIED"
+        "VISIBILITY_RULE_ENUM_IN_PREVIEW_METHOD_UNSPECIFIED"
       ],
-      "default": "VISIBILITY_PREVIEW_ENUM_UNSPECIFIED",
+      "default": "VISIBILITY_RULE_ENUM_IN_PREVIEW_METHOD_UNSPECIFIED",
       "description": "EnumInPreviewMethod doesn't define its own visibility restrictions,\nbut is only included in a method marked as \"PREVIEW\", so it will only\nappear if `visibility_restriction_selectors` include \"PREVIEW\"."
     },
     "examplepbVisibilityRuleMessageInPreviewMethod": {
