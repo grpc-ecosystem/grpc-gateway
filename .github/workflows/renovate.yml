@@ -15,11 +15,11 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
         with:
           fetch-depth: 0
           token: ${{ secrets.GH_PUSH_TOKEN }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@fd5de65bc895cf536527842281bea11763fefd77 # tag=v3
         with:
           path: /home/vscode/.cache/_grpc_gateway_bazel
           key: v1-bazel-cache-${{ hashFiles('repositories.bzl') }}
@@ -57,7 +57,7 @@ jobs:
       # git conflicts
       - update_repositoriesbzl
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
         with:
           fetch-depth: 0
           token: ${{ secrets.GH_PUSH_TOKEN }}
