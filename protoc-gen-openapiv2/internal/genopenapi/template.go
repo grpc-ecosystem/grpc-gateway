@@ -367,6 +367,10 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 		for _, meth := range svc.Methods {
 			// Request may be fully included in query
 			{
+				if !isVisible(getMethodVisibilityOption(meth), reg) {
+					continue
+				}
+
 				swgReqName, ok := fullyQualifiedNameToOpenAPIName(meth.RequestType.FQMN(), reg)
 				if !ok {
 					glog.Errorf("couldn't resolve OpenAPI name for FQMN '%v'", meth.RequestType.FQMN())
