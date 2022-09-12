@@ -12,12 +12,12 @@ package abe
 
 import (
 	"context"
+	"fmt"
+	"github.com/antihax/optional"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
-	"fmt"
-	"github.com/antihax/optional"
 )
 
 // Linger please
@@ -27,19 +27,19 @@ var (
 
 type ABitOfEverythingServiceApiService service
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param value
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param value
 
 @return interface{}
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckExternalNestedPathEnum(ctx context.Context, value string) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -78,7 +78,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckExternal
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -99,103 +99,103 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckExternal
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param value
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param value
 
 @return interface{}
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckExternalPathEnum(ctx context.Context, value string) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -234,7 +234,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckExternal
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -255,91 +255,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckExternal
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedName name is nested field.
@@ -350,84 +350,86 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCheckGetQueryParamsOpts - Optional Parameters:
-     * @param "SingleNestedAmount" (optional.Int64) - 
+     * @param "SingleNestedAmount" (optional.Int64) -
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Uint64Value" (optional.String) - 
-     * @param "Int32Value" (optional.Int32) - 
-     * @param "Fixed64Value" (optional.String) - 
-     * @param "Fixed32Value" (optional.Int64) - 
-     * @param "BoolValue" (optional.Bool) - 
-     * @param "StringValue" (optional.String) - 
-     * @param "BytesValue" (optional.String) - 
-     * @param "Uint32Value" (optional.Int64) - 
+     * @param "Uint64Value" (optional.String) -
+     * @param "Int32Value" (optional.Int32) -
+     * @param "Fixed64Value" (optional.String) -
+     * @param "Fixed32Value" (optional.Int64) -
+     * @param "BoolValue" (optional.Bool) -
+     * @param "StringValue" (optional.String) -
+     * @param "BytesValue" (optional.String) -
+     * @param "Uint32Value" (optional.Int64) -
      * @param "EnumValue" (optional.String) -   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "PathEnumValue" (optional.String) - 
-     * @param "NestedPathEnumValue" (optional.String) - 
-     * @param "Sfixed32Value" (optional.Int32) - 
-     * @param "Sfixed64Value" (optional.String) - 
-     * @param "Sint32Value" (optional.Int32) - 
-     * @param "Sint64Value" (optional.String) - 
-     * @param "RepeatedStringValue" (optional.Interface of []string) - 
-     * @param "OneofString" (optional.String) - 
-     * @param "NonConventionalNameValue" (optional.String) - 
-     * @param "TimestampValue" (optional.Time) - 
+     * @param "PathEnumValue" (optional.String) -
+     * @param "NestedPathEnumValue" (optional.String) -
+     * @param "Sfixed32Value" (optional.Int32) -
+     * @param "Sfixed64Value" (optional.String) -
+     * @param "Sint32Value" (optional.Int32) -
+     * @param "Sint64Value" (optional.String) -
+     * @param "RepeatedStringValue" (optional.Interface of []string) -
+     * @param "OneofString" (optional.String) -
+     * @param "NonConventionalNameValue" (optional.String) -
+     * @param "TimestampValue" (optional.Time) -
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
-     * @param "NestedAnnotationAmount" (optional.Int64) - 
+     * @param "NestedAnnotationAmount" (optional.Int64) -
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "Int64OverrideType" (optional.Int64) -
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
-     * @param "OptionalStringValue" (optional.String) - 
+     * @param "OptionalStringValue" (optional.String) -
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return ExamplepbABitOfEverything
 */
 
-type ABitOfEverythingServiceCheckGetQueryParamsOpts struct { 
-	SingleNestedAmount optional.Int64
-	SingleNestedOk optional.String
-	Uint64Value optional.String
-	Int32Value optional.Int32
-	Fixed64Value optional.String
-	Fixed32Value optional.Int64
-	BoolValue optional.Bool
-	StringValue optional.String
-	BytesValue optional.String
-	Uint32Value optional.Int64
-	EnumValue optional.String
-	PathEnumValue optional.String
-	NestedPathEnumValue optional.String
-	Sfixed32Value optional.Int32
-	Sfixed64Value optional.String
-	Sint32Value optional.Int32
-	Sint64Value optional.String
-	RepeatedStringValue optional.Interface
-	OneofString optional.String
-	NonConventionalNameValue optional.String
-	TimestampValue optional.Time
-	RepeatedEnumValue optional.Interface
-	RepeatedEnumAnnotation optional.Interface
-	EnumValueAnnotation optional.String
-	RepeatedStringAnnotation optional.Interface
-	NestedAnnotationAmount optional.Int64
-	NestedAnnotationOk optional.String
-	Int64OverrideType optional.Int64
+type ABitOfEverythingServiceCheckGetQueryParamsOpts struct {
+	SingleNestedAmount                         optional.Int64
+	SingleNestedOk                             optional.String
+	Uint64Value                                optional.String
+	Int32Value                                 optional.Int32
+	Fixed64Value                               optional.String
+	Fixed32Value                               optional.Int64
+	BoolValue                                  optional.Bool
+	StringValue                                optional.String
+	BytesValue                                 optional.String
+	Uint32Value                                optional.Int64
+	EnumValue                                  optional.String
+	PathEnumValue                              optional.String
+	NestedPathEnumValue                        optional.String
+	Sfixed32Value                              optional.Int32
+	Sfixed64Value                              optional.String
+	Sint32Value                                optional.Int32
+	Sint64Value                                optional.String
+	RepeatedStringValue                        optional.Interface
+	OneofString                                optional.String
+	NonConventionalNameValue                   optional.String
+	TimestampValue                             optional.Time
+	RepeatedEnumValue                          optional.Interface
+	RepeatedEnumAnnotation                     optional.Interface
+	EnumValueAnnotation                        optional.String
+	RepeatedStringAnnotation                   optional.Interface
+	NestedAnnotationAmount                     optional.Int64
+	NestedAnnotationOk                         optional.String
+	Int64OverrideType                          optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
-	OptionalStringValue optional.String
-	ProductId optional.Interface
-	OptionalStringField optional.String
+	OptionalStringValue                        optional.String
+	ProductId                                  optional.Interface
+	OptionalStringField                        optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbABitOfEverything
 	)
 
@@ -542,6 +544,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -569,7 +573,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -590,91 +594,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbABitOfEverything
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedOk DeepEnum description.
@@ -685,84 +689,86 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
-     * @param "SingleNestedAmount" (optional.Int64) - 
-     * @param "Uint64Value" (optional.String) - 
-     * @param "Int32Value" (optional.Int32) - 
-     * @param "Fixed64Value" (optional.String) - 
-     * @param "Fixed32Value" (optional.Int64) - 
-     * @param "BoolValue" (optional.Bool) - 
-     * @param "StringValue" (optional.String) - 
-     * @param "BytesValue" (optional.String) - 
-     * @param "Uint32Value" (optional.Int64) - 
+     * @param "SingleNestedAmount" (optional.Int64) -
+     * @param "Uint64Value" (optional.String) -
+     * @param "Int32Value" (optional.Int32) -
+     * @param "Fixed64Value" (optional.String) -
+     * @param "Fixed32Value" (optional.Int64) -
+     * @param "BoolValue" (optional.Bool) -
+     * @param "StringValue" (optional.String) -
+     * @param "BytesValue" (optional.String) -
+     * @param "Uint32Value" (optional.Int64) -
      * @param "EnumValue" (optional.String) -   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "PathEnumValue" (optional.String) - 
-     * @param "NestedPathEnumValue" (optional.String) - 
-     * @param "Sfixed32Value" (optional.Int32) - 
-     * @param "Sfixed64Value" (optional.String) - 
-     * @param "Sint32Value" (optional.Int32) - 
-     * @param "Sint64Value" (optional.String) - 
-     * @param "RepeatedStringValue" (optional.Interface of []string) - 
-     * @param "OneofString" (optional.String) - 
-     * @param "NonConventionalNameValue" (optional.String) - 
-     * @param "TimestampValue" (optional.Time) - 
+     * @param "PathEnumValue" (optional.String) -
+     * @param "NestedPathEnumValue" (optional.String) -
+     * @param "Sfixed32Value" (optional.Int32) -
+     * @param "Sfixed64Value" (optional.String) -
+     * @param "Sint32Value" (optional.Int32) -
+     * @param "Sint64Value" (optional.String) -
+     * @param "RepeatedStringValue" (optional.Interface of []string) -
+     * @param "OneofString" (optional.String) -
+     * @param "NonConventionalNameValue" (optional.String) -
+     * @param "TimestampValue" (optional.Time) -
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
-     * @param "NestedAnnotationAmount" (optional.Int64) - 
-     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "NestedAnnotationAmount" (optional.Int64) -
+     * @param "Int64OverrideType" (optional.Int64) -
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
-     * @param "OptionalStringValue" (optional.String) - 
+     * @param "OptionalStringValue" (optional.String) -
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return ExamplepbABitOfEverything
 */
 
-type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct { 
-	SingleNestedName optional.String
-	SingleNestedAmount optional.Int64
-	Uint64Value optional.String
-	Int32Value optional.Int32
-	Fixed64Value optional.String
-	Fixed32Value optional.Int64
-	BoolValue optional.Bool
-	StringValue optional.String
-	BytesValue optional.String
-	Uint32Value optional.Int64
-	EnumValue optional.String
-	PathEnumValue optional.String
-	NestedPathEnumValue optional.String
-	Sfixed32Value optional.Int32
-	Sfixed64Value optional.String
-	Sint32Value optional.Int32
-	Sint64Value optional.String
-	RepeatedStringValue optional.Interface
-	OneofString optional.String
-	NonConventionalNameValue optional.String
-	TimestampValue optional.Time
-	RepeatedEnumValue optional.Interface
-	RepeatedEnumAnnotation optional.Interface
-	EnumValueAnnotation optional.String
-	RepeatedStringAnnotation optional.Interface
-	NestedAnnotationName optional.String
-	NestedAnnotationAmount optional.Int64
-	Int64OverrideType optional.Int64
+type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct {
+	SingleNestedName                           optional.String
+	SingleNestedAmount                         optional.Int64
+	Uint64Value                                optional.String
+	Int32Value                                 optional.Int32
+	Fixed64Value                               optional.String
+	Fixed32Value                               optional.Int64
+	BoolValue                                  optional.Bool
+	StringValue                                optional.String
+	BytesValue                                 optional.String
+	Uint32Value                                optional.Int64
+	EnumValue                                  optional.String
+	PathEnumValue                              optional.String
+	NestedPathEnumValue                        optional.String
+	Sfixed32Value                              optional.Int32
+	Sfixed64Value                              optional.String
+	Sint32Value                                optional.Int32
+	Sint64Value                                optional.String
+	RepeatedStringValue                        optional.Interface
+	OneofString                                optional.String
+	NonConventionalNameValue                   optional.String
+	TimestampValue                             optional.Time
+	RepeatedEnumValue                          optional.Interface
+	RepeatedEnumAnnotation                     optional.Interface
+	EnumValueAnnotation                        optional.String
+	RepeatedStringAnnotation                   optional.Interface
+	NestedAnnotationName                       optional.String
+	NestedAnnotationAmount                     optional.Int64
+	Int64OverrideType                          optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
-	OptionalStringValue optional.String
-	ProductId optional.Interface
-	OptionalStringField optional.String
+	OptionalStringValue                        optional.String
+	ProductId                                  optional.Interface
+	OptionalStringField                        optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbABitOfEverything
 	)
 
@@ -877,6 +883,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -904,7 +912,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -925,91 +933,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbABitOfEverything
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param stringValue
@@ -1021,80 +1029,82 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCheckPostQueryParamsOpts - Optional Parameters:
-     * @param "Uint64Value" (optional.String) - 
-     * @param "Int32Value" (optional.Int32) - 
-     * @param "Fixed64Value" (optional.String) - 
-     * @param "Fixed32Value" (optional.Int64) - 
-     * @param "BoolValue" (optional.Bool) - 
-     * @param "BytesValue" (optional.String) - 
-     * @param "Uint32Value" (optional.Int64) - 
+     * @param "Uint64Value" (optional.String) -
+     * @param "Int32Value" (optional.Int32) -
+     * @param "Fixed64Value" (optional.String) -
+     * @param "Fixed32Value" (optional.Int64) -
+     * @param "BoolValue" (optional.Bool) -
+     * @param "BytesValue" (optional.String) -
+     * @param "Uint32Value" (optional.Int64) -
      * @param "EnumValue" (optional.String) -   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "PathEnumValue" (optional.String) - 
-     * @param "NestedPathEnumValue" (optional.String) - 
-     * @param "Sfixed32Value" (optional.Int32) - 
-     * @param "Sfixed64Value" (optional.String) - 
-     * @param "Sint32Value" (optional.Int32) - 
-     * @param "Sint64Value" (optional.String) - 
-     * @param "RepeatedStringValue" (optional.Interface of []string) - 
-     * @param "OneofString" (optional.String) - 
-     * @param "NonConventionalNameValue" (optional.String) - 
-     * @param "TimestampValue" (optional.Time) - 
+     * @param "PathEnumValue" (optional.String) -
+     * @param "NestedPathEnumValue" (optional.String) -
+     * @param "Sfixed32Value" (optional.Int32) -
+     * @param "Sfixed64Value" (optional.String) -
+     * @param "Sint32Value" (optional.Int32) -
+     * @param "Sint64Value" (optional.String) -
+     * @param "RepeatedStringValue" (optional.Interface of []string) -
+     * @param "OneofString" (optional.String) -
+     * @param "NonConventionalNameValue" (optional.String) -
+     * @param "TimestampValue" (optional.Time) -
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
-     * @param "NestedAnnotationAmount" (optional.Int64) - 
+     * @param "NestedAnnotationAmount" (optional.Int64) -
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "Int64OverrideType" (optional.Int64) -
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
-     * @param "OptionalStringValue" (optional.String) - 
+     * @param "OptionalStringValue" (optional.String) -
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return ExamplepbABitOfEverything
 */
 
-type ABitOfEverythingServiceCheckPostQueryParamsOpts struct { 
-	Uint64Value optional.String
-	Int32Value optional.Int32
-	Fixed64Value optional.String
-	Fixed32Value optional.Int64
-	BoolValue optional.Bool
-	BytesValue optional.String
-	Uint32Value optional.Int64
-	EnumValue optional.String
-	PathEnumValue optional.String
-	NestedPathEnumValue optional.String
-	Sfixed32Value optional.Int32
-	Sfixed64Value optional.String
-	Sint32Value optional.Int32
-	Sint64Value optional.String
-	RepeatedStringValue optional.Interface
-	OneofString optional.String
-	NonConventionalNameValue optional.String
-	TimestampValue optional.Time
-	RepeatedEnumValue optional.Interface
-	RepeatedEnumAnnotation optional.Interface
-	EnumValueAnnotation optional.String
-	RepeatedStringAnnotation optional.Interface
-	NestedAnnotationName optional.String
-	NestedAnnotationAmount optional.Int64
-	NestedAnnotationOk optional.String
-	Int64OverrideType optional.Int64
+type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
+	Uint64Value                                optional.String
+	Int32Value                                 optional.Int32
+	Fixed64Value                               optional.String
+	Fixed32Value                               optional.Int64
+	BoolValue                                  optional.Bool
+	BytesValue                                 optional.String
+	Uint32Value                                optional.Int64
+	EnumValue                                  optional.String
+	PathEnumValue                              optional.String
+	NestedPathEnumValue                        optional.String
+	Sfixed32Value                              optional.Int32
+	Sfixed64Value                              optional.String
+	Sint32Value                                optional.Int32
+	Sint64Value                                optional.String
+	RepeatedStringValue                        optional.Interface
+	OneofString                                optional.String
+	NonConventionalNameValue                   optional.String
+	TimestampValue                             optional.Time
+	RepeatedEnumValue                          optional.Interface
+	RepeatedEnumAnnotation                     optional.Interface
+	EnumValueAnnotation                        optional.String
+	RepeatedStringAnnotation                   optional.Interface
+	NestedAnnotationName                       optional.String
+	NestedAnnotationAmount                     optional.Int64
+	NestedAnnotationOk                         optional.String
+	Int64OverrideType                          optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
-	OptionalStringValue optional.String
-	ProductId optional.Interface
-	OptionalStringField optional.String
+	OptionalStringValue                        optional.String
+	ProductId                                  optional.Interface
+	OptionalStringField                        optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Post")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbABitOfEverything
 	)
 
@@ -1203,6 +1213,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -1232,7 +1244,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -1253,102 +1265,102 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbABitOfEverything
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 
 @return ExamplepbCheckStatusResponse
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckStatus(ctx context.Context) (ExamplepbCheckStatusResponse, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbCheckStatusResponse
 	)
 
@@ -1386,7 +1398,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckStatus(c
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -1407,91 +1419,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckStatus(c
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbCheckStatusResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService Create a new ABitOfEverything
 This API creates a new ABitOfEverything
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -1518,56 +1530,58 @@ This API creates a new ABitOfEverything
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCreateOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
-     * @param "SingleNestedAmount" (optional.Int64) - 
+     * @param "SingleNestedAmount" (optional.Int64) -
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "BytesValue" (optional.String) - 
-     * @param "RepeatedStringValue" (optional.Interface of []string) - 
-     * @param "OneofString" (optional.String) - 
-     * @param "TimestampValue" (optional.Time) - 
+     * @param "BytesValue" (optional.String) -
+     * @param "RepeatedStringValue" (optional.Interface of []string) -
+     * @param "OneofString" (optional.String) -
+     * @param "TimestampValue" (optional.Time) -
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
-     * @param "NestedAnnotationAmount" (optional.Int64) - 
+     * @param "NestedAnnotationAmount" (optional.Int64) -
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "Int64OverrideType" (optional.Int64) -
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
-     * @param "OptionalStringValue" (optional.String) - 
+     * @param "OptionalStringValue" (optional.String) -
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return ExamplepbABitOfEverything
 */
 
-type ABitOfEverythingServiceCreateOpts struct { 
-	SingleNestedName optional.String
-	SingleNestedAmount optional.Int64
-	SingleNestedOk optional.String
-	BytesValue optional.String
-	RepeatedStringValue optional.Interface
-	OneofString optional.String
-	TimestampValue optional.Time
-	RepeatedEnumValue optional.Interface
-	RepeatedEnumAnnotation optional.Interface
-	RepeatedStringAnnotation optional.Interface
-	NestedAnnotationName optional.String
-	NestedAnnotationAmount optional.Int64
-	NestedAnnotationOk optional.String
-	Int64OverrideType optional.Int64
+type ABitOfEverythingServiceCreateOpts struct {
+	SingleNestedName                           optional.String
+	SingleNestedAmount                         optional.Int64
+	SingleNestedOk                             optional.String
+	BytesValue                                 optional.String
+	RepeatedStringValue                        optional.Interface
+	OneofString                                optional.String
+	TimestampValue                             optional.Time
+	RepeatedEnumValue                          optional.Interface
+	RepeatedEnumAnnotation                     optional.Interface
+	RepeatedStringAnnotation                   optional.Interface
+	NestedAnnotationName                       optional.String
+	NestedAnnotationAmount                     optional.Int64
+	NestedAnnotationOk                         optional.String
+	Int64OverrideType                          optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
-	OptionalStringValue optional.String
-	ProductId optional.Interface
-	OptionalStringField optional.String
+	OptionalStringValue                        optional.String
+	ProductId                                  optional.Interface
+	OptionalStringField                        optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, uuid string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, uuid string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Post")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbABitOfEverything
 	)
 
@@ -1655,6 +1669,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -1682,7 +1698,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -1703,103 +1719,103 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbABitOfEverything
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body Intentionally complicated message type to cover many features of Protobuf.
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param body Intentionally complicated message type to cover many features of Protobuf.
 
 @return ExamplepbABitOfEverything
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ctx context.Context, body ExamplepbABitOfEverything) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Post")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbABitOfEverything
 	)
 
@@ -1839,7 +1855,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ct
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -1860,91 +1876,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ct
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbABitOfEverything
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService Create a book.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param parent The publisher in which to create the book.  Format: &#x60;publishers/{publisher}&#x60;  Example: &#x60;publishers/1257894000000000000&#x60;
@@ -1955,16 +1971,16 @@ ABitOfEverythingServiceApiService Create a book.
 @return ExamplepbBook
 */
 
-type ABitOfEverythingServiceCreateBookOpts struct { 
+type ABitOfEverythingServiceCreateBookOpts struct {
 	BookId optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ctx context.Context, parent string, book ExamplepbBook, localVarOptionals *ABitOfEverythingServiceCreateBookOpts) (ExamplepbBook, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Post")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbBook
 	)
 
@@ -2008,7 +2024,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ct
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -2029,91 +2045,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ct
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbBook
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -2123,88 +2139,90 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCustomOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
-     * @param "SingleNestedAmount" (optional.Int64) - 
+     * @param "SingleNestedAmount" (optional.Int64) -
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Uint64Value" (optional.String) - 
-     * @param "Int32Value" (optional.Int32) - 
-     * @param "Fixed64Value" (optional.String) - 
-     * @param "Fixed32Value" (optional.Int64) - 
-     * @param "BoolValue" (optional.Bool) - 
-     * @param "StringValue" (optional.String) - 
-     * @param "BytesValue" (optional.String) - 
-     * @param "Uint32Value" (optional.Int64) - 
+     * @param "Uint64Value" (optional.String) -
+     * @param "Int32Value" (optional.Int32) -
+     * @param "Fixed64Value" (optional.String) -
+     * @param "Fixed32Value" (optional.Int64) -
+     * @param "BoolValue" (optional.Bool) -
+     * @param "StringValue" (optional.String) -
+     * @param "BytesValue" (optional.String) -
+     * @param "Uint32Value" (optional.Int64) -
      * @param "EnumValue" (optional.String) -   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "PathEnumValue" (optional.String) - 
-     * @param "NestedPathEnumValue" (optional.String) - 
-     * @param "Sfixed32Value" (optional.Int32) - 
-     * @param "Sfixed64Value" (optional.String) - 
-     * @param "Sint32Value" (optional.Int32) - 
-     * @param "Sint64Value" (optional.String) - 
-     * @param "RepeatedStringValue" (optional.Interface of []string) - 
-     * @param "OneofString" (optional.String) - 
-     * @param "NonConventionalNameValue" (optional.String) - 
-     * @param "TimestampValue" (optional.Time) - 
+     * @param "PathEnumValue" (optional.String) -
+     * @param "NestedPathEnumValue" (optional.String) -
+     * @param "Sfixed32Value" (optional.Int32) -
+     * @param "Sfixed64Value" (optional.String) -
+     * @param "Sint32Value" (optional.Int32) -
+     * @param "Sint64Value" (optional.String) -
+     * @param "RepeatedStringValue" (optional.Interface of []string) -
+     * @param "OneofString" (optional.String) -
+     * @param "NonConventionalNameValue" (optional.String) -
+     * @param "TimestampValue" (optional.Time) -
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
-     * @param "NestedAnnotationAmount" (optional.Int64) - 
+     * @param "NestedAnnotationAmount" (optional.Int64) -
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "Int64OverrideType" (optional.Int64) -
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
-     * @param "OptionalStringValue" (optional.String) - 
+     * @param "OptionalStringValue" (optional.String) -
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return ExamplepbABitOfEverything
 */
 
-type ABitOfEverythingServiceCustomOpts struct { 
-	SingleNestedName optional.String
-	SingleNestedAmount optional.Int64
-	SingleNestedOk optional.String
-	Uint64Value optional.String
-	Int32Value optional.Int32
-	Fixed64Value optional.String
-	Fixed32Value optional.Int64
-	BoolValue optional.Bool
-	StringValue optional.String
-	BytesValue optional.String
-	Uint32Value optional.Int64
-	EnumValue optional.String
-	PathEnumValue optional.String
-	NestedPathEnumValue optional.String
-	Sfixed32Value optional.Int32
-	Sfixed64Value optional.String
-	Sint32Value optional.Int32
-	Sint64Value optional.String
-	RepeatedStringValue optional.Interface
-	OneofString optional.String
-	NonConventionalNameValue optional.String
-	TimestampValue optional.Time
-	RepeatedEnumValue optional.Interface
-	RepeatedEnumAnnotation optional.Interface
-	EnumValueAnnotation optional.String
-	RepeatedStringAnnotation optional.Interface
-	NestedAnnotationName optional.String
-	NestedAnnotationAmount optional.Int64
-	NestedAnnotationOk optional.String
-	Int64OverrideType optional.Int64
+type ABitOfEverythingServiceCustomOpts struct {
+	SingleNestedName                           optional.String
+	SingleNestedAmount                         optional.Int64
+	SingleNestedOk                             optional.String
+	Uint64Value                                optional.String
+	Int32Value                                 optional.Int32
+	Fixed64Value                               optional.String
+	Fixed32Value                               optional.Int64
+	BoolValue                                  optional.Bool
+	StringValue                                optional.String
+	BytesValue                                 optional.String
+	Uint32Value                                optional.Int64
+	EnumValue                                  optional.String
+	PathEnumValue                              optional.String
+	NestedPathEnumValue                        optional.String
+	Sfixed32Value                              optional.Int32
+	Sfixed64Value                              optional.String
+	Sint32Value                                optional.Int32
+	Sint64Value                                optional.String
+	RepeatedStringValue                        optional.Interface
+	OneofString                                optional.String
+	NonConventionalNameValue                   optional.String
+	TimestampValue                             optional.Time
+	RepeatedEnumValue                          optional.Interface
+	RepeatedEnumAnnotation                     optional.Interface
+	EnumValueAnnotation                        optional.String
+	RepeatedStringAnnotation                   optional.Interface
+	NestedAnnotationName                       optional.String
+	NestedAnnotationAmount                     optional.Int64
+	NestedAnnotationOk                         optional.String
+	Int64OverrideType                          optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
-	OptionalStringValue optional.String
-	ProductId optional.Interface
-	OptionalStringField optional.String
+	OptionalStringValue                        optional.String
+	ProductId                                  optional.Interface
+	OptionalStringField                        optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Post")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbABitOfEverything
 	)
 
@@ -2324,6 +2342,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx co
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -2351,7 +2371,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx co
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -2372,91 +2392,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx co
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbABitOfEverything
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -2466,88 +2486,90 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCustomOptionsRequestOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
-     * @param "SingleNestedAmount" (optional.Int64) - 
+     * @param "SingleNestedAmount" (optional.Int64) -
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Uint64Value" (optional.String) - 
-     * @param "Int32Value" (optional.Int32) - 
-     * @param "Fixed64Value" (optional.String) - 
-     * @param "Fixed32Value" (optional.Int64) - 
-     * @param "BoolValue" (optional.Bool) - 
-     * @param "StringValue" (optional.String) - 
-     * @param "BytesValue" (optional.String) - 
-     * @param "Uint32Value" (optional.Int64) - 
+     * @param "Uint64Value" (optional.String) -
+     * @param "Int32Value" (optional.Int32) -
+     * @param "Fixed64Value" (optional.String) -
+     * @param "Fixed32Value" (optional.Int64) -
+     * @param "BoolValue" (optional.Bool) -
+     * @param "StringValue" (optional.String) -
+     * @param "BytesValue" (optional.String) -
+     * @param "Uint32Value" (optional.Int64) -
      * @param "EnumValue" (optional.String) -   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "PathEnumValue" (optional.String) - 
-     * @param "NestedPathEnumValue" (optional.String) - 
-     * @param "Sfixed32Value" (optional.Int32) - 
-     * @param "Sfixed64Value" (optional.String) - 
-     * @param "Sint32Value" (optional.Int32) - 
-     * @param "Sint64Value" (optional.String) - 
-     * @param "RepeatedStringValue" (optional.Interface of []string) - 
-     * @param "OneofString" (optional.String) - 
-     * @param "NonConventionalNameValue" (optional.String) - 
-     * @param "TimestampValue" (optional.Time) - 
+     * @param "PathEnumValue" (optional.String) -
+     * @param "NestedPathEnumValue" (optional.String) -
+     * @param "Sfixed32Value" (optional.Int32) -
+     * @param "Sfixed64Value" (optional.String) -
+     * @param "Sint32Value" (optional.Int32) -
+     * @param "Sint64Value" (optional.String) -
+     * @param "RepeatedStringValue" (optional.Interface of []string) -
+     * @param "OneofString" (optional.String) -
+     * @param "NonConventionalNameValue" (optional.String) -
+     * @param "TimestampValue" (optional.Time) -
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
-     * @param "NestedAnnotationAmount" (optional.Int64) - 
+     * @param "NestedAnnotationAmount" (optional.Int64) -
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "Int64OverrideType" (optional.Int64) -
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
-     * @param "OptionalStringValue" (optional.String) - 
+     * @param "OptionalStringValue" (optional.String) -
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return interface{}
 */
 
-type ABitOfEverythingServiceCustomOptionsRequestOpts struct { 
-	SingleNestedName optional.String
-	SingleNestedAmount optional.Int64
-	SingleNestedOk optional.String
-	Uint64Value optional.String
-	Int32Value optional.Int32
-	Fixed64Value optional.String
-	Fixed32Value optional.Int64
-	BoolValue optional.Bool
-	StringValue optional.String
-	BytesValue optional.String
-	Uint32Value optional.Int64
-	EnumValue optional.String
-	PathEnumValue optional.String
-	NestedPathEnumValue optional.String
-	Sfixed32Value optional.Int32
-	Sfixed64Value optional.String
-	Sint32Value optional.Int32
-	Sint64Value optional.String
-	RepeatedStringValue optional.Interface
-	OneofString optional.String
-	NonConventionalNameValue optional.String
-	TimestampValue optional.Time
-	RepeatedEnumValue optional.Interface
-	RepeatedEnumAnnotation optional.Interface
-	EnumValueAnnotation optional.String
-	RepeatedStringAnnotation optional.Interface
-	NestedAnnotationName optional.String
-	NestedAnnotationAmount optional.Int64
-	NestedAnnotationOk optional.String
-	Int64OverrideType optional.Int64
+type ABitOfEverythingServiceCustomOptionsRequestOpts struct {
+	SingleNestedName                           optional.String
+	SingleNestedAmount                         optional.Int64
+	SingleNestedOk                             optional.String
+	Uint64Value                                optional.String
+	Int32Value                                 optional.Int32
+	Fixed64Value                               optional.String
+	Fixed32Value                               optional.Int64
+	BoolValue                                  optional.Bool
+	StringValue                                optional.String
+	BytesValue                                 optional.String
+	Uint32Value                                optional.Int64
+	EnumValue                                  optional.String
+	PathEnumValue                              optional.String
+	NestedPathEnumValue                        optional.String
+	Sfixed32Value                              optional.Int32
+	Sfixed64Value                              optional.String
+	Sint32Value                                optional.Int32
+	Sint64Value                                optional.String
+	RepeatedStringValue                        optional.Interface
+	OneofString                                optional.String
+	NonConventionalNameValue                   optional.String
+	TimestampValue                             optional.Time
+	RepeatedEnumValue                          optional.Interface
+	RepeatedEnumAnnotation                     optional.Interface
+	EnumValueAnnotation                        optional.String
+	RepeatedStringAnnotation                   optional.Interface
+	NestedAnnotationName                       optional.String
+	NestedAnnotationAmount                     optional.Int64
+	NestedAnnotationOk                         optional.String
+	Int64OverrideType                          optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
-	OptionalStringValue optional.String
-	ProductId optional.Interface
-	OptionalStringField optional.String
+	OptionalStringValue                        optional.String
+	ProductId                                  optional.Interface
+	OptionalStringField                        optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Options")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Options")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -2667,6 +2689,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptions
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -2694,7 +2718,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptions
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -2715,60 +2739,60 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptions
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param singleNestedName name is nested field.
- * @param body
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param singleNestedName name is nested field.
+  - @param body
 
 @return ExamplepbABitOfEverything
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(ctx context.Context, singleNestedName string, body ABitOfEverything1) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Post")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbABitOfEverything
 	)
 
@@ -2809,7 +2833,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -2830,103 +2854,103 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbABitOfEverything
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param uuid
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param uuid
 
 @return interface{}
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDelete(ctx context.Context, uuid string) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Delete")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Delete")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -2965,7 +2989,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDelete(ctx co
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -2986,91 +3010,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDelete(ctx co
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -3080,88 +3104,90 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceDoubleColonOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
-     * @param "SingleNestedAmount" (optional.Int64) - 
+     * @param "SingleNestedAmount" (optional.Int64) -
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Uint64Value" (optional.String) - 
-     * @param "Int32Value" (optional.Int32) - 
-     * @param "Fixed64Value" (optional.String) - 
-     * @param "Fixed32Value" (optional.Int64) - 
-     * @param "BoolValue" (optional.Bool) - 
-     * @param "StringValue" (optional.String) - 
-     * @param "BytesValue" (optional.String) - 
-     * @param "Uint32Value" (optional.Int64) - 
+     * @param "Uint64Value" (optional.String) -
+     * @param "Int32Value" (optional.Int32) -
+     * @param "Fixed64Value" (optional.String) -
+     * @param "Fixed32Value" (optional.Int64) -
+     * @param "BoolValue" (optional.Bool) -
+     * @param "StringValue" (optional.String) -
+     * @param "BytesValue" (optional.String) -
+     * @param "Uint32Value" (optional.Int64) -
      * @param "EnumValue" (optional.String) -   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "PathEnumValue" (optional.String) - 
-     * @param "NestedPathEnumValue" (optional.String) - 
-     * @param "Sfixed32Value" (optional.Int32) - 
-     * @param "Sfixed64Value" (optional.String) - 
-     * @param "Sint32Value" (optional.Int32) - 
-     * @param "Sint64Value" (optional.String) - 
-     * @param "RepeatedStringValue" (optional.Interface of []string) - 
-     * @param "OneofString" (optional.String) - 
-     * @param "NonConventionalNameValue" (optional.String) - 
-     * @param "TimestampValue" (optional.Time) - 
+     * @param "PathEnumValue" (optional.String) -
+     * @param "NestedPathEnumValue" (optional.String) -
+     * @param "Sfixed32Value" (optional.Int32) -
+     * @param "Sfixed64Value" (optional.String) -
+     * @param "Sint32Value" (optional.Int32) -
+     * @param "Sint64Value" (optional.String) -
+     * @param "RepeatedStringValue" (optional.Interface of []string) -
+     * @param "OneofString" (optional.String) -
+     * @param "NonConventionalNameValue" (optional.String) -
+     * @param "TimestampValue" (optional.Time) -
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
-     * @param "NestedAnnotationAmount" (optional.Int64) - 
+     * @param "NestedAnnotationAmount" (optional.Int64) -
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "Int64OverrideType" (optional.Int64) -
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
-     * @param "OptionalStringValue" (optional.String) - 
+     * @param "OptionalStringValue" (optional.String) -
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return ExamplepbABitOfEverything
 */
 
-type ABitOfEverythingServiceDoubleColonOpts struct { 
-	SingleNestedName optional.String
-	SingleNestedAmount optional.Int64
-	SingleNestedOk optional.String
-	Uint64Value optional.String
-	Int32Value optional.Int32
-	Fixed64Value optional.String
-	Fixed32Value optional.Int64
-	BoolValue optional.Bool
-	StringValue optional.String
-	BytesValue optional.String
-	Uint32Value optional.Int64
-	EnumValue optional.String
-	PathEnumValue optional.String
-	NestedPathEnumValue optional.String
-	Sfixed32Value optional.Int32
-	Sfixed64Value optional.String
-	Sint32Value optional.Int32
-	Sint64Value optional.String
-	RepeatedStringValue optional.Interface
-	OneofString optional.String
-	NonConventionalNameValue optional.String
-	TimestampValue optional.Time
-	RepeatedEnumValue optional.Interface
-	RepeatedEnumAnnotation optional.Interface
-	EnumValueAnnotation optional.String
-	RepeatedStringAnnotation optional.Interface
-	NestedAnnotationName optional.String
-	NestedAnnotationAmount optional.Int64
-	NestedAnnotationOk optional.String
-	Int64OverrideType optional.Int64
+type ABitOfEverythingServiceDoubleColonOpts struct {
+	SingleNestedName                           optional.String
+	SingleNestedAmount                         optional.Int64
+	SingleNestedOk                             optional.String
+	Uint64Value                                optional.String
+	Int32Value                                 optional.Int32
+	Fixed64Value                               optional.String
+	Fixed32Value                               optional.Int64
+	BoolValue                                  optional.Bool
+	StringValue                                optional.String
+	BytesValue                                 optional.String
+	Uint32Value                                optional.Int64
+	EnumValue                                  optional.String
+	PathEnumValue                              optional.String
+	NestedPathEnumValue                        optional.String
+	Sfixed32Value                              optional.Int32
+	Sfixed64Value                              optional.String
+	Sint32Value                                optional.Int32
+	Sint64Value                                optional.String
+	RepeatedStringValue                        optional.Interface
+	OneofString                                optional.String
+	NonConventionalNameValue                   optional.String
+	TimestampValue                             optional.Time
+	RepeatedEnumValue                          optional.Interface
+	RepeatedEnumAnnotation                     optional.Interface
+	EnumValueAnnotation                        optional.String
+	RepeatedStringAnnotation                   optional.Interface
+	NestedAnnotationName                       optional.String
+	NestedAnnotationAmount                     optional.Int64
+	NestedAnnotationOk                         optional.String
+	Int64OverrideType                          optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
-	OptionalStringValue optional.String
-	ProductId optional.Interface
-	OptionalStringField optional.String
+	OptionalStringValue                        optional.String
+	ProductId                                  optional.Interface
+	OptionalStringField                        optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceDoubleColonOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceDoubleColonOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Post")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbABitOfEverything
 	)
 
@@ -3281,6 +3307,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(c
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -3308,7 +3336,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(c
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -3329,102 +3357,102 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(c
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbABitOfEverything
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 
 @return interface{}
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceErrorWithDetails(ctx context.Context) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -3462,7 +3490,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceErrorWithDeta
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -3483,91 +3511,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceErrorWithDeta
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -3577,88 +3605,90 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceExistsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
-     * @param "SingleNestedAmount" (optional.Int64) - 
+     * @param "SingleNestedAmount" (optional.Int64) -
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Uint64Value" (optional.String) - 
-     * @param "Int32Value" (optional.Int32) - 
-     * @param "Fixed64Value" (optional.String) - 
-     * @param "Fixed32Value" (optional.Int64) - 
-     * @param "BoolValue" (optional.Bool) - 
-     * @param "StringValue" (optional.String) - 
-     * @param "BytesValue" (optional.String) - 
-     * @param "Uint32Value" (optional.Int64) - 
+     * @param "Uint64Value" (optional.String) -
+     * @param "Int32Value" (optional.Int32) -
+     * @param "Fixed64Value" (optional.String) -
+     * @param "Fixed32Value" (optional.Int64) -
+     * @param "BoolValue" (optional.Bool) -
+     * @param "StringValue" (optional.String) -
+     * @param "BytesValue" (optional.String) -
+     * @param "Uint32Value" (optional.Int64) -
      * @param "EnumValue" (optional.String) -   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "PathEnumValue" (optional.String) - 
-     * @param "NestedPathEnumValue" (optional.String) - 
-     * @param "Sfixed32Value" (optional.Int32) - 
-     * @param "Sfixed64Value" (optional.String) - 
-     * @param "Sint32Value" (optional.Int32) - 
-     * @param "Sint64Value" (optional.String) - 
-     * @param "RepeatedStringValue" (optional.Interface of []string) - 
-     * @param "OneofString" (optional.String) - 
-     * @param "NonConventionalNameValue" (optional.String) - 
-     * @param "TimestampValue" (optional.Time) - 
+     * @param "PathEnumValue" (optional.String) -
+     * @param "NestedPathEnumValue" (optional.String) -
+     * @param "Sfixed32Value" (optional.Int32) -
+     * @param "Sfixed64Value" (optional.String) -
+     * @param "Sint32Value" (optional.Int32) -
+     * @param "Sint64Value" (optional.String) -
+     * @param "RepeatedStringValue" (optional.Interface of []string) -
+     * @param "OneofString" (optional.String) -
+     * @param "NonConventionalNameValue" (optional.String) -
+     * @param "TimestampValue" (optional.Time) -
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
-     * @param "NestedAnnotationAmount" (optional.Int64) - 
+     * @param "NestedAnnotationAmount" (optional.Int64) -
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "Int64OverrideType" (optional.Int64) -
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
-     * @param "OptionalStringValue" (optional.String) - 
+     * @param "OptionalStringValue" (optional.String) -
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return interface{}
 */
 
-type ABitOfEverythingServiceExistsOpts struct { 
-	SingleNestedName optional.String
-	SingleNestedAmount optional.Int64
-	SingleNestedOk optional.String
-	Uint64Value optional.String
-	Int32Value optional.Int32
-	Fixed64Value optional.String
-	Fixed32Value optional.Int64
-	BoolValue optional.Bool
-	StringValue optional.String
-	BytesValue optional.String
-	Uint32Value optional.Int64
-	EnumValue optional.String
-	PathEnumValue optional.String
-	NestedPathEnumValue optional.String
-	Sfixed32Value optional.Int32
-	Sfixed64Value optional.String
-	Sint32Value optional.Int32
-	Sint64Value optional.String
-	RepeatedStringValue optional.Interface
-	OneofString optional.String
-	NonConventionalNameValue optional.String
-	TimestampValue optional.Time
-	RepeatedEnumValue optional.Interface
-	RepeatedEnumAnnotation optional.Interface
-	EnumValueAnnotation optional.String
-	RepeatedStringAnnotation optional.Interface
-	NestedAnnotationName optional.String
-	NestedAnnotationAmount optional.Int64
-	NestedAnnotationOk optional.String
-	Int64OverrideType optional.Int64
+type ABitOfEverythingServiceExistsOpts struct {
+	SingleNestedName                           optional.String
+	SingleNestedAmount                         optional.Int64
+	SingleNestedOk                             optional.String
+	Uint64Value                                optional.String
+	Int32Value                                 optional.Int32
+	Fixed64Value                               optional.String
+	Fixed32Value                               optional.Int64
+	BoolValue                                  optional.Bool
+	StringValue                                optional.String
+	BytesValue                                 optional.String
+	Uint32Value                                optional.Int64
+	EnumValue                                  optional.String
+	PathEnumValue                              optional.String
+	NestedPathEnumValue                        optional.String
+	Sfixed32Value                              optional.Int32
+	Sfixed64Value                              optional.String
+	Sint32Value                                optional.Int32
+	Sint64Value                                optional.String
+	RepeatedStringValue                        optional.Interface
+	OneofString                                optional.String
+	NonConventionalNameValue                   optional.String
+	TimestampValue                             optional.Time
+	RepeatedEnumValue                          optional.Interface
+	RepeatedEnumAnnotation                     optional.Interface
+	EnumValueAnnotation                        optional.String
+	RepeatedStringAnnotation                   optional.Interface
+	NestedAnnotationName                       optional.String
+	NestedAnnotationAmount                     optional.Int64
+	NestedAnnotationOk                         optional.String
+	Int64OverrideType                          optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
-	OptionalStringValue optional.String
-	ProductId optional.Interface
-	OptionalStringField optional.String
+	OptionalStringValue                        optional.String
+	ProductId                                  optional.Interface
+	OptionalStringField                        optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Head")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Head")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -3778,6 +3808,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx co
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -3805,7 +3837,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx co
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -3826,60 +3858,60 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx co
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param id
- * @param data
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param id
+  - @param data
 
 @return interface{}
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWithBody(ctx context.Context, id string, data ExamplepbBody) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Post")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -3920,7 +3952,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWit
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -3941,91 +3973,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWit
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -4035,88 +4067,90 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceGetQueryOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
-     * @param "SingleNestedAmount" (optional.Int64) - 
+     * @param "SingleNestedAmount" (optional.Int64) -
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Uint64Value" (optional.String) - 
-     * @param "Int32Value" (optional.Int32) - 
-     * @param "Fixed64Value" (optional.String) - 
-     * @param "Fixed32Value" (optional.Int64) - 
-     * @param "BoolValue" (optional.Bool) - 
-     * @param "StringValue" (optional.String) - 
-     * @param "BytesValue" (optional.String) - 
-     * @param "Uint32Value" (optional.Int64) - 
+     * @param "Uint64Value" (optional.String) -
+     * @param "Int32Value" (optional.Int32) -
+     * @param "Fixed64Value" (optional.String) -
+     * @param "Fixed32Value" (optional.Int64) -
+     * @param "BoolValue" (optional.Bool) -
+     * @param "StringValue" (optional.String) -
+     * @param "BytesValue" (optional.String) -
+     * @param "Uint32Value" (optional.Int64) -
      * @param "EnumValue" (optional.String) -   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "PathEnumValue" (optional.String) - 
-     * @param "NestedPathEnumValue" (optional.String) - 
-     * @param "Sfixed32Value" (optional.Int32) - 
-     * @param "Sfixed64Value" (optional.String) - 
-     * @param "Sint32Value" (optional.Int32) - 
-     * @param "Sint64Value" (optional.String) - 
-     * @param "RepeatedStringValue" (optional.Interface of []string) - 
-     * @param "OneofString" (optional.String) - 
-     * @param "NonConventionalNameValue" (optional.String) - 
-     * @param "TimestampValue" (optional.Time) - 
+     * @param "PathEnumValue" (optional.String) -
+     * @param "NestedPathEnumValue" (optional.String) -
+     * @param "Sfixed32Value" (optional.Int32) -
+     * @param "Sfixed64Value" (optional.String) -
+     * @param "Sint32Value" (optional.Int32) -
+     * @param "Sint64Value" (optional.String) -
+     * @param "RepeatedStringValue" (optional.Interface of []string) -
+     * @param "OneofString" (optional.String) -
+     * @param "NonConventionalNameValue" (optional.String) -
+     * @param "TimestampValue" (optional.Time) -
      * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
      * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
-     * @param "NestedAnnotationAmount" (optional.Int64) - 
+     * @param "NestedAnnotationAmount" (optional.Int64) -
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "Int64OverrideType" (optional.Int64) -
      * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
-     * @param "OptionalStringValue" (optional.String) - 
+     * @param "OptionalStringValue" (optional.String) -
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
 
 @return interface{}
 */
 
-type ABitOfEverythingServiceGetQueryOpts struct { 
-	SingleNestedName optional.String
-	SingleNestedAmount optional.Int64
-	SingleNestedOk optional.String
-	Uint64Value optional.String
-	Int32Value optional.Int32
-	Fixed64Value optional.String
-	Fixed32Value optional.Int64
-	BoolValue optional.Bool
-	StringValue optional.String
-	BytesValue optional.String
-	Uint32Value optional.Int64
-	EnumValue optional.String
-	PathEnumValue optional.String
-	NestedPathEnumValue optional.String
-	Sfixed32Value optional.Int32
-	Sfixed64Value optional.String
-	Sint32Value optional.Int32
-	Sint64Value optional.String
-	RepeatedStringValue optional.Interface
-	OneofString optional.String
-	NonConventionalNameValue optional.String
-	TimestampValue optional.Time
-	RepeatedEnumValue optional.Interface
-	RepeatedEnumAnnotation optional.Interface
-	EnumValueAnnotation optional.String
-	RepeatedStringAnnotation optional.Interface
-	NestedAnnotationName optional.String
-	NestedAnnotationAmount optional.Int64
-	NestedAnnotationOk optional.String
-	Int64OverrideType optional.Int64
+type ABitOfEverythingServiceGetQueryOpts struct {
+	SingleNestedName                           optional.String
+	SingleNestedAmount                         optional.Int64
+	SingleNestedOk                             optional.String
+	Uint64Value                                optional.String
+	Int32Value                                 optional.Int32
+	Fixed64Value                               optional.String
+	Fixed32Value                               optional.Int64
+	BoolValue                                  optional.Bool
+	StringValue                                optional.String
+	BytesValue                                 optional.String
+	Uint32Value                                optional.Int64
+	EnumValue                                  optional.String
+	PathEnumValue                              optional.String
+	NestedPathEnumValue                        optional.String
+	Sfixed32Value                              optional.Int32
+	Sfixed64Value                              optional.String
+	Sint32Value                                optional.Int32
+	Sint64Value                                optional.String
+	RepeatedStringValue                        optional.Interface
+	OneofString                                optional.String
+	NonConventionalNameValue                   optional.String
+	TimestampValue                             optional.Time
+	RepeatedEnumValue                          optional.Interface
+	RepeatedEnumAnnotation                     optional.Interface
+	EnumValueAnnotation                        optional.String
+	RepeatedStringAnnotation                   optional.Interface
+	NestedAnnotationName                       optional.String
+	NestedAnnotationAmount                     optional.Int64
+	NestedAnnotationOk                         optional.String
+	Int64OverrideType                          optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
-	OptionalStringValue optional.String
-	ProductId optional.Interface
-	OptionalStringField optional.String
+	OptionalStringValue                        optional.String
+	ProductId                                  optional.Interface
+	OptionalStringField                        optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -4236,6 +4270,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -4271,118 +4307,118 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param pathRepeatedFloatValue repeated values. they are comma-separated in path
- * @param pathRepeatedDoubleValue
- * @param pathRepeatedInt64Value
- * @param pathRepeatedUint64Value
- * @param pathRepeatedInt32Value
- * @param pathRepeatedFixed64Value
- * @param pathRepeatedFixed32Value
- * @param pathRepeatedBoolValue
- * @param pathRepeatedStringValue
- * @param pathRepeatedBytesValue
- * @param pathRepeatedUint32Value
- * @param pathRepeatedEnumValue
- * @param pathRepeatedSfixed32Value
- * @param pathRepeatedSfixed64Value
- * @param pathRepeatedSint32Value
- * @param pathRepeatedSint64Value
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param pathRepeatedFloatValue repeated values. they are comma-separated in path
+  - @param pathRepeatedDoubleValue
+  - @param pathRepeatedInt64Value
+  - @param pathRepeatedUint64Value
+  - @param pathRepeatedInt32Value
+  - @param pathRepeatedFixed64Value
+  - @param pathRepeatedFixed32Value
+  - @param pathRepeatedBoolValue
+  - @param pathRepeatedStringValue
+  - @param pathRepeatedBytesValue
+  - @param pathRepeatedUint32Value
+  - @param pathRepeatedEnumValue
+  - @param pathRepeatedSfixed32Value
+  - @param pathRepeatedSfixed64Value
+  - @param pathRepeatedSint32Value
+  - @param pathRepeatedSint64Value
 
 @return ExamplepbABitOfEverythingRepeated
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetRepeatedQuery(ctx context.Context, pathRepeatedFloatValue []float32, pathRepeatedDoubleValue []float64, pathRepeatedInt64Value []string, pathRepeatedUint64Value []string, pathRepeatedInt32Value []int32, pathRepeatedFixed64Value []string, pathRepeatedFixed32Value []int64, pathRepeatedBoolValue []bool, pathRepeatedStringValue []string, pathRepeatedBytesValue []string, pathRepeatedUint32Value []int64, pathRepeatedEnumValue []string, pathRepeatedSfixed32Value []int32, pathRepeatedSfixed64Value []string, pathRepeatedSint32Value []int32, pathRepeatedSint64Value []string) (ExamplepbABitOfEverythingRepeated, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbABitOfEverythingRepeated
 	)
 
@@ -4484,7 +4520,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetRepeatedQu
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -4505,103 +4541,103 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetRepeatedQu
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbABitOfEverythingRepeated
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param uuid
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param uuid
 
 @return ExamplepbABitOfEverything
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceLookup(ctx context.Context, uuid string) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbABitOfEverything
 	)
 
@@ -4640,7 +4676,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceLookup(ctx co
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -4661,102 +4697,102 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceLookup(ctx co
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbABitOfEverything
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 
 @return string
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceOverwriteResponseContentType(ctx context.Context) (string, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue string
 	)
 
@@ -4794,7 +4830,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceOverwriteResp
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -4815,103 +4851,103 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceOverwriteResp
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param exampleEnum
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param exampleEnum
 
 @return interface{}
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostOneofEnum(ctx context.Context, exampleEnum OneofenumExampleEnum) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Post")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -4951,7 +4987,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostOneofEnum
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -4972,104 +5008,104 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostOneofEnum
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param name
- * @param body
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param name
+  - @param body
 
 @return interface{}
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmptyBody(ctx context.Context, name string, body interface{}) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Post")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Post")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -5110,7 +5146,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmpty
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -5131,102 +5167,102 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostWithEmpty
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 
 @return interface{}
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceTimeout(ctx context.Context) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Get")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Get")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -5264,7 +5300,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceTimeout(ctx c
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -5285,104 +5321,104 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceTimeout(ctx c
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param uuidName
- * @param body
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param uuidName
+  - @param body
 
 @return interface{}
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx context.Context, uuidName string, body ABitOfEverything) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Put")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Put")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -5423,7 +5459,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx co
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -5444,91 +5480,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx co
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param bookName The resource name of the book.  Format: &#x60;publishers/{publisher}/books/{book}&#x60;  Example: &#x60;publishers/1257894000000000000/books/my-book&#x60;
@@ -5540,17 +5576,17 @@ ABitOfEverythingServiceApiService
 @return ExamplepbBook
 */
 
-type ABitOfEverythingServiceUpdateBookOpts struct { 
-	UpdateMask optional.String
+type ABitOfEverythingServiceUpdateBookOpts struct {
+	UpdateMask   optional.String
 	AllowMissing optional.Bool
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ctx context.Context, bookName string, book TheBookToUpdate_, localVarOptionals *ABitOfEverythingServiceUpdateBookOpts) (ExamplepbBook, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Patch")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Patch")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue ExamplepbBook
 	)
 
@@ -5597,7 +5633,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ct
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -5618,91 +5654,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ct
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v ExamplepbBook
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -5713,16 +5749,16 @@ ABitOfEverythingServiceApiService
 @return interface{}
 */
 
-type ABitOfEverythingServiceUpdateV2Opts struct { 
+type ABitOfEverythingServiceUpdateV2Opts struct {
 	UpdateMask optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, uuidName string, abe ABitOfEverything2, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Put")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Put")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -5766,7 +5802,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -5787,91 +5823,91 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
@@ -5882,16 +5918,16 @@ ABitOfEverythingServiceApiService
 @return interface{}
 */
 
-type ABitOfEverythingServiceUpdateV22Opts struct { 
+type ABitOfEverythingServiceUpdateV22Opts struct {
 	UpdateMask optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, uuidName string, abe ABitOfEverything3, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Patch")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Patch")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -5935,7 +5971,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -5956,104 +5992,104 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 
 	return localVarReturnValue, localVarHttpResponse, nil
 }
 
-/* 
+/*
 ABitOfEverythingServiceApiService
- * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param uuidName
- * @param body
+  - @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+  - @param uuidName
+  - @param body
 
 @return interface{}
 */
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx context.Context, uuidName string, body UpdateV2RequestRequestForUpdateIncludesTheMessageAndTheUpdateMask) (interface{}, *http.Response, error) {
 	var (
-		localVarHttpMethod = strings.ToUpper("Patch")
-		localVarPostBody   interface{}
-		localVarFileName   string
-		localVarFileBytes  []byte
+		localVarHttpMethod  = strings.ToUpper("Patch")
+		localVarPostBody    interface{}
+		localVarFileName    string
+		localVarFileBytes   []byte
 		localVarReturnValue interface{}
 	)
 
@@ -6094,7 +6130,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx
 				key = auth.Key
 			}
 			localVarHeaderParams["X-API-Key"] = key
-			
+
 		}
 	}
 	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
@@ -6115,84 +6151,84 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx
 
 	if localVarHttpResponse.StatusCode < 300 {
 		// If we succeed, return the data, otherwise pass on to decode error.
-		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-		if err == nil { 
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+		if err == nil {
 			return localVarReturnValue, localVarHttpResponse, err
 		}
 	}
 
 	if localVarHttpResponse.StatusCode >= 300 {
 		newErr := GenericSwaggerError{
-			body: localVarBody,
+			body:  localVarBody,
 			error: localVarHttpResponse.Status,
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 200 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 403 {
 			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 404 {
 			var v string
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 418 {
 			var v ExamplepbNumericEnum
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 500 {
 			var v ExamplepbErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		if localVarHttpResponse.StatusCode == 0 {
 			var v RpcStatus
-			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
-				if err != nil {
-					newErr.error = err.Error()
-					return localVarReturnValue, localVarHttpResponse, newErr
-				}
-				newErr.model = v
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
 				return localVarReturnValue, localVarHttpResponse, newErr
+			}
+			newErr.model = v
+			return localVarReturnValue, localVarHttpResponse, newErr
 		}
-		
+
 		return localVarReturnValue, localVarHttpResponse, newErr
 	}
 

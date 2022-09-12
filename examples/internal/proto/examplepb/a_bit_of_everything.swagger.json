@@ -540,6 +540,19 @@
             "in": "query",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "required_field_behavior_json_name_custom",
+            "description": "Test openapiv2 handling of required json_name fields",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_schema_json_name_custom",
+            "in": "query",
+            "required": true,
+            "type": "string"
           }
         ],
         "tags": [
@@ -921,6 +934,19 @@
             "in": "query",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "required_field_behavior_json_name_custom",
+            "description": "Test openapiv2 handling of required json_name fields",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_schema_json_name_custom",
+            "in": "query",
+            "required": true,
+            "type": "string"
           }
         ],
         "tags": [
@@ -1288,6 +1314,19 @@
           },
           {
             "name": "requiredStringField2",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_behavior_json_name_custom",
+            "description": "Test openapiv2 handling of required json_name fields",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_schema_json_name_custom",
             "in": "query",
             "required": true,
             "type": "string"
@@ -1676,6 +1715,19 @@
           },
           {
             "name": "requiredStringField2",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_behavior_json_name_custom",
+            "description": "Test openapiv2 handling of required json_name fields",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_schema_json_name_custom",
             "in": "query",
             "required": true,
             "type": "string"
@@ -2071,6 +2123,19 @@
             "in": "query",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "required_field_behavior_json_name_custom",
+            "description": "Test openapiv2 handling of required json_name fields",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_schema_json_name_custom",
+            "in": "query",
+            "required": true,
+            "type": "string"
           }
         ],
         "tags": [
@@ -2331,6 +2396,13 @@
                 },
                 "requiredStringField2": {
                   "type": "string"
+                },
+                "required_field_behavior_json_name_custom": {
+                  "type": "string",
+                  "title": "Test openapiv2 handling of required json_name fields"
+                },
+                "required_field_schema_json_name_custom": {
+                  "type": "string"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -2342,10 +2414,12 @@
               "required": [
                 "int64Value",
                 "doubleValue",
+                "required_field_schema_json_name_custom",
                 "floatValue",
                 "requiredStringViaFieldBehaviorAnnotation",
                 "requiredStringField1",
-                "requiredStringField2"
+                "requiredStringField2",
+                "required_field_behavior_json_name_custom"
               ],
               "x-a-bit-of-everything-foo": "bar"
             }
@@ -2712,6 +2786,19 @@
             "in": "query",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "required_field_behavior_json_name_custom",
+            "description": "Test openapiv2 handling of required json_name fields",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_schema_json_name_custom",
+            "in": "query",
+            "required": true,
+            "type": "string"
           }
         ],
         "tags": [
@@ -3072,6 +3159,19 @@
           },
           {
             "name": "requiredStringField2",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_behavior_json_name_custom",
+            "description": "Test openapiv2 handling of required json_name fields",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_schema_json_name_custom",
             "in": "query",
             "required": true,
             "type": "string"
@@ -3462,6 +3562,19 @@
             "in": "query",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "required_field_behavior_json_name_custom",
+            "description": "Test openapiv2 handling of required json_name fields",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_schema_json_name_custom",
+            "in": "query",
+            "required": true,
+            "type": "string"
           }
         ],
         "tags": [
@@ -3846,6 +3959,19 @@
           },
           {
             "name": "requiredStringField2",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_behavior_json_name_custom",
+            "description": "Test openapiv2 handling of required json_name fields",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "required_field_schema_json_name_custom",
             "in": "query",
             "required": true,
             "type": "string"
@@ -4529,6 +4655,13 @@
                 },
                 "requiredStringField2": {
                   "type": "string"
+                },
+                "required_field_behavior_json_name_custom": {
+                  "type": "string",
+                  "title": "Test openapiv2 handling of required json_name fields"
+                },
+                "required_field_schema_json_name_custom": {
+                  "type": "string"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -4541,10 +4674,12 @@
                 "uuid",
                 "int64Value",
                 "doubleValue",
+                "required_field_schema_json_name_custom",
                 "floatValue",
                 "requiredStringViaFieldBehaviorAnnotation",
                 "requiredStringField1",
-                "requiredStringField2"
+                "requiredStringField2",
+                "required_field_behavior_json_name_custom"
               ],
               "x-a-bit-of-everything-foo": "bar"
             }
@@ -5107,6 +5242,13 @@
                 },
                 "requiredStringField2": {
                   "type": "string"
+                },
+                "required_field_behavior_json_name_custom": {
+                  "type": "string",
+                  "title": "Test openapiv2 handling of required json_name fields"
+                },
+                "required_field_schema_json_name_custom": {
+                  "type": "string"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -5118,10 +5260,12 @@
               "required": [
                 "int64Value",
                 "doubleValue",
+                "required_field_schema_json_name_custom",
                 "floatValue",
                 "requiredStringViaFieldBehaviorAnnotation",
                 "requiredStringField1",
-                "requiredStringField2"
+                "requiredStringField2",
+                "required_field_behavior_json_name_custom"
               ],
               "x-a-bit-of-everything-foo": "bar"
             }
@@ -5391,6 +5535,13 @@
                 },
                 "requiredStringField2": {
                   "type": "string"
+                },
+                "required_field_behavior_json_name_custom": {
+                  "type": "string",
+                  "title": "Test openapiv2 handling of required json_name fields"
+                },
+                "required_field_schema_json_name_custom": {
+                  "type": "string"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -5402,10 +5553,12 @@
               "required": [
                 "int64Value",
                 "doubleValue",
+                "required_field_schema_json_name_custom",
                 "floatValue",
                 "requiredStringViaFieldBehaviorAnnotation",
                 "requiredStringField1",
-                "requiredStringField2"
+                "requiredStringField2",
+                "required_field_behavior_json_name_custom"
               ],
               "x-a-bit-of-everything-foo": "bar"
             }
@@ -6185,6 +6338,13 @@
                     },
                     "requiredStringField2": {
                       "type": "string"
+                    },
+                    "required_field_behavior_json_name_custom": {
+                      "type": "string",
+                      "title": "Test openapiv2 handling of required json_name fields"
+                    },
+                    "required_field_schema_json_name_custom": {
+                      "type": "string"
                     }
                   },
                   "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -6204,10 +6364,12 @@
               "required": [
                 "int64Value",
                 "doubleValue",
+                "required_field_schema_json_name_custom",
                 "floatValue",
                 "requiredStringViaFieldBehaviorAnnotation",
                 "requiredStringField1",
-                "requiredStringField2"
+                "requiredStringField2",
+                "required_field_behavior_json_name_custom"
               ]
             }
           }
@@ -6521,6 +6683,13 @@
         },
         "requiredStringField2": {
           "type": "string"
+        },
+        "required_field_behavior_json_name_custom": {
+          "type": "string",
+          "title": "Test openapiv2 handling of required json_name fields"
+        },
+        "required_field_schema_json_name_custom": {
+          "type": "string"
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -6533,10 +6702,12 @@
         "uuid",
         "int64Value",
         "doubleValue",
+        "required_field_schema_json_name_custom",
         "floatValue",
         "requiredStringViaFieldBehaviorAnnotation",
         "requiredStringField1",
-        "requiredStringField2"
+        "requiredStringField2",
+        "required_field_behavior_json_name_custom"
       ],
       "x-a-bit-of-everything-foo": "bar"
     },

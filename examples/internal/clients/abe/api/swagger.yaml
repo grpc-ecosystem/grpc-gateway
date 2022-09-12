@@ -442,6 +442,17 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
       responses:
         200:
           description: "A successful response."
@@ -789,6 +800,17 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
       responses:
         200:
           description: "A successful response."
@@ -1123,6 +1145,17 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
       responses:
         200:
           description: "A successful response."
@@ -1477,6 +1510,17 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
       responses:
         200:
           description: "A successful response."
@@ -1818,6 +1862,17 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
       responses:
         200:
           description: "A successful response."
@@ -2172,6 +2227,17 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
       responses:
         200:
           description: "A successful response."
@@ -2551,6 +2617,17 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
       responses:
         200:
           description: "A successful response."
@@ -2888,6 +2965,17 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
       responses:
         200:
           description: "A successful response."
@@ -3242,6 +3330,17 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
       responses:
         200:
           description: "A successful response."
@@ -4434,6 +4533,8 @@ definitions:
     - "requiredStringField1"
     - "requiredStringField2"
     - "requiredStringViaFieldBehaviorAnnotation"
+    - "required_field_behavior_json_name_custom"
+    - "required_field_schema_json_name_custom"
     - "uuid"
     properties:
       singleNested:
@@ -4584,6 +4685,11 @@ definitions:
       requiredStringField1:
         type: "string"
       requiredStringField2:
+        type: "string"
+      required_field_behavior_json_name_custom:
+        type: "string"
+        title: "Test openapiv2 handling of required json_name fields"
+      required_field_schema_json_name_custom:
         type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
@@ -4903,6 +5009,8 @@ definitions:
     - "requiredStringField1"
     - "requiredStringField2"
     - "requiredStringViaFieldBehaviorAnnotation"
+    - "required_field_behavior_json_name_custom"
+    - "required_field_schema_json_name_custom"
     properties:
       singleNested:
         $ref: "#/definitions/ABitOfEverythingNested"
@@ -5048,6 +5156,11 @@ definitions:
         type: "string"
       requiredStringField2:
         type: "string"
+      required_field_behavior_json_name_custom:
+        type: "string"
+        title: "Test openapiv2 handling of required json_name fields"
+      required_field_schema_json_name_custom:
+        type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -5077,6 +5190,8 @@ definitions:
     - "requiredStringField1"
     - "requiredStringField2"
     - "requiredStringViaFieldBehaviorAnnotation"
+    - "required_field_behavior_json_name_custom"
+    - "required_field_schema_json_name_custom"
     - "uuid"
     properties:
       singleNested:
@@ -5228,6 +5343,11 @@ definitions:
         type: "string"
       requiredStringField2:
         type: "string"
+      required_field_behavior_json_name_custom:
+        type: "string"
+        title: "Test openapiv2 handling of required json_name fields"
+      required_field_schema_json_name_custom:
+        type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -5262,6 +5382,8 @@ definitions:
     - "requiredStringField1"
     - "requiredStringField2"
     - "requiredStringViaFieldBehaviorAnnotation"
+    - "required_field_behavior_json_name_custom"
+    - "required_field_schema_json_name_custom"
     properties:
       singleNested:
         $ref: "#/definitions/ABitOfEverythingNested"
@@ -5406,6 +5528,11 @@ definitions:
       requiredStringField1:
         type: "string"
       requiredStringField2:
+        type: "string"
+      required_field_behavior_json_name_custom:
+        type: "string"
+        title: "Test openapiv2 handling of required json_name fields"
+      required_field_schema_json_name_custom:
         type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
@@ -5426,6 +5553,8 @@ definitions:
     - "requiredStringField1"
     - "requiredStringField2"
     - "requiredStringViaFieldBehaviorAnnotation"
+    - "required_field_behavior_json_name_custom"
+    - "required_field_schema_json_name_custom"
     properties:
       singleNested:
         $ref: "#/definitions/ABitOfEverythingNested"
@@ -5570,6 +5699,11 @@ definitions:
       requiredStringField1:
         type: "string"
       requiredStringField2:
+        type: "string"
+      required_field_behavior_json_name_custom:
+        type: "string"
+        title: "Test openapiv2 handling of required json_name fields"
+      required_field_schema_json_name_custom:
         type: "string"
     externalDocs:
       description: "Find out more about ABitOfEverything"
@@ -5726,6 +5860,11 @@ definitions:
       requiredStringField1:
         type: "string"
       requiredStringField2:
+        type: "string"
+      required_field_behavior_json_name_custom:
+        type: "string"
+        title: "Test openapiv2 handling of required json_name fields"
+      required_field_schema_json_name_custom:
         type: "string"
     description: "Intentionally complicated message type to cover many features of\
       \ Protobuf."
