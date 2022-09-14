@@ -391,8 +391,11 @@ message ABitOfEverything {
   string required_string_field_2 = 44 [(google.api.field_behavior) = REQUIRED];
 
   // Test openapiv2 handling of required json_name fields
-  string required_field_behavior_json_name = 45 [json_name="required_field_behavior_json_name_custom", (google.api.field_behavior) = REQUIRED];
-  string required_field_schema_json_name = 46 [json_name="required_field_schema_json_name_custom"];
+  string required_field_behavior_json_name = 45 [
+    json_name = "required_field_behavior_json_name_custom",
+    (google.api.field_behavior) = REQUIRED
+  ];
+  string required_field_schema_json_name = 46 [json_name = "required_field_schema_json_name_custom"];
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality
