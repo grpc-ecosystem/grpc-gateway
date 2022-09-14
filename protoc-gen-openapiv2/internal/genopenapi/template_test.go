@@ -715,7 +715,7 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 					Field: []*descriptorpb.FieldDescriptorProto{
 						{
 							Name: proto.String("field"),
-							//Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+							// Label:  descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
 							Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
 							Number: proto.Int32(1),
 						},
@@ -900,6 +900,18 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 		Params   []openapiParameterObject
 	}
 
+	var requiredField = []annotations.FieldBehavior{annotations.FieldBehavior_REQUIRED}
+	var requiredFieldOptions = new(descriptorpb.FieldOptions)
+	proto.SetExtension(requiredFieldOptions, annotations.E_FieldBehavior, requiredField)
+
+	messageSchema := &openapi_options.Schema{
+		JsonSchema: &openapi_options.JSONSchema{
+			Required: []string{"test_field_b"},
+		},
+	}
+	messageOption := &descriptorpb.MessageOptions{}
+	proto.SetExtension(messageOption, openapi_options.E_Openapiv2Schema, messageSchema)
+
 	tests := []test{
 		{
 			MsgDescs: []*descriptorpb.DescriptorProto{
@@ -961,6 +973,44 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 				},
 			},
 		},
+		{
+			MsgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("ExampleMessage"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:     proto.String("test_field_a"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:   proto.Int32(1),
+							JsonName: proto.String("testFieldACustom"),
+							Options:  requiredFieldOptions,
+						},
+						{
+							Name:     proto.String("test_field_b"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:   proto.Int32(2),
+							JsonName: proto.String("testFieldBCustom"),
+						},
+					},
+					Options: messageOption,
+				},
+			},
+			Message: "ExampleMessage",
+			Params: []openapiParameterObject{
+				{
+					Name:     "testFieldACustom",
+					In:       "query",
+					Required: true,
+					Type:     "string",
+				},
+				{
+					Name:     "testFieldBCustom",
+					In:       "query",
+					Required: true,
+					Type:     "string",
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -1004,7 +1054,7 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
 		if !reflect.DeepEqual(params, test.Params) {
-			t.Errorf("expected %v, got %v", test.Params, params)
+			t.Errorf("expected %#v, got %#v", test.Params, params)
 		}
 	}
 }
@@ -3569,10 +3619,11 @@ func TestFQMNtoOpenAPIName(t *testing.T) {
 
 func TestSchemaOfField(t *testing.T) {
 	type test struct {
-		field          *descriptor.Field
-		refs           refMap
-		expected       openapiSchemaObject
-		openAPIOptions *openapiconfig.OpenAPIOptions
+		field                 *descriptor.Field
+		refs                  refMap
+		expected              openapiSchemaObject
+		openAPIOptions        *openapiconfig.OpenAPIOptions
+		useJSONNamesForFields bool
 	}
 
 	jsonSchema := &openapi_options.JSONSchema{
@@ -3597,6 +3648,9 @@ func TestSchemaOfField(t *testing.T) {
 		MinProperties:    22,
 		Required:         []string{"req"},
 		ReadOnly:         true,
+	}
+	jsonSchemaRequired := &openapi_options.JSONSchema{
+		Required: []string{"required_via_json_schema"},
 	}
 
 	var fieldOptions = new(descriptorpb.FieldOptions)
@@ -4275,9 +4329,54 @@ func TestSchemaOfField(t *testing.T) {
 				MinItems:    2,
 			},
 		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("required_via_field_behavior_field_json_name"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+					JsonName: proto.String("required_field_custom_name"),
+					Options:  requiredFieldOptions,
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
+				Required: []string{"required_field_custom_name"},
+			},
+			useJSONNamesForFields: true,
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:     proto.String("required_via_json_schema"),
+					Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+					JsonName: proto.String("required_via_json_schema_json_name"),
+				},
+			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field:  "example.Message.required_via_json_schema",
+						Option: jsonSchemaRequired,
+					},
+				},
+			},
+			refs:                  make(refMap),
+			useJSONNamesForFields: true,
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type: "string",
+				},
+				Required: []string{"required_via_json_schema_json_name"},
+			},
+		},
 	}
 	for _, test := range tests {
 		reg := descriptor.NewRegistry()
+		reg.SetUseJSONNamesForFields(test.useJSONNamesForFields)
+
 		req := &pluginpb.CodeGeneratorRequest{
 			ProtoFile: []*descriptorpb.FileDescriptorProto{
 				{
@@ -4429,12 +4528,13 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 	proto.SetExtension(fieldVisibilityPreviewOption, visibility.E_FieldVisibility, fieldVisibilityFieldPreview)
 
 	tests := []struct {
-		descr          string
-		msgDescs       []*descriptorpb.DescriptorProto
-		schema         map[string]*openapi_options.Schema // per-message schema to add
-		defs           openapiDefinitionsObject
-		openAPIOptions *openapiconfig.OpenAPIOptions
-		pathParams     []descriptor.Parameter
+		descr                 string
+		msgDescs              []*descriptorpb.DescriptorProto
+		schema                map[string]*openapi_options.Schema // per-message schema to add
+		defs                  openapiDefinitionsObject
+		openAPIOptions        *openapiconfig.OpenAPIOptions
+		pathParams            []descriptor.Parameter
+		UseJSONNamesForFields bool
 	}{
 		{
 			descr: "no OpenAPI options",
@@ -4961,6 +5061,82 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 				},
 			},
 		},
+		{
+			descr: "JSONSchema with required properties and fields with json_name",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:     proto.String("FieldOne"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:   proto.Int32(1),
+							JsonName: proto.String("custom_json_1"),
+						},
+						{
+							Name:     proto.String("FieldTwo"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:   proto.Int32(2),
+							JsonName: proto.String("custom_json_2"),
+							Options:  requiredFieldOptions,
+						},
+						{
+							Name:     proto.String("FieldThree"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+							Number:   proto.Int32(3),
+							JsonName: proto.String("custom_json_3"),
+							Options:  requiredFieldOptions,
+						},
+					},
+				},
+			},
+			schema: map[string]*openapi_options.Schema{
+				"Message": {
+					JsonSchema: &openapi_options.JSONSchema{
+						Title:       "title",
+						Description: "desc",
+						Required:    []string{"FieldOne", "FieldTwo"},
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"Message": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "title",
+					Description: "desc",
+					Required:    []string{"custom_json_1", "custom_json_2", "custom_json_3"},
+					Properties: &openapiSchemaObjectProperties{
+						{
+							Key: "custom_json_1",
+							Value: openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
+							},
+						},
+						{
+							Key: "custom_json_2",
+							Value: openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
+							},
+						},
+						{
+							Key: "custom_json_3",
+							Value: openapiSchemaObject{
+								schemaCore: schemaCore{
+									Type: "string",
+								},
+							},
+						},
+					},
+				},
+			},
+			UseJSONNamesForFields: true,
+		},
 	}
 
 	for _, test := range tests {
@@ -4992,6 +5168,11 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 				ProtoFile: []*descriptorpb.FileDescriptorProto{file.FileDescriptorProto},
 			})
 			reg.SetVisibilityRestrictionSelectors([]string{"PREVIEW"})
+
+			if test.UseJSONNamesForFields {
+				reg.SetUseJSONNamesForFields(true)
+			}
+
 			if err != nil {
 				t.Fatalf("failed to load code generator request: %v", err)
 			}
