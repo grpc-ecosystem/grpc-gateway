@@ -269,7 +269,8 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		// verify if the field is required in message options
 		if messageSchema, err := extractSchemaOptionFromMessageDescriptor(message.DescriptorProto); err == nil {
 			for _, fieldName := range messageSchema.GetJsonSchema().GetRequired() {
-				if fieldName == reg.FieldName(field) || fieldName == field.GetName() {
+				// Required fields can be field names or json_name values
+				if fieldName == field.GetJsonName() || fieldName == field.GetName() {
 					required = true
 					break
 				}
