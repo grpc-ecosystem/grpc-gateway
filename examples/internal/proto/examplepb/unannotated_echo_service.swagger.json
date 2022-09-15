@@ -17,7 +17,12 @@
   },
   "tags": [
     {
-      "name": "UnannotatedEchoService"
+      "name": "UnannotatedEchoService",
+      "description": "UnannotatedEchoService description -- which should not be used in place of the documentation comment!",
+      "externalDocs": {
+        "description": "Find out more about UnannotatedEchoService",
+        "url": "https://github.com/grpc-ecosystem/grpc-gateway"
+      }
     }
   ],
   "schemes": [
