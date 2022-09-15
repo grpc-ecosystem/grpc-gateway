@@ -2516,16 +2516,12 @@ func getMessageOpenAPIOption(reg *descriptor.Registry, msg *descriptor.Message) 
 }
 
 func getServiceOpenAPIOption(reg *descriptor.Registry, svc *descriptor.Service) (*openapi_options.Tag, error) {
+	if opts, ok := reg.GetOpenAPIServiceOption(svc.FQSN()); ok {
+		return opts, nil
+	}
 	opts, err := extractTagOptionFromServiceDescriptor(svc.ServiceDescriptorProto)
 	if err != nil {
 		return nil, err
-	}
-	if opts != nil {
-		return opts, nil
-	}
-	opts, ok := reg.GetOpenAPIServiceOption(svc.FQSN())
-	if !ok {
-		return nil, nil
 	}
 	return opts, nil
 }
