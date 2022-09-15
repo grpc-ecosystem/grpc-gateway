@@ -26,7 +26,7 @@ type VisibilityRuleEchoServiceClient interface {
 	EchoInternal(ctx context.Context, in *VisibilityRuleSimpleMessage, opts ...grpc.CallOption) (*VisibilityRuleSimpleMessage, error)
 	// EchoPreview is a preview API that should only be visible in the OpenAPI spec
 	// if `visibility_restriction_selectors` includes "PREVIEW".
-	EchoPreview(ctx context.Context, in *VisibilityRuleSimpleMessage, opts ...grpc.CallOption) (*VisibilityRuleSimpleMessage, error)
+	EchoPreview(ctx context.Context, in *VisibilityRuleSimpleMessage, opts ...grpc.CallOption) (*VisibilityRuleMessageInPreviewMethod, error)
 	// EchoInternalAndPreview is a internal and preview API that should only be visible in the OpenAPI spec
 	// if `visibility_restriction_selectors` includes "PREVIEW" or "INTERNAL".
 	EchoInternalAndPreview(ctx context.Context, in *VisibilityRuleSimpleMessage, opts ...grpc.CallOption) (*VisibilityRuleSimpleMessage, error)
@@ -58,8 +58,8 @@ func (c *visibilityRuleEchoServiceClient) EchoInternal(ctx context.Context, in *
 	return out, nil
 }
 
-func (c *visibilityRuleEchoServiceClient) EchoPreview(ctx context.Context, in *VisibilityRuleSimpleMessage, opts ...grpc.CallOption) (*VisibilityRuleSimpleMessage, error) {
-	out := new(VisibilityRuleSimpleMessage)
+func (c *visibilityRuleEchoServiceClient) EchoPreview(ctx context.Context, in *VisibilityRuleSimpleMessage, opts ...grpc.CallOption) (*VisibilityRuleMessageInPreviewMethod, error) {
+	out := new(VisibilityRuleMessageInPreviewMethod)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.VisibilityRuleEchoService/EchoPreview", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -88,7 +88,7 @@ type VisibilityRuleEchoServiceServer interface {
 	EchoInternal(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleSimpleMessage, error)
 	// EchoPreview is a preview API that should only be visible in the OpenAPI spec
 	// if `visibility_restriction_selectors` includes "PREVIEW".
-	EchoPreview(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleSimpleMessage, error)
+	EchoPreview(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleMessageInPreviewMethod, error)
 	// EchoInternalAndPreview is a internal and preview API that should only be visible in the OpenAPI spec
 	// if `visibility_restriction_selectors` includes "PREVIEW" or "INTERNAL".
 	EchoInternalAndPreview(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleSimpleMessage, error)
@@ -104,7 +104,7 @@ func (UnimplementedVisibilityRuleEchoServiceServer) Echo(context.Context, *Visib
 func (UnimplementedVisibilityRuleEchoServiceServer) EchoInternal(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleSimpleMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoInternal not implemented")
 }
-func (UnimplementedVisibilityRuleEchoServiceServer) EchoPreview(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleSimpleMessage, error) {
+func (UnimplementedVisibilityRuleEchoServiceServer) EchoPreview(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleMessageInPreviewMethod, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EchoPreview not implemented")
 }
 func (UnimplementedVisibilityRuleEchoServiceServer) EchoInternalAndPreview(context.Context, *VisibilityRuleSimpleMessage) (*VisibilityRuleSimpleMessage, error) {

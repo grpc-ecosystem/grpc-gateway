@@ -296,6 +296,13 @@
         },
         "requiredStringField2": {
           "type": "string"
+        },
+        "required_field_behavior_json_name_custom": {
+          "type": "string",
+          "title": "Test openapiv2 handling of required json_name fields"
+        },
+        "required_field_schema_json_name_custom": {
+          "type": "string"
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -308,10 +315,12 @@
         "uuid",
         "int64Value",
         "doubleValue",
+        "required_field_schema_json_name_custom",
         "floatValue",
         "requiredStringViaFieldBehaviorAnnotation",
         "requiredStringField1",
-        "requiredStringField2"
+        "requiredStringField2",
+        "required_field_behavior_json_name_custom"
       ],
       "x-a-bit-of-everything-foo": "bar"
     },

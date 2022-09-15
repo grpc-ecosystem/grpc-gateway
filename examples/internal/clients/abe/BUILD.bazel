@@ -36,6 +36,7 @@ go_library(
         "model_examplepbsnake_case_enum.go",
         "model_message_path_enum_nested_path_enum.go",
         "model_nested_deep_enum.go",
+        "model_oneofenum_example_enum.go",
         "model_pathenum_path_enum.go",
         "model_pathenumsnake_case_for_import.go",
         "model_protobuf_any.go",

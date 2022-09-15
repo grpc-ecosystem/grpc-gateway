@@ -350,6 +350,8 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCheckGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
@@ -422,7 +424,7 @@ type ABitOfEverythingServiceCheckGetQueryParamsOpts struct {
 	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -542,6 +544,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -685,6 +689,8 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -757,7 +763,7 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct {
 	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -877,6 +883,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -1021,6 +1029,8 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCheckPostQueryParamsOpts - Optional Parameters:
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
@@ -1089,7 +1099,7 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1203,6 +1213,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -1518,6 +1530,8 @@ This API creates a new ABitOfEverything
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCreateOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -1562,7 +1576,7 @@ type ABitOfEverythingServiceCreateOpts struct {
 	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, uuid string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, uuid string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1655,6 +1669,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -2123,6 +2139,8 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCustomOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -2199,7 +2217,7 @@ type ABitOfEverythingServiceCustomOpts struct {
 	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -2324,6 +2342,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx co
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -2466,6 +2486,8 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCustomOptionsRequestOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -2542,7 +2564,7 @@ type ABitOfEverythingServiceCustomOptionsRequestOpts struct {
 	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Options")
 		localVarPostBody   interface{}
@@ -2667,6 +2689,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptions
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -3080,6 +3104,8 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceDoubleColonOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -3156,7 +3182,7 @@ type ABitOfEverythingServiceDoubleColonOpts struct {
 	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceDoubleColonOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceDoubleColonOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -3281,6 +3307,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(c
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -3577,6 +3605,8 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceExistsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -3653,7 +3683,7 @@ type ABitOfEverythingServiceExistsOpts struct {
 	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Head")
 		localVarPostBody   interface{}
@@ -3778,6 +3808,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx co
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -4035,6 +4067,8 @@ ABitOfEverythingServiceApiService
  * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
  * @param requiredStringField1
  * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceGetQueryOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
@@ -4111,7 +4145,7 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	OptionalStringField optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -4236,6 +4270,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	}
 	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -4829,6 +4865,163 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceOverwriteResp
 		
 		if localVarHttpResponse.StatusCode == 200 {
 			var v string
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 403 {
+			var v interface{}
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 404 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 418 {
+			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RpcStatus
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		return localVarReturnValue, localVarHttpResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHttpResponse, nil
+}
+
+/* 
+ABitOfEverythingServiceApiService
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param exampleEnum
+
+@return interface{}
+*/
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostOneofEnum(ctx context.Context, exampleEnum OneofenumExampleEnum) (interface{}, *http.Response, error) {
+	var (
+		localVarHttpMethod = strings.ToUpper("Post")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+		localVarReturnValue interface{}
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v1/example/oneofenum"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{"application/json", "application/x-foo-mime"}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	// body params
+	localVarPostBody = &exampleEnum
+	if ctx != nil {
+		// API Key Authentication
+		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
+			var key string
+			if auth.Prefix != "" {
+				key = auth.Prefix + " " + auth.Key
+			} else {
+				key = auth.Key
+			}
+			localVarHeaderParams["X-API-Key"] = key
+			
+		}
+	}
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode < 300 {
+		// If we succeed, return the data, otherwise pass on to decode error.
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+		if err == nil { 
+			return localVarReturnValue, localVarHttpResponse, err
+		}
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body: localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		
+		if localVarHttpResponse.StatusCode == 200 {
+			var v interface{}
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()

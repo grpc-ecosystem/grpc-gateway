@@ -269,7 +269,8 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 		// verify if the field is required in message options
 		if messageSchema, err := extractSchemaOptionFromMessageDescriptor(message.DescriptorProto); err == nil {
 			for _, fieldName := range messageSchema.GetJsonSchema().GetRequired() {
-				if fieldName == reg.FieldName(field) {
+				// Required fields can be field names or json_name values
+				if fieldName == field.GetJsonName() || fieldName == field.GetName() {
 					required = true
 					break
 				}
@@ -367,6 +368,10 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 		for _, meth := range svc.Methods {
 			// Request may be fully included in query
 			{
+				if !isVisible(getMethodVisibilityOption(meth), reg) {
+					continue
+				}
+
 				swgReqName, ok := fullyQualifiedNameToOpenAPIName(meth.RequestType.FQMN(), reg)
 				if !ok {
 					glog.Errorf("couldn't resolve OpenAPI name for FQMN '%v'", meth.RequestType.FQMN())
@@ -726,6 +731,12 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 
 	if j, err := getFieldBehaviorOption(reg, f); err == nil {
 		updateSwaggerObjectFromFieldBehavior(&ret, j, reg, f)
+	}
+
+	for i, required := range ret.Required {
+		if required == f.GetName() {
+			ret.Required[i] = reg.FieldName(f)
+		}
 	}
 
 	if reg.GetProto3OptionalNullable() && f.GetProto3Optional() {
@@ -2625,12 +2636,6 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 	s.MaxItems = j.GetMaxItems()
 	s.MinItems = j.GetMinItems()
 
-	if reg.GetUseJSONNamesForFields() {
-		for i, r := range s.Required {
-			// TODO(oyvindwe): Look up field and use field.GetJsonName()?
-			s.Required[i] = casing.JSONCamelCase(r)
-		}
-	}
 	s.Enum = j.GetEnum()
 	if j.GetExtensions() != nil {
 		exts, err := processExtensions(j.GetExtensions())

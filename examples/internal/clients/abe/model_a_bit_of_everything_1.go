@@ -66,4 +66,6 @@ type ABitOfEverything1 struct {
 	OptionalStringField string `json:"optionalStringField,omitempty"`
 	RequiredStringField1 string `json:"requiredStringField1"`
 	RequiredStringField2 string `json:"requiredStringField2"`
+	RequiredFieldBehaviorJsonNameCustom string `json:"required_field_behavior_json_name_custom"`
+	RequiredFieldSchemaJsonNameCustom string `json:"required_field_schema_json_name_custom"`
 }

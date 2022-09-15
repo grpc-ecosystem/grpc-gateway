@@ -13,6 +13,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/oneofenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2"
@@ -2671,6 +2672,50 @@ func local_request_ABitOfEverythingService_TraceRequest_0(ctx context.Context, m
 
 }
 
+func request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, marshaler runtime.Marshaler, client ABitOfEverythingServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq oneofenum.OneofEnumMessage
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if protoReq.One == nil {
+		protoReq.One = &oneofenum.OneofEnumMessage_ExampleEnum{}
+	} else if _, ok := protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum); !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *oneofenum.OneofEnumMessage_ExampleEnum, but: %t\n", protoReq.One)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.PostOneofEnum(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, marshaler runtime.Marshaler, server ABitOfEverythingServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq oneofenum.OneofEnumMessage
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if protoReq.One == nil {
+		protoReq.One = &oneofenum.OneofEnumMessage_ExampleEnum{}
+	} else if _, ok := protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum); !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *oneofenum.OneofEnumMessage_ExampleEnum, but: %t\n", protoReq.One)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.PostOneofEnum(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_CamelCaseServiceName_Empty_0(ctx context.Context, marshaler runtime.Marshaler, client CamelCaseServiceNameClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
@@ -3601,6 +3646,31 @@ func RegisterABitOfEverythingServiceHandlerServer(ctx context.Context, mux *runt
 
 	})
 
+	mux.Handle("POST", pattern_ABitOfEverythingService_PostOneofEnum_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/PostOneofEnum", runtime.WithHTTPPathPattern("/v1/example/oneofenum"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ABitOfEverythingService_PostOneofEnum_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ABitOfEverythingService_PostOneofEnum_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -4414,6 +4484,28 @@ func RegisterABitOfEverythingServiceHandlerClient(ctx context.Context, mux *runt
 
 	})
 
+	mux.Handle("POST", pattern_ABitOfEverythingService_PostOneofEnum_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/PostOneofEnum", runtime.WithHTTPPathPattern("/v1/example/oneofenum"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ABitOfEverythingService_PostOneofEnum_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ABitOfEverythingService_PostOneofEnum_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -4481,6 +4573,8 @@ var (
 	pattern_ABitOfEverythingService_CustomOptionsRequest_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "a_bit_of_everything", "uuid"}, ""))
 
 	pattern_ABitOfEverythingService_TraceRequest_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "example", "a_bit_of_everything", "uuid"}, ""))
+
+	pattern_ABitOfEverythingService_PostOneofEnum_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "example", "oneofenum"}, ""))
 )
 
 var (
@@ -4547,6 +4641,8 @@ var (
 	forward_ABitOfEverythingService_CustomOptionsRequest_0 = runtime.ForwardResponseMessage
 
 	forward_ABitOfEverythingService_TraceRequest_0 = runtime.ForwardResponseMessage
+
+	forward_ABitOfEverythingService_PostOneofEnum_0 = runtime.ForwardResponseMessage
 )
 
 // RegisterCamelCaseServiceNameHandlerFromEndpoint is same as RegisterCamelCaseServiceNameHandler but

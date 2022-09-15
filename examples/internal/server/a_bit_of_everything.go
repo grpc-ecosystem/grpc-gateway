@@ -9,6 +9,7 @@ import (
 
 	"github.com/golang/glog"
 	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/oneofenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2"
@@ -405,4 +406,8 @@ func (s *_ABitOfEverythingServer) CustomOptionsRequest(ctx context.Context, msg 
 
 func (s *_ABitOfEverythingServer) TraceRequest(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
 	return msg, nil
+}
+
+func (s *_ABitOfEverythingServer) PostOneofEnum(ctx context.Context, msg *oneofenum.OneofEnumMessage) (*emptypb.Empty, error) {
+	return new(emptypb.Empty), nil
 }

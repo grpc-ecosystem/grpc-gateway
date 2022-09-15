@@ -120,6 +120,19 @@ func TestMuxServeHTTP(t *testing.T) {
 		{
 			patterns: []stubPattern{
 				{
+					method: "POST",
+					ops:    []int{int(utilities.OpLitPush), 0, int(utilities.OpPush), 0, int(utilities.OpConcatN), 1, int(utilities.OpCapture), 1},
+					pool:   []string{"foo", "id"},
+					verb:   "archive",
+				},
+			},
+			reqMethod:  "DELETE",
+			reqPath:    "/foo/bar:archive",
+			respStatus: http.StatusNotImplemented,
+		},
+		{
+			patterns: []stubPattern{
+				{
 					method: "GET",
 					ops:    []int{int(utilities.OpLitPush), 0},
 					pool:   []string{"foo"},
