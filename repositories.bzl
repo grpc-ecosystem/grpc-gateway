@@ -974,8 +974,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_bigquery",
         importpath = "cloud.google.com/go/bigquery",
-        sum = "h1:PQcPefKFdaIzjQFbiyOgAqyx8q5djaE7x9Sqe712DPA=",
-        version = "v1.8.0",
+        sum = "h1:JuTk8po4bCKRwObdT0zLb1K0BGkGHJdtgs2GK3j2Gws=",
+        version = "v1.42.0",
     )
     go_repository(
         name = "com_google_cloud_go_billing",
@@ -1389,8 +1389,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:mmbq5q8M1t7dhkLw320YK4PsOXm6jdnUAkErImaIqOg=",
-        version = "v0.0.0-20220920201722-2b89144ce006",
+        sum = "h1:K1zaaMdYBXRyX+cwFnxj7M6zwDyumLQMZ5xqwGvjreQ=",
+        version = "v0.0.0-20220921223823-23cae91e6737",
     )
     go_repository(
         name = "org_golang_google_grpc",
