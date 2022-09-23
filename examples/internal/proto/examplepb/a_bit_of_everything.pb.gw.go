@@ -2681,11 +2681,11 @@ func request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if protoReq.One == nil {
-		protoReq.One = &oneofenum.OneofEnumMessage_ExampleEnum{}
-	} else if _, ok := protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum); !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *oneofenum.OneofEnumMessage_ExampleEnum, but: %t\n", protoReq.One)
+		protoReq.One = &OneofEnumMessage_ExampleEnum{}
+	} else if _, ok := protoReq.One.(*OneofEnumMessage_ExampleEnum); !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *OneofEnumMessage_ExampleEnum, but: %t\n", protoReq.One)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.One.(*OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2703,11 +2703,11 @@ func local_request_ABitOfEverythingService_PostOneofEnum_0(ctx context.Context, 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
 	if protoReq.One == nil {
-		protoReq.One = &oneofenum.OneofEnumMessage_ExampleEnum{}
-	} else if _, ok := protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum); !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *oneofenum.OneofEnumMessage_ExampleEnum, but: %t\n", protoReq.One)
+		protoReq.One = &OneofEnumMessage_ExampleEnum{}
+	} else if _, ok := protoReq.One.(*OneofEnumMessage_ExampleEnum); !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "expect type: *OneofEnumMessage_ExampleEnum, but: %t\n", protoReq.One)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.One.(*oneofenum.OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.One.(*OneofEnumMessage_ExampleEnum).ExampleEnum); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -2836,6 +2836,110 @@ func local_request_SnakeEnumService_SnakeEnum_0(ctx context.Context, marshaler r
 	protoReq.Where = pathenum.SnakeCaseForImport(e)
 
 	msg, err := server.SnakeEnum(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_ParentChildService_UpdateChild_0(ctx context.Context, marshaler runtime.Marshaler, client ParentChildServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq UpdateChildRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Child); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		e   int32
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["parent"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "parent")
+	}
+
+	protoReq.Parent, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "parent", err)
+	}
+
+	val, ok = pathParams["child.type"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "child.type")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "child.type", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "child.type", err)
+	}
+
+	e, err = runtime.Enum(val, ChildType_value)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "child.type", err)
+	}
+
+	protoReq.Child.Type = ChildType(e)
+
+	msg, err := client.UpdateChild(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ParentChildService_UpdateChild_0(ctx context.Context, marshaler runtime.Marshaler, server ParentChildServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq UpdateChildRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Child); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		e   int32
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["parent"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "parent")
+	}
+
+	protoReq.Parent, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "parent", err)
+	}
+
+	val, ok = pathParams["child.type"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "child.type")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "child.type", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "child.type", err)
+	}
+
+	e, err = runtime.Enum(val, ChildType_value)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "could not parse path as enum value, parameter: %s, error: %v", "child.type", err)
+	}
+
+	protoReq.Child.Type = ChildType(e)
+
+	msg, err := server.UpdateChild(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -3736,6 +3840,40 @@ func RegisterSnakeEnumServiceHandlerServer(ctx context.Context, mux *runtime.Ser
 		}
 
 		forward_SnakeEnumService_SnakeEnum_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	return nil
+}
+
+// RegisterParentChildServiceHandlerServer registers the http handlers for service ParentChildService to "mux".
+// UnaryRPC     :call ParentChildServiceServer directly.
+// StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterParentChildServiceHandlerFromEndpoint instead.
+func RegisterParentChildServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ParentChildServiceServer) error {
+
+	mux.Handle("PUT", pattern_ParentChildService_UpdateChild_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ParentChildService/UpdateChild", runtime.WithHTTPPathPattern("/v1/{parent=child/*}/children/{child.type=*}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ParentChildService_UpdateChild_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ParentChildService_UpdateChild_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -4785,4 +4923,75 @@ var (
 
 var (
 	forward_SnakeEnumService_SnakeEnum_0 = runtime.ForwardResponseMessage
+)
+
+// RegisterParentChildServiceHandlerFromEndpoint is same as RegisterParentChildServiceHandler but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+func RegisterParentChildServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+	conn, err := grpc.Dial(endpoint, opts...)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			if cerr := conn.Close(); cerr != nil {
+				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+			}
+			return
+		}
+		go func() {
+			<-ctx.Done()
+			if cerr := conn.Close(); cerr != nil {
+				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+			}
+		}()
+	}()
+
+	return RegisterParentChildServiceHandler(ctx, mux, conn)
+}
+
+// RegisterParentChildServiceHandler registers the http handlers for service ParentChildService to "mux".
+// The handlers forward requests to the grpc endpoint over "conn".
+func RegisterParentChildServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterParentChildServiceHandlerClient(ctx, mux, NewParentChildServiceClient(conn))
+}
+
+// RegisterParentChildServiceHandlerClient registers the http handlers for service ParentChildService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "ParentChildServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ParentChildServiceClient"
+// doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
+// "ParentChildServiceClient" to call the correct interceptors.
+func RegisterParentChildServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ParentChildServiceClient) error {
+
+	mux.Handle("PUT", pattern_ParentChildService_UpdateChild_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ParentChildService/UpdateChild", runtime.WithHTTPPathPattern("/v1/{parent=child/*}/children/{child.type=*}"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ParentChildService_UpdateChild_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ParentChildService_UpdateChild_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	return nil
+}
+
+var (
+	pattern_ParentChildService_UpdateChild_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"v1", "child", "parent", "children", "child.type"}, ""))
+)
+
+var (
+	forward_ParentChildService_UpdateChild_0 = runtime.ForwardResponseMessage
 )
