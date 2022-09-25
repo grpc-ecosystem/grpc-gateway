@@ -934,6 +934,13 @@ def go_repositories():
         version = "v0.34.0",
     )
     go_repository(
+        name = "com_google_cloud_go_aiplatform",
+        importpath = "cloud.google.com/go/aiplatform",
+        sum = "h1:D5nT9LhFKyXr8b/Ah+H3u5zSorUIQGuyymEJ85CaSjY=",
+        version = "v1.22.0",
+    )
+
+    go_repository(
         name = "com_google_cloud_go_analytics",
         importpath = "cloud.google.com/go/analytics",
         sum = "h1:+d7hZrqp2IebYPliDiv4AwnUAIqVhMiXHm3G/G9l6ms=",
@@ -1389,8 +1396,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:K1zaaMdYBXRyX+cwFnxj7M6zwDyumLQMZ5xqwGvjreQ=",
-        version = "v0.0.0-20220921223823-23cae91e6737",
+        sum = "h1:saaNe2+SBQxandnzcD/qB1JEBQ2Pqew+KlFLLdA/XcM=",
+        version = "v0.0.0-20220923205249-dd2d53f1fffc",
     )
     go_repository(
         name = "org_golang_google_grpc",
