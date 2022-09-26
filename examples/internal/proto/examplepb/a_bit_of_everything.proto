@@ -794,6 +794,13 @@ service ABitOfEverythingService {
       body: "example_enum"
     };
   }
+
+  rpc PostRequiredMessageType(RequiredMessageTypeRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/example/requiredmessagetype"
+      body: "*"
+    };
+  }
 }
 
 // camelCase and lowercase service names are valid but not recommended (use TitleCase instead)
@@ -843,3 +850,18 @@ message SnakeEnumRequest {
 }
 
 message SnakeEnumResponse {}
+
+// Required message type -> OpenAPI
+// https://github.com/grpc-ecosystem/grpc-gateway/issues/2837
+message RequiredMessageTypeRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+  Foo foo = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message Foo {
+  Bar bar = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message Bar {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}

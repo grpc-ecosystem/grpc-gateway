@@ -4329,7 +4329,7 @@ func TestSchemaOfField(t *testing.T) {
 		{
 			field: &descriptor.Field{
 				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
-					Name:     proto.String("message_field"),
+					Name:     proto.String("required_message_field"),
 					TypeName: proto.String(".example.Message"),
 					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
 					Options:  requiredFieldOptions,
@@ -4340,6 +4340,7 @@ func TestSchemaOfField(t *testing.T) {
 				schemaCore: schemaCore{
 					Ref: "#/definitions/exampleMessage",
 				},
+				Required: []string{"required_message_field"},
 			},
 		},
 		{

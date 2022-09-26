@@ -10,8 +10,6 @@
 
 package abe
 
-// Nested is nested type.
-type V1exampledeepPathsingleNestedNameSingleNested struct {
-	Amount int64 `json:"amount,omitempty"`
-	Ok *NestedDeepEnum `json:"ok,omitempty"`
+type ExamplepbBar struct {
+	Id string `json:"id"`
 }
