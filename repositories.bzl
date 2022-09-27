@@ -1010,6 +1010,13 @@ def go_repositories():
         version = "v1.7.0",
     )
     go_repository(
+        name = "com_google_cloud_go_containeranalysis",
+        importpath = "cloud.google.com/go/containeranalysis",
+        sum = "h1:seZBe4+LZGIRd72O3ZjDlftBdO4m0MjgURzlMGSvqpg=",
+        version = "v0.5.1",
+    )
+
+    go_repository(
         name = "com_google_cloud_go_datacatalog",
         importpath = "cloud.google.com/go/datacatalog",
         sum = "h1:Q9DXHJhkRsPm+EfOj60EGlCK0VMSnd4T/BsVmY2Tmg4=",
@@ -1396,8 +1403,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:saaNe2+SBQxandnzcD/qB1JEBQ2Pqew+KlFLLdA/XcM=",
-        version = "v0.0.0-20220923205249-dd2d53f1fffc",
+        sum = "h1:+2ye9vAK4F9F/LCex8dT2cDk0VnTAwUL8uRgX/6nAMU=",
+        version = "v0.0.0-20220926220553-6981cbe3cfce",
     )
     go_repository(
         name = "org_golang_google_grpc",
