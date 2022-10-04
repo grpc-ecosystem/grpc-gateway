@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
         with:
           fetch-depth: 0
       - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f # tag=v3
@@ -48,7 +48,7 @@ jobs:
   push_bsr_plugins:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
       - uses: docker/setup-buildx-action@dc7b9719a96d48369863986a06765841d7ea23f6 # tag=v2
       - uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b # tag=v2
         with:
