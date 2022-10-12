@@ -61,6 +61,7 @@ def _run_proto_gen_openapi(
         openapi_naming_strategy,
         use_go_templates,
         disable_default_errors,
+        disable_service_tags,
         enums_as_ints,
         omit_enum_default_value,
         output_format,
@@ -111,6 +112,9 @@ def _run_proto_gen_openapi(
 
     if disable_default_errors:
         args.add("--openapiv2_opt", "disable_default_errors=true")
+
+    if disable_service_tags:
+        args.add("--openapiv2_opt", "disable_service_tags=true")
 
     if enums_as_ints:
         args.add("--openapiv2_opt", "enums_as_ints=true")
@@ -220,6 +224,7 @@ def _proto_gen_openapi_impl(ctx):
                     openapi_naming_strategy = ctx.attr.openapi_naming_strategy,
                     use_go_templates = ctx.attr.use_go_templates,
                     disable_default_errors = ctx.attr.disable_default_errors,
+                    disable_service_tags = ctx.attr.disable_service_tags,
                     enums_as_ints = ctx.attr.enums_as_ints,
                     omit_enum_default_value = ctx.attr.omit_enum_default_value,
                     output_format = ctx.attr.output_format,
@@ -300,6 +305,12 @@ protoc_gen_openapiv2 = rule(
             mandatory = False,
             doc = "if set, disables generation of default errors." +
                   " This is useful if you have defined custom error handling",
+        ),
+        "disable_service_tags": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, disables generation of service tags." +
+                  " This is useful if you do not want to expose the names of your backend grpc services.",
         ),
         "enums_as_ints": attr.bool(
             default = False,

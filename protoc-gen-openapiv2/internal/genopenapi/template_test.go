@@ -1614,6 +1614,18 @@ func TestApplyTemplateOpenAPIConfigFromYAML(t *testing.T) {
 		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 	}
 
+	reg.SetDisableServiceTags(true)
+
+	res, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", file, err)
+		return
+	}
+
+	if got, want := len(res.Tags), 0; got != want {
+		t.Fatalf("len(applyTemplate(%#v).Tags) = %d want to be %d", file, got, want)
+	}
+
 	// If there was a failure, print out the input and the json result for debugging.
 	if t.Failed() {
 		t.Errorf("had: %s", file)

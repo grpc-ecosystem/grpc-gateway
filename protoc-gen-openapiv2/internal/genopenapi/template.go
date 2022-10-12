@@ -1589,7 +1589,10 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 	if err := renderServices(p.Services, s.Paths, p.reg, requestResponseRefs, customRefs, p.Messages); err != nil {
 		panic(err)
 	}
-	s.Tags = append(s.Tags, renderServiceTags(p.Services, p.reg)...)
+
+	if !p.reg.GetDisableServiceTags() {
+		s.Tags = append(s.Tags, renderServiceTags(p.Services, p.reg)...)
+	}
 
 	messages := messageMap{}
 	streamingMessages := messageMap{}
