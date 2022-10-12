@@ -1422,3 +1422,87 @@ var SnakeEnumService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "examples/internal/proto/examplepb/a_bit_of_everything.proto",
 }
+
+// ParentChildServiceClient is the client API for ParentChildService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ParentChildServiceClient interface {
+	UpdateChild(ctx context.Context, in *UpdateChildRequest, opts ...grpc.CallOption) (*Child, error)
+}
+
+type parentChildServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewParentChildServiceClient(cc grpc.ClientConnInterface) ParentChildServiceClient {
+	return &parentChildServiceClient{cc}
+}
+
+func (c *parentChildServiceClient) UpdateChild(ctx context.Context, in *UpdateChildRequest, opts ...grpc.CallOption) (*Child, error) {
+	out := new(Child)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ParentChildService/UpdateChild", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ParentChildServiceServer is the server API for ParentChildService service.
+// All implementations should embed UnimplementedParentChildServiceServer
+// for forward compatibility
+type ParentChildServiceServer interface {
+	UpdateChild(context.Context, *UpdateChildRequest) (*Child, error)
+}
+
+// UnimplementedParentChildServiceServer should be embedded to have forward compatible implementations.
+type UnimplementedParentChildServiceServer struct {
+}
+
+func (UnimplementedParentChildServiceServer) UpdateChild(context.Context, *UpdateChildRequest) (*Child, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateChild not implemented")
+}
+
+// UnsafeParentChildServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ParentChildServiceServer will
+// result in compilation errors.
+type UnsafeParentChildServiceServer interface {
+	mustEmbedUnimplementedParentChildServiceServer()
+}
+
+func RegisterParentChildServiceServer(s grpc.ServiceRegistrar, srv ParentChildServiceServer) {
+	s.RegisterService(&ParentChildService_ServiceDesc, srv)
+}
+
+func _ParentChildService_UpdateChild_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateChildRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ParentChildServiceServer).UpdateChild(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ParentChildService/UpdateChild",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ParentChildServiceServer).UpdateChild(ctx, req.(*UpdateChildRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ParentChildService_ServiceDesc is the grpc.ServiceDesc for ParentChildService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ParentChildService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.ParentChildService",
+	HandlerType: (*ParentChildServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "UpdateChild",
+			Handler:    _ParentChildService_UpdateChild_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "examples/internal/proto/examplepb/a_bit_of_everything.proto",
+}

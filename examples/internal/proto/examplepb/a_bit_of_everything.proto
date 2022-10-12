@@ -843,3 +843,31 @@ message SnakeEnumRequest {
 }
 
 message SnakeEnumResponse {}
+
+service ParentChildService {
+  rpc UpdateChild(UpdateChildRequest) returns (Child) {
+    option (google.api.http) = {
+      put: "/v1/{parent=child/*}/children/{child.type=*}"
+      body: "child"
+    };
+  }
+}
+
+message UpdateChildRequest {
+  // The parent resource
+  string parent = 1;
+
+  // The X to set.
+  Child child = 2;
+}
+
+enum ChildType {
+  TYPE_UNDEFINED = 0;
+  TYPE_A = 1;
+  TYPE_B = 2;
+}
+
+message Child {
+  ChildType type = 1;
+  string name = 2;
+}
