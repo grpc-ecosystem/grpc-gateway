@@ -578,4 +578,67 @@ definitions:
         type: string
 ```
 
+### Disable service tag generation
+
+By default service tags are generated for backend services, but it is possible to disable it using the `disable_service_tags` option. Allowed values are: `true`, `false`.
+
+For example, if you are using `buf`:
+```yaml
+version: v1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - disable_service_tags=true
+```
+
+or with `protoc`
+
+```sh
+protoc --openapiv2_out=. --openapiv2_opt=disable_service_tags=true ./path/to/file.proto
+```
+
+Input example:
+```protobuf
+syntax = "proto3";
+
+package helloproto.v1;
+option go_package = "helloproto/v1;helloproto";
+
+import "google/api/annotations.proto";
+
+service EchoService {
+    rpc Hello(HelloReq) returns (HelloResp) {
+        option (google.api.http) = {
+            get: "/api/hello"
+        };
+    }
+}
+
+message HelloReq {
+    string name = 1;
+}
+
+message HelloResp {
+    string message = 1;
+}
+```
+
+Output (tags object are not generated):
+```yaml
+swagger: "2.0"
+info:
+  title: helloproto/v1/example.proto
+  version: version not set
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /api/hello:
+    get:
+      operationId: EchoService_Hello
+...
+```
+
 {% endraw %}
