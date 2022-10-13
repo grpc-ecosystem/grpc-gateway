@@ -92,10 +92,9 @@ message Swagger {
   // (that is, there is a logical OR between the security requirements).
   // Individual operations can override this definition.
   repeated SecurityRequirement security = 12;
-  // field 13 is reserved for 'tags', which are supposed to be exposed as and
-  // customizable as proto services. TODO(ivucica): add processing of proto
-  // service objects into OpenAPI v2 Tag objects.
-  reserved 13;
+  // A list of tags for API documentation control. Tags can be used for logical
+  // grouping of operations by resources or any other qualifier.
+  repeated Tag tags = 13;
   // Additional external documentation.
   ExternalDocumentation external_docs = 14;
   map<string, google.protobuf.Value> extensions = 15;
@@ -526,15 +525,10 @@ message JSONSchema {
 // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#tagObject
 //
 message Tag {
-  // field 1 is reserved for 'name'. In our generator, this is (to be) extracted
-  // from the name of proto service, and thus not exposed to the user, as
-  // changing tag object's name would break the link to the references to the
-  // tag in individual operation specifications.
-  //
-  // TODO(ivucica): Add 'name' property. Use it to allow override of the name of
+  // The name of the tag. Use it to allow override of the name of a
   // global Tag object, then use that name to reference the tag throughout the
   // OpenAPI file.
-  reserved 1;
+  string name = 1;
   // A short description for the tag. GFM syntax can be used for rich text
   // representation.
   string description = 2;
