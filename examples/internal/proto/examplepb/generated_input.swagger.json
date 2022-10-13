@@ -67,8 +67,7 @@
           "format": "int64"
         },
         "ok": {
-          "$ref": "#/definitions/NestedDeepEnum",
-          "description": "DeepEnum description."
+          "$ref": "#/definitions/NestedDeepEnum"
         }
       },
       "description": "Nested is nested type."
@@ -235,9 +234,7 @@
           "title": "Repeated numeric enum title"
         },
         "enumValueAnnotation": {
-          "$ref": "#/definitions/examplepbNumericEnum",
-          "description": "Numeric enum description.",
-          "title": "Numeric enum title"
+          "$ref": "#/definitions/examplepbNumericEnum"
         },
         "repeatedStringAnnotation": {
           "type": "array",
@@ -256,9 +253,7 @@
           "title": "Repeated nested object title"
         },
         "nestedAnnotation": {
-          "$ref": "#/definitions/ABitOfEverythingNested",
-          "description": "Nested object description.",
-          "title": "Nested object title"
+          "$ref": "#/definitions/ABitOfEverythingNested"
         },
         "int64OverrideType": {
           "type": "integer",

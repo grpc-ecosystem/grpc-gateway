@@ -411,3 +411,7 @@ func (s *_ABitOfEverythingServer) TraceRequest(ctx context.Context, msg *example
 func (s *_ABitOfEverythingServer) PostOneofEnum(ctx context.Context, msg *oneofenum.OneofEnumMessage) (*emptypb.Empty, error) {
 	return new(emptypb.Empty), nil
 }
+
+func (s *_ABitOfEverythingServer) PostRequiredMessageType(ctx context.Context, req *examples.RequiredMessageTypeRequest) (*emptypb.Empty, error) {
+	return new(emptypb.Empty), nil
+}

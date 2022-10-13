@@ -516,6 +516,12 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 			fieldSchema.Required = nil
 		}
 
+		if fieldSchema.Ref != "" {
+			// Per the JSON Reference syntax: Any members other than "$ref" in a JSON Reference object SHALL be ignored.
+			// https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03#section-3
+			fieldSchema = openapiSchemaObject{schemaCore: schemaCore{Ref: fieldSchema.Ref}}
+		}
+
 		kv := keyVal{Value: fieldSchema}
 		kv.Key = reg.FieldName(f)
 		if schema.Properties == nil {
@@ -1232,6 +1238,12 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						} else {
 							desc = fieldProtoComments(reg, bodyField.Target.Message, bodyField.Target)
 						}
+						if schema.Ref != "" {
+							// Per the JSON Reference syntax: Any members other than "$ref" in a JSON Reference object SHALL be ignored.
+							// https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03#section-3
+							schema = openapiSchemaObject{schemaCore: schemaCore{Ref: schema.Ref}}
+						}
+
 					}
 
 					if meth.GetClientStreaming() {
@@ -2655,12 +2667,6 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 }
 
 func updateSwaggerObjectFromFieldBehavior(s *openapiSchemaObject, j []annotations.FieldBehavior, reg *descriptor.Registry, field *descriptor.Field) {
-	// Per the JSON Reference syntax: Any members other than "$ref" in a JSON Reference object SHALL be ignored.
-	// https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03#section-3
-	if s.Ref != "" {
-		return
-	}
-
 	for _, fb := range j {
 		switch fb {
 		case annotations.FieldBehavior_REQUIRED:

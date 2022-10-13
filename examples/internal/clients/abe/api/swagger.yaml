@@ -3754,6 +3754,44 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
+  /v1/example/requiredmessagetype:
+    post:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_PostRequiredMessageType"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbRequiredMessageTypeRequest"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            type: "object"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
   /v1/example/snake/{who}/{what}/{where}:
     get:
       tags:
@@ -4505,7 +4543,6 @@ definitions:
         type: "integer"
         format: "int64"
       ok:
-        description: "DeepEnum description."
         $ref: "#/definitions/NestedDeepEnum"
     description: "Nested is nested type."
     example:
@@ -4638,8 +4675,6 @@ definitions:
         items:
           $ref: "#/definitions/examplepbNumericEnum"
       enumValueAnnotation:
-        description: "Numeric enum description."
-        title: "Numeric enum title"
         $ref: "#/definitions/examplepbNumericEnum"
       repeatedStringAnnotation:
         type: "array"
@@ -4654,8 +4689,6 @@ definitions:
         items:
           $ref: "#/definitions/ABitOfEverythingNested"
       nestedAnnotation:
-        description: "Nested object description."
-        title: "Nested object title"
         $ref: "#/definitions/ABitOfEverythingNested"
       int64OverrideType:
         type: "integer"
@@ -4794,6 +4827,13 @@ definitions:
       - 1
       - 2
       - 3
+  examplepbBar:
+    type: "object"
+    required:
+    - "id"
+    properties:
+      id:
+        type: "string"
   examplepbBody:
     type: "object"
     properties:
@@ -4858,6 +4898,13 @@ definitions:
         pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
       error:
         $ref: "#/definitions/examplepbErrorObject"
+  examplepbFoo:
+    type: "object"
+    required:
+    - "bar"
+    properties:
+      bar:
+        $ref: "#/definitions/examplepbBar"
   examplepbNumericEnum:
     type: "string"
     description: "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE\
@@ -4866,6 +4913,17 @@ definitions:
     - "ZERO"
     - "ONE"
     default: "ZERO"
+  examplepbRequiredMessageTypeRequest:
+    type: "object"
+    required:
+    - "foo"
+    - "id"
+    properties:
+      id:
+        type: "string"
+      foo:
+        $ref: "#/definitions/examplepbFoo"
+    title: "Required message type -> OpenAPI\nhttps://github.com/grpc-ecosystem/grpc-gateway/issues/2837"
   examplepbSnakeEnumResponse:
     type: "object"
   examplepbsnake_case_0_enum:
@@ -5108,8 +5166,6 @@ definitions:
         items:
           $ref: "#/definitions/examplepbNumericEnum"
       enumValueAnnotation:
-        description: "Numeric enum description."
-        title: "Numeric enum title"
         $ref: "#/definitions/examplepbNumericEnum"
       repeatedStringAnnotation:
         type: "array"
@@ -5124,8 +5180,6 @@ definitions:
         items:
           $ref: "#/definitions/ABitOfEverythingNested"
       nestedAnnotation:
-        description: "Nested object description."
-        title: "Nested object title"
         $ref: "#/definitions/ABitOfEverythingNested"
       int64OverrideType:
         type: "integer"
@@ -5177,7 +5231,6 @@ definitions:
         type: "integer"
         format: "int64"
       ok:
-        description: "DeepEnum description."
         $ref: "#/definitions/NestedDeepEnum"
     description: "Nested is nested type."
     example: "{\"ok\":\"TRUE\"}"
@@ -5295,8 +5348,6 @@ definitions:
         items:
           $ref: "#/definitions/examplepbNumericEnum"
       enumValueAnnotation:
-        description: "Numeric enum description."
-        title: "Numeric enum title"
         $ref: "#/definitions/examplepbNumericEnum"
       repeatedStringAnnotation:
         type: "array"
@@ -5311,8 +5362,6 @@ definitions:
         items:
           $ref: "#/definitions/ABitOfEverythingNested"
       nestedAnnotation:
-        description: "Nested object description."
-        title: "Nested object title"
         $ref: "#/definitions/ABitOfEverythingNested"
       int64OverrideType:
         type: "integer"
@@ -5481,8 +5530,6 @@ definitions:
         items:
           $ref: "#/definitions/examplepbNumericEnum"
       enumValueAnnotation:
-        description: "Numeric enum description."
-        title: "Numeric enum title"
         $ref: "#/definitions/examplepbNumericEnum"
       repeatedStringAnnotation:
         type: "array"
@@ -5497,8 +5544,6 @@ definitions:
         items:
           $ref: "#/definitions/ABitOfEverythingNested"
       nestedAnnotation:
-        description: "Nested object description."
-        title: "Nested object title"
         $ref: "#/definitions/ABitOfEverythingNested"
       int64OverrideType:
         type: "integer"
@@ -5652,8 +5697,6 @@ definitions:
         items:
           $ref: "#/definitions/examplepbNumericEnum"
       enumValueAnnotation:
-        description: "Numeric enum description."
-        title: "Numeric enum title"
         $ref: "#/definitions/examplepbNumericEnum"
       repeatedStringAnnotation:
         type: "array"
@@ -5668,8 +5711,6 @@ definitions:
         items:
           $ref: "#/definitions/ABitOfEverythingNested"
       nestedAnnotation:
-        description: "Nested object description."
-        title: "Nested object title"
         $ref: "#/definitions/ABitOfEverythingNested"
       int64OverrideType:
         type: "integer"
@@ -5813,8 +5854,6 @@ definitions:
         items:
           $ref: "#/definitions/examplepbNumericEnum"
       enumValueAnnotation:
-        description: "Numeric enum description."
-        title: "Numeric enum title"
         $ref: "#/definitions/examplepbNumericEnum"
       repeatedStringAnnotation:
         type: "array"
@@ -5829,8 +5868,6 @@ definitions:
         items:
           $ref: "#/definitions/ABitOfEverythingNested"
       nestedAnnotation:
-        description: "Nested object description."
-        title: "Nested object title"
         $ref: "#/definitions/ABitOfEverythingNested"
       int64OverrideType:
         type: "integer"
