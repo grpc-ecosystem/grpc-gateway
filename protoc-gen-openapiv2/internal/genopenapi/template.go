@@ -1835,6 +1835,21 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 			s.extensions = exts
 		}
 
+		if spb.Tags != nil {
+			for _, v := range spb.Tags {
+				newTag := openapiTagObject{}
+				newTag.Name = v.Name
+				newTag.Description = v.Description
+				if v.ExternalDocs != nil {
+					newTag.ExternalDocs = &openapiExternalDocumentationObject{
+						Description: v.ExternalDocs.Description,
+						URL:         v.ExternalDocs.Url,
+					}
+				}
+				s.Tags = append(s.Tags, newTag)
+			}
+		}
+
 		// Additional fields on the OpenAPI v2 spec's "OpenAPI" object
 		// should be added here, once supported in the proto.
 	}

@@ -21,6 +21,8 @@ tags:
 - name: "camelCaseServiceName"
 - name: "AnotherServiceWithNoBindings"
 - name: "SnakeEnumService"
+- name: "echo rpc"
+  description: "Echo Rpc description"
 schemes:
 - "http"
 - "https"
