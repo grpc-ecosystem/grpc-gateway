@@ -1834,6 +1834,15 @@ func TestApplyTemplateExtensions(t *testing.T) {
 				},
 			},
 		},
+		Tags: []*openapi_options.Tag{
+			{
+				Name:        "test tag",
+				Description: "test tag description",
+				Extensions: map[string]*structpb.Value{
+					"x-traitTag": {Kind: &structpb.Value_BoolValue{BoolValue: true}},
+				},
+			},
+		},
 	}
 	openapiOperation := openapi_options.Operation{
 		Responses: map[string]*openapi_options.Response{
@@ -1934,6 +1943,16 @@ func TestApplyTemplateExtensions(t *testing.T) {
 		if want, is, name := []extension{
 			{key: "x-resp-id", value: json.RawMessage("\"resp1000\"")},
 		}, response.extensions, "response.Extensions"; !reflect.DeepEqual(is, want) {
+			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+		}
+
+		var tag openapiTagObject
+		for _, v := range result.Tags {
+			tag = v
+		}
+		if want, is, name := []extension{
+			{key: "x-traitTag", value: json.RawMessage("true")},
+		}, tag.extensions, "Tags[0].Extensions"; !reflect.DeepEqual(is, want) {
 			t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
 		}
 	}

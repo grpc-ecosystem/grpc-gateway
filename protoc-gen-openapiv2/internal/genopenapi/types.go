@@ -31,6 +31,8 @@ type openapiTagObject struct {
 	Name         string                              `json:"name" yaml:"name"`
 	Description  string                              `json:"description,omitempty" yaml:"description,omitempty"`
 	ExternalDocs *openapiExternalDocumentationObject `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
+
+	extensions []extension `json:"-" yaml:"-"`
 }
 
 // http://swagger.io/specification/#contactObject

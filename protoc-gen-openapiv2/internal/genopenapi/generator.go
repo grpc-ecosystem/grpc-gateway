@@ -218,6 +218,23 @@ func (so openapiParameterObject) MarshalYAML() (interface{}, error) {
 	}, nil
 }
 
+func (so openapiTagObject) MarshalJSON() ([]byte, error) {
+	type alias openapiTagObject
+	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+func (so openapiTagObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiTagObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
+}
+
 func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error) {
 	// To append arbitrary keys to the struct we'll render into json,
 	// we're creating another struct that embeds the original one, and

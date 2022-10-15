@@ -188,6 +188,12 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   tags: {
     name: "echo rpc"
     description: "Echo Rpc description"
+    extensions: {
+      key: "x-traitTag";
+      value {
+        bool_value: true;
+      }
+    }
   }
   extensions: {
     key: "x-grpc-gateway-foo";

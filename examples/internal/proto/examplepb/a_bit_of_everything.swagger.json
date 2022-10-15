@@ -34,7 +34,8 @@
     },
     {
       "name": "echo rpc",
-      "description": "Echo Rpc description"
+      "description": "Echo Rpc description",
+      "x-traitTag": true
     }
   ],
   "schemes": [

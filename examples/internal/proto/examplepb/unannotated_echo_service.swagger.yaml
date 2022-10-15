@@ -15,6 +15,13 @@ openapiOptions:
           version: "1.0"
           extensions:
             x-something-something: yadda
+        tags:
+          - name: Echo
+            description: Echo description
+          - name: Internal
+            description: Internal description
+            extensions:
+              x-traitTag: true
         schemes:
           - HTTP
           - HTTPS

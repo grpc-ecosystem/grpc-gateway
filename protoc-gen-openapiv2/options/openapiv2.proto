@@ -534,6 +534,7 @@ message Tag {
   string description = 2;
   // Additional external documentation for this tag.
   ExternalDocumentation external_docs = 3;
+  map<string, google.protobuf.Value> extensions = 4;
 }
 
 // `SecurityDefinitions` is a representation of OpenAPI v2 specification's
