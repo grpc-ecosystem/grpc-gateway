@@ -382,8 +382,11 @@ type Swagger struct {
 	// grouping of operations by resources or any other qualifier.
 	Tags []*Tag `protobuf:"bytes,13,rep,name=tags,proto3" json:"tags,omitempty"`
 	// Additional external documentation.
-	ExternalDocs *ExternalDocumentation     `protobuf:"bytes,14,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
-	Extensions   map[string]*structpb.Value `protobuf:"bytes,15,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	ExternalDocs *ExternalDocumentation `protobuf:"bytes,14,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
+	// Custom properties that start with "x-" such as "x-foo" used to describe
+	// extra functionality that is not covered by the standard OpenAPI Specification.
+	// See: https://swagger.io/docs/specification/openapi-extensions/
+	Extensions map[string]*structpb.Value `protobuf:"bytes,15,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *Swagger) Reset() {
@@ -578,7 +581,10 @@ type Operation struct {
 	// (that is, there is a logical OR between the security requirements). This
 	// definition overrides any declared top-level security. To remove a top-level
 	// security declaration, an empty array can be used.
-	Security   []*SecurityRequirement     `protobuf:"bytes,12,rep,name=security,proto3" json:"security,omitempty"`
+	Security []*SecurityRequirement `protobuf:"bytes,12,rep,name=security,proto3" json:"security,omitempty"`
+	// Custom properties that start with "x-" such as "x-foo" used to describe
+	// extra functionality that is not covered by the standard OpenAPI Specification.
+	// See: https://swagger.io/docs/specification/openapi-extensions/
 	Extensions map[string]*structpb.Value `protobuf:"bytes,13,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
@@ -809,7 +815,10 @@ type Response struct {
 	Headers map[string]*Header `protobuf:"bytes,3,rep,name=headers,proto3" json:"headers,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// `Examples` gives per-mimetype response examples.
 	// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#example-object
-	Examples   map[string]string          `protobuf:"bytes,4,rep,name=examples,proto3" json:"examples,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Examples map[string]string `protobuf:"bytes,4,rep,name=examples,proto3" json:"examples,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Custom properties that start with "x-" such as "x-foo" used to describe
+	// extra functionality that is not covered by the standard OpenAPI Specification.
+	// See: https://swagger.io/docs/specification/openapi-extensions/
 	Extensions map[string]*structpb.Value `protobuf:"bytes,5,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
@@ -922,7 +931,10 @@ type Info struct {
 	License *License `protobuf:"bytes,5,opt,name=license,proto3" json:"license,omitempty"`
 	// Provides the version of the application API (not to be confused
 	// with the specification version).
-	Version    string                     `protobuf:"bytes,6,opt,name=version,proto3" json:"version,omitempty"`
+	Version string `protobuf:"bytes,6,opt,name=version,proto3" json:"version,omitempty"`
+	// Custom properties that start with "x-" such as "x-foo" used to describe
+	// extra functionality that is not covered by the standard OpenAPI Specification.
+	// See: https://swagger.io/docs/specification/openapi-extensions/
 	Extensions map[string]*structpb.Value `protobuf:"bytes,7,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
@@ -1417,7 +1429,10 @@ type JSONSchema struct {
 	Enum []string `protobuf:"bytes,46,rep,name=enum,proto3" json:"enum,omitempty"`
 	// Additional field level properties used when generating the OpenAPI v2 file.
 	FieldConfiguration *JSONSchema_FieldConfiguration `protobuf:"bytes,1001,opt,name=field_configuration,json=fieldConfiguration,proto3" json:"field_configuration,omitempty"`
-	Extensions         map[string]*structpb.Value     `protobuf:"bytes,48,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Custom properties that start with "x-" such as "x-foo" used to describe
+	// extra functionality that is not covered by the standard OpenAPI Specification.
+	// See: https://swagger.io/docs/specification/openapi-extensions/
+	Extensions map[string]*structpb.Value `protobuf:"bytes,48,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *JSONSchema) Reset() {
@@ -1651,8 +1666,11 @@ type Tag struct {
 	// representation.
 	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// Additional external documentation for this tag.
-	ExternalDocs *ExternalDocumentation     `protobuf:"bytes,3,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
-	Extensions   map[string]*structpb.Value `protobuf:"bytes,4,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	ExternalDocs *ExternalDocumentation `protobuf:"bytes,3,opt,name=external_docs,json=externalDocs,proto3" json:"external_docs,omitempty"`
+	// Custom properties that start with "x-" such as "x-foo" used to describe
+	// extra functionality that is not covered by the standard OpenAPI Specification.
+	// See: https://swagger.io/docs/specification/openapi-extensions/
+	Extensions map[string]*structpb.Value `protobuf:"bytes,4,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *Tag) Reset() {
@@ -1812,7 +1830,10 @@ type SecurityScheme struct {
 	TokenUrl string `protobuf:"bytes,7,opt,name=token_url,json=tokenUrl,proto3" json:"token_url,omitempty"`
 	// The available scopes for the OAuth2 security scheme.
 	// Valid for oauth2.
-	Scopes     *Scopes                    `protobuf:"bytes,8,opt,name=scopes,proto3" json:"scopes,omitempty"`
+	Scopes *Scopes `protobuf:"bytes,8,opt,name=scopes,proto3" json:"scopes,omitempty"`
+	// Custom properties that start with "x-" such as "x-foo" used to describe
+	// extra functionality that is not covered by the standard OpenAPI Specification.
+	// See: https://swagger.io/docs/specification/openapi-extensions/
 	Extensions map[string]*structpb.Value `protobuf:"bytes,9,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
