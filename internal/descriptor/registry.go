@@ -2,6 +2,7 @@ package descriptor
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/golang/glog"
@@ -187,12 +188,18 @@ func (r *Registry) LoadFromPlugin(gen *protogen.Plugin) error {
 }
 
 func (r *Registry) load(gen *protogen.Plugin) error {
-	for filePath, f := range gen.FilesByPath {
-		r.loadFile(filePath, f)
+	filePaths := make([]string, 0, len(gen.FilesByPath))
+	for filePath := range gen.FilesByPath {
+		filePaths = append(filePaths, filePath)
+	}
+	sort.Strings(filePaths)
+
+	for _, filePath := range filePaths {
+		r.loadFile(filePath, gen.FilesByPath[filePath])
 	}
 
-	for filePath, f := range gen.FilesByPath {
-		if !f.Generate {
+	for _, filePath := range filePaths {
+		if !gen.FilesByPath[filePath].Generate {
 			continue
 		}
 		file := r.files[filePath]
