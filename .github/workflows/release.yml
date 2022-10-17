@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f # tag=v3
         with:
           check-latest: true
-      - uses: goreleaser/goreleaser-action@ff11ca24a9b39f2d36796d1fbd7a4e39c182630a # tag=v3
+      - uses: goreleaser/goreleaser-action@b508e2e3ef3b19d4e4146d4f8fb3ba9db644a757 # tag=v3
         id: run-goreleaser
         with:
           args: release --rm-dist
