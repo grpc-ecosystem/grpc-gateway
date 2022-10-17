@@ -96,9 +96,9 @@ jobs:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
       - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f # tag=v3
         with:
-          go-version: 1.18
+          go-version: 1.19
           check-latest: true
-      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.11.3
+      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.12.0
   proto_lint:
     runs-on: ubuntu-latest
     steps:
