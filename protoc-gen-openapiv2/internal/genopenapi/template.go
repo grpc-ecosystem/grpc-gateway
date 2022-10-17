@@ -1858,6 +1858,13 @@ func applyTemplate(p param) (*openapiSwaggerObject, error) {
 						URL:         v.ExternalDocs.Url,
 					}
 				}
+				if v.Extensions != nil {
+					exts, err := processExtensions(v.Extensions)
+					if err != nil {
+						return nil, err
+					}
+					newTag.extensions = exts
+				}
 				s.Tags = append(s.Tags, newTag)
 			}
 		}

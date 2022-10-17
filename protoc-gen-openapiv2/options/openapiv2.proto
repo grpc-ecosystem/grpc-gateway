@@ -97,6 +97,9 @@ message Swagger {
   repeated Tag tags = 13;
   // Additional external documentation.
   ExternalDocumentation external_docs = 14;
+  // Custom properties that start with "x-" such as "x-foo" used to describe
+  // extra functionality that is not covered by the standard OpenAPI Specification.
+  // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
   map<string, google.protobuf.Value> extensions = 15;
 }
 
@@ -168,6 +171,9 @@ message Operation {
   // definition overrides any declared top-level security. To remove a top-level
   // security declaration, an empty array can be used.
   repeated SecurityRequirement security = 12;
+  // Custom properties that start with "x-" such as "x-foo" used to describe
+  // extra functionality that is not covered by the standard OpenAPI Specification.
+  // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
   map<string, google.protobuf.Value> extensions = 13;
 }
 
@@ -234,6 +240,9 @@ message Response {
   // `Examples` gives per-mimetype response examples.
   // See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#example-object
   map<string, string> examples = 4;
+  // Custom properties that start with "x-" such as "x-foo" used to describe
+  // extra functionality that is not covered by the standard OpenAPI Specification.
+  // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
   map<string, google.protobuf.Value> extensions = 5;
 }
 
@@ -276,6 +285,9 @@ message Info {
   // Provides the version of the application API (not to be confused
   // with the specification version).
   string version = 6;
+  // Custom properties that start with "x-" such as "x-foo" used to describe
+  // extra functionality that is not covered by the standard OpenAPI Specification.
+  // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
   map<string, google.protobuf.Value> extensions = 7;
 }
 
@@ -517,6 +529,9 @@ message JSONSchema {
     // for overlapping paths.
     string path_param_name = 47;
   }
+  // Custom properties that start with "x-" such as "x-foo" used to describe
+  // extra functionality that is not covered by the standard OpenAPI Specification.
+  // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
   map<string, google.protobuf.Value> extensions = 48;
 }
 
@@ -534,6 +549,10 @@ message Tag {
   string description = 2;
   // Additional external documentation for this tag.
   ExternalDocumentation external_docs = 3;
+  // Custom properties that start with "x-" such as "x-foo" used to describe
+  // extra functionality that is not covered by the standard OpenAPI Specification.
+  // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
+  map<string, google.protobuf.Value> extensions = 4;
 }
 
 // `SecurityDefinitions` is a representation of OpenAPI v2 specification's
@@ -613,6 +632,9 @@ message SecurityScheme {
   // The available scopes for the OAuth2 security scheme.
   // Valid for oauth2.
   Scopes scopes = 8;
+  // Custom properties that start with "x-" such as "x-foo" used to describe
+  // extra functionality that is not covered by the standard OpenAPI Specification.
+  // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
   map<string, google.protobuf.Value> extensions = 9;
 }
 

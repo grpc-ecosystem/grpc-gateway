@@ -23,6 +23,7 @@ tags:
 - name: "SnakeEnumService"
 - name: "echo rpc"
   description: "Echo Rpc description"
+  x-traitTag: true
 schemes:
 - "http"
 - "https"
