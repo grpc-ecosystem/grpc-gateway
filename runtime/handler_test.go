@@ -146,9 +146,9 @@ func TestForwardResponseStream(t *testing.T) {
 						t.Errorf("stream responseBody failed %v", err)
 					}
 
-					b, err = marshaler.Marshal(map[string]interface{}{"result": rb.XXX_ResponseBody()})
+					b, err = marshaler.Marshal(rb.XXX_ResponseBody())
 				} else {
-					b, err = marshaler.Marshal(map[string]interface{}{"result": msg.pb})
+					b, err = marshaler.Marshal(msg.pb)
 				}
 
 				if err != nil {
@@ -252,7 +252,7 @@ func TestForwardResponseStreamCustomMarshaler(t *testing.T) {
 				if msg.err != nil {
 					t.Skip("checking erorr encodings")
 				}
-				b, err := marshaler.Marshal(map[string]proto.Message{"result": msg.pb})
+				b, err := marshaler.Marshal(msg.pb)
 				if err != nil {
 					t.Errorf("marshaler.Marshal() failed %v", err)
 				}

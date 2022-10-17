@@ -72,12 +72,11 @@ func ForwardResponseStream(ctx context.Context, mux *ServeMux, marshaler Marshal
 		case isHTTPBody:
 			buf = httpBody.GetData()
 		default:
-			result := map[string]interface{}{"result": resp}
 			if rb, ok := resp.(responseBody); ok {
-				result["result"] = rb.XXX_ResponseBody()
+				buf, err = marshaler.Marshal(rb.XXX_ResponseBody())
+			} else {
+				buf, err = marshaler.Marshal(resp)
 			}
-
-			buf, err = marshaler.Marshal(result)
 		}
 
 		if err != nil {
