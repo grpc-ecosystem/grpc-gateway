@@ -221,6 +221,49 @@ func request_ResponseBodyService_GetResponseBodyStream_0(ctx context.Context, ma
 
 }
 
+func request_ResponseBodyService_GetResponseBodyBidiStream_0(ctx context.Context, marshaler runtime.Marshaler, client ResponseBodyServiceClient, req *http.Request, pathParams map[string]string) (ResponseBodyService_GetResponseBodyBidiStreamClient, runtime.ServerMetadata, error) {
+	var metadata runtime.ServerMetadata
+	stream, err := client.GetResponseBodyBidiStream(ctx)
+	if err != nil {
+		grpclog.Infof("Failed to start streaming: %v", err)
+		return nil, metadata, err
+	}
+	dec := marshaler.NewDecoder(req.Body)
+	handleSend := func() error {
+		var protoReq ResponseBodyIn
+		err := dec.Decode(&protoReq)
+		if err == io.EOF {
+			return err
+		}
+		if err != nil {
+			grpclog.Infof("Failed to decode request: %v", err)
+			return err
+		}
+		if err := stream.Send(&protoReq); err != nil {
+			grpclog.Infof("Failed to send request: %v", err)
+			return err
+		}
+		return nil
+	}
+	go func() {
+		for {
+			if err := handleSend(); err != nil {
+				break
+			}
+		}
+		if err := stream.CloseSend(); err != nil {
+			grpclog.Infof("Failed to terminate client stream: %v", err)
+		}
+	}()
+	header, err := stream.Header()
+	if err != nil {
+		grpclog.Infof("Failed to get header from client: %v", err)
+		return nil, metadata, err
+	}
+	metadata.HeaderMD = header
+	return stream, metadata, nil
+}
+
 // RegisterResponseBodyServiceHandlerServer registers the http handlers for service ResponseBodyService to "mux".
 // UnaryRPC     :call ResponseBodyServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -303,6 +346,13 @@ func RegisterResponseBodyServiceHandlerServer(ctx context.Context, mux *runtime.
 	})
 
 	mux.Handle("GET", pattern_ResponseBodyService_GetResponseBodyStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
+		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+		return
+	})
+
+	mux.Handle("POST", pattern_ResponseBodyService_GetResponseBodyBidiStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		err := status.Error(codes.Unimplemented, "streaming calls are not yet supported in the in-process transport")
 		_, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -441,6 +491,31 @@ func RegisterResponseBodyServiceHandlerClient(ctx context.Context, mux *runtime.
 
 	})
 
+	mux.Handle("POST", pattern_ResponseBodyService_GetResponseBodyBidiStream_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBodyBidiStream", runtime.WithHTTPPathPattern("/responsebody/bidistream"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ResponseBodyService_GetResponseBodyBidiStream_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ResponseBodyService_GetResponseBodyBidiStream_0(annotatedContext, mux, outboundMarshaler, w, req, func() (proto.Message, error) {
+			res, err := resp.Recv()
+			return response_ResponseBodyService_GetResponseBodyBidiStream_0{res}, err
+		}, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -480,6 +555,15 @@ func (m response_ResponseBodyService_GetResponseBodyStream_0) XXX_ResponseBody()
 	return response.Response
 }
 
+type response_ResponseBodyService_GetResponseBodyBidiStream_0 struct {
+	proto.Message
+}
+
+func (m response_ResponseBodyService_GetResponseBodyBidiStream_0) XXX_ResponseBody() interface{} {
+	response := m.Message.(*ResponseBodyOut)
+	return response.Response
+}
+
 var (
 	pattern_ResponseBodyService_GetResponseBody_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsebody", "data"}, ""))
 
@@ -488,6 +572,8 @@ var (
 	pattern_ResponseBodyService_ListResponseStrings_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"responsestrings", "data"}, ""))
 
 	pattern_ResponseBodyService_GetResponseBodyStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"responsebody", "stream", "data"}, ""))
+
+	pattern_ResponseBodyService_GetResponseBodyBidiStream_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"responsebody", "bidistream"}, ""))
 )
 
 var (
@@ -498,4 +584,6 @@ var (
 	forward_ResponseBodyService_ListResponseStrings_0 = runtime.ForwardResponseMessage
 
 	forward_ResponseBodyService_GetResponseBodyStream_0 = runtime.ForwardResponseStream
+
+	forward_ResponseBodyService_GetResponseBodyBidiStream_0 = runtime.ForwardResponseStream
 )

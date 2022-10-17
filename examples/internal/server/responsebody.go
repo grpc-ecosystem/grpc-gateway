@@ -59,3 +59,22 @@ func (s *responseBodyServer) GetResponseBodyStream(req *examples.ResponseBodyIn,
 		},
 	})
 }
+
+func (s *responseBodyServer) GetResponseBodyBidiStream(server examples.ResponseBodyService_GetResponseBodyBidiStreamServer) error {
+	recv, err := server.Recv()
+	if err != nil {
+		return err
+	}
+	echoMessage := recv.String()
+	err = server.Send(&examples.ResponseBodyOut{
+		Response: &examples.ResponseBodyOut_Response{
+			Data: fmt.Sprintf("first %s", echoMessage),
+		}})
+	if err != nil {
+		return err
+	}
+	return server.Send(&examples.ResponseBodyOut{
+		Response: &examples.ResponseBodyOut_Response{
+			Data: fmt.Sprintf("first %s", echoMessage),
+		}})
+}

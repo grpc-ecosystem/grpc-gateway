@@ -1782,6 +1782,45 @@ func TestResponseBodyStream(t *testing.T) {
 	}
 }
 
+func TestBidiStream(t *testing.T) {
+	tests := []struct {
+		name       string
+		url        string
+		wantStatus int
+		wantBody   []string
+	}{{
+		name:       "bidi stream case",
+		url:        "http://localhost:%d/responsebody/bidistream",
+		wantStatus: http.StatusOK,
+		wantBody:   []string{`{"result":{"data":"some-text"}}`, `{"result":{"data":"some-text"}}`},
+	}}
+
+	port := 8088
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			apiURL := fmt.Sprintf(tt.url, port)
+			resp, err := http.Post(apiURL, "text/plain", strings.NewReader("some-text"))
+			if err != nil {
+				t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
+			}
+
+			defer resp.Body.Close()
+			body, err := readAll(resp.Body)
+			if err != nil {
+				t.Fatalf("readAll(resp.Body) failed with %v; want success", err)
+			}
+
+			if got, want := resp.StatusCode, tt.wantStatus; got != want {
+				t.Errorf("resp.StatusCode = %d; want %d", got, want)
+			}
+
+			if !reflect.DeepEqual(tt.wantBody, body) {
+				t.Errorf("response = %v; want %v", body, tt.wantBody)
+			}
+		})
+	}
+}
+
 func readAll(body io.ReadCloser) ([]string, error) {
 	var b []string
 	reader := bufio.NewReader(body)

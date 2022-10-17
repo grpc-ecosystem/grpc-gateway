@@ -22,6 +22,7 @@ type ResponseBodyServiceClient interface {
 	ListResponseBodies(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (*RepeatedResponseBodyOut, error)
 	ListResponseStrings(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (*RepeatedResponseStrings, error)
 	GetResponseBodyStream(ctx context.Context, in *ResponseBodyIn, opts ...grpc.CallOption) (ResponseBodyService_GetResponseBodyStreamClient, error)
+	GetResponseBodyBidiStream(ctx context.Context, opts ...grpc.CallOption) (ResponseBodyService_GetResponseBodyBidiStreamClient, error)
 }
 
 type responseBodyServiceClient struct {
@@ -91,6 +92,37 @@ func (x *responseBodyServiceGetResponseBodyStreamClient) Recv() (*ResponseBodyOu
 	return m, nil
 }
 
+func (c *responseBodyServiceClient) GetResponseBodyBidiStream(ctx context.Context, opts ...grpc.CallOption) (ResponseBodyService_GetResponseBodyBidiStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ResponseBodyService_ServiceDesc.Streams[1], "/grpc.gateway.examples.internal.proto.examplepb.ResponseBodyService/GetResponseBodyBidiStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &responseBodyServiceGetResponseBodyBidiStreamClient{stream}
+	return x, nil
+}
+
+type ResponseBodyService_GetResponseBodyBidiStreamClient interface {
+	Send(*ResponseBodyIn) error
+	Recv() (*ResponseBodyOut, error)
+	grpc.ClientStream
+}
+
+type responseBodyServiceGetResponseBodyBidiStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *responseBodyServiceGetResponseBodyBidiStreamClient) Send(m *ResponseBodyIn) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *responseBodyServiceGetResponseBodyBidiStreamClient) Recv() (*ResponseBodyOut, error) {
+	m := new(ResponseBodyOut)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // ResponseBodyServiceServer is the server API for ResponseBodyService service.
 // All implementations should embed UnimplementedResponseBodyServiceServer
 // for forward compatibility
@@ -99,6 +131,7 @@ type ResponseBodyServiceServer interface {
 	ListResponseBodies(context.Context, *ResponseBodyIn) (*RepeatedResponseBodyOut, error)
 	ListResponseStrings(context.Context, *ResponseBodyIn) (*RepeatedResponseStrings, error)
 	GetResponseBodyStream(*ResponseBodyIn, ResponseBodyService_GetResponseBodyStreamServer) error
+	GetResponseBodyBidiStream(ResponseBodyService_GetResponseBodyBidiStreamServer) error
 }
 
 // UnimplementedResponseBodyServiceServer should be embedded to have forward compatible implementations.
@@ -116,6 +149,9 @@ func (UnimplementedResponseBodyServiceServer) ListResponseStrings(context.Contex
 }
 func (UnimplementedResponseBodyServiceServer) GetResponseBodyStream(*ResponseBodyIn, ResponseBodyService_GetResponseBodyStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetResponseBodyStream not implemented")
+}
+func (UnimplementedResponseBodyServiceServer) GetResponseBodyBidiStream(ResponseBodyService_GetResponseBodyBidiStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetResponseBodyBidiStream not implemented")
 }
 
 // UnsafeResponseBodyServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -204,6 +240,32 @@ func (x *responseBodyServiceGetResponseBodyStreamServer) Send(m *ResponseBodyOut
 	return x.ServerStream.SendMsg(m)
 }
 
+func _ResponseBodyService_GetResponseBodyBidiStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ResponseBodyServiceServer).GetResponseBodyBidiStream(&responseBodyServiceGetResponseBodyBidiStreamServer{stream})
+}
+
+type ResponseBodyService_GetResponseBodyBidiStreamServer interface {
+	Send(*ResponseBodyOut) error
+	Recv() (*ResponseBodyIn, error)
+	grpc.ServerStream
+}
+
+type responseBodyServiceGetResponseBodyBidiStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *responseBodyServiceGetResponseBodyBidiStreamServer) Send(m *ResponseBodyOut) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *responseBodyServiceGetResponseBodyBidiStreamServer) Recv() (*ResponseBodyIn, error) {
+	m := new(ResponseBodyIn)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // ResponseBodyService_ServiceDesc is the grpc.ServiceDesc for ResponseBodyService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -229,6 +291,12 @@ var ResponseBodyService_ServiceDesc = grpc.ServiceDesc{
 			StreamName:    "GetResponseBodyStream",
 			Handler:       _ResponseBodyService_GetResponseBodyStream_Handler,
 			ServerStreams: true,
+		},
+		{
+			StreamName:    "GetResponseBodyBidiStream",
+			Handler:       _ResponseBodyService_GetResponseBodyBidiStream_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
 		},
 	},
 	Metadata: "examples/internal/proto/examplepb/response_body_service.proto",

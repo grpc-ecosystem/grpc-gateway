@@ -63,4 +63,11 @@ service ResponseBodyService {
       response_body: "response"
     };
   }
+
+  rpc GetResponseBodyBidiStream(stream ResponseBodyIn) returns (stream ResponseBodyOut) {
+    option (google.api.http) = {
+      post: "/responsebody/bidistream"
+      response_body: "response"
+    };
+  }
 }

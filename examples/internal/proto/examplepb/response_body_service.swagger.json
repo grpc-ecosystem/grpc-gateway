@@ -49,6 +49,45 @@
         ]
       }
     },
+    "/responsebody/bidistream": {
+      "post": {
+        "operationId": "ResponseBodyService_GetResponseBodyBidiStream",
+        "responses": {
+          "200": {
+            "description": "(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/examplepbResponseBodyOutResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of examplepbResponseBodyOut"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "data",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ResponseBodyService"
+        ]
+      }
+    },
     "/responsebody/stream/{data}": {
       "get": {
         "operationId": "ResponseBodyService_GetResponseBodyStream",
