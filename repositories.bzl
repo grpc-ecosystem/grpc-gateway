@@ -1497,8 +1497,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_x_text",
         importpath = "golang.org/x/text",
-        sum = "h1:nAL+RVCQ9uMn3vJZbV+MRnydTJFPf8qqY42YiA6MrqY=",
-        version = "v0.3.8",
+        sum = "h1:BrVqGRd7+k1DiOgtnFvAkoQEWQvBc25ouMJM6429SFg=",
+        version = "v0.4.0",
     )
 
     go_repository(
