@@ -962,14 +962,14 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_asset",
         importpath = "cloud.google.com/go/asset",
-        sum = "h1:1zumX+e2xh1qTuBJE0ExxU45s7SmRaZQhp9EJEdQou8=",
-        version = "v1.7.0",
+        sum = "h1:qzYOcI6u4CD+0R1E8rWbrqs04fISCcg2YYxW8yBAqFM=",
+        version = "v1.8.0",
     )
     go_repository(
         name = "com_google_cloud_go_assuredworkloads",
         importpath = "cloud.google.com/go/assuredworkloads",
-        sum = "h1:2RVswX57rLj/3SneMwVk6inceggf+6wl4THRru/Joi8=",
-        version = "v1.6.0",
+        sum = "h1:IYhjgcgwb5TIAhC0aWQGGOqBnP0c2xijgMGf1iJRs50=",
+        version = "v1.7.0",
     )
     go_repository(
         name = "com_google_cloud_go_automl",
@@ -1062,8 +1062,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_dialogflow",
         importpath = "cloud.google.com/go/dialogflow",
-        sum = "h1:4ccwvAOnFdgliUJyQSeyG9Yy3HW4jF24xDIX6ftbqvY=",
-        version = "v1.16.1",
+        sum = "h1:NU0Pj57H++JQOW225/7o34sUZ4i9/TLfWFOSbI3N1cY=",
+        version = "v1.17.0",
     )
     go_repository(
         name = "com_google_cloud_go_documentai",
@@ -1081,8 +1081,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_edgecontainer",
         importpath = "cloud.google.com/go/edgecontainer",
-        sum = "h1:PS3AxjRqMu2XS01YLG/teWFQlZrP7+a+LJBj37zBMAQ=",
-        version = "v0.1.0",
+        sum = "h1:hd6J2n5dBBRuAqnNUEsKWrp6XNPKsaxwwIyzOPZTokk=",
+        version = "v0.2.0",
     )
 
     go_repository(
@@ -1197,8 +1197,8 @@ def go_repositories():
     go_repository(
         name = "com_google_cloud_go_recaptchaenterprise_v2",
         importpath = "cloud.google.com/go/recaptchaenterprise/v2",
-        sum = "h1:CM59ZlNZxxpn24nwXfxhL4JtnGFTJ6gfSkoFbM8FKxE=",
-        version = "v2.2.0",
+        sum = "h1:BkkI7C0o8CtaHvdDMr5IA+y8pk0Y5wb73C7DHQiAKnw=",
+        version = "v2.3.0",
     )
     go_repository(
         name = "com_google_cloud_go_recommendationengine",
@@ -1403,8 +1403,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:GH6UPn3ixhWcKDhpnEC55S75cerLPdpp3hrhfKYjZgw=",
-        version = "v0.0.0-20221014213838-99cd37c6964a",
+        sum = "h1:U1u4KB2kx6KR/aJDjQ97hZ15wQs8ZPvDcGcRynBhkvg=",
+        version = "v0.0.0-20221018160656-63c7b68cfc55",
     )
     go_repository(
         name = "org_golang_google_grpc",
