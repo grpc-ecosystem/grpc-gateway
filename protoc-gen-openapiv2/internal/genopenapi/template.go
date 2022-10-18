@@ -1380,13 +1380,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					responseSchema.Ref = ""
 				}
 
-				tag := svc.GetName()
-				if pkg := svc.File.GetPackage(); pkg != "" && reg.IsIncludePackageInTags() {
-					tag = pkg + "." + tag
-				}
-
 				operationObject := &openapiOperationObject{
-					Tags:       []string{tag},
 					Parameters: parameters,
 					Responses: openapiResponsesObject{
 						"200": openapiResponseObject{
@@ -1396,6 +1390,15 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						},
 					},
 				}
+
+				if !reg.GetDisableServiceTags() {
+					tag := svc.GetName()
+					if pkg := svc.File.GetPackage(); pkg != "" && reg.IsIncludePackageInTags() {
+						tag = pkg + "." + tag
+					}
+					operationObject.Tags = []string{tag}
+				}
+
 				if !reg.GetDisableDefaultErrors() {
 					errDef, hasErrDef := fullyQualifiedNameToOpenAPIName(".google.rpc.Status", reg)
 					if hasErrDef {
