@@ -175,6 +175,8 @@ message Operation {
   // extra functionality that is not covered by the standard OpenAPI Specification.
   // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
   map<string, google.protobuf.Value> extensions = 13;
+
+  map<string, Header> headers = 14;
 }
 
 // `Header` is a representation of OpenAPI v2 specification's Header object.
