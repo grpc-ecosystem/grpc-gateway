@@ -9,7 +9,7 @@
   "license": "SEE LICENSE IN LICENSE.txt",
   "devDependencies": {
     "bower": "^1.7.9",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-bower": "0.0.13",
     "gulp-exit": "0.0.2",
     "gulp-jasmine-browser": "^1.3.2",
