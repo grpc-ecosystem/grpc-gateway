@@ -1792,14 +1792,14 @@ func TestBidiStream(t *testing.T) {
 		name:       "bidi stream case",
 		url:        "http://localhost:%d/responsebody/bidistream",
 		wantStatus: http.StatusOK,
-		wantBody:   []string{`{"result":{"data":"some-text"}}`, `{"result":{"data":"some-text"}}`},
+		wantBody:   []string{`{"result":{"data":"first data:\"some-text\""}}`, `{"result":{"data":"first data:\"some-text\""}}`},
 	}}
 
 	port := 8088
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			apiURL := fmt.Sprintf(tt.url, port)
-			resp, err := http.Post(apiURL, "text/plain", strings.NewReader("some-text"))
+			resp, err := http.Post(apiURL, "application/json", strings.NewReader(`{"data":"some-text"}`))
 			if err != nil {
 				t.Fatalf("http.Get(%q) failed with %v; want success", apiURL, err)
 			}
