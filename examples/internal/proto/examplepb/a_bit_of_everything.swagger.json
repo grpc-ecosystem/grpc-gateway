@@ -558,6 +558,34 @@
             "in": "query",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "trailingOnly",
+            "description": "Trailing only",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnlyDot",
+            "description": "Trailing only dot.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingBoth",
+            "description": "Leading both\n\nTrailing both.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingMultiline",
+            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -952,6 +980,34 @@
             "in": "query",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "trailingOnly",
+            "description": "Trailing only",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnlyDot",
+            "description": "Trailing only dot.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingBoth",
+            "description": "Leading both\n\nTrailing both.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingMultiline",
+            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -1334,6 +1390,34 @@
             "name": "required_field_schema_json_name_custom",
             "in": "query",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnly",
+            "description": "Trailing only",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnlyDot",
+            "description": "Trailing only dot.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingBoth",
+            "description": "Leading both\n\nTrailing both.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingMultiline",
+            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -1735,6 +1819,34 @@
             "name": "required_field_schema_json_name_custom",
             "in": "query",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnly",
+            "description": "Trailing only",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnlyDot",
+            "description": "Trailing only dot.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingBoth",
+            "description": "Leading both\n\nTrailing both.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingMultiline",
+            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -2141,6 +2253,34 @@
             "in": "query",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "trailingOnly",
+            "description": "Trailing only",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnlyDot",
+            "description": "Trailing only dot.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingBoth",
+            "description": "Leading both\n\nTrailing both.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingMultiline",
+            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -2404,6 +2544,24 @@
                 },
                 "required_field_schema_json_name_custom": {
                   "type": "string"
+                },
+                "trailingOnly": {
+                  "type": "string",
+                  "title": "Trailing only"
+                },
+                "trailingOnlyDot": {
+                  "type": "string",
+                  "description": "Trailing only dot."
+                },
+                "trailingBoth": {
+                  "type": "string",
+                  "description": "Trailing both.",
+                  "title": "Leading both"
+                },
+                "trailingMultiline": {
+                  "type": "string",
+                  "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+                  "title": "Leading multiline"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -2800,6 +2958,34 @@
             "in": "query",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "trailingOnly",
+            "description": "Trailing only",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnlyDot",
+            "description": "Trailing only dot.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingBoth",
+            "description": "Leading both\n\nTrailing both.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingMultiline",
+            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -3175,6 +3361,34 @@
             "name": "required_field_schema_json_name_custom",
             "in": "query",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnly",
+            "description": "Trailing only",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnlyDot",
+            "description": "Trailing only dot.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingBoth",
+            "description": "Leading both\n\nTrailing both.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingMultiline",
+            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -3576,6 +3790,34 @@
             "in": "query",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "trailingOnly",
+            "description": "Trailing only",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnlyDot",
+            "description": "Trailing only dot.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingBoth",
+            "description": "Leading both\n\nTrailing both.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingMultiline",
+            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -3975,6 +4217,34 @@
             "name": "required_field_schema_json_name_custom",
             "in": "query",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnly",
+            "description": "Trailing only",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingOnlyDot",
+            "description": "Trailing only dot.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingBoth",
+            "description": "Leading both\n\nTrailing both.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "trailingMultiline",
+            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -4658,6 +4928,24 @@
                 },
                 "required_field_schema_json_name_custom": {
                   "type": "string"
+                },
+                "trailingOnly": {
+                  "type": "string",
+                  "title": "Trailing only"
+                },
+                "trailingOnlyDot": {
+                  "type": "string",
+                  "description": "Trailing only dot."
+                },
+                "trailingBoth": {
+                  "type": "string",
+                  "description": "Trailing both.",
+                  "title": "Leading both"
+                },
+                "trailingMultiline": {
+                  "type": "string",
+                  "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+                  "title": "Leading multiline"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -5297,6 +5585,24 @@
                 },
                 "required_field_schema_json_name_custom": {
                   "type": "string"
+                },
+                "trailingOnly": {
+                  "type": "string",
+                  "title": "Trailing only"
+                },
+                "trailingOnlyDot": {
+                  "type": "string",
+                  "description": "Trailing only dot."
+                },
+                "trailingBoth": {
+                  "type": "string",
+                  "description": "Trailing both.",
+                  "title": "Leading both"
+                },
+                "trailingMultiline": {
+                  "type": "string",
+                  "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+                  "title": "Leading multiline"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -5586,6 +5892,24 @@
                 },
                 "required_field_schema_json_name_custom": {
                   "type": "string"
+                },
+                "trailingOnly": {
+                  "type": "string",
+                  "title": "Trailing only"
+                },
+                "trailingOnlyDot": {
+                  "type": "string",
+                  "description": "Trailing only dot."
+                },
+                "trailingBoth": {
+                  "type": "string",
+                  "description": "Trailing both.",
+                  "title": "Leading both"
+                },
+                "trailingMultiline": {
+                  "type": "string",
+                  "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+                  "title": "Leading multiline"
                 }
               },
               "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -6385,6 +6709,24 @@
                     },
                     "required_field_schema_json_name_custom": {
                       "type": "string"
+                    },
+                    "trailingOnly": {
+                      "type": "string",
+                      "title": "Trailing only"
+                    },
+                    "trailingOnlyDot": {
+                      "type": "string",
+                      "description": "Trailing only dot."
+                    },
+                    "trailingBoth": {
+                      "type": "string",
+                      "description": "Trailing both.",
+                      "title": "Leading both"
+                    },
+                    "trailingMultiline": {
+                      "type": "string",
+                      "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+                      "title": "Leading multiline"
                     }
                   },
                   "description": "Intentionally complicated message type to cover many features of Protobuf.",
@@ -6725,6 +7067,24 @@
         },
         "required_field_schema_json_name_custom": {
           "type": "string"
+        },
+        "trailingOnly": {
+          "type": "string",
+          "title": "Trailing only"
+        },
+        "trailingOnlyDot": {
+          "type": "string",
+          "description": "Trailing only dot."
+        },
+        "trailingBoth": {
+          "type": "string",
+          "description": "Trailing both.",
+          "title": "Leading both"
+        },
+        "trailingMultiline": {
+          "type": "string",
+          "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+          "title": "Leading multiline"
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",

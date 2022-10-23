@@ -298,6 +298,24 @@
         },
         "required_field_schema_json_name_custom": {
           "type": "string"
+        },
+        "trailingOnly": {
+          "type": "string",
+          "title": "Trailing only"
+        },
+        "trailingOnlyDot": {
+          "type": "string",
+          "description": "Trailing only dot."
+        },
+        "trailingBoth": {
+          "type": "string",
+          "description": "Trailing both.",
+          "title": "Leading both"
+        },
+        "trailingMultiline": {
+          "type": "string",
+          "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+          "title": "Leading multiline"
         }
       },
       "description": "Intentionally complicated message type to cover many features of Protobuf.",

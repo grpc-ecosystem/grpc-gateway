@@ -385,6 +385,10 @@ ABitOfEverythingServiceApiService
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -422,6 +426,10 @@ type ABitOfEverythingServiceCheckGetQueryParamsOpts struct {
 	OptionalStringValue optional.String
 	ProductId optional.Interface
 	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -546,6 +554,18 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
 	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -724,6 +744,10 @@ ABitOfEverythingServiceApiService
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -761,6 +785,10 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct {
 	OptionalStringValue optional.String
 	ProductId optional.Interface
 	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -885,6 +913,18 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
 	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -1062,6 +1102,10 @@ ABitOfEverythingServiceApiService
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -1097,6 +1141,10 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	OptionalStringValue optional.String
 	ProductId optional.Interface
 	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -1215,6 +1263,18 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
 	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -1551,6 +1611,10 @@ This API creates a new ABitOfEverything
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -1574,6 +1638,10 @@ type ABitOfEverythingServiceCreateOpts struct {
 	OptionalStringValue optional.String
 	ProductId optional.Interface
 	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, uuid string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -1671,6 +1739,18 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
 	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -2176,6 +2256,10 @@ ABitOfEverythingServiceApiService
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -2215,6 +2299,10 @@ type ABitOfEverythingServiceCustomOpts struct {
 	OptionalStringValue optional.String
 	ProductId optional.Interface
 	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -2344,6 +2432,18 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx co
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
 	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -2523,6 +2623,10 @@ ABitOfEverythingServiceApiService
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
 
 @return interface{}
 */
@@ -2562,6 +2666,10 @@ type ABitOfEverythingServiceCustomOptionsRequestOpts struct {
 	OptionalStringValue optional.String
 	ProductId optional.Interface
 	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
@@ -2691,6 +2799,18 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptions
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
 	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -3141,6 +3261,10 @@ ABitOfEverythingServiceApiService
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -3180,6 +3304,10 @@ type ABitOfEverythingServiceDoubleColonOpts struct {
 	OptionalStringValue optional.String
 	ProductId optional.Interface
 	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceDoubleColonOpts) (ExamplepbABitOfEverything, *http.Response, error) {
@@ -3309,6 +3437,18 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(c
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
 	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -3642,6 +3782,10 @@ ABitOfEverythingServiceApiService
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
 
 @return interface{}
 */
@@ -3681,6 +3825,10 @@ type ABitOfEverythingServiceExistsOpts struct {
 	OptionalStringValue optional.String
 	ProductId optional.Interface
 	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
@@ -3810,6 +3958,18 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx co
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
 	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -4104,6 +4264,10 @@ ABitOfEverythingServiceApiService
      * @param "OptionalStringValue" (optional.String) - 
      * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
      * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
 
 @return interface{}
 */
@@ -4143,6 +4307,10 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	OptionalStringValue optional.String
 	ProductId optional.Interface
 	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
 func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
@@ -4272,6 +4440,18 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
 	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
 	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
