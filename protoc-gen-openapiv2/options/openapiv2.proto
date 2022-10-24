@@ -176,58 +176,7 @@ message Operation {
   // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
   map<string, google.protobuf.Value> extensions = 13;
 
-  map<string, Parameter> parameters = 14;
-}
-
-// `Parameter` is a representation of OpenAPI v2 specification's Parameter object.
-//
-// See: https://github.com/OAI/OpenAPI-Specification/blob/3.0.0/versions/2.0.md#parameterObject
-//
-message Parameter {
-  // `Name` of the parameter. Parameter represents a url path segment, header etc.
-  string name = 1;
-  // `In` specifies the location of the parameter. Possible values are "query", "header", "path", "formData"
-  string in = 2;
-  // `Description` is a short description of the parameter describing intent
-  string description = 3;
-  // `Required` Determines whether this parameter is mandatory. When `In` is path, this should be true
-  string required = 4;
-  // The type of the object. The value MUST be one of "string", "number", "integer", or "boolean". The "array" type is not supported.
-  string type = 5;
-  // `Format` The extending format for the previously mentioned type.
-  string format = 6;
-  // field 7 is reserved for 'items'
-  reserved 7;
-  // field 8 is reserved `Collection Format` Determines the format of the array if type array is used.
-  reserved 8;
-  // `Default` Declares the value of the parameter that the server will use if none is provided.
-  // See: https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-6.2.
-  // Unlike JSON Schema this value MUST conform to the defined type for the header.
-  string default = 9;
-  // field 10 is reserved for 'maximum'.
-  reserved 10;
-  // field 11 is reserved for 'exclusiveMaximum'.
-  reserved 11;
-  // field 12 is reserved for 'minimum'.
-  reserved 12;
-  // field 13 is reserved for 'exclusiveMinimum'.
-  reserved 13;
-  // field 14 is reserved for 'maxLength'.
-  reserved 14;
-  // field 15 is reserved for 'minLength'.
-  reserved 15;
-  // 'Pattern' See https://tools.ietf.org/html/draft-fge-json-schema-validation-00#section-5.2.3.
-  string pattern = 16;
-  // field 17 is reserved for 'maxItems'.
-  reserved 17;
-  // field 18 is reserved for 'minItems'.
-  reserved 18;
-  // field 19 is reserved for 'uniqueItems'.
-  reserved 19;
-  // field 20 is reserved for 'enum'.
-  reserved 20;
-  // field 21 is reserved for 'multipleOf'.
-  reserved 21;
+  map<string, Header> headers = 14;
 }
 
 // `Header` is a representation of OpenAPI v2 specification's Header object.
