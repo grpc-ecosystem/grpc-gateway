@@ -413,7 +413,7 @@ message ABitOfEverything {
   string trailing_both = 49;     // Trailing both.
   // Leading multiline
   //
-  // This is a example of multi-line comments.
+  // This is an example of a multi-line comment.
   string trailing_multiline = 50;     // Trailing multiline.
 }
 
