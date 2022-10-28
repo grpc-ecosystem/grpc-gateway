@@ -388,7 +388,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnly" (optional.String) -  Trailing only
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
-     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -747,7 +747,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnly" (optional.String) -  Trailing only
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
-     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -1105,7 +1105,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnly" (optional.String) -  Trailing only
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
-     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -1614,7 +1614,7 @@ This API creates a new ABitOfEverything
      * @param "TrailingOnly" (optional.String) -  Trailing only
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
-     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -2259,7 +2259,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnly" (optional.String) -  Trailing only
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
-     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -2626,7 +2626,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnly" (optional.String) -  Trailing only
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
-     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return interface{}
 */
@@ -3264,7 +3264,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnly" (optional.String) -  Trailing only
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
-     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -3785,7 +3785,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnly" (optional.String) -  Trailing only
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
-     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return interface{}
 */
@@ -4267,7 +4267,7 @@ ABitOfEverythingServiceApiService
      * @param "TrailingOnly" (optional.String) -  Trailing only
      * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
      * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
-     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is a example of multi-line comments.  Trailing multiline.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return interface{}
 */

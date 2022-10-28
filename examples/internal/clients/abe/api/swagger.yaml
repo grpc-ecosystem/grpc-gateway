@@ -479,7 +479,7 @@ paths:
         x-optionalDataType: "String"
       - name: "trailingMultiline"
         in: "query"
-        description: "Leading multiline\n\nThis is a example of multi-line comments.\n\
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
           \nTrailing multiline."
         required: false
         type: "string"
@@ -866,7 +866,7 @@ paths:
         x-optionalDataType: "String"
       - name: "trailingMultiline"
         in: "query"
-        description: "Leading multiline\n\nThis is a example of multi-line comments.\n\
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
           \nTrailing multiline."
         required: false
         type: "string"
@@ -1240,7 +1240,7 @@ paths:
         x-optionalDataType: "String"
       - name: "trailingMultiline"
         in: "query"
-        description: "Leading multiline\n\nThis is a example of multi-line comments.\n\
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
           \nTrailing multiline."
         required: false
         type: "string"
@@ -1634,7 +1634,7 @@ paths:
         x-optionalDataType: "String"
       - name: "trailingMultiline"
         in: "query"
-        description: "Leading multiline\n\nThis is a example of multi-line comments.\n\
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
           \nTrailing multiline."
         required: false
         type: "string"
@@ -2015,7 +2015,7 @@ paths:
         x-optionalDataType: "String"
       - name: "trailingMultiline"
         in: "query"
-        description: "Leading multiline\n\nThis is a example of multi-line comments.\n\
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
           \nTrailing multiline."
         required: false
         type: "string"
@@ -2409,7 +2409,7 @@ paths:
         x-optionalDataType: "String"
       - name: "trailingMultiline"
         in: "query"
-        description: "Leading multiline\n\nThis is a example of multi-line comments.\n\
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
           \nTrailing multiline."
         required: false
         type: "string"
@@ -2828,7 +2828,7 @@ paths:
         x-optionalDataType: "String"
       - name: "trailingMultiline"
         in: "query"
-        description: "Leading multiline\n\nThis is a example of multi-line comments.\n\
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
           \nTrailing multiline."
         required: false
         type: "string"
@@ -3205,7 +3205,7 @@ paths:
         x-optionalDataType: "String"
       - name: "trailingMultiline"
         in: "query"
-        description: "Leading multiline\n\nThis is a example of multi-line comments.\n\
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
           \nTrailing multiline."
         required: false
         type: "string"
@@ -3599,7 +3599,7 @@ paths:
         x-optionalDataType: "String"
       - name: "trailingMultiline"
         in: "query"
-        description: "Leading multiline\n\nThis is a example of multi-line comments.\n\
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
           \nTrailing multiline."
         required: false
         type: "string"
@@ -5000,7 +5000,7 @@ definitions:
         title: "Leading both"
       trailingMultiline:
         type: "string"
-        description: "This is a example of multi-line comments.\n\nTrailing multiline."
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
         title: "Leading multiline"
     externalDocs:
       description: "Find out more about ABitOfEverything"
@@ -5505,7 +5505,7 @@ definitions:
         title: "Leading both"
       trailingMultiline:
         type: "string"
-        description: "This is a example of multi-line comments.\n\nTrailing multiline."
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
         title: "Leading multiline"
     externalDocs:
       description: "Find out more about ABitOfEverything"
@@ -5701,7 +5701,7 @@ definitions:
         title: "Leading both"
       trailingMultiline:
         type: "string"
-        description: "This is a example of multi-line comments.\n\nTrailing multiline."
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
         title: "Leading multiline"
     externalDocs:
       description: "Find out more about ABitOfEverything"
@@ -5897,7 +5897,7 @@ definitions:
         title: "Leading both"
       trailingMultiline:
         type: "string"
-        description: "This is a example of multi-line comments.\n\nTrailing multiline."
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
         title: "Leading multiline"
     externalDocs:
       description: "Find out more about ABitOfEverything"
@@ -6078,7 +6078,7 @@ definitions:
         title: "Leading both"
       trailingMultiline:
         type: "string"
-        description: "This is a example of multi-line comments.\n\nTrailing multiline."
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
         title: "Leading multiline"
     externalDocs:
       description: "Find out more about ABitOfEverything"
@@ -6249,7 +6249,7 @@ definitions:
         title: "Leading both"
       trailingMultiline:
         type: "string"
-        description: "This is a example of multi-line comments.\n\nTrailing multiline."
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
         title: "Leading multiline"
     description: "Intentionally complicated message type to cover many features of\
       \ Protobuf."

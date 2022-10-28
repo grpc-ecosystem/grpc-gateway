@@ -582,7 +582,7 @@
           },
           {
             "name": "trailingMultiline",
-            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "description": "Leading multiline\n\nThis is an example of a multi-line comment.\n\nTrailing multiline.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1004,7 +1004,7 @@
           },
           {
             "name": "trailingMultiline",
-            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "description": "Leading multiline\n\nThis is an example of a multi-line comment.\n\nTrailing multiline.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1415,7 +1415,7 @@
           },
           {
             "name": "trailingMultiline",
-            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "description": "Leading multiline\n\nThis is an example of a multi-line comment.\n\nTrailing multiline.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -1844,7 +1844,7 @@
           },
           {
             "name": "trailingMultiline",
-            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "description": "Leading multiline\n\nThis is an example of a multi-line comment.\n\nTrailing multiline.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -2277,7 +2277,7 @@
           },
           {
             "name": "trailingMultiline",
-            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "description": "Leading multiline\n\nThis is an example of a multi-line comment.\n\nTrailing multiline.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -2560,7 +2560,7 @@
                 },
                 "trailingMultiline": {
                   "type": "string",
-                  "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+                  "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
                   "title": "Leading multiline"
                 }
               },
@@ -2982,7 +2982,7 @@
           },
           {
             "name": "trailingMultiline",
-            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "description": "Leading multiline\n\nThis is an example of a multi-line comment.\n\nTrailing multiline.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -3386,7 +3386,7 @@
           },
           {
             "name": "trailingMultiline",
-            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "description": "Leading multiline\n\nThis is an example of a multi-line comment.\n\nTrailing multiline.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -3814,7 +3814,7 @@
           },
           {
             "name": "trailingMultiline",
-            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "description": "Leading multiline\n\nThis is an example of a multi-line comment.\n\nTrailing multiline.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -4242,7 +4242,7 @@
           },
           {
             "name": "trailingMultiline",
-            "description": "Leading multiline\n\nThis is a example of multi-line comments.\n\nTrailing multiline.",
+            "description": "Leading multiline\n\nThis is an example of a multi-line comment.\n\nTrailing multiline.",
             "in": "query",
             "required": false,
             "type": "string"
@@ -4944,7 +4944,7 @@
                 },
                 "trailingMultiline": {
                   "type": "string",
-                  "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+                  "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
                   "title": "Leading multiline"
                 }
               },
@@ -5601,7 +5601,7 @@
                 },
                 "trailingMultiline": {
                   "type": "string",
-                  "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+                  "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
                   "title": "Leading multiline"
                 }
               },
@@ -5908,7 +5908,7 @@
                 },
                 "trailingMultiline": {
                   "type": "string",
-                  "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+                  "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
                   "title": "Leading multiline"
                 }
               },
@@ -6725,7 +6725,7 @@
                     },
                     "trailingMultiline": {
                       "type": "string",
-                      "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+                      "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
                       "title": "Leading multiline"
                     }
                   },
@@ -7083,7 +7083,7 @@
         },
         "trailingMultiline": {
           "type": "string",
-          "description": "This is a example of multi-line comments.\n\nTrailing multiline.",
+          "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
           "title": "Leading multiline"
         }
       },

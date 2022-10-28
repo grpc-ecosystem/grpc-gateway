@@ -412,7 +412,7 @@ type ABitOfEverything struct {
 	TrailingBoth string `protobuf:"bytes,49,opt,name=trailing_both,json=trailingBoth,proto3" json:"trailing_both,omitempty"` // Trailing both.
 	// Leading multiline
 	//
-	// This is a example of multi-line comments.
+	// This is an example of a multi-line comment.
 	TrailingMultiline string `protobuf:"bytes,50,opt,name=trailing_multiline,json=trailingMultiline,proto3" json:"trailing_multiline,omitempty"` // Trailing multiline.
 }
 
