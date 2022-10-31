@@ -2228,6 +2228,14 @@ func protoComments(reg *descriptor.Registry, file *descriptor.File, outers []str
 			// - join by \n
 			comments = strings.Replace(comments, "\n ", "\n", -1)
 		}
+		if loc.TrailingComments != nil {
+			trailing := strings.TrimSpace(*loc.TrailingComments)
+			if comments == "" {
+				comments = trailing
+			} else {
+				comments += "\n\n" + trailing
+			}
+		}
 		return comments
 	}
 	return ""

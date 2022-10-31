@@ -406,6 +406,15 @@ message ABitOfEverything {
     (google.api.field_behavior) = REQUIRED
   ];
   string required_field_schema_json_name = 46 [json_name = "required_field_schema_json_name_custom"];
+
+  string trailing_only = 47; // Trailing only
+  string trailing_only_dot = 48; // Trailing only dot.
+  // Leading both
+  string trailing_both = 49; // Trailing both.
+  // Leading multiline
+  //
+  // This is an example of a multi-line comment.
+  string trailing_multiline = 50; // Trailing multiline.
 }
 
 // ABitOfEverythingRepeated is used to validate repeated path parameter functionality

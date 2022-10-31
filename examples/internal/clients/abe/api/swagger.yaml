@@ -456,6 +456,35 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -814,6 +843,35 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -1159,6 +1217,35 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -1524,6 +1611,35 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -1876,6 +1992,35 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -2241,6 +2386,35 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -2631,6 +2805,35 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -2979,6 +3182,35 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -3344,6 +3576,35 @@ paths:
         required: true
         type: "string"
         x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -4727,6 +4988,20 @@ definitions:
         title: "Test openapiv2 handling of required json_name fields"
       required_field_schema_json_name_custom:
         type: "string"
+      trailingOnly:
+        type: "string"
+        title: "Trailing only"
+      trailingOnlyDot:
+        type: "string"
+        description: "Trailing only dot."
+      trailingBoth:
+        type: "string"
+        description: "Trailing both."
+        title: "Leading both"
+      trailingMultiline:
+        type: "string"
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
+        title: "Leading multiline"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -5218,6 +5493,20 @@ definitions:
         title: "Test openapiv2 handling of required json_name fields"
       required_field_schema_json_name_custom:
         type: "string"
+      trailingOnly:
+        type: "string"
+        title: "Trailing only"
+      trailingOnlyDot:
+        type: "string"
+        description: "Trailing only dot."
+      trailingBoth:
+        type: "string"
+        description: "Trailing both."
+        title: "Leading both"
+      trailingMultiline:
+        type: "string"
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
+        title: "Leading multiline"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -5400,6 +5689,20 @@ definitions:
         title: "Test openapiv2 handling of required json_name fields"
       required_field_schema_json_name_custom:
         type: "string"
+      trailingOnly:
+        type: "string"
+        title: "Trailing only"
+      trailingOnlyDot:
+        type: "string"
+        description: "Trailing only dot."
+      trailingBoth:
+        type: "string"
+        description: "Trailing both."
+        title: "Leading both"
+      trailingMultiline:
+        type: "string"
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
+        title: "Leading multiline"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -5582,6 +5885,20 @@ definitions:
         title: "Test openapiv2 handling of required json_name fields"
       required_field_schema_json_name_custom:
         type: "string"
+      trailingOnly:
+        type: "string"
+        title: "Trailing only"
+      trailingOnlyDot:
+        type: "string"
+        description: "Trailing only dot."
+      trailingBoth:
+        type: "string"
+        description: "Trailing both."
+        title: "Leading both"
+      trailingMultiline:
+        type: "string"
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
+        title: "Leading multiline"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -5749,6 +6066,20 @@ definitions:
         title: "Test openapiv2 handling of required json_name fields"
       required_field_schema_json_name_custom:
         type: "string"
+      trailingOnly:
+        type: "string"
+        title: "Trailing only"
+      trailingOnlyDot:
+        type: "string"
+        description: "Trailing only dot."
+      trailingBoth:
+        type: "string"
+        description: "Trailing both."
+        title: "Leading both"
+      trailingMultiline:
+        type: "string"
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
+        title: "Leading multiline"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
@@ -5906,6 +6237,20 @@ definitions:
         title: "Test openapiv2 handling of required json_name fields"
       required_field_schema_json_name_custom:
         type: "string"
+      trailingOnly:
+        type: "string"
+        title: "Trailing only"
+      trailingOnlyDot:
+        type: "string"
+        description: "Trailing only dot."
+      trailingBoth:
+        type: "string"
+        description: "Trailing both."
+        title: "Leading both"
+      trailingMultiline:
+        type: "string"
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
+        title: "Leading multiline"
     description: "Intentionally complicated message type to cover many features of\
       \ Protobuf."
     example: "{\"int64_value\":12,\"double_value\":12.3}"
