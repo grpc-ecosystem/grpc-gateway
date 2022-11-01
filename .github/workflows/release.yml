@@ -42,6 +42,7 @@ jobs:
       contents: write # To add assets to a release.
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.2.1
     with:
+      compile-generator: true # Workaround for https://github.com/slsa-framework/slsa-github-generator/issues/1163
       base64-subjects: "${{ needs.goreleaser.outputs.hashes }}"
       upload-assets: true # upload to a new release
 
