@@ -4807,6 +4807,7 @@ definitions:
         type: "integer"
         format: "int64"
       ok:
+        description: "DeepEnum description."
         $ref: "#/definitions/NestedDeepEnum"
     description: "Nested is nested type."
     example:
@@ -4939,6 +4940,8 @@ definitions:
         items:
           $ref: "#/definitions/examplepbNumericEnum"
       enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
         $ref: "#/definitions/examplepbNumericEnum"
       repeatedStringAnnotation:
         type: "array"
@@ -4953,6 +4956,8 @@ definitions:
         items:
           $ref: "#/definitions/ABitOfEverythingNested"
       nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
         $ref: "#/definitions/ABitOfEverythingNested"
       int64OverrideType:
         type: "integer"
@@ -5444,6 +5449,8 @@ definitions:
         items:
           $ref: "#/definitions/examplepbNumericEnum"
       enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
         $ref: "#/definitions/examplepbNumericEnum"
       repeatedStringAnnotation:
         type: "array"
@@ -5458,6 +5465,8 @@ definitions:
         items:
           $ref: "#/definitions/ABitOfEverythingNested"
       nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
         $ref: "#/definitions/ABitOfEverythingNested"
       int64OverrideType:
         type: "integer"
@@ -5523,6 +5532,7 @@ definitions:
         type: "integer"
         format: "int64"
       ok:
+        description: "DeepEnum description."
         $ref: "#/definitions/NestedDeepEnum"
     description: "Nested is nested type."
     example: "{\"ok\":\"TRUE\"}"
@@ -5640,6 +5650,8 @@ definitions:
         items:
           $ref: "#/definitions/examplepbNumericEnum"
       enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
         $ref: "#/definitions/examplepbNumericEnum"
       repeatedStringAnnotation:
         type: "array"
@@ -5654,6 +5666,8 @@ definitions:
         items:
           $ref: "#/definitions/ABitOfEverythingNested"
       nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
         $ref: "#/definitions/ABitOfEverythingNested"
       int64OverrideType:
         type: "integer"
@@ -5836,6 +5850,8 @@ definitions:
         items:
           $ref: "#/definitions/examplepbNumericEnum"
       enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
         $ref: "#/definitions/examplepbNumericEnum"
       repeatedStringAnnotation:
         type: "array"
@@ -5850,6 +5866,8 @@ definitions:
         items:
           $ref: "#/definitions/ABitOfEverythingNested"
       nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
         $ref: "#/definitions/ABitOfEverythingNested"
       int64OverrideType:
         type: "integer"
@@ -6017,6 +6035,8 @@ definitions:
         items:
           $ref: "#/definitions/examplepbNumericEnum"
       enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
         $ref: "#/definitions/examplepbNumericEnum"
       repeatedStringAnnotation:
         type: "array"
@@ -6031,6 +6051,8 @@ definitions:
         items:
           $ref: "#/definitions/ABitOfEverythingNested"
       nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
         $ref: "#/definitions/ABitOfEverythingNested"
       int64OverrideType:
         type: "integer"
@@ -6188,6 +6210,8 @@ definitions:
         items:
           $ref: "#/definitions/examplepbNumericEnum"
       enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
         $ref: "#/definitions/examplepbNumericEnum"
       repeatedStringAnnotation:
         type: "array"
@@ -6202,6 +6226,8 @@ definitions:
         items:
           $ref: "#/definitions/ABitOfEverythingNested"
       nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
         $ref: "#/definitions/ABitOfEverythingNested"
       int64OverrideType:
         type: "integer"

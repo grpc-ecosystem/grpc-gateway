@@ -13,5 +13,6 @@ package abe
 // Nested is nested type.
 type V1exampledeepPathsingleNestedNameSingleNested struct {
 	Amount int64 `json:"amount,omitempty"`
+	// DeepEnum description.
 	Ok *NestedDeepEnum `json:"ok,omitempty"`
 }
