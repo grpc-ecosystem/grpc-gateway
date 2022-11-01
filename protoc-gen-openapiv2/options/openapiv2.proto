@@ -175,8 +175,28 @@ message Operation {
   // extra functionality that is not covered by the standard OpenAPI Specification.
   // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
   map<string, google.protobuf.Value> extensions = 13;
+}
 
-  map<string, Header> headers = 14;
+// `RequestHeader` is a shallow representation of OpenAPI  v2 specification's of Parameter object
+// This only represents some of the keys required to specify request  headers
+//  
+// See: https://swagger.io/specification/v2/#parameter-object
+//
+message RequestHeader {
+  // `Name` name of the header
+  string name = 1;
+  // `Description` is a short description of the header.
+  string description = 2;
+  // The type of the object. The value MUST be one of "string", "number", "integer", or "boolean". The "array" type is not supported.
+  string type = 3;
+  // `Format` The extending format for the previously mentioned type.
+  string format = 4;
+  // `Required` indicates if the header is optional
+  bool required = 5;
+  // field 6 is reserved for 'items', but in OpenAPI-specific way.
+  reserved 6;
+ // field 7 is reserved `Collection Format` Determines the format of the array if type array is used.
+  reserved 7;
 }
 
 // `Header` is a representation of OpenAPI v2 specification's Header object.
