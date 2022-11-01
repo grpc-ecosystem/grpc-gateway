@@ -2480,7 +2480,9 @@
                   "title": "Repeated numeric enum title"
                 },
                 "enumValueAnnotation": {
-                  "$ref": "#/definitions/examplepbNumericEnum"
+                  "$ref": "#/definitions/examplepbNumericEnum",
+                  "description": "Numeric enum description.",
+                  "title": "Numeric enum title"
                 },
                 "repeatedStringAnnotation": {
                   "type": "array",
@@ -2499,7 +2501,9 @@
                   "title": "Repeated nested object title"
                 },
                 "nestedAnnotation": {
-                  "$ref": "#/definitions/ABitOfEverythingNested"
+                  "$ref": "#/definitions/ABitOfEverythingNested",
+                  "description": "Nested object description.",
+                  "title": "Nested object title"
                 },
                 "int64OverrideType": {
                   "type": "integer",
@@ -4724,7 +4728,8 @@
                       "format": "int64"
                     },
                     "ok": {
-                      "$ref": "#/definitions/NestedDeepEnum"
+                      "$ref": "#/definitions/NestedDeepEnum",
+                      "description": "DeepEnum description."
                     }
                   },
                   "description": "Nested is nested type."
@@ -4864,7 +4869,9 @@
                   "title": "Repeated numeric enum title"
                 },
                 "enumValueAnnotation": {
-                  "$ref": "#/definitions/examplepbNumericEnum"
+                  "$ref": "#/definitions/examplepbNumericEnum",
+                  "description": "Numeric enum description.",
+                  "title": "Numeric enum title"
                 },
                 "repeatedStringAnnotation": {
                   "type": "array",
@@ -4883,7 +4890,9 @@
                   "title": "Repeated nested object title"
                 },
                 "nestedAnnotation": {
-                  "$ref": "#/definitions/ABitOfEverythingNested"
+                  "$ref": "#/definitions/ABitOfEverythingNested",
+                  "description": "Nested object description.",
+                  "title": "Nested object title"
                 },
                 "int64OverrideType": {
                   "type": "integer",
@@ -5521,7 +5530,9 @@
                   "title": "Repeated numeric enum title"
                 },
                 "enumValueAnnotation": {
-                  "$ref": "#/definitions/examplepbNumericEnum"
+                  "$ref": "#/definitions/examplepbNumericEnum",
+                  "description": "Numeric enum description.",
+                  "title": "Numeric enum title"
                 },
                 "repeatedStringAnnotation": {
                   "type": "array",
@@ -5540,7 +5551,9 @@
                   "title": "Repeated nested object title"
                 },
                 "nestedAnnotation": {
-                  "$ref": "#/definitions/ABitOfEverythingNested"
+                  "$ref": "#/definitions/ABitOfEverythingNested",
+                  "description": "Nested object description.",
+                  "title": "Nested object title"
                 },
                 "int64OverrideType": {
                   "type": "integer",
@@ -5828,7 +5841,9 @@
                   "title": "Repeated numeric enum title"
                 },
                 "enumValueAnnotation": {
-                  "$ref": "#/definitions/examplepbNumericEnum"
+                  "$ref": "#/definitions/examplepbNumericEnum",
+                  "description": "Numeric enum description.",
+                  "title": "Numeric enum title"
                 },
                 "repeatedStringAnnotation": {
                   "type": "array",
@@ -5847,7 +5862,9 @@
                   "title": "Repeated nested object title"
                 },
                 "nestedAnnotation": {
-                  "$ref": "#/definitions/ABitOfEverythingNested"
+                  "$ref": "#/definitions/ABitOfEverythingNested",
+                  "description": "Nested object description.",
+                  "title": "Nested object title"
                 },
                 "int64OverrideType": {
                   "type": "integer",
@@ -6645,7 +6662,9 @@
                       "title": "Repeated numeric enum title"
                     },
                     "enumValueAnnotation": {
-                      "$ref": "#/definitions/examplepbNumericEnum"
+                      "$ref": "#/definitions/examplepbNumericEnum",
+                      "description": "Numeric enum description.",
+                      "title": "Numeric enum title"
                     },
                     "repeatedStringAnnotation": {
                       "type": "array",
@@ -6664,7 +6683,9 @@
                       "title": "Repeated nested object title"
                     },
                     "nestedAnnotation": {
-                      "$ref": "#/definitions/ABitOfEverythingNested"
+                      "$ref": "#/definitions/ABitOfEverythingNested",
+                      "description": "Nested object description.",
+                      "title": "Nested object title"
                     },
                     "int64OverrideType": {
                       "type": "integer",
@@ -6836,7 +6857,8 @@
           "format": "int64"
         },
         "ok": {
-          "$ref": "#/definitions/NestedDeepEnum"
+          "$ref": "#/definitions/NestedDeepEnum",
+          "description": "DeepEnum description."
         }
       },
       "description": "Nested is nested type."
@@ -7003,7 +7025,9 @@
           "title": "Repeated numeric enum title"
         },
         "enumValueAnnotation": {
-          "$ref": "#/definitions/examplepbNumericEnum"
+          "$ref": "#/definitions/examplepbNumericEnum",
+          "description": "Numeric enum description.",
+          "title": "Numeric enum title"
         },
         "repeatedStringAnnotation": {
           "type": "array",
@@ -7022,7 +7046,9 @@
           "title": "Repeated nested object title"
         },
         "nestedAnnotation": {
-          "$ref": "#/definitions/ABitOfEverythingNested"
+          "$ref": "#/definitions/ABitOfEverythingNested",
+          "description": "Nested object description.",
+          "title": "Nested object title"
         },
         "int64OverrideType": {
           "type": "integer",
