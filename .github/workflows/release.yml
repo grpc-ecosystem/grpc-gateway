@@ -2,6 +2,10 @@ on:
   push:
     tags:
       - v2.[0-9]+.[0-9]+
+  # For testing the workflow before pushing a tag
+  # This will run goreleaser with --snapshot and test the
+  # SLSA generator.
+  workflow_dispatch:
 permissions:
   contents: read
 name: release
@@ -19,10 +23,19 @@ jobs:
       - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f # tag=v3
         with:
           check-latest: true
+      - name: Generate goreleaser args
+        id: args
+        run: |
+          set -euo pipefail
+          args='release --rm-dist'
+          if [[ "$GITHUB_REF" != refs/tags/* ]]; then
+            args+=' --snapshot'
+          fi
+          echo "args=$args" >> $GITHUB_OUTPUT
       - uses: goreleaser/goreleaser-action@b508e2e3ef3b19d4e4146d4f8fb3ba9db644a757 # tag=v3
         id: run-goreleaser
         with:
-          args: release --rm-dist
+          args: ${{ steps.args.outputs.args }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate subject
@@ -44,10 +57,11 @@ jobs:
     with:
       compile-generator: true # Workaround for https://github.com/slsa-framework/slsa-github-generator/issues/1163
       base64-subjects: "${{ needs.goreleaser.outputs.hashes }}"
-      upload-assets: true # upload to a new release
+      upload-assets: ${{ github.event_name == 'push' }} # upload to a new release when pushing via tag
 
   push_bsr_plugins:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
       - uses: docker/setup-buildx-action@8c0edbc76e98fa90f69d9a2c020dcb50019dc325 # tag=v2
