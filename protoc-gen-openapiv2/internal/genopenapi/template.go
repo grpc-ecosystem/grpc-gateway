@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math"
 	"net/textproto"
 	"os"
@@ -2234,7 +2233,7 @@ func goTemplateComments(comment string, data interface{}, reg *descriptor.Regist
 	tpl, err := template.New("").Funcs(template.FuncMap{
 		// Allows importing documentation from a file
 		"import": func(name string) string {
-			file, err := ioutil.ReadFile(name)
+			file, err := os.ReadFile(name)
 			if err != nil {
 				return err.Error()
 			}
