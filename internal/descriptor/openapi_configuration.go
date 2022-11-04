@@ -3,7 +3,7 @@ package descriptor
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/openapiconfig"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -12,9 +12,8 @@ import (
 
 func loadOpenAPIConfigFromYAML(yamlFileContents []byte, yamlSourceLogName string) (*openapiconfig.OpenAPIConfig, error) {
 	var yamlContents interface{}
-	err := yaml.Unmarshal(yamlFileContents, &yamlContents)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse gRPC API Configuration from YAML in '%v': %v", yamlSourceLogName, err)
+	if err := yaml.Unmarshal(yamlFileContents, &yamlContents); err != nil {
+		return nil, fmt.Errorf("failed to parse gRPC API Configuration from YAML in %q: %w", yamlSourceLogName, err)
 	}
 
 	jsonContents, err := json.Marshal(yamlContents)
@@ -29,7 +28,7 @@ func loadOpenAPIConfigFromYAML(yamlFileContents []byte, yamlSourceLogName string
 
 	openapiConfiguration := openapiconfig.OpenAPIConfig{}
 	if err := unmarshaler.Unmarshal(jsonContents, &openapiConfiguration); err != nil {
-		return nil, fmt.Errorf("failed to parse OpenAPI Configuration from YAML in '%v': %v", yamlSourceLogName, err)
+		return nil, fmt.Errorf("failed to parse OpenAPI Configuration from YAML in '%v': %w", yamlSourceLogName, err)
 	}
 
 	return &openapiConfiguration, nil
@@ -42,7 +41,7 @@ func registerOpenAPIOptions(registry *Registry, openAPIConfig *openapiconfig.Ope
 	}
 
 	if err := registry.RegisterOpenAPIOptions(openAPIConfig.OpenapiOptions); err != nil {
-		return fmt.Errorf("failed to register option in %s: %s", yamlSourceLogName, err)
+		return fmt.Errorf("failed to register option in %s: %w", yamlSourceLogName, err)
 	}
 	return nil
 }
@@ -51,7 +50,7 @@ func registerOpenAPIOptions(registry *Registry, openAPIConfig *openapiconfig.Ope
 // and registers the OpenAPI options the given registry.
 // This must be done after loading the proto file.
 func (r *Registry) LoadOpenAPIConfigFromYAML(yamlFile string) error {
-	yamlFileContents, err := ioutil.ReadFile(yamlFile)
+	yamlFileContents, err := os.ReadFile(yamlFile)
 	if err != nil {
 		return fmt.Errorf("failed to read OpenAPI Configuration description from '%v': %v", yamlFile, err)
 	}

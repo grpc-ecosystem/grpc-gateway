@@ -3,7 +3,7 @@ package descriptor
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor/apiconfig"
@@ -64,9 +64,9 @@ func registerHTTPRulesFromGrpcAPIService(registry *Registry, service *apiconfig.
 // Note that for the purposes of the gateway generator we only consider a subset of all
 // available features google supports in their service descriptions.
 func (r *Registry) LoadGrpcAPIServiceFromYAML(yamlFile string) error {
-	yamlFileContents, err := ioutil.ReadFile(yamlFile)
+	yamlFileContents, err := os.ReadFile(yamlFile)
 	if err != nil {
-		return fmt.Errorf("failed to read gRPC API Configuration description from '%v': %v", yamlFile, err)
+		return fmt.Errorf("failed to read gRPC API Configuration description from %q: %w", yamlFile, err)
 	}
 
 	service, err := loadGrpcAPIServiceFromYAML(yamlFileContents, yamlFile)
