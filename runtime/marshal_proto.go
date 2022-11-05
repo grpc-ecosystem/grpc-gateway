@@ -51,8 +51,7 @@ func (marshaller *ProtoMarshaller) NewEncoder(writer io.Writer) Encoder {
 		if err != nil {
 			return err
 		}
-		_, err = writer.Write(buffer)
-		if err != nil {
+		if _, err := writer.Write(buffer); err != nil {
 			return err
 		}
 

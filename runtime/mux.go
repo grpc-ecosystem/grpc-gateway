@@ -43,9 +43,7 @@ const (
 	UnescapingModeDefault = UnescapingModeLegacy
 )
 
-var (
-	encodedPathSplitter = regexp.MustCompile("(/|%2F)")
-)
+var encodedPathSplitter = regexp.MustCompile("(/|%2F)")
 
 // A HandlerFunc handles a specific pair of path pattern and HTTP method.
 type HandlerFunc func(w http.ResponseWriter, r *http.Request, pathParams map[string]string)
@@ -106,10 +104,10 @@ type HeaderMatcherFunc func(string) (string, bool)
 // keys (as specified by the IANA) to gRPC context with grpcgateway- prefix. HTTP headers that start with
 // 'Grpc-Metadata-' are mapped to gRPC metadata after removing prefix 'Grpc-Metadata-'.
 func DefaultHeaderMatcher(key string) (string, bool) {
-	key = textproto.CanonicalMIMEHeaderKey(key)
-	if isPermanentHTTPHeader(key) {
+	switch key = textproto.CanonicalMIMEHeaderKey(key); {
+	case isPermanentHTTPHeader(key):
 		return MetadataPrefix + key, true
-	} else if strings.HasPrefix(key, MetadataHeaderPrefix) {
+	case strings.HasPrefix(key, MetadataHeaderPrefix):
 		return key[len(MetadataHeaderPrefix):], true
 	}
 	return "", false
