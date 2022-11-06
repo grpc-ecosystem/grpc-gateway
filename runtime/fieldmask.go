@@ -2,6 +2,7 @@ package runtime
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"sort"
@@ -44,7 +45,7 @@ func FieldMaskFromRequestBody(r io.Reader, msg proto.Message) (*field_mask.Field
 			// if the item is an object, then enqueue all of its children
 			for k, v := range m {
 				if item.msg == nil {
-					return nil, fmt.Errorf("JSON structure did not match request type")
+					return nil, errors.New("JSON structure did not match request type")
 				}
 
 				fd := getFieldByName(item.msg.Descriptor().Fields(), k)
