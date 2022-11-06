@@ -1633,7 +1633,7 @@ func TestApplyTemplateOpenAPIConfigFromYAML(t *testing.T) {
 	}
 }
 
-func TestApplyTemplateOverrideOperationID(t *testing.T) {
+func TestApplyTemplateOverrideWithOperation(t *testing.T) {
 	newFile := func() *descriptor.File {
 		msgdesc := &descriptorpb.DescriptorProto{
 			Name: proto.String("ExampleMessage"),
@@ -1717,6 +1717,12 @@ func TestApplyTemplateOverrideOperationID(t *testing.T) {
 		if want, is := "MyExample", result.Paths["/v1/echo"].Get.OperationID; !reflect.DeepEqual(is, want) {
 			t.Errorf("applyTemplate(%#v).Paths[0].Get.OperationID = %s want to be %s", *file, is, want)
 		}
+		if want, is := []string{"application/xml"}, result.Paths["/v1/echo"].Get.Consumes; !reflect.DeepEqual(is, want) {
+			t.Errorf("applyTemplate(%#v).Paths[0].Get.Consumes = %s want to be %s", *file, is, want)
+		}
+		if want, is := []string{"application/json", "application/xml"}, result.Paths["/v1/echo"].Get.Produces; !reflect.DeepEqual(is, want) {
+			t.Errorf("applyTemplate(%#v).Paths[0].Get.Produces = %s want to be %s", *file, is, want)
+		}
 
 		// If there was a failure, print out the input and the json result for debugging.
 		if t.Failed() {
@@ -1727,6 +1733,8 @@ func TestApplyTemplateOverrideOperationID(t *testing.T) {
 
 	openapiOperation := openapi_options.Operation{
 		OperationId: "MyExample",
+		Consumes:    []string{"application/xml"},
+		Produces:    []string{"application/json", "application/xml"},
 	}
 
 	t.Run("verify override via method option", func(t *testing.T) {

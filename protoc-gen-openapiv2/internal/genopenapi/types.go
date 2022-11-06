@@ -126,6 +126,7 @@ type openapiOperationObject struct {
 	Parameters  openapiParametersObject `json:"parameters,omitempty" yaml:"parameters,omitempty"`
 	Tags        []string                `json:"tags,omitempty" yaml:"tags,omitempty"`
 	Deprecated  bool                    `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
+	Consumes    []string                `json:"consumes,omitempty" yaml:"consumes,omitempty"`
 	Produces    []string                `json:"produces,omitempty" yaml:"produces,omitempty"`
 
 	Security     *[]openapiSecurityRequirementObject `json:"security,omitempty" yaml:"security,omitempty"`
