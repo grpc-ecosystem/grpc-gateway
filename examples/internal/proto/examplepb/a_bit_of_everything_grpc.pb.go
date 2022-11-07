@@ -58,6 +58,7 @@ type ABitOfEverythingServiceClient interface {
 	CheckGetQueryParams(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	CheckNestedEnumGetQueryParams(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	CheckPostQueryParams(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
+	OverwriteRequestContentType(ctx context.Context, in *Body, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	OverwriteResponseContentType(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*wrapperspb.StringValue, error)
 	CheckExternalPathEnum(ctx context.Context, in *pathenum.MessageWithPathEnum, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CheckExternalNestedPathEnum(ctx context.Context, in *pathenum.MessageWithNestedPathEnum, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -275,6 +276,15 @@ func (c *aBitOfEverythingServiceClient) CheckPostQueryParams(ctx context.Context
 	return out, nil
 }
 
+func (c *aBitOfEverythingServiceClient) OverwriteRequestContentType(ctx context.Context, in *Body, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/OverwriteRequestContentType", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *aBitOfEverythingServiceClient) OverwriteResponseContentType(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*wrapperspb.StringValue, error) {
 	out := new(wrapperspb.StringValue)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/OverwriteResponseContentType", in, out, opts...)
@@ -393,6 +403,7 @@ type ABitOfEverythingServiceServer interface {
 	CheckGetQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	CheckNestedEnumGetQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	CheckPostQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
+	OverwriteRequestContentType(context.Context, *Body) (*emptypb.Empty, error)
 	OverwriteResponseContentType(context.Context, *emptypb.Empty) (*wrapperspb.StringValue, error)
 	CheckExternalPathEnum(context.Context, *pathenum.MessageWithPathEnum) (*emptypb.Empty, error)
 	CheckExternalNestedPathEnum(context.Context, *pathenum.MessageWithNestedPathEnum) (*emptypb.Empty, error)
@@ -473,6 +484,9 @@ func (UnimplementedABitOfEverythingServiceServer) CheckNestedEnumGetQueryParams(
 }
 func (UnimplementedABitOfEverythingServiceServer) CheckPostQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckPostQueryParams not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) OverwriteRequestContentType(context.Context, *Body) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OverwriteRequestContentType not implemented")
 }
 func (UnimplementedABitOfEverythingServiceServer) OverwriteResponseContentType(context.Context, *emptypb.Empty) (*wrapperspb.StringValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OverwriteResponseContentType not implemented")
@@ -909,6 +923,24 @@ func _ABitOfEverythingService_CheckPostQueryParams_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ABitOfEverythingService_OverwriteRequestContentType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Body)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).OverwriteRequestContentType(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/OverwriteRequestContentType",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).OverwriteRequestContentType(ctx, req.(*Body))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ABitOfEverythingService_OverwriteResponseContentType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
@@ -1165,6 +1197,10 @@ var ABitOfEverythingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckPostQueryParams",
 			Handler:    _ABitOfEverythingService_CheckPostQueryParams_Handler,
+		},
+		{
+			MethodName: "OverwriteRequestContentType",
+			Handler:    _ABitOfEverythingService_OverwriteRequestContentType_Handler,
 		},
 		{
 			MethodName: "OverwriteResponseContentType",
