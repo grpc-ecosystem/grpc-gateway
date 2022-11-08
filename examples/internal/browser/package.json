@@ -18,7 +18,7 @@
     "jasmine": "^2.4.1",
     "phantomjs": "^2.1.7",
     "swagger-client": "^2.1.28",
-    "webpack-stream": "^3.2.0",
+    "webpack-stream": "^7.0.0",
     "bower-logger": "^0.2.2",
     "mout": "^1.2.4",
     "bower-config": "^0.6.2",
