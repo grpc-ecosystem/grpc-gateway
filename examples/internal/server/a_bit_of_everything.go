@@ -370,6 +370,10 @@ func (s *_ABitOfEverythingServer) CheckPostQueryParams(ctx context.Context, msg 
 	return msg, nil
 }
 
+func (s *_ABitOfEverythingServer) OverwriteRequestContentType(ctx context.Context, msg *examples.Body) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
+}
+
 func (s *_ABitOfEverythingServer) OverwriteResponseContentType(ctx context.Context, msg *emptypb.Empty) (*wrapperspb.StringValue, error) {
 	return &wrapperspb.StringValue{}, nil
 }

@@ -755,6 +755,15 @@ service ABitOfEverythingService {
       body: "single_nested"
     };
   }
+  rpc OverwriteRequestContentType(Body) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v2/example/overwriterequestcontenttype"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      consumes: "application/x-bar-mime"
+    };
+  }
   rpc OverwriteResponseContentType(google.protobuf.Empty) returns (google.protobuf.StringValue) {
     option (google.api.http) = {
       get: "/v2/example/overwriteresponsecontenttype"
