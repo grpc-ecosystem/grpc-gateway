@@ -1,6 +1,7 @@
 package descriptor
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -132,7 +133,7 @@ func (r *Registry) newMethod(svc *Service, md *descriptorpb.MethodDescriptorProt
 		tmpl := parsed.Compile()
 
 		if md.GetClientStreaming() && len(tmpl.Fields) > 0 {
-			return nil, fmt.Errorf("cannot use path parameter in client streaming")
+			return nil, errors.New("cannot use path parameter in client streaming")
 		}
 
 		b := &Binding{
@@ -259,13 +260,13 @@ func (r *Registry) newParam(meth *Method, path string) (Parameter, error) {
 }
 
 func (r *Registry) newBody(meth *Method, path string) (*Body, error) {
-	msg := meth.RequestType
 	switch path {
 	case "":
 		return nil, nil
 	case "*":
 		return &Body{FieldPath: nil}, nil
 	}
+	msg := meth.RequestType
 	fields, err := r.resolveFieldPath(msg, path, false)
 	if err != nil {
 		return nil, err

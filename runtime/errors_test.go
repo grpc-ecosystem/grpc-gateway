@@ -2,7 +2,7 @@ package runtime_test
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -32,7 +32,7 @@ func TestDefaultHTTPError(t *testing.T) {
 		details     string
 	}{
 		{
-			err:         fmt.Errorf("example error"),
+			err:         errors.New("example error"),
 			status:      http.StatusInternalServerError,
 			marshaler:   &runtime.JSONPb{},
 			contentType: "application/json",
@@ -54,7 +54,7 @@ func TestDefaultHTTPError(t *testing.T) {
 			details:     "type.googleapis.com/google.rpc.PreconditionFailure",
 		},
 		{
-			err:         fmt.Errorf("example error"),
+			err:         errors.New("example error"),
 			status:      http.StatusInternalServerError,
 			marshaler:   &CustomMarshaler{&runtime.JSONPb{}},
 			contentType: "Custom-Content-Type",

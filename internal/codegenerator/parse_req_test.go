@@ -2,7 +2,7 @@ package codegenerator_test
 
 import (
 	"bytes"
-	"fmt"
+	"errors"
 	"io"
 	"strings"
 	"testing"
@@ -66,5 +66,5 @@ type invalidReader struct {
 }
 
 func (*invalidReader) Read(p []byte) (int, error) {
-	return 0, fmt.Errorf("invalid reader")
+	return 0, errors.New("invalid reader")
 }

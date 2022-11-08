@@ -13,9 +13,7 @@ import (
 	"google.golang.org/protobuf/types/pluginpb"
 )
 
-var (
-	errNoTargetService = errors.New("no target service defined in the file")
-)
+var errNoTargetService = errors.New("no target service defined in the file")
 
 type generator struct {
 	reg                *descriptor.Registry
@@ -76,7 +74,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		glog.V(1).Infof("Processing %s", file.GetName())
 
 		code, err := g.generate(file)
-		if err == errNoTargetService {
+		if errors.Is(err, errNoTargetService) {
 			glog.V(1).Infof("%s: %v", file.GetName(), err)
 			continue
 		}
