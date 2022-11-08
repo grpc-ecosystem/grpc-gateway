@@ -320,17 +320,6 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		path = r.URL.RawPath
 	}
 
-	var components []string
-	// since in UnescapeModeLegacy, the URL will already have been fully unescaped, if we also split on "%2F"
-	// in this escaping mode we would be double unescaping but in UnescapingModeAllCharacters, we still do as the
-	// path is the RawPath (i.e. unescaped). That does mean that the behavior of this function will change its default
-	// behavior when the UnescapingModeDefault gets changed from UnescapingModeLegacy to UnescapingModeAllExceptReserved
-	if s.unescapingMode == UnescapingModeAllCharacters {
-		components = encodedPathSplitter.Split(path[1:], -1)
-	} else {
-		components = strings.Split(path[1:], "/")
-	}
-
 	if override := r.Header.Get("X-HTTP-Method-Override"); override != "" && s.isPathLengthFallback(r) {
 		r.Method = strings.ToUpper(override)
 		if err := r.ParseForm(); err != nil {
@@ -341,7 +330,18 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	lastComponent := components[len(components)-1]
+	var pathComponents []string
+	// since in UnescapeModeLegacy, the URL will already have been fully unescaped, if we also split on "%2F"
+	// in this escaping mode we would be double unescaping but in UnescapingModeAllCharacters, we still do as the
+	// path is the RawPath (i.e. unescaped). That does mean that the behavior of this function will change its default
+	// behavior when the UnescapingModeDefault gets changed from UnescapingModeLegacy to UnescapingModeAllExceptReserved
+	if s.unescapingMode == UnescapingModeAllCharacters {
+		pathComponents = encodedPathSplitter.Split(path[1:], -1)
+	} else {
+		pathComponents = strings.Split(path[1:], "/")
+	}
+
+	lastPathComponent := pathComponents[len(pathComponents)-1]
 
 	for _, h := range s.handlers[r.Method] {
 		// If the pattern has a verb, explicitly look for a suffix in the last
@@ -357,19 +357,23 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		patVerb := h.pat.Verb()
 
 		idx := -1
-		if patVerb != "" && strings.HasSuffix(lastComponent, ":"+patVerb) {
-			idx = len(lastComponent) - len(patVerb) - 1
+		if patVerb != "" && strings.HasSuffix(lastPathComponent, ":"+patVerb) {
+			idx = len(lastPathComponent) - len(patVerb) - 1
 		}
 		if idx == 0 {
 			_, outboundMarshaler := MarshalerForRequest(s, r)
 			s.routingErrorHandler(ctx, s, outboundMarshaler, w, r, http.StatusNotFound)
 			return
 		}
+
+		comps := make([]string, len(pathComponents))
+		copy(comps, pathComponents)
+
 		if idx > 0 {
-			components[len(components)-1], verb = lastComponent[:idx], lastComponent[idx+1:]
+			comps[len(comps)-1], verb = lastPathComponent[:idx], lastPathComponent[idx+1:]
 		}
 
-		pathParams, err := h.pat.MatchAndEscape(components, verb, s.unescapingMode)
+		pathParams, err := h.pat.MatchAndEscape(comps, verb, s.unescapingMode)
 		if err != nil {
 			var mse MalformedSequenceError
 			if ok := errors.As(err, &mse); ok {
@@ -396,14 +400,18 @@ func (s *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			patVerb := h.pat.Verb()
 
 			idx := -1
-			if patVerb != "" && strings.HasSuffix(lastComponent, ":"+patVerb) {
-				idx = len(lastComponent) - len(patVerb) - 1
-			}
-			if idx > 0 {
-				components[len(components)-1], verb = lastComponent[:idx], lastComponent[idx+1:]
+			if patVerb != "" && strings.HasSuffix(lastPathComponent, ":"+patVerb) {
+				idx = len(lastPathComponent) - len(patVerb) - 1
 			}
 
-			pathParams, err := h.pat.MatchAndEscape(components, verb, s.unescapingMode)
+			comps := make([]string, len(pathComponents))
+			copy(comps, pathComponents)
+
+			if idx > 0 {
+				comps[len(comps)-1], verb = lastPathComponent[:idx], lastPathComponent[idx+1:]
+			}
+
+			pathParams, err := h.pat.MatchAndEscape(comps, verb, s.unescapingMode)
 			if err != nil {
 				var mse MalformedSequenceError
 				if ok := errors.As(err, &mse); ok {

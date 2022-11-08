@@ -478,6 +478,48 @@ func TestMuxServeHTTP(t *testing.T) {
 			unescapingMode: runtime.UnescapingModeAllCharacters,
 			respContent:    "POST /api/v1/{name=organizations/*}:action",
 		},
+		{
+			patterns: []stubPattern{
+				{
+					method: "POST",
+					ops: []int{
+						int(utilities.OpLitPush), 0,
+						int(utilities.OpLitPush), 1,
+						int(utilities.OpLitPush), 2,
+					},
+					pool: []string{"api", "v1", "organizations"},
+					verb: "verb",
+				},
+				{
+					method: "POST",
+					ops: []int{
+						int(utilities.OpLitPush), 0,
+						int(utilities.OpLitPush), 1,
+						int(utilities.OpLitPush), 2,
+					},
+					pool: []string{"api", "v1", "organizations"},
+					verb: "",
+				},
+				{
+					method: "POST",
+					ops: []int{
+						int(utilities.OpLitPush), 0,
+						int(utilities.OpLitPush), 1,
+						int(utilities.OpLitPush), 2,
+					},
+					pool: []string{"api", "v1", "dummies"},
+					verb: "verb",
+				},
+			},
+			reqMethod: "POST",
+			reqPath:   "/api/v1/organizations:verb",
+			headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+			respStatus:     http.StatusOK,
+			unescapingMode: runtime.UnescapingModeAllCharacters,
+			respContent:    "POST /api/v1/organizations:verb",
+		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			var opts []runtime.ServeMuxOption
