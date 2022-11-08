@@ -78,8 +78,7 @@ func main() {
 	glog.V(1).Info("Parsed code generator request")
 	pkgMap := make(map[string]string)
 	if req.Parameter != nil {
-		err := parseReqParam(req.GetParameter(), flag.CommandLine, pkgMap)
-		if err != nil {
+		if err := parseReqParam(req.GetParameter(), flag.CommandLine, pkgMap); err != nil {
 			glog.Fatalf("Error parsing flags: %v", err)
 		}
 	}
@@ -166,7 +165,7 @@ func main() {
 		}
 	}
 
-	var targets []*descriptor.File
+	targets := make([]*descriptor.File, 0, len(req.FileToGenerate))
 	for _, target := range req.FileToGenerate {
 		f, err := reg.LookupFile(target)
 		if err != nil {
@@ -218,37 +217,30 @@ func parseReqParam(param string, f *flag.FlagSet, pkgMap map[string]string) erro
 	for _, p := range strings.Split(param, ",") {
 		spec := strings.SplitN(p, "=", 2)
 		if len(spec) == 1 {
-			if spec[0] == "allow_delete_body" {
-				err := f.Set(spec[0], "true")
-				if err != nil {
-					return fmt.Errorf("cannot set flag %s: %v", p, err)
+			switch spec[0] {
+			case "allow_delete_body":
+				if err := f.Set(spec[0], "true"); err != nil {
+					return fmt.Errorf("cannot set flag %s: %w", p, err)
+				}
+				continue
+			case "allow_merge":
+				if err := f.Set(spec[0], "true"); err != nil {
+					return fmt.Errorf("cannot set flag %s: %w", p, err)
+				}
+				continue
+			case "allow_repeated_fields_in_body":
+				if err := f.Set(spec[0], "true"); err != nil {
+					return fmt.Errorf("cannot set flag %s: %w", p, err)
+				}
+				continue
+			case "include_package_in_tags":
+				if err := f.Set(spec[0], "true"); err != nil {
+					return fmt.Errorf("cannot set flag %s: %w", p, err)
 				}
 				continue
 			}
-			if spec[0] == "allow_merge" {
-				err := f.Set(spec[0], "true")
-				if err != nil {
-					return fmt.Errorf("cannot set flag %s: %v", p, err)
-				}
-				continue
-			}
-			if spec[0] == "allow_repeated_fields_in_body" {
-				err := f.Set(spec[0], "true")
-				if err != nil {
-					return fmt.Errorf("cannot set flag %s: %v", p, err)
-				}
-				continue
-			}
-			if spec[0] == "include_package_in_tags" {
-				err := f.Set(spec[0], "true")
-				if err != nil {
-					return fmt.Errorf("cannot set flag %s: %v", p, err)
-				}
-				continue
-			}
-			err := f.Set(spec[0], "")
-			if err != nil {
-				return fmt.Errorf("cannot set flag %s: %v", p, err)
+			if err := f.Set(spec[0], ""); err != nil {
+				return fmt.Errorf("cannot set flag %s: %w", p, err)
 			}
 			continue
 		}
@@ -258,7 +250,7 @@ func parseReqParam(param string, f *flag.FlagSet, pkgMap map[string]string) erro
 			continue
 		}
 		if err := f.Set(name, value); err != nil {
-			return fmt.Errorf("cannot set flag %s: %v", p, err)
+			return fmt.Errorf("cannot set flag %s: %w", p, err)
 		}
 	}
 	return nil
