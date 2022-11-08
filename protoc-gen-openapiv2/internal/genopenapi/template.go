@@ -2231,7 +2231,7 @@ func goTemplateComments(comment string, data interface{}, reg *descriptor.Regist
 		},
 		// Grabs title and description from a field
 		"fieldcomments": func(msg *descriptor.Message, field *descriptor.Field) string {
-			return strings.Replace(fieldProtoComments(reg, msg, field), "\n", "<br>", -1)
+			return strings.ReplaceAll(fieldProtoComments(reg, msg, field), "\n", "<br>")
 		},
 	}).Parse(comment)
 	if err != nil {

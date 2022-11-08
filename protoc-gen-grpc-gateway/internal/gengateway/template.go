@@ -253,12 +253,12 @@ var _ = metadata.Join
 {{end}}
 `))
 
-	_ = template.Must(handlerTemplate.New("request-func-signature").Parse(strings.Replace(`
+	_ = template.Must(handlerTemplate.New("request-func-signature").Parse(strings.ReplaceAll(`
 {{if .Method.GetServerStreaming}}
 func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.InstanceName}}Client, req *http.Request, pathParams map[string]string) ({{.Method.Service.InstanceName}}_{{.Method.GetName}}Client, runtime.ServerMetadata, error)
 {{else}}
 func request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, client {{.Method.Service.InstanceName}}Client, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error)
-{{end}}`, "\n", "", -1)))
+{{end}}`, "\n", "")))
 
 	_ = template.Must(handlerTemplate.New("client-streaming-request-func").Parse(`
 {{template "request-func-signature" .}} {
@@ -480,11 +480,11 @@ var (
 {{end}}
 `))
 
-	_ = template.Must(localHandlerTemplate.New("local-request-func-signature").Parse(strings.Replace(`
+	_ = template.Must(localHandlerTemplate.New("local-request-func-signature").Parse(strings.ReplaceAll(`
 {{if .Method.GetServerStreaming}}
 {{else}}
 func local_request_{{.Method.Service.GetName}}_{{.Method.GetName}}_{{.Index}}(ctx context.Context, marshaler runtime.Marshaler, server {{.Method.Service.InstanceName}}Server, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error)
-{{end}}`, "\n", "", -1)))
+{{end}}`, "\n", "")))
 
 	_ = template.Must(localHandlerTemplate.New("local-client-rpc-request-func").Funcs(funcMap).Parse(`
 {{$AllowPatchFeature := .AllowPatchFeature}}
