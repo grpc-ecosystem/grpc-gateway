@@ -1369,13 +1369,15 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 
 				operationObject := &openapiOperationObject{
 					Parameters: parameters,
-					Responses: openapiResponsesObject{
-						"200": openapiResponseObject{
-							Description: desc,
-							Schema:      responseSchema,
-							Headers:     openapiHeadersObject{},
-						},
-					},
+					Responses:  openapiResponsesObject{},
+				}
+
+				if !reg.GetDisableDefaultResponses() {
+					operationObject.Responses["200"] = openapiResponseObject{
+						Description: desc,
+						Schema:      responseSchema,
+						Headers:     openapiHeadersObject{},
+					}
 				}
 
 				if !reg.GetDisableServiceTags() {
