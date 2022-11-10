@@ -2,7 +2,7 @@ package runtime
 
 import (
 	"bytes"
-	"fmt"
+	"errors"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -260,7 +260,7 @@ func TestFieldMaskErrors(t *testing.T) {
 		{
 			name:        "object under scalar",
 			input:       `{"uuid": {"a": "x"}}`,
-			expectedErr: fmt.Errorf("JSON structure did not match request type"),
+			expectedErr: errors.New("JSON structure did not match request type"),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
