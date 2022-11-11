@@ -1515,6 +1515,34 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						copy(operationObject.Produces, opts.Produces)
 					}
 
+					if params := opts.Parameters; params != nil && len(params.Headers) > 0 {
+						for _, header := range params.Headers {
+							param := openapiParameterObject{
+								In:          "header",
+								Name:        header.Name,
+								Description: header.Description,
+								Required:    header.Required,
+								Format:      header.Format,
+							}
+
+							switch header.Type {
+							case openapi_options.HeaderParameter_STRING:
+								param.Type = "string"
+							case openapi_options.HeaderParameter_NUMBER:
+								param.Type = "number"
+							case openapi_options.HeaderParameter_INTEGER:
+								param.Type = "integer"
+							case openapi_options.HeaderParameter_BOOLEAN:
+								param.Type = "boolean"
+							default:
+								// TODO(krak3n): Should we error or assume string?
+								param.Type = "string"
+							}
+
+							operationObject.Parameters = append(operationObject.Parameters, param)
+						}
+					}
+
 					// TODO(ivucica): add remaining fields of operation object
 				}
 
