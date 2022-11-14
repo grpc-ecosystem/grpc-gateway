@@ -132,6 +132,10 @@ type Registry struct {
 	// disableServiceTags disables the generation of service tags.
 	// This is useful if you do not want to expose the names of your backend grpc services.
 	disableServiceTags bool
+
+	// disableDefaultResponses disables the generation of default responses.
+	// Useful if you have to support custom response codes that are not 200.
+	disableDefaultResponses bool
 }
 
 type repeatedFieldSeparator struct {
@@ -757,4 +761,14 @@ func (r *Registry) SetDisableServiceTags(use bool) {
 // GetDisableServiceTags returns disableServiceTags
 func (r *Registry) GetDisableServiceTags() bool {
 	return r.disableServiceTags
+}
+
+// SetDisableDefaultResponses setsdisableDefaultResponses
+func (r *Registry) SetDisableDefaultResponses(use bool) {
+	r.disableDefaultResponses = use
+}
+
+// GetDisableDefaultResponses returns disableDefaultResponses
+func (r *Registry) GetDisableDefaultResponses() bool {
+	return r.disableDefaultResponses
 }

@@ -41,6 +41,7 @@ var (
 	outputFormat                   = flag.String("output_format", string(genopenapi.FormatJSON), fmt.Sprintf("output content format. Allowed values are: `%s`, `%s`", genopenapi.FormatJSON, genopenapi.FormatYAML))
 	visibilityRestrictionSelectors = utilities.StringArrayFlag(flag.CommandLine, "visibility_restriction_selectors", "list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Repeat this option to supply multiple values. Elements without visibility annotations are unaffected by this setting.")
 	disableServiceTags             = flag.Bool("disable_service_tags", false, "if set, disables generation of service tags. This is useful if you do not want to expose the names of your backend grpc services.")
+	disableDefaultResponses        = flag.Bool("disable_default_responses", false, "if set, disables generation of default responses. Useful if you have to support custom response codes that are not 200.")
 )
 
 // Variables set by goreleaser at build time
@@ -125,6 +126,7 @@ func main() {
 	reg.SetOmitEnumDefaultValue(*omitEnumDefaultValue)
 	reg.SetVisibilityRestrictionSelectors(*visibilityRestrictionSelectors)
 	reg.SetDisableServiceTags(*disableServiceTags)
+	reg.SetDisableDefaultResponses(*disableDefaultResponses)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
 		return

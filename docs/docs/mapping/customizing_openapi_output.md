@@ -631,14 +631,107 @@ info:
   title: helloproto/v1/example.proto
   version: version not set
 consumes:
-- application/json
+  - application/json
 produces:
-- application/json
+  - application/json
 paths:
   /api/hello:
     get:
       operationId: EchoService_Hello
-...
+```
+
+### Disable default responses
+
+By default a 200 OK response is rendered for each service operation. But it is possible to disable this and explicitly define your service's responses, using the `disable_default_responses` option. Allowed values are: `true`, `false`.
+
+**Note**: This does not alter the behavior of the gateway itself and should be coupled with a `ForwardResponseWriter` when altering status codes, see [Controlling HTTP Response Codes](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_your_gateway/#controlling-http-response-status-codes).
+
+For example, if you are using `buf`:
+
+```yaml
+version: v1
+plugins:
+  - name: openapiv2
+    out: .
+    opt:
+      - disable_default_responses=true
+```
+
+or with `protoc`
+
+```sh
+protoc --openapiv2_out=. --openapiv2_opt=disable_default_responses=true ./path/to/file.proto
+```
+
+Input example:
+
+```protobuf
+syntax = "proto3";
+
+package helloproto.v1;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "helloproto/v1;helloproto";
+
+service EchoService {
+  rpc Hello(HelloReq) returns (HelloResp) {
+    option (google.api.http) = {get: "/api/hello"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      responses: {
+        key: "201",
+        value: {
+          description: "Created";
+          schema: {
+            json_schema: {ref: ".helloproto.v1.HelloResp"}
+          }
+        }
+      };
+    };
+  }
+}
+
+message HelloReq {
+  string name = 1;
+}
+
+message HelloResp {
+  string message = 1;
+}
+```
+
+Output (default response not generated):
+
+```yaml
+swagger: "2.0"
+info:
+  title: helloproto/v1/hello.proto
+  version: version not set
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /api/hello:
+    get:
+      operationId: EchoService_Hello
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: "#/definitions/v1HelloResp"
+      parameters:
+        - name: name
+          in: query
+          required: false
+          type: string
+definitions:
+  v1HelloResp:
+    type: object
+    properties:
+      message:
+        type: string
 ```
 
 {% endraw %}
