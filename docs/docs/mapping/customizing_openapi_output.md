@@ -644,6 +644,8 @@ paths:
 
 By default a 200 OK response is rendered for each service operation. But it is possible to disable this and explicitly define your service's responses, using the `disable_default_responses` option. Allowed values are: `true`, `false`.
 
+**Note**: This does not alter the behavior of the gateway itself and should be coupled with a `ForwardResponseWriter` when altering status codes, see [Controlling HTTP Response Codes](https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/customizing_your_gateway/#controlling-http-response-status-codes).
+
 For example, if you are using `buf`:
 
 ```yaml
