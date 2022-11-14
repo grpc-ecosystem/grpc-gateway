@@ -100,9 +100,8 @@ func TestJSONBuiltinUnmarshalField(t *testing.T) {
 func alloc(t reflect.Type) reflect.Value {
 	if t == nil {
 		return reflect.ValueOf(new(interface{}))
-	} else {
-		return reflect.New(t)
 	}
+	return reflect.New(t)
 }
 
 func TestJSONBuiltinUnmarshalFieldKnownErrors(t *testing.T) {
@@ -250,7 +249,7 @@ var (
 			json: `"2016-05-10T10:19:13.123Z"`,
 		},
 		{
-			data: &wrapperspb.Int32Value{Value: 123},
+			data: wrapperspb.Int32(123),
 			json: "123",
 		},
 	}
