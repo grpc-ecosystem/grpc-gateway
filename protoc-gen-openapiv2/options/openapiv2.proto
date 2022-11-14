@@ -182,6 +182,9 @@ message Operation {
 }
 
 // `Parameters` is a representation of OpenAPI v2 specification's parameters object.
+// Note: This technically breaks compatibility with the OpenAPI 2 definition structure as we only
+// allow header parameters to be set here since we do not want users specifying custom non-header
+// parameters beyond those inferred from the Protobuf schema.
 // See: https://swagger.io/specification/v2/#parameter-object
 message Parameters {
   // `Headers` is one or more HTTP header parameter.
