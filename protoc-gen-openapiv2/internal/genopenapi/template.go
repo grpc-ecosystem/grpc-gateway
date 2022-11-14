@@ -1535,8 +1535,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							case openapi_options.HeaderParameter_BOOLEAN:
 								param.Type = "boolean"
 							default:
-								// TODO(krak3n): Should we error or assume string?
-								param.Type = "string"
+								return fmt.Errorf("invalid header parameter type: %+v", header.Type)
 							}
 
 							operationObject.Parameters = append(operationObject.Parameters, param)
