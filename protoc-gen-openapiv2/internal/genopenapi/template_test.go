@@ -8134,6 +8134,7 @@ func TestRenderServiceWithHeaderParameters(t *testing.T) {
 						{
 							Name:     "X-Custom-Header",
 							Required: true,
+							Type:     openapi_options.HeaderParameter_STRING,
 						},
 					},
 				},
