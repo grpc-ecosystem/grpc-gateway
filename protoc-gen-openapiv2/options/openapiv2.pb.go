@@ -78,7 +78,8 @@ func (Scheme) EnumDescriptor() ([]byte, []int) {
 	return file_protoc_gen_openapiv2_options_openapiv2_proto_rawDescGZIP(), []int{0}
 }
 
-// `Type` is a a supported HTTP type.
+// `Type` is a a supported HTTP header type.
+// See https://swagger.io/specification/v2/#parameterType.
 type HeaderParameter_Type int32
 
 const (
@@ -643,6 +644,8 @@ type Operation struct {
 	// See: https://swagger.io/docs/specification/2-0/swagger-extensions/
 	Extensions map[string]*structpb.Value `protobuf:"bytes,13,rep,name=extensions,proto3" json:"extensions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// Custom parameters such as HTTP request headers.
+	// See: https://swagger.io/docs/specification/2-0/describing-parameters/
+	// and https://swagger.io/specification/v2/#parameter-object.
 	Parameters *Parameters `protobuf:"bytes,14,opt,name=parameters,proto3" json:"parameters,omitempty"`
 }
 
@@ -770,12 +773,17 @@ func (x *Operation) GetParameters() *Parameters {
 }
 
 // `Parameters` is a representation of OpenAPI v2 specification's parameters object.
+// Note: This technically breaks compatibility with the OpenAPI 2 definition structure as we only
+// allow header parameters to be set here since we do not want users specifying custom non-header
+// parameters beyond those inferred from the Protobuf schema.
+// See: https://swagger.io/specification/v2/#parameter-object
 type Parameters struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	// `Headers` is one or more HTTP header parameter.
+	// See: https://swagger.io/docs/specification/2-0/describing-parameters/#header-parameters
 	Headers []*HeaderParameter `protobuf:"bytes,1,rep,name=headers,proto3" json:"headers,omitempty"`
 }
 
@@ -819,6 +827,7 @@ func (x *Parameters) GetHeaders() []*HeaderParameter {
 }
 
 // `HeaderParameter` a HTTP header parameter.
+// See: https://swagger.io/specification/v2/#parameter-object
 type HeaderParameter struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -829,6 +838,7 @@ type HeaderParameter struct {
 	// `Description` is a short description of the header.
 	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// `Type` is the type of the object. The value MUST be one of "string", "number", "integer", or "boolean". The "array" type is not supported.
+	// See: https://swagger.io/specification/v2/#parameterType.
 	Type HeaderParameter_Type `protobuf:"varint,3,opt,name=type,proto3,enum=grpc.gateway.protoc_gen_openapiv2.options.HeaderParameter_Type" json:"type,omitempty"`
 	// `Format` The extending format for the previously mentioned type.
 	Format string `protobuf:"bytes,4,opt,name=format,proto3" json:"format,omitempty"`
