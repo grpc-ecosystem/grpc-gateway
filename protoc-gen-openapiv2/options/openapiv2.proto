@@ -175,6 +175,51 @@ message Operation {
   // extra functionality that is not covered by the standard OpenAPI Specification.
   // See: https://swagger.io/docs/specification/2-0/swagger-extensions/
   map<string, google.protobuf.Value> extensions = 13;
+  // Custom parameters such as HTTP request headers.
+  // See: https://swagger.io/docs/specification/2-0/describing-parameters/
+  // and https://swagger.io/specification/v2/#parameter-object.
+  Parameters parameters = 14;
+}
+
+// `Parameters` is a representation of OpenAPI v2 specification's parameters object.
+// Note: This technically breaks compatibility with the OpenAPI 2 definition structure as we only
+// allow header parameters to be set here since we do not want users specifying custom non-header
+// parameters beyond those inferred from the Protobuf schema.
+// See: https://swagger.io/specification/v2/#parameter-object
+message Parameters {
+  // `Headers` is one or more HTTP header parameter.
+  // See: https://swagger.io/docs/specification/2-0/describing-parameters/#header-parameters
+  repeated HeaderParameter headers = 1;
+}
+
+// `HeaderParameter` a HTTP header parameter.
+// See: https://swagger.io/specification/v2/#parameter-object
+message HeaderParameter {
+  // `Type` is a a supported HTTP header type.
+  // See https://swagger.io/specification/v2/#parameterType.
+  enum Type {
+    UNKNOWN = 0;
+    STRING = 1;
+    NUMBER = 2;
+    INTEGER = 3;
+    BOOLEAN = 4;
+  }
+
+  // `Name` is the header name.
+  string name = 1;
+  // `Description` is a short description of the header.
+  string description = 2;
+  // `Type` is the type of the object. The value MUST be one of "string", "number", "integer", or "boolean". The "array" type is not supported.
+  // See: https://swagger.io/specification/v2/#parameterType.
+  Type type = 3;
+  // `Format` The extending format for the previously mentioned type.
+  string format = 4;
+  // `Required` indicates if the header is optional
+  bool required = 5;
+  // field 6 is reserved for 'items', but in OpenAPI-specific way.
+  reserved 6;
+  // field 7 is reserved `Collection Format`. Determines the format of the array if type array is used.
+  reserved 7;
 }
 
 // `Header` is a representation of OpenAPI v2 specification's Header object.

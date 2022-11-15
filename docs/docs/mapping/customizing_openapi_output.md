@@ -734,4 +734,93 @@ definitions:
         type: string
 ```
 
+### Custom HTTP Header Request Parameters
+
+By default the parameters for each operation are generated from the protocol buffer definition however you can extend the parameters to include extra HTTP headers if required.
+
+**NOTE**: These annotations do not alter the behaviour of the gateway and must be coupled with custom header parsing behaviour in the application. Also be aware that adding header parameters can alter the forwards and backwards compatibility of the schema. You must also set a type for your header which can be one of `STRING`, `INTEGER`, `NUMBER` or `BOOLEAN`.
+
+```protobuf
+syntax = "proto3";
+
+package helloproto.v1;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "helloproto/v1;helloproto";
+
+service EchoService {
+  rpc Hello(HelloReq) returns (HelloResp) {
+    option (google.api.http) = {get: "/api/hello"};
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      parameters: {
+        headers: {
+          name: "X-Foo";
+          description: "Foo Header";
+          type: STRING,
+          required: true;
+        };
+        headers: {
+          name: "X-Bar";
+          description: "Bar Header";
+          type: NUMBER,
+        };
+      };
+    };
+  }
+}
+
+message HelloReq {
+  string name = 1;
+}
+
+message HelloResp {
+  string message = 1;
+}
+```
+
+Output:
+
+```yaml
+swagger: "2.0"
+info:
+  title: helloproto/v1/hello.proto
+  version: version not set
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /api/hello:
+    get:
+      operationId: Hello
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: "#/definitions/helloproto.v1.HelloResp"
+      parameters:
+        - name: name
+          in: query
+          required: false
+          type: string
+        - name: X-Foo
+          description: Foo Header
+          in: header
+          required: true
+          type: string
+        - name: X-Bar
+          description: Bar Header
+          in: header
+          required: false
+          type: number
+definitions:
+  helloproto.v1.HelloResp:
+    type: object
+    properties:
+      message:
+        type: string
+```
+
 {% endraw %}
