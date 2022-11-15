@@ -3316,6 +3316,17 @@ func TestApplyTemplateProtobufAny(t *testing.T) {
 			},
 			wantNumDefinitions: 3,
 		},
+		{
+			// we have a protobufAny in a message but with automatic rendering of responses disabled
+			name: "protobufAny_referenced_in_message_with_default_responses_disabled",
+			args: args{
+				msgContainsAny: true,
+				regConfig: func(reg *descriptor.Registry) {
+					reg.SetDisableDefaultResponses(true)
+				},
+			},
+			wantNumDefinitions: 4,
+		},
 	}
 
 	for _, tt := range tests {

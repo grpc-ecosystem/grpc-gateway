@@ -23,9 +23,7 @@ import (
 	legacydescriptor "github.com/golang/protobuf/descriptor"
 )
 
-var (
-	errNoTargetService = errors.New("no target service defined in the file")
-)
+var errNoTargetService = errors.New("no target service defined in the file")
 
 type generator struct {
 	reg    *descriptor.Registry
@@ -326,7 +324,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 	for _, file := range targets {
 		glog.V(1).Infof("Processing %s", file.GetName())
 		swagger, err := applyTemplate(param{File: file, reg: g.reg})
-		if err == errNoTargetService {
+		if errors.Is(err, errNoTargetService) {
 			glog.V(1).Infof("%s: %v", file.GetName(), err)
 			continue
 		}
@@ -343,7 +341,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		targetOpenAPI := mergeTargetFile(openapis, g.reg.GetMergeFileName())
 		f, err := encodeOpenAPI(targetOpenAPI, g.format)
 		if err != nil {
-			return nil, fmt.Errorf("failed to encode OpenAPI for %s: %s", g.reg.GetMergeFileName(), err)
+			return nil, fmt.Errorf("failed to encode OpenAPI for %s: %w", g.reg.GetMergeFileName(), err)
 		}
 		files = append(files, f)
 		glog.V(1).Infof("New OpenAPI file will emit")
@@ -351,7 +349,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 		for _, file := range openapis {
 			f, err := encodeOpenAPI(file, g.format)
 			if err != nil {
-				return nil, fmt.Errorf("failed to encode OpenAPI for %s: %s", file.fileName, err)
+				return nil, fmt.Errorf("failed to encode OpenAPI for %s: %w", file.fileName, err)
 			}
 			files = append(files, f)
 			glog.V(1).Infof("New OpenAPI file will emit")

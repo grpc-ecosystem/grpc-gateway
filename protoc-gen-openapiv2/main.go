@@ -41,6 +41,7 @@ var (
 	outputFormat                   = flag.String("output_format", string(genopenapi.FormatJSON), fmt.Sprintf("output content format. Allowed values are: `%s`, `%s`", genopenapi.FormatJSON, genopenapi.FormatYAML))
 	visibilityRestrictionSelectors = utilities.StringArrayFlag(flag.CommandLine, "visibility_restriction_selectors", "list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Repeat this option to supply multiple values. Elements without visibility annotations are unaffected by this setting.")
 	disableServiceTags             = flag.Bool("disable_service_tags", false, "if set, disables generation of service tags. This is useful if you do not want to expose the names of your backend grpc services.")
+	disableDefaultResponses        = flag.Bool("disable_default_responses", false, "if set, disables generation of default responses. Useful if you have to support custom response codes that are not 200.")
 )
 
 // Variables set by goreleaser at build time
@@ -78,8 +79,7 @@ func main() {
 	glog.V(1).Info("Parsed code generator request")
 	pkgMap := make(map[string]string)
 	if req.Parameter != nil {
-		err := parseReqParam(req.GetParameter(), flag.CommandLine, pkgMap)
-		if err != nil {
+		if err := parseReqParam(req.GetParameter(), flag.CommandLine, pkgMap); err != nil {
 			glog.Fatalf("Error parsing flags: %v", err)
 		}
 	}
@@ -126,6 +126,7 @@ func main() {
 	reg.SetOmitEnumDefaultValue(*omitEnumDefaultValue)
 	reg.SetVisibilityRestrictionSelectors(*visibilityRestrictionSelectors)
 	reg.SetDisableServiceTags(*disableServiceTags)
+	reg.SetDisableDefaultResponses(*disableDefaultResponses)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
 		return
@@ -166,7 +167,7 @@ func main() {
 		}
 	}
 
-	var targets []*descriptor.File
+	targets := make([]*descriptor.File, 0, len(req.FileToGenerate))
 	for _, target := range req.FileToGenerate {
 		f, err := reg.LookupFile(target)
 		if err != nil {
@@ -218,37 +219,30 @@ func parseReqParam(param string, f *flag.FlagSet, pkgMap map[string]string) erro
 	for _, p := range strings.Split(param, ",") {
 		spec := strings.SplitN(p, "=", 2)
 		if len(spec) == 1 {
-			if spec[0] == "allow_delete_body" {
-				err := f.Set(spec[0], "true")
-				if err != nil {
-					return fmt.Errorf("cannot set flag %s: %v", p, err)
+			switch spec[0] {
+			case "allow_delete_body":
+				if err := f.Set(spec[0], "true"); err != nil {
+					return fmt.Errorf("cannot set flag %s: %w", p, err)
+				}
+				continue
+			case "allow_merge":
+				if err := f.Set(spec[0], "true"); err != nil {
+					return fmt.Errorf("cannot set flag %s: %w", p, err)
+				}
+				continue
+			case "allow_repeated_fields_in_body":
+				if err := f.Set(spec[0], "true"); err != nil {
+					return fmt.Errorf("cannot set flag %s: %w", p, err)
+				}
+				continue
+			case "include_package_in_tags":
+				if err := f.Set(spec[0], "true"); err != nil {
+					return fmt.Errorf("cannot set flag %s: %w", p, err)
 				}
 				continue
 			}
-			if spec[0] == "allow_merge" {
-				err := f.Set(spec[0], "true")
-				if err != nil {
-					return fmt.Errorf("cannot set flag %s: %v", p, err)
-				}
-				continue
-			}
-			if spec[0] == "allow_repeated_fields_in_body" {
-				err := f.Set(spec[0], "true")
-				if err != nil {
-					return fmt.Errorf("cannot set flag %s: %v", p, err)
-				}
-				continue
-			}
-			if spec[0] == "include_package_in_tags" {
-				err := f.Set(spec[0], "true")
-				if err != nil {
-					return fmt.Errorf("cannot set flag %s: %v", p, err)
-				}
-				continue
-			}
-			err := f.Set(spec[0], "")
-			if err != nil {
-				return fmt.Errorf("cannot set flag %s: %v", p, err)
+			if err := f.Set(spec[0], ""); err != nil {
+				return fmt.Errorf("cannot set flag %s: %w", p, err)
 			}
 			continue
 		}
@@ -258,7 +252,7 @@ func parseReqParam(param string, f *flag.FlagSet, pkgMap map[string]string) erro
 			continue
 		}
 		if err := f.Set(name, value); err != nil {
-			return fmt.Errorf("cannot set flag %s: %v", p, err)
+			return fmt.Errorf("cannot set flag %s: %w", p, err)
 		}
 	}
 	return nil

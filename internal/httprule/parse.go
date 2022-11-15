@@ -1,6 +1,7 @@
 package httprule
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -164,7 +165,7 @@ func (p *parser) segment() (segment, error) {
 
 	v, err := p.variable()
 	if err != nil {
-		return nil, fmt.Errorf("segment neither wildcards, literal or variable: %v", err)
+		return nil, fmt.Errorf("segment neither wildcards, literal or variable: %w", err)
 	}
 	return v, err
 }
@@ -213,7 +214,7 @@ func (p *parser) fieldPath() (string, error) {
 	}
 	components := []string{c}
 	for {
-		if _, err = p.accept("."); err != nil {
+		if _, err := p.accept("."); err != nil {
 			return strings.Join(components, "."), nil
 		}
 		c, err := p.accept(typeIdent)
@@ -237,10 +238,8 @@ const (
 	typeEOF     = termType("$")
 )
 
-const (
-	// eof is the terminal symbol which always appears at the end of token sequence.
-	eof = "\u0000"
-)
+// eof is the terminal symbol which always appears at the end of token sequence.
+const eof = "\u0000"
 
 // accept tries to accept a token in "p".
 // This function consumes a token and returns it if it matches to the specified "term".
@@ -334,7 +333,7 @@ func expectPChars(t string) error {
 // expectIdent determines if "ident" is a valid identifier in .proto schema ([[:alpha:]_][[:alphanum:]_]*).
 func expectIdent(ident string) error {
 	if ident == "" {
-		return fmt.Errorf("empty identifier")
+		return errors.New("empty identifier")
 	}
 	for pos, r := range ident {
 		switch {
