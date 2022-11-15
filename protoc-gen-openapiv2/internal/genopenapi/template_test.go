@@ -8028,7 +8028,7 @@ func TestRenderServiceWithHeaderParameters(t *testing.T) {
 									PathTmpl: httprule.Template{
 										Version:  1,
 										OpCodes:  []int{0, 0},
-										Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
+										Template: "/v1/echo",
 									},
 								},
 							},
