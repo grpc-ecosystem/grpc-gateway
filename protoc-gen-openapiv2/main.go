@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"runtime/debug"
 	"strings"
 
 	"github.com/golang/glog"
@@ -52,20 +51,12 @@ var (
 	date    = "unknown"
 )
 
-func buildVersion() string {
-	v, ok := debug.ReadBuildInfo()
-	if !ok {
-		return version
-	}
-	return v.Main.Version
-}
-
 func main() {
 	flag.Parse()
 	defer glog.Flush()
 
 	if *versionFlag {
-		fmt.Printf("Version %v, commit %v, built at %v\n", buildVersion(), commit, date)
+		fmt.Printf("Version %v, commit %v, built at %v\n", version, commit, date)
 		os.Exit(0)
 	}
 
