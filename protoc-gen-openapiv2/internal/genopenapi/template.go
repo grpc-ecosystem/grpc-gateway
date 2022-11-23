@@ -2622,6 +2622,10 @@ func getFieldBehaviorOption(reg *descriptor.Registry, fd *descriptor.Field) ([]a
 func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.JSONSchema, reg *descriptor.Registry, refs refMap) schemaCore {
 	ret := schemaCore{}
 
+	if j == nil {
+		return ret
+	}
+
 	if j.GetRef() != "" {
 		openapiName, ok := fullyQualifiedNameToOpenAPIName(j.GetRef(), reg)
 		if ok {
@@ -2633,13 +2637,15 @@ func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.JSONSchema, reg *desc
 			ret.Ref += j.GetRef()
 		}
 	} else {
-		f, t := protoJSONSchemaTypeToFormat(j.GetType())
+		typ := j.GetType()
 
-		if items := j.GetItems(); items != nil && f == "array" {
+		if len(typ) > 0 && typ[0] == openapi_options.JSONSchema_ARRAY {
 			ret.Items = &openapiItemsObject{
-				schemaCore: protoJSONSchemaToOpenAPISchemaCore(items, reg, refs),
+				schemaCore: protoJSONSchemaToOpenAPISchemaCore(j.GetItems(), reg, refs),
 			}
 		} else {
+			f, t := protoJSONSchemaTypeToFormat(typ)
+
 			ret.Format = f
 			ret.Type = t
 		}
