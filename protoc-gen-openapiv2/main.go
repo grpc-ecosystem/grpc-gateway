@@ -56,7 +56,7 @@ func main() {
 	defer glog.Flush()
 
 	if *versionFlag {
-		fmt.Printf("Version %v, commit %v, built at %v\n", version, commit, date)
+		fmt.Printf("Version %v, commit %v, built at %v\n", readVersion(), commit, date)
 		os.Exit(0)
 	}
 

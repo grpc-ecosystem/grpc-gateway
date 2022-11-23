@@ -4,9 +4,10 @@ package main
 
 import "runtime/debug"
 
-func init() {
+func readVersion() string {
 	v, ok := debug.ReadBuildInfo()
-	if ok {
-		version = v.Main.Version
+	if !ok {
+		return version
 	}
+	return v.Main.Version
 }
