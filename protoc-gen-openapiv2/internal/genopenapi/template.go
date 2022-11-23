@@ -2634,8 +2634,15 @@ func protoJSONSchemaToOpenAPISchemaCore(j *openapi_options.JSONSchema, reg *desc
 		}
 	} else {
 		f, t := protoJSONSchemaTypeToFormat(j.GetType())
-		ret.Format = f
-		ret.Type = t
+
+		if items := j.GetItems(); items != nil && f == "array" {
+			ret.Items = &openapiItemsObject{
+				schemaCore: protoJSONSchemaToOpenAPISchemaCore(items, reg, refs),
+			}
+		} else {
+			ret.Format = f
+			ret.Type = t
+		}
 	}
 
 	return ret
