@@ -1,12 +1,12 @@
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - protoc-gen-openapiv2/options/*.proto
 permissions:
   contents: read
-name: master
+name: main
 jobs:
   proto_push:
     runs-on: ubuntu-latest

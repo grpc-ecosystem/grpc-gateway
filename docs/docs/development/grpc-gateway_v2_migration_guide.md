@@ -56,7 +56,7 @@ It would now look like this:
 example: "{\"uuid\": \"0cf361e1-4b44-483d-a159-54dabdf7e814\"}"
 ```
 
-See [a_bit_of_everything.proto](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/examples/internal/proto/examplepb/a_bit_of_everything.proto) in the example protos for more examples.
+See [a_bit_of_everything.proto](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/examples/internal/proto/examplepb/a_bit_of_everything.proto) in the example protos for more examples.
 
 ## We now use the camelCase JSON names by default
 
