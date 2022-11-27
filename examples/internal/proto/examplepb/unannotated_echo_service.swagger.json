@@ -11,7 +11,7 @@
     },
     "license": {
       "name": "BSD 3-Clause License",
-      "url": "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt"
+      "url": "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt"
     },
     "x-something-something": "yadda"
   },

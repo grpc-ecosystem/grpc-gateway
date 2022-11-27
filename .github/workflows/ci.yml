@@ -110,7 +110,7 @@ jobs:
       - run: PATH=$PATH:~/go/bin buf build
       - run: PATH=$PATH:~/go/bin buf lint
       - run: PATH=$PATH:~/go/bin buf format -w && git diff --exit-code
-      - run: PATH=$PATH:~/go/bin buf breaking --path protoc-gen-openapiv2/ --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=master'
+      - run: PATH=$PATH:~/go/bin buf breaking --path protoc-gen-openapiv2/ --against 'https://github.com/grpc-ecosystem/grpc-gateway.git#branch=main'
   golangci:
     permissions:
       pull-requests: read # for golangci/golangci-lint-action to fetch pull requests

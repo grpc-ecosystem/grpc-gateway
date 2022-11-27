@@ -3,7 +3,7 @@ Thank you for sending the PR! We appreciate you spending the time to work on the
 
 Help us understand your motivation by explaining why you decided to make this change.
 
-You can learn more about contributing to gRPC-Gateway here: https://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md
+You can learn more about contributing to gRPC-Gateway here: https://github.com/grpc-ecosystem/grpc-gateway/blob/main/CONTRIBUTING.md
 
 Happy contributing!
 
@@ -17,7 +17,7 @@ https://tinyurl.com/auto-closing for more information). Also, please
 write a comment on that issue linking back to this pull request once it is
 open. -->
 
-#### Have you read the [Contributing Guidelines](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/CONTRIBUTING.md)?
+#### Have you read the [Contributing Guidelines](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/CONTRIBUTING.md)?
 
 #### Brief description of what is fixed or changed
 

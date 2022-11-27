@@ -4,7 +4,7 @@
         "helpers:pinGitHubActionDigests"
     ],
     "baseBranches": [
-        "master"
+        "main"
     ],
     "postUpdateOptions": [
         "gomodTidy"
@@ -21,7 +21,7 @@
         },
         {
             "baseBranchList": [
-                "master"
+                "main"
             ],
             "packageNames": [
                 "github.com/golang/protobuf",
@@ -37,8 +37,12 @@
             "enabled": false
         },
         {
-            "matchManagers": ["github-actions"],
-            "matchPackageNames": ["slsa-framework/slsa-github-generator"],
+            "matchManagers": [
+                "github-actions"
+            ],
+            "matchPackageNames": [
+                "slsa-framework/slsa-github-generator"
+            ],
             "pinDigests": false
         }
     ]
