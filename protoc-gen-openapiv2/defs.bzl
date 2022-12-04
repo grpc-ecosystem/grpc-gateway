@@ -75,7 +75,6 @@ def _run_proto_gen_openapi(
     args.add("--plugin", "protoc-gen-openapiv2=%s" % protoc_gen_openapiv2.path)
 
     args.add("--openapiv2_opt", "logtostderr=true")
-    args.add("--openapiv2_opt", "allow_repeated_fields_in_body=true")
 
     extra_inputs = []
     if grpc_api_configuration:
