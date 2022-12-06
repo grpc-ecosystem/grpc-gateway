@@ -2,6 +2,7 @@ package descriptor
 
 import (
 	"fmt"
+	"path"
 	"sort"
 	"strings"
 
@@ -221,6 +222,16 @@ func (r *Registry) load(gen *protogen.Plugin) error {
 // It does not load services and methods in "file".  You need to call
 // loadServices after loadFiles is called for all files to load services and methods.
 func (r *Registry) loadFile(filePath string, file *protogen.File) {
+	if r.separatePackage {
+		file.GoPackageName += "gateway"
+		dir := path.Dir(file.GeneratedFilenamePrefix)
+		base := path.Base(file.GeneratedFilenamePrefix)
+		file.GeneratedFilenamePrefix = path.Join(
+			dir,
+			string(file.GoPackageName),
+			base,
+		)
+	}
 	pkg := GoPackage{
 		Path: string(file.GoImportPath),
 		Name: string(file.GoPackageName),

@@ -90,19 +90,10 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 			glog.Errorf("%v: %s", err, code)
 			return nil, err
 		}
-		goPkg := file.GoPkg
-		filePrefix := file.GeneratedFilenamePrefix
-		if g.separatePackage {
-			goPkg = descriptor.GoPackage{
-				Path: path.Join(goPkg.Path, filepath.Base(goPkg.Path)+"gateway"),
-				Name: goPkg.Name + "gateway",
-			}
-			filePrefix = path.Join(filepath.Dir(file.GeneratedFilenamePrefix), filepath.Base(goPkg.Path), filepath.Base(file.GeneratedFilenamePrefix))
-		}
 		files = append(files, &descriptor.ResponseFile{
-			GoPkg: goPkg,
+			GoPkg: file.GoPkg,
 			CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
-				Name:    proto.String(filePrefix + ".pb.gw.go"),
+				Name:    proto.String(file.GeneratedFilenamePrefix + ".pb.gw.go"),
 				Content: proto.String(string(formatted)),
 			},
 		})
