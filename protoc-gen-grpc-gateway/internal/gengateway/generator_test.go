@@ -96,3 +96,27 @@ func TestGenerator_Generate(t *testing.T) {
 		t.Fatalf("invalid name %q, expected %q", gotName, expectedName)
 	}
 }
+
+func TestGenerator_GenerateSeparatePackage(t *testing.T) {
+	g := new(generator)
+	g.separatePackage = true
+	g.reg = descriptor.NewRegistry()
+	g.reg.SetSeparatePackage(true)
+	result, err := g.Generate([]*descriptor.File{
+		crossLinkFixture(newExampleFileDescriptorWithGoPkg(&descriptor.GoPackage{
+			Path: "example.com/path/to/example",
+			Name: "example_pb",
+		}, "path/to/example")),
+	})
+	if err != nil {
+		t.Fatalf("failed to generate stubs: %v", err)
+	}
+	if len(result) != 1 {
+		t.Fatalf("expected to generate one file, got: %d", len(result))
+	}
+	expectedName := "path/to/examplegateway/example.pb.gw.go"
+	gotName := result[0].GetName()
+	if gotName != expectedName {
+		t.Fatalf("invalid name %q, expected %q", gotName, expectedName)
+	}
+}

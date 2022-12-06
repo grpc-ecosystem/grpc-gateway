@@ -35,9 +35,6 @@ func (r *Registry) loadServices(file *File) error {
 					Name:  svc.File.GoPkg.Name + "grpc",
 					Alias: "extGRPC" + strings.TrimPrefix(svc.File.GoPkg.Alias, "ext"),
 				},
-				Messages: svc.File.Messages,
-				Enums:    svc.File.Enums,
-				Services: svc.File.Services,
 			}
 		}
 		for _, md := range sd.GetMethod() {
