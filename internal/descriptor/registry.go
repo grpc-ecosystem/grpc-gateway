@@ -136,6 +136,8 @@ type Registry struct {
 	// disableDefaultResponses disables the generation of default responses.
 	// Useful if you have to support custom response codes that are not 200.
 	disableDefaultResponses bool
+
+	separatePackage bool
 }
 
 type repeatedFieldSeparator struct {
@@ -216,7 +218,7 @@ func (r *Registry) load(gen *protogen.Plugin) error {
 }
 
 // loadFile loads messages, enumerations and fields from "file".
-// It does not loads services and methods in "file".  You need to call
+// It does not load services and methods in "file".  You need to call
 // loadServices after loadFiles is called for all files to load services and methods.
 func (r *Registry) loadFile(filePath string, file *protogen.File) {
 	pkg := GoPackage{
@@ -397,6 +399,11 @@ func (r *Registry) SetPrefix(prefix string) {
 // SetStandalone registers standalone flag to control package prefix
 func (r *Registry) SetStandalone(standalone bool) {
 	r.standalone = standalone
+}
+
+// SetSeparatePackage registers flag to enable code generate to a sub package
+func (r *Registry) SetSeparatePackage(separatePackage bool) {
+	r.separatePackage = separatePackage
 }
 
 // SetRecursiveDepth records the max recursion count

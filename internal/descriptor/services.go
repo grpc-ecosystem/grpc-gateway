@@ -3,6 +3,7 @@ package descriptor
 import (
 	"errors"
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/golang/glog"
@@ -22,8 +23,22 @@ func (r *Registry) loadServices(file *File) error {
 		glog.V(2).Infof("Registering %s", sd.GetName())
 		svc := &Service{
 			File:                   file,
+			GRPCFile:               nil,
 			ServiceDescriptorProto: sd,
 			ForcePrefixedName:      r.standalone,
+		}
+		if r.separatePackage {
+			svc.GRPCFile = &File{
+				FileDescriptorProto: svc.File.FileDescriptorProto,
+				GoPkg: GoPackage{
+					Path:  svc.File.GoPkg.Path + "/" + filepath.Base(svc.File.GoPkg.Path) + "grpc",
+					Name:  svc.File.GoPkg.Name + "grpc",
+					Alias: "extGRPC" + strings.TrimPrefix(svc.File.GoPkg.Alias, "ext"),
+				},
+				Messages: svc.File.Messages,
+				Enums:    svc.File.Enums,
+				Services: svc.File.Services,
+			}
 		}
 		for _, md := range sd.GetMethod() {
 			glog.V(2).Infof("Processing %s.%s", sd.GetName(), md.GetName())
