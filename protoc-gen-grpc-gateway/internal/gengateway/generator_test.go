@@ -1,9 +1,13 @@
 package gengateway
 
 import (
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/internal/descriptor"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
 )
@@ -98,16 +102,42 @@ func TestGenerator_Generate(t *testing.T) {
 }
 
 func TestGenerator_GenerateSeparatePackage(t *testing.T) {
-	g := new(generator)
-	g.separatePackage = true
-	g.reg = descriptor.NewRegistry()
-	g.reg.SetSeparatePackage(true)
-	result, err := g.Generate([]*descriptor.File{
+	reg := descriptor.NewRegistry()
+	reg.SetSeparatePackage(true)
+	reg.SetStandalone(true)
+	g := New(reg, true, "Handler", true, true, true)
+	targets := []*descriptor.File{
 		crossLinkFixture(newExampleFileDescriptorWithGoPkg(&descriptor.GoPackage{
-			Path: "example.com/path/to/example",
-			Name: "example_pb",
+			Path:  "example.com/path/to/example",
+			Name:  "example",
+			Alias: "ext" + cases.Title(language.AmericanEnglish).String("example"),
 		}, "path/to/example")),
-	})
+	}
+	// Set ForcePrefixedName (usually set when standalone=true).
+	for _, f := range targets {
+		for _, msg := range f.Messages {
+			msg.ForcePrefixedName = true
+			for _, field := range msg.Fields {
+				field.ForcePrefixedName = true
+			}
+		}
+		for _, enum := range f.Enums {
+			enum.ForcePrefixedName = true
+		}
+		for _, svc := range f.Services {
+			svc.ForcePrefixedName = true
+			// replicates behavior in internal/descriptor/services.go (loadServices)
+			svc.GRPCFile = &descriptor.File{
+				FileDescriptorProto: svc.File.FileDescriptorProto,
+				GoPkg: descriptor.GoPackage{
+					Path:  svc.File.GoPkg.Path + "/" + filepath.Base(svc.File.GoPkg.Path) + "grpc",
+					Name:  svc.File.GoPkg.Name + "grpc",
+					Alias: "extGRPC" + strings.TrimPrefix(svc.File.GoPkg.Alias, "ext"),
+				},
+			}
+		}
+	}
+	result, err := g.Generate(targets)
 	if err != nil {
 		t.Fatalf("failed to generate stubs: %v", err)
 	}
