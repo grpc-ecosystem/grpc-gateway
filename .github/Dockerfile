@@ -1,4 +1,4 @@
-FROM golang:1.19.3
+FROM golang:1.19.4
 
 ENV NVM_DIR="/usr/local/share/nvm"
 ENV NVM_SYMLINK_CURRENT=true \
