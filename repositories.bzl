@@ -1350,6 +1350,12 @@ def go_repositories():
         sum = "h1:3Kdajn6X25yWQFhFCErmKSYTSvkEd3chJROny//F1A0=",
         version = "v1.4.0",
     )
+    go_repository(
+        name = "com_google_cloud_go_maps",
+        importpath = "cloud.google.com/go/maps",
+        sum = "h1:kLReRbclTgJefw2fcCbdLPLhPj0U6UUWN10ldG8sdOU=",
+        version = "v0.1.0",
+    )
 
     go_repository(
         name = "com_google_cloud_go_mediatranslation",
@@ -1654,6 +1660,13 @@ def go_repositories():
         version = "v1.3.0",
     )
     go_repository(
+        name = "com_google_cloud_go_vmwareengine",
+        importpath = "cloud.google.com/go/vmwareengine",
+        sum = "h1:JMPZaOT/gIUxVlTqSl/QQ32Y2k+r0stNeM1NSqhVP9o=",
+        version = "v0.1.0",
+    )
+
+    go_repository(
         name = "com_google_cloud_go_vpcaccess",
         importpath = "cloud.google.com/go/vpcaccess",
         sum = "h1:woHXXtnW8b9gLFdWO9HLPalAddBQ9V4LT+1vjKwR3W8=",
@@ -1784,8 +1797,8 @@ def go_repositories():
     go_repository(
         name = "org_golang_google_genproto",
         importpath = "google.golang.org/genproto",
-        sum = "h1:AGXp12e/9rItf6/4QymU7WsAUwCf+ICW75cuR91nJIc=",
-        version = "v0.0.0-20221206210731-b1a01be3a5f6",
+        sum = "h1:jmIfw8+gSvXcZSgaFAGyInDXeWzUhvYH57G/5GKMn70=",
+        version = "v0.0.0-20221207170731-23e4bf6bdc37",
     )
     go_repository(
         name = "org_golang_google_grpc",
