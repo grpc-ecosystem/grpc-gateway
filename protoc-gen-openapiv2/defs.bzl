@@ -356,6 +356,12 @@ protoc_gen_openapiv2 = rule(
                   " Repeat this option to supply multiple values. Elements without" +
                   " visibility annotations are unaffected by this setting.",
         ),
+        "use_allof_for_refs": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, will use allOf as container for $ref to preserve" +
+                  " same-level properties.",
+        ),
         "_protoc": attr.label(
             default = "@com_google_protobuf//:protoc",
             executable = True,

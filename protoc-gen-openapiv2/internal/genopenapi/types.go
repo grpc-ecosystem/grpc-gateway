@@ -182,6 +182,10 @@ type schemaCore struct {
 	Default string   `json:"default,omitempty" yaml:"default,omitempty"`
 }
 
+type allOfEntry struct {
+	Ref string `json:"$ref,omitempty" yaml:"$ref,omitempty"`
+}
+
 type RawExample json.RawMessage
 
 func (m RawExample) MarshalJSON() ([]byte, error) {
@@ -321,6 +325,8 @@ type openapiSchemaObject struct {
 	Required         []string `json:"required,omitempty" yaml:"required,omitempty"`
 
 	extensions []extension
+
+	AllOf []allOfEntry `json:"allOf,omitempty" yaml:"allOf,omitempty"`
 }
 
 // http://swagger.io/specification/#definitionsObject

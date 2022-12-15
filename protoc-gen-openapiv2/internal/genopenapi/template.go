@@ -515,6 +515,24 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 			fieldSchema.Required = nil
 		}
 
+		if reg.GetUseAllOfForRefs() {
+			if fieldSchema.Ref != "" {
+				// Per the JSON Reference syntax: Any members other than "$ref" in a JSON Reference object SHALL be ignored.
+				// https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03#section-3
+				// However, use allOf to specify Title/Description/readOnly fields.
+				if fieldSchema.Title != "" || fieldSchema.Description != "" || fieldSchema.ReadOnly {
+					fieldSchema = openapiSchemaObject{
+						Title:       fieldSchema.Title,
+						Description: fieldSchema.Description,
+						ReadOnly:    fieldSchema.ReadOnly,
+						AllOf:       []allOfEntry{{Ref: fieldSchema.Ref}},
+					}
+				} else {
+					fieldSchema = openapiSchemaObject{schemaCore: schemaCore{Ref: fieldSchema.Ref}}
+				}
+			}
+		}
+
 		kv := keyVal{Value: fieldSchema}
 		kv.Key = reg.FieldName(f)
 		if schema.Properties == nil {
