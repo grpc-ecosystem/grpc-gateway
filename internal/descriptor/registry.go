@@ -136,6 +136,10 @@ type Registry struct {
 	// disableDefaultResponses disables the generation of default responses.
 	// Useful if you have to support custom response codes that are not 200.
 	disableDefaultResponses bool
+
+	// useAllOfForRefs, if set, will use allOf as container for $ref to preserve same-level
+	// properties
+	useAllOfForRefs bool
 }
 
 type repeatedFieldSeparator struct {
@@ -771,4 +775,14 @@ func (r *Registry) SetDisableDefaultResponses(use bool) {
 // GetDisableDefaultResponses returns disableDefaultResponses
 func (r *Registry) GetDisableDefaultResponses() bool {
 	return r.disableDefaultResponses
+}
+
+// SetUseAllOfForRefs sets useAllOfForRefs
+func (r *Registry) SetUseAllOfForRefs(use bool) {
+	r.useAllOfForRefs = use
+}
+
+// GetUseAllOfForRefs returns useAllOfForRefs
+func (r *Registry) GetUseAllOfForRefs() bool {
+	return r.useAllOfForRefs
 }

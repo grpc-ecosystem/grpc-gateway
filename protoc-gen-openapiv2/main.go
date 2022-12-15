@@ -42,6 +42,7 @@ var (
 	visibilityRestrictionSelectors = utilities.StringArrayFlag(flag.CommandLine, "visibility_restriction_selectors", "list of `google.api.VisibilityRule` visibility labels to include in the generated output when a visibility annotation is defined. Repeat this option to supply multiple values. Elements without visibility annotations are unaffected by this setting.")
 	disableServiceTags             = flag.Bool("disable_service_tags", false, "if set, disables generation of service tags. This is useful if you do not want to expose the names of your backend grpc services.")
 	disableDefaultResponses        = flag.Bool("disable_default_responses", false, "if set, disables generation of default responses. Useful if you have to support custom response codes that are not 200.")
+	useAllOfForRefs                = flag.Bool("use_allof_for_refs", false, "if set, will use allOf as container for $ref to preserve same-level properties.")
 )
 
 // Variables set by goreleaser at build time
@@ -127,6 +128,7 @@ func main() {
 	reg.SetVisibilityRestrictionSelectors(*visibilityRestrictionSelectors)
 	reg.SetDisableServiceTags(*disableServiceTags)
 	reg.SetDisableDefaultResponses(*disableDefaultResponses)
+	reg.SetUseAllOfForRefs(*useAllOfForRefs)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
 		return
