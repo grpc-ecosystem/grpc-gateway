@@ -362,6 +362,12 @@ protoc_gen_openapiv2 = rule(
             doc = "if set, will use allOf as container for $ref to preserve" +
                   " same-level properties.",
         ),
+        "allow_write_only_attribute": attr.bool(
+            default = False,
+            mandatory = False,
+            doc = "if set, enables the writeOnly attribute which is only available" +
+                  " in Open API v3, but some tools (like Redoc) support it for v2.",
+        ),
         "_protoc": attr.label(
             default = "@com_google_protobuf//:protoc",
             executable = True,

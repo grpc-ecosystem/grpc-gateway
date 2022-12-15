@@ -534,6 +534,8 @@ message JSONSchema {
   reserved 30 to 33;
   // Items in 'array' must be unique.
   repeated string array = 34;
+  // Only available in Open API v3, but some tools (like Redoc) support it for v2.
+  bool write_only = 99;
 
   enum JSONSchemaSimpleTypes {
     UNKNOWN = 0;

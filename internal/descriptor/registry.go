@@ -140,6 +140,10 @@ type Registry struct {
 	// useAllOfForRefs, if set, will use allOf as container for $ref to preserve same-level
 	// properties
 	useAllOfForRefs bool
+
+	// allowWriteOnlyAttribute, if set enables the writeOnly attribute which is only available in
+	// Open API v3, but some tools (like Redoc) support it for v2.
+	allowWriteOnlyAttribute bool
 }
 
 type repeatedFieldSeparator struct {
@@ -785,4 +789,14 @@ func (r *Registry) SetUseAllOfForRefs(use bool) {
 // GetUseAllOfForRefs returns useAllOfForRefs
 func (r *Registry) GetUseAllOfForRefs() bool {
 	return r.useAllOfForRefs
+}
+
+// SetAllowWriteOnlyAttribute sets allowWriteOnlyAttribute
+func (r *Registry) SetAllowWriteOnlyAttribute(use bool) {
+	r.allowWriteOnlyAttribute = use
+}
+
+// GetAllowWriteOnlyAttributes returns allowWriteOnlyAttribute
+func (r *Registry) GetAllowWriteOnlyAttributes() bool {
+	return r.allowWriteOnlyAttribute
 }

@@ -43,6 +43,7 @@ var (
 	disableServiceTags             = flag.Bool("disable_service_tags", false, "if set, disables generation of service tags. This is useful if you do not want to expose the names of your backend grpc services.")
 	disableDefaultResponses        = flag.Bool("disable_default_responses", false, "if set, disables generation of default responses. Useful if you have to support custom response codes that are not 200.")
 	useAllOfForRefs                = flag.Bool("use_allof_for_refs", false, "if set, will use allOf as container for $ref to preserve same-level properties.")
+	allowWriteOnlyAttribute        = flag.Bool("allow_write_only_attribute", false, "if set, enables the writeOnly attribute which is only available in Open API v3, but some tools (like Redoc) support it for v2.")
 )
 
 // Variables set by goreleaser at build time
@@ -129,6 +130,7 @@ func main() {
 	reg.SetDisableServiceTags(*disableServiceTags)
 	reg.SetDisableDefaultResponses(*disableDefaultResponses)
 	reg.SetUseAllOfForRefs(*useAllOfForRefs)
+	reg.SetAllowWriteOnlyAttribute(*allowWriteOnlyAttribute)
 	if err := reg.SetRepeatedPathParamSeparator(*repeatedPathParamSeparator); err != nil {
 		emitError(err)
 		return

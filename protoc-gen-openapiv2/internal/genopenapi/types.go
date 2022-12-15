@@ -320,6 +320,7 @@ type openapiSchemaObject struct {
 	ExternalDocs *openapiExternalDocumentationObject `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
 
 	ReadOnly         bool     `json:"readOnly,omitempty" yaml:"readOnly,omitempty"`
+	WriteOnly        bool     `json:"writeOnly,omitempty" yaml:"writeOnly,omitempty"`
 	MultipleOf       float64  `json:"multipleOf,omitempty" yaml:"multipleOf,omitempty"`
 	Maximum          float64  `json:"maximum,omitempty" yaml:"maximum,omitempty"`
 	ExclusiveMaximum bool     `json:"exclusiveMaximum,omitempty" yaml:"exclusiveMaximum,omitempty"`
