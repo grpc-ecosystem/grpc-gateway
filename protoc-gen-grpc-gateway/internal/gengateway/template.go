@@ -72,6 +72,9 @@ func (b binding) QueryParamFilter() queryParamFilter {
 	}
 	for _, p := range b.PathParams {
 		seqs = append(seqs, strings.Split(p.FieldPath.String(), "."))
+		if p.Target.JsonName != nil {
+			seqs = append(seqs, strings.Split(*p.Target.JsonName, "."))
+		}
 	}
 	return queryParamFilter{utilities.NewDoubleArray(seqs)}
 }
