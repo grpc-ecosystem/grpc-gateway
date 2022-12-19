@@ -17,6 +17,98 @@
     "application/json"
   ],
   "paths": {
+    "/v1/example/echo/resource/{resourceId}": {
+      "get": {
+        "summary": "Echo method receives a simple message and returns it.",
+        "description": "The message posted as the id parameter will also be\nreturned.",
+        "operationId": "EchoService_Echo6",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbSimpleMessage"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "resourceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "description": "Id represents the message identifier.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lineNum",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "status.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "en",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.progress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "no.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "EchoService"
+        ]
+      }
+    },
     "/v1/example/echo/{id}": {
       "post": {
         "summary": "Echo method receives a simple message and returns it.",
@@ -93,6 +185,12 @@
           },
           {
             "name": "no.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "resourceId",
             "in": "query",
             "required": false,
             "type": "string"
@@ -182,6 +280,12 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -268,6 +372,12 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -348,6 +458,12 @@
             "required": false,
             "type": "string",
             "format": "int64"
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -428,6 +544,12 @@
             "required": false,
             "type": "string",
             "format": "int64"
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -542,6 +664,12 @@
             "required": false,
             "type": "string",
             "format": "int64"
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -624,6 +752,12 @@
           },
           {
             "name": "no.note",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "resourceId",
             "in": "query",
             "required": false,
             "type": "string"
@@ -751,6 +885,12 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "resourceId",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -821,6 +961,9 @@
         },
         "no": {
           "$ref": "#/definitions/examplepbEmbedded"
+        },
+        "resourceId": {
+          "type": "string"
         }
       },
       "description": "SimpleMessage represents a simple message sent to the Echo service."

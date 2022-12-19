@@ -42,6 +42,7 @@ Description Echo
      * @param "En" (optional.String) - 
      * @param "NoProgress" (optional.String) - 
      * @param "NoNote" (optional.String) - 
+     * @param "ResourceId" (optional.String) - 
 
 @return ExamplepbUnannotatedSimpleMessage
 */
@@ -55,6 +56,7 @@ type UnannotatedEchoServiceEchoOpts struct {
 	En optional.String
 	NoProgress optional.String
 	NoNote optional.String
+	ResourceId optional.String
 }
 
 func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho(ctx context.Context, id string, num string, localVarOptionals *UnannotatedEchoServiceEchoOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
@@ -98,6 +100,9 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho(ctx contex
 	}
 	if localVarOptionals != nil && localVarOptionals.NoNote.IsSet() {
 		localVarQueryParams.Add("no.note", parameterToString(localVarOptionals.NoNote.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ResourceId.IsSet() {
+		localVarQueryParams.Add("resourceId", parameterToString(localVarOptionals.ResourceId.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -235,6 +240,7 @@ Description Echo
      * @param "En" (optional.String) - 
      * @param "NoProgress" (optional.String) - 
      * @param "NoNote" (optional.String) - 
+     * @param "ResourceId" (optional.String) - 
 
 @return ExamplepbUnannotatedSimpleMessage
 */
@@ -248,6 +254,7 @@ type UnannotatedEchoServiceEcho2Opts struct {
 	En optional.String
 	NoProgress optional.String
 	NoNote optional.String
+	ResourceId optional.String
 }
 
 func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx context.Context, id string, num string, localVarOptionals *UnannotatedEchoServiceEcho2Opts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
@@ -291,6 +298,9 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEcho2(ctx conte
 	}
 	if localVarOptionals != nil && localVarOptionals.NoNote.IsSet() {
 		localVarQueryParams.Add("no.note", parameterToString(localVarOptionals.NoNote.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ResourceId.IsSet() {
+		localVarQueryParams.Add("resourceId", parameterToString(localVarOptionals.ResourceId.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -562,6 +572,7 @@ UnannotatedEchoServiceApiService EchoDelete method receives a simple message and
      * @param "En" (optional.String) - 
      * @param "NoProgress" (optional.String) - 
      * @param "NoNote" (optional.String) - 
+     * @param "ResourceId" (optional.String) - 
 
 @return ExamplepbUnannotatedSimpleMessage
 */
@@ -576,6 +587,7 @@ type UnannotatedEchoServiceEchoDeleteOpts struct {
 	En optional.String
 	NoProgress optional.String
 	NoNote optional.String
+	ResourceId optional.String
 }
 
 func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx context.Context, num string, localVarOptionals *UnannotatedEchoServiceEchoDeleteOpts) (ExamplepbUnannotatedSimpleMessage, *http.Response, error) {
@@ -621,6 +633,9 @@ func (a *UnannotatedEchoServiceApiService) UnannotatedEchoServiceEchoDelete(ctx 
 	}
 	if localVarOptionals != nil && localVarOptionals.NoNote.IsSet() {
 		localVarQueryParams.Add("no.note", parameterToString(localVarOptionals.NoNote.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ResourceId.IsSet() {
+		localVarQueryParams.Add("resourceId", parameterToString(localVarOptionals.ResourceId.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}

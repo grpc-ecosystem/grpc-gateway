@@ -138,6 +138,9 @@ test: proto
 	go test -short -race ./...
 	go test -race ./examples/internal/integration -args -network=unix -endpoint=test.sock
 
+test/integration:
+	go test -race ./examples/internal/integration -args -network=unix -endpoint=test.sock
+
 clean:
 	find . -type f -name '*.pb.go' -delete
 	find . -type f -name '*.swagger.json' -delete
