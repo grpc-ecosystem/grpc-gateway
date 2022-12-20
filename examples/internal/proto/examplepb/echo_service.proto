@@ -84,6 +84,10 @@ service EchoService {
         put: "/v1/example/echo_body/{id}"
         body: "no"
       }
+      additional_bindings {
+        put: "/v1/example/echo_body2/{id}"
+        body: "resource_id"
+      }
     };
   }
   // EchoDelete method receives a simple message and returns it.
