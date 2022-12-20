@@ -100,9 +100,8 @@ func TestJSONBuiltinUnmarshalField(t *testing.T) {
 func alloc(t reflect.Type) reflect.Value {
 	if t == nil {
 		return reflect.ValueOf(new(interface{}))
-	} else {
-		return reflect.New(t)
 	}
+	return reflect.New(t)
 }
 
 func TestJSONBuiltinUnmarshalFieldKnownErrors(t *testing.T) {
@@ -197,6 +196,8 @@ var (
 		{data: "", json: `""`},
 		{data: proto.String(""), json: `""`},
 		{data: "foo", json: `"foo"`},
+		{data: []byte("foo"), json: `"Zm9v"`},
+		{data: []byte{}, json: `""`},
 		{data: proto.String("foo"), json: `"foo"`},
 		{data: int32(-1), json: "-1"},
 		{data: proto.Int32(-1), json: "-1"},
@@ -248,7 +249,7 @@ var (
 			json: `"2016-05-10T10:19:13.123Z"`,
 		},
 		{
-			data: &wrapperspb.Int32Value{Value: 123},
+			data: wrapperspb.Int32(123),
 			json: "123",
 		},
 	}

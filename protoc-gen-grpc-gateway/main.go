@@ -3,7 +3,8 @@
 // HTTP/1 requests gRPC invocation.
 // You rarely need to run this program directly. Instead, put this program
 // into your $PATH with a name "protoc-gen-grpc-gateway" and run
-//   protoc --grpc-gateway_out=output_directory path/to/input.proto
+//
+//	protoc --grpc-gateway_out=output_directory path/to/input.proto
 //
 // See README.md for more details.
 package main
@@ -26,7 +27,7 @@ var (
 	useRequestContext          = flag.Bool("request_context", true, "determine whether to use http.Request's context or not")
 	allowDeleteBody            = flag.Bool("allow_delete_body", false, "unless set, HTTP DELETE methods may not have a body")
 	grpcAPIConfiguration       = flag.String("grpc_api_configuration", "", "path to gRPC API Configuration in YAML format")
-	allowRepeatedFieldsInBody  = flag.Bool("allow_repeated_fields_in_body", false, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option")
+	_                          = flag.Bool("allow_repeated_fields_in_body", true, "allows to use repeated field in `body` and `response_body` field of `google.api.http` annotation option. DEPRECATED: the value is ignored and always behaves as `true`.")
 	repeatedPathParamSeparator = flag.String("repeated_path_param_separator", "csv", "configures how repeated fields should be split. Allowed values are `csv`, `pipes`, `ssv` and `tsv`.")
 	allowPatchFeature          = flag.Bool("allow_patch_feature", true, "determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).")
 	omitPackageDoc             = flag.Bool("omit_package_doc", false, "if true, no package comment will be included in the generated code")
@@ -101,32 +102,6 @@ func main() {
 	})
 }
 
-func parseFlags(reg *descriptor.Registry, parameter string) {
-	if parameter == "" {
-		return
-	}
-
-	for _, p := range strings.Split(parameter, ",") {
-		spec := strings.SplitN(p, "=", 2)
-		if len(spec) == 1 {
-			if err := flag.CommandLine.Set(spec[0], ""); err != nil {
-				glog.Fatalf("Cannot set flag %s", p)
-			}
-			continue
-		}
-
-		name, value := spec[0], spec[1]
-
-		if strings.HasPrefix(name, "M") {
-			reg.AddPkgMap(name[1:], value)
-			continue
-		}
-		if err := flag.CommandLine.Set(name, value); err != nil {
-			glog.Fatalf("Cannot set flag %s", p)
-		}
-	}
-}
-
 func applyFlags(reg *descriptor.Registry) error {
 	if *grpcAPIConfiguration != "" {
 		if err := reg.LoadGrpcAPIServiceFromYAML(*grpcAPIConfiguration); err != nil {
@@ -138,7 +113,13 @@ func applyFlags(reg *descriptor.Registry) error {
 	}
 	reg.SetStandalone(*standalone)
 	reg.SetAllowDeleteBody(*allowDeleteBody)
-	reg.SetAllowRepeatedFieldsInBody(*allowRepeatedFieldsInBody)
+
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "allow_repeated_fields_in_body" {
+			glog.Warning("The `allow_repeated_fields_in_body` flag is deprecated and will always behave as `true`.")
+		}
+	})
+
 	reg.SetOmitPackageDoc(*omitPackageDoc)
 	reg.SetWarnOnUnboundMethods(*warnOnUnboundMethods)
 	reg.SetGenerateUnboundMethods(*generateUnboundMethods)

@@ -66,6 +66,57 @@ func (PathEnum) EnumDescriptor() ([]byte, []int) {
 	return file_examples_internal_proto_pathenum_path_enum_proto_rawDescGZIP(), []int{0}
 }
 
+// Ignoring lint warnings as this enum type exist to validate proper functionality
+// for projects that don't follow these lint rules.
+// buf:lint:ignore ENUM_PASCAL_CASE
+type SnakeCaseForImport int32
+
+const (
+	// buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE
+	SnakeCaseForImport_value_x SnakeCaseForImport = 0
+	// buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE
+	SnakeCaseForImport_value_y SnakeCaseForImport = 1
+)
+
+// Enum value maps for SnakeCaseForImport.
+var (
+	SnakeCaseForImport_name = map[int32]string{
+		0: "value_x",
+		1: "value_y",
+	}
+	SnakeCaseForImport_value = map[string]int32{
+		"value_x": 0,
+		"value_y": 1,
+	}
+)
+
+func (x SnakeCaseForImport) Enum() *SnakeCaseForImport {
+	p := new(SnakeCaseForImport)
+	*p = x
+	return p
+}
+
+func (x SnakeCaseForImport) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (SnakeCaseForImport) Descriptor() protoreflect.EnumDescriptor {
+	return file_examples_internal_proto_pathenum_path_enum_proto_enumTypes[1].Descriptor()
+}
+
+func (SnakeCaseForImport) Type() protoreflect.EnumType {
+	return &file_examples_internal_proto_pathenum_path_enum_proto_enumTypes[1]
+}
+
+func (x SnakeCaseForImport) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use SnakeCaseForImport.Descriptor instead.
+func (SnakeCaseForImport) EnumDescriptor() ([]byte, []int) {
+	return file_examples_internal_proto_pathenum_path_enum_proto_rawDescGZIP(), []int{1}
+}
+
 type MessagePathEnum_NestedPathEnum int32
 
 const (
@@ -96,11 +147,11 @@ func (x MessagePathEnum_NestedPathEnum) String() string {
 }
 
 func (MessagePathEnum_NestedPathEnum) Descriptor() protoreflect.EnumDescriptor {
-	return file_examples_internal_proto_pathenum_path_enum_proto_enumTypes[1].Descriptor()
+	return file_examples_internal_proto_pathenum_path_enum_proto_enumTypes[2].Descriptor()
 }
 
 func (MessagePathEnum_NestedPathEnum) Type() protoreflect.EnumType {
-	return &file_examples_internal_proto_pathenum_path_enum_proto_enumTypes[1]
+	return &file_examples_internal_proto_pathenum_path_enum_proto_enumTypes[2]
 }
 
 func (x MessagePathEnum_NestedPathEnum) Number() protoreflect.EnumNumber {
@@ -271,13 +322,16 @@ var file_examples_internal_proto_pathenum_path_enum_proto_rawDesc = []byte{
 	0x50, 0x61, 0x74, 0x68, 0x45, 0x6e, 0x75, 0x6d, 0x2e, 0x4e, 0x65, 0x73, 0x74, 0x65, 0x64, 0x50,
 	0x61, 0x74, 0x68, 0x45, 0x6e, 0x75, 0x6d, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x2a, 0x1c,
 	0x0a, 0x08, 0x50, 0x61, 0x74, 0x68, 0x45, 0x6e, 0x75, 0x6d, 0x12, 0x07, 0x0a, 0x03, 0x41, 0x42,
-	0x43, 0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x44, 0x45, 0x46, 0x10, 0x01, 0x42, 0x4c, 0x5a, 0x4a,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2d,
-	0x65, 0x63, 0x6f, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x2f, 0x67, 0x72, 0x70, 0x63, 0x2d, 0x67,
-	0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2f, 0x76, 0x32, 0x2f, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c,
-	0x65, 0x73, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2f, 0x70, 0x61, 0x74, 0x68, 0x65, 0x6e, 0x75, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x43, 0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x44, 0x45, 0x46, 0x10, 0x01, 0x2a, 0x31, 0x0a, 0x15,
+	0x73, 0x6e, 0x61, 0x6b, 0x65, 0x5f, 0x63, 0x61, 0x73, 0x65, 0x5f, 0x66, 0x6f, 0x72, 0x5f, 0x69,
+	0x6d, 0x70, 0x6f, 0x72, 0x74, 0x12, 0x0b, 0x0a, 0x07, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x5f, 0x78,
+	0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x5f, 0x79, 0x10, 0x01, 0x42,
+	0x4c, 0x5a, 0x4a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x72,
+	0x70, 0x63, 0x2d, 0x65, 0x63, 0x6f, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x2f, 0x67, 0x72, 0x70,
+	0x63, 0x2d, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2f, 0x76, 0x32, 0x2f, 0x65, 0x78, 0x61,
+	0x6d, 0x70, 0x6c, 0x65, 0x73, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x70, 0x61, 0x74, 0x68, 0x65, 0x6e, 0x75, 0x6d, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -292,18 +346,19 @@ func file_examples_internal_proto_pathenum_path_enum_proto_rawDescGZIP() []byte 
 	return file_examples_internal_proto_pathenum_path_enum_proto_rawDescData
 }
 
-var file_examples_internal_proto_pathenum_path_enum_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_examples_internal_proto_pathenum_path_enum_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
 var file_examples_internal_proto_pathenum_path_enum_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_examples_internal_proto_pathenum_path_enum_proto_goTypes = []interface{}{
 	(PathEnum)(0),                       // 0: grpc.gateway.examples.internal.pathenum.PathEnum
-	(MessagePathEnum_NestedPathEnum)(0), // 1: grpc.gateway.examples.internal.pathenum.MessagePathEnum.NestedPathEnum
-	(*MessagePathEnum)(nil),             // 2: grpc.gateway.examples.internal.pathenum.MessagePathEnum
-	(*MessageWithPathEnum)(nil),         // 3: grpc.gateway.examples.internal.pathenum.MessageWithPathEnum
-	(*MessageWithNestedPathEnum)(nil),   // 4: grpc.gateway.examples.internal.pathenum.MessageWithNestedPathEnum
+	(SnakeCaseForImport)(0),             // 1: grpc.gateway.examples.internal.pathenum.snake_case_for_import
+	(MessagePathEnum_NestedPathEnum)(0), // 2: grpc.gateway.examples.internal.pathenum.MessagePathEnum.NestedPathEnum
+	(*MessagePathEnum)(nil),             // 3: grpc.gateway.examples.internal.pathenum.MessagePathEnum
+	(*MessageWithPathEnum)(nil),         // 4: grpc.gateway.examples.internal.pathenum.MessageWithPathEnum
+	(*MessageWithNestedPathEnum)(nil),   // 5: grpc.gateway.examples.internal.pathenum.MessageWithNestedPathEnum
 }
 var file_examples_internal_proto_pathenum_path_enum_proto_depIdxs = []int32{
 	0, // 0: grpc.gateway.examples.internal.pathenum.MessageWithPathEnum.value:type_name -> grpc.gateway.examples.internal.pathenum.PathEnum
-	1, // 1: grpc.gateway.examples.internal.pathenum.MessageWithNestedPathEnum.value:type_name -> grpc.gateway.examples.internal.pathenum.MessagePathEnum.NestedPathEnum
+	2, // 1: grpc.gateway.examples.internal.pathenum.MessageWithNestedPathEnum.value:type_name -> grpc.gateway.examples.internal.pathenum.MessagePathEnum.NestedPathEnum
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -359,7 +414,7 @@ func file_examples_internal_proto_pathenum_path_enum_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_examples_internal_proto_pathenum_path_enum_proto_rawDesc,
-			NumEnums:      2,
+			NumEnums:      3,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,

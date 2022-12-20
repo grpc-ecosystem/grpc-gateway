@@ -383,10 +383,79 @@ paths:
       parameters:
       - in: "body"
         name: "body"
+        description: "SimpleMessage represents a simple message sent to the Echo service."
         required: true
         schema:
           $ref: "#/definitions/examplepbSimpleMessage"
         x-exportParamName: "Body"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+  /v1/example/echo_body/{id}:
+    put:
+      tags:
+      - "EchoService"
+      summary: "EchoBody method receives a simple message and returns it."
+      operationId: "EchoService_EchoBody2"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id represents the message identifier."
+        required: true
+        type: "string"
+        x-exportParamName: "Id"
+      - in: "body"
+        name: "no"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbEmbedded"
+        x-exportParamName: "No"
+      - name: "num"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Num"
+        x-optionalDataType: "String"
+      - name: "lineNum"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "LineNum"
+        x-optionalDataType: "String"
+      - name: "lang"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      - name: "status.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "StatusProgress"
+        x-optionalDataType: "String"
+      - name: "status.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StatusNote"
+        x-optionalDataType: "String"
+      - name: "en"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "En"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -585,14 +654,12 @@ definitions:
       structField:
         type: "object"
         properties: {}
-      valueField:
-        type: "object"
-        properties: {}
+      valueField: {}
     description: "DynamicMessage represents a message which can have its structure\n\
       built dynamically using Struct and Values."
     example:
       structField: "{}"
-      valueField: "{}"
+      valueField: ""
   examplepbDynamicMessageUpdate:
     type: "object"
     properties:
@@ -603,7 +670,7 @@ definitions:
     example:
       body:
         structField: "{}"
-        valueField: "{}"
+        valueField: ""
       updateMask: "updateMask"
   examplepbEmbedded:
     type: "object"

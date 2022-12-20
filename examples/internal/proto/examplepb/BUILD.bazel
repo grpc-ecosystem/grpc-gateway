@@ -28,6 +28,8 @@ package(default_visibility = ["//visibility:public"])
 # gazelle:exclude wrappers_grpc.pb.go
 # gazelle:exclude unannotated_echo_service.pb.gw.go
 # gazelle:exclude unannotated_echo_service_grpc.pb.go
+# gazelle:exclude visibility_rule_echo_service.pb.gw.go
+# gazelle:exclude visibility_rule_echo_service_grpc.pb.go
 # gazelle:exclude openapi_merge_a.proto
 # gazelle:exclude openapi_merge_b.proto
 # gazelle:go_grpc_compilers //:go_apiv2, //:go_grpc, //protoc-gen-grpc-gateway:go_gen_grpc_gateway
@@ -52,9 +54,11 @@ proto_library(
         "stream.proto",
         "unannotated_echo_service.proto",
         "use_go_template.proto",
+        "visibility_rule_echo_service.proto",
         "wrappers.proto",
     ],
     deps = [
+        "//examples/internal/proto/oneofenum:oneofenum_proto",
         "//examples/internal/proto/pathenum:pathenum_proto",
         "//examples/internal/proto/sub:sub_proto",
         "//examples/internal/proto/sub2:sub2_proto",
@@ -67,6 +71,7 @@ proto_library(
         "@com_google_protobuf//:wrappers_proto",
         "@go_googleapis//google/api:annotations_proto",
         "@go_googleapis//google/api:httpbody_proto",
+        "@go_googleapis//google/api:visibility_proto",
         "@go_googleapis//google/rpc:status_proto",
     ],
 )
@@ -94,6 +99,7 @@ go_proto_library(
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb",
     proto = ":examplepb_proto",
     deps = [
+        "//examples/internal/proto/oneofenum",
         "//examples/internal/proto/pathenum",
         "//examples/internal/proto/sub",
         "//examples/internal/proto/sub2",
@@ -101,6 +107,7 @@ go_proto_library(
         "@com_github_golang_protobuf//descriptor:go_default_library_gen",  # keep
         "@go_googleapis//google/api:annotations_go_proto",
         "@go_googleapis//google/api:httpbody_go_proto",
+        "@go_googleapis//google/api:visibility_go_proto",
         "@go_googleapis//google/rpc:status_go_proto",
         "@org_golang_google_protobuf//proto:go_default_library",  # keep
     ],

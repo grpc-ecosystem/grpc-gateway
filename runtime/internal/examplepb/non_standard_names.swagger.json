@@ -130,9 +130,7 @@
         "structField": {
           "type": "object"
         },
-        "valueField": {
-          "type": "object"
-        }
+        "valueField": {}
       },
       "description": "NonStandardMessage has oddly named fields."
     },
@@ -186,9 +184,7 @@
         "StructField": {
           "type": "object"
         },
-        "ValueField": {
-          "type": "object"
-        }
+        "ValueField": {}
       },
       "description": "NonStandardMessageWithJSONNames maps odd field names to odd JSON names for maximum confusion."
     },

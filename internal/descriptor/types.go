@@ -323,8 +323,14 @@ type Body struct {
 
 // AssignableExpr returns an assignable expression in Go to be used to initialize method request object.
 // It starts with "msgExpr", which is the go expression of the method request object.
-func (b Body) AssignableExpr(msgExpr string) string {
-	return b.FieldPath.AssignableExpr(msgExpr)
+func (b Body) AssignableExpr(msgExpr string, currentPackage string) string {
+	return b.FieldPath.AssignableExpr(msgExpr, currentPackage)
+}
+
+// AssignableExprPrep returns preparatory statements for an assignable expression to initialize the
+// method request object.
+func (b Body) AssignableExprPrep(msgExpr string, currentPackage string) string {
+	return b.FieldPath.AssignableExprPrep(msgExpr, currentPackage)
 }
 
 // FieldPath is a path to a field from a request message.
@@ -356,11 +362,49 @@ func (p FieldPath) IsOptionalProto3() bool {
 }
 
 // AssignableExpr is an assignable expression in Go to be used to assign a value to the target field.
-// It starts with "msgExpr", which is the go expression of the method request object.
-func (p FieldPath) AssignableExpr(msgExpr string) string {
+// It starts with "msgExpr", which is the go expression of the method request object. Before using
+// such an expression the prep statements must be emitted first, in case the field path includes
+// a oneof. See FieldPath.AssignableExprPrep.
+func (p FieldPath) AssignableExpr(msgExpr string, currentPackage string) string {
 	l := len(p)
 	if l == 0 {
 		return msgExpr
+	}
+
+	components := msgExpr
+	for i, c := range p {
+		// We need to check if the target is not proto3_optional first.
+		// Under the hood, proto3_optional uses oneof to signal to old proto3 clients
+		// that presence is tracked for this field. This oneof is known as a "synthetic" oneof.
+		if !c.Target.GetProto3Optional() && c.Target.OneofIndex != nil {
+			index := c.Target.OneofIndex
+			msg := c.Target.Message
+			oneOfName := casing.Camel(msg.GetOneofDecl()[*index].GetName())
+			oneofFieldName := msg.GoType(currentPackage) + "_" + c.AssignableExpr()
+
+			if c.Target.ForcePrefixedName {
+				oneofFieldName = msg.File.Pkg() + "." + msg.GetName() + "_" + c.AssignableExpr()
+			}
+
+			components = components + "." + oneOfName + ".(*" + oneofFieldName + ")"
+		}
+
+		if i == l-1 {
+			components = components + "." + c.AssignableExpr()
+			continue
+		}
+		components = components + "." + c.ValueExpr()
+	}
+	return components
+}
+
+// AssignableExprPrep returns preparation statements for an assignable expression to assign a value
+// to the target field. The Go expression of the method request object is "msgExpr". This is only
+// needed for field paths that contain oneofs. Otherwise, an empty string is returned.
+func (p FieldPath) AssignableExprPrep(msgExpr string, currentPackage string) string {
+	l := len(p)
+	if l == 0 {
+		return ""
 	}
 
 	var preparations []string
@@ -373,10 +417,10 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 			index := c.Target.OneofIndex
 			msg := c.Target.Message
 			oneOfName := casing.Camel(msg.GetOneofDecl()[*index].GetName())
-			oneofFieldName := msg.GetName() + "_" + c.AssignableExpr()
+			oneofFieldName := msg.GoType(currentPackage) + "_" + c.AssignableExpr()
 
 			if c.Target.ForcePrefixedName {
-				oneofFieldName = msg.File.Pkg() + "." + oneofFieldName
+				oneofFieldName = msg.File.Pkg() + "." + msg.GetName() + "_" + c.AssignableExpr()
 			}
 
 			components = components + "." + oneOfName
@@ -397,7 +441,6 @@ func (p FieldPath) AssignableExpr(msgExpr string) string {
 		components = components + "." + c.ValueExpr()
 	}
 
-	preparations = append(preparations, components)
 	return strings.Join(preparations, "\n")
 }
 

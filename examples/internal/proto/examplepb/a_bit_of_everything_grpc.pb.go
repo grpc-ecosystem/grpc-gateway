@@ -4,6 +4,7 @@ package examplepb
 
 import (
 	context "context"
+	oneofenum "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/oneofenum"
 	pathenum "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
 	sub "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	sub2 "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2"
@@ -33,6 +34,8 @@ type ABitOfEverythingServiceClient interface {
 	CreateBook(ctx context.Context, in *CreateBookRequest, opts ...grpc.CallOption) (*Book, error)
 	UpdateBook(ctx context.Context, in *UpdateBookRequest, opts ...grpc.CallOption) (*Book, error)
 	Lookup(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*ABitOfEverything, error)
+	Custom(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
+	DoubleColon(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	Update(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateV2(ctx context.Context, in *UpdateV2Request, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Delete(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -55,10 +58,16 @@ type ABitOfEverythingServiceClient interface {
 	CheckGetQueryParams(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	CheckNestedEnumGetQueryParams(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
 	CheckPostQueryParams(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
+	OverwriteRequestContentType(ctx context.Context, in *Body, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	OverwriteResponseContentType(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*wrapperspb.StringValue, error)
 	CheckExternalPathEnum(ctx context.Context, in *pathenum.MessageWithPathEnum, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CheckExternalNestedPathEnum(ctx context.Context, in *pathenum.MessageWithNestedPathEnum, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CheckStatus(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CheckStatusResponse, error)
+	Exists(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CustomOptionsRequest(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	TraceRequest(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error)
+	PostOneofEnum(ctx context.Context, in *oneofenum.OneofEnumMessage, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PostRequiredMessageType(ctx context.Context, in *RequiredMessageTypeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type aBitOfEverythingServiceClient struct {
@@ -108,6 +117,24 @@ func (c *aBitOfEverythingServiceClient) UpdateBook(ctx context.Context, in *Upda
 func (c *aBitOfEverythingServiceClient) Lookup(ctx context.Context, in *sub2.IdMessage, opts ...grpc.CallOption) (*ABitOfEverything, error) {
 	out := new(ABitOfEverything)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Lookup", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) Custom(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
+	out := new(ABitOfEverything)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Custom", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) DoubleColon(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
+	out := new(ABitOfEverything)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/DoubleColon", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -249,6 +276,15 @@ func (c *aBitOfEverythingServiceClient) CheckPostQueryParams(ctx context.Context
 	return out, nil
 }
 
+func (c *aBitOfEverythingServiceClient) OverwriteRequestContentType(ctx context.Context, in *Body, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/OverwriteRequestContentType", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *aBitOfEverythingServiceClient) OverwriteResponseContentType(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*wrapperspb.StringValue, error) {
 	out := new(wrapperspb.StringValue)
 	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/OverwriteResponseContentType", in, out, opts...)
@@ -285,6 +321,51 @@ func (c *aBitOfEverythingServiceClient) CheckStatus(ctx context.Context, in *emp
 	return out, nil
 }
 
+func (c *aBitOfEverythingServiceClient) Exists(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Exists", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) CustomOptionsRequest(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CustomOptionsRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) TraceRequest(ctx context.Context, in *ABitOfEverything, opts ...grpc.CallOption) (*ABitOfEverything, error) {
+	out := new(ABitOfEverything)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/TraceRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) PostOneofEnum(ctx context.Context, in *oneofenum.OneofEnumMessage, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/PostOneofEnum", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aBitOfEverythingServiceClient) PostRequiredMessageType(ctx context.Context, in *RequiredMessageTypeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/PostRequiredMessageType", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ABitOfEverythingServiceServer is the server API for ABitOfEverythingService service.
 // All implementations should embed UnimplementedABitOfEverythingServiceServer
 // for forward compatibility
@@ -298,6 +379,8 @@ type ABitOfEverythingServiceServer interface {
 	CreateBook(context.Context, *CreateBookRequest) (*Book, error)
 	UpdateBook(context.Context, *UpdateBookRequest) (*Book, error)
 	Lookup(context.Context, *sub2.IdMessage) (*ABitOfEverything, error)
+	Custom(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
+	DoubleColon(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	Update(context.Context, *ABitOfEverything) (*emptypb.Empty, error)
 	UpdateV2(context.Context, *UpdateV2Request) (*emptypb.Empty, error)
 	Delete(context.Context, *sub2.IdMessage) (*emptypb.Empty, error)
@@ -320,10 +403,16 @@ type ABitOfEverythingServiceServer interface {
 	CheckGetQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	CheckNestedEnumGetQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
 	CheckPostQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
+	OverwriteRequestContentType(context.Context, *Body) (*emptypb.Empty, error)
 	OverwriteResponseContentType(context.Context, *emptypb.Empty) (*wrapperspb.StringValue, error)
 	CheckExternalPathEnum(context.Context, *pathenum.MessageWithPathEnum) (*emptypb.Empty, error)
 	CheckExternalNestedPathEnum(context.Context, *pathenum.MessageWithNestedPathEnum) (*emptypb.Empty, error)
 	CheckStatus(context.Context, *emptypb.Empty) (*CheckStatusResponse, error)
+	Exists(context.Context, *ABitOfEverything) (*emptypb.Empty, error)
+	CustomOptionsRequest(context.Context, *ABitOfEverything) (*emptypb.Empty, error)
+	TraceRequest(context.Context, *ABitOfEverything) (*ABitOfEverything, error)
+	PostOneofEnum(context.Context, *oneofenum.OneofEnumMessage) (*emptypb.Empty, error)
+	PostRequiredMessageType(context.Context, *RequiredMessageTypeRequest) (*emptypb.Empty, error)
 }
 
 // UnimplementedABitOfEverythingServiceServer should be embedded to have forward compatible implementations.
@@ -344,6 +433,12 @@ func (UnimplementedABitOfEverythingServiceServer) UpdateBook(context.Context, *U
 }
 func (UnimplementedABitOfEverythingServiceServer) Lookup(context.Context, *sub2.IdMessage) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Lookup not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) Custom(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Custom not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) DoubleColon(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DoubleColon not implemented")
 }
 func (UnimplementedABitOfEverythingServiceServer) Update(context.Context, *ABitOfEverything) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
@@ -390,6 +485,9 @@ func (UnimplementedABitOfEverythingServiceServer) CheckNestedEnumGetQueryParams(
 func (UnimplementedABitOfEverythingServiceServer) CheckPostQueryParams(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckPostQueryParams not implemented")
 }
+func (UnimplementedABitOfEverythingServiceServer) OverwriteRequestContentType(context.Context, *Body) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OverwriteRequestContentType not implemented")
+}
 func (UnimplementedABitOfEverythingServiceServer) OverwriteResponseContentType(context.Context, *emptypb.Empty) (*wrapperspb.StringValue, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OverwriteResponseContentType not implemented")
 }
@@ -401,6 +499,21 @@ func (UnimplementedABitOfEverythingServiceServer) CheckExternalNestedPathEnum(co
 }
 func (UnimplementedABitOfEverythingServiceServer) CheckStatus(context.Context, *emptypb.Empty) (*CheckStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckStatus not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) Exists(context.Context, *ABitOfEverything) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Exists not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) CustomOptionsRequest(context.Context, *ABitOfEverything) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CustomOptionsRequest not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) TraceRequest(context.Context, *ABitOfEverything) (*ABitOfEverything, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TraceRequest not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) PostOneofEnum(context.Context, *oneofenum.OneofEnumMessage) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostOneofEnum not implemented")
+}
+func (UnimplementedABitOfEverythingServiceServer) PostRequiredMessageType(context.Context, *RequiredMessageTypeRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostRequiredMessageType not implemented")
 }
 
 // UnsafeABitOfEverythingServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -500,6 +613,42 @@ func _ABitOfEverythingService_Lookup_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ABitOfEverythingServiceServer).Lookup(ctx, req.(*sub2.IdMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_Custom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).Custom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Custom",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).Custom(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_DoubleColon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).DoubleColon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/DoubleColon",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).DoubleColon(ctx, req.(*ABitOfEverything))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -774,6 +923,24 @@ func _ABitOfEverythingService_CheckPostQueryParams_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ABitOfEverythingService_OverwriteRequestContentType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Body)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).OverwriteRequestContentType(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/OverwriteRequestContentType",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).OverwriteRequestContentType(ctx, req.(*Body))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ABitOfEverythingService_OverwriteResponseContentType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
@@ -846,6 +1013,96 @@ func _ABitOfEverythingService_CheckStatus_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ABitOfEverythingService_Exists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).Exists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/Exists",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).Exists(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_CustomOptionsRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).CustomOptionsRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/CustomOptionsRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).CustomOptionsRequest(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_TraceRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ABitOfEverything)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).TraceRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/TraceRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).TraceRequest(ctx, req.(*ABitOfEverything))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_PostOneofEnum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(oneofenum.OneofEnumMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).PostOneofEnum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/PostOneofEnum",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).PostOneofEnum(ctx, req.(*oneofenum.OneofEnumMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ABitOfEverythingService_PostRequiredMessageType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequiredMessageTypeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ABitOfEverythingServiceServer).PostRequiredMessageType(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.ABitOfEverythingService/PostRequiredMessageType",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ABitOfEverythingServiceServer).PostRequiredMessageType(ctx, req.(*RequiredMessageTypeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ABitOfEverythingService_ServiceDesc is the grpc.ServiceDesc for ABitOfEverythingService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -872,6 +1129,14 @@ var ABitOfEverythingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Lookup",
 			Handler:    _ABitOfEverythingService_Lookup_Handler,
+		},
+		{
+			MethodName: "Custom",
+			Handler:    _ABitOfEverythingService_Custom_Handler,
+		},
+		{
+			MethodName: "DoubleColon",
+			Handler:    _ABitOfEverythingService_DoubleColon_Handler,
 		},
 		{
 			MethodName: "Update",
@@ -934,6 +1199,10 @@ var ABitOfEverythingService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ABitOfEverythingService_CheckPostQueryParams_Handler,
 		},
 		{
+			MethodName: "OverwriteRequestContentType",
+			Handler:    _ABitOfEverythingService_OverwriteRequestContentType_Handler,
+		},
+		{
 			MethodName: "OverwriteResponseContentType",
 			Handler:    _ABitOfEverythingService_OverwriteResponseContentType_Handler,
 		},
@@ -948,6 +1217,26 @@ var ABitOfEverythingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckStatus",
 			Handler:    _ABitOfEverythingService_CheckStatus_Handler,
+		},
+		{
+			MethodName: "Exists",
+			Handler:    _ABitOfEverythingService_Exists_Handler,
+		},
+		{
+			MethodName: "CustomOptionsRequest",
+			Handler:    _ABitOfEverythingService_CustomOptionsRequest_Handler,
+		},
+		{
+			MethodName: "TraceRequest",
+			Handler:    _ABitOfEverythingService_TraceRequest_Handler,
+		},
+		{
+			MethodName: "PostOneofEnum",
+			Handler:    _ABitOfEverythingService_PostOneofEnum_Handler,
+		},
+		{
+			MethodName: "PostRequiredMessageType",
+			Handler:    _ABitOfEverythingService_PostRequiredMessageType_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1116,6 +1405,90 @@ var AnotherServiceWithNoBindings_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NoBindings",
 			Handler:    _AnotherServiceWithNoBindings_NoBindings_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "examples/internal/proto/examplepb/a_bit_of_everything.proto",
+}
+
+// SnakeEnumServiceClient is the client API for SnakeEnumService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type SnakeEnumServiceClient interface {
+	SnakeEnum(ctx context.Context, in *SnakeEnumRequest, opts ...grpc.CallOption) (*SnakeEnumResponse, error)
+}
+
+type snakeEnumServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewSnakeEnumServiceClient(cc grpc.ClientConnInterface) SnakeEnumServiceClient {
+	return &snakeEnumServiceClient{cc}
+}
+
+func (c *snakeEnumServiceClient) SnakeEnum(ctx context.Context, in *SnakeEnumRequest, opts ...grpc.CallOption) (*SnakeEnumResponse, error) {
+	out := new(SnakeEnumResponse)
+	err := c.cc.Invoke(ctx, "/grpc.gateway.examples.internal.proto.examplepb.SnakeEnumService/SnakeEnum", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// SnakeEnumServiceServer is the server API for SnakeEnumService service.
+// All implementations should embed UnimplementedSnakeEnumServiceServer
+// for forward compatibility
+type SnakeEnumServiceServer interface {
+	SnakeEnum(context.Context, *SnakeEnumRequest) (*SnakeEnumResponse, error)
+}
+
+// UnimplementedSnakeEnumServiceServer should be embedded to have forward compatible implementations.
+type UnimplementedSnakeEnumServiceServer struct {
+}
+
+func (UnimplementedSnakeEnumServiceServer) SnakeEnum(context.Context, *SnakeEnumRequest) (*SnakeEnumResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SnakeEnum not implemented")
+}
+
+// UnsafeSnakeEnumServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to SnakeEnumServiceServer will
+// result in compilation errors.
+type UnsafeSnakeEnumServiceServer interface {
+	mustEmbedUnimplementedSnakeEnumServiceServer()
+}
+
+func RegisterSnakeEnumServiceServer(s grpc.ServiceRegistrar, srv SnakeEnumServiceServer) {
+	s.RegisterService(&SnakeEnumService_ServiceDesc, srv)
+}
+
+func _SnakeEnumService_SnakeEnum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SnakeEnumRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SnakeEnumServiceServer).SnakeEnum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.gateway.examples.internal.proto.examplepb.SnakeEnumService/SnakeEnum",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SnakeEnumServiceServer).SnakeEnum(ctx, req.(*SnakeEnumRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// SnakeEnumService_ServiceDesc is the grpc.ServiceDesc for SnakeEnumService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var SnakeEnumService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc.gateway.examples.internal.proto.examplepb.SnakeEnumService",
+	HandlerType: (*SnakeEnumServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "SnakeEnum",
+			Handler:    _SnakeEnumService_SnakeEnum_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

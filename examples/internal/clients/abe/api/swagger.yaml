@@ -9,7 +9,7 @@ info:
     email: "none@example.com"
   license:
     name: "BSD 3-Clause License"
-    url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt"
+    url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt"
   x-something-something: "yadda"
 tags:
 - name: "ABitOfEverythingService"
@@ -20,6 +20,10 @@ tags:
     url: "https://github.com/grpc-ecosystem/grpc-gateway"
 - name: "camelCaseServiceName"
 - name: "AnotherServiceWithNoBindings"
+- name: "SnakeEnumService"
+- name: "echo rpc"
+  description: "Echo Rpc description"
+  x-traitTag: true
 schemes:
 - "http"
 - "https"
@@ -46,6 +50,8 @@ paths:
       parameters:
       - in: "body"
         name: "body"
+        description: "Intentionally complicated message type to cover many features\
+          \ of Protobuf."
         required: true
         schema:
           $ref: "#/definitions/examplepbABitOfEverything"
@@ -156,11 +162,11 @@ paths:
         x-optionalDataType: "Int64"
       - name: "uuid"
         in: "query"
-        required: false
+        required: true
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-internal: true
         x-exportParamName: "Uuid"
-        x-optionalDataType: "String"
       - name: "floatValue"
         in: "query"
         description: "Float value field"
@@ -171,18 +177,16 @@ paths:
         x-exportParamName: "FloatValue"
       - name: "doubleValue"
         in: "query"
-        required: false
+        required: true
         type: "number"
         format: "double"
         x-exportParamName: "DoubleValue"
-        x-optionalDataType: "Float64"
       - name: "int64Value"
         in: "query"
-        required: false
+        required: true
         type: "string"
         format: "int64"
         x-exportParamName: "Int64Value"
-        x-optionalDataType: "String"
       - name: "uint64Value"
         in: "query"
         required: false
@@ -325,7 +329,7 @@ paths:
         x-optionalDataType: "Time"
       - name: "repeatedEnumValue"
         in: "query"
-        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
           \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -338,7 +342,7 @@ paths:
         x-exportParamName: "RepeatedEnumValue"
       - name: "repeatedEnumAnnotation"
         in: "query"
-        description: "Repeated numeric enum title. Repeated numeric enum description.\n\
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
           \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -351,8 +355,8 @@ paths:
         x-exportParamName: "RepeatedEnumAnnotation"
       - name: "enumValueAnnotation"
         in: "query"
-        description: "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO\
-          \ means 0\n - ONE: ONE means 1"
+        description: "Numeric enum title\n\nNumeric enum description.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "string"
         default: "ZERO"
@@ -363,7 +367,7 @@ paths:
         x-optionalDataType: "String"
       - name: "repeatedStringAnnotation"
         in: "query"
-        description: "Repeated string title. Repeated string description."
+        description: "Repeated string title\n\nRepeated string description."
         required: false
         type: "array"
         items:
@@ -393,13 +397,13 @@ paths:
         x-optionalDataType: "Int64"
       - name: "requiredStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as required in Open API definition."
+        description: "mark a field as required in Open API definition"
         required: true
         type: "string"
         x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
       - name: "outputOnlyStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as readonly in Open API definition."
+        description: "mark a field as readonly in Open API definition"
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
@@ -409,6 +413,77 @@ paths:
         required: false
         type: "string"
         x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
       responses:
         200:
@@ -469,11 +544,11 @@ paths:
         x-optionalDataType: "String"
       - name: "uuid"
         in: "query"
-        required: false
+        required: true
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-internal: true
         x-exportParamName: "Uuid"
-        x-optionalDataType: "String"
       - name: "floatValue"
         in: "query"
         description: "Float value field"
@@ -484,18 +559,16 @@ paths:
         x-exportParamName: "FloatValue"
       - name: "doubleValue"
         in: "query"
-        required: false
+        required: true
         type: "number"
         format: "double"
         x-exportParamName: "DoubleValue"
-        x-optionalDataType: "Float64"
       - name: "int64Value"
         in: "query"
-        required: false
+        required: true
         type: "string"
         format: "int64"
         x-exportParamName: "Int64Value"
-        x-optionalDataType: "String"
       - name: "uint64Value"
         in: "query"
         required: false
@@ -638,7 +711,7 @@ paths:
         x-optionalDataType: "Time"
       - name: "repeatedEnumValue"
         in: "query"
-        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
           \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -651,7 +724,7 @@ paths:
         x-exportParamName: "RepeatedEnumValue"
       - name: "repeatedEnumAnnotation"
         in: "query"
-        description: "Repeated numeric enum title. Repeated numeric enum description.\n\
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
           \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -664,8 +737,8 @@ paths:
         x-exportParamName: "RepeatedEnumAnnotation"
       - name: "enumValueAnnotation"
         in: "query"
-        description: "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO\
-          \ means 0\n - ONE: ONE means 1"
+        description: "Numeric enum title\n\nNumeric enum description.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "string"
         default: "ZERO"
@@ -676,7 +749,7 @@ paths:
         x-optionalDataType: "String"
       - name: "repeatedStringAnnotation"
         in: "query"
-        description: "Repeated string title. Repeated string description."
+        description: "Repeated string title\n\nRepeated string description."
         required: false
         type: "array"
         items:
@@ -711,13 +784,13 @@ paths:
         x-optionalDataType: "Int64"
       - name: "requiredStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as required in Open API definition."
+        description: "mark a field as required in Open API definition"
         required: true
         type: "string"
         x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
       - name: "outputOnlyStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as readonly in Open API definition."
+        description: "mark a field as readonly in Open API definition"
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
@@ -727,6 +800,77 @@ paths:
         required: false
         type: "string"
         x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
       responses:
         200:
@@ -766,18 +910,18 @@ paths:
         type: "string"
         x-exportParamName: "StringValue"
       - in: "body"
-        name: "body"
+        name: "singleNested"
         required: true
         schema:
           $ref: "#/definitions/ABitOfEverythingNested"
-        x-exportParamName: "Body"
+        x-exportParamName: "SingleNested"
       - name: "uuid"
         in: "query"
-        required: false
+        required: true
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-internal: true
         x-exportParamName: "Uuid"
-        x-optionalDataType: "String"
       - name: "floatValue"
         in: "query"
         description: "Float value field"
@@ -788,18 +932,16 @@ paths:
         x-exportParamName: "FloatValue"
       - name: "doubleValue"
         in: "query"
-        required: false
+        required: true
         type: "number"
         format: "double"
         x-exportParamName: "DoubleValue"
-        x-optionalDataType: "Float64"
       - name: "int64Value"
         in: "query"
-        required: false
+        required: true
         type: "string"
         format: "int64"
         x-exportParamName: "Int64Value"
-        x-optionalDataType: "String"
       - name: "uint64Value"
         in: "query"
         required: false
@@ -936,7 +1078,7 @@ paths:
         x-optionalDataType: "Time"
       - name: "repeatedEnumValue"
         in: "query"
-        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
           \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -949,7 +1091,7 @@ paths:
         x-exportParamName: "RepeatedEnumValue"
       - name: "repeatedEnumAnnotation"
         in: "query"
-        description: "Repeated numeric enum title. Repeated numeric enum description.\n\
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
           \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -962,8 +1104,8 @@ paths:
         x-exportParamName: "RepeatedEnumAnnotation"
       - name: "enumValueAnnotation"
         in: "query"
-        description: "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO\
-          \ means 0\n - ONE: ONE means 1"
+        description: "Numeric enum title\n\nNumeric enum description.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "string"
         default: "ZERO"
@@ -974,7 +1116,7 @@ paths:
         x-optionalDataType: "String"
       - name: "repeatedStringAnnotation"
         in: "query"
-        description: "Repeated string title. Repeated string description."
+        description: "Repeated string title\n\nRepeated string description."
         required: false
         type: "array"
         items:
@@ -1016,13 +1158,13 @@ paths:
         x-optionalDataType: "Int64"
       - name: "requiredStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as required in Open API definition."
+        description: "mark a field as required in Open API definition"
         required: true
         type: "string"
         x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
       - name: "outputOnlyStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as readonly in Open API definition."
+        description: "mark a field as readonly in Open API definition"
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
@@ -1032,6 +1174,77 @@ paths:
         required: false
         type: "string"
         x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
       responses:
         200:
@@ -1059,17 +1272,18 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-  /v1/example/a_bit_of_everything/query/{uuid}:
+  /v1/example/a_bit_of_everything/query/{uuidName}:
     get:
       tags:
       - "ABitOfEverythingService"
       operationId: "ABitOfEverythingService_GetQuery"
       parameters:
-      - name: "uuid"
+      - name: "uuidName"
         in: "path"
         required: true
         type: "string"
-        x-exportParamName: "Uuid"
+        x-internal: true
+        x-exportParamName: "UuidName"
       - name: "singleNested.name"
         in: "query"
         description: "name is nested field."
@@ -1106,18 +1320,16 @@ paths:
         x-exportParamName: "FloatValue"
       - name: "doubleValue"
         in: "query"
-        required: false
+        required: true
         type: "number"
         format: "double"
         x-exportParamName: "DoubleValue"
-        x-optionalDataType: "Float64"
       - name: "int64Value"
         in: "query"
-        required: false
+        required: true
         type: "string"
         format: "int64"
         x-exportParamName: "Int64Value"
-        x-optionalDataType: "String"
       - name: "uint64Value"
         in: "query"
         required: false
@@ -1260,7 +1472,7 @@ paths:
         x-optionalDataType: "Time"
       - name: "repeatedEnumValue"
         in: "query"
-        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
           \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -1273,7 +1485,7 @@ paths:
         x-exportParamName: "RepeatedEnumValue"
       - name: "repeatedEnumAnnotation"
         in: "query"
-        description: "Repeated numeric enum title. Repeated numeric enum description.\n\
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
           \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -1286,8 +1498,8 @@ paths:
         x-exportParamName: "RepeatedEnumAnnotation"
       - name: "enumValueAnnotation"
         in: "query"
-        description: "Numeric enum title. Numeric enum description.\n\n - ZERO: ZERO\
-          \ means 0\n - ONE: ONE means 1"
+        description: "Numeric enum title\n\nNumeric enum description.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "string"
         default: "ZERO"
@@ -1298,7 +1510,7 @@ paths:
         x-optionalDataType: "String"
       - name: "repeatedStringAnnotation"
         in: "query"
-        description: "Repeated string title. Repeated string description."
+        description: "Repeated string title\n\nRepeated string description."
         required: false
         type: "array"
         items:
@@ -1340,13 +1552,13 @@ paths:
         x-optionalDataType: "Int64"
       - name: "requiredStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as required in Open API definition."
+        description: "mark a field as required in Open API definition"
         required: true
         type: "string"
         x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
       - name: "outputOnlyStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as readonly in Open API definition."
+        description: "mark a field as readonly in Open API definition"
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
@@ -1357,10 +1569,82 @@ paths:
         type: "string"
         x-exportParamName: "OptionalStringValue"
         x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
-          schema: {}
+          schema:
+            type: "object"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -1546,11 +1830,11 @@ paths:
         x-optionalDataType: "String"
       - name: "uuid"
         in: "query"
-        required: false
+        required: true
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-internal: true
         x-exportParamName: "Uuid"
-        x-optionalDataType: "String"
       - name: "bytesValue"
         in: "query"
         required: false
@@ -1581,7 +1865,7 @@ paths:
         x-optionalDataType: "Time"
       - name: "repeatedEnumValue"
         in: "query"
-        description: "repeated enum value. it is comma-separated in query.\n\n - ZERO:\
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
           \ ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -1594,7 +1878,7 @@ paths:
         x-exportParamName: "RepeatedEnumValue"
       - name: "repeatedEnumAnnotation"
         in: "query"
-        description: "Repeated numeric enum title. Repeated numeric enum description.\n\
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
           \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
         required: false
         type: "array"
@@ -1607,7 +1891,7 @@ paths:
         x-exportParamName: "RepeatedEnumAnnotation"
       - name: "repeatedStringAnnotation"
         in: "query"
-        description: "Repeated string title. Repeated string description."
+        description: "Repeated string title\n\nRepeated string description."
         required: false
         type: "array"
         items:
@@ -1649,13 +1933,13 @@ paths:
         x-optionalDataType: "Int64"
       - name: "requiredStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as required in Open API definition."
+        description: "mark a field as required in Open API definition"
         required: true
         type: "string"
         x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
       - name: "outputOnlyStringViaFieldBehaviorAnnotation"
         in: "query"
-        description: "mark a field as readonly in Open API definition."
+        description: "mark a field as readonly in Open API definition"
         required: false
         type: "string"
         x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
@@ -1665,6 +1949,1661 @@ paths:
         required: false
         type: "string"
         x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbABitOfEverything"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+  /v1/example/a_bit_of_everything/{uuidName}:
+    head:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_Exists"
+      parameters:
+      - name: "uuidName"
+        in: "path"
+        required: true
+        type: "string"
+        x-internal: true
+        x-exportParamName: "UuidName"
+      - name: "singleNested.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "SingleNestedName"
+        x-optionalDataType: "String"
+      - name: "singleNested.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "SingleNestedAmount"
+        x-optionalDataType: "Int64"
+      - name: "singleNested.ok"
+        in: "query"
+        description: "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE:\
+          \ TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "SingleNestedOk"
+        x-optionalDataType: "String"
+      - name: "floatValue"
+        in: "query"
+        description: "Float value field"
+        required: true
+        type: "number"
+        default: 0.2
+        format: "float"
+        x-exportParamName: "FloatValue"
+      - name: "doubleValue"
+        in: "query"
+        required: true
+        type: "number"
+        format: "double"
+        x-exportParamName: "DoubleValue"
+      - name: "int64Value"
+        in: "query"
+        required: true
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Int64Value"
+      - name: "uint64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "uint64"
+        x-exportParamName: "Uint64Value"
+        x-optionalDataType: "String"
+      - name: "int32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Int32Value"
+        x-optionalDataType: "Int32"
+      - name: "fixed64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "uint64"
+        x-exportParamName: "Fixed64Value"
+        x-optionalDataType: "String"
+      - name: "fixed32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Fixed32Value"
+        x-optionalDataType: "Int64"
+      - name: "boolValue"
+        in: "query"
+        required: false
+        type: "boolean"
+        x-exportParamName: "BoolValue"
+        x-optionalDataType: "Bool"
+      - name: "stringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StringValue"
+        x-optionalDataType: "String"
+      - name: "bytesValue"
+        in: "query"
+        required: false
+        type: "string"
+        format: "byte"
+        x-exportParamName: "BytesValue"
+        x-optionalDataType: "String"
+      - name: "uint32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Uint32Value"
+        x-optionalDataType: "Int64"
+      - name: "enumValue"
+        in: "query"
+        description: " - ZERO: ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "string"
+        default: "ZERO"
+        enum:
+        - "ZERO"
+        - "ONE"
+        x-exportParamName: "EnumValue"
+        x-optionalDataType: "String"
+      - name: "pathEnumValue"
+        in: "query"
+        required: false
+        type: "string"
+        default: "ABC"
+        enum:
+        - "ABC"
+        - "DEF"
+        x-exportParamName: "PathEnumValue"
+        x-optionalDataType: "String"
+      - name: "nestedPathEnumValue"
+        in: "query"
+        required: false
+        type: "string"
+        default: "GHI"
+        enum:
+        - "GHI"
+        - "JKL"
+        x-exportParamName: "NestedPathEnumValue"
+        x-optionalDataType: "String"
+      - name: "sfixed32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Sfixed32Value"
+        x-optionalDataType: "Int32"
+      - name: "sfixed64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Sfixed64Value"
+        x-optionalDataType: "String"
+      - name: "sint32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Sint32Value"
+        x-optionalDataType: "Int32"
+      - name: "sint64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Sint64Value"
+        x-optionalDataType: "String"
+      - name: "repeatedStringValue"
+        in: "query"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedStringValue"
+      - name: "oneofString"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OneofString"
+        x-optionalDataType: "String"
+      - name: "nonConventionalNameValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NonConventionalNameValue"
+        x-optionalDataType: "String"
+      - name: "timestampValue"
+        in: "query"
+        required: false
+        type: "string"
+        format: "date-time"
+        x-exportParamName: "TimestampValue"
+        x-optionalDataType: "Time"
+      - name: "repeatedEnumValue"
+        in: "query"
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedEnumValue"
+      - name: "repeatedEnumAnnotation"
+        in: "query"
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
+          \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedEnumAnnotation"
+      - name: "enumValueAnnotation"
+        in: "query"
+        description: "Numeric enum title\n\nNumeric enum description.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "string"
+        default: "ZERO"
+        enum:
+        - "ZERO"
+        - "ONE"
+        x-exportParamName: "EnumValueAnnotation"
+        x-optionalDataType: "String"
+      - name: "repeatedStringAnnotation"
+        in: "query"
+        description: "Repeated string title\n\nRepeated string description."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedStringAnnotation"
+      - name: "nestedAnnotation.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "NestedAnnotationName"
+        x-optionalDataType: "String"
+      - name: "nestedAnnotation.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "NestedAnnotationAmount"
+        x-optionalDataType: "Int64"
+      - name: "nestedAnnotation.ok"
+        in: "query"
+        description: "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE:\
+          \ TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "NestedAnnotationOk"
+        x-optionalDataType: "String"
+      - name: "int64OverrideType"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Int64OverrideType"
+        x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition"
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            type: "object"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+    put:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_Update"
+      parameters:
+      - name: "uuidName"
+        in: "path"
+        required: true
+        type: "string"
+        x-internal: true
+        x-exportParamName: "UuidName"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/A bit of everything"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            type: "object"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+    options:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_CustomOptionsRequest"
+      parameters:
+      - name: "uuidName"
+        in: "path"
+        required: true
+        type: "string"
+        x-internal: true
+        x-exportParamName: "UuidName"
+      - name: "singleNested.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "SingleNestedName"
+        x-optionalDataType: "String"
+      - name: "singleNested.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "SingleNestedAmount"
+        x-optionalDataType: "Int64"
+      - name: "singleNested.ok"
+        in: "query"
+        description: "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE:\
+          \ TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "SingleNestedOk"
+        x-optionalDataType: "String"
+      - name: "floatValue"
+        in: "query"
+        description: "Float value field"
+        required: true
+        type: "number"
+        default: 0.2
+        format: "float"
+        x-exportParamName: "FloatValue"
+      - name: "doubleValue"
+        in: "query"
+        required: true
+        type: "number"
+        format: "double"
+        x-exportParamName: "DoubleValue"
+      - name: "int64Value"
+        in: "query"
+        required: true
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Int64Value"
+      - name: "uint64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "uint64"
+        x-exportParamName: "Uint64Value"
+        x-optionalDataType: "String"
+      - name: "int32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Int32Value"
+        x-optionalDataType: "Int32"
+      - name: "fixed64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "uint64"
+        x-exportParamName: "Fixed64Value"
+        x-optionalDataType: "String"
+      - name: "fixed32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Fixed32Value"
+        x-optionalDataType: "Int64"
+      - name: "boolValue"
+        in: "query"
+        required: false
+        type: "boolean"
+        x-exportParamName: "BoolValue"
+        x-optionalDataType: "Bool"
+      - name: "stringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StringValue"
+        x-optionalDataType: "String"
+      - name: "bytesValue"
+        in: "query"
+        required: false
+        type: "string"
+        format: "byte"
+        x-exportParamName: "BytesValue"
+        x-optionalDataType: "String"
+      - name: "uint32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Uint32Value"
+        x-optionalDataType: "Int64"
+      - name: "enumValue"
+        in: "query"
+        description: " - ZERO: ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "string"
+        default: "ZERO"
+        enum:
+        - "ZERO"
+        - "ONE"
+        x-exportParamName: "EnumValue"
+        x-optionalDataType: "String"
+      - name: "pathEnumValue"
+        in: "query"
+        required: false
+        type: "string"
+        default: "ABC"
+        enum:
+        - "ABC"
+        - "DEF"
+        x-exportParamName: "PathEnumValue"
+        x-optionalDataType: "String"
+      - name: "nestedPathEnumValue"
+        in: "query"
+        required: false
+        type: "string"
+        default: "GHI"
+        enum:
+        - "GHI"
+        - "JKL"
+        x-exportParamName: "NestedPathEnumValue"
+        x-optionalDataType: "String"
+      - name: "sfixed32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Sfixed32Value"
+        x-optionalDataType: "Int32"
+      - name: "sfixed64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Sfixed64Value"
+        x-optionalDataType: "String"
+      - name: "sint32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Sint32Value"
+        x-optionalDataType: "Int32"
+      - name: "sint64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Sint64Value"
+        x-optionalDataType: "String"
+      - name: "repeatedStringValue"
+        in: "query"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedStringValue"
+      - name: "oneofString"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OneofString"
+        x-optionalDataType: "String"
+      - name: "nonConventionalNameValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NonConventionalNameValue"
+        x-optionalDataType: "String"
+      - name: "timestampValue"
+        in: "query"
+        required: false
+        type: "string"
+        format: "date-time"
+        x-exportParamName: "TimestampValue"
+        x-optionalDataType: "Time"
+      - name: "repeatedEnumValue"
+        in: "query"
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedEnumValue"
+      - name: "repeatedEnumAnnotation"
+        in: "query"
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
+          \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedEnumAnnotation"
+      - name: "enumValueAnnotation"
+        in: "query"
+        description: "Numeric enum title\n\nNumeric enum description.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "string"
+        default: "ZERO"
+        enum:
+        - "ZERO"
+        - "ONE"
+        x-exportParamName: "EnumValueAnnotation"
+        x-optionalDataType: "String"
+      - name: "repeatedStringAnnotation"
+        in: "query"
+        description: "Repeated string title\n\nRepeated string description."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedStringAnnotation"
+      - name: "nestedAnnotation.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "NestedAnnotationName"
+        x-optionalDataType: "String"
+      - name: "nestedAnnotation.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "NestedAnnotationAmount"
+        x-optionalDataType: "Int64"
+      - name: "nestedAnnotation.ok"
+        in: "query"
+        description: "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE:\
+          \ TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "NestedAnnotationOk"
+        x-optionalDataType: "String"
+      - name: "int64OverrideType"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Int64OverrideType"
+        x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition"
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            type: "object"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+  /v1/example/a_bit_of_everything/{uuidName}:custom:
+    post:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_Custom"
+      parameters:
+      - name: "uuidName"
+        in: "path"
+        required: true
+        type: "string"
+        x-internal: true
+        x-exportParamName: "UuidName"
+      - name: "singleNested.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "SingleNestedName"
+        x-optionalDataType: "String"
+      - name: "singleNested.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "SingleNestedAmount"
+        x-optionalDataType: "Int64"
+      - name: "singleNested.ok"
+        in: "query"
+        description: "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE:\
+          \ TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "SingleNestedOk"
+        x-optionalDataType: "String"
+      - name: "floatValue"
+        in: "query"
+        description: "Float value field"
+        required: true
+        type: "number"
+        default: 0.2
+        format: "float"
+        x-exportParamName: "FloatValue"
+      - name: "doubleValue"
+        in: "query"
+        required: true
+        type: "number"
+        format: "double"
+        x-exportParamName: "DoubleValue"
+      - name: "int64Value"
+        in: "query"
+        required: true
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Int64Value"
+      - name: "uint64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "uint64"
+        x-exportParamName: "Uint64Value"
+        x-optionalDataType: "String"
+      - name: "int32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Int32Value"
+        x-optionalDataType: "Int32"
+      - name: "fixed64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "uint64"
+        x-exportParamName: "Fixed64Value"
+        x-optionalDataType: "String"
+      - name: "fixed32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Fixed32Value"
+        x-optionalDataType: "Int64"
+      - name: "boolValue"
+        in: "query"
+        required: false
+        type: "boolean"
+        x-exportParamName: "BoolValue"
+        x-optionalDataType: "Bool"
+      - name: "stringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StringValue"
+        x-optionalDataType: "String"
+      - name: "bytesValue"
+        in: "query"
+        required: false
+        type: "string"
+        format: "byte"
+        x-exportParamName: "BytesValue"
+        x-optionalDataType: "String"
+      - name: "uint32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Uint32Value"
+        x-optionalDataType: "Int64"
+      - name: "enumValue"
+        in: "query"
+        description: " - ZERO: ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "string"
+        default: "ZERO"
+        enum:
+        - "ZERO"
+        - "ONE"
+        x-exportParamName: "EnumValue"
+        x-optionalDataType: "String"
+      - name: "pathEnumValue"
+        in: "query"
+        required: false
+        type: "string"
+        default: "ABC"
+        enum:
+        - "ABC"
+        - "DEF"
+        x-exportParamName: "PathEnumValue"
+        x-optionalDataType: "String"
+      - name: "nestedPathEnumValue"
+        in: "query"
+        required: false
+        type: "string"
+        default: "GHI"
+        enum:
+        - "GHI"
+        - "JKL"
+        x-exportParamName: "NestedPathEnumValue"
+        x-optionalDataType: "String"
+      - name: "sfixed32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Sfixed32Value"
+        x-optionalDataType: "Int32"
+      - name: "sfixed64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Sfixed64Value"
+        x-optionalDataType: "String"
+      - name: "sint32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Sint32Value"
+        x-optionalDataType: "Int32"
+      - name: "sint64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Sint64Value"
+        x-optionalDataType: "String"
+      - name: "repeatedStringValue"
+        in: "query"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedStringValue"
+      - name: "oneofString"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OneofString"
+        x-optionalDataType: "String"
+      - name: "nonConventionalNameValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NonConventionalNameValue"
+        x-optionalDataType: "String"
+      - name: "timestampValue"
+        in: "query"
+        required: false
+        type: "string"
+        format: "date-time"
+        x-exportParamName: "TimestampValue"
+        x-optionalDataType: "Time"
+      - name: "repeatedEnumValue"
+        in: "query"
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedEnumValue"
+      - name: "repeatedEnumAnnotation"
+        in: "query"
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
+          \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedEnumAnnotation"
+      - name: "enumValueAnnotation"
+        in: "query"
+        description: "Numeric enum title\n\nNumeric enum description.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "string"
+        default: "ZERO"
+        enum:
+        - "ZERO"
+        - "ONE"
+        x-exportParamName: "EnumValueAnnotation"
+        x-optionalDataType: "String"
+      - name: "repeatedStringAnnotation"
+        in: "query"
+        description: "Repeated string title\n\nRepeated string description."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedStringAnnotation"
+      - name: "nestedAnnotation.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "NestedAnnotationName"
+        x-optionalDataType: "String"
+      - name: "nestedAnnotation.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "NestedAnnotationAmount"
+        x-optionalDataType: "Int64"
+      - name: "nestedAnnotation.ok"
+        in: "query"
+        description: "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE:\
+          \ TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "NestedAnnotationOk"
+        x-optionalDataType: "String"
+      - name: "int64OverrideType"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Int64OverrideType"
+        x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition"
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
+        x-optionalDataType: "String"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbABitOfEverything"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+  /v1/example/a_bit_of_everything/{uuidName}:custom:custom:
+    post:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_DoubleColon"
+      parameters:
+      - name: "uuidName"
+        in: "path"
+        required: true
+        type: "string"
+        x-internal: true
+        x-exportParamName: "UuidName"
+      - name: "singleNested.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "SingleNestedName"
+        x-optionalDataType: "String"
+      - name: "singleNested.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "SingleNestedAmount"
+        x-optionalDataType: "Int64"
+      - name: "singleNested.ok"
+        in: "query"
+        description: "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE:\
+          \ TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "SingleNestedOk"
+        x-optionalDataType: "String"
+      - name: "floatValue"
+        in: "query"
+        description: "Float value field"
+        required: true
+        type: "number"
+        default: 0.2
+        format: "float"
+        x-exportParamName: "FloatValue"
+      - name: "doubleValue"
+        in: "query"
+        required: true
+        type: "number"
+        format: "double"
+        x-exportParamName: "DoubleValue"
+      - name: "int64Value"
+        in: "query"
+        required: true
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Int64Value"
+      - name: "uint64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "uint64"
+        x-exportParamName: "Uint64Value"
+        x-optionalDataType: "String"
+      - name: "int32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Int32Value"
+        x-optionalDataType: "Int32"
+      - name: "fixed64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "uint64"
+        x-exportParamName: "Fixed64Value"
+        x-optionalDataType: "String"
+      - name: "fixed32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Fixed32Value"
+        x-optionalDataType: "Int64"
+      - name: "boolValue"
+        in: "query"
+        required: false
+        type: "boolean"
+        x-exportParamName: "BoolValue"
+        x-optionalDataType: "Bool"
+      - name: "stringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StringValue"
+        x-optionalDataType: "String"
+      - name: "bytesValue"
+        in: "query"
+        required: false
+        type: "string"
+        format: "byte"
+        x-exportParamName: "BytesValue"
+        x-optionalDataType: "String"
+      - name: "uint32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Uint32Value"
+        x-optionalDataType: "Int64"
+      - name: "enumValue"
+        in: "query"
+        description: " - ZERO: ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "string"
+        default: "ZERO"
+        enum:
+        - "ZERO"
+        - "ONE"
+        x-exportParamName: "EnumValue"
+        x-optionalDataType: "String"
+      - name: "pathEnumValue"
+        in: "query"
+        required: false
+        type: "string"
+        default: "ABC"
+        enum:
+        - "ABC"
+        - "DEF"
+        x-exportParamName: "PathEnumValue"
+        x-optionalDataType: "String"
+      - name: "nestedPathEnumValue"
+        in: "query"
+        required: false
+        type: "string"
+        default: "GHI"
+        enum:
+        - "GHI"
+        - "JKL"
+        x-exportParamName: "NestedPathEnumValue"
+        x-optionalDataType: "String"
+      - name: "sfixed32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Sfixed32Value"
+        x-optionalDataType: "Int32"
+      - name: "sfixed64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Sfixed64Value"
+        x-optionalDataType: "String"
+      - name: "sint32Value"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int32"
+        x-exportParamName: "Sint32Value"
+        x-optionalDataType: "Int32"
+      - name: "sint64Value"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Sint64Value"
+        x-optionalDataType: "String"
+      - name: "repeatedStringValue"
+        in: "query"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedStringValue"
+      - name: "oneofString"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OneofString"
+        x-optionalDataType: "String"
+      - name: "nonConventionalNameValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NonConventionalNameValue"
+        x-optionalDataType: "String"
+      - name: "timestampValue"
+        in: "query"
+        required: false
+        type: "string"
+        format: "date-time"
+        x-exportParamName: "TimestampValue"
+        x-optionalDataType: "Time"
+      - name: "repeatedEnumValue"
+        in: "query"
+        description: "repeated enum value. it is comma-separated in query\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedEnumValue"
+      - name: "repeatedEnumAnnotation"
+        in: "query"
+        description: "Repeated numeric enum title\n\nRepeated numeric enum description.\n\
+          \n - ZERO: ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+          - "ZERO"
+          - "ONE"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedEnumAnnotation"
+      - name: "enumValueAnnotation"
+        in: "query"
+        description: "Numeric enum title\n\nNumeric enum description.\n\n - ZERO:\
+          \ ZERO means 0\n - ONE: ONE means 1"
+        required: false
+        type: "string"
+        default: "ZERO"
+        enum:
+        - "ZERO"
+        - "ONE"
+        x-exportParamName: "EnumValueAnnotation"
+        x-optionalDataType: "String"
+      - name: "repeatedStringAnnotation"
+        in: "query"
+        description: "Repeated string title\n\nRepeated string description."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "multi"
+        x-exportParamName: "RepeatedStringAnnotation"
+      - name: "nestedAnnotation.name"
+        in: "query"
+        description: "name is nested field."
+        required: false
+        type: "string"
+        x-exportParamName: "NestedAnnotationName"
+        x-optionalDataType: "String"
+      - name: "nestedAnnotation.amount"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "NestedAnnotationAmount"
+        x-optionalDataType: "Int64"
+      - name: "nestedAnnotation.ok"
+        in: "query"
+        description: "DeepEnum description.\n\n - FALSE: FALSE is false.\n - TRUE:\
+          \ TRUE is true."
+        required: false
+        type: "string"
+        default: "FALSE"
+        enum:
+        - "FALSE"
+        - "TRUE"
+        x-exportParamName: "NestedAnnotationOk"
+        x-optionalDataType: "String"
+      - name: "int64OverrideType"
+        in: "query"
+        required: false
+        type: "integer"
+        format: "int64"
+        x-exportParamName: "Int64OverrideType"
+        x-optionalDataType: "Int64"
+      - name: "requiredStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as required in Open API definition"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringViaFieldBehaviorAnnotation"
+      - name: "outputOnlyStringViaFieldBehaviorAnnotation"
+        in: "query"
+        description: "mark a field as readonly in Open API definition"
+        required: false
+        type: "string"
+        x-exportParamName: "OutputOnlyStringViaFieldBehaviorAnnotation"
+        x-optionalDataType: "String"
+      - name: "optionalStringValue"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringValue"
+        x-optionalDataType: "String"
+      - name: "productId"
+        in: "query"
+        description: "Test openapiv2 generation of repeated fields\n\nOnly digits\
+          \ are allowed."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+        collectionFormat: "multi"
+        x-exportParamName: "ProductId"
+      - name: "optionalStringField"
+        in: "query"
+        description: "Test openapiv2 generation of required fields with annotation\
+          \ and jsonschema to reproduce"
+        required: false
+        type: "string"
+        x-exportParamName: "OptionalStringField"
+        x-optionalDataType: "String"
+      - name: "requiredStringField1"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField1"
+      - name: "requiredStringField2"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredStringField2"
+      - name: "required_field_behavior_json_name_custom"
+        in: "query"
+        description: "Test openapiv2 handling of required json_name fields"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldBehaviorJsonNameCustom"
+      - name: "required_field_schema_json_name_custom"
+        in: "query"
+        required: true
+        type: "string"
+        x-exportParamName: "RequiredFieldSchemaJsonNameCustom"
+      - name: "trailingOnly"
+        in: "query"
+        description: "Trailing only"
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnly"
+        x-optionalDataType: "String"
+      - name: "trailingOnlyDot"
+        in: "query"
+        description: "Trailing only dot."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingOnlyDot"
+        x-optionalDataType: "String"
+      - name: "trailingBoth"
+        in: "query"
+        description: "Leading both\n\nTrailing both."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingBoth"
+        x-optionalDataType: "String"
+      - name: "trailingMultiline"
+        in: "query"
+        description: "Leading multiline\n\nThis is an example of a multi-line comment.\n\
+          \nTrailing multiline."
+        required: false
+        type: "string"
+        x-exportParamName: "TrailingMultiline"
         x-optionalDataType: "String"
       responses:
         200:
@@ -1729,47 +3668,6 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-    put:
-      tags:
-      - "ABitOfEverythingService"
-      operationId: "ABitOfEverythingService_Update"
-      parameters:
-      - name: "uuid"
-        in: "path"
-        required: true
-        type: "string"
-        x-exportParamName: "Uuid"
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          $ref: "#/definitions/A bit of everything"
-        x-exportParamName: "Body"
-      responses:
-        200:
-          description: "A successful response."
-          schema: {}
-        403:
-          description: "Returned when the user does not have permission to access\
-            \ the resource."
-          schema: {}
-        404:
-          description: "Returned when the resource does not exist."
-          schema:
-            type: "string"
-            format: "string"
-        418:
-          description: "I'm a teapot."
-          schema:
-            $ref: "#/definitions/examplepbNumericEnum"
-        500:
-          description: "Server error"
-          schema:
-            $ref: "#/definitions/examplepbErrorResponse"
-        default:
-          description: "An unexpected error response."
-          schema:
-            $ref: "#/definitions/rpcStatus"
     delete:
       tags:
       - "ABitOfEverythingService"
@@ -1783,7 +3681,8 @@ paths:
       responses:
         200:
           description: "A successful response."
-          schema: {}
+          schema:
+            type: "object"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2053,13 +3952,145 @@ paths:
         name: "body"
         required: true
         schema:
-          $ref: "#/definitions/examplepbABitOfEverything"
+          $ref: "#/definitions/A bit of everything_1"
         x-exportParamName: "Body"
       responses:
         200:
           description: "A successful response."
           schema:
             $ref: "#/definitions/examplepbABitOfEverything"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+  /v1/example/oneofenum:
+    post:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_PostOneofEnum"
+      parameters:
+      - in: "body"
+        name: "exampleEnum"
+        required: true
+        schema:
+          $ref: "#/definitions/oneofenumExampleEnum"
+        x-exportParamName: "ExampleEnum"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            type: "object"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+  /v1/example/requiredmessagetype:
+    post:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_PostRequiredMessageType"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbRequiredMessageTypeRequest"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            type: "object"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
+          schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+  /v1/example/snake/{who}/{what}/{where}:
+    get:
+      tags:
+      - "SnakeEnumService"
+      operationId: "SnakeEnumService_SnakeEnum"
+      parameters:
+      - name: "who"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "value_e"
+        - "value_f"
+        x-exportParamName: "Who"
+      - name: "what"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "value_c"
+        - "value_d"
+        x-exportParamName: "What"
+      - name: "where"
+        in: "path"
+        required: true
+        type: "string"
+        enum:
+        - "value_x"
+        - "value_y"
+        x-exportParamName: "Where"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSnakeEnumResponse"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2096,13 +4127,13 @@ paths:
         pattern: "publishers/[^/]+/books/[^/]+"
         x-exportParamName: "BookName"
       - in: "body"
-        name: "body"
+        name: "book"
         description: "The book to update.\n\nThe book's `name` field is used to identify\
           \ the book to be updated.\nFormat: publishers/{publisher}/books/{book}"
         required: true
         schema:
-          $ref: "#/definitions/examplepbBook"
-        x-exportParamName: "Body"
+          $ref: "The book to update."
+        x-exportParamName: "Book"
       - name: "updateMask"
         in: "query"
         description: "The list of fields to be updated."
@@ -2160,12 +4191,12 @@ paths:
         pattern: "publishers/[^/]+"
         x-exportParamName: "Parent"
       - in: "body"
-        name: "body"
+        name: "book"
         description: "The book to create."
         required: true
         schema:
           $ref: "#/definitions/examplepbBook"
-        x-exportParamName: "Body"
+        x-exportParamName: "Book"
       - name: "bookId"
         in: "query"
         description: "The ID to use for the book.\n\nThis must start with an alphanumeric\
@@ -2200,23 +4231,26 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-  /v2/example/a_bit_of_everything/{abe.uuid}:
+  /v2/example/a_bit_of_everything/{uuidName}:
     put:
       tags:
       - "ABitOfEverythingService"
       operationId: "ABitOfEverythingService_UpdateV2"
       parameters:
-      - name: "abe.uuid"
+      - name: "uuidName"
         in: "path"
         required: true
         type: "string"
-        x-exportParamName: "AbeUuid"
+        x-internal: true
+        x-exportParamName: "UuidName"
       - in: "body"
-        name: "body"
+        name: "abe"
+        description: "A bit of everything\n\nIntentionally complicated message type\
+          \ to cover many features of Protobuf."
         required: true
         schema:
-          $ref: "#/definitions/examplepbABitOfEverything"
-        x-exportParamName: "Body"
+          $ref: "#/definitions/A bit of everything_2"
+        x-exportParamName: "Abe"
       - name: "updateMask"
         in: "query"
         description: "The paths to update."
@@ -2227,7 +4261,8 @@ paths:
       responses:
         200:
           description: "A successful response."
-          schema: {}
+          schema:
+            type: "object"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2254,17 +4289,20 @@ paths:
       - "ABitOfEverythingService"
       operationId: "ABitOfEverythingService_UpdateV22"
       parameters:
-      - name: "abe.uuid"
+      - name: "uuidName"
         in: "path"
         required: true
         type: "string"
-        x-exportParamName: "AbeUuid"
+        x-internal: true
+        x-exportParamName: "UuidName"
       - in: "body"
-        name: "body"
+        name: "abe"
+        description: "A bit of everything\n\nIntentionally complicated message type\
+          \ to cover many features of Protobuf."
         required: true
         schema:
-          $ref: "#/definitions/examplepbABitOfEverything"
-        x-exportParamName: "Body"
+          $ref: "#/definitions/A bit of everything_3"
+        x-exportParamName: "Abe"
       - name: "updateMask"
         in: "query"
         description: "The paths to update."
@@ -2275,7 +4313,8 @@ paths:
       responses:
         200:
           description: "A successful response."
-          schema: {}
+          schema:
+            type: "object"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2355,11 +4394,11 @@ paths:
       operationId: "ABitOfEverythingService_Echo2"
       parameters:
       - in: "body"
-        name: "body"
+        name: "value"
         required: true
         schema:
           type: "string"
-        x-exportParamName: "Body"
+        x-exportParamName: "Value"
       responses:
         200:
           description: "A successful response."
@@ -2405,7 +4444,8 @@ paths:
       responses:
         200:
           description: "A successful response."
-          schema: {}
+          schema:
+            type: "object"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2436,7 +4476,48 @@ paths:
       responses:
         200:
           description: "A successful response."
+          schema:
+            type: "object"
+        403:
+          description: "Returned when the user does not have permission to access\
+            \ the resource."
           schema: {}
+        404:
+          description: "Returned when the resource does not exist."
+          schema:
+            type: "string"
+            format: "string"
+        418:
+          description: "I'm a teapot."
+          schema:
+            $ref: "#/definitions/examplepbNumericEnum"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/examplepbErrorResponse"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+  /v2/example/overwriterequestcontenttype:
+    post:
+      tags:
+      - "ABitOfEverythingService"
+      operationId: "ABitOfEverythingService_OverwriteRequestContentType"
+      consumes:
+      - "application/x-bar-mime"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/examplepbBody"
+        x-exportParamName: "Body"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            type: "object"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2512,7 +4593,8 @@ paths:
       responses:
         200:
           description: "A successful response."
-          schema: {}
+          schema:
+            type: "object"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2543,7 +4625,8 @@ paths:
       responses:
         200:
           description: "A successful response."
-          schema: {}
+          schema:
+            type: "object"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2577,15 +4660,16 @@ paths:
         type: "string"
         x-exportParamName: "Id"
       - in: "body"
-        name: "body"
+        name: "data"
         required: true
         schema:
           $ref: "#/definitions/examplepbBody"
-        x-exportParamName: "Body"
+        x-exportParamName: "Data"
       responses:
         200:
           description: "A successful response."
-          schema: {}
+          schema:
+            type: "object"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2624,7 +4708,8 @@ paths:
       responses:
         200:
           description: "A successful response."
-          schema: {}
+          schema:
+            type: "object"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2646,27 +4731,30 @@ paths:
           description: "An unexpected error response."
           schema:
             $ref: "#/definitions/rpcStatus"
-  /v2a/example/a_bit_of_everything/{abe.uuid}:
+  /v2a/example/a_bit_of_everything/{uuidName}:
     patch:
       tags:
       - "ABitOfEverythingService"
       operationId: "ABitOfEverythingService_UpdateV23"
       parameters:
-      - name: "abe.uuid"
+      - name: "uuidName"
         in: "path"
         required: true
         type: "string"
-        x-exportParamName: "AbeUuid"
+        x-internal: true
+        x-exportParamName: "UuidName"
       - in: "body"
         name: "body"
         required: true
         schema:
-          $ref: "#/definitions/examplepbUpdateV2Request"
+          $ref: "#/definitions/UpdateV2Request request for update includes the message\
+            \ and the update mask"
         x-exportParamName: "Body"
       responses:
         200:
           description: "A successful response."
-          schema: {}
+          schema:
+            type: "object"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2705,7 +4793,8 @@ paths:
       responses:
         200:
           description: "A successful response."
-          schema: {}
+          schema:
+            type: "object"
         403:
           description: "Returned when the user does not have permission to access\
             \ the resource."
@@ -2783,7 +4872,11 @@ definitions:
     - "doubleValue"
     - "floatValue"
     - "int64Value"
+    - "requiredStringField1"
+    - "requiredStringField2"
     - "requiredStringViaFieldBehaviorAnnotation"
+    - "required_field_behavior_json_name_custom"
+    - "required_field_schema_json_name_custom"
     - "uuid"
     properties:
       singleNested:
@@ -2792,6 +4885,7 @@ definitions:
         type: "string"
         minLength: 1
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-internal: true
       nested:
         type: "array"
         items:
@@ -2917,15 +5011,52 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        title: "Test openapiv2 generation of repeated fields"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+      optionalStringField:
+        type: "string"
+        title: "Test openapiv2 generation of required fields with annotation and jsonschema\
+          \ to reproduce"
+      requiredStringField1:
+        type: "string"
+      requiredStringField2:
+        type: "string"
+      required_field_behavior_json_name_custom:
+        type: "string"
+        title: "Test openapiv2 handling of required json_name fields"
+      required_field_schema_json_name_custom:
+        type: "string"
+      trailingOnly:
+        type: "string"
+        title: "Trailing only"
+      trailingOnlyDot:
+        type: "string"
+        description: "Trailing only dot."
+      trailingBoth:
+        type: "string"
+        description: "Trailing both."
+        title: "Leading both"
+      trailingMultiline:
+        type: "string"
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
+        title: "Leading multiline"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
     title: "A bit of everything"
-    description: "Intentionaly complicated message type to cover many features of\
+    description: "Intentionally complicated message type to cover many features of\
       \ Protobuf."
     example:
       int64_value: 12
       double_value: 12.3
+    x-a-bit-of-everything-foo: "bar"
   examplepbABitOfEverythingRepeated:
     type: "object"
     properties:
@@ -3019,6 +5150,13 @@ definitions:
       - 1
       - 2
       - 3
+  examplepbBar:
+    type: "object"
+    required:
+    - "id"
+    properties:
+      id:
+        type: "string"
   examplepbBody:
     type: "object"
     properties:
@@ -3083,6 +5221,13 @@ definitions:
         pattern: "^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$"
       error:
         $ref: "#/definitions/examplepbErrorObject"
+  examplepbFoo:
+    type: "object"
+    required:
+    - "bar"
+    properties:
+      bar:
+        $ref: "#/definitions/examplepbBar"
   examplepbNumericEnum:
     type: "string"
     description: "NumericEnum is one or zero.\n\n - ZERO: ZERO means 0\n - ONE: ONE\
@@ -3091,22 +5236,61 @@ definitions:
     - "ZERO"
     - "ONE"
     default: "ZERO"
-  examplepbUpdateV2Request:
+  examplepbRequiredMessageTypeRequest:
     type: "object"
+    required:
+    - "foo"
+    - "id"
     properties:
-      abe:
-        $ref: "#/definitions/examplepbABitOfEverything"
-      updateMask:
+      id:
         type: "string"
-        description: "The paths to update."
-    title: "UpdateV2Request request for update includes the message and the update\
-      \ mask"
+      foo:
+        $ref: "#/definitions/examplepbFoo"
+    title: "Required message type -> OpenAPI\nhttps://github.com/grpc-ecosystem/grpc-gateway/issues/2837"
+  examplepbSnakeEnumResponse:
+    type: "object"
+  examplepbsnake_case_0_enum:
+    type: "string"
+    title: "Ignoring lint warnings as this enum type exist to validate proper functionality\n\
+      for projects that don't follow these lint rules.\nbuf:lint:ignore ENUM_PASCAL_CASE"
+    description: "- value_e: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE\n - value_f:\
+      \ buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE"
+    enum:
+    - "value_e"
+    - "value_f"
+    default: "value_e"
+  examplepbsnake_case_enum:
+    type: "string"
+    title: "Ignoring lint warnings as this enum type exist to validate proper functionality\n\
+      for projects that don't follow these lint rules.\nbuf:lint:ignore ENUM_PASCAL_CASE"
+    description: "- value_c: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE\n - value_d:\
+      \ buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE"
+    enum:
+    - "value_c"
+    - "value_d"
+    default: "value_c"
+  oneofenumExampleEnum:
+    type: "string"
+    enum:
+    - "EXAMPLE_ENUM_UNSPECIFIED"
+    - "EXAMPLE_ENUM_FIRST"
+    default: "EXAMPLE_ENUM_UNSPECIFIED"
   pathenumPathEnum:
     type: "string"
     enum:
     - "ABC"
     - "DEF"
     default: "ABC"
+  pathenumsnake_case_for_import:
+    type: "string"
+    title: "Ignoring lint warnings as this enum type exist to validate proper functionality\n\
+      for projects that don't follow these lint rules.\nbuf:lint:ignore ENUM_PASCAL_CASE"
+    description: "- value_x: buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE\n - value_y:\
+      \ buf:lint:ignore ENUM_VALUE_UPPER_SNAKE_CASE"
+    enum:
+    - "value_x"
+    - "value_y"
+    default: "value_x"
   protobufAny:
     type: "object"
     properties:
@@ -3203,7 +5387,11 @@ definitions:
     - "doubleValue"
     - "floatValue"
     - "int64Value"
+    - "requiredStringField1"
+    - "requiredStringField2"
     - "requiredStringViaFieldBehaviorAnnotation"
+    - "required_field_behavior_json_name_custom"
+    - "required_field_schema_json_name_custom"
     properties:
       singleNested:
         $ref: "#/definitions/ABitOfEverythingNested"
@@ -3332,15 +5520,816 @@ definitions:
         readOnly: true
       optionalStringValue:
         type: "string"
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        title: "Test openapiv2 generation of repeated fields"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+      optionalStringField:
+        type: "string"
+        title: "Test openapiv2 generation of required fields with annotation and jsonschema\
+          \ to reproduce"
+      requiredStringField1:
+        type: "string"
+      requiredStringField2:
+        type: "string"
+      required_field_behavior_json_name_custom:
+        type: "string"
+        title: "Test openapiv2 handling of required json_name fields"
+      required_field_schema_json_name_custom:
+        type: "string"
+      trailingOnly:
+        type: "string"
+        title: "Trailing only"
+      trailingOnlyDot:
+        type: "string"
+        description: "Trailing only dot."
+      trailingBoth:
+        type: "string"
+        description: "Trailing both."
+        title: "Leading both"
+      trailingMultiline:
+        type: "string"
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
+        title: "Leading multiline"
     externalDocs:
       description: "Find out more about ABitOfEverything"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"
     title: "A bit of everything"
-    description: "Intentionaly complicated message type to cover many features of\
+    description: "Intentionally complicated message type to cover many features of\
       \ Protobuf."
     example:
       int64_value: 12
       double_value: 12.3
+    x-a-bit-of-everything-foo: "bar"
+  v1exampledeep_pathsingleNested.name_singleNested:
+    properties:
+      amount:
+        type: "integer"
+        format: "int64"
+      ok:
+        description: "DeepEnum description."
+        $ref: "#/definitions/NestedDeepEnum"
+    description: "Nested is nested type."
+    example: "{\"ok\":\"TRUE\"}"
+  A bit of everything_1:
+    type: "object"
+    required:
+    - "doubleValue"
+    - "floatValue"
+    - "int64Value"
+    - "requiredStringField1"
+    - "requiredStringField2"
+    - "requiredStringViaFieldBehaviorAnnotation"
+    - "required_field_behavior_json_name_custom"
+    - "required_field_schema_json_name_custom"
+    - "uuid"
+    properties:
+      singleNested:
+        $ref: "v1exampledeep_pathsingleNested.name_singleNested"
+      uuid:
+        type: "string"
+        minLength: 1
+        pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        x-internal: true
+      nested:
+        type: "array"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      floatValue:
+        type: "number"
+        format: "float"
+        description: "Float value field"
+        default: 0.2
+      doubleValue:
+        type: "number"
+        format: "double"
+      int64Value:
+        type: "string"
+        format: "int64"
+      uint64Value:
+        type: "string"
+        format: "uint64"
+      int32Value:
+        type: "integer"
+        format: "int32"
+      fixed64Value:
+        type: "string"
+        format: "uint64"
+      fixed32Value:
+        type: "integer"
+        format: "int64"
+      boolValue:
+        type: "boolean"
+      stringValue:
+        type: "string"
+      bytesValue:
+        type: "string"
+        format: "byte"
+        pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+      uint32Value:
+        type: "integer"
+        format: "int64"
+      enumValue:
+        $ref: "#/definitions/examplepbNumericEnum"
+      pathEnumValue:
+        $ref: "#/definitions/pathenumPathEnum"
+      nestedPathEnumValue:
+        $ref: "#/definitions/MessagePathEnumNestedPathEnum"
+      sfixed32Value:
+        type: "integer"
+        format: "int32"
+      sfixed64Value:
+        type: "string"
+        format: "int64"
+      sint32Value:
+        type: "integer"
+        format: "int32"
+      sint64Value:
+        type: "string"
+        format: "int64"
+      repeatedStringValue:
+        type: "array"
+        items:
+          type: "string"
+      oneofEmpty:
+        type: "object"
+        properties: {}
+      oneofString:
+        type: "string"
+      mapValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/examplepbNumericEnum"
+      mappedStringValue:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      mappedNestedValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nonConventionalNameValue:
+        type: "string"
+      timestampValue:
+        type: "string"
+        format: "date-time"
+      repeatedEnumValue:
+        type: "array"
+        title: "repeated enum value. it is comma-separated in query"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      repeatedEnumAnnotation:
+        type: "array"
+        description: "Repeated numeric enum description."
+        title: "Repeated numeric enum title"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
+        $ref: "#/definitions/examplepbNumericEnum"
+      repeatedStringAnnotation:
+        type: "array"
+        description: "Repeated string description."
+        title: "Repeated string title"
+        items:
+          type: "string"
+      repeatedNestedAnnotation:
+        type: "array"
+        description: "Repeated nested object description."
+        title: "Repeated nested object title"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
+        $ref: "#/definitions/ABitOfEverythingNested"
+      int64OverrideType:
+        type: "integer"
+        format: "int64"
+      requiredStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as required in Open API definition"
+      outputOnlyStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as readonly in Open API definition"
+        readOnly: true
+      optionalStringValue:
+        type: "string"
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        title: "Test openapiv2 generation of repeated fields"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+      optionalStringField:
+        type: "string"
+        title: "Test openapiv2 generation of required fields with annotation and jsonschema\
+          \ to reproduce"
+      requiredStringField1:
+        type: "string"
+      requiredStringField2:
+        type: "string"
+      required_field_behavior_json_name_custom:
+        type: "string"
+        title: "Test openapiv2 handling of required json_name fields"
+      required_field_schema_json_name_custom:
+        type: "string"
+      trailingOnly:
+        type: "string"
+        title: "Trailing only"
+      trailingOnlyDot:
+        type: "string"
+        description: "Trailing only dot."
+      trailingBoth:
+        type: "string"
+        description: "Trailing both."
+        title: "Leading both"
+      trailingMultiline:
+        type: "string"
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
+        title: "Leading multiline"
+    externalDocs:
+      description: "Find out more about ABitOfEverything"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    title: "A bit of everything"
+    description: "Intentionally complicated message type to cover many features of\
+      \ Protobuf."
+    example:
+      int64_value: 12
+      double_value: 12.3
+    x-a-bit-of-everything-foo: "bar"
+  The book to update.:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Output only. The book's ID."
+        readOnly: true
+      createTime:
+        type: "string"
+        format: "date-time"
+        description: "Output only. Creation time of the book."
+        readOnly: true
+    title: "The book to update."
+    description: "The book's `name` field is used to identify the book to be updated.\n\
+      Format: publishers/{publisher}/books/{book}"
+  A bit of everything_2:
+    type: "object"
+    required:
+    - "doubleValue"
+    - "floatValue"
+    - "int64Value"
+    - "requiredStringField1"
+    - "requiredStringField2"
+    - "requiredStringViaFieldBehaviorAnnotation"
+    - "required_field_behavior_json_name_custom"
+    - "required_field_schema_json_name_custom"
+    properties:
+      singleNested:
+        $ref: "#/definitions/ABitOfEverythingNested"
+      nested:
+        type: "array"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      floatValue:
+        type: "number"
+        format: "float"
+        description: "Float value field"
+        default: 0.2
+      doubleValue:
+        type: "number"
+        format: "double"
+      int64Value:
+        type: "string"
+        format: "int64"
+      uint64Value:
+        type: "string"
+        format: "uint64"
+      int32Value:
+        type: "integer"
+        format: "int32"
+      fixed64Value:
+        type: "string"
+        format: "uint64"
+      fixed32Value:
+        type: "integer"
+        format: "int64"
+      boolValue:
+        type: "boolean"
+      stringValue:
+        type: "string"
+      bytesValue:
+        type: "string"
+        format: "byte"
+        pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+      uint32Value:
+        type: "integer"
+        format: "int64"
+      enumValue:
+        $ref: "#/definitions/examplepbNumericEnum"
+      pathEnumValue:
+        $ref: "#/definitions/pathenumPathEnum"
+      nestedPathEnumValue:
+        $ref: "#/definitions/MessagePathEnumNestedPathEnum"
+      sfixed32Value:
+        type: "integer"
+        format: "int32"
+      sfixed64Value:
+        type: "string"
+        format: "int64"
+      sint32Value:
+        type: "integer"
+        format: "int32"
+      sint64Value:
+        type: "string"
+        format: "int64"
+      repeatedStringValue:
+        type: "array"
+        items:
+          type: "string"
+      oneofEmpty:
+        type: "object"
+        properties: {}
+      oneofString:
+        type: "string"
+      mapValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/examplepbNumericEnum"
+      mappedStringValue:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      mappedNestedValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nonConventionalNameValue:
+        type: "string"
+      timestampValue:
+        type: "string"
+        format: "date-time"
+      repeatedEnumValue:
+        type: "array"
+        title: "repeated enum value. it is comma-separated in query"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      repeatedEnumAnnotation:
+        type: "array"
+        description: "Repeated numeric enum description."
+        title: "Repeated numeric enum title"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
+        $ref: "#/definitions/examplepbNumericEnum"
+      repeatedStringAnnotation:
+        type: "array"
+        description: "Repeated string description."
+        title: "Repeated string title"
+        items:
+          type: "string"
+      repeatedNestedAnnotation:
+        type: "array"
+        description: "Repeated nested object description."
+        title: "Repeated nested object title"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
+        $ref: "#/definitions/ABitOfEverythingNested"
+      int64OverrideType:
+        type: "integer"
+        format: "int64"
+      requiredStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as required in Open API definition"
+      outputOnlyStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as readonly in Open API definition"
+        readOnly: true
+      optionalStringValue:
+        type: "string"
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        title: "Test openapiv2 generation of repeated fields"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+      optionalStringField:
+        type: "string"
+        title: "Test openapiv2 generation of required fields with annotation and jsonschema\
+          \ to reproduce"
+      requiredStringField1:
+        type: "string"
+      requiredStringField2:
+        type: "string"
+      required_field_behavior_json_name_custom:
+        type: "string"
+        title: "Test openapiv2 handling of required json_name fields"
+      required_field_schema_json_name_custom:
+        type: "string"
+      trailingOnly:
+        type: "string"
+        title: "Trailing only"
+      trailingOnlyDot:
+        type: "string"
+        description: "Trailing only dot."
+      trailingBoth:
+        type: "string"
+        description: "Trailing both."
+        title: "Leading both"
+      trailingMultiline:
+        type: "string"
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
+        title: "Leading multiline"
+    externalDocs:
+      description: "Find out more about ABitOfEverything"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    title: "A bit of everything"
+    description: "Intentionally complicated message type to cover many features of\
+      \ Protobuf."
+    example:
+      int64_value: 12
+      double_value: 12.3
+    x-a-bit-of-everything-foo: "bar"
+  A bit of everything_3:
+    type: "object"
+    required:
+    - "doubleValue"
+    - "floatValue"
+    - "int64Value"
+    - "requiredStringField1"
+    - "requiredStringField2"
+    - "requiredStringViaFieldBehaviorAnnotation"
+    - "required_field_behavior_json_name_custom"
+    - "required_field_schema_json_name_custom"
+    properties:
+      singleNested:
+        $ref: "#/definitions/ABitOfEverythingNested"
+      nested:
+        type: "array"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      floatValue:
+        type: "number"
+        format: "float"
+        description: "Float value field"
+        default: 0.2
+      doubleValue:
+        type: "number"
+        format: "double"
+      int64Value:
+        type: "string"
+        format: "int64"
+      uint64Value:
+        type: "string"
+        format: "uint64"
+      int32Value:
+        type: "integer"
+        format: "int32"
+      fixed64Value:
+        type: "string"
+        format: "uint64"
+      fixed32Value:
+        type: "integer"
+        format: "int64"
+      boolValue:
+        type: "boolean"
+      stringValue:
+        type: "string"
+      bytesValue:
+        type: "string"
+        format: "byte"
+        pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+      uint32Value:
+        type: "integer"
+        format: "int64"
+      enumValue:
+        $ref: "#/definitions/examplepbNumericEnum"
+      pathEnumValue:
+        $ref: "#/definitions/pathenumPathEnum"
+      nestedPathEnumValue:
+        $ref: "#/definitions/MessagePathEnumNestedPathEnum"
+      sfixed32Value:
+        type: "integer"
+        format: "int32"
+      sfixed64Value:
+        type: "string"
+        format: "int64"
+      sint32Value:
+        type: "integer"
+        format: "int32"
+      sint64Value:
+        type: "string"
+        format: "int64"
+      repeatedStringValue:
+        type: "array"
+        items:
+          type: "string"
+      oneofEmpty:
+        type: "object"
+        properties: {}
+      oneofString:
+        type: "string"
+      mapValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/examplepbNumericEnum"
+      mappedStringValue:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      mappedNestedValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nonConventionalNameValue:
+        type: "string"
+      timestampValue:
+        type: "string"
+        format: "date-time"
+      repeatedEnumValue:
+        type: "array"
+        title: "repeated enum value. it is comma-separated in query"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      repeatedEnumAnnotation:
+        type: "array"
+        description: "Repeated numeric enum description."
+        title: "Repeated numeric enum title"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
+        $ref: "#/definitions/examplepbNumericEnum"
+      repeatedStringAnnotation:
+        type: "array"
+        description: "Repeated string description."
+        title: "Repeated string title"
+        items:
+          type: "string"
+      repeatedNestedAnnotation:
+        type: "array"
+        description: "Repeated nested object description."
+        title: "Repeated nested object title"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
+        $ref: "#/definitions/ABitOfEverythingNested"
+      int64OverrideType:
+        type: "integer"
+        format: "int64"
+      requiredStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as required in Open API definition"
+      outputOnlyStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as readonly in Open API definition"
+        readOnly: true
+      optionalStringValue:
+        type: "string"
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        title: "Test openapiv2 generation of repeated fields"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+      optionalStringField:
+        type: "string"
+        title: "Test openapiv2 generation of required fields with annotation and jsonschema\
+          \ to reproduce"
+      requiredStringField1:
+        type: "string"
+      requiredStringField2:
+        type: "string"
+      required_field_behavior_json_name_custom:
+        type: "string"
+        title: "Test openapiv2 handling of required json_name fields"
+      required_field_schema_json_name_custom:
+        type: "string"
+      trailingOnly:
+        type: "string"
+        title: "Trailing only"
+      trailingOnlyDot:
+        type: "string"
+        description: "Trailing only dot."
+      trailingBoth:
+        type: "string"
+        description: "Trailing both."
+        title: "Leading both"
+      trailingMultiline:
+        type: "string"
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
+        title: "Leading multiline"
+    externalDocs:
+      description: "Find out more about ABitOfEverything"
+      url: "https://github.com/grpc-ecosystem/grpc-gateway"
+    title: "A bit of everything"
+    description: "Intentionally complicated message type to cover many features of\
+      \ Protobuf."
+    example:
+      int64_value: 12
+      double_value: 12.3
+    x-a-bit-of-everything-foo: "bar"
+  A bit of everything_4:
+    properties:
+      singleNested:
+        $ref: "#/definitions/ABitOfEverythingNested"
+      nested:
+        type: "array"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      floatValue:
+        type: "number"
+        format: "float"
+        description: "Float value field"
+        default: 0.2
+      doubleValue:
+        type: "number"
+        format: "double"
+      int64Value:
+        type: "string"
+        format: "int64"
+      uint64Value:
+        type: "string"
+        format: "uint64"
+      int32Value:
+        type: "integer"
+        format: "int32"
+      fixed64Value:
+        type: "string"
+        format: "uint64"
+      fixed32Value:
+        type: "integer"
+        format: "int64"
+      boolValue:
+        type: "boolean"
+      stringValue:
+        type: "string"
+      bytesValue:
+        type: "string"
+        format: "byte"
+        pattern: "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+      uint32Value:
+        type: "integer"
+        format: "int64"
+      enumValue:
+        $ref: "#/definitions/examplepbNumericEnum"
+      pathEnumValue:
+        $ref: "#/definitions/pathenumPathEnum"
+      nestedPathEnumValue:
+        $ref: "#/definitions/MessagePathEnumNestedPathEnum"
+      sfixed32Value:
+        type: "integer"
+        format: "int32"
+      sfixed64Value:
+        type: "string"
+        format: "int64"
+      sint32Value:
+        type: "integer"
+        format: "int32"
+      sint64Value:
+        type: "string"
+        format: "int64"
+      repeatedStringValue:
+        type: "array"
+        items:
+          type: "string"
+      oneofEmpty:
+        type: "object"
+        properties: {}
+      oneofString:
+        type: "string"
+      mapValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/examplepbNumericEnum"
+      mappedStringValue:
+        type: "object"
+        additionalProperties:
+          type: "string"
+      mappedNestedValue:
+        type: "object"
+        additionalProperties:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nonConventionalNameValue:
+        type: "string"
+      timestampValue:
+        type: "string"
+        format: "date-time"
+      repeatedEnumValue:
+        type: "array"
+        title: "repeated enum value. it is comma-separated in query"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      repeatedEnumAnnotation:
+        type: "array"
+        description: "Repeated numeric enum description."
+        title: "Repeated numeric enum title"
+        items:
+          $ref: "#/definitions/examplepbNumericEnum"
+      enumValueAnnotation:
+        description: "Numeric enum description."
+        title: "Numeric enum title"
+        $ref: "#/definitions/examplepbNumericEnum"
+      repeatedStringAnnotation:
+        type: "array"
+        description: "Repeated string description."
+        title: "Repeated string title"
+        items:
+          type: "string"
+      repeatedNestedAnnotation:
+        type: "array"
+        description: "Repeated nested object description."
+        title: "Repeated nested object title"
+        items:
+          $ref: "#/definitions/ABitOfEverythingNested"
+      nestedAnnotation:
+        description: "Nested object description."
+        title: "Nested object title"
+        $ref: "#/definitions/ABitOfEverythingNested"
+      int64OverrideType:
+        type: "integer"
+        format: "int64"
+      requiredStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as required in Open API definition"
+      outputOnlyStringViaFieldBehaviorAnnotation:
+        type: "string"
+        title: "mark a field as readonly in Open API definition"
+        readOnly: true
+      optionalStringValue:
+        type: "string"
+      productId:
+        type: "array"
+        description: "Only digits are allowed."
+        title: "Test openapiv2 generation of repeated fields"
+        items:
+          type: "string"
+          minLength: 1
+          maxLength: 19
+          pattern: "^[0-9]+$"
+      optionalStringField:
+        type: "string"
+        title: "Test openapiv2 generation of required fields with annotation and jsonschema\
+          \ to reproduce"
+      requiredStringField1:
+        type: "string"
+      requiredStringField2:
+        type: "string"
+      required_field_behavior_json_name_custom:
+        type: "string"
+        title: "Test openapiv2 handling of required json_name fields"
+      required_field_schema_json_name_custom:
+        type: "string"
+      trailingOnly:
+        type: "string"
+        title: "Trailing only"
+      trailingOnlyDot:
+        type: "string"
+        description: "Trailing only dot."
+      trailingBoth:
+        type: "string"
+        description: "Trailing both."
+        title: "Leading both"
+      trailingMultiline:
+        type: "string"
+        description: "This is an example of a multi-line comment.\n\nTrailing multiline."
+        title: "Leading multiline"
+    description: "Intentionally complicated message type to cover many features of\
+      \ Protobuf."
+    example: "{\"int64_value\":12,\"double_value\":12.3}"
+  UpdateV2Request request for update includes the message and the update mask:
+    type: "object"
+    properties:
+      abe:
+        $ref: "#/definitions/A bit of everything_4"
+      updateMask:
+        type: "string"
+        description: "The paths to update."
+    title: "UpdateV2Request request for update includes the message and the update\
+      \ mask"
 externalDocs:
   description: "More about gRPC-Gateway"
   url: "https://github.com/grpc-ecosystem/grpc-gateway"

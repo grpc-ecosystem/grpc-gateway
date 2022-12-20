@@ -523,6 +523,8 @@ var (
 		{data: uint64(1), json: "1"},
 		{data: proto.Uint64(1), json: "1"},
 		{data: "abc", json: `"abc"`},
+		{data: []byte("abc"), json: `"YWJj"`},
+		{data: []byte{}, json: `""`},
 		{data: proto.String("abc"), json: `"abc"`},
 		{data: float32(1.5), json: "1.5"},
 		{data: proto.Float32(1.5), json: "1.5"},
@@ -635,31 +637,31 @@ var (
 		},
 
 		{
-			data: &wrapperspb.BoolValue{Value: true},
+			data: wrapperspb.Bool(true),
 			json: "true",
 		},
 		{
-			data: &wrapperspb.DoubleValue{Value: 123.456},
+			data: wrapperspb.Double(123.456),
 			json: "123.456",
 		},
 		{
-			data: &wrapperspb.FloatValue{Value: 123.456},
+			data: wrapperspb.Float(123.456),
 			json: "123.456",
 		},
 		{
-			data: &wrapperspb.Int32Value{Value: -123},
+			data: wrapperspb.Int32(-123),
 			json: "-123",
 		},
 		{
-			data: &wrapperspb.Int64Value{Value: -123},
+			data: wrapperspb.Int64(-123),
 			json: `"-123"`,
 		},
 		{
-			data: &wrapperspb.UInt32Value{Value: 123},
+			data: wrapperspb.UInt32(123),
 			json: "123",
 		},
 		{
-			data: &wrapperspb.UInt64Value{Value: 123},
+			data: wrapperspb.UInt64(123),
 			json: `"123"`,
 		},
 		// TODO(yugui) Add other well-known types once jsonpb supports them

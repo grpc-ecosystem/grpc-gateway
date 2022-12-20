@@ -21,6 +21,7 @@ lint:
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
+      - examples/internal/proto/examplepb/visibility_rule_echo_service.proto
       - examples/internal/proto/examplepb/use_go_template.proto
       - examples/internal/proto/examplepb/wrappers.proto
     ENUM_VALUE_PREFIX:
@@ -56,8 +57,10 @@ lint:
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
+      - examples/internal/proto/examplepb/visibility_rule_echo_service.proto
       - examples/internal/proto/examplepb/use_go_template.proto
       - examples/internal/proto/examplepb/wrappers.proto
+      - examples/internal/proto/oneofenum/oneof_enum.proto
       - examples/internal/proto/pathenum/path_enum.proto
       - examples/internal/proto/sub/message.proto
       - examples/internal/proto/sub2/message.proto
@@ -79,6 +82,7 @@ lint:
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
+      - examples/internal/proto/examplepb/visibility_rule_echo_service.proto
       - examples/internal/proto/examplepb/use_go_template.proto
       - examples/internal/proto/examplepb/wrappers.proto
       - runtime/internal/examplepb/example.proto
@@ -98,8 +102,10 @@ lint:
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
+      - examples/internal/proto/examplepb/visibility_rule_echo_service.proto
       - examples/internal/proto/examplepb/use_go_template.proto
       - examples/internal/proto/examplepb/wrappers.proto
+      - examples/internal/proto/oneofenum/oneof_enum.proto
       - examples/internal/proto/pathenum/path_enum.proto
       - examples/internal/proto/sub/message.proto
       - examples/internal/proto/sub2/message.proto
@@ -122,6 +128,7 @@ lint:
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
+      - examples/internal/proto/examplepb/visibility_rule_echo_service.proto
       - examples/internal/proto/examplepb/wrappers.proto
     RPC_REQUEST_STANDARD_NAME:
       - examples/internal/helloworld/helloworld.proto
@@ -136,6 +143,7 @@ lint:
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
+      - examples/internal/proto/examplepb/visibility_rule_echo_service.proto
       - examples/internal/proto/examplepb/wrappers.proto
       - runtime/internal/examplepb/non_standard_names.proto
     RPC_RESPONSE_STANDARD_NAME:
@@ -151,6 +159,7 @@ lint:
       - examples/internal/proto/examplepb/response_body_service.proto
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
+      - examples/internal/proto/examplepb/visibility_rule_echo_service.proto
       - examples/internal/proto/examplepb/use_go_template.proto
       - examples/internal/proto/examplepb/wrappers.proto
       - runtime/internal/examplepb/non_standard_names.proto
@@ -162,6 +171,7 @@ lint:
       - examples/internal/proto/examplepb/flow_combination.proto
       - examples/internal/proto/examplepb/openapi_merge_a.proto
       - examples/internal/proto/examplepb/openapi_merge_b.proto
+  allow_comment_ignores: true
 # Note: the build configuration goes last in this
 # files so we can append excludes at push time.
 build:

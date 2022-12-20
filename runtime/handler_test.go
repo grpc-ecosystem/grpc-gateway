@@ -3,7 +3,6 @@ package runtime_test
 import (
 	"context"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -104,7 +103,7 @@ func TestForwardResponseStream(t *testing.T) {
 			if h := w.Header.Get("Transfer-Encoding"); h != "chunked" {
 				t.Errorf("ForwardResponseStream missing header chunked")
 			}
-			body, err := ioutil.ReadAll(w.Body)
+			body, err := io.ReadAll(w.Body)
 			if err != nil {
 				t.Errorf("Failed to read response body with %v", err)
 			}
@@ -120,6 +119,7 @@ func TestForwardResponseStream(t *testing.T) {
 						// Skip non-stream errors
 						t.Skip("checking error encodings")
 					}
+					delimiter := marshaler.Delimiter()
 					st := status.Convert(msg.err)
 					b, err := marshaler.Marshal(map[string]proto.Message{
 						"error": st.Proto(),
@@ -128,7 +128,7 @@ func TestForwardResponseStream(t *testing.T) {
 						t.Errorf("marshaler.Marshal() failed %v", err)
 					}
 					errBytes := body[len(want):]
-					if string(errBytes) != string(b) {
+					if string(errBytes) != string(b)+string(delimiter) {
 						t.Errorf("ForwardResponseStream() = \"%s\" want \"%s\"", errBytes, b)
 					}
 
@@ -237,7 +237,7 @@ func TestForwardResponseStreamCustomMarshaler(t *testing.T) {
 			if h := w.Header.Get("Transfer-Encoding"); h != "chunked" {
 				t.Errorf("ForwardResponseStream missing header chunked")
 			}
-			body, err := ioutil.ReadAll(w.Body)
+			body, err := io.ReadAll(w.Body)
 			if err != nil {
 				t.Errorf("Failed to read response body with %v", err)
 			}
@@ -301,7 +301,7 @@ func TestForwardResponseMessage(t *testing.T) {
 			if h := w.Header.Get("Content-Type"); h != tt.contentType {
 				t.Errorf("Content-Type %v want %v", h, tt.contentType)
 			}
-			body, err := ioutil.ReadAll(w.Body)
+			body, err := io.ReadAll(w.Body)
 			if err != nil {
 				t.Errorf("Failed to read response body with %v", err)
 			}

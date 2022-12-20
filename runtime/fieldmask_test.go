@@ -2,7 +2,7 @@ package runtime
 
 import (
 	"bytes"
-	"fmt"
+	"errors"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -59,6 +59,12 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 			msg:      &examplepb.NonStandardMessage{},
 			input:    `{"struct_field": {"name":{"first": "bob"}, "amount": 2}}`,
 			expected: newFieldMask("struct_field.name.first", "struct_field.amount"),
+		},
+		{
+			name:     "NonStandardMessageWithJSONNamesForStruct",
+			msg:      &examplepb.NonStandardMessage{},
+			input:    `{"lineNum": 123, "structField": {"name":"bob"}}`,
+			expected: newFieldMask("line_num", "struct_field.name"),
 		},
 		{
 			name:     "value",
@@ -254,7 +260,7 @@ func TestFieldMaskErrors(t *testing.T) {
 		{
 			name:        "object under scalar",
 			input:       `{"uuid": {"a": "x"}}`,
-			expectedErr: fmt.Errorf("JSON structure did not match request type"),
+			expectedErr: errors.New("JSON structure did not match request type"),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

@@ -26,7 +26,7 @@ You might want to serialize request/response messages in MessagePack instead of 
    )
    ```
 
-You can see [the default implementation for JSON](https://github.com/grpc-ecosystem/grpc-gateway/blob/master/runtime/marshal_jsonpb.go) for reference.
+You can see [the default implementation for JSON](https://github.com/grpc-ecosystem/grpc-gateway/blob/main/runtime/marshal_jsonpb.go) for reference.
 
 ### Using proto names in JSON
 

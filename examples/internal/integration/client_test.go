@@ -2,12 +2,16 @@ package integration_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/abe"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/echo"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/clients/unannotatedecho"
+	"github.com/rogpeppe/fastuuid"
 )
+
+var uuidgen = fastuuid.MustNewGenerator()
 
 func TestEchoClient(t *testing.T) {
 	if testing.Short() {
@@ -48,6 +52,26 @@ func TestEchoBodyClient(t *testing.T) {
 	}
 }
 
+func TestEchoBody2Client(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+		return
+	}
+
+	cfg := echo.NewConfiguration()
+	cfg.BasePath = "http://localhost:8088"
+
+	cl := echo.NewAPIClient(cfg)
+	req := echo.ExamplepbEmbedded{Note: "note"}
+	resp, _, err := cl.EchoServiceApi.EchoServiceEchoBody2(context.Background(), "foo", req, nil)
+	if err != nil {
+		t.Errorf("cl.EchoBody(%#v) failed with %v; want success", req, err)
+	}
+	if got, want := resp.Id, "foo"; got != want {
+		t.Errorf("resp.Id = %q; want %q", got, want)
+	}
+}
+
 func TestAbitOfEverythingClient(t *testing.T) {
 	if testing.Short() {
 		t.Skip()
@@ -68,25 +92,28 @@ func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
 	messagePath := abe.JKL_MessagePathEnumNestedPathEnum
 
 	want := &abe.ExamplepbABitOfEverything{
-		FloatValue:               1.5,
-		DoubleValue:              2.5,
-		Int64Value:               "4294967296",
-		Uint64Value:              "9223372036854775807",
-		Int32Value:               -2147483648,
-		Fixed64Value:             "9223372036854775807",
-		Fixed32Value:             4294967295,
-		BoolValue:                true,
-		StringValue:              "strprefix/foo",
-		Uint32Value:              4294967295,
-		Sfixed32Value:            2147483647,
-		Sfixed64Value:            "-4611686018427387904",
-		Sint32Value:              2147483647,
-		Sint64Value:              "4611686018427387903",
-		NonConventionalNameValue: "camelCase",
-		EnumValue:                &enumZero,
-		PathEnumValue:            &enumPath,
-		NestedPathEnumValue:      &messagePath,
-		EnumValueAnnotation:      &enumZero,
+		FloatValue:                          1.5,
+		DoubleValue:                         2.5,
+		Int64Value:                          "4294967296",
+		Uint64Value:                         "9223372036854775807",
+		Int32Value:                          -2147483648,
+		Fixed64Value:                        "9223372036854775807",
+		Fixed32Value:                        4294967295,
+		BoolValue:                           true,
+		StringValue:                         "strprefix/foo",
+		Uint32Value:                         4294967295,
+		Sfixed32Value:                       2147483647,
+		Sfixed64Value:                       "-4611686018427387904",
+		Sint32Value:                         2147483647,
+		Sint64Value:                         "4611686018427387903",
+		NonConventionalNameValue:            "camelCase",
+		EnumValue:                           &enumZero,
+		PathEnumValue:                       &enumPath,
+		NestedPathEnumValue:                 &messagePath,
+		EnumValueAnnotation:                 &enumZero,
+		Uuid:                                fmt.Sprintf("%x", uuidgen.Next()),
+		RequiredFieldBehaviorJsonNameCustom: "test",
+		RequiredFieldSchemaJsonNameCustom:   "test",
 	}
 	resp, _, err := cl.ABitOfEverythingServiceApi.ABitOfEverythingServiceCreate(
 		context.Background(),
@@ -109,7 +136,12 @@ func testABEClientCreate(t *testing.T, cl *abe.APIClient) {
 		want.PathEnumValue.String(),
 		want.NestedPathEnumValue.String(),
 		want.EnumValueAnnotation.String(),
+		want.Uuid,
 		want.RequiredStringViaFieldBehaviorAnnotation,
+		want.StringValue,
+		want.StringValue,
+		want.RequiredFieldBehaviorJsonNameCustom,
+		want.RequiredFieldSchemaJsonNameCustom,
 		nil,
 	)
 	if err != nil {

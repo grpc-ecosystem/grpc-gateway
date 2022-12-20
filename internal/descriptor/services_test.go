@@ -1117,7 +1117,7 @@ func TestResolveFieldPath(t *testing.T) {
 				>
 			`,
 			path:    "string",
-			wantErr: true,
+			wantErr: false,
 		},
 		// nested field
 		{
@@ -1222,7 +1222,7 @@ func TestResolveFieldPath(t *testing.T) {
 				>
 			`,
 			path:    "nested.nested2.terminal",
-			wantErr: true,
+			wantErr: false,
 		},
 	} {
 		var file descriptorpb.FileDescriptorProto

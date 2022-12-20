@@ -1,10 +1,10 @@
 {
     "extends": [
-        "config:base"
+        "config:base",
+        "helpers:pinGitHubActionDigests"
     ],
     "baseBranches": [
-        "v1",
-        "master"
+        "main"
     ],
     "postUpdateOptions": [
         "gomodTidy"
@@ -21,20 +21,7 @@
         },
         {
             "baseBranchList": [
-                "v1"
-            ],
-            "packageNames": [
-                "github.com/golang/protobuf",
-                "google.golang.org/genproto",
-                "io_bazel_rules_go",
-                "golang.org/x/oauth2",
-                "google.golang.org/grpc"
-            ],
-            "enabled": false
-        },
-        {
-            "baseBranchList": [
-                "master"
+                "main"
             ],
             "packageNames": [
                 "github.com/golang/protobuf",
@@ -48,6 +35,15 @@
                 "github-pages"
             ],
             "enabled": false
+        },
+        {
+            "matchManagers": [
+                "github-actions"
+            ],
+            "matchPackageNames": [
+                "slsa-framework/slsa-github-generator"
+            ],
+            "pinDigests": false
         }
     ]
 }

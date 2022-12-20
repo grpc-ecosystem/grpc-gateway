@@ -17,6 +17,7 @@ go_library(
     importpath = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/server",
     deps = [
         "//examples/internal/proto/examplepb",
+        "//examples/internal/proto/oneofenum",
         "//examples/internal/proto/pathenum",
         "//examples/internal/proto/standalone",
         "//examples/internal/proto/sub",

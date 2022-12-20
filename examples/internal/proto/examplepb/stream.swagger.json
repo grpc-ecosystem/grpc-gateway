@@ -54,6 +54,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
+              "type": "object",
               "properties": {}
             }
           },
@@ -67,7 +68,7 @@
         "parameters": [
           {
             "name": "body",
-            "description": " (streaming inputs)",
+            "description": "Intentionally complicated message type to cover many features of Protobuf. (streaming inputs)",
             "in": "body",
             "required": true,
             "schema": {
@@ -213,7 +214,7 @@
           "description": "Application specific response metadata. Must be set in the first response\nfor streaming APIs."
         }
       },
-      "description": "Message that represents an arbitrary HTTP body. It should only be used for\npayload formats that can't be represented as JSON, such as raw binary or\nan HTML page.\n\n\nThis message can be used both in streaming and non-streaming API methods in\nthe request as well as the response.\n\nIt can be used as a top-level request field, which is convenient if one\nwants to extract parameters from either the URL or HTTP template into the\nrequest fields and also want access to the raw HTTP body.\n\nExample:\n\n    message GetResourceRequest {\n      // A unique request id.\n      string request_id = 1;\n\n      // The raw HTTP body is bound to this field.\n      google.api.HttpBody http_body = 2;\n    }\n\n    service ResourceService {\n      rpc GetResource(GetResourceRequest) returns (google.api.HttpBody);\n      rpc UpdateResource(google.api.HttpBody) returns\n      (google.protobuf.Empty);\n    }\n\nExample with streaming methods:\n\n    service CaldavService {\n      rpc GetCalendar(stream google.api.HttpBody)\n        returns (stream google.api.HttpBody);\n      rpc UpdateCalendar(stream google.api.HttpBody)\n        returns (stream google.api.HttpBody);\n    }\n\nUse of this type only changes how the request and response bodies are\nhandled, all other features will continue to work unchanged."
+      "description": "Message that represents an arbitrary HTTP body. It should only be used for\npayload formats that can't be represented as JSON, such as raw binary or\nan HTML page.\n\n\nThis message can be used both in streaming and non-streaming API methods in\nthe request as well as the response.\n\nIt can be used as a top-level request field, which is convenient if one\nwants to extract parameters from either the URL or HTTP template into the\nrequest fields and also want access to the raw HTTP body.\n\nExample:\n\n    message GetResourceRequest {\n      // A unique request id.\n      string request_id = 1;\n\n      // The raw HTTP body is bound to this field.\n      google.api.HttpBody http_body = 2;\n\n    }\n\n    service ResourceService {\n      rpc GetResource(GetResourceRequest)\n        returns (google.api.HttpBody);\n      rpc UpdateResource(google.api.HttpBody)\n        returns (google.protobuf.Empty);\n\n    }\n\nExample with streaming methods:\n\n    service CaldavService {\n      rpc GetCalendar(stream google.api.HttpBody)\n        returns (stream google.api.HttpBody);\n      rpc UpdateCalendar(stream google.api.HttpBody)\n        returns (stream google.api.HttpBody);\n\n    }\n\nUse of this type only changes how the request and response bodies are\nhandled, all other features will continue to work unchanged."
     },
     "examplepbABitOfEverything": {
       "type": "object",
@@ -228,7 +229,8 @@
         "uuid": {
           "type": "string",
           "minLength": 1,
-          "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+          "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+          "x-internal": true
         },
         "nested": {
           "type": "array",
@@ -240,10 +242,7 @@
           "type": "number",
           "format": "float",
           "default": "0.2",
-          "description": "Float value field",
-          "required": [
-            "float_value"
-          ]
+          "description": "Float value field"
         },
         "doubleValue": {
           "type": "number",
@@ -315,6 +314,7 @@
           }
         },
         "oneofEmpty": {
+          "type": "object",
           "properties": {}
         },
         "oneofString": {
@@ -392,10 +392,7 @@
         },
         "requiredStringViaFieldBehaviorAnnotation": {
           "type": "string",
-          "title": "mark a field as required in Open API definition",
-          "required": [
-            "required_string_via_field_behavior_annotation"
-          ]
+          "title": "mark a field as required in Open API definition"
         },
         "outputOnlyStringViaFieldBehaviorAnnotation": {
           "type": "string",
@@ -404,9 +401,55 @@
         },
         "optionalStringValue": {
           "type": "string"
+        },
+        "productId": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 19,
+            "minLength": 1,
+            "pattern": "^[0-9]+$"
+          },
+          "description": "Only digits are allowed.",
+          "title": "Test openapiv2 generation of repeated fields"
+        },
+        "optionalStringField": {
+          "type": "string",
+          "title": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce"
+        },
+        "requiredStringField1": {
+          "type": "string"
+        },
+        "requiredStringField2": {
+          "type": "string"
+        },
+        "required_field_behavior_json_name_custom": {
+          "type": "string",
+          "title": "Test openapiv2 handling of required json_name fields"
+        },
+        "required_field_schema_json_name_custom": {
+          "type": "string"
+        },
+        "trailingOnly": {
+          "type": "string",
+          "title": "Trailing only"
+        },
+        "trailingOnlyDot": {
+          "type": "string",
+          "description": "Trailing only dot."
+        },
+        "trailingBoth": {
+          "type": "string",
+          "description": "Trailing both.",
+          "title": "Leading both"
+        },
+        "trailingMultiline": {
+          "type": "string",
+          "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
+          "title": "Leading multiline"
         }
       },
-      "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+      "description": "Intentionally complicated message type to cover many features of Protobuf.",
       "title": "A bit of everything",
       "externalDocs": {
         "description": "Find out more about ABitOfEverything",
@@ -416,9 +459,14 @@
         "uuid",
         "int64Value",
         "doubleValue",
+        "required_field_schema_json_name_custom",
         "floatValue",
-        "requiredStringViaFieldBehaviorAnnotation"
-      ]
+        "requiredStringViaFieldBehaviorAnnotation",
+        "requiredStringField1",
+        "requiredStringField2",
+        "required_field_behavior_json_name_custom"
+      ],
+      "x-a-bit-of-everything-foo": "bar"
     },
     "examplepbNumericEnum": {
       "type": "string",

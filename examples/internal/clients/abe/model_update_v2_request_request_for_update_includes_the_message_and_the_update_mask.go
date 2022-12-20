@@ -10,8 +10,8 @@
 
 package abe
 
-type ExamplepbUpdateV2Request struct {
-	Abe *ExamplepbABitOfEverything `json:"abe,omitempty"`
+type UpdateV2RequestRequestForUpdateIncludesTheMessageAndTheUpdateMask struct {
+	Abe *ABitOfEverything4 `json:"abe,omitempty"`
 	// The paths to update.
 	UpdateMask string `json:"updateMask,omitempty"`
 }

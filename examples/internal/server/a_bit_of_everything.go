@@ -9,6 +9,7 @@ import (
 
 	"github.com/golang/glog"
 	examples "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/oneofenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/pathenum"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/sub2"
@@ -187,6 +188,32 @@ func (s *_ABitOfEverythingServer) Download(_ *emptypb.Empty, stream examples.Str
 	return nil
 }
 
+func (s *_ABitOfEverythingServer) Custom(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	glog.Info(msg)
+	if _, ok := s.v[msg.Uuid]; ok {
+		s.v[msg.Uuid] = msg
+	} else {
+		return nil, status.Errorf(codes.NotFound, "not found")
+	}
+	return msg, nil
+}
+
+func (s *_ABitOfEverythingServer) DoubleColon(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+	s.m.Lock()
+	defer s.m.Unlock()
+
+	glog.Info(msg)
+	if _, ok := s.v[msg.Uuid]; ok {
+		s.v[msg.Uuid] = msg
+	} else {
+		return nil, status.Errorf(codes.NotFound, "not found")
+	}
+	return msg, nil
+}
+
 func (s *_ABitOfEverythingServer) Update(ctx context.Context, msg *examples.ABitOfEverything) (*emptypb.Empty, error) {
 	s.m.Lock()
 	defer s.m.Unlock()
@@ -343,6 +370,10 @@ func (s *_ABitOfEverythingServer) CheckPostQueryParams(ctx context.Context, msg 
 	return msg, nil
 }
 
+func (s *_ABitOfEverythingServer) OverwriteRequestContentType(ctx context.Context, msg *examples.Body) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, nil
+}
+
 func (s *_ABitOfEverythingServer) OverwriteResponseContentType(ctx context.Context, msg *emptypb.Empty) (*wrapperspb.StringValue, error) {
 	return &wrapperspb.StringValue{}, nil
 }
@@ -357,4 +388,34 @@ func (s *_ABitOfEverythingServer) CheckExternalNestedPathEnum(ctx context.Contex
 
 func (s *_ABitOfEverythingServer) CheckStatus(ctx context.Context, empty *emptypb.Empty) (*examples.CheckStatusResponse, error) {
 	return &examples.CheckStatusResponse{Status: &statuspb.Status{}}, nil
+}
+
+func (s *_ABitOfEverythingServer) Exists(ctx context.Context, msg *examples.ABitOfEverything) (*emptypb.Empty, error) {
+	if _, ok := s.v[msg.Uuid]; ok {
+		return new(emptypb.Empty), nil
+	}
+
+	return nil, status.Errorf(codes.NotFound, "not found")
+}
+
+func (s *_ABitOfEverythingServer) CustomOptionsRequest(ctx context.Context, msg *examples.ABitOfEverything) (*emptypb.Empty, error) {
+	err := grpc.SendHeader(ctx, metadata.New(map[string]string{
+		"Allow": "OPTIONS, GET, HEAD, POST, PUT, TRACE",
+	}))
+	if err != nil {
+		return nil, err
+	}
+	return new(emptypb.Empty), nil
+}
+
+func (s *_ABitOfEverythingServer) TraceRequest(ctx context.Context, msg *examples.ABitOfEverything) (*examples.ABitOfEverything, error) {
+	return msg, nil
+}
+
+func (s *_ABitOfEverythingServer) PostOneofEnum(ctx context.Context, msg *oneofenum.OneofEnumMessage) (*emptypb.Empty, error) {
+	return new(emptypb.Empty), nil
+}
+
+func (s *_ABitOfEverythingServer) PostRequiredMessageType(ctx context.Context, req *examples.RequiredMessageTypeRequest) (*emptypb.Empty, error) {
+	return new(emptypb.Empty), nil
 }

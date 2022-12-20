@@ -20,8 +20,11 @@
     "swagger-client": "^2.1.28",
     "webpack-stream": "^3.2.0",
     "bower-logger": "^0.2.2",
-    "mout": "^1.1.0",
+    "mout": "^1.2.4",
     "bower-config": "^0.6.2",
     "configstore": "^4.0.0"
+  },
+  "dependencies": {
+    "gulp-cli": "^2.3.0"
   }
 }

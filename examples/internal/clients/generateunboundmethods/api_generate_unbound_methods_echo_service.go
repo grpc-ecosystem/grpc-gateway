@@ -28,7 +28,7 @@ type GenerateUnboundMethodsEchoServiceApiService service
 GenerateUnboundMethodsEchoServiceApiService Echo method receives a simple message and returns it.
 The message posted as the id parameter will also be returned.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param body GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.
 
 @return ExamplepbGenerateUnboundMethodsSimpleMessage
 */
@@ -128,7 +128,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 /* 
 GenerateUnboundMethodsEchoServiceApiService EchoBody method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param body GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.
 
 @return ExamplepbGenerateUnboundMethodsSimpleMessage
 */
@@ -228,7 +228,7 @@ func (a *GenerateUnboundMethodsEchoServiceApiService) GenerateUnboundMethodsEcho
 /* 
 GenerateUnboundMethodsEchoServiceApiService EchoDelete method receives a simple message and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param body GenerateUnboundMethodsSimpleMessage represents a simple message sent to the unannotated GenerateUnboundMethodsEchoService service.
 
 @return ExamplepbGenerateUnboundMethodsSimpleMessage
 */

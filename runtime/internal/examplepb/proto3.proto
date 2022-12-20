@@ -2,15 +2,16 @@ syntax = "proto3";
 
 package grpc.gateway.runtime.internal.examplepb;
 
-option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb";
-
 import "google/protobuf/duration.proto";
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/runtime/internal/examplepb";
+
 message Proto3Message {
-  // Next number: 47
+  // Next number: 49
   Proto3Message nested = 41;
   float float_value = 42;
   double double_value = 43;
@@ -58,6 +59,8 @@ message Proto3Message {
   map<string, bool> map_value14 = 39;
   map<bool, string> map_value15 = 40;
   map<string, google.protobuf.UInt64Value> map_value16 = 45;
+  google.protobuf.Value struct_value_value = 47;
+  google.protobuf.Struct struct_value = 48;
 }
 
 enum EnumValue {

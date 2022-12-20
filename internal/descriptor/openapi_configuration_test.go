@@ -28,8 +28,8 @@ file:
 		t.Fatal(err)
 	}
 
-	if !strings.Contains(err.Error(), "line 4") {
-		t.Errorf("Expected yaml error to be detected in line 4. Got other error: %v", err)
+	if !strings.Contains(err.Error(), "line 3") {
+		t.Errorf("Expected yaml error to be detected in line 3. Got other error: %v", err)
 	}
 
 	if config != nil {
@@ -111,4 +111,21 @@ openapiOptions:
 	if secOpt.Name != "X-API-Key" {
 		t.Fatalf("expected name to be X-API-Key but got %s", secOpt.Name)
 	}
+}
+
+func TestLoadOpenAPIConfigFromYAMLUnknownKeys(t *testing.T) {
+	_, err := loadOpenAPIConfigFromYAML([]byte(`
+closedapiOptions:
+  get: it?
+openapiOptions:
+  file:
+  - file: test.proto
+    option:
+      schemes:
+      - HTTP
+`), "openapi_options")
+	if err == nil {
+		t.Errorf("Expected invalid key error")
+	}
+
 }

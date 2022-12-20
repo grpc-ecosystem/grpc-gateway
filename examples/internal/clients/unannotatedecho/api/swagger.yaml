@@ -13,10 +13,20 @@ info:
     email: "none@example.com"
   license:
     name: "BSD 3-Clause License"
-    url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/master/LICENSE.txt"
+    url: "https://github.com/grpc-ecosystem/grpc-gateway/blob/main/LICENSE.txt"
   x-something-something: "yadda"
 tags:
 - name: "UnannotatedEchoService"
+  description: "UnannotatedEchoService description -- which should not be used in\
+    \ place of the documentation comment!"
+  externalDocs:
+    description: "Find out more about UnannotatedEchoService"
+    url: "https://github.com/grpc-ecosystem/grpc-gateway"
+- name: "Echo"
+  description: "Echo description"
+- name: "Internal"
+  description: "Internal description"
+  x-traitTag: true
 schemes:
 - "http"
 - "https"
@@ -248,6 +258,7 @@ paths:
       parameters:
       - in: "body"
         name: "body"
+        description: "A simple message with many types"
         required: true
         schema:
           $ref: "#/definitions/examplepbUnannotatedSimpleMessage"

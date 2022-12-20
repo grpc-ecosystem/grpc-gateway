@@ -343,14 +343,18 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckExternal
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedName name is nested field.
+ * @param uuid
  * @param floatValue Float value field
- * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition.
+ * @param doubleValue
+ * @param int64Value
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
+ * @param requiredStringField1
+ * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCheckGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Uuid" (optional.String) - 
-     * @param "DoubleValue" (optional.Float64) - 
-     * @param "Int64Value" (optional.String) - 
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -370,15 +374,21 @@ ABitOfEverythingServiceApiService
      * @param "OneofString" (optional.String) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
-     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title. Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title. Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title. Repeated string description.
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationAmount" (optional.Int64) - 
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Int64OverrideType" (optional.Int64) - 
-     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -386,9 +396,6 @@ ABitOfEverythingServiceApiService
 type ABitOfEverythingServiceCheckGetQueryParamsOpts struct { 
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
-	Uuid optional.String
-	DoubleValue optional.Float64
-	Int64Value optional.String
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -417,9 +424,15 @@ type ABitOfEverythingServiceCheckGetQueryParamsOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
+	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQueryParams(ctx context.Context, singleNestedName string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -442,16 +455,10 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	if localVarOptionals != nil && localVarOptionals.SingleNestedOk.IsSet() {
 		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
 	}
-	if localVarOptionals != nil && localVarOptionals.Uuid.IsSet() {
-		localVarQueryParams.Add("uuid", parameterToString(localVarOptionals.Uuid.Value(), ""))
-	}
+	localVarQueryParams.Add("uuid", parameterToString(uuid, ""))
 	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
-	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
-	}
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
 		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
@@ -536,6 +543,28 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -673,14 +702,18 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckGetQuery
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedOk DeepEnum description.
+ * @param uuid
  * @param floatValue Float value field
- * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition.
+ * @param doubleValue
+ * @param int64Value
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
+ * @param requiredStringField1
+ * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
-     * @param "Uuid" (optional.String) - 
-     * @param "DoubleValue" (optional.Float64) - 
-     * @param "Int64Value" (optional.String) - 
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -700,15 +733,21 @@ ABitOfEverythingServiceApiService
      * @param "OneofString" (optional.String) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
-     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title. Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title. Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title. Repeated string description.
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
      * @param "NestedAnnotationAmount" (optional.Int64) - 
      * @param "Int64OverrideType" (optional.Int64) - 
-     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -716,9 +755,6 @@ ABitOfEverythingServiceApiService
 type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct { 
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
-	Uuid optional.String
-	DoubleValue optional.Float64
-	Int64Value optional.String
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -747,9 +783,15 @@ type ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
+	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEnumGetQueryParams(ctx context.Context, singleNestedOk string, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckNestedEnumGetQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -772,16 +814,10 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	if localVarOptionals != nil && localVarOptionals.SingleNestedAmount.IsSet() {
 		localVarQueryParams.Add("singleNested.amount", parameterToString(localVarOptionals.SingleNestedAmount.Value(), ""))
 	}
-	if localVarOptionals != nil && localVarOptionals.Uuid.IsSet() {
-		localVarQueryParams.Add("uuid", parameterToString(localVarOptionals.Uuid.Value(), ""))
-	}
+	localVarQueryParams.Add("uuid", parameterToString(uuid, ""))
 	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
-	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
-	}
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
 		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
@@ -866,6 +902,28 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -1003,13 +1061,17 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckNestedEn
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param stringValue
- * @param body
+ * @param singleNested
+ * @param uuid
  * @param floatValue Float value field
- * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition.
+ * @param doubleValue
+ * @param int64Value
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
+ * @param requiredStringField1
+ * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCheckPostQueryParamsOpts - Optional Parameters:
-     * @param "Uuid" (optional.String) - 
-     * @param "DoubleValue" (optional.Float64) - 
-     * @param "Int64Value" (optional.String) - 
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -1028,24 +1090,27 @@ ABitOfEverythingServiceApiService
      * @param "OneofString" (optional.String) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
-     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title. Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title. Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title. Repeated string description.
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
      * @param "NestedAnnotationAmount" (optional.Int64) - 
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Int64OverrideType" (optional.Int64) - 
-     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
 
 type ABitOfEverythingServiceCheckPostQueryParamsOpts struct { 
-	Uuid optional.String
-	DoubleValue optional.Float64
-	Int64Value optional.String
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -1074,9 +1139,15 @@ type ABitOfEverythingServiceCheckPostQueryParamsOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
+	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, body ABitOfEverythingNested, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQueryParams(ctx context.Context, stringValue string, singleNested ABitOfEverythingNested, uuid string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCheckPostQueryParamsOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1093,16 +1164,10 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if localVarOptionals != nil && localVarOptionals.Uuid.IsSet() {
-		localVarQueryParams.Add("uuid", parameterToString(localVarOptionals.Uuid.Value(), ""))
-	}
+	localVarQueryParams.Add("uuid", parameterToString(uuid, ""))
 	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
-	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
-	}
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
 		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
@@ -1188,6 +1253,28 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
 	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 
@@ -1206,7 +1293,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCheckPostQuer
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &singleNested
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -1499,25 +1586,35 @@ This API creates a new ABitOfEverything
  * @param pathEnumValue
  * @param nestedPathEnumValue
  * @param enumValueAnnotation Numeric enum description.
- * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition.
+ * @param uuid
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
+ * @param requiredStringField1
+ * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceCreateOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "Uuid" (optional.String) - 
      * @param "BytesValue" (optional.String) - 
      * @param "RepeatedStringValue" (optional.Interface of []string) - 
      * @param "OneofString" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
-     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title. Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title. Repeated string description.
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
      * @param "NestedAnnotationAmount" (optional.Int64) - 
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Int64OverrideType" (optional.Int64) - 
-     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return ExamplepbABitOfEverything
 */
@@ -1526,7 +1623,6 @@ type ABitOfEverythingServiceCreateOpts struct {
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
-	Uuid optional.String
 	BytesValue optional.String
 	RepeatedStringValue optional.Interface
 	OneofString optional.String
@@ -1540,9 +1636,15 @@ type ABitOfEverythingServiceCreateOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
+	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx context.Context, floatValue float32, doubleValue float64, int64Value string, uint64Value string, int32Value int32, fixed64Value string, fixed32Value int64, boolValue bool, stringValue string, uint32Value int64, sfixed32Value int32, sfixed64Value string, sint32Value int32, sint64Value string, nonConventionalNameValue string, enumValue string, pathEnumValue string, nestedPathEnumValue string, enumValueAnnotation string, uuid string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCreateOpts) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1586,9 +1688,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 	if localVarOptionals != nil && localVarOptionals.SingleNestedOk.IsSet() {
 		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
 	}
-	if localVarOptionals != nil && localVarOptionals.Uuid.IsSet() {
-		localVarQueryParams.Add("uuid", parameterToString(localVarOptionals.Uuid.Value(), ""))
-	}
+	localVarQueryParams.Add("uuid", parameterToString(uuid, ""))
 	if localVarOptionals != nil && localVarOptionals.BytesValue.IsSet() {
 		localVarQueryParams.Add("bytesValue", parameterToString(localVarOptionals.BytesValue.Value(), ""))
 	}
@@ -1628,6 +1728,28 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -1764,7 +1886,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreate(ctx co
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param body
+ * @param body Intentionally complicated message type to cover many features of Protobuf.
 
 @return ExamplepbABitOfEverything
 */
@@ -1922,7 +2044,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBody(ct
 ABitOfEverythingServiceApiService Create a book.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param parent The publisher in which to create the book.  Format: &#x60;publishers/{publisher}&#x60;  Example: &#x60;publishers/1257894000000000000&#x60;
- * @param body The book to create.
+ * @param book The book to create.
  * @param optional nil or *ABitOfEverythingServiceCreateBookOpts - Optional Parameters:
      * @param "BookId" (optional.String) -  The ID to use for the book.  This must start with an alphanumeric character.
 
@@ -1933,7 +2055,7 @@ type ABitOfEverythingServiceCreateBookOpts struct {
 	BookId optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ctx context.Context, parent string, body ExamplepbBook, localVarOptionals *ABitOfEverythingServiceCreateBookOpts) (ExamplepbBook, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ctx context.Context, parent string, book ExamplepbBook, localVarOptionals *ABitOfEverythingServiceCreateBookOpts) (ExamplepbBook, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -1971,7 +2093,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ct
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &book
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -2090,12 +2212,702 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCreateBook(ct
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param uuidName
+ * @param floatValue Float value field
+ * @param doubleValue
+ * @param int64Value
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
+ * @param requiredStringField1
+ * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
+ * @param optional nil or *ABitOfEverythingServiceCustomOpts - Optional Parameters:
+     * @param "SingleNestedName" (optional.String) -  name is nested field.
+     * @param "SingleNestedAmount" (optional.Int64) - 
+     * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
+     * @param "Uint64Value" (optional.String) - 
+     * @param "Int32Value" (optional.Int32) - 
+     * @param "Fixed64Value" (optional.String) - 
+     * @param "Fixed32Value" (optional.Int64) - 
+     * @param "BoolValue" (optional.Bool) - 
+     * @param "StringValue" (optional.String) - 
+     * @param "BytesValue" (optional.String) - 
+     * @param "Uint32Value" (optional.Int64) - 
+     * @param "EnumValue" (optional.String) -   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "PathEnumValue" (optional.String) - 
+     * @param "NestedPathEnumValue" (optional.String) - 
+     * @param "Sfixed32Value" (optional.Int32) - 
+     * @param "Sfixed64Value" (optional.String) - 
+     * @param "Sint32Value" (optional.Int32) - 
+     * @param "Sint64Value" (optional.String) - 
+     * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofString" (optional.String) - 
+     * @param "NonConventionalNameValue" (optional.String) - 
+     * @param "TimestampValue" (optional.Time) - 
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
+     * @param "NestedAnnotationName" (optional.String) -  name is nested field.
+     * @param "NestedAnnotationAmount" (optional.Int64) - 
+     * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
+     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
+     * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
+
+@return ExamplepbABitOfEverything
+*/
+
+type ABitOfEverythingServiceCustomOpts struct { 
+	SingleNestedName optional.String
+	SingleNestedAmount optional.Int64
+	SingleNestedOk optional.String
+	Uint64Value optional.String
+	Int32Value optional.Int32
+	Fixed64Value optional.String
+	Fixed32Value optional.Int64
+	BoolValue optional.Bool
+	StringValue optional.String
+	BytesValue optional.String
+	Uint32Value optional.Int64
+	EnumValue optional.String
+	PathEnumValue optional.String
+	NestedPathEnumValue optional.String
+	Sfixed32Value optional.Int32
+	Sfixed64Value optional.String
+	Sint32Value optional.Int32
+	Sint64Value optional.String
+	RepeatedStringValue optional.Interface
+	OneofString optional.String
+	NonConventionalNameValue optional.String
+	TimestampValue optional.Time
+	RepeatedEnumValue optional.Interface
+	RepeatedEnumAnnotation optional.Interface
+	EnumValueAnnotation optional.String
+	RepeatedStringAnnotation optional.Interface
+	NestedAnnotationName optional.String
+	NestedAnnotationAmount optional.Int64
+	NestedAnnotationOk optional.String
+	Int64OverrideType optional.Int64
+	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
+	OptionalStringValue optional.String
+	ProductId optional.Interface
+	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
+}
+
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustom(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCustomOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+	var (
+		localVarHttpMethod = strings.ToUpper("Post")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+		localVarReturnValue ExamplepbABitOfEverything
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{uuidName}:custom"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if localVarOptionals != nil && localVarOptionals.SingleNestedName.IsSet() {
+		localVarQueryParams.Add("singleNested.name", parameterToString(localVarOptionals.SingleNestedName.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.SingleNestedAmount.IsSet() {
+		localVarQueryParams.Add("singleNested.amount", parameterToString(localVarOptionals.SingleNestedAmount.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.SingleNestedOk.IsSet() {
+		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
+	}
+	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
+	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
+		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Int32Value.IsSet() {
+		localVarQueryParams.Add("int32Value", parameterToString(localVarOptionals.Int32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Fixed64Value.IsSet() {
+		localVarQueryParams.Add("fixed64Value", parameterToString(localVarOptionals.Fixed64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Fixed32Value.IsSet() {
+		localVarQueryParams.Add("fixed32Value", parameterToString(localVarOptionals.Fixed32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.BoolValue.IsSet() {
+		localVarQueryParams.Add("boolValue", parameterToString(localVarOptionals.BoolValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.StringValue.IsSet() {
+		localVarQueryParams.Add("stringValue", parameterToString(localVarOptionals.StringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.BytesValue.IsSet() {
+		localVarQueryParams.Add("bytesValue", parameterToString(localVarOptionals.BytesValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uint32Value.IsSet() {
+		localVarQueryParams.Add("uint32Value", parameterToString(localVarOptionals.Uint32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.EnumValue.IsSet() {
+		localVarQueryParams.Add("enumValue", parameterToString(localVarOptionals.EnumValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.PathEnumValue.IsSet() {
+		localVarQueryParams.Add("pathEnumValue", parameterToString(localVarOptionals.PathEnumValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedPathEnumValue.IsSet() {
+		localVarQueryParams.Add("nestedPathEnumValue", parameterToString(localVarOptionals.NestedPathEnumValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sfixed32Value.IsSet() {
+		localVarQueryParams.Add("sfixed32Value", parameterToString(localVarOptionals.Sfixed32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sfixed64Value.IsSet() {
+		localVarQueryParams.Add("sfixed64Value", parameterToString(localVarOptionals.Sfixed64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sint32Value.IsSet() {
+		localVarQueryParams.Add("sint32Value", parameterToString(localVarOptionals.Sint32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sint64Value.IsSet() {
+		localVarQueryParams.Add("sint64Value", parameterToString(localVarOptionals.Sint64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
+		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
+		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
+		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TimestampValue.IsSet() {
+		localVarQueryParams.Add("timestampValue", parameterToString(localVarOptionals.TimestampValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedEnumValue.IsSet() {
+		localVarQueryParams.Add("repeatedEnumValue", parameterToString(localVarOptionals.RepeatedEnumValue.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedEnumAnnotation.IsSet() {
+		localVarQueryParams.Add("repeatedEnumAnnotation", parameterToString(localVarOptionals.RepeatedEnumAnnotation.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.EnumValueAnnotation.IsSet() {
+		localVarQueryParams.Add("enumValueAnnotation", parameterToString(localVarOptionals.EnumValueAnnotation.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedStringAnnotation.IsSet() {
+		localVarQueryParams.Add("repeatedStringAnnotation", parameterToString(localVarOptionals.RepeatedStringAnnotation.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedAnnotationName.IsSet() {
+		localVarQueryParams.Add("nestedAnnotation.name", parameterToString(localVarOptionals.NestedAnnotationName.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedAnnotationAmount.IsSet() {
+		localVarQueryParams.Add("nestedAnnotation.amount", parameterToString(localVarOptionals.NestedAnnotationAmount.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedAnnotationOk.IsSet() {
+		localVarQueryParams.Add("nestedAnnotation.ok", parameterToString(localVarOptionals.NestedAnnotationOk.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Int64OverrideType.IsSet() {
+		localVarQueryParams.Add("int64OverrideType", parameterToString(localVarOptionals.Int64OverrideType.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringViaFieldBehaviorAnnotation", parameterToString(requiredStringViaFieldBehaviorAnnotation, ""))
+	if localVarOptionals != nil && localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.IsSet() {
+		localVarQueryParams.Add("outputOnlyStringViaFieldBehaviorAnnotation", parameterToString(localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
+		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{"application/json", "application/x-foo-mime"}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	if ctx != nil {
+		// API Key Authentication
+		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
+			var key string
+			if auth.Prefix != "" {
+				key = auth.Prefix + " " + auth.Key
+			} else {
+				key = auth.Key
+			}
+			localVarHeaderParams["X-API-Key"] = key
+			
+		}
+	}
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode < 300 {
+		// If we succeed, return the data, otherwise pass on to decode error.
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+		if err == nil { 
+			return localVarReturnValue, localVarHttpResponse, err
+		}
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body: localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		
+		if localVarHttpResponse.StatusCode == 200 {
+			var v ExamplepbABitOfEverything
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 403 {
+			var v interface{}
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 404 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 418 {
+			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RpcStatus
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		return localVarReturnValue, localVarHttpResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHttpResponse, nil
+}
+
+/* 
+ABitOfEverythingServiceApiService
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param uuidName
+ * @param floatValue Float value field
+ * @param doubleValue
+ * @param int64Value
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
+ * @param requiredStringField1
+ * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
+ * @param optional nil or *ABitOfEverythingServiceCustomOptionsRequestOpts - Optional Parameters:
+     * @param "SingleNestedName" (optional.String) -  name is nested field.
+     * @param "SingleNestedAmount" (optional.Int64) - 
+     * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
+     * @param "Uint64Value" (optional.String) - 
+     * @param "Int32Value" (optional.Int32) - 
+     * @param "Fixed64Value" (optional.String) - 
+     * @param "Fixed32Value" (optional.Int64) - 
+     * @param "BoolValue" (optional.Bool) - 
+     * @param "StringValue" (optional.String) - 
+     * @param "BytesValue" (optional.String) - 
+     * @param "Uint32Value" (optional.Int64) - 
+     * @param "EnumValue" (optional.String) -   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "PathEnumValue" (optional.String) - 
+     * @param "NestedPathEnumValue" (optional.String) - 
+     * @param "Sfixed32Value" (optional.Int32) - 
+     * @param "Sfixed64Value" (optional.String) - 
+     * @param "Sint32Value" (optional.Int32) - 
+     * @param "Sint64Value" (optional.String) - 
+     * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofString" (optional.String) - 
+     * @param "NonConventionalNameValue" (optional.String) - 
+     * @param "TimestampValue" (optional.Time) - 
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
+     * @param "NestedAnnotationName" (optional.String) -  name is nested field.
+     * @param "NestedAnnotationAmount" (optional.Int64) - 
+     * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
+     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
+     * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
+
+@return interface{}
+*/
+
+type ABitOfEverythingServiceCustomOptionsRequestOpts struct { 
+	SingleNestedName optional.String
+	SingleNestedAmount optional.Int64
+	SingleNestedOk optional.String
+	Uint64Value optional.String
+	Int32Value optional.Int32
+	Fixed64Value optional.String
+	Fixed32Value optional.Int64
+	BoolValue optional.Bool
+	StringValue optional.String
+	BytesValue optional.String
+	Uint32Value optional.Int64
+	EnumValue optional.String
+	PathEnumValue optional.String
+	NestedPathEnumValue optional.String
+	Sfixed32Value optional.Int32
+	Sfixed64Value optional.String
+	Sint32Value optional.Int32
+	Sint64Value optional.String
+	RepeatedStringValue optional.Interface
+	OneofString optional.String
+	NonConventionalNameValue optional.String
+	TimestampValue optional.Time
+	RepeatedEnumValue optional.Interface
+	RepeatedEnumAnnotation optional.Interface
+	EnumValueAnnotation optional.String
+	RepeatedStringAnnotation optional.Interface
+	NestedAnnotationName optional.String
+	NestedAnnotationAmount optional.Int64
+	NestedAnnotationOk optional.String
+	Int64OverrideType optional.Int64
+	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
+	OptionalStringValue optional.String
+	ProductId optional.Interface
+	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
+}
+
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceCustomOptionsRequest(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceCustomOptionsRequestOpts) (interface{}, *http.Response, error) {
+	var (
+		localVarHttpMethod = strings.ToUpper("Options")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+		localVarReturnValue interface{}
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{uuidName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if localVarOptionals != nil && localVarOptionals.SingleNestedName.IsSet() {
+		localVarQueryParams.Add("singleNested.name", parameterToString(localVarOptionals.SingleNestedName.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.SingleNestedAmount.IsSet() {
+		localVarQueryParams.Add("singleNested.amount", parameterToString(localVarOptionals.SingleNestedAmount.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.SingleNestedOk.IsSet() {
+		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
+	}
+	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
+	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
+		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Int32Value.IsSet() {
+		localVarQueryParams.Add("int32Value", parameterToString(localVarOptionals.Int32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Fixed64Value.IsSet() {
+		localVarQueryParams.Add("fixed64Value", parameterToString(localVarOptionals.Fixed64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Fixed32Value.IsSet() {
+		localVarQueryParams.Add("fixed32Value", parameterToString(localVarOptionals.Fixed32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.BoolValue.IsSet() {
+		localVarQueryParams.Add("boolValue", parameterToString(localVarOptionals.BoolValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.StringValue.IsSet() {
+		localVarQueryParams.Add("stringValue", parameterToString(localVarOptionals.StringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.BytesValue.IsSet() {
+		localVarQueryParams.Add("bytesValue", parameterToString(localVarOptionals.BytesValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uint32Value.IsSet() {
+		localVarQueryParams.Add("uint32Value", parameterToString(localVarOptionals.Uint32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.EnumValue.IsSet() {
+		localVarQueryParams.Add("enumValue", parameterToString(localVarOptionals.EnumValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.PathEnumValue.IsSet() {
+		localVarQueryParams.Add("pathEnumValue", parameterToString(localVarOptionals.PathEnumValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedPathEnumValue.IsSet() {
+		localVarQueryParams.Add("nestedPathEnumValue", parameterToString(localVarOptionals.NestedPathEnumValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sfixed32Value.IsSet() {
+		localVarQueryParams.Add("sfixed32Value", parameterToString(localVarOptionals.Sfixed32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sfixed64Value.IsSet() {
+		localVarQueryParams.Add("sfixed64Value", parameterToString(localVarOptionals.Sfixed64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sint32Value.IsSet() {
+		localVarQueryParams.Add("sint32Value", parameterToString(localVarOptionals.Sint32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sint64Value.IsSet() {
+		localVarQueryParams.Add("sint64Value", parameterToString(localVarOptionals.Sint64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
+		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
+		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
+		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TimestampValue.IsSet() {
+		localVarQueryParams.Add("timestampValue", parameterToString(localVarOptionals.TimestampValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedEnumValue.IsSet() {
+		localVarQueryParams.Add("repeatedEnumValue", parameterToString(localVarOptionals.RepeatedEnumValue.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedEnumAnnotation.IsSet() {
+		localVarQueryParams.Add("repeatedEnumAnnotation", parameterToString(localVarOptionals.RepeatedEnumAnnotation.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.EnumValueAnnotation.IsSet() {
+		localVarQueryParams.Add("enumValueAnnotation", parameterToString(localVarOptionals.EnumValueAnnotation.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedStringAnnotation.IsSet() {
+		localVarQueryParams.Add("repeatedStringAnnotation", parameterToString(localVarOptionals.RepeatedStringAnnotation.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedAnnotationName.IsSet() {
+		localVarQueryParams.Add("nestedAnnotation.name", parameterToString(localVarOptionals.NestedAnnotationName.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedAnnotationAmount.IsSet() {
+		localVarQueryParams.Add("nestedAnnotation.amount", parameterToString(localVarOptionals.NestedAnnotationAmount.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedAnnotationOk.IsSet() {
+		localVarQueryParams.Add("nestedAnnotation.ok", parameterToString(localVarOptionals.NestedAnnotationOk.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Int64OverrideType.IsSet() {
+		localVarQueryParams.Add("int64OverrideType", parameterToString(localVarOptionals.Int64OverrideType.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringViaFieldBehaviorAnnotation", parameterToString(requiredStringViaFieldBehaviorAnnotation, ""))
+	if localVarOptionals != nil && localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.IsSet() {
+		localVarQueryParams.Add("outputOnlyStringViaFieldBehaviorAnnotation", parameterToString(localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
+		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{"application/json", "application/x-foo-mime"}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	if ctx != nil {
+		// API Key Authentication
+		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
+			var key string
+			if auth.Prefix != "" {
+				key = auth.Prefix + " " + auth.Key
+			} else {
+				key = auth.Key
+			}
+			localVarHeaderParams["X-API-Key"] = key
+			
+		}
+	}
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode < 300 {
+		// If we succeed, return the data, otherwise pass on to decode error.
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+		if err == nil { 
+			return localVarReturnValue, localVarHttpResponse, err
+		}
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body: localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		
+		if localVarHttpResponse.StatusCode == 200 {
+			var v interface{}
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RpcStatus
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		return localVarReturnValue, localVarHttpResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHttpResponse, nil
+}
+
+/* 
+ABitOfEverythingServiceApiService
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param singleNestedName name is nested field.
  * @param body
 
 @return ExamplepbABitOfEverything
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(ctx context.Context, singleNestedName string, body ExamplepbABitOfEverything) (ExamplepbABitOfEverything, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDeepPathEcho(ctx context.Context, singleNestedName string, body ABitOfEverything1) (ExamplepbABitOfEverything, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -2405,6 +3217,373 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDelete(ctx co
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param uuidName
+ * @param floatValue Float value field
+ * @param doubleValue
+ * @param int64Value
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
+ * @param requiredStringField1
+ * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
+ * @param optional nil or *ABitOfEverythingServiceDoubleColonOpts - Optional Parameters:
+     * @param "SingleNestedName" (optional.String) -  name is nested field.
+     * @param "SingleNestedAmount" (optional.Int64) - 
+     * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
+     * @param "Uint64Value" (optional.String) - 
+     * @param "Int32Value" (optional.Int32) - 
+     * @param "Fixed64Value" (optional.String) - 
+     * @param "Fixed32Value" (optional.Int64) - 
+     * @param "BoolValue" (optional.Bool) - 
+     * @param "StringValue" (optional.String) - 
+     * @param "BytesValue" (optional.String) - 
+     * @param "Uint32Value" (optional.Int64) - 
+     * @param "EnumValue" (optional.String) -   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "PathEnumValue" (optional.String) - 
+     * @param "NestedPathEnumValue" (optional.String) - 
+     * @param "Sfixed32Value" (optional.Int32) - 
+     * @param "Sfixed64Value" (optional.String) - 
+     * @param "Sint32Value" (optional.Int32) - 
+     * @param "Sint64Value" (optional.String) - 
+     * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofString" (optional.String) - 
+     * @param "NonConventionalNameValue" (optional.String) - 
+     * @param "TimestampValue" (optional.Time) - 
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
+     * @param "NestedAnnotationName" (optional.String) -  name is nested field.
+     * @param "NestedAnnotationAmount" (optional.Int64) - 
+     * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
+     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
+     * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
+
+@return ExamplepbABitOfEverything
+*/
+
+type ABitOfEverythingServiceDoubleColonOpts struct { 
+	SingleNestedName optional.String
+	SingleNestedAmount optional.Int64
+	SingleNestedOk optional.String
+	Uint64Value optional.String
+	Int32Value optional.Int32
+	Fixed64Value optional.String
+	Fixed32Value optional.Int64
+	BoolValue optional.Bool
+	StringValue optional.String
+	BytesValue optional.String
+	Uint32Value optional.Int64
+	EnumValue optional.String
+	PathEnumValue optional.String
+	NestedPathEnumValue optional.String
+	Sfixed32Value optional.Int32
+	Sfixed64Value optional.String
+	Sint32Value optional.Int32
+	Sint64Value optional.String
+	RepeatedStringValue optional.Interface
+	OneofString optional.String
+	NonConventionalNameValue optional.String
+	TimestampValue optional.Time
+	RepeatedEnumValue optional.Interface
+	RepeatedEnumAnnotation optional.Interface
+	EnumValueAnnotation optional.String
+	RepeatedStringAnnotation optional.Interface
+	NestedAnnotationName optional.String
+	NestedAnnotationAmount optional.Int64
+	NestedAnnotationOk optional.String
+	Int64OverrideType optional.Int64
+	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
+	OptionalStringValue optional.String
+	ProductId optional.Interface
+	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
+}
+
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceDoubleColon(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceDoubleColonOpts) (ExamplepbABitOfEverything, *http.Response, error) {
+	var (
+		localVarHttpMethod = strings.ToUpper("Post")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+		localVarReturnValue ExamplepbABitOfEverything
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{uuidName}:custom:custom"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if localVarOptionals != nil && localVarOptionals.SingleNestedName.IsSet() {
+		localVarQueryParams.Add("singleNested.name", parameterToString(localVarOptionals.SingleNestedName.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.SingleNestedAmount.IsSet() {
+		localVarQueryParams.Add("singleNested.amount", parameterToString(localVarOptionals.SingleNestedAmount.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.SingleNestedOk.IsSet() {
+		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
+	}
+	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
+	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
+		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Int32Value.IsSet() {
+		localVarQueryParams.Add("int32Value", parameterToString(localVarOptionals.Int32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Fixed64Value.IsSet() {
+		localVarQueryParams.Add("fixed64Value", parameterToString(localVarOptionals.Fixed64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Fixed32Value.IsSet() {
+		localVarQueryParams.Add("fixed32Value", parameterToString(localVarOptionals.Fixed32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.BoolValue.IsSet() {
+		localVarQueryParams.Add("boolValue", parameterToString(localVarOptionals.BoolValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.StringValue.IsSet() {
+		localVarQueryParams.Add("stringValue", parameterToString(localVarOptionals.StringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.BytesValue.IsSet() {
+		localVarQueryParams.Add("bytesValue", parameterToString(localVarOptionals.BytesValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uint32Value.IsSet() {
+		localVarQueryParams.Add("uint32Value", parameterToString(localVarOptionals.Uint32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.EnumValue.IsSet() {
+		localVarQueryParams.Add("enumValue", parameterToString(localVarOptionals.EnumValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.PathEnumValue.IsSet() {
+		localVarQueryParams.Add("pathEnumValue", parameterToString(localVarOptionals.PathEnumValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedPathEnumValue.IsSet() {
+		localVarQueryParams.Add("nestedPathEnumValue", parameterToString(localVarOptionals.NestedPathEnumValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sfixed32Value.IsSet() {
+		localVarQueryParams.Add("sfixed32Value", parameterToString(localVarOptionals.Sfixed32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sfixed64Value.IsSet() {
+		localVarQueryParams.Add("sfixed64Value", parameterToString(localVarOptionals.Sfixed64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sint32Value.IsSet() {
+		localVarQueryParams.Add("sint32Value", parameterToString(localVarOptionals.Sint32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sint64Value.IsSet() {
+		localVarQueryParams.Add("sint64Value", parameterToString(localVarOptionals.Sint64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
+		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
+		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
+		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TimestampValue.IsSet() {
+		localVarQueryParams.Add("timestampValue", parameterToString(localVarOptionals.TimestampValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedEnumValue.IsSet() {
+		localVarQueryParams.Add("repeatedEnumValue", parameterToString(localVarOptionals.RepeatedEnumValue.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedEnumAnnotation.IsSet() {
+		localVarQueryParams.Add("repeatedEnumAnnotation", parameterToString(localVarOptionals.RepeatedEnumAnnotation.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.EnumValueAnnotation.IsSet() {
+		localVarQueryParams.Add("enumValueAnnotation", parameterToString(localVarOptionals.EnumValueAnnotation.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedStringAnnotation.IsSet() {
+		localVarQueryParams.Add("repeatedStringAnnotation", parameterToString(localVarOptionals.RepeatedStringAnnotation.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedAnnotationName.IsSet() {
+		localVarQueryParams.Add("nestedAnnotation.name", parameterToString(localVarOptionals.NestedAnnotationName.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedAnnotationAmount.IsSet() {
+		localVarQueryParams.Add("nestedAnnotation.amount", parameterToString(localVarOptionals.NestedAnnotationAmount.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedAnnotationOk.IsSet() {
+		localVarQueryParams.Add("nestedAnnotation.ok", parameterToString(localVarOptionals.NestedAnnotationOk.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Int64OverrideType.IsSet() {
+		localVarQueryParams.Add("int64OverrideType", parameterToString(localVarOptionals.Int64OverrideType.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringViaFieldBehaviorAnnotation", parameterToString(requiredStringViaFieldBehaviorAnnotation, ""))
+	if localVarOptionals != nil && localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.IsSet() {
+		localVarQueryParams.Add("outputOnlyStringViaFieldBehaviorAnnotation", parameterToString(localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
+		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{"application/json", "application/x-foo-mime"}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	if ctx != nil {
+		// API Key Authentication
+		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
+			var key string
+			if auth.Prefix != "" {
+				key = auth.Prefix + " " + auth.Key
+			} else {
+				key = auth.Key
+			}
+			localVarHeaderParams["X-API-Key"] = key
+			
+		}
+	}
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode < 300 {
+		// If we succeed, return the data, otherwise pass on to decode error.
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+		if err == nil { 
+			return localVarReturnValue, localVarHttpResponse, err
+		}
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body: localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		
+		if localVarHttpResponse.StatusCode == 200 {
+			var v ExamplepbABitOfEverything
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 403 {
+			var v interface{}
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 404 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 418 {
+			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RpcStatus
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		return localVarReturnValue, localVarHttpResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHttpResponse, nil
+}
+
+/* 
+ABitOfEverythingServiceApiService
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 
 @return interface{}
 */
@@ -2559,12 +3738,335 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceErrorWithDeta
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param id
- * @param body
+ * @param uuidName
+ * @param floatValue Float value field
+ * @param doubleValue
+ * @param int64Value
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
+ * @param requiredStringField1
+ * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
+ * @param optional nil or *ABitOfEverythingServiceExistsOpts - Optional Parameters:
+     * @param "SingleNestedName" (optional.String) -  name is nested field.
+     * @param "SingleNestedAmount" (optional.Int64) - 
+     * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
+     * @param "Uint64Value" (optional.String) - 
+     * @param "Int32Value" (optional.Int32) - 
+     * @param "Fixed64Value" (optional.String) - 
+     * @param "Fixed32Value" (optional.Int64) - 
+     * @param "BoolValue" (optional.Bool) - 
+     * @param "StringValue" (optional.String) - 
+     * @param "BytesValue" (optional.String) - 
+     * @param "Uint32Value" (optional.Int64) - 
+     * @param "EnumValue" (optional.String) -   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "PathEnumValue" (optional.String) - 
+     * @param "NestedPathEnumValue" (optional.String) - 
+     * @param "Sfixed32Value" (optional.Int32) - 
+     * @param "Sfixed64Value" (optional.String) - 
+     * @param "Sint32Value" (optional.Int32) - 
+     * @param "Sint64Value" (optional.String) - 
+     * @param "RepeatedStringValue" (optional.Interface of []string) - 
+     * @param "OneofString" (optional.String) - 
+     * @param "NonConventionalNameValue" (optional.String) - 
+     * @param "TimestampValue" (optional.Time) - 
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
+     * @param "NestedAnnotationName" (optional.String) -  name is nested field.
+     * @param "NestedAnnotationAmount" (optional.Int64) - 
+     * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
+     * @param "Int64OverrideType" (optional.Int64) - 
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
+     * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWithBody(ctx context.Context, id string, body ExamplepbBody) (interface{}, *http.Response, error) {
+
+type ABitOfEverythingServiceExistsOpts struct { 
+	SingleNestedName optional.String
+	SingleNestedAmount optional.Int64
+	SingleNestedOk optional.String
+	Uint64Value optional.String
+	Int32Value optional.Int32
+	Fixed64Value optional.String
+	Fixed32Value optional.Int64
+	BoolValue optional.Bool
+	StringValue optional.String
+	BytesValue optional.String
+	Uint32Value optional.Int64
+	EnumValue optional.String
+	PathEnumValue optional.String
+	NestedPathEnumValue optional.String
+	Sfixed32Value optional.Int32
+	Sfixed64Value optional.String
+	Sint32Value optional.Int32
+	Sint64Value optional.String
+	RepeatedStringValue optional.Interface
+	OneofString optional.String
+	NonConventionalNameValue optional.String
+	TimestampValue optional.Time
+	RepeatedEnumValue optional.Interface
+	RepeatedEnumAnnotation optional.Interface
+	EnumValueAnnotation optional.String
+	RepeatedStringAnnotation optional.Interface
+	NestedAnnotationName optional.String
+	NestedAnnotationAmount optional.Int64
+	NestedAnnotationOk optional.String
+	Int64OverrideType optional.Int64
+	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
+	OptionalStringValue optional.String
+	ProductId optional.Interface
+	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
+}
+
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceExists(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceExistsOpts) (interface{}, *http.Response, error) {
+	var (
+		localVarHttpMethod = strings.ToUpper("Head")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+		localVarReturnValue interface{}
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{uuidName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if localVarOptionals != nil && localVarOptionals.SingleNestedName.IsSet() {
+		localVarQueryParams.Add("singleNested.name", parameterToString(localVarOptionals.SingleNestedName.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.SingleNestedAmount.IsSet() {
+		localVarQueryParams.Add("singleNested.amount", parameterToString(localVarOptionals.SingleNestedAmount.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.SingleNestedOk.IsSet() {
+		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
+	}
+	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
+	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
+		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Int32Value.IsSet() {
+		localVarQueryParams.Add("int32Value", parameterToString(localVarOptionals.Int32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Fixed64Value.IsSet() {
+		localVarQueryParams.Add("fixed64Value", parameterToString(localVarOptionals.Fixed64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Fixed32Value.IsSet() {
+		localVarQueryParams.Add("fixed32Value", parameterToString(localVarOptionals.Fixed32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.BoolValue.IsSet() {
+		localVarQueryParams.Add("boolValue", parameterToString(localVarOptionals.BoolValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.StringValue.IsSet() {
+		localVarQueryParams.Add("stringValue", parameterToString(localVarOptionals.StringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.BytesValue.IsSet() {
+		localVarQueryParams.Add("bytesValue", parameterToString(localVarOptionals.BytesValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Uint32Value.IsSet() {
+		localVarQueryParams.Add("uint32Value", parameterToString(localVarOptionals.Uint32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.EnumValue.IsSet() {
+		localVarQueryParams.Add("enumValue", parameterToString(localVarOptionals.EnumValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.PathEnumValue.IsSet() {
+		localVarQueryParams.Add("pathEnumValue", parameterToString(localVarOptionals.PathEnumValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedPathEnumValue.IsSet() {
+		localVarQueryParams.Add("nestedPathEnumValue", parameterToString(localVarOptionals.NestedPathEnumValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sfixed32Value.IsSet() {
+		localVarQueryParams.Add("sfixed32Value", parameterToString(localVarOptionals.Sfixed32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sfixed64Value.IsSet() {
+		localVarQueryParams.Add("sfixed64Value", parameterToString(localVarOptionals.Sfixed64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sint32Value.IsSet() {
+		localVarQueryParams.Add("sint32Value", parameterToString(localVarOptionals.Sint32Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Sint64Value.IsSet() {
+		localVarQueryParams.Add("sint64Value", parameterToString(localVarOptionals.Sint64Value.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedStringValue.IsSet() {
+		localVarQueryParams.Add("repeatedStringValue", parameterToString(localVarOptionals.RepeatedStringValue.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OneofString.IsSet() {
+		localVarQueryParams.Add("oneofString", parameterToString(localVarOptionals.OneofString.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NonConventionalNameValue.IsSet() {
+		localVarQueryParams.Add("nonConventionalNameValue", parameterToString(localVarOptionals.NonConventionalNameValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TimestampValue.IsSet() {
+		localVarQueryParams.Add("timestampValue", parameterToString(localVarOptionals.TimestampValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedEnumValue.IsSet() {
+		localVarQueryParams.Add("repeatedEnumValue", parameterToString(localVarOptionals.RepeatedEnumValue.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedEnumAnnotation.IsSet() {
+		localVarQueryParams.Add("repeatedEnumAnnotation", parameterToString(localVarOptionals.RepeatedEnumAnnotation.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.EnumValueAnnotation.IsSet() {
+		localVarQueryParams.Add("enumValueAnnotation", parameterToString(localVarOptionals.EnumValueAnnotation.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.RepeatedStringAnnotation.IsSet() {
+		localVarQueryParams.Add("repeatedStringAnnotation", parameterToString(localVarOptionals.RepeatedStringAnnotation.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedAnnotationName.IsSet() {
+		localVarQueryParams.Add("nestedAnnotation.name", parameterToString(localVarOptionals.NestedAnnotationName.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedAnnotationAmount.IsSet() {
+		localVarQueryParams.Add("nestedAnnotation.amount", parameterToString(localVarOptionals.NestedAnnotationAmount.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.NestedAnnotationOk.IsSet() {
+		localVarQueryParams.Add("nestedAnnotation.ok", parameterToString(localVarOptionals.NestedAnnotationOk.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.Int64OverrideType.IsSet() {
+		localVarQueryParams.Add("int64OverrideType", parameterToString(localVarOptionals.Int64OverrideType.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringViaFieldBehaviorAnnotation", parameterToString(requiredStringViaFieldBehaviorAnnotation, ""))
+	if localVarOptionals != nil && localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.IsSet() {
+		localVarQueryParams.Add("outputOnlyStringViaFieldBehaviorAnnotation", parameterToString(localVarOptionals.OutputOnlyStringViaFieldBehaviorAnnotation.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
+		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
+	}
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{"application/json", "application/x-foo-mime"}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	if ctx != nil {
+		// API Key Authentication
+		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
+			var key string
+			if auth.Prefix != "" {
+				key = auth.Prefix + " " + auth.Key
+			} else {
+				key = auth.Key
+			}
+			localVarHeaderParams["X-API-Key"] = key
+			
+		}
+	}
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode < 300 {
+		// If we succeed, return the data, otherwise pass on to decode error.
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+		if err == nil { 
+			return localVarReturnValue, localVarHttpResponse, err
+		}
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body: localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		
+		if localVarHttpResponse.StatusCode == 200 {
+			var v interface{}
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RpcStatus
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		return localVarReturnValue, localVarHttpResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHttpResponse, nil
+}
+
+/* 
+ABitOfEverythingServiceApiService
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param id
+ * @param data
+
+@return interface{}
+*/
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWithBody(ctx context.Context, id string, data ExamplepbBody) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Post")
 		localVarPostBody   interface{}
@@ -2599,7 +4101,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWit
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &data
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -2718,15 +4220,19 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetMessageWit
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param uuid
+ * @param uuidName
  * @param floatValue Float value field
- * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition.
+ * @param doubleValue
+ * @param int64Value
+ * @param requiredStringViaFieldBehaviorAnnotation mark a field as required in Open API definition
+ * @param requiredStringField1
+ * @param requiredStringField2
+ * @param requiredFieldBehaviorJsonNameCustom Test openapiv2 handling of required json_name fields
+ * @param requiredFieldSchemaJsonNameCustom
  * @param optional nil or *ABitOfEverythingServiceGetQueryOpts - Optional Parameters:
      * @param "SingleNestedName" (optional.String) -  name is nested field.
      * @param "SingleNestedAmount" (optional.Int64) - 
      * @param "SingleNestedOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
-     * @param "DoubleValue" (optional.Float64) - 
-     * @param "Int64Value" (optional.String) - 
      * @param "Uint64Value" (optional.String) - 
      * @param "Int32Value" (optional.Int32) - 
      * @param "Fixed64Value" (optional.String) - 
@@ -2746,16 +4252,22 @@ ABitOfEverythingServiceApiService
      * @param "OneofString" (optional.String) - 
      * @param "NonConventionalNameValue" (optional.String) - 
      * @param "TimestampValue" (optional.Time) - 
-     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title. Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title. Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
-     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title. Repeated string description.
+     * @param "RepeatedEnumValue" (optional.Interface of []string) -  repeated enum value. it is comma-separated in query   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedEnumAnnotation" (optional.Interface of []string) -  Repeated numeric enum title  Repeated numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "EnumValueAnnotation" (optional.String) -  Numeric enum title  Numeric enum description.   - ZERO: ZERO means 0  - ONE: ONE means 1
+     * @param "RepeatedStringAnnotation" (optional.Interface of []string) -  Repeated string title  Repeated string description.
      * @param "NestedAnnotationName" (optional.String) -  name is nested field.
      * @param "NestedAnnotationAmount" (optional.Int64) - 
      * @param "NestedAnnotationOk" (optional.String) -  DeepEnum description.   - FALSE: FALSE is false.  - TRUE: TRUE is true.
      * @param "Int64OverrideType" (optional.Int64) - 
-     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition.
+     * @param "OutputOnlyStringViaFieldBehaviorAnnotation" (optional.String) -  mark a field as readonly in Open API definition
      * @param "OptionalStringValue" (optional.String) - 
+     * @param "ProductId" (optional.Interface of []string) -  Test openapiv2 generation of repeated fields  Only digits are allowed.
+     * @param "OptionalStringField" (optional.String) -  Test openapiv2 generation of required fields with annotation and jsonschema to reproduce
+     * @param "TrailingOnly" (optional.String) -  Trailing only
+     * @param "TrailingOnlyDot" (optional.String) -  Trailing only dot.
+     * @param "TrailingBoth" (optional.String) -  Leading both  Trailing both.
+     * @param "TrailingMultiline" (optional.String) -  Leading multiline  This is an example of a multi-line comment.  Trailing multiline.
 
 @return interface{}
 */
@@ -2764,8 +4276,6 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	SingleNestedName optional.String
 	SingleNestedAmount optional.Int64
 	SingleNestedOk optional.String
-	DoubleValue optional.Float64
-	Int64Value optional.String
 	Uint64Value optional.String
 	Int32Value optional.Int32
 	Fixed64Value optional.String
@@ -2795,9 +4305,15 @@ type ABitOfEverythingServiceGetQueryOpts struct {
 	Int64OverrideType optional.Int64
 	OutputOnlyStringViaFieldBehaviorAnnotation optional.String
 	OptionalStringValue optional.String
+	ProductId optional.Interface
+	OptionalStringField optional.String
+	TrailingOnly optional.String
+	TrailingOnlyDot optional.String
+	TrailingBoth optional.String
+	TrailingMultiline optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuid string, floatValue float32, requiredStringViaFieldBehaviorAnnotation string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx context.Context, uuidName string, floatValue float32, doubleValue float64, int64Value string, requiredStringViaFieldBehaviorAnnotation string, requiredStringField1 string, requiredStringField2 string, requiredFieldBehaviorJsonNameCustom string, requiredFieldSchemaJsonNameCustom string, localVarOptionals *ABitOfEverythingServiceGetQueryOpts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Get")
 		localVarPostBody   interface{}
@@ -2807,8 +4323,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/query/{uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"uuid"+"}", fmt.Sprintf("%v", uuid), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/query/{uuidName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2824,12 +4340,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 		localVarQueryParams.Add("singleNested.ok", parameterToString(localVarOptionals.SingleNestedOk.Value(), ""))
 	}
 	localVarQueryParams.Add("floatValue", parameterToString(floatValue, ""))
-	if localVarOptionals != nil && localVarOptionals.DoubleValue.IsSet() {
-		localVarQueryParams.Add("doubleValue", parameterToString(localVarOptionals.DoubleValue.Value(), ""))
-	}
-	if localVarOptionals != nil && localVarOptionals.Int64Value.IsSet() {
-		localVarQueryParams.Add("int64Value", parameterToString(localVarOptionals.Int64Value.Value(), ""))
-	}
+	localVarQueryParams.Add("doubleValue", parameterToString(doubleValue, ""))
+	localVarQueryParams.Add("int64Value", parameterToString(int64Value, ""))
 	if localVarOptionals != nil && localVarOptionals.Uint64Value.IsSet() {
 		localVarQueryParams.Add("uint64Value", parameterToString(localVarOptionals.Uint64Value.Value(), ""))
 	}
@@ -2917,6 +4429,28 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceGetQuery(ctx 
 	}
 	if localVarOptionals != nil && localVarOptionals.OptionalStringValue.IsSet() {
 		localVarQueryParams.Add("optionalStringValue", parameterToString(localVarOptionals.OptionalStringValue.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.ProductId.IsSet() {
+		localVarQueryParams.Add("productId", parameterToString(localVarOptionals.ProductId.Value(), "multi"))
+	}
+	if localVarOptionals != nil && localVarOptionals.OptionalStringField.IsSet() {
+		localVarQueryParams.Add("optionalStringField", parameterToString(localVarOptionals.OptionalStringField.Value(), ""))
+	}
+	localVarQueryParams.Add("requiredStringField1", parameterToString(requiredStringField1, ""))
+	localVarQueryParams.Add("requiredStringField2", parameterToString(requiredStringField2, ""))
+	localVarQueryParams.Add("required_field_behavior_json_name_custom", parameterToString(requiredFieldBehaviorJsonNameCustom, ""))
+	localVarQueryParams.Add("required_field_schema_json_name_custom", parameterToString(requiredFieldSchemaJsonNameCustom, ""))
+	if localVarOptionals != nil && localVarOptionals.TrailingOnly.IsSet() {
+		localVarQueryParams.Add("trailingOnly", parameterToString(localVarOptionals.TrailingOnly.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingOnlyDot.IsSet() {
+		localVarQueryParams.Add("trailingOnlyDot", parameterToString(localVarOptionals.TrailingOnlyDot.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingBoth.IsSet() {
+		localVarQueryParams.Add("trailingBoth", parameterToString(localVarOptionals.TrailingBoth.Value(), ""))
+	}
+	if localVarOptionals != nil && localVarOptionals.TrailingMultiline.IsSet() {
+		localVarQueryParams.Add("trailingMultiline", parameterToString(localVarOptionals.TrailingMultiline.Value(), ""))
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
@@ -3430,6 +4964,163 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceLookup(ctx co
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param body
+
+@return interface{}
+*/
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceOverwriteRequestContentType(ctx context.Context, body ExamplepbBody) (interface{}, *http.Response, error) {
+	var (
+		localVarHttpMethod = strings.ToUpper("Post")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+		localVarReturnValue interface{}
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v2/example/overwriterequestcontenttype"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{"application/x-bar-mime"}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{"application/json", "application/x-foo-mime"}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	// body params
+	localVarPostBody = &body
+	if ctx != nil {
+		// API Key Authentication
+		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
+			var key string
+			if auth.Prefix != "" {
+				key = auth.Prefix + " " + auth.Key
+			} else {
+				key = auth.Key
+			}
+			localVarHeaderParams["X-API-Key"] = key
+			
+		}
+	}
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode < 300 {
+		// If we succeed, return the data, otherwise pass on to decode error.
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+		if err == nil { 
+			return localVarReturnValue, localVarHttpResponse, err
+		}
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body: localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		
+		if localVarHttpResponse.StatusCode == 200 {
+			var v interface{}
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 403 {
+			var v interface{}
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 404 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 418 {
+			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RpcStatus
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		return localVarReturnValue, localVarHttpResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHttpResponse, nil
+}
+
+/* 
+ABitOfEverythingServiceApiService
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 
 @return string
 */
@@ -3511,6 +5202,320 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceOverwriteResp
 		
 		if localVarHttpResponse.StatusCode == 200 {
 			var v string
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 403 {
+			var v interface{}
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 404 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 418 {
+			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RpcStatus
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		return localVarReturnValue, localVarHttpResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHttpResponse, nil
+}
+
+/* 
+ABitOfEverythingServiceApiService
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param exampleEnum
+
+@return interface{}
+*/
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostOneofEnum(ctx context.Context, exampleEnum OneofenumExampleEnum) (interface{}, *http.Response, error) {
+	var (
+		localVarHttpMethod = strings.ToUpper("Post")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+		localVarReturnValue interface{}
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v1/example/oneofenum"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{"application/json", "application/x-foo-mime"}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	// body params
+	localVarPostBody = &exampleEnum
+	if ctx != nil {
+		// API Key Authentication
+		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
+			var key string
+			if auth.Prefix != "" {
+				key = auth.Prefix + " " + auth.Key
+			} else {
+				key = auth.Key
+			}
+			localVarHeaderParams["X-API-Key"] = key
+			
+		}
+	}
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode < 300 {
+		// If we succeed, return the data, otherwise pass on to decode error.
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+		if err == nil { 
+			return localVarReturnValue, localVarHttpResponse, err
+		}
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body: localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		
+		if localVarHttpResponse.StatusCode == 200 {
+			var v interface{}
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 403 {
+			var v interface{}
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 404 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 418 {
+			var v ExamplepbNumericEnum
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 500 {
+			var v ExamplepbErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		if localVarHttpResponse.StatusCode == 0 {
+			var v RpcStatus
+			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+				if err != nil {
+					newErr.error = err.Error()
+					return localVarReturnValue, localVarHttpResponse, newErr
+				}
+				newErr.model = v
+				return localVarReturnValue, localVarHttpResponse, newErr
+		}
+		
+		return localVarReturnValue, localVarHttpResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHttpResponse, nil
+}
+
+/* 
+ABitOfEverythingServiceApiService
+ * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param body
+
+@return interface{}
+*/
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServicePostRequiredMessageType(ctx context.Context, body ExamplepbRequiredMessageTypeRequest) (interface{}, *http.Response, error) {
+	var (
+		localVarHttpMethod = strings.ToUpper("Post")
+		localVarPostBody   interface{}
+		localVarFileName   string
+		localVarFileBytes  []byte
+		localVarReturnValue interface{}
+	)
+
+	// create path and map variables
+	localVarPath := a.client.cfg.BasePath + "/v1/example/requiredmessagetype"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
+
+	// set Content-Type header
+	localVarHttpContentType := selectHeaderContentType(localVarHttpContentTypes)
+	if localVarHttpContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHttpContentType
+	}
+
+	// to determine the Accept header
+	localVarHttpHeaderAccepts := []string{"application/json", "application/x-foo-mime"}
+
+	// set Accept header
+	localVarHttpHeaderAccept := selectHeaderAccept(localVarHttpHeaderAccepts)
+	if localVarHttpHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
+	}
+	// body params
+	localVarPostBody = &body
+	if ctx != nil {
+		// API Key Authentication
+		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
+			var key string
+			if auth.Prefix != "" {
+				key = auth.Prefix + " " + auth.Key
+			} else {
+				key = auth.Key
+			}
+			localVarHeaderParams["X-API-Key"] = key
+			
+		}
+	}
+	r, err := a.client.prepareRequest(ctx, localVarPath, localVarHttpMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHttpResponse, err := a.client.callAPI(r)
+	if err != nil || localVarHttpResponse == nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	localVarBody, err := ioutil.ReadAll(localVarHttpResponse.Body)
+	localVarHttpResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHttpResponse, err
+	}
+
+	if localVarHttpResponse.StatusCode < 300 {
+		// If we succeed, return the data, otherwise pass on to decode error.
+		err = a.client.decode(&localVarReturnValue, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
+		if err == nil { 
+			return localVarReturnValue, localVarHttpResponse, err
+		}
+	}
+
+	if localVarHttpResponse.StatusCode >= 300 {
+		newErr := GenericSwaggerError{
+			body: localVarBody,
+			error: localVarHttpResponse.Status,
+		}
+		
+		if localVarHttpResponse.StatusCode == 200 {
+			var v interface{}
 			err = a.client.decode(&v, localVarBody, localVarHttpResponse.Header.Get("Content-Type"));
 				if err != nil {
 					newErr.error = err.Error()
@@ -3897,12 +5902,12 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceTimeout(ctx c
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param uuid
+ * @param uuidName
  * @param body
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx context.Context, uuid string, body ABitOfEverything) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx context.Context, uuidName string, body ABitOfEverything) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -3912,8 +5917,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx co
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"uuid"+"}", fmt.Sprintf("%v", uuid), -1)
+	localVarPath := a.client.cfg.BasePath + "/v1/example/a_bit_of_everything/{uuidName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4057,7 +6062,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdate(ctx co
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param bookName The resource name of the book.  Format: &#x60;publishers/{publisher}/books/{book}&#x60;  Example: &#x60;publishers/1257894000000000000/books/my-book&#x60;
- * @param body The book to update.  The book&#39;s &#x60;name&#x60; field is used to identify the book to be updated. Format: publishers/{publisher}/books/{book}
+ * @param book The book to update.  The book&#39;s &#x60;name&#x60; field is used to identify the book to be updated. Format: publishers/{publisher}/books/{book}
  * @param optional nil or *ABitOfEverythingServiceUpdateBookOpts - Optional Parameters:
      * @param "UpdateMask" (optional.String) -  The list of fields to be updated.
      * @param "AllowMissing" (optional.Bool) -  If set to true, and the book is not found, a new book will be created. In this situation, &#x60;update_mask&#x60; is ignored.
@@ -4070,7 +6075,7 @@ type ABitOfEverythingServiceUpdateBookOpts struct {
 	AllowMissing optional.Bool
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ctx context.Context, bookName string, body ExamplepbBook, localVarOptionals *ABitOfEverythingServiceUpdateBookOpts) (ExamplepbBook, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ctx context.Context, bookName string, book TheBookToUpdate_, localVarOptionals *ABitOfEverythingServiceUpdateBookOpts) (ExamplepbBook, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -4111,7 +6116,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ct
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &book
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -4230,8 +6235,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ct
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param abeUuid
- * @param body
+ * @param uuidName
+ * @param abe A bit of everything  Intentionally complicated message type to cover many features of Protobuf.
  * @param optional nil or *ABitOfEverythingServiceUpdateV2Opts - Optional Parameters:
      * @param "UpdateMask" (optional.String) -  The paths to update.
 
@@ -4242,7 +6247,7 @@ type ABitOfEverythingServiceUpdateV2Opts struct {
 	UpdateMask optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, abeUuid string, body ExamplepbABitOfEverything, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx context.Context, uuidName string, abe ABitOfEverything2, localVarOptionals *ABitOfEverythingServiceUpdateV2Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Put")
 		localVarPostBody   interface{}
@@ -4252,8 +6257,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v2/example/a_bit_of_everything/{abe.uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"abe.uuid"+"}", fmt.Sprintf("%v", abeUuid), -1)
+	localVarPath := a.client.cfg.BasePath + "/v2/example/a_bit_of_everything/{uuidName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4280,7 +6285,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &abe
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -4399,8 +6404,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV2(ctx 
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param abeUuid
- * @param body
+ * @param uuidName
+ * @param abe A bit of everything  Intentionally complicated message type to cover many features of Protobuf.
  * @param optional nil or *ABitOfEverythingServiceUpdateV22Opts - Optional Parameters:
      * @param "UpdateMask" (optional.String) -  The paths to update.
 
@@ -4411,7 +6416,7 @@ type ABitOfEverythingServiceUpdateV22Opts struct {
 	UpdateMask optional.String
 }
 
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, abeUuid string, body ExamplepbABitOfEverything, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, uuidName string, abe ABitOfEverything3, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -4421,8 +6426,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v2/example/a_bit_of_everything/{abe.uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"abe.uuid"+"}", fmt.Sprintf("%v", abeUuid), -1)
+	localVarPath := a.client.cfg.BasePath + "/v2/example/a_bit_of_everything/{uuidName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4449,7 +6454,7 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 		localVarHeaderParams["Accept"] = localVarHttpHeaderAccept
 	}
 	// body params
-	localVarPostBody = &body
+	localVarPostBody = &abe
 	if ctx != nil {
 		// API Key Authentication
 		if auth, ok := ctx.Value(ContextAPIKey).(APIKey); ok {
@@ -4568,12 +6573,12 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 /* 
 ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- * @param abeUuid
+ * @param uuidName
  * @param body
 
 @return interface{}
 */
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx context.Context, abeUuid string, body ExamplepbUpdateV2Request) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx context.Context, uuidName string, body UpdateV2RequestRequestForUpdateIncludesTheMessageAndTheUpdateMask) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -4583,8 +6588,8 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV23(ctx
 	)
 
 	// create path and map variables
-	localVarPath := a.client.cfg.BasePath + "/v2a/example/a_bit_of_everything/{abe.uuid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"abe.uuid"+"}", fmt.Sprintf("%v", abeUuid), -1)
+	localVarPath := a.client.cfg.BasePath + "/v2a/example/a_bit_of_everything/{uuidName}"
+	localVarPath = strings.Replace(localVarPath, "{"+"uuidName"+"}", fmt.Sprintf("%v", uuidName), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

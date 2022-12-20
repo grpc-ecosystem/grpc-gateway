@@ -23,12 +23,11 @@ import (
 	legacydescriptor "github.com/golang/protobuf/descriptor"
 )
 
-var (
-	errNoTargetService = errors.New("no target service defined in the file")
-)
+var errNoTargetService = errors.New("no target service defined in the file")
 
 type generator struct {
-	reg *descriptor.Registry
+	reg    *descriptor.Registry
+	format Format
 }
 
 type wrapper struct {
@@ -42,8 +41,11 @@ type GeneratorOptions struct {
 }
 
 // New returns a new generator which generates grpc gateway files.
-func New(reg *descriptor.Registry) gen.Generator {
-	return &generator{reg: reg}
+func New(reg *descriptor.Registry, format Format) gen.Generator {
+	return &generator{
+		reg:    reg,
+		format: format,
+	}
 }
 
 // Merge a lot of OpenAPI file (wrapper) to single one OpenAPI file
@@ -73,16 +75,43 @@ func mergeTargetFile(targets []*wrapper, mergeFileName string) *wrapper {
 
 // Q: What's up with the alias types here?
 // A: We don't want to completely override how these structs are marshaled into
-//    JSON, we only want to add fields (see below, extensionMarshalJSON).
-//    An infinite recursion would happen if we'd call json.Marshal on the struct
-//    that has swaggerObject as an embedded field. To avoid that, we'll create
-//    type aliases, and those don't have the custom MarshalJSON methods defined
-//    on them. See http://choly.ca/post/go-json-marshalling/ (or, if it ever
-//    goes away, use
-//    https://web.archive.org/web/20190806073003/http://choly.ca/post/go-json-marshalling/.
+// JSON, we only want to add fields (see below, extensionMarshalJSON).
+// An infinite recursion would happen if we'd call json.Marshal on the struct
+// that has swaggerObject as an embedded field. To avoid that, we'll create
+// type aliases, and those don't have the custom MarshalJSON methods defined
+// on them. See http://choly.ca/post/go-json-marshalling/ (or, if it ever
+// goes away, use
+// https://web.archive.org/web/20190806073003/http://choly.ca/post/go-json-marshalling/.
 func (so openapiSwaggerObject) MarshalJSON() ([]byte, error) {
 	type alias openapiSwaggerObject
 	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+// MarshalYAML implements yaml.Marshaler interface.
+//
+// It is required in order to pass extensions inline.
+//
+// Example:
+//
+//	extensions: {x-key: x-value}
+//	type: string
+//
+// It will be rendered as:
+//
+//	x-key: x-value
+//	type: string
+//
+// Use generics when the project will be upgraded to go 1.18+.
+func (so openapiSwaggerObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiSwaggerObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
 }
 
 func (so openapiInfoObject) MarshalJSON() ([]byte, error) {
@@ -90,9 +119,33 @@ func (so openapiInfoObject) MarshalJSON() ([]byte, error) {
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
+func (so openapiInfoObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiInfoObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
+}
+
 func (so openapiSecuritySchemeObject) MarshalJSON() ([]byte, error) {
 	type alias openapiSecuritySchemeObject
 	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+func (so openapiSecuritySchemeObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiSecuritySchemeObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
 }
 
 func (so openapiOperationObject) MarshalJSON() ([]byte, error) {
@@ -100,9 +153,84 @@ func (so openapiOperationObject) MarshalJSON() ([]byte, error) {
 	return extensionMarshalJSON(alias(so), so.extensions)
 }
 
+func (so openapiOperationObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiOperationObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
+}
+
 func (so openapiResponseObject) MarshalJSON() ([]byte, error) {
 	type alias openapiResponseObject
 	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+func (so openapiResponseObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiResponseObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
+}
+
+func (so openapiSchemaObject) MarshalJSON() ([]byte, error) {
+	type alias openapiSchemaObject
+	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+func (so openapiSchemaObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiSchemaObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
+}
+
+func (so openapiParameterObject) MarshalJSON() ([]byte, error) {
+	type alias openapiParameterObject
+	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+func (so openapiParameterObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiParameterObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
+}
+
+func (so openapiTagObject) MarshalJSON() ([]byte, error) {
+	type alias openapiTagObject
+	return extensionMarshalJSON(alias(so), so.extensions)
+}
+
+func (so openapiTagObject) MarshalYAML() (interface{}, error) {
+	type Alias openapiTagObject
+
+	return struct {
+		Extension map[string]interface{} `yaml:",inline"`
+		Alias     `yaml:",inline"`
+	}{
+		Extension: extensionsToMap(so.extensions),
+		Alias:     Alias(so),
+	}, nil
 }
 
 func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error) {
@@ -143,21 +271,25 @@ func extensionMarshalJSON(so interface{}, extensions []extension) ([]byte, error
 }
 
 // encodeOpenAPI converts OpenAPI file obj to pluginpb.CodeGeneratorResponse_File
-func encodeOpenAPI(file *wrapper) (*descriptor.ResponseFile, error) {
-	var formatted bytes.Buffer
-	enc := json.NewEncoder(&formatted)
-	enc.SetIndent("", "  ")
+func encodeOpenAPI(file *wrapper, format Format) (*descriptor.ResponseFile, error) {
+	var contentBuf bytes.Buffer
+	enc, err := format.NewEncoder(&contentBuf)
+	if err != nil {
+		return nil, err
+	}
+
 	if err := enc.Encode(*file.swagger); err != nil {
 		return nil, err
 	}
+
 	name := file.fileName
 	ext := filepath.Ext(name)
 	base := strings.TrimSuffix(name, ext)
-	output := fmt.Sprintf("%s.swagger.json", base)
+	output := fmt.Sprintf("%s.swagger."+string(format), base)
 	return &descriptor.ResponseFile{
 		CodeGeneratorResponse_File: &pluginpb.CodeGeneratorResponse_File{
 			Name:    proto.String(output),
-			Content: proto.String(formatted.String()),
+			Content: proto.String(contentBuf.String()),
 		},
 	}, nil
 }
@@ -192,7 +324,7 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 	for _, file := range targets {
 		glog.V(1).Infof("Processing %s", file.GetName())
 		swagger, err := applyTemplate(param{File: file, reg: g.reg})
-		if err == errNoTargetService {
+		if errors.Is(err, errNoTargetService) {
 			glog.V(1).Infof("%s: %v", file.GetName(), err)
 			continue
 		}
@@ -207,17 +339,17 @@ func (g *generator) Generate(targets []*descriptor.File) ([]*descriptor.Response
 
 	if g.reg.IsAllowMerge() {
 		targetOpenAPI := mergeTargetFile(openapis, g.reg.GetMergeFileName())
-		f, err := encodeOpenAPI(targetOpenAPI)
+		f, err := encodeOpenAPI(targetOpenAPI, g.format)
 		if err != nil {
-			return nil, fmt.Errorf("failed to encode OpenAPI for %s: %s", g.reg.GetMergeFileName(), err)
+			return nil, fmt.Errorf("failed to encode OpenAPI for %s: %w", g.reg.GetMergeFileName(), err)
 		}
 		files = append(files, f)
 		glog.V(1).Infof("New OpenAPI file will emit")
 	} else {
 		for _, file := range openapis {
-			f, err := encodeOpenAPI(file)
+			f, err := encodeOpenAPI(file, g.format)
 			if err != nil {
-				return nil, fmt.Errorf("failed to encode OpenAPI for %s: %s", file.fileName, err)
+				return nil, fmt.Errorf("failed to encode OpenAPI for %s: %w", file.fileName, err)
 			}
 			files = append(files, f)
 			glog.V(1).Infof("New OpenAPI file will emit")
@@ -243,4 +375,14 @@ func AddErrorDefs(reg *descriptor.Registry) error {
 			status,
 		},
 	})
+}
+
+func extensionsToMap(extensions []extension) map[string]interface{} {
+	m := make(map[string]interface{}, len(extensions))
+
+	for _, v := range extensions {
+		m[v.key] = RawExample(v.value)
+	}
+
+	return m
 }

@@ -1,5 +1,10 @@
 package casing
 
+import (
+	"path/filepath"
+	"strings"
+)
+
 // Camel returns the CamelCased name.
 //
 // This was moved from the now deprecated github.com/golang/protobuf/protoc-gen-go/generator package
@@ -48,6 +53,36 @@ func Camel(s string) string {
 		}
 	}
 	return string(t)
+}
+
+// CamelIdentifier returns the CamelCased identifier without affecting the package name/path if any.
+func CamelIdentifier(s string) string {
+	const dot = "."
+	if !strings.Contains(s, dot) {
+		return Camel(s)
+	}
+	identifier := filepath.Ext(s)
+	path := strings.TrimSuffix(s, identifier)
+	identifier = strings.TrimPrefix(identifier, dot)
+	return path + dot + Camel(identifier)
+}
+
+// JSONCamelCase converts a snake_case identifier to a camelCase identifier,
+// according to the protobuf JSON specification.
+func JSONCamelCase(s string) string {
+	var b []byte
+	var wasUnderscore bool
+	for i := 0; i < len(s); i++ { // proto identifiers are always ASCII
+		c := s[i]
+		if c != '_' {
+			if wasUnderscore && isASCIILower(c) {
+				c -= 'a' - 'A' // convert to uppercase
+			}
+			b = append(b, c)
+		}
+		wasUnderscore = c == '_'
+	}
+	return string(b)
 }
 
 // And now lots of helper functions.

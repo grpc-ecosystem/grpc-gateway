@@ -35,11 +35,9 @@ const metadataHeaderBinarySuffix = "-Bin"
 const xForwardedFor = "X-Forwarded-For"
 const xForwardedHost = "X-Forwarded-Host"
 
-var (
-	// DefaultContextTimeout is used for gRPC call context.WithTimeout whenever a Grpc-Timeout inbound
-	// header isn't present. If the value is 0 the sent `context` will not have a timeout.
-	DefaultContextTimeout = 0 * time.Second
-)
+// DefaultContextTimeout is used for gRPC call context.WithTimeout whenever a Grpc-Timeout inbound
+// header isn't present. If the value is 0 the sent `context` will not have a timeout.
+var DefaultContextTimeout = 0 * time.Second
 
 // malformedHTTPHeaders lists the headers that the gRPC server may reject outright as malformed.
 // See https://github.com/grpc/grpc-go/pull/4803#issuecomment-986093310 for more context.
@@ -106,7 +104,6 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 	for _, o := range options {
 		ctx = o(ctx)
 	}
-	var pairs []string
 	timeout := DefaultContextTimeout
 	if tm := req.Header.Get(metadataGrpcTimeout); tm != "" {
 		var err error
@@ -115,7 +112,7 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 			return nil, nil, status.Errorf(codes.InvalidArgument, "invalid grpc-timeout: %s", tm)
 		}
 	}
-
+	var pairs []string
 	for key, vals := range req.Header {
 		key = textproto.CanonicalMIMEHeaderKey(key)
 		for _, val := range vals {
@@ -178,11 +175,17 @@ type serverMetadataKey struct{}
 
 // NewServerMetadataContext creates a new context with ServerMetadata
 func NewServerMetadataContext(ctx context.Context, md ServerMetadata) context.Context {
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	return context.WithValue(ctx, serverMetadataKey{}, md)
 }
 
 // ServerMetadataFromContext returns the ServerMetadata in ctx
 func ServerMetadataFromContext(ctx context.Context) (md ServerMetadata, ok bool) {
+	if ctx == nil {
+		return md, false
+	}
 	md, ok = ctx.Value(serverMetadataKey{}).(ServerMetadata)
 	return
 }
@@ -275,8 +278,8 @@ func timeoutUnitToDuration(u uint8) (d time.Duration, ok bool) {
 	case 'n':
 		return time.Nanosecond, true
 	default:
+		return
 	}
-	return
 }
 
 // isPermanentHTTPHeader checks whether hdr belongs to the list of

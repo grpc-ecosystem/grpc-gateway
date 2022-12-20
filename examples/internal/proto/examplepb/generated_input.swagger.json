@@ -23,6 +23,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
+              "type": "object",
               "properties": {}
             }
           },
@@ -36,6 +37,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "Intentionally complicated message type to cover many features of Protobuf.",
             "in": "body",
             "required": true,
             "schema": {
@@ -101,7 +103,8 @@
         "uuid": {
           "type": "string",
           "minLength": 1,
-          "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+          "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+          "x-internal": true
         },
         "nested": {
           "type": "array",
@@ -113,10 +116,7 @@
           "type": "number",
           "format": "float",
           "default": "0.2",
-          "description": "Float value field",
-          "required": [
-            "float_value"
-          ]
+          "description": "Float value field"
         },
         "doubleValue": {
           "type": "number",
@@ -188,6 +188,7 @@
           }
         },
         "oneofEmpty": {
+          "type": "object",
           "properties": {}
         },
         "oneofString": {
@@ -265,10 +266,7 @@
         },
         "requiredStringViaFieldBehaviorAnnotation": {
           "type": "string",
-          "title": "mark a field as required in Open API definition",
-          "required": [
-            "required_string_via_field_behavior_annotation"
-          ]
+          "title": "mark a field as required in Open API definition"
         },
         "outputOnlyStringViaFieldBehaviorAnnotation": {
           "type": "string",
@@ -277,9 +275,55 @@
         },
         "optionalStringValue": {
           "type": "string"
+        },
+        "productId": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 19,
+            "minLength": 1,
+            "pattern": "^[0-9]+$"
+          },
+          "description": "Only digits are allowed.",
+          "title": "Test openapiv2 generation of repeated fields"
+        },
+        "optionalStringField": {
+          "type": "string",
+          "title": "Test openapiv2 generation of required fields with annotation and jsonschema to reproduce"
+        },
+        "requiredStringField1": {
+          "type": "string"
+        },
+        "requiredStringField2": {
+          "type": "string"
+        },
+        "required_field_behavior_json_name_custom": {
+          "type": "string",
+          "title": "Test openapiv2 handling of required json_name fields"
+        },
+        "required_field_schema_json_name_custom": {
+          "type": "string"
+        },
+        "trailingOnly": {
+          "type": "string",
+          "title": "Trailing only"
+        },
+        "trailingOnlyDot": {
+          "type": "string",
+          "description": "Trailing only dot."
+        },
+        "trailingBoth": {
+          "type": "string",
+          "description": "Trailing both.",
+          "title": "Leading both"
+        },
+        "trailingMultiline": {
+          "type": "string",
+          "description": "This is an example of a multi-line comment.\n\nTrailing multiline.",
+          "title": "Leading multiline"
         }
       },
-      "description": "Intentionaly complicated message type to cover many features of Protobuf.",
+      "description": "Intentionally complicated message type to cover many features of Protobuf.",
       "title": "A bit of everything",
       "externalDocs": {
         "description": "Find out more about ABitOfEverything",
@@ -289,9 +333,14 @@
         "uuid",
         "int64Value",
         "doubleValue",
+        "required_field_schema_json_name_custom",
         "floatValue",
-        "requiredStringViaFieldBehaviorAnnotation"
-      ]
+        "requiredStringViaFieldBehaviorAnnotation",
+        "requiredStringField1",
+        "requiredStringField2",
+        "required_field_behavior_json_name_custom"
+      ],
+      "x-a-bit-of-everything-foo": "bar"
     },
     "examplepbNumericEnum": {
       "type": "string",
