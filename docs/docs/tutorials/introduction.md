@@ -30,10 +30,9 @@ We will be using a Go gRPC server in the examples, so please install Go first fr
 After installing Go, use `go get` to download the following packages:
 
 ```sh
-$ go get github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
-$ go get github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
-$ go get google.golang.org/protobuf/cmd/protoc-gen-go
-$ go get google.golang.org/grpc/cmd/protoc-gen-go-grpc
+$ go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+$ go install google.golang.org/protobuf/cmd/protoc-gen-go
+$ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
 ```
 
 This installs the `protoc` generator plugins we need to generate the stubs. Make sure to add `$GOPATH/bin` to your `$PATH` so that executables installed via `go get` are available on your `$PATH`.
