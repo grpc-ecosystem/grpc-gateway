@@ -165,12 +165,17 @@ func TestFieldMaskFromRequestBody(t *testing.T) {
 				"nested",
 			),
 		},
-
 		{
 			name:     "protobuf-any",
 			msg:      &examplepb.ABitOfEverything{},
 			input:    `{"anytype":{"@type": "xx.xx/examplepb.NestedOuter", "one":{"two":{"three":{"a":true, "b":false}}}}}`,
 			expected: newFieldMask("anytype"), //going deeper makes no sense
+		},
+		{
+			name:     "repeated-protobuf-any",
+			msg:      &examplepb.ABitOfEverything{},
+			input:    `{"repeated_anytype":[{"@type": "xx.xx/examplepb.NestedOuter", "one":{"two":{"three":{"a":true, "b":false}}}}]}`,
+			expected: newFieldMask("repeated_anytype"), //going deeper makes no sense
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
