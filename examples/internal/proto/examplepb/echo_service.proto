@@ -34,6 +34,7 @@ message SimpleMessage {
     int64 en = 6;
     Embedded no = 7;
   }
+  string resource_id = 8;
 }
 
 // DynamicMessage represents a message which can have its structure
@@ -69,6 +70,9 @@ service EchoService {
       additional_bindings {
         get: "/v1/example/echo2/{no.note}"
       }
+      additional_bindings {
+        get: "/v1/example/echo/resource/{resource_id}"
+      }
     };
   }
   // EchoBody method receives a simple message and returns it.
@@ -79,6 +83,10 @@ service EchoService {
       additional_bindings {
         put: "/v1/example/echo_body/{id}"
         body: "no"
+      }
+      additional_bindings {
+        put: "/v1/example/echo_body2/{id}"
+        body: "resource_id"
       }
     };
   }

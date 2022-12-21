@@ -46,11 +46,13 @@ func TestEcho(t *testing.T) {
 			testEchoOneof(t, 8088, apiPrefix, "application/json")
 			testEchoOneof1(t, 8088, apiPrefix, "application/json")
 			testEchoOneof2(t, 8088, apiPrefix, "application/json")
+			testEchoPathParamOverwrite(t, 8088)
 			testEchoBody(t, 8088, apiPrefix, true)
 			testEchoBody(t, 8088, apiPrefix, false)
 			// Use SendHeader/SetTrailer without gRPC server https://github.com/grpc-ecosystem/grpc-gateway/issues/517#issuecomment-684625645
 			testEchoBody(t, 8089, apiPrefix, true)
 			testEchoBody(t, 8089, apiPrefix, false)
+			testEchoBodyParamOverwrite(t, 8088)
 		})
 	}
 }
@@ -347,8 +349,37 @@ func testEchoOneof2(t *testing.T, port int, apiPrefix string, contentType string
 	}
 }
 
+func testEchoPathParamOverwrite(t *testing.T, port int) {
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo/resource/my_resource_id?resourceId=bad_resource_id", port)
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		t.Errorf("http.Get(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer resp.Body.Close()
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("io.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	msg := new(examplepb.UnannotatedSimpleMessage)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
+		return
+	}
+	if got, want := msg.GetResourceId(), "my_resource_id"; got != want {
+		t.Errorf("msg.GetResourceId() = %q; want %q", got, want)
+	}
+}
+
 func testEchoBody(t *testing.T, port int, apiPrefix string, useTrailers bool) {
-	sent := examplepb.UnannotatedSimpleMessage{Id: "example"}
+	sent := examplepb.UnannotatedSimpleMessage{Id: "example", ResourceId: "my_resource_id"}
 	payload, err := marshaler.Marshal(&sent)
 	if err != nil {
 		t.Fatalf("marshaler.Marshal(%#v) failed with %v; want success", payload, err)
@@ -410,6 +441,48 @@ func testEchoBody(t *testing.T, port int, apiPrefix string, useTrailers bool) {
 		if got := resp.Trailer.Get(trailer); got != want {
 			t.Errorf("%s was %q, wanted %q", trailer, got, want)
 		}
+	}
+}
+
+func testEchoBodyParamOverwrite(t *testing.T, port int) {
+	sent := "my_resource_id"
+	payload, err := marshaler.Marshal(&sent)
+	if err != nil {
+		t.Fatalf("marshaler.Marshal(%#v) failed with %v; want success", payload, err)
+	}
+
+	apiURL := fmt.Sprintf("http://localhost:%d/v1/example/echo_body2/%s?resourceId=bad_resource_id", port, "my_id")
+
+	req, err := http.NewRequest("PUT", apiURL, bytes.NewReader(payload))
+	if err != nil {
+		t.Errorf("http.NewRequest() failed with %v; want success", err)
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("client.Do(%v) failed with %v; want success", req, err)
+		return
+	}
+	defer resp.Body.Close()
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("io.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	var received examplepb.UnannotatedSimpleMessage
+	if err := marshaler.Unmarshal(buf, &received); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
+		return
+	}
+	if diff := cmp.Diff(&received.ResourceId, &sent, protocmp.Transform()); diff != "" {
+		t.Errorf(diff)
 	}
 }
 

@@ -11,6 +11,88 @@ consumes:
 produces:
 - "application/json"
 paths:
+  /v1/example/echo/resource/{resourceId}:
+    get:
+      tags:
+      - "EchoService"
+      summary: "Echo method receives a simple message and returns it."
+      description: "The message posted as the id parameter will also be\nreturned."
+      operationId: "EchoService_Echo6"
+      parameters:
+      - name: "resourceId"
+        in: "path"
+        required: true
+        type: "string"
+        x-exportParamName: "ResourceId"
+      - name: "id"
+        in: "query"
+        description: "Id represents the message identifier."
+        required: false
+        type: "string"
+        x-exportParamName: "Id"
+        x-optionalDataType: "String"
+      - name: "num"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Num"
+        x-optionalDataType: "String"
+      - name: "lineNum"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "LineNum"
+        x-optionalDataType: "String"
+      - name: "lang"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      - name: "status.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "StatusProgress"
+        x-optionalDataType: "String"
+      - name: "status.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StatusNote"
+        x-optionalDataType: "String"
+      - name: "en"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "En"
+        x-optionalDataType: "String"
+      - name: "no.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "NoProgress"
+        x-optionalDataType: "String"
+      - name: "no.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NoNote"
+        x-optionalDataType: "String"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
   /v1/example/echo/{id}:
     post:
       tags:
@@ -77,6 +159,12 @@ paths:
         required: false
         type: "string"
         x-exportParamName: "NoNote"
+        x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
         x-optionalDataType: "String"
       responses:
         200:
@@ -153,6 +241,12 @@ paths:
         type: "string"
         x-exportParamName: "NoNote"
         x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -227,6 +321,12 @@ paths:
         type: "string"
         x-exportParamName: "NoNote"
         x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -294,6 +394,12 @@ paths:
         type: "string"
         format: "int64"
         x-exportParamName: "NoProgress"
+        x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
         x-optionalDataType: "String"
       responses:
         200:
@@ -364,6 +470,12 @@ paths:
         type: "string"
         format: "int64"
         x-exportParamName: "NoProgress"
+        x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
         x-optionalDataType: "String"
       responses:
         200:
@@ -456,6 +568,93 @@ paths:
         format: "int64"
         x-exportParamName: "En"
         x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
+        x-optionalDataType: "String"
+      responses:
+        200:
+          description: "A successful response."
+          schema:
+            $ref: "#/definitions/examplepbSimpleMessage"
+        default:
+          description: "An unexpected error response."
+          schema:
+            $ref: "#/definitions/rpcStatus"
+  /v1/example/echo_body2/{id}:
+    put:
+      tags:
+      - "EchoService"
+      summary: "EchoBody method receives a simple message and returns it."
+      operationId: "EchoService_EchoBody3"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Id represents the message identifier."
+        required: true
+        type: "string"
+        x-exportParamName: "Id"
+      - in: "body"
+        name: "resourceId"
+        required: true
+        schema:
+          type: "string"
+        x-exportParamName: "ResourceId"
+      - name: "num"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "Num"
+        x-optionalDataType: "String"
+      - name: "lineNum"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "LineNum"
+        x-optionalDataType: "String"
+      - name: "lang"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      - name: "status.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "StatusProgress"
+        x-optionalDataType: "String"
+      - name: "status.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "StatusNote"
+        x-optionalDataType: "String"
+      - name: "en"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "En"
+        x-optionalDataType: "String"
+      - name: "no.progress"
+        in: "query"
+        required: false
+        type: "string"
+        format: "int64"
+        x-exportParamName: "NoProgress"
+        x-optionalDataType: "String"
+      - name: "no.note"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "NoNote"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -531,6 +730,12 @@ paths:
         required: false
         type: "string"
         x-exportParamName: "NoNote"
+        x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
         x-optionalDataType: "String"
       responses:
         200:
@@ -638,6 +843,12 @@ paths:
         type: "string"
         x-exportParamName: "NoNote"
         x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -705,11 +916,14 @@ definitions:
         format: "int64"
       "no":
         $ref: "#/definitions/examplepbEmbedded"
+      resourceId:
+        type: "string"
     description: "SimpleMessage represents a simple message sent to the Echo service."
     example:
       "no":
         note: "note"
         progress: "progress"
+      resourceId: "resourceId"
       num: "num"
       lineNum: "lineNum"
       en: "en"

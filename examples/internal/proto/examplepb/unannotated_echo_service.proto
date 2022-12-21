@@ -37,6 +37,7 @@ message UnannotatedSimpleMessage {
     int64 en = 7;
     UnannotatedEmbedded no = 8;
   }
+  string resource_id = 9;
 }
 
 // Echo service responds to incoming echo requests.
