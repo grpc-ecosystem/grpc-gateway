@@ -27,7 +27,7 @@ Before we start coding, we have to install some tools.
 
 We will be using a Go gRPC server in the examples, so please install Go first from [https://golang.org/dl/](https://golang.org/dl/).
 
-After installing Go, use `go get` to download the following packages:
+After installing Go, use `go install` to download and build the following binaries:
 
 ```sh
 $ go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
