@@ -793,7 +793,7 @@ func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format st
 		// NOTE: in OpenAPI specification, format should be empty on boolean type
 		return "boolean", "", true
 	case descriptorpb.FieldDescriptorProto_TYPE_STRING:
-		// NOTE: in OpenAPI specification, format should be empty on string type
+		// NOTE: in OpenAPI specification, can be empty on string type
 		return "string", "", true
 	case descriptorpb.FieldDescriptorProto_TYPE_BYTES:
 		return "string", "byte", true
@@ -1133,6 +1133,9 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						desc = schema.Description
 						defaultValue = schema.Default
 						extensions = schema.extensions
+						if paramFormat == "" {
+							paramFormat = schema.Format
+						}
 					}
 
 					if parameter.IsRepeated() {
