@@ -4321,6 +4321,36 @@ func TestSchemaOfField(t *testing.T) {
 		{
 			field: &descriptor.Field{
 				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:  proto.String("primitive_field_option"),
+					Label: descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:  descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum().Enum(),
+				},
+			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field: "example.Message.primitive_field_option",
+						Option: &openapi_options.JSONSchema{
+							Title:       "field title",
+							Description: "field description",
+							Format:      "uuid",
+						},
+					},
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "uuid",
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
 					Name:     proto.String("message_field_option"),
 					Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
 					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
@@ -8117,6 +8147,28 @@ func TestRenderServiceWithHeaderParameters(t *testing.T) {
 					Name: "X-Custom-Header",
 					In:   "header",
 					Type: "string",
+				},
+			},
+		},
+		"type string with format": {
+			file: file,
+			openapiOperation: &openapi_options.Operation{
+				Parameters: &openapi_options.Parameters{
+					Headers: []*openapi_options.HeaderParameter{
+						{
+							Name:   "X-Custom-Header",
+							Type:   openapi_options.HeaderParameter_STRING,
+							Format: "uuid",
+						},
+					},
+				},
+			},
+			parameters: openapiParametersObject{
+				{
+					Name:   "X-Custom-Header",
+					In:     "header",
+					Type:   "string",
+					Format: "uuid",
 				},
 			},
 		},
