@@ -794,6 +794,7 @@ func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format st
 		return "boolean", "", true
 	case descriptorpb.FieldDescriptorProto_TYPE_STRING:
 		// NOTE: in OpenAPI specification, can be empty on string type
+		// see: https://swagger.io/specification/v2/#data-types
 		return "string", "", true
 	case descriptorpb.FieldDescriptorProto_TYPE_BYTES:
 		return "string", "byte", true
@@ -1133,6 +1134,8 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						desc = schema.Description
 						defaultValue = schema.Default
 						extensions = schema.extensions
+						// If there is no mandatory format based on the field,
+						// allow it to be overridden by the user
 						if paramFormat == "" {
 							paramFormat = schema.Format
 						}
