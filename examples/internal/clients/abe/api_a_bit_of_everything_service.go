@@ -6064,14 +6064,12 @@ ABitOfEverythingServiceApiService
  * @param bookName The resource name of the book.  Format: &#x60;publishers/{publisher}/books/{book}&#x60;  Example: &#x60;publishers/1257894000000000000/books/my-book&#x60;
  * @param book The book to update.  The book&#39;s &#x60;name&#x60; field is used to identify the book to be updated. Format: publishers/{publisher}/books/{book}
  * @param optional nil or *ABitOfEverythingServiceUpdateBookOpts - Optional Parameters:
-     * @param "UpdateMask" (optional.String) -  The list of fields to be updated.
      * @param "AllowMissing" (optional.Bool) -  If set to true, and the book is not found, a new book will be created. In this situation, &#x60;update_mask&#x60; is ignored.
 
 @return ExamplepbBook
 */
 
 type ABitOfEverythingServiceUpdateBookOpts struct { 
-	UpdateMask optional.String
 	AllowMissing optional.Bool
 }
 
@@ -6092,9 +6090,6 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateBook(ct
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if localVarOptionals != nil && localVarOptionals.UpdateMask.IsSet() {
-		localVarQueryParams.Add("updateMask", parameterToString(localVarOptionals.UpdateMask.Value(), ""))
-	}
 	if localVarOptionals != nil && localVarOptionals.AllowMissing.IsSet() {
 		localVarQueryParams.Add("allowMissing", parameterToString(localVarOptionals.AllowMissing.Value(), ""))
 	}
@@ -6406,17 +6401,10 @@ ABitOfEverythingServiceApiService
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param uuidName
  * @param abe A bit of everything  Intentionally complicated message type to cover many features of Protobuf.
- * @param optional nil or *ABitOfEverythingServiceUpdateV22Opts - Optional Parameters:
-     * @param "UpdateMask" (optional.String) -  The paths to update.
 
 @return interface{}
 */
-
-type ABitOfEverythingServiceUpdateV22Opts struct { 
-	UpdateMask optional.String
-}
-
-func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, uuidName string, abe ABitOfEverything3, localVarOptionals *ABitOfEverythingServiceUpdateV22Opts) (interface{}, *http.Response, error) {
+func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx context.Context, uuidName string, abe ABitOfEverything3) (interface{}, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -6433,9 +6421,6 @@ func (a *ABitOfEverythingServiceApiService) ABitOfEverythingServiceUpdateV22(ctx
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if localVarOptionals != nil && localVarOptionals.UpdateMask.IsSet() {
-		localVarQueryParams.Add("updateMask", parameterToString(localVarOptionals.UpdateMask.Value(), ""))
-	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json", "application/x-foo-mime"}
 

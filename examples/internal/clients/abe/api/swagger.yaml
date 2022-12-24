@@ -4144,13 +4144,6 @@ paths:
         schema:
           $ref: "The book to update."
         x-exportParamName: "Book"
-      - name: "updateMask"
-        in: "query"
-        description: "The list of fields to be updated."
-        required: false
-        type: "string"
-        x-exportParamName: "UpdateMask"
-        x-optionalDataType: "String"
       - name: "allowMissing"
         in: "query"
         description: "If set to true, and the book is not found, a new book will be\
@@ -4315,13 +4308,6 @@ paths:
         schema:
           $ref: "#/definitions/A bit of everything_3"
         x-exportParamName: "Abe"
-      - name: "updateMask"
-        in: "query"
-        description: "The paths to update."
-        required: false
-        type: "string"
-        x-exportParamName: "UpdateMask"
-        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."

@@ -312,7 +312,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil, "")
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
@@ -498,7 +498,7 @@ func TestMessageToQueryParametersWithOmitEnumDefaultValue(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil, "")
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
@@ -684,7 +684,7 @@ func TestMessageToQueryParameters(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil, "")
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
@@ -810,7 +810,7 @@ func TestMessageToQueryParametersNoRecursive(t *testing.T) {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
 
-		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
+		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil, "")
 		if err != nil {
 			t.Fatalf("No recursion error should be thrown: %s", err)
 		}
@@ -934,7 +934,7 @@ func TestMessageToQueryParametersRecursive(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
+		_, err = messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil, "")
 		if err == nil {
 			t.Fatalf("It should not be allowed to have recursive query parameters")
 		}
@@ -1097,7 +1097,7 @@ func TestMessageToQueryParametersWithJsonName(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil, "")
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
@@ -1220,7 +1220,7 @@ func TestMessageToQueryParametersWellKnownTypes(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil, "")
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
@@ -1338,7 +1338,7 @@ func TestMessageToQueryParametersWithRequiredField(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to lookup message: %s", err)
 		}
-		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil)
+		params, err := messageToQueryParameters(message, reg, []descriptor.Parameter{}, nil, "")
 		if err != nil {
 			t.Fatalf("failed to convert message to query parameters: %s", err)
 		}
@@ -7508,6 +7508,198 @@ func TestRenderServicesWithBodyFieldNameInCamelCase(t *testing.T) {
 		if got, want := v.Key, "role"; got != want {
 			t.Fatalf("Wrong key for property, got %s want %s", got, want)
 		}
+	}
+}
+
+func TestRenderServicesWithBodyFieldHasFieldMask(t *testing.T) {
+	userDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("User"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:   proto.String("name"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(1),
+			},
+			{
+				Name:   proto.String("role"),
+				Type:   descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(),
+				Number: proto.Int32(2),
+			},
+		},
+	}
+	updateDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("UpdateUserRequest"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("user_object"),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".example.User"),
+				Number:   proto.Int32(1),
+			},
+			{
+				Name:     proto.String("update_mask"),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".google.protobuf.FieldMask"),
+				Number:   proto.Int32(2),
+			},
+		},
+	}
+
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("UpdateUser"),
+		InputType:  proto.String("UpdateUserRequest"),
+		OutputType: proto.String("User"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("UserService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	userMsg := &descriptor.Message{
+		DescriptorProto: userDesc,
+	}
+	updateMsg := &descriptor.Message{
+		DescriptorProto: updateDesc,
+	}
+	nameField := &descriptor.Field{
+		Message:              userMsg,
+		FieldDescriptorProto: userMsg.GetField()[0],
+	}
+	nameField.JsonName = proto.String("name")
+	roleField := &descriptor.Field{
+		Message:              userMsg,
+		FieldDescriptorProto: userMsg.GetField()[1],
+	}
+	roleField.JsonName = proto.String("role")
+	userMsg.Fields = []*descriptor.Field{nameField, roleField}
+	userField := &descriptor.Field{
+		Message:              updateMsg,
+		FieldMessage:         userMsg,
+		FieldDescriptorProto: updateMsg.GetField()[0],
+	}
+	userField.JsonName = proto.String("userObject")
+	updateMaskField := &descriptor.Field{
+		Message:              updateMsg,
+		FieldDescriptorProto: updateMsg.GetField()[1],
+	}
+	updateMaskField.JsonName = proto.String("updateMask")
+	updateMsg.Fields = []*descriptor.Field{userField, updateMaskField}
+
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Package:        proto.String("example"),
+			Name:           proto.String("user_service.proto"),
+			Dependency:     []string{"google/well_known.proto"},
+			MessageType:    []*descriptorpb.DescriptorProto{userDesc, updateDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{userMsg, updateMsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           updateMsg,
+						ResponseType:          userMsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "PATCH",
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/users/{user_object.name}",
+								},
+								PathParams: []descriptor.Parameter{
+									{
+										FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{
+											{
+												Name: "user_object",
+											},
+											{
+												Name: "name",
+											},
+										}),
+										Target: nameField,
+									},
+								},
+								Body: &descriptor.Body{
+									FieldPath: []descriptor.FieldPathComponent{
+										{
+											Name:   "user_object",
+											Target: userField,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(true)
+	reg.SetAllowPatchFeature(true)
+	err := reg.Load(&pluginpb.CodeGeneratorRequest{ProtoFile: []*descriptorpb.FileDescriptorProto{
+		{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("google/well_known.proto"),
+			Package:        proto.String("google.protobuf"),
+			Dependency:     []string{},
+			MessageType: []*descriptorpb.DescriptorProto{
+				protodesc.ToDescriptorProto((&field_mask.FieldMask{}).ProtoReflect().Descriptor()),
+			},
+			Service: []*descriptorpb.ServiceDescriptorProto{},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("google/well_known"),
+			},
+		},
+		file.FileDescriptorProto,
+	}})
+	if err != nil {
+		t.Fatalf("failed to reg.Load(): %v", err)
+	}
+	result, err := applyTemplate(param{File: crossLinkFixture(&file), reg: reg})
+	if err != nil {
+		t.Fatalf("applyTemplate(%#v) failed with %v; want success", file, err)
+	}
+
+	paths := GetPaths(result)
+	if got, want := len(paths), 1; got != want {
+		t.Fatalf("Results path length differed, got %d want %d", got, want)
+	}
+
+	if got, want := paths[0], "/v1/users/{userObject.name}"; got != want {
+		t.Fatalf("Wrong results path, got %s want %s", got, want)
+	}
+
+	var operation = *result.Paths["/v1/users/{userObject.name}"].Patch
+	if got, want := len(operation.Parameters), 2; got != want {
+		t.Fatalf("Parameters length differed, got %d want %d", got, want)
+	}
+
+	if got, want := operation.Parameters[0].Name, "userObject.name"; got != want {
+		t.Fatalf("Wrong parameter name, got %s want %s", got, want)
+	}
+
+	if got, want := operation.Parameters[0].In, "path"; got != want {
+		t.Fatalf("Wrong parameter location, got %s want %s", got, want)
+	}
+
+	if got, want := operation.Parameters[1].Name, "userObject"; got != want {
+		t.Fatalf("Wrong parameter name, got %s want %s", got, want)
+	}
+
+	if got, want := operation.Parameters[1].In, "body"; got != want {
+		t.Fatalf("Wrong parameter location, got %s want %s", got, want)
 	}
 }
 

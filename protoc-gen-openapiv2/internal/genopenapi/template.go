@@ -145,9 +145,12 @@ func getEnumDefault(reg *descriptor.Registry, enum *descriptor.Enum) string {
 }
 
 // messageToQueryParameters converts a message to a list of OpenAPI query parameters.
-func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body) (params []openapiParameterObject, err error) {
+func messageToQueryParameters(message *descriptor.Message, reg *descriptor.Registry, pathParams []descriptor.Parameter, body *descriptor.Body, httpMethod string) (params []openapiParameterObject, err error) {
 	for _, field := range message.Fields {
 		if !isVisible(getFieldVisibilityOption(field), reg) {
+			continue
+		}
+		if reg.GetAllowPatchFeature() && field.GetTypeName() == ".google.protobuf.FieldMask" && field.GetName() == "update_mask" && httpMethod == "PATCH" && len(body.FieldPath) != 0 {
 			continue
 		}
 
@@ -1271,7 +1274,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 				}
 
 				// add the parameters to the query string
-				queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body)
+				queryParams, err := messageToQueryParameters(meth.RequestType, reg, b.PathParams, b.Body, b.HTTPMethod)
 				if err != nil {
 					return err
 				}
