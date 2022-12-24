@@ -69,7 +69,8 @@ def _run_proto_gen_openapi(
         proto3_optional_nullable,
         openapi_configuration,
         generate_unbound_methods,
-        visibility_restriction_selectors):
+        visibility_restriction_selectors,
+        use_allof_for_refs):
     args = actions.args()
 
     args.add("--plugin", "protoc-gen-openapiv2=%s" % protoc_gen_openapiv2.path)
@@ -129,6 +130,9 @@ def _run_proto_gen_openapi(
 
     for visibility_restriction_selector in visibility_restriction_selectors:
         args.add("--openapiv2_opt", "visibility_restriction_selectors=%s" % visibility_restriction_selector)
+
+    if use_allof_for_refs:
+        args.add("--openapiv2_opt", "use_allof_for_refs=true")
 
     args.add("--openapiv2_opt", "repeated_path_param_separator=%s" % repeated_path_param_separator)
 
@@ -232,6 +236,7 @@ def _proto_gen_openapi_impl(ctx):
                     openapi_configuration = ctx.file.openapi_configuration,
                     generate_unbound_methods = ctx.attr.generate_unbound_methods,
                     visibility_restriction_selectors = ctx.attr.visibility_restriction_selectors,
+                    use_allof_for_refs = ctx.attr.use_allof_for_refs,
                 ),
             ),
         ),
