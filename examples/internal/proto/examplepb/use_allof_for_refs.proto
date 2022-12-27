@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package grpc.gateway.examples.internal.proto.examplepb;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/grpc-ecosystem/grpc-gateway/v2/examples/internal/proto/examplepb";
+
+// UseAllOfForRefsService demonstrates the use_allof_for_refs option.
+//
+// When that option is enabled, a field that is a message reference normally
+// renders as a bare "$ref". Per the JSON Reference syntax any sibling members
+// of a "$ref" are ignored, so the field is instead wrapped in an "allOf" to
+// preserve its title, description and OpenAPI extensions next to the ref.
+service UseAllOfForRefsService {
+  rpc GetExample(GetExampleRequest) returns (GetExampleResponse) {
+    option (google.api.http) = {get: "/v1/example/{example_id}"};
+  }
+}
+
+message GetExampleRequest {
+  string example_id = 1;
+}
+
+message GetExampleResponse {
+  string example_id = 1;
+
+  // friend carries only a field extension and no description, so the allOf
+  // wrapping below is triggered purely to preserve the extension next to the
+  // "$ref" (which would otherwise be dropped). Note: the proto comment is
+  // intentionally detached so it does not become an OpenAPI description.
+
+  Person friend = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    extensions: {
+      key: "x-person-role"
+      value: {string_value: "friend"}
+    }
+  }];
+
+  // colleague combines a description with an extension; both are kept alongside
+  // the "$ref" via allOf.
+  Person colleague = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description: "A work contact."
+    extensions: {
+      key: "x-person-role"
+      value: {string_value: "colleague"}
+    }
+  }];
+}
+
+message Person {
+  string name = 1;
+  int32 age = 2;
+}

@@ -743,15 +743,16 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 				// Per the JSON Reference syntax: Any members other than "$ref" in a JSON Reference object SHALL be ignored.
 				// https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03#section-3
 				// However, use allOf to specify Title/Description/Example/readOnly fields.
-				if fieldSchema.Title != "" || fieldSchema.Description != "" || len(fieldSchema.Example) > 0 || fieldSchema.ReadOnly {
+				if fieldSchema.Title != "" || fieldSchema.Description != "" || len(fieldSchema.Example) > 0 || fieldSchema.ReadOnly || len(fieldSchema.extensions) > 0 {
 					fieldSchema = openapiSchemaObject{
 						Title:       fieldSchema.Title,
 						Description: fieldSchema.Description,
 						schemaCore: schemaCore{
 							Example: fieldSchema.Example,
 						},
-						ReadOnly: fieldSchema.ReadOnly,
-						AllOf:    []allOfEntry{{Ref: fieldSchema.Ref}},
+						ReadOnly:   fieldSchema.ReadOnly,
+						extensions: fieldSchema.extensions,
+						AllOf:      []allOfEntry{{Ref: fieldSchema.Ref}},
 					}
 				} else {
 					fieldSchema = openapiSchemaObject{schemaCore: schemaCore{Ref: fieldSchema.Ref}}

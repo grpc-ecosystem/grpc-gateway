@@ -100,6 +100,9 @@ proto:
 		--template ./examples/internal/proto/examplepb/use_go_template.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/use_go_template.proto
 	buf generate \
+		--template ./examples/internal/proto/examplepb/use_allof_for_refs.buf.gen.yaml \
+		--path examples/internal/proto/examplepb/use_allof_for_refs.proto
+	buf generate \
 		--template ./examples/internal/proto/examplepb/ignore_comment.buf.gen.yaml \
 		--path examples/internal/proto/examplepb/ignore_comment.proto
 	buf generate \

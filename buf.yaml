@@ -27,6 +27,7 @@ lint:
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
       - examples/internal/proto/examplepb/visibility_rule_echo_service.proto
+      - examples/internal/proto/examplepb/use_allof_for_refs.proto
       - examples/internal/proto/examplepb/use_go_template.proto
       - examples/internal/proto/examplepb/ignore_comment.proto
       - examples/internal/proto/examplepb/remove_internal_comment.proto
@@ -74,6 +75,7 @@ lint:
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
       - examples/internal/proto/examplepb/visibility_rule_echo_service.proto
+      - examples/internal/proto/examplepb/use_allof_for_refs.proto
       - examples/internal/proto/examplepb/use_go_template.proto
       - examples/internal/proto/examplepb/ignore_comment.proto
       - examples/internal/proto/examplepb/remove_internal_comment.proto
@@ -109,6 +111,7 @@ lint:
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
       - examples/internal/proto/examplepb/visibility_rule_echo_service.proto
+      - examples/internal/proto/examplepb/use_allof_for_refs.proto
       - examples/internal/proto/examplepb/use_go_template.proto
       - examples/internal/proto/examplepb/ignore_comment.proto
       - examples/internal/proto/examplepb/remove_internal_comment.proto
@@ -136,6 +139,7 @@ lint:
       - examples/internal/proto/examplepb/stream.proto
       - examples/internal/proto/examplepb/unannotated_echo_service.proto
       - examples/internal/proto/examplepb/visibility_rule_echo_service.proto
+      - examples/internal/proto/examplepb/use_allof_for_refs.proto
       - examples/internal/proto/examplepb/use_go_template.proto
       - examples/internal/proto/examplepb/ignore_comment.proto
       - examples/internal/proto/examplepb/remove_internal_comment.proto

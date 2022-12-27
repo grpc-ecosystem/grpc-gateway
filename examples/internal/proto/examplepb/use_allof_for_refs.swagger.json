@@ -1,0 +1,118 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "examples/internal/proto/examplepb/use_allof_for_refs.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "UseAllOfForRefsService",
+      "description": "UseAllOfForRefsService demonstrates the use_allof_for_refs option.\n\nWhen that option is enabled, a field that is a message reference normally\nrenders as a bare \"$ref\". Per the JSON Reference syntax any sibling members\nof a \"$ref\" are ignored, so the field is instead wrapped in an \"allOf\" to\npreserve its title, description and OpenAPI extensions next to the ref."
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/example/{exampleId}": {
+      "get": {
+        "operationId": "UseAllOfForRefsService_GetExample",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/examplepbGetExampleResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "exampleId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UseAllOfForRefsService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "examplepbGetExampleResponse": {
+      "type": "object",
+      "properties": {
+        "exampleId": {
+          "type": "string"
+        },
+        "friend": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/examplepbPerson"
+            }
+          ],
+          "x-person-role": "friend"
+        },
+        "colleague": {
+          "description": "A work contact.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/examplepbPerson"
+            }
+          ],
+          "x-person-role": "colleague"
+        }
+      }
+    },
+    "examplepbPerson": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "age": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
