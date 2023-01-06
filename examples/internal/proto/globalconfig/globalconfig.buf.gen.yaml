@@ -3,7 +3,6 @@ plugins:
   - name: grpc-gateway
     out: .
     opt:
-      - paths=source_relative
       - grpc_api_configuration=examples/internal/proto/globalconfig/grpc_annotations.yaml
   - name: openapiv2
     out: .
