@@ -36,6 +36,54 @@ import (
 
 var marshaler = &runtime.JSONPb{}
 
+func TestOpenapiExamplesFromProtoExamples(t *testing.T) {
+	examples := openapiExamplesFromProtoExamples(map[string]string{
+		"application/json": `{"Hello": "Worldr!"}`,
+		"plain/text":       "Hello, World!",
+	})
+
+	testCases := map[Format]string{
+		FormatJSON: `
+		{
+			"application/json": {
+				"Hello": "Worldr!"
+			},
+			"plain/text": "Hello, World!"
+		}
+		`,
+		FormatYAML: `
+		application/json:
+		  Hello: Worldr!
+		plain/text: Hello, World!
+		`,
+	}
+
+	spaceRemover := strings.NewReplacer(" ", "", "\t", "", "\n", "")
+
+	for format, expected := range testCases {
+		t.Run(string(format), func(t *testing.T) {
+			var buf bytes.Buffer
+
+			encoder, err := format.NewEncoder(&buf)
+			if err != nil {
+				t.Fatalf("creating encoder: %s", err)
+			}
+
+			err = encoder.Encode(examples)
+			if err != nil {
+				t.Fatalf("encoding: %s", err)
+			}
+
+			actual := spaceRemover.Replace(buf.String())
+			expected = spaceRemover.Replace(expected)
+
+			if expected != actual {
+				t.Fatalf("expected:\n%s\nactual:\n%s", expected, actual)
+			}
+		})
+	}
+}
+
 func crossLinkFixture(f *descriptor.File) *descriptor.File {
 	for _, m := range f.Messages {
 		m.File = f

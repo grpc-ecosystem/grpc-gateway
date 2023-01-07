@@ -2768,7 +2768,7 @@ func openapiExamplesFromProtoExamples(in map[string]string) map[string]interface
 		switch mimeType {
 		case "application/json":
 			// JSON example objects are rendered raw.
-			out[mimeType] = json.RawMessage(exampleStr)
+			out[mimeType] = RawExample(exampleStr)
 		default:
 			// All other mimetype examples are rendered as strings.
 			out[mimeType] = exampleStr
