@@ -722,6 +722,9 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 
 	switch aggregate {
 	case array:
+		if _, ok := wktSchemas[fd.GetTypeName()]; !ok && fd.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
+			core.Type = "object"
+		}
 		ret = openapiSchemaObject{
 			schemaCore: schemaCore{
 				Type:  "array",
@@ -2771,7 +2774,7 @@ func openapiExamplesFromProtoExamples(in map[string]string) map[string]interface
 		switch mimeType {
 		case "application/json":
 			// JSON example objects are rendered raw.
-			out[mimeType] = json.RawMessage(exampleStr)
+			out[mimeType] = RawExample(exampleStr)
 		default:
 			// All other mimetype examples are rendered as strings.
 			out[mimeType] = exampleStr
