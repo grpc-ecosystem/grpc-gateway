@@ -101,8 +101,9 @@ func SetQueryParameterParser(queryParameterParser QueryParameterParser) ServeMux
 type HeaderMatcherFunc func(string) (string, bool)
 
 // DefaultHeaderMatcher is used to pass http request headers to/from gRPC context. This adds permanent HTTP header
-// keys (as specified by the IANA) to gRPC context with grpcgateway- prefix. HTTP headers that start with
-// 'Grpc-Metadata-' are mapped to gRPC metadata after removing prefix 'Grpc-Metadata-'.
+// keys (as specified by the IANA) to gRPC context with grpcgateway- prefix. e.g:Accept、Cookie、Host. If you want
+// to know support permanent HTTP header enum value,you can view isPermanentHTTPHeader function.
+// HTTP headers that start with 'Grpc-Metadata-' are mapped to gRPC metadata after removing prefix 'Grpc-Metadata-'.
 func DefaultHeaderMatcher(key string) (string, bool) {
 	switch key = textproto.CanonicalMIMEHeaderKey(key); {
 	case isPermanentHTTPHeader(key):
