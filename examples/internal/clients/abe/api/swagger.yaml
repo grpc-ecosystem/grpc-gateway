@@ -165,6 +165,7 @@ paths:
         required: true
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "Uuid"
       - name: "floatValue"
@@ -547,6 +548,7 @@ paths:
         required: true
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "Uuid"
       - name: "floatValue"
@@ -920,6 +922,7 @@ paths:
         required: true
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "Uuid"
       - name: "floatValue"
@@ -1282,6 +1285,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "UuidName"
       - name: "singleNested.name"
@@ -1833,6 +1837,7 @@ paths:
         required: true
         type: "string"
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "Uuid"
       - name: "bytesValue"
@@ -2057,6 +2062,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "UuidName"
       - name: "singleNested.name"
@@ -2433,6 +2439,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "UuidName"
       - in: "body"
@@ -2476,6 +2483,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "UuidName"
       - name: "singleNested.name"
@@ -2853,6 +2861,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "UuidName"
       - name: "singleNested.name"
@@ -3247,6 +3256,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "UuidName"
       - name: "singleNested.name"
@@ -4241,6 +4251,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "UuidName"
       - in: "body"
@@ -4293,6 +4304,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "UuidName"
       - in: "body"
@@ -4741,6 +4753,7 @@ paths:
         in: "path"
         required: true
         type: "string"
+        format: "uuid"
         x-internal: true
         x-exportParamName: "UuidName"
       - in: "body"
@@ -4883,6 +4896,7 @@ definitions:
         $ref: "#/definitions/ABitOfEverythingNested"
       uuid:
         type: "string"
+        format: "uuid"
         minLength: 1
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-internal: true
@@ -5593,6 +5607,7 @@ definitions:
         $ref: "v1exampledeep_pathsingleNested.name_singleNested"
       uuid:
         type: "string"
+        format: "uuid"
         minLength: 1
         pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
         x-internal: true
