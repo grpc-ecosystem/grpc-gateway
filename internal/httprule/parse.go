@@ -167,7 +167,7 @@ func (p *parser) segment() (segment, error) {
 	if err != nil {
 		return nil, fmt.Errorf("segment neither wildcards, literal or variable: %w", err)
 	}
-	return v, err
+	return v, nil
 }
 
 func (p *parser) literal() (segment, error) {
@@ -192,7 +192,7 @@ func (p *parser) variable() (segment, error) {
 	if _, err := p.accept("="); err == nil {
 		segs, err = p.segments()
 		if err != nil {
-			return nil, fmt.Errorf("invalid segment in variable %q: %v", path, err)
+			return nil, fmt.Errorf("invalid segment in variable %q: %w", path, err)
 		}
 	} else {
 		segs = []segment{wildcard{}}
@@ -219,7 +219,7 @@ func (p *parser) fieldPath() (string, error) {
 		}
 		c, err := p.accept(typeIdent)
 		if err != nil {
-			return "", fmt.Errorf("invalid field path component: %v", err)
+			return "", fmt.Errorf("invalid field path component: %w", err)
 		}
 		components = append(components, c)
 	}

@@ -36,6 +36,54 @@ import (
 
 var marshaler = &runtime.JSONPb{}
 
+func TestOpenapiExamplesFromProtoExamples(t *testing.T) {
+	examples := openapiExamplesFromProtoExamples(map[string]string{
+		"application/json": `{"Hello": "Worldr!"}`,
+		"plain/text":       "Hello, World!",
+	})
+
+	testCases := map[Format]string{
+		FormatJSON: `
+		{
+			"application/json": {
+				"Hello": "Worldr!"
+			},
+			"plain/text": "Hello, World!"
+		}
+		`,
+		FormatYAML: `
+		application/json:
+		  Hello: Worldr!
+		plain/text: Hello, World!
+		`,
+	}
+
+	spaceRemover := strings.NewReplacer(" ", "", "\t", "", "\n", "")
+
+	for format, expected := range testCases {
+		t.Run(string(format), func(t *testing.T) {
+			var buf bytes.Buffer
+
+			encoder, err := format.NewEncoder(&buf)
+			if err != nil {
+				t.Fatalf("creating encoder: %s", err)
+			}
+
+			err = encoder.Encode(examples)
+			if err != nil {
+				t.Fatalf("encoding: %s", err)
+			}
+
+			actual := spaceRemover.Replace(buf.String())
+			expected = spaceRemover.Replace(expected)
+
+			if expected != actual {
+				t.Fatalf("expected:\n%s\nactual:\n%s", expected, actual)
+			}
+		})
+	}
+}
+
 func crossLinkFixture(f *descriptor.File) *descriptor.File {
 	for _, m := range f.Messages {
 		m.File = f
@@ -4321,6 +4369,36 @@ func TestSchemaOfField(t *testing.T) {
 		{
 			field: &descriptor.Field{
 				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
+					Name:  proto.String("primitive_field_option"),
+					Label: descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
+					Type:  descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum().Enum(),
+				},
+			},
+			openAPIOptions: &openapiconfig.OpenAPIOptions{
+				Field: []*openapiconfig.OpenAPIFieldOption{
+					{
+						Field: "example.Message.primitive_field_option",
+						Option: &openapi_options.JSONSchema{
+							Title:       "field title",
+							Description: "field description",
+							Format:      "uuid",
+						},
+					},
+				},
+			},
+			refs: make(refMap),
+			expected: openapiSchemaObject{
+				schemaCore: schemaCore{
+					Type:   "string",
+					Format: "uuid",
+				},
+				Title:       "field title",
+				Description: "field description",
+			},
+		},
+		{
+			field: &descriptor.Field{
+				FieldDescriptorProto: &descriptorpb.FieldDescriptorProto{
 					Name:     proto.String("message_field_option"),
 					Label:    descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
 					Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
@@ -4690,6 +4768,7 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 		openAPIOptions        *openapiconfig.OpenAPIOptions
 		pathParams            []descriptor.Parameter
 		UseJSONNamesForFields bool
+		UseAllOfForRefs       bool
 	}{
 		{
 			descr: "no OpenAPI options",
@@ -5292,6 +5371,55 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 			},
 			UseJSONNamesForFields: true,
 		},
+		{
+			descr: "JSONSchema with a read_only nested field",
+			msgDescs: []*descriptorpb.DescriptorProto{
+				{
+					Name: proto.String("Message"),
+					Field: []*descriptorpb.FieldDescriptorProto{
+						{
+							Name:     proto.String("nested"),
+							Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+							TypeName: proto.String(".example.Message.Nested"),
+							Number:   proto.Int32(1),
+							Options:  fieldBehaviorOutputOnlyOptions,
+						},
+					},
+					NestedType: []*descriptorpb.DescriptorProto{{
+						Name: proto.String("Nested"),
+					}},
+				},
+			},
+			UseAllOfForRefs: true,
+			schema: map[string]*openapi_options.Schema{
+				"Message": {
+					JsonSchema: &openapi_options.JSONSchema{
+						Title:       "title",
+						Description: "desc",
+						Required:    []string{},
+					},
+				},
+			},
+			defs: map[string]openapiSchemaObject{
+				"exampleMessage": {
+					schemaCore: schemaCore{
+						Type: "object",
+					},
+					Title:       "title",
+					Description: "desc",
+					Required:    nil,
+					Properties: &openapiSchemaObjectProperties{
+						{
+							Key: "nested",
+							Value: openapiSchemaObject{
+								AllOf:    []allOfEntry{{Ref: "#/definitions/MessageNested"}},
+								ReadOnly: true,
+							},
+						},
+					},
+				},
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -5326,6 +5454,10 @@ func TestRenderMessagesAsDefinition(t *testing.T) {
 
 			if test.UseJSONNamesForFields {
 				reg.SetUseJSONNamesForFields(true)
+			}
+
+			if test.UseAllOfForRefs {
+				reg.SetUseAllOfForRefs(true)
 			}
 
 			if err != nil {
@@ -8066,6 +8198,28 @@ func TestRenderServiceWithHeaderParameters(t *testing.T) {
 				},
 			},
 		},
+		"type string with format": {
+			file: file,
+			openapiOperation: &openapi_options.Operation{
+				Parameters: &openapi_options.Parameters{
+					Headers: []*openapi_options.HeaderParameter{
+						{
+							Name:   "X-Custom-Header",
+							Type:   openapi_options.HeaderParameter_STRING,
+							Format: "uuid",
+						},
+					},
+				},
+			},
+			parameters: openapiParametersObject{
+				{
+					Name:   "X-Custom-Header",
+					In:     "header",
+					Type:   "string",
+					Format: "uuid",
+				},
+			},
+		},
 		"type integer": {
 			file: file,
 			openapiOperation: &openapi_options.Operation{
@@ -8192,4 +8346,246 @@ func GetPaths(req *openapiSwaggerObject) []string {
 		i++
 	}
 	return paths
+}
+
+func TestArrayMessageItemsType(t *testing.T) {
+
+	msgDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("ExampleMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+
+			{
+				Name:     proto.String("children"),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".example.ExampleMessage"),
+				Number:   proto.Int32(1),
+				JsonName: proto.String("children"),
+			},
+		},
+	}
+
+	nestDesc := &descriptorpb.DescriptorProto{
+		Name: proto.String("NestDescMessage"),
+		Field: []*descriptorpb.FieldDescriptorProto{
+			{
+				Name:     proto.String("children"),
+				Label:    descriptorpb.FieldDescriptorProto_LABEL_REPEATED.Enum(),
+				Type:     descriptorpb.FieldDescriptorProto_TYPE_MESSAGE.Enum(),
+				TypeName: proto.String(".example.ExampleMessage"),
+				Number:   proto.Int32(1),
+				JsonName: proto.String("children"),
+			},
+		},
+	}
+
+	meth := &descriptorpb.MethodDescriptorProto{
+		Name:       proto.String("Example"),
+		InputType:  proto.String("ExampleMessage"),
+		OutputType: proto.String("NestDescMessage"),
+	}
+	svc := &descriptorpb.ServiceDescriptorProto{
+		Name:   proto.String("ExampleService"),
+		Method: []*descriptorpb.MethodDescriptorProto{meth},
+	}
+	msg := &descriptor.Message{
+		DescriptorProto: msgDesc,
+	}
+	nsg := &descriptor.Message{
+		DescriptorProto: nestDesc,
+	}
+	msg.Fields = []*descriptor.Field{
+		{
+			Message:              msg,
+			FieldDescriptorProto: msg.GetField()[0],
+		},
+	}
+	nsg.Fields = []*descriptor.Field{
+		{
+			Message:              nsg,
+			FieldDescriptorProto: nsg.GetField()[0],
+		},
+	}
+	file := descriptor.File{
+		FileDescriptorProto: &descriptorpb.FileDescriptorProto{
+			SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+			Name:           proto.String("example.proto"),
+			Package:        proto.String("example"),
+			MessageType:    []*descriptorpb.DescriptorProto{msgDesc, nestDesc},
+			Service:        []*descriptorpb.ServiceDescriptorProto{svc},
+			Options: &descriptorpb.FileOptions{
+				GoPackage: proto.String("github.com/grpc-ecosystem/grpc-gateway/runtime/internal/examplepb;example"),
+			},
+		},
+		GoPkg: descriptor.GoPackage{
+			Path: "example.com/path/to/example/example.pb",
+			Name: "example_pb",
+		},
+		Messages: []*descriptor.Message{msg, nsg},
+		Services: []*descriptor.Service{
+			{
+				ServiceDescriptorProto: svc,
+				Methods: []*descriptor.Method{
+					{
+						MethodDescriptorProto: meth,
+						RequestType:           msg,
+						ResponseType:          nsg,
+						Bindings: []*descriptor.Binding{
+							{
+								HTTPMethod: "POST",
+								Body: &descriptor.Body{
+									FieldPath: descriptor.FieldPath([]descriptor.FieldPathComponent{}),
+								},
+								PathTmpl: httprule.Template{
+									Version:  1,
+									OpCodes:  []int{0, 0},
+									Template: "/v1/echo", // TODO(achew22): Figure out what this should really be
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	reg := descriptor.NewRegistry()
+	reg.SetUseJSONNamesForFields(true)
+	if err := AddErrorDefs(reg); err != nil {
+		t.Errorf("AddErrorDefs(%#v) failed with %v; want success", reg, err)
+		return
+	}
+	fileCL := crossLinkFixture(&file)
+	if err := reg.Load(&pluginpb.CodeGeneratorRequest{
+		ProtoFile: []*descriptorpb.FileDescriptorProto{
+			{
+				SourceCodeInfo: &descriptorpb.SourceCodeInfo{},
+				Name:           proto.String("acme/example.proto"),
+				Package:        proto.String("example"),
+				MessageType:    []*descriptorpb.DescriptorProto{msgDesc, nestDesc},
+				Service:        []*descriptorpb.ServiceDescriptorProto{},
+				Options: &descriptorpb.FileOptions{
+					GoPackage: proto.String("acme/example"),
+				},
+			},
+		},
+	}); err != nil {
+		t.Errorf("reg.Load(%#v) failed with %v; want success", reg, err)
+		return
+	}
+	expect := openapiDefinitionsObject{
+		"rpcStatus": openapiSchemaObject{
+			schemaCore: schemaCore{
+				Type: "object",
+			},
+			Properties: &openapiSchemaObjectProperties{
+				keyVal{
+					Key: "code",
+					Value: openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type:   "integer",
+							Format: "int32",
+						},
+					},
+				},
+				keyVal{
+					Key: "message",
+					Value: openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type: "string",
+						},
+					},
+				},
+				keyVal{
+					Key: "details",
+					Value: openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type: "array",
+							Items: &openapiItemsObject{
+								schemaCore: schemaCore{
+									Type: "object",
+									Ref:  "#/definitions/protobufAny",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		"exampleExampleMessage": openapiSchemaObject{
+			schemaCore: schemaCore{
+				Type: "object",
+			},
+			Properties: &openapiSchemaObjectProperties{
+				keyVal{
+					Key: "children",
+					Value: openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type: "array",
+							Items: &openapiItemsObject{
+								schemaCore: schemaCore{
+									Type: "object",
+									Ref:  "#/definitions/exampleExampleMessage",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		"exampleNestDescMessage": openapiSchemaObject{
+			schemaCore: schemaCore{
+				Type: "object",
+			},
+			Properties: &openapiSchemaObjectProperties{
+				keyVal{
+					Key: "children",
+					Value: openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type: "array",
+							Items: &openapiItemsObject{
+								schemaCore: schemaCore{
+									Type: "object",
+									Ref:  "#/definitions/exampleExampleMessage",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		"protobufAny": openapiSchemaObject{
+			schemaCore: schemaCore{
+				Type: "object",
+			},
+			Properties: &openapiSchemaObjectProperties{
+				keyVal{
+					Key: "@type",
+					Value: openapiSchemaObject{
+						schemaCore: schemaCore{
+							Type: "string",
+						},
+					},
+				},
+			},
+			AdditionalProperties: &openapiSchemaObject{},
+		},
+	}
+
+	result, err := applyTemplate(param{File: fileCL, reg: reg})
+	if err != nil {
+		t.Errorf("applyTemplate(%#v) failed with %v; want success", reg, err)
+		return
+	}
+	if want, is, name := []string{"application/json"}, result.Produces, "Produces"; !reflect.DeepEqual(is, want) {
+		t.Errorf("applyTemplate(%#v).%s = %s want to be %s", file, name, is, want)
+	}
+	if want, is, name := expect, result.Definitions, "Produces"; !reflect.DeepEqual(is, want) {
+
+		t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, is, want)
+	}
+	// If there was a failure, print out the input and the json result for debugging.
+	if t.Failed() {
+		t.Errorf("had: %s", file)
+		t.Errorf("got: %s", fmt.Sprint(result))
+	}
 }

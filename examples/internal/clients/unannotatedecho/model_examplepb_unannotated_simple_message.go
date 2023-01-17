@@ -22,4 +22,5 @@ type ExamplepbUnannotatedSimpleMessage struct {
 	Status *ExamplepbUnannotatedEmbedded `json:"status,omitempty"`
 	En string `json:"en,omitempty"`
 	No *ExamplepbUnannotatedEmbedded `json:"no,omitempty"`
+	ResourceId string `json:"resourceId,omitempty"`
 }

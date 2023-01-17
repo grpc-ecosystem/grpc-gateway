@@ -209,6 +209,7 @@
         "extensions": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           },
           "description": "Application specific response metadata. Must be set in the first response\nfor streaming APIs."
@@ -228,6 +229,7 @@
         },
         "uuid": {
           "type": "string",
+          "format": "uuid",
           "minLength": 1,
           "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
           "x-internal": true
@@ -235,6 +237,7 @@
         "nested": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/ABitOfEverythingNested"
           }
         },
@@ -376,6 +379,7 @@
         "repeatedNestedAnnotation": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/ABitOfEverythingNested"
           },
           "description": "Repeated nested object description.",
@@ -511,6 +515,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           },
           "description": "A list of messages that carry the error details.  There is a common set of\nmessage types for APIs to use."

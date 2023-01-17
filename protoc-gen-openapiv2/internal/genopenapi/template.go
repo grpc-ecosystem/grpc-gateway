@@ -515,6 +515,24 @@ func renderMessageAsDefinition(msg *descriptor.Message, reg *descriptor.Registry
 			fieldSchema.Required = nil
 		}
 
+		if reg.GetUseAllOfForRefs() {
+			if fieldSchema.Ref != "" {
+				// Per the JSON Reference syntax: Any members other than "$ref" in a JSON Reference object SHALL be ignored.
+				// https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03#section-3
+				// However, use allOf to specify Title/Description/readOnly fields.
+				if fieldSchema.Title != "" || fieldSchema.Description != "" || fieldSchema.ReadOnly {
+					fieldSchema = openapiSchemaObject{
+						Title:       fieldSchema.Title,
+						Description: fieldSchema.Description,
+						ReadOnly:    fieldSchema.ReadOnly,
+						AllOf:       []allOfEntry{{Ref: fieldSchema.Ref}},
+					}
+				} else {
+					fieldSchema = openapiSchemaObject{schemaCore: schemaCore{Ref: fieldSchema.Ref}}
+				}
+			}
+		}
+
 		kv := keyVal{Value: fieldSchema}
 		kv.Key = reg.FieldName(f)
 		if schema.Properties == nil {
@@ -704,6 +722,9 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 
 	switch aggregate {
 	case array:
+		if _, ok := wktSchemas[fd.GetTypeName()]; !ok && fd.GetType() == descriptorpb.FieldDescriptorProto_TYPE_MESSAGE {
+			core.Type = "object"
+		}
 		ret = openapiSchemaObject{
 			schemaCore: schemaCore{
 				Type:  "array",
@@ -775,7 +796,8 @@ func primitiveSchema(t descriptorpb.FieldDescriptorProto_Type) (ftype, format st
 		// NOTE: in OpenAPI specification, format should be empty on boolean type
 		return "boolean", "", true
 	case descriptorpb.FieldDescriptorProto_TYPE_STRING:
-		// NOTE: in OpenAPI specification, format should be empty on string type
+		// NOTE: in OpenAPI specification, can be empty on string type
+		// see: https://swagger.io/specification/v2/#data-types
 		return "string", "", true
 	case descriptorpb.FieldDescriptorProto_TYPE_BYTES:
 		return "string", "byte", true
@@ -1115,6 +1137,11 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						desc = schema.Description
 						defaultValue = schema.Default
 						extensions = schema.extensions
+						// If there is no mandatory format based on the field,
+						// allow it to be overridden by the user
+						if paramFormat == "" {
+							paramFormat = schema.Format
+						}
 					}
 
 					if parameter.IsRepeated() {
@@ -2747,7 +2774,7 @@ func openapiExamplesFromProtoExamples(in map[string]string) map[string]interface
 		switch mimeType {
 		case "application/json":
 			// JSON example objects are rendered raw.
-			out[mimeType] = json.RawMessage(exampleStr)
+			out[mimeType] = RawExample(exampleStr)
 		default:
 			// All other mimetype examples are rendered as strings.
 			out[mimeType] = exampleStr

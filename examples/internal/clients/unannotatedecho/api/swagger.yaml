@@ -119,6 +119,12 @@ paths:
         type: "string"
         x-exportParamName: "NoNote"
         x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -220,6 +226,12 @@ paths:
         required: false
         type: "string"
         x-exportParamName: "NoNote"
+        x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
         x-optionalDataType: "String"
       responses:
         200:
@@ -355,6 +367,12 @@ paths:
         type: "string"
         x-exportParamName: "NoNote"
         x-optionalDataType: "String"
+      - name: "resourceId"
+        in: "query"
+        required: false
+        type: "string"
+        x-exportParamName: "ResourceId"
+        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."
@@ -422,6 +440,8 @@ definitions:
         format: "int64"
       "no":
         $ref: "#/definitions/examplepbUnannotatedEmbedded"
+      resourceId:
+        type: "string"
     externalDocs:
       description: "Find out more about UnannotatedSimpleMessage"
       url: "https://github.com/grpc-ecosystem/grpc-gateway"

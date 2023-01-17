@@ -11,27 +11,27 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/setup-go@d0a58c1c4d2b25278816e339b944508c875f3613 # v3
+      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3
         with:
           go-version: ${{ matrix.go-version }}
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
       - run: go build ./...
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-go@d0a58c1c4d2b25278816e339b944508c875f3613 # v3
+      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3
         with:
           check-latest: true
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
       - run: go test ./...
   node_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
-      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3
         with:
           node-version: 10
-      - uses: actions/setup-go@d0a58c1c4d2b25278816e339b944508c875f3613 # v3
+      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3
         with:
           check-latest: true
       - run: >
@@ -48,7 +48,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
       - run: make install
       - run: make clean
       - run: make generate
@@ -63,8 +63,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
-      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # tag=v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - uses: actions/cache@58c146cc91c5b9e778e71775dfe9bf1442ad9a12 # v3
         with:
           path: /home/vscode/.cache/_grpc_gateway_bazel
           key: v1-bazel-cache-${{ hashFiles('repositories.bzl') }}
@@ -93,17 +93,17 @@ jobs:
   gorelease:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
-      - uses: actions/setup-go@d0a58c1c4d2b25278816e339b944508c875f3613 # v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3
         with:
           go-version: 1.19
           check-latest: true
-      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.14.0
+      - run: go run golang.org/x/exp/cmd/gorelease@latest -base=v2.15.0
   proto_lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
-      - uses: actions/setup-go@d0a58c1c4d2b25278816e339b944508c875f3613 # v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3
         with:
           check-latest: true
       - run: make install
@@ -116,8 +116,8 @@ jobs:
       pull-requests: read # for golangci/golangci-lint-action to fetch pull requests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
-      - uses: golangci/golangci-lint-action@0ad9a0988b3973e851ab0a07adf248ec2e100376 # tag=v3
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - uses: golangci/golangci-lint-action@0ad9a0988b3973e851ab0a07adf248ec2e100376 # v3
         with:
           version: v1.45
           args: --enable goimports
@@ -139,7 +139,7 @@ jobs:
           dry-run: false
           language: go
       - name: Upload Crash
-        uses: actions/upload-artifact@83fd05a356d7e2593de66fc9913b3002723633cb # tag=v3
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
         if: failure() && steps.build.outcome == 'success'
         with:
           name: artifacts
