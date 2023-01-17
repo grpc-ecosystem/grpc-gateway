@@ -466,19 +466,19 @@ plugin generation looks like this:
 ```yaml
 version: v1
 plugins:
-  - remote: buf.build/library/plugins/go:v1.27.1-1
+  - plugin: buf.build/protocolbuffers/go:v1.28.1
     out: gen/go
     opt:
       - paths=source_relative
-  - remote: buf.build/library/plugins/go-grpc:v1.1.0-2
+  - plugin: buf.build/grpc/go:v1.2.0
     out: gen/go
     opt:
       - paths=source_relative
-  - remote: buf.build/grpc-ecosystem/plugins/grpc-gateway:v2.6.0-1
+  - plugin: buf.build/grpc-ecosystem/gateway:v2.15.0
     out: gen/go
     opt:
       - paths=source_relative
-  - remote: buf.build/grpc-ecosystem/plugins/openapiv2:v2.6.0-1
+  - plugin: buf.build/grpc-ecosystem/openapiv2:v2.15.0
     out: gen/openapiv2
 ```
 
