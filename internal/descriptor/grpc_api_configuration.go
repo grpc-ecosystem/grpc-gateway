@@ -15,7 +15,7 @@ func loadGrpcAPIServiceFromYAML(yamlFileContents []byte, yamlSourceLogName strin
 	var yamlContents interface{}
 	err := yaml.Unmarshal(yamlFileContents, &yamlContents)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse gRPC API Configuration from YAML in '%v': %v", yamlSourceLogName, err)
+		return nil, fmt.Errorf("failed to parse gRPC API Configuration from YAML in %q: %w", yamlSourceLogName, err)
 	}
 
 	jsonContents, err := json.Marshal(yamlContents)
@@ -30,7 +30,7 @@ func loadGrpcAPIServiceFromYAML(yamlFileContents []byte, yamlSourceLogName strin
 
 	serviceConfiguration := apiconfig.GrpcAPIService{}
 	if err := unmarshaler.Unmarshal(jsonContents, &serviceConfiguration); err != nil {
-		return nil, fmt.Errorf("failed to parse gRPC API Configuration from YAML in '%v': %v", yamlSourceLogName, err)
+		return nil, fmt.Errorf("failed to parse gRPC API Configuration from YAML in %q: %w", yamlSourceLogName, err)
 	}
 
 	return &serviceConfiguration, nil
