@@ -61,7 +61,7 @@ type ServeMux struct {
 	errorHandler              ErrorHandlerFunc
 	streamErrorHandler        StreamErrorHandlerFunc
 	routingErrorHandler       RoutingErrorHandlerFunc
-	onHandle                  func(method string, pattern Pattern)
+	onHandle                  func(mux *ServeMux, method string, pattern Pattern)
 	disablePathLengthFallback bool
 	unescapingMode            UnescapingMode
 }
@@ -256,7 +256,7 @@ func WithHealthzEndpoint(healthCheckClient grpc_health_v1.HealthClient) ServeMux
 	return WithHealthEndpointAt(healthCheckClient, "/healthz")
 }
 
-func WithOnHandle(onHandle func(method string, pattern Pattern)) ServeMuxOption {
+func WithOnHandle(onHandle func(mux *ServeMux, method string, pattern Pattern)) ServeMuxOption {
 	return func(s *ServeMux) {
 		s.onHandle = onHandle
 	}
@@ -294,7 +294,7 @@ func NewServeMux(opts ...ServeMuxOption) *ServeMux {
 // Handle associates "h" to the pair of HTTP method and path pattern.
 func (s *ServeMux) Handle(meth string, pat Pattern, h HandlerFunc) {
 	s.handlers[meth] = append([]handler{{pat: pat, h: h}}, s.handlers[meth]...)
-	s.onHandle(meth, pat)
+	s.onHandle(s, meth, pat)
 }
 
 // HandlePath allows users to configure custom path handlers.
