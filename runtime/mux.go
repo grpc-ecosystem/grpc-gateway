@@ -256,6 +256,10 @@ func WithHealthzEndpoint(healthCheckClient grpc_health_v1.HealthClient) ServeMux
 	return WithHealthEndpointAt(healthCheckClient, "/healthz")
 }
 
+// WithOnHandle returns a ServeMuxOption that will add a onHandle callback to the created ServeMux.
+//
+// Method called when a router is added to ServeMux.
+// This is quite hepful when you want to intergrate with other HTTP frameworks.
 func WithOnHandle(onHandle func(mux *ServeMux, method string, pattern Pattern)) ServeMuxOption {
 	return func(s *ServeMux) {
 		s.onHandle = onHandle
