@@ -10,7 +10,7 @@ require (
 	github.com/rogpeppe/fastuuid v1.2.0
 	golang.org/x/oauth2 v0.4.0
 	golang.org/x/text v0.6.0
-	google.golang.org/genproto v0.0.0-20230117162540-28d6b9783ac4
+	google.golang.org/genproto v0.0.0-20230119192704-9d59e20e5cd1
 	google.golang.org/grpc v1.52.0
 	google.golang.org/protobuf v1.28.1
 	gopkg.in/yaml.v3 v3.0.1
