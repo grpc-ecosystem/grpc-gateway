@@ -13,8 +13,7 @@ import (
 
 func loadGrpcAPIServiceFromYAML(yamlFileContents []byte, yamlSourceLogName string) (*apiconfig.GrpcAPIService, error) {
 	var yamlContents interface{}
-	err := yaml.Unmarshal(yamlFileContents, &yamlContents)
-	if err != nil {
+	if err := yaml.Unmarshal(yamlFileContents, &yamlContents); err != nil {
 		return nil, fmt.Errorf("failed to parse gRPC API Configuration from YAML in %q: %w", yamlSourceLogName, err)
 	}
 
@@ -45,7 +44,7 @@ func registerHTTPRulesFromGrpcAPIService(registry *Registry, service *apiconfig.
 	for _, rule := range service.Http.GetRules() {
 		selector := "." + strings.Trim(rule.GetSelector(), " ")
 		if strings.ContainsAny(selector, "*, ") {
-			return fmt.Errorf("selector '%v' in %v must specify a single service method without wildcards", rule.GetSelector(), sourceLogName)
+			return fmt.Errorf("selector %q in %v must specify a single service method without wildcards", rule.GetSelector(), sourceLogName)
 		}
 
 		registry.AddExternalHTTPRule(selector, rule)
