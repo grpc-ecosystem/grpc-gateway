@@ -430,7 +430,7 @@ func (r *Registry) ReserveGoPackageAlias(alias, pkgpath string) error {
 
 // GetAllFQMNs returns a list of all FQMNs
 func (r *Registry) GetAllFQMNs() []string {
-	var keys []string
+	keys := make([]string, 0, len(r.msgs))
 	for k := range r.msgs {
 		keys = append(keys, k)
 	}
@@ -439,7 +439,7 @@ func (r *Registry) GetAllFQMNs() []string {
 
 // GetAllFQENs returns a list of all FQENs
 func (r *Registry) GetAllFQENs() []string {
-	var keys []string
+	keys := make([]string, 0, len(r.enums))
 	for k := range r.enums {
 		keys = append(keys, k)
 	}
@@ -749,8 +749,7 @@ func (r *Registry) FieldName(f *Field) string {
 
 func (r *Registry) CheckDuplicateAnnotation(httpMethod string, httpTemplate string, svc *Service) error {
 	a := annotationIdentifier{method: httpMethod, pathTemplate: httpTemplate, service: svc}
-	_, ok := r.annotationMap[a]
-	if ok {
+	if _, ok := r.annotationMap[a]; ok {
 		return fmt.Errorf("duplicate annotation: method=%s, template=%s", httpMethod, httpTemplate)
 	}
 	r.annotationMap[a] = struct{}{}
