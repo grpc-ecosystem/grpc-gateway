@@ -58,8 +58,7 @@ func main() {
 	}.Run(func(gen *protogen.Plugin) error {
 		reg := descriptor.NewRegistry()
 
-		err := applyFlags(reg)
-		if err != nil {
+		if err := applyFlags(reg); err != nil {
 			return err
 		}
 
@@ -78,7 +77,7 @@ func main() {
 			return fmt.Errorf("HTTP rules without a matching selector: %s", strings.Join(unboundHTTPRules, ", "))
 		}
 
-		var targets []*descriptor.File
+		targets := make([]*descriptor.File, 0, len(gen.Request.FileToGenerate))
 		for _, target := range gen.Request.FileToGenerate {
 			f, err := reg.LookupFile(target)
 			if err != nil {

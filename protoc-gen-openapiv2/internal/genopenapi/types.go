@@ -224,7 +224,7 @@ func (e RawExample) MarshalYAML() (interface{}, error) {
 func (s *schemaCore) setRefFromFQN(ref string, reg *descriptor.Registry) error {
 	name, ok := fullyQualifiedNameToOpenAPIName(ref, reg)
 	if !ok {
-		return fmt.Errorf("setRefFromFQN: can't resolve OpenAPI name from '%v'", ref)
+		return fmt.Errorf("setRefFromFQN: can't resolve OpenAPI name from %q", ref)
 	}
 	s.Ref = fmt.Sprintf("#/definitions/%s", name)
 	return nil

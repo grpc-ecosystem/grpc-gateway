@@ -373,7 +373,7 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 
 				swgReqName, ok := fullyQualifiedNameToOpenAPIName(meth.RequestType.FQMN(), reg)
 				if !ok {
-					glog.Errorf("couldn't resolve OpenAPI name for FQMN '%v'", meth.RequestType.FQMN())
+					glog.Errorf("couldn't resolve OpenAPI name for FQMN %q", meth.RequestType.FQMN())
 					continue
 				}
 				if _, ok := refs[fmt.Sprintf("#/definitions/%s", swgReqName)]; ok {
@@ -385,7 +385,7 @@ func findServicesMessagesAndEnumerations(s []*descriptor.Service, reg *descripto
 
 			swgRspName, ok := fullyQualifiedNameToOpenAPIName(meth.ResponseType.FQMN(), reg)
 			if !ok && !skipRenderingRef(meth.ResponseType.FQMN()) {
-				glog.Errorf("couldn't resolve OpenAPI name for FQMN '%v'", meth.ResponseType.FQMN())
+				glog.Errorf("couldn't resolve OpenAPI name for FQMN %q", meth.ResponseType.FQMN())
 				continue
 			}
 
@@ -601,7 +601,7 @@ func renderMessagesAsDefinition(messages messageMap, d openapiDefinitionsObject,
 	for name, msg := range messages {
 		swgName, ok := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
 		if !ok {
-			return fmt.Errorf("can't resolve OpenAPI name from '%v'", msg.FQMN())
+			return fmt.Errorf("can't resolve OpenAPI name from %q", msg.FQMN())
 		}
 		if skipRenderingRef(name) {
 			continue
@@ -700,7 +700,7 @@ func schemaOfField(f *descriptor.Field, reg *descriptor.Registry, refs refMap) o
 		} else {
 			swgRef, ok := fullyQualifiedNameToOpenAPIName(fd.GetTypeName(), reg)
 			if !ok {
-				panic(fmt.Sprintf("can't resolve OpenAPI ref from typename '%v'", fd.GetTypeName()))
+				panic(fmt.Sprintf("can't resolve OpenAPI ref from typename %q", fd.GetTypeName()))
 			}
 			core = schemaCore{
 				Ref: "#/definitions/" + swgRef,
@@ -878,7 +878,7 @@ func lookupMsgAndOpenAPIName(location, name string, reg *descriptor.Registry) (*
 	}
 	swgName, ok := fullyQualifiedNameToOpenAPIName(msg.FQMN(), reg)
 	if !ok {
-		return nil, "", fmt.Errorf("can't map OpenAPI name from FQMN '%v'", msg.FQMN())
+		return nil, "", fmt.Errorf("can't map OpenAPI name from FQMN %q", msg.FQMN())
 	}
 	return msg, swgName, nil
 }
