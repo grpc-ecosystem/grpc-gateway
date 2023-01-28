@@ -32,7 +32,7 @@ jobs:
             args+=' --snapshot'
           fi
           echo "args=$args" >> $GITHUB_OUTPUT
-      - uses: goreleaser/goreleaser-action@8f67e590f2d095516493f017008adc464e63adb1 # v4
+      - uses: goreleaser/goreleaser-action@9754a253a8673b0ea869c2e863b4e975497efd0c # v4
         id: run-goreleaser
         with:
           args: ${{ steps.args.outputs.args }}
