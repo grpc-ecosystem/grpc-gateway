@@ -117,10 +117,15 @@ func listEnumNames(reg *descriptor.Registry, enum *descriptor.Enum) (names []str
 		}
 		names = append(names, value.GetName())
 	}
-	return names
+
+	if len(names) > 0 {
+		return names
+	}
+
+	return nil
 }
 
-func listEnumNumbers(reg *descriptor.Registry, enum *descriptor.Enum) (numbers []string) {
+func listEnumNumbers(reg *descriptor.Registry, enum *descriptor.Enum) (numbers []int) {
 	for _, value := range enum.GetValue() {
 		if reg.GetOmitEnumDefaultValue() && value.GetNumber() == 0 {
 			continue
@@ -128,12 +133,17 @@ func listEnumNumbers(reg *descriptor.Registry, enum *descriptor.Enum) (numbers [
 		if !isVisible(getEnumValueVisibilityOption(value), reg) {
 			continue
 		}
-		numbers = append(numbers, strconv.Itoa(int(value.GetNumber())))
+		numbers = append(numbers, int(value.GetNumber()))
 	}
-	return
+
+	if len(numbers) > 0 {
+		return numbers
+	}
+
+	return nil
 }
 
-func getEnumDefault(reg *descriptor.Registry, enum *descriptor.Enum) string {
+func getEnumDefault(reg *descriptor.Registry, enum *descriptor.Enum) interface{} {
 	if !reg.GetOmitEnumDefaultValue() {
 		for _, value := range enum.GetValue() {
 			if value.GetNumber() == 0 {
@@ -141,7 +151,18 @@ func getEnumDefault(reg *descriptor.Registry, enum *descriptor.Enum) string {
 			}
 		}
 	}
-	return ""
+	return nil
+}
+
+func getEnumDefaultNumber(reg *descriptor.Registry, enum *descriptor.Enum) interface{} {
+	if !reg.GetOmitEnumDefaultValue() {
+		for _, value := range enum.GetValue() {
+			if value.GetNumber() == 0 {
+				return int(value.GetNumber())
+			}
+		}
+	}
+	return nil
 }
 
 // messageToQueryParameters converts a message to a list of OpenAPI query parameters.
@@ -317,9 +338,7 @@ func nestedQueryParams(message *descriptor.Message, field *descriptor.Field, pre
 				if reg.GetEnumsAsInts() {
 					param.Type = "integer"
 					param.Enum = listEnumNumbers(reg, enum)
-					if !reg.GetOmitEnumDefaultValue() {
-						param.Default = "0"
-					}
+					param.Default = getEnumDefaultNumber(reg, enum)
 				}
 			}
 			valueComments := enumValueProtoComments(reg, enum)
@@ -843,8 +862,11 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 		if reg.GetEnumsAsInts() {
 			enumSchemaObject.Type = "integer"
 			enumSchemaObject.Format = "int32"
-			enumSchemaObject.Default = "0"
+			enumSchemaObject.Default = 0
 			enumSchemaObject.Enum = listEnumNumbers(reg, enum)
+			if reg.GetOmitEnumDefaultValue() {
+				enumSchemaObject.Default = nil
+			}
 		}
 		if err := updateOpenAPIDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
 			panic(err)
@@ -1089,8 +1111,9 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 				var pathParamNames = make(map[string]string)
 				for _, parameter := range b.PathParams {
 
-					var paramType, paramFormat, desc, collectionFormat, defaultValue string
-					var enumNames []string
+					var paramType, paramFormat, desc, collectionFormat string
+					var defaultValue interface{}
+					var enumNames interface{}
 					var items *openapiItemsObject
 					var minItems *int
 					var extensions []extension
@@ -1122,6 +1145,10 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							paramFormat = ""
 							enumNames = listEnumNumbers(reg, enum)
 						}
+						if reg.GetOmitEnumDefaultValue() {
+							enumNames = nil
+						}
+
 						schema := schemaOfField(parameter.Target, reg, customRefs)
 						desc = schema.Description
 						defaultValue = schema.Default
@@ -1147,7 +1174,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					if parameter.IsRepeated() {
 						core := schemaCore{Type: paramType, Format: paramFormat}
 						if parameter.IsEnum() {
-							var s []string
+							var s interface{}
 							core.Enum = enumNames
 							enumNames = s
 						}
@@ -2691,6 +2718,13 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		s.Items.ExclusiveMaximum = j.GetExclusiveMaximum()
 		s.Items.ExclusiveMinimum = j.GetExclusiveMinimum()
 		s.Items.Enum = j.GetEnum()
+
+		if j.GetDefault() == "" {
+			s.Items.Default = nil
+		}
+		if len(j.GetEnum()) == 0 {
+			s.Items.Enum = nil
+		}
 	} else {
 		s.MaxLength = j.GetMaxLength()
 		s.MinLength = j.GetMinLength()
@@ -2707,11 +2741,17 @@ func updateswaggerObjectFromJSONSchema(s *openapiSchemaObject, j *openapi_option
 		s.ExclusiveMaximum = j.GetExclusiveMaximum()
 		s.ExclusiveMinimum = j.GetExclusiveMinimum()
 		s.Enum = j.GetEnum()
+
+		if j.GetDefault() == "" {
+			s.Default = nil
+		}
+		if len(j.GetEnum()) == 0 {
+			s.Enum = nil
+		}
 	}
 	s.MaxItems = j.GetMaxItems()
 	s.MinItems = j.GetMinItems()
 
-	s.Enum = j.GetEnum()
 	if j.GetExtensions() != nil {
 		exts, err := processExtensions(j.GetExtensions())
 		if err != nil {

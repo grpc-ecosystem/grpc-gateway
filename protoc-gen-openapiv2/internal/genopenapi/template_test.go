@@ -269,8 +269,8 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 					In:       "query",
 					Required: false,
 					Type:     "integer",
-					Enum:     []string{"0", "1"},
-					Default:  "0",
+					Enum:     []int{0, 1},
+					Default:  0,
 				},
 			},
 		},
@@ -320,6 +320,7 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 		for i := range params {
 			params[i].Items = nil
 		}
+
 		if !reflect.DeepEqual(params, test.Params) {
 			t.Errorf("expected %v, got %v", test.Params, params)
 		}
@@ -8482,8 +8483,10 @@ func TestArrayMessageItemsType(t *testing.T) {
 					Key: "code",
 					Value: openapiSchemaObject{
 						schemaCore: schemaCore{
-							Type:   "integer",
-							Format: "int32",
+							Type:    "integer",
+							Format:  "int32",
+							Enum:    nil,
+							Default: nil,
 						},
 					},
 				},
@@ -8491,7 +8494,9 @@ func TestArrayMessageItemsType(t *testing.T) {
 					Key: "message",
 					Value: openapiSchemaObject{
 						schemaCore: schemaCore{
-							Type: "string",
+							Type:    "string",
+							Enum:    nil,
+							Default: nil,
 						},
 					},
 				},
@@ -8502,8 +8507,10 @@ func TestArrayMessageItemsType(t *testing.T) {
 							Type: "array",
 							Items: &openapiItemsObject{
 								schemaCore: schemaCore{
-									Type: "object",
-									Ref:  "#/definitions/protobufAny",
+									Type:    "object",
+									Ref:     "#/definitions/protobufAny",
+									Enum:    nil,
+									Default: nil,
 								},
 							},
 						},
@@ -8523,8 +8530,10 @@ func TestArrayMessageItemsType(t *testing.T) {
 							Type: "array",
 							Items: &openapiItemsObject{
 								schemaCore: schemaCore{
-									Type: "object",
-									Ref:  "#/definitions/exampleExampleMessage",
+									Type:    "object",
+									Ref:     "#/definitions/exampleExampleMessage",
+									Enum:    nil,
+									Default: nil,
 								},
 							},
 						},
@@ -8541,11 +8550,15 @@ func TestArrayMessageItemsType(t *testing.T) {
 					Key: "children",
 					Value: openapiSchemaObject{
 						schemaCore: schemaCore{
-							Type: "array",
+							Type:    "array",
+							Enum:    nil,
+							Default: nil,
 							Items: &openapiItemsObject{
 								schemaCore: schemaCore{
-									Type: "object",
-									Ref:  "#/definitions/exampleExampleMessage",
+									Type:    "object",
+									Ref:     "#/definitions/exampleExampleMessage",
+									Enum:    nil,
+									Default: nil,
 								},
 							},
 						},
@@ -8562,7 +8575,9 @@ func TestArrayMessageItemsType(t *testing.T) {
 					Key: "@type",
 					Value: openapiSchemaObject{
 						schemaCore: schemaCore{
-							Type: "string",
+							Type:    "string",
+							Enum:    nil,
+							Default: nil,
 						},
 					},
 				},
@@ -8583,6 +8598,10 @@ func TestArrayMessageItemsType(t *testing.T) {
 
 		t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, is, want)
 	}
+	d1, _ := json.Marshal(result.Definitions)
+	d2, _ := json.Marshal(expect)
+	fmt.Println(string(d1))
+	fmt.Println(string(d2))
 	// If there was a failure, print out the input and the json result for debugging.
 	if t.Failed() {
 		t.Errorf("had: %s", file)
