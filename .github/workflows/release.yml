@@ -76,7 +76,7 @@ jobs:
       - name: Set grpc-version
         run: echo ::set-output name=version::$(go list -m -f '{{.Version}}' google.golang.org/grpc)
         id: grpc-version
-      - uses: docker/build-push-action@1104d471370f9806843c095c1db02b5a90c5f8b6 # v3
+      - uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671 # v3
         with:
           push: true
           tags: plugins.buf.build/grpc-ecosystem/grpc-gateway:${{ github.ref_name }}-1
@@ -86,7 +86,7 @@ jobs:
             RELEASE_VERSION=${{ github.ref_name }}
             GO_PROTOBUF_RELEASE_VERSION=${{ steps.protobuf-version.outputs.version }}
             GO_GRPC_RELEASE_VERSION=${{ steps.grpc-version.outputs.version }}
-      - uses: docker/build-push-action@1104d471370f9806843c095c1db02b5a90c5f8b6 # v3
+      - uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671 # v3
         with:
           push: true
           tags: plugins.buf.build/grpc-ecosystem/openapiv2:${{ github.ref_name }}-1
