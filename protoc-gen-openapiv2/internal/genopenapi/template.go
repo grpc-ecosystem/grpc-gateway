@@ -1170,7 +1170,7 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 						if parameter.IsEnum() {
 							var s interface{}
 							core.Enum = enumNames
-							enumNames = s
+							enumNames = nil
 						}
 						items = (*openapiItemsObject)(&openapiSchemaObject{schemaCore: core})
 						paramType = "array"
