@@ -8503,10 +8503,8 @@ func TestArrayMessageItemsType(t *testing.T) {
 							Type: "array",
 							Items: &openapiItemsObject{
 								schemaCore: schemaCore{
-									Type:    "object",
-									Ref:     "#/definitions/protobufAny",
-									Enum:    nil,
-									Default: nil,
+									Type: "object",
+									Ref:  "#/definitions/protobufAny",
 								},
 							},
 						},
@@ -8526,10 +8524,8 @@ func TestArrayMessageItemsType(t *testing.T) {
 							Type: "array",
 							Items: &openapiItemsObject{
 								schemaCore: schemaCore{
-									Type:    "object",
-									Ref:     "#/definitions/exampleExampleMessage",
-									Enum:    nil,
-									Default: nil,
+									Type: "object",
+									Ref:  "#/definitions/exampleExampleMessage",
 								},
 							},
 						},
@@ -8550,10 +8546,8 @@ func TestArrayMessageItemsType(t *testing.T) {
 
 							Items: &openapiItemsObject{
 								schemaCore: schemaCore{
-									Type:    "object",
-									Ref:     "#/definitions/exampleExampleMessage",
-									Enum:    nil,
-									Default: nil,
+									Type: "object",
+									Ref:  "#/definitions/exampleExampleMessage",
 								},
 							},
 						},
