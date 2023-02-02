@@ -862,11 +862,8 @@ func renderEnumerationsAsDefinition(enums enumMap, d openapiDefinitionsObject, r
 		if reg.GetEnumsAsInts() {
 			enumSchemaObject.Type = "integer"
 			enumSchemaObject.Format = "int32"
-			enumSchemaObject.Default = 0
+			enumSchemaObject.Default = getEnumDefaultNumber(reg, enum)
 			enumSchemaObject.Enum = listEnumNumbers(reg, enum)
-			if reg.GetOmitEnumDefaultValue() {
-				enumSchemaObject.Default = nil
-			}
 		}
 		if err := updateOpenAPIDataFromComments(reg, &enumSchemaObject, enum, enumComments, false); err != nil {
 			panic(err)
@@ -1144,9 +1141,6 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 							paramType = "integer"
 							paramFormat = ""
 							enumNames = listEnumNumbers(reg, enum)
-						}
-						if reg.GetOmitEnumDefaultValue() {
-							enumNames = nil
 						}
 
 						schema := schemaOfField(parameter.Target, reg, customRefs)
