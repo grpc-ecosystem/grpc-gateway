@@ -8598,10 +8598,6 @@ func TestArrayMessageItemsType(t *testing.T) {
 
 		t.Errorf("applyTemplate(%#v).%s = %v want to be %v", file, name, is, want)
 	}
-	d1, _ := json.Marshal(result.Definitions)
-	d2, _ := json.Marshal(expect)
-	fmt.Println(string(d1))
-	fmt.Println(string(d2))
 	// If there was a failure, print out the input and the json result for debugging.
 	if t.Failed() {
 		t.Errorf("had: %s", file)
