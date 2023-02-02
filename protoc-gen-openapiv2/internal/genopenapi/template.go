@@ -1168,7 +1168,6 @@ func renderServices(services []*descriptor.Service, paths openapiPathsObject, re
 					if parameter.IsRepeated() {
 						core := schemaCore{Type: paramType, Format: paramFormat}
 						if parameter.IsEnum() {
-							var s interface{}
 							core.Enum = enumNames
 							enumNames = nil
 						}
