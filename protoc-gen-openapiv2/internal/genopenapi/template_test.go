@@ -8483,10 +8483,8 @@ func TestArrayMessageItemsType(t *testing.T) {
 					Key: "code",
 					Value: openapiSchemaObject{
 						schemaCore: schemaCore{
-							Type:    "integer",
-							Format:  "int32",
-							Enum:    nil,
-							Default: nil,
+							Type:   "integer",
+							Format: "int32",
 						},
 					},
 				},
@@ -8494,9 +8492,7 @@ func TestArrayMessageItemsType(t *testing.T) {
 					Key: "message",
 					Value: openapiSchemaObject{
 						schemaCore: schemaCore{
-							Type:    "string",
-							Enum:    nil,
-							Default: nil,
+							Type: "string",
 						},
 					},
 				},
@@ -8550,9 +8546,8 @@ func TestArrayMessageItemsType(t *testing.T) {
 					Key: "children",
 					Value: openapiSchemaObject{
 						schemaCore: schemaCore{
-							Type:    "array",
-							Enum:    nil,
-							Default: nil,
+							Type: "array",
+
 							Items: &openapiItemsObject{
 								schemaCore: schemaCore{
 									Type:    "object",
@@ -8575,9 +8570,7 @@ func TestArrayMessageItemsType(t *testing.T) {
 					Key: "@type",
 					Value: openapiSchemaObject{
 						schemaCore: schemaCore{
-							Type:    "string",
-							Enum:    nil,
-							Default: nil,
+							Type: "string",
 						},
 					},
 				},
