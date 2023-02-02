@@ -320,7 +320,6 @@ func TestMessageToQueryParametersWithEnumAsInt(t *testing.T) {
 		for i := range params {
 			params[i].Items = nil
 		}
-
 		if !reflect.DeepEqual(params, test.Params) {
 			t.Errorf("expected %v, got %v", test.Params, params)
 		}
@@ -8543,7 +8542,6 @@ func TestArrayMessageItemsType(t *testing.T) {
 					Value: openapiSchemaObject{
 						schemaCore: schemaCore{
 							Type: "array",
-
 							Items: &openapiItemsObject{
 								schemaCore: schemaCore{
 									Type: "object",
