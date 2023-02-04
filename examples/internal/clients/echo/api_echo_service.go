@@ -1446,17 +1446,10 @@ func (a *EchoServiceApiService) EchoServiceEchoDelete(ctx context.Context, local
 EchoServiceApiService EchoPatch method receives a NonStandardUpdateRequest and returns it.
  * @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param body
- * @param optional nil or *EchoServiceEchoPatchOpts - Optional Parameters:
-     * @param "UpdateMask" (optional.String) - 
 
 @return ExamplepbDynamicMessageUpdate
 */
-
-type EchoServiceEchoPatchOpts struct { 
-	UpdateMask optional.String
-}
-
-func (a *EchoServiceApiService) EchoServiceEchoPatch(ctx context.Context, body ExamplepbDynamicMessage, localVarOptionals *EchoServiceEchoPatchOpts) (ExamplepbDynamicMessageUpdate, *http.Response, error) {
+func (a *EchoServiceApiService) EchoServiceEchoPatch(ctx context.Context, body ExamplepbDynamicMessage) (ExamplepbDynamicMessageUpdate, *http.Response, error) {
 	var (
 		localVarHttpMethod = strings.ToUpper("Patch")
 		localVarPostBody   interface{}
@@ -1472,9 +1465,6 @@ func (a *EchoServiceApiService) EchoServiceEchoPatch(ctx context.Context, body E
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if localVarOptionals != nil && localVarOptionals.UpdateMask.IsSet() {
-		localVarQueryParams.Add("updateMask", parameterToString(localVarOptionals.UpdateMask.Value(), ""))
-	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{"application/json"}
 

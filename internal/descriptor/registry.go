@@ -140,6 +140,9 @@ type Registry struct {
 	// useAllOfForRefs, if set, will use allOf as container for $ref to preserve same-level
 	// properties
 	useAllOfForRefs bool
+
+	// allowPatchFeature determines whether to use PATCH feature involving update masks (using google.protobuf.FieldMask).
+	allowPatchFeature bool
 }
 
 type repeatedFieldSeparator struct {
@@ -784,4 +787,14 @@ func (r *Registry) SetUseAllOfForRefs(use bool) {
 // GetUseAllOfForRefs returns useAllOfForRefs
 func (r *Registry) GetUseAllOfForRefs() bool {
 	return r.useAllOfForRefs
+}
+
+// SetAllowPatchFeature sets allowPatchFeature
+func (r *Registry) SetAllowPatchFeature(allow bool) {
+	r.allowPatchFeature = allow
+}
+
+// GetAllowPatchFeature returns allowPatchFeature
+func (r *Registry) GetAllowPatchFeature() bool {
+	return r.allowPatchFeature
 }

@@ -42,12 +42,6 @@
             "schema": {
               "$ref": "#/definitions/examplepbNonStandardMessage"
             }
-          },
-          {
-            "name": "updateMask",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [
@@ -81,12 +75,6 @@
             "schema": {
               "$ref": "#/definitions/examplepbNonStandardMessageWithJSONNames"
             }
-          },
-          {
-            "name": "updateMask",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [

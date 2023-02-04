@@ -759,12 +759,6 @@ paths:
         schema:
           $ref: "#/definitions/examplepbDynamicMessage"
         x-exportParamName: "Body"
-      - name: "updateMask"
-        in: "query"
-        required: false
-        type: "string"
-        x-exportParamName: "UpdateMask"
-        x-optionalDataType: "String"
       responses:
         200:
           description: "A successful response."

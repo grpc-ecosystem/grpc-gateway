@@ -887,12 +887,6 @@
             "schema": {
               "$ref": "#/definitions/examplepbDynamicMessage"
             }
-          },
-          {
-            "name": "updateMask",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [

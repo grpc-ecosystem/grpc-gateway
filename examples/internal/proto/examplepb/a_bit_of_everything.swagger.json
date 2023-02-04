@@ -5261,13 +5261,6 @@
             }
           },
           {
-            "name": "updateMask",
-            "description": "The list of fields to be updated.",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
             "name": "allowMissing",
             "description": "If set to true, and the book is not found, a new book will be created.\nIn this situation, `update_mask` is ignored.",
             "in": "query",
@@ -5968,13 +5961,6 @@
               ],
               "x-a-bit-of-everything-foo": "bar"
             }
-          },
-          {
-            "name": "updateMask",
-            "description": "The paths to update.",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
         "tags": [
