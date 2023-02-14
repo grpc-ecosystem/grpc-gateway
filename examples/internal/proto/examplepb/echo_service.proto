@@ -58,21 +58,11 @@ service EchoService {
   rpc Echo(SimpleMessage) returns (SimpleMessage) {
     option (google.api.http) = {
       post: "/v1/example/echo/{id}"
-      additional_bindings {
-        get: "/v1/example/echo/{id}/{num}"
-      }
-      additional_bindings {
-        get: "/v1/example/echo/{id}/{num}/{lang}"
-      }
-      additional_bindings {
-        get: "/v1/example/echo1/{id}/{line_num}/{status.note}"
-      }
-      additional_bindings {
-        get: "/v1/example/echo2/{no.note}"
-      }
-      additional_bindings {
-        get: "/v1/example/echo/resource/{resource_id}"
-      }
+      additional_bindings {get: "/v1/example/echo/{id}/{num}"}
+      additional_bindings {get: "/v1/example/echo/{id}/{num}/{lang}"}
+      additional_bindings {get: "/v1/example/echo1/{id}/{line_num}/{status.note}"}
+      additional_bindings {get: "/v1/example/echo2/{no.note}"}
+      additional_bindings {get: "/v1/example/echo/resource/{resource_id}"}
     };
   }
   // EchoBody method receives a simple message and returns it.
@@ -92,9 +82,7 @@ service EchoService {
   }
   // EchoDelete method receives a simple message and returns it.
   rpc EchoDelete(SimpleMessage) returns (SimpleMessage) {
-    option (google.api.http) = {
-      delete: "/v1/example/echo_delete"
-    };
+    option (google.api.http) = {delete: "/v1/example/echo_delete"};
   }
   // EchoPatch method receives a NonStandardUpdateRequest and returns it.
   rpc EchoPatch(DynamicMessageUpdate) returns (DynamicMessageUpdate) {
@@ -107,8 +95,6 @@ service EchoService {
   // always return a google.rpc.Code of `UNAUTHENTICATED` and a HTTP Status code
   // of 401.
   rpc EchoUnauthorized(SimpleMessage) returns (SimpleMessage) {
-    option (google.api.http) = {
-      get: "/v1/example/echo_unauthorized"
-    };
+    option (google.api.http) = {get: "/v1/example/echo_unauthorized"};
   }
 }

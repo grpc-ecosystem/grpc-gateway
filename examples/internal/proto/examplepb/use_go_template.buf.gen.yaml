@@ -1,6 +1,6 @@
 version: v1
 plugins:
-  - name: openapiv2
+  - plugin: openapiv2
     out: .
     opt:
       - use_go_templates=true

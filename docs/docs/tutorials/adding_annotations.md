@@ -55,13 +55,13 @@ We'll need to add the gRPC-Gateway generator to the generation configuration:
 ```yaml
 version: v1
 plugins:
-  - name: go
+  - plugin: go
     out: proto
     opt: paths=source_relative
-  - name: go-grpc
+  - plugin: go-grpc
     out: proto
     opt: paths=source_relative,require_unimplemented_servers=false
-  - name: grpc-gateway
+  - plugin: grpc-gateway
     out: proto
     opt: paths=source_relative
 ```

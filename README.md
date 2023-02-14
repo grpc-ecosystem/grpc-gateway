@@ -138,11 +138,11 @@ Alternatively, see the section on remotely managed plugin versions below.
    ```yaml
    version: v1
    plugins:
-     - name: go
+     - plugin: go
        out: gen/go
        opt:
          - paths=source_relative
-     - name: go-grpc
+     - plugin: go-grpc
        out: gen/go
        opt:
          - paths=source_relative
@@ -189,15 +189,15 @@ Alternatively, see the section on remotely managed plugin versions below.
    ```yaml
    version: v1
    plugins:
-     - name: go
+     - plugin: go
        out: gen/go
        opt:
          - paths=source_relative
-     - name: go-grpc
+     - plugin: go-grpc
        out: gen/go
        opt:
          - paths=source_relative
-     - name: grpc-gateway
+     - plugin: grpc-gateway
        out: gen/go
        opt:
          - paths=source_relative
@@ -264,15 +264,15 @@ Alternatively, see the section on remotely managed plugin versions below.
    ```yaml
    version: v1
    plugins:
-     - name: go
+     - plugin: go
        out: gen/go
        opt:
          - paths=source_relative
-     - name: go-grpc
+     - plugin: go-grpc
        out: gen/go
        opt:
          - paths=source_relative
-     - name: grpc-gateway
+     - plugin: grpc-gateway
        out: gen/go
        opt:
          - paths=source_relative
@@ -314,15 +314,15 @@ Alternatively, see the section on remotely managed plugin versions below.
    ```yaml
    version: v1
    plugins:
-     - name: go
+     - plugin: go
        out: gen/go
        opt:
          - paths=source_relative
-     - name: go-grpc
+     - plugin: go-grpc
        out: gen/go
        opt:
          - paths=source_relative
-     - name: grpc-gateway
+     - plugin: grpc-gateway
        out: gen/go
        opt:
          - paths=source_relative
@@ -400,19 +400,19 @@ Alternatively, see the section on remotely managed plugin versions below.
    ```yaml
    version: v1
    plugins:
-     - name: go
+     - plugin: go
        out: gen/go
        opt:
          - paths=source_relative
-     - name: go-grpc
+     - plugin: go-grpc
        out: gen/go
        opt:
          - paths=source_relative
-     - name: grpc-gateway
+     - plugin: grpc-gateway
        out: gen/go
        opt:
          - paths=source_relative
-     - name: openapiv2
+     - plugin: openapiv2
        out: gen/openapiv2
    ```
 
@@ -509,7 +509,7 @@ the `opt` field in your `buf.gen.yaml` file, for example:
 ```yaml
 version: v1
 plugins:
-  - name: grpc-gateway
+  - plugin: grpc-gateway
     out: gen/go
     opt:
       - paths=source_relative

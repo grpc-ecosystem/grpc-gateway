@@ -24,10 +24,10 @@ To generate type and gRPC stubs for Go, create the file `buf.gen.yaml`:
 ```yaml
 version: v1
 plugins:
-  - name: go
+  - plugin: go
     out: proto
     opt: paths=source_relative
-  - name: go-grpc
+  - plugin: go-grpc
     out: proto
     opt: paths=source_relative
 ```
