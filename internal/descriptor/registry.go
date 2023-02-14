@@ -74,6 +74,9 @@ type Registry struct {
 	// visibilityRestrictionSelectors is a map of selectors for `google.api.VisibilityRule`s that will be included in the OpenAPI output.
 	visibilityRestrictionSelectors map[string]bool
 
+	// includeWithoutVisibility determines whether to include elements without visibility annotations.
+	includeWithoutVisibility bool
+
 	// useGoTemplate determines whether you want to use GO templates
 	// in your protofile comments
 	useGoTemplate bool
@@ -595,6 +598,14 @@ func (r *Registry) SetVisibilityRestrictionSelectors(selectors []string) {
 // GetVisibilityRestrictionSelectors retrieves he visibility restriction selectors.
 func (r *Registry) GetVisibilityRestrictionSelectors() map[string]bool {
 	return r.visibilityRestrictionSelectors
+}
+
+func (r *Registry) SetIncludeWithoutVisibility(include bool) {
+	r.includeWithoutVisibility = include
+}
+
+func (r *Registry) GetIncludeWithoutVisibility() bool {
+	return r.includeWithoutVisibility
 }
 
 // SetDisableDefaultErrors sets disableDefaultErrors

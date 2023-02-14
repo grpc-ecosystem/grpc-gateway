@@ -634,7 +634,7 @@ func isVisible(r *visibility.VisibilityRule, reg *descriptor.Registry) bool {
 	restrictions := strings.Split(strings.TrimSpace(r.Restriction), ",")
 	// No restrictions results in the element always being visible
 	if len(restrictions) == 0 {
-		return true
+		return reg.GetIncludeWithoutVisibility()
 	}
 
 	for _, restriction := range restrictions {
