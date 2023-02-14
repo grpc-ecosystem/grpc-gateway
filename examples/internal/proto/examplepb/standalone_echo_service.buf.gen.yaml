@@ -1,6 +1,6 @@
 version: v1
 plugins:
-  - name: grpc-gateway
+  - plugin: grpc-gateway
     out: .
     opt:
       - paths=source_relative
