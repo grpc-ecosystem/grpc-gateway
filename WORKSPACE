@@ -3,12 +3,19 @@ workspace(name = "grpc_ecosystem_grpc_gateway")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
+http_archive(
+    name = "com_google_googletest",
+    sha256 = "ffa17fbc5953900994e2deec164bb8949879ea09b411e07f215bfbb1f87f4632",
+    strip_prefix = "googletest-1.13.0",
+    urls = ["https://github.com/google/googletest/archive/v1.13.0.zip"],
+)
+
 # Define before rules_proto, otherwise we receive the version of com_google_protobuf from there
 http_archive(
     name = "com_google_protobuf",
-    sha256 = "930c2c3b5ecc6c9c12615cf5ad93f1cd6e12d0aba862b572e076259970ac3a53",
-    strip_prefix = "protobuf-3.21.12",
-    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.21.12.tar.gz"],
+    sha256 = "a1562006dbd31e79c12f944c359495807900a8b71f5bf0f6fa7741898259b2cd",
+    strip_prefix = "protobuf-3.22.0",
+    urls = ["https://github.com/protocolbuffers/protobuf/archive/v3.22.0.tar.gz"],
 )
 
 http_archive(
