@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/golang/glog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -99,6 +100,25 @@ func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Reque
 	return metadata.NewIncomingContext(ctx, md), nil
 }
 
+func isValidGRPCMetadataKey(key string) bool {
+	for i := 0; i < len(key); i++ {
+		r := key[i]
+		if !(r >= 'a' && r <= 'z') && !(r >= '0' && r <= '9') && r != '.' && r != '-' && r != '_' {
+			return false
+		}
+	}
+	return true
+}
+
+func isValidGRPCMetadataTextValue(textValue string) bool {
+	for i := 0; i < len(textValue); i++ {
+		if textValue[i] < 0x20 || textValue[i] > 0x7E {
+			return true
+		}
+	}
+	return false
+}
+
 func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string, options ...AnnotateContextOption) (context.Context, metadata.MD, error) {
 	ctx = withRPCMethod(ctx, rpcMethodName)
 	for _, o := range options {
@@ -121,6 +141,11 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 				pairs = append(pairs, "authorization", val)
 			}
 			if h, ok := mux.incomingHeaderMatcher(key); ok {
+				if !isValidGRPCMetadataKey(h) {
+					glog.Errorf("HTTP header %q is not valid as gRPC metadata; skipping", h)
+					continue
+				}
+
 				// Handles "-bin" metadata in grpc, since grpc will do another base64
 				// encode before sending to server, we need to decode it first.
 				if strings.HasSuffix(key, metadataHeaderBinarySuffix) {
@@ -130,7 +155,11 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 					}
 
 					val = string(b)
+				} else if !isValidGRPCMetadataTextValue(val) {
+					glog.Errorf("HTTP header %q contains non-ASCII value (not valid as gRPC metadata): skipping", h)
+					continue
 				}
+
 				pairs = append(pairs, h, val)
 			}
 		}
