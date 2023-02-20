@@ -113,10 +113,10 @@ func isValidGRPCMetadataKey(key string) bool {
 func isValidGRPCMetadataTextValue(textValue string) bool {
 	for i := 0; i < len(textValue); i++ {
 		if textValue[i] < 0x20 || textValue[i] > 0x7E {
-			return true
+			return false
 		}
 	}
-	return false
+	return true
 }
 
 func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcMethodName string, options ...AnnotateContextOption) (context.Context, metadata.MD, error) {
