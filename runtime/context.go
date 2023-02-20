@@ -142,7 +142,7 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 			}
 			if h, ok := mux.incomingHeaderMatcher(key); ok {
 				if !isValidGRPCMetadataKey(h) {
-					glog.Errorf("HTTP header %q is not valid as gRPC metadata; skipping", h)
+					glog.Errorf("HTTP header name %q is not valid as gRPC metadata key; skipping", h)
 					continue
 				}
 
@@ -156,7 +156,7 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 
 					val = string(b)
 				} else if !isValidGRPCMetadataTextValue(val) {
-					glog.Errorf("HTTP header %q contains non-ASCII value (not valid as gRPC metadata): skipping", h)
+					glog.Errorf("Value of HTTP header %q contains non-ASCII value (not valid as gRPC metadata): skipping", h)
 					continue
 				}
 
