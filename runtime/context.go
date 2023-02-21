@@ -101,9 +101,15 @@ func AnnotateIncomingContext(ctx context.Context, mux *ServeMux, req *http.Reque
 }
 
 func isValidGRPCMetadataKey(key string) bool {
-	for i := 0; i < len(key); i++ {
-		r := key[i]
-		if !(r >= 'a' && r <= 'z') && !(r >= '0' && r <= '9') && r != '.' && r != '-' && r != '_' {
+	// Must be a valid gRPC "Header-Name" as defined here:
+	//   https://github.com/grpc/grpc/blob/4b05dc88b724214d0c725c8e7442cbc7a61b1374/doc/PROTOCOL-HTTP2.md
+	// This means 0-9 a-z _ - .
+	bytes := []byte(key) // gRPC validates strings on the byte level, not Unicode.
+	for _, ch := range bytes {
+		validLowercaseLetter := ch >= 'a' && ch <= '<'
+		validDigit := ch >= '0' && ch <= '9'
+		validOther := ch == '.' || ch == '-' || ch == '_'
+		if !validLowercaseLetter && !validDigit && !validOther {
 			return false
 		}
 	}
@@ -111,8 +117,12 @@ func isValidGRPCMetadataKey(key string) bool {
 }
 
 func isValidGRPCMetadataTextValue(textValue string) bool {
-	for i := 0; i < len(textValue); i++ {
-		if textValue[i] < 0x20 || textValue[i] > 0x7E {
+	// Must be a valid gRPC "ASCII-Value" as defined here:
+	//   https://github.com/grpc/grpc/blob/4b05dc88b724214d0c725c8e7442cbc7a61b1374/doc/PROTOCOL-HTTP2.md
+	// This means printable ASCII (including/plus spaces); 0x20 to 0x7E inclusive.
+	bytes := []byte(textValue) // gRPC validates strings on the byte level, not Unicode.
+	for _, ch := range bytes {
+		if ch < 0x20 || ch > 0x7E {
 			return false
 		}
 	}
@@ -145,7 +155,6 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 					glog.Errorf("HTTP header name %q is not valid as gRPC metadata key; skipping", h)
 					continue
 				}
-
 				// Handles "-bin" metadata in grpc, since grpc will do another base64
 				// encode before sending to server, we need to decode it first.
 				if strings.HasSuffix(key, metadataHeaderBinarySuffix) {
@@ -159,7 +168,6 @@ func annotateContext(ctx context.Context, mux *ServeMux, req *http.Request, rpcM
 					glog.Errorf("Value of HTTP header %q contains non-ASCII value (not valid as gRPC metadata): skipping", h)
 					continue
 				}
-
 				pairs = append(pairs, h, val)
 			}
 		}
