@@ -104,12 +104,15 @@ func isValidGRPCMetadataKey(key string) bool {
 	// Must be a valid gRPC "Header-Name" as defined here:
 	//   https://github.com/grpc/grpc/blob/4b05dc88b724214d0c725c8e7442cbc7a61b1374/doc/PROTOCOL-HTTP2.md
 	// This means 0-9 a-z _ - .
+	// Only lowercase letters are valid in the wire protocol, but the client library will normalize
+	// uppercase ASCII to lowercase, so uppercase ASCII is also acceptable.
 	bytes := []byte(key) // gRPC validates strings on the byte level, not Unicode.
 	for _, ch := range bytes {
-		validLowercaseLetter := ch >= 'a' && ch <= '<'
+		validLowercaseLetter := ch >= 'a' && ch <= 'z'
+		validUppercaseLetter := ch >= 'A' && ch <= 'Z'
 		validDigit := ch >= '0' && ch <= '9'
 		validOther := ch == '.' || ch == '-' || ch == '_'
-		if !validLowercaseLetter && !validDigit && !validOther {
+		if !validLowercaseLetter && !validUppercaseLetter && !validDigit && !validOther {
 			return false
 		}
 	}
