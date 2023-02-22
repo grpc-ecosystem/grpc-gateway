@@ -26,6 +26,7 @@ go_library(
     deps = [
         "//internal/httprule",
         "//utilities",
+        "@com_github_golang_glog//:glog",
         "@go_googleapis//google/api:httpbody_go_proto",
         "@io_bazel_rules_go//proto/wkt:field_mask_go_proto",
         "@org_golang_google_grpc//codes",

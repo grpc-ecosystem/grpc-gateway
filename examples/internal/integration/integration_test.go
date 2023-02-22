@@ -53,6 +53,8 @@ func TestEcho(t *testing.T) {
 			testEchoBody(t, 8089, apiPrefix, true)
 			testEchoBody(t, 8089, apiPrefix, false)
 			testEchoBodyParamOverwrite(t, 8088)
+			testEchoWithNonASCIIHeaderValues(t, 8088, apiPrefix)
+			testEchoWithInvalidHeaderKey(t, 8088, apiPrefix)
 		})
 	}
 }
@@ -2502,5 +2504,81 @@ func testABETrace(t *testing.T, port int) {
 	if err := marshaler.Unmarshal(buf, want); err != nil {
 		t.Errorf("marshaler.Unmarshal(%s, want) failed with %v; want success", buf, err)
 		return
+	}
+}
+
+func testEchoWithNonASCIIHeaderValues(t *testing.T, port int, apiPrefix string) {
+	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo/myid", port, apiPrefix)
+
+	req, err := http.NewRequest("POST", apiURL, strings.NewReader("{}"))
+	if err != nil {
+		t.Errorf("http.NewRequest() = err: %v", err)
+		return
+	}
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Grpc-Metadata-Location", "Gjøvik")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("io.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	msg := new(examplepb.UnannotatedSimpleMessage)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
+		return
+	}
+	if got, want := msg.Id, "myid"; got != want {
+		t.Errorf("msg.Id = %q; want %q", got, want)
+	}
+}
+
+func testEchoWithInvalidHeaderKey(t *testing.T, port int, apiPrefix string) {
+	apiURL := fmt.Sprintf("http://localhost:%d/%s/example/echo/myid", port, apiPrefix)
+
+	req, err := http.NewRequest("POST", apiURL, strings.NewReader("{}"))
+	if err != nil {
+		t.Errorf("http.NewRequest() = err: %v", err)
+		return
+	}
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Grpc-Metadata-Foo+Bar", "Hello")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("http.Post(%q) failed with %v; want success", apiURL, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Errorf("io.ReadAll(resp.Body) failed with %v; want success", err)
+		return
+	}
+
+	if got, want := resp.StatusCode, http.StatusOK; got != want {
+		t.Errorf("resp.StatusCode = %d; want %d", got, want)
+		t.Logf("%s", buf)
+	}
+
+	msg := new(examplepb.UnannotatedSimpleMessage)
+	if err := marshaler.Unmarshal(buf, msg); err != nil {
+		t.Errorf("marshaler.Unmarshal(%s, msg) failed with %v; want success", buf, err)
+		return
+	}
+	if got, want := msg.Id, "myid"; got != want {
+		t.Errorf("msg.Id = %q; want %q", got, want)
 	}
 }
